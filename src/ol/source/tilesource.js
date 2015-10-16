@@ -10,6 +10,7 @@ goog.require('ol.Extent');
 goog.require('ol.TileCache');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
@@ -97,14 +98,19 @@ ol.source.Tile.prototype.canExpireCache = function() {
 
 
 /**
+ * @param {ol.proj.Projection} projection Projection.
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.source.Tile.prototype.expireCache = function(usedTiles) {
-  this.tileCache.expireCache(usedTiles);
+ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
+  var tileCache = this.getTileCacheForProjection(projection);
+  if (tileCache) {
+    tileCache.expireCache(usedTiles);
+  }
 };
 
 
 /**
+ * @param {ol.proj.Projection} projection Projection.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
@@ -112,15 +118,21 @@ ol.source.Tile.prototype.expireCache = function(usedTiles) {
  *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.Tile.prototype.forEachLoadedTile = function(z, tileRange, callback) {
+ol.source.Tile.prototype.forEachLoadedTile =
+    function(projection, z, tileRange, callback) {
+  var tileCache = this.getTileCacheForProjection(projection);
+  if (!tileCache) {
+    return false;
+  }
+
   var covered = true;
   var tile, tileCoordKey, loaded;
   for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoordKey = this.getKeyZXY(z, x, y);
       loaded = false;
-      if (this.tileCache.containsKey(tileCoordKey)) {
-        tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+      if (tileCache.containsKey(tileCoordKey)) {
+        tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
         loaded = tile.getState() === ol.TileState.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
@@ -174,7 +186,7 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection=} opt_projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {!ol.Tile} Tile.
  */
 ol.source.Tile.prototype.getTile = goog.abstractMethod;
@@ -200,6 +212,29 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
   } else {
     return this.tileGrid;
   }
+};
+
+
+/**
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCache} Tile cache.
+ * @protected
+ */
+ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
+  var thisProj = this.getProjection();
+  if (thisProj && !ol.proj.equivalent(thisProj, projection)) {
+    return null;
+  } else {
+    return this.tileCache;
+  }
+};
+
+
+/**
+ * @return {number} Tile pixel ratio.
+ */
+ol.source.Tile.prototype.getTilePixelRatio = function() {
+  return this.tilePixelRatio_;
 };
 
 
@@ -244,6 +279,7 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
+ * @param {ol.proj.Projection} projection Projection.
  */
 ol.source.Tile.prototype.useTile = ol.nullFunction;
 

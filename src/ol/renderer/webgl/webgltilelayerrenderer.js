@@ -105,6 +105,7 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
 /**
  * Create a function that adds loaded tiles to the tile lookup.
  * @param {ol.source.Tile} source Tile source.
+ * @param {ol.proj.Projection} projection Projection of the tiles.
  * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
  *     tiles by zoom level.
  * @return {function(number, ol.TileRange):boolean} A function that can be
@@ -113,7 +114,7 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
  * @protected
  */
 ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
-    function(source, tiles) {
+    function(source, projection, tiles) {
   var mapRenderer = this.mapRenderer;
 
   return (
@@ -123,16 +124,17 @@ ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
-        return source.forEachLoadedTile(zoom, tileRange, function(tile) {
-          var loaded = mapRenderer.isTileTextureLoaded(tile);
-          if (loaded) {
-            if (!tiles[zoom]) {
-              tiles[zoom] = {};
-            }
-            tiles[zoom][tile.tileCoord.toString()] = tile;
-          }
-          return loaded;
-        });
+        return source.forEachLoadedTile(projection, zoom,
+                                        tileRange, function(tile) {
+              var loaded = mapRenderer.isTileTextureLoaded(tile);
+              if (loaded) {
+                if (!tiles[zoom]) {
+                  tiles[zoom] = {};
+                }
+                tiles[zoom][tile.tileCoord.toString()] = tile;
+              }
+              return loaded;
+            });
       });
 };
 
@@ -239,7 +241,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     tilesToDrawByZ[z] = {};
 
     var findLoadedTiles = this.createLoadedTileFinder(
-        tileSource, tilesToDrawByZ);
+        tileSource, projection, tilesToDrawByZ);
 
     var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
     var allTilesLoaded = true;

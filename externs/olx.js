@@ -3602,6 +3602,7 @@ olx.source;
  *     key: string,
  *     imagerySet: string,
  *     maxZoom: (number|undefined),
+ *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
@@ -3640,6 +3641,15 @@ olx.source.BingMapsOptions.prototype.imagerySet;
  * @api
  */
 olx.source.BingMapsOptions.prototype.maxZoom;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -3761,6 +3771,7 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
+ *            reprojectionErrorThreshold: (number|undefined),
  *            state: (ol.source.State|string|undefined),
  *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                                 ol.TileState, string, ?string,
@@ -3817,6 +3828,15 @@ olx.source.TileImageOptions.prototype.opaque;
  * @api
  */
 olx.source.TileImageOptions.prototype.projection;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileImageOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -4076,6 +4096,7 @@ olx.source.ImageMapGuideOptions.prototype.params;
 
 /**
  * @typedef {{layer: string,
+ *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
  * @api
@@ -4089,6 +4110,15 @@ olx.source.MapQuestOptions;
  * @api stable
  */
 olx.source.MapQuestOptions.prototype.layer;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.MapQuestOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -4144,6 +4174,7 @@ olx.source.TileDebugOptions.prototype.wrapX;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     maxZoom: (number|undefined),
+ *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     wrapX: (boolean|undefined)}}
@@ -4180,6 +4211,15 @@ olx.source.OSMOptions.prototype.crossOrigin;
  * @api
  */
 olx.source.OSMOptions.prototype.maxZoom;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.OSMOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -4538,6 +4578,7 @@ olx.source.ImageWMSOptions.prototype.url;
  *     minZoom: (number|undefined),
  *     maxZoom: (number|undefined),
  *     opaque: (boolean|undefined),
+ *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined)}}
  * @api
@@ -4575,6 +4616,15 @@ olx.source.StamenOptions.prototype.maxZoom;
  * @api
  */
 olx.source.StamenOptions.prototype.opaque;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.StamenOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -4683,6 +4733,7 @@ olx.source.ImageStaticOptions.prototype.url;
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     projection: ol.proj.ProjectionLike,
+ *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
@@ -4755,6 +4806,15 @@ olx.source.TileArcGISRestOptions.prototype.projection;
 
 
 /**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileArcGISRestOptions.prototype.reprojectionErrorThreshold;
+
+
+/**
  * Optional function to load a tile given a URL.
  * @type {ol.TileLoadFunctionType|undefined}
  * @api
@@ -4791,6 +4851,7 @@ olx.source.TileArcGISRestOptions.prototype.urls;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
+ *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
  *     wrapX: (boolean|undefined)}}
@@ -4819,6 +4880,15 @@ olx.source.TileJSONOptions.prototype.attributions;
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.crossOrigin;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -4855,6 +4925,7 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     maxZoom: (number|undefined),
  *     projection: ol.proj.ProjectionLike,
+ *     reprojectionErrorThreshold: (number|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
@@ -4953,6 +5024,15 @@ olx.source.TileWMSOptions.prototype.maxZoom;
  * @api
  */
 olx.source.TileWMSOptions.prototype.projection;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.TileWMSOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -5120,6 +5200,7 @@ olx.source.VectorOptions.prototype.wrapX;
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.proj.ProjectionLike,
+ *     reprojectionErrorThreshold: (number|undefined),
  *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
  *     layer: string,
  *     style: string,
@@ -5183,6 +5264,15 @@ olx.source.WMTSOptions.prototype.tileGrid;
  * @api
  */
 olx.source.WMTSOptions.prototype.projection;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.WMTSOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -5311,6 +5401,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
+ *     reprojectionErrorThreshold: (number|undefined),
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
@@ -5360,6 +5451,15 @@ olx.source.XYZOptions.prototype.logo;
  * @api
  */
 olx.source.XYZOptions.prototype.projection;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.XYZOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
@@ -5452,6 +5552,7 @@ olx.source.XYZOptions.prototype.wrapX;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     reprojectionErrorThreshold: (number|undefined),
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
@@ -5486,6 +5587,15 @@ olx.source.ZoomifyOptions.prototype.crossOrigin;
  * @api stable
  */
 olx.source.ZoomifyOptions.prototype.logo;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.ZoomifyOptions.prototype.reprojectionErrorThreshold;
 
 
 /**

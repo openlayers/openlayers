@@ -45,6 +45,7 @@ ol.source.TileWMS = function(opt_options) {
     logo: options.logo,
     opaque: !transparent,
     projection: options.projection,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: goog.bind(this.tileUrlFunction_, this),

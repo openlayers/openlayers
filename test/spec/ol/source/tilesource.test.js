@@ -26,7 +26,7 @@ describe('ol.source.Tile', function() {
       var zoom = 3;
       var range = grid.getTileRangeForExtentAndZ(extent, zoom);
 
-      source.forEachLoadedTile(zoom, range, callback);
+      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(callback.callCount).to.be(0);
     });
 
@@ -38,7 +38,7 @@ describe('ol.source.Tile', function() {
       var zoom = 3;
       var range = grid.getTileRangeForExtentAndZ(extent, zoom);
 
-      source.forEachLoadedTile(zoom, range, callback);
+      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(source.getTile.callCount).to.be(0);
       source.getTile.restore();
     });
@@ -55,7 +55,7 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      source.forEachLoadedTile(zoom, range, callback);
+      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(callback.callCount).to.be(3);
     });
 
@@ -71,9 +71,10 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(zoom, range, function() {
-        return true;
-      });
+      var covered = source.forEachLoadedTile(source.getProjection(), zoom,
+                                             range, function() {
+            return true;
+          });
       expect(covered).to.be(true);
     });
 
@@ -89,9 +90,10 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(zoom, range, function() {
-        return true;
-      });
+      var covered = source.forEachLoadedTile(source.getProjection(), zoom,
+                                             range, function() {
+            return true;
+          });
       expect(covered).to.be(false);
     });
 
@@ -107,9 +109,10 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(zoom, range, function() {
-        return false;
-      });
+      var covered = source.forEachLoadedTile(source.getProjection(), zoom,
+                                             range, function() {
+            return false;
+          });
       expect(covered).to.be(false);
     });
 

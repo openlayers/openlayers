@@ -41,6 +41,7 @@ ol.source.TileArcGISRest = function(opt_options) {
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     projection: options.projection,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: goog.bind(this.tileUrlFunction_, this),

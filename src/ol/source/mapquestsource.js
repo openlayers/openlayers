@@ -40,6 +40,7 @@ ol.source.MapQuest = function(opt_options) {
     crossOrigin: 'anonymous',
     logo: 'https://developer.mapquest.com/content/osm/mq_logo.png',
     maxZoom: layerConfig.maxZoom,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     opaque: true,
     tileLoadFunction: options.tileLoadFunction,
     url: url

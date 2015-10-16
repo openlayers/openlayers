@@ -126,7 +126,7 @@ ol.source.ImageMapGuide.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageMapGuide.prototype.getImage =
+ol.source.ImageMapGuide.prototype.getImageInternal =
     function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;

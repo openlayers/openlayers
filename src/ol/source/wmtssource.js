@@ -185,6 +185,7 @@ ol.source.WMTS = function(options) {
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     projection: options.projection,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: options.tileClass,
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
