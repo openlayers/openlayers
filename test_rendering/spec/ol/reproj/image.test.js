@@ -51,36 +51,6 @@ describe('ol.rendering.reproj.Image', function() {
           'spec/ol/reproj/expected/image-3857-to-4326.png', done);
     });
   });
-
-  describe('dateline wrapping', function() {
-    beforeEach(function() {
-      source = new ol.source.ImageStatic({
-        url: 'spec/ol/data/tiles/4326/0/0/0.png',
-        imageExtent: [-180, -270, 180, 90],
-        projection: ol.proj.get('EPSG:4326')
-      });
-    });
-
-    it('wraps X when prime meridian is shifted', function(done) {
-      proj4.defs('merc_180', '+proj=merc +lon_0=180 +units=m +no_defs');
-      var projExtent = [-20026376.39, -20048966.10, 20026376.39, 20048966.10];
-
-      testSingleImage(source, 'merc_180', projExtent,
-          ol.extent.getWidth(projExtent) / 64, 1,
-          'spec/ol/reproj/expected/image-dateline-merc-180.png', done);
-    });
-
-    it('displays north pole correctly (EPSG:3413)', function(done) {
-      proj4.defs('EPSG:3413', '+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 ' +
-          '+k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs');
-
-      var projExtent = [-4194304, -4194304, 4194304, 4194304];
-
-      testSingleImage(source, 'EPSG:3413', projExtent,
-          ol.extent.getWidth(projExtent) / 64, 1,
-          'spec/ol/reproj/expected/image-dateline-pole.png', done);
-    });
-  });
 });
 
 goog.require('ol.extent');

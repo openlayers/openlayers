@@ -156,7 +156,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('merc_180', 0, [64, 64]);
       testSingleTile(source, 'merc_180', tileGrid, 0, 0, -1, 1,
-                     'spec/ol/reproj/expected/dateline-merc-180.png', 1, done);
+                     'spec/ol/reproj/expected/dateline-merc-180.png', 2, done);
     });
 
     it('displays north pole correctly (EPSG:3413)', function(done) {
@@ -167,7 +167,7 @@ describe('ol.rendering.reproj.Tile', function() {
 
       var tileGrid = ol.tilegrid.createForProjection('EPSG:3413', 0, [64, 64]);
       testSingleTile(source, 'EPSG:3413', tileGrid, 0, 0, -1, 1,
-                     'spec/ol/reproj/expected/dateline-pole.png', 1, done);
+                     'spec/ol/reproj/expected/dateline-pole.png', 2, done);
     });
   });
 });

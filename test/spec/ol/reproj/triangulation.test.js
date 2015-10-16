@@ -36,20 +36,6 @@ describe('ol.reproj.Triangulation', function() {
           [20, 20, 30, 30], null, 0);
       expect(triangulation.getTriangles().length).to.be(2);
     });
-
-    it('can handle wrapX in source', function() {
-      proj4.defs('merc_180', '+proj=merc +lon_0=180 +units=m +no_defs');
-      var proj_ = ol.proj.get('merc_180');
-      proj_.setExtent([-20026376.39, -20048966.10, 20026376.39, 20048966.10]);
-
-      var proj4326 = ol.proj.get('EPSG:4326');
-      var triangulation = new ol.reproj.Triangulation(proj4326, proj_,
-          proj_.getExtent(), [-180, -90, 180, 90], 0);
-      expect(triangulation.getWrapsXInSource()).to.be(true);
-      var triExtent = triangulation.calculateSourceExtent();
-      expect(triExtent[2] < triExtent[0]).to.be(true);
-    });
-
   });
 });
 
