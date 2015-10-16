@@ -81,16 +81,16 @@ ol.math.squaredDistance = function(x1, y1, x2, y2) {
 /**
  * Solves system of linear equations using Gaussian elimination method.
  *
- * @param {Array.<Array.<number>>} A Augmented matrix (n x n + 1 column)
- *                                   in row-major order.
+ * @param {Array.<Array.<number>>} mat Augmented matrix (n x n + 1 column)
+ *                                     in row-major order.
  * @return {Array.<number>} The resulting vector.
  */
-ol.math.solveLinearSystem = function(A) {
-  var n = A.length;
+ol.math.solveLinearSystem = function(mat) {
+  var n = mat.length;
 
   if (goog.asserts.ENABLE_ASSERTS) {
     for (var row = 0; row < n; row++) {
-      goog.asserts.assert(A[row].length == n + 1,
+      goog.asserts.assert(mat[row].length == n + 1,
                           'every row should have correct number of columns');
     }
   }
@@ -98,9 +98,9 @@ ol.math.solveLinearSystem = function(A) {
   for (var i = 0; i < n; i++) {
     // Find max in the i-th column (ignoring i - 1 first rows)
     var maxRow = i;
-    var maxEl = Math.abs(A[i][i]);
+    var maxEl = Math.abs(mat[i][i]);
     for (var r = i + 1; r < n; r++) {
-      var absValue = Math.abs(A[r][i]);
+      var absValue = Math.abs(mat[r][i]);
       if (absValue > maxEl) {
         maxEl = absValue;
         maxRow = r;
@@ -112,29 +112,29 @@ ol.math.solveLinearSystem = function(A) {
     }
 
     // Swap max row with i-th (current) row
-    var tmp = A[maxRow];
-    A[maxRow] = A[i];
-    A[i] = tmp;
+    var tmp = mat[maxRow];
+    mat[maxRow] = mat[i];
+    mat[i] = tmp;
 
     // Subtract the i-th row to make all the remaining rows 0 in the i-th column
     for (var j = i + 1; j < n; j++) {
-      var coef = -A[j][i] / A[i][i];
+      var coef = -mat[j][i] / mat[i][i];
       for (var k = i; k < n + 1; k++) {
         if (i == k) {
-          A[j][k] = 0;
+          mat[j][k] = 0;
         } else {
-          A[j][k] += coef * A[i][k];
+          mat[j][k] += coef * mat[i][k];
         }
       }
     }
   }
 
-  // Solve Ax=b for upper triangular matrix A
+  // Solve Ax=b for upper triangular matrix A (mat)
   var x = new Array(n);
   for (var l = n - 1; l >= 0; l--) {
-    x[l] = A[l][n] / A[l][l];
+    x[l] = mat[l][n] / mat[l][l];
     for (var m = l - 1; m >= 0; m--) {
-      A[m][n] -= A[m][l] * x[l];
+      mat[m][n] -= mat[m][l] * x[l];
     }
   }
   return x;
