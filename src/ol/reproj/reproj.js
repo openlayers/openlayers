@@ -99,7 +99,8 @@ ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {ol.Extent} targetExtent Target extent.
  * @param {ol.reproj.Triangulation} triangulation Calculated triangulation.
  * @param {Array.<{extent: ol.Extent,
- *                 image: (HTMLCanvasElement|Image)}>} sources Array of sources.
+ *                 image: (HTMLCanvasElement|Image|HTMLVideoElement)}>} sources
+ *             Array of sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
