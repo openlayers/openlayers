@@ -190,7 +190,8 @@ ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
  * @define {number} Maximum number of subdivision steps during raster
  *     reprojection triangulation. Prevents high memory usage and large
  *     number of proj4 calls (for certain transformations and areas).
- *     At most `2*(2^this)` triangles are created. Default is `10`.
+ *     At most `2*(2^this)` triangles are created for each triangulated
+ *     extent (tile/image). Default is `10`.
  */
 ol.RASTER_REPROJECTION_MAX_SUBDIVISION = 10;
 

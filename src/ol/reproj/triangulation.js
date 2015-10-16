@@ -79,9 +79,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.triangles_ = [];
 
   /**
-   * Indicates that source coordinates have to be shifted during reprojection.
-   * This is needed when the triangulation crosses
-   * edge of the source projection (dateline).
+   * Indicates that the triangulation crosses edge of the source projection.
    * @type {boolean}
    * @private
    */
