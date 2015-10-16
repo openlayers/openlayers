@@ -144,8 +144,6 @@ ol.reproj.render = function(width, height, pixelRatio,
   var targetTopLeft = ol.extent.getTopLeft(targetExtent);
 
   triangulation.getTriangles().forEach(function(triangle, i, arr) {
-    context.save();
-
     /* Calculate affine transform (src -> dst)
      * Resulting matrix can be used to transform coordinate
      * from `sourceProjection` to destination pixels.
@@ -199,6 +197,7 @@ ol.reproj.render = function(width, height, pixelRatio,
       return;
     }
 
+    context.save();
     context.beginPath();
     if (ol.reproj.browserAntialiasesClip_) {
       var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
