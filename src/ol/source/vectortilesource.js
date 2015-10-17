@@ -35,10 +35,10 @@ ol.source.VectorTile = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    state: goog.isDef(options.state) ?
+    state: options.state ?
         /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
-    tileLoadFunction: goog.isDef(options.tileLoadFunction) ?
+    tileLoadFunction: options.tileLoadFunction ?
         options.tileLoadFunction : ol.source.VectorTile.defaultTileLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
@@ -51,15 +51,14 @@ ol.source.VectorTile = function(options) {
    * @private
    * @type {ol.format.Feature}
    */
-  this.format_ = goog.isDef(options.format) ? options.format : null;
+  this.format_ = options.format ? options.format : null;
 
   /**
    * @protected
    * @type {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
    *        ol.format.Feature, ol.TileLoadFunctionType)}
    */
-  this.tileClass = goog.isDef(options.tileClass) ?
-      options.tileClass : ol.VectorTile;
+  this.tileClass = options.tileClass ? options.tileClass : ol.VectorTile;
 
 };
 goog.inherits(ol.source.VectorTile, ol.source.UrlTile);
@@ -78,12 +77,12 @@ ol.source.VectorTile.prototype.getTile =
     var tileCoord = [z, x, y];
     var urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
-    var tileUrl = goog.isNull(urlTileCoord) ? undefined :
-        this.tileUrlFunction(urlTileCoord, pixelRatio, projection);
+    var tileUrl = urlTileCoord ?
+        this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
     var tile = new this.tileClass(
         tileCoord,
-        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        goog.isDef(tileUrl) ? tileUrl : '',
+        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        tileUrl !== undefined ? tileUrl : '',
         this.format_,
         this.tileLoadFunction);
     goog.events.listen(tile, goog.events.EventType.CHANGE,

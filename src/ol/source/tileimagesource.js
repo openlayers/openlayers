@@ -34,7 +34,7 @@ ol.source.TileImage = function(options) {
     state: options.state !== undefined ?
         /** @type {ol.source.State} */ (options.state) : undefined,
     tileGrid: options.tileGrid,
-    tileLoadFunction: goog.isDef(options.tileLoadFunction) ?
+    tileLoadFunction: options.tileLoadFunction ?
         options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,

@@ -1884,7 +1884,7 @@ ol.render.canvas.ReplayGroup = function(
    * @private
    * @type {boolean}
    */
-  this.rightHandedPolygons_ = goog.isDef(opt_rightHandedPolygons) ?
+  this.rightHandedPolygons_ = opt_rightHandedPolygons ?
       opt_rightHandedPolygons : false;
 
 };

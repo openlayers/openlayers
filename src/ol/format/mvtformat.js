@@ -2,7 +2,6 @@
 
 goog.provide('ol.format.MVT');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.ext.pbf');
@@ -37,7 +36,7 @@ ol.format.MVT = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.proj.Projection}
@@ -53,27 +52,27 @@ ol.format.MVT = function(opt_options) {
    *     function(ol.geom.GeometryType,Array.<number>,
    *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
    */
-  this.featureClass_ = goog.isDef(options.featureClass) ?
+  this.featureClass_ = options.featureClass ?
       options.featureClass : ol.render.Feature;
 
   /**
    * @private
    * @type {string}
    */
-  this.geometryName_ = goog.isDef(options.geometryName) ?
+  this.geometryName_ = options.geometryName ?
       options.geometryName : 'geometry';
 
   /**
    * @private
    * @type {string}
    */
-  this.layerName_ = goog.isDef(options.layerName) ? options.layerName : 'layer';
+  this.layerName_ = options.layerName ? options.layerName : 'layer';
 
   /**
    * @private
    * @type {Array.<string>}
    */
-  this.layers_ = goog.isDef(options.layers) ? options.layers : null;
+  this.layers_ = options.layers ? options.layers : null;
 
   this.rightHandedPolygons = true;
 
@@ -104,7 +103,7 @@ ol.format.MVT.prototype.readFeature_ = function(
   var geometry = ol.format.Feature.transformWithOptions(
       ol.format.MVT.readGeometry_(rawFeature), false,
       this.adaptOptions(opt_options));
-  if (!goog.isNull(geometry)) {
+  if (geometry) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
     values[this.geometryName_] = geometry;
   }
@@ -176,7 +175,7 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
   var featureClass = this.featureClass_;
   var layer, feature;
   for (var name in tile.layers) {
-    if (!goog.isNull(layers) && !goog.array.contains(layers, name)) {
+    if (layers && layers.indexOf(name) == -1) {
       continue;
     }
     layer = tile.layers[name];

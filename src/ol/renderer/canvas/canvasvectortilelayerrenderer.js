@@ -1,9 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.TileRange');
@@ -163,7 +161,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     layer, pixelRatio) {
   var revision = layer.getRevision();
   var renderOrder = layer.getRenderOrder();
-  if (!goog.isDef(renderOrder)) {
+  if (renderOrder === undefined) {
     renderOrder = null;
   }
 
@@ -207,13 +205,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
    */
   function renderFeature(feature) {
     var styles;
-    if (goog.isDef(feature.getStyleFunction())) {
+    if (feature.getStyleFunction()) {
       goog.asserts.assertInstanceof(feature, ol.Feature, 'Got an ol.Feature');
       styles = feature.getStyleFunction().call(feature, resolution);
-    } else if (goog.isDef(layer.getStyleFunction())) {
+    } else if (layer.getStyleFunction()) {
       styles = layer.getStyleFunction()(feature, resolution);
     }
-    if (goog.isDefAndNotNull(styles)) {
+    if (styles) {
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
           replayGroup);
       this.dirty_ = this.dirty_ || dirty;
@@ -222,11 +220,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   }
 
   var features = tile.getFeatures();
-  if (!goog.isNull(renderOrder) &&
-      renderOrder !== replayState.renderedRenderOrder) {
-    goog.array.sort(features, renderOrder);
+  if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
+    features.sort(renderOrder);
   }
-  goog.array.forEach(features, renderFeature, this);
+  features.forEach(renderFeature, this);
 
   replayGroup.finish();
 
@@ -286,7 +283,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'received a feature');
+          goog.asserts.assert(feature, 'received a feature');
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -336,7 +333,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   }
 
   var extent = frameState.extent;
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent) {
     extent = ol.extent.getIntersection(extent, layerState.extent);
   }
   if (ol.extent.isEmpty(extent)) {
@@ -394,7 +391,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
       if (!fullyLoaded) {
         childTileRange = tileGrid.getTileCoordChildTileRange(
             tile.tileCoord, tmpTileRange, tmpExtent);
-        if (!goog.isNull(childTileRange)) {
+        if (childTileRange) {
           findLoadedTiles(z + 1, childTileRange);
         }
       }
@@ -405,8 +402,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   this.dirty_ = false;
 
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
-  goog.array.sort(zs);
+  var zs = Object.keys(tilesToDrawByZ).map(Number);
+  zs.sort();
   var replayables = [];
   var i, ii, currentZ, tileCoordKey, tilesToDraw;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -436,7 +433,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
  */
 ol.renderer.canvas.VectorTileLayer.prototype.renderFeature =
     function(feature, squaredTolerance, styles, replayGroup) {
-  if (!goog.isDefAndNotNull(styles)) {
+  if (!styles) {
     return false;
   }
   var i, ii, loading = false;

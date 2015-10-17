@@ -27,7 +27,7 @@ ol.layer.VectorTileProperty = {
  * @api
  */
 ol.layer.VectorTile = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   var baseOptions = goog.object.clone(options);
 
@@ -35,8 +35,8 @@ ol.layer.VectorTile = function(opt_options) {
   delete baseOptions.useInterimTilesOnError;
   goog.base(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
-  this.setPreload(goog.isDef(options.preload) ? options.preload : 0);
-  this.setUseInterimTilesOnError(goog.isDef(options.useInterimTilesOnError) ?
+  this.setPreload(options.preload ? options.preload : 0);
+  this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
       options.useInterimTilesOnError : true);
 
 };

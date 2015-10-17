@@ -171,5 +171,5 @@ ol.featureloader.xhr = function(url, format) {
        */
       function(features) {
         this.addFeatures(features);
-      }, goog.nullFunction);
+      }, ol.nullFunction);
 };

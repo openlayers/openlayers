@@ -143,7 +143,7 @@ ol.render.Feature.prototype.getStride = goog.functions.constant(2);
 /**
  * @return {undefined}
  */
-ol.render.Feature.prototype.getStyleFunction = goog.nullFunction;
+ol.render.Feature.prototype.getStyleFunction = ol.nullFunction;
 
 
 /**
