@@ -13,7 +13,6 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
-goog.require('ol.tilegrid.XYZ');
 
 
 
@@ -36,7 +35,7 @@ ol.source.TileUTFGrid = function(options) {
    * @private
    * @type {boolean}
    */
-  this.preemptive_ = goog.isDef(options.preemptive) ?
+  this.preemptive_ = options.preemptive !== undefined ?
       options.preemptive : true;
 
   /**
@@ -58,6 +57,7 @@ goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
 
 /**
+ * Return the template from TileJSON.
  * @return {string|undefined} The template from TileJSON.
  * @api
  */
@@ -81,7 +81,7 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
  */
 ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
     coordinate, resolution, callback, opt_this, opt_request) {
-  if (!goog.isNull(this.tileGrid)) {
+  if (this.tileGrid) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
         coordinate, resolution);
     var tile = /** @type {!ol.source.TileUTFGridTile_} */(this.getTile(
@@ -110,18 +110,18 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var sourceProjection = this.getProjection();
   var extent;
-  if (goog.isDef(tileJSON.bounds)) {
+  if (tileJSON.bounds !== undefined) {
     var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, sourceProjection);
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (goog.isDef(tileJSON.scheme)) {
-    goog.asserts.assert(tileJSON.scheme == 'xyz');
+  if (tileJSON.scheme !== undefined) {
+    goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
   }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
-  var tileGrid = new ol.tilegrid.XYZ({
+  var tileGrid = ol.tilegrid.createXYZ({
     extent: ol.tilegrid.extentFromProjection(sourceProjection),
     maxZoom: maxZoom,
     minZoom: minZoom
@@ -131,19 +131,16 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
   this.template_ = tileJSON.template;
 
   var grids = tileJSON.grids;
-  if (!goog.isDefAndNotNull(grids)) {
+  if (!grids) {
     this.setState(ol.source.State.ERROR);
     return;
   }
 
-  this.tileUrlFunction_ = ol.TileUrlFunction.withTileCoordTransform(
-      tileGrid.createTileCoordTransform({
-        extent: extent
-      }),
-      ol.TileUrlFunction.createFromTemplates(grids));
+  this.tileUrlFunction_ =
+      ol.TileUrlFunction.createFromTemplates(grids, tileGrid);
 
-  if (goog.isDef(tileJSON.attribution)) {
-    var attributionExtent = goog.isDef(extent) ?
+  if (tileJSON.attribution !== undefined) {
+    var attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};
@@ -175,13 +172,15 @@ ol.source.TileUTFGrid.prototype.getTile =
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    goog.asserts.assert(projection);
+    goog.asserts.assert(projection, 'argument projection is truthy');
     var tileCoord = [z, x, y];
-    var tileUrl = this.tileUrlFunction_(tileCoord, pixelRatio, projection);
+    var urlTileCoord =
+        this.getTileCoordForTileUrlFunction(tileCoord, projection);
+    var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGridTile_(
         tileCoord,
-        goog.isDef(tileUrl) ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        goog.isDef(tileUrl) ? tileUrl : '',
+        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        tileUrl !== undefined ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_);
     this.tileCache.set(tileCoordKey, tile);
@@ -270,8 +269,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
  * @return {Object}
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
-  if (goog.isNull(this.grid_) || goog.isNull(this.keys_) ||
-      goog.isNull(this.data_)) {
+  if (!this.grid_ || !this.keys_ || !this.data_) {
     return null;
   }
   var xRelative = (coordinate[0] - this.extent_[0]) /
@@ -294,9 +292,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   }
   code -= 32;
 
-  var key = this.keys_[code];
-
-  return goog.isDefAndNotNull(key) ? this.data_[key] : null;
+  return (code in this.keys_) ? this.data_[this.keys_[code]] : null;
 };
 
 

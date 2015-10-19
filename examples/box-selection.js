@@ -1,19 +1,18 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.events.condition');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.DragBox');
 goog.require('ol.interaction.Select');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.GeoJSON');
 goog.require('ol.source.OSM');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
+goog.require('ol.source.Vector');
 
 
-var vectorSource = new ol.source.GeoJSON({
-  projection: 'EPSG:3857',
-  url: 'data/geojson/countries.geojson'
+var vectorSource = new ol.source.Vector({
+  url: 'data/geojson/countries.geojson',
+  format: new ol.format.GeoJSON()
 });
 
 
@@ -42,12 +41,7 @@ var selectedFeatures = select.getFeatures();
 
 // a DragBox interaction used to select features by drawing boxes
 var dragBox = new ol.interaction.DragBox({
-  condition: ol.events.condition.shiftKeyOnly,
-  style: new ol.style.Style({
-    stroke: new ol.style.Stroke({
-      color: [0, 0, 255, 1]
-    })
-  })
+  condition: ol.events.condition.platformModifierKeyOnly
 });
 
 map.addInteraction(dragBox);

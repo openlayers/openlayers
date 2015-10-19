@@ -10,10 +10,13 @@
   "trailing": true,
   "maxlen": 80,
   "globals": {
+    "Buffer": false,
     "__dirname": false,
+    "__filename": false,
     "exports": true,
     "module": false,
     "process": false,
-    "require": false
+    "require": false,
+    "setImmediate": false
   }
 }

@@ -110,7 +110,7 @@ ol.ImageBase.prototype.getPixelRatio = function() {
  * @return {number} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
-  goog.asserts.assert(goog.isDef(this.resolution), 'resolution not yet set');
+  goog.asserts.assert(this.resolution !== undefined, 'resolution not yet set');
   return this.resolution;
 };
 

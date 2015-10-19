@@ -2,9 +2,10 @@ goog.provide('ol.DeviceOrientation');
 goog.provide('ol.DeviceOrientationProperty');
 
 goog.require('goog.events');
-goog.require('goog.math');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.has');
+goog.require('ol.math');
 
 
 /**
@@ -22,8 +23,8 @@ ol.DeviceOrientationProperty = {
 
 /**
  * @classdesc
- * The ol.DeviceOrientation class provides access to DeviceOrientation
- * information and events, see the [HTML 5 DeviceOrientation Specification](
+ * The ol.DeviceOrientation class provides access to information from
+ * DeviceOrientation events.  See the [HTML 5 DeviceOrientation Specification](
  * http://www.w3.org/TR/orientation-event/) for more details.
  *
  * Many new computers, and especially mobile phones
@@ -67,9 +68,11 @@ ol.DeviceOrientationProperty = {
  *
  * @see http://www.w3.org/TR/orientation-event/
  *
+ * To get notified of device orientation changes, register a listener for the
+ * generic `change` event on your `ol.DeviceOrientation` instance.
+ *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the device orientation changes.
  * @param {olx.DeviceOrientationOptions=} opt_options Options.
  * @api
  */
@@ -77,7 +80,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -89,7 +92,7 @@ ol.DeviceOrientation = function(opt_options) {
       ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
+  this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
 goog.inherits(ol.DeviceOrientation, ol.Object);
@@ -111,32 +114,32 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
 ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
   var event = /** @type {DeviceOrientationEvent} */
       (browserEvent.getBrowserEvent());
-  if (goog.isDefAndNotNull(event.alpha)) {
-    var alpha = goog.math.toRadians(event.alpha);
+  if (event.alpha !== null) {
+    var alpha = ol.math.toRadians(event.alpha);
     this.set(ol.DeviceOrientationProperty.ALPHA, alpha);
     // event.absolute is undefined in iOS.
     if (goog.isBoolean(event.absolute) && event.absolute) {
       this.set(ol.DeviceOrientationProperty.HEADING, alpha);
-    } else if (goog.isDefAndNotNull(event.webkitCompassHeading) &&
-               goog.isDefAndNotNull(event.webkitCompassAccuracy) &&
+    } else if (goog.isNumber(event.webkitCompassHeading) &&
                event.webkitCompassAccuracy != -1) {
-      var heading = goog.math.toRadians(event.webkitCompassHeading);
+      var heading = ol.math.toRadians(event.webkitCompassHeading);
       this.set(ol.DeviceOrientationProperty.HEADING, heading);
     }
   }
-  if (goog.isDefAndNotNull(event.beta)) {
+  if (event.beta !== null) {
     this.set(ol.DeviceOrientationProperty.BETA,
-        goog.math.toRadians(event.beta));
+        ol.math.toRadians(event.beta));
   }
-  if (goog.isDefAndNotNull(event.gamma)) {
+  if (event.gamma !== null) {
     this.set(ol.DeviceOrientationProperty.GAMMA,
-        goog.math.toRadians(event.gamma));
+        ol.math.toRadians(event.gamma));
   }
   this.changed();
 };
 
 
 /**
+ * Rotation around the device z-axis (in radians).
  * @return {number|undefined} The euler angle in radians of the device from the
  *     standard Z axis.
  * @observable
@@ -146,13 +149,10 @@ ol.DeviceOrientation.prototype.getAlpha = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.ALPHA));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getAlpha',
-    ol.DeviceOrientation.prototype.getAlpha);
 
 
 /**
+ * Rotation around the device x-axis (in radians).
  * @return {number|undefined} The euler angle in radians of the device from the
  *     planar X axis.
  * @observable
@@ -162,13 +162,10 @@ ol.DeviceOrientation.prototype.getBeta = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.BETA));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getBeta',
-    ol.DeviceOrientation.prototype.getBeta);
 
 
 /**
+ * Rotation around the device y-axis (in radians).
  * @return {number|undefined} The euler angle in radians of the device from the
  *     planar Y axis.
  * @observable
@@ -178,13 +175,10 @@ ol.DeviceOrientation.prototype.getGamma = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.GAMMA));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getGamma',
-    ol.DeviceOrientation.prototype.getGamma);
 
 
 /**
+ * The heading of the device relative to north (in radians).
  * @return {number|undefined} The heading of the device relative to north, in
  *     radians, normalizing for different browser behavior.
  * @observable
@@ -194,16 +188,11 @@ ol.DeviceOrientation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.DeviceOrientationProperty.HEADING));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getHeading',
-    ol.DeviceOrientation.prototype.getHeading);
 
 
 /**
- * Are we tracking the device's orientation?
- * @return {boolean} The status of tracking changes to alpha, beta and gamma.
- *     If true, changes are tracked and reported immediately.
+ * Determine if orientation is being tracked.
+ * @return {boolean} Changes in device orientation are being tracked.
  * @observable
  * @api
  */
@@ -211,10 +200,6 @@ ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
       this.get(ol.DeviceOrientationProperty.TRACKING));
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'getTracking',
-    ol.DeviceOrientation.prototype.getTracking);
 
 
 /**
@@ -223,10 +208,10 @@ goog.exportProperty(
 ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.DEVICE_ORIENTATION) {
     var tracking = this.getTracking();
-    if (tracking && goog.isNull(this.listenerKey_)) {
+    if (tracking && !this.listenerKey_) {
       this.listenerKey_ = goog.events.listen(goog.global, 'deviceorientation',
           this.orientationChange_, false, this);
-    } else if (!tracking && !goog.isNull(this.listenerKey_)) {
+    } else if (!tracking && this.listenerKey_) {
       goog.events.unlistenByKey(this.listenerKey_);
       this.listenerKey_ = null;
     }
@@ -235,7 +220,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 
 
 /**
- * Enable or disable tracking of DeviceOrientation events.
+ * Enable or disable tracking of device orientation events.
  * @param {boolean} tracking The status of tracking changes to alpha, beta and
  *     gamma. If true, changes are tracked and reported immediately.
  * @observable
@@ -244,7 +229,3 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
 ol.DeviceOrientation.prototype.setTracking = function(tracking) {
   this.set(ol.DeviceOrientationProperty.TRACKING, tracking);
 };
-goog.exportProperty(
-    ol.DeviceOrientation.prototype,
-    'setTracking',
-    ol.DeviceOrientation.prototype.setTracking);

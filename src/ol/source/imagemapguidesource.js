@@ -34,23 +34,23 @@ ol.source.ImageMapGuide = function(options) {
    * @type {?string}
    */
   this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
    * @private
    * @type {number}
    */
-  this.displayDpi_ = goog.isDef(options.displayDpi) ?
+  this.displayDpi_ = options.displayDpi !== undefined ?
       options.displayDpi : 96;
 
   /**
    * @private
    * @type {Object}
    */
-  this.params_ = goog.isDef(options.params) ? options.params : {};
+  this.params_ = options.params !== undefined ? options.params : {};
 
   var imageUrlFunction;
-  if (goog.isDef(options.url)) {
+  if (options.url !== undefined) {
     imageUrlFunction = ol.ImageUrlFunction.createFromParamsFunction(
         options.url, this.params_, goog.bind(this.getUrl, this));
   } else {
@@ -67,33 +67,33 @@ ol.source.ImageMapGuide = function(options) {
    * @private
    * @type {ol.ImageLoadFunctionType}
    */
-  this.imageLoadFunction_ = goog.isDef(options.imageLoadFunction) ?
+  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
 
   /**
    * @private
    * @type {number}
    */
-  this.metersPerUnit_ = goog.isDef(options.metersPerUnit) ?
+  this.metersPerUnit_ = options.metersPerUnit !== undefined ?
       options.metersPerUnit : 1;
 
   /**
    * @private
    * @type {number}
    */
-  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1;
+  this.ratio_ = options.ratio !== undefined ? options.ratio : 1;
 
   /**
    * @private
    * @type {boolean}
    */
-  this.useOverlay_ = goog.isDef(options.useOverlay) ?
+  this.useOverlay_ = options.useOverlay !== undefined ?
       options.useOverlay : false;
 
   /**
@@ -126,13 +126,13 @@ ol.source.ImageMapGuide.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageMapGuide.prototype.getImage =
+ol.source.ImageMapGuide.prototype.getImageInternal =
     function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
-  if (!goog.isNull(image) &&
+  if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
@@ -149,7 +149,7 @@ ol.source.ImageMapGuide.prototype.getImage =
   var size = [width * pixelRatio, height * pixelRatio];
 
   var imageUrl = this.imageUrlFunction_(extent, size, projection);
-  if (goog.isDef(imageUrl)) {
+  if (imageUrl !== undefined) {
     image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
@@ -166,6 +166,7 @@ ol.source.ImageMapGuide.prototype.getImage =
 
 
 /**
+ * Return the image load function of the source.
  * @return {ol.ImageLoadFunctionType} The image load function.
  * @api
  */
@@ -176,7 +177,7 @@ ol.source.ImageMapGuide.prototype.getImageLoadFunction = function() {
 
 /**
  * @param {ol.Extent} extent The map extents.
- * @param {ol.Size} size the viewport size.
+ * @param {ol.Size} size The viewport size.
  * @param {number} metersPerUnit The meters-per-unit value.
  * @param {number} dpi The display resolution.
  * @return {number} The computed map scale.
@@ -238,6 +239,7 @@ ol.source.ImageMapGuide.prototype.getUrl =
 
 
 /**
+ * Set the image load function of the MapGuide source.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */

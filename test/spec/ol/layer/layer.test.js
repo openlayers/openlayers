@@ -22,24 +22,8 @@ describe('ol.layer.Layer', function() {
       expect(layer).to.be.a(ol.layer.Layer);
     });
 
-    it('provides default brightness', function() {
-      expect(layer.getBrightness()).to.be(0);
-    });
-
-    it('provides default contrast', function() {
-      expect(layer.getContrast()).to.be(1);
-    });
-
-    it('provides default hue', function() {
-      expect(layer.getHue()).to.be(0);
-    });
-
     it('provides default opacity', function() {
       expect(layer.getOpacity()).to.be(1);
-    });
-
-    it('provides default saturation', function() {
-      expect(layer.getSaturation()).to.be(1);
     });
 
     it('provides default visibility', function() {
@@ -57,14 +41,12 @@ describe('ol.layer.Layer', function() {
     it('provides default layerState', function() {
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        brightness: 0,
-        contrast: 1,
-        hue: 0,
         opacity: 1,
-        saturation: 1,
         visible: true,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -79,36 +61,27 @@ describe('ol.layer.Layer', function() {
         source: new ol.source.Source({
           projection: ol.proj.get('EPSG:4326')
         }),
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25,
         foo: 42
       });
 
-      expect(layer.getBrightness()).to.be(0.5);
-      expect(layer.getContrast()).to.be(10);
-      expect(layer.getHue()).to.be(180);
       expect(layer.getOpacity()).to.be(0.5);
-      expect(layer.getSaturation()).to.be(5);
       expect(layer.getVisible()).to.be(false);
       expect(layer.getMaxResolution()).to.be(500);
       expect(layer.getMinResolution()).to.be(0.25);
       expect(layer.get('foo')).to.be(42);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -184,66 +157,49 @@ describe('ol.layer.Layer', function() {
     });
 
     it('returns a layerState from the properties values', function() {
-      layer.setBrightness(-0.7);
-      layer.setContrast(0.3);
-      layer.setHue(-0.3);
       layer.setOpacity(0.3);
-      layer.setSaturation(0.3);
       layer.setVisible(false);
       layer.setMaxResolution(500);
       layer.setMinResolution(0.25);
+      layer.setZIndex(10);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        brightness: -0.7,
-        contrast: 0.3,
-        hue: -0.3,
         opacity: 0.3,
-        saturation: 0.3,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
     });
 
     it('returns a layerState with clamped values', function() {
-      layer.setBrightness(1.5);
-      layer.setContrast(-0.7);
-      layer.setHue(42);
       layer.setOpacity(-1.5);
-      layer.setSaturation(-0.7);
       layer.setVisible(false);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        brightness: 1,
-        contrast: 0,
-        hue: 42,
         opacity: 0,
-        saturation: 0,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
 
-      layer.setBrightness(-3);
-      layer.setContrast(42);
-      layer.setHue(-100);
       layer.setOpacity(3);
-      layer.setSaturation(42);
       layer.setVisible(true);
       expect(layer.getLayerState()).to.eql({
         layer: layer,
-        brightness: -1,
-        contrast: 42,
-        hue: -100,
         opacity: 1,
-        saturation: 42,
         visible: true,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -353,122 +309,6 @@ describe('ol.layer.Layer', function() {
 
   });
 
-  describe('#setBrightness', function() {
-
-    var layer;
-
-    beforeEach(function() {
-      layer = new ol.layer.Layer({
-        source: new ol.source.Source({
-          projection: ol.proj.get('EPSG:4326')
-        })
-      });
-    });
-
-    afterEach(function() {
-      goog.dispose(layer);
-    });
-
-    it('accepts a positive number', function() {
-      layer.setBrightness(0.3);
-      expect(layer.getBrightness()).to.be(0.3);
-    });
-
-    it('accepts a negative number', function() {
-      layer.setBrightness(-0.7);
-      expect(layer.getBrightness()).to.be(-0.7);
-    });
-
-    it('triggers a change event', function() {
-      var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
-      layer.setBrightness(0.5);
-      expect(listener.calledOnce).to.be(true);
-    });
-
-  });
-
-  describe('#setContrast', function() {
-
-    var layer;
-
-    beforeEach(function() {
-      layer = new ol.layer.Layer({
-        source: new ol.source.Source({
-          projection: ol.proj.get('EPSG:4326')
-        })
-      });
-    });
-
-    afterEach(function() {
-      goog.dispose(layer);
-    });
-
-    it('accepts a small positive number', function() {
-      layer.setContrast(0.3);
-      expect(layer.getContrast()).to.be(0.3);
-    });
-
-    it('accepts a big positive number', function() {
-      layer.setContrast(42);
-      expect(layer.getContrast()).to.be(42);
-    });
-
-    it('triggers a change event', function() {
-      var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
-      layer.setContrast(43);
-      expect(listener.calledOnce).to.be(true);
-    });
-
-  });
-
-
-  describe('#setHue', function() {
-
-    var layer;
-
-    beforeEach(function() {
-      layer = new ol.layer.Layer({
-        source: new ol.source.Source({
-          projection: ol.proj.get('EPSG:4326')
-        })
-      });
-    });
-
-    afterEach(function() {
-      goog.dispose(layer);
-    });
-
-    it('accepts a small positive number', function() {
-      layer.setHue(0.3);
-      expect(layer.getHue()).to.be(0.3);
-    });
-
-    it('accepts a small negative number', function() {
-      layer.setHue(-0.7);
-      expect(layer.getHue()).to.be(-0.7);
-    });
-
-    it('accepts a big positive number', function() {
-      layer.setHue(42);
-      expect(layer.getHue()).to.be(42);
-    });
-
-    it('accepts a big negative number', function() {
-      layer.setHue(-100);
-      expect(layer.getHue()).to.be(-100);
-    });
-
-    it('triggers a change event', function() {
-      var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
-      layer.setHue(0.5);
-      expect(listener.calledOnce).to.be(true);
-    });
-
-  });
-
 
   describe('#setOpacity', function() {
 
@@ -495,42 +335,6 @@ describe('ol.layer.Layer', function() {
       var listener = sinon.spy();
       layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
       layer.setOpacity(0.4);
-      expect(listener.calledOnce).to.be(true);
-    });
-
-  });
-
-
-  describe('#setSaturation', function() {
-
-    var layer;
-
-    beforeEach(function() {
-      layer = new ol.layer.Layer({
-        source: new ol.source.Source({
-          projection: ol.proj.get('EPSG:4326')
-        })
-      });
-    });
-
-    afterEach(function() {
-      goog.dispose(layer);
-    });
-
-    it('accepts a small positive number', function() {
-      layer.setSaturation(0.3);
-      expect(layer.getSaturation()).to.be(0.3);
-    });
-
-    it('accepts a big positive number', function() {
-      layer.setSaturation(42);
-      expect(layer.getSaturation()).to.be(42);
-    });
-
-    it('triggers a change event', function() {
-      var listener = sinon.spy();
-      layer.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
-      layer.setSaturation(42);
       expect(listener.calledOnce).to.be(true);
     });
 
@@ -573,11 +377,66 @@ describe('ol.layer.Layer', function() {
 
   });
 
+  describe('#setMap (unmanaged layer)', function() {
+    var map;
+
+    beforeEach(function() {
+      map = new ol.Map({});
+    });
+
+    describe('with map in constructor options', function() {
+      it('renders the layer', function() {
+        var layer = new ol.layer.Layer({
+          map: map
+        });
+        var frameState = {
+          layerStatesArray: [],
+          layerStates: {}
+        };
+        map.dispatchEvent(new ol.render.Event('precompose', map, null,
+            frameState, null, null));
+        expect(frameState.layerStatesArray.length).to.be(1);
+        var layerState = frameState.layerStatesArray[0];
+        expect(layerState.layer).to.equal(layer);
+        expect(frameState.layerStates[goog.getUid(layer)]).to.equal(layerState);
+      });
+    });
+
+    describe('setMap sequences', function() {
+      var mapRenderSpy;
+
+      beforeEach(function() {
+        mapRenderSpy = sinon.spy(map, 'render');
+      });
+
+      afterEach(function() {
+        mapRenderSpy.restore();
+      });
+
+      it('requests a render frame', function() {
+        var layer = new ol.layer.Layer({});
+
+        layer.setMap(map);
+        expect(mapRenderSpy.callCount).to.be(1);
+
+        layer.setMap(null);
+        expect(mapRenderSpy.callCount).to.be(2);
+
+        layer.setMap(map);
+        expect(mapRenderSpy.callCount).to.be(3);
+      });
+
+    });
+
+  });
+
 });
 
 goog.require('goog.dispose');
+goog.require('ol.Map');
 goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');
+goog.require('ol.render.Event');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');

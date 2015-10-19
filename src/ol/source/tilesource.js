@@ -1,12 +1,17 @@
 goog.provide('ol.source.Tile');
+goog.provide('ol.source.TileEvent');
 goog.provide('ol.source.TileOptions');
 
+goog.require('goog.asserts');
 goog.require('goog.events.Event');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.TileCache');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.proj');
+goog.require('ol.size');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
@@ -45,27 +50,28 @@ ol.source.Tile = function(options) {
     extent: options.extent,
     logo: options.logo,
     projection: options.projection,
-    state: options.state
+    state: options.state,
+    wrapX: options.wrapX
   });
 
   /**
    * @private
    * @type {boolean}
    */
-  this.opaque_ = goog.isDef(options.opaque) ? options.opaque : false;
+  this.opaque_ = options.opaque !== undefined ? options.opaque : false;
 
   /**
    * @private
    * @type {number}
    */
-  this.tilePixelRatio_ = goog.isDef(options.tilePixelRatio) ?
+  this.tilePixelRatio_ = options.tilePixelRatio !== undefined ?
       options.tilePixelRatio : 1;
 
   /**
    * @protected
    * @type {ol.tilegrid.TileGrid}
    */
-  this.tileGrid = goog.isDef(options.tileGrid) ? options.tileGrid : null;
+  this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
   /**
    * @protected
@@ -74,10 +80,10 @@ ol.source.Tile = function(options) {
   this.tileCache = new ol.TileCache();
 
   /**
-   * @private
-   * @type {boolean|undefined}
+   * @protected
+   * @type {ol.Size}
    */
-  this.wrapX_ = options.wrapX;
+  this.tmpSize = [0, 0];
 
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
@@ -92,14 +98,19 @@ ol.source.Tile.prototype.canExpireCache = function() {
 
 
 /**
+ * @param {ol.proj.Projection} projection Projection.
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.
  */
-ol.source.Tile.prototype.expireCache = function(usedTiles) {
-  this.tileCache.expireCache(usedTiles);
+ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
+  var tileCache = this.getTileCacheForProjection(projection);
+  if (tileCache) {
+    tileCache.expireCache(usedTiles);
+  }
 };
 
 
 /**
+ * @param {ol.proj.Projection} projection Projection.
  * @param {number} z Zoom level.
  * @param {ol.TileRange} tileRange Tile range.
  * @param {function(ol.Tile):(boolean|undefined)} callback Called with each
@@ -107,15 +118,21 @@ ol.source.Tile.prototype.expireCache = function(usedTiles) {
  *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.Tile.prototype.forEachLoadedTile = function(z, tileRange, callback) {
+ol.source.Tile.prototype.forEachLoadedTile =
+    function(projection, z, tileRange, callback) {
+  var tileCache = this.getTileCacheForProjection(projection);
+  if (!tileCache) {
+    return false;
+  }
+
   var covered = true;
   var tile, tileCoordKey, loaded;
   for (var x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (var y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tileCoordKey = this.getKeyZXY(z, x, y);
       loaded = false;
-      if (this.tileCache.containsKey(tileCoordKey)) {
-        tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+      if (tileCache.containsKey(tileCoordKey)) {
+        tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
         loaded = tile.getState() === ol.TileState.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
@@ -169,13 +186,14 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection=} opt_projection Projection.
+ * @param {ol.proj.Projection} projection Projection.
  * @return {!ol.Tile} Tile.
  */
 ol.source.Tile.prototype.getTile = goog.abstractMethod;
 
 
 /**
+ * Return the tile grid of the tile source.
  * @return {ol.tilegrid.TileGrid} Tile grid.
  * @api stable
  */
@@ -189,7 +207,7 @@ ol.source.Tile.prototype.getTileGrid = function() {
  * @return {ol.tilegrid.TileGrid} Tile grid.
  */
 ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
-  if (goog.isNull(this.tileGrid)) {
+  if (!this.tileGrid) {
     return ol.tilegrid.getForProjection(projection);
   } else {
     return this.tileGrid;
@@ -198,41 +216,61 @@ ol.source.Tile.prototype.getTileGridForProjection = function(projection) {
 
 
 /**
- * @param {number} z Z.
- * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @return {number} Tile size.
+ * @return {ol.TileCache} Tile cache.
+ * @protected
  */
-ol.source.Tile.prototype.getTilePixelSize =
-    function(z, pixelRatio, projection) {
-  var tileGrid = this.getTileGridForProjection(projection);
-  return tileGrid.getTileSize(z) * this.tilePixelRatio_;
+ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
+  var thisProj = this.getProjection();
+  if (thisProj && !ol.proj.equivalent(thisProj, projection)) {
+    return null;
+  } else {
+    return this.tileCache;
+  }
 };
 
 
 /**
- * Handles x-axis wrapping. When `this.wrapX_` is undefined or the projection
- * is not a global projection, `tileCoord` will be returned unaltered. When
- * `this.wrapX_` is true, the tile coordinate will be wrapped horizontally.
- * When `this.wrapX_` is `false`, `null` will be returned for tiles that are
- * outside the projection extent.
+ * @return {number} Tile pixel ratio.
+ */
+ol.source.Tile.prototype.getTilePixelRatio = function() {
+  return this.tilePixelRatio_;
+};
+
+
+/**
+ * @param {number} z Z.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.Size} Tile size.
+ */
+ol.source.Tile.prototype.getTilePixelSize =
+    function(z, pixelRatio, projection) {
+  var tileGrid = this.getTileGridForProjection(projection);
+  return ol.size.scale(ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize),
+      this.tilePixelRatio_, this.tmpSize);
+};
+
+
+/**
+ * Returns a tile coordinate wrapped around the x-axis. When the tile coordinate
+ * is outside the resolution and extent range of the tile grid, `null` will be
+ * returned.
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.proj.Projection=} opt_projection Projection.
- * @return {ol.TileCoord} Tile coordinate.
+ * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
+ *     null if no tile URL should be created for the passed `tileCoord`.
  */
-ol.source.Tile.prototype.getWrapXTileCoord =
+ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
     function(tileCoord, opt_projection) {
-  var projection = goog.isDef(opt_projection) ?
+  var projection = opt_projection !== undefined ?
       opt_projection : this.getProjection();
-  if (goog.isDef(this.wrapX_) && projection.isGlobal()) {
-    var tileGrid = this.getTileGridForProjection(projection);
-    var extent = ol.tilegrid.extentFromProjection(projection);
-    return this.wrapX_ ?
-        ol.tilecoord.wrapX(tileCoord, tileGrid, extent) :
-        ol.tilecoord.clipX(tileCoord, tileGrid, extent);
-  } else {
-    return tileCoord;
+  var tileGrid = this.getTileGridForProjection(projection);
+  goog.asserts.assert(tileGrid, 'tile grid needed');
+  if (this.getWrapX() && projection.isGlobal()) {
+    tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }
+  return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
 };
 
 
@@ -241,8 +279,9 @@ ol.source.Tile.prototype.getWrapXTileCoord =
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
+ * @param {ol.proj.Projection} projection Projection.
  */
-ol.source.Tile.prototype.useTile = goog.nullFunction;
+ol.source.Tile.prototype.useTile = ol.nullFunction;
 
 
 
@@ -280,21 +319,21 @@ ol.source.TileEventType = {
   /**
    * Triggered when a tile starts loading.
    * @event ol.source.TileEvent#tileloadstart
-   * @api
+   * @api stable
    */
   TILELOADSTART: 'tileloadstart',
 
   /**
    * Triggered when a tile finishes loading.
    * @event ol.source.TileEvent#tileloadend
-   * @api
+   * @api stable
    */
   TILELOADEND: 'tileloadend',
 
   /**
    * Triggered if tile loading results in an error.
    * @event ol.source.TileEvent#tileloaderror
-   * @api
+   * @api stable
    */
   TILELOADERROR: 'tileloaderror'
 

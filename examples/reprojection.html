@@ -1,0 +1,48 @@
+---
+template: example.html
+title: Raster reprojection example
+shortdesc: Demonstrates client-side raster reprojection between various projections.
+docs: >
+  This example shows client-side raster reprojection between various projections.
+tags: "reprojection, projection, proj4js, mapquest, wms, wmts, hidpi"
+resources:
+  - http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+  <form class="form-inline">
+    <div class="col-md-3">
+      <label>Base map:</label>
+      <select id="base-layer">
+        <option value="mapquest">MapQuest (EPSG:3857)</option>
+        <option value="wms4326">WMS (EPSG:4326)</option>
+      </select>
+    </div>
+    <div class="col-md-4">
+      <label>Overlay map:</label>
+      <select id="overlay-layer">
+        <option value="bng">British National Grid (EPSG:27700)</option>
+        <option value="wms21781">Swisstopo WMS (EPSG:21781)</option>
+        <option value="wmts3413">NASA Arctic WMTS (EPSG:3413)</option>
+        <option value="grandcanyon">Grand Canyon HiDPI (EPSG:3857)</option>
+        <option value="states">United States (EPSG:3857)</option>
+      </select>
+    </div>
+    <div class="col-md-5">
+      <label>View projection:</label>
+      <select id="view-projection">
+        <option value="EPSG:3857">Spherical Mercator (EPSG:3857)</option>
+        <option value="EPSG:4326">WGS 84 (EPSG:4326)</option>
+        <option value="ESRI:54009">Mollweide (ESRI:54009)</option>
+        <option value="EPSG:27700">British National Grid (EPSG:27700)</option>
+        <option value="EPSG:23032">ED50 / UTM zone 32N (EPSG:23032)</option>
+        <option value="EPSG:2163">US National Atlas Equal Area (EPSG:2163)</option>
+        <option value="EPSG:3413">NSIDC Polar Stereographic North (EPSG:3413)</option>
+        <option value="EPSG:5479">RSRGD2000 / MSLC2000 (EPSG:5479)</option>
+      </select>
+    </div>
+    <label for="render-edges"><input type="checkbox" id="render-edges" />Render reprojection edges</label> (only displayed on reprojected data)
+  </form>
+</div>

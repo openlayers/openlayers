@@ -2,6 +2,7 @@ goog.provide('ol.geom.Circle');
 
 goog.require('goog.asserts');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.deflate');
@@ -22,9 +23,8 @@ goog.require('ol.proj');
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
   goog.base(this);
-  var radius = goog.isDef(opt_radius) ? opt_radius : 0;
-  this.setCenterAndRadius(center, radius,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  var radius = opt_radius ? opt_radius : 0;
+  this.setCenterAndRadius(center, radius, opt_layout);
 };
 goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
@@ -84,6 +84,7 @@ ol.geom.Circle.prototype.containsXY = function(x, y) {
 
 
 /**
+ * Return the center of the circle as {@link ol.Coordinate coordinate}.
  * @return {ol.Coordinate} Center.
  * @api
  */
@@ -106,6 +107,7 @@ ol.geom.Circle.prototype.computeExtent = function(extent) {
 
 
 /**
+ * Return the radius of the circle.
  * @return {number} Radius.
  * @api
  */
@@ -135,12 +137,37 @@ ol.geom.Circle.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ * @api stable
+ */
+ol.geom.Circle.prototype.intersectsExtent = function(extent) {
+  var circleExtent = this.getExtent();
+  if (ol.extent.intersects(extent, circleExtent)) {
+    var center = this.getCenter();
+
+    if (extent[0] <= center[0] && extent[2] >= center[0]) {
+      return true;
+    }
+    if (extent[1] <= center[1] && extent[3] >= center[1]) {
+      return true;
+    }
+
+    return ol.extent.forEachCorner(extent, this.containsCoordinate, this);
+  }
+  return false;
+
+};
+
+
+/**
+ * Set the center of the circle as {@link ol.Coordinate coordinate}.
  * @param {ol.Coordinate} center Center.
  * @api
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
-  goog.asserts.assert(center.length == stride);
+  goog.asserts.assert(center.length == stride,
+      'center array length should match stride');
   var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
   var flatCoordinates = center.slice();
   flatCoordinates[stride] = flatCoordinates[0] + radius;
@@ -153,6 +180,8 @@ ol.geom.Circle.prototype.setCenter = function(center) {
 
 
 /**
+ * Set the center (as {@link ol.Coordinate coordinate}) and the radius (as
+ * number) of the circle.
  * @param {ol.Coordinate} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
@@ -160,11 +189,11 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  */
 ol.geom.Circle.prototype.setCenterAndRadius =
     function(center, radius, opt_layout) {
-  if (goog.isNull(center)) {
+  if (!center) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, center, 0);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     /** @type {Array.<number>} */
@@ -194,12 +223,13 @@ ol.geom.Circle.prototype.setFlatCoordinates =
 
 
 /**
- * The radius is in the units of the projection.
+ * Set the radius of the circle. The radius is in the units of the projection.
  * @param {number} radius Radius.
  * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
-  goog.asserts.assert(!goog.isNull(this.flatCoordinates));
+  goog.asserts.assert(this.flatCoordinates,
+      'truthy this.flatCoordinates expected');
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };

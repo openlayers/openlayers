@@ -45,7 +45,7 @@ describe('ol.control.ZoomSlider', function() {
       expect(zoomSliderThumbs.length).to.be(1);
 
       zoomSliderThumb = zoomSliderThumbs[0];
-      expect(zoomSliderThumb instanceof HTMLDivElement).to.be(true);
+      expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
 
       hasUnselectableCls = goog.dom.classlist.contains(zoomSliderThumb,
           'ol-unselectable');

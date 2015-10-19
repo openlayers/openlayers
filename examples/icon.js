@@ -46,7 +46,7 @@ var rasterLayer = new ol.layer.Tile({
 });
 
 var map = new ol.Map({
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new ol.View({
@@ -71,9 +71,7 @@ map.on('click', function(evt) {
         return feature;
       });
   if (feature) {
-    var geometry = feature.getGeometry();
-    var coord = geometry.getCoordinates();
-    popup.setPosition(coord);
+    popup.setPosition(evt.coordinate);
     $(element).popover({
       'placement': 'top',
       'html': true,

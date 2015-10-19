@@ -3,10 +3,10 @@ goog.provide('ol.interaction.MouseWheelZoom');
 goog.require('goog.asserts');
 goog.require('goog.events.MouseWheelEvent');
 goog.require('goog.events.MouseWheelHandler.EventType');
-goog.require('goog.math');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.interaction.Interaction');
+goog.require('ol.math');
 
 
 
@@ -25,7 +25,7 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
     handleEvent: ol.interaction.MouseWheelZoom.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -37,7 +37,13 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
 
   /**
    * @private
@@ -62,6 +68,8 @@ goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
 
 /**
+ * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
+ * mousewheel-event) and eventually zooms the map.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.MouseWheelZoom}
@@ -73,17 +81,21 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
     var mouseWheelEvent = mapBrowserEvent.browserEvent;
-    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent);
+    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
+        'mouseWheelEvent should be of type MouseWheelEvent');
 
-    this.lastAnchor_ = mapBrowserEvent.coordinate;
+    if (this.useAnchor_) {
+      this.lastAnchor_ = mapBrowserEvent.coordinate;
+    }
+
     this.delta_ += mouseWheelEvent.deltaY;
 
-    if (!goog.isDef(this.startTime_)) {
-      this.startTime_ = goog.now();
+    if (this.startTime_ === undefined) {
+      this.startTime_ = Date.now();
     }
 
     var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
-    var timeLeft = Math.max(duration - (goog.now() - this.startTime_), 0);
+    var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
 
     goog.global.clearTimeout(this.timeoutId_);
     this.timeoutId_ = goog.global.setTimeout(
@@ -102,10 +114,10 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  */
 ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
-  var delta = goog.math.clamp(this.delta_, -maxDelta, maxDelta);
+  var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
 
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view));
+  goog.asserts.assert(view, 'map must have view');
 
   map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
@@ -115,4 +127,18 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
   this.timeoutId_ = undefined;
+};
+
+
+/**
+ * Enable or disable using the mouse's location as an anchor when zooming
+ * @param {boolean} useAnchor true to zoom to the mouse's location, false
+ * to zoom to the center of the map
+ * @api
+ */
+ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
+  this.useAnchor_ = useAnchor;
+  if (!useAnchor) {
+    this.lastAnchor_ = null;
+  }
 };

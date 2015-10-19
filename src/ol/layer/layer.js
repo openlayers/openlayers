@@ -3,9 +3,11 @@ goog.provide('ol.layer.Layer');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
 
@@ -18,10 +20,11 @@ goog.require('ol.source.State');
  * Layers group together those properties that pertain to how the data is to be
  * displayed, irrespective of the source of that data.
  *
+ * A generic `change` event is fired when the state of the source changes.
+ *
  * @constructor
  * @extends {ol.layer.Base}
  * @fires ol.render.Event
- * @fires change Triggered when the state of the source changes.
  * @param {olx.layer.LayerOptions} options Layer options.
  * @api stable
  */
@@ -36,13 +39,29 @@ ol.layer.Layer = function(options) {
    * @private
    * @type {goog.events.Key}
    */
+  this.mapPrecomposeKey_ = null;
+
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
+  this.mapRenderKey_ = null;
+
+  /**
+   * @private
+   * @type {goog.events.Key}
+   */
   this.sourceChangeKey_ = null;
+
+  if (options.map) {
+    this.setMap(options.map);
+  }
 
   goog.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.LayerProperty.SOURCE),
       this.handleSourcePropertyChange_, false, this);
 
-  var source = goog.isDef(options.source) ? options.source : null;
+  var source = options.source ? options.source : null;
   this.setSource(source);
 };
 goog.inherits(ol.layer.Layer, ol.layer.Base);
@@ -66,7 +85,7 @@ ol.layer.Layer.visibleAtResolution = function(layerState, resolution) {
  * @inheritDoc
  */
 ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
-  var array = goog.isDef(opt_array) ? opt_array : [];
+  var array = opt_array ? opt_array : [];
   array.push(this);
   return array;
 };
@@ -76,7 +95,7 @@ ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
  * @inheritDoc
  */
 ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
-  var states = goog.isDef(opt_states) ? opt_states : [];
+  var states = opt_states ? opt_states : [];
   states.push(this.getLayerState());
   return states;
 };
@@ -90,13 +109,8 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  */
 ol.layer.Layer.prototype.getSource = function() {
   var source = this.get(ol.layer.LayerProperty.SOURCE);
-  return goog.isDef(source) ?
-      /** @type {ol.source.Source} */ (source) : null;
+  return /** @type {ol.source.Source} */ (source) || null;
 };
-goog.exportProperty(
-    ol.layer.Layer.prototype,
-    'getSource',
-    ol.layer.Layer.prototype.getSource);
 
 
 /**
@@ -104,7 +118,7 @@ goog.exportProperty(
   */
 ol.layer.Layer.prototype.getSourceState = function() {
   var source = this.getSource();
-  return goog.isNull(source) ? ol.source.State.UNDEFINED : source.getState();
+  return !source ? ol.source.State.UNDEFINED : source.getState();
 };
 
 
@@ -120,16 +134,52 @@ ol.layer.Layer.prototype.handleSourceChange_ = function() {
  * @private
  */
 ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
-  if (!goog.isNull(this.sourceChangeKey_)) {
+  if (this.sourceChangeKey_) {
     goog.events.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
   var source = this.getSource();
-  if (!goog.isNull(source)) {
+  if (source) {
     this.sourceChangeKey_ = goog.events.listen(source,
         goog.events.EventType.CHANGE, this.handleSourceChange_, false, this);
   }
   this.changed();
+};
+
+
+/**
+ * Sets the layer to be rendered on a map. The map will not manage this layer in
+ * its layers collection, layer filters in {@link ol.Map#forEachLayerAtPixel}
+ * will not filter the layer, and it will be rendered on top. This is useful for
+ * temporary layers. To remove an unmanaged layer from the map, use
+ * `#setMap(null)`.
+ *
+ * To add the layer to a map and have it managed by the map, use
+ * {@link ol.Map#addLayer} instead.
+ * @param {ol.Map} map Map.
+ * @api
+ */
+ol.layer.Layer.prototype.setMap = function(map) {
+  goog.events.unlistenByKey(this.mapPrecomposeKey_);
+  this.mapPrecomposeKey_ = null;
+  if (!map) {
+    this.changed();
+  }
+  goog.events.unlistenByKey(this.mapRenderKey_);
+  this.mapRenderKey_ = null;
+  if (map) {
+    this.mapPrecomposeKey_ = goog.events.listen(
+        map, ol.render.EventType.PRECOMPOSE, function(evt) {
+          var layerState = this.getLayerState();
+          layerState.managed = false;
+          layerState.zIndex = Infinity;
+          evt.frameState.layerStatesArray.push(layerState);
+          evt.frameState.layerStates[goog.getUid(this)] = layerState;
+        }, false, this);
+    this.mapRenderKey_ = goog.events.listen(
+        this, goog.events.EventType.CHANGE, map.render, false, map);
+    this.changed();
+  }
 };
 
 
@@ -142,7 +192,3 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
 ol.layer.Layer.prototype.setSource = function(source) {
   this.set(ol.layer.LayerProperty.SOURCE, source);
 };
-goog.exportProperty(
-    ol.layer.Layer.prototype,
-    'setSource',
-    ol.layer.Layer.prototype.setSource);

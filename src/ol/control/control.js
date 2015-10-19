@@ -1,8 +1,8 @@
 goog.provide('ol.control.Control');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
+goog.require('ol');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
 
@@ -45,7 +45,7 @@ ol.control.Control = function(options) {
    * @protected
    * @type {Element}
    */
-  this.element = goog.isDef(options.element) ? options.element : null;
+  this.element = options.element ? options.element : null;
 
   /**
    * @private
@@ -68,9 +68,9 @@ ol.control.Control = function(options) {
   /**
    * @type {function(ol.MapEvent)}
    */
-  this.render = goog.isDef(options.render) ? options.render : goog.nullFunction;
+  this.render = options.render ? options.render : ol.nullFunction;
 
-  if (goog.isDef(options.target)) {
+  if (options.target) {
     this.setTarget(options.target);
   }
 
@@ -105,19 +105,19 @@ ol.control.Control.prototype.getMap = function() {
  * @api stable
  */
 ol.control.Control.prototype.setMap = function(map) {
-  if (!goog.isNull(this.map_)) {
+  if (this.map_) {
     goog.dom.removeNode(this.element);
   }
-  if (!goog.array.isEmpty(this.listenerKeys)) {
-    goog.array.forEach(this.listenerKeys, goog.events.unlistenByKey);
+  if (this.listenerKeys.length > 0) {
+    this.listenerKeys.forEach(goog.events.unlistenByKey);
     this.listenerKeys.length = 0;
   }
   this.map_ = map;
-  if (!goog.isNull(this.map_)) {
-    var target = !goog.isNull(this.target_) ?
+  if (this.map_) {
+    var target = this.target_ ?
         this.target_ : map.getOverlayContainerStopEvent();
-    goog.dom.appendChild(target, this.element);
-    if (this.render !== goog.nullFunction) {
+    target.appendChild(this.element);
+    if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(goog.events.listen(map,
           ol.MapEventType.POSTRENDER, this.render, false, this));
     }

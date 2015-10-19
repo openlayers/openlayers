@@ -52,6 +52,25 @@ oli.DrawEvent.prototype.feature;
 /**
  * @interface
  */
+oli.ModifyEvent = function() {};
+
+
+/**
+ * @type {ol.Collection.<ol.Feature>}
+ */
+oli.ModifyEvent.prototype.features;
+
+
+/**
+ * @type {ol.MapBrowserPointerEvent}
+ */
+oli.ModifyEvent.prototype.mapBrowserPointerEvent;
+
+
+
+/**
+ * @interface
+ */
 oli.ObjectEvent = function() {};
 
 
@@ -120,19 +139,25 @@ oli.MapEvent.prototype.frameState;
 /**
  * @interface
  */
- oli.SelectEvent = function() {};
+oli.SelectEvent = function() {};
 
 
- /**
-  * @type {Array.<ol.Feature>}
-  */
+/**
+ * @type {Array.<ol.Feature>}
+ */
 oli.SelectEvent.prototype.deselected;
 
 
- /**
-  * @type {Array.<ol.Feature>}
-  */
+/**
+ * @type {Array.<ol.Feature>}
+ */
 oli.SelectEvent.prototype.selected;
+
+
+/**
+ * @type {ol.MapBrowserEvent}
+ */
+oli.SelectEvent.prototype.mapBrowserEvent;
 
 
 
@@ -186,6 +211,25 @@ oli.interaction.DragAndDropEvent.prototype.projection;
 oli.interaction.DragAndDropEvent.prototype.file;
 
 
+
+/**
+ * @interface
+ */
+oli.interaction.TranslateEvent = function() {};
+
+
+/**
+ * @type {ol.Collection.<ol.Feature>}
+ */
+oli.interaction.TranslateEvent.prototype.features;
+
+
+/**
+ * @type {ol.Coordinate}
+ */
+oli.interaction.TranslateEvent.prototype.coordinate;
+
+
 /**
  * @type {Object}
  */
@@ -218,7 +262,7 @@ oli.render.Event.prototype.glContext;
 
 
 /**
- * @type {ol.render.IVectorContext|undefined}
+ * @type {ol.render.VectorContext|undefined}
  */
 oli.render.Event.prototype.vectorContext;
 
@@ -239,6 +283,30 @@ oli.source.ImageEvent = function() {};
  * @type {ol.Image}
  */
 oli.source.ImageEvent.prototype.image;
+
+
+/**
+ * @interface
+ */
+oli.source.RasterEvent = function() {};
+
+
+/**
+ * @type {ol.Extent}
+ */
+oli.source.RasterEvent.prototype.extent;
+
+
+/**
+ * @type {number}
+ */
+oli.source.RasterEvent.prototype.resolution;
+
+
+/**
+ * @type {Object}
+ */
+oli.source.RasterEvent.prototype.data;
 
 
 /**

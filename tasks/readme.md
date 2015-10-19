@@ -53,8 +53,7 @@ Below is a complete `build.json` configuration file that would generate a 'full'
       "externs/olx.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
-      "externs/topojson.js",
-      "externs/vbarray.js"
+      "externs/topojson.js"
     ],
     "define": [
       "goog.dom.ASSUME_STANDARDS_MODE=true",
@@ -107,9 +106,9 @@ This is useful for projects that use the Closure Compiler to build, but want to 
 Called internally to parse the library for annotations and write out a `build/info.json` file.
 
 
-## `parse-examples.js`
+## `build-examples.js`
 
-Called after install to generate an example index.  After new examples are added, run `node tasks/parse-examples.js` to regenerate the example index.
+Builds examples and the example index.
 
 
 ## `serve.js`

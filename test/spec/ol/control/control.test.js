@@ -7,7 +7,7 @@ describe('ol.control.Control', function() {
     map = new ol.Map({
       target: document.createElement('div')
     });
-    var element = goog.dom.createDom(goog.dom.TagName.DIV);
+    var element = goog.dom.createDom('DIV');
     control = new ol.control.Control({element: element});
     control.setMap(map);
   });
@@ -50,6 +50,5 @@ describe('ol.control.Control\'s target', function() {
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('ol.Map');
 goog.require('ol.control.Control');

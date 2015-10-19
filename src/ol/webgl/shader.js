@@ -1,3 +1,6 @@
+goog.provide('ol.webgl.Fragment');
+goog.provide('ol.webgl.Shader');
+goog.provide('ol.webgl.Vertex');
 goog.provide('ol.webgl.shader');
 
 goog.require('goog.functions');

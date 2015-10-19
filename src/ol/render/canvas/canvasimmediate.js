@@ -6,13 +6,12 @@ goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
-goog.require('ol.render.IVectorContext');
+goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
@@ -20,7 +19,7 @@ goog.require('ol.vec.Mat4');
 
 /**
  * @classdesc
- * A concrete subclass of {@link ol.render.IVectorContext} that implements
+ * A concrete subclass of {@link ol.render.VectorContext} that implements
  * direct rendering of features and geometries to an HTML5 Canvas context.
  * Instances of this class are created internally by the library and
  * provided to application code as vectorContext member of the
@@ -28,7 +27,7 @@ goog.require('ol.vec.Mat4');
  * render events emitted by layers and maps.
  *
  * @constructor
- * @implements {ol.render.IVectorContext}
+ * @extends {ol.render.VectorContext}
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.
@@ -41,7 +40,7 @@ ol.render.canvas.Immediate =
 
   /**
    * @private
-   * @type {Object.<string,
+   * @type {!Object.<string,
    *        Array.<function(ol.render.canvas.Immediate)>>}
    */
   this.callbacksByZIndex_ = {};
@@ -250,11 +249,12 @@ ol.render.canvas.Immediate =
  */
 ol.render.canvas.Immediate.prototype.drawImages_ =
     function(flatCoordinates, offset, end, stride) {
-  if (goog.isNull(this.image_)) {
+  if (!this.image_) {
     return;
   }
-  goog.asserts.assert(offset === 0);
-  goog.asserts.assert(end == flatCoordinates.length);
+  goog.asserts.assert(offset === 0, 'offset should be 0');
+  goog.asserts.assert(end == flatCoordinates.length,
+      'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, 2, this.transform_,
       this.pixelCoordinates_);
@@ -312,18 +312,19 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
  */
 ol.render.canvas.Immediate.prototype.drawText_ =
     function(flatCoordinates, offset, end, stride) {
-  if (goog.isNull(this.textState_) || this.text_ === '') {
+  if (!this.textState_ || this.text_ === '') {
     return;
   }
-  if (!goog.isNull(this.textFillState_)) {
+  if (this.textFillState_) {
     this.setContextFillState_(this.textFillState_);
   }
-  if (!goog.isNull(this.textStrokeState_)) {
+  if (this.textStrokeState_) {
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
-  goog.asserts.assert(offset === 0);
-  goog.asserts.assert(end == flatCoordinates.length);
+  goog.asserts.assert(offset === 0, 'offset should be 0');
+  goog.asserts.assert(end == flatCoordinates.length,
+      'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, stride, this.transform_,
       this.pixelCoordinates_);
@@ -342,10 +343,10 @@ ol.render.canvas.Immediate.prototype.drawText_ =
           goog.vec.Mat4.getElement(localTransform, 0, 3),
           goog.vec.Mat4.getElement(localTransform, 1, 3));
     }
-    if (!goog.isNull(this.textStrokeState_)) {
+    if (this.textStrokeState_) {
       context.strokeText(this.text_, x, y);
     }
-    if (!goog.isNull(this.textFillState_)) {
+    if (this.textFillState_) {
       context.fillText(this.text_, x, y);
     }
   }
@@ -415,7 +416,7 @@ ol.render.canvas.Immediate.prototype.drawRings_ =
 ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
   var zIndexKey = zIndex.toString();
   var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (goog.isDef(callbacks)) {
+  if (callbacks !== undefined) {
     callbacks.push(callback);
   } else {
     this.callbacksByZIndex_[zIndexKey] = [callback];
@@ -436,11 +437,11 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
   if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.fillState_) || !goog.isNull(this.strokeState_)) {
-    if (!goog.isNull(this.fillState_)) {
+  if (this.fillState_ || this.strokeState_) {
+    if (this.fillState_) {
       this.setContextFillState_(this.fillState_);
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
@@ -452,10 +453,10 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
     context.beginPath();
     context.arc(
         pixelCoordinates[0], pixelCoordinates[1], radius, 0, 2 * Math.PI);
-    if (!goog.isNull(this.fillState_)) {
+    if (this.fillState_) {
       context.fill();
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_) {
       context.stroke();
     }
   }
@@ -469,8 +470,8 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  * Render a feature into the canvas.  In order to respect the zIndex of the
  * style this method draws asynchronously and thus *after* calls to
  * drawXxxxGeometry have been finished, effectively drawing the feature
- * *on top* of everything else.  You probably should be using
- * {@link ol.FeatureOverlay} instead of calling this method directly.
+ * *on top* of everything else.  You probably should be using an
+ * {@link ol.layer.Vector} instead of calling this method directly.
  *
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
@@ -478,12 +479,12 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry =
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!goog.isDefAndNotNull(geometry) ||
+  if (!geometry ||
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   var zIndex = style.getZIndex();
-  if (!goog.isDef(zIndex)) {
+  if (zIndex === undefined) {
     zIndex = 0;
   }
   this.drawAsync(zIndex, function(render) {
@@ -492,7 +493,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setTextStyle(style.getText());
     var renderGeometry =
         ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(renderGeometry));
+    goog.asserts.assert(renderGeometry !== undefined,
+        'renderGeometry should be defined');
     renderGeometry.call(render, geometry, null);
   });
 };
@@ -514,7 +516,8 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
     var geometry = geometries[i];
     var geometryRenderer =
         ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(goog.isDef(geometryRenderer));
+    goog.asserts.assert(geometryRenderer !== undefined,
+        'geometryRenderer should be defined');
     geometryRenderer.call(this, geometry, feature);
   }
 };
@@ -532,7 +535,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
     function(pointGeometry, feature) {
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
-  if (!goog.isNull(this.image_)) {
+  if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
   if (this.text_ !== '') {
@@ -553,7 +556,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
     function(multiPointGeometry, feature) {
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
-  if (!goog.isNull(this.image_)) {
+  if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
   if (this.text_ !== '') {
@@ -575,7 +578,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.strokeState_)) {
+  if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
     var flatCoordinates = lineStringGeometry.getFlatCoordinates();
@@ -606,7 +609,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
   }
-  if (!goog.isNull(this.strokeState_)) {
+  if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
     var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
@@ -641,21 +644,21 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.strokeState_) || !goog.isNull(this.fillState_)) {
-    if (!goog.isNull(this.fillState_)) {
+  if (this.strokeState_ || this.fillState_) {
+    if (this.fillState_) {
       this.setContextFillState_(this.fillState_);
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var context = this.context_;
     context.beginPath();
     this.drawRings_(polygonGeometry.getOrientedFlatCoordinates(),
         0, polygonGeometry.getEnds(), polygonGeometry.getStride());
-    if (!goog.isNull(this.fillState_)) {
+    if (this.fillState_) {
       context.fill();
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_) {
       context.stroke();
     }
   }
@@ -678,11 +681,11 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
     return;
   }
-  if (!goog.isNull(this.strokeState_) || !goog.isNull(this.fillState_)) {
-    if (!goog.isNull(this.fillState_)) {
+  if (this.strokeState_ || this.fillState_) {
+    if (this.fillState_) {
       this.setContextFillState_(this.fillState_);
     }
-    if (!goog.isNull(this.strokeState_)) {
+    if (this.strokeState_) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var context = this.context_;
@@ -695,10 +698,10 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
       var ends = endss[i];
       context.beginPath();
       offset = this.drawRings_(flatCoordinates, offset, ends, stride);
-      if (!goog.isNull(this.fillState_)) {
+      if (this.fillState_) {
         context.fill();
       }
-      if (!goog.isNull(this.strokeState_)) {
+      if (this.strokeState_) {
         context.stroke();
       }
     }
@@ -721,7 +724,7 @@ ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
  */
 ol.render.canvas.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.callbacksByZIndex_), Number);
+  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
   goog.array.sort(zs);
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -741,7 +744,7 @@ ol.render.canvas.Immediate.prototype.setContextFillState_ =
     function(fillState) {
   var context = this.context_;
   var contextFillState = this.contextFillState_;
-  if (goog.isNull(contextFillState)) {
+  if (!contextFillState) {
     context.fillStyle = fillState.fillStyle;
     this.contextFillState_ = {
       fillStyle: fillState.fillStyle
@@ -762,7 +765,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ =
     function(strokeState) {
   var context = this.context_;
   var contextStrokeState = this.contextStrokeState_;
-  if (goog.isNull(contextStrokeState)) {
+  if (!contextStrokeState) {
     context.lineCap = strokeState.lineCap;
     if (ol.has.CANVAS_LINE_DASH) {
       context.setLineDash(strokeState.lineDash);
@@ -815,7 +818,7 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
     function(textState) {
   var context = this.context_;
   var contextTextState = this.contextTextState_;
-  if (goog.isNull(contextTextState)) {
+  if (!contextTextState) {
     context.font = textState.font;
     context.textAlign = textState.textAlign;
     context.textBaseline = textState.textBaseline;
@@ -849,16 +852,16 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ =
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
-  if (goog.isNull(fillStyle)) {
+  if (!fillStyle) {
     this.fillState_ = null;
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
-      fillStyle: ol.color.asString(!goog.isNull(fillStyleColor) ?
+      fillStyle: ol.color.asString(fillStyleColor ?
           fillStyleColor : ol.render.canvas.defaultFillStyle)
     };
   }
-  if (goog.isNull(strokeStyle)) {
+  if (!strokeStyle) {
     this.strokeState_ = null;
   } else {
     var strokeStyleColor = strokeStyle.getColor();
@@ -868,17 +871,17 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
     var strokeStyleWidth = strokeStyle.getWidth();
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     this.strokeState_ = {
-      lineCap: goog.isDef(strokeStyleLineCap) ?
+      lineCap: strokeStyleLineCap !== undefined ?
           strokeStyleLineCap : ol.render.canvas.defaultLineCap,
-      lineDash: goog.isDefAndNotNull(strokeStyleLineDash) ?
+      lineDash: strokeStyleLineDash ?
           strokeStyleLineDash : ol.render.canvas.defaultLineDash,
-      lineJoin: goog.isDef(strokeStyleLineJoin) ?
+      lineJoin: strokeStyleLineJoin !== undefined ?
           strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-      lineWidth: this.pixelRatio_ * (goog.isDef(strokeStyleWidth) ?
+      lineWidth: this.pixelRatio_ * (strokeStyleWidth !== undefined ?
           strokeStyleWidth : ol.render.canvas.defaultLineWidth),
-      miterLimit: goog.isDef(strokeStyleMiterLimit) ?
+      miterLimit: strokeStyleMiterLimit !== undefined ?
           strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
-      strokeStyle: ol.color.asString(!goog.isNull(strokeStyleColor) ?
+      strokeStyle: ol.color.asString(strokeStyleColor ?
           strokeStyleColor : ol.render.canvas.defaultStrokeStyle)
     };
   }
@@ -893,7 +896,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle =
  * @api
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
-  if (goog.isNull(imageStyle)) {
+  if (!imageStyle) {
     this.image_ = null;
   } else {
     var imageAnchor = imageStyle.getAnchor();
@@ -901,10 +904,10 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
-    goog.asserts.assert(!goog.isNull(imageAnchor));
-    goog.asserts.assert(!goog.isNull(imageImage));
-    goog.asserts.assert(!goog.isNull(imageOrigin));
-    goog.asserts.assert(!goog.isNull(imageSize));
+    goog.asserts.assert(imageAnchor, 'imageAnchor must be truthy');
+    goog.asserts.assert(imageImage, 'imageImage must be truthy');
+    goog.asserts.assert(imageOrigin, 'imageOrigin must be truthy');
+    goog.asserts.assert(imageSize, 'imageSize must be truthy');
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];
@@ -929,21 +932,21 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
  * @api
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
-  if (goog.isNull(textStyle)) {
+  if (!textStyle) {
     this.text_ = '';
   } else {
     var textFillStyle = textStyle.getFill();
-    if (goog.isNull(textFillStyle)) {
+    if (!textFillStyle) {
       this.textFillState_ = null;
     } else {
       var textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
-        fillStyle: ol.color.asString(!goog.isNull(textFillStyleColor) ?
+        fillStyle: ol.color.asString(textFillStyleColor ?
             textFillStyleColor : ol.render.canvas.defaultFillStyle)
       };
     }
     var textStrokeStyle = textStyle.getStroke();
-    if (goog.isNull(textStrokeStyle)) {
+    if (!textStrokeStyle) {
       this.textStrokeState_ = null;
     } else {
       var textStrokeStyleColor = textStrokeStyle.getColor();
@@ -953,17 +956,17 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       var textStrokeStyleWidth = textStrokeStyle.getWidth();
       var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
       this.textStrokeState_ = {
-        lineCap: goog.isDef(textStrokeStyleLineCap) ?
+        lineCap: textStrokeStyleLineCap !== undefined ?
             textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
-        lineDash: goog.isDefAndNotNull(textStrokeStyleLineDash) ?
+        lineDash: textStrokeStyleLineDash ?
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
-        lineJoin: goog.isDef(textStrokeStyleLineJoin) ?
+        lineJoin: textStrokeStyleLineJoin !== undefined ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-        lineWidth: goog.isDef(textStrokeStyleWidth) ?
+        lineWidth: textStrokeStyleWidth !== undefined ?
             textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
-        miterLimit: goog.isDef(textStrokeStyleMiterLimit) ?
+        miterLimit: textStrokeStyleMiterLimit !== undefined ?
             textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
-        strokeStyle: ol.color.asString(!goog.isNull(textStrokeStyleColor) ?
+        strokeStyle: ol.color.asString(textStrokeStyleColor ?
             textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle)
       };
     }
@@ -976,20 +979,20 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     var textTextAlign = textStyle.getTextAlign();
     var textTextBaseline = textStyle.getTextBaseline();
     this.textState_ = {
-      font: goog.isDef(textFont) ?
+      font: textFont !== undefined ?
           textFont : ol.render.canvas.defaultFont,
-      textAlign: goog.isDef(textTextAlign) ?
+      textAlign: textTextAlign !== undefined ?
           textTextAlign : ol.render.canvas.defaultTextAlign,
-      textBaseline: goog.isDef(textTextBaseline) ?
+      textBaseline: textTextBaseline !== undefined ?
           textTextBaseline : ol.render.canvas.defaultTextBaseline
     };
-    this.text_ = goog.isDef(textText) ? textText : '';
+    this.text_ = textText !== undefined ? textText : '';
     this.textOffsetX_ =
-        goog.isDef(textOffsetX) ? (this.pixelRatio_ * textOffsetX) : 0;
+        textOffsetX !== undefined ? (this.pixelRatio_ * textOffsetX) : 0;
     this.textOffsetY_ =
-        goog.isDef(textOffsetY) ? (this.pixelRatio_ * textOffsetY) : 0;
-    this.textRotation_ = goog.isDef(textRotation) ? textRotation : 0;
-    this.textScale_ = this.pixelRatio_ * (goog.isDef(textScale) ?
+        textOffsetY !== undefined ? (this.pixelRatio_ * textOffsetY) : 0;
+    this.textRotation_ = textRotation !== undefined ? textRotation : 0;
+    this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
         textScale : 1);
   }
 };

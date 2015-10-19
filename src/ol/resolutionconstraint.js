@@ -1,8 +1,8 @@
 goog.provide('ol.ResolutionConstraint');
 goog.provide('ol.ResolutionConstraintType');
 
-goog.require('goog.math');
 goog.require('ol.array');
+goog.require('ol.math');
 
 
 /**
@@ -25,10 +25,10 @@ ol.ResolutionConstraint.createSnapToResolutions =
        * @return {number|undefined} Resolution.
        */
       function(resolution, delta, direction) {
-        if (goog.isDef(resolution)) {
+        if (resolution !== undefined) {
           var z =
               ol.array.linearFindNearest(resolutions, resolution, direction);
-          z = goog.math.clamp(z + delta, 0, resolutions.length - 1);
+          z = ol.math.clamp(z + delta, 0, resolutions.length - 1);
           return resolutions[z];
         } else {
           return undefined;
@@ -53,7 +53,7 @@ ol.ResolutionConstraint.createSnapToPower =
        * @return {number|undefined} Resolution.
        */
       function(resolution, delta, direction) {
-        if (goog.isDef(resolution)) {
+        if (resolution !== undefined) {
           var offset;
           if (direction > 0) {
             offset = 0;
@@ -65,7 +65,7 @@ ol.ResolutionConstraint.createSnapToPower =
           var oldLevel = Math.floor(
               Math.log(maxResolution / resolution) / Math.log(power) + offset);
           var newLevel = Math.max(oldLevel + delta, 0);
-          if (goog.isDef(opt_maxLevel)) {
+          if (opt_maxLevel !== undefined) {
             newLevel = Math.min(newLevel, opt_maxLevel);
           }
           return maxResolution / Math.pow(power, newLevel);

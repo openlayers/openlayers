@@ -16,7 +16,7 @@ var map = new ol.Map({
   renderer: 'canvas',
   target: 'map',
   view: new ol.View({
-    center: ol.proj.transform([4.8, 47.75], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.fromLonLat([4.8, 47.75]),
     zoom: 5
   })
 });

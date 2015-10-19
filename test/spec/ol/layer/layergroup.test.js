@@ -18,24 +18,8 @@ describe('ol.layer.Group', function() {
       expect(layerGroup).to.be.a(ol.layer.Group);
     });
 
-    it('provides default brightness', function() {
-      expect(layerGroup.getBrightness()).to.be(0);
-    });
-
-    it('provides default contrast', function() {
-      expect(layerGroup.getContrast()).to.be(1);
-    });
-
-    it('provides default hue', function() {
-      expect(layerGroup.getHue()).to.be(0);
-    });
-
     it('provides default opacity', function() {
       expect(layerGroup.getOpacity()).to.be(1);
-    });
-
-    it('provides default saturation', function() {
-      expect(layerGroup.getSaturation()).to.be(1);
     });
 
     it('provides default visibility', function() {
@@ -45,14 +29,12 @@ describe('ol.layer.Group', function() {
     it('provides default layerState', function() {
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 0,
-        contrast: 1,
-        hue: 0,
         opacity: 1,
-        saturation: 1,
         visible: true,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -153,34 +135,25 @@ describe('ol.layer.Group', function() {
       });
       var layerGroup = new ol.layer.Group({
         layers: [layer],
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
 
-      expect(layerGroup.getBrightness()).to.be(0.5);
-      expect(layerGroup.getContrast()).to.be(10);
-      expect(layerGroup.getHue()).to.be(180);
       expect(layerGroup.getOpacity()).to.be(0.5);
-      expect(layerGroup.getSaturation()).to.be(5);
       expect(layerGroup.getVisible()).to.be(false);
       expect(layerGroup.getMaxResolution()).to.be(500);
       expect(layerGroup.getMinResolution()).to.be(0.25);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -202,36 +175,26 @@ describe('ol.layer.Group', function() {
       var groupExtent = [-10, -5, 10, 5];
       var layerGroup = new ol.layer.Group({
         layers: [layer],
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         extent: groupExtent,
         maxResolution: 500,
         minResolution: 0.25
       });
 
-      expect(layerGroup.getBrightness()).to.be(0.5);
-      expect(layerGroup.getContrast()).to.be(10);
-      expect(layerGroup.getHue()).to.be(180);
       expect(layerGroup.getOpacity()).to.be(0.5);
-      expect(layerGroup.getSaturation()).to.be(5);
       expect(layerGroup.getVisible()).to.be(false);
       expect(layerGroup.getExtent()).to.eql(groupExtent);
       expect(layerGroup.getMaxResolution()).to.be(500);
       expect(layerGroup.getMinResolution()).to.be(0.25);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: groupExtent,
+        zIndex: 0,
         maxResolution: 500,
         minResolution: 0.25
       });
@@ -257,68 +220,51 @@ describe('ol.layer.Group', function() {
     });
 
     it('returns a layerState from the properties values', function() {
-      layerGroup.setBrightness(-0.7);
-      layerGroup.setContrast(0.3);
-      layerGroup.setHue(-0.3);
       layerGroup.setOpacity(0.3);
-      layerGroup.setSaturation(0.3);
       layerGroup.setVisible(false);
+      layerGroup.setZIndex(10);
       var groupExtent = [-100, 50, 100, 50];
       layerGroup.setExtent(groupExtent);
       layerGroup.setMaxResolution(500);
       layerGroup.setMinResolution(0.25);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: -0.7,
-        contrast: 0.3,
-        hue: -0.3,
         opacity: 0.3,
-        saturation: 0.3,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: groupExtent,
+        zIndex: 10,
         maxResolution: 500,
         minResolution: 0.25
       });
     });
 
     it('returns a layerState with clamped values', function() {
-      layerGroup.setBrightness(1.5);
-      layerGroup.setContrast(-0.7);
-      layerGroup.setHue(42);
       layerGroup.setOpacity(-1.5);
-      layerGroup.setSaturation(-0.7);
       layerGroup.setVisible(false);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: 1,
-        contrast: 0,
-        hue: 42,
         opacity: 0,
-        saturation: 0,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
 
-      layerGroup.setBrightness(-3);
-      layerGroup.setContrast(42);
-      layerGroup.setHue(-100);
       layerGroup.setOpacity(3);
-      layerGroup.setSaturation(42);
       layerGroup.setVisible(true);
       expect(layerGroup.getLayerState()).to.eql({
         layer: layerGroup,
-        brightness: -1,
-        contrast: 42,
-        hue: -100,
         opacity: 1,
-        saturation: 42,
         visible: true,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: Infinity,
         minResolution: 0
       });
@@ -326,6 +272,31 @@ describe('ol.layer.Group', function() {
 
   });
 
+  describe('layers events', function() {
+
+    it('listen / unlisten for layers added to the collection', function() {
+      var layers = new ol.Collection();
+      var layerGroup = new ol.layer.Group({
+        layers: layers
+      });
+      expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(0);
+      var layer = new ol.layer.Layer({});
+      layers.push(layer);
+      expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(1);
+
+      var listeners = layerGroup.listenerKeys_[goog.getUid(layer)];
+      expect(listeners.length).to.eql(2);
+      expect(listeners[0]).to.be.a(goog.events.Listener);
+      expect(listeners[1]).to.be.a(goog.events.Listener);
+
+      // remove the layer from the group
+      layers.pop();
+      expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(0);
+      expect(listeners[0].removed).to.eql(true);
+      expect(listeners[1].removed).to.eql(true);
+    });
+
+  });
 
   describe('#setLayers', function() {
 
@@ -340,9 +311,6 @@ describe('ol.layer.Group', function() {
 
       layerGroup.setLayers(layers);
       expect(layerGroup.getLayers()).to.be(layers);
-
-      layerGroup.setLayers(null);
-      expect(layerGroup.getLayers()).to.be(null);
 
       goog.dispose(layerGroup);
       goog.dispose(layer);
@@ -373,11 +341,7 @@ describe('ol.layer.Group', function() {
       source: new ol.source.Source({
         projection: 'EPSG:4326'
       }),
-      brightness: 0.5,
-      contrast: 10,
-      hue: 180,
       opacity: 0.5,
-      saturation: 5,
       visible: false,
       maxResolution: 500,
       minResolution: 0.25
@@ -437,11 +401,7 @@ describe('ol.layer.Group', function() {
     it('transforms layerStates correctly', function() {
       var layerGroup = new ol.layer.Group({
         layers: [layer1, layer2],
-        brightness: 0.5,
-        contrast: 10,
-        hue: 180,
         opacity: 0.5,
-        saturation: 5,
         visible: false,
         maxResolution: 150,
         minResolution: 0.2
@@ -463,14 +423,12 @@ describe('ol.layer.Group', function() {
       layerState = goog.object.clone(layerStatesArray[1]);
       delete layerState.layer;
       expect(layerState).to.eql({
-        brightness: 1,
-        contrast: 100,
-        hue: 360,
         opacity: 0.25,
-        saturation: 25,
         visible: false,
+        managed: true,
         sourceState: ol.source.State.READY,
         extent: undefined,
+        zIndex: 0,
         maxResolution: 150,
         minResolution: 0.25
       });
@@ -478,21 +436,69 @@ describe('ol.layer.Group', function() {
       goog.dispose(layerGroup);
     });
 
+    it('let order of layers without Z-index unchanged', function() {
+      var layerGroup = new ol.layer.Group({
+        layers: [layer1, layer2]
+      });
+
+      var layerStatesArray = layerGroup.getLayerStatesArray();
+      var initialArray = layerStatesArray.slice();
+      goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+      expect(layerStatesArray[0]).to.eql(initialArray[0]);
+      expect(layerStatesArray[1]).to.eql(initialArray[1]);
+
+      goog.dispose(layerGroup);
+    });
+
+    it('orders layer with higher Z-index on top', function() {
+      var layer10 = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: 'EPSG:4326'
+        })
+      });
+      layer10.setZIndex(10);
+
+      var layerM1 = new ol.layer.Layer({
+        source: new ol.source.Source({
+          projection: 'EPSG:4326'
+        })
+      });
+      layerM1.setZIndex(-1);
+
+      var layerGroup = new ol.layer.Group({
+        layers: [layer1, layer10, layer2, layerM1]
+      });
+
+      var layerStatesArray = layerGroup.getLayerStatesArray();
+      var initialArray = layerStatesArray.slice();
+      goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+      expect(layerStatesArray[0]).to.eql(initialArray[3]);
+      expect(layerStatesArray[1]).to.eql(initialArray[0]);
+      expect(layerStatesArray[2]).to.eql(initialArray[2]);
+      expect(layerStatesArray[3]).to.eql(initialArray[1]);
+
+      goog.dispose(layer10);
+      goog.dispose(layerM1);
+      goog.dispose(layerGroup);
+    });
+
     goog.dispose(layer1);
     goog.dispose(layer2);
     goog.dispose(layer3);
-
   });
 
 });
 
+goog.require('goog.array');
 goog.require('goog.dispose');
 goog.require('goog.events.EventType');
+goog.require('goog.events.Listener');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');
+goog.require('ol.renderer.Map');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.Collection');

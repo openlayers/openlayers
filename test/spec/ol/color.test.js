@@ -3,6 +3,33 @@ goog.provide('ol.test.color');
 
 describe('ol.color', function() {
 
+  describe('ol.color.blend', function() {
+    it('blends red (a=1) and blue (a=1) to blue (a=1)', function() {
+      var red = [255, 0, 0, 1];
+      var blue = [0, 0, 255, 1];
+      var blended = ol.color.blend(red, blue);
+      expect(blended).to.eql([0, 0, 255, 1]);
+    });
+    it('blends red (a=1) and blue (a=0) to red (a=1)', function() {
+      var red = [255, 0, 0, 1];
+      var blue = [0, 0, 255, 0];
+      var blended = ol.color.blend(red, blue);
+      expect(blended).to.eql([255, 0, 0, 1]);
+    });
+    it('blends red (a=0.5) and blue (a=0.5) to purple (a=0.75)', function() {
+      var red = [255, 0, 0, 0.5];
+      var blue = [0, 0, 255, 0.5];
+      var blended = ol.color.blend(red, blue);
+      expect(blended).to.eql([85, 0, 170, 0.75]);
+    });
+    it('blends red (a=0.5) and blue (a=0) to red (a=0.5)', function() {
+      var red = [255, 0, 0, 0.5];
+      var blue = [0, 0, 255, 0];
+      var blended = ol.color.blend(red, blue);
+      expect(blended).to.eql([255, 0, 0, 0.5]);
+    });
+  });
+
   describe('ol.color.fromString', function() {
 
     before(function() {

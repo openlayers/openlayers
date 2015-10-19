@@ -79,7 +79,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
  */
 ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
-  if (goog.isNull(this.getImage())) {
+  if (!this.getImage()) {
     return undefined;
   }
 
@@ -99,7 +99,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
     }
   } else {
     // for all other image sources directly check the image
-    if (goog.isNull(this.imageTransformInv_)) {
+    if (!this.imageTransformInv_) {
       this.imageTransformInv_ = goog.vec.Mat4.createNumber();
       goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
     }
@@ -107,7 +107,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
     var pixelOnCanvas =
         this.getPixelOnCanvas(pixel, this.imageTransformInv_);
 
-    if (goog.isNull(this.hitCanvasContext_)) {
+    if (!this.hitCanvasContext_) {
       this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
     }
 
@@ -129,8 +129,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
  * @inheritDoc
  */
 ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
-  return goog.isNull(this.image_) ?
-      null : this.image_.getImage();
+  return !this.image_ ? null : this.image_.getImage();
 };
 
 
@@ -156,13 +155,14 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
 
   var image;
   var imageLayer = this.getLayer();
-  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image);
+  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image,
+      'layer is an instance of ol.layer.Image');
   var imageSource = imageLayer.getSource();
 
   var hints = frameState.viewHints;
 
   var renderedExtent = frameState.extent;
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent !== undefined) {
     renderedExtent = ol.extent.getIntersection(
         renderedExtent, layerState.extent);
   }
@@ -170,14 +170,17 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
-    var sourceProjection = imageSource.getProjection();
-    if (!goog.isNull(sourceProjection)) {
-      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection));
-      projection = sourceProjection;
+    if (!ol.ENABLE_RASTER_REPROJECTION) {
+      var sourceProjection = imageSource.getProjection();
+      if (sourceProjection) {
+        goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
+            'projection and sourceProjection are equivalent');
+        projection = sourceProjection;
+      }
     }
     image = imageSource.getImage(
         renderedExtent, viewResolution, pixelRatio, projection);
-    if (!goog.isNull(image)) {
+    if (image) {
       var loaded = this.loadImage(image);
       if (loaded) {
         this.image_ = image;
@@ -185,7 +188,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
     }
   }
 
-  if (!goog.isNull(this.image_)) {
+  if (this.image_) {
     image = this.image_;
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();

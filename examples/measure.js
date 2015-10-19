@@ -1,4 +1,5 @@
 goog.require('ol.Map');
+goog.require('ol.Observable');
 goog.require('ol.Overlay');
 goog.require('ol.Sphere');
 goog.require('ol.View');
@@ -103,27 +104,20 @@ var pointerMoveHandler = function(evt) {
   }
   /** @type {string} */
   var helpMsg = 'Click to start drawing';
-  /** @type {ol.Coordinate|undefined} */
-  var tooltipCoord = evt.coordinate;
 
   if (sketch) {
-    var output;
     var geom = (sketch.getGeometry());
     if (geom instanceof ol.geom.Polygon) {
-      output = formatArea(/** @type {ol.geom.Polygon} */ (geom));
       helpMsg = continuePolygonMsg;
-      tooltipCoord = geom.getInteriorPoint().getCoordinates();
     } else if (geom instanceof ol.geom.LineString) {
-      output = formatLength( /** @type {ol.geom.LineString} */ (geom));
       helpMsg = continueLineMsg;
-      tooltipCoord = geom.getLastCoordinate();
     }
-    measureTooltipElement.innerHTML = output;
-    measureTooltip.setPosition(tooltipCoord);
   }
 
   helpTooltipElement.innerHTML = helpMsg;
   helpTooltip.setPosition(evt.coordinate);
+
+  $(helpTooltipElement).removeClass('hidden');
 };
 
 
@@ -137,6 +131,10 @@ var map = new ol.Map({
 });
 
 map.on('pointermove', pointerMoveHandler);
+
+$(map.getViewport()).on('mouseout', function() {
+  $(helpTooltipElement).addClass('hidden');
+});
 
 var typeSelect = document.getElementById('type');
 var geodesicCheckbox = document.getElementById('geodesic');
@@ -172,10 +170,28 @@ function addInteraction() {
   createMeasureTooltip();
   createHelpTooltip();
 
+  var listener;
   draw.on('drawstart',
       function(evt) {
         // set sketch
         sketch = evt.feature;
+
+        /** @type {ol.Coordinate|undefined} */
+        var tooltipCoord = evt.coordinate;
+
+        listener = sketch.getGeometry().on('change', function(evt) {
+          var geom = evt.target;
+          var output;
+          if (geom instanceof ol.geom.Polygon) {
+            output = formatArea(/** @type {ol.geom.Polygon} */ (geom));
+            tooltipCoord = geom.getInteriorPoint().getCoordinates();
+          } else if (geom instanceof ol.geom.LineString) {
+            output = formatLength( /** @type {ol.geom.LineString} */ (geom));
+            tooltipCoord = geom.getLastCoordinate();
+          }
+          measureTooltipElement.innerHTML = output;
+          measureTooltip.setPosition(tooltipCoord);
+        });
       }, this);
 
   draw.on('drawend',
@@ -187,6 +203,7 @@ function addInteraction() {
         // unset tooltip so that a new one can be created
         measureTooltipElement = null;
         createMeasureTooltip();
+        ol.Observable.unByKey(listener);
       }, this);
 }
 
@@ -199,7 +216,7 @@ function createHelpTooltip() {
     helpTooltipElement.parentNode.removeChild(helpTooltipElement);
   }
   helpTooltipElement = document.createElement('div');
-  helpTooltipElement.className = 'tooltip';
+  helpTooltipElement.className = 'tooltip hidden';
   helpTooltip = new ol.Overlay({
     element: helpTooltipElement,
     offset: [15, 0],

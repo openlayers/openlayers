@@ -365,20 +365,38 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('#loadFeatures', function() {
+
+    describe('with no loader and the "all" strategy', function() {
+
+      it('stores the infinity extent in the Rtree', function() {
+        var source = new ol.source.Vector();
+        source.loadFeatures([-10000, -10000, 10000, 10000], 1,
+            ol.proj.get('EPSG:3857'));
+        var loadedExtents = source.loadedExtentsRtree_.getAll();
+        expect(loadedExtents).to.have.length(1);
+        expect(loadedExtents[0].extent).to.eql(
+            [-Infinity, -Infinity, Infinity, Infinity]);
+      });
+    });
+
+  });
+
   describe('the feature id index', function() {
     var source;
     beforeEach(function() {
       source = new ol.source.Vector();
     });
 
-    it('allows adding feature with the same id', function() {
+    it('ignores features with the same id', function() {
       var feature = new ol.Feature();
       feature.setId('foo');
       source.addFeature(feature);
       var dupe = new ol.Feature();
       dupe.setId('foo');
       source.addFeature(dupe);
-      expect(source.getFeatureById('foo')).to.be(dupe);
+      expect(source.getFeatures()).to.have.length(1);
+      expect(source.getFeatureById('foo')).to.be(feature);
     });
 
     it('allows changing feature and set the same id', function() {
@@ -409,10 +427,125 @@ describe('ol.source.Vector', function() {
     });
   });
 
+  describe('with useSpatialIndex set to false', function() {
+    var source;
+    beforeEach(function() {
+      source = new ol.source.Vector({useSpatialIndex: false});
+    });
+
+    it('returns a features collection', function() {
+      expect(source.getFeaturesCollection()).to.be.a(ol.Collection);
+    });
+
+    it('#forEachFeatureInExtent loops through all features', function() {
+      source.addFeatures([new ol.Feature(), new ol.Feature()]);
+      var spy = sinon.spy();
+      source.forEachFeatureInExtent([0, 0, 0, 0], spy);
+      expect(spy.callCount).to.be(2);
+    });
+
+  });
+
+  describe('with a collection of features', function() {
+    var collection, source;
+    beforeEach(function() {
+      source = new ol.source.Vector({
+        useSpatialIndex: false
+      });
+      collection = source.getFeaturesCollection();
+    });
+
+    it('creates a features collection', function() {
+      expect(source.getFeaturesCollection()).to.not.be(null);
+    });
+
+    it('adding/removing features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
+      source.addFeature(feature);
+      expect(collection.getLength()).to.be(1);
+      source.removeFeature(feature);
+      expect(collection.getLength()).to.be(0);
+    });
+
+    it('#clear() features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear();
+      expect(collection.getLength()).to.be(0);
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear(true);
+      expect(collection.getLength()).to.be(0);
+    });
+
+    it('keeps the source\'s features in sync with the collection', function() {
+      var feature = new ol.Feature();
+      collection.push(feature);
+      expect(source.getFeatures().length).to.be(1);
+      collection.remove(feature);
+      expect(source.getFeatures().length).to.be(0);
+      collection.extend([feature]);
+      expect(source.getFeatures().length).to.be(1);
+      collection.clear();
+      expect(source.getFeatures().length).to.be(0);
+    });
+
+  });
+
+  describe('with a collection of features plus spatial index', function() {
+    var collection, source;
+    beforeEach(function() {
+      collection = new ol.Collection();
+      source = new ol.source.Vector({
+        features: collection
+      });
+    });
+
+    it('#getFeaturesCollection returns the configured collection', function() {
+      expect(source.getFeaturesCollection()).to.equal(collection);
+    });
+
+    it('adding/removing features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
+      source.addFeature(feature);
+      expect(collection.getLength()).to.be(1);
+      source.removeFeature(feature);
+      expect(collection.getLength()).to.be(0);
+    });
+
+    it('#clear() features keeps the collection in sync', function() {
+      var feature = new ol.Feature();
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear();
+      expect(collection.getLength()).to.be(0);
+      source.addFeatures([feature]);
+      expect(collection.getLength()).to.be(1);
+      source.clear(true);
+      expect(collection.getLength()).to.be(0);
+    });
+
+    it('keeps the source\'s features in sync with the collection', function() {
+      var feature = new ol.Feature();
+      collection.push(feature);
+      expect(source.getFeatures().length).to.be(1);
+      collection.remove(feature);
+      expect(source.getFeatures().length).to.be(0);
+      collection.extend([feature]);
+      expect(source.getFeatures().length).to.be(1);
+      collection.clear();
+      expect(source.getFeatures().length).to.be(0);
+    });
+
+  });
+
 });
 
 
 goog.require('goog.events');
+goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.proj');
 goog.require('ol.source.Vector');

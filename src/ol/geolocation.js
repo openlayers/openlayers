@@ -5,12 +5,12 @@ goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
 goog.require('ol.has');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.sphere.WGS84');
 
@@ -39,6 +39,9 @@ ol.GeolocationProperty = {
  * The [Geolocation API](http://www.w3.org/TR/geolocation-API/)
  * is used to locate a user's position.
  *
+ * To get notified of position changes, register a listener for the generic
+ * `change` event on your instance of `ol.Geolocation`.
+ *
  * Example:
  *
  *     var geolocation = new ol.Geolocation({
@@ -52,7 +55,6 @@ ol.GeolocationProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the position changes.
  * @param {olx.GeolocationOptions=} opt_options Options.
  * @api stable
  */
@@ -60,7 +62,7 @@ ol.Geolocation = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The unprojected (EPSG:4326) device position.
@@ -88,14 +90,14 @@ ol.Geolocation = function(opt_options) {
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  if (goog.isDef(options.projection)) {
+  if (options.projection !== undefined) {
     this.setProjection(ol.proj.get(options.projection));
   }
-  if (goog.isDef(options.trackingOptions)) {
+  if (options.trackingOptions !== undefined) {
     this.setTrackingOptions(options.trackingOptions);
   }
 
-  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
+  this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
 goog.inherits(ol.Geolocation, ol.Object);
@@ -115,10 +117,10 @@ ol.Geolocation.prototype.disposeInternal = function() {
  */
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
-  if (goog.isDefAndNotNull(projection)) {
+  if (projection) {
     this.transform_ = ol.proj.getTransformFromProjections(
         ol.proj.get('EPSG:4326'), projection);
-    if (!goog.isNull(this.position_)) {
+    if (this.position_) {
       this.set(
           ol.GeolocationProperty.POSITION, this.transform_(this.position_));
     }
@@ -132,12 +134,12 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.GEOLOCATION) {
     var tracking = this.getTracking();
-    if (tracking && !goog.isDef(this.watchId_)) {
+    if (tracking && this.watchId_ === undefined) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(
           goog.bind(this.positionChange_, this),
           goog.bind(this.positionError_, this),
           this.getTrackingOptions());
-    } else if (!tracking && goog.isDef(this.watchId_)) {
+    } else if (!tracking && this.watchId_ !== undefined) {
       goog.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }
@@ -153,13 +155,13 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
   this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
   this.set(ol.GeolocationProperty.ALTITUDE,
-      goog.isNull(coords.altitude) ? undefined : coords.altitude);
+      coords.altitude === null ? undefined : coords.altitude);
   this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
-      goog.isNull(coords.altitudeAccuracy) ?
+      coords.altitudeAccuracy === null ?
       undefined : coords.altitudeAccuracy);
-  this.set(ol.GeolocationProperty.HEADING, goog.isNull(coords.heading) ?
-      undefined : goog.math.toRadians(coords.heading));
-  if (goog.isNull(this.position_)) {
+  this.set(ol.GeolocationProperty.HEADING, coords.heading === null ?
+      undefined : ol.math.toRadians(coords.heading));
+  if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {
     this.position_[0] = coords.longitude;
@@ -168,7 +170,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   var projectedPosition = this.transform_(this.position_);
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
-      goog.isNull(coords.speed) ? undefined : coords.speed);
+      coords.speed === null ? undefined : coords.speed);
   var geometry = ol.geom.Polygon.circular(
       ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
@@ -199,10 +201,6 @@ ol.Geolocation.prototype.getAccuracy = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.GeolocationProperty.ACCURACY));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getAccuracy',
-    ol.Geolocation.prototype.getAccuracy);
 
 
 /**
@@ -215,10 +213,6 @@ ol.Geolocation.prototype.getAccuracyGeometry = function() {
   return /** @type {?ol.geom.Geometry} */ (
       this.get(ol.GeolocationProperty.ACCURACY_GEOMETRY) || null);
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getAccuracyGeometry',
-    ol.Geolocation.prototype.getAccuracyGeometry);
 
 
 /**
@@ -232,10 +226,6 @@ ol.Geolocation.prototype.getAltitude = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.GeolocationProperty.ALTITUDE));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getAltitude',
-    ol.Geolocation.prototype.getAltitude);
 
 
 /**
@@ -249,10 +239,6 @@ ol.Geolocation.prototype.getAltitudeAccuracy = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.GeolocationProperty.ALTITUDE_ACCURACY));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getAltitudeAccuracy',
-    ol.Geolocation.prototype.getAltitudeAccuracy);
 
 
 /**
@@ -265,10 +251,6 @@ ol.Geolocation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.GeolocationProperty.HEADING));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getHeading',
-    ol.Geolocation.prototype.getHeading);
 
 
 /**
@@ -282,10 +264,6 @@ ol.Geolocation.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.GeolocationProperty.POSITION));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getPosition',
-    ol.Geolocation.prototype.getPosition);
 
 
 /**
@@ -299,10 +277,6 @@ ol.Geolocation.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
       this.get(ol.GeolocationProperty.PROJECTION));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getProjection',
-    ol.Geolocation.prototype.getProjection);
 
 
 /**
@@ -316,15 +290,11 @@ ol.Geolocation.prototype.getSpeed = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.GeolocationProperty.SPEED));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getSpeed',
-    ol.Geolocation.prototype.getSpeed);
 
 
 /**
- * Are we tracking the user's position?
- * @return {boolean} Whether to track the device's position.
+ * Determine if the device location is being tracked.
+ * @return {boolean} The device location is being tracked.
  * @observable
  * @api stable
  */
@@ -332,18 +302,14 @@ ol.Geolocation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
       this.get(ol.GeolocationProperty.TRACKING));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getTracking',
-    ol.Geolocation.prototype.getTracking);
 
 
 /**
  * Get the tracking options.
  * @see http://www.w3.org/TR/geolocation-API/#position-options
  * @return {GeolocationPositionOptions|undefined} PositionOptions as defined by
- *     the HTML5 Geolocation spec at
- *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
+ *     the [HTML5 Geolocation spec
+ *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
  * @observable
  * @api stable
  */
@@ -351,10 +317,6 @@ ol.Geolocation.prototype.getTrackingOptions = function() {
   return /** @type {GeolocationPositionOptions|undefined} */ (
       this.get(ol.GeolocationProperty.TRACKING_OPTIONS));
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'getTrackingOptions',
-    ol.Geolocation.prototype.getTrackingOptions);
 
 
 /**
@@ -367,40 +329,28 @@ goog.exportProperty(
 ol.Geolocation.prototype.setProjection = function(projection) {
   this.set(ol.GeolocationProperty.PROJECTION, projection);
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'setProjection',
-    ol.Geolocation.prototype.setProjection);
 
 
 /**
- * Enable/disable tracking.
- * @param {boolean} tracking Whether to track the device's position.
+ * Enable or disable tracking.
+ * @param {boolean} tracking Enable tracking.
  * @observable
  * @api stable
  */
 ol.Geolocation.prototype.setTracking = function(tracking) {
   this.set(ol.GeolocationProperty.TRACKING, tracking);
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'setTracking',
-    ol.Geolocation.prototype.setTracking);
 
 
 /**
  * Set the tracking options.
  * @see http://www.w3.org/TR/geolocation-API/#position-options
  * @param {GeolocationPositionOptions} options PositionOptions as defined by the
- *     HTML5 Geolocation spec at
- *     {@link http://www.w3.org/TR/geolocation-API/#position_options_interface}
+ *     [HTML5 Geolocation spec
+ *     ](http://www.w3.org/TR/geolocation-API/#position_options_interface).
  * @observable
  * @api stable
  */
 ol.Geolocation.prototype.setTrackingOptions = function(options) {
   this.set(ol.GeolocationProperty.TRACKING_OPTIONS, options);
 };
-goog.exportProperty(
-    ol.Geolocation.prototype,
-    'setTrackingOptions',
-    ol.Geolocation.prototype.setTrackingOptions);

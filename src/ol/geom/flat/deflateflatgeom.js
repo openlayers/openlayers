@@ -12,7 +12,8 @@ goog.require('goog.asserts');
  */
 ol.geom.flat.deflate.coordinate =
     function(flatCoordinates, offset, coordinate, stride) {
-  goog.asserts.assert(coordinate.length == stride);
+  goog.asserts.assert(coordinate.length == stride,
+      'length of the coordinate array should match stride');
   var i, ii;
   for (i = 0, ii = coordinate.length; i < ii; ++i) {
     flatCoordinates[offset++] = coordinate[i];
@@ -33,7 +34,8 @@ ol.geom.flat.deflate.coordinates =
   var i, ii;
   for (i = 0, ii = coordinates.length; i < ii; ++i) {
     var coordinate = coordinates[i];
-    goog.asserts.assert(coordinate.length == stride);
+    goog.asserts.assert(coordinate.length == stride,
+        'length of coordinate array should match stride');
     var j;
     for (j = 0; j < stride; ++j) {
       flatCoordinates[offset++] = coordinate[j];
@@ -53,7 +55,7 @@ ol.geom.flat.deflate.coordinates =
  */
 ol.geom.flat.deflate.coordinatess =
     function(flatCoordinates, offset, coordinatess, stride, opt_ends) {
-  var ends = goog.isDef(opt_ends) ? opt_ends : [];
+  var ends = opt_ends ? opt_ends : [];
   var i = 0;
   var j, jj;
   for (j = 0, jj = coordinatess.length; j < jj; ++j) {
@@ -77,7 +79,7 @@ ol.geom.flat.deflate.coordinatess =
  */
 ol.geom.flat.deflate.coordinatesss =
     function(flatCoordinates, offset, coordinatesss, stride, opt_endss) {
-  var endss = goog.isDef(opt_endss) ? opt_endss : [];
+  var endss = opt_endss ? opt_endss : [];
   var i = 0;
   var j, jj;
   for (j = 0, jj = coordinatesss.length; j < jj; ++j) {

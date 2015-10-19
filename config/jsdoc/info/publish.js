@@ -49,7 +49,7 @@ exports.publish = function(data, opts) {
   var externs = [];
   var base = [];
   var augments = {};
-  var names = {};
+  var symbolsByName = {};
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
@@ -144,8 +144,13 @@ exports.publish = function(data, opts) {
       }
 
       var target = isExterns ? externs : (doc.api ? symbols : base);
+      var existingSymbol = symbolsByName[symbol.name];
+      if (existingSymbol) {
+        var idx = target.indexOf(existingSymbol);
+        target.splice(idx, 1);
+      }
       target.push(symbol);
-      names[symbol.name] = true;
+      symbolsByName[symbol.name] = symbol;
 
       if (doc.api && symbol.extends) {
         while (symbol.extends in classes && !classes[symbol.extends].api &&

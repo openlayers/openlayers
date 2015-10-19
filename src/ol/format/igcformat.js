@@ -7,6 +7,7 @@ goog.require('goog.string.newlines');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 
@@ -35,7 +36,7 @@ ol.format.IGCZ = {
  */
 ol.format.IGC = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this);
 
@@ -48,7 +49,7 @@ ol.format.IGC = function(opt_options) {
    * @private
    * @type {ol.format.IGCZ}
    */
-  this.altitudeMode_ = goog.isDef(options.altitudeMode) ?
+  this.altitudeMode_ = options.altitudeMode ?
       options.altitudeMode : ol.format.IGCZ.NONE;
 
 };
@@ -100,7 +101,7 @@ ol.format.IGC.prototype.getExtensions = function() {
  * Read the feature from the IGC source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  * @api
@@ -163,7 +164,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
       } else {
         m = ol.format.IGC.H_RECORD_RE_.exec(line);
         if (m) {
-          properties[m[1]] = goog.string.trim(m[2]);
+          properties[m[1]] = m[2].trim();
           m = ol.format.IGC.HFDTE_RECORD_RE_.exec(line);
         }
       }
@@ -188,7 +189,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
  * feature, this will return the feature in an array.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  * @api
@@ -201,7 +202,7 @@ ol.format.IGC.prototype.readFeatures;
  */
 ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
   var feature = this.readFeatureFromText(text, opt_options);
-  if (!goog.isNull(feature)) {
+  if (feature) {
     return [feature];
   } else {
     return [];
@@ -213,7 +214,7 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * Read the projection from the IGC source.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  * @api
  */

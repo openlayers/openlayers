@@ -112,6 +112,17 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
     });
 
+    it('extends FORMAT_OPTIONS if it is already present', function() {
+      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      var source = new ol.source.ImageWMS(options);
+      options.params.FORMAT_OPTIONS = 'param1:value1';
+      pixelRatio = 2;
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new goog.Uri(image.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
+    });
+
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
        function() {
          options.serverType = ol.source.wms.ServerType.GEOSERVER;
@@ -142,6 +153,14 @@ describe('ol.source.ImageWMS', function() {
       image.load();
       expect(imageLoadFunction).to.be.called();
       expect(imageLoadFunction.calledWith(image, image.src_)).to.be(true);
+    });
+
+    it('returns same image for consecutive calls with same args', function() {
+      var extent = [10.01, 20, 30.01, 40];
+      var source = new ol.source.ImageWMS(options);
+      var image1 = source.getImage(extent, resolution, pixelRatio, projection);
+      var image2 = source.getImage(extent, resolution, pixelRatio, projection);
+      expect(image1).to.equal(image2);
     });
 
   });

@@ -2,11 +2,12 @@ goog.provide('ol.layer.Heatmap');
 
 goog.require('goog.asserts');
 goog.require('goog.events');
-goog.require('goog.math');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.layer.Vector');
+goog.require('ol.math');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
@@ -37,7 +38,7 @@ ol.layer.HeatmapLayerProperty = {
  * @api
  */
 ol.layer.Heatmap = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   var baseOptions = goog.object.clone(options);
 
@@ -58,7 +59,7 @@ ol.layer.Heatmap = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.shadow_ = goog.isDef(options.shadow) ? options.shadow : 250;
+  this.shadow_ = options.shadow !== undefined ? options.shadow : 250;
 
   /**
    * @private
@@ -76,12 +77,12 @@ ol.layer.Heatmap = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
       this.handleGradientChanged_, false, this);
 
-  this.setGradient(goog.isDef(options.gradient) ?
+  this.setGradient(options.gradient ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
-  this.setBlur(goog.isDef(options.blur) ? options.blur : 15);
+  this.setBlur(options.blur !== undefined ? options.blur : 15);
 
-  this.setRadius(goog.isDef(options.radius) ? options.radius : 8);
+  this.setRadius(options.radius !== undefined ? options.radius : 8);
 
   goog.events.listen(this, [
     ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
@@ -90,7 +91,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.handleStyleChanged_();
 
-  var weight = goog.isDef(options.weight) ? options.weight : 'weight';
+  var weight = options.weight ? options.weight : 'weight';
   var weightFunction;
   if (goog.isString(weight)) {
     weightFunction = function(feature) {
@@ -99,17 +100,19 @@ ol.layer.Heatmap = function(opt_options) {
   } else {
     weightFunction = weight;
   }
-  goog.asserts.assert(goog.isFunction(weightFunction));
+  goog.asserts.assert(goog.isFunction(weightFunction),
+      'weightFunction should be a function');
 
   this.setStyle(goog.bind(function(feature, resolution) {
-    goog.asserts.assert(!goog.isNull(this.styleCache_));
-    goog.asserts.assert(goog.isDef(this.circleImage_));
+    goog.asserts.assert(this.styleCache_, 'this.styleCache_ expected');
+    goog.asserts.assert(this.circleImage_ !== undefined,
+        'this.circleImage_ should be defined');
     var weight = weightFunction(feature);
-    var opacity = goog.isDef(weight) ? goog.math.clamp(weight, 0, 1) : 1;
+    var opacity = weight !== undefined ? ol.math.clamp(weight, 0, 1) : 1;
     // cast to 8 bits
     var index = (255 * opacity) | 0;
     var style = this.styleCache_[index];
-    if (!goog.isDef(style)) {
+    if (!style) {
       style = [
         new ol.style.Style({
           image: new ol.style.Icon({
@@ -171,7 +174,8 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 ol.layer.Heatmap.prototype.createCircle_ = function() {
   var radius = this.getRadius();
   var blur = this.getBlur();
-  goog.asserts.assert(goog.isDef(radius) && goog.isDef(blur));
+  goog.asserts.assert(radius !== undefined && blur !== undefined,
+      'radius and blur should be defined');
   var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
   var context = ol.dom.createCanvasContext2D(size, size);
@@ -187,6 +191,7 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
 
 
 /**
+ * Return the blur size in pixels.
  * @return {number} Blur size in pixels.
  * @api
  * @observable
@@ -194,13 +199,10 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
 ol.layer.Heatmap.prototype.getBlur = function() {
   return /** @type {number} */ (this.get(ol.layer.HeatmapLayerProperty.BLUR));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getBlur',
-    ol.layer.Heatmap.prototype.getBlur);
 
 
 /**
+ * Return the gradient colors as array of strings.
  * @return {Array.<string>} Colors.
  * @api
  * @observable
@@ -209,13 +211,10 @@ ol.layer.Heatmap.prototype.getGradient = function() {
   return /** @type {Array.<string>} */ (
       this.get(ol.layer.HeatmapLayerProperty.GRADIENT));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getGradient',
-    ol.layer.Heatmap.prototype.getGradient);
 
 
 /**
+ * Return the size of the radius in pixels.
  * @return {number} Radius size in pixel.
  * @api
  * @observable
@@ -223,10 +222,6 @@ goog.exportProperty(
 ol.layer.Heatmap.prototype.getRadius = function() {
   return /** @type {number} */ (this.get(ol.layer.HeatmapLayerProperty.RADIUS));
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'getRadius',
-    ol.layer.Heatmap.prototype.getRadius);
 
 
 /**
@@ -252,13 +247,14 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
  * @private
  */
 ol.layer.Heatmap.prototype.handleRender_ = function(event) {
-  goog.asserts.assert(event.type == ol.render.EventType.RENDER);
-  goog.asserts.assert(!goog.isNull(this.gradient_));
+  goog.asserts.assert(event.type == ol.render.EventType.RENDER,
+      'event.type should be RENDER');
+  goog.asserts.assert(this.gradient_, 'this.gradient_ expected');
   var context = event.context;
   var canvas = context.canvas;
   var image = context.getImageData(0, 0, canvas.width, canvas.height);
   var view8 = image.data;
-  var i, ii, alpha, offset;
+  var i, ii, alpha;
   for (i = 0, ii = view8.length; i < ii; i += 4) {
     alpha = view8[i + 3] * 4;
     if (alpha) {
@@ -272,6 +268,7 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 
 
 /**
+ * Set the blur size in pixels.
  * @param {number} blur Blur size in pixels.
  * @api
  * @observable
@@ -279,13 +276,10 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 ol.layer.Heatmap.prototype.setBlur = function(blur) {
   this.set(ol.layer.HeatmapLayerProperty.BLUR, blur);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setBlur',
-    ol.layer.Heatmap.prototype.setBlur);
 
 
 /**
+ * Set the gradient colors as array of strings.
  * @param {Array.<string>} colors Gradient.
  * @api
  * @observable
@@ -293,13 +287,10 @@ goog.exportProperty(
 ol.layer.Heatmap.prototype.setGradient = function(colors) {
   this.set(ol.layer.HeatmapLayerProperty.GRADIENT, colors);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setGradient',
-    ol.layer.Heatmap.prototype.setGradient);
 
 
 /**
+ * Set the size of the radius in pixels.
  * @param {number} radius Radius size in pixel.
  * @api
  * @observable
@@ -307,7 +298,3 @@ goog.exportProperty(
 ol.layer.Heatmap.prototype.setRadius = function(radius) {
   this.set(ol.layer.HeatmapLayerProperty.RADIUS, radius);
 };
-goog.exportProperty(
-    ol.layer.Heatmap.prototype,
-    'setRadius',
-    ol.layer.Heatmap.prototype.setRadius);

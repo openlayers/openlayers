@@ -74,7 +74,7 @@ $(function () {
     var stabilityToggle = $('#stability-toggle');
     stabilityToggle.change(function() {
         unstable.toggleClass('hidden', this.checked);
-        var search = this.checked ? '' : '?unstable=true';
+        var search = this.checked ? '?stableonly=true' : '';
         links.each(function(i, el) {
             this.href = this.pathname + search + this.hash;
         });
@@ -88,6 +88,6 @@ $(function () {
     links.each(function(i, el) {
         this.href = this.pathname + search + this.hash;
     });
-    stabilityToggle.prop('checked', search !== '?unstable=true');
+    stabilityToggle.prop('checked', search === '?stableonly=true');
     unstable.toggleClass('hidden', stabilityToggle[0].checked);
 });

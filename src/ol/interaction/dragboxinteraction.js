@@ -91,19 +91,13 @@ ol.interaction.DragBox = function(opt_options) {
     handleUpEvent: ol.interaction.DragBox.handleUpEvent_
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
-
-  /**
-   * @private
-   * @type {ol.style.Style}
-   */
-  var style = goog.isDef(options.style) ? options.style : null;
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.render.Box}
    * @private
    */
-  this.box_ = new ol.render.Box(style);
+  this.box_ = new ol.render.Box(options.className || 'ol-dragbox');
 
   /**
    * @type {ol.Pixel}
@@ -115,7 +109,7 @@ ol.interaction.DragBox = function(opt_options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ?
+  this.condition_ = options.condition ?
       options.condition : ol.events.condition.always;
 
 };
@@ -152,7 +146,7 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */
-ol.interaction.DragBox.prototype.onBoxEnd = goog.nullFunction;
+ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
 
 
 /**

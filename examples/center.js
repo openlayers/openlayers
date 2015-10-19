@@ -1,20 +1,21 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.source.GeoJSON');
 goog.require('ol.source.OSM');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-var source = new ol.source.GeoJSON({
-  projection: 'EPSG:3857',
-  url: 'data/geojson/switzerland.geojson'
+var source = new ol.source.Vector({
+  url: 'data/geojson/switzerland.geojson',
+  format: new ol.format.GeoJSON()
 });
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
@@ -64,7 +65,7 @@ zoomtoswitzerlandbest.addEventListener('click', function() {
   var feature = source.getFeatures()[0];
   var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   var size = /** @type {ol.Size} */ (map.getSize());
-  view.fitGeometry(
+  view.fit(
       polygon,
       size,
       {
@@ -80,7 +81,7 @@ zoomtoswitzerlandconstrained.addEventListener('click', function() {
   var feature = source.getFeatures()[0];
   var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   var size = /** @type {ol.Size} */ (map.getSize());
-  view.fitGeometry(
+  view.fit(
       polygon,
       size,
       {
@@ -95,7 +96,7 @@ zoomtoswitzerlandnearest.addEventListener('click', function() {
   var feature = source.getFeatures()[0];
   var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   var size = /** @type {ol.Size} */ (map.getSize());
-  view.fitGeometry(
+  view.fit(
       polygon,
       size,
       {
@@ -110,7 +111,7 @@ zoomtolausanne.addEventListener('click', function() {
   var feature = source.getFeatures()[1];
   var point = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
   var size = /** @type {ol.Size} */ (map.getSize());
-  view.fitGeometry(
+  view.fit(
       point,
       size,
       {

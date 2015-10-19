@@ -9,7 +9,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [-8730000, 5930000],

@@ -1,12 +1,11 @@
 goog.provide('ol.renderer.dom.Map');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -14,18 +13,17 @@ goog.require('ol.RendererType');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
+goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
-goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.dom.ImageLayer');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.dom.TileLayer');
 goog.require('ol.renderer.dom.VectorLayer');
-goog.require('ol.renderer.vector');
 goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
 
@@ -45,16 +43,13 @@ ol.renderer.dom.Map = function(container, map) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = null;
-  if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE)) {
-    this.context_ = ol.dom.createCanvasContext2D();
-    var canvas = this.context_.canvas;
-    canvas.style.position = 'absolute';
-    canvas.style.width = '100%';
-    canvas.style.height = '100%';
-    canvas.className = ol.css.CLASS_UNSELECTABLE;
-    goog.dom.insertChildAt(container, canvas, 0);
-  }
+  this.context_ = ol.dom.createCanvasContext2D();
+  var canvas = this.context_.canvas;
+  canvas.style.position = 'absolute';
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.className = ol.css.CLASS_UNSELECTABLE;
+  goog.dom.insertChildAt(container, canvas, 0);
 
   /**
    * @private
@@ -66,20 +61,12 @@ ol.renderer.dom.Map = function(container, map) {
    * @type {!Element}
    * @private
    */
-  this.layersPane_ = goog.dom.createElement(goog.dom.TagName.DIV);
+  this.layersPane_ = goog.dom.createElement('DIV');
   this.layersPane_.className = ol.css.CLASS_UNSELECTABLE;
   var style = this.layersPane_.style;
   style.position = 'absolute';
   style.width = '100%';
   style.height = '100%';
-
-  // in IE < 9, we need to return false from ondragstart to cancel the default
-  // behavior of dragging images, which is interfering with the custom handler
-  // in the Drag interaction subclasses
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    this.layersPane_.ondragstart = goog.functions.FALSE;
-    this.layersPane_.onselectstart = goog.functions.FALSE;
-  }
 
   // prevent the img context menu on mobile devices
   goog.events.listen(this.layersPane_, goog.events.EventType.TOUCHSTART,
@@ -115,11 +102,10 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
     layerRenderer = new ol.renderer.dom.ImageLayer(layer);
   } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     layerRenderer = new ol.renderer.dom.TileLayer(layer);
-  } else if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) &&
-      ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
+  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     layerRenderer = new ol.renderer.dom.VectorLayer(layer);
   } else {
-    goog.asserts.fail();
+    goog.asserts.fail('unexpected layer configuration');
     return null;
   }
   return layerRenderer;
@@ -134,11 +120,10 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
 ol.renderer.dom.Map.prototype.dispatchComposeEvent_ =
     function(type, frameState) {
   var map = this.getMap();
-  if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) && map.hasListener(type)) {
+  if (map.hasListener(type)) {
     var extent = frameState.extent;
     var pixelRatio = frameState.pixelRatio;
     var viewState = frameState.viewState;
-    var resolution = viewState.resolution;
     var rotation = viewState.rotation;
     var context = this.context_;
     var canvas = context.canvas;
@@ -152,18 +137,10 @@ ol.renderer.dom.Map.prototype.dispatchComposeEvent_ =
         -viewState.center[0], -viewState.center[1]);
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
         extent, this.transform_, rotation);
-    var replayGroup = new ol.render.canvas.ReplayGroup(
-        ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-        resolution);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
-        replayGroup, frameState, context, null);
+        frameState, context, null);
     map.dispatchEvent(composeEvent);
-    replayGroup.finish();
-    if (!replayGroup.isEmpty()) {
-      replayGroup.replay(context, pixelRatio, this.transform_, rotation, {});
-    }
     vectorContext.flush();
-    this.replayGroup = replayGroup;
   }
 };
 
@@ -181,7 +158,7 @@ ol.renderer.dom.Map.prototype.getType = function() {
  */
 ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
-  if (goog.isNull(frameState)) {
+  if (!frameState) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.layersPane_, false);
       this.renderedVisible_ = false;
@@ -189,40 +166,9 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
-  /**
-   * @this {ol.renderer.dom.Map}
-   * @param {Element} elem
-   * @param {number} i
-   */
-  var addChild;
-
-  // appendChild is actually more performant than insertBefore
-  // in IE 7 and 8. http://jsperf.com/reattaching-dom-nodes
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    addChild =
-        /**
-         * @this {ol.renderer.dom.Map}
-         * @param {Element} elem
-         */ (
-        function(elem) {
-          goog.dom.appendChild(this.layersPane_, elem);
-        });
-  } else {
-    addChild =
-        /**
-         * @this {ol.renderer.dom.Map}
-         * @param {Element} elem
-         * @param {number} i
-         */ (
-        function(elem, i) {
-          goog.dom.insertChildAt(this.layersPane_, elem, i);
-        });
-  }
-
   var map = this.getMap();
-  if (!(ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) &&
-      (map.hasListener(ol.render.EventType.PRECOMPOSE) ||
-      map.hasListener(ol.render.EventType.POSTCOMPOSE))) {
+  if (map.hasListener(ol.render.EventType.PRECOMPOSE) ||
+      map.hasListener(ol.render.EventType.POSTCOMPOSE)) {
     var canvas = this.context_.canvas;
     var pixelRatio = frameState.pixelRatio;
     canvas.width = frameState.size[0] * pixelRatio;
@@ -232,15 +178,20 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
+  goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+
+  var viewResolution = frameState.viewState.resolution;
   var i, ii, layer, layerRenderer, layerState;
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
         this.getLayerRenderer(layer));
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
-    addChild.call(this, layerRenderer.getTarget(), i);
-    if (layerState.sourceState == ol.source.State.READY) {
+    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
+        'renderer is an instance of ol.renderer.dom.Layer');
+    goog.dom.insertChildAt(this.layersPane_, layerRenderer.getTarget(), i);
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerState.sourceState == ol.source.State.READY) {
       if (layerRenderer.prepareFrame(frameState, layerState)) {
         layerRenderer.composeFrame(frameState, layerState);
       }
@@ -254,7 +205,8 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   for (layerKey in this.getLayerRenderers()) {
     if (!(layerKey in layerStates)) {
       layerRenderer = this.getLayerRendererByKey(layerKey);
-      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer);
+      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
+          'renderer is an instance of ol.renderer.dom.Layer');
       goog.dom.removeNode(layerRenderer.getTarget());
     }
   }

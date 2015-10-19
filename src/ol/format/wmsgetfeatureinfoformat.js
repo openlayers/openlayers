@@ -4,8 +4,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('goog.string');
-goog.require('ol.format.GML');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
@@ -67,7 +65,8 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
     function(node, objectStack) {
 
   node.namespaceURI = this.featureNS_;
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT);
+  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+      'node.nodeType should be ELEMENT');
   var localName = ol.xml.getLocalName(node);
   /** @type {Array.<ol.Feature>} */
   var features = [];
@@ -75,18 +74,21 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
     return features;
   }
   if (localName == 'msGMLOutput') {
-    goog.array.forEach(node.childNodes, function(layer) {
+    for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
+      var layer = node.childNodes[i];
       if (layer.nodeType !== goog.dom.NodeType.ELEMENT) {
-        return;
+        continue;
       }
       var context = objectStack[0];
-      goog.asserts.assert(goog.isObject(context));
+      goog.asserts.assert(goog.isObject(context),
+          'context should be an Object');
 
       goog.asserts.assert(layer.localName.indexOf(
-          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0);
+          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0,
+          'localName of layer node should match layerIdentifier');
 
-      var featureType = goog.string.remove(layer.localName,
-          ol.format.WMSGetFeatureInfo.layerIdentifier_) +
+      var toRemove = ol.format.WMSGetFeatureInfo.layerIdentifier_;
+      var featureType = layer.localName.replace(toRemove, '') +
           ol.format.WMSGetFeatureInfo.featureIdentifier_;
 
       context['featureType'] = featureType;
@@ -95,21 +97,21 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
       var parsers = {};
       parsers[featureType] = ol.xml.makeArrayPusher(
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
-      var parsersNS = ol.xml.makeParsersNS(
+      var parsersNS = ol.xml.makeStructureNS(
           [context['featureNS'], null], parsers);
       layer.namespaceURI = this.featureNS_;
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
-      if (goog.isDef(layerFeatures)) {
+      if (layerFeatures) {
         goog.array.extend(features, layerFeatures);
       }
-    }, this);
+    }
   }
   if (localName == 'FeatureCollection') {
     var gmlFeatures = ol.xml.pushParseAndPop([],
         this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
         [{}], this.gmlFormat_);
-    if (goog.isDef(gmlFeatures)) {
+    if (gmlFeatures) {
       features = gmlFeatures;
     }
   }
@@ -121,7 +123,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
  * Read all features from a WMSGetFeatureInfo response.
  *
  * @function
- * @param {ArrayBuffer|Document|Node|Object|string} source Source.
+ * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
@@ -138,7 +140,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode =
     'featureType': this.featureType,
     'featureNS': this.featureNS
   };
-  if (goog.isDef(opt_options)) {
+  if (opt_options) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);

@@ -59,7 +59,8 @@ ol.TileRange.boundingTileRange = function(var_args) {
     tileCoordZ = tileCoord[0];
     tileCoordX = tileCoord[1];
     tileCoordY = tileCoord[2];
-    goog.asserts.assert(tileCoordZ == tileCoord0Z);
+    goog.asserts.assert(tileCoordZ == tileCoord0Z,
+        'passed tilecoords all have the same Z-value');
     tileRange.minX = Math.min(tileRange.minX, tileCoordX);
     tileRange.maxX = Math.max(tileRange.maxX, tileCoordX);
     tileRange.minY = Math.min(tileRange.minY, tileCoordY);
@@ -78,7 +79,7 @@ ol.TileRange.boundingTileRange = function(var_args) {
  * @return {ol.TileRange} Tile range.
  */
 ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
-  if (goog.isDef(tileRange)) {
+  if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
     tileRange.minY = minY;

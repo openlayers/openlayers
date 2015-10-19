@@ -5,14 +5,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   describe('constructor', function() {
 
     it('creates a new instance', function() {
-      var map = new ol.Map({
-        target: document.createElement('div')
-      });
       var layer = new ol.layer.Vector({
         source: new ol.source.Vector()
       });
-      var renderer = new ol.renderer.canvas.VectorLayer(map.getRenderer(),
-          layer);
+      var renderer = new ol.renderer.canvas.VectorLayer(layer);
       expect(renderer).to.be.a(ol.renderer.canvas.VectorLayer);
     });
 
@@ -59,40 +55,112 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-    var renderer;
+    var layer, renderer;
 
     beforeEach(function() {
-      var map = new ol.Map({});
-      var layer = new ol.layer.Vector({
+      layer = new ol.layer.Vector({
         source: new ol.source.Vector()
       });
-      renderer = new ol.renderer.canvas.VectorLayer(
-          map.getRenderer(), layer);
+      renderer = new ol.renderer.canvas.VectorLayer(layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
           resolution, rotation, skippedFeaturesUids, callback) {
-        var geometry = new ol.geom.Point([0, 0]);
         var feature = new ol.Feature();
-        callback(geometry, feature);
-        callback(geometry, feature);
+        callback(feature);
+        callback(feature);
       };
     });
 
-    it('calls callback once per feature', function() {
+    it('calls callback once per feature with a layer as 2nd arg', function() {
       var spy = sinon.spy();
       var coordinate = [0, 0];
       var frameState = {
+        layerStates: {},
         skippedFeatureUids: {},
         viewState: {
           resolution: 1,
           rotation: 0
         }
       };
+      frameState.layerStates[goog.getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);
+      expect(spy.getCall(0).args[1]).to.equal(layer);
     });
+  });
+
+  describe('#prepareFrame', function() {
+    var frameState, projExtent, renderer, worldWidth, buffer;
+
+    beforeEach(function() {
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({wrapX: true})
+      });
+      renderer = new ol.renderer.canvas.VectorLayer(layer);
+      var projection = ol.proj.get('EPSG:3857');
+      projExtent = projection.getExtent();
+      worldWidth = ol.extent.getWidth(projExtent);
+      buffer = layer.getRenderBuffer();
+      frameState = {
+        skippedFeatureUids: {},
+        viewHints: [],
+        viewState: {
+          projection: projection,
+          resolution: 1,
+          rotation: 0
+        }
+      };
+    });
+
+    it('sets correct extent for small viewport near dateline', function() {
+
+      frameState.extent =
+          [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+
+    });
+
+    it('sets correct extent for viewport less than 1 world wide', function() {
+
+      frameState.extent =
+          [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+    });
+
+    it('sets correct extent for viewport more than 1 world wide', function() {
+
+      frameState.extent =
+          [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+    });
+
+    it('sets correct extent for viewport more than 2 worlds wide', function() {
+
+      frameState.extent = [
+        projExtent[0] - 2 * worldWidth - 10000,
+        -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
+      ];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - 2 * worldWidth - 10000,
+        -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
+      ], buffer));
+    });
+
   });
 
 });
@@ -101,8 +169,10 @@ describe('ol.renderer.canvas.VectorLayer', function() {
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
+goog.require('ol.proj');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');

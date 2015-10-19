@@ -1,11 +1,12 @@
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.GeoJSON');
+goog.require('ol.layer.Vector');
 goog.require('ol.source.ImageVector');
 goog.require('ol.source.MapQuest');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -18,9 +19,9 @@ var map = new ol.Map({
     }),
     new ol.layer.Image({
       source: new ol.source.ImageVector({
-        source: new ol.source.GeoJSON({
-          projection: 'EPSG:3857',
-          url: 'data/geojson/countries.geojson'
+        source: new ol.source.Vector({
+          url: 'data/geojson/countries.geojson',
+          format: new ol.format.GeoJSON()
         }),
         style: new ol.style.Style({
           fill: new ol.style.Fill({
@@ -41,7 +42,8 @@ var map = new ol.Map({
   })
 });
 
-var featureOverlay = new ol.FeatureOverlay({
+var featureOverlay = new ol.layer.Vector({
+  source: new ol.source.Vector(),
   map: map,
   style: new ol.style.Style({
     stroke: new ol.style.Stroke({
@@ -70,10 +72,10 @@ var displayFeatureInfo = function(pixel) {
 
   if (feature !== highlight) {
     if (highlight) {
-      featureOverlay.removeFeature(highlight);
+      featureOverlay.getSource().removeFeature(highlight);
     }
     if (feature) {
-      featureOverlay.addFeature(feature);
+      featureOverlay.getSource().addFeature(feature);
     }
     highlight = feature;
   }

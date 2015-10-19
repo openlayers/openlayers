@@ -34,12 +34,12 @@ function elastic(t) {
   return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
 }
 
-var london = ol.proj.transform([-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
-var moscow = ol.proj.transform([37.6178, 55.7517], 'EPSG:4326', 'EPSG:3857');
-var istanbul = ol.proj.transform([28.9744, 41.0128], 'EPSG:4326', 'EPSG:3857');
-var rome = ol.proj.transform([12.5, 41.9], 'EPSG:4326', 'EPSG:3857');
-var bern = ol.proj.transform([7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
-var madrid = ol.proj.transform([-3.683333, 40.4], 'EPSG:4326', 'EPSG:3857');
+var london = ol.proj.fromLonLat([-0.12755, 51.507222]);
+var moscow = ol.proj.fromLonLat([37.6178, 55.7517]);
+var istanbul = ol.proj.fromLonLat([28.9744, 41.0128]);
+var rome = ol.proj.fromLonLat([12.5, 41.9]);
+var bern = ol.proj.fromLonLat([7.4458, 46.95]);
+var madrid = ol.proj.fromLonLat([-3.683333, 40.4]);
 
 var view = new ol.View({
   // the view's initial state
@@ -54,7 +54,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: exampleNS.getRendererFromQueryString(),
+  renderer: common.getRendererFromQueryString(),
   // Improve user experience by loading tiles while animating. Will make
   // animations stutter on mobile or slow devices.
   loadTilesWhileAnimating: true,

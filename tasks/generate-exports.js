@@ -175,7 +175,7 @@ function generateExports(symbols, namespace) {
   blocks.unshift(
       '/**\n' +
       ' * @fileoverview Custom exports file.\n' +
-      ' * @suppress {checkVars}\n' +
+      ' * @suppress {checkVars,extraRequire}\n' +
       ' */\n');
   return blocks.join('\n');
 }

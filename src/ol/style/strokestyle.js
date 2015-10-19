@@ -21,13 +21,13 @@ goog.require('ol.structs.IHasChecksum');
  */
 ol.style.Stroke = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
    * @type {ol.Color|string}
    */
-  this.color_ = goog.isDef(options.color) ? options.color : null;
+  this.color_ = options.color !== undefined ? options.color : null;
 
   /**
    * @private
@@ -39,7 +39,7 @@ ol.style.Stroke = function(opt_options) {
    * @private
    * @type {Array.<number>}
    */
-  this.lineDash_ = goog.isDef(options.lineDash) ? options.lineDash : null;
+  this.lineDash_ = options.lineDash !== undefined ? options.lineDash : null;
 
   /**
    * @private
@@ -68,6 +68,7 @@ ol.style.Stroke = function(opt_options) {
 
 
 /**
+ * Get the stroke color.
  * @return {ol.Color|string} Color.
  * @api
  */
@@ -77,6 +78,7 @@ ol.style.Stroke.prototype.getColor = function() {
 
 
 /**
+ * Get the line cap type for the stroke.
  * @return {string|undefined} Line cap.
  * @api
  */
@@ -86,6 +88,7 @@ ol.style.Stroke.prototype.getLineCap = function() {
 
 
 /**
+ * Get the line dash style for the stroke.
  * @return {Array.<number>} Line dash.
  * @api
  */
@@ -95,6 +98,7 @@ ol.style.Stroke.prototype.getLineDash = function() {
 
 
 /**
+ * Get the line join type for the stroke.
  * @return {string|undefined} Line join.
  * @api
  */
@@ -104,6 +108,7 @@ ol.style.Stroke.prototype.getLineJoin = function() {
 
 
 /**
+ * Get the miter limit for the stroke.
  * @return {number|undefined} Miter limit.
  * @api
  */
@@ -113,6 +118,7 @@ ol.style.Stroke.prototype.getMiterLimit = function() {
 
 
 /**
+ * Get the stroke width.
  * @return {number|undefined} Width.
  * @api
  */
@@ -197,19 +203,19 @@ ol.style.Stroke.prototype.setWidth = function(width) {
  * @inheritDoc
  */
 ol.style.Stroke.prototype.getChecksum = function() {
-  if (!goog.isDef(this.checksum_)) {
+  if (this.checksum_ === undefined) {
     var raw = 's' +
-        (!goog.isNull(this.color_) ?
+        (this.color_ ?
             ol.color.asString(this.color_) : '-') + ',' +
-        (goog.isDef(this.lineCap_) ?
+        (this.lineCap_ !== undefined ?
             this.lineCap_.toString() : '-') + ',' +
-        (!goog.isNull(this.lineDash_) ?
+        (this.lineDash_ ?
             this.lineDash_.toString() : '-') + ',' +
-        (goog.isDef(this.lineJoin_) ?
+        (this.lineJoin_ !== undefined ?
             this.lineJoin_ : '-') + ',' +
-        (goog.isDef(this.miterLimit_) ?
+        (this.miterLimit_ !== undefined ?
             this.miterLimit_.toString() : '-') + ',' +
-        (goog.isDef(this.width_) ?
+        (this.width_ !== undefined ?
             this.width_.toString() : '-');
 
     var md5 = new goog.crypt.Md5();

@@ -2,6 +2,7 @@ goog.provide('ol.format.XSD');
 
 goog.require('goog.asserts');
 goog.require('goog.string');
+goog.require('ol');
 goog.require('ol.xml');
 
 
@@ -29,7 +30,7 @@ ol.format.XSD.readBoolean = function(node) {
 ol.format.XSD.readBooleanString = function(string) {
   var m = /^\s*(true|1)|(false|0)\s*$/.exec(string);
   if (m) {
-    return goog.isDef(m[1]) || false;
+    return m[1] !== undefined || false;
   } else {
     return undefined;
   }
@@ -56,7 +57,7 @@ ol.format.XSD.readDateTime = function(node) {
     if (m[7] != 'Z') {
       var sign = m[8] == '-' ? -1 : 1;
       dateTime += sign * 60 * parseInt(m[9], 10);
-      if (goog.isDef(m[10])) {
+      if (m[10] !== undefined) {
         dateTime += sign * 60 * 60 * parseInt(m[10], 10);
       }
     }
@@ -121,8 +122,7 @@ ol.format.XSD.readNonNegativeIntegerString = function(string) {
  * @return {string|undefined} String.
  */
 ol.format.XSD.readString = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
-  return goog.string.trim(s);
+  return ol.xml.getAllTextContent(node, false).trim();
 };
 
 
@@ -167,8 +167,9 @@ ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
  */
 ol.format.XSD.writeNonNegativeIntegerTextNode =
     function(node, nonNegativeInteger) {
-  goog.asserts.assert(nonNegativeInteger >= 0);
-  goog.asserts.assert(nonNegativeInteger == (nonNegativeInteger | 0));
+  goog.asserts.assert(nonNegativeInteger >= 0, 'value should be more than 0');
+  goog.asserts.assert(nonNegativeInteger == (nonNegativeInteger | 0),
+      'value should be an integer value');
   var string = nonNegativeInteger.toString();
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };

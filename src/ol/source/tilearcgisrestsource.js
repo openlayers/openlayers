@@ -1,6 +1,5 @@
 goog.provide('ol.source.TileArcGISRest');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('goog.object');
@@ -11,6 +10,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
+goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
 
@@ -32,22 +32,24 @@ goog.require('ol.tilecoord');
  */
 ol.source.TileArcGISRest = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
-  var params = goog.isDef(options.params) ? options.params : {};
+  var params = options.params !== undefined ? options.params : {};
 
   goog.base(this, {
     attributions: options.attributions,
+    crossOrigin: options.crossOrigin,
     logo: options.logo,
     projection: options.projection,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   var urls = options.urls;
-  if (!goog.isDef(urls) && goog.isDef(options.url)) {
+  if (urls === undefined && options.url !== undefined) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 
@@ -55,7 +57,7 @@ ol.source.TileArcGISRest = function(opt_options) {
    * @private
    * @type {!Array.<string>}
    */
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
 
   /**
    * @private
@@ -86,7 +88,7 @@ ol.source.TileArcGISRest.prototype.getParams = function() {
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {number} tileSize Tile size.
+ * @param {ol.Size} tileSize Tile size.
  * @param {ol.Extent} tileExtent Tile extent.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
@@ -99,18 +101,18 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls_;
-  if (goog.array.isEmpty(urls)) {
+  if (urls.length === 0) {
     return undefined;
   }
 
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
 
-  params['SIZE'] = tileSize + ',' + tileSize;
+  params['SIZE'] = tileSize[0] + ',' + tileSize[1];
   params['BBOX'] = tileExtent.join(',');
   params['BBOXSR'] = srid;
   params['IMAGESR'] = srid;
-  params['DPI'] = 90 * pixelRatio;
+  params['DPI'] = Math.round(90 * pixelRatio);
 
   var url;
   if (urls.length == 1) {
@@ -143,7 +145,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
  * @param {number} z Z.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
- * @return {number} Size.
+ * @return {ol.Size} Size.
  */
 ol.source.TileArcGISRest.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
@@ -151,13 +153,13 @@ ol.source.TileArcGISRest.prototype.getTilePixelSize =
   if (pixelRatio == 1) {
     return tileSize;
   } else {
-    return (tileSize * pixelRatio + 0.5) | 0;
+    return ol.size.scale(tileSize, pixelRatio, this.tmpSize);
   }
 };
 
 
 /**
- * Return the URLs used for this ArcGIS source.
+ * Return the URLs used for this ArcGIS source.
  * @return {!Array.<string>} URLs.
  * @api stable
  */
@@ -167,21 +169,23 @@ ol.source.TileArcGISRest.prototype.getUrls = function() {
 
 
 /**
+ * Set the URL to use for requests.
  * @param {string|undefined} url URL.
  * @api stable
  */
 ol.source.TileArcGISRest.prototype.setUrl = function(url) {
-  var urls = goog.isDef(url) ? ol.TileUrlFunction.expandUrl(url) : null;
+  var urls = url !== undefined ? ol.TileUrlFunction.expandUrl(url) : null;
   this.setUrls(urls);
 };
 
 
 /**
+ * Set the URLs to use for requests.
  * @param {Array.<string>|undefined} urls URLs.
  * @api stable
  */
 ol.source.TileArcGISRest.prototype.setUrls = function(urls) {
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
+  this.urls_ = urls || [];
   this.changed();
 };
 
@@ -197,7 +201,7 @@ ol.source.TileArcGISRest.prototype.tileUrlFunction_ =
     function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
-  if (goog.isNull(tileGrid)) {
+  if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projection);
   }
 
@@ -207,10 +211,11 @@ ol.source.TileArcGISRest.prototype.tileUrlFunction_ =
 
   var tileExtent = tileGrid.getTileCoordExtent(
       tileCoord, this.tmpExtent_);
-  var tileSize = tileGrid.getTileSize(tileCoord[0]);
+  var tileSize = ol.size.toSize(
+      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
 
   if (pixelRatio != 1) {
-    tileSize = (tileSize * pixelRatio + 0.5) | 0;
+    tileSize = ol.size.scale(tileSize, pixelRatio, this.tmpSize);
   }
 
   // Apply default params and override with user specified values.

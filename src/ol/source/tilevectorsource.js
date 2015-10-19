@@ -3,10 +3,11 @@ goog.provide('ol.source.TileVector');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.source.FormatVector');
+goog.require('ol.featureloader');
 goog.require('ol.source.State');
+goog.require('ol.source.Vector');
+goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
 
@@ -17,7 +18,7 @@ goog.require('ol.tilegrid.TileGrid');
  * into tiles in a fixed grid pattern.
  *
  * @constructor
- * @extends {ol.source.FormatVector}
+ * @extends {ol.source.Vector}
  * @param {olx.source.TileVectorOptions} options Options.
  * @api
  */
@@ -25,10 +26,17 @@ ol.source.TileVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    format: options.format,
     logo: options.logo,
-    projection: options.projection
+    projection: undefined,
+    state: ol.source.State.READY,
+    wrapX: options.wrapX
   });
+
+  /**
+   * @private
+   * @type {ol.format.Feature|undefined}
+   */
+  this.format_ = options.format !== undefined ? options.format : null;
 
   /**
    * @private
@@ -44,9 +52,13 @@ ol.source.TileVector = function(options) {
 
   /**
    * @private
-   * @type {ol.TileCoordTransformType}
+   * @type {?ol.TileVectorLoadFunctionType}
    */
-  this.tileCoordTransform_ = this.tileGrid_.createTileCoordTransform();
+  this.tileLoadFunction_ = options.tileLoadFunction !== undefined ?
+      options.tileLoadFunction : null;
+
+  goog.asserts.assert(this.format_ || this.tileLoadFunction_,
+      'Either format or tileLoadFunction are required');
 
   /**
    * @private
@@ -54,16 +66,16 @@ ol.source.TileVector = function(options) {
    */
   this.tiles_ = {};
 
-  if (goog.isDef(options.tileUrlFunction)) {
+  if (options.tileUrlFunction !== undefined) {
     this.setTileUrlFunction(options.tileUrlFunction);
-  } else if (goog.isDef(options.urls)) {
+  } else if (options.urls !== undefined) {
     this.setUrls(options.urls);
-  } else if (goog.isDef(options.url)) {
+  } else if (options.url !== undefined) {
     this.setUrl(options.url);
   }
 
 };
-goog.inherits(ol.source.TileVector, ol.source.FormatVector);
+goog.inherits(ol.source.TileVector, ol.source.Vector);
 
 
 /**
@@ -116,12 +128,12 @@ ol.source.TileVector.prototype.forEachFeatureAtCoordinateAndResolution =
 
   var tileKey = this.getTileKeyZXY_(tileCoord[0], tileCoord[1], tileCoord[2]);
   var features = tiles[tileKey];
-  if (goog.isDef(features)) {
+  if (features !== undefined) {
     var i, ii;
     for (i = 0, ii = features.length; i < ii; ++i) {
       var feature = features[i];
       var geometry = feature.getGeometry();
-      goog.asserts.assert(goog.isDefAndNotNull(geometry));
+      goog.asserts.assert(geometry, 'feature geometry is defined and not null');
       if (geometry.containsCoordinate(coordinate)) {
         var result = callback.call(opt_this, feature);
         if (result) {
@@ -154,7 +166,7 @@ ol.source.TileVector.prototype.forEachFeatureInExtentAtResolution =
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       var tileKey = this.getTileKeyZXY_(z, x, y);
       var features = tiles[tileKey];
-      if (goog.isDef(features)) {
+      if (features !== undefined) {
         var i, ii;
         for (i = 0, ii = features.length; i < ii; ++i) {
           var result = f.call(opt_this, features[i]);
@@ -183,6 +195,7 @@ ol.source.TileVector.prototype.getExtent = goog.abstractMethod;
 
 
 /**
+ * Return the features of the TileVector source.
  * @inheritDoc
  * @api
  */
@@ -226,6 +239,28 @@ ol.source.TileVector.prototype.getFeaturesInExtent = goog.abstractMethod;
 
 
 /**
+ * Handles x-axis wrapping and returns a tile coordinate transformed from the
+ * internal tile scheme to the tile grid's tile scheme. When the tile coordinate
+ * is outside the resolution and extent range of the tile grid, `null` will be
+ * returned.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
+ *     null if no tile URL should be created for the passed `tileCoord`.
+ */
+ol.source.TileVector.prototype.getTileCoordForTileUrlFunction =
+    function(tileCoord, projection) {
+  var tileGrid = this.tileGrid_;
+  goog.asserts.assert(tileGrid, 'tile grid needed');
+  if (this.getWrapX() && projection.isGlobal()) {
+    tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
+  }
+  return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ?
+      tileCoord : null;
+};
+
+
+/**
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
@@ -242,7 +277,6 @@ ol.source.TileVector.prototype.getTileKeyZXY_ = function(z, x, y) {
  */
 ol.source.TileVector.prototype.loadFeatures =
     function(extent, resolution, projection) {
-  var tileCoordTransform = this.tileCoordTransform_;
   var tileGrid = this.tileGrid_;
   var tileUrlFunction = this.tileUrlFunction_;
   var tiles = this.tiles_;
@@ -257,21 +291,28 @@ ol.source.TileVector.prototype.loadFeatures =
    */
   function success(tileKey, features) {
     tiles[tileKey] = features;
-    this.setState(ol.source.State.READY);
+    this.changed();
   }
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       var tileKey = this.getTileKeyZXY_(z, x, y);
       if (!(tileKey in tiles)) {
-        tileCoord[0] = z;
         tileCoord[1] = x;
         tileCoord[2] = y;
-        tileCoordTransform(tileCoord, projection, tileCoord);
-        var url = tileUrlFunction(tileCoord, 1, projection);
-        if (goog.isDef(url)) {
+        var urlTileCoord = this.getTileCoordForTileUrlFunction(
+            tileCoord, projection);
+        var url = !urlTileCoord ? undefined :
+            tileUrlFunction(urlTileCoord, 1, projection);
+        if (url !== undefined) {
           tiles[tileKey] = [];
-          this.loadFeaturesFromURL(url, goog.partial(success, tileKey),
-              goog.nullFunction, this);
+          var tileSuccess = goog.partial(success, tileKey);
+          if (this.tileLoadFunction_) {
+            this.tileLoadFunction_(url, goog.bind(tileSuccess, this));
+          } else {
+            var loader = ol.featureloader.loadFeaturesXhr(url,
+                /** @type {ol.format.Feature} */ (this.format_), tileSuccess);
+            loader.call(this, extent, resolution, projection);
+          }
         }
       }
     }
@@ -299,7 +340,7 @@ ol.source.TileVector.prototype.setTileUrlFunction = function(tileUrlFunction) {
  */
 ol.source.TileVector.prototype.setUrl = function(url) {
   this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(
-      ol.TileUrlFunction.expandUrl(url)));
+      ol.TileUrlFunction.expandUrl(url), this.tileGrid_));
 };
 
 
@@ -307,5 +348,6 @@ ol.source.TileVector.prototype.setUrl = function(url) {
  * @param {Array.<string>} urls URLs.
  */
 ol.source.TileVector.prototype.setUrls = function(urls) {
-  this.setTileUrlFunction(ol.TileUrlFunction.createFromTemplates(urls));
+  this.setTileUrlFunction(
+      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid_));
 };

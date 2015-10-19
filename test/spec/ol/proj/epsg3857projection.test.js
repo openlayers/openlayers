@@ -3,12 +3,9 @@ goog.provide('ol.test.proj.EPSG3857');
 
 describe('ol.proj.EPSG3857', function() {
 
-  beforeEach(function() {
-    ol.proj.common.add();
-  });
-
   afterEach(function() {
     ol.proj.clearAllProjections();
+    ol.proj.common.add();
   });
 
   describe('getPointResolution', function() {

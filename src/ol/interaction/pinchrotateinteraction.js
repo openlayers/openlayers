@@ -29,7 +29,7 @@ ol.interaction.PinchRotate = function(opt_options) {
     handleUpEvent: ol.interaction.PinchRotate.handleUpEvent_
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -59,7 +59,13 @@ ol.interaction.PinchRotate = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.threshold_ = goog.isDef(options.threshold) ? options.threshold : 0.3;
+  this.threshold_ = options.threshold !== undefined ? options.threshold : 0.3;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
 goog.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
@@ -71,7 +77,8 @@ goog.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetPointers.length >= 2);
+  goog.asserts.assert(this.targetPointers.length >= 2,
+      'length of this.targetPointers should be greater than or equal to 2');
   var rotationDelta = 0.0;
 
   var touch0 = this.targetPointers[0];
@@ -82,7 +89,7 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
       touch1.clientY - touch0.clientY,
       touch1.clientX - touch0.clientX);
 
-  if (goog.isDef(this.lastAngle_)) {
+  if (this.lastAngle_ !== undefined) {
     var delta = angle - this.lastAngle_;
     this.rotationDelta_ += delta;
     if (!this.rotating_ &&
@@ -130,7 +137,7 @@ ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
     if (this.rotating_) {
       var rotation = view.getRotation();
       ol.interaction.Interaction.rotate(
-          map, view, rotation, this.anchor_, ol.ROTATE_ANIMATION_DURATION);
+          map, view, rotation, this.anchor_, this.duration_);
     }
     return false;
   } else {
