@@ -9,17 +9,14 @@ goog.require('ol.proj');
 
 
 /**
-* This function will transform a path between a and b from one projection
-* to another. interpolate(0) should return point a, and interpolate(1),
-* point b. Points between a and b should be returned for other values.
-* @param {function(number): ol.Coordinate} interpolate Interpolate function.
-* @param {ol.TransformFunction} transform Transform from x/y to
-* projected coordinates. Can be the identity transform.
-* @param {number} squaredTolerance Squared tolerance,
-* destination projection units.
-* @return {Array.<number>} Flat coordinates.
-*/
-ol.geom.flat.geodesic.transform =
+ * @private
+ * @param {function(number): ol.Coordinate} interpolate Interpolate function.
+ * @param {ol.TransformFunction} transform Transform from longitude/latitude to
+ *     projected coordinates.
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {Array.<number>} Flat coordinates.
+ */
+ol.geom.flat.geodesic.line_ =
     function(interpolate, transform, squaredTolerance) {
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
@@ -94,8 +91,8 @@ ol.geom.flat.geodesic.transform =
 * @param {number} lat1 Latitude 1 in degrees.
 * @param {number} lon2 Longitude 2 in degrees.
 * @param {number} lat2 Latitude 2 in degrees.
-* @param {ol.proj.Projection} projection Projection for returned coordinates.
-* @param {number} squaredTolerance Squared tolerance (for curve fitting).
+ * @param {ol.proj.Projection} projection Projection.
+* @param {number} squaredTolerance Squared tolerance.
 * @return {Array.<number>} Flat coordinates.
 */
 ol.geom.flat.geodesic.greatCircleArc = function(
@@ -111,7 +108,7 @@ ol.geom.flat.geodesic.greatCircleArc = function(
   var sinDeltaLon = Math.sin(goog.math.toRadians(lon2 - lon1));
   var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
 
-  return ol.geom.flat.geodesic.transform(
+  return ol.geom.flat.geodesic.line_(
       /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
@@ -140,15 +137,22 @@ ol.geom.flat.geodesic.greatCircleArc = function(
  * @param {number} lon Longitude.
  * @param {number} lat1 Latitude 1.
  * @param {number} lat2 Latitude 2.
- * @param {ol.proj.Projection} projection Projection for returned coordinates.
- * @param {number} squaredTolerance Squared tolerance (projection units).
- * @return {Array.<number>} Flat coordinates in specified projection.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {Array.<number>} Flat coordinates.
  */
 ol.geom.flat.geodesic.meridian =
     function(lon, lat1, lat2, projection, squaredTolerance) {
-  return ol.geom.flat.geodesic.customMeridian(lon, lat1, lat2,
-      ol.proj.get('EPSG:4326'), projection, squaredTolerance);
-
+  var epsg4326Projection = ol.proj.get('EPSG:4326');
+  return ol.geom.flat.geodesic.line_(
+      /**
+       * @param {number} frac Fraction.
+       * @return {ol.Coordinate} Coordinate.
+       */
+      function(frac) {
+        return [lon, lat1 + ((lat2 - lat1) * frac)];
+      },
+      ol.proj.getTransform(epsg4326Projection, projection), squaredTolerance);
 };
 
 
@@ -157,54 +161,14 @@ ol.geom.flat.geodesic.meridian =
  * @param {number} lat Latitude.
  * @param {number} lon1 Longitude 1.
  * @param {number} lon2 Longitude 2.
- * @param {ol.proj.Projection} projection Projection for returned coordinates.
- * @param {number} squaredTolerance Squared tolerance (projection units).
- * @return {Array.<number>} Flat coordinates in specified projection.
+ * @param {ol.proj.Projection} projection Projection.
+ * @param {number} squaredTolerance Squared tolerance.
+ * @return {Array.<number>} Flat coordinates.
  */
 ol.geom.flat.geodesic.parallel =
     function(lat, lon1, lon2, projection, squaredTolerance) {
-  return ol.geom.flat.geodesic.customParallel(lat, lon1, lon2,
-      ol.proj.get('EPSG:4326'), projection, squaredTolerance);
-};
-
-
-/**
-* Generate a meridian/vertical (line at constant longitude or X).
-* @param {number} lon Longitude or X.
-* @param {number} lat1 Latitude or Y for point a.
-* @param {number} lat2 Latitude or Y for point b.
-* @param {ol.proj.Projection} srcProjection Source Projection for X and Y.
-* @param {ol.proj.Projection} dstProjection Dest Projection.
-* @param {number} squaredTolerance Squared tolerance for curve fitting.
-* @return {Array.<number>} Flat coordinates in Dest projection.
-*/
-ol.geom.flat.geodesic.customMeridian =
-    function(lon, lat1, lat2, srcProjection, dstProjection, squaredTolerance) {
-  return ol.geom.flat.geodesic.transform(
-      /**
-       * @param {number} frac Fraction.
-       * @return {ol.Coordinate} Coordinate.
-       */
-      function(frac) {
-        return [lon, lat1 + ((lat2 - lat1) * frac)];
-      },
-      ol.proj.getTransform(srcProjection, dstProjection), squaredTolerance);
-};
-
-
-/**
-* Generate a parallel/horizontal (line at constant latitude or Y).
-* @param {number} lat Latitude or Y.
-* @param {number} lon1 Longitude or X for point a.
-* @param {number} lon2 Longitude or X for point b.
-* @param {ol.proj.Projection} srcProjection Source Projection for X and Y.
-* @param {ol.proj.Projection} dstProjection Dest Projection.
-* @param {number} squaredTolerance Squared tolerance for curve fitting.
-* @return {Array.<number>} Flat coordinates in Dest projection.
-*/
-ol.geom.flat.geodesic.customParallel =
-    function(lat, lon1, lon2, srcProjection, dstProjection, squaredTolerance) {
-  return ol.geom.flat.geodesic.transform(
+  var epsg4326Projection = ol.proj.get('EPSG:4326');
+  return ol.geom.flat.geodesic.line_(
       /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
@@ -212,5 +176,5 @@ ol.geom.flat.geodesic.customParallel =
       function(frac) {
         return [lon1 + ((lon2 - lon1) * frac), lat];
       },
-      ol.proj.getTransform(srcProjection, dstProjection), squaredTolerance);
+      ol.proj.getTransform(epsg4326Projection, projection), squaredTolerance);
 };
