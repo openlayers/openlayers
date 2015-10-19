@@ -57,12 +57,12 @@ var polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-var route = new ol.format.Polyline({
+var route = /** @type {ol.geom.LineString} */ (new ol.format.Polyline({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
   featureProjection: 'EPSG:3857'
-});
+}));
 
 var routeCoords = route.getCoordinates();
 var routeLength = routeCoords.length;
@@ -167,7 +167,7 @@ var moveFeature = function(event) {
 
 function startAnimation() {
   if (animating) {
-    stopAnimation();
+    stopAnimation(false);
   } else {
     animating = true;
     now = new Date().getTime();
@@ -181,13 +181,20 @@ function startAnimation() {
     map.render();
   }
 }
+
+
+/**
+ * @param {boolean} ended end of animation.
+ */
 function stopAnimation(ended) {
   animating = false;
   startButton.textContent = 'Start Animation';
 
   // if animation cancelled set the marker at the beginning
   var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
-  geoMarker.getGeometry().setCoordinates(coord);
+  /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
+    .setCoordinates(coord);
+  //remove listener
   map.un('postcompose', moveFeature);
 }
 
