@@ -140,8 +140,9 @@ ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
 
 
 /**
- * Return `true` if only the platform-modifier-key (e.g. the windows-key) is
- * pressed, `false` otherwise (e.g. when additionally the shift-key is pressed).
+ * Return `true` if only the platform-modifier-key (the meta-key on Mac,
+ * ctrl-key otherwise) is pressed, `false` otherwise (e.g. when additionally
+ * the shift-key is pressed).
  *
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if only the platform modifier key is pressed.
@@ -196,15 +197,11 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
 /**
  * Return `true` if the event originates from a mouse device.
  *
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a mouse device.
  * @api stable
  */
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
-  goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent,
-      'mapBrowserEvent should be an instance of ol.MapBrowserPointerEvent');
-  /* pointerId must be 1 for mouse devices,
-   * see: http://www.w3.org/Submission/pointer-events/#pointerevent-interface
-   */
-  return mapBrowserEvent.pointerEvent.pointerId == 1;
+  // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
+  return mapBrowserEvent.pointerEvent.pointerType == 'mouse';
 };

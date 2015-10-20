@@ -338,9 +338,12 @@ ol.tilegrid.TileGrid.prototype.getTileCoordCenter = function(tileCoord) {
 
 
 /**
+ * Get the extent of a tile coordinate.
+ *
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.Extent=} opt_extent Temporary extent object.
  * @return {ol.Extent} Extent.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordExtent =
     function(tileCoord, opt_extent) {

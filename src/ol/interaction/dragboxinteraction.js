@@ -94,16 +94,10 @@ ol.interaction.DragBox = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   /**
-   * @private
-   * @type {ol.style.Style}
-   */
-  var style = options.style ? options.style : null;
-
-  /**
    * @type {ol.render.Box}
    * @private
    */
-  this.box_ = new ol.render.Box(style);
+  this.box_ = new ol.render.Box(options.className || 'ol-dragbox');
 
   /**
    * @type {ol.Pixel}

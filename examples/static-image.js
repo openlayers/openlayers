@@ -36,6 +36,7 @@ var map = new ol.Map({
   view: new ol.View({
     projection: projection,
     center: ol.extent.getCenter(extent),
-    zoom: 2
+    zoom: 2,
+    maxZoom: 8
   })
 });
