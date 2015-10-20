@@ -128,6 +128,37 @@ describe('ol.coordinate', function() {
         });
   });
 
+  describe('#getLineIntersection', function() {
+    var a = [10, 40], b = [30, 20];
+    var c = [10, 20], d = [30, 40], c2 = [10, 20], d2 = [30, 10];
+    var inter = [20, 30], inter2 = [50, 0];
+
+    it('calculates correctly', function() {
+      var got = ol.coordinate.getLineIntersection([a, b], [c, d]);
+      expect(got[0]).to.be(inter[0]);
+      expect(got[1]).to.be(inter[1]);
+    });
+    it('calculates correctly for different point order', function() {
+      var got = ol.coordinate.getLineIntersection([b, a], [c, d]);
+      expect(got[0]).to.be(inter[0]);
+      expect(got[1]).to.be(inter[1]);
+      got = ol.coordinate.getLineIntersection([d, c], [b, a]);
+      expect(got[0]).to.be(inter[0]);
+      expect(got[1]).to.be(inter[1]);
+    });
+    it('can handle intersections outside the point segments', function() {
+      var got = ol.coordinate.getLineIntersection([a, b], [c2, d2]);
+      expect(got[0]).to.be(inter2[0]);
+      expect(got[1]).to.be(inter2[1]);
+    });
+    it('can handle identical lines', function() {
+      expect(ol.coordinate.getLineIntersection([a, b], [a, b])).to.be(null);
+    });
+    it('can handle parallel lines', function() {
+      expect(ol.coordinate.getLineIntersection([a, c], [b, d])).to.be(null);
+    });
+  });
+
   describe('#rotate', function() {
     it('can rotate point in place', function() {
       var coord = [7.85, 47.983333];
