@@ -5155,12 +5155,12 @@ olx.source.VectorOptions.prototype.strategy;
  * the given URL. Use a {@link ol.FeatureUrlFunction} to generate the url with
  * other loading strategies.
  * Requires `format` to be set as well.
- * When a `string` is used and the default XHR feature loader is provided, the
- * data loaded from the remote url will be read into features with using the
- * provided `format` object, and will attempt to translate the features to the
- * current view projection. If your remote data is not in the default 
- * EPSG:4326 projection, make sure you provide the `defaultDataProjection` on 
- * your `format` object or the remote date declares it via CRS.
+ * When default XHR feature loader is provided, the features will
+ * be transformed from the data projection to the view projection 
+ * during parsing. If your remote data source does not advertise its projection 
+ * properly, this transformation will be incorrect. For some formats, the 
+ * default projection (usually EPSG:4326) can be overridden by setting the 
+ * defaultDataProjection constructor option on the format.
  * @type {string|ol.FeatureUrlFunction|undefined}
  * @api
  */
