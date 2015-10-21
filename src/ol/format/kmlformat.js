@@ -208,7 +208,7 @@ ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
  * @type {number}
  * @private
  */
-ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ = 0.5
+ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ = 0.5;
 
 
 /**
