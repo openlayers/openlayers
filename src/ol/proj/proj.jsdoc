@@ -38,6 +38,13 @@
  * object has been created with `setExtent`, for example,
  * `ol.proj.get('EPSG:1234').setExtent(extent)`.
  *
+ * Some non global projections such as UTM and BNG (EPSG:27700), which have
+ * near constant scale over their extent, can use simple cartesian methods
+ * rather than spherical methods, for faster and more accurate length and
+ * area calculations. For these projections, you can set constant point
+ * resolution with `setConstantPointResolution`, for example,
+ * `ol.proj.get('EPSG:27700').setConstantPointReolution(true)`.
+ *
  * In addition to Proj4js support, any transform functions can be added with
  * {@link ol.proj.addCoordinateTransforms}. To use this, you must first create
  * a {@link ol.proj.Projection} object for the new projection and add it with

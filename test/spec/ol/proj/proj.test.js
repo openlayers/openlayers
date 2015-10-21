@@ -545,6 +545,205 @@ describe('ol.proj', function() {
 
   });
 
+  describe('ol.proj.getLength with a 3 segment linestring', function() {
+
+    var lineString = [[0, 0], [100, 0], [100, 100], [0, 0]];
+
+    var expectL = 100.0 + 100.0 + (100.0 * Math.sqrt(2.0));
+
+    var lineString4326 = [[0, 0], [20, 0], [20, 20], [0, 0]];
+
+    describe('EPSG:4326 uses Haversine', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString4326, 'EPSG:4326')
+        ).to.roughlyEqual(7560238, 1);
+      });
+    });
+
+    describe('EPSG:3857 uses Haversine', function() {
+
+      var projLineString = [];
+      var i;
+      for (i = 0; i < 4; i++) {
+        projLineString[i] = ol.proj.fromLonLat(lineString4326[i]);
+      }
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(projLineString, 'EPSG:3857', ol.sphere.NORMAL)
+        ).to.roughlyEqual(7560238, 1);
+      });
+    });
+
+    describe('Pixels projection uses Cartesian', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, pxProj)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+
+    });
+
+  });
+
+  describe('ol.proj.getArea with a ', function() {
+
+    var square1k = [[0, 0], [1000, 0], [1000, 1000], [0, 1000], [0, 0]];
+
+    var root2k = 1000 * Math.sqrt(2);
+    var brg45 = Math.atan(1);
+    var brg90 = 2 * brg45;
+
+    var equatorSquare1k = [[0, 0],
+                           ol.sphere.NORMAL.offset([0, 0], 1000, brg90),
+                           ol.sphere.NORMAL.offset([0, 0], root2k, brg45),
+                           ol.sphere.NORMAL.offset([0, 0], 1000, 0),
+                           [0, 0]];
+
+    var northSquare1k = [[84, 0],
+                         ol.sphere.NORMAL.offset([84, 0], 1000, brg90),
+                         ol.sphere.NORMAL.offset([84, 0], root2k, brg45),
+                         ol.sphere.NORMAL.offset([84, 0], 1000, 0),
+                         [84, 0]];
+
+    var i;
+    var equatorSquare1k3857 = [];
+    var northSquare1k3857 = [];
+    var aLen = equatorSquare1k.length;
+    for (i = 0; i < aLen; i++) {
+      equatorSquare1k3857[i] = ol.proj.fromLonLat(equatorSquare1k[i]);
+    }
+    aLen = northSquare1k.length;
+    for (i = 0; i < aLen; i++) {
+      northSquare1k3857[i] = ol.proj.fromLonLat(northSquare1k[i]);
+    }
+
+    var expectA = 1000.0 * 1000.0;
+
+    describe('1km square at equator in EPSG:4326', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(equatorSquare1k, 'EPSG:4326')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('1km square at 84N in EPSG:4326', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(northSquare1k, 'EPSG:4326')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('1km square at equator in EPSG:3857', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(equatorSquare1k3857, 'EPSG:3857')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('1km square at 84N in EPSG:3857', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857', ol.sphere.NORMAL)
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('Pixels projection uses Cartesian', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(square1k, pxProj)
+        ).to.roughlyEqual(expectA, 1e-6);
+      });
+
+    });
+
+  });
+
+  describe('ol.proj.setConstantPointResolution ', function() {
+
+    var testProj = new ol.proj.Projection(
+        { units: ol.proj.Units.METERS, code: 'TEST' });
+
+    var constProj = new ol.proj.Projection(
+        { units: ol.proj.Units.METERS, code: 'CONST',
+          constantPointResolution: true });
+
+    describe('false ignored for EPSG:4326', function() {
+
+      it('returns the expected result', function() {
+        ol.proj.get('EPSG:4326').setConstantPointResolution(false);
+        expect(ol.proj.get('EPSG:4326').hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('true ignored for EPSG:3857', function() {
+
+      it('returns the expected result', function() {
+        ol.proj.get('EPSG:3857').setConstantPointResolution(true);
+        expect(ol.proj.get('EPSG:3857').hasConstantPointResolution()
+        ).to.be(false);
+      });
+    });
+
+    describe('false ignored for Pixel projection', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        pxProj.setConstantPointResolution(false);
+        expect(pxProj.hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('default is false', function() {
+
+      it('returns the expected result', function() {
+        expect(testProj.hasConstantPointResolution()
+        ).to.be(false);
+      });
+    });
+
+    describe('can be initialised to true', function() {
+
+      it('returns the expected result', function() {
+        expect(constProj.hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('can be set true', function() {
+
+      it('returns the expected result', function() {
+        testProj.setConstantPointResolution(true);
+        expect(testProj.hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('can be set false', function() {
+
+      it('returns the expected result', function() {
+        testProj.setConstantPointResolution(false);
+        expect(testProj.hasConstantPointResolution()
+        ).to.be(false);
+      });
+    });
+
+  });
+
 });
 
 
@@ -552,3 +751,4 @@ goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.proj.common');
+goog.require('ol.sphere.NORMAL');

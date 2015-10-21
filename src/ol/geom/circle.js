@@ -107,7 +107,9 @@ ol.geom.Circle.prototype.computeExtent = function(extent) {
 
 
 /**
- * Return the radius of the circle.
+ * Return the radius of the circle in projected units.
+ * For EPSG:3857 or EPSG:4326 circles this method
+ * does not return the radius in meters.
  * @return {number} Radius.
  * @api
  */
@@ -181,7 +183,9 @@ ol.geom.Circle.prototype.setCenter = function(center) {
 
 /**
  * Set the center (as {@link ol.Coordinate coordinate}) and the radius (as
- * number) of the circle.
+ * number) of the circle in projected units.
+ * For EPSG:3857 or EPSG:4326 circles, this method
+ * does not set the radius in meters.
  * @param {ol.Coordinate} center Center.
  * @param {number} radius Radius.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
@@ -223,7 +227,9 @@ ol.geom.Circle.prototype.setFlatCoordinates =
 
 
 /**
- * Set the radius of the circle. The radius is in the units of the projection.
+ * Set the radius of the circle in projected units.
+ * For EPSG:3857 or EPSG:4326 circles, this method
+ * does not set the radius in meters.
  * @param {number} radius Radius.
  * @api
  */

@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Extent');
+goog.require('ol.Sphere');
 goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.sphere.NORMAL');
@@ -120,7 +121,6 @@ ol.proj.Projection = function(options) {
    */
   this.global_ = options.global !== undefined ? options.global : false;
 
-
   /**
    * @private
    * @type {boolean}
@@ -129,10 +129,14 @@ ol.proj.Projection = function(options) {
 
   /**
   * @private
-  * @type {function(number, ol.Coordinate):number}
+  * @type {boolean}
   */
-  this.getPointResolutionFunc_ = options.getPointResolution !== undefined ?
-      options.getPointResolution : this.getPointResolution_;
+  this.constantPointResolution_ =
+      options.constantPointResolution !== undefined ?
+      options.constantPointResolution :
+      ((this.units_ == ol.proj.Units.PIXELS) ||
+      (this.units_ == ol.proj.Units.DEGREES)) ?
+      true : false;
 
   /**
    * @private
@@ -278,6 +282,35 @@ ol.proj.Projection.prototype.setGlobal = function(global) {
 
 
 /**
+ * Does this projection have nominally constant point resolution?
+ * @return {boolean} Whether the projection has nominally constant point
+ * resolution.
+ * @api
+ */
+ol.proj.Projection.prototype.hasConstantPointResolution = function() {
+  return this.constantPointResolution_;
+};
+
+
+/**
+ * Set if the projection has nominally constant point resolution
+ * @param {boolean} constantPointResolution Whether the point resolution
+ * is nominally constant. Projections with units of PIXELS or DEGREES
+ * can not have this pararemeter set false. The parameter can not be set true
+ * for the EPSG:3857 projection.
+ * @api
+ */
+ol.proj.Projection.prototype.setConstantPointResolution =
+    function(constantPointResolution) {
+  if ((this.units_ != ol.proj.Units.PIXELS) &&
+      (this.units_ != ol.proj.Units.DEGREES) &&
+      (this.code_ != 'EPSG:3857')) {
+    this.constantPointResolution_ = constantPointResolution;
+  }
+};
+
+
+/**
  * @return {ol.tilegrid.TileGrid} The default tile grid.
  */
 ol.proj.Projection.prototype.getDefaultTileGrid = function() {
@@ -316,31 +349,22 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
 
 
 /**
-* Set the getPointResolution function for this projection.
-* @param {function(number, ol.Coordinate):number} func Function
-* @api
-*/
-ol.proj.Projection.prototype.setGetPointResolution = function(func) {
-  this.getPointResolutionFunc_ = func;
-};
-
-
-/**
-* Default version.
-* Get the resolution of the point in degrees or distance units.
-* For projections with degrees as the unit this will simply return the
-* provided resolution. For other projections the point resolution is
-* estimated by transforming the 'point' pixel to EPSG:4326,
-* measuring its width and height on the normal sphere,
-* and taking the average of the width and height.
-* @param {number} resolution Nominal resolution in projection units.
-* @param {ol.Coordinate} point Point to find adjusted resolution at.
-* @return {number} Point resolution at point in projection units.
-* @private
-*/
-ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
-  var units = this.getUnits();
-  if (units == ol.proj.Units.DEGREES) {
+ * Get the resolution of the point in degrees or distance units.
+ * For projections with constant point resolution or DEGREES or PIXELS as units
+ * this will simply return the provided resolution.
+ * For other projections the point resolution is
+ * estimated by transforming the 'point' pixel to EPSG:4326,
+ * measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
+ * For EPSG:3857, point resolution changes significantly with latitude.
+ * @param {number} resolution Nominal resolution in projection units.
+ * @param {ol.Coordinate} point Point to find adjusted resolution at.
+ * @return {number} Point resolution at point in projection units.
+ * @api
+ */
+ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
+  var constantPointResolution = this.hasConstantPointResolution();
+  if (constantPointResolution) {
     return resolution;
   } else {
     // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -370,22 +394,124 @@ ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
 
 
 /**
- * Get the resolution of the point in degrees or distance units.
- * For projections with degrees as the unit this will simply return the
- * provided resolution. The default for other projections is to estimate
- * the point resolution by transforming the 'point' pixel to EPSG:4326,
- * measuring its width and height on the normal sphere,
- * and taking the average of the width and height.
- * An alternative implementation may be given when constructing a
- * projection. For many local projections,
- * such a custom function will return the resolution unchanged.
- * @param {number} resolution Resolution in projection units.
- * @param {ol.Coordinate} point Point.
- * @return {number} Point resolution in projection units.
+ * Calculate the length of a line string in projection units except
+ * if the projection's units are DEGREES, when a length in meters is returned.
+ * You can use e.g. map.getView().getProjection() to get
+ * the projection to pass as the projection parameter.
+ * The calculation method is Cartesian for projections with constant point
+ * resolution or those with units of PIXELS and Haversine for all others.
+ * The Haversine method calculates great circle distances.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates of a line string.
+ * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {ol.Sphere=} opt_sphere optional sphere, defaults to ol.sphere.Normal
+ * @return {number} Length sum of the length of the line segments.
  * @api
  */
-ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
-  return this.getPointResolutionFunc_(resolution, point);
+ol.proj.getLength = function(coordinates, projection, opt_sphere) {
+  var length = 0;
+  var proj = ol.proj.get(projection);
+  var units = proj.getUnits();
+  var constantPointResolution = proj.hasConstantPointResolution();
+  var aLen = coordinates.length;
+  var i;
+  var c1, c2;
+  var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
+
+  if (units == ol.proj.Units.DEGREES) {
+    /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
+    c1 = coordinates[0];
+    for (i = 1; i < aLen; i++) {
+      c2 = coordinates[i];
+      length += sphere.haversineDistance(c1, c2);
+      c1 = c2;
+    }
+    /* length is in meters */
+  }
+  else if (constantPointResolution) {
+    var x1 = coordinates[0][0];
+    var y1 = coordinates[0][1];
+    var x2, y2;
+    for (i = 1; i < aLen; i++) {
+      x2 = coordinates[i][0];
+      y2 = coordinates[i][1];
+      length += Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+      x1 = x2;
+      y1 = y2;
+    }
+    /* length is already in projection units or pixels */
+  }
+  else {
+    c1 = ol.proj.toLonLat(coordinates[0], proj);
+    for (i = 1; i < aLen; i++) {
+      c2 = ol.proj.toLonLat(coordinates[i], proj);
+      length += sphere.haversineDistance(c1, c2);
+      c1 = c2;
+    }
+
+    var metersPerUnit = proj.getMetersPerUnit();
+    if (metersPerUnit !== undefined) {
+      length /= metersPerUnit;
+    }
+  }
+  return length;
+};
+
+
+/**
+ * Calculate the area of a simple polygon in projection units squared except
+ * if the projection's units are DEGREES, when an area in square meters is
+ * returned. You can use e.g. map.getView().getProjection() to get
+ * the projection to pass as the projection parameter.
+ * The calculation method is Cartesian for projections with constant point
+ * resolution or those with units of PIXELS and Spherical Geodesic
+ * for all others.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates of a Polygon.
+ * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {ol.Sphere=} opt_sphere optional sphere, defaults to ol.sphere.Normal
+ * @return {number} Area of the ploygon.
+ * @api
+ */
+ol.proj.getArea = function(coordinates, projection, opt_sphere) {
+  var area = 0;
+  var proj = ol.proj.get(projection);
+  var units = proj.getUnits();
+  var constantPointResolution = proj.hasConstantPointResolution();
+  var aLen = coordinates.length;
+  var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
+  var i;
+
+  if (units == ol.proj.Units.DEGREES) {
+    /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
+    area = sphere.geodesicArea(coordinates);
+    /* area is in meters x meters */
+  }
+  else if (constantPointResolution) {
+    var x1 = coordinates[0][0];
+    var y1 = coordinates[0][1];
+    var x2, y2;
+    for (i = 1; i < aLen; i++) {
+      x2 = coordinates[i][0];
+      y2 = coordinates[i][1];
+      area += y1 * x2 - x1 * y2;
+      x1 = x2;
+      y1 = y2;
+    }
+    area /= 2;
+    /* area is already in projection units or pixels squared */
+  }
+  else {
+    var transformedCoords = [];
+    for (i = 0; i < aLen; i++) {
+      transformedCoords[i] = ol.proj.toLonLat(coordinates[i], proj);
+    }
+    area = sphere.geodesicArea(transformedCoords);
+
+    var metersPerUnit = proj.getMetersPerUnit();
+    if (metersPerUnit !== undefined) {
+      area /= metersPerUnit * metersPerUnit;
+    }
+  }
+  return Math.abs(area);
 };
 
 
