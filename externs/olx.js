@@ -430,7 +430,7 @@ olx.OverlayOptions.prototype.autoPanMargin;
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined),
  *     worldExtent: (ol.Extent|undefined),
- *     getPointResolution: (function(number, ol.Coordinate):number|undefined) }}
+ *     constantScale: {boolean|undefined} }}
  * @api
  */
 olx.ProjectionOptions;
@@ -485,13 +485,14 @@ olx.ProjectionOptions.prototype.worldExtent;
 
 
 /**
- * Function to determine resolution at a point. The function is called with a
- * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
- * the `{number}` resolution at the passed coordinate.
- * @type {(function(number, ol.Coordinate):number|undefined)}
+ * Whether the projection has nominally constant scale.
+ * Default is `true` for projections with units of PIXELS else 'false'.
+ * The property should be set 'true' for many non-global projections,
+ * such as UTM, to permit simple and accurate distance and area calculations.
+ * @type {boolean|undefined}
  * @api
  */
-olx.ProjectionOptions.prototype.getPointResolution;
+olx.ProjectionOptions.prototype.constantScale;
 
 
 /**

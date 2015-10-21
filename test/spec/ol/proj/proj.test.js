@@ -545,6 +545,50 @@ describe('ol.proj', function() {
 
   });
 
+  describe('ol.proj.getLength with a 3 segment linestring', function() {
+
+    var lineString = [[0, 0], [100, 0], [100, 100], [0, 0]];
+
+    var expectL = 100.0 + 100.0 + (100.0 * Math.sqrt(2.0));
+
+    var lineString4326 = [[0, 0], [20, 0], [20, 20], [0, 0]];
+
+    describe('EPSG:4326 uses Haversine', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString4326, 'EPSG:4326')
+        ).to.roughlyEqual(7560238, 1);
+      });
+    });
+
+    describe('EPSG:3857 uses Haversine', function() {
+
+      var projLineString = [];
+      var i;
+      for (i = 0; i < 4; i++) {
+        projLineString[i] = ol.proj.fromLonLat(lineString4326[i]);
+      }
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(projLineString, 'EPSG:3857')
+        ).to.roughlyEqual(7560238, 1);
+      });
+    });
+
+    describe('Pixels projection uses Cartesian', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getLength(lineString, pxProj)
+        ).to.roughlyEqual(expectL, 1e-6);
+      });
+
+    });
+
+  });
+
 });
 
 
