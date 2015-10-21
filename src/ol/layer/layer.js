@@ -173,7 +173,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
           var layerState = this.getLayerState();
           var zIndex = this.getZIndex();
           layerState.managed = false;
-          layerState.zIndex = goog.isDef(zIndex) ? zIndex : Infinity;
+          layerState.zIndex = (goog.isDef(zIndex) && zIndex != 0) ? zIndex : Infinity;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[goog.getUid(this)] = layerState;
         }, false, this);
