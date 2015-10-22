@@ -130,8 +130,11 @@ ol.proj.Projection = function(options) {
   * @private
   * @type {boolean}
   */
-  this.constantScale_ = options.constantScale !== undefined ?
-      options.constantScale : (this.units_ == ol.proj.Units.PIXELS) ?
+  this.constantPointResolution_ =
+      options.constantPointResolution !== undefined ?
+      options.constantPointResolution :
+      ((this.units_ == ol.proj.Units.PIXELS) ||
+      (this.units_ == ol.proj.Units.DEGREES)) ?
       true : false;
 
   /**
@@ -278,22 +281,29 @@ ol.proj.Projection.prototype.setGlobal = function(global) {
 
 
 /**
- * Does this projection have nominally constant scale?
- * @return {boolean} Whether the projection has nominally constant scale.
+ * Does this projection have nominally constant point resolution?
+ * @return {boolean} Whether the projection has nominally constant point
+ * resolution.
  * @api
  */
-ol.proj.Projection.prototype.isConstantScale = function() {
-  return this.constantScale_;
+ol.proj.Projection.prototype.hasConstantPointResolution = function() {
+  return this.constantPointResolution_;
 };
 
 
 /**
-* Set if the projection has nominally constant scale
-* @param {boolean} constantScale Whether the scale is nominally constant.
-* @api
-*/
-ol.proj.Projection.prototype.setConstantScale = function(constantScale) {
-  this.constantScale_ = constantScale;
+ * Set if the projection has nominally constant point resolution
+ * @param {boolean} constantPointResolution Whether the point resolution
+ * is nominally constant. Projections with units of PIXELS or DEGREES
+ * can not have this pararemeter set false.
+ * @api
+ */
+ol.proj.Projection.prototype.setConstantPointResolution =
+    function(constantPointResolution) {
+  if ((this.units_ != ol.proj.Units.PIXELS) &&
+      (this.units_ != ol.proj.Units.DEGREES)) {
+    this.constantPointResolution_ = constantPointResolution;
+  }
 };
 
 
@@ -337,22 +347,21 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
 
 /**
  * Get the resolution of the point in degrees or distance units.
- * For projections with constant scale or degrees or pixels as units
+ * For projections with constant point resolution or DEGREES or PIXELS as units
  * this will simply return the provided resolution.
  * For other projections the point resolution is
  * estimated by transforming the 'point' pixel to EPSG:4326,
  * measuring its width and height on the normal sphere,
  * and taking the average of the width and height.
- * For EPSG:3857, scale changes significantly with latitude.
+ * For EPSG:3857, point resolution changes significantly with latitude.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {ol.Coordinate} point Point to find adjusted resolution at.
  * @return {number} Point resolution at point in projection units.
  * @api
  */
 ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
-  var units = this.getUnits();
-  var constantScale = this.isConstantScale(); /* true for Pixel projections */
-  if ((units == ol.proj.Units.DEGREES) || constantScale) {
+  var constantPointResolution = this.hasConstantPointResolution();
+  if (constantPointResolution) {
     return resolution;
   } else {
     // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -383,11 +392,11 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
 
 /**
  * Calculate the length of a line string in projection units except
- * if the projection's units are degrees, when a length in meters is returned.
+ * if the projection's units are DEGREES, when a length in meters is returned.
  * You can use e.g. map.getView().getProjection() to get
  * the projection to pass as the projection parameter.
- * The calculation method is Cartesian for projections with constant scale
- * or those with units of pixels and Haversine for all others.
+ * The calculation method is Cartesian for projections with constant point
+ * resolution or those with units of PIXELS and Haversine for all others.
  * The Haversine method calculates great circle distances on the normal sphere.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates of a line string.
  * @param {ol.proj.ProjectionLike} projection of the coordinates.
@@ -398,11 +407,25 @@ ol.proj.getLength = function(coordinates, projection) {
   var length = 0;
   var proj = ol.proj.get(projection);
   var units = proj.getUnits();
-  var constantScale = proj.isConstantScale();
+  var constantPointResolution = proj.hasConstantPointResolution();
   var aLen = coordinates.length;
   var i;
+  var c1, c2;
 
-  if (constantScale) {
+  /* We use the NORMAL sphere which is similar to the WGS84 authalic sphere. */
+
+  if (units == ol.proj.Units.DEGREES) {
+    /* We do not convert non WGS84 lat/lon coordinates to EPSG:4326 - */
+    /* ol3 is not a GIS. */
+    c1 = coordinates[0];
+    for (i = 1; i < aLen; i++) {
+      c2 = coordinates[i];
+      length += ol.sphere.NORMAL.haversineDistance(c1, c2);
+      c1 = c2;
+    }
+    /* length is in metres */
+  }
+  else if (constantPointResolution) {
     var x1 = coordinates[0][0];
     var y1 = coordinates[0][1];
     var x2, y2;
@@ -416,14 +439,13 @@ ol.proj.getLength = function(coordinates, projection) {
     /* length is already in projection units or pixels */
   }
   else {
-    var c1, c2;
     c1 = ol.proj.toLonLat(coordinates[0], proj);
     for (i = 1; i < aLen; i++) {
       c2 = ol.proj.toLonLat(coordinates[i], proj);
       length += ol.sphere.NORMAL.haversineDistance(c1, c2);
       c1 = c2;
     }
-    /* convert from metres to projection units, Pixel projns don't get here */
+    /* convert from metres to projection units */
     if (units != ol.proj.Units.DEGREES) {
       var metersPerUnit = proj.getMetersPerUnit();
       if (metersPerUnit !== undefined) {
