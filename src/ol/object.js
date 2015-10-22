@@ -197,11 +197,11 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
- * @param {boolean=} opt_notify update propertie silently
+ * @param {boolean=} opt_silent update propertie silently
  * @api stable
  */
-ol.Object.prototype.set = function(key, value, opt_notify) {
-  if (goog.isDef(opt_notify) && opt_notify === false) {
+ol.Object.prototype.set = function(key, value, opt_silent) {
+  if (goog.isDef(opt_silent) && opt_silent === true) {
     this.values_[key] = value;
   }
   else {
@@ -216,13 +216,13 @@ ol.Object.prototype.set = function(key, value, opt_notify) {
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
- * @param {boolean=} opt_notify update propertie silently
+ * @param {boolean=} opt_silent update propertie silently
  * @api stable
  */
-ol.Object.prototype.setProperties = function(values, opt_notify) {
+ol.Object.prototype.setProperties = function(values, opt_silent) {
   var key;
   for (key in values) {
-    this.set(key, values[key], opt_notify);
+    this.set(key, values[key], opt_silent);
   }
 };
 
@@ -230,14 +230,14 @@ ol.Object.prototype.setProperties = function(values, opt_notify) {
 /**
  * Unsets a property.
  * @param {string} key Key name.
- * @param {boolean=} opt_notify update propertie silently
+ * @param {boolean=} opt_silent update propertie silently
  * @api stable
  */
-ol.Object.prototype.unset = function(key, opt_notify) {
+ol.Object.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
-    if (!goog.isDef(opt_notify) || opt_notify !== false) {
+    if (!goog.isDef(opt_silent) || opt_silent !== true) {
       this.notify(key, oldValue);
     }
   }
