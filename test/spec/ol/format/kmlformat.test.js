@@ -1681,6 +1681,55 @@ describe('ol.format.KML', function() {
         expect(style.getText().getText()).to.eql(f.getProperties()['name']);
       });
 
+      it('can create text style for named point placemarks', function() {
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Style id="sh_ylw-pushpin">' +
+            '    <IconStyle>' +
+            '      <scale>0.3</scale>' +
+            '      <Icon>' +
+            '        <href>http://maps.google.com/mapfiles/kml/pushpin/' +
+            'ylw-pushpin.png</href>' +
+            '      </Icon>' +
+            '      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>' +
+            '    </IconStyle>' +
+            '  </Style>' +
+            '  <StyleMap id="msn_ylw-pushpin0">' +
+            '    <Pair>' +
+            '      <key>normal</key>' +
+            '      <styleUrl>#sn_ylw-pushpin</styleUrl>' +
+            '    </Pair>' +
+            '    <Pair>' +
+            '      <key>highlight</key>' +
+            '      <styleUrl>#sh_ylw-pushpin</styleUrl>' +
+            '    </Pair>' +
+            '  </StyleMap>' +
+            '  <Placemark>' +
+            '    <name>Test</name>' +
+            '    <styleUrl>#msn_ylw-pushpin0</styleUrl>' +
+            '    <Point>' +
+            '      <coordinates>1,2</coordinates>' +
+            '    </Point>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        var styleFunction = f.getStyleFunction();
+        expect(styleFunction).not.to.be(undefined);
+        var styleArray = styleFunction.call(f, 0);
+        expect(styleArray).to.be.an(Array);
+        expect(styleArray).to.have.length(2);
+        var style = styleArray[1];
+        expect(style).to.be.an(ol.style.Style);
+        expect(style.getText().getText()).to.eql(f.getProperties()['name']);
+      });
+
       it('can write an feature\'s icon style', function() {
         var style = new ol.style.Style({
           image: new ol.style.Icon({
