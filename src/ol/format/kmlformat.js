@@ -11,7 +11,6 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.FeatureStyleFunction');
@@ -98,6 +97,13 @@ ol.format.KML = function(opt_options) {
    * @type {Object.<string, (Array.<ol.style.Style>|string)>}
    */
   this.sharedStyles_ = {};
+  
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.showPointNames_ = options.showPointNames !== undefined ?
+      options.showPointNames : true;
 
 };
 goog.inherits(ol.format.KML, ol.format.XMLFeature);
@@ -248,7 +254,7 @@ ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
  * @private
  */
 ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_ = new ol.style.Stroke({
-  color: [0, 0, 0, 1],
+  color: [3, 3, 3, 1],
   width: 2
 });
 
@@ -312,7 +318,7 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
   var textAlign = 'start';
   if (foundStyle.getImage()) {
     var imageSize = foundStyle.getImage().getImageSize();
-    if (!goog.object.isEmpty(imageSize)) {
+    if (imageSize && imageSize.length == 2) {
       // Offset the label to be centered to the right of the icon, if there is
       // one.
       textOffset[0] = foundStyle.getImage().getScale() * imageSize[0] / 2;
@@ -352,32 +358,35 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
  * @param {Array.<ol.style.Style>} defaultStyle Default style.
  * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles Shared
  *          styles.
+ * @param {boolean|undefined} showPointNames true to show names for point placemarks.
  * @return {ol.FeatureStyleFunction} Feature style function.
  * @private
  */
 ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
-    defaultStyle, sharedStyles) {
+    defaultStyle, sharedStyles, showPointNames) {
+    
   return (
       /**
-       * @param {number}
-       *          resolution Resolution.
+       * @param {number} resolution Resolution.
        * @return {Array.<ol.style.Style>} Style.
        * @this {ol.Feature}
        */
       function(resolution) {
-        var drawName = false;
+        var drawName = showPointNames;
         /** @type {ol.style.Style|undefined} */
         var nameStyle;
         /** @type {string} */
         var name = '';
-        if (this.getGeometry()) {
-          drawName = (this.getGeometry().getType() ===
-                      ol.geom.GeometryType.POINT);
+        if (drawName){
+          if (this.getGeometry()) {
+            drawName = (this.getGeometry().getType() ===
+                        ol.geom.GeometryType.POINT);
+          }
         }
 
         if (drawName) {
           name = /** @type {string} */ (this.getProperties()['name']);
-          drawName = drawName && !goog.string.isEmptySafe(name);
+          drawName = drawName && name;
         }
 
         if (style) {
@@ -1795,7 +1804,7 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     var style = object['Style'];
     var styleUrl = object['styleUrl'];
     var styleFunction = ol.format.KML.createFeatureStyleFunction_(
-        style, styleUrl, this.defaultStyle_, this.sharedStyles_);
+        style, styleUrl, this.defaultStyle_, this.sharedStyles_, this.showPointNames_);
     feature.setStyle(styleFunction);
   }
   delete object['Style'];
