@@ -413,14 +413,14 @@ ol.proj.getLength = function(coordinates, projection) {
   var c1, c2;
 
   if (units == ol.proj.Units.DEGREES) {
-    /* We do not convert non WGS84 lat/lon coordinates to EPSG:4326 */
+    /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
     c1 = coordinates[0];
     for (i = 1; i < aLen; i++) {
       c2 = coordinates[i];
       length += ol.sphere.NORMAL.haversineDistance(c1, c2);
       c1 = c2;
     }
-    /* length is in metres */
+    /* length is in meters */
   }
   else if (constantPointResolution) {
     var x1 = coordinates[0][0];
@@ -458,8 +458,8 @@ ol.proj.getLength = function(coordinates, projection) {
  * returned. You can use e.g. map.getView().getProjection() to get
  * the projection to pass as the projection parameter.
  * The calculation method is Cartesian for projections with constant point
- * resolution or those with units of PIXELS and Spherical Geodesic for all
- * others.
+ * resolution or those with units of PIXELS and Spherical Geodesic 
+ * (on the normal sphere) for all others.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates of a Polygon.
  * @param {ol.proj.ProjectionLike} projection of the coordinates.
  * @return {number} Area of the ploygon.
@@ -474,8 +474,9 @@ ol.proj.getArea = function(coordinates, projection) {
   var i;
 
   if (units == ol.proj.Units.DEGREES) {
+    /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
     area = ol.sphere.NORMAL.geodesicArea(coordinates);
-    /* area is in metres x metres */
+    /* area is in meters x meters */
   }
   else if (constantPointResolution) {
     var x1 = coordinates[0][0];

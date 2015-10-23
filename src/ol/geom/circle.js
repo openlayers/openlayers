@@ -109,7 +109,7 @@ ol.geom.Circle.prototype.computeExtent = function(extent) {
 /**
  * Return the radius of the circle in projected units.
  * For EPSG:3857 or EPSG:4326 circles this method
- * does not return the radius in metres.
+ * does not return the radius in meters.
  * @return {number} Radius.
  * @api
  */
