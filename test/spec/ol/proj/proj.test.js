@@ -571,7 +571,7 @@ describe('ol.proj', function() {
       }
 
       it('returns the expected result', function() {
-        expect(ol.proj.getLength(projLineString, 'EPSG:3857')
+        expect(ol.proj.getLength(projLineString, 'EPSG:3857', 6370997)
         ).to.roughlyEqual(7560238, 1);
       });
     });
@@ -651,7 +651,7 @@ describe('ol.proj', function() {
     describe('1km square at 84N in EPSG:3857', function() {
 
       it('returns the expected result', function() {
-        expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857')
+        expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857', 6370997)
         ).to.roughlyEqual(expectA, 0.01);
       });
     });

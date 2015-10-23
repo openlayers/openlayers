@@ -397,13 +397,14 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
  * the projection to pass as the projection parameter.
  * The calculation method is Cartesian for projections with constant point
  * resolution or those with units of PIXELS and Haversine for all others.
- * The Haversine method calculates great circle distances on the normal sphere.
+ * The Haversine method calculates great circle distances.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates of a line string.
  * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {number=} opt_radius optional radius defaults to ol.Sphere.Normal
  * @return {number} Length sum of the length of the line segments.
  * @api
  */
-ol.proj.getLength = function(coordinates, projection) {
+ol.proj.getLength = function(coordinates, projection, opt_radius) {
   var length = 0;
   var proj = ol.proj.get(projection);
   var units = proj.getUnits();
@@ -411,13 +412,15 @@ ol.proj.getLength = function(coordinates, projection) {
   var aLen = coordinates.length;
   var i;
   var c1, c2;
+  var sphere = (opt_radius !== undefined) ? new ol.Sphere(opt_radius) :
+               ol.sphere.NORMAL;
 
   if (units == ol.proj.Units.DEGREES) {
     /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
     c1 = coordinates[0];
     for (i = 1; i < aLen; i++) {
       c2 = coordinates[i];
-      length += ol.sphere.NORMAL.haversineDistance(c1, c2);
+      length += sphere.haversineDistance(c1, c2);
       c1 = c2;
     }
     /* length is in meters */
@@ -439,7 +442,7 @@ ol.proj.getLength = function(coordinates, projection) {
     c1 = ol.proj.toLonLat(coordinates[0], proj);
     for (i = 1; i < aLen; i++) {
       c2 = ol.proj.toLonLat(coordinates[i], proj);
-      length += ol.sphere.NORMAL.haversineDistance(c1, c2);
+      length += sphere.haversineDistance(c1, c2);
       c1 = c2;
     }
 
@@ -458,24 +461,27 @@ ol.proj.getLength = function(coordinates, projection) {
  * returned. You can use e.g. map.getView().getProjection() to get
  * the projection to pass as the projection parameter.
  * The calculation method is Cartesian for projections with constant point
- * resolution or those with units of PIXELS and Spherical Geodesic 
- * (on the normal sphere) for all others.
+ * resolution or those with units of PIXELS and Spherical Geodesic
+ * for all others.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates of a Polygon.
  * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {number=} opt_radius optional radius defaults to ol.Sphere.Normal
  * @return {number} Area of the ploygon.
  * @api
  */
-ol.proj.getArea = function(coordinates, projection) {
+ol.proj.getArea = function(coordinates, projection, opt_radius) {
   var area = 0;
   var proj = ol.proj.get(projection);
   var units = proj.getUnits();
   var constantPointResolution = proj.hasConstantPointResolution();
   var aLen = coordinates.length;
+  var sphere = (opt_radius !== undefined) ? new ol.Sphere(opt_radius) :
+               ol.sphere.NORMAL;
   var i;
 
   if (units == ol.proj.Units.DEGREES) {
     /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
-    area = ol.sphere.NORMAL.geodesicArea(coordinates);
+    area = sphere.geodesicArea(coordinates);
     /* area is in meters x meters */
   }
   else if (constantPointResolution) {
@@ -497,7 +503,7 @@ ol.proj.getArea = function(coordinates, projection) {
     for (i = 0; i < aLen; i++) {
       transformedCoords[i] = ol.proj.toLonLat(coordinates[i], proj);
     }
-    area = ol.sphere.NORMAL.geodesicArea(transformedCoords);
+    area = sphere.geodesicArea(transformedCoords);
 
     var metersPerUnit = proj.getMetersPerUnit();
     if (metersPerUnit !== undefined) {
