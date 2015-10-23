@@ -430,7 +430,7 @@ olx.OverlayOptions.prototype.autoPanMargin;
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined),
  *     worldExtent: (ol.Extent|undefined),
- *     constantPointResolution: {boolean|undefined} }}
+ *     constantPointResolution: (boolean|undefined) }}
  * @api
  */
 olx.ProjectionOptions;
