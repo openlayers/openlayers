@@ -453,7 +453,7 @@ ol.proj.getLength = function(coordinates, projection) {
 
 
 /**
- * Calculate the area of a simple ploygon in projection units squared except
+ * Calculate the area of a simple polygon in projection units squared except
  * if the projection's units are DEGREES, when an area in square meters is
  * returned. You can use e.g. map.getView().getProjection() to get
  * the projection to pass as the projection parameter.
