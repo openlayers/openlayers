@@ -1744,7 +1744,8 @@ olx.format.IGCOptions.prototype.altitudeMode;
 
 /**
  * @typedef {{extractStyles: (boolean|undefined),
- *     defaultStyle: (Array.<ol.style.Style>|undefined)}}
+ *     defaultStyle: (Array.<ol.style.Style>|undefined),
+ *     showPointNames: (boolean|undefined)}}
  * @api
  */
 olx.format.KMLOptions;
@@ -1756,6 +1757,14 @@ olx.format.KMLOptions;
  * @api stable
  */
 olx.format.KMLOptions.prototype.extractStyles;
+
+
+/**
+ * Show names as labels for placemarks which contain points. Default is `true`.
+ * @type {boolean|undefined}
+ * @api stable
+ */
+olx.format.KMLOptions.prototype.showPointNames;
 
 
 /**
