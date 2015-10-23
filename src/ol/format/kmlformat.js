@@ -358,7 +358,8 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
  * @param {Array.<ol.style.Style>} defaultStyle Default style.
  * @param {Object.<string, (Array.<ol.style.Style>|string)>} sharedStyles Shared
  *          styles.
- * @param {boolean|undefined} showPointNames true to show names for point placemarks.
+ * @param {boolean|undefined} showPointNames true to show names for point
+ *          placemarks.
  * @return {ol.FeatureStyleFunction} Feature style function.
  * @private
  */
@@ -377,7 +378,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
         var nameStyle;
         /** @type {string} */
         var name = '';
-        if (drawName){
+        if (drawName) {
           if (this.getGeometry()) {
             drawName = (this.getGeometry().getType() ===
                         ol.geom.GeometryType.POINT);
@@ -1804,7 +1805,8 @@ ol.format.KML.prototype.readPlacemark_ = function(node, objectStack) {
     var style = object['Style'];
     var styleUrl = object['styleUrl'];
     var styleFunction = ol.format.KML.createFeatureStyleFunction_(
-        style, styleUrl, this.defaultStyle_, this.sharedStyles_, this.showPointNames_);
+        style, styleUrl, this.defaultStyle_, this.sharedStyles_,
+        this.showPointNames_);
     feature.setStyle(styleFunction);
   }
   delete object['Style'];
