@@ -412,11 +412,8 @@ ol.proj.getLength = function(coordinates, projection) {
   var i;
   var c1, c2;
 
-  /* We use the NORMAL sphere which is similar to the WGS84 authalic sphere. */
-
   if (units == ol.proj.Units.DEGREES) {
-    /* We do not convert non WGS84 lat/lon coordinates to EPSG:4326 - */
-    /* ol3 is not a GIS. */
+    /* We do not convert non WGS84 lat/lon coordinates to EPSG:4326 */
     c1 = coordinates[0];
     for (i = 1; i < aLen; i++) {
       c2 = coordinates[i];
@@ -445,15 +442,68 @@ ol.proj.getLength = function(coordinates, projection) {
       length += ol.sphere.NORMAL.haversineDistance(c1, c2);
       c1 = c2;
     }
-    /* convert from metres to projection units */
-    if (units != ol.proj.Units.DEGREES) {
-      var metersPerUnit = proj.getMetersPerUnit();
-      if (metersPerUnit !== undefined) {
-        length /= metersPerUnit;
-      }
+
+    var metersPerUnit = proj.getMetersPerUnit();
+    if (metersPerUnit !== undefined) {
+      length /= metersPerUnit;
     }
   }
   return length;
+};
+
+
+/**
+ * Calculate the area of a simple ploygon in projection units squared except
+ * if the projection's units are DEGREES, when an area in square meters is
+ * returned. You can use e.g. map.getView().getProjection() to get
+ * the projection to pass as the projection parameter.
+ * The calculation method is Cartesian for projections with constant point
+ * resolution or those with units of PIXELS and Spherical Geodesic for all
+ * others.
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates of a Polygon.
+ * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @return {number} Area of the ploygon.
+ * @api
+ */
+ol.proj.getArea = function(coordinates, projection) {
+  var area = 0;
+  var proj = ol.proj.get(projection);
+  var units = proj.getUnits();
+  var constantPointResolution = proj.hasConstantPointResolution();
+  var aLen = coordinates.length;
+  var i;
+
+  if (units == ol.proj.Units.DEGREES) {
+    area = ol.sphere.NORMAL.geodesicArea(coordinates);
+    /* area is in metres x metres */
+  }
+  else if (constantPointResolution) {
+    var x1 = coordinates[0][0];
+    var y1 = coordinates[0][1];
+    var x2, y2;
+    for (i = 1; i < aLen; i++) {
+      x2 = coordinates[i][0];
+      y2 = coordinates[i][1];
+      area += y1 * x2 - x1 * y2;
+      x1 = x2;
+      y1 = y2;
+    }
+    area /= 2;
+    /* area is already in projection units or pixels squared */
+  }
+  else {
+    var transformedCoords = [];
+    for (i = 0; i < aLen; i++) {
+      transformedCoords[i] = ol.proj.toLonLat(coordinates[i], proj);
+    }
+    area = ol.sphere.NORMAL.geodesicArea(transformedCoords);
+
+    var metersPerUnit = proj.getMetersPerUnit();
+    if (metersPerUnit !== undefined) {
+      area /= metersPerUnit * metersPerUnit;
+    }
+  }
+  return Math.abs(area);
 };
 
 

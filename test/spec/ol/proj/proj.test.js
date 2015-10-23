@@ -1,4 +1,5 @@
 goog.provide('ol.test.proj');
+goog.require('ol.sphere.NORMAL');
 
 describe('ol.proj', function() {
 
@@ -588,6 +589,87 @@ describe('ol.proj', function() {
     });
 
   });
+
+  describe('ol.proj.getArea with a ', function() {
+
+    var square1k = [[0, 0], [1000, 0], [1000, 1000], [0, 1000], [0, 0]];
+
+    var root2k = 1000 * Math.sqrt(2);
+    var brg45 = Math.atan(1);
+    var brg90 = 2 * brg45;
+
+    var equatorSquare1k = [[0, 0],
+                           ol.sphere.NORMAL.offset([0, 0], 1000, brg90),
+                           ol.sphere.NORMAL.offset([0, 0], root2k, brg45),
+                           ol.sphere.NORMAL.offset([0, 0], 1000, 0),
+                           [0, 0]];
+
+    var northSquare1k = [[84, 0],
+                         ol.sphere.NORMAL.offset([84, 0], 1000, brg90),
+                         ol.sphere.NORMAL.offset([84, 0], root2k, brg45),
+                         ol.sphere.NORMAL.offset([84, 0], 1000, 0),
+                         [84, 0]];
+
+    var i;
+    var equatorSquare1k3857 = [];
+    var northSquare1k3857 = [];
+    var aLen = equatorSquare1k.length;
+    for (i = 0; i < aLen; i++) {
+      equatorSquare1k3857[i] = ol.proj.fromLonLat(equatorSquare1k[i]);
+    }
+    aLen = northSquare1k.length;
+    for (i = 0; i < aLen; i++) {
+      northSquare1k3857[i] = ol.proj.fromLonLat(northSquare1k[i]);
+    }
+
+    var expectA = 1000.0 * 1000.0;
+
+    describe('1km square at equator in EPSG:4326', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(equatorSquare1k, 'EPSG:4326')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('1km square at 84N in EPSG:4326', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(northSquare1k, 'EPSG:4326')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('1km square at equator in EPSG:3857', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(equatorSquare1k3857, 'EPSG:3857')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('1km square at 84N in EPSG:3857', function() {
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857')
+        ).to.roughlyEqual(expectA, 0.01);
+      });
+    });
+
+    describe('Pixels projection uses Cartesian', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        expect(ol.proj.getArea(square1k, pxProj)
+        ).to.roughlyEqual(expectA, 1e-6);
+      });
+
+    });
+
+  });
+
 
 });
 
