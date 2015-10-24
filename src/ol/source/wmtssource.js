@@ -338,8 +338,6 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  */
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
-  /* jshint -W069 */
-
   // TODO: add support for TileMatrixLimits
   goog.asserts.assert(config['layer'],
       'config "layer" must not be null');
@@ -500,7 +498,5 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     dimensions: dimensions,
     wrapX: wrapX
   };
-
-  /* jshint +W069 */
 
 };
