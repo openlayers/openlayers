@@ -43,7 +43,7 @@
  * rather than spherical methods, for faster and more accurate length and
  * area calculations. For these projections, you can set constant point
  * resolution with `setConstantPointResolution`, for example,
- * `ol.proj.get('EPSG:27700').setConstantPointReolution(true)`.
+ * `ol.proj.get('EPSG:27700').setConstantPointReolution()`.
  *
  * In addition to Proj4js support, any transform functions can be added with
  * {@link ol.proj.addCoordinateTransforms}. To use this, you must first create

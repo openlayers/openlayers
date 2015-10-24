@@ -678,33 +678,12 @@ describe('ol.proj', function() {
         { units: ol.proj.Units.METERS, code: 'CONST',
           constantPointResolution: true });
 
-    describe('false ignored for EPSG:4326', function() {
+    describe('cannot be set for EPSG:3857', function() {
 
       it('returns the expected result', function() {
-        ol.proj.get('EPSG:4326').setConstantPointResolution(false);
-        expect(ol.proj.get('EPSG:4326').hasConstantPointResolution()
-        ).to.be(true);
-      });
-    });
-
-    describe('true ignored for EPSG:3857', function() {
-
-      it('returns the expected result', function() {
-        ol.proj.get('EPSG:3857').setConstantPointResolution(true);
+        ol.proj.get('EPSG:3857').setConstantPointResolution();
         expect(ol.proj.get('EPSG:3857').hasConstantPointResolution()
         ).to.be(false);
-      });
-    });
-
-    describe('false ignored for Pixel projection', function() {
-
-      var pxProj = new ol.proj.Projection(
-          { units: ol.proj.Units.PIXELS, code: 'px' });
-
-      it('returns the expected result', function() {
-        pxProj.setConstantPointResolution(false);
-        expect(pxProj.hasConstantPointResolution()
-        ).to.be(true);
       });
     });
 
@@ -727,18 +706,9 @@ describe('ol.proj', function() {
     describe('can be set true', function() {
 
       it('returns the expected result', function() {
-        testProj.setConstantPointResolution(true);
+        testProj.setConstantPointResolution();
         expect(testProj.hasConstantPointResolution()
         ).to.be(true);
-      });
-    });
-
-    describe('can be set false', function() {
-
-      it('returns the expected result', function() {
-        testProj.setConstantPointResolution(false);
-        expect(testProj.hasConstantPointResolution()
-        ).to.be(false);
       });
     });
 
