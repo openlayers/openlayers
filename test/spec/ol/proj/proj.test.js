@@ -735,7 +735,6 @@ describe('ol.proj', function() {
 
     describe('can be set false', function() {
 
-
       it('returns the expected result', function() {
         testProj.setConstantPointResolution(false);
         expect(testProj.hasConstantPointResolution()
