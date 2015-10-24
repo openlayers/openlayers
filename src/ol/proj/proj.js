@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Extent');
+goog.require('ol.Sphere');
 goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.sphere.NORMAL');
@@ -295,13 +296,15 @@ ol.proj.Projection.prototype.hasConstantPointResolution = function() {
  * Set if the projection has nominally constant point resolution
  * @param {boolean} constantPointResolution Whether the point resolution
  * is nominally constant. Projections with units of PIXELS or DEGREES
- * can not have this pararemeter set false.
+ * can not have this pararemeter set false. The parameter can not be set true
+ * for the EPSG:3857 projection.
  * @api
  */
 ol.proj.Projection.prototype.setConstantPointResolution =
     function(constantPointResolution) {
   if ((this.units_ != ol.proj.Units.PIXELS) &&
-      (this.units_ != ol.proj.Units.DEGREES)) {
+      (this.units_ != ol.proj.Units.DEGREES) &&
+      (this.code_ != 'EPSG:3857')) {
     this.constantPointResolution_ = constantPointResolution;
   }
 };
@@ -400,11 +403,11 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
  * The Haversine method calculates great circle distances.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates of a line string.
  * @param {ol.proj.ProjectionLike} projection of the coordinates.
- * @param {number=} opt_radius optional radius defaults to ol.Sphere.Normal
+ * @param {ol.Sphere=} opt_sphere optional sphere, defaults to ol.sphere.Normal
  * @return {number} Length sum of the length of the line segments.
  * @api
  */
-ol.proj.getLength = function(coordinates, projection, opt_radius) {
+ol.proj.getLength = function(coordinates, projection, opt_sphere) {
   var length = 0;
   var proj = ol.proj.get(projection);
   var units = proj.getUnits();
@@ -412,8 +415,7 @@ ol.proj.getLength = function(coordinates, projection, opt_radius) {
   var aLen = coordinates.length;
   var i;
   var c1, c2;
-  var sphere = (opt_radius !== undefined) ? new ol.Sphere(opt_radius) :
-               ol.sphere.NORMAL;
+  var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
 
   if (units == ol.proj.Units.DEGREES) {
     /* non WGS84 lat/lon coordinates are not converted to EPSG:4326 */
@@ -465,18 +467,17 @@ ol.proj.getLength = function(coordinates, projection, opt_radius) {
  * for all others.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates of a Polygon.
  * @param {ol.proj.ProjectionLike} projection of the coordinates.
- * @param {number=} opt_radius optional radius defaults to ol.Sphere.Normal
+ * @param {ol.Sphere=} opt_sphere optional sphere, defaults to ol.sphere.Normal
  * @return {number} Area of the ploygon.
  * @api
  */
-ol.proj.getArea = function(coordinates, projection, opt_radius) {
+ol.proj.getArea = function(coordinates, projection, opt_sphere) {
   var area = 0;
   var proj = ol.proj.get(projection);
   var units = proj.getUnits();
   var constantPointResolution = proj.hasConstantPointResolution();
   var aLen = coordinates.length;
-  var sphere = (opt_radius !== undefined) ? new ol.Sphere(opt_radius) :
-               ol.sphere.NORMAL;
+  var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
   var i;
 
   if (units == ol.proj.Units.DEGREES) {

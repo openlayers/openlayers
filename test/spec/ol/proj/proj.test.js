@@ -1,5 +1,4 @@
 goog.provide('ol.test.proj');
-goog.require('ol.sphere.NORMAL');
 
 describe('ol.proj', function() {
 
@@ -571,7 +570,7 @@ describe('ol.proj', function() {
       }
 
       it('returns the expected result', function() {
-        expect(ol.proj.getLength(projLineString, 'EPSG:3857', 6370997)
+        expect(ol.proj.getLength(projLineString, 'EPSG:3857', ol.sphere.NORMAL)
         ).to.roughlyEqual(7560238, 1);
       });
     });
@@ -651,7 +650,7 @@ describe('ol.proj', function() {
     describe('1km square at 84N in EPSG:3857', function() {
 
       it('returns the expected result', function() {
-        expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857', 6370997)
+        expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857', ol.sphere.NORMAL)
         ).to.roughlyEqual(expectA, 0.01);
       });
     });
@@ -670,6 +669,81 @@ describe('ol.proj', function() {
 
   });
 
+  describe('ol.proj.setConstantPointResolution ', function() {
+
+    var testProj = new ol.proj.Projection(
+        { units: ol.proj.Units.METERS, code: 'TEST' });
+
+    var constProj = new ol.proj.Projection(
+        { units: ol.proj.Units.METERS, code: 'CONST',
+          constantPointResolution: true });
+
+    describe('false ignored for EPSG:4326', function() {
+
+      it('returns the expected result', function() {
+        ol.proj.get('EPSG:4326').setConstantPointResolution(false);
+        expect(ol.proj.get('EPSG:4326').hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('true ignored for EPSG:3857', function() {
+
+      it('returns the expected result', function() {
+        ol.proj.get('EPSG:3857').setConstantPointResolution(true);
+        expect(ol.proj.get('EPSG:3857').hasConstantPointResolution()
+        ).to.be(false);
+      });
+    });
+
+    describe('false ignored for Pixel projection', function() {
+
+      var pxProj = new ol.proj.Projection(
+          { units: ol.proj.Units.PIXELS, code: 'px' });
+
+      it('returns the expected result', function() {
+        pxProj.setConstantPointResolution(false);
+        expect(pxProj.hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('default is false', function() {
+
+      it('returns the expected result', function() {
+        expect(testProj.hasConstantPointResolution()
+        ).to.be(false);
+      });
+    });
+
+    describe('can be initialised to true', function() {
+
+      it('returns the expected result', function() {
+        expect(constProj.hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('can be set true', function() {
+
+      it('returns the expected result', function() {
+        testProj.setConstantPointResolution(true);
+        expect(testProj.hasConstantPointResolution()
+        ).to.be(true);
+      });
+    });
+
+    describe('can be set false', function() {
+
+
+      it('returns the expected result', function() {
+        testProj.setConstantPointResolution(false);
+        expect(testProj.hasConstantPointResolution()
+        ).to.be(false);
+      });
+    });
+
+  });
 
 });
 
@@ -678,3 +752,4 @@ goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.proj.common');
+goog.require('ol.sphere.NORMAL');
