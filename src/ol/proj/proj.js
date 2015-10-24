@@ -132,11 +132,11 @@ ol.proj.Projection = function(options) {
   * @type {boolean}
   */
   this.constantPointResolution_ =
+      ((options.units == ol.proj.Units.PIXELS) ||
+      (options.units == ol.proj.Units.DEGREES)) ?
+      true :
       options.constantPointResolution !== undefined ?
-      options.constantPointResolution :
-      ((this.units_ == ol.proj.Units.PIXELS) ||
-      (this.units_ == ol.proj.Units.DEGREES)) ?
-      true : false;
+      options.constantPointResolution : false;
 
   /**
    * @private
@@ -293,19 +293,16 @@ ol.proj.Projection.prototype.hasConstantPointResolution = function() {
 
 
 /**
- * Set if the projection has nominally constant point resolution
- * @param {boolean} constantPointResolution Whether the point resolution
- * is nominally constant. Projections with units of PIXELS or DEGREES
- * can not have this pararemeter set false. The parameter can not be set true
- * for the EPSG:3857 projection.
+ * Set if the projection has nominally constant point resolution.
+ * The attribute can not be set for the EPSG:3857 projection.
+ * It should only be set for projections with nominally constant scale
+ * or those with units of Pixels or Degrees.
  * @api
  */
 ol.proj.Projection.prototype.setConstantPointResolution =
-    function(constantPointResolution) {
-  if ((this.units_ != ol.proj.Units.PIXELS) &&
-      (this.units_ != ol.proj.Units.DEGREES) &&
-      (this.code_ != 'EPSG:3857')) {
-    this.constantPointResolution_ = constantPointResolution;
+    function() {
+  if (this.code_ != 'EPSG:3857') {
+    this.constantPointResolution_ = true;
   }
 };
 
