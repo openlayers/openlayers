@@ -524,6 +524,92 @@ describe('ol.format.GeoJSON', function() {
           expect(geojson.features[0].properties.mygeom).to.eql(undefined);
         });
 
+    describe('writing CRS member', function() {
+
+      it('writes null CRS when unknown', function() {
+        var str = JSON.stringify(data),
+            array = format.readFeatures(str);
+        var geojson = format.writeFeatures(array);
+        var result = JSON.parse(geojson);
+        expect(result.crs).to.be(null);
+        for (var i = 0, ii = array.length; i < ii; ++i) {
+          expect(result.features[i].crs).to.be(undefined);
+        }
+      });
+
+      it('writes the correct CRS when using featureProjection', function() {
+        var str = JSON.stringify(data),
+            array = format.readFeatures(str);
+        var geojson = format.writeFeatures(array, {
+          featureProjection: 'EPSG:3857'
+        });
+        var result = JSON.parse(geojson);
+        expect(result.crs).to.eql({
+          type: 'name',
+          properties: {
+            name: 'EPSG:4326'
+          }
+        });
+        for (var i = 0, ii = array.length; i < ii; ++i) {
+          expect(result.features[i].crs).to.be(undefined);
+        }
+      });
+
+      it('writes the correct CRS when using featureProjection' +
+         'and dataProjection', function() {
+           var str = JSON.stringify(data),
+           array = format.readFeatures(str);
+           var geojson = format.writeFeatures(array, {
+             featureProjection: 'EPSG:3857',
+             dataProjection: ol.proj.get('urn:ogc:def:crs:EPSG:6.18:3:3857')
+           });
+           var result = JSON.parse(geojson);
+           expect(result.crs).to.eql({
+             type: 'name',
+             properties: {
+               name: 'urn:ogc:def:crs:EPSG:6.18:3:3857'
+             }
+           });
+           for (var i = 0, ii = array.length; i < ii; ++i) {
+             expect(result.features[i].crs).to.be(undefined);
+           }
+         });
+
+      it('writes null CRS when unknown', function() {
+        var str = JSON.stringify(data),
+            array = format.readFeatures(str);
+        var geojson = format.writeFeatures(array);
+        var result = JSON.parse(geojson);
+        expect(result.crs).to.be(null);
+        for (var i = 0, ii = array.length; i < ii; ++i) {
+          expect(result.features[i].crs).to.be(undefined);
+        }
+      });
+
+      it('writes the correct CRS when using featureProjection', function() {
+        var str = JSON.stringify(data),
+            array = format.readFeatures(str);
+        var geojson = format.writeFeatures(array, {
+          featureProjection: 'EPSG:3857'
+        });
+        var result = JSON.parse(geojson);
+        expect(result.crs).to.eql({
+          type: 'name',
+          properties: {
+            name: 'EPSG:4326'
+          }
+        });
+        for (var i = 0, ii = array.length; i < ii; ++i) {
+          expect(result.features[i].crs).to.be(undefined);
+        }
+      });
+
+    });
+
+  });
+
+  describe('#writeFeatureObject', function() {
+
     it('writes out a feature without properties correctly', function() {
       var feature = new ol.Feature(new ol.geom.Point([5, 10]));
       var geojson = format.writeFeatureObject(feature);
@@ -534,6 +620,26 @@ describe('ol.format.GeoJSON', function() {
       var feature = new ol.Feature();
       var geojson = format.writeFeatureObject(feature);
       expect(geojson.geometry).to.eql(null);
+    });
+
+    it('writes CRS=null when unknown', function() {
+      var feature = new ol.Feature(new ol.geom.Point([5, 10]));
+      var geojson = format.writeFeatureObject(feature);
+      expect(geojson.crs).to.be(null);
+    });
+
+    it('writes the CRS when known', function() {
+      var feature = new ol.Feature(new ol.geom.Point([5, 10]));
+      var geojson = format.writeFeatureObject(feature, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(geojson.crs).to.eql({
+        type: 'name',
+        properties: {
+          name: 'EPSG:4326'
+        }
+      });
+
     });
 
   });
