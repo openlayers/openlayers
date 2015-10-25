@@ -603,11 +603,11 @@ describe('ol.proj', function() {
                            ol.sphere.NORMAL.offset([0, 0], 1000, 0),
                            [0, 0]];
 
-    var northSquare1k = [[84, 0],
-                         ol.sphere.NORMAL.offset([84, 0], 1000, brg90),
-                         ol.sphere.NORMAL.offset([84, 0], root2k, brg45),
-                         ol.sphere.NORMAL.offset([84, 0], 1000, 0),
-                         [84, 0]];
+    var northSquare1k = [[0, 84],
+                         ol.sphere.NORMAL.offset([0, 84], 1000, brg90),
+                         ol.sphere.NORMAL.offset([0, 84], root2k, brg45),
+                         ol.sphere.NORMAL.offset([0, 84], 1000, 0),
+                         [0, 84]];
 
     var i;
     var equatorSquare1k3857 = [];
@@ -635,7 +635,7 @@ describe('ol.proj', function() {
 
       it('returns the expected result', function() {
         expect(ol.proj.getArea(northSquare1k, 'EPSG:4326')
-        ).to.roughlyEqual(expectA, 0.01);
+        ).to.roughlyEqual(expectA, 0.4);
       });
     });
 
@@ -651,7 +651,7 @@ describe('ol.proj', function() {
 
       it('returns the expected result', function() {
         expect(ol.proj.getArea(northSquare1k3857, 'EPSG:3857', ol.sphere.NORMAL)
-        ).to.roughlyEqual(expectA, 0.01);
+        ).to.roughlyEqual(expectA, 0.4);
       });
     });
 
