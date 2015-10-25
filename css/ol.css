@@ -159,6 +159,7 @@
 .ol-attribution img {
   max-height: 2em;
   max-width: inherit;
+  vertical-align: middle;
 }
 .ol-attribution ul, .ol-attribution button {
   display: inline-block;
