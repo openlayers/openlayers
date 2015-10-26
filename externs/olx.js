@@ -3684,7 +3684,9 @@ olx.source.BingMapsOptions.prototype.wrapX;
  *     format: (ol.format.Feature|undefined),
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
- *     source: ol.source.Vector}}
+ *     source: ol.source.Vector,
+ *     wrapX: (boolean|undefined)
+ }}
  * @api
  */
 olx.source.ClusterOptions;
