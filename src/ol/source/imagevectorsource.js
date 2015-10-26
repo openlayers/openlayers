@@ -154,7 +154,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
  */
 ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeatureUids, callback) {
-  if (goog.isNull(this.replayGroup_)) {
+  if (!this.replayGroup_) {
     return undefined;
   } else {
     /** @type {Object.<string, boolean>} */
@@ -166,7 +166,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'passed a feature');
+          goog.asserts.assert(feature !== undefined, 'passed a feature');
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -259,12 +259,13 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
 ol.source.ImageVector.prototype.renderFeature_ =
     function(feature, resolution, pixelRatio, replayGroup) {
   var styles;
-  if (goog.isDef(feature.getStyleFunction())) {
-    styles = feature.getStyleFunction().call(feature, resolution);
-  } else if (goog.isDef(this.styleFunction_)) {
+  var styleFunction = feature.getStyleFunction();
+  if (styleFunction) {
+    styles = styleFunction.call(feature, resolution);
+  } else if (this.styleFunction_) {
     styles = this.styleFunction_(feature, resolution);
   }
-  if (!goog.isDefAndNotNull(styles)) {
+  if (!styles) {
     return false;
   }
   var i, ii, loading = false;
@@ -290,8 +291,8 @@ ol.source.ImageVector.prototype.renderFeature_ =
  * @api stable
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
-  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
-  this.styleFunction_ = goog.isNull(style) ?
+  this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = !style ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();
 };

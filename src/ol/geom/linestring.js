@@ -2,6 +2,7 @@ goog.provide('ol.geom.LineString');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -69,7 +70,7 @@ goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   goog.asserts.assert(coordinate.length == this.stride,
       'length of coordinate array should match stride');
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {
     goog.array.extend(this.flatCoordinates, coordinate);
@@ -148,7 +149,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
       this.layout != ol.geom.GeometryLayout.XYZM) {
     return null;
   }
-  var extrapolate = goog.isDef(opt_extrapolate) ? opt_extrapolate : false;
+  var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
   return ol.geom.flat.lineStringCoordinateAtM(this.flatCoordinates, 0,
       this.flatCoordinates.length, this.stride, m, extrapolate);
 };
@@ -234,11 +235,11 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.LineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(

@@ -48,7 +48,7 @@ goog.inherits(ol.DebugTile_, ol.Tile);
  * @inheritDoc
  */
 ol.DebugTile_.prototype.getImage = function(opt_context) {
-  var key = goog.isDef(opt_context) ? goog.getUid(opt_context) : -1;
+  var key = opt_context !== undefined ? goog.getUid(opt_context) : -1;
   if (key in this.canvasByContext_) {
     return this.canvasByContext_[key];
   } else {
@@ -92,7 +92,7 @@ ol.source.TileDebug = function(options) {
     opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
 };
@@ -110,7 +110,7 @@ ol.source.TileDebug.prototype.getTile = function(z, x, y) {
     var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
     var tileCoord = [z, x, y];
     var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-    var text = goog.isNull(textTileCoord) ? '' : ol.tilecoord.toString(
+    var text = !textTileCoord ? '' : ol.tilecoord.toString(
         this.getTileCoordForTileUrlFunction(textTileCoord));
     var tile = new ol.DebugTile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);

@@ -32,6 +32,7 @@ goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
 
@@ -168,7 +169,7 @@ ol.pointer.TouchSource.prototype.resetClickCountHandler_ = function() {
  * @private
  */
 ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
-  if (goog.isDef(this.resetId_)) {
+  if (this.resetId_ !== undefined) {
     goog.global.clearTimeout(this.resetId_);
   }
 };
@@ -425,7 +426,7 @@ ol.pointer.TouchSource.prototype.cancelOut_ =
  * @param {Object} inPointer
  */
 ol.pointer.TouchSource.prototype.cleanUpPointer_ = function(inPointer) {
-  goog.object.remove(this.pointerMap, inPointer.pointerId);
+  delete this.pointerMap[inPointer.pointerId];
   this.removePrimaryPointer_(inPointer);
 };
 

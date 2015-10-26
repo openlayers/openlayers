@@ -7,7 +7,7 @@
 
 goog.provide('ol.Sphere');
 
-goog.require('goog.math');
+goog.require('ol.math');
 
 
 
@@ -57,9 +57,9 @@ ol.Sphere.prototype.geodesicArea = function(coordinates) {
   var y1 = coordinates[len - 1][1];
   for (var i = 0; i < len; i++) {
     var x2 = coordinates[i][0], y2 = coordinates[i][1];
-    area += goog.math.toRadians(x2 - x1) *
-        (2 + Math.sin(goog.math.toRadians(y1)) +
-        Math.sin(goog.math.toRadians(y2)));
+    area += ol.math.toRadians(x2 - x1) *
+        (2 + Math.sin(ol.math.toRadians(y1)) +
+        Math.sin(ol.math.toRadians(y2)));
     x1 = x2;
     y1 = y2;
   }
@@ -76,10 +76,10 @@ ol.Sphere.prototype.geodesicArea = function(coordinates) {
  * @api
  */
 ol.Sphere.prototype.haversineDistance = function(c1, c2) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lat2 = goog.math.toRadians(c2[1]);
+  var lat1 = ol.math.toRadians(c1[1]);
+  var lat2 = ol.math.toRadians(c2[1]);
   var deltaLatBy2 = (lat2 - lat1) / 2;
-  var deltaLonBy2 = goog.math.toRadians(c2[0] - c1[0]) / 2;
+  var deltaLonBy2 = ol.math.toRadians(c2[0] - c1[0]) / 2;
   var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
       Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
       Math.cos(lat1) * Math.cos(lat2);
@@ -97,8 +97,8 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
  * @return {ol.Coordinate} The target point.
  */
 ol.Sphere.prototype.offset = function(c1, distance, bearing) {
-  var lat1 = goog.math.toRadians(c1[1]);
-  var lon1 = goog.math.toRadians(c1[0]);
+  var lat1 = ol.math.toRadians(c1[1]);
+  var lon1 = ol.math.toRadians(c1[0]);
   var dByR = distance / this.radius;
   var lat = Math.asin(
       Math.sin(lat1) * Math.cos(dByR) +
@@ -106,5 +106,5 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
   var lon = lon1 + Math.atan2(
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
       Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
-  return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
+  return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
 };

@@ -44,13 +44,13 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
   this.dispatchPreComposeEvent(context, frameState);
 
   var image = this.getImage();
-  if (!goog.isNull(image)) {
+  if (image) {
 
     // clipped rendering if layer extent is set
     var extent = layerState.extent;
-    var clipped = goog.isDef(extent);
+    var clipped = extent !== undefined;
     if (clipped) {
-      goog.asserts.assert(goog.isDef(extent),
+      goog.asserts.assert(extent !== undefined,
           'layerState extent is defined');
       var pixelRatio = frameState.pixelRatio;
       var topLeft = ol.extent.getTopLeft(extent);
@@ -126,7 +126,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
     function(type, context, frameState, opt_transform) {
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
-    var transform = goog.isDef(opt_transform) ?
+    var transform = opt_transform !== undefined ?
         opt_transform : this.getTransform(frameState, 0);
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
@@ -252,7 +252,7 @@ ol.renderer.canvas.Layer.testCanvasSize = (function() {
   var imageData = null;
 
   return function(size) {
-    if (goog.isNull(context)) {
+    if (!context) {
       context = ol.dom.createCanvasContext2D(1, 1);
       imageData = context.createImageData(1, 1);
       var data = imageData.data;

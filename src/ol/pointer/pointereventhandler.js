@@ -30,7 +30,6 @@
 
 goog.provide('ol.pointer.PointerEventHandler');
 
-goog.require('goog.array');
 goog.require('goog.dom');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -119,7 +118,7 @@ ol.pointer.PointerEventHandler.prototype.registerSource =
   var newEvents = s.getEvents();
 
   if (newEvents) {
-    goog.array.forEach(newEvents, function(e) {
+    newEvents.forEach(function(e) {
       var handler = s.getHandlerForEvent(e);
 
       if (handler) {
@@ -179,7 +178,7 @@ ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
  * @param {Array.<string>} events List of events.
  */
 ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
-  goog.array.forEach(events, function(eventName) {
+  events.forEach(function(eventName) {
     goog.events.listen(this.element_, eventName,
         this.eventHandler_, false, this);
   }, this);
@@ -192,7 +191,7 @@ ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
  * @param {Array.<string>} events List of events.
  */
 ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
-  goog.array.forEach(events, function(e) {
+  events.forEach(function(e) {
     goog.events.unlisten(this.element_, e,
         this.eventHandler_, false, this);
   }, this);
@@ -367,7 +366,7 @@ ol.pointer.PointerEventHandler.prototype.enterOver =
  */
 ol.pointer.PointerEventHandler.prototype.contains_ =
     function(container, contained) {
-  if (goog.isNull(contained)) {
+  if (!contained) {
     return false;
   }
   return goog.dom.contains(container, contained);

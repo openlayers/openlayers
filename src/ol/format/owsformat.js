@@ -26,7 +26,7 @@ goog.inherits(ol.format.OWS, ol.format.XML);
 ol.format.OWS.prototype.readFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
       'doc.nodeType should be DOCUMENT');
-  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+  for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readFromNode(n);
     }
@@ -44,7 +44,7 @@ ol.format.OWS.prototype.readFromNode = function(node) {
       'node.nodeType should be ELEMENT');
   var owsObject = ol.xml.pushParseAndPop({},
       ol.format.OWS.PARSERS_, node, []);
-  return goog.isDef(owsObject) ? owsObject : null;
+  return owsObject ? owsObject : null;
 };
 
 
@@ -92,7 +92,7 @@ ol.format.OWS.readConstraint_ = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Constraint',
       'localName should be Constraint');
   var name = node.getAttribute('name');
-  if (!goog.isDef(name)) {
+  if (!name) {
     return undefined;
   }
   return ol.xml.pushParseAndPop({'name': name},
@@ -143,7 +143,7 @@ ol.format.OWS.readGet_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Get', 'localName should be Get');
   var href = ol.format.XLink.readHref(node);
-  if (!goog.isDef(href)) {
+  if (!href) {
     return undefined;
   }
   return ol.xml.pushParseAndPop({'href': href},
@@ -180,7 +180,7 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
   var name = node.getAttribute('name');
   var value = ol.xml.pushParseAndPop({},
       ol.format.OWS.OPERATION_PARSERS_, node, objectStack);
-  if (!goog.isDef(value)) {
+  if (!value) {
     return undefined;
   }
   var object = /** @type {Object} */

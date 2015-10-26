@@ -91,7 +91,7 @@ ol.Collection = function(opt_array) {
    * @private
    * @type {!Array.<T>}
    */
-  this.array_ = goog.isDef(opt_array) ? opt_array : [];
+  this.array_ = opt_array ? opt_array : [];
 
   this.updateLength_();
 
@@ -136,7 +136,7 @@ ol.Collection.prototype.extend = function(arr) {
  * @api stable
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
-  goog.array.forEach(this.array_, f, opt_this);
+  this.array_.forEach(f, opt_this);
 };
 
 

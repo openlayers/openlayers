@@ -1,13 +1,12 @@
 goog.provide('ol.pointer.EventSource');
 
 goog.require('goog.events.BrowserEvent');
-goog.require('goog.object');
 
 
 
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher
- * @param {Object.<string, function(goog.events.BrowserEvent)>} mapping
+ * @param {!Object.<string, function(goog.events.BrowserEvent)>} mapping
  * @constructor
  */
 ol.pointer.EventSource = function(dispatcher, mapping) {
@@ -19,7 +18,7 @@ ol.pointer.EventSource = function(dispatcher, mapping) {
   /**
    * @private
    * @const
-   * @type {Object.<string, function(goog.events.BrowserEvent)>}
+   * @type {!Object.<string, function(goog.events.BrowserEvent)>}
    */
   this.mapping_ = mapping;
 };
@@ -30,7 +29,7 @@ ol.pointer.EventSource = function(dispatcher, mapping) {
  * @return {Array.<string>} Event names
  */
 ol.pointer.EventSource.prototype.getEvents = function() {
-  return goog.object.getKeys(this.mapping_);
+  return Object.keys(this.mapping_);
 };
 
 

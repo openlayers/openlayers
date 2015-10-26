@@ -16,13 +16,13 @@ goog.require('ol.structs.IHasChecksum');
  */
 ol.style.Fill = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
    * @type {ol.Color|string}
    */
-  this.color_ = goog.isDef(options.color) ? options.color : null;
+  this.color_ = options.color !== undefined ? options.color : null;
 
   /**
    * @private
@@ -58,8 +58,8 @@ ol.style.Fill.prototype.setColor = function(color) {
  * @inheritDoc
  */
 ol.style.Fill.prototype.getChecksum = function() {
-  if (!goog.isDef(this.checksum_)) {
-    this.checksum_ = 'f' + (!goog.isNull(this.color_) ?
+  if (this.checksum_ === undefined) {
+    this.checksum_ = 'f' + (this.color_ ?
         ol.color.asString(this.color_) : '-');
   }
 

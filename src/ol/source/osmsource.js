@@ -16,26 +16,27 @@ goog.require('ol.source.XYZ');
  */
 ol.source.OSM = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   var attributions;
-  if (goog.isDef(options.attributions)) {
+  if (options.attributions !== undefined) {
     attributions = options.attributions;
   } else {
     attributions = [ol.source.OSM.ATTRIBUTION];
   }
 
-  var crossOrigin = goog.isDef(options.crossOrigin) ?
+  var crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : 'anonymous';
 
-  var url = goog.isDef(options.url) ?
+  var url = options.url !== undefined ?
       options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   goog.base(this, {
     attributions: attributions,
     crossOrigin: crossOrigin,
     opaque: true,
-    maxZoom: goog.isDef(options.maxZoom) ? options.maxZoom : 19,
+    maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileLoadFunction: options.tileLoadFunction,
     url: url,
     wrapX: options.wrapX

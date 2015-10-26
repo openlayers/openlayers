@@ -1,6 +1,5 @@
 goog.provide('ol.render.webgl.Immediate');
 goog.require('goog.array');
-goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.ImageReplay');
@@ -67,7 +66,7 @@ ol.render.webgl.Immediate = function(context,
 
   /**
    * @private
-   * @type {Object.<string,
+   * @type {!Object.<string,
    *        Array.<function(ol.render.webgl.Immediate)>>}
    */
   this.callbacksByZIndex_ = {};
@@ -80,7 +79,7 @@ goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
  */
 ol.render.webgl.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(this.callbacksByZIndex_), Number);
+  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
   goog.array.sort(zs);
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
@@ -103,7 +102,7 @@ ol.render.webgl.Immediate.prototype.flush = function() {
 ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
   var zIndexKey = zIndex.toString();
   var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (goog.isDef(callbacks)) {
+  if (callbacks !== undefined) {
     callbacks.push(callback);
   } else {
     this.callbacksByZIndex_[zIndexKey] = [callback];
@@ -126,12 +125,12 @@ ol.render.webgl.Immediate.prototype.drawCircleGeometry =
  */
 ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!goog.isDefAndNotNull(geometry) ||
+  if (!geometry ||
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   var zIndex = style.getZIndex();
-  if (!goog.isDef(zIndex)) {
+  if (zIndex === undefined) {
     zIndex = 0;
   }
   this.drawAsync(zIndex, function(render) {
@@ -186,16 +185,12 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
   replay.finish(context);
   // default colors
   var opacity = 1;
-  var brightness = 0;
-  var contrast = 1;
-  var hue = 0;
-  var saturation = 1;
   var skippedFeatures = {};
   var featureCallback;
   var oneByOne = false;
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.pixelRatio_, opacity, brightness,
-      contrast, hue, saturation, skippedFeatures, featureCallback, oneByOne);
+      this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
+      oneByOne);
   replay.getDeleteResourcesFunction(context)();
 };
 
@@ -231,18 +226,13 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
   replay.setImageStyle(this.imageStyle_);
   replay.drawMultiPointGeometry(multiPointGeometry, data);
   replay.finish(context);
-  // default colors
   var opacity = 1;
-  var brightness = 0;
-  var contrast = 1;
-  var hue = 0;
-  var saturation = 1;
   var skippedFeatures = {};
   var featureCallback;
   var oneByOne = false;
   replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-      this.size_, this.pixelRatio_, opacity, brightness,
-      contrast, hue, saturation, skippedFeatures, featureCallback, oneByOne);
+      this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
+      oneByOne);
   replay.getDeleteResourcesFunction(context)();
 };
 

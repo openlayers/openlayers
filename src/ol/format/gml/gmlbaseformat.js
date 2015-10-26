@@ -41,7 +41,7 @@ goog.require('ol.xml');
  */
 ol.format.GMLBase = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
-      (goog.isDef(opt_options) ? opt_options : {});
+      (opt_options ? opt_options : {});
 
   /**
    * @protected
@@ -116,13 +116,13 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
     var featureType = context['featureType'];
     var featureNS = context['featureNS'];
     var i, ii, prefix = 'p', defaultPrefix = 'p0';
-    if (!goog.isDef(featureType) && goog.isDefAndNotNull(node.childNodes)) {
+    if (!featureType && node.childNodes) {
       featureType = [], featureNS = {};
       for (i = 0, ii = node.childNodes.length; i < ii; ++i) {
         var child = node.childNodes[i];
         if (child.nodeType === 1) {
           var ft = child.nodeName.split(':').pop();
-          if (goog.array.indexOf(featureType, ft) === -1) {
+          if (featureType.indexOf(ft) === -1) {
             var key;
             if (!goog.object.contains(featureNS, child.namespaceURI)) {
               key = prefix + goog.object.getCount(featureNS);
@@ -162,7 +162,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
     }
     features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
   }
-  if (!goog.isDef(features)) {
+  if (!features) {
     features = [];
   }
   return features;
@@ -180,7 +180,7 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   context['srsName'] = node.firstElementChild.getAttribute('srsName');
   var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
       this.GEOMETRY_PARSERS_, node, objectStack, this);
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     return /** @type {ol.geom.Geometry} */ (
         ol.format.Feature.transformWithOptions(geometry, false, context));
   } else {
@@ -199,8 +199,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var fid = node.getAttribute('fid') ||
       ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
-  for (n = node.firstElementChild; !goog.isNull(n);
-      n = n.nextElementSibling) {
+  for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var localName = ol.xml.getLocalName(n);
     // Assume attribute elements have one child node and that the child
     // is a text or CDATA node (to be treated as text).
@@ -222,7 +221,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
     }
   }
   var feature = new ol.Feature(values);
-  if (goog.isDef(geometryName)) {
+  if (geometryName) {
     feature.setGeometryName(geometryName);
   }
   if (fid) {
@@ -243,7 +242,7 @@ ol.format.GMLBase.prototype.readPoint = function(node, objectStack) {
   goog.asserts.assert(node.localName == 'Point', 'localName should be Point');
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
-  if (goog.isDefAndNotNull(flatCoordinates)) {
+  if (flatCoordinates) {
     var point = new ol.geom.Point(null);
     goog.asserts.assert(flatCoordinates.length == 3,
         'flatCoordinates should have a length of 3');
@@ -266,7 +265,7 @@ ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
   var coordinates = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([]),
       this.MULTIPOINT_PARSERS_, node, objectStack, this);
-  if (goog.isDef(coordinates)) {
+  if (coordinates) {
     return new ol.geom.MultiPoint(coordinates);
   } else {
     return undefined;
@@ -287,7 +286,7 @@ ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
   var lineStrings = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.LineString>} */ ([]),
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
-  if (goog.isDef(lineStrings)) {
+  if (lineStrings) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
     return multiLineString;
@@ -310,7 +309,7 @@ ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
   var polygons = ol.xml.pushParseAndPop(
       /** @type {Array.<ol.geom.Polygon>} */ ([]),
       this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
-  if (goog.isDef(polygons)) {
+  if (polygons) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
     return multiPolygon;
@@ -382,7 +381,7 @@ ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
       'localName should be LineString');
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
-  if (goog.isDefAndNotNull(flatCoordinates)) {
+  if (flatCoordinates) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
     return lineString;
@@ -406,7 +405,7 @@ ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
   var ring = ol.xml.pushParseAndPop(/** @type {Array.<number>} */(null),
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
       objectStack, this);
-  if (goog.isDefAndNotNull(ring)) {
+  if (ring) {
     return ring;
   } else {
     return undefined;
@@ -426,7 +425,7 @@ ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
       'localName should be LinearRing');
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
-  if (goog.isDef(flatCoordinates)) {
+  if (flatCoordinates) {
     var ring = new ol.geom.LinearRing(null);
     ring.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
     return ring;
@@ -449,8 +448,7 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
   var flatLinearRings = ol.xml.pushParseAndPop(
       /** @type {Array.<Array.<number>>} */ ([null]),
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
-  if (goog.isDef(flatLinearRings) &&
-      !goog.isNull(flatLinearRings[0])) {
+  if (flatLinearRings && flatLinearRings[0]) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
     var ends = [flatCoordinates.length];
@@ -588,8 +586,8 @@ ol.format.GMLBase.prototype.RING_PARSERS = Object({
 ol.format.GMLBase.prototype.readGeometryFromNode =
     function(node, opt_options) {
   var geometry = this.readGeometryElement(node,
-      [this.getReadOptions(node, goog.isDef(opt_options) ? opt_options : {})]);
-  return goog.isDef(geometry) ? geometry : null;
+      [this.getReadOptions(node, opt_options ? opt_options : {})]);
+  return geometry ? geometry : null;
 };
 
 
@@ -614,7 +612,7 @@ ol.format.GMLBase.prototype.readFeaturesFromNode =
     featureType: this.featureType,
     featureNS: this.featureNS
   };
-  if (goog.isDef(opt_options)) {
+  if (opt_options) {
     goog.object.extend(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeaturesInternal(node, [options]);
@@ -625,6 +623,6 @@ ol.format.GMLBase.prototype.readFeaturesFromNode =
  * @inheritDoc
  */
 ol.format.GMLBase.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get(goog.isDef(this.srsName_) ? this.srsName_ :
+  return ol.proj.get(this.srsName_ ? this.srsName_ :
       node.firstElementChild.getAttribute('srsName'));
 };

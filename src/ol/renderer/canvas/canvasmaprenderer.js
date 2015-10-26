@@ -146,7 +146,7 @@ ol.renderer.canvas.Map.prototype.getType = function() {
  */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
-  if (goog.isNull(frameState)) {
+  if (!frameState) {
     if (this.renderedVisible_) {
       goog.style.setElementShown(this.canvas_, false);
       this.renderedVisible_ = false;

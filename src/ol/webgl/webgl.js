@@ -34,7 +34,7 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
   for (i = 0; i < ii; ++i) {
     try {
       context = canvas.getContext(ol.webgl.CONTEXT_IDS_[i], opt_attributes);
-      if (!goog.isNull(context)) {
+      if (context) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }
     } catch (e) {

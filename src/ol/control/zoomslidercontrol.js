@@ -4,14 +4,12 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
 goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
-goog.require('goog.math');
 goog.require('goog.math.Rect');
 goog.require('goog.style');
 goog.require('ol.Size');
@@ -20,6 +18,7 @@ goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
+goog.require('ol.math');
 
 
 
@@ -38,7 +37,7 @@ goog.require('ol.easing');
  */
 ol.control.ZoomSlider = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * Will hold the current resolution of the view.
@@ -76,13 +75,14 @@ ol.control.ZoomSlider = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
+  this.duration_ = options.duration ? options.duration : 200;
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-zoomslider';
-  var thumbElement = goog.dom.createDom(goog.dom.TagName.DIV,
-      [className + '-thumb', ol.css.CLASS_UNSELECTABLE]);
-  var containerElement = goog.dom.createDom(goog.dom.TagName.DIV,
+  var className = options.className ? options.className : 'ol-zoomslider';
+  var thumbElement = goog.dom.createDom('BUTTON', {
+    'type': 'button',
+    'class': className + '-thumb ' + ol.css.CLASS_UNSELECTABLE
+  });
+  var containerElement = goog.dom.createDom('DIV',
       [className, ol.css.CLASS_UNSELECTABLE, ol.css.CLASS_CONTROL],
       thumbElement);
 
@@ -105,8 +105,7 @@ ol.control.ZoomSlider = function(opt_options) {
   goog.events.listen(thumbElement, goog.events.EventType.CLICK,
       goog.events.Event.stopPropagation);
 
-  var render = goog.isDef(options.render) ?
-      options.render : ol.control.ZoomSlider.render;
+  var render = options.render ? options.render : ol.control.ZoomSlider.render;
 
   goog.base(this, {
     element: containerElement,
@@ -132,7 +131,7 @@ ol.control.ZoomSlider.direction = {
  */
 ol.control.ZoomSlider.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
+  if (map) {
     map.render();
   }
 };
@@ -181,10 +180,10 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
  * @api
  */
 ol.control.ZoomSlider.render = function(mapEvent) {
-  if (goog.isNull(mapEvent.frameState)) {
+  if (!mapEvent.frameState) {
     return;
   }
-  goog.asserts.assert(goog.isDefAndNotNull(mapEvent.frameState.viewState),
+  goog.asserts.assert(mapEvent.frameState.viewState,
       'viewState should be defined');
   if (!this.sliderInitialized_) {
     this.initSlider_();
@@ -205,7 +204,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
   var map = this.getMap();
   var view = map.getView();
   var currentResolution = view.getResolution();
-  goog.asserts.assert(goog.isDef(currentResolution),
+  goog.asserts.assert(currentResolution,
       'currentResolution should be defined');
   map.beforeRender(ol.animation.zoom({
     resolution: currentResolution,
@@ -252,7 +251,7 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   var map = this.getMap();
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
-  goog.asserts.assert(goog.isDef(this.currentResolution_),
+  goog.asserts.assert(this.currentResolution_,
       'this.currentResolution_ should be defined');
   map.beforeRender(ol.animation.zoom({
     resolution: this.currentResolution_,
@@ -303,7 +302,7 @@ ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   } else {
     amount = (y - draggerLimits.top) / draggerLimits.height;
   }
-  return goog.math.clamp(amount, 0, 1);
+  return ol.math.clamp(amount, 0, 1);
 };
 
 

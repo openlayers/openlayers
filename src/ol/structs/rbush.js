@@ -1,6 +1,5 @@
 goog.provide('ol.structs.RBush');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol.ext.rbush');
@@ -118,7 +117,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
   var item = this.items_[uid];
-  goog.object.remove(this.items_, uid);
+  delete this.items_[uid];
   return this.rbush_.remove(item) !== null;
 };
 
@@ -150,7 +149,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
  */
 ol.structs.RBush.prototype.getAll = function() {
   var items = this.rbush_.all();
-  return goog.array.map(items, function(item) {
+  return items.map(function(item) {
     return item[4];
   });
 };
@@ -163,7 +162,7 @@ ol.structs.RBush.prototype.getAll = function() {
  */
 ol.structs.RBush.prototype.getInExtent = function(extent) {
   var items = this.rbush_.search(extent);
-  return goog.array.map(items, function(item) {
+  return items.map(function(item) {
     return item[4];
   });
 };

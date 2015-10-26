@@ -1,11 +1,11 @@
 goog.provide('ol.interaction.Snap');
 goog.provide('ol.interaction.SnapProperty');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
@@ -54,19 +54,19 @@ ol.interaction.Snap = function(opt_options) {
     handleUpEvent: ol.interaction.Snap.handleUpEvent_
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.source.Vector}
    * @private
    */
-  this.source_ = goog.isDef(options.source) ? options.source : null;
+  this.source_ = options.source ? options.source : null;
 
   /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = goog.isDef(options.features) ? options.features : null;
+  this.features_ = options.features ? options.features : null;
 
   /**
    * @type {Array.<goog.events.Key>}
@@ -114,7 +114,7 @@ ol.interaction.Snap = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.pixelTolerance_ = goog.isDef(options.pixelTolerance) ?
+  this.pixelTolerance_ = options.pixelTolerance !== undefined ?
       options.pixelTolerance : 10;
 
   /**
@@ -159,10 +159,10 @@ goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
  * @api
  */
 ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
-  var listen = goog.isDef(opt_listen) ? opt_listen : true;
+  var listen = opt_listen !== undefined ? opt_listen : true;
   var geometry = feature.getGeometry();
   var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
-  if (goog.isDef(segmentWriter)) {
+  if (segmentWriter) {
     var feature_uid = goog.getUid(feature);
     this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
         ol.extent.createEmpty());
@@ -205,12 +205,12 @@ ol.interaction.Snap.prototype.forEachFeatureRemove_ = function(feature) {
  */
 ol.interaction.Snap.prototype.getFeatures_ = function() {
   var features;
-  if (!goog.isNull(this.features_)) {
+  if (this.features_) {
     features = this.features_;
-  } else if (!goog.isNull(this.source_)) {
+  } else if (this.source_) {
     features = this.source_.getFeatures();
   }
-  goog.asserts.assert(goog.isDef(features), 'features should be defined');
+  goog.asserts.assert(features !== undefined, 'features should be defined');
   return features;
 };
 
@@ -286,7 +286,7 @@ ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
  * @api
  */
 ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
-  var unlisten = goog.isDef(opt_unlisten) ? opt_unlisten : true;
+  var unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
   var feature_uid = goog.getUid(feature);
   var extent = this.indexedFeaturesExtents_[feature_uid];
   if (extent) {
@@ -320,7 +320,7 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   var features = this.getFeatures_();
 
   if (currentMap) {
-    goog.array.forEach(keys, ol.Observable.unByKey);
+    keys.forEach(ol.Observable.unByKey);
     keys.length = 0;
     features.forEach(this.forEachFeatureRemove_, this);
   }
@@ -328,12 +328,12 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
 
   if (map) {
-    if (!goog.isNull(this.features_)) {
+    if (this.features_) {
       keys.push(this.features_.on(ol.CollectionEventType.ADD,
           this.handleFeatureAdd_, this));
       keys.push(this.features_.on(ol.CollectionEventType.REMOVE,
           this.handleFeatureRemove_, this));
-    } else if (!goog.isNull(this.source_)) {
+    } else if (this.source_) {
       keys.push(this.source_.on(ol.source.VectorEventType.ADDFEATURE,
           this.handleFeatureAdd_, this));
       keys.push(this.source_.on(ol.source.VectorEventType.REMOVEFEATURE,
@@ -599,7 +599,7 @@ ol.interaction.Snap.handleEvent_ = function(evt) {
 ol.interaction.Snap.handleUpEvent_ = function(evt) {
   var featuresToUpdate = goog.object.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
-    goog.array.forEach(featuresToUpdate, this.updateFeature_, this);
+    featuresToUpdate.forEach(this.updateFeature_, this);
     this.pendingFeatures_ = {};
   }
   return false;

@@ -3,7 +3,6 @@ goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
 goog.provide('ol.MapBrowserPointerEvent');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
@@ -73,7 +72,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
    * @type {boolean}
    * @api stable
    */
-  this.dragging = goog.isDef(opt_dragging) ? opt_dragging : false;
+  this.dragging = opt_dragging !== undefined ? opt_dragging : false;
 
 };
 goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
@@ -170,14 +169,6 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.pointerdownListenerKey_ = null;
 
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    /**
-     * @type {goog.events.Key}
-     * @private
-     */
-    this.ieDblclickListenerKey_ = null;
-  }
-
   /**
    * The most recent "down" type event (or null if none have occurred).
    * Set on pointerdown.
@@ -226,33 +217,8 @@ ol.MapBrowserEventHandler = function(map) {
       ol.pointer.EventType.POINTERMOVE,
       this.relayEvent_, false, this);
 
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    /*
-     * On legacy IE, double clicks do not produce two mousedown and
-     * mouseup events. That is why a separate DBLCLICK event listener
-     * is used.
-     */
-    this.ieDblclickListenerKey_ = goog.events.listen(element,
-        goog.events.EventType.DBLCLICK,
-        this.emulateClickLegacyIE_, false, this);
-  }
-
 };
 goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
-
-
-/**
- * @param {goog.events.BrowserEvent} browserEvent Pointer event.
- * @private
- */
-ol.MapBrowserEventHandler.prototype.emulateClickLegacyIE_ =
-    function(browserEvent) {
-  var pointerEvent = this.pointerEventHandler_.wrapMouseEvent(
-      ol.MapBrowserEvent.EventType.POINTERUP,
-      browserEvent
-      );
-  this.emulateClick_(pointerEvent);
-};
 
 
 /**
@@ -318,15 +284,14 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
-    goog.asserts.assert(!goog.isNull(this.down_),
-        'this.down_ should not be null');
+    goog.asserts.assert(this.down_, 'this.down_ must be truthy');
     this.emulateClick_(this.down_);
   }
 
   goog.asserts.assert(this.activePointers_ >= 0,
       'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
-    goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+    this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     this.dragging_ = false;
     this.down_ = null;
@@ -343,11 +308,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
  */
 ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
     function(pointerEvent) {
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    return pointerEvent.button == 1;
-  } else {
-    return pointerEvent.button === 0;
-  }
+  return pointerEvent.button === 0;
 };
 
 
@@ -364,7 +325,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
 
   this.down_ = pointerEvent;
 
-  if (goog.isNull(this.dragListenerKeys_)) {
+  if (!this.dragListenerKeys_) {
     /* Set up a pointer event handler on the `document`,
      * which is required when the pointer is moved outside
      * the viewport when dragging.
@@ -434,7 +395,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
  * @private
  */
 ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
-  var dragging = !goog.isNull(this.down_) && this.isMoving_(pointerEvent);
+  var dragging = !!(this.down_ && this.isMoving_(pointerEvent));
   this.dispatchEvent(new ol.MapBrowserPointerEvent(
       pointerEvent.type, this.map_, pointerEvent, dragging));
 };
@@ -455,30 +416,25 @@ ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
  * @inheritDoc
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
-  if (!goog.isNull(this.relayedListenerKey_)) {
+  if (this.relayedListenerKey_) {
     goog.events.unlistenByKey(this.relayedListenerKey_);
     this.relayedListenerKey_ = null;
   }
-  if (!goog.isNull(this.pointerdownListenerKey_)) {
+  if (this.pointerdownListenerKey_) {
     goog.events.unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
   }
-  if (!goog.isNull(this.dragListenerKeys_)) {
-    goog.array.forEach(this.dragListenerKeys_, goog.events.unlistenByKey);
+  if (this.dragListenerKeys_) {
+    this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
-  if (!goog.isNull(this.documentPointerEventHandler_)) {
+  if (this.documentPointerEventHandler_) {
     goog.dispose(this.documentPointerEventHandler_);
     this.documentPointerEventHandler_ = null;
   }
-  if (!goog.isNull(this.pointerEventHandler_)) {
+  if (this.pointerEventHandler_) {
     goog.dispose(this.pointerEventHandler_);
     this.pointerEventHandler_ = null;
-  }
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE &&
-      !goog.isNull(this.ieDblclickListenerKey_)) {
-    goog.events.unlistenByKey(this.ieDblclickListenerKey_);
-    this.ieDblclickListenerKey_ = null;
   }
   goog.base(this, 'disposeInternal');
 };

@@ -61,7 +61,7 @@ ol.geom.flat.interpolate.lineString =
       pointY = flatCoordinates[offset + index * stride + 1];
     }
   }
-  if (goog.isDefAndNotNull(opt_dest)) {
+  if (opt_dest) {
     opt_dest[0] = pointX;
     opt_dest[1] = pointY;
     return opt_dest;

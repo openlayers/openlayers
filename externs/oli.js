@@ -211,6 +211,25 @@ oli.interaction.DragAndDropEvent.prototype.projection;
 oli.interaction.DragAndDropEvent.prototype.file;
 
 
+
+/**
+ * @interface
+ */
+oli.interaction.TranslateEvent = function() {};
+
+
+/**
+ * @type {ol.Collection.<ol.Feature>}
+ */
+oli.interaction.TranslateEvent.prototype.features;
+
+
+/**
+ * @type {ol.Coordinate}
+ */
+oli.interaction.TranslateEvent.prototype.coordinate;
+
+
 /**
  * @type {Object}
  */

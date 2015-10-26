@@ -4,7 +4,6 @@ goog.provide('ol.style.StyleFunction');
 goog.provide('ol.style.defaultGeometryFunction');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Circle');
@@ -26,7 +25,7 @@ goog.require('ol.style.Stroke');
  */
 ol.style.Style = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -40,7 +39,7 @@ ol.style.Style = function(opt_options) {
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
 
-  if (goog.isDef(options.geometry)) {
+  if (options.geometry !== undefined) {
     this.setGeometry(options.geometry);
   }
 
@@ -48,25 +47,25 @@ ol.style.Style = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
    * @type {ol.style.Image}
    */
-  this.image_ = goog.isDef(options.image) ? options.image : null;
+  this.image_ = options.image !== undefined ? options.image : null;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
    * @type {ol.style.Text}
    */
-  this.text_ = goog.isDef(options.text) ? options.text : null;
+  this.text_ = options.text !== undefined ? options.text : null;
 
   /**
    * @private
@@ -164,15 +163,15 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
   } else if (goog.isString(geometry)) {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
-      if (goog.isDefAndNotNull(result)) {
+      if (result) {
         goog.asserts.assertInstanceof(result, ol.geom.Geometry,
             'feature geometry must be an ol.geom.Geometry instance');
       }
       return result;
     };
-  } else if (goog.isNull(geometry)) {
+  } else if (!geometry) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
-  } else if (goog.isDef(geometry)) {
+  } else if (geometry !== undefined) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
         'geometry must be an ol.geom.Geometry instance');
     this.geometryFunction_ = function() {
@@ -230,7 +229,9 @@ ol.style.createStyleFunction = function(obj) {
           'obj geometry must be an ol.style.Style instance');
       styles = [obj];
     }
-    styleFunction = goog.functions.constant(styles);
+    styleFunction = function() {
+      return styles;
+    };
   }
   return styleFunction;
 };
@@ -254,7 +255,7 @@ ol.style.defaultStyleFunction = function(feature, resolution) {
   // browsers that do not support Canvas. (ol.style.Circle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
-  if (goog.isNull(ol.style.defaultStyle_)) {
+  if (!ol.style.defaultStyle_) {
     var fill = new ol.style.Fill({
       color: 'rgba(255,255,255,0.4)'
     });
@@ -365,7 +366,6 @@ ol.style.GeometryFunction;
  * @return {ol.geom.Geometry|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.asserts.assert(!goog.isNull(feature),
-      'feature must not be null');
+  goog.asserts.assert(feature, 'feature must not be null');
   return feature.getGeometry();
 };

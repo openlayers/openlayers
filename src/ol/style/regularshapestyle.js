@@ -2,7 +2,7 @@ goog.provide('ol.style.RegularShape');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
+goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
@@ -30,7 +30,7 @@ goog.require('ol.style.Stroke');
 ol.style.RegularShape = function(options) {
 
   goog.asserts.assert(
-      goog.isDef(options.radius) || goog.isDef(options.radius1),
+      options.radius !== undefined || options.radius1 !== undefined,
       'must provide either "radius" or "radius1"');
 
   /**
@@ -55,7 +55,7 @@ ol.style.RegularShape = function(options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
@@ -73,7 +73,7 @@ ol.style.RegularShape = function(options) {
    * @private
    * @type {number}
    */
-  this.radius_ = /** @type {number} */ (goog.isDef(options.radius) ?
+  this.radius_ = /** @type {number} */ (options.radius !== undefined ?
       options.radius : options.radius1);
 
   /**
@@ -81,19 +81,19 @@ ol.style.RegularShape = function(options) {
    * @type {number}
    */
   this.radius2_ =
-      goog.isDef(options.radius2) ? options.radius2 : this.radius_;
+      options.radius2 !== undefined ? options.radius2 : this.radius_;
 
   /**
    * @private
    * @type {number}
    */
-  this.angle_ = goog.isDef(options.angle) ? options.angle : 0;
+  this.angle_ = options.angle !== undefined ? options.angle : 0;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
@@ -124,13 +124,13 @@ ol.style.RegularShape = function(options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = goog.isDef(options.snapToPixel) ?
+  var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
   goog.base(this, {
     opacity: 1,
     rotateWithView: false,
-    rotation: goog.isDef(options.rotation) ? options.rotation : 0,
+    rotation: options.rotation !== undefined ? options.rotation : 0,
     scale: 1,
     snapToPixel: snapToPixel
   });
@@ -270,19 +270,19 @@ ol.style.RegularShape.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.listenImageChange = goog.nullFunction;
+ol.style.RegularShape.prototype.listenImageChange = ol.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.load = goog.nullFunction;
+ol.style.RegularShape.prototype.load = ol.nullFunction;
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.unlistenImageChange = goog.nullFunction;
+ol.style.RegularShape.prototype.unlistenImageChange = ol.nullFunction;
 
 
 /**
@@ -312,10 +312,10 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   var strokeStyle;
   var strokeWidth = 0;
 
-  if (!goog.isNull(this.stroke_)) {
+  if (this.stroke_) {
     strokeStyle = ol.color.asString(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
-    if (!goog.isDef(strokeWidth)) {
+    if (strokeWidth === undefined) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
@@ -323,15 +323,15 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
       lineDash = null;
     }
     lineJoin = this.stroke_.getLineJoin();
-    if (!goog.isDef(lineJoin)) {
+    if (lineJoin === undefined) {
       lineJoin = ol.render.canvas.defaultLineJoin;
     }
     lineCap = this.stroke_.getLineCap();
-    if (!goog.isDef(lineCap)) {
+    if (lineCap === undefined) {
       lineCap = ol.render.canvas.defaultLineCap;
     }
     miterLimit = this.stroke_.getMiterLimit();
-    if (!goog.isDef(miterLimit)) {
+    if (miterLimit === undefined) {
       miterLimit = ol.render.canvas.defaultMiterLimit;
     }
   }
@@ -349,10 +349,10 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     miterLimit: miterLimit
   };
 
-  if (!goog.isDef(atlasManager)) {
+  if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
     this.canvas_ = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement(goog.dom.TagName.CANVAS));
+        (goog.dom.createElement('CANVAS'));
 
     this.canvas_.height = size;
     this.canvas_.width = size;
@@ -370,7 +370,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     // an atlas manager is used, add the symbol to an atlas
     size = Math.round(size);
 
-    var hasCustomHitDetectionImage = goog.isNull(this.fill_);
+    var hasCustomHitDetectionImage = !this.fill_;
     var renderHitDetectionCallback;
     if (hasCustomHitDetectionImage) {
       // render the hit-detection image into a separate atlas image
@@ -382,7 +382,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     var info = atlasManager.add(
         id, size, size, goog.bind(this.draw_, this, renderOptions),
         renderHitDetectionCallback);
-    goog.asserts.assert(!goog.isNull(info), 'shape size is too large');
+    goog.asserts.assert(info, 'shape size is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];
@@ -430,14 +430,14 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
                    renderOptions.size / 2 + radiusC * Math.sin(angle0));
   }
 
-  if (!goog.isNull(this.fill_)) {
+  if (this.fill_) {
     context.fillStyle = ol.color.asString(this.fill_.getColor());
     context.fill();
   }
-  if (!goog.isNull(this.stroke_)) {
+  if (this.stroke_) {
     context.strokeStyle = renderOptions.strokeStyle;
     context.lineWidth = renderOptions.strokeWidth;
-    if (!goog.isNull(renderOptions.lineDash)) {
+    if (renderOptions.lineDash) {
       context.setLineDash(renderOptions.lineDash);
     }
     context.lineCap = renderOptions.lineCap;
@@ -456,7 +456,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
 ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
     function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
-  if (!goog.isNull(this.fill_)) {
+  if (this.fill_) {
     this.hitDetectionCanvas_ = this.canvas_;
     return;
   }
@@ -464,7 +464,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
   this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      (goog.dom.createElement('CANVAS'));
   var canvas = this.hitDetectionCanvas_;
 
   canvas.height = renderOptions.size;
@@ -505,10 +505,10 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ =
 
   context.fillStyle = ol.render.canvas.defaultFillStyle;
   context.fill();
-  if (!goog.isNull(this.stroke_)) {
+  if (this.stroke_) {
     context.strokeStyle = renderOptions.strokeStyle;
     context.lineWidth = renderOptions.strokeWidth;
-    if (!goog.isNull(renderOptions.lineDash)) {
+    if (renderOptions.lineDash) {
       context.setLineDash(renderOptions.lineDash);
     }
     context.stroke();
@@ -521,12 +521,12 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ =
  * @inheritDoc
  */
 ol.style.RegularShape.prototype.getChecksum = function() {
-  var strokeChecksum = !goog.isNull(this.stroke_) ?
+  var strokeChecksum = this.stroke_ ?
       this.stroke_.getChecksum() : '-';
-  var fillChecksum = !goog.isNull(this.fill_) ?
+  var fillChecksum = this.fill_ ?
       this.fill_.getChecksum() : '-';
 
-  var recalculate = goog.isNull(this.checksums_) ||
+  var recalculate = !this.checksums_ ||
       (strokeChecksum != this.checksums_[1] ||
       fillChecksum != this.checksums_[2] ||
       this.radius_ != this.checksums_[3] ||
@@ -536,10 +536,10 @@ ol.style.RegularShape.prototype.getChecksum = function() {
 
   if (recalculate) {
     var checksum = 'r' + strokeChecksum + fillChecksum +
-        (goog.isDef(this.radius_) ? this.radius_.toString() : '-') +
-        (goog.isDef(this.radius2_) ? this.radius2_.toString() : '-') +
-        (goog.isDef(this.angle_) ? this.angle_.toString() : '-') +
-        (goog.isDef(this.points_) ? this.points_.toString() : '-');
+        (this.radius_ !== undefined ? this.radius_.toString() : '-') +
+        (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
+        (this.angle_ !== undefined ? this.angle_.toString() : '-') +
+        (this.points_ !== undefined ? this.points_.toString() : '-');
     this.checksums_ = [checksum, strokeChecksum, fillChecksum,
       this.radius_, this.radius2_, this.angle_, this.points_];
   }

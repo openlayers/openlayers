@@ -20,7 +20,7 @@ ol.geom.flat.transform.transform2D =
   var m11 = goog.vec.Mat4.getElement(transform, 1, 1);
   var m03 = goog.vec.Mat4.getElement(transform, 0, 3);
   var m13 = goog.vec.Mat4.getElement(transform, 1, 3);
-  var dest = goog.isDef(opt_dest) ? opt_dest : [];
+  var dest = opt_dest ? opt_dest : [];
   var i = 0;
   var j;
   for (j = offset; j < end; j += stride) {
@@ -29,7 +29,7 @@ ol.geom.flat.transform.transform2D =
     dest[i++] = m00 * x + m01 * y + m03;
     dest[i++] = m10 * x + m11 * y + m13;
   }
-  if (goog.isDef(opt_dest) && dest.length != i) {
+  if (opt_dest && dest.length != i) {
     dest.length = i;
   }
   return dest;
@@ -48,7 +48,7 @@ ol.geom.flat.transform.transform2D =
  */
 ol.geom.flat.transform.translate =
     function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
-  var dest = goog.isDef(opt_dest) ? opt_dest : [];
+  var dest = opt_dest ? opt_dest : [];
   var i = 0;
   var j, k;
   for (j = offset; j < end; j += stride) {
@@ -58,7 +58,7 @@ ol.geom.flat.transform.translate =
       dest[i++] = flatCoordinates[k];
     }
   }
-  if (goog.isDef(opt_dest) && dest.length != i) {
+  if (opt_dest && dest.length != i) {
     dest.length = i;
   }
   return dest;

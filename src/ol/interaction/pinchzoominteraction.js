@@ -3,6 +3,7 @@ goog.provide('ol.interaction.PinchZoom');
 goog.require('goog.asserts');
 goog.require('goog.functions');
 goog.require('goog.style');
+goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
@@ -28,7 +29,7 @@ ol.interaction.PinchZoom = function(opt_options) {
     handleUpEvent: ol.interaction.PinchZoom.handleUpEvent_
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -40,7 +41,7 @@ ol.interaction.PinchZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 400;
+  this.duration_ = options.duration !== undefined ? options.duration : 400;
 
   /**
    * @private
@@ -76,7 +77,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   // distance between touches
   var distance = Math.sqrt(dx * dx + dy * dy);
 
-  if (goog.isDef(this.lastDistance_)) {
+  if (this.lastDistance_ !== undefined) {
     scaleDelta = this.lastDistance_ / distance;
   }
   this.lastDistance_ = distance;

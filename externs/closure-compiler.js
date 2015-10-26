@@ -8,31 +8,7 @@
  * @externs
  */
 
-/** @type {number} */
-Touch.prototype.force;
-
-
-/** @type {number} */
-Touch.prototype.radiusX;
-
-
-/** @type {number} */
-Touch.prototype.radiusY;
-
-
-/** @type {number} */
-Touch.prototype.webkitForce;
-
-
-/** @type {number} */
-Touch.prototype.webkitRadiusX;
-
-
-/** @type {number} */
-Touch.prototype.webkitRadiusY;
-
-
-// see https://github.com/google/closure-compiler/pull/1139
+// see https://github.com/google/closure-compiler/pull/1206
 
 /**
  * @type {string}

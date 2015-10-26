@@ -138,7 +138,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame =
 
   var replayGroup = this.replayGroup_;
 
-  if (!goog.isNull(replayGroup) && !replayGroup.isEmpty()) {
+  if (replayGroup && !replayGroup.isEmpty()) {
 
     context.globalAlpha = layerState.opacity;
     replayGroup.replay(context, pixelRatio, transform, viewRotation,
@@ -178,7 +178,7 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ =
  */
 ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate =
     function(coordinate, frameState, callback, thisArg) {
-  if (goog.isNull(this.replayGroup_)) {
+  if (!this.replayGroup_) {
     return undefined;
   } else {
     var resolution = frameState.viewState.resolution;
@@ -194,7 +194,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate =
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'received a feature');
+          goog.asserts.assert(feature !== undefined, 'received a feature');
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -250,7 +250,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
   var vectorLayerRenderBuffer = vectorLayer.getRenderBuffer();
   var vectorLayerRenderOrder = vectorLayer.getRenderOrder();
 
-  if (!goog.isDef(vectorLayerRenderOrder)) {
+  if (vectorLayerRenderOrder === undefined) {
     vectorLayerRenderOrder = ol.renderer.vector.defaultOrder;
   }
 
@@ -283,18 +283,22 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
        */
       function(feature) {
     var styles;
-    if (goog.isDef(feature.getStyleFunction())) {
-      styles = feature.getStyleFunction().call(feature, resolution);
-    } else if (goog.isDef(vectorLayer.getStyleFunction())) {
-      styles = vectorLayer.getStyleFunction()(feature, resolution);
+    var styleFunction = feature.getStyleFunction();
+    if (styleFunction) {
+      styles = styleFunction.call(feature, resolution);
+    } else {
+      styleFunction = vectorLayer.getStyleFunction();
+      if (styleFunction) {
+        styles = styleFunction(feature, resolution);
+      }
     }
-    if (goog.isDefAndNotNull(styles)) {
+    if (styles) {
       var dirty = this.renderFeature(
           feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
   };
-  if (!goog.isNull(vectorLayerRenderOrder)) {
+  if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
     vectorSource.forEachFeatureInExtentAtResolution(extent, resolution,
@@ -305,7 +309,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
           features.push(feature);
         }, this);
     goog.array.sort(features, vectorLayerRenderOrder);
-    goog.array.forEach(features, renderFeature, this);
+    features.forEach(renderFeature, this);
   } else {
     vectorSource.forEachFeatureInExtentAtResolution(
         extent, resolution, renderFeature, this);
@@ -332,7 +336,7 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame =
  */
 ol.renderer.dom.VectorLayer.prototype.renderFeature =
     function(feature, resolution, pixelRatio, styles, replayGroup) {
-  if (!goog.isDefAndNotNull(styles)) {
+  if (!styles) {
     return false;
   }
   var i, ii, loading = false;

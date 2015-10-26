@@ -1,7 +1,6 @@
 goog.provide('ol.has');
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('ol');
 goog.require('ol.dom');
 goog.require('ol.webgl');
@@ -41,10 +40,10 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
       }
       try {
         var context = ol.dom.createCanvasContext2D();
-        if (goog.isNull(context)) {
+        if (!context) {
           return false;
         } else {
-          if (goog.isDef(context.setLineDash)) {
+          if (context.setLineDash !== undefined) {
             ol.has.CANVAS_LINE_DASH = true;
           }
           return true;
@@ -125,11 +124,11 @@ ol.has.WEBGL;
     if ('WebGLRenderingContext' in goog.global) {
       try {
         var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement(goog.dom.TagName.CANVAS));
+            (goog.dom.createElement('CANVAS'));
         var gl = ol.webgl.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
         });
-        if (!goog.isNull(gl)) {
+        if (gl) {
           hasWebGL = true;
           textureSize = /** @type {number} */
               (gl.getParameter(gl.MAX_TEXTURE_SIZE));

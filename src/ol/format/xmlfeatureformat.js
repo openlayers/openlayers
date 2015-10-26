@@ -107,7 +107,7 @@ ol.format.XMLFeature.prototype.readFeaturesFromDocument = function(
   /** @type {Array.<ol.Feature>} */
   var features = [];
   var n;
-  for (n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+  for (n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       goog.array.extend(features, this.readFeaturesFromNode(n, opt_options));
     }

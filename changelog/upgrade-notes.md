@@ -1,6 +1,52 @@
 ## Upgrade notes
 
+### v3.11.0
+
+#### `ol.format.KML` changes
+
+KML icons are scaled 50% so that the rendering better matches Google Earth rendering.
+
+If a KML placemark has a name and is a point, an `ol.style.Text` is created with the name displayed to the right of the icon (if there is an icon).
+This can be controlled with the showPointNames option which defaults to true.
+
+To disable rendering of the point names for placemarks, use the option:
+new ol.format.KML({ showPointNames: false });
+
+
+#### `ol.interaction.DragBox` and `ol.interaction.DragZoom` changes
+
+Styling is no longer done with `ol.Style`, but with pure CSS. The `style` constructor option is no longer required, and no longer available. Instead, there is a `className` option for the CSS selector. The default for `ol.interaction.DragBox` is `ol-dragbox`, and `ol.interaction.DragZoom` uses `ol-dragzoom`. If you previously had
+```js
+new ol.interaction.DragZoom({
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: [255, 255, 255, 0.4]
+    })
+  })
+});
+```
+you'll now just need
+```js
+new ol.interaction.DragZoom();
+```
+but with additional css:
+```css
+.ol-dragzoom {
+  border-color: red;
+  border-width: 3px;
+  background-color: rgba(255,255,255,0.4);
+}
+```
+
 ### v3.10.0
+
+#### `ol.layer.Layer` changes
+
+The experimental `setHue`, `setContrast`, `setBrightness`, `setSaturation`, and the corresponding getter methods have been removed.  These properties only worked with the WebGL renderer.  If are interested in applying color transforms, look for the `postcompose` event in the API docs.  In addition, the `ol.source.Raster` source provides a way to create new raster data based on arbitrary transforms run on any number of input sources.
 
 ### v3.9.0
 

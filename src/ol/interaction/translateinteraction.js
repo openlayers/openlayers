@@ -1,7 +1,70 @@
 goog.provide('ol.interaction.Translate');
+goog.provide('ol.interaction.TranslateEvent');
 
-goog.require('goog.array');
+goog.require('goog.events');
+goog.require('goog.events.Event');
+goog.require('ol.array');
 goog.require('ol.interaction.Pointer');
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.TranslateEventType = {
+  /**
+   * Triggered upon feature translation start.
+   * @event ol.interaction.TranslateEvent#translatestart
+   * @api
+   */
+  TRANSLATESTART: 'translatestart',
+  /**
+   * Triggered upon feature translation.
+   * @event ol.interaction.TranslateEvent#translating
+   * @api
+   */
+  TRANSLATING: 'translating',
+  /**
+   * Triggered upon feature translation end.
+   * @event ol.interaction.TranslateEvent#translateend
+   * @api
+   */
+  TRANSLATEEND: 'translateend'
+};
+
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Translate} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {goog.events.Event}
+ * @implements {oli.interaction.TranslateEvent}
+ * @param {ol.interaction.TranslateEventType} type Type.
+ * @param {ol.Collection.<ol.Feature>} features The features translated.
+ * @param {ol.Coordinate} coordinate The event coordinate.
+ */
+ol.interaction.TranslateEvent = function(type, features, coordinate) {
+
+  goog.base(this, type);
+
+  /**
+   * The features being translated.
+   * @type {ol.Collection.<ol.Feature>}
+   * @api
+   */
+  this.features = features;
+
+  /**
+   * The coordinate of the drag event.
+   * @const
+   * @type {ol.Coordinate}
+   * @api
+   */
+  this.coordinate = coordinate;
+};
+goog.inherits(ol.interaction.TranslateEvent, goog.events.Event);
 
 
 
@@ -11,6 +74,7 @@ goog.require('ol.interaction.Pointer');
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
+ * @fires ol.interaction.TranslateEvent
  * @param {olx.interaction.TranslateOptions} options Options.
  * @api
  */
@@ -42,7 +106,7 @@ ol.interaction.Translate = function(options) {
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
-  this.features_ = goog.isDef(options.features) ? options.features : null;
+  this.features_ = options.features !== undefined ? options.features : null;
 
   /**
    * @type {ol.Feature}
@@ -61,9 +125,13 @@ goog.inherits(ol.interaction.Translate, ol.interaction.Pointer);
  */
 ol.interaction.Translate.handleDownEvent_ = function(event) {
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
-  if (goog.isNull(this.lastCoordinate_) && !goog.isNull(this.lastFeature_)) {
+  if (!this.lastCoordinate_ && this.lastFeature_) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
+    this.dispatchEvent(
+        new ol.interaction.TranslateEvent(
+            ol.interaction.TranslateEventType.TRANSLATESTART, this.features_,
+            event.coordinate));
     return true;
   }
   return false;
@@ -77,9 +145,13 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Translate.handleUpEvent_ = function(event) {
-  if (!goog.isNull(this.lastCoordinate_)) {
+  if (this.lastCoordinate_) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
+    this.dispatchEvent(
+        new ol.interaction.TranslateEvent(
+            ol.interaction.TranslateEventType.TRANSLATEEND, this.features_,
+            event.coordinate));
     return true;
   }
   return false;
@@ -92,24 +164,28 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
  * @private
  */
 ol.interaction.Translate.handleDragEvent_ = function(event) {
-  if (!goog.isNull(this.lastCoordinate_)) {
+  if (this.lastCoordinate_) {
     var newCoordinate = event.coordinate;
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    if (!goog.isNull(this.features_)) {
+    if (this.features_) {
       this.features_.forEach(function(feature) {
         var geom = feature.getGeometry();
         geom.translate(deltaX, deltaY);
         feature.setGeometry(geom);
       });
-    } else if (goog.isNull(this.lastFeature_)) {
+    } else if (this.lastFeature_) {
       var geom = this.lastFeature_.getGeometry();
       geom.translate(deltaX, deltaY);
       this.lastFeature_.setGeometry(geom);
     }
 
     this.lastCoordinate_ = newCoordinate;
+    this.dispatchEvent(
+        new ol.interaction.TranslateEvent(
+            ol.interaction.TranslateEventType.TRANSLATING, this.features_,
+            newCoordinate));
   }
 };
 
@@ -130,24 +206,24 @@ ol.interaction.Translate.handleMoveEvent_ = function(event)
   if (intersectingFeature) {
     var isSelected = false;
 
-    if (!goog.isNull(this.features_) &&
-        goog.array.contains(this.features_.getArray(), intersectingFeature)) {
+    if (this.features_ &&
+        ol.array.includes(this.features_.getArray(), intersectingFeature)) {
       isSelected = true;
     }
 
     this.previousCursor_ = elem.style.cursor;
 
     // WebKit browsers don't support the grab icons without a prefix
-    elem.style.cursor = !goog.isNull(this.lastCoordinate_) ?
+    elem.style.cursor = this.lastCoordinate_ ?
         '-webkit-grabbing' : (isSelected ? '-webkit-grab' : 'pointer');
 
     // Thankfully, attempting to set the standard ones will silently fail,
     // keeping the prefixed icons
-    elem.style.cursor = goog.isNull(this.lastCoordinate_) ?
+    elem.style.cursor = !this.lastCoordinate_ ?
         'grabbing' : (isSelected ? 'grab' : 'pointer');
 
   } else {
-    elem.style.cursor = goog.isDef(this.previousCursor_) ?
+    elem.style.cursor = this.previousCursor_ !== undefined ?
         this.previousCursor_ : '';
     this.previousCursor_ = undefined;
   }
@@ -171,8 +247,8 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
         return feature;
       });
 
-  if (!goog.isNull(this.features_) &&
-      goog.array.contains(this.features_.getArray(), intersectingFeature)) {
+  if (this.features_ &&
+      ol.array.includes(this.features_.getArray(), intersectingFeature)) {
     found = intersectingFeature;
   }
 

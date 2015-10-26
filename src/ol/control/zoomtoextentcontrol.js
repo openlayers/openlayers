@@ -2,7 +2,6 @@ goog.provide('ol.control.ZoomToExtent');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.control.Control');
@@ -21,21 +20,21 @@ goog.require('ol.css');
  * @api stable
  */
 ol.control.ZoomToExtent = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {ol.Extent}
    * @private
    */
-  this.extent_ = goog.isDef(options.extent) ? options.extent : null;
+  this.extent_ = options.extent ? options.extent : null;
 
-  var className = goog.isDef(options.className) ? options.className :
+  var className = options.className ? options.className :
       'ol-zoom-extent';
 
-  var label = goog.isDef(options.label) ? options.label : 'E';
-  var tipLabel = goog.isDef(options.tipLabel) ?
+  var label = options.label ? options.label : 'E';
+  var tipLabel = options.tipLabel ?
       options.tipLabel : 'Fit to extent';
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var button = goog.dom.createDom('BUTTON', {
     'type': 'button',
     'title': tipLabel
   }, label);
@@ -45,7 +44,7 @@ ol.control.ZoomToExtent = function(opt_options) {
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  var element = goog.dom.createDom('DIV', cssClasses, button);
 
   goog.base(this, {
     element: element,
@@ -71,9 +70,9 @@ ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
 ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  var extent = goog.isNull(this.extent_) ?
+  var extent = !this.extent_ ?
       view.getProjection().getExtent() : this.extent_;
   var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
+  goog.asserts.assert(size, 'size should be defined');
   view.fit(extent, size);
 };

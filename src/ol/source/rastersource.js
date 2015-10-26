@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.events.EventType');
-goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageCanvas');
@@ -48,14 +47,14 @@ ol.source.Raster = function(options) {
    * @private
    * @type {ol.raster.OperationType}
    */
-  this.operationType_ = goog.isDef(options.operationType) ?
+  this.operationType_ = options.operationType !== undefined ?
       options.operationType : ol.raster.OperationType.PIXEL;
 
   /**
    * @private
    * @type {number}
    */
-  this.threads_ = goog.isDef(options.threads) ? options.threads : 1;
+  this.threads_ = options.threads !== undefined ? options.threads : 1;
 
   /**
    * @private
@@ -79,7 +78,7 @@ ol.source.Raster = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      goog.functions.constant(1),
+      function() { return 1; },
       goog.bind(this.changed, this));
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
@@ -133,7 +132,7 @@ ol.source.Raster = function(options) {
 
   goog.base(this, {});
 
-  if (goog.isDef(options.operation)) {
+  if (options.operation !== undefined) {
     this.setOperation(options.operation, options.lib);
   }
 
@@ -320,7 +319,7 @@ ol.source.Raster.prototype.onWorkerComplete_ =
     callback(err);
     return;
   }
-  if (goog.isNull(output)) {
+  if (!output) {
     // job aborted
     return;
   }

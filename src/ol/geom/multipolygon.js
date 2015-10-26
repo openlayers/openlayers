@@ -3,6 +3,7 @@ goog.provide('ol.geom.MultiPolygon');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -94,7 +95,7 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
       'layout of polygon should match layout');
   /** @type {Array.<number>} */
   var ends;
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = polygon.getFlatCoordinates().slice();
     ends = polygon.getEnds().slice();
     this.endss_.push();
@@ -182,7 +183,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
-  if (goog.isDef(opt_right)) {
+  if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     ol.geom.flat.orient.orientLinearRingss(
         flatCoordinates, 0, this.endss_, this.stride, opt_right);
@@ -362,11 +363,11 @@ ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.MultiPolygon.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.endss_);
   } else {
     this.setLayout(opt_layout, coordinates, 3);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     var endss = ol.geom.flat.deflate.coordinatesss(
@@ -390,8 +391,8 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  */
 ol.geom.MultiPolygon.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, endss) {
-  goog.asserts.assert(!goog.isNull(endss), 'endss cannot be null');
-  if (goog.isNull(flatCoordinates) || flatCoordinates.length === 0) {
+  goog.asserts.assert(endss, 'endss must be truthy');
+  if (!flatCoordinates || flatCoordinates.length === 0) {
     goog.asserts.assert(endss.length === 0, 'the length of endss should be 0');
   } else {
     goog.asserts.assert(endss.length > 0, 'endss cannot be an empty array');
@@ -409,7 +410,7 @@ ol.geom.MultiPolygon.prototype.setFlatCoordinates =
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
  */
 ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
-  var layout = ol.geom.GeometryLayout.XY;
+  var layout = this.getLayout();
   var flatCoordinates = [];
   var endss = [];
   var i, ii, ends;

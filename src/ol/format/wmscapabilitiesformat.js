@@ -1,10 +1,9 @@
 goog.provide('ol.format.WMSCapabilities');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
-goog.require('goog.string');
+goog.require('ol');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
 goog.require('ol.format.XSD');
@@ -50,7 +49,7 @@ ol.format.WMSCapabilities.prototype.read;
 ol.format.WMSCapabilities.prototype.readFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
       'doc.nodeType should be DOCUMENT');
-  for (var n = doc.firstChild; !goog.isNull(n); n = n.nextSibling) {
+  for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
       return this.readFromNode(n);
     }
@@ -69,12 +68,12 @@ ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
   goog.asserts.assert(node.localName == 'WMS_Capabilities' ||
       node.localName == 'WMT_MS_Capabilities',
       'localName should be WMS_Capabilities or WMT_MS_Capabilities');
-  this.version = goog.string.trim(node.getAttribute('version'));
+  this.version = node.getAttribute('version').trim();
   goog.asserts.assertString(this.version, 'this.version should be a string');
   var wmsCapabilityObject = ol.xml.pushParseAndPop({
     'version': this.version
   }, ol.format.WMSCapabilities.PARSERS_, node, []);
-  return goog.isDef(wmsCapabilityObject) ? wmsCapabilityObject : null;
+  return wmsCapabilityObject ? wmsCapabilityObject : null;
 };
 
 
@@ -142,7 +141,7 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       {},
       ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
       node, objectStack);
-  if (!goog.isDef(geographicBoundingBox)) {
+  if (!geographicBoundingBox) {
     return undefined;
   }
   var westBoundLongitude = /** @type {number|undefined} */
@@ -153,8 +152,8 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
       (geographicBoundingBox['eastBoundLongitude']);
   var northBoundLatitude = /** @type {number|undefined} */
       (geographicBoundingBox['northBoundLatitude']);
-  if (!goog.isDef(westBoundLongitude) || !goog.isDef(southBoundLatitude) ||
-      !goog.isDef(eastBoundLongitude) || !goog.isDef(northBoundLatitude)) {
+  if (westBoundLongitude === undefined || southBoundLatitude === undefined ||
+      eastBoundLongitude === undefined || northBoundLatitude === undefined) {
     return undefined;
   }
   return /** @type {ol.Extent} */ ([
@@ -297,66 +296,64 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var layerObject = /**  @type {Object.<string,*>} */ (ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack));
 
-  if (!goog.isDef(layerObject)) {
+  if (!layerObject) {
     return undefined;
   }
   var queryable =
       ol.format.XSD.readBooleanString(node.getAttribute('queryable'));
-  if (!goog.isDef(queryable)) {
+  if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
-  layerObject['queryable'] = goog.isDef(queryable) ? queryable : false;
+  layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
   var cascaded = ol.format.XSD.readNonNegativeIntegerString(
       node.getAttribute('cascaded'));
-  if (!goog.isDef(cascaded)) {
+  if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
   layerObject['cascaded'] = cascaded;
 
   var opaque = ol.format.XSD.readBooleanString(node.getAttribute('opaque'));
-  if (!goog.isDef(opaque)) {
+  if (opaque === undefined) {
     opaque = parentLayerObject['opaque'];
   }
-  layerObject['opaque'] = goog.isDef(opaque) ? opaque : false;
+  layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
   var noSubsets =
       ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
-  if (!goog.isDef(noSubsets)) {
+  if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
-  layerObject['noSubsets'] = goog.isDef(noSubsets) ? noSubsets : false;
+  layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
   var fixedWidth =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));
-  if (!goog.isDef(fixedWidth)) {
+  if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
   var fixedHeight =
       ol.format.XSD.readDecimalString(node.getAttribute('fixedHeight'));
-  if (!goog.isDef(fixedHeight)) {
+  if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
   }
   layerObject['fixedHeight'] = fixedHeight;
 
   // See 7.2.4.8
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
-  goog.array.forEach(addKeys, function(key) {
-    var parentValue = parentLayerObject[key];
-    if (goog.isDef(parentValue)) {
+  addKeys.forEach(function(key) {
+    if (key in parentLayerObject) {
       var childValue = goog.object.setIfUndefined(layerObject, key, []);
-      childValue = childValue.concat(parentValue);
+      childValue = childValue.concat(parentLayerObject[key]);
       layerObject[key] = childValue;
     }
   });
 
   var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
     'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
-  goog.array.forEach(replaceKeys, function(key) {
-    var childValue = layerObject[key];
-    if (!goog.isDef(childValue)) {
+  replaceKeys.forEach(function(key) {
+    if (!(key in layerObject)) {
       var parentValue = parentLayerObject[key];
       layerObject[key] = parentValue;
     }
@@ -482,7 +479,7 @@ ol.format.WMSCapabilities.readSizedFormatOnlineresource_ =
       'node.nodeType should be ELEMENT');
   var formatOnlineresource =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
-  if (goog.isDef(formatOnlineresource)) {
+  if (formatOnlineresource) {
     var size = [
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('width')),
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('height'))
@@ -507,7 +504,7 @@ ol.format.WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
       'localName should be AuthorityURL');
   var authorityObject =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
-  if (goog.isDef(authorityObject)) {
+  if (authorityObject) {
     authorityObject['name'] = node.getAttribute('name');
     return authorityObject;
   }
@@ -528,7 +525,7 @@ ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
       'localName should be MetadataURL');
   var metadataObject =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
-  if (goog.isDef(metadataObject)) {
+  if (metadataObject) {
     metadataObject['type'] = node.getAttribute('type');
     return metadataObject;
   }

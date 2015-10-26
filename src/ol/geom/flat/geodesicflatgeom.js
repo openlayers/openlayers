@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.geodesic');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.TransformFunction');
 goog.require('ol.math');
@@ -102,12 +101,12 @@ ol.geom.flat.geodesic.greatCircleArc = function(
 
   var geoProjection = ol.proj.get('EPSG:4326');
 
-  var cosLat1 = Math.cos(goog.math.toRadians(lat1));
-  var sinLat1 = Math.sin(goog.math.toRadians(lat1));
-  var cosLat2 = Math.cos(goog.math.toRadians(lat2));
-  var sinLat2 = Math.sin(goog.math.toRadians(lat2));
-  var cosDeltaLon = Math.cos(goog.math.toRadians(lon2 - lon1));
-  var sinDeltaLon = Math.sin(goog.math.toRadians(lon2 - lon1));
+  var cosLat1 = Math.cos(ol.math.toRadians(lat1));
+  var sinLat1 = Math.sin(ol.math.toRadians(lat1));
+  var cosLat2 = Math.cos(ol.math.toRadians(lat2));
+  var sinLat2 = Math.sin(ol.math.toRadians(lat2));
+  var cosDeltaLon = Math.cos(ol.math.toRadians(lon2 - lon1));
+  var sinDeltaLon = Math.sin(ol.math.toRadians(lon2 - lon1));
   var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
 
   return ol.geom.flat.geodesic.line_(
@@ -126,10 +125,10 @@ ol.geom.flat.geodesic.greatCircleArc = function(
         var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
         var theta = Math.atan2(y, x);
         var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-        var lon = goog.math.toRadians(lon1) +
+        var lon = ol.math.toRadians(lon1) +
             Math.atan2(Math.sin(theta) * sinD * cosLat1,
                        cosD - sinLat1 * Math.sin(lat));
-        return [goog.math.toDegrees(lon), goog.math.toDegrees(lat)];
+        return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
       }, ol.proj.getTransform(geoProjection, projection), squaredTolerance);
 };
 

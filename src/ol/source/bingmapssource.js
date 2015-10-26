@@ -1,7 +1,6 @@
 goog.provide('ol.source.BingMaps');
 
 goog.require('goog.Uri');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
@@ -30,22 +29,23 @@ ol.source.BingMaps = function(options) {
     crossOrigin: 'anonymous',
     opaque: true,
     projection: ol.proj.get('EPSG:3857'),
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   /**
    * @private
    * @type {string}
    */
-  this.culture_ = goog.isDef(options.culture) ? options.culture : 'en-us';
+  this.culture_ = options.culture !== undefined ? options.culture : 'en-us';
 
   /**
    * @private
    * @type {number}
    */
-  this.maxZoom_ = goog.isDef(options.maxZoom) ? options.maxZoom : -1;
+  this.maxZoom_ = options.maxZoom !== undefined ? options.maxZoom : -1;
 
   var uri = new goog.Uri(
       'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
@@ -115,67 +115,60 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse =
 
   var culture = this.culture_;
   this.tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
-      goog.array.map(
-          resource.imageUrlSubdomains,
-          function(subdomain) {
-            var quadKeyTileCoord = [0, 0, 0];
-            var imageUrl = resource.imageUrl
-                .replace('{subdomain}', subdomain)
-                .replace('{culture}', culture);
-            return (
-                /**
-                 * @param {ol.TileCoord} tileCoord Tile coordinate.
-                 * @param {number} pixelRatio Pixel ratio.
-                 * @param {ol.proj.Projection} projection Projection.
-                 * @return {string|undefined} Tile URL.
-                 */
-                function(tileCoord, pixelRatio, projection) {
-                  goog.asserts.assert(ol.proj.equivalent(
-                      projection, sourceProjection),
-                      'projections are equivalent');
-                  if (goog.isNull(tileCoord)) {
-                    return undefined;
-                  } else {
-                    ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
-                        -tileCoord[2] - 1, quadKeyTileCoord);
-                    return imageUrl.replace('{quadkey}', ol.tilecoord.quadKey(
-                        quadKeyTileCoord));
-                  }
-                });
-          }));
+      resource.imageUrlSubdomains.map(function(subdomain) {
+        var quadKeyTileCoord = [0, 0, 0];
+        var imageUrl = resource.imageUrl
+            .replace('{subdomain}', subdomain)
+            .replace('{culture}', culture);
+        return (
+            /**
+             * @param {ol.TileCoord} tileCoord Tile coordinate.
+             * @param {number} pixelRatio Pixel ratio.
+             * @param {ol.proj.Projection} projection Projection.
+             * @return {string|undefined} Tile URL.
+             */
+            function(tileCoord, pixelRatio, projection) {
+              goog.asserts.assert(ol.proj.equivalent(
+                  projection, sourceProjection),
+                  'projections are equivalent');
+              if (!tileCoord) {
+                return undefined;
+              } else {
+                ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
+                    -tileCoord[2] - 1, quadKeyTileCoord);
+                return imageUrl.replace('{quadkey}', ol.tilecoord.quadKey(
+                    quadKeyTileCoord));
+              }
+            });
+      }));
 
   if (resource.imageryProviders) {
     var transform = ol.proj.getTransformFromProjections(
         ol.proj.get('EPSG:4326'), this.getProjection());
 
-    var attributions = goog.array.map(
-        resource.imageryProviders,
-        function(imageryProvider) {
-          var html = imageryProvider.attribution;
-          /** @type {Object.<string, Array.<ol.TileRange>>} */
-          var tileRanges = {};
-          goog.array.forEach(
-              imageryProvider.coverageAreas,
-              function(coverageArea) {
-                var minZ = coverageArea.zoomMin;
-                var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
-                var bbox = coverageArea.bbox;
-                var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
-                var extent = ol.extent.applyTransform(
-                    epsg4326Extent, transform);
-                var tileRange, z, zKey;
-                for (z = minZ; z <= maxZ; ++z) {
-                  zKey = z.toString();
-                  tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-                  if (zKey in tileRanges) {
-                    tileRanges[zKey].push(tileRange);
-                  } else {
-                    tileRanges[zKey] = [tileRange];
-                  }
-                }
-              });
-          return new ol.Attribution({html: html, tileRanges: tileRanges});
-        });
+    var attributions = resource.imageryProviders.map(function(imageryProvider) {
+      var html = imageryProvider.attribution;
+      /** @type {Object.<string, Array.<ol.TileRange>>} */
+      var tileRanges = {};
+      imageryProvider.coverageAreas.forEach(function(coverageArea) {
+        var minZ = coverageArea.zoomMin;
+        var maxZ = Math.min(coverageArea.zoomMax, maxZoom);
+        var bbox = coverageArea.bbox;
+        var epsg4326Extent = [bbox[1], bbox[0], bbox[3], bbox[2]];
+        var extent = ol.extent.applyTransform(epsg4326Extent, transform);
+        var tileRange, z, zKey;
+        for (z = minZ; z <= maxZ; ++z) {
+          zKey = z.toString();
+          tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+          if (zKey in tileRanges) {
+            tileRanges[zKey].push(tileRange);
+          } else {
+            tileRanges[zKey] = [tileRange];
+          }
+        }
+      });
+      return new ol.Attribution({html: html, tileRanges: tileRanges});
+    });
     attributions.push(ol.source.BingMaps.TOS_ATTRIBUTION);
     this.setAttributions(attributions);
   }

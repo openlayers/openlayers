@@ -3,7 +3,6 @@ goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('ol');
@@ -40,14 +39,14 @@ ol.style.AtlasManagerInfo;
  */
 ol.style.AtlasManager = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The size in pixels of the latest atlas image.
    * @private
    * @type {number}
    */
-  this.currentSize_ = goog.isDef(options.initialSize) ?
+  this.currentSize_ = options.initialSize !== undefined ?
       options.initialSize : ol.INITIAL_ATLAS_SIZE;
 
   /**
@@ -55,9 +54,9 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(options.maxSize) ?
+  this.maxSize_ = options.maxSize !== undefined ?
       options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
-          ol.MAX_ATLAS_SIZE : goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ?
+          ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
               ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
@@ -65,7 +64,7 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.space_ = goog.isDef(options.space) ? options.space : 1;
+  this.space_ = options.space !== undefined ? options.space : 1;
 
   /**
    * @private
@@ -97,13 +96,12 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
   /** @type {?ol.style.AtlasInfo} */
   var info = this.getInfo_(this.atlases_, id);
 
-  if (goog.isNull(info)) {
+  if (!info) {
     return null;
   }
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.getInfo_(this.hitAtlases_, id);
-  goog.asserts.assert(!goog.isNull(hitInfo),
-      'hitInfo must not be null');
+  goog.asserts.assert(hitInfo, 'hitInfo must not be null');
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -121,7 +119,7 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.get(id);
-    if (!goog.isNull(info)) {
+    if (info) {
       return info;
     }
   }
@@ -184,21 +182,20 @@ ol.style.AtlasManager.prototype.add =
   /** @type {?ol.style.AtlasInfo} */
   var info = this.add_(false,
       id, width, height, renderCallback, opt_this);
-  if (goog.isNull(info)) {
+  if (!info) {
     return null;
   }
 
   // even if no hit-detection entry is requested, we insert a fake entry into
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
-  var renderHitCallback = goog.isDef(opt_renderHitCallback) ?
+  var renderHitCallback = opt_renderHitCallback !== undefined ?
       opt_renderHitCallback : goog.functions.NULL;
 
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.add_(true,
       id, width, height, renderHitCallback, opt_this);
-  goog.asserts.assert(!goog.isNull(hitInfo),
-      'hitInfo must not be null');
+  goog.asserts.assert(hitInfo, 'hitInfo must not be null');
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -225,9 +222,9 @@ ol.style.AtlasManager.prototype.add_ =
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.add(id, width, height, renderCallback, opt_this);
-    if (!goog.isNull(info)) {
+    if (info) {
       return info;
-    } else if (goog.isNull(info) && i === ii - 1) {
+    } else if (!info && i === ii - 1) {
       // the entry could not be added to one of the existing atlases,
       // create a new atlas that is twice as big and try to add to this one.
       var size;
@@ -300,7 +297,7 @@ ol.style.Atlas = function(size, space) {
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
+      (goog.dom.createElement('CANVAS'));
   this.canvas_.width = size;
   this.canvas_.height = size;
 

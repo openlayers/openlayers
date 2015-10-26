@@ -2,9 +2,10 @@ goog.provide('ol.layer.Base');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
 
-goog.require('goog.math');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.Object');
+goog.require('ol.math');
 goog.require('ol.source.State');
 
 
@@ -12,11 +13,7 @@ goog.require('ol.source.State');
  * @enum {string}
  */
 ol.layer.LayerProperty = {
-  BRIGHTNESS: 'brightness',
-  CONTRAST: 'contrast',
-  HUE: 'hue',
   OPACITY: 'opacity',
-  SATURATION: 'saturation',
   VISIBLE: 'visible',
   EXTENT: 'extent',
   Z_INDEX: 'zIndex',
@@ -28,11 +25,7 @@ ol.layer.LayerProperty = {
 
 /**
  * @typedef {{layer: ol.layer.Layer,
- *            brightness: number,
- *            contrast: number,
- *            hue: number,
  *            opacity: number,
- *            saturation: number,
  *            sourceState: ol.source.State,
  *            visible: boolean,
  *            managed: boolean,
@@ -66,24 +59,16 @@ ol.layer.Base = function(options) {
    * @type {Object.<string, *>}
    */
   var properties = goog.object.clone(options);
-  properties[ol.layer.LayerProperty.BRIGHTNESS] =
-      goog.isDef(options.brightness) ? options.brightness : 0;
-  properties[ol.layer.LayerProperty.CONTRAST] =
-      goog.isDef(options.contrast) ? options.contrast : 1;
-  properties[ol.layer.LayerProperty.HUE] =
-      goog.isDef(options.hue) ? options.hue : 0;
   properties[ol.layer.LayerProperty.OPACITY] =
-      goog.isDef(options.opacity) ? options.opacity : 1;
-  properties[ol.layer.LayerProperty.SATURATION] =
-      goog.isDef(options.saturation) ? options.saturation : 1;
+      options.opacity !== undefined ? options.opacity : 1;
   properties[ol.layer.LayerProperty.VISIBLE] =
-      goog.isDef(options.visible) ? options.visible : true;
+      options.visible !== undefined ? options.visible : true;
   properties[ol.layer.LayerProperty.Z_INDEX] =
-      goog.isDef(options.zIndex) ? options.zIndex : 0;
+      options.zIndex !== undefined ? options.zIndex : 0;
   properties[ol.layer.LayerProperty.MAX_RESOLUTION] =
-      goog.isDef(options.maxResolution) ? options.maxResolution : Infinity;
+      options.maxResolution !== undefined ? options.maxResolution : Infinity;
   properties[ol.layer.LayerProperty.MIN_RESOLUTION] =
-      goog.isDef(options.minResolution) ? options.minResolution : 0;
+      options.minResolution !== undefined ? options.minResolution : 0;
 
   this.setProperties(properties);
 };
@@ -91,47 +76,10 @@ goog.inherits(ol.layer.Base, ol.Object);
 
 
 /**
- * Return the brightness of the layer.
- * @return {number} The brightness of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.getBrightness = function() {
-  return /** @type {number} */ (this.get(ol.layer.LayerProperty.BRIGHTNESS));
-};
-
-
-/**
- * Return the contrast of the layer.
- * @return {number} The contrast of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.getContrast = function() {
-  return /** @type {number} */ (this.get(ol.layer.LayerProperty.CONTRAST));
-};
-
-
-/**
- * Return the hue of the layer.
- * @return {number} The hue of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.getHue = function() {
-  return /** @type {number} */ (this.get(ol.layer.LayerProperty.HUE));
-};
-
-
-/**
  * @return {ol.layer.LayerState} Layer state.
  */
 ol.layer.Base.prototype.getLayerState = function() {
-  var brightness = this.getBrightness();
-  var contrast = this.getContrast();
-  var hue = this.getHue();
   var opacity = this.getOpacity();
-  var saturation = this.getSaturation();
   var sourceState = this.getSourceState();
   var visible = this.getVisible();
   var extent = this.getExtent();
@@ -140,11 +88,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   var minResolution = this.getMinResolution();
   return {
     layer: /** @type {ol.layer.Layer} */ (this),
-    brightness: goog.math.clamp(brightness, -1, 1),
-    contrast: Math.max(contrast, 0),
-    hue: hue,
-    opacity: goog.math.clamp(opacity, 0, 1),
-    saturation: Math.max(saturation, 0),
+    opacity: ol.math.clamp(opacity, 0, 1),
     sourceState: sourceState,
     visible: visible,
     managed: true,
@@ -221,17 +165,6 @@ ol.layer.Base.prototype.getOpacity = function() {
 
 
 /**
- * Return the saturation of the layer.
- * @return {number} The saturation of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.getSaturation = function() {
-  return /** @type {number} */ (this.get(ol.layer.LayerProperty.SATURATION));
-};
-
-
-/**
  * @return {ol.source.State} Source state.
  */
 ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
@@ -257,59 +190,6 @@ ol.layer.Base.prototype.getVisible = function() {
  */
 ol.layer.Base.prototype.getZIndex = function() {
   return /** @type {number} */ (this.get(ol.layer.LayerProperty.Z_INDEX));
-};
-
-
-/**
- * Adjust the layer brightness.  A value of -1 will render the layer completely
- * black.  A value of 0 will leave the brightness unchanged.  A value of 1 will
- * render the layer completely white.  Other values are linear multipliers on
- * the effect (values are clamped between -1 and 1).
- *
- * The filter effects draft [1] says the brightness function is supposed to
- * render 0 black, 1 unchanged, and all other values as a linear multiplier.
- *
- * The current WebKit implementation clamps values between -1 (black) and 1
- * (white) [2].  There is a bug open to change the filter effect spec [3].
- *
- * TODO: revisit this if the spec is still unmodified before we release
- *
- * [1] https://dvcs.w3.org/hg/FXTF/raw-file/tip/filters/index.html
- * [2] https://github.com/WebKit/webkit/commit/8f4765e569
- * [3] https://www.w3.org/Bugs/Public/show_bug.cgi?id=15647
- *
- * @param {number} brightness The brightness of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.setBrightness = function(brightness) {
-  this.set(ol.layer.LayerProperty.BRIGHTNESS, brightness);
-};
-
-
-/**
- * Adjust the layer contrast.  A value of 0 will render the layer completely
- * grey.  A value of 1 will leave the contrast unchanged.  Other values are
- * linear multipliers on the effect (and values over 1 are permitted).
- *
- * @param {number} contrast The contrast of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.setContrast = function(contrast) {
-  this.set(ol.layer.LayerProperty.CONTRAST, contrast);
-};
-
-
-/**
- * Apply a hue-rotation to the layer.  A value of 0 will leave the hue
- * unchanged.  Other values are radians around the color circle.
- * @param {number} hue The hue of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.setHue = function(hue) {
-  this.set(ol.layer.LayerProperty.HUE, hue);
 };
 
 
@@ -355,21 +235,6 @@ ol.layer.Base.prototype.setMinResolution = function(minResolution) {
  */
 ol.layer.Base.prototype.setOpacity = function(opacity) {
   this.set(ol.layer.LayerProperty.OPACITY, opacity);
-};
-
-
-/**
- * Adjust layer saturation.  A value of 0 will render the layer completely
- * unsaturated.  A value of 1 will leave the saturation unchanged.  Other
- * values are linear multipliers of the effect (and values over 1 are
- * permitted).
- *
- * @param {number} saturation The saturation of the layer.
- * @observable
- * @api
- */
-ol.layer.Base.prototype.setSaturation = function(saturation) {
-  this.set(ol.layer.LayerProperty.SATURATION, saturation);
 };
 
 

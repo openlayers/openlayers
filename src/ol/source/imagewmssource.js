@@ -31,7 +31,7 @@ goog.require('ol.source.wms.ServerType');
  */
 ol.source.ImageWMS = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   goog.base(this, {
     attributions: options.attributions,
@@ -45,7 +45,7 @@ ol.source.ImageWMS = function(opt_options) {
    * @type {?string}
    */
   this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
    * @private
@@ -57,7 +57,7 @@ ol.source.ImageWMS = function(opt_options) {
    * @private
    * @type {ol.ImageLoadFunctionType}
    */
-  this.imageLoadFunction_ = goog.isDef(options.imageLoadFunction) ?
+  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
@@ -84,7 +84,7 @@ ol.source.ImageWMS = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.hidpi_ = goog.isDef(options.hidpi) ? options.hidpi : true;
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
 
   /**
    * @private
@@ -108,7 +108,7 @@ ol.source.ImageWMS = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1.5;
+  this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
 };
 goog.inherits(ol.source.ImageWMS, ol.source.Image);
@@ -142,7 +142,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl =
   goog.asserts.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
 
-  if (!goog.isDef(this.url_)) {
+  if (this.url_ === undefined) {
     return undefined;
   }
 
@@ -185,16 +185,16 @@ ol.source.ImageWMS.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageWMS.prototype.getImage =
+ol.source.ImageWMS.prototype.getImageInternal =
     function(extent, resolution, pixelRatio, projection) {
 
-  if (!goog.isDef(this.url_)) {
+  if (this.url_ === undefined) {
     return null;
   }
 
   resolution = this.findNearestResolution(resolution);
 
-  if (pixelRatio != 1 && (!this.hidpi_ || !goog.isDef(this.serverType_))) {
+  if (pixelRatio != 1 && (!this.hidpi_ || this.serverType_ === undefined)) {
     pixelRatio = 1;
   }
 
@@ -223,7 +223,7 @@ ol.source.ImageWMS.prototype.getImage =
   extent[3] = centerY + imageResolution * height / 2;
 
   var image = this.image_;
-  if (!goog.isNull(image) &&
+  if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
@@ -281,7 +281,7 @@ ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
 ol.source.ImageWMS.prototype.getRequestUrl_ =
     function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(goog.isDef(this.url_), 'url is defined');
+  goog.asserts.assert(this.url_ !== undefined, 'url is defined');
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -295,7 +295,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ =
     switch (this.serverType_) {
       case ol.source.wms.ServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
-        if (goog.isDef(params['FORMAT_OPTIONS'])) {
+        if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
         } else {
           params['FORMAT_OPTIONS'] = 'dpi:' + dpi;

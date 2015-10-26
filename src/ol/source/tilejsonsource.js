@@ -34,9 +34,10 @@ ol.source.TileJSON = function(options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     projection: ol.proj.get('EPSG:3857'),
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
   var request = new goog.net.Jsonp(options.url);
@@ -57,13 +58,13 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var sourceProjection = this.getProjection();
   var extent;
-  if (goog.isDef(tileJSON.bounds)) {
+  if (tileJSON.bounds !== undefined) {
     var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, sourceProjection);
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (goog.isDef(tileJSON.scheme)) {
+  if (tileJSON.scheme !== undefined) {
     goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
   }
   var minZoom = tileJSON.minzoom || 0;
@@ -75,11 +76,11 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   });
   this.tileGrid = tileGrid;
 
-  this.tileUrlFunction = ol.TileUrlFunction.createFromTemplates(tileJSON.tiles);
+  this.tileUrlFunction =
+      ol.TileUrlFunction.createFromTemplates(tileJSON.tiles, tileGrid);
 
-  if (goog.isDef(tileJSON.attribution) &&
-      goog.isNull(this.getAttributions())) {
-    var attributionExtent = goog.isDef(extent) ?
+  if (tileJSON.attribution !== undefined && !this.getAttributions()) {
+    var attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};

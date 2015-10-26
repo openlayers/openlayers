@@ -33,7 +33,6 @@ goog.provide('ol.pointer.PointerEvent');
 
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.object');
 
 
 
@@ -59,7 +58,7 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    */
   this.browserEvent = browserEvent;
 
-  var eventDict = goog.isDef(opt_eventDict) ? opt_eventDict : {};
+  var eventDict = opt_eventDict ? opt_eventDict : {};
 
   /**
    * @type {number}
@@ -76,72 +75,73 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
   /**
    * @type {boolean}
    */
-  this.bubbles = goog.object.get(eventDict, 'bubbles', false);
+  this.bubbles = 'bubbles' in eventDict ? eventDict['bubbles'] : false;
 
   /**
    * @type {boolean}
    */
-  this.cancelable = goog.object.get(eventDict, 'cancelable', false);
+  this.cancelable = 'cancelable' in eventDict ? eventDict['cancelable'] : false;
 
   /**
    * @type {Object}
    */
-  this.view = goog.object.get(eventDict, 'view', null);
+  this.view = 'view' in eventDict ? eventDict['view'] : null;
 
   /**
    * @type {number}
    */
-  this.detail = goog.object.get(eventDict, 'detail', null);
+  this.detail = 'detail' in eventDict ? eventDict['detail'] : null;
 
   /**
    * @type {number}
    */
-  this.screenX = goog.object.get(eventDict, 'screenX', 0);
+  this.screenX = 'screenX' in eventDict ? eventDict['screenX'] : 0;
 
   /**
    * @type {number}
    */
-  this.screenY = goog.object.get(eventDict, 'screenY', 0);
+  this.screenY = 'screenY' in eventDict ? eventDict['screenY'] : 0;
 
   /**
    * @type {number}
    */
-  this.clientX = goog.object.get(eventDict, 'clientX', 0);
+  this.clientX = 'clientX' in eventDict ? eventDict['clientX'] : 0;
 
   /**
    * @type {number}
    */
-  this.clientY = goog.object.get(eventDict, 'clientY', 0);
+  this.clientY = 'clientY' in eventDict ? eventDict['clientY'] : 0;
 
   /**
    * @type {boolean}
    */
-  this.ctrlKey = goog.object.get(eventDict, 'ctrlKey', false);
+  this.ctrlKey = 'ctrlKey' in eventDict ? eventDict['ctrlKey'] : false;
 
   /**
    * @type {boolean}
    */
-  this.altKey = goog.object.get(eventDict, 'altKey', false);
+  this.altKey = 'altKey' in eventDict ? eventDict['altKey'] : false;
 
   /**
    * @type {boolean}
    */
-  this.shiftKey = goog.object.get(eventDict, 'shiftKey', false);
+  this.shiftKey = 'shiftKey' in eventDict ? eventDict['shiftKey'] : false;
 
   /**
    * @type {boolean}
    */
-  this.metaKey = goog.object.get(eventDict, 'metaKey', false);
+  this.metaKey = 'metaKey' in eventDict ? eventDict['metaKey'] : false;
 
   /**
    * @type {number}
    */
-  this.button = goog.object.get(eventDict, 'button', 0);
+  this.button = 'button' in eventDict ? eventDict['button'] : 0;
 
   /**
    * @type {Node}
    */
-  this.relatedTarget = goog.object.get(eventDict, 'relatedTarget', null);
+  this.relatedTarget = 'relatedTarget' in eventDict ?
+      eventDict['relatedTarget'] : null;
 
   // PointerEvent related properties
 
@@ -149,42 +149,42 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    * @const
    * @type {number}
    */
-  this.pointerId = goog.object.get(eventDict, 'pointerId', 0);
+  this.pointerId = 'pointerId' in eventDict ? eventDict['pointerId'] : 0;
 
   /**
    * @type {number}
    */
-  this.width = goog.object.get(eventDict, 'width', 0);
+  this.width = 'width' in eventDict ? eventDict['width'] : 0;
 
   /**
    * @type {number}
    */
-  this.height = goog.object.get(eventDict, 'height', 0);
+  this.height = 'height' in eventDict ? eventDict['height'] : 0;
 
   /**
    * @type {number}
    */
-  this.tiltX = goog.object.get(eventDict, 'tiltX', 0);
+  this.tiltX = 'tiltX' in eventDict ? eventDict['tiltX'] : 0;
 
   /**
    * @type {number}
    */
-  this.tiltY = goog.object.get(eventDict, 'tiltY', 0);
+  this.tiltY = 'tiltY' in eventDict ? eventDict['tiltY'] : 0;
 
   /**
    * @type {string}
    */
-  this.pointerType = goog.object.get(eventDict, 'pointerType', '');
+  this.pointerType = 'pointerType' in eventDict ? eventDict['pointerType'] : '';
 
   /**
    * @type {number}
    */
-  this.hwTimestamp = goog.object.get(eventDict, 'hwTimestamp', 0);
+  this.hwTimestamp = 'hwTimestamp' in eventDict ? eventDict['hwTimestamp'] : 0;
 
   /**
    * @type {boolean}
    */
-  this.isPrimary = goog.object.get(eventDict, 'isPrimary', false);
+  this.isPrimary = 'isPrimary' in eventDict ? eventDict['isPrimary'] : false;
 
   // keep the semantics of preventDefault
   if (browserEvent.preventDefault) {

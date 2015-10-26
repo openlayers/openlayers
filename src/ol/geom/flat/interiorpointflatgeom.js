@@ -60,7 +60,7 @@ ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
     // ring.  Use the center of the the linear ring's extent.
     pointX = flatCenters[flatCentersOffset];
   }
-  if (goog.isDef(opt_dest)) {
+  if (opt_dest) {
     opt_dest.push(pointX, y);
     return opt_dest;
   } else {

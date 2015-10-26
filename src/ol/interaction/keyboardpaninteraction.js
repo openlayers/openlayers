@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.events.KeyCodes');
 goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -34,13 +35,14 @@ ol.interaction.KeyboardPan = function(opt_options) {
     handleEvent: ol.interaction.KeyboardPan.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ? options.condition :
+  this.condition_ = options.condition !== undefined ?
+      options.condition :
       goog.functions.and(ol.events.condition.noModifierKeys,
           ol.events.condition.targetNotEditable);
 
@@ -48,13 +50,14 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 100;
+  this.duration_ = options.duration !== undefined ? options.duration : 100;
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelDelta_ = goog.isDef(options.pixelDelta) ? options.pixelDelta : 128;
+  this.pixelDelta_ = options.pixelDelta !== undefined ?
+      options.pixelDelta : 128;
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
@@ -82,7 +85,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
         keyCode == goog.events.KeyCodes.UP)) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
-      goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+      goog.asserts.assert(view, 'map must have view');
       var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == goog.events.KeyCodes.DOWN) {

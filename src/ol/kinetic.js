@@ -73,7 +73,7 @@ ol.Kinetic.prototype.begin = function() {
  * @param {number} y Y.
  */
 ol.Kinetic.prototype.update = function(x, y) {
-  this.points_.push(x, y, goog.now());
+  this.points_.push(x, y, Date.now());
 };
 
 
@@ -86,7 +86,7 @@ ol.Kinetic.prototype.end = function() {
     // in the array)
     return false;
   }
-  var delay = goog.now() - this.delay_;
+  var delay = Date.now() - this.delay_;
   var lastIndex = this.points_.length - 3;
   if (this.points_[lastIndex + 2] < delay) {
     // the last tracked point is too old, which means that the user stopped

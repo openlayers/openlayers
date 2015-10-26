@@ -38,7 +38,7 @@ goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   goog.asserts.assert(point.getLayout() == this.layout,
       'the layout of point should match layout');
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = point.getFlatCoordinates().slice();
   } else {
     goog.array.extend(this.flatCoordinates, point.getFlatCoordinates());
@@ -104,7 +104,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
  * @api stable
  */
 ol.geom.MultiPoint.prototype.getPoint = function(index) {
-  var n = goog.isNull(this.flatCoordinates) ?
+  var n = !this.flatCoordinates ?
       0 : this.flatCoordinates.length / this.stride;
   goog.asserts.assert(0 <= index && index < n,
       'index should be in between 0 and n');
@@ -175,11 +175,11 @@ ol.geom.MultiPoint.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.MultiPoint.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, coordinates, 1);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinates(

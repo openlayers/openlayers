@@ -5,12 +5,12 @@ goog.provide('ol.GeolocationProperty');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
 goog.require('ol.has');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.sphere.WGS84');
 
@@ -62,7 +62,7 @@ ol.Geolocation = function(opt_options) {
 
   goog.base(this);
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The unprojected (EPSG:4326) device position.
@@ -90,14 +90,14 @@ ol.Geolocation = function(opt_options) {
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
       this.handleTrackingChanged_, false, this);
 
-  if (goog.isDef(options.projection)) {
+  if (options.projection !== undefined) {
     this.setProjection(ol.proj.get(options.projection));
   }
-  if (goog.isDef(options.trackingOptions)) {
+  if (options.trackingOptions !== undefined) {
     this.setTrackingOptions(options.trackingOptions);
   }
 
-  this.setTracking(goog.isDef(options.tracking) ? options.tracking : false);
+  this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
 goog.inherits(ol.Geolocation, ol.Object);
@@ -117,10 +117,10 @@ ol.Geolocation.prototype.disposeInternal = function() {
  */
 ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
-  if (goog.isDefAndNotNull(projection)) {
+  if (projection) {
     this.transform_ = ol.proj.getTransformFromProjections(
         ol.proj.get('EPSG:4326'), projection);
-    if (!goog.isNull(this.position_)) {
+    if (this.position_) {
       this.set(
           ol.GeolocationProperty.POSITION, this.transform_(this.position_));
     }
@@ -134,12 +134,12 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.GEOLOCATION) {
     var tracking = this.getTracking();
-    if (tracking && !goog.isDef(this.watchId_)) {
+    if (tracking && this.watchId_ === undefined) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(
           goog.bind(this.positionChange_, this),
           goog.bind(this.positionError_, this),
           this.getTrackingOptions());
-    } else if (!tracking && goog.isDef(this.watchId_)) {
+    } else if (!tracking && this.watchId_ !== undefined) {
       goog.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }
@@ -155,13 +155,13 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
   this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
   this.set(ol.GeolocationProperty.ALTITUDE,
-      goog.isNull(coords.altitude) ? undefined : coords.altitude);
+      coords.altitude === null ? undefined : coords.altitude);
   this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
-      goog.isNull(coords.altitudeAccuracy) ?
+      coords.altitudeAccuracy === null ?
       undefined : coords.altitudeAccuracy);
-  this.set(ol.GeolocationProperty.HEADING, goog.isNull(coords.heading) ?
-      undefined : goog.math.toRadians(coords.heading));
-  if (goog.isNull(this.position_)) {
+  this.set(ol.GeolocationProperty.HEADING, coords.heading === null ?
+      undefined : ol.math.toRadians(coords.heading));
+  if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {
     this.position_[0] = coords.longitude;
@@ -170,7 +170,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   var projectedPosition = this.transform_(this.position_);
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
   this.set(ol.GeolocationProperty.SPEED,
-      goog.isNull(coords.speed) ? undefined : coords.speed);
+      coords.speed === null ? undefined : coords.speed);
   var geometry = ol.geom.Polygon.circular(
       ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);

@@ -2,7 +2,6 @@ goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -21,7 +20,7 @@ goog.require('ol.vec.Mat4');
  * @param {ol.layer.Image} imageLayer Image layer.
  */
 ol.renderer.dom.ImageLayer = function(imageLayer) {
-  var target = goog.dom.createElement(goog.dom.TagName.DIV);
+  var target = goog.dom.createElement('DIV');
   target.style.position = 'absolute';
 
   goog.base(this, imageLayer, target);
@@ -94,7 +93,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
   var hints = frameState.viewHints;
 
   var renderedExtent = frameState.extent;
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent !== undefined) {
     renderedExtent = ol.extent.getIntersection(
         renderedExtent, layerState.extent);
   }
@@ -102,15 +101,17 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
   if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
-    var sourceProjection = imageSource.getProjection();
-    if (!goog.isNull(sourceProjection)) {
-      goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
-          'projection and sourceProjection are equivalent');
-      projection = sourceProjection;
+    if (!ol.ENABLE_RASTER_REPROJECTION) {
+      var sourceProjection = imageSource.getProjection();
+      if (sourceProjection) {
+        goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
+            'projection and sourceProjection are equivalent');
+        projection = sourceProjection;
+      }
     }
     var image_ = imageSource.getImage(renderedExtent, viewResolution,
         frameState.pixelRatio, projection);
-    if (!goog.isNull(image_)) {
+    if (image_) {
       var loaded = this.loadImage(image_);
       if (loaded) {
         image = image_;
@@ -118,7 +119,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
     }
   }
 
-  if (!goog.isNull(image)) {
+  if (image) {
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
     var transform = goog.vec.Mat4.createNumber();
@@ -136,7 +137,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame =
       imageElement.style.maxWidth = 'none';
       imageElement.style.position = 'absolute';
       goog.dom.removeChildren(this.target);
-      goog.dom.appendChild(this.target, imageElement);
+      this.target.appendChild(imageElement);
       this.image_ = image;
     }
     this.setTransform_(transform);

@@ -3,6 +3,7 @@
 goog.provide('ol.interaction.Interaction');
 goog.provide('ol.interaction.InteractionProperty');
 
+goog.require('ol');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.animation');
@@ -107,8 +108,8 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
  */
 ol.interaction.Interaction.pan = function(map, view, delta, opt_duration) {
   var currentCenter = view.getCenter();
-  if (goog.isDef(currentCenter)) {
-    if (goog.isDef(opt_duration) && opt_duration > 0) {
+  if (currentCenter) {
+    if (opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.pan({
         source: currentCenter,
         duration: opt_duration,
@@ -146,17 +147,17 @@ ol.interaction.Interaction.rotate =
  */
 ol.interaction.Interaction.rotateWithoutConstraints =
     function(map, view, rotation, opt_anchor, opt_duration) {
-  if (goog.isDefAndNotNull(rotation)) {
+  if (rotation !== undefined) {
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
-    if (goog.isDef(currentRotation) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration) && opt_duration > 0) {
+    if (currentRotation !== undefined && currentCenter &&
+        opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
         duration: opt_duration,
         easing: ol.easing.easeOut
       }));
-      if (goog.isDef(opt_anchor)) {
+      if (opt_anchor) {
         map.beforeRender(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
@@ -217,17 +218,18 @@ ol.interaction.Interaction.zoomByDelta =
  */
 ol.interaction.Interaction.zoomWithoutConstraints =
     function(map, view, resolution, opt_anchor, opt_duration) {
-  if (goog.isDefAndNotNull(resolution)) {
+  if (resolution) {
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
-    if (goog.isDef(currentResolution) && goog.isDef(currentCenter) &&
-        goog.isDef(opt_duration) && opt_duration > 0) {
+    if (currentResolution !== undefined && currentCenter &&
+        resolution !== currentResolution &&
+        opt_duration && opt_duration > 0) {
       map.beforeRender(ol.animation.zoom({
         resolution: currentResolution,
         duration: opt_duration,
         easing: ol.easing.easeOut
       }));
-      if (goog.isDef(opt_anchor)) {
+      if (opt_anchor) {
         map.beforeRender(ol.animation.pan({
           source: currentCenter,
           duration: opt_duration,
@@ -235,7 +237,7 @@ ol.interaction.Interaction.zoomWithoutConstraints =
         }));
       }
     }
-    if (goog.isDefAndNotNull(opt_anchor)) {
+    if (opt_anchor) {
       var center = view.calculateCenterZoom(resolution, opt_anchor);
       view.setCenter(center);
     }

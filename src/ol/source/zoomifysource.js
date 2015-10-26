@@ -33,10 +33,10 @@ ol.source.ZoomifyTierSizeCalculation = {
  */
 ol.source.Zoomify = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   var size = options.size;
-  var tierSizeCalculation = goog.isDef(options.tierSizeCalculation) ?
+  var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
       options.tierSizeCalculation :
       ol.source.ZoomifyTierSizeCalculation.DEFAULT;
 
@@ -104,7 +104,7 @@ ol.source.Zoomify = function(opt_options) {
    * @return {string|undefined} Tile URL.
    */
   function tileUrlFunction(tileCoord, pixelRatio, projection) {
-    if (goog.isNull(tileCoord)) {
+    if (!tileCoord) {
       return undefined;
     } else {
       var tileCoordZ = tileCoord[0];
@@ -124,6 +124,7 @@ ol.source.Zoomify = function(opt_options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: ol.source.ZoomifyTile_,
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction
@@ -165,7 +166,8 @@ goog.inherits(ol.source.ZoomifyTile_, ol.ImageTile);
  */
 ol.source.ZoomifyTile_.prototype.getImage = function(opt_context) {
   var tileSize = ol.DEFAULT_TILE_SIZE;
-  var key = goog.isDef(opt_context) ? goog.getUid(opt_context).toString() : '';
+  var key = opt_context !== undefined ?
+      goog.getUid(opt_context).toString() : '';
   if (key in this.zoomifyImageByContext_) {
     return this.zoomifyImageByContext_[key];
   } else {

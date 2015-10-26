@@ -29,7 +29,7 @@ describe('ol.rendering.layer.Image', function() {
       }
     };
 
-    goog.array.forEach(sources, function(source) {
+    sources.forEach(function(source) {
       source.on('imageloadstart', function(event) {
         imagesLoading++;
       });
@@ -84,7 +84,6 @@ describe('ol.rendering.layer.Image', function() {
   });
 });
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.proj');
 goog.require('ol.Map');
