@@ -3684,7 +3684,8 @@ olx.source.BingMapsOptions.prototype.wrapX;
  *     format: (ol.format.Feature|undefined),
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
- *     source: ol.source.Vector}}
+ *     source: ol.source.Vector,
+ *     wrapX: (boolean|undefined)}}
  * @api
  */
 olx.source.ClusterOptions;
@@ -3744,6 +3745,14 @@ olx.source.ClusterOptions.prototype.projection;
  * @api
  */
 olx.source.ClusterOptions.prototype.source;
+
+
+/**
+ * WrapX. Default is true
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.ClusterOptions.prototype.wrapX;
 
 
 /**
@@ -5165,10 +5174,10 @@ olx.source.VectorOptions.prototype.strategy;
  * other loading strategies.
  * Requires `format` to be set as well.
  * When default XHR feature loader is provided, the features will
- * be transformed from the data projection to the view projection 
- * during parsing. If your remote data source does not advertise its projection 
- * properly, this transformation will be incorrect. For some formats, the 
- * default projection (usually EPSG:4326) can be overridden by setting the 
+ * be transformed from the data projection to the view projection
+ * during parsing. If your remote data source does not advertise its projection
+ * properly, this transformation will be incorrect. For some formats, the
+ * default projection (usually EPSG:4326) can be overridden by setting the
  * defaultDataProjection constructor option on the format.
  * @type {string|ol.FeatureUrlFunction|undefined}
  * @api
