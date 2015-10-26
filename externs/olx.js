@@ -3746,7 +3746,7 @@ olx.source.ClusterOptions.prototype.projection;
 olx.source.ClusterOptions.prototype.source;
 
 /**
- * WrapX. Minimum distance in pixels between clusters. Default is true
+ * WrapX. Default is true
  * @type {boolean|undefined}
  * @api
  */
