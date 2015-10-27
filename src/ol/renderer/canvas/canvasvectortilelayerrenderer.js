@@ -247,6 +247,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
 
   var replayables = this.renderedTiles_;
   var source = layer.getSource();
+  goog.asserts.assertInstanceof(source, ol.source.VectorTile,
+      'Source is an ol.source.VectorTile');
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
@@ -254,8 +256,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
   for (i = 0, ii = replayables.length; i < ii; ++i) {
     tile = replayables[i];
     tileCoord = tile.getTileCoord();
-    goog.asserts.assertInstanceof(source, ol.source.VectorTile,
-        'Source is an ol.source.VectorTile');
     tileExtent = source.getTileGrid().getTileCoordExtent(tileCoord,
         this.tmpExtent_);
     if (!ol.extent.containsCoordinate(tileExtent, coordinate)) {

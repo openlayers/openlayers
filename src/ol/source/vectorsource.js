@@ -494,20 +494,6 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
 
 
 /**
- * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
- * @param {function(this: T, ol.Feature): S} f Callback.
- * @param {T=} opt_this The object to use as `this` in `f`.
- * @return {S|undefined}
- * @template T,S
- */
-ol.source.Vector.prototype.forEachFeatureInExtentAtResolution =
-    function(extent, resolution, f, opt_this) {
-  return this.forEachFeatureInExtent(extent, f, opt_this);
-};
-
-
-/**
  * Iterate through all features whose geometry intersects the provided extent,
  * calling the callback with each feature.  If the callback returns a "truthy"
  * value, iteration will stop and the function will return the same value.

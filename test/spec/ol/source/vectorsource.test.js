@@ -62,6 +62,17 @@ describe('ol.source.Vector', function() {
         expect(listener).to.be.called();
       });
 
+      it('adds same id features only once', function() {
+        var source = new ol.source.Vector();
+        var feature1 = new ol.Feature();
+        feature1.setId('1');
+        var feature2 = new ol.Feature();
+        feature2.setId('1');
+        source.addFeature(feature1);
+        source.addFeature(feature2);
+        expect(source.getFeatures().length).to.be(1);
+      });
+
     });
 
   });
