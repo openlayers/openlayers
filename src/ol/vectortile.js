@@ -170,7 +170,7 @@ ol.VectorTile.prototype.setState = function(tileState) {
 
 
 /**
- * Set the feeature loader for reading this tile's features.
+ * Set the feature loader for reading this tile's features.
  * @param {ol.FeatureLoader} loader Feature loader.
  * @api
  */

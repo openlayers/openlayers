@@ -86,7 +86,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var projection = viewState.projection;
   var resolution = viewState.resolution;
   var rotation = viewState.rotation;
-  var source = this.getLayer().getSource();
+  var layer = this.getLayer();
+  var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
       'Source is an ol.source.VectorTile');
 
@@ -94,7 +95,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
 
   this.dispatchPreComposeEvent(context, frameState, transform);
 
-  var layer = this.getLayer();
   var replayContext;
   if (layer.hasListener(ol.render.EventType.RENDER)) {
     // resize and clear
@@ -160,10 +160,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
 ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     layer, pixelRatio) {
   var revision = layer.getRevision();
-  var renderOrder = layer.getRenderOrder();
-  if (renderOrder === undefined) {
-    renderOrder = null;
-  }
+  var renderOrder = layer.getRenderOrder() || null;
 
   var replayState = tile.getReplayState();
   if (!replayState.dirty && replayState.renderedRevision == revision &&

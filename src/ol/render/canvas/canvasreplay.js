@@ -1180,6 +1180,10 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
     miterLimit: undefined
   };
 
+  /**
+   * @private
+   * @type {boolean}
+   */
   this.rightHanded_ = false;
 
 };

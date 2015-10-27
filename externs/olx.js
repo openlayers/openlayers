@@ -3651,12 +3651,13 @@ olx.layer.VectorOptions.prototype.visible;
 
 
 /**
- * @typedef {{map: (ol.Map|undefined),
+ * @typedef {{extent: (ol.Extent|undefined),
+ *     map: (ol.Map|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     renderBuffer: (number|undefined),
- *     renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
+ *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
  *     source: (ol.source.VectorTile|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
@@ -3680,9 +3681,8 @@ olx.layer.VectorTileOptions.prototype.renderBuffer;
 
 /**
  * Render order. Function to be used when sorting features before rendering. By
- * default features are drawn in the order that they are created. Use `null` to
- * avoid the sort, but get an undefined draw order.
- * @type {function(ol.Feature, ol.Feature):number|null|undefined}
+ * default features are drawn in the order that they are created.
+ * @type {function(ol.Feature, ol.Feature):number|undefined}
  * @api
  */
 olx.layer.VectorTileOptions.prototype.renderOrder;
@@ -3703,7 +3703,7 @@ olx.layer.VectorTileOptions.prototype.map;
  * The bounding extent for layer rendering.  The layer will not be rendered
  * outside of this extent.
  * @type {ol.Extent|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorTileOptions.prototype.extent;
 
@@ -3711,7 +3711,7 @@ olx.layer.VectorTileOptions.prototype.extent;
 /**
  * The minimum resolution (inclusive) at which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorTileOptions.prototype.minResolution;
 
@@ -3719,7 +3719,7 @@ olx.layer.VectorTileOptions.prototype.minResolution;
 /**
  * The maximum resolution (exclusive) below which this layer will be visible.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorTileOptions.prototype.maxResolution;
 
@@ -3727,15 +3727,15 @@ olx.layer.VectorTileOptions.prototype.maxResolution;
 /**
  * Opacity. 0-1. Default is `1`.
  * @type {number|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorTileOptions.prototype.opacity;
 
 
 /**
  * Source.
- * @type {ol.source.VectorTile}
- * @api
+ * @type {ol.source.VectorTile|undefined}
+ * @api stable
  */
 olx.layer.VectorTileOptions.prototype.source;
 
@@ -3744,7 +3744,7 @@ olx.layer.VectorTileOptions.prototype.source;
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
- * @api
+ * @api stable
  */
 olx.layer.VectorTileOptions.prototype.style;
 
@@ -4154,6 +4154,7 @@ olx.source.VectorTileOptions.prototype.attributions;
  * Feature format for tiles. Used and required by the default
  * `tileLoadFunction`.
  * @type {ol.format.Feature|undefined}
+ * @api
  */
 olx.source.VectorTileOptions.prototype.format;
 

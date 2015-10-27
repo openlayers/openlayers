@@ -86,7 +86,7 @@ ol.render.Feature.prototype.getEnds = function() {
  * @api
  */
 ol.render.Feature.prototype.getExtent = function() {
-  if (!goog.isDef(this.extent_)) {
+  if (!this.extent_) {
     this.extent_ = this.type_ === ol.geom.GeometryType.POINT ?
         ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
         ol.extent.createOrUpdateFromFlatCoordinates(

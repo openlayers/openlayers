@@ -107,7 +107,7 @@ ol.format.MVT.prototype.readFeature_ = function(
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
     values[this.geometryName_] = geometry;
   }
-  feature.setProperties(rawFeature.properties);
+  feature.setProperties(values);
   feature.setGeometryName(this.geometryName_);
   return feature;
 };
@@ -121,21 +121,9 @@ ol.format.MVT.prototype.readFeature_ = function(
  */
 ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
   var coords = rawFeature.loadGeometry();
-  var end = 0;
   var ends = [];
   var flatCoordinates = [];
-  var line, coord;
-  for (var i = 0, ii = coords.length; i < ii; ++i) {
-    line = coords[i];
-    for (var j = 0, jj = line.length; j < jj; ++j) {
-      coord = line[j];
-      // Non-tilespace coords can be calculated here when a TileGrid and
-      // TileCoord are known.
-      flatCoordinates.push(coord.x, coord.y);
-    }
-    end += 2 * j;
-    ends.push(end);
-  }
+  ol.format.MVT.calculateFlatCoordinates_(coords, flatCoordinates, ends);
 
   var type = rawFeature.type;
   /** @type {ol.geom.GeometryType} */
@@ -149,15 +137,14 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
     } else {
       geometryType = ol.geom.GeometryType.MULTI_LINE_STRING;
     }
-  } else {
+  } else if (type === 3) {
     geometryType = ol.geom.GeometryType.POLYGON;
   }
 
-  var properties = rawFeature.properties;
-  properties[this.layerName_] = layer;
+  var values = rawFeature.properties;
+  values[this.layerName_] = layer;
 
-  return new this.featureClass_(
-      geometryType, flatCoordinates, ends, rawFeature.properties);
+  return new this.featureClass_(geometryType, flatCoordinates, ends, values);
 };
 
 
@@ -180,7 +167,7 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
     }
     layer = tile.layers[name];
 
-    for (var i = 0, ii = layer.length; i < layer.length; ++i) {
+    for (var i = 0, ii = layer.length; i < ii; ++i) {
       if (featureClass === ol.render.Feature) {
         feature = this.readRenderFeature_(layer.feature(i), name);
       } else {
@@ -214,20 +201,14 @@ ol.format.MVT.prototype.setLayers = function(layers) {
 
 /**
  * @private
- * @param {Object} rawFeature Raw Mapbox feature.
- * @return {ol.geom.Geometry} Geometry.
+ * @param {Object} coords Raw feature coordinates.
+ * @param {Array.<number>} flatCoordinates Flat coordinates to be populated by
+ *     this function.
+ * @param {Array.<number>} ends Ends to be populated by this function.
  */
-ol.format.MVT.readGeometry_ = function(rawFeature) {
-  var type = rawFeature.type;
-  if (type === 0) {
-    return null;
-  }
-
-  var coords = rawFeature.loadGeometry();
-
+ol.format.MVT.calculateFlatCoordinates_ = function(
+    coords, flatCoordinates, ends) {
   var end = 0;
-  var ends = [];
-  var flatCoordinates = [];
   var line, coord;
   for (var i = 0, ii = coords.length; i < ii; ++i) {
     line = coords[i];
@@ -240,6 +221,24 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
     end += 2 * j;
     ends.push(end);
   }
+};
+
+
+/**
+ * @private
+ * @param {Object} rawFeature Raw Mapbox feature.
+ * @return {ol.geom.Geometry} Geometry.
+ */
+ol.format.MVT.readGeometry_ = function(rawFeature) {
+  var type = rawFeature.type;
+  if (type === 0) {
+    return null;
+  }
+
+  var coords = rawFeature.loadGeometry();
+  var ends = [];
+  var flatCoordinates = [];
+  ol.format.MVT.calculateFlatCoordinates_(coords, flatCoordinates, ends);
 
   var geom;
   if (type === 1) {
@@ -251,7 +250,7 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
     } else {
       geom = new ol.geom.MultiLineString(null);
     }
-  } else {
+  } else if (type === 3) {
     geom = new ol.geom.Polygon(null);
   }
 

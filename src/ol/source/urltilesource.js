@@ -112,7 +112,7 @@ ol.source.UrlTile.prototype.getTileUrlFunction = function() {
 
 
 /**
- * Return the URLs used for this XYZ source.
+ * Return the URLs used for this source.
  * When a tileUrlFunction is used instead of url or urls,
  * null will be returned.
  * @return {!Array.<string>|null} URLs.

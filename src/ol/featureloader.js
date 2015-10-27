@@ -102,7 +102,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
                 if (source) {
                   var features = format.readFeatures(source,
                       {featureProjection: projection});
-                  if (success.length == 2) {
+                  if (ol.ENABLE_VECTOR_TILE && success.length == 2) {
                     success.call(this, features, format.readProjection(source));
                   } else {
                     success.call(this, features);
@@ -171,5 +171,5 @@ ol.featureloader.xhr = function(url, format) {
        */
       function(features) {
         this.addFeatures(features);
-      }, ol.nullFunction);
+      }, /* FIXME handle error */ ol.nullFunction);
 };

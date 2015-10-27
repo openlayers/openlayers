@@ -253,7 +253,8 @@ ol.geom.Geometry.prototype.translate = goog.abstractMethod;
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
   goog.asserts.assert(
-      ol.proj.get(source).getUnits() !== ol.proj.Units.TILE_PIXELS,
+      ol.proj.get(source).getUnits() !== ol.proj.Units.TILE_PIXELS &&
+      ol.proj.get(destination).getUnits() !== ol.proj.Units.TILE_PIXELS,
       'cannot transform geometries with TILE_PIXELS units');
   this.applyTransform(ol.proj.getTransform(source, destination));
   return this;
