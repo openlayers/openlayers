@@ -163,6 +163,16 @@ describe('ol.source.ImageWMS', function() {
       expect(image1).to.equal(image2);
     });
 
+    it('returns same image for calls with similar extents', function() {
+      options.ratio = 1.5;
+      var source = new ol.source.ImageWMS(options);
+      var extent = [10.01, 20, 30.01, 40];
+      var image1 = source.getImage(extent, resolution, pixelRatio, projection);
+      extent = [10.01, 20.1, 30.01, 40.1];
+      var image2 = source.getImage(extent, resolution, pixelRatio, projection);
+      expect(image1).to.equal(image2);
+    });
+
   });
 
   describe('#getGetFeatureInfo', function() {
