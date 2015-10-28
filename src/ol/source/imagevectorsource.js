@@ -116,7 +116,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
   this.source_.loadFeatures(extent, resolution, projection);
 
   var loading = false;
-  this.source_.forEachFeatureInExtentAtResolution(extent, resolution,
+  this.source_.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
        */
@@ -162,7 +162,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     return this.replayGroup_.forEachFeatureAtCoordinate(
         coordinate, resolution, 0, skippedFeatureUids,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {

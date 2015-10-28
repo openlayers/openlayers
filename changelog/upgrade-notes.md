@@ -42,6 +42,10 @@ but with additional css:
 }
 ```
 
+#### Removal of `ol.source.TileVector`
+
+With the introduction of true vector tile support, `ol.source.TileVector` becomes obsolete. Change your code to use `ol.layer.VectorTile` and `ol.source.VectorTile` instead of `ol.layer.Vector` and `ol.source.TileVector`.
+
 ### v3.10.0
 
 #### `ol.layer.Layer` changes

@@ -125,6 +125,14 @@ ol.ENABLE_VECTOR = true;
 
 
 /**
+ * @define {boolean} Enable rendering of ol.layer.VectorTile based layers.
+ *     Default is `true`. Setting this to false at compile time in advanced mode
+ *     removes all code supporting VectorTile layers from the build.
+ */
+ol.ENABLE_VECTOR_TILE = true;
+
+
+/**
  * @define {boolean} Enable the WebGL renderer.  Default is `true`. Setting
  *     this to false at compile time in advanced mode removes all code
  *     supporting the WebGL renderer from the build.

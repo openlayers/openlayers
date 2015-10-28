@@ -11,7 +11,6 @@ goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.size');
@@ -49,19 +48,10 @@ ol.source.TileWMS = function(opt_options) {
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    url: options.url,
+    urls: options.urls,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
-
-  var urls = options.urls;
-  if (urls === undefined && options.url !== undefined) {
-    urls = ol.TileUrlFunction.expandUrl(options.url);
-  }
-
-  /**
-   * @private
-   * @type {!Array.<string>}
-   */
-  this.urls_ = urls || [];
 
   /**
    * @private
@@ -221,7 +211,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
     function(tileCoord, tileSize, tileExtent,
         pixelRatio, projection, params) {
 
-  var urls = this.urls_;
+  var urls = this.urls;
   if (urls.length === 0) {
     return undefined;
   }
@@ -302,16 +292,6 @@ ol.source.TileWMS.prototype.getTilePixelSize =
 
 
 /**
- * Return the URLs used for this WMS source.
- * @return {!Array.<string>} URLs.
- * @api stable
- */
-ol.source.TileWMS.prototype.getUrls = function() {
-  return this.urls_;
-};
-
-
-/**
  * @private
  */
 ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
@@ -319,8 +299,8 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   var res = [];
 
   var j, jj;
-  for (j = 0, jj = this.urls_.length; j < jj; ++j) {
-    res[i++] = this.urls_[j];
+  for (j = 0, jj = this.urls.length; j < jj; ++j) {
+    res[i++] = this.urls[j];
   }
 
   var key;
@@ -329,29 +309,6 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   }
 
   this.coordKeyPrefix_ = res.join('#');
-};
-
-
-/**
- * Set the URL to use for requests.
- * @param {string|undefined} url URL.
- * @api stable
- */
-ol.source.TileWMS.prototype.setUrl = function(url) {
-  var urls = url !== undefined ? ol.TileUrlFunction.expandUrl(url) : null;
-  this.setUrls(urls);
-};
-
-
-/**
- * Set the URLs to use for requests.
- * @param {Array.<string>|undefined} urls URLs.
- * @api stable
- */
-ol.source.TileWMS.prototype.setUrls = function(urls) {
-  this.urls_ = urls || [];
-  this.resetCoordKeyPrefix_();
-  this.changed();
 };
 
 

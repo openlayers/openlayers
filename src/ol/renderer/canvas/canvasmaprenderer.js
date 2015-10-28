@@ -15,6 +15,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.layer.VectorTile');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');
@@ -23,6 +24,7 @@ goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
 
@@ -79,6 +81,8 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
     return new ol.renderer.canvas.ImageLayer(layer);
   } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
     return new ol.renderer.canvas.TileLayer(layer);
+  } else if (ol.ENABLE_VECTOR_TILE && layer instanceof ol.layer.VectorTile) {
+    return new ol.renderer.canvas.VectorTileLayer(layer);
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(layer);
   } else {

@@ -198,7 +198,8 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
  * the view's resolution. The function should return an array of
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
  *
- * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
+ * @typedef {function((ol.Feature|ol.render.Feature), number):
+ *     Array.<ol.style.Style>}
  * @api
  */
 ol.style.StyleFunction;
@@ -245,7 +246,7 @@ ol.style.defaultStyle_ = null;
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
@@ -354,7 +355,8 @@ ol.style.createDefaultEditingStyles = function() {
  * A function that takes an {@link ol.Feature} as argument and returns an
  * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function(ol.Feature): (ol.geom.Geometry|undefined)}
+ * @typedef {function((ol.Feature|ol.render.Feature)):
+ *     (ol.geom.Geometry|ol.render.Feature|undefined)}
  * @api
  */
 ol.style.GeometryFunction;
@@ -362,8 +364,9 @@ ol.style.GeometryFunction;
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {ol.Feature} feature Feature to get the geometry for.
- * @return {ol.geom.Geometry|undefined} Geometry to render.
+ * @param {ol.Feature|ol.render.Feature} feature Feature to get the geometry
+ *     for.
+ * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
   goog.asserts.assert(feature, 'feature must not be null');

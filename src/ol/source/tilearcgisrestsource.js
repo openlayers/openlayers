@@ -7,7 +7,6 @@ goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.TileCoord');
-goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.size');
@@ -45,19 +44,10 @@ ol.source.TileArcGISRest = function(opt_options) {
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    url: options.url,
+    urls: options.urls,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
-
-  var urls = options.urls;
-  if (urls === undefined && options.url !== undefined) {
-    urls = ol.TileUrlFunction.expandUrl(options.url);
-  }
-
-  /**
-   * @private
-   * @type {!Array.<string>}
-   */
-  this.urls_ = urls || [];
 
   /**
    * @private
@@ -100,7 +90,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
     function(tileCoord, tileSize, tileExtent,
         pixelRatio, projection, params) {
 
-  var urls = this.urls_;
+  var urls = this.urls;
   if (urls.length === 0) {
     return undefined;
   }
@@ -155,38 +145,6 @@ ol.source.TileArcGISRest.prototype.getTilePixelSize =
   } else {
     return ol.size.scale(tileSize, pixelRatio, this.tmpSize);
   }
-};
-
-
-/**
- * Return the URLs used for this ArcGIS source.
- * @return {!Array.<string>} URLs.
- * @api stable
- */
-ol.source.TileArcGISRest.prototype.getUrls = function() {
-  return this.urls_;
-};
-
-
-/**
- * Set the URL to use for requests.
- * @param {string|undefined} url URL.
- * @api stable
- */
-ol.source.TileArcGISRest.prototype.setUrl = function(url) {
-  var urls = url !== undefined ? ol.TileUrlFunction.expandUrl(url) : null;
-  this.setUrls(urls);
-};
-
-
-/**
- * Set the URLs to use for requests.
- * @param {Array.<string>|undefined} urls URLs.
- * @api stable
- */
-ol.source.TileArcGISRest.prototype.setUrls = function(urls) {
-  this.urls_ = urls || [];
-  this.changed();
 };
 
 

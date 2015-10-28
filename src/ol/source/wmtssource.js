@@ -87,12 +87,6 @@ ol.source.WMTS = function(options) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
 
-  /**
-   * @private
-   * @type {!Array.<string>}
-   */
-  this.urls_ = urls || [];
-
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
 
@@ -175,9 +169,9 @@ ol.source.WMTS = function(options) {
         });
   }
 
-  var tileUrlFunction = this.urls_.length > 0 ?
+  var tileUrlFunction = (urls && urls.length > 0) ?
       ol.TileUrlFunction.createFromTileUrlFunctions(
-          this.urls_.map(createFromWMTSTemplate)) :
+          urls.map(createFromWMTSTemplate)) :
       ol.TileUrlFunction.nullTileUrlFunction;
 
   goog.base(this, {
@@ -191,6 +185,7 @@ ol.source.WMTS = function(options) {
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: tileUrlFunction,
+    urls: urls,
     wrapX: options.wrapX !== undefined ? options.wrapX : false
   });
 
@@ -265,16 +260,6 @@ ol.source.WMTS.prototype.getRequestEncoding = function() {
  */
 ol.source.WMTS.prototype.getStyle = function() {
   return this.style_;
-};
-
-
-/**
- * Return the URLs used for this WMTS source.
- * @return {!Array.<string>} URLs.
- * @api
- */
-ol.source.WMTS.prototype.getUrls = function() {
-  return this.urls_;
 };
 
 
