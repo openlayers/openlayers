@@ -551,6 +551,12 @@ describe('ol.format.GeoJSON', function() {
       expect(geojson.geometry).to.eql(null);
     });
 
+    it('writes out a feature with id equal to 0 correctly', function() {
+      var feature = new ol.Feature();
+      feature.setId(0);
+      var geojson = format.writeFeatureObject(feature);
+      expect(geojson.id).to.eql(0);
+    });
   });
 
   describe('#writeGeometry', function() {

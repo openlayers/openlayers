@@ -530,7 +530,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
     'type': 'Feature'
   };
   var id = feature.getId();
-  if (id) {
+  if (id !== undefined) {
     object['id'] = id;
   }
   var geometry = feature.getGeometry();
