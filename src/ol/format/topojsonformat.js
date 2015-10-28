@@ -17,7 +17,7 @@ goog.require('ol.proj');
 
 /**
  * @classdesc
- * Feature format for reading and writing data in the TopoJSON format.
+ * Feature format for reading data in the TopoJSON format.
  *
  * @constructor
  * @extends {ol.format.JSONFeature}
