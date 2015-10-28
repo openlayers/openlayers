@@ -260,7 +260,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   var feature = new ol.Feature();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
-  if (object.id) {
+  if (object.id !== undefined) {
     feature.setId(object.id);
   }
   if (object.properties) {
