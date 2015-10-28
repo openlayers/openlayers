@@ -74,8 +74,6 @@ ol.format.MVT = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
-  this.rightHandedPolygons = true;
-
 };
 goog.inherits(ol.format.MVT, ol.format.Feature);
 

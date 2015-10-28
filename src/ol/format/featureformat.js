@@ -25,11 +25,6 @@ ol.format.Feature = function() {
    */
   this.defaultDataProjection = null;
 
-  /**
-   * @protected
-   * @type {boolean}
-   */
-  this.rightHandedPolygons = false;
 };
 
 
@@ -56,14 +51,6 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
     };
   }
   return this.adaptOptions(options);
-};
-
-
-/**
- * @return {boolean}
- */
-ol.format.Feature.prototype.getRightHandedPolygons = function() {
-  return this.rightHandedPolygons;
 };
 
 

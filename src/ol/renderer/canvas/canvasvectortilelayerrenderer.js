@@ -191,8 +191,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   var tileResolution = pixelSpace ? source.getTilePixelRatio() : resolution;
   replayState.dirty = false;
   var replayGroup = new ol.render.canvas.ReplayGroup(0, extent,
-      tileResolution, layer.getRenderBuffer(),
-      tile.getFormat().getRightHandedPolygons());
+      tileResolution, layer.getRenderBuffer());
   var squaredTolerance = ol.renderer.vector.getSquaredTolerance(
       tileResolution, pixelRatio);
 

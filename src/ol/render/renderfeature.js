@@ -15,7 +15,8 @@ goog.require('ol.geom.GeometryType');
  *
  * @constructor
  * @param {ol.geom.GeometryType} type Geometry type.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {Array.<number>} flatCoordinates Flat coordinates. These always need
+ *     to be right-handed for polygons.
  * @param {Array.<number>|Array.<Array.<number>>} ends Ends or Endss.
  * @param {Object.<string, *>} properties Properties.
  */
