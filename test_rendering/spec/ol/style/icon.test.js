@@ -30,7 +30,7 @@ describe('ol.rendering.style.Icon', function() {
       disposeMap(map);
     });
 
-    function createFeatures(callback) {
+    function createFeatures(callback, offset) {
       var feature;
       feature = new ol.Feature({
         geometry: new ol.geom.Point([0, 0])
@@ -44,6 +44,7 @@ describe('ol.rendering.style.Icon', function() {
             anchorXUnits: 'fraction',
             anchorYUnits: 'pixels',
             opacity: 0.75,
+            offset: offset,
             scale: 0.5,
             img: img,
             imgSize: [32, 48]
@@ -61,6 +62,14 @@ describe('ol.rendering.style.Icon', function() {
         expectResemble(map, 'spec/ol/style/expected/icon-canvas.png',
             IMAGE_TOLERANCE, done);
       });
+    });
+
+    it('tests the canvas renderer with an offset', function(done) {
+      map = createMap('canvas');
+      createFeatures(function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-offset.png',
+            IMAGE_TOLERANCE, done);
+      }, [10, 10]);
     });
 
     it('tests the WebGL renderer', function(done) {
