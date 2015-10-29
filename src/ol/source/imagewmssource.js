@@ -201,14 +201,6 @@ ol.source.ImageWMS.prototype.getImageInternal =
   extent = extent.slice();
   var centerX = (extent[0] + extent[2]) / 2;
   var centerY = (extent[1] + extent[3]) / 2;
-  if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
-    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
-    extent[0] = centerX - halfWidth;
-    extent[1] = centerY - halfHeight;
-    extent[2] = centerX + halfWidth;
-    extent[3] = centerY + halfHeight;
-  }
 
   var imageResolution = resolution / pixelRatio;
 
@@ -229,6 +221,15 @@ ol.source.ImageWMS.prototype.getImageInternal =
       image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
+  }
+
+  if (this.ratio_ != 1) {
+    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
+    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
+    extent[0] = centerX - halfWidth;
+    extent[1] = centerY - halfHeight;
+    extent[2] = centerX + halfWidth;
+    extent[3] = centerY + halfHeight;
   }
 
   var params = {
