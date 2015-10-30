@@ -14,7 +14,7 @@ goog.require('ol.extent');
  * @constructor
  * @extends {ol.ImageBase}
  * @param {ol.Extent} extent Extent.
- * @param {number|undefined} resolution Resolution.
+ * @param {Array.<number>|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
@@ -114,7 +114,10 @@ ol.Image.prototype.handleImageError_ = function() {
  */
 ol.Image.prototype.handleImageLoad_ = function() {
   if (this.resolution === undefined) {
-    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
+    this.resolution = [
+      ol.extent.getWidth(this.extent) / this.image_.width,
+      ol.extent.getHeight(this.extent) / this.image_.height
+    ];
   }
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
