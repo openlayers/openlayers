@@ -14,11 +14,13 @@ var externsPaths = [
   path.join(externsDir, 'geojson.js')
 ];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
-var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
+
+var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
+var jsdoc = path.resolve(path.dirname(jsdocResolved), '../.bin/jsdoc');
 
 // on Windows, use jsdoc.cmd
 if (isWindows) {
- jsdoc += '.cmd';
+  jsdoc += '.cmd';
 }
 
 var jsdocConfig = path.join(
@@ -99,7 +101,7 @@ function getNewer(date, newer, callback) {
     callback(new Error('Trouble walking ' + sourceDir));
   });
   walker.on('end', function() {
-  
+
     /**
      * Windows has restrictions on length of command line, so passing all the
      * changed paths to a task will fail if this limit is exceeded.
@@ -109,7 +111,7 @@ function getNewer(date, newer, callback) {
     if (isWindows) {
         paths = [sourceDir].concat(externsPaths);
     }
-  
+
     callback(null, newer ? paths : []);
   });
 }
