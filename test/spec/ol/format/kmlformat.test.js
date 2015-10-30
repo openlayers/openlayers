@@ -1632,7 +1632,7 @@ describe('ol.format.KML', function() {
             expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
             expect(style.getZIndex()).to.be(undefined);
           });
-      
+
       it('can create text style for named point placemarks', function() {
         var text =
             '<kml xmlns="http://www.opengis.net/kml/2.2"' +
@@ -1644,7 +1644,8 @@ describe('ol.format.KML', function() {
             '    <IconStyle>' +
             '      <scale>0.3</scale>' +
             '      <Icon>' +
-            '        <href>http://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png</href>' +
+            '        <href>http://maps.google.com/mapfiles/kml/pushpin/' +
+            'ylw-pushpin.png</href>' +
             '      </Icon>' +
             '      <hotSpot x="20" y="2" xunits="pixels" yunits="pixels"/>' +
             '    </IconStyle>' +
