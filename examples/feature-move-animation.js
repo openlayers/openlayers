@@ -162,7 +162,7 @@ var moveFeature = function(event) {
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
   // tell OL3 to continue the postcompose animation
-  frameState.animate = true;
+  map.render();
 };
 
 function startAnimation() {
