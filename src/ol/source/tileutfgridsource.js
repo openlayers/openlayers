@@ -256,7 +256,10 @@ goog.inherits(ol.source.TileUTFGridTile_, ol.Tile);
 
 
 /**
- * @inheritDoc
+ * Get the image element for this tile.
+ * @param {Object=} opt_context Optional context. Only used for the DOM
+ *     renderer.
+ * @return {Image} Image.
  */
 ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
   return null;

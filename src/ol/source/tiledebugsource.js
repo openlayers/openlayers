@@ -45,7 +45,10 @@ goog.inherits(ol.DebugTile_, ol.Tile);
 
 
 /**
- * @inheritDoc
+ * Get the image element for this tile.
+ * @param {Object=} opt_context Optional context. Only used by the DOM
+ *     renderer.
+ * @return {HTMLCanvasElement} Image.
  */
 ol.DebugTile_.prototype.getImage = function(opt_context) {
   var key = opt_context !== undefined ? goog.getUid(opt_context) : -1;

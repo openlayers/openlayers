@@ -150,19 +150,21 @@ describe('ol.interaction.Modify', function() {
     it('works when clicking on a shared vertex', function() {
       features.push(features[0].clone());
 
+      var first = features[0];
+      var firstRevision = first.getGeometry().getRevision();
+      var second = features[1];
+      var secondRevision = second.getGeometry().getRevision();
+
       var modify = new ol.interaction.Modify({
         features: new ol.Collection(features)
       });
       map.addInteraction(modify);
 
-      var first = features[0];
-      var second = features[1];
-
       events = trackEvents(first, modify);
 
-      expect(first.getGeometry().getRevision()).to.equal(1);
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(5);
-      expect(second.getGeometry().getRevision()).to.equal(2);
+      expect(second.getGeometry().getRevision()).to.equal(secondRevision);
       expect(second.getGeometry().getCoordinates()[0]).to.have.length(5);
 
       simulateEvent('pointerdown', 10, -20, false, 0);
@@ -170,9 +172,9 @@ describe('ol.interaction.Modify', function() {
       simulateEvent('click', 10, -20, false, 0);
       simulateEvent('singleclick', 10, -20, false, 0);
 
-      expect(first.getGeometry().getRevision()).to.equal(2);
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(4);
-      expect(second.getGeometry().getRevision()).to.equal(3);
+      expect(second.getGeometry().getRevision()).to.equal(secondRevision + 1);
       expect(second.getGeometry().getCoordinates()[0]).to.have.length(4);
 
       validateEvents(events, features);

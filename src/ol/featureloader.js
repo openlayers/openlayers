@@ -7,6 +7,7 @@ goog.require('goog.events');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
+goog.require('ol.TileState');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -46,22 +47,28 @@ ol.FeatureUrlFunction;
 /**
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
- * @param {function(this:ol.source.Vector, Array.<ol.Feature>)} success
- *     Function called with the loaded features. Called with the vector
+ * @param {function(this:ol.VectorTile, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
+ *     Function called with the loaded features and optionally with the data
+ *     projection. Called with the vector tile or source as `this`.
+ * @param {function(this:ol.VectorTile)|function(this:ol.source.Vector)} failure
+ *     Function called when loading failed. Called with the vector tile or
  *     source as `this`.
  * @return {ol.FeatureLoader} The feature loader.
  */
-ol.featureloader.loadFeaturesXhr = function(url, format, success) {
+ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
   return (
       /**
        * @param {ol.Extent} extent Extent.
        * @param {number} resolution Resolution.
        * @param {ol.proj.Projection} projection Projection.
-       * @this {ol.source.Vector}
+       * @this {ol.source.Vector|ol.VectorTile}
        */
       function(extent, resolution, projection) {
         var xhrIo = new goog.net.XhrIo();
-        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
+        xhrIo.setResponseType(
+            format.getType() == ol.format.FormatType.ARRAY_BUFFER ?
+                goog.net.XhrIo.ResponseType.ARRAY_BUFFER :
+                goog.net.XhrIo.ResponseType.TEXT);
         goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
             /**
              * @param {Event} event Event.
@@ -87,18 +94,24 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
                   if (!source) {
                     source = ol.xml.parse(xhrIo.getResponseText());
                   }
+                } else if (type == ol.format.FormatType.ARRAY_BUFFER) {
+                  source = xhrIo.getResponse();
                 } else {
                   goog.asserts.fail('unexpected format type');
                 }
                 if (source) {
                   var features = format.readFeatures(source,
                       {featureProjection: projection});
-                  success.call(this, features);
+                  if (ol.ENABLE_VECTOR_TILE && success.length == 2) {
+                    success.call(this, features, format.readProjection(source));
+                  } else {
+                    success.call(this, features);
+                  }
                 } else {
                   goog.asserts.fail('undefined or null source');
                 }
               } else {
-                // FIXME
+                failure.call(this);
               }
               goog.dispose(xhrIo);
             }, false, this);
@@ -108,6 +121,35 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success) {
           xhrIo.send(url);
         }
 
+      });
+};
+
+
+/**
+ * Create an XHR feature loader for a `url` and `format`. The feature loader
+ * loads features (with XHR), parses the features, and adds them to the
+ * vector tile.
+ * @param {string|ol.FeatureUrlFunction} url Feature URL service.
+ * @param {ol.format.Feature} format Feature format.
+ * @return {ol.FeatureLoader} The feature loader.
+ * @api
+ */
+ol.featureloader.tile = function(url, format) {
+  return ol.featureloader.loadFeaturesXhr(url, format,
+      /**
+       * @param {Array.<ol.Feature>} features The loaded features.
+       * @param {ol.proj.Projection} projection Data projection.
+       * @this {ol.VectorTile}
+       */
+      function(features, projection) {
+        this.setProjection(projection);
+        this.setFeatures(features);
+      },
+      /**
+       * @this {ol.VectorTile}
+       */
+      function() {
+        this.setState(ol.TileState.ERROR);
       });
 };
 
@@ -129,5 +171,5 @@ ol.featureloader.xhr = function(url, format) {
        */
       function(features) {
         this.addFeatures(features);
-      });
+      }, /* FIXME handle error */ ol.nullFunction);
 };

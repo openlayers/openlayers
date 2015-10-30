@@ -24,6 +24,7 @@ ol.format.Feature = function() {
    * @type {ol.proj.Projection}
    */
   this.defaultDataProjection = null;
+
 };
 
 
@@ -95,7 +96,7 @@ ol.format.Feature.prototype.readFeature = goog.abstractMethod;
 /**
  * Read all features from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Node|ArrayBuffer|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */

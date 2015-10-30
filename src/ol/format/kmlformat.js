@@ -254,7 +254,7 @@ ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
  * @private
  */
 ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_ = new ol.style.Stroke({
-  color: [3, 3, 3, 1],
+  color: [51, 51, 51, 1],
   width: 2
 });
 

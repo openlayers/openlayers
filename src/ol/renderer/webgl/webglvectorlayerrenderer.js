@@ -269,7 +269,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
-    vectorSource.forEachFeatureInExtentAtResolution(extent, resolution,
+    vectorSource.forEachFeatureInExtent(extent,
         /**
          * @param {ol.Feature} feature Feature.
          */
@@ -279,8 +279,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
     goog.array.sort(features, vectorLayerRenderOrder);
     features.forEach(renderFeature, this);
   } else {
-    vectorSource.forEachFeatureInExtentAtResolution(
-        extent, resolution, renderFeature, this);
+    vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
   }
   replayGroup.finish(context);
 

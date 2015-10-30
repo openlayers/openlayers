@@ -3,10 +3,10 @@ goog.provide('ol.TileVectorLoadFunctionType');
 
 
 /**
- * A function that takes an {@link ol.ImageTile} for the image tile and a
- * `{string}` for the src as arguments.
+ * A function that takes an {@link ol.Tile} for the tile and a
+ * `{string}` for the url as arguments.
  *
- * @typedef {function(ol.ImageTile, string)}
+ * @typedef {function(ol.Tile, string)}
  * @api
  */
 ol.TileLoadFunctionType;

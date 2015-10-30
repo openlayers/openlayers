@@ -27,6 +27,15 @@ describe('ol.format.GeoJSON', function() {
     }
   };
 
+  var zeroIdGeoJSON = {
+    'type': 'Feature',
+    'id': 0,
+    'geometry': null,
+    'properties': {
+      'prop0': 'value0'
+    }
+  };
+
   var lineStringGeoJSON = {
     'type': 'Feature',
     'geometry': {
@@ -164,6 +173,12 @@ describe('ol.format.GeoJSON', function() {
       var geometry = feature.getGeometry();
       expect(geometry).to.eql(null);
       expect(feature.get('prop0')).to.be('value0');
+    });
+
+    it('can read a feature with id equal to 0', function() {
+      var feature = format.readFeature(zeroIdGeoJSON);
+      expect(feature).to.be.an(ol.Feature);
+      expect(feature.getId()).to.be(0);
     });
 
     it('can read a feature collection', function() {
@@ -536,6 +551,12 @@ describe('ol.format.GeoJSON', function() {
       expect(geojson.geometry).to.eql(null);
     });
 
+    it('writes out a feature with id equal to 0 correctly', function() {
+      var feature = new ol.Feature();
+      feature.setId(0);
+      var geojson = format.writeFeatureObject(feature);
+      expect(geojson.id).to.eql(0);
+    });
   });
 
   describe('#writeGeometry', function() {

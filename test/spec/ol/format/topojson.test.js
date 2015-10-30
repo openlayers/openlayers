@@ -22,6 +22,16 @@ var aruba = {
   ]
 };
 
+var zeroId = {
+  type: 'Topology',
+  objects: {
+    foobar: {
+      type: 'Point',
+      id: 0,
+      coordinates: [0, 42]
+    }
+  }
+};
 
 describe('ol.format.TopoJSON', function() {
 
@@ -58,6 +68,15 @@ describe('ol.format.TopoJSON', function() {
         -70.08100810081008, 12.417091709170947,
         -69.9009900990099, 12.608069195591469
       ]);
+    });
+
+    it('can read a feature with id equal to 0', function() {
+      var features = format.readFeaturesFromObject(zeroId);
+      expect(features).to.have.length(1);
+
+      var feature = features[0];
+      expect(feature).to.be.a(ol.Feature);
+      expect(feature.getId()).to.be(0);
     });
 
   });

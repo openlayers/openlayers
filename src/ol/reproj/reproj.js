@@ -93,7 +93,7 @@ ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {number} width Width of the canvas.
  * @param {number} height Height of the canvas.
  * @param {number} pixelRatio Pixel ratio.
- * @param {number} sourceResolution Source resolution.
+ * @param {Array.<number>} sourceResolution Source resolution.
  * @param {ol.Extent} sourceExtent Extent of the data source.
  * @param {number} targetResolution Target resolution.
  * @param {ol.Extent} targetExtent Target extent.
@@ -124,12 +124,14 @@ ol.reproj.render = function(width, height, pixelRatio,
 
   var canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
   var canvasHeightInUnits = ol.extent.getHeight(sourceDataExtent);
+  var sourceResolutionX = sourceResolution[0];
+  var sourceResolutionY = sourceResolution[1];
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
-      Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
+      Math.round(pixelRatio * canvasWidthInUnits / sourceResolutionX),
+      Math.round(pixelRatio * canvasHeightInUnits / sourceResolutionY));
 
-  stitchContext.scale(pixelRatio / sourceResolution,
-                      pixelRatio / sourceResolution);
+  stitchContext.scale(pixelRatio / sourceResolutionX,
+                      pixelRatio / sourceResolutionY);
   stitchContext.translate(-sourceDataExtent[0], sourceDataExtent[3]);
 
   sources.forEach(function(src, i, arr) {
@@ -222,8 +224,8 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
                       sourceDataExtent[3] - sourceNumericalShiftY);
 
-    context.scale(sourceResolution / pixelRatio,
-                  -sourceResolution / pixelRatio);
+    context.scale(sourceResolutionX / pixelRatio,
+                  -sourceResolutionY / pixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();

@@ -23,7 +23,8 @@ ol.proj.ProjectionLike;
 
 
 /**
- * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, or `'us-ft'`.
+ * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
+ * `'us-ft'`.
  * @enum {string}
  * @api stable
  */
@@ -32,6 +33,7 @@ ol.proj.Units = {
   FEET: 'ft',
   METERS: 'm',
   PIXELS: 'pixels',
+  TILE_PIXELS: 'tile-pixels',
   USFEET: 'us-ft'
 };
 
@@ -676,9 +678,7 @@ ol.proj.equivalent = function(projection1, projection2) {
   if (projection1 === projection2) {
     return true;
   } else if (projection1.getCode() === projection2.getCode()) {
-    return true;
-  } else if (projection1.getUnits() != projection2.getUnits()) {
-    return false;
+    return projection1.getUnits() === projection2.getUnits();
   } else {
     var transformFn = ol.proj.getTransformFromProjections(
         projection1, projection2);
