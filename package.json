@@ -24,6 +24,10 @@
   "bugs": {
     "url": "https://github.com/openlayers/ol3/issues"
   },
+  "browser": "dist/ol.js",
+  "style": [
+    "css/ol.css"
+  ],
   "dependencies": {
     "async": "0.9.0",
     "bluebird": "^2.10.1",
