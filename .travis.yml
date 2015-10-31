@@ -8,6 +8,7 @@ env:
 
 before_install:
   - "npm install -g npm && npm install"
+  - "npm prune"
 
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
