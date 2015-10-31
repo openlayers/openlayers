@@ -26,14 +26,15 @@
   },
   "dependencies": {
     "async": "0.9.0",
+    "bluebird": "^2.10.1",
     "browserify": "9.0.3",
-    "derequire": "2.0.2",
     "closure-util": "1.8.0",
+    "derequire": "2.0.2",
     "fs-extra": "0.12.0",
     "glob": "5.0.3",
     "graceful-fs": "3.0.2",
     "handlebars": "3.0.1",
-    "jsdoc": "3.3.2",
+    "jsdoc-fork": "^4.0.0-beta.1",
     "marked": "0.3.5",
     "metalsmith": "1.6.0",
     "metalsmith-templates": "0.7.0",
@@ -66,8 +67,18 @@
   },
   "ext": [
     "rbush",
-    {"module": "pbf", "browserify": true},
-    {"module": "pixelworks", "browserify": true},
-    {"module": "vector-tile", "name": "vectortile", "browserify": true}
+    {
+      "module": "pbf",
+      "browserify": true
+    },
+    {
+      "module": "pixelworks",
+      "browserify": true
+    },
+    {
+      "module": "vector-tile",
+      "name": "vectortile",
+      "browserify": true
+    }
   ]
 }
