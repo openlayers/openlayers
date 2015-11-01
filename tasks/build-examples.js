@@ -73,7 +73,7 @@ function augmentExamples(files, metalsmith, done) {
     var match = filename.match(markupRegEx);
     if (match && filename !== 'index.html') {
       if (!file.layout) {
-        throw new Error(filename + ': Missing template in YAML front-matter');
+        throw new Error(filename + ': Missing "layout" in YAML front-matter');
       }
       var id = match[1];
 
