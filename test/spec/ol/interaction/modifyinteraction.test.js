@@ -42,7 +42,7 @@ describe('ol.interaction.Modify', function() {
       })
     });
 
-    map.on('postrender', function() {
+    map.once('postrender', function() {
       done();
     });
   });
