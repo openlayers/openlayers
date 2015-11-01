@@ -1,5 +1,11 @@
-language: python
-sudo: false
+sudo: required
+dist: trusty
+
+language: node_js
+
+node_js:
+  - "4"
+
 cache:
   directories:
     - node_modules
@@ -7,8 +13,8 @@ env:
   - DISPLAY=:99.0
 
 before_install:
-  - "npm install -g npm && npm install"
   - "npm prune"
+  - "sudo pip install -r requirements.txt"
 
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
