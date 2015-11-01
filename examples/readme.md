@@ -2,7 +2,7 @@
 
 The `.html` files in this folder are built by applying the templates in the `config/examples/` folder. Examples have [YAML front-matter](http://www.metalsmith.io) headers with the following properties:
 
-* template: The template from the `config/examples/` directory to use for this example
+* layout: The template from the `config/examples/` directory to use for this example
 * title: The title of the example
 * shortdesc: A short description for the example index
 * docs: Documentation of the example. Can be markdown.
