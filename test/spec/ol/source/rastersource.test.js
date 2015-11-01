@@ -10,7 +10,7 @@ var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
     'ABAAEAAAICRAEAOw==';
 
 function itNoPhantom() {
-  if (window.mochaPhantomJS) {
+  if (window.initMochaPhantomJS) {
     return xit.apply(this, arguments);
   } else {
     return it.apply(this, arguments);
