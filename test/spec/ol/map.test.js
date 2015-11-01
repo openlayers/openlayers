@@ -133,7 +133,7 @@ describe('ol.Map', function() {
     it('results in an postrender event', function(done) {
 
       map.render();
-      map.on('postrender', function(event) {
+      map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
         expect(frameState).not.to.be(null);
@@ -147,7 +147,7 @@ describe('ol.Map', function() {
       map.updateSize();
 
       map.render();
-      map.on('postrender', function(event) {
+      map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
@@ -161,7 +161,7 @@ describe('ol.Map', function() {
       map.updateSize();
 
       map.render();
-      map.on('postrender', function(event) {
+      map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
