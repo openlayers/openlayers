@@ -2,7 +2,7 @@ var path = require('path');
 
 var Metalsmith = require('metalsmith');
 var handlebars = require('handlebars');
-var templates = require('metalsmith-templates');
+var templates = require('metalsmith-layouts');
 var marked = require('marked');
 var pkg = require('../package.json');
 
@@ -72,7 +72,7 @@ function augmentExamples(files, metalsmith, done) {
     var file = files[filename];
     var match = filename.match(markupRegEx);
     if (match && filename !== 'index.html') {
-      if (!file.template) {
+      if (!file.layout) {
         throw new Error(filename + ': Missing template in YAML front-matter');
       }
       var id = match[1];
