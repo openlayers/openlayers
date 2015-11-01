@@ -26,7 +26,7 @@ describe('ol.interaction.Draw', function() {
         resolution: 1
       })
     });
-    map.on('postrender', function() {
+    map.once('postrender', function() {
       done();
     });
   });
