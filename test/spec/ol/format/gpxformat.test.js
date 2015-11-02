@@ -557,6 +557,23 @@ describe('ol.format.GPX', function() {
 
   });
 
+  describe('write unsupported geometries', function() {
+    beforeEach(function() {
+      format = new ol.format.GPX();
+    });
+
+    it('does not fail', function() {
+      var polygon = new ol.geom.Polygon(
+          [[[0, 0], [2, 2], [4, 0], [0, 0]]]);
+      var feature = new ol.Feature(polygon);
+      var features = [feature];
+      var gpx = format.writeFeatures(features);
+      var expected =
+          '<gpx xmlns="http://www.topografix.com/GPX/1/1"/>';
+      expect(gpx).to.be(expected);
+    });
+  });
+
 });
 
 
@@ -566,5 +583,6 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 goog.require('ol.xml');
