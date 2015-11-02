@@ -21,6 +21,18 @@ var map = new ol.Map({
   })
 });
 
+var lonFormatter = function(lon) {
+  var formattedLon = Math.abs(Math.round(lon * 100) / 100);
+  formattedLon += (lon < 0) ? 'W' : ((lon > 0) ? 'E' : '');
+  return formattedLon;
+};
+
+var latFormatter = function(lat) {
+  var formattedLat = Math.abs(Math.round(lat * 100) / 100);
+  formattedLat += (lat < 0) ? 'S' : ((lat > 0) ? 'N' : '');
+  return formattedLat;
+};
+
 // Create the graticule component
 var graticule = new ol.Graticule({
   // the style to use for the lines, optional.
@@ -28,6 +40,11 @@ var graticule = new ol.Graticule({
     color: 'rgba(255,120,0,0.9)',
     width: 2,
     lineDash: [0.5, 4]
-  })
+  }),
+  showLabels: true,
+  lonLabelFormatter: lonFormatter,
+  lonLabelPosition: 0.05,
+  latLabelFormatter: latFormatter,
+  latLabelPosition: 0.95
 });
 graticule.setMap(map);

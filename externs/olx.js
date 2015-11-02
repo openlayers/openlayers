@@ -101,6 +101,11 @@ olx.LogoOptions.prototype.src;
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
+ *     showLabels: (boolean|undefined),
+ *     lonLabelFormatter: (Function|undefined),
+ *     latLabelFormatter: (Function|undefined),
+ *     lonLabelPosition: (number|undefined),
+ *     latLabelPosition: (number|undefined),
  *     targetSize: (number|undefined)}}
  * @api
  */
