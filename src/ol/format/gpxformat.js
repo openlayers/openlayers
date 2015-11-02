@@ -839,11 +839,13 @@ ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
       'value should be an ol.Feature');
   var geometry = value.getGeometry();
   if (geometry) {
-    var parentNode = objectStack[objectStack.length - 1].node;
-    goog.asserts.assert(ol.xml.isNode(parentNode),
-        'parentNode should be an XML node');
-    return ol.xml.createElementNS(parentNode.namespaceURI,
-        ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()]);
+    var nodeName = ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()];
+    if (nodeName) {
+      var parentNode = objectStack[objectStack.length - 1].node;
+      goog.asserts.assert(ol.xml.isNode(parentNode),
+          'parentNode should be an XML node');
+      return ol.xml.createElementNS(parentNode.namespaceURI, nodeName);
+    }
   }
 };
 
