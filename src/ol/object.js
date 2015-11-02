@@ -197,14 +197,13 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
- * @param {boolean=} opt_silent update propertie silently
+ * @param {boolean=} opt_silent Update property without triggering notification.
  * @api stable
  */
 ol.Object.prototype.set = function(key, value, opt_silent) {
-  if (goog.isDef(opt_silent) && opt_silent === true) {
+  if (opt_silent === true) {
     this.values_[key] = value;
-  }
-  else {
+  } else {
     var oldValue = this.values_[key];
     this.values_[key] = value;
     this.notify(key, oldValue);
@@ -237,7 +236,7 @@ ol.Object.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
-    if (!goog.isDef(opt_silent) || opt_silent !== true) {
+    if (!opt_silent) {
       this.notify(key, oldValue);
     }
   }
