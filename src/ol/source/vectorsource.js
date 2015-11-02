@@ -659,7 +659,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate =
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
- * @return {ol.Extent} Extent.
+ * @return {!ol.Extent} Extent.
  * @api stable
  */
 ol.source.Vector.prototype.getExtent = function() {
