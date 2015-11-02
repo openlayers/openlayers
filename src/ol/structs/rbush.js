@@ -253,7 +253,7 @@ ol.structs.RBush.prototype.clear = function() {
 
 /**
  * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
+ * @return {!ol.Extent} Extent.
  */
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
