@@ -235,7 +235,9 @@ ol.interaction.Select.prototype.getFeatures = function() {
 
 /**
  * Returns the associated {@link ol.layer.Vector vectorlayer} of
- * the (last) selected feature.
+ * the (last) selected feature. Note that this will not work with any
+ * programmatic method like pushing features to
+ * {@link ol.interaction.Select#getFeatures collection}.
  * @param {ol.Feature|ol.render.Feature} feature Feature
  * @return {ol.layer.Vector} Layer.
  * @api
