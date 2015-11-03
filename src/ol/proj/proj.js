@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Extent');
+goog.require('ol.Sphere');
 goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.sphere.NORMAL');
@@ -388,6 +389,142 @@ ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
  */
 ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
   return this.getPointResolutionFunc_(resolution, point);
+};
+
+
+/**
+ * Calculate the length of a line string in meters.
+ *
+ * Use e.g. map.getView().getProjection() to get the projection to pass
+ * as the projection parameter. The method will accept coordinates from
+ * {@link ol.geom.LineString#getCoordinates} .
+ *
+ * The Haversine {@link ol.Sphere#haversineDistance} method,  which
+ * calculates spherical great circle distances is used. If required, the
+ * supplied coordinates will be converted to EPSG:4326 before making
+ * the Haversine calculation.
+ *
+ * For better accuracy and performance, the
+ * {@link ol.geom.LineString#getLength} method should be used for
+ * projections which have nominally constant scale, e.g. UTM.
+ * See {@link ol.geom} for more details.
+ *
+ * This method should not be used for projections with units of Pixels.
+ * An excpetion will be thrown if it is. Use the
+ * {@link ol.geom.LineString#getLength} method instead.
+ *
+ * @param {Array.<ol.Coordinate>} coordinates Coordinates of a line string.
+ * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {ol.Sphere=} opt_sphere optional sphere for the Haversine calculation,
+ * defaults to a terrestrial {@link ol.Sphere} with a radius of 6370997m
+ * @return {number} The sum of the length of the line segments in meters.
+ * @api
+ */
+ol.proj.getLength = function(coordinates, projection, opt_sphere) {
+  var length = 0;
+  var proj = ol.proj.get(projection);
+  var units = proj.getUnits();
+  var aLen = coordinates.length;
+  var i;
+  var c1, c2;
+  var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
+
+  goog.asserts.assert((units != ol.proj.Units.PIXELS) &&
+      (units != ol.proj.Units.TILE_PIXELS),
+      'use ol geom LineString getLength for pixel projections');
+
+  if (units == ol.proj.Units.DEGREES) {
+    c1 = coordinates[0];
+    for (i = 1; i < aLen; i++) {
+      c2 = coordinates[i];
+      length += sphere.haversineDistance(c1, c2);
+      c1 = c2;
+    }
+  }
+  else {
+    c1 = ol.proj.toLonLat(coordinates[0], proj);
+    for (i = 1; i < aLen; i++) {
+      c2 = ol.proj.toLonLat(coordinates[i], proj);
+      length += sphere.haversineDistance(c1, c2);
+      c1 = c2;
+    }
+  }
+  return length;
+};
+
+
+/**
+ * Calculate the area of a polygon in square meters.
+ *
+ * Use e.g. map.getView().getProjection() to get the projection to pass as the
+ * projection parameter. The method will accept coordinates from
+ * {@link ol.geom.Polygon#getCoordinates}.
+ *
+ * The calculation method is spherical geodesic using
+ * {@link ol.Sphere#geodesicArea}. If required, the supplied coordinates will
+ * be converted to EPSG:4326 before the spherical geodesic calculation.
+ *
+ * The clockwise and anti-clockwise conventions from
+ * {@link ol.geom.Polygon#getCoordinates} are used for adding and subtracting
+ * the areas of multiple linear rings.
+ *
+ * For better accuracy and performance, the {@link ol.geom.Polygon#getArea}
+ * method should be used for projections which have nominally constant scale
+ * e.g. UTM. See {@link ol.geom} for more details.
+ *
+ * This method should not be used for projections with units of Pixels.
+ * An exception will be thrown if it is. Use the {@link ol.geom.Polygon#getArea}
+ * method instead.
+ *
+ * @param {Array.<ol.Coordinate> | Array.<Array.<ol.Coordinate>>} coordinates
+ * Coordinates of a simple polygon or an array of coordinates of linear rings
+ * @param {ol.proj.ProjectionLike} projection of the coordinates.
+ * @param {ol.Sphere=} opt_sphere optional sphere for the area calculation,
+ * defaults to a terrestrial {@link ol.Sphere} with a radius of 6370997m
+ * @return {number} Area of a simple ploygon or the sum of the area of a
+ * set of linear rings, in square meters.
+ * @api
+ */
+ol.proj.getArea = function(coordinates, projection, opt_sphere) {
+  var totalArea = 0;
+  var proj = ol.proj.get(projection);
+  var units = proj.getUnits();
+
+  var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
+  var i;
+
+  var coordss = [];
+
+  goog.asserts.assert((units != ol.proj.Units.PIXELS) &&
+      (units != ol.proj.Units.TILE_PIXELS),
+      'use ol geom Polygon getArea for pixel projections');
+
+  if (!Array.isArray(coordinates[0][0])) {
+    coordss[0] = coordinates;
+  }
+  else {
+    coordss = coordinates;
+  }
+
+  coordss.forEach(function(coords, index, array) {
+
+    var aLen = coords.length;
+    var area = 0;
+
+    if (units == ol.proj.Units.DEGREES) {
+      area = sphere.geodesicArea(coords);
+    }
+    else {
+      var transformedCoords = [];
+      for (i = 0; i < aLen; i++) {
+        transformedCoords[i] = ol.proj.toLonLat(coords[i], proj);
+      }
+      area = sphere.geodesicArea(transformedCoords);
+    }
+
+    totalArea += area;
+  });
+  return Math.abs(totalArea);
 };
 
 

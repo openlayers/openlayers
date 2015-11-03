@@ -146,6 +146,8 @@ ol.geom.Polygon.prototype.containsXY = function(x, y) {
 
 /**
  * Return the area of the polygon on projected plane.
+ * To get an area in square meters, use {@link ol.proj.getArea} instead.
+ * See {@link ol.geom} for more details.
  * @return {number} Area (on projected plane).
  * @api stable
  */

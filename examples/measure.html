@@ -1,10 +1,12 @@
 ---
 layout: example.html
 title: Measure example
-shortdesc: Example of using the ol.interaction.Draw interaction for creating simple measuring application.
+shortdesc: Example of using the ol.interaction.Draw interaction for creating a simple measuring application.
 docs: >
-  <p><i>NOTE: If use geodesic measures is not checked, measure is done in simple way on projected plane. Earth curvature is not taken into account</i></p>
-tags: "draw, edit, measure, vector"
+  <p><i>NOTE: Area and length calculations are done using ol.proj getLength and ol.proj getArea to get answers in meters or square meters at any latitude.
+  The ol.geom.Linestring getLength method does not give a length in meters for EPSG:3857 or EPSG:4326 linestrings.
+  The ol.geom.Polygon getArea method does not give an area in square meters for EPSG:3857 or EPSG:4326 polygons.</i></p>
+tags: "draw, edit, measure, vector, length, area"
 ---
 <div class="row-fluid">
   <div class="span12">
@@ -17,5 +19,5 @@ tags: "draw, edit, measure, vector"
       <option value="length">Length</option>
       <option value="area">Area</option>
     </select>
-    <label class="checkbox"><input type="checkbox" id="geodesic"/>use geodesic measures</label>
+
 </form>
