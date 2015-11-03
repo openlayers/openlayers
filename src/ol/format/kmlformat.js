@@ -394,7 +394,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
           if (drawName) {
             nameStyle = ol.format.KML.createNameStyleFunction_(style[0],
                 name);
-            return [style, nameStyle];
+            return style.concat(nameStyle);
           }
           return style;
         }
