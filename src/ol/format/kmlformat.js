@@ -342,11 +342,7 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
     });
   }
   var nameStyle = new ol.style.Style({
-    fill: undefined,
-    image: undefined,
-    text: textStyle,
-    stroke: undefined,
-    zIndex: undefined
+    text: textStyle
   });
   return nameStyle;
 };
