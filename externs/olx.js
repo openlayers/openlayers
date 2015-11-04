@@ -1796,7 +1796,8 @@ olx.format.IGCOptions.prototype.altitudeMode;
 /**
  * @typedef {{extractStyles: (boolean|undefined),
  *     defaultStyle: (Array.<ol.style.Style>|undefined),
- *     showPointNames: (boolean|undefined)}}
+ *     showPointNames: (boolean|undefined),
+ *     writeStyles: (boolean|undefined)}}
  * @api
  */
 olx.format.KMLOptions;
@@ -1824,6 +1825,14 @@ olx.format.KMLOptions.prototype.showPointNames;
  * @api stable
  */
 olx.format.KMLOptions.prototype.defaultStyle;
+
+
+/**
+ * Write styles into KML. Default is `true`.
+ * @type {boolean|undefined}
+ * @api stable
+ */
+olx.format.KMLOptions.prototype.writeStyles;
 
 
 /**
