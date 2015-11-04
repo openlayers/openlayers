@@ -4784,7 +4784,7 @@ olx.source.ImageWMSOptions.prototype.serverType;
 
 /**
  * Optional function to load an image given a URL.
- * @type {ol.TileLoadFunctionType|undefined}
+ * @type {ol.ImageLoadFunctionType|undefined}
  * @api
  */
 olx.source.ImageWMSOptions.prototype.imageLoadFunction;
