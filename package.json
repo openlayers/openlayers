@@ -60,7 +60,7 @@
     "jquery": "2.1.4",
     "jshint": "2.8.0",
     "mocha": "2.3.3",
-    "mocha-phantomjs-core": "^1.2.1",
+    "mocha-phantomjs": "4.0.1",
     "mustache": "2.2.0",
     "phantomjs": "1.9.18",
     "proj4": "2.3.12",
