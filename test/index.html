@@ -16,6 +16,9 @@
   <script type="text/javascript" src="../node_modules/proj4/dist/proj4.js"></script>
   <script type="text/javascript" src="test-extensions.js"></script>
   <script>
+    if (typeof initMochaPhantomJS === 'function') {
+      initMochaPhantomJS()
+    }
     mocha.setup({
       ui: 'bdd',
       bail: false
@@ -43,25 +46,21 @@
      */
     goog.events.listen(this, 'test', function() {});
 
-    if (window.mochaPhantomJS) {
-      mochaPhantomJS.run();
-    } else {
-      var runner = mocha.run();
-      if (window.console && console.log) {
-        // write stacks to the console for failed tests
-        runner.on('fail', function(test, err) {
-          if (test.duration > test._timeout) {
-            var titles = [];
-            for (var p = test; p; p = p.parent) {
-              if (p.title) {
-                titles.unshift(p.title);
-              }
+    var runner = mocha.run();
+    if (window.console && console.log) {
+      // write stacks to the console for failed tests
+      runner.on('fail', function(test, err) {
+        if (test.duration > test._timeout) {
+          var titles = [];
+          for (var p = test; p; p = p.parent) {
+            if (p.title) {
+              titles.unshift(p.title);
             }
-            console.log('Test timed out:', titles.join(' > '));
           }
-          console.error(test.err.stack);
-        });
-      }
+          console.log('Test timed out:', titles.join(' > '));
+        }
+        console.error(test.err.stack);
+      });
     }
   </script>
   <!--

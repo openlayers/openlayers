@@ -27,7 +27,7 @@ describe('ol.interaction.DragZoom', function() {
         resolution: 1
       })
     });
-    map.on('postrender', function() {
+    map.once('postrender', function() {
       done();
     });
   });

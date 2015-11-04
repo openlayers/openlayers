@@ -37,7 +37,7 @@ describe('ol.interaction.Snap', function() {
         })
       });
 
-      map.on('postrender', function() {
+      map.once('postrender', function() {
         done();
       });
     });

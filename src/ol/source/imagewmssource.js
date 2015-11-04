@@ -217,7 +217,7 @@ ol.source.ImageWMS.prototype.getImageInternal =
   var image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
+      image.getResolution()[0] == resolution &&
       image.getPixelRatio() == pixelRatio &&
       ol.extent.containsExtent(image.getExtent(), extent)) {
     return image;
@@ -247,7 +247,7 @@ ol.source.ImageWMS.prototype.getImageInternal =
   var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
       projection, params);
 
-  this.image_ = new ol.Image(extent, resolution, pixelRatio,
+  this.image_ = new ol.Image(extent, [resolution, resolution], pixelRatio,
       this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();

@@ -57,7 +57,7 @@ describe('ol.interaction.Select', function() {
       })
     });
 
-    map.on('postrender', function() {
+    map.once('postrender', function() {
       done();
     });
   });

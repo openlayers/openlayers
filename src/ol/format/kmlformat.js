@@ -342,11 +342,7 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
     });
   }
   var nameStyle = new ol.style.Style({
-    fill: undefined,
-    image: undefined,
-    text: textStyle,
-    stroke: undefined,
-    zIndex: undefined
+    text: textStyle
   });
   return nameStyle;
 };
@@ -394,7 +390,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
           if (drawName) {
             nameStyle = ol.format.KML.createNameStyleFunction_(style[0],
                 name);
-            return [style, nameStyle];
+            return style.concat(nameStyle);
           }
           return style;
         }
