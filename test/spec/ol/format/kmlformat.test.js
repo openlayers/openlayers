@@ -1337,6 +1337,7 @@ describe('ol.format.KML', function() {
         expect(imageStyle.getOrigin()).to.be(null);
         expect(imageStyle.getRotation()).to.eql(0);
         expect(imageStyle.getSize()).to.be(null);
+        expect(imageStyle.getScale()).to.be(1);
         expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
         expect(style.getZIndex()).to.be(undefined);
       });
@@ -1348,6 +1349,7 @@ describe('ol.format.KML', function() {
             '  <Placemark>' +
             '    <Style>' +
             '      <IconStyle>' +
+            '        <scale>3.0</scale>' +
             '        <Icon>' +
             '          <href>http://foo.png</href>' +
             '          <gx:x>24</gx:x>' +
@@ -1380,6 +1382,7 @@ describe('ol.format.KML', function() {
         expect(imageStyle.getAnchor()).to.eql([24, 36]);
         expect(imageStyle.getOrigin()).to.eql([24, 108]);
         expect(imageStyle.getRotation()).to.eql(0);
+        expect(imageStyle.getScale()).to.eql(Math.sqrt(3));
         expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
         expect(style.getZIndex()).to.be(undefined);
       });
