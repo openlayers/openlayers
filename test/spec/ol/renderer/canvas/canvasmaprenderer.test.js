@@ -46,13 +46,23 @@ describe('ol.renderer.canvas.Map', function() {
       document.body.removeChild(target);
     });
 
-    it('always includes unmanaged layers', function() {
+    it('calls callback with layer for managed layers', function() {
+      map.addLayer(layer);
+      map.renderSync();
+      var cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
+      expect(cb).to.be.called();
+      expect(cb.firstCall.args[1]).to.be(layer);
+    });
+
+    it('includes unmanaged layers, but calls callback with null', function() {
       layer.setMap(map);
       map.renderSync();
       var cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
           function() { return false; });
       expect(cb).to.be.called();
+      expect(cb.firstCall.args[1]).to.be(null);
     });
 
     it('filters managed layers', function() {

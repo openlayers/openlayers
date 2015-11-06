@@ -599,8 +599,9 @@ ol.Map.prototype.disposeInternal = function() {
  *     called with two arguments. The first argument is one
  *     {@link ol.Feature feature} or
  *     {@link ol.render.Feature render feature} at the pixel, the second is
- *     the {@link ol.layer.Layer layer} of the feature. To stop detection,
- *     callback functions can return a truthy value.
+ *     the {@link ol.layer.Layer layer} of the feature and will be null for
+ *     unmanaged layers. To stop detection, callback functions can return a
+ *     truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the

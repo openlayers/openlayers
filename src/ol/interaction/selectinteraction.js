@@ -97,6 +97,8 @@ goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
  * further feature filter using the `filter` option.
  *
+ * Selected features are added to an internal unmanaged layer.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
