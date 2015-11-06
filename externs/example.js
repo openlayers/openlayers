@@ -6,9 +6,10 @@ var common;
 
 
 /**
+ * @param {string=} opt_default Default renderer.
  * @return {string} Renderer type.
  */
-common.getRendererFromQueryString = function() {};
+common.getRendererFromQueryString = function(opt_default) {};
 
 
 /**
