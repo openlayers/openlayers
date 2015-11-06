@@ -230,6 +230,16 @@ ol.structs.LRUCache.prototype.pop = function() {
  * @param {string} key Key.
  * @param {T} value Value.
  */
+ol.structs.LRUCache.prototype.replace = function(key, value) {
+  this.get(key);  // update `newest_`
+  this.entries_[key].value_ = value;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
 ol.structs.LRUCache.prototype.set = function(key, value) {
   goog.asserts.assert(!(key in {}),
       'key is not a standard property of objects (e.g. "__proto__")');
