@@ -2512,7 +2512,7 @@ ol.format.KML.writeStyle_ = function(node, style, objectStack) {
   var strokeStyle = style.getStroke();
   var imageStyle = style.getImage();
   var textStyle = style.getText();
-  if (imageStyle) {
+  if (imageStyle instanceof ol.style.Icon) {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {
