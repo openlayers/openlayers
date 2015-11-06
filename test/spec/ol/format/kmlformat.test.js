@@ -1779,6 +1779,28 @@ describe('ol.format.KML', function() {
         expect(node).to.xmleql(ol.xml.parse(text));
       });
 
+      it('does not write styles when writeStyles option is false', function() {
+        format = new ol.format.KML({writeStyles: false});
+        var style = new ol.style.Style({
+          image: new ol.style.Icon({
+            src: 'http://foo.png'
+          })
+        });
+        var feature = new ol.Feature();
+        feature.setStyle([style]);
+        var node = format.writeFeaturesNode([feature]);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
+
       it('can write an feature\'s text style', function() {
         var style = new ol.style.Style({
           text: new ol.style.Text({
