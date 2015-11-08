@@ -283,7 +283,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (this.filter_(feature, layer)) {
+          if (layer && this.filter_(feature, layer)) {
             selected.push(feature);
             this.addFeatureLayerAssociation_(feature, layer);
             return !this.multi_;
