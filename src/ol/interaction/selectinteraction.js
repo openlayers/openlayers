@@ -97,6 +97,8 @@ goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
  * `toggle`, `add`/`remove`, and `multi` options; a `layers` filter; and a
  * further feature filter using the `filter` option.
  *
+ * Selected features are added to an internal unmanaged layer.
+ *
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
@@ -281,7 +283,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (this.filter_(feature, layer)) {
+          if (layer && this.filter_(feature, layer)) {
             selected.push(feature);
             this.addFeatureLayerAssociation_(feature, layer);
             return !this.multi_;
