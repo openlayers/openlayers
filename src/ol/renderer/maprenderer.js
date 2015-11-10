@@ -9,6 +9,7 @@ goog.require('goog.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
@@ -34,7 +35,6 @@ ol.RendererType = {
  * @extends {goog.Disposable}
  * @param {Element} container Container.
  * @param {ol.Map} map Map.
- * @suppress {checkStructDictInheritance}
  * @struct
  */
 ol.renderer.Map = function(container, map) {
@@ -47,12 +47,6 @@ ol.renderer.Map = function(container, map) {
    * @type {ol.Map}
    */
   this.map_ = map;
-
-  /**
-   * @protected
-   * @type {ol.render.IReplayGroup}
-   */
-  this.replayGroup = null;
 
   /**
    * @private
@@ -77,8 +71,8 @@ goog.inherits(ol.renderer.Map, goog.Disposable);
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var viewState = frameState.viewState;
   var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
-  goog.asserts.assert(!goog.isNull(coordinateToPixelMatrix),
-      'frameState has non-null coordinateToPixelMatrix');
+  goog.asserts.assert(coordinateToPixelMatrix,
+      'frameState has a coordinateToPixelMatrix');
   ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / viewState.resolution, -1 / viewState.resolution,
@@ -120,8 +114,8 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback.
+ * @param {function(this: S, (ol.Feature|ol.render.Feature),
+ *     ol.layer.Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
@@ -137,17 +131,16 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
-  var viewRotation = viewState.rotation;
 
   /** @type {Object.<string, boolean>} */
   var features = {};
 
   /**
-   * @param {ol.Feature} feature Feature.
+   * @param {ol.Feature|ol.render.Feature} feature Feature.
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature) {
-    goog.asserts.assert(goog.isDef(feature), 'received a feature');
+    goog.asserts.assert(feature !== undefined, 'received a feature');
     var key = goog.getUid(feature).toString();
     if (!(key in features)) {
       features[key] = true;
@@ -168,25 +161,23 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
     }
   }
 
-  if (!goog.isNull(this.replayGroup)) {
-    result = this.replayGroup.forEachFeatureAtCoordinate(translatedCoordinate,
-        viewResolution, viewRotation, {}, forEachFeatureAtCoordinate);
-    if (result) {
-      return result;
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
+    if (!layerState.managed ||
+        (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer))) {
       var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachFeatureAtCoordinate(
-          layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-          frameState, callback, thisArg);
+      if (layer.getSource()) {
+        result = layerRenderer.forEachFeatureAtCoordinate(
+            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+            frameState,
+            layerState.managed ? callback : forEachFeatureAtCoordinate,
+            thisArg);
+      }
       if (result) {
         return result;
       }
@@ -216,20 +207,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
-  var viewRotation = viewState.rotation;
 
-  if (!goog.isNull(this.replayGroup)) {
-    var coordinate = this.getMap().getCoordinateFromPixel(pixel);
-    var hasFeature = this.replayGroup.forEachFeatureAtCoordinate(coordinate,
-        viewResolution, viewRotation, {}, goog.functions.TRUE);
-
-    if (hasFeature) {
-      result = callback.call(thisArg, null);
-      if (result) {
-        return result;
-      }
-    }
-  }
   var layerStates = frameState.layerStatesArray;
   var numLayers = layerStates.length;
   var i;
@@ -266,7 +244,7 @@ ol.renderer.Map.prototype.hasFeatureAtCoordinate =
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
 
-  return goog.isDef(hasFeature);
+  return hasFeature !== undefined;
 };
 
 
@@ -359,7 +337,7 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
  * Render.
  * @param {?olx.FrameState} frameState Frame state.
  */
-ol.renderer.Map.prototype.renderFrame = goog.nullFunction;
+ol.renderer.Map.prototype.renderFrame = ol.nullFunction;
 
 
 /**
@@ -371,7 +349,7 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
     function(map, frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
-    if (goog.isNull(frameState) || !(layerKey in frameState.layerStates)) {
+    if (!frameState || !(layerKey in frameState.layerStates)) {
       goog.dispose(this.removeLayerRendererByKey_(layerKey));
     }
   }
@@ -401,4 +379,14 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
       return;
     }
   }
+};
+
+
+/**
+ * @param {ol.layer.LayerState} state1
+ * @param {ol.layer.LayerState} state2
+ * @return {number}
+ */
+ol.renderer.Map.sortByZIndex = function(state1, state2) {
+  return state1.zIndex - state2.zIndex;
 };

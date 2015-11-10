@@ -1,7 +1,7 @@
 goog.provide('ol.CenterConstraint');
 goog.provide('ol.CenterConstraintType');
 
-goog.require('goog.math');
+goog.require('ol.math');
 
 
 /**
@@ -21,10 +21,10 @@ ol.CenterConstraint.createExtent = function(extent) {
        * @return {ol.Coordinate|undefined} Center.
        */
       function(center) {
-        if (goog.isDef(center)) {
+        if (center) {
           return [
-            goog.math.clamp(center[0], extent[0], extent[2]),
-            goog.math.clamp(center[1], extent[1], extent[3])
+            ol.math.clamp(center[0], extent[0], extent[2]),
+            ol.math.clamp(center[1], extent[1], extent[3])
           ];
         } else {
           return undefined;

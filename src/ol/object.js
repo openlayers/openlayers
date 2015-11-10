@@ -4,7 +4,6 @@ goog.provide('ol.ObjectEventType');
 
 goog.require('goog.events');
 goog.require('goog.events.Event');
-goog.require('goog.object');
 goog.require('ol.Observable');
 
 
@@ -112,11 +111,11 @@ ol.Object = function(opt_values) {
 
   /**
    * @private
-   * @type {Object.<string, *>}
+   * @type {!Object.<string, *>}
    */
   this.values_ = {};
 
-  if (goog.isDef(opt_values)) {
+  if (opt_values !== undefined) {
     this.setProperties(opt_values);
   }
 };
@@ -162,7 +161,7 @@ ol.Object.prototype.get = function(key) {
  * @api stable
  */
 ol.Object.prototype.getKeys = function() {
-  return goog.object.getKeys(this.values_);
+  return Object.keys(this.values_);
 };
 
 

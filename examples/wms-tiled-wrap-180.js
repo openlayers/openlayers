@@ -13,8 +13,7 @@ var layers = [
     source: new ol.source.TileWMS({
       url: 'http://demo.boundlessgeo.com/geoserver/ne/wms',
       params: {'LAYERS': 'ne:ne_10m_admin_0_countries', 'TILED': true},
-      serverType: 'geoserver',
-      wrapX: true
+      serverType: 'geoserver'
     })
   })
 ];

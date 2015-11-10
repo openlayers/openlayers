@@ -1,6 +1,5 @@
 goog.require('ol.Attribution');
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
@@ -180,7 +179,8 @@ map.on('postcompose', function(evt) {
   }
 });
 
-var featureOverlay = new ol.FeatureOverlay({
+var featureOverlay = new ol.layer.Vector({
+  source: new ol.source.Vector(),
   map: map,
   style: new ol.style.Style({
     image: new ol.style.Circle({
@@ -203,7 +203,7 @@ document.getElementById('time').addEventListener('input', function() {
     if (highlight === undefined) {
       highlight = new ol.Feature(new ol.geom.Point(coordinate));
       feature.set('highlight', highlight);
-      featureOverlay.addFeature(highlight);
+      featureOverlay.getSource().addFeature(highlight);
     } else {
       highlight.getGeometry().setCoordinates(coordinate);
     }

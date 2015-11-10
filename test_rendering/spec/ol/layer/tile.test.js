@@ -11,7 +11,7 @@ describe('ol.rendering.layer.Tile', function() {
       target: target,
       renderer: renderer,
       view: new ol.View({
-        center: goog.isDef(opt_center) ? opt_center : ol.proj.transform(
+        center: opt_center !== undefined ? opt_center : ol.proj.transform(
             [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
         zoom: 5
       })
@@ -29,7 +29,7 @@ describe('ol.rendering.layer.Tile', function() {
       }
     };
 
-    goog.array.forEach(sources, function(source) {
+    sources.forEach(function(source) {
       source.on('tileloadstart', function(event) {
         tilesLoading++;
       });
@@ -190,7 +190,6 @@ describe('ol.rendering.layer.Tile', function() {
 
 });
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol.proj');
 goog.require('ol.Map');

@@ -99,6 +99,12 @@ ol.geom.SimpleGeometry.prototype.computeExtent = function(extent) {
 
 
 /**
+ * @return {Array} Coordinates.
+ */
+ol.geom.SimpleGeometry.prototype.getCoordinates = goog.abstractMethod;
+
+
+/**
  * Return the first coordinate of the geometry.
  * @return {ol.Coordinate} First coordinate.
  * @api stable
@@ -210,6 +216,13 @@ ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
 
 
 /**
+ * @param {Array} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ */
+ol.geom.SimpleGeometry.prototype.setCoordinates = goog.abstractMethod;
+
+
+/**
  * @param {ol.geom.GeometryLayout|undefined} layout Layout.
  * @param {Array} coordinates Coordinates.
  * @param {number} nesting Nesting.
@@ -219,7 +232,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
     function(layout, coordinates, nesting) {
   /** @type {number} */
   var stride;
-  if (goog.isDef(layout)) {
+  if (layout) {
     stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   } else {
     var i;
@@ -245,7 +258,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
  * @api stable
  */
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
-  if (!goog.isNull(this.flatCoordinates)) {
+  if (this.flatCoordinates) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
     this.changed();
   }
@@ -258,7 +271,7 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   var flatCoordinates = this.getFlatCoordinates();
-  if (!goog.isNull(flatCoordinates)) {
+  if (flatCoordinates) {
     var stride = this.getStride();
     ol.geom.flat.transform.translate(
         flatCoordinates, 0, flatCoordinates.length, stride,
@@ -277,7 +290,7 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
 ol.geom.transformSimpleGeometry2D =
     function(simpleGeometry, transform, opt_dest) {
   var flatCoordinates = simpleGeometry.getFlatCoordinates();
-  if (goog.isNull(flatCoordinates)) {
+  if (!flatCoordinates) {
     return null;
   } else {
     var stride = simpleGeometry.getStride();

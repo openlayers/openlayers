@@ -38,6 +38,17 @@ ol.array.binaryFindNearest = function(arr, target) {
 
 
 /**
+ * Whether the array contains the given object.
+ * @param {Array.<*>} arr The array to test for the presence of the element.
+ * @param {*} obj The object for which to test.
+ * @return {boolean} The object is in the array.
+ */
+ol.array.includes = function(arr, obj) {
+  return arr.indexOf(obj) >= 0;
+};
+
+
+/**
  * @param {Array.<number>} arr Array.
  * @param {number} target Target.
  * @param {number} direction 0 means return the nearest, > 0

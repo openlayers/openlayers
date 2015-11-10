@@ -26,7 +26,7 @@ goog.require('ol.proj');
  */
 ol.format.Polyline = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this);
 
@@ -39,13 +39,13 @@ ol.format.Polyline = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.factor_ = goog.isDef(options.factor) ? options.factor : 1e5;
+  this.factor_ = options.factor ? options.factor : 1e5;
 
   /**
    * @private
    * @type {ol.geom.GeometryLayout}
    */
-  this.geometryLayout_ = goog.isDef(options.geometryLayout) ?
+  this.geometryLayout_ = options.geometryLayout ?
       options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
 goog.inherits(ol.format.Polyline, ol.format.TextFeature);
@@ -65,7 +65,7 @@ goog.inherits(ol.format.Polyline, ol.format.TextFeature);
  * @api
  */
 ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
-  var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
+  var factor = opt_factor ? opt_factor : 1e5;
   var d;
 
   var lastNumbers = new Array(stride);
@@ -100,7 +100,7 @@ ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
  * @api
  */
 ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
-  var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
+  var factor = opt_factor ? opt_factor : 1e5;
   var d;
 
   /** @type {Array.<number>} */
@@ -137,7 +137,7 @@ ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
  * @api
  */
 ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
-  var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
+  var factor = opt_factor ? opt_factor : 1e5;
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     numbers[i] = Math.round(numbers[i] * factor);
@@ -157,7 +157,7 @@ ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
  * @api
  */
 ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
-  var factor = goog.isDef(opt_factor) ? opt_factor : 1e5;
+  var factor = opt_factor ? opt_factor : 1e5;
   var numbers = ol.format.Polyline.decodeSignedIntegers(encoded);
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
@@ -356,7 +356,7 @@ ol.format.Polyline.prototype.readProjection;
  */
 ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
   } else {
     goog.asserts.fail('geometry needs to be defined');

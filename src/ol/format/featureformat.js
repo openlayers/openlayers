@@ -24,6 +24,7 @@ ol.format.Feature = function() {
    * @type {ol.proj.Projection}
    */
   this.defaultDataProjection = null;
+
 };
 
 
@@ -42,9 +43,9 @@ ol.format.Feature.prototype.getExtensions = goog.abstractMethod;
  */
 ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
   var options;
-  if (goog.isDef(opt_options)) {
+  if (opt_options) {
     options = {
-      dataProjection: goog.isDef(opt_options.dataProjection) ?
+      dataProjection: opt_options.dataProjection ?
           opt_options.dataProjection : this.readProjection(source),
       featureProjection: opt_options.featureProjection
     };
@@ -64,10 +65,10 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
  */
 ol.format.Feature.prototype.adaptOptions = function(options) {
   var updatedOptions;
-  if (goog.isDef(options)) {
+  if (options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
-      dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
+      dataProjection: options.dataProjection ?
           options.dataProjection : this.defaultDataProjection,
       rightHanded: options.rightHanded
     };
@@ -95,7 +96,7 @@ ol.format.Feature.prototype.readFeature = goog.abstractMethod;
 /**
  * Read all features from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Node|ArrayBuffer|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
@@ -161,11 +162,11 @@ ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
  */
 ol.format.Feature.transformWithOptions = function(
     geometry, write, opt_options) {
-  var featureProjection = goog.isDef(opt_options) ?
+  var featureProjection = opt_options ?
       ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) ?
+  var dataProjection = opt_options ?
       ol.proj.get(opt_options.dataProjection) : null;
-  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
+  if (featureProjection && dataProjection &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {
     if (geometry instanceof ol.geom.Geometry) {
       return (write ? geometry.clone() : geometry).transform(

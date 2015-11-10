@@ -42,7 +42,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.style).to.be.eql('DarkBlue');
 
-          expect(options.dimensions).to.eql({});
+          expect(options.dimensions).to.eql({Time: '20110805'});
 
         });
 
@@ -73,9 +73,19 @@ describe('ol.source.WMTS', function() {
 
           expect(options.style).to.be.eql('DarkBlue');
 
-          expect(options.dimensions).to.eql({});
+          expect(options.dimensions).to.eql({Time: '20110805'});
 
         });
+
+    it('can find a MatrixSet by SRS identifier', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(
+          capabilities,
+          { layer: 'BlueMarbleNextGeneration', projection: 'EPSG:3857',
+            requestEncoding: 'REST' });
+
+      expect(options.matrixSet).to.be.eql('google3857');
+    });
+
   });
 
   describe('when creating tileUrlFunction', function() {
@@ -99,8 +109,8 @@ describe('ol.source.WMTS', function() {
           });
 
           var projection = ol.proj.get('EPSG:3857');
-          var url = source.tileUrlFunction.call(source,
-             [1, 1, -2], 1, projection);
+          var url = source.tileUrlFunction(
+              source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
              'layer/default/EPSG:3857/1/1/1.jpg');
 
@@ -125,8 +135,8 @@ describe('ol.source.WMTS', function() {
           });
 
           var projection = ol.proj.get('EPSG:3857');
-          var url = source.tileUrlFunction.call(source,
-             [1, 1, -2], 1, projection);
+          var url = source.tileUrlFunction(
+              source.getTileCoordForTileUrlFunction([1, 1, -2]), 1, projection);
           expect(url).to.be.eql('http://www.example.com/wmts/coastlines/' +
              'layer/default/EPSG:3857/1/1/1.jpg');
 

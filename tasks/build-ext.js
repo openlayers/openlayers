@@ -4,6 +4,7 @@ var path = require('path');
 var async = require('async');
 var fse = require('fs-extra');
 var browserify = require('browserify');
+var derequire = require('derequire');
 
 var pkg = require('../package.json');
 
@@ -50,6 +51,7 @@ function wrapModule(mod, callback) {
         '(function() {\n' +
         'var exports = {};\n' +
         'var module = {exports: exports};\n' +
+        'var define;\n' +
         '/**\n' +
         ' * @fileoverview\n' +
         ' * @suppress {accessControls, ambiguousFunctionDecl, ' +
@@ -70,7 +72,7 @@ function wrapModule(mod, callback) {
         callback(err);
         return;
       }
-      callback(null, wrap(buf.toString()));
+      callback(null, wrap(derequire(buf.toString())));
     });
   } else {
     fs.readFile(mod.main, function(err, data) {

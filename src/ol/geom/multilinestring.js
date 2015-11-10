@@ -2,6 +2,7 @@ goog.provide('ol.geom.MultiLineString');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -48,8 +49,7 @@ ol.geom.MultiLineString = function(coordinates, opt_layout) {
    */
   this.maxDeltaRevision_ = -1;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
@@ -63,7 +63,7 @@ goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
   goog.asserts.assert(lineString.getLayout() == this.layout,
       'layout of lineString should match the layout');
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = lineString.getFlatCoordinates().slice();
   } else {
     goog.array.extend(
@@ -136,8 +136,8 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM =
       this.flatCoordinates.length === 0) {
     return null;
   }
-  var extrapolate = goog.isDef(opt_extrapolate) ? opt_extrapolate : false;
-  var interpolate = goog.isDef(opt_interpolate) ? opt_interpolate : false;
+  var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
+  var interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
   return ol.geom.flat.lineStringsCoordinateAtM(this.flatCoordinates, 0,
       this.ends_, this.stride, m, extrapolate, interpolate);
 };
@@ -270,11 +270,11 @@ ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.MultiLineString.prototype.setCoordinates =
     function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     var ends = ol.geom.flat.deflate.coordinatess(
@@ -292,9 +292,9 @@ ol.geom.MultiLineString.prototype.setCoordinates =
  */
 ol.geom.MultiLineString.prototype.setFlatCoordinates =
     function(layout, flatCoordinates, ends) {
-  if (goog.isNull(flatCoordinates)) {
-    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0,
-        'ends cannot be null and ends.length should be 0');
+  if (!flatCoordinates) {
+    goog.asserts.assert(ends && ends.length === 0,
+        'ends must be truthy and ends.length should be 0');
   } else if (ends.length === 0) {
     goog.asserts.assert(flatCoordinates.length === 0,
         'flatCoordinates should be an empty array');
@@ -312,7 +312,7 @@ ol.geom.MultiLineString.prototype.setFlatCoordinates =
  * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.
  */
 ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
-  var layout = ol.geom.GeometryLayout.XY;
+  var layout = this.getLayout();
   var flatCoordinates = [];
   var ends = [];
   var i, ii;

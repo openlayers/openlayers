@@ -4,14 +4,13 @@ goog.provide('ol.source.WMTSRequestEncoding');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
-goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
-goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.WMTS');
 
 
@@ -44,19 +43,19 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {string}
    */
-  this.version_ = goog.isDef(options.version) ? options.version : '1.0.0';
+  this.version_ = options.version !== undefined ? options.version : '1.0.0';
 
   /**
    * @private
    * @type {string}
    */
-  this.format_ = goog.isDef(options.format) ? options.format : 'image/jpeg';
+  this.format_ = options.format !== undefined ? options.format : 'image/jpeg';
 
   /**
    * @private
    * @type {Object}
    */
-  this.dimensions_ = goog.isDef(options.dimensions) ? options.dimensions : {};
+  this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
 
   /**
    * @private
@@ -84,15 +83,9 @@ ol.source.WMTS = function(options) {
   this.style_ = options.style;
 
   var urls = options.urls;
-  if (!goog.isDef(urls) && goog.isDef(options.url)) {
+  if (urls === undefined && options.url !== undefined) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
   }
-
-  /**
-   * @private
-   * @type {!Array.<string>}
-   */
-  this.urls_ = goog.isDefAndNotNull(urls) ? urls : [];
 
   // FIXME: should we guess this requestEncoding from options.url(s)
   //        structure? that would mean KVP only if a template is not provided.
@@ -101,7 +94,7 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {ol.source.WMTSRequestEncoding}
    */
-  this.requestEncoding_ = goog.isDef(options.requestEncoding) ?
+  this.requestEncoding_ = options.requestEncoding !== undefined ?
       /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
       ol.source.WMTSRequestEncoding.KVP;
 
@@ -154,13 +147,13 @@ ol.source.WMTS = function(options) {
          * @return {string|undefined} Tile URL.
          */
         function(tileCoord, pixelRatio, projection) {
-          if (goog.isNull(tileCoord)) {
+          if (!tileCoord) {
             return undefined;
           } else {
             var localContext = {
               'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
               'TileCol': tileCoord[1],
-              'TileRow': tileCoord[2]
+              'TileRow': -tileCoord[2] - 1
             };
             goog.object.extend(localContext, dimensions);
             var url = template;
@@ -176,49 +169,24 @@ ol.source.WMTS = function(options) {
         });
   }
 
-  var tileUrlFunction = this.urls_.length > 0 ?
+  var tileUrlFunction = (urls && urls.length > 0) ?
       ol.TileUrlFunction.createFromTileUrlFunctions(
-          goog.array.map(this.urls_, createFromWMTSTemplate)) :
+          urls.map(createFromWMTSTemplate)) :
       ol.TileUrlFunction.nullTileUrlFunction;
-
-  var tmpExtent = ol.extent.createEmpty();
-  tileUrlFunction = ol.TileUrlFunction.withTileCoordTransform(
-      /**
-       * @param {ol.TileCoord} tileCoord Tile coordinate.
-       * @param {ol.proj.Projection} projection Projection.
-       * @param {ol.TileCoord=} opt_tileCoord Tile coordinate.
-       * @return {ol.TileCoord} Tile coordinate.
-       */
-      function(tileCoord, projection, opt_tileCoord) {
-        goog.asserts.assert(!goog.isNull(tileGrid),
-            'tileGrid must not be null');
-        if (tileGrid.getResolutions().length <= tileCoord[0]) {
-          return null;
-        }
-        var x = tileCoord[1];
-        var y = -tileCoord[2] - 1;
-        var tileExtent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-        var extent = projection.getExtent();
-
-        if (!ol.extent.intersects(tileExtent, extent) ||
-            ol.extent.touches(tileExtent, extent)) {
-          return null;
-        }
-        return ol.tilecoord.createOrUpdate(tileCoord[0], x, y, opt_tileCoord);
-      },
-      tileUrlFunction);
 
   goog.base(this, {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     projection: options.projection,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: options.tileClass,
     tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: tileUrlFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : false
+    urls: urls,
+    wrapX: options.wrapX !== undefined ? options.wrapX : false
   });
 
 };
@@ -296,16 +264,6 @@ ol.source.WMTS.prototype.getStyle = function() {
 
 
 /**
- * Return the URLs used for this WMTS source.
- * @return {!Array.<string>} URLs.
- * @api
- */
-ol.source.WMTS.prototype.getUrls = function() {
-  return this.urls_;
-};
-
-
-/**
  * Return the version of the WMTS source.
  * @return {string} Version.
  * @api
@@ -341,6 +299,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
 
 
 /**
+ * Generate source options from a capabilities object.
  * @param {Object} wmtsCap An object representing the capabilities document.
  * @param {Object} config Configuration properties for the layer.  Defaults for
  *                  the layer will apply if not provided.
@@ -364,34 +323,37 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  */
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
-  /* jshint -W069 */
-
   // TODO: add support for TileMatrixLimits
-  goog.asserts.assert(!goog.isNull(config['layer']),
+  goog.asserts.assert(config['layer'],
       'config "layer" must not be null');
 
   var layers = wmtsCap['Contents']['Layer'];
   var l = goog.array.find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
-  goog.asserts.assert(!goog.isNull(l),
-      'found a matching layer in Contents/Layer');
+  goog.asserts.assert(l, 'found a matching layer in Contents/Layer');
 
   goog.asserts.assert(l['TileMatrixSetLink'].length > 0,
       'layer has TileMatrixSetLink');
-  var idx, matrixSet, wrapX;
+  var tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
+  var idx, matrixSet;
   if (l['TileMatrixSetLink'].length > 1) {
-    idx = goog.array.findIndex(l['TileMatrixSetLink'],
-        function(elt, index, array) {
-          return elt['TileMatrixSet'] == config['matrixSet'];
-        });
-  } else if (goog.isDef(config['projection'])) {
-    idx = goog.array.findIndex(l['TileMatrixSetLink'],
-        function(elt, index, array) {
-          return elt['TileMatrixSet']['SupportedCRS'].replace(
-              /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'
-                 ) == config['projection'];
-        });
+    if ('projection' in config) {
+      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+          function(elt, index, array) {
+            var tileMatrixSet = goog.array.find(tileMatrixSets, function(el) {
+              return el['Identifier'] == elt['TileMatrixSet'];
+            });
+            return tileMatrixSet['SupportedCRS'].replace(
+                /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'
+                   ) == config['projection'];
+          });
+    } else {
+      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+          function(elt, index, array) {
+            return elt['TileMatrixSet'] == config['matrixSet'];
+          });
+    }
   } else {
     idx = 0;
   }
@@ -401,22 +363,14 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
 
-  goog.asserts.assert(!goog.isNull(matrixSet),
-      'TileMatrixSet must not be null');
-
-  var wgs84BoundingBox = l['WGS84BoundingBox'];
-  if (goog.isDef(wgs84BoundingBox)) {
-    var wgs84ProjectionExtent = ol.proj.get('EPSG:4326').getExtent();
-    wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
-        wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
-  }
+  goog.asserts.assert(matrixSet, 'TileMatrixSet must not be null');
 
   var format = /** @type {string} */ (l['Format'][0]);
-  if (goog.isDef(config['format'])) {
+  if ('format' in config) {
     format = config['format'];
   }
   idx = goog.array.findIndex(l['Style'], function(elt, index, array) {
-    if (goog.isDef(config['style'])) {
+    if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {
       return elt['isDefault'];
@@ -428,17 +382,17 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var style = /** @type {string} */ (l['Style'][idx]['Identifier']);
 
   var dimensions = {};
-  if (goog.isDef(l['Dimension'])) {
-    goog.array.forEach(l['Dimension'], function(elt, index, array) {
+  if ('Dimension' in l) {
+    l['Dimension'].forEach(function(elt, index, array) {
       var key = elt['Identifier'];
-      var value = elt['default'];
-      if (goog.isDef(value)) {
-        goog.asserts.assert(goog.array.contains(elt['values'], value),
+      var value = elt['Default'];
+      if (value !== undefined) {
+        goog.asserts.assert(ol.array.includes(elt['Value'], value),
             'default value contained in values');
       } else {
-        value = elt['values'][0];
+        value = elt['Value'][0];
       }
-      goog.asserts.assert(goog.isDef(value), 'value could be found');
+      goog.asserts.assert(value !== undefined, 'value could be found');
       dimensions[key] = value;
     });
   }
@@ -447,35 +401,54 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var matrixSetObj = goog.array.find(matrixSets, function(elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
-  goog.asserts.assert(!goog.isNull(matrixSetObj),
+  goog.asserts.assert(matrixSetObj,
       'found matrixSet in Contents/TileMatrixSet');
 
-  var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
-      matrixSetObj);
-
   var projection;
-  if (goog.isDef(config['projection'])) {
+  if ('projection' in config) {
     projection = ol.proj.get(config['projection']);
   } else {
     projection = ol.proj.get(matrixSetObj['SupportedCRS'].replace(
         /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'));
   }
 
+  var wgs84BoundingBox = l['WGS84BoundingBox'];
+  var extent, wrapX;
+  if (wgs84BoundingBox !== undefined) {
+    var wgs84ProjectionExtent = ol.proj.get('EPSG:4326').getExtent();
+    wrapX = (wgs84BoundingBox[0] == wgs84ProjectionExtent[0] &&
+        wgs84BoundingBox[2] == wgs84ProjectionExtent[2]);
+    extent = ol.proj.transformExtent(
+        wgs84BoundingBox, 'EPSG:4326', projection);
+    var projectionExtent = projection.getExtent();
+    if (projectionExtent) {
+      // If possible, do a sanity check on the extent - it should never be
+      // bigger than the validity extent of the projection of a matrix set.
+      if (!ol.extent.containsExtent(projectionExtent, extent)) {
+        extent = undefined;
+      }
+    }
+  }
+
+  var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
+      matrixSetObj, extent);
+
   /** @type {!Array.<string>} */
   var urls = [];
   var requestEncoding = config['requestEncoding'];
-  requestEncoding = goog.isDef(requestEncoding) ? requestEncoding : '';
+  requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
 
   goog.asserts.assert(
-      goog.array.contains(['REST', 'RESTful', 'KVP', ''], requestEncoding),
+      ol.array.includes(['REST', 'RESTful', 'KVP', ''], requestEncoding),
       'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
       requestEncoding);
 
-  if (!wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
-      goog.string.startsWith(requestEncoding, 'REST')) {
+  if (!wmtsCap.hasOwnProperty('OperationsMetadata') ||
+      !wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
+      requestEncoding.indexOf('REST') === 0) {
     // Add REST tile resource url
     requestEncoding = ol.source.WMTSRequestEncoding.REST;
-    goog.array.forEach(l['ResourceURL'], function(elt, index, array) {
+    l['ResourceURL'].forEach(function(elt, index, array) {
       if (elt['resourceType'] == 'tile') {
         format = elt['format'];
         urls.push(/** @type {string} */ (elt['template']));
@@ -490,7 +463,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
             return elt['name'] == 'GetEncoding';
           });
       var encodings = constraint['AllowedValues']['Value'];
-      if (encodings.length > 0 && goog.array.contains(encodings, 'KVP')) {
+      if (encodings.length > 0 && ol.array.includes(encodings, 'KVP')) {
         requestEncoding = ol.source.WMTSRequestEncoding.KVP;
         urls.push(/** @type {string} */ (gets[i]['href']));
       }
@@ -510,7 +483,5 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     dimensions: dimensions,
     wrapX: wrapX
   };
-
-  /* jshint +W069 */
 
 };

@@ -16,9 +16,8 @@
         ]
     },
     "plugins": [
-        "node_modules/jsdoc/plugins/markdown",
+        "node_modules/jsdoc-fork/plugins/markdown",
         "config/jsdoc/api/plugins/inheritdoc",
-        "config/jsdoc/api/plugins/interface",
         "config/jsdoc/api/plugins/typedefs",
         "config/jsdoc/api/plugins/events",
         "config/jsdoc/api/plugins/observable",

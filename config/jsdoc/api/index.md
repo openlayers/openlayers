@@ -35,6 +35,5 @@ Interactions for [vector features](ol.Feature.html)
 <td><p>Changes to all [ol.Objects](ol.Object.html) can observed by calling the [object.on('propertychange')](ol.Object.html#on) method.  Listeners receive an [ol.ObjectEvent](ol.ObjectEvent.html) with information on the changed property and old value.</p>
 <td>[ol.DeviceOrientation](ol.DeviceOrientation.html)<br>
 [ol.Geolocation](ol.Geolocation.html)<br>
-[ol.Overlay](ol.Overlay.html)<br>
-[ol.FeatureOverlay](ol.FeatureOverlay.html)<br></td>
+[ol.Overlay](ol.Overlay.html)<br></td>
 </tr></table>

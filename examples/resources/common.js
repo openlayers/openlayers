@@ -10,6 +10,14 @@
     });
   }
 
+  var fiddleButton = document.getElementById('jsfiddle-button');
+  if (fiddleButton) {
+    fiddleButton.onclick = function(event) {
+      event.preventDefault();
+      document.getElementById('jsfiddle-form').submit();
+    };
+  }
+
   if (window.location.host === 'localhost:3000') {
     return;
   }
@@ -75,7 +83,7 @@
 
 var common = {};
 
-common.getRendererFromQueryString = function() {
+common.getRendererFromQueryString = function(opt_default) {
   var obj = {};
   var queryString = location.search.slice(1);
   var re = /([^&=]+)=([^&]*)/g;
@@ -90,6 +98,6 @@ common.getRendererFromQueryString = function() {
   } else if ('renderer' in obj) {
     return [obj['renderer']];
   } else {
-    return undefined;
+    return opt_default;
   }
 };

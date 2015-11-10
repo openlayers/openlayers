@@ -1,5 +1,197 @@
 ## Upgrade notes
 
+### v3.11.0
+
+#### `ol.format.KML` changes
+
+KML icons are scaled 50% so that the rendering better matches Google Earth rendering.
+
+If a KML placemark has a name and is a point, an `ol.style.Text` is created with the name displayed to the right of the icon (if there is an icon).
+This can be controlled with the showPointNames option which defaults to true.
+
+To disable rendering of the point names for placemarks, use the option:
+new ol.format.KML({ showPointNames: false });
+
+
+#### `ol.interaction.DragBox` and `ol.interaction.DragZoom` changes
+
+Styling is no longer done with `ol.Style`, but with pure CSS. The `style` constructor option is no longer required, and no longer available. Instead, there is a `className` option for the CSS selector. The default for `ol.interaction.DragBox` is `ol-dragbox`, and `ol.interaction.DragZoom` uses `ol-dragzoom`. If you previously had
+```js
+new ol.interaction.DragZoom({
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: [255, 255, 255, 0.4]
+    })
+  })
+});
+```
+you'll now just need
+```js
+new ol.interaction.DragZoom();
+```
+but with additional css:
+```css
+.ol-dragzoom {
+  border-color: red;
+  border-width: 3px;
+  background-color: rgba(255,255,255,0.4);
+}
+```
+
+#### Removal of `ol.source.TileVector`
+
+With the introduction of true vector tile support, `ol.source.TileVector` becomes obsolete. Change your code to use `ol.layer.VectorTile` and `ol.source.VectorTile` instead of `ol.layer.Vector` and `ol.source.TileVector`.
+
+#### `ol.Map#forEachFeatureAtPixel` changes for unmanaged layers
+
+`ol.Map#forEachFeatureAtPixel` will still be called for unmanaged layers, but the 2nd argument to the callback function will be `null` instead of a reference to the unmanaged layer. This brings back the behavior of the abandoned `ol.FeatureOverlay` that was replaced by unmanaged layers.
+
+If you are affected by this change, please change your unmanaged layer to a regular layer by using e.g. `ol.Map#addLayer` instead of `ol.layer.Layer#setMap`.
+
+### v3.10.0
+
+#### `ol.layer.Layer` changes
+
+The experimental `setHue`, `setContrast`, `setBrightness`, `setSaturation`, and the corresponding getter methods have been removed.  These properties only worked with the WebGL renderer.  If are interested in applying color transforms, look for the `postcompose` event in the API docs.  In addition, the `ol.source.Raster` source provides a way to create new raster data based on arbitrary transforms run on any number of input sources.
+
+### v3.9.0
+
+#### `ol.style.Circle` changes
+
+The experimental `getAnchor`, `getOrigin`, and `getSize` methods have been removed.  The anchor and origin of a circle symbolizer are not modifiable, so these properties should not need to be accessed.  The radius and stroke width can be used to calculate the rendered size of a circle symbolizer if needed:
+
+```js
+// calculate rendered size of a circle symbolizer
+var width = 2 * circle.getRadius();
+if (circle.getStroke()) {
+  width += circle.getStroke().getWidth() + 1;
+}
+```
+
+### v3.8.0
+
+There should be nothing special required when upgrading from v3.7.0 to v3.8.0.
+
+### v3.7.0
+
+#### Removal of `ol.FeatureOverlay`
+
+Instead of an `ol.FeatureOverlay`, we now use an `ol.layer.Vector` with an
+`ol.source.Vector`. If you previously had:
+```js
+var featureOverlay = new ol.FeatureOverlay({
+  map: map,
+  style: overlayStyle
+});
+featureOverlay.addFeature(feature);
+featureOverlay.removeFeature(feature);
+var collection = featureOverlay.getFeatures();
+```
+you will have to change this to:
+```js
+var collection = new ol.Collection();
+var featureOverlay = new ol.layer.Vector({
+  map: map,
+  source: new ol.source.Vector({
+    features: collection,
+    useSpatialIndex: false // optional, might improve performance
+  }),
+  style: overlayStyle,
+  updateWhileAnimating: true, // optional, for instant visual feedback
+  updateWhileInteracting: true // optional, for instant visual feedback
+});
+featureOverlay.getSource().addFeature(feature);
+featureOverlay.getSource().removeFeature(feature);
+```
+
+With the removal of `ol.FeatureOverlay`, `zIndex` symbolizer properties of overlays are no longer stacked per map, but per layer/overlay. If you previously had multiple feature overlays where you controlled the rendering order of features by using `zIndex` symbolizer properties, you can now achieve the same rendering order only if all overlay features are on the same layer.
+
+Note that `ol.FeatureOverlay#getFeatures()` returned an `{ol.Collection.<ol.Feature>}`, whereas `ol.source.Vector#getFeatures()` returns an `{Array.<ol.Feature>}`.
+
+#### `ol.TileCoord` changes
+
+Until now, the API exposed two different types of `ol.TileCoord` tile coordinates: internal ones that increase left to right and upward, and transformed ones that may increase downward, as defined by a transform function on the tile grid. With this change, the API now only exposes tile coordinates that increase left to right and upward.
+
+Previously, tile grids created by OpenLayers either had their origin at the top-left or at the bottom-left corner of the extent. To make it easier for application developers to transform tile coordinates to the common XYZ tiling scheme, all tile grids that OpenLayers creates internally have their origin now at the top-left corner of the extent.
+
+This change affects applications that configure a custom `tileUrlFunction` for an `ol.source.Tile`. Previously, the `tileUrlFunction` was called with rather unpredictable tile coordinates, depending on whether a tile coordinate transform took place before calling the `tileUrlFunction`. Now it is always called with OpenLayers tile coordinates. To transform these into the common XYZ tiling scheme, a custom `tileUrlFunction` has to change the `y` value (tile row) of the `ol.TileCoord`:
+```js
+function tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  var urlTemplate = '{z}/{x}/{y}';
+  return urlTemplate
+      .replace('{z}', tileCoord[0].toString())
+      .replace('{x}', tileCoord[1].toString())
+      .replace('{y}', (-tileCoord[2] - 1).toString());
+}
+```
+
+The `ol.tilegrid.TileGrid#createTileCoordTransform()` function which could be used to get the tile grid's tile coordinate transform function has been removed. This function was confusing and should no longer be needed now that application developers get tile coordinates in a known layout.
+
+The code snippets below show how your application code needs to be changed:
+
+Old application code (with `ol.tilegrid.TileGrid#createTileCoordTransform()`):
+```js
+var transform = source.getTileGrid().createTileCoordTransform();
+var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  tileCoord = transform(tileCoord, projection);
+  return 'http://mytiles.com/' +
+      tileCoord[0] + '/' + tileCoord[1] + '/' + tileCoord[2] + '.png';
+};
+```
+Old application code (with custom `y` transform):
+```js
+var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  var z = tileCoord[0];
+  var yFromBottom = tileCoord[2];
+  var resolution = tileGrid.getResolution(z);
+  var tileHeight = ol.size.toSize(tileSize)[1];
+  var matrixHeight =
+      Math.floor(ol.extent.getHeight(extent) / tileHeight / resolution);
+  return 'http://mytiles.com/' +
+      tileCoord[0] + '/' + tileCoord[1] + '/' +
+      (matrixHeight - yFromBottom - 1) + '.png';
+
+};
+```
+New application code (simple -y - 1 transform):
+```js
+var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
+  return 'http://mytiles.com/' +
+      tileCoord[0] + '/' + tileCoord[1] + '/' + (-tileCoord[2] - 1) + '.png';
+};
+```
+
+#### Removal of `ol.tilegrid.Zoomify`
+
+The replacement of `ol.tilegrid.Zoomify` is a plain `ol.tilegrid.TileGrid`, configured with `extent`, `origin` and `resolutions`. If the `size` passed to the `ol.source.Zoomify` source is `[width, height]`, then the extent for the tile grid will be `[0, -height, width, 0]`, and the origin will be `[0, 0]`.
+
+#### Replace `ol.View.fitExtent()` and `ol.View.fitGeometry()` with `ol.View.fit()`
+* This combines two previously distinct functions into one more flexible call which takes either a geometry or an extent.
+* Rename all calls to `fitExtent` and `fitGeometry` to `fit`.
+
+#### Change to `ol.interaction.Modify`
+
+When single clicking a line or boundary within the `pixelTolerance`, a vertex is now created.
+
+### v3.6.0
+
+#### `ol.interaction.Draw` changes
+
+* The `minPointsPerRing` config option has been renamed to `minPoints`. It is now also available for linestring drawing, not only for polygons.
+* The `ol.DrawEvent` and `ol.DrawEventType` types were renamed to `ol.interaction.DrawEvent` and `ol.interaction.DrawEventType`. This has an impact on your code only if your code is compiled together with ol3.
+
+#### `ol.tilegrid` changes
+
+* The `ol.tilegrid.XYZ` constructor has been replaced by a static `ol.tilegrid.createXYZ()` function. The `ol.tilegrid.createXYZ()` function takes the same arguments as the previous `ol.tilegrid.XYZ` constructor, but returns an `ol.tilegrid.TileGrid` instance.
+* The internal tile coordinate scheme for XYZ sources has been changed. Previously, the `y` of tile coordinates was transformed to the coordinates used by sources by calculating `-y-1`. Now, it is transformed by calculating `height-y-1`, where height is the number of rows of the tile grid at the zoom level of the tile coordinate.
+* The `widths` constructor option of `ol.tilegrid.TileGrid` and subclasses is no longer available, and it is no longer necessary to get proper wrapping at the 180° meridian. However, for `ol.tilegrid.WMTS`, there is a new option `sizes`, where each entry is an `ol.Size` with the `width` ('TileMatrixWidth' in WMTS capabilities) as first and the `height` ('TileMatrixHeight') as second entry of the array. For other tile grids, users can
+now specify an `extent` instead of `widths`. These settings are used to restrict the range of tiles that sources will request.
+* For `ol.source.TileWMS`, the default value of `warpX` used to be `undefined`, meaning that WMS requests with out-of-extent tile BBOXes would be sent. Now `wrapX` can only be `true` or `false`, and the new default is `true`. No application code changes should be required, but the resulting WMS requests for out-of-extent tiles will no longer use out-of-extent BBOXes, but ones that are shifted to real-world coordinates.
+
 ### v3.5.0
 
 #### `ol.Object` and `bindTo`

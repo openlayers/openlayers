@@ -1,5 +1,6 @@
 goog.provide('ol.interaction');
 
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
 goog.require('ol.interaction.DoubleClickZoom');
@@ -41,19 +42,19 @@ goog.require('ol.interaction.PinchZoom');
  */
 ol.interaction.defaults = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   var interactions = new ol.Collection();
 
   var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
 
-  var altShiftDragRotate = goog.isDef(options.altShiftDragRotate) ?
+  var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
       options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate());
   }
 
-  var doubleClickZoom = goog.isDef(options.doubleClickZoom) ?
+  var doubleClickZoom = options.doubleClickZoom !== undefined ?
       options.doubleClickZoom : true;
   if (doubleClickZoom) {
     interactions.push(new ol.interaction.DoubleClickZoom({
@@ -62,30 +63,27 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var dragPan = goog.isDef(options.dragPan) ?
-      options.dragPan : true;
+  var dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
     interactions.push(new ol.interaction.DragPan({
       kinetic: kinetic
     }));
   }
 
-  var pinchRotate = goog.isDef(options.pinchRotate) ?
-      options.pinchRotate : true;
+  var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
+      true;
   if (pinchRotate) {
     interactions.push(new ol.interaction.PinchRotate());
   }
 
-  var pinchZoom = goog.isDef(options.pinchZoom) ?
-      options.pinchZoom : true;
+  var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
     interactions.push(new ol.interaction.PinchZoom({
       duration: options.zoomDuration
     }));
   }
 
-  var keyboard = goog.isDef(options.keyboard) ?
-      options.keyboard : true;
+  var keyboard = options.keyboard !== undefined ? options.keyboard : true;
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
     interactions.push(new ol.interaction.KeyboardZoom({
@@ -94,7 +92,7 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var mouseWheelZoom = goog.isDef(options.mouseWheelZoom) ?
+  var mouseWheelZoom = options.mouseWheelZoom !== undefined ?
       options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
     interactions.push(new ol.interaction.MouseWheelZoom({
@@ -102,10 +100,12 @@ ol.interaction.defaults = function(opt_options) {
     }));
   }
 
-  var shiftDragZoom = goog.isDef(options.shiftDragZoom) ?
+  var shiftDragZoom = options.shiftDragZoom !== undefined ?
       options.shiftDragZoom : true;
   if (shiftDragZoom) {
-    interactions.push(new ol.interaction.DragZoom());
+    interactions.push(new ol.interaction.DragZoom({
+      duration: options.zoomDuration
+    }));
   }
 
   return interactions;

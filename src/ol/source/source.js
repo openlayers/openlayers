@@ -1,7 +1,7 @@
 goog.provide('ol.source.Source');
 goog.provide('ol.source.State');
 
-goog.require('goog.events.EventType');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Object');
 goog.require('ol.proj');
@@ -37,9 +37,10 @@ ol.source.SourceOptions;
  * instantiated in apps.
  * Base class for {@link ol.layer.Layer} sources.
  *
+ * A generic `change` event is triggered when the state of the source changes.
+ *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the state of the source changes.
  * @param {ol.source.SourceOptions} options Source options.
  * @api stable
  */
@@ -57,7 +58,7 @@ ol.source.Source = function(options) {
    * @private
    * @type {Array.<ol.Attribution>}
    */
-  this.attributions_ = goog.isDef(options.attributions) ?
+  this.attributions_ = options.attributions !== undefined ?
       options.attributions : null;
 
   /**
@@ -70,14 +71,14 @@ ol.source.Source = function(options) {
    * @private
    * @type {ol.source.State}
    */
-  this.state_ = goog.isDef(options.state) ?
+  this.state_ = options.state !== undefined ?
       options.state : ol.source.State.READY;
 
   /**
    * @private
-   * @type {boolean|undefined}
+   * @type {boolean}
    */
-  this.wrapX_ = options.wrapX;
+  this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
 
 };
 goog.inherits(ol.source.Source, ol.Object);
@@ -88,12 +89,12 @@ goog.inherits(ol.source.Source, ol.Object);
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
- * @param {function(ol.Feature): T} callback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
+ *     callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.source.Source.prototype.forEachFeatureAtCoordinate =
-    goog.nullFunction;
+ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 
 
 /**
@@ -153,9 +154,11 @@ ol.source.Source.prototype.getWrapX = function() {
 /**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @api
  */
 ol.source.Source.prototype.setAttributions = function(attributions) {
   this.attributions_ = attributions;
+  this.changed();
 };
 
 

@@ -239,7 +239,6 @@ Here is a version of `config.json` with more compilation checks enabled:
       "ambiguousFunctionDecl",
       "checkEventfulObjectDisposal",
       "checkRegExp",
-      "checkStructDictInheritance",
       "checkTypes",
       "checkVars",
       "const",
@@ -313,7 +312,7 @@ directory:
 ```
 
 Note that the page includes a `script` tag referencing the `app.js` file,
-which is the file resuted from the compilation.
+which is the file resulting from the compilation.
 
 You are done!
 

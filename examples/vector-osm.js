@@ -12,7 +12,6 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
-goog.require('ol.tilegrid.XYZ');
 
 var styles = {
   'amenity': {
@@ -88,21 +87,15 @@ var styles = {
   }
 };
 
-var osmxmlFormat = new ol.format.OSMXML();
-
 var vectorSource = new ol.source.Vector({
-  loader: function(extent, resolution, projection) {
+  format: new ol.format.OSMXML(),
+  url: function(extent, resolution, projection) {
     var epsg4326Extent =
         ol.proj.transformExtent(extent, projection, 'EPSG:4326');
-    var url = 'http://overpass-api.de/api/xapi?map?bbox=' +
+    return 'http://overpass-api.de/api/xapi?map?bbox=' +
         epsg4326Extent.join(',');
-    $.ajax(url).then(function(response) {
-      var features = osmxmlFormat.readFeatures(response,
-          {featureProjection: projection});
-      vectorSource.addFeatures(features);
-    });
   },
-  strategy: ol.loadingstrategy.tile(new ol.tilegrid.XYZ({
+  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
     maxZoom: 19
   }))
 });

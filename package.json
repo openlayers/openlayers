@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "3.4.0",
+  "version": "3.10.1",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -12,54 +12,77 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "test": "node tasks/test.js"
+    "test": "node tasks/test.js",
+    "debug-server": "node tasks/serve-lib.js"
   },
   "main": "dist/ol.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/openlayers/ol3.git"
   },
-  "license": "BSD",
+  "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/openlayers/ol3/issues"
   },
+  "browser": "dist/ol.js",
+  "style": [
+    "css/ol.css"
+  ],
   "dependencies": {
-    "async": "0.9.0",
-    "closure-util": "1.4.0",
-    "fs-extra": "0.12.0",
-    "glob": "5.0.3",
-    "graceful-fs": "3.0.2",
-    "handlebars": "3.0.1",
-    "htmlparser2": "3.7.3",
-    "jsdoc": "3.3.0-alpha9",
-    "marked": "0.3.3",
-    "metalsmith": "1.6.0",
-    "metalsmith-templates": "0.7.0",
-    "nomnom": "1.8.0",
-    "rbush": "1.3.5",
-    "temp": "0.8.1",
-    "walk": "2.3.4",
-    "wrench": "1.5.8",
-    "browserify": "9.0.3"
+    "async": "1.5.0",
+    "bluebird": "^3.0.5",
+    "browserify": "12.0.1",
+    "closure-util": "1.9.0",
+    "derequire": "2.0.3",
+    "fs-extra": "0.26.2",
+    "glob": "5.0.15",
+    "graceful-fs": "4.1.2",
+    "handlebars": "4.0.4",
+    "jsdoc-fork": "^4.0.0-beta.1",
+    "marked": "0.3.5",
+    "metalsmith": "2.1.0",
+    "metalsmith-layouts": "1.4.2",
+    "nomnom": "1.8.1",
+    "pbf": "1.3.5",
+    "pixelworks": "1.0.0",
+    "rbush": "1.4.1",
+    "temp": "0.8.3",
+    "vector-tile": "1.1.3",
+    "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css": "2.2.16",
-    "coveralls": "2.11.2",
+    "clean-css": "3.4.6",
+    "coveralls": "2.11.4",
     "debounce": "^1.0.0",
     "expect.js": "0.3.1",
     "gaze": "^0.5.1",
-    "istanbul": "0.3.13",
-    "jquery": "2.1.1",
-    "jshint": "2.5.6",
-    "mocha": "1.21.5",
-    "mocha-phantomjs": "3.5.1",
-    "phantomjs": "1.9.10",
-    "proj4": "2.3.6",
-    "resemblejs": "1.2.0",
-    "sinon": "1.10.3",
-    "slimerjs-edge": "0.10.0-pre-2"
+    "istanbul": "0.4.0",
+    "jquery": "2.1.4",
+    "jshint": "2.8.0",
+    "mocha": "2.3.3",
+    "mocha-phantomjs-core": "^1.3.0",
+    "mustache": "2.2.0",
+    "phantomjs": "1.9.18",
+    "proj4": "2.3.12",
+    "resemblejs": "2.0.1",
+    "sinon": "1.17.2",
+    "slimerjs-edge": "0.10.0-pre-3",
+    "wrench": "1.5.8"
   },
   "ext": [
-    "rbush"
+    "rbush",
+    {
+      "module": "pbf",
+      "browserify": true
+    },
+    {
+      "module": "pixelworks",
+      "browserify": true
+    },
+    {
+      "module": "vector-tile",
+      "name": "vectortile",
+      "browserify": true
+    }
   ]
 }

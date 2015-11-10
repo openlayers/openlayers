@@ -1,12 +1,11 @@
 goog.provide('ol.interaction.DragZoom');
 
 goog.require('goog.asserts');
+goog.require('ol.animation');
+goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
 
 
 
@@ -16,37 +15,29 @@ goog.require('ol.style.Style');
  * normally combined with an {@link ol.events.condition} that limits
  * it to when a key, shift by default, is held down.
  *
+ * To change the style of the box, use CSS and the `.ol-dragzoom` selector, or
+ * your custom one configured with `className`.
+ *
  * @constructor
  * @extends {ol.interaction.DragBox}
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
  * @api stable
  */
 ol.interaction.DragZoom = function(opt_options) {
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var condition = goog.isDef(options.condition) ?
+  var condition = options.condition ?
       options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 200;
-
-  /**
-   * @private
-   * @type {ol.style.Style}
-   */
-  var style = goog.isDef(options.style) ?
-      options.style : new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: [0, 0, 255, 1]
-        })
-      });
+  this.duration_ = options.duration !== undefined ? options.duration : 200;
 
   goog.base(this, {
     condition: condition,
-    style: style
+    className: options.className || 'ol-dragzoom'
   });
 
 };
@@ -58,13 +49,35 @@ goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
  */
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
+
   var view = map.getView();
-  goog.asserts.assert(!goog.isNull(view), 'view should not be null');
-  var extent = this.getGeometry().getExtent();
-  var center = ol.extent.getCenter(extent);
+  goog.asserts.assert(view, 'map must have view');
+
   var size = map.getSize();
-  goog.asserts.assert(goog.isDef(size), 'size should be defined');
-  ol.interaction.Interaction.zoom(map, view,
-      view.getResolutionForExtent(extent, size),
-      center, this.duration_);
+  goog.asserts.assert(size !== undefined, 'size should be defined');
+
+  var extent = this.getGeometry().getExtent();
+
+  var resolution = view.constrainResolution(
+      view.getResolutionForExtent(extent, size));
+
+  var currentResolution = view.getResolution();
+  goog.asserts.assert(currentResolution !== undefined, 'res should be defined');
+
+  var currentCenter = view.getCenter();
+  goog.asserts.assert(currentCenter !== undefined, 'center should be defined');
+
+  map.beforeRender(ol.animation.zoom({
+    resolution: currentResolution,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+  map.beforeRender(ol.animation.pan({
+    source: currentCenter,
+    duration: this.duration_,
+    easing: ol.easing.easeOut
+  }));
+
+  view.setCenter(ol.extent.getCenter(extent));
+  view.setResolution(resolution);
 };

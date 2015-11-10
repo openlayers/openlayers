@@ -1,9 +1,8 @@
 goog.provide('ol.TileCoord');
 goog.provide('ol.tilecoord');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
+goog.require('ol.extent');
 
 
 /**
@@ -27,33 +26,6 @@ ol.QuadKeyCharCode = {
 
 
 /**
- * @param {string} quadKey Quad key.
- * @return {ol.TileCoord} Tile coordinate.
- */
-ol.tilecoord.createFromQuadKey = function(quadKey) {
-  var z = quadKey.length, x = 0, y = 0;
-  var mask = 1 << (z - 1);
-  var i;
-  for (i = 0; i < z; ++i) {
-    switch (quadKey.charCodeAt(i)) {
-      case ol.QuadKeyCharCode.ONE:
-        x += mask;
-        break;
-      case ol.QuadKeyCharCode.TWO:
-        y += mask;
-        break;
-      case ol.QuadKeyCharCode.THREE:
-        x += mask;
-        y += mask;
-        break;
-    }
-    mask >>= 1;
-  }
-  return [z, x, y];
-};
-
-
-/**
  * @param {string} str String that follows pattern “z/x/y” where x, y and z are
  *   numbers.
  * @return {ol.TileCoord} Tile coord.
@@ -62,10 +34,9 @@ ol.tilecoord.createFromString = function(str) {
   var v = str.split('/');
   goog.asserts.assert(v.length === 3,
       'must provide a string in "z/x/y" format, got "%s"', str);
-  v = goog.array.map(v, function(e, i, a) {
+  return v.map(function(e) {
     return parseInt(e, 10);
   });
-  return v;
 };
 
 
@@ -77,7 +48,7 @@ ol.tilecoord.createFromString = function(str) {
  * @return {ol.TileCoord} Tile coordinate.
  */
 ol.tilecoord.createOrUpdate = function(z, x, y, opt_tileCoord) {
-  if (goog.isDef(opt_tileCoord)) {
+  if (opt_tileCoord !== undefined) {
     opt_tileCoord[0] = z;
     opt_tileCoord[1] = x;
     opt_tileCoord[2] = y;
@@ -149,25 +120,42 @@ ol.tilecoord.toString = function(tileCoord) {
  */
 ol.tilecoord.wrapX = function(tileCoord, tileGrid, projection) {
   var z = tileCoord[0];
-  var x = tileCoord[1];
-  var tileRange = tileGrid.getTileRange(z, projection);
-  if (x < tileRange.minX || x > tileRange.maxX) {
-    x = goog.math.modulo(x, tileRange.getWidth());
-    return [z, x, tileCoord[2]];
+  var center = tileGrid.getTileCoordCenter(tileCoord);
+  var projectionExtent = ol.tilegrid.extentFromProjection(projection);
+  if (!ol.extent.containsCoordinate(projectionExtent, center)) {
+    var worldWidth = ol.extent.getWidth(projectionExtent);
+    var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
+    center[0] += worldWidth * worldsAway;
+    return tileGrid.getTileCoordForCoordAndZ(center, z);
+  } else {
+    return tileCoord;
   }
-  return tileCoord;
 };
 
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.TileCoord} Tile coordinate.
+ * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @return {boolean} Tile coordinate is within extent and zoom level range.
  */
-ol.tilecoord.clipX = function(tileCoord, tileGrid, projection) {
+ol.tilecoord.withinExtentAndZ = function(tileCoord, tileGrid) {
   var z = tileCoord[0];
   var x = tileCoord[1];
-  var tileRange = tileGrid.getTileRange(z, projection);
-  return (x < tileRange.minX || x > tileRange.maxX) ? null : tileCoord;
+  var y = tileCoord[2];
+
+  if (tileGrid.getMinZoom() > z || z > tileGrid.getMaxZoom()) {
+    return false;
+  }
+  var extent = tileGrid.getExtent();
+  var tileRange;
+  if (!extent) {
+    tileRange = tileGrid.getFullTileRange(z);
+  } else {
+    tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+  }
+  if (!tileRange) {
+    return true;
+  } else {
+    return tileRange.containsXY(x, y);
+  }
 };

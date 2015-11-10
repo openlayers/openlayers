@@ -87,7 +87,7 @@ ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
  * @api stable
  */
 ol.extent.buffer = function(extent, value, opt_extent) {
-  if (goog.isDef(opt_extent)) {
+  if (opt_extent) {
     opt_extent[0] = extent[0] - value;
     opt_extent[1] = extent[1] - value;
     opt_extent[2] = extent[2] + value;
@@ -112,7 +112,7 @@ ol.extent.buffer = function(extent, value, opt_extent) {
  * @return {ol.Extent} The clone.
  */
 ol.extent.clone = function(extent, opt_extent) {
-  if (goog.isDef(opt_extent)) {
+  if (opt_extent) {
     opt_extent[0] = extent[0];
     opt_extent[1] = extent[1];
     opt_extent[2] = extent[2];
@@ -164,12 +164,15 @@ ol.extent.containsCoordinate = function(extent, coordinate) {
 
 
 /**
- * Check if one extent is contained by or on the edge of another.
+ * Check if one extent contains another.
+ *
+ * An extent is deemed contained if it lies completely within the other extent,
+ * including if they share one or more edges.
  *
  * @param {ol.Extent} extent1 Extent 1.
  * @param {ol.Extent} extent2 Extent 2.
- * @return {boolean} The first extent is contained by or on the edge of the
- *     second.
+ * @return {boolean} The second extent is contained by or on the edge of the
+ *     first.
  * @api stable
  */
 ol.extent.containsExtent = function(extent1, extent2) {
@@ -244,7 +247,7 @@ ol.extent.createEmpty = function() {
  * @return {ol.Extent} Extent.
  */
 ol.extent.createOrUpdate = function(minX, minY, maxX, maxY, opt_extent) {
-  if (goog.isDef(opt_extent)) {
+  if (opt_extent) {
     opt_extent[0] = minX;
     opt_extent[1] = minY;
     opt_extent[2] = maxX;
@@ -542,7 +545,7 @@ ol.extent.getCorner = function(extent, corner) {
   } else {
     goog.asserts.fail('Invalid corner: %s', corner);
   }
-  goog.asserts.assert(goog.isDef(coordinate), 'coordinate should be defined');
+  goog.asserts.assert(coordinate, 'coordinate should be defined');
   return coordinate;
 };
 
@@ -621,8 +624,7 @@ ol.extent.getIntersectionArea = function(extent1, extent2) {
  * @api stable
  */
 ol.extent.getIntersection = function(extent1, extent2, opt_extent) {
-  var intersection = goog.isDef(opt_extent) ?
-      opt_extent : ol.extent.createEmpty();
+  var intersection = opt_extent ? opt_extent : ol.extent.createEmpty();
   if (ol.extent.intersects(extent1, extent2)) {
     if (extent1[0] > extent2[0]) {
       intersection[0] = extent1[0];
@@ -757,7 +759,7 @@ ol.extent.normalize = function(extent, coordinate) {
  * @return {ol.Extent} Extent.
  */
 ol.extent.returnOrUpdate = function(extent, opt_extent) {
-  if (goog.isDef(opt_extent)) {
+  if (opt_extent) {
     opt_extent[0] = extent[0];
     opt_extent[1] = extent[1];
     opt_extent[2] = extent[2];
@@ -883,7 +885,7 @@ ol.extent.applyTransform = function(extent, transformFn, opt_extent) {
  * @return {ol.Extent} The transformed extent.
  */
 ol.extent.transform2D = function(extent, transform, opt_extent) {
-  var dest = goog.isDef(opt_extent) ? opt_extent : [];
+  var dest = opt_extent ? opt_extent : [];
   var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
   var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
   var m01 = goog.vec.Mat4.getElement(transform, 0, 1);

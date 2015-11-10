@@ -8,7 +8,7 @@ describe('ol.pointer.MouseSource', function() {
 
   beforeEach(function() {
     clock = sinon.useFakeTimers();
-    target = goog.dom.createElement(goog.dom.TagName.DIV);
+    target = goog.dom.createElement('DIV');
 
     // make sure that a mouse and touch event source is used
     ol.has.POINTER = false;
@@ -92,7 +92,6 @@ describe('ol.pointer.MouseSource', function() {
 });
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('ol.has');

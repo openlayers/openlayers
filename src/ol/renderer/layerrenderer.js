@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
+goog.require('ol');
 goog.require('ol.ImageState');
 goog.require('ol.Observable');
 goog.require('ol.TileRange');
@@ -21,7 +22,6 @@ goog.require('ol.vec.Mat4');
  * @constructor
  * @extends {ol.Observable}
  * @param {ol.layer.Layer} layer Layer.
- * @suppress {checkStructDictInheritance}
  * @struct
  */
 ol.renderer.Layer = function(layer) {
@@ -42,13 +42,13 @@ goog.inherits(ol.renderer.Layer, ol.Observable);
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
- * @param {function(this: S, ol.Feature, ol.layer.Layer): T} callback Feature
- *     callback.
+ * @param {function(this: S, (ol.Feature|ol.render.Feature), ol.layer.Layer): T}
+ *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = goog.nullFunction;
+ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 
 
 /**
@@ -87,6 +87,7 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
 /**
  * Create a function that adds loaded tiles to the tile lookup.
  * @param {ol.source.Tile} source Tile source.
+ * @param {ol.proj.Projection} projection Projection of the tiles.
  * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
  *     tiles by zoom level.
  * @return {function(number, ol.TileRange):boolean} A function that can be
@@ -94,7 +95,8 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
  *     lookup.
  * @protected
  */
-ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, tiles) {
+ol.renderer.Layer.prototype.createLoadedTileFinder =
+    function(source, projection, tiles) {
   return (
       /**
        * @param {number} zoom Zoom level.
@@ -102,18 +104,18 @@ ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, tiles) {
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
-        return source.forEachLoadedTile(zoom, tileRange, function(tile) {
-          if (!tiles[zoom]) {
-            tiles[zoom] = {};
-          }
-          tiles[zoom][tile.tileCoord.toString()] = tile;
-        });
+        return source.forEachLoadedTile(projection, zoom,
+                                        tileRange, function(tile) {
+              if (!tiles[zoom]) {
+                tiles[zoom] = {};
+              }
+              tiles[zoom][tile.tileCoord.toString()] = tile;
+            });
       });
 };
 
 
 /**
- * @protected
  * @return {ol.layer.Layer} Layer.
  */
 ol.renderer.Layer.prototype.getLayer = function() {
@@ -157,8 +159,9 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
   if (imageState == ol.ImageState.IDLE) {
     image.load();
     imageState = image.getState();
-    goog.asserts.assert(imageState == ol.ImageState.LOADING,
-        'imageState is "loading"');
+    goog.asserts.assert(imageState == ol.ImageState.LOADING ||
+        imageState == ol.ImageState.LOADED,
+        'imageState is "loading" or "loaded"');
   }
   return imageState == ol.ImageState.LOADED;
 };
@@ -192,7 +195,8 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
              */
             function(tileSource, map, frameState) {
               var tileSourceKey = goog.getUid(tileSource).toString();
-              tileSource.expireCache(frameState.usedTiles[tileSourceKey]);
+              tileSource.expireCache(frameState.viewState.projection,
+                                     frameState.usedTiles[tileSourceKey]);
             }, tileSource));
   }
 };
@@ -206,7 +210,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
  */
 ol.renderer.Layer.prototype.updateAttributions =
     function(attributionsSet, attributions) {
-  if (goog.isDefAndNotNull(attributions)) {
+  if (attributions) {
     var attribution, i, ii;
     for (i = 0, ii = attributions.length; i < ii; ++i) {
       attribution = attributions[i];
@@ -223,7 +227,7 @@ ol.renderer.Layer.prototype.updateAttributions =
  */
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
-  if (goog.isDef(logo)) {
+  if (logo !== undefined) {
     if (goog.isString(logo)) {
       frameState.logos[logo] = '';
     } else if (goog.isObject(logo)) {
@@ -321,11 +325,11 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
             }
           }
-          if (goog.isDef(opt_tileCallback)) {
+          if (opt_tileCallback !== undefined) {
             opt_tileCallback.call(opt_this, tile);
           }
         } else {
-          tileSource.useTile(z, x, y);
+          tileSource.useTile(z, x, y, projection);
         }
       }
     }

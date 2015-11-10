@@ -118,7 +118,7 @@ dragAndDropInteraction.on('addfeatures', function(event) {
     source: vectorSource,
     style: styleFunction
   }));
-  map.getView().fitExtent(
+  map.getView().fit(
       vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
 });
 

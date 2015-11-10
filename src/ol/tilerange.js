@@ -79,7 +79,7 @@ ol.TileRange.boundingTileRange = function(var_args) {
  * @return {ol.TileRange} Tile range.
  */
 ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
-  if (goog.isDef(tileRange)) {
+  if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
     tileRange.minY = minY;

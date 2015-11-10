@@ -2,20 +2,17 @@ goog.provide('ol.test.proj');
 
 describe('ol.proj', function() {
 
-  beforeEach(function() {
-    ol.proj.common.add();
-  });
-
   afterEach(function() {
     ol.proj.clearAllProjections();
+    ol.proj.common.add();
   });
 
   describe('projection equivalence', function() {
 
     function _testAllEquivalent(codes) {
-      var projections = goog.array.map(codes, ol.proj.get);
-      goog.array.forEach(projections, function(source) {
-        goog.array.forEach(projections, function(destination) {
+      var projections = codes.map(ol.proj.get);
+      projections.forEach(function(source) {
+        projections.forEach(function(destination) {
           expect(ol.proj.equivalent(source, destination)).to.be.ok();
         });
       });
@@ -58,6 +55,19 @@ describe('ol.proj', function() {
             'urn:ogc:def:crs:EPSG:6.6:4326',
             'EPSG:4326'
           ]);
+        });
+
+    it('requires code and units to be equal for projection evquivalence',
+        function() {
+          var proj1 = new ol.proj.Projection({
+            code: 'EPSG:3857',
+            units: 'm'
+          });
+          var proj2 = new ol.proj.Projection({
+            code: 'EPSG:3857',
+            units: 'tile-pixels'
+          });
+          expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
         });
   });
 
@@ -302,6 +312,16 @@ describe('ol.proj', function() {
       }
     });
 
+    it('does not overwrite existing projections in the registry', function() {
+      var epsg4326 = ol.proj.get('EPSG:4326');
+      new ol.proj.Projection({
+        code: 'EPSG:4326',
+        units: 'degrees',
+        extent: [-45, -45, 45, 45]
+      });
+      expect(ol.proj.get('EPSG:4326')).to.equal(epsg4326);
+    });
+
   });
 
   describe('ol.proj.getTransformFromProjections()', function() {
@@ -488,11 +508,28 @@ describe('ol.proj', function() {
           '+lon_0=-110.0833333333333 +k=0.9999375 +x_0=800000.0000101599 ' +
           '+y_0=99999.99998983997 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 ' +
           '+units=us-ft +no_defs');
+      proj4.defs('EPSG:4269', 'GEOGCS["NAD83",' +
+          'DATUM["North_American_Datum_1983",' +
+          'SPHEROID["GRS 1980",6378137,298.257222101,' +
+          'AUTHORITY["EPSG","7019"]],' +
+          'AUTHORITY["EPSG","6269"]],' +
+          'PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],' +
+          'UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],' +
+          'AUTHORITY["EPSG","4269"]]');
+      proj4.defs('EPSG:4279', 'GEOGCS["OS(SN)80",DATUM["OS_SN_1980",' +
+          'SPHEROID["Airy 1830",6377563.396,299.3249646,' +
+          'AUTHORITY["EPSG","7001"]],' +
+          'AUTHORITY["EPSG","6279"]],' +
+          'PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],' +
+          'UNIT["degree",0.01745329251994328,AUTHORITY["EPSG","9122"]],' +
+          'AUTHORITY["EPSG","4279"]]');
     });
 
     afterEach(function() {
       delete proj4.defs['EPSG:26782'];
       delete proj4.defs['EPSG:3739'];
+      delete proj4.defs['EPSG:4269'];
+      delete proj4.defs['EPSG:4279'];
     });
 
     it('returns value in meters', function() {
@@ -510,12 +547,20 @@ describe('ol.proj', function() {
       expect(epsg3739.getMetersPerUnit()).to.eql(1200 / 3937);
     });
 
+    it('works for proj4js OGC WKT GEOGCS projections', function() {
+      var epsg4269 = ol.proj.get('EPSG:4269');
+      expect(epsg4269.getMetersPerUnit()).to.eql(
+          6378137 * 0.01745329251994328);
+      var epsg4279 = ol.proj.get('EPSG:4279');
+      expect(epsg4279.getMetersPerUnit()).to.eql(
+          6377563.396 * 0.01745329251994328);
+    });
+
   });
 
 });
 
 
-goog.require('goog.array');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');

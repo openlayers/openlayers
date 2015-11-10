@@ -1,6 +1,5 @@
 goog.provide('ol.webgl.Buffer');
 
-goog.require('goog.array');
 goog.require('goog.webgl');
 goog.require('ol');
 
@@ -28,13 +27,13 @@ ol.webgl.Buffer = function(opt_arr, opt_usage) {
    * @private
    * @type {Array.<number>}
    */
-  this.arr_ = goog.isDef(opt_arr) ? opt_arr : [];
+  this.arr_ = opt_arr !== undefined ? opt_arr : [];
 
   /**
    * @private
    * @type {number}
    */
-  this.usage_ = goog.isDef(opt_usage) ?
+  this.usage_ = opt_usage !== undefined ?
       opt_usage : ol.webgl.BufferUsage.STATIC_DRAW;
 
 };

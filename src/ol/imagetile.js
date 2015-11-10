@@ -1,6 +1,5 @@
 goog.provide('ol.ImageTile');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
@@ -38,7 +37,7 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    * @type {Image}
    */
   this.image_ = new Image();
-  if (!goog.isNull(crossOrigin)) {
+  if (crossOrigin) {
     this.image_.crossOrigin = crossOrigin;
   }
 
@@ -76,11 +75,12 @@ ol.ImageTile.prototype.disposeInternal = function() {
 
 
 /**
+ * Get the image element for this tile.
  * @inheritDoc
  * @api
  */
 ol.ImageTile.prototype.getImage = function(opt_context) {
-  if (goog.isDef(opt_context)) {
+  if (opt_context !== undefined) {
     var image;
     var key = goog.getUid(opt_context);
     if (key in this.imageByContext_) {
@@ -124,13 +124,6 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  * @private
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
-  if (ol.LEGACY_IE_SUPPORT && ol.IS_LEGACY_IE) {
-    if (!goog.isDef(this.image_.naturalWidth)) {
-      this.image_.naturalWidth = this.image_.width;
-      this.image_.naturalHeight = this.image_.height;
-    }
-  }
-
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
     this.state = ol.TileState.LOADED;
   } else {
@@ -148,7 +141,7 @@ ol.ImageTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
     this.changed();
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_),
+    goog.asserts.assert(!this.imageListenerKeys_,
         'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
@@ -167,8 +160,8 @@ ol.ImageTile.prototype.load = function() {
  * @private
  */
 ol.ImageTile.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_),
+  goog.asserts.assert(this.imageListenerKeys_,
       'this.imageListenerKeys_ should not be null');
-  goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
+  this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };

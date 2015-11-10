@@ -7,13 +7,13 @@
 
 ## Getting Started
 
-- Download the [latest release](https://github.com/openlayers/ol3/releases/tag/v3.4.0)
+- Download the [latest release](http://openlayers.org/download/)
 - Install with npm: `npm install openlayers`
 - Clone the repo: `git clone git@github.com:openlayers/ol3.git`
 
 ## Documentation
 
-Check out the [hosted examples](http://openlayers.org/en/master/examples/), the [workshop](http://openlayers.org/ol3-workshop/) or [API docs](http://openlayers.org/en/master/apidoc/).
+Check out the [hosted examples](http://openlayers.org/en/master/examples/), the [workshop](http://openlayers.org/workshop/) or [API docs](http://openlayers.org/en/master/apidoc/).
 
 ## Bugs
 

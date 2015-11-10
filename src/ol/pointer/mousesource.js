@@ -30,7 +30,6 @@
 
 goog.provide('ol.pointer.MouseSource');
 
-goog.require('goog.object');
 goog.require('ol.pointer.EventSource');
 
 
@@ -161,11 +160,9 @@ ol.pointer.MouseSource.prepareEvent = function(inEvent, dispatcher) {
  */
 ol.pointer.MouseSource.prototype.mousedown = function(inEvent) {
   if (!this.isEventSimulatedFromTouch_(inEvent)) {
-    var p = goog.object.containsKey(this.pointerMap,
-        ol.pointer.MouseSource.POINTER_ID.toString());
     // TODO(dfreedman) workaround for some elements not sending mouseup
     // http://crbug/149091
-    if (p) {
+    if (ol.pointer.MouseSource.POINTER_ID.toString() in this.pointerMap) {
       this.cancel(inEvent);
     }
     var e = ol.pointer.MouseSource.prepareEvent(inEvent, this.dispatcher);
@@ -248,6 +245,5 @@ ol.pointer.MouseSource.prototype.cancel = function(inEvent) {
  * Remove the mouse from the list of active pointers.
  */
 ol.pointer.MouseSource.prototype.cleanupMouse = function() {
-  goog.object.remove(this.pointerMap,
-      ol.pointer.MouseSource.POINTER_ID.toString());
+  delete this.pointerMap[ol.pointer.MouseSource.POINTER_ID.toString()];
 };

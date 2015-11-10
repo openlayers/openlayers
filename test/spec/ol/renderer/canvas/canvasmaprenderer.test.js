@@ -14,6 +14,77 @@ describe('ol.renderer.canvas.Map', function() {
 
   });
 
+  describe('#forEachFeatureAtCoordinate', function() {
+
+    var layer, map, target;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      map = new ol.Map({
+        target: target,
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+      layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [
+            new ol.Feature({
+              geometry: new ol.geom.Point([0, 0])
+            })
+          ]
+        })
+      });
+    });
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('calls callback with layer for managed layers', function() {
+      map.addLayer(layer);
+      map.renderSync();
+      var cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
+      expect(cb).to.be.called();
+      expect(cb.firstCall.args[1]).to.be(layer);
+    });
+
+    it('includes unmanaged layers, but calls callback with null', function() {
+      layer.setMap(map);
+      map.renderSync();
+      var cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
+          function() { return false; });
+      expect(cb).to.be.called();
+      expect(cb.firstCall.args[1]).to.be(null);
+    });
+
+    it('filters managed layers', function() {
+      map.addLayer(layer);
+      map.renderSync();
+      var cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
+          function() { return false; });
+      expect(cb).to.not.be.called();
+    });
+
+    it('doesn\'t fail with layer with no source', function() {
+      map.addLayer(new ol.layer.Tile());
+      map.renderSync();
+      expect(function() {
+        map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]),
+            function() {});
+      }).to.not.throwException();
+    });
+
+  });
+
   describe('#renderFrame()', function() {
     var layer, map, renderer;
 
@@ -31,60 +102,17 @@ describe('ol.renderer.canvas.Map', function() {
       renderer.layerRenderers_[goog.getUid(layer)] = layerRenderer;
     });
 
-    it('uses correct extent and offset on wrapped worlds', function() {
-      var spy = sinon.spy(renderer, 'getTransform');
-      var proj = new ol.proj.Projection({
-        code: 'foo',
-        extent: [-180, -90, 180, 90],
-        global: true
-      });
-      var frameState = {
-        coordinateToPixelMatrix: map.coordinateToPixelMatrix_,
-        pixelToCoordinateMatrix: map.pixelToCoordinateMatrix_,
-        pixelRatio: 1,
-        size: [100, 100],
-        skippedFeatureUids: {},
-        extent: proj.getExtent(),
-        viewState: {
-          center: [0, 0],
-          projection: proj,
-          resolution: 1,
-          rotation: 0
-        },
-        layerStates: {},
-        layerStatesArray: [{
-          layer: layer,
-          sourceState: 'ready',
-          visible: true,
-          minResolution: 1,
-          maxResolution: 2
-        }],
-        postRenderFunctions: []
-      };
-      frameState.focus = [0, 0];
-      // focus is on real world
-      renderer.renderFrame(frameState);
-      expect(spy.getCall(0).args[1]).to.be(0);
-      expect(renderer.replayGroup.maxExtent_).to.eql([-180, -90, 180, 90]);
-      frameState.focus = [-200, 0];
-      // focus is one world left of the real world
-      renderer.renderFrame(frameState);
-      expect(spy.getCall(1).args[1]).to.be(360);
-      expect(renderer.replayGroup.maxExtent_).to.eql([180, -90, 540, 90]);
-      frameState.focus = [200, 0];
-      // focus is one world right of the real world
-      renderer.renderFrame(frameState);
-      expect(spy.getCall(2).args[1]).to.be(-360);
-      expect(renderer.replayGroup.maxExtent_).to.eql([-540, -90, -180, 90]);
-    });
   });
 
 });
 
 
-goog.require('ol.layer.Vector');
+goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.proj.Projection');
+goog.require('ol.View');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.source.Vector');

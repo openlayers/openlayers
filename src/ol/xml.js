@@ -1,5 +1,3 @@
-// FIXME Remove ol.xml.makeParsersNS, and use ol.xml.makeStructureNS instead.
-
 goog.provide('ol.xml');
 
 goog.require('goog.array');
@@ -59,7 +57,7 @@ ol.xml.createElementNS_ = function(namespaceURI, qualifiedName) {
  * @private
  */
 ol.xml.createElementNSActiveX_ = function(namespaceURI, qualifiedName) {
-  if (goog.isNull(namespaceURI)) {
+  if (!namespaceURI) {
     namespaceURI = '';
   }
   return ol.xml.DOCUMENT.createNode(1, qualifiedName, namespaceURI);
@@ -109,7 +107,7 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
     }
   } else {
     var n;
-    for (n = node.firstChild; !goog.isNull(n); n = n.nextSibling) {
+    for (n = node.firstChild; n; n = n.nextSibling) {
       ol.xml.getAllTextContent_(n, normalizeWhitespace, accumulator);
     }
   }
@@ -134,11 +132,11 @@ ol.xml.getLocalName_ = function(node) {
  */
 ol.xml.getLocalNameIE_ = function(node) {
   var localName = node.localName;
-  if (goog.isDef(localName)) {
+  if (localName !== undefined) {
     return localName;
   }
   var baseName = node.baseName;
-  goog.asserts.assert(goog.isDefAndNotNull(baseName),
+  goog.asserts.assert(baseName,
       'Failed to get localName/baseName of node %s', node);
   return baseName;
 };
@@ -196,7 +194,7 @@ ol.xml.isNode_ = function(value) {
  * @return {boolean} Is node.
  */
 ol.xml.isNodeIE_ = function(value) {
-  return goog.isObject(value) && goog.isDef(value.nodeType);
+  return goog.isObject(value) && value.nodeType !== undefined;
 };
 
 
@@ -229,7 +227,7 @@ ol.xml.getAttributeNS_ = function(node, namespaceURI, name) {
 ol.xml.getAttributeNSActiveX_ = function(node, namespaceURI, name) {
   var attributeValue = '';
   var attributeNode = ol.xml.getAttributeNodeNS(node, namespaceURI, name);
-  if (goog.isDef(attributeNode)) {
+  if (attributeNode !== undefined) {
     attributeValue = attributeNode.nodeValue;
   }
   return attributeValue;
@@ -316,7 +314,7 @@ ol.xml.setAttributeNS_ = function(node, namespaceURI, name, value) {
  * @private
  */
 ol.xml.setAttributeNSActiveX_ = function(node, namespaceURI, name, value) {
-  if (!goog.isNull(namespaceURI)) {
+  if (namespaceURI) {
     var attribute = node.ownerDocument.createNode(2, name, namespaceURI);
     attribute.nodeValue = value;
     node.setAttributeNode(attribute);
@@ -365,7 +363,7 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
        */
       function(node, objectStack) {
         var value = valueReader.call(opt_this, node, objectStack);
-        if (goog.isDef(value)) {
+        if (value !== undefined) {
           goog.asserts.assert(goog.isArray(value),
               'valueReader function is expected to return an array of values');
           var array = /** @type {Array.<*>} */
@@ -393,9 +391,9 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
             node, objectStack);
-        if (goog.isDef(value)) {
+        if (value !== undefined) {
           var array = objectStack[objectStack.length - 1];
           goog.asserts.assert(goog.isArray(array),
               'objectStack is supposed to be an array of arrays');
@@ -420,9 +418,9 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
             node, objectStack);
-        if (goog.isDef(value)) {
+        if (value !== undefined) {
           objectStack[objectStack.length - 1] = value;
         }
       });
@@ -440,7 +438,7 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  */
 ol.xml.makeObjectPropertyPusher =
     function(valueReader, opt_property, opt_this) {
-  goog.asserts.assert(goog.isDef(valueReader),
+  goog.asserts.assert(valueReader !== undefined,
       'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
@@ -448,12 +446,12 @@ ol.xml.makeObjectPropertyPusher =
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
             node, objectStack);
-        if (goog.isDef(value)) {
+        if (value !== undefined) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
-          var property = goog.isDef(opt_property) ?
+          var property = opt_property !== undefined ?
               opt_property : node.localName;
           goog.asserts.assert(goog.isObject(object),
               'entity from stack was not an object');
@@ -474,7 +472,7 @@ ol.xml.makeObjectPropertyPusher =
  */
 ol.xml.makeObjectPropertySetter =
     function(valueReader, opt_property, opt_this) {
-  goog.asserts.assert(goog.isDef(valueReader),
+  goog.asserts.assert(valueReader !== undefined,
       'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
@@ -482,32 +480,18 @@ ol.xml.makeObjectPropertySetter =
        * @param {Array.<*>} objectStack Object stack.
        */
       function(node, objectStack) {
-        var value = valueReader.call(goog.isDef(opt_this) ? opt_this : this,
+        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
             node, objectStack);
-        if (goog.isDef(value)) {
+        if (value !== undefined) {
           var object = /** @type {Object} */
               (objectStack[objectStack.length - 1]);
-          var property = goog.isDef(opt_property) ?
+          var property = opt_property !== undefined ?
               opt_property : node.localName;
           goog.asserts.assert(goog.isObject(object),
               'entity from stack was not an object');
           object[property] = value;
         }
       });
-};
-
-
-/**
- * Make a parserNS hash.
- * @param {Array.<string>} namespaceURIs Namespace URIs.
- * @param {Object.<string, ol.xml.Parser>} parsers Parsers.
- * @param {Object.<string, Object.<string, ol.xml.Parser>>=} opt_parsersNS
- *     ParsersNS.
- * @return {Object.<string, Object.<string, ol.xml.Parser>>} Parsers NS.
- */
-ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
-  return /** @type {Object.<string, Object.<string, ol.xml.Parser>>} */ (
-      ol.xml.makeStructureNS(namespaceURIs, parsers, opt_parsersNS));
 };
 
 
@@ -523,7 +507,7 @@ ol.xml.makeParsersNS = function(namespaceURIs, parsers, opt_parsersNS) {
  */
 ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
-    nodeWriter.call(goog.isDef(opt_this) ? opt_this : this,
+    nodeWriter.call(opt_this !== undefined ? opt_this : this,
         node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
     goog.asserts.assert(goog.isObject(parent),
@@ -553,7 +537,7 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
 ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
   var serializersNS, nodeFactory;
   return function(node, value, objectStack) {
-    if (!goog.isDef(serializersNS)) {
+    if (serializersNS === undefined) {
       serializersNS = {};
       var serializers = {};
       serializers[node.localName] = nodeWriter;
@@ -593,14 +577,14 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
         goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
             'expected node %s to be a Node or a Document', node);
         var nodeName = fixedNodeName;
-        if (!goog.isDef(nodeName)) {
+        if (nodeName === undefined) {
           nodeName = opt_nodeName;
         }
         var namespaceURI = opt_namespaceURI;
-        if (!goog.isDef(opt_namespaceURI)) {
+        if (opt_namespaceURI === undefined) {
           namespaceURI = node.namespaceURI;
         }
-        goog.asserts.assert(goog.isDef(nodeName), 'nodeName was undefined');
+        goog.asserts.assert(nodeName !== undefined, 'nodeName was undefined');
         return ol.xml.createElementNS(namespaceURI, nodeName);
       }
   );
@@ -653,7 +637,7 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
   /**
    * @type {Object.<string, *>}
    */
-  var structureNS = goog.isDef(opt_structureNS) ? opt_structureNS : {};
+  var structureNS = opt_structureNS !== undefined ? opt_structureNS : {};
   var i, ii;
   for (i = 0, ii = namespaceURIs.length; i < ii; ++i) {
     structureNS[namespaceURIs[i]] = structure;
@@ -672,11 +656,11 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
  */
 ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
   var n;
-  for (n = node.firstElementChild; !goog.isNull(n); n = n.nextElementSibling) {
+  for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var parsers = parsersNS[n.namespaceURI];
-    if (goog.isDef(parsers)) {
+    if (parsers !== undefined) {
       var parser = parsers[n.localName];
-      if (goog.isDef(parser)) {
+      if (parser !== undefined) {
         parser.call(opt_this, n, objectStack);
       }
     }
@@ -727,14 +711,14 @@ ol.xml.pushParseAndPop = function(
  */
 ol.xml.serialize = function(
     serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
-  var length = (goog.isDef(opt_keys) ? opt_keys : values).length;
+  var length = (opt_keys !== undefined ? opt_keys : values).length;
   var value, node;
   for (var i = 0; i < length; ++i) {
     value = values[i];
-    if (goog.isDef(value)) {
+    if (value !== undefined) {
       node = nodeFactory.call(opt_this, value, objectStack,
-          goog.isDef(opt_keys) ? opt_keys[i] : undefined);
-      if (goog.isDef(node)) {
+          opt_keys !== undefined ? opt_keys[i] : undefined);
+      if (node !== undefined) {
         serializersNS[node.namespaceURI][node.localName]
             .call(opt_this, node, value, objectStack);
       }

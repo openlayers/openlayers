@@ -39,26 +39,14 @@ serve.createServer(function(err, server) {
       url + '/test_rendering/index.html'
     ];
 
+    // The current version of slimerjs is 0.9.6, but this version does not work
+    // for us because of https://github.com/laurentj/slimerjs/issues/333. This
+    // issue is now fixed in master and slimerjs-edge (nightly builds) works for
+    // us. But we should use slimerjs instead of slimerjs-edge when a new
+    // release is published.
     var child = spawn(slimerjs.path, args, {stdio: 'inherit'});
     child.on('exit', function(code) {
-      // FIXME SlimerJS has a problem with returning the correct return
-      // code when using a custom profile, see
-      // https://github.com/laurentj/slimerjs/issues/333
-      // as a work-around we are currently reading the return code from
-      // a file created in the profile directory.
-      // if this issue is fixed we should use the npm package 'slimerjs'
-      // instead of the nightly build 'slimerjs-edge'.
-      var exitstatus = path.join(profile, 'exitstatus');
-      fs.readFile(exitstatus, {encoding: 'utf-8'}, function(err, data) {
-        if (err) {
-          process.stderr.write(
-              'Error getting the exit status of SlimerJS' + '\n');
-          process.stderr.write(err.stack + '\n');
-          process.exit(1);
-        } else {
-          process.exit(data);
-        }
-      });
+      process.exit(code);
     });
   });
 

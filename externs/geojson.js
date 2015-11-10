@@ -123,7 +123,7 @@ var GeoJSONFeature = function() {};
 
 
 /**
- * @type {GeoJSONGeometry}
+ * @type {GeoJSONGeometry|GeoJSONGeometryCollection}
  */
 GeoJSONFeature.prototype.geometry;
 

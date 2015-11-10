@@ -32,7 +32,7 @@ goog.require('ol.proj');
  */
 ol.format.EsriJSON = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this);
 
@@ -54,21 +54,21 @@ goog.inherits(ol.format.EsriJSON, ol.format.JSONFeature);
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
-  if (goog.isNull(object)) {
+  if (!object) {
     return null;
   }
   var type;
   if (goog.isNumber(object.x) && goog.isNumber(object.y)) {
     type = ol.geom.GeometryType.POINT;
-  } else if (goog.isDefAndNotNull(object.points)) {
+  } else if (object.points) {
     type = ol.geom.GeometryType.MULTI_POINT;
-  } else if (goog.isDefAndNotNull(object.paths)) {
+  } else if (object.paths) {
     if (object.paths.length === 1) {
       type = ol.geom.GeometryType.LINE_STRING;
     } else {
       type = ol.geom.GeometryType.MULTI_LINE_STRING;
     }
-  } else if (goog.isDefAndNotNull(object.rings)) {
+  } else if (object.rings) {
     var layout = ol.format.EsriJSON.getGeometryLayout_(object);
     var rings = ol.format.EsriJSON.convertRings_(object.rings, layout);
     object = /** @type {EsriJSONGeometry} */(goog.object.clone(object));
@@ -80,9 +80,9 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
       object.rings = rings;
     }
   }
-  goog.asserts.assert(goog.isDef(type), 'geometry type should be defined');
+  goog.asserts.assert(type, 'geometry type should be defined');
   var geometryReader = ol.format.EsriJSON.GEOMETRY_READERS_[type];
-  goog.asserts.assert(goog.isDef(geometryReader),
+  goog.asserts.assert(geometryReader,
       'geometryReader should be defined');
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
@@ -149,13 +149,13 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
   goog.asserts.assert(goog.isNumber(object.x), 'object.x should be number');
   goog.asserts.assert(goog.isNumber(object.y), 'object.y should be number');
   var point;
-  if (goog.isDefAndNotNull(object.m) && goog.isDefAndNotNull(object.z)) {
+  if (object.m !== undefined && object.z !== undefined) {
     point = new ol.geom.Point([object.x, object.y, object.z, object.m],
         ol.geom.GeometryLayout.XYZM);
-  } else if (goog.isDefAndNotNull(object.z)) {
+  } else if (object.z !== undefined) {
     point = new ol.geom.Point([object.x, object.y, object.z],
         ol.geom.GeometryLayout.XYZ);
-  } else if (goog.isDefAndNotNull(object.m)) {
+  } else if (object.m !== undefined) {
     point = new ol.geom.Point([object.x, object.y, object.m],
         ol.geom.GeometryLayout.XYM);
   } else {
@@ -219,8 +219,7 @@ ol.format.EsriJSON.getGeometryLayout_ = function(object) {
  * @return {ol.geom.Geometry} MultiPoint.
  */
 ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
-  goog.asserts.assert(goog.isDefAndNotNull(object.points),
-      'object.points should be defined');
+  goog.asserts.assert(object.points, 'object.points should be defined');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiPoint(object.points, layout);
 };
@@ -232,7 +231,7 @@ ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiPolygon.
  */
 ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
-  goog.asserts.assert(goog.isDefAndNotNull(object.rings));
+  goog.asserts.assert(object.rings);
   goog.asserts.assert(object.rings.length > 1,
       'object.rings should have length larger than 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
@@ -248,7 +247,7 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Geometry} Polygon.
  */
 ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
-  goog.asserts.assert(goog.isDefAndNotNull(object.rings));
+  goog.asserts.assert(object.rings);
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.Polygon(object.rings, layout);
 };
@@ -483,26 +482,25 @@ ol.format.EsriJSON.prototype.readFeatures;
 ol.format.EsriJSON.prototype.readFeatureFromObject = function(
     object, opt_options) {
   var esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-  goog.asserts.assert(goog.isDefAndNotNull(esriJSONFeature.geometry) ||
-      goog.isDefAndNotNull(esriJSONFeature.compressedGeometry) ||
-      goog.isDefAndNotNull(esriJSONFeature.attributes),
-      'geometry, compressedGeometry or attributes should be defined');
+  goog.asserts.assert(esriJSONFeature.geometry ||
+      esriJSONFeature.attributes,
+      'geometry or attributes should be defined');
   var geometry = ol.format.EsriJSON.readGeometry_(esriJSONFeature.geometry,
       opt_options);
   var feature = new ol.Feature();
-  if (goog.isDef(this.geometryName_)) {
+  if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
   }
   feature.setGeometry(geometry);
-  if (goog.isDef(opt_options) && goog.isDef(opt_options.idField) &&
-      goog.isDef(esriJSONFeature.attributes[opt_options.idField])) {
+  if (opt_options && opt_options.idField &&
+      esriJSONFeature.attributes[opt_options.idField]) {
     goog.asserts.assert(
         goog.isNumber(esriJSONFeature.attributes[opt_options.idField]),
         'objectIdFieldName value should be a number');
     feature.setId(/** @type {number} */(
         esriJSONFeature.attributes[opt_options.idField]));
   }
-  if (goog.isDef(esriJSONFeature.attributes)) {
+  if (esriJSONFeature.attributes) {
     feature.setProperties(esriJSONFeature.attributes);
   }
   return feature;
@@ -515,8 +513,8 @@ ol.format.EsriJSON.prototype.readFeatureFromObject = function(
 ol.format.EsriJSON.prototype.readFeaturesFromObject = function(
     object, opt_options) {
   var esriJSONObject = /** @type {EsriJSONObject} */ (object);
-  var options = goog.isDef(opt_options) ? opt_options : {};
-  if (goog.isDefAndNotNull(esriJSONObject.features)) {
+  var options = opt_options ? opt_options : {};
+  if (esriJSONObject.features) {
     var esriJSONFeatureCollection = /** @type {EsriJSONFeatureCollection} */
         (object);
     /** @type {Array.<ol.Feature>} */
@@ -573,8 +571,7 @@ ol.format.EsriJSON.prototype.readProjection;
  */
 ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
   var esriJSONObject = /** @type {EsriJSONObject} */ (object);
-  if (goog.isDefAndNotNull(esriJSONObject.spatialReference) &&
-      goog.isDefAndNotNull(esriJSONObject.spatialReference.wkid)) {
+  if (esriJSONObject.spatialReference && esriJSONObject.spatialReference.wkid) {
     var crs = esriJSONObject.spatialReference.wkid;
     return ol.proj.get('EPSG:' + crs);
   } else {
@@ -591,8 +588,7 @@ ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
  */
 ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
-  goog.asserts.assert(goog.isDef(geometryWriter),
-      'geometryWriter should be defined');
+  goog.asserts.assert(geometryWriter, 'geometryWriter should be defined');
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
       opt_options);
@@ -651,18 +647,18 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
   opt_options = this.adaptOptions(opt_options);
   var object = {};
   var geometry = feature.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     object['geometry'] =
         ol.format.EsriJSON.writeGeometry_(geometry, opt_options);
   }
   var properties = feature.getProperties();
-  goog.object.remove(properties, feature.getGeometryName());
+  delete properties[feature.getGeometryName()];
   if (!goog.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
     object['attributes'] = {};
   }
-  if (goog.isDef(opt_options) && goog.isDef(opt_options.featureProjection)) {
+  if (opt_options && opt_options.featureProjection) {
     object['spatialReference'] = /** @type {EsriJSONCRS} */({
       wkid: ol.proj.get(
           opt_options.featureProjection).getCode().split(':').pop()

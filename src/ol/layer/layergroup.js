@@ -1,10 +1,8 @@
 goog.provide('ol.layer.Group');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
@@ -29,15 +27,16 @@ ol.layer.GroupProperty = {
  * @classdesc
  * A {@link ol.Collection} of layers that are handled together.
  *
+ * A generic `change` event is triggered when the group/Collection changes.
+ *
  * @constructor
  * @extends {ol.layer.Base}
- * @fires change Triggered when the group/Collection changes.
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
  * @api stable
  */
 ol.layer.Group = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
   var baseOptions = /** @type {olx.layer.GroupOptions} */
       (goog.object.clone(options));
   delete baseOptions.layers;
@@ -62,7 +61,7 @@ ol.layer.Group = function(opt_options) {
       ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
       this.handleLayersChanged_, false, this);
 
-  if (goog.isDefAndNotNull(layers)) {
+  if (layers) {
     if (goog.isArray(layers)) {
       layers = new ol.Collection(layers.slice());
     } else {
@@ -95,7 +94,7 @@ ol.layer.Group.prototype.handleLayerChange_ = function() {
  * @private
  */
 ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
-  goog.array.forEach(this.layersListenerKeys_, goog.events.unlistenByKey);
+  this.layersListenerKeys_.forEach(goog.events.unlistenByKey);
   this.layersListenerKeys_.length = 0;
 
   var layers = this.getLayers();
@@ -106,7 +105,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
           this.handleLayersRemove_, false, this));
 
   goog.object.forEach(this.listenerKeys_, function(keys) {
-    goog.array.forEach(keys, goog.events.unlistenByKey);
+    keys.forEach(goog.events.unlistenByKey);
   });
   goog.object.clear(this.listenerKeys_);
 
@@ -153,7 +152,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = goog.getUid(layer).toString();
   goog.asserts.assert(key in this.listenerKeys_, 'no listeners to unregister');
-  goog.array.forEach(this.listenerKeys_[key], goog.events.unlistenByKey);
+  this.listenerKeys_[key].forEach(goog.events.unlistenByKey);
   delete this.listenerKeys_[key];
   this.changed();
 };
@@ -163,7 +162,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  * Returns the {@link ol.Collection collection} of {@link ol.layer.Layer layers}
  * in this group.
  * @return {!ol.Collection.<ol.layer.Base>} Collection of
- *   {@link ol.layer.Layer layers} that are part of this group.
+ *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
  * @api stable
  */
@@ -177,7 +176,7 @@ ol.layer.Group.prototype.getLayers = function() {
  * Set the {@link ol.Collection collection} of {@link ol.layer.Layer layers}
  * in this group.
  * @param {!ol.Collection.<ol.layer.Base>} layers Collection of
- *   {@link ol.layer.Layer layers} that are part of this group.
+ *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
  * @api stable
  */
@@ -190,7 +189,7 @@ ol.layer.Group.prototype.setLayers = function(layers) {
  * @inheritDoc
  */
 ol.layer.Group.prototype.getLayersArray = function(opt_array) {
-  var array = goog.isDef(opt_array) ? opt_array : [];
+  var array = opt_array !== undefined ? opt_array : [];
   this.getLayers().forEach(function(layer) {
     layer.getLayersArray(array);
   });
@@ -202,7 +201,7 @@ ol.layer.Group.prototype.getLayersArray = function(opt_array) {
  * @inheritDoc
  */
 ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
-  var states = goog.isDef(opt_states) ? opt_states : [];
+  var states = opt_states !== undefined ? opt_states : [];
 
   var pos = states.length;
 
@@ -214,19 +213,14 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
   var i, ii, layerState;
   for (i = pos, ii = states.length; i < ii; i++) {
     layerState = states[i];
-    layerState.brightness = goog.math.clamp(
-        layerState.brightness + ownLayerState.brightness, -1, 1);
-    layerState.contrast *= ownLayerState.contrast;
-    layerState.hue += ownLayerState.hue;
     layerState.opacity *= ownLayerState.opacity;
-    layerState.saturation *= ownLayerState.saturation;
     layerState.visible = layerState.visible && ownLayerState.visible;
     layerState.maxResolution = Math.min(
         layerState.maxResolution, ownLayerState.maxResolution);
     layerState.minResolution = Math.max(
         layerState.minResolution, ownLayerState.minResolution);
-    if (goog.isDef(ownLayerState.extent)) {
-      if (goog.isDef(layerState.extent)) {
+    if (ownLayerState.extent !== undefined) {
+      if (layerState.extent !== undefined) {
         layerState.extent = ol.extent.getIntersection(
             layerState.extent, ownLayerState.extent);
       } else {

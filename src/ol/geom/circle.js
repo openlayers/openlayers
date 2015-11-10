@@ -23,9 +23,8 @@ goog.require('ol.proj');
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
   goog.base(this);
-  var radius = goog.isDef(opt_radius) ? opt_radius : 0;
-  this.setCenterAndRadius(center, radius,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  var radius = opt_radius ? opt_radius : 0;
+  this.setCenterAndRadius(center, radius, opt_layout);
 };
 goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
@@ -138,6 +137,29 @@ ol.geom.Circle.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ * @api stable
+ */
+ol.geom.Circle.prototype.intersectsExtent = function(extent) {
+  var circleExtent = this.getExtent();
+  if (ol.extent.intersects(extent, circleExtent)) {
+    var center = this.getCenter();
+
+    if (extent[0] <= center[0] && extent[2] >= center[0]) {
+      return true;
+    }
+    if (extent[1] <= center[1] && extent[3] >= center[1]) {
+      return true;
+    }
+
+    return ol.extent.forEachCorner(extent, this.containsCoordinate, this);
+  }
+  return false;
+
+};
+
+
+/**
  * Set the center of the circle as {@link ol.Coordinate coordinate}.
  * @param {ol.Coordinate} center Center.
  * @api
@@ -167,11 +189,11 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  */
 ol.geom.Circle.prototype.setCenterAndRadius =
     function(center, radius, opt_layout) {
-  if (goog.isNull(center)) {
+  if (!center) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
     this.setLayout(opt_layout, center, 0);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     /** @type {Array.<number>} */
@@ -206,8 +228,8 @@ ol.geom.Circle.prototype.setFlatCoordinates =
  * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
-  goog.asserts.assert(!goog.isNull(this.flatCoordinates),
-      'this.flatCoordinates cannot be null');
+  goog.asserts.assert(this.flatCoordinates,
+      'truthy this.flatCoordinates expected');
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };

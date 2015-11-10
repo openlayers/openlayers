@@ -2,14 +2,15 @@ goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
-goog.require('ol.color.Matrix');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
-goog.require('ol.renderer.webgl.map.shader.Color');
 goog.require('ol.renderer.webgl.map.shader.Default');
+goog.require('ol.renderer.webgl.map.shader.Default.Locations');
+goog.require('ol.renderer.webgl.map.shader.DefaultFragment');
+goog.require('ol.renderer.webgl.map.shader.DefaultVertex');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
@@ -74,18 +75,6 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.color.Matrix}
-   */
-  this.colorMatrix_ = new ol.color.Matrix();
-
-  /**
-   * @private
-   * @type {ol.renderer.webgl.map.shader.Color.Locations}
-   */
-  this.colorLocations_ = null;
-
-  /**
-   * @private
    * @type {ol.renderer.webgl.map.shader.Default.Locations}
    */
   this.defaultLocations_ = null;
@@ -104,7 +93,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer =
 
   var gl = this.mapRenderer.getGL();
 
-  if (!goog.isDef(this.framebufferDimension) ||
+  if (this.framebufferDimension === undefined ||
       this.framebufferDimension != framebufferDimension) {
 
     frameState.postRenderFunctions.push(
@@ -155,42 +144,19 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
 
   var gl = context.getGL();
 
-  var useColor =
-      layerState.brightness ||
-      layerState.contrast != 1 ||
-      layerState.hue ||
-      layerState.saturation != 1;
-
-  var fragmentShader, vertexShader;
-  if (useColor) {
-    fragmentShader = ol.renderer.webgl.map.shader.ColorFragment.getInstance();
-    vertexShader = ol.renderer.webgl.map.shader.ColorVertex.getInstance();
-  } else {
-    fragmentShader =
-        ol.renderer.webgl.map.shader.DefaultFragment.getInstance();
-    vertexShader = ol.renderer.webgl.map.shader.DefaultVertex.getInstance();
-  }
+  var fragmentShader =
+      ol.renderer.webgl.map.shader.DefaultFragment.getInstance();
+  var vertexShader = ol.renderer.webgl.map.shader.DefaultVertex.getInstance();
 
   var program = context.getProgram(fragmentShader, vertexShader);
 
-  // FIXME colorLocations_ and defaultLocations_ should be shared somehow
   var locations;
-  if (useColor) {
-    if (goog.isNull(this.colorLocations_)) {
-      locations =
-          new ol.renderer.webgl.map.shader.Color.Locations(gl, program);
-      this.colorLocations_ = locations;
-    } else {
-      locations = this.colorLocations_;
-    }
+  if (!this.defaultLocations_) {
+    locations =
+        new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
+    this.defaultLocations_ = locations;
   } else {
-    if (goog.isNull(this.defaultLocations_)) {
-      locations =
-          new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
-      this.defaultLocations_ = locations;
-    } else {
-      locations = this.defaultLocations_;
-    }
+    locations = this.defaultLocations_;
   }
 
   if (context.useProgram(program)) {
@@ -207,15 +173,6 @@ ol.renderer.webgl.Layer.prototype.composeFrame =
       locations.u_texCoordMatrix, false, this.getTexCoordMatrix());
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
       this.getProjectionMatrix());
-  if (useColor) {
-    gl.uniformMatrix4fv(locations.u_colorMatrix, false,
-        this.colorMatrix_.getMatrix(
-            layerState.brightness,
-            layerState.contrast,
-            layerState.hue,
-            layerState.saturation
-        ));
-  }
   gl.uniform1f(locations.u_opacity, layerState.opacity);
   gl.bindTexture(goog.webgl.TEXTURE_2D, this.getTexture());
   gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
@@ -247,7 +204,7 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ =
     var render = new ol.render.webgl.Immediate(
         context, center, resolution, rotation, size, extent, pixelRatio);
     var composeEvent = new ol.render.Event(
-        type, layer, render, null, frameState, null, context);
+        type, layer, render, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
 };

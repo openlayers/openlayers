@@ -1,6 +1,8 @@
 goog.provide('ol.layer.Vector');
 
+goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol');
 goog.require('ol.layer.Layer');
 goog.require('ol.style.Style');
 
@@ -29,8 +31,13 @@ ol.layer.VectorProperty = {
  */
 ol.layer.Vector = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ?
+  var options = opt_options ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
+
+  goog.asserts.assert(
+      options.renderOrder === undefined || !options.renderOrder ||
+      goog.isFunction(options.renderOrder),
+      'renderOrder must be a comparator function');
 
   var baseOptions = goog.object.clone(options);
 
@@ -44,7 +51,7 @@ ol.layer.Vector = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.renderBuffer_ = goog.isDef(options.renderBuffer) ?
+  this.renderBuffer_ = options.renderBuffer !== undefined ?
       options.renderBuffer : 100;
 
   /**
@@ -67,14 +74,14 @@ ol.layer.Vector = function(opt_options) {
    * @type {boolean}
    * @private
    */
-  this.updateWhileAnimating_ = goog.isDef(options.updateWhileAnimating) ?
+  this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
       options.updateWhileAnimating : false;
 
   /**
    * @type {boolean}
    * @private
    */
-  this.updateWhileInteracting_ = goog.isDef(options.updateWhileInteracting) ?
+  this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
       options.updateWhileInteracting : false;
 
 };
@@ -153,6 +160,10 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
  *     Render order.
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
+  goog.asserts.assert(
+      renderOrder === undefined || !renderOrder ||
+      goog.isFunction(renderOrder),
+      'renderOrder must be a comparator function');
   this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
 };
 
@@ -164,13 +175,13 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null|undefined}
  *     style Layer style.
  * @api stable
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
-  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
-  this.styleFunction_ = goog.isNull(style) ?
+  this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = style === null ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();
 };

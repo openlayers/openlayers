@@ -5,7 +5,6 @@ goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
@@ -217,7 +216,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     extent = frameState.extent;
   }
 
-  if (goog.isDef(layerState.extent)) {
+  if (layerState.extent !== undefined) {
     extent = ol.extent.getIntersection(extent, layerState.extent);
   }
   if (ol.extent.isEmpty(extent)) {
@@ -232,12 +231,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   var canvasHeight = tilePixelSize[1] * tileRange.getHeight();
 
   var canvas, context;
-  if (goog.isNull(this.canvas_)) {
-    goog.asserts.assert(goog.isNull(this.canvasSize_),
+  if (!this.canvas_) {
+    goog.asserts.assert(!this.canvasSize_,
         'canvasSize is null (because canvas is null)');
-    goog.asserts.assert(goog.isNull(this.context_),
+    goog.asserts.assert(!this.context_,
         'context is null (because canvas is null)');
-    goog.asserts.assert(goog.isNull(this.renderedCanvasTileRange_),
+    goog.asserts.assert(!this.renderedCanvasTileRange_,
         'renderedCanvasTileRange is null (because canvas is null)');
     context = ol.dom.createCanvasContext2D(canvasWidth, canvasHeight);
     this.canvas_ = context.canvas;
@@ -246,9 +245,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
     this.canvasTooBig_ =
         !ol.renderer.canvas.Layer.testCanvasSize(this.canvasSize_);
   } else {
-    goog.asserts.assert(!goog.isNull(this.canvasSize_),
+    goog.asserts.assert(this.canvasSize_,
         'non-null canvasSize (because canvas is not null)');
-    goog.asserts.assert(!goog.isNull(this.context_),
+    goog.asserts.assert(this.context_,
         'non-null context (because canvas is not null)');
     canvas = this.canvas_;
     context = this.context_;
@@ -278,7 +277,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   }
 
   var canvasTileRange, canvasTileRangeWidth, minX, minY;
-  if (goog.isNull(this.renderedCanvasTileRange_)) {
+  if (!this.renderedCanvasTileRange_) {
     canvasTileRangeWidth = canvasWidth / tilePixelSize[0];
     var canvasTileRangeHeight = canvasHeight / tilePixelSize[1];
     minX = tileRange.minX -
@@ -310,7 +309,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   /** @type {Array.<ol.Tile>} */
   var tilesToClear = [];
 
-  var findLoadedTiles = this.createLoadedTileFinder(tileSource, tilesToDrawByZ);
+  var findLoadedTiles = this.createLoadedTileFinder(
+      tileSource, projection, tilesToDrawByZ);
 
   var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
 
@@ -337,7 +337,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
         tilesToClear.push(tile);
         childTileRange = tileGrid.getTileCoordChildTileRange(
             tile.tileCoord, tmpTileRange, tmpExtent);
-        if (!goog.isNull(childTileRange)) {
+        if (childTileRange) {
           findLoadedTiles(z + 1, childTileRange);
         }
       }
@@ -354,14 +354,14 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
   }
 
   /** @type {Array.<number>} */
-  var zs = goog.array.map(goog.object.getKeys(tilesToDrawByZ), Number);
+  var zs = Object.keys(tilesToDrawByZ).map(Number);
   goog.array.sort(zs);
   var opaque = tileSource.getOpaque();
   var origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(
       [z, canvasTileRange.minX, canvasTileRange.maxY],
       tmpExtent));
   var currentZ, index, scale, tileCoordKey, tileExtent, tilesToDraw;
-  var ix, iy, interimTileExtent, interimTileRange, maxX, maxY;
+  var ix, iy, interimTileRange, maxX, maxY;
   var height, width;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     currentZ = zs[i];
@@ -451,11 +451,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
  */
 ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel =
     function(pixel, frameState, callback, thisArg) {
-  if (goog.isNull(this.context_)) {
+  if (!this.context_) {
     return undefined;
   }
 
-  if (goog.isNull(this.imageTransformInv_)) {
+  if (!this.imageTransformInv_) {
     this.imageTransformInv_ = goog.vec.Mat4.createNumber();
     goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
   }

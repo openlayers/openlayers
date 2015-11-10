@@ -6,11 +6,14 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 
+var Promise = require('bluebird');
+
 
 /**
  * Publish hook for the JSDoc template.  Writes to JSON stdout.
  * @param {function} data The root of the Taffy DB containing doclet records.
  * @param {Object} opts Options.
+ * @return {Promise} A promise that resolves when writing is complete.
  */
 exports.publish = function(data, opts) {
 
@@ -49,7 +52,7 @@ exports.publish = function(data, opts) {
   var externs = [];
   var base = [];
   var augments = {};
-  var names = {};
+  var symbolsByName = {};
   docs.filter(function(doc) {
     var include = true;
     var constructor = doc.memberof;
@@ -144,8 +147,13 @@ exports.publish = function(data, opts) {
       }
 
       var target = isExterns ? externs : (doc.api ? symbols : base);
+      var existingSymbol = symbolsByName[symbol.name];
+      if (existingSymbol) {
+        var idx = target.indexOf(existingSymbol);
+        target.splice(idx, 1);
+      }
       target.push(symbol);
-      names[symbol.name] = true;
+      symbolsByName[symbol.name] = symbol;
 
       if (doc.api && symbol.extends) {
         while (symbol.extends in classes && !classes[symbol.extends].api &&
@@ -163,13 +171,17 @@ exports.publish = function(data, opts) {
     return (symbol.name in augments || symbol.virtual);
   });
 
-  process.stdout.write(
-      JSON.stringify({
-        symbols: symbols,
-        defines: defines,
-        typedefs: typedefs,
-        externs: externs,
-        base: base
-      }, null, 2));
+  return new Promise(function(resolve, reject) {
+
+    process.stdout.write(
+        JSON.stringify({
+          symbols: symbols,
+          defines: defines,
+          typedefs: typedefs,
+          externs: externs,
+          base: base
+        }, null, 2), resolve);
+
+  });
 
 };

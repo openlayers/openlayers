@@ -15,7 +15,7 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('returns a tile with the expected URL', function() {
       var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       expect(uri.getScheme()).to.be('http');
@@ -23,8 +23,8 @@ describe('ol.source.TileArcGISRest', function() {
       expect(uri.getPath()).to.be('/MapServer/export');
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091932,' +
-          '-5009377.085697311,-10018754.17139462');
+          '-10018754.171394622,-15028131.257091936,' +
+          '-5009377.085697311,-10018754.171394624');
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('SIZE')).to.be('256,256');
       expect(queryData.get('IMAGESR')).to.be('3857');
@@ -33,13 +33,21 @@ describe('ol.source.TileArcGISRest', function() {
 
     });
 
+    it('returns a non floating point DPI value', function() {
+      var source = new ol.source.TileArcGISRest(options);
+      var tile = source.getTile(3, 2, -7, 1.12, ol.proj.get('EPSG:3857'));
+      var uri = new goog.Uri(tile.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('DPI')).to.be('101');
+    });
+
     it('returns a tile with the expected URL with url list', function() {
 
       options.urls = ['http://test1.com/MapServer',
                       'http://test2.com/MapServer'];
       var source = new ol.source.TileArcGISRest(options);
 
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       expect(uri.getScheme()).to.be('http');
@@ -47,8 +55,8 @@ describe('ol.source.TileArcGISRest', function() {
       expect(uri.getPath()).to.be('/MapServer/export');
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091932,' +
-          '-5009377.085697311,-10018754.17139462');
+          '-10018754.171394622,-15028131.257091936,' +
+          '-5009377.085697311,-10018754.171394624');
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('SIZE')).to.be('256,256');
       expect(queryData.get('IMAGESR')).to.be('3857');
@@ -60,7 +68,7 @@ describe('ol.source.TileArcGISRest', function() {
     it('returns a tile with the expected URL for ImageServer', function() {
       options.url = 'http://example.com/ImageServer';
       var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.an(ol.ImageTile);
       var uri = new goog.Uri(tile.src_);
       expect(uri.getScheme()).to.be('http');
@@ -68,8 +76,8 @@ describe('ol.source.TileArcGISRest', function() {
       expect(uri.getPath()).to.be('/ImageServer/exportImage');
       var queryData = uri.getQueryData();
       expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091932,' +
-          '-5009377.085697311,-10018754.17139462');
+          '-10018754.171394622,-15028131.257091936,' +
+          '-5009377.085697311,-10018754.171394624');
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('SIZE')).to.be('256,256');
       expect(queryData.get('IMAGESR')).to.be('3857');
@@ -81,7 +89,7 @@ describe('ol.source.TileArcGISRest', function() {
       options.params.FORMAT = 'png';
       options.params.TRANSPARENT = false;
       var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('FORMAT')).to.be('png');
@@ -91,7 +99,7 @@ describe('ol.source.TileArcGISRest', function() {
     it('allows adding rest option', function() {
       options.params.LAYERS = 'show:1,3,4';
       var source = new ol.source.TileArcGISRest(options);
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:4326'));
+      var tile = source.getTile(3, 2, -3, 1, ol.proj.get('EPSG:4326'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('LAYERS')).to.be('show:1,3,4');
@@ -104,7 +112,7 @@ describe('ol.source.TileArcGISRest', function() {
       var source = new ol.source.TileArcGISRest(options);
       source.updateParams({ 'TEST': 'value' });
 
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
 
@@ -117,7 +125,7 @@ describe('ol.source.TileArcGISRest', function() {
       var source = new ol.source.TileArcGISRest(options);
       source.updateParams({ 'TEST': 'newValue' });
 
-      var tile = source.getTile(3, 2, 1, 1, ol.proj.get('EPSG:3857'));
+      var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       var uri = new goog.Uri(tile.src_);
       var queryData = uri.getQueryData();
 

@@ -6,7 +6,7 @@ describe('ol.pointer.PointerEventHandler', function() {
   var eventSpy;
 
   beforeEach(function() {
-    target = goog.dom.createElement(goog.dom.TagName.DIV);
+    target = goog.dom.createElement('DIV');
 
     // make sure that a mouse event source is used
     ol.has.POINTER = false;
@@ -161,7 +161,6 @@ describe('ol.pointer.PointerEventHandler', function() {
 });
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
 goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('ol.has');

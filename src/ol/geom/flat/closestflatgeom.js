@@ -154,7 +154,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
     }
   }
   goog.asserts.assert(maxDelta > 0, 'maxDelta should be larger than 0');
-  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
+  var tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
   var index = offset + stride;
   while (index < end) {
     ol.geom.flat.closest.point(
@@ -217,7 +217,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
 ol.geom.flat.closest.getsClosestPoint = function(flatCoordinates, offset, ends,
     stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
     opt_tmpPoint) {
-  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
+  var tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -247,7 +247,7 @@ ol.geom.flat.closest.getsClosestPoint = function(flatCoordinates, offset, ends,
 ol.geom.flat.closest.getssClosestPoint = function(flatCoordinates, offset,
     endss, stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
     opt_tmpPoint) {
-  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
+  var tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];

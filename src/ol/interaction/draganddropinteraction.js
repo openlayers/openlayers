@@ -27,7 +27,7 @@ goog.require('ol.proj');
  */
 ol.interaction.DragAndDrop = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this, {
     handleEvent: ol.interaction.DragAndDrop.handleEvent
@@ -37,14 +37,14 @@ ol.interaction.DragAndDrop = function(opt_options) {
    * @private
    * @type {Array.<function(new: ol.format.Feature)>}
    */
-  this.formatConstructors_ = goog.isDef(options.formatConstructors) ?
+  this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
 
   /**
    * @private
    * @type {ol.proj.Projection}
    */
-  this.projection_ = goog.isDef(options.projection) ?
+  this.projection_ = options.projection ?
       ol.proj.get(options.projection) : null;
 
   /**
@@ -67,7 +67,7 @@ goog.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
  * @inheritDoc
  */
 ol.interaction.DragAndDrop.prototype.disposeInternal = function() {
-  if (goog.isDef(this.dropListenKey_)) {
+  if (this.dropListenKey_) {
     goog.events.unlistenByKey(this.dropListenKey_);
   }
   goog.base(this, 'disposeInternal');
@@ -98,13 +98,13 @@ ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
  */
 ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   var map = this.getMap();
-  goog.asserts.assert(!goog.isNull(map), 'map should not be null');
+  goog.asserts.assert(map, 'map must be set');
   var projection = this.projection_;
-  if (goog.isNull(projection)) {
+  if (!projection) {
     var view = map.getView();
-    goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+    goog.asserts.assert(view, 'map must have view');
     projection = view.getProjection();
-    goog.asserts.assert(goog.isDef(projection),
+    goog.asserts.assert(projection !== undefined,
         'projection should be defined');
   }
   var formatConstructors = this.formatConstructors_;
@@ -114,14 +114,14 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
     var formatConstructor = formatConstructors[i];
     var format = new formatConstructor();
     var readFeatures = this.tryReadFeatures_(format, result);
-    if (!goog.isNull(readFeatures)) {
+    if (readFeatures) {
       var featureProjection = format.readProjection(result);
       var transform = ol.proj.getTransform(featureProjection, projection);
       var j, jj;
       for (j = 0, jj = readFeatures.length; j < jj; ++j) {
         var feature = readFeatures[j];
         var geometry = feature.getGeometry();
-        if (goog.isDefAndNotNull(geometry)) {
+        if (geometry) {
           geometry.applyTransform(transform);
         }
         features.push(feature);
@@ -150,18 +150,18 @@ ol.interaction.DragAndDrop.handleEvent = goog.functions.TRUE;
  * @inheritDoc
  */
 ol.interaction.DragAndDrop.prototype.setMap = function(map) {
-  if (goog.isDef(this.dropListenKey_)) {
+  if (this.dropListenKey_) {
     goog.events.unlistenByKey(this.dropListenKey_);
     this.dropListenKey_ = undefined;
   }
-  if (!goog.isNull(this.fileDropHandler_)) {
+  if (this.fileDropHandler_) {
     goog.dispose(this.fileDropHandler_);
     this.fileDropHandler_ = null;
   }
-  goog.asserts.assert(!goog.isDef(this.dropListenKey_),
+  goog.asserts.assert(this.dropListenKey_ === undefined,
       'this.dropListenKey_ should be undefined');
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
+  if (map) {
     this.fileDropHandler_ = new goog.events.FileDropHandler(map.getViewport());
     this.dropListenKey_ = goog.events.listen(
         this.fileDropHandler_, goog.events.FileDropHandler.EventType.DROP,
@@ -219,18 +219,21 @@ ol.interaction.DragAndDropEvent =
   goog.base(this, type, target);
 
   /**
+   * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
    * @api stable
    */
   this.features = opt_features;
 
   /**
+   * The dropped file.
    * @type {File}
    * @api stable
    */
   this.file = file;
 
   /**
+   * The feature projection.
    * @type {ol.proj.Projection|undefined}
    * @api
    */

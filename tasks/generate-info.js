@@ -5,6 +5,7 @@ var spawn = require('child_process').spawn;
 var async = require('async');
 var fse = require('fs-extra');
 var walk = require('walk').walk;
+var isWindows = process.platform.indexOf('win') === 0;
 
 var sourceDir = path.join(__dirname, '..', 'src');
 var externsDir = path.join(__dirname, '..', 'externs');
@@ -13,7 +14,15 @@ var externsPaths = [
   path.join(externsDir, 'geojson.js')
 ];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
-var jsdoc = path.join(__dirname, '..', 'node_modules', '.bin', 'jsdoc');
+
+var jsdocResolved = require.resolve('jsdoc-fork/jsdoc.js');
+var jsdoc = path.resolve(path.dirname(jsdocResolved), '../.bin/jsdoc');
+
+// on Windows, use jsdoc.cmd
+if (isWindows) {
+  jsdoc += '.cmd';
+}
+
 var jsdocConfig = path.join(
     __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
 
@@ -92,6 +101,17 @@ function getNewer(date, newer, callback) {
     callback(new Error('Trouble walking ' + sourceDir));
   });
   walker.on('end', function() {
+
+    /**
+     * Windows has restrictions on length of command line, so passing all the
+     * changed paths to a task will fail if this limit is exceeded.
+     * To get round this, if this is Windows and there are newer files, just
+     * pass the sourceDir to the task so it can do the walking.
+     */
+    if (isWindows) {
+        paths = [sourceDir].concat(externsPaths);
+    }
+
     callback(null, newer ? paths : []);
   });
 }
