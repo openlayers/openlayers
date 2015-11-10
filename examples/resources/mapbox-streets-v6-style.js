@@ -53,16 +53,16 @@ function createMapboxStreetsV6Style() {
     } else if (layer == 'waterway' &&
         cls != 'river' && cls != 'stream' && cls != 'canal') {
       stroke.setColor('#a0c8f0');
-      stroke.setWidth(1.3);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'waterway' && cls == 'river') {
       stroke.setColor('#a0c8f0');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'waterway' && (cls == 'stream' ||
         cls == 'canal')) {
       stroke.setColor('#a0c8f0');
-      stroke.setWidth(1.3);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'water') {
       fill.setColor('#a0c8f0');
@@ -73,7 +73,7 @@ function createMapboxStreetsV6Style() {
     } else if (layer == 'aeroway' && geom == 'LineString' &&
         resolution <= 76.43702828517625) {
       stroke.setColor('#f0ede9');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'building') {
       fill.setColor('#f2eae2');
@@ -82,90 +82,90 @@ function createMapboxStreetsV6Style() {
       styles[length++] = strokedPolygon;
     } else if (layer == 'tunnel' && cls == 'motorway_link') {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'tunnel' && cls == 'service') {
       stroke.setColor('#cfcdca');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'tunnel' &&
         (cls == 'street' || cls == 'street_limited')) {
       stroke.setColor('#cfcdca');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'tunnel' && cls == 'main' &&
         resolution <= 1222.99245256282) {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'tunnel' && cls == 'motorway') {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'tunnel' && cls == 'path') {
       stroke.setColor('#cba');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'tunnel' && cls == 'major_rail') {
       stroke.setColor('#bbb');
-      stroke.setWidth(1.4);
+      stroke.setWidth(2);
       styles[length++] = line;
     } else if (layer == 'road' && cls == 'motorway_link') {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'road' && (cls == 'street' ||
         cls == 'street_limited') && geom == 'LineString') {
       stroke.setColor('#cfcdca');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'road' && cls == 'main' &&
         resolution <= 1222.99245256282) {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'road' && cls == 'motorway' &&
         resolution <= 4891.96981025128) {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'road' && cls == 'path') {
       stroke.setColor('#cba');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'road' && cls == 'major_rail') {
       stroke.setColor('#bbb');
-      stroke.setWidth(1.4);
+      stroke.setWidth(2);
       styles[length++] = line;
     } else if (layer == 'bridge' && cls == 'motorway_link') {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'bridge' && cls == 'motorway') {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'bridge' && cls == 'service') {
       stroke.setColor('#cfcdca');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'bridge' &&
         (cls == 'street' || cls == 'street_limited')) {
       stroke.setColor('#cfcdca');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'bridge' && cls == 'main' &&
         resolution <= 1222.99245256282) {
       stroke.setColor('#e9ac77');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'bridge' && cls == 'path') {
       stroke.setColor('#cba');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = line;
     } else if (layer == 'bridge' && cls == 'major_rail') {
       stroke.setColor('#bbb');
-      stroke.setWidth(1.4);
+      stroke.setWidth(2);
       styles[length++] = line;
     } else if (layer == 'admin' && adminLevel >= 3 && maritime === 0) {
       stroke.setColor('#9e9cab');
@@ -227,7 +227,7 @@ function createMapboxStreetsV6Style() {
           'italic 11px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#74aee9');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(0.75);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'marine_label' && labelrank === 2 &&
         geom == 'Point') {
@@ -236,7 +236,7 @@ function createMapboxStreetsV6Style() {
           'italic 11px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#74aee9');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(0.75);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'marine_label' && labelrank === 3 &&
         geom == 'Point') {
@@ -245,7 +245,7 @@ function createMapboxStreetsV6Style() {
           'italic 10px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#74aee9');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(0.75);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'marine_label' && labelrank === 4 &&
         geom == 'Point') {
@@ -254,7 +254,7 @@ function createMapboxStreetsV6Style() {
           'italic 9px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#74aee9');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(0.75);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'place_label' && type == 'city' &&
         resolution <= 1222.99245256282) {
@@ -262,7 +262,7 @@ function createMapboxStreetsV6Style() {
       text.getText().setFont('11px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#333');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'place_label' && type == 'town' &&
         resolution <= 305.748113140705) {
@@ -270,7 +270,7 @@ function createMapboxStreetsV6Style() {
       text.getText().setFont('9px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#333');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'place_label' && type == 'village' &&
         resolution <= 38.21851414258813) {
@@ -278,7 +278,7 @@ function createMapboxStreetsV6Style() {
       text.getText().setFont('8px "Open Sans", "Arial Unicode MS"');
       fill.setColor('#333');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'place_label' &&
         resolution <= 19.109257071294063 && (type == 'hamlet' ||
@@ -287,7 +287,7 @@ function createMapboxStreetsV6Style() {
       text.getText().setFont('bold 9px "Arial Narrow"');
       fill.setColor('#633');
       stroke.setColor('rgba(255,255,255,0.8)');
-      stroke.setWidth(1.2);
+      stroke.setWidth(1);
       styles[length++] = text;
     } else if (layer == 'poi_label' && resolution <= 19.109257071294063 &&
         scalerank == 1 && maki !== 'marker') {
