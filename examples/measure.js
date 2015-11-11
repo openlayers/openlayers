@@ -137,7 +137,6 @@ $(map.getViewport()).on('mouseout', function() {
 });
 
 var typeSelect = document.getElementById('type');
-var geodesicCheckbox = document.getElementById('geodesic');
 
 var draw; // global so we can remove it later
 function addInteraction() {

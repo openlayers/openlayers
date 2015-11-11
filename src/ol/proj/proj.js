@@ -489,11 +489,10 @@ ol.proj.getArea = function(coordinates, projection, opt_sphere) {
   var totalArea = 0;
   var proj = ol.proj.get(projection);
   var units = proj.getUnits();
-
   var sphere = (opt_sphere !== undefined) ? opt_sphere : ol.sphere.NORMAL;
-  var i;
-
+  var ring;
   var coordss = [];
+  var aAsLen;
 
   goog.asserts.assert((units != ol.proj.Units.PIXELS) &&
       (units != ol.proj.Units.TILE_PIXELS),
@@ -505,25 +504,28 @@ ol.proj.getArea = function(coordinates, projection, opt_sphere) {
   else {
     coordss = coordinates;
   }
+  aAsLen = coordss.length;
 
-  coordss.forEach(function(coords, index, array) {
+  for (ring = 0; ring < aAsLen; ring++) {
 
+    var coords = coordss[ring];
     var aLen = coords.length;
     var area = 0;
+    var i;
 
     if (units == ol.proj.Units.DEGREES) {
       area = sphere.geodesicArea(coords);
     }
     else {
-      var transformedCoords = [];
+      var transformedCoords = coords.slice();
       for (i = 0; i < aLen; i++) {
-        transformedCoords[i] = ol.proj.toLonLat(coords[i], proj);
+        transformedCoords[i] = ol.proj.toLonLat(transformedCoords[i], proj);
       }
       area = sphere.geodesicArea(transformedCoords);
     }
 
     totalArea += area;
-  });
+  }
   return Math.abs(totalArea);
 };
 
