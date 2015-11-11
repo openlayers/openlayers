@@ -205,6 +205,7 @@ ol.style.Text.prototype.setFont = function(font) {
  * Set the x offset.
  *
  * @param {number} offsetX Horizontal text offset.
+ * @api
  */
 ol.style.Text.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
@@ -215,6 +216,7 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
  * Set the y offset.
  *
  * @param {number} offsetY Vertical text offset.
+ * @api
  */
 ol.style.Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
