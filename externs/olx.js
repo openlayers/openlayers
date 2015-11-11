@@ -2762,8 +2762,6 @@ olx.interaction.ModifyOptions.prototype.wrapX;
  *     maxdelta: (number|undefined),
  *     timeout: (number|undefined)}}
  *     useAnchor: (boolean|undefined)}}
-=======
->>>>>>> upstream/master
  * @api
  */
 olx.interaction.MouseWheelZoomOptions;
