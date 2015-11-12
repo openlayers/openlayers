@@ -2769,6 +2769,8 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 /**
  * @typedef {{duration: (number|undefined),
+ *     maxdelta: (number|undefined),
+ *     timeout: (number|undefined)}}
  *     useAnchor: (boolean|undefined)}}
  * @api
  */
@@ -2784,6 +2786,21 @@ olx.interaction.MouseWheelZoomOptions.prototype.duration;
 
 
 /**
+ * Max delta for cumulative scroll. Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.maxdelta;
+
+/**
+ * Timeout duration. Default is `80`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.timeout;
+
+
+/** 
  * Enable zooming using the mouse's location as the anchor. Default is `true`.
  * When set to false, zooming in and out will zoom to the center of the screen
  * instead of zooming on the mouse's location.
