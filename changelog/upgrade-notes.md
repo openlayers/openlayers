@@ -46,6 +46,12 @@ but with additional css:
 
 With the introduction of true vector tile support, `ol.source.TileVector` becomes obsolete. Change your code to use `ol.layer.VectorTile` and `ol.source.VectorTile` instead of `ol.layer.Vector` and `ol.source.TileVector`.
 
+#### `ol.Map#forEachFeatureAtPixel` changes for unmanaged layers
+
+`ol.Map#forEachFeatureAtPixel` will still be called for unmanaged layers, but the 2nd argument to the callback function will be `null` instead of a reference to the unmanaged layer. This brings back the behavior of the abandoned `ol.FeatureOverlay` that was replaced by unmanaged layers.
+
+If you are affected by this change, please change your unmanaged layer to a regular layer by using e.g. `ol.Map#addLayer` instead of `ol.layer.Layer#setMap`.
+
 ### v3.10.0
 
 #### `ol.layer.Layer` changes

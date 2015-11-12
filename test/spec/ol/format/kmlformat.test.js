@@ -1337,6 +1337,7 @@ describe('ol.format.KML', function() {
         expect(imageStyle.getOrigin()).to.be(null);
         expect(imageStyle.getRotation()).to.eql(0);
         expect(imageStyle.getSize()).to.be(null);
+        expect(imageStyle.getScale()).to.be(1);
         expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
         expect(style.getZIndex()).to.be(undefined);
       });
@@ -1348,6 +1349,7 @@ describe('ol.format.KML', function() {
             '  <Placemark>' +
             '    <Style>' +
             '      <IconStyle>' +
+            '        <scale>3.0</scale>' +
             '        <Icon>' +
             '          <href>http://foo.png</href>' +
             '          <gx:x>24</gx:x>' +
@@ -1380,6 +1382,7 @@ describe('ol.format.KML', function() {
         expect(imageStyle.getAnchor()).to.eql([24, 36]);
         expect(imageStyle.getOrigin()).to.eql([24, 108]);
         expect(imageStyle.getRotation()).to.eql(0);
+        expect(imageStyle.getScale()).to.eql(Math.sqrt(3));
         expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
         expect(style.getZIndex()).to.be(undefined);
       });
@@ -1779,6 +1782,54 @@ describe('ol.format.KML', function() {
         expect(node).to.xmleql(ol.xml.parse(text));
       });
 
+      it('does not write styles when writeStyles option is false', function() {
+        format = new ol.format.KML({writeStyles: false});
+        var style = new ol.style.Style({
+          image: new ol.style.Icon({
+            src: 'http://foo.png'
+          })
+        });
+        var feature = new ol.Feature();
+        feature.setStyle([style]);
+        var node = format.writeFeaturesNode([feature]);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
+
+      it('skips image styles that are not icon styles', function() {
+        var style = new ol.style.Style({
+          image: new ol.style.Circle({
+            radius: 4,
+            fill: new ol.style.Fill({
+              color: 'rgb(12, 34, 223)'
+            })
+          })
+        });
+        var feature = new ol.Feature();
+        feature.setStyle([style]);
+        var node = format.writeFeaturesNode([feature]);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <Style>' +
+            '    </Style>' +
+            '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
+
       it('can write an feature\'s text style', function() {
         var style = new ol.style.Style({
           text: new ol.style.Text({
@@ -1861,6 +1912,43 @@ describe('ol.format.KML', function() {
             '      </PolyStyle>' +
             '    </Style>' +
             '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
+
+      it('can write multiple features with Style', function() {
+        var style = new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(12, 34, 223, 0.7)'
+          })
+        });
+        var feature = new ol.Feature();
+        feature.setStyle(style);
+        var feature2 = new ol.Feature();
+        feature2.setStyle(style);
+        var node = format.writeFeaturesNode([feature, feature2]);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Document>' +
+            '    <Placemark>' +
+            '      <Style>' +
+            '        <PolyStyle>' +
+            '          <color>b2df220c</color>' +
+            '        </PolyStyle>' +
+            '      </Style>' +
+            '    </Placemark>' +
+            '    <Placemark>' +
+            '      <Style>' +
+            '        <PolyStyle>' +
+            '          <color>b2df220c</color>' +
+            '        </PolyStyle>' +
+            '      </Style>' +
+            '    </Placemark>' +
+            '  </Document>' +
             '</kml>';
         expect(node).to.xmleql(ol.xml.parse(text));
       });
@@ -2725,6 +2813,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconOrigin');

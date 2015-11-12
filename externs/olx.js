@@ -1315,6 +1315,7 @@ olx.control.ScaleLineOptions.prototype.units;
  *     tipLabel: (string|undefined),
  *     target: (Element|undefined),
  *     render: (function(ol.MapEvent)|undefined),
+ *     resetNorth: (function()|undefined),
  *     autoHide: (boolean|undefined)}}
  * @api stable
  */
@@ -1369,6 +1370,15 @@ olx.control.RotateOptions.prototype.autoHide;
  * @api
  */
 olx.control.RotateOptions.prototype.render;
+
+
+/**
+ * Function called when the control is clicked. This will override the 
+ * default resetNorth.
+ * @type {function()|undefined}
+ * @api
+ */
+olx.control.RotateOptions.prototype.resetNorth;
 
 
 /**
@@ -1796,7 +1806,8 @@ olx.format.IGCOptions.prototype.altitudeMode;
 /**
  * @typedef {{extractStyles: (boolean|undefined),
  *     defaultStyle: (Array.<ol.style.Style>|undefined),
- *     showPointNames: (boolean|undefined)}}
+ *     showPointNames: (boolean|undefined),
+ *     writeStyles: (boolean|undefined)}}
  * @api
  */
 olx.format.KMLOptions;
@@ -1824,6 +1835,14 @@ olx.format.KMLOptions.prototype.showPointNames;
  * @api stable
  */
 olx.format.KMLOptions.prototype.defaultStyle;
+
+
+/**
+ * Write styles into KML. Default is `true`.
+ * @type {boolean|undefined}
+ * @api stable
+ */
+olx.format.KMLOptions.prototype.writeStyles;
 
 
 /**
@@ -4784,7 +4803,7 @@ olx.source.ImageWMSOptions.prototype.serverType;
 
 /**
  * Optional function to load an image given a URL.
- * @type {ol.TileLoadFunctionType|undefined}
+ * @type {ol.ImageLoadFunctionType|undefined}
  * @api
  */
 olx.source.ImageWMSOptions.prototype.imageLoadFunction;

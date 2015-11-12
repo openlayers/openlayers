@@ -83,7 +83,7 @@
 
 var common = {};
 
-common.getRendererFromQueryString = function() {
+common.getRendererFromQueryString = function(opt_default) {
   var obj = {};
   var queryString = location.search.slice(1);
   var re = /([^&=]+)=([^&]*)/g;
@@ -98,6 +98,6 @@ common.getRendererFromQueryString = function() {
   } else if ('renderer' in obj) {
     return [obj['renderer']];
   } else {
-    return undefined;
+    return opt_default;
   }
 };

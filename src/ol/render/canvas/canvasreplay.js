@@ -246,6 +246,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
+  var skipFeatures = !goog.object.isEmpty(skippedFeaturesHash);
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
@@ -259,8 +260,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
-        var featureUid = goog.getUid(feature).toString();
-        if (skippedFeaturesHash[featureUid] !== undefined ||
+        if ((skipFeatures &&
+            skippedFeaturesHash[goog.getUid(feature).toString()]) ||
             !feature.getGeometry()) {
           i = /** @type {number} */ (instruction[2]);
         } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
