@@ -150,7 +150,7 @@ ol.source.ImageMapGuide.prototype.getImageInternal =
 
   var imageUrl = this.imageUrlFunction_(extent, size, projection);
   if (imageUrl !== undefined) {
-    image = new ol.Image(extent, [resolution, resolution], pixelRatio,
+    image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
     goog.events.listen(image, goog.events.EventType.CHANGE,
