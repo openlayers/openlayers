@@ -2185,7 +2185,8 @@ ol.format.KML.writeCoordinatesTextNode_ =
 ol.format.KML.writeDocument_ = function(node, features, objectStack) {
   var /** @type {ol.xml.NodeStackItem} */ context = {node: node};
   ol.xml.pushSerializeAndPop(context, ol.format.KML.DOCUMENT_SERIALIZERS_,
-      ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack);
+      ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack, undefined,
+      this);
 };
 
 
