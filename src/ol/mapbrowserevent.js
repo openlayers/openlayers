@@ -318,6 +318,10 @@ ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
  */
 ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
     function(pointerEvent) {
+  if (pointerEvent.browserEvent.target
+    .parentElement.className !== 'ol-viewport') {
+    return;
+  }
   this.updateActivePointers_(pointerEvent);
   var newEvent = new ol.MapBrowserPointerEvent(
       ol.MapBrowserEvent.EventType.POINTERDOWN, this.map_, pointerEvent);
