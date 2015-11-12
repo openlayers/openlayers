@@ -2760,7 +2760,7 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 /**
  * @typedef {{duration: (number|undefined),
  *     maxdelta: (number|undefined),
- *     timeout: (number|undefined)}}
+ *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  * @api
  */
