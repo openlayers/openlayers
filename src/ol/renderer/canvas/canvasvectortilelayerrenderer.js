@@ -201,13 +201,20 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
    */
   function renderFeature(feature) {
     var styles;
-    if (feature.getStyleFunction()) {
+    var styleFunction = feature.getStyleFunction();
+    if (styleFunction) {
       goog.asserts.assertInstanceof(feature, ol.Feature, 'Got an ol.Feature');
-      styles = feature.getStyleFunction().call(feature, resolution);
-    } else if (layer.getStyleFunction()) {
-      styles = layer.getStyleFunction()(feature, resolution);
+      styles = styleFunction.call(feature, resolution);
+    } else {
+      styleFunction = layer.getStyleFunction();
+      if (styleFunction) {
+        styles = styleFunction(feature, resolution);
+      }
     }
     if (styles) {
+      if (!goog.isArray(styles)) {
+        styles = [styles];
+      }
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
           replayGroup);
       this.dirty_ = this.dirty_ || dirty;
@@ -423,7 +430,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
 /**
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {Array.<ol.style.Style>} styles Array of styles
+ * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
+ *     styles.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
@@ -432,10 +440,16 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature =
   if (!styles) {
     return false;
   }
-  var i, ii, loading = false;
-  for (i = 0, ii = styles.length; i < ii; ++i) {
+  var loading = false;
+  if (goog.isArray(styles)) {
+    for (var i = 0, ii = styles.length; i < ii; ++i) {
+      loading = ol.renderer.vector.renderFeature(
+          replayGroup, feature, styles[i], squaredTolerance,
+          this.handleStyleImageChange_, this) || loading;
+    }
+  } else {
     loading = ol.renderer.vector.renderFeature(
-        replayGroup, feature, styles[i], squaredTolerance,
+        replayGroup, feature, styles, squaredTolerance,
         this.handleStyleImageChange_, this) || loading;
   }
   return loading;
