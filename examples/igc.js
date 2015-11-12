@@ -27,17 +27,17 @@ var colors = {
 var styleCache = {};
 var styleFunction = function(feature, resolution) {
   var color = colors[feature.get('PLT')];
-  var styleArray = styleCache[color];
-  if (!styleArray) {
-    styleArray = [new ol.style.Style({
+  var style = styleCache[color];
+  if (!style) {
+    style = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: color,
         width: 3
       })
-    })];
-    styleCache[color] = styleArray;
+    });
+    styleCache[color] = style;
   }
-  return styleArray;
+  return style;
 };
 
 var vectorSource = new ol.source.Vector();

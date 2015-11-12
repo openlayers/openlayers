@@ -35,14 +35,14 @@ var styleFunction = function(feature, resolution) {
     delta = 24 - delta;
   }
   var opacity = 0.75 * (1 - delta / 12);
-  return [new ol.style.Style({
+  return new ol.style.Style({
     fill: new ol.style.Fill({
       color: [0xff, 0xff, 0x33, opacity]
     }),
     stroke: new ol.style.Stroke({
       color: '#ffffff'
     })
-  })];
+  });
 };
 
 var vector = new ol.layer.Vector({

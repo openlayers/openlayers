@@ -38,7 +38,7 @@ var clusters = new ol.layer.Vector({
     var size = feature.get('features').length;
     var style = styleCache[size];
     if (!style) {
-      style = [new ol.style.Style({
+      style = new ol.style.Style({
         image: new ol.style.Circle({
           radius: 10,
           stroke: new ol.style.Stroke({
@@ -54,7 +54,7 @@ var clusters = new ol.layer.Vector({
             color: '#fff'
           })
         })
-      })];
+      });
       styleCache[size] = style;
     }
     return style;
