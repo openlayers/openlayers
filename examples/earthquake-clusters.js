@@ -84,7 +84,7 @@ function styleFunction(feature, resolution) {
   var style;
   var size = feature.get('features').length;
   if (size > 1) {
-    style = [new ol.style.Style({
+    style = new ol.style.Style({
       image: new ol.style.Circle({
         radius: feature.get('radius'),
         fill: new ol.style.Fill({
@@ -96,10 +96,10 @@ function styleFunction(feature, resolution) {
         fill: textFill,
         stroke: textStroke
       })
-    })];
+    });
   } else {
     var originalFeature = feature.get('features')[0];
-    style = [createEarthquakeStyle(originalFeature)];
+    style = createEarthquakeStyle(originalFeature);
   }
   return style;
 }

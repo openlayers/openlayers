@@ -21,7 +21,7 @@ var raster = new ol.layer.Tile({
 });
 
 var style = {
-  'Point': [new ol.style.Style({
+  'Point': new ol.style.Style({
     image: new ol.style.Circle({
       fill: new ol.style.Fill({
         color: 'rgba(255,255,0,0.4)'
@@ -32,19 +32,19 @@ var style = {
         width: 1
       })
     })
-  })],
-  'LineString': [new ol.style.Style({
+  }),
+  'LineString': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#f00',
       width: 3
     })
-  })],
-  'MultiLineString': [new ol.style.Style({
+  }),
+  'MultiLineString': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#0f0',
       width: 3
     })
-  })]
+  })
 };
 
 var vector = new ol.layer.Vector({
