@@ -26,12 +26,10 @@ ol.source.ImageStatic = function(options) {
 
   var imageExtent = options.imageExtent;
 
-  var xResolution, yResolution, resolutions, imgResolution;
+  var resolution, resolutions;
   if (options.imageSize !== undefined) {
-    xResolution = ol.extent.getWidth(imageExtent) / options.imageSize[0];
-    yResolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
-    imgResolution = [xResolution, yResolution];
-    resolutions = [yResolution];
+    resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
+    resolutions = [resolution];
   }
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -52,8 +50,8 @@ ol.source.ImageStatic = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, imgResolution, 1,
-      attributions, options.url, crossOrigin, imageLoadFunction);
+  this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
+      options.url, crossOrigin, imageLoadFunction);
   goog.events.listen(this.image_, goog.events.EventType.CHANGE,
       this.handleImageChange, false, this);
 
