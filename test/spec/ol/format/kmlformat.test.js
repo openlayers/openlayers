@@ -1915,6 +1915,43 @@ describe('ol.format.KML', function() {
             '</kml>';
         expect(node).to.xmleql(ol.xml.parse(text));
       });
+
+      it('can write multiple features with Style', function() {
+        var style = new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'rgba(12, 34, 223, 0.7)'
+          })
+        });
+        var feature = new ol.Feature();
+        feature.setStyle(style);
+        var feature2 = new ol.Feature();
+        feature2.setStyle(style);
+        var node = format.writeFeaturesNode([feature, feature2]);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Document>' +
+            '    <Placemark>' +
+            '      <Style>' +
+            '        <PolyStyle>' +
+            '          <color>b2df220c</color>' +
+            '        </PolyStyle>' +
+            '      </Style>' +
+            '    </Placemark>' +
+            '    <Placemark>' +
+            '      <Style>' +
+            '        <PolyStyle>' +
+            '          <color>b2df220c</color>' +
+            '        </PolyStyle>' +
+            '      </Style>' +
+            '    </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
     });
 
     describe('style maps', function() {
