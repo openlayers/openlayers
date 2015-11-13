@@ -1373,7 +1373,7 @@ olx.control.RotateOptions.prototype.render;
 
 
 /**
- * Function called when the control is clicked. This will override the 
+ * Function called when the control is clicked. This will override the
  * default resetNorth.
  * @type {function()|undefined}
  * @api
@@ -4935,7 +4935,6 @@ olx.source.StamenOptions.prototype.url;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     imageExtent: (ol.Extent),
- *     imageSize: (ol.Size|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -4972,14 +4971,6 @@ olx.source.ImageStaticOptions.prototype.crossOrigin;
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.imageExtent;
-
-
-/**
- * Size of the image in pixels.
- * @type {ol.Size|undefined}
- * @api stable
- */
-olx.source.ImageStaticOptions.prototype.imageSize;
 
 
 /**

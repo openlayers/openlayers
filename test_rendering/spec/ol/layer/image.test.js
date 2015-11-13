@@ -82,6 +82,31 @@ describe('ol.rendering.layer.Image', function() {
       });
     });
   });
+
+  describe('single image layer - scaled', function() {
+    var source;
+
+    beforeEach(function() {
+      source = new ol.source.ImageStatic({
+        url: 'spec/ol/data/tiles/osm/5/5/12.png',
+        imageExtent: ol.proj.transformExtent(
+            [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders correctly', function(done) {
+      map = createMap('canvas');
+      waitForImages([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/image-scaled.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+  });
+
 });
 
 goog.require('goog.object');
