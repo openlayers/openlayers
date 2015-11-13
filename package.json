@@ -51,7 +51,7 @@
     "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css": "3.4.7",
+    "clean-css": "3.4.8",
     "coveralls": "2.11.4",
     "debounce": "^1.0.0",
     "expect.js": "0.3.1",
