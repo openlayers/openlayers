@@ -247,7 +247,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
     var allTilesLoaded = true;
     var tmpExtent = ol.extent.createEmpty();
     var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-    var childTileRange, fullyLoaded, tile, tileState, x, y, tileExtent;
+    var childTileRange, drawable, fullyLoaded, tile, tileState;
+    var x, y, tileExtent;
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
 
@@ -259,6 +260,14 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
             continue;
           }
         }
+        tileState = tile.getState();
+        drawable = tileState == ol.TileState.LOADED ||
+            tileState == ol.TileState.EMPTY ||
+            tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+        if (!drawable && tile.interimTile) {
+          tile = tile.interimTile;
+        }
+        goog.asserts.assert(tile);
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {

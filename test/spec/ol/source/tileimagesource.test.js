@@ -22,6 +22,75 @@ describe('ol.source.TileImage', function() {
     });
   });
 
+  describe('#getTileInternal', function() {
+    var source, tile;
+
+    beforeEach(function() {
+      source = createSource();
+      expect(source.getKeyParams()).to.be('');
+      source.getTileInternal(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+      expect(source.tileCache.getCount()).to.be(1);
+      tile = source.tileCache.get(source.getKeyZXY(0, 0, -1));
+    });
+
+    it('gets the tile from the cache', function() {
+      var returnedTile = source.getTileInternal(
+          0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+      expect(returnedTile).to.be(tile);
+    });
+
+    describe('change a dynamic param', function() {
+
+      describe('tile is not loaded', function() {
+        it('returns a tile with no interim tile', function() {
+          source.getKeyParams = function() {
+            return 'key0';
+          };
+          var returnedTile = source.getTileInternal(
+              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+          expect(returnedTile).not.to.be(tile);
+          expect(returnedTile.key).to.be('key0');
+          expect(returnedTile.interimTile).to.be(null);
+        });
+      });
+
+      describe('tile is loaded', function() {
+        it('returns a tile with interim tile', function() {
+          source.getKeyParams = function() {
+            return 'key0';
+          };
+          tile.state = ol.TileState.LOADED;
+          var returnedTile = source.getTileInternal(
+              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+          expect(returnedTile).not.to.be(tile);
+          expect(returnedTile.key).to.be('key0');
+          expect(returnedTile.interimTile).to.be(tile);
+        });
+      });
+
+      describe('tile is not loaded but interim tile is', function() {
+        it('returns a tile with interim tile', function() {
+          var dynamicParamsKey, returnedTile;
+          source.getKeyParams = function() {
+            return dynamicParamsKey;
+          };
+          dynamicParamsKey = 'key0';
+          tile.state = ol.TileState.LOADED;
+          returnedTile = source.getTileInternal(
+              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+          dynamicParamsKey = 'key1';
+          returnedTile = source.getTileInternal(
+              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+          expect(returnedTile).not.to.be(tile);
+          expect(returnedTile.key).to.be('key1');
+          expect(returnedTile.interimTile).to.be(tile);
+        });
+      });
+
+    });
+
+  });
+
   describe('#getTile', function() {
     it('does not do reprojection for identity', function() {
       var source3857 = createSource('EPSG:3857');

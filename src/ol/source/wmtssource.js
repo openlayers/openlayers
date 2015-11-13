@@ -61,8 +61,8 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {string}
    */
-  this.coordKeyPrefix_ = '';
-  this.resetCoordKeyPrefix_();
+  this.dimensionsKey_ = '';
+  this.resetDimensionsKey_();
 
   /**
    * @private
@@ -218,8 +218,8 @@ ol.source.WMTS.prototype.getFormat = function() {
 /**
  * @inheritDoc
  */
-ol.source.WMTS.prototype.getKeyZXY = function(z, x, y) {
-  return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
+ol.source.WMTS.prototype.getKeyParams = function() {
+  return this.dimensionsKey_;
 };
 
 
@@ -276,13 +276,13 @@ ol.source.WMTS.prototype.getVersion = function() {
 /**
  * @private
  */
-ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
+ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
     res[i++] = key + '-' + this.dimensions_[key];
   }
-  this.coordKeyPrefix_ = res.join('/');
+  this.dimensionsKey_ = res.join('/');
 };
 
 
@@ -293,7 +293,7 @@ ol.source.WMTS.prototype.resetCoordKeyPrefix_ = function() {
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   goog.object.extend(this.dimensions_, dimensions);
-  this.resetCoordKeyPrefix_();
+  this.resetDimensionsKey_();
   this.changed();
 };
 

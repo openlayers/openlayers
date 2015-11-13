@@ -157,6 +157,17 @@ ol.source.Tile.prototype.getGutter = function() {
 
 
 /**
+ * Return the "parameters" key, a string composed of the source's
+ * parameters/dimensions.
+ * @return {string} The parameters key.
+ * @protected
+ */
+ol.source.Tile.prototype.getKeyParams = function() {
+  return '';
+};
+
+
+/**
  * @param {number} z Z.
  * @param {number} x X.
  * @param {number} y Y.
