@@ -233,6 +233,16 @@ function main(callback) {
         helpers: {
           md: function(str) {
             return new handlebars.SafeString(marked(str));
+          },
+          indent: function(text, options) {
+            if (!text) {
+              return text;
+            }
+            var count = options.hash.spaces || 2;
+            var spaces = new Array(count + 1).join(' ');
+            return text.split('\n').map(function(line) {
+              return line ? spaces + line : '';
+            }).join('\n');
           }
         }
       }))

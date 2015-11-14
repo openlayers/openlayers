@@ -53,23 +53,18 @@
         </form>
         <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
-&lt;head&gt;
-&lt;title&gt;{{ title }}&lt;/title&gt;
-&lt;link rel="stylesheet" href="http://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
-&lt;script src="http://openlayers.org/en/v{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;
-{{ extraHead.remote }}
-{{#if css.source}}
-&lt;style&gt;
-{{ css.source }}
-&lt;/style&gt;
-{{/if}}
-&lt;/head&gt;
-&lt;body&gt;
-{{ contents }}
-&lt;script&gt;
-{{ js.source }}
-&lt;/script&gt;
-&lt;/body&gt;
+  &lt;head&gt;
+    &lt;title&gt;{{ title }}&lt;/title&gt;
+    &lt;link rel="stylesheet" href="http://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
+    &lt;script src="http://openlayers.org/en/v{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;{{#if extraHead.remote}}
+{{ indent extraHead.remote spaces=4 }}{{/if}}{{#if css.source}}
+    &lt;style&gt;
+{{ indent css.source spaces=6 }}    &lt;/style&gt;{{/if}}
+  &lt;/head&gt;
+  &lt;body&gt;
+{{ indent contents spaces=4 }}    &lt;script&gt;
+{{ indent js.source spaces=6 }}    &lt;/script&gt;
+  &lt;/body&gt;
 &lt;/html&gt;</code></pre>
       </div>
     </div>
