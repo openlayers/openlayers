@@ -121,7 +121,9 @@ function augmentExamples(files, metalsmith, done) {
             remoteResources[i] = '<script src="' + remoteResource +
                 '"></script>';
           } else if (isCssRegEx.test(resource)) {
-            resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+            if (resource.indexOf('bootstrap.min.css') === -1) {
+              resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+            }
             remoteResources[i] = '<link rel="stylesheet" href="' +
                 remoteResource + '">';
           } else {
