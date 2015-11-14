@@ -8,7 +8,7 @@ var wmsSource = new ol.source.TileWMS({
   url: 'http://demo.boundlessgeo.com/geoserver/wms',
   params: {'LAYERS': 'ne:ne'},
   serverType: 'geoserver',
-  crossOrigin: ''
+  crossOrigin: 'anonymous'
 });
 
 var wmsLayer = new ol.layer.Tile({
