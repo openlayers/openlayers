@@ -27,6 +27,10 @@ body {
   display: inline-block;
 }
 
+#title {
+  margin-top: 0;
+}
+
 ul.inline,
 ol.inline {
   margin-left: 0;
