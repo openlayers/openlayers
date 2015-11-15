@@ -82,11 +82,11 @@ layer0.setMap(map);
 
 
 function bindInputs(id, layer) {
-  var idxInput = $('#idx' + id);
-  idxInput.on('input change', function() {
+  var idxInput = document.getElementById('idx' + id);
+  idxInput.onchange = function() {
     layer.setZIndex(parseInt(this.value, 10) || 0);
-  });
-  idxInput.val(String(layer.getZIndex()));
+  };
+  idxInput.value = String(layer.getZIndex());
 }
 bindInputs(1, layer1);
 bindInputs(2, layer2);
