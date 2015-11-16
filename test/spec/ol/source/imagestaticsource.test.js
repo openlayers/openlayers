@@ -33,6 +33,26 @@ describe('ol.source.ImageStatic', function() {
       image.load();
     });
 
+    it('respects imageSize', function(done) {
+      var source = new ol.source.ImageStatic({
+        url: 'spec/ol/source/images/12-655-1583.png',
+        imageExtent: [
+          -13629027.891360067, 4539747.983913189,
+          -13619243.951739565, 4559315.863154193],
+        imageSize: [254, 254],
+        projection: projection
+      });
+
+      source.on('imageloadend', function(event) {
+        expect(image.getImage().width).to.be(127);
+        expect(image.getImage().height).to.be(254);
+        done();
+      });
+
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      image.load();
+    });
+
     it('triggers image load events', function(done) {
       var source = new ol.source.ImageStatic({
         url: 'spec/ol/source/images/12-655-1583.png',
