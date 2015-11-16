@@ -75,7 +75,7 @@ ol.control.Rotate = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.duration_ = options.duration ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
   /**
    * @type {boolean}
