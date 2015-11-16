@@ -4936,6 +4936,7 @@ olx.source.StamenOptions.prototype.url;
  *     crossOrigin: (null|string|undefined),
  *     imageExtent: (ol.Extent),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
+ *     imageSize: (ol.Size|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     url: string}}
@@ -4995,6 +4996,15 @@ olx.source.ImageStaticOptions.prototype.logo;
  * @api
  */
 olx.source.ImageStaticOptions.prototype.projection;
+
+
+/**
+ * Size of the image in pixels. Usually the image size is auto-detected, so this
+ * only needs to be set if auto-detection fails for some reason.
+ * @type {ol.Size|undefined}
+ * @api stable
+ */
+olx.source.ImageStaticOptions.prototype.imageSize;
 
 
 /**
