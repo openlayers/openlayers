@@ -29,20 +29,18 @@ var vectorSource = new ol.source.Vector({
             ',"spatialReference":{"wkid":102100}}') +
         '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
         '&outSR=102100';
-    $.ajax({url: url, dataType: 'jsonp', success: function(response) {
-      if (response.error) {
-        alert(response.error.message + '\n' +
-            response.error.details.join('\n'));
-      } else {
-        // dataProjection will be read from document
-        var features = esrijsonFormat.readFeatures(response, {
-          featureProjection: projection
-        });
-        if (features.length > 0) {
-          vectorSource.addFeatures(features);
-        }
+
+    fetch(url).then(function(response) {
+      return response.json();
+    }).then(function(json) {
+      // dataProjection will be read from document
+      var features = esrijsonFormat.readFeatures(json, {
+        featureProjection: projection
+      });
+      if (features.length > 0) {
+        vectorSource.addFeatures(features);
       }
-    }});
+    });
   },
   strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
     tileSize: 512
@@ -97,8 +95,12 @@ selected.on('remove', function(evt) {
       featureProjection: map.getView().getProjection()
     }) + ']';
     var url = serviceUrl + layer + '/updateFeatures';
-    $.post(url, { f: 'json', features: payload }).done(function(data) {
-      var result = JSON.parse(data);
+    var data = new FormData();
+    data.append('f', 'json');
+    data.append('features', payload);
+    fetch(url, {method: 'POST', body: data}).then(function(response) {
+      return response.json();
+    }).then(function(result) {
       if (result.updateResults && result.updateResults.length > 0) {
         if (result.updateResults[0].success !== true) {
           var error = result.updateResults[0].error;
@@ -117,8 +119,12 @@ draw.on('drawend', function(evt) {
     featureProjection: map.getView().getProjection()
   }) + ']';
   var url = serviceUrl + layer + '/addFeatures';
-  $.post(url, { f: 'json', features: payload }).done(function(data) {
-    var result = JSON.parse(data);
+  var data = new FormData();
+  data.append('f', 'json');
+  data.append('features', payload);
+  fetch(url, {method: 'POST', body: data}).then(function(response) {
+    return response.json();
+  }).then(function(result) {
     if (result.addResults && result.addResults.length > 0) {
       if (result.addResults[0].success === true) {
         feature.setId(result.addResults[0]['objectId']);

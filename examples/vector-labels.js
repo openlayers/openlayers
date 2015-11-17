@@ -185,17 +185,20 @@ var map = new ol.Map({
   })
 });
 
-$('#refresh-points').click(function() {
-  vectorPoints.setStyle(pointStyleFunction);
-});
+document.getElementById('refresh-points')
+    .addEventListener('click', function() {
+      vectorPoints.setStyle(pointStyleFunction);
+    });
 
-$('#refresh-lines').click(function() {
-  vectorLines.setStyle(lineStyleFunction);
-});
+document.getElementById('refresh-lines')
+    .addEventListener('click', function() {
+      vectorLines.setStyle(lineStyleFunction);
+    });
 
-$('#refresh-polygons').click(function() {
-  vectorPolygons.setStyle(polygonStyleFunction);
-});
+document.getElementById('refresh-polygons')
+    .addEventListener('click', function() {
+      vectorPolygons.setStyle(polygonStyleFunction);
+    });
 
 
 /**
