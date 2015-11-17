@@ -255,7 +255,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
-  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution, tileSize;
+  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution;
   for (i = 0, ii = replayables.length; i < ii; ++i) {
     tile = replayables[i];
     tileCoord = tile.getTileCoord();
@@ -268,7 +268,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
       origin = ol.extent.getTopLeft(tileExtent);
       tilePixelRatio = source.getTilePixelRatio();
       tileResolution = tileGrid.getResolution(tileCoord[0]) / tilePixelRatio;
-      tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]));
       tileSpaceCoordinate = [
         (coordinate[0] - origin[0]) / tileResolution,
         (origin[1] - coordinate[1]) / tileResolution
