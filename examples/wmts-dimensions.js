@@ -1,9 +1,6 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.control');
-goog.require('ol.control.Attribution');
-goog.require('ol.control.Zoom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
@@ -55,13 +52,9 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     projection: projection,
-    center: [-3052589, 3541786],
-    zoom: 3
+    center: [-9871995, 3566245],
+    zoom: 6
   }),
-  controls: [
-    new ol.control.Zoom(),
-    new ol.control.Attribution()
-  ],
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -75,7 +68,7 @@ var map = new ol.Map({
 
 var updateSourceDimension = function(source, sliderVal) {
   source.updateDimensions({'threshold': sliderVal});
-  document.getElementById('theinfo').innerHTML = sliderVal + ' meters.';
+  document.getElementById('theinfo').innerHTML = sliderVal + ' meters';
 };
 
 updateSourceDimension(wmtsSource, 10);
