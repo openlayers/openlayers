@@ -113,7 +113,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var tilesToDraw = this.renderedTiles_;
   var tileGrid = source.getTileGrid();
 
-  var currentZ, i, ii, origin, scale, tile, tileExtent, tileSize;
+  var currentZ, i, ii, origin, tile, tileSize;
   var tilePixelRatio, tilePixelResolution, tilePixelSize, tileResolution;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
