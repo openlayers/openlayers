@@ -38,7 +38,7 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
    * @type {Image}
    */
   this.image_ = new Image();
-  if (crossOrigin) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
