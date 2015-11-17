@@ -168,6 +168,13 @@ describe('ol.Object', function() {
       expect(event.key).to.be('k');
     });
 
+    it('dispatches events only if the value is different', function() {
+      o.set('k', 1);
+      o.set('k', 1);
+      expect(listener1.calledOnce).to.be(true);
+      expect(listener2.calledOnce).to.be(true);
+    });
+
   });
 
   describe('setter', function() {
