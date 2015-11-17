@@ -16,6 +16,4 @@ To enable this, examples have the following, not needed in application code:
 
  * html files load `resources/common.js` and some scripts use `common.getRendererFromQueryString()` to set the map renderer; application code would not need these
 
- * in addition, examples use Twitter Bootstrap and jQuery; this is of course not a requirement - you may use whichever presentation/helper libraries you wish
-
 At the bottom of each example generated in the `build/examples` folder, a modified version of its source code is shown. That modified version can be run standalone and is usually used as starting point for users to extend examples into their own application.
