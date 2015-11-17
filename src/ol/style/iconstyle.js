@@ -392,7 +392,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
    */
   this.image_ = !image ? new Image() : image;
 
-  if (crossOrigin) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
