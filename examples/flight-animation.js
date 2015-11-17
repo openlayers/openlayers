@@ -71,7 +71,7 @@ var animateFlights = function(event) {
     }
   }
   // tell OL3 to continue the postcompose animation
-  frameState.animate = true;
+  map.render();
 };
 
 var addLater = function(feature, timeout) {
