@@ -1,10 +1,8 @@
 // NOCOMPILE
-// this example uses arc.js for which we don't have an externs file.
 goog.require('ol.Attribution');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.control');
 goog.require('ol.geom.LineString');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -22,12 +20,6 @@ var map = new ol.Map({
       })
     })
   ],
-  controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-      collapsible: false
-    })
-  }),
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View({
     center: [0, 0],
@@ -89,8 +81,10 @@ var flightsSource = new ol.source.Vector({
   })],
   loader: function(extent, resolution, projection) {
     var url = 'data/openflights/flights.json';
-    $.ajax({url: url, dataType: 'json', success: function(response) {
-      var flightsData = response.flights;
+    fetch(url).then(function(response) {
+      return response.json();
+    }).then(function(json) {
+      var flightsData = json.flights;
       for (var i = 0; i < flightsData.length; i++) {
         var flight = flightsData[i];
         var from = flight[0];
@@ -116,7 +110,7 @@ var flightsSource = new ol.source.Vector({
         }
       }
       map.on('postcompose', animateFlights);
-    }});
+    });
   }
 });
 
