@@ -1,3 +1,34 @@
 /**
+ *
+ * The ol.geom namespace contains classes representing geometries.
+ * The coordinates used to define geometries can be of any {@link ol.proj.Projection}.
+ *
+ * For calculating length, {@link ol.geom.LineString#getLength} is provided.
+ * For calculating area, {@link ol.geom.Polygon#getArea} is provided. These
+ * methods operate on the projected plane and need to be used with care.
+ * Neither will give answers in surface meters for EPSG:3857 or EPSG:4326
+ * projection coordinates. These projections both have a scale, in meters,
+ * that varies with latitude. For these and similar projections,
+ * use the {@link ol.proj.getLength} and {@link ol.proj.getArea} methods
+ * to obtain surface lengths and areas. These perform calculations on
+ * the sphere. They can be passed coordinates obtained using
+ * {@link ol.geom.LineString#getCoordinates} or
+ * {@link ol.geom.Polygon#getCoordinates}.
+ *
+ * Some projections, such as UTM and BNG (EPSG:27700), have near constant scale
+ * (meters per pixel) across their extent. Such projections are normally
+ * used for large scale topographic maps. These types of maps are often printed
+ * with a grid and enable good measurements to be made with a ruler.
+ * The {@link ol.geom.LineString#getLength} and
+ * {@link ol.geom.Polygon#getArea} methods can be used with
+ * this class of projection and will produce more accurate results than the
+ * {@link ol.proj.getLength} or {@link ol.proj.getArea} methods.
+ *
+ * The {@link ol.geom.LineString#getLength} or
+ * {@link ol.geom.Polygon#getArea} methods should always be used for
+ * geometries with coordinates using a projection with units of `pixels`.
+ * An attempt to use the {@link ol.proj.getLength} and {@link ol.proj.getArea}
+ * methods for these will cause an exception.
+ *
  * @namespace ol.geom
  */

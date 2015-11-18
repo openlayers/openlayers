@@ -167,7 +167,9 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
- * Return the length of the linestring on projected plane.
+ * Return the length of the linestring on the projected plane.
+ * To get a surface length in meters, use {@link ol.proj.getLength} instead.
+ * See {@link ol.geom} for more details.
  * @return {number} Length (on projected plane).
  * @api stable
  */

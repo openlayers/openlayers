@@ -158,7 +158,9 @@ ol.geom.MultiPolygon.prototype.containsXY = function(x, y) {
 
 
 /**
- * Return the area of the multipolygon on projected plane.
+ * Return the area of the multipolygon on the projected plane.
+ * To get a surface area in square meters, use {@link ol.proj.getArea} instead.
+ * See {@link ol.geom} for more details.
  * @return {number} Area (on projected plane).
  * @api stable
  */

@@ -38,6 +38,10 @@
  * object has been created with `setExtent`, for example,
  * `ol.proj.get('EPSG:1234').setExtent(extent)`.
  *
+ * To calculate surface lengths in meters and areas in square meters the
+ * spherical {@link ol.proj.getLength} and {@link ol.proj.getArea} methods
+ * should normally be used. See {@link ol.geom} for more details.
+ *
  * In addition to Proj4js support, any transform functions can be added with
  * {@link ol.proj.addCoordinateTransforms}. To use this, you must first create
  * a {@link ol.proj.Projection} object for the new projection and add it with
