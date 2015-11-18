@@ -7,10 +7,10 @@ layout: doc.hbs
 
 OpenLayers 3 has an ability to display raster data from WMS, WMTS, static images and many other sources in a different coordinate system than delivered from the server.
 Transformation of the map projections of the image happens directly in a web browser.
-The view in any Proj4js supported coordinate reference system is possible and previously incompatible layers can be now combined and overlaid.
+The view in any Proj4js supported coordinate reference system is possible and previously incompatible layers can now be combined and overlaid.
 
 # Usage
-The usage in API is very simple. Just specify proper projection (using [EPSG](http://epsg.io) code) on `ol.View`:
+The API usage is very simple. Just specify proper projection (using [EPSG](http://epsg.io) code) on `ol.View`:
 ``` javascript
 var map = new ol.Map({
   target: 'map',
@@ -27,11 +27,12 @@ var map = new ol.Map({
         params: {
           'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
         }
+      })
     })
-  })]
+  ]
 });
 ```
-If a source (based on `ol.source.TileImage` or `ol.source.Image`) has projection different from the current `ol.View`’s projection then the reprojection happens automatically under the hood.
+If a source (based on `ol.source.TileImage` or `ol.source.Image`) has a projection different from the current `ol.View`’s projection then the reprojection happens automatically under the hood.
 
 ### Examples
 - [Raster reprojection demo](http://openlayers.org/en/master/examples/reprojection.html)
@@ -40,7 +41,7 @@ If a source (based on `ol.source.TileImage` or `ol.source.Image`) has projection
 - [Image reprojection](http://openlayers.org/en/master/examples/reprojection-image.html)
 
 ### Custom projection
-The easiest way to use a custom projection is to add [Proj4js](http://proj4js.org/) library to your project and then define the projection using proj4 definition string.
+The easiest way to use a custom projection is to add the [Proj4js](http://proj4js.org/) library to your project and then define the projection using a proj4 definition string.
 Following example shows definition of a [British National Grid](http://epsg.io/27700):
 
 ``` html
@@ -82,7 +83,7 @@ The reprojection of pixels inside the triangle is approximated with an affine tr
 
 <img src="raster-reprojection-resources/how-it-works.jpg" alt="How it works" width="600" />
 
-This way we can support wide range of projections from proj4js (or even custom transformation functions) on almost any hardware (with canvas 2d support) with relatively small number of actual transformation calculations.
+This way we can support a wide range of projections from proj4js (or even custom transformation functions) on almost any hardware (with canvas 2d support) with a relatively small number of actual transformation calculations.
 
 The precision of the reprojection is then limited by the number of triangles.
 
@@ -93,39 +94,39 @@ The reprojection process preserves transparency on the raster data supplied from
 The above image above shows a noticeable error (especially on the edges) when the original image (left; EPSG:27700) is transformed with only a limited number of triangles (right; EPSG:3857).
 The error can be minimized by increasing the number of triangles used.
 
-Since some transformations require more detail triangulation network, the dynamic triangulation process automatically measures reprojection error and iteratively subdivides to meet a specific error threshold:
+Since some transformations require a more detail triangulation network, the dynamic triangulation process automatically measures reprojection error and iteratively subdivides to meet a specific error threshold:
 
 <img src="raster-reprojection-resources/iterative-triangulation.png" alt="Iterative triangulation" width="600" />
 
-For debugging, rendering of the reprojection edges can be enabled by `ol.source.TileImage#setRenderReporojectionEdges(true)`.
+For debugging, rendering of the reprojection edges can be enabled by `ol.source.TileImage#setRenderReprojectionEdges(true)`.
 
 # Advanced
 
 ### Disabling reprojection
 In case you are creating a custom build of OpenLayers and do not need the reprojection code, you can reduce the build size by setting `ol.ENABLE_RASTER_REPROJECTION` to `false`, which completely disables the reprojection support.
-See [Custom builds](custom-builds.html#defines) tutorial to see how to do this.
+See [Custom builds](custom-builds.html#defines) tutorial on how to do this.
 
 ### Triangulation precision threshold
 The default [triangulation error threshold](#dynamic-triangulation) in pixels is given by `ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD` (0.5 pixel).
-In case different threshold needs to be defined for different sources, `reprojectionErrorThreshold` option can be passed when constructing tile image source.
+In case a different threshold needs to be defined for different sources, the `reprojectionErrorThreshold` option can be passed when constructing the tile image source.
 
 ###Limiting visibility of reprojected map by extent
 
 The reprojection algorithm uses inverse transformation (from *view projection* to *data projection*).
 For certain coordinate systems this can result in a "double occurrence" of the source data on a map.
-For example, when reprojecting a map of Switzerland from EPSG:21781 to EPSG:3857, it is displayed twice: once at the proper place in Europe, but also in the Pacific Ocean near the New Zealand, on the opposite side of the globe.
+For example, when reprojecting a map of Switzerland from EPSG:21781 to EPSG:3857, it is displayed twice: once at the proper place in Europe, but also in the Pacific Ocean near New Zealand, on the opposite side of the globe.
 
 <img src="raster-reprojection-resources/double-occurrence.jpg" alt="Double occurrence of a reprojected map" width="600" />
 
-Although this is mathematically correct behavior of the inverse transformation, visibility of the map on multiple places is not expected by users.
+Although this is mathematically correct behavior of the inverse transformation, visibility of the layer on multiple places is not expected by users.
 A possible general solution would be to calculate the forward transformation for every vertex as well - but this would significantly decrease performance (especially for computationally expensive transformations).
 
 Therefore a recommended workaround is to define a proper visibility extent on the `ol.layer.Tile` in the view projection.
-Setting of such limit is demonstrated in the [reprojection demo example](http://openlayers.org/en/master/examples/reprojection.html).
+Setting such a limit is demonstrated in the [reprojection demo example](http://openlayers.org/en/master/examples/reprojection.html).
 
 ### Resolution calculation
 When determining source tiles to load, the ideal source resolution needs to be calculated.
 The `ol.reproj.calculateSourceResolution(sourceProj, targetProj, targetCenter, targetResolution)` function calculates the ideal value in order to achieve pixel mapping as close as possible to 1:1 during reprojection, which is then used to select proper zoom level from the source.
 
-It is, however, generally not practical to use the same source zoom level for the whole target zoom level -- different projections can have significantly different resolutions in different parts of the world (e.g. polar regions in EPSG:3857 vs EPSG:4326) and enforcing single resolution for whole zoom level would result in some tiles being scaled up/down, possibly requiring huge number of source tiles to be loaded.
-Therefore, the resolution mapping is calculated for each reprojected tile separately (in the middle of the tile extent).
+It is, however, generally not practical to use the same source zoom level for the whole target zoom level -- different projections can have significantly different resolutions in different parts of the world (e.g. polar regions in EPSG:3857 vs EPSG:4326) and enforcing a single resolution for the whole zoom level would result in some tiles being scaled up/down, possibly requiring a huge number of source tiles to be loaded.
+Therefore, the resolution mapping is calculated separately for each reprojected tile (in the middle of the tile extent).
