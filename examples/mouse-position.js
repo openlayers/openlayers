@@ -36,14 +36,13 @@ var map = new ol.Map({
   })
 });
 
-var projectionSelect = $('#projection');
-projectionSelect.on('change', function() {
-  mousePositionControl.setProjection(ol.proj.get(this.value));
+var projectionSelect = document.getElementById('projection');
+projectionSelect.addEventListener('change', function(event) {
+  mousePositionControl.setProjection(ol.proj.get(event.target.value));
 });
-projectionSelect.val(mousePositionControl.getProjection().getCode());
 
-var precisionInput = $('#precision');
-precisionInput.on('change', function() {
-  var format = ol.coordinate.createStringXY(this.valueAsNumber);
+var precisionInput = document.getElementById('precision');
+precisionInput.addEventListener('change', function(event) {
+  var format = ol.coordinate.createStringXY(event.target.valueAsNumber);
   mousePositionControl.setCoordinateFormat(format);
 });
