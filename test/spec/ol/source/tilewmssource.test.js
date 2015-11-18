@@ -13,6 +13,16 @@ describe('ol.source.TileWMS', function() {
     };
   });
 
+  describe('constructor', function() {
+    it('can be constructed without url or urls params', function() {
+      var source = new ol.source.TileWMS({
+        projection: 'EPSG:3857',
+        tileGrid: ol.tilegrid.createXYZ({maxZoom: 6})
+      });
+      expect(source).to.be.an(ol.source.TileWMS);
+    });
+  });
+
   describe('#getTile', function() {
 
     it('returns a tile with the expected URL', function() {
