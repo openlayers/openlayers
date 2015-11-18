@@ -36,7 +36,7 @@ ol.control.FullScreen = function(opt_options) {
    */
   this.cssClassName_ = options.className ? options.className : 'ol-full-screen';
 
-  var label = options.label ? options.label : '\u2194';
+  var label = options.label ? options.label : '\u2922';
 
   /**
    * @private
