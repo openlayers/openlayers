@@ -6,8 +6,6 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 
-var Promise = require('bluebird');
-
 
 /**
  * Publish hook for the JSDoc template.  Writes to JSON stdout.
@@ -171,17 +169,13 @@ exports.publish = function(data, opts) {
     return (symbol.name in augments || symbol.virtual);
   });
 
-  return new Promise(function(resolve, reject) {
-
-    process.stdout.write(
-        JSON.stringify({
-          symbols: symbols,
-          defines: defines,
-          typedefs: typedefs,
-          externs: externs,
-          base: base
-        }, null, 2), resolve);
-
-  });
+  process.stdout.write(
+      JSON.stringify({
+        symbols: symbols,
+        defines: defines,
+        typedefs: typedefs,
+        externs: externs,
+        base: base
+      }, null, 2));
 
 };

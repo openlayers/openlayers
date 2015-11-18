@@ -15,7 +15,7 @@ var externsPaths = [
 ];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 
-var jsdocResolved = require.resolve('jsdoc-fork/jsdoc.js');
+var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
 var jsdoc = path.resolve(path.dirname(jsdocResolved), '../.bin/jsdoc');
 
 // on Windows, use jsdoc.cmd

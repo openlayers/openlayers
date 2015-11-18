@@ -30,7 +30,6 @@
   ],
   "dependencies": {
     "async": "1.5.0",
-    "bluebird": "^3.0.5",
     "browserify": "12.0.1",
     "closure-util": "1.9.0",
     "derequire": "2.0.3",
@@ -38,7 +37,7 @@
     "glob": "6.0.1",
     "graceful-fs": "4.1.2",
     "handlebars": "4.0.4",
-    "jsdoc-fork": "^4.0.0-beta.1",
+    "jsdoc": "3.4.0",
     "marked": "0.3.5",
     "metalsmith": "2.1.0",
     "metalsmith-layouts": "1.4.2",
