@@ -212,7 +212,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls;
-  if (urls.length === 0) {
+  if (!urls) {
     return undefined;
   }
 
@@ -298,9 +298,11 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
   var i = 0;
   var res = [];
 
-  var j, jj;
-  for (j = 0, jj = this.urls.length; j < jj; ++j) {
-    res[i++] = this.urls[j];
+  if (this.urls) {
+    var j, jj;
+    for (j = 0, jj = this.urls.length; j < jj; ++j) {
+      res[i++] = this.urls[j];
+    }
   }
 
   var key;
