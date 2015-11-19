@@ -1,5 +1,4 @@
 goog.provide('ol.render.webgl.Immediate');
-goog.require('goog.array');
 goog.require('ol.extent');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.ImageReplay');
@@ -80,7 +79,7 @@ goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
 ol.render.webgl.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  goog.array.sort(zs);
+  zs.sort();
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     callbacks = this.callbacksByZIndex_[zs[i].toString()];

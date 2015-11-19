@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('ol.ViewHint');
@@ -276,7 +275,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
         function(feature) {
           features.push(feature);
         }, this);
-    goog.array.sort(features, vectorLayerRenderOrder);
+    features.sort(vectorLayerRenderOrder);
     features.forEach(renderFeature, this);
   } else {
     vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
