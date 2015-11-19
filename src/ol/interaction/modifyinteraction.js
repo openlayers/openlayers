@@ -211,7 +211,7 @@ ol.interaction.Modify = function(options) {
   /**
   * @const
   * @private
-  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)> }
+  * @type {Object.<string, function(ol.Feature, ol.geom.Geometry)>}
   */
   this.SEGMENT_WRITERS_ = {
     'Point': this.writePointGeometry_,
