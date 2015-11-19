@@ -6040,6 +6040,7 @@ olx.style.FillOptions.prototype.color;
  *     anchorOrigin: (ol.style.IconOrigin|undefined),
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
  *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
+ *     color: (ol.Color|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|HTMLCanvasElement|undefined),
  *     offset: (Array.<number>|undefined),
@@ -6092,6 +6093,14 @@ olx.style.IconOptions.prototype.anchorXUnits;
  * @api
  */
 olx.style.IconOptions.prototype.anchorYUnits;
+
+
+/**
+ * Color to tint the icon. If not specified, the icon will be left as is.
+ * @type {ol.Color|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.color;
 
 
 /**

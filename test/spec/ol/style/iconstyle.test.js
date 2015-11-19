@@ -133,7 +133,7 @@ describe('ol.style.Icon', function() {
       var cache = ol.style.IconImageCache.getInstance();
       var src = 'test.png';
       var iconImage = new ol.style.IconImage_(null, 'test.png', imgSize);
-      cache.set(src, null, iconImage);
+      cache.set(src, null, null, iconImage);
 
       var iconStyle = new ol.style.Icon({
         src: 'test.png'
@@ -176,7 +176,7 @@ describe('ol.style.IconImageCache', function() {
       for (i = 0; i < 4; ++i) {
         src = i + '';
         iconImage = new ol.style.IconImage_(src, null);
-        cache.set(src, null, iconImage);
+        cache.set(src, null, null, iconImage);
       }
 
       expect(cache.cacheSize_).to.eql(4);
@@ -186,7 +186,7 @@ describe('ol.style.IconImageCache', function() {
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
-      cache.set(src, null, iconImage);
+      cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
       cache.expire(); // remove '0' and '4'
@@ -196,21 +196,21 @@ describe('ol.style.IconImageCache', function() {
       iconImage = new ol.style.IconImage_(src, null);
       goog.events.listen(iconImage, goog.events.EventType.CHANGE,
           ol.nullFunction, false);
-      cache.set(src, null, iconImage);
+      cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
       goog.events.listen(iconImage, goog.events.EventType.CHANGE,
           ol.nullFunction, false);
-      cache.set(src, null, iconImage);
+      cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
       // check that '0' and '4' are not removed from the cache
       cache.expire();
-      key = ol.style.IconImageCache.getKey('0', null);
+      key = ol.style.IconImageCache.getKey('0', null, null);
       expect(key in cache.cache_).to.be.ok();
-      key = ol.style.IconImageCache.getKey('4', null);
+      key = ol.style.IconImageCache.getKey('4', null, null);
       expect(key in cache.cache_).to.be.ok();
 
     });
