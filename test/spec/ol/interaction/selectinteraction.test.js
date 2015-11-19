@@ -179,7 +179,7 @@ describe('ol.interaction.Select', function() {
         unmanaged.setMap(map);
         map.renderSync();
         simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
-        expect(spy.firstCall.args[0]).to.not.equal(feature);
+        expect(spy.getCalls().length).to.be(0);
         unmanaged.setMap(null);
       });
     });
