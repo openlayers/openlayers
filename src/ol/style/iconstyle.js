@@ -516,8 +516,8 @@ ol.style.IconImage_.prototype.handleImageLoad_ = function() {
   this.imageState_ = ol.style.ImageState.LOADED;
   this.size_ = [this.image_.width, this.image_.height];
   this.unlistenImage_();
-  this.replaceColor_();
   this.determineTainting_();
+  this.replaceColor_();
   this.dispatchChangeEvent_();
 };
 
@@ -604,7 +604,7 @@ ol.style.IconImage_.prototype.load = function() {
  * @private
  */
 ol.style.IconImage_.prototype.replaceColor_ = function() {
-  if (this.color_ === null) {
+  if (this.tainting_ || this.color_ === null) {
     return;
   }
 
