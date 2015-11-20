@@ -1,6 +1,5 @@
 goog.provide('ol.tilegrid.WMTS');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
@@ -109,7 +108,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   // swap origin x and y coordinates if axis orientation is lat/long
   var switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
-  goog.array.sort(matrixSet[matrixIdsPropName], function(a, b) {
+  matrixSet[matrixIdsPropName].sort(function(a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
   });
 

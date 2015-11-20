@@ -197,12 +197,19 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * Sets a value.
  * @param {string} key Key name.
  * @param {*} value Value.
+ * @param {boolean=} opt_silent Update without triggering an event.
  * @api stable
  */
-ol.Object.prototype.set = function(key, value) {
-  var oldValue = this.values_[key];
-  this.values_[key] = value;
-  this.notify(key, oldValue);
+ol.Object.prototype.set = function(key, value, opt_silent) {
+  if (opt_silent) {
+    this.values_[key] = value;
+  } else {
+    var oldValue = this.values_[key];
+    this.values_[key] = value;
+    if (oldValue !== value) {
+      this.notify(key, oldValue);
+    }
+  }
 };
 
 
@@ -210,12 +217,13 @@ ol.Object.prototype.set = function(key, value) {
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
+ * @param {boolean=} opt_silent Update without triggering an event.
  * @api stable
  */
-ol.Object.prototype.setProperties = function(values) {
+ol.Object.prototype.setProperties = function(values, opt_silent) {
   var key;
   for (key in values) {
-    this.set(key, values[key]);
+    this.set(key, values[key], opt_silent);
   }
 };
 
@@ -223,12 +231,15 @@ ol.Object.prototype.setProperties = function(values) {
 /**
  * Unsets a property.
  * @param {string} key Key name.
+ * @param {boolean=} opt_silent Unset without triggering an event.
  * @api stable
  */
-ol.Object.prototype.unset = function(key) {
+ol.Object.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
     var oldValue = this.values_[key];
     delete this.values_[key];
-    this.notify(key, oldValue);
+    if (!opt_silent) {
+      this.notify(key, oldValue);
+    }
   }
 };

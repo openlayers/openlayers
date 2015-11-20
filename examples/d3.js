@@ -1,5 +1,4 @@
 // NOCOMPILE
-// this example uses d3 for which we don't have an externs file.
 goog.require('ol');
 goog.require('ol.Map');
 goog.require('ol.View');

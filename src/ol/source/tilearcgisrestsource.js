@@ -91,7 +91,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
         pixelRatio, projection, params) {
 
   var urls = this.urls;
-  if (urls.length === 0) {
+  if (!urls) {
     return undefined;
   }
 

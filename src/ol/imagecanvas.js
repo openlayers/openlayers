@@ -30,8 +30,7 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   var state = opt_loader !== undefined ?
       ol.ImageState.IDLE : ol.ImageState.LOADED;
 
-  goog.base(this, extent, [resolution, resolution], pixelRatio, state,
-      attributions);
+  goog.base(this, extent, resolution, pixelRatio, state, attributions);
 
   /**
    * @private

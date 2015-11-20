@@ -64,30 +64,26 @@ function setProjection(code, name, proj4def, bbox) {
 
 
 function search(query) {
-  resultSpan.innerHTML = 'Searching...';
-  $.ajax({
-    url: 'http://epsg.io/?format=json&q=' + query,
-    dataType: 'jsonp',
-    success: function(response) {
-      if (response) {
-        var results = response['results'];
-        if (results && results.length > 0) {
-          for (var i = 0, ii = results.length; i < ii; i++) {
-            var result = results[i];
-            if (result) {
-              var code = result['code'], name = result['name'],
-                  proj4def = result['proj4'], bbox = result['bbox'];
-              if (code && code.length > 0 && proj4def && proj4def.length > 0 &&
-                  bbox && bbox.length == 4) {
-                setProjection(code, name, proj4def, bbox);
-                return;
-              }
-            }
+  resultSpan.innerHTML = 'Searching ...';
+  fetch('http://epsg.io/?format=json&q=' + query).then(function(response) {
+    return response.json();
+  }).then(function(json) {
+    var results = json['results'];
+    if (results && results.length > 0) {
+      for (var i = 0, ii = results.length; i < ii; i++) {
+        var result = results[i];
+        if (result) {
+          var code = result['code'], name = result['name'],
+              proj4def = result['proj4'], bbox = result['bbox'];
+          if (code && code.length > 0 && proj4def && proj4def.length > 0 &&
+              bbox && bbox.length == 4) {
+            setProjection(code, name, proj4def, bbox);
+            return;
           }
         }
       }
-      setProjection(null, null, null, null);
     }
+    setProjection(null, null, null, null);
   });
 }
 

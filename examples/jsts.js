@@ -12,10 +12,11 @@ goog.require('ol.source.Vector');
 
 
 var source = new ol.source.Vector();
-$.ajax('data/geojson/roads-seoul.geojson').then(function(response) {
+fetch('data/geojson/roads-seoul.geojson').then(function(response) {
+  return response.json();
+}).then(function(json) {
   var format = new ol.format.GeoJSON();
-  var features = format.readFeatures(response,
-      {featureProjection: 'EPSG:3857'});
+  var features = format.readFeatures(json, {featureProjection: 'EPSG:3857'});
 
   var parser = new jsts.io.olParser();
 

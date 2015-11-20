@@ -98,9 +98,12 @@ layers['wms21781'] = new ol.layer.Tile({
 });
 
 var parser = new ol.format.WMTSCapabilities();
-$.ajax('http://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
-    'wmts.cgi?SERVICE=WMTS&request=GetCapabilities').then(function(response) {
-  var result = parser.read(response);
+var url = 'http://map1.vis.earthdata.nasa.gov/wmts-arctic/' +
+    'wmts.cgi?SERVICE=WMTS&request=GetCapabilities';
+fetch(url).then(function(response) {
+  return response.text();
+}).then(function(text) {
+  var result = parser.read(text);
   var options = ol.source.WMTS.optionsFromCapabilities(result,
       {layer: 'OSM_Land_Mask', matrixSet: 'EPSG3413_250m'});
   options.crossOrigin = '';

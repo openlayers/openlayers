@@ -3,7 +3,6 @@
 
 goog.provide('ol.renderer.dom.TileLayer');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
@@ -128,11 +127,18 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   var tmpExtent = ol.extent.createEmpty();
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
-  var childTileRange, fullyLoaded, tile, tileState, x, y;
+  var childTileRange, drawable, fullyLoaded, tile, tileState, x, y;
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
-
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+      tileState = tile.getState();
+      drawable = tileState == ol.TileState.LOADED ||
+          tileState == ol.TileState.EMPTY ||
+          tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+      if (!drawable && tile.interimTile) {
+        tile = tile.interimTile;
+      }
+      goog.asserts.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
@@ -142,7 +148,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
                   !useInterimTilesOnError)) {
         continue;
       }
-
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
           tile.tileCoord, findLoadedTiles, null, tmpTileRange, tmpExtent);
       if (!fullyLoaded) {
@@ -172,7 +177,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  goog.array.sort(zs);
+  zs.sort();
 
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
@@ -198,7 +203,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var tileLayerZKeys = Object.keys(this.tileLayerZs_).map(Number);
-  goog.array.sort(tileLayerZKeys);
+  tileLayerZKeys.sort();
 
   var i, ii, j, origin, resolution;
   var transform = goog.vec.Mat4.createNumber();

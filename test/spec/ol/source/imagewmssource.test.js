@@ -173,6 +173,14 @@ describe('ol.source.ImageWMS', function() {
       expect(image1).to.equal(image2);
     });
 
+    it('calculates correct image size with ratio', function() {
+      options.ratio = 1.5;
+      var source = new ol.source.ImageWMS(options);
+      var extent = [10, 5, 30, 45];
+      source.getImage(extent, resolution, pixelRatio, projection);
+      expect(source.imageSize_).to.eql([300, 600]);
+    });
+
   });
 
   describe('#getGetFeatureInfo', function() {

@@ -94,6 +94,13 @@ ol.format.KML = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.writeStyles_ = options.writeStyles !== undefined ?
+      options.writeStyles : true;
+
+  /**
+   * @private
    * @type {Object.<string, (Array.<ol.style.Style>|string)>}
    */
   this.sharedStyles_ = {};
@@ -647,6 +654,9 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
       (object['scale']);
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
+    if (scale === undefined) {
+      scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
+    }
   }
 
   var imageStyle = new ol.style.Icon({
@@ -658,7 +668,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     offset: offset,
     offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     rotation: rotation,
-    scale: ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ * scale,
+    scale: scale,
     size: size,
     src: src
   });
@@ -2169,12 +2179,14 @@ ol.format.KML.writeCoordinatesTextNode_ =
  * @param {Node} node Node.
  * @param {Array.<ol.Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
+ * @this {ol.format.KML}
  * @private
  */
 ol.format.KML.writeDocument_ = function(node, features, objectStack) {
   var /** @type {ol.xml.NodeStackItem} */ context = {node: node};
   ol.xml.pushSerializeAndPop(context, ol.format.KML.DOCUMENT_SERIALIZERS_,
-      ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack);
+      ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack, undefined,
+      this);
 };
 
 
@@ -2366,6 +2378,7 @@ ol.format.KML.writeBoundaryIs_ = function(node, linearRing, objectStack) {
  * @param {Node} node Node.
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Object stack.
+ * @this {ol.format.KML}
  * @private
  */
 ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
@@ -2378,14 +2391,18 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
 
   // serialize properties (properties unknown to KML are not serialized)
   var properties = feature.getProperties();
+
   var styleFunction = feature.getStyleFunction();
   if (styleFunction) {
     // FIXME the styles returned by the style function are supposed to be
     // resolution-independent here
     var styles = styleFunction.call(feature, 0);
     if (styles && styles.length > 0) {
-      properties['Style'] = styles[0];
-      var textStyle = styles[0].getText();
+      var style = styles[0];
+      if (this.writeStyles_) {
+        properties['Style'] = styles[0];
+      }
+      var textStyle = style.getText();
       if (textStyle) {
         properties['name'] = textStyle.getText();
       }
@@ -2496,7 +2513,7 @@ ol.format.KML.writeStyle_ = function(node, style, objectStack) {
   var strokeStyle = style.getStroke();
   var imageStyle = style.getImage();
   var textStyle = style.getText();
-  if (imageStyle) {
+  if (imageStyle instanceof ol.style.Icon) {
     properties['IconStyle'] = imageStyle;
   }
   if (textStyle) {
@@ -2988,6 +3005,7 @@ ol.format.KML.prototype.writeFeaturesNode = function(features, opt_options) {
   var orderedKeys = ol.format.KML.KML_SEQUENCE_[kml.namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(context, ol.format.KML.KML_SERIALIZERS_,
-      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys);
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY, values, [opt_options], orderedKeys,
+      this);
   return kml;
 };

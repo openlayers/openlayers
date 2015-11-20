@@ -199,7 +199,7 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
  *
  * @typedef {function((ol.Feature|ol.render.Feature), number):
- *     Array.<ol.style.Style>}
+ *     (ol.style.Style|Array.<ol.style.Style>)}
  * @api
  */
 ol.style.StyleFunction;

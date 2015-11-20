@@ -64,7 +64,7 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = options.duration ? options.duration : 400;
+  this.duration_ = options.duration !== undefined ? options.duration : 400;
 
 };
 goog.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);

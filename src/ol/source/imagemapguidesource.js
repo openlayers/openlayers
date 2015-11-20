@@ -6,7 +6,6 @@ goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
-goog.require('ol.ImageUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
 
@@ -49,19 +48,11 @@ ol.source.ImageMapGuide = function(options) {
    */
   this.params_ = options.params !== undefined ? options.params : {};
 
-  var imageUrlFunction;
-  if (options.url !== undefined) {
-    imageUrlFunction = ol.ImageUrlFunction.createFromParamsFunction(
-        options.url, this.params_, goog.bind(this.getUrl, this));
-  } else {
-    imageUrlFunction = ol.ImageUrlFunction.nullImageUrlFunction;
-  }
-
   /**
    * @private
-   * @type {ol.ImageUrlFunctionType}
+   * @type {string|undefined}
    */
-  this.imageUrlFunction_ = imageUrlFunction;
+  this.url_ = options.url;
 
   /**
    * @private
@@ -148,9 +139,10 @@ ol.source.ImageMapGuide.prototype.getImageInternal =
   var height = ol.extent.getHeight(extent) / resolution;
   var size = [width * pixelRatio, height * pixelRatio];
 
-  var imageUrl = this.imageUrlFunction_(extent, size, projection);
-  if (imageUrl !== undefined) {
-    image = new ol.Image(extent, [resolution, resolution], pixelRatio,
+  if (this.url_ !== undefined) {
+    var imageUrl = this.getUrl(this.url_, this.params_, extent, size,
+        projection);
+    image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
     goog.events.listen(image, goog.events.EventType.CHANGE,

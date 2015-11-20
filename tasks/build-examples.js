@@ -7,7 +7,9 @@ var marked = require('marked');
 var pkg = require('../package.json');
 
 var markupRegEx = /([^\/^\.]*)\.html$/;
-var cleanupJSRegEx = /.*(goog\.require(.*);|.*renderer: common\..*,?)[\n]*/g;
+/* jshint -W101 */
+var cleanupJSRegEx = /.*(\/\/ NOCOMPILE|goog\.require\(.*\);|.*renderer: common\..*,?)[\n]*/g;
+/* jshint +W101 */
 var requiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
@@ -121,7 +123,9 @@ function augmentExamples(files, metalsmith, done) {
             remoteResources[i] = '<script src="' + remoteResource +
                 '"></script>';
           } else if (isCssRegEx.test(resource)) {
-            resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+            if (resource.indexOf('bootstrap.min.css') === -1) {
+              resources[i] = '<link rel="stylesheet" href="' + resource + '">';
+            }
             remoteResources[i] = '<link rel="stylesheet" href="' +
                 remoteResource + '">';
           } else {
@@ -233,6 +237,16 @@ function main(callback) {
         helpers: {
           md: function(str) {
             return new handlebars.SafeString(marked(str));
+          },
+          indent: function(text, options) {
+            if (!text) {
+              return text;
+            }
+            var count = options.hash.spaces || 2;
+            var spaces = new Array(count + 1).join(' ');
+            return text.split('\n').map(function(line) {
+              return line ? spaces + line : '';
+            }).join('\n');
           }
         }
       }))

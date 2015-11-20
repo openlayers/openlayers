@@ -258,7 +258,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
 
   var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
   this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
-      [sourceResolution, sourceResolution], this.sourceTileGrid_.getExtent(),
+      sourceResolution, this.sourceTileGrid_.getExtent(),
       targetResolution, targetExtent, this.triangulation_, sources,
       this.renderEdges_);
 
