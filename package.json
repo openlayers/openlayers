@@ -36,7 +36,7 @@
     "fs-extra": "0.26.2",
     "glob": "6.0.1",
     "graceful-fs": "4.1.2",
-    "handlebars": "4.0.4",
+    "handlebars": "4.0.5",
     "jsdoc": "3.4.0",
     "marked": "0.3.5",
     "metalsmith": "2.1.0",
