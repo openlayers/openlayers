@@ -63,6 +63,8 @@ ol.control.Rotate = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.Rotate.render;
 
+  this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
+
   goog.base(this, {
     element: element,
     render: render,
@@ -73,7 +75,7 @@ ol.control.Rotate = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.duration_ = options.duration ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
   /**
    * @type {boolean}
@@ -101,7 +103,11 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {
   event.preventDefault();
-  this.resetNorth_();
+  if (this.callResetNorth_ !== undefined) {
+    this.callResetNorth_();
+  } else {
+    this.resetNorth_();
+  }
 };
 
 

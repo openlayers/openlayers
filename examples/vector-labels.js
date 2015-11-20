@@ -107,75 +107,66 @@ var createTextStyle = function(feature, resolution, dom) {
 
 
 // Polygons
-var createPolygonStyleFunction = function() {
-  return function(feature, resolution) {
-    var style = new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: 'blue',
-        width: 1
-      }),
-      fill: new ol.style.Fill({
-        color: 'rgba(0, 0, 255, 0.1)'
-      }),
-      text: createTextStyle(feature, resolution, myDom.polygons)
-    });
-    return [style];
-  };
-};
+function polygonStyleFunction(feature, resolution) {
+  return new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'blue',
+      width: 1
+    }),
+    fill: new ol.style.Fill({
+      color: 'rgba(0, 0, 255, 0.1)'
+    }),
+    text: createTextStyle(feature, resolution, myDom.polygons)
+  });
+}
 
 var vectorPolygons = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: 'data/geojson/polygon-samples.geojson',
     format: new ol.format.GeoJSON()
   }),
-  style: createPolygonStyleFunction()
+  style: polygonStyleFunction
 });
 
 
 // Lines
-var createLineStyleFunction = function() {
-  return function(feature, resolution) {
-    var style = new ol.style.Style({
-      stroke: new ol.style.Stroke({
-        color: 'green',
-        width: 2
-      }),
-      text: createTextStyle(feature, resolution, myDom.lines)
-    });
-    return [style];
-  };
-};
+function lineStyleFunction(feature, resolution) {
+  return new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'green',
+      width: 2
+    }),
+    text: createTextStyle(feature, resolution, myDom.lines)
+  });
+}
 
 var vectorLines = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: 'data/geojson/line-samples.geojson',
     format: new ol.format.GeoJSON()
   }),
-  style: createLineStyleFunction()
+  style: lineStyleFunction
 });
 
 
 // Points
-var createPointStyleFunction = function() {
-  return function(feature, resolution) {
-    var style = new ol.style.Style({
-      image: new ol.style.Circle({
-        radius: 10,
-        fill: new ol.style.Fill({color: 'rgba(255, 0, 0, 0.1)'}),
-        stroke: new ol.style.Stroke({color: 'red', width: 1})
-      }),
-      text: createTextStyle(feature, resolution, myDom.points)
-    });
-    return [style];
-  };
-};
+function pointStyleFunction(feature, resolution) {
+  return new ol.style.Style({
+    image: new ol.style.Circle({
+      radius: 10,
+      fill: new ol.style.Fill({color: 'rgba(255, 0, 0, 0.1)'}),
+      stroke: new ol.style.Stroke({color: 'red', width: 1})
+    }),
+    text: createTextStyle(feature, resolution, myDom.points)
+  });
+}
 
 var vectorPoints = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: 'data/geojson/point-samples.geojson',
     format: new ol.format.GeoJSON()
   }),
-  style: createPointStyleFunction()
+  style: pointStyleFunction
 });
 
 var map = new ol.Map({
@@ -194,17 +185,20 @@ var map = new ol.Map({
   })
 });
 
-$('#refresh-points').click(function() {
-  vectorPoints.setStyle(createPointStyleFunction());
-});
+document.getElementById('refresh-points')
+    .addEventListener('click', function() {
+      vectorPoints.setStyle(pointStyleFunction);
+    });
 
-$('#refresh-lines').click(function() {
-  vectorLines.setStyle(createLineStyleFunction());
-});
+document.getElementById('refresh-lines')
+    .addEventListener('click', function() {
+      vectorLines.setStyle(lineStyleFunction);
+    });
 
-$('#refresh-polygons').click(function() {
-  vectorPolygons.setStyle(createPolygonStyleFunction());
-});
+document.getElementById('refresh-polygons')
+    .addEventListener('click', function() {
+      vectorPolygons.setStyle(polygonStyleFunction);
+    });
 
 
 /**

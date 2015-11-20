@@ -16,7 +16,7 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var styleArray = [new ol.style.Style({
+var style = new ol.style.Style({
   fill: new ol.style.Fill({
     color: 'rgba(255, 255, 255, 0.6)'
   }),
@@ -24,7 +24,7 @@ var styleArray = [new ol.style.Style({
     color: '#319FD3',
     width: 1
   })
-})];
+});
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -33,7 +33,7 @@ var vector = new ol.layer.Vector({
   }),
   style: function(feature, resolution) {
     // don't want to render the full world polygon, which repeats all countries
-    return feature.getId() !== undefined ? styleArray : null;
+    return feature.getId() !== undefined ? style : null;
   }
 });
 

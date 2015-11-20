@@ -115,9 +115,9 @@ var vectorLayer = new ol.layer.Vector({
   style: function(feature, resolution) {
     // hide geoMarker if animation is active
     if (animating && feature.get('type') === 'geoMarker') {
-      return [];
+      return null;
     }
-    return [styles[feature.get('type')]];
+    return styles[feature.get('type')];
   }
 });
 

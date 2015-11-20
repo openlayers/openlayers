@@ -59,13 +59,19 @@ function runTests(includeCoverage, callback) {
       var url = 'http://' + address.address + ':' + address.port;
       var args = [
         require.resolve('mocha-phantomjs-core'),
-        url + '/test/index.html'
+        url + '/test/index.html',
+        'spec'
       ];
+      var config = {
+        ignoreResourceErrors: true,
+        useColors: true,
+      };
 
       if (includeCoverage) {
-        args.push('spec', '{"hooks": "' +
-          path.join(__dirname, '../test/phantom_hooks.js') + '"}');
+        config.hooks = path.join(__dirname, '../test/phantom_hooks.js');
       }
+
+      args.push(JSON.stringify(config));
 
       var child = spawn(phantomjs.path, args, {stdio: 'inherit'});
       child.on('exit', function(code) {

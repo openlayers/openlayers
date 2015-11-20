@@ -36,8 +36,19 @@
   var urlMode = window.location.href.match(/mode=([a-z0-9\-]+)\&?/i);
   var curMode = urlMode ? urlMode[1] : 'advanced';
 
-  var modeChangedMethod = function() {
-    var newMode = this.value;
+  for (var mode in possibleModes) {
+    if (possibleModes.hasOwnProperty(mode)) {
+      var option = document.createElement('option');
+      var modeTxt = possibleModes[mode];
+      option.value = mode;
+      option.innerHTML = modeTxt;
+      option.selected = curMode === mode;
+      select.appendChild(option);
+    }
+  }
+
+  select.onchange = function(event) {
+    var newMode = event.target.value;
     var search = window.location.search.substring(1);
     var baseUrl = window.location.href.split('?')[0];
     var chunks = search ? search.split('&') : [];
@@ -61,18 +72,6 @@
     location.href = baseUrl + '?' + pairs.join('&');
   };
 
-  for (var mode in possibleModes) {
-    if (possibleModes.hasOwnProperty(mode)) {
-      var option = document.createElement('option');
-      var modeTxt = possibleModes[mode];
-      option.value = mode;
-      option.innerHTML = modeTxt;
-      option.selected = curMode === mode;
-      select.appendChild(option);
-    }
-  }
-
-  $(select).change(modeChangedMethod);
   select.className = 'input-medium';
 
   form.className = 'navbar-form pull-right';
@@ -83,7 +82,7 @@
 
 var common = {};
 
-common.getRendererFromQueryString = function() {
+common.getRendererFromQueryString = function(opt_default) {
   var obj = {};
   var queryString = location.search.slice(1);
   var re = /([^&=]+)=([^&]*)/g;
@@ -98,6 +97,6 @@ common.getRendererFromQueryString = function() {
   } else if ('renderer' in obj) {
     return [obj['renderer']];
   } else {
-    return undefined;
+    return opt_default;
   }
 };

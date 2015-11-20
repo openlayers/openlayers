@@ -27,6 +27,14 @@ body {
   display: inline-block;
 }
 
+#title {
+  margin-top: 0;
+}
+
+#docs {
+  margin-top: 1em;
+}
+
 ul.inline,
 ol.inline {
   margin-left: 0;

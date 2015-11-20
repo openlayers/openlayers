@@ -1,10 +1,10 @@
 /*global env: true */
-var template = require('jsdoc-fork/lib/jsdoc/template'),
-    fs = require('jsdoc-fork/lib/jsdoc/fs'),
-    path = require('jsdoc-fork/lib/jsdoc/path'),
+var template = require('jsdoc/lib/jsdoc/template'),
+    fs = require('jsdoc/lib/jsdoc/fs'),
+    path = require('jsdoc/lib/jsdoc/path'),
     taffy = require('taffydb').taffy,
-    handle = require('jsdoc-fork/lib/jsdoc/util/error').handle,
-    helper = require('jsdoc-fork/lib/jsdoc/util/templateHelper'),
+    handle = require('jsdoc/lib/jsdoc/util/error').handle,
+    helper = require('jsdoc/lib/jsdoc/util/templateHelper'),
     _ = require('underscore'),
     htmlsafe = helper.htmlsafe,
     linkto = helper.linkto,
@@ -350,8 +350,8 @@ exports.publish = function(taffyData, opts, tutorials) {
     var staticFileScanner;
     if (conf['default'].staticFiles) {
         staticFilePaths = conf['default'].staticFiles.paths || [];
-        staticFileFilter = new (require('jsdoc-fork/lib/jsdoc/src/filter')).Filter(conf['default'].staticFiles);
-        staticFileScanner = new (require('jsdoc-fork/lib/jsdoc/src/scanner')).Scanner();
+        staticFileFilter = new (require('jsdoc/lib/jsdoc/src/filter')).Filter(conf['default'].staticFiles);
+        staticFileScanner = new (require('jsdoc/lib/jsdoc/src/scanner')).Scanner();
 
         staticFilePaths.forEach(function(filePath) {
             var extraStaticFiles = staticFileScanner.scan([filePath], 10, staticFileFilter);

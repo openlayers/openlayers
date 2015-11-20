@@ -3,8 +3,8 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
+goog.require('ol.source.OSM');
 goog.require('ol.source.Raster');
-goog.require('ol.source.TileJSON');
 goog.require('ol.source.XYZ');
 
 
@@ -117,9 +117,7 @@ var map = new ol.Map({
   target: 'map',
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.TileJSON({
-        url: 'http://api.tiles.mapbox.com/v3/tschaub.miapgppd.jsonp'
-      })
+      source: new ol.source.OSM()
     }),
     new ol.layer.Image({
       opacity: 0.3,

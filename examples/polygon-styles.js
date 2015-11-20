@@ -98,7 +98,7 @@ var map = new ol.Map({
   layers: [layer],
   target: 'map',
   view: new ol.View({
-    center: [0, 1000000],
+    center: [0, 3000000],
     zoom: 2
   })
 });

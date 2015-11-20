@@ -12,9 +12,11 @@ goog.require('ol.source.Vector');
 
 
 var source = new ol.source.Vector();
-$.ajax('data/geojson/roads-seoul.geojson').then(function(response) {
+fetch('data/geojson/roads-seoul.geojson').then(function(response) {
+  return response.json();
+}).then(function(json) {
   var format = new ol.format.GeoJSON();
-  var features = format.readFeatures(response);
+  var features = format.readFeatures(json);
   var street = features[0];
 
   // convert to a turf.js feature

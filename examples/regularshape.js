@@ -14,7 +14,7 @@ var stroke = new ol.style.Stroke({color: 'black', width: 2});
 var fill = new ol.style.Fill({color: 'red'});
 
 var styles = {
-  'square': [new ol.style.Style({
+  'square': new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -22,8 +22,8 @@ var styles = {
       radius: 10,
       angle: Math.PI / 4
     })
-  })],
-  'triangle': [new ol.style.Style({
+  }),
+  'triangle': new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -32,8 +32,8 @@ var styles = {
       rotation: Math.PI / 4,
       angle: 0
     })
-  })],
-  'star': [new ol.style.Style({
+  }),
+  'star': new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -42,8 +42,8 @@ var styles = {
       radius2: 4,
       angle: 0
     })
-  })],
-  'cross': [new ol.style.Style({
+  }),
+  'cross': new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -52,8 +52,8 @@ var styles = {
       radius2: 0,
       angle: 0
     })
-  })],
-  'x': [new ol.style.Style({
+  }),
+  'x': new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -62,7 +62,7 @@ var styles = {
       radius2: 0,
       angle: Math.PI / 4
     })
-  })]
+  })
 };
 
 

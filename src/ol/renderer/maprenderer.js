@@ -174,7 +174,9 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, callback, thisArg);
+            frameState,
+            layerState.managed ? callback : forEachFeatureAtCoordinate,
+            thisArg);
       }
       if (result) {
         return result;

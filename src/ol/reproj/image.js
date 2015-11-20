@@ -116,9 +116,8 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.sourceImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, [targetResolution, targetResolution],
-            this.sourcePixelRatio_, state, attributions);
-
+  goog.base(this, targetExtent, targetResolution, this.sourcePixelRatio_,
+            state, attributions);
 };
 goog.inherits(ol.reproj.Image, ol.ImageBase);
 

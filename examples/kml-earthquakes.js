@@ -21,7 +21,7 @@ var styleFunction = function(feature, resolution) {
   var radius = 5 + 20 * (magnitude - 5);
   var style = styleCache[radius];
   if (!style) {
-    style = [new ol.style.Style({
+    style = new ol.style.Style({
       image: new ol.style.Circle({
         radius: radius,
         fill: new ol.style.Fill({
@@ -32,7 +32,7 @@ var styleFunction = function(feature, resolution) {
           width: 1
         })
       })
-    })];
+    });
     styleCache[radius] = style;
   }
   return style;
