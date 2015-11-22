@@ -1,5 +1,18 @@
 ## Upgrade notes
 
+### v3.12.0
+
+#### `ol.Map#forEachFeatureAtPixel` changes
+
+The optional `layerFilter` function is now also called for unmanaged layers. To get the same behaviour as before, wrap your layer filter code in an if block like this:
+```js
+function layerFilter(layer) {
+  if (map.getLayers().getArray().indexOf(layer) !== -1) {
+    // existing layer filter code
+  }
+}
+```
+
 ### v3.11.0
 
 #### `ol.format.KML` changes
