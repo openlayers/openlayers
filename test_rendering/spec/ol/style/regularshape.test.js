@@ -103,7 +103,7 @@ describe('ol.rendering.style.RegularShape', function() {
       map = createMap('canvas');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/regularshape-canvas.png',
-          7.0, done);
+          9.4, done);
     });
 
     it('tests the WebGL renderer', function(done) {
