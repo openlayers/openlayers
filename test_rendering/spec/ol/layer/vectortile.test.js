@@ -66,7 +66,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map = createMap('canvas');
       waitForTiles(source, {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas.png',
-            11.0, done);
+            11.6, done);
       });
     });
 
