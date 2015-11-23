@@ -1059,7 +1059,7 @@ olx.control.FullScreenOptions.prototype.className;
 
 
 /**
- * Text label to use for the button. Default is `\u2194` (an arrow).
+ * Text label to use for the button. Default is `\u2922` (NORTH EAST AND SOUTH WEST ARROW).
  * Instead of text, also a Node (e.g. a `span` element) can be used.
  * @type {string|Node|undefined}
  * @api
