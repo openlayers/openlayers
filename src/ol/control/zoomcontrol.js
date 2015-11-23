@@ -85,6 +85,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
   event.preventDefault();
   this.zoomByDelta_(delta);
+  event.target.blur();
 };
 
 
