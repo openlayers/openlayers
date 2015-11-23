@@ -3,11 +3,15 @@ layout: example.html
 title: WMTS IGN Layer from capabilities example
 shortdesc: Example of an IGN WMTS source created from a WMTS capabilities document with TileMatrixSetLimits.
 docs: >
-  This example shows how to create the configuration for accessing a WMTS from a GetCapabilities response usint the TileMatrixSetLimits to prevent unavailable level to be requested. The [IGN WMTS example](wmts-ign.html) shows how to create the configuration manually.
-tags: "wmts, capabilities, getcapabilities"
+  This example shows how the TileMatrixSetLimits information contained into GetCapabilities is used to prevent unavailable level to be requested. The [IGN WMTS example](wmts-ign.html) shows how to create the configuration manually.
+  When zooming out and changing layer to unlimited one, unavailable level are requested to tile server and 404 errors come out.
+tags: "wmts, capabilities, getcapabilities, tilematrixset, tilematrixsetlimits"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
+<div class="mapcontainer">
+  <div id="map" class="map"></div>
+  <select id="layerSelector">
+    <option value="planIgnWithTileMatrixSetLimits">Plan IGN with TileMatrixSetLimits</option>
+    <option value="planIgn">Plan IGN</option>
+  </select>
+  Zoom level: <span id="zoomValue"></span>
 </div>
