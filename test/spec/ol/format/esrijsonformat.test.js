@@ -291,7 +291,7 @@ describe('ol.format.EsriJSON', function() {
     it('parses ksfields.geojson', function(done) {
       afterLoadText('spec/ol/format/esrijson/ksfields.json', function(text) {
         var result = format.readFeatures(text);
-        expect(result.length).to.be(306);
+        expect(result.length).to.be(9);
 
         var first = result[0];
         expect(first).to.be.a(ol.Feature);
@@ -304,15 +304,15 @@ describe('ol.format.EsriJSON', function() {
               -10579560.16462974, 4716567.373073828]))
             .to.be(true);
 
-        var last = result[305];
+        var last = result[8];
         expect(last).to.be.a(ol.Feature);
-        expect(last.get('field_name')).to.be('PAOLA-RANTOUL');
-        expect(last.getId()).to.be(223);
+        expect(last.get('field_name')).to.be('FEAGINS');
+        expect(last.getId()).to.be(6030);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(lastGeom.getExtent(),
-            [-10596945.530910717, 4634530.860533288,
-              -10538217.991305258, 4691558.678837225]))
+            [-10555714.026858449, 4576511.565880965,
+              -10553671.199322715, 4578554.9934867555]))
             .to.be(true);
         done();
       });
