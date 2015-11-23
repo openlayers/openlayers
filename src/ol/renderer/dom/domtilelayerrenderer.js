@@ -31,7 +31,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.dom.TileLayer = function(tileLayer) {
 
-  var target = goog.dom.createElement('DIV');
+  var target = document.createElement('DIV');
   target.style.position = 'absolute';
 
   goog.base(this, tileLayer, target);
@@ -276,7 +276,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
   /**
    * @type {!Element}
    */
-  this.target = goog.dom.createElement('DIV');
+  this.target = document.createElement('DIV');
   this.target.style.position = 'absolute';
   this.target.style.width = '100%';
   this.target.style.height = '100%';
@@ -359,7 +359,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileElement;
   var tileElementStyle;
   if (tileGutter > 0) {
-    tileElement = goog.dom.createElement('DIV');
+    tileElement = document.createElement('DIV');
     tileElementStyle = tileElement.style;
     tileElementStyle.overflow = 'hidden';
     tileElementStyle.width = tileSize[0] + 'px';

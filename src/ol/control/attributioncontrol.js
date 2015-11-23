@@ -37,13 +37,13 @@ ol.control.Attribution = function(opt_options) {
    * @private
    * @type {Element}
    */
-  this.ulElement_ = goog.dom.createElement('UL');
+  this.ulElement_ = document.createElement('UL');
 
   /**
    * @private
    * @type {Element}
    */
-  this.logoLi_ = goog.dom.createElement('LI');
+  this.logoLi_ = document.createElement('LI');
 
   this.ulElement_.appendChild(this.logoLi_);
   goog.style.setElementShown(this.logoLi_, false);
@@ -261,7 +261,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     }
   }
   for (attributionKey in visibleAttributions) {
-    attributionElement = goog.dom.createElement('LI');
+    attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         visibleAttributions[attributionKey].getHTML();
     this.ulElement_.appendChild(attributionElement);
@@ -269,7 +269,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     this.attributionElementRenderedVisible_[attributionKey] = true;
   }
   for (attributionKey in hiddenAttributions) {
-    attributionElement = goog.dom.createElement('LI');
+    attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         hiddenAttributions[attributionKey].getHTML();
     goog.style.setElementShown(attributionElement, false);

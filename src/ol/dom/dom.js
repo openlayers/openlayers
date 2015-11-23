@@ -17,7 +17,7 @@ goog.require('ol');
  * @return {CanvasRenderingContext2D}
  */
 ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
-  var canvas = goog.dom.createElement('CANVAS');
+  var canvas = document.createElement('CANVAS');
   if (opt_width) {
     canvas.width = opt_width;
   }
@@ -44,7 +44,7 @@ ol.dom.canUseCssTransform = (function() {
         // this browser is ancient
         canUseCssTransform = false;
       } else {
-        var el = goog.dom.createElement('P'),
+        var el = document.createElement('P'),
             has2d,
             transforms = {
               'webkitTransform': '-webkit-transform',
@@ -87,7 +87,7 @@ ol.dom.canUseCssTransform3D = (function() {
         // this browser is ancient
         canUseCssTransform3D = false;
       } else {
-        var el = goog.dom.createElement('P'),
+        var el = document.createElement('P'),
             has3d,
             transforms = {
               'webkitTransform': '-webkit-transform',
