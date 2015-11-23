@@ -17,7 +17,8 @@ function itNoPhantom() {
   }
 }
 
-describe('ol.source.Raster', function() {
+(typeof ImageData == 'function' ? describe : xdescribe)('ol.source.Raster',
+    function() {
 
   var target, map, redSource, greenSource, blueSource;
 
