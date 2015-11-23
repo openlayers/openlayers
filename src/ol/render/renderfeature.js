@@ -2,7 +2,6 @@ goog.provide('ol.render.Feature');
 
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 
@@ -138,7 +137,9 @@ ol.render.Feature.prototype.getSimplifiedGeometry =
 /**
  * @return {number} Stride.
  */
-ol.render.Feature.prototype.getStride = goog.functions.constant(2);
+ol.render.Feature.prototype.getStride = function() {
+  return 2;
+};
 
 
 /**
