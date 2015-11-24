@@ -34,9 +34,11 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091936,' +
-          '-5009377.085697311,-10018754.171394624');
+      var bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
+      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
+      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
+      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');
@@ -199,9 +201,11 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091936,' +
-          '-5009377.085697311,-10018754.171394624');
+      var bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
+      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
+      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
+      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');
@@ -231,9 +235,11 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/wms');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091936,' +
-          '-5009377.085697311,-10018754.171394624');
+      var bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
+      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
+      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
+      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
       expect(queryData.get('CRS')).to.be('EPSG:3857');
       expect(queryData.get('FORMAT')).to.be('image/png');
       expect(queryData.get('HEIGHT')).to.be('256');

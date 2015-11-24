@@ -567,10 +567,10 @@ describe('ol.format.GPX', function() {
           [[[0, 0], [2, 2], [4, 0], [0, 0]]]);
       var feature = new ol.Feature(polygon);
       var features = [feature];
-      var gpx = format.writeFeatures(features);
+      var gpx = format.writeFeaturesNode(features);
       var expected =
           '<gpx xmlns="http://www.topografix.com/GPX/1/1"/>';
-      expect(gpx).to.be(expected);
+      expect(gpx).to.xmleql(ol.xml.parse(expected));
     });
   });
 

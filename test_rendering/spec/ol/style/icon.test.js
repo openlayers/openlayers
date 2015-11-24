@@ -68,7 +68,7 @@ describe('ol.rendering.style.Icon', function() {
       map = createMap('webgl');
       createFeatures(function() {
         expectResemble(map, 'spec/ol/style/expected/icon-webgl.png',
-            IMAGE_TOLERANCE, done);
+            2.0, done);
       });
     });
   });

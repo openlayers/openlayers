@@ -30,6 +30,8 @@
 
   <script type="text/javascript">
 
+    goog.json.USE_NATIVE_JSON = true;
+
     /**
      * The goog.dom.ViewportSizeMonitor (used in map.js) creates a global leak
      * by setting goog.UID_PROPERTY_ on the monitored window.  In order to test

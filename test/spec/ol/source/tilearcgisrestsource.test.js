@@ -22,9 +22,11 @@ describe('ol.source.TileArcGISRest', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/MapServer/export');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091936,' +
-          '-5009377.085697311,-10018754.171394624');
+      var bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
+      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
+      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
+      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('SIZE')).to.be('256,256');
       expect(queryData.get('IMAGESR')).to.be('3857');
@@ -54,9 +56,11 @@ describe('ol.source.TileArcGISRest', function() {
       expect(uri.getDomain()).to.match(/test[12]\.com/);
       expect(uri.getPath()).to.be('/MapServer/export');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091936,' +
-          '-5009377.085697311,-10018754.171394624');
+      var bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
+      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
+      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
+      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('SIZE')).to.be('256,256');
       expect(queryData.get('IMAGESR')).to.be('3857');
@@ -75,9 +79,11 @@ describe('ol.source.TileArcGISRest', function() {
       expect(uri.getDomain()).to.be('example.com');
       expect(uri.getPath()).to.be('/ImageServer/exportImage');
       var queryData = uri.getQueryData();
-      expect(queryData.get('BBOX')).to.be(
-          '-10018754.171394622,-15028131.257091936,' +
-          '-5009377.085697311,-10018754.171394624');
+      var bbox = queryData.get('BBOX').split(',').map(parseFloat);
+      expect(bbox[0]).roughlyEqual(-10018754.171394622, 1e-9);
+      expect(bbox[1]).roughlyEqual(-15028131.257091936, 1e-9);
+      expect(bbox[2]).roughlyEqual(-5009377.085697311, 1e-9);
+      expect(bbox[3]).roughlyEqual(-10018754.171394624, 1e-9);
       expect(queryData.get('FORMAT')).to.be('PNG32');
       expect(queryData.get('SIZE')).to.be('256,256');
       expect(queryData.get('IMAGESR')).to.be('3857');
