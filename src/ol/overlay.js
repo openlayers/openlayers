@@ -260,7 +260,7 @@ ol.Overlay.prototype.handleElementChanged = function() {
   goog.dom.removeChildren(this.element_);
   var element = this.getElement();
   if (element) {
-    this.element_.appendChild(element);
+    goog.dom.append(/** @type {!Node} */ (this.element_), element);
   }
 };
 
@@ -285,7 +285,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
       goog.dom.insertChildAt(/** @type {!Element} */ (
           container), this.element_, 0);
     } else {
-      container.appendChild(this.element_);
+      goog.dom.append(/** @type {!Node} */ (container), this.element_);
     }
   }
 };
