@@ -5,11 +5,11 @@ goog.provide('ol.source.Cluster');
 
 goog.require('goog.asserts');
 goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
+goog.require('ol.object');
 goog.require('ol.source.Vector');
 
 
@@ -141,7 +141,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
     }
   }
   goog.asserts.assert(
-      goog.object.getCount(clustered) == this.source_.getFeatures().length,
+      ol.object.getCount(clustered) == this.source_.getFeatures().length,
       'number of clustered equals number of features in the source');
 };
 

@@ -3,9 +3,9 @@ goog.provide('ol.webgl.Context');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.log');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.array');
+goog.require('ol.object');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
 
@@ -164,13 +164,13 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
 ol.webgl.Context.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if (!gl.isContextLost()) {
-    goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
+    ol.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
       gl.deleteBuffer(bufferCacheEntry.buffer);
     });
-    goog.object.forEach(this.programCache_, function(program) {
+    ol.object.forEach(this.programCache_, function(program) {
       gl.deleteProgram(program);
     });
-    goog.object.forEach(this.shaderCache_, function(shader) {
+    ol.object.forEach(this.shaderCache_, function(shader) {
       gl.deleteShader(shader);
     });
     // delete objects for hit-detection
@@ -282,9 +282,9 @@ ol.webgl.Context.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-  goog.object.clear(this.bufferCache_);
-  goog.object.clear(this.shaderCache_);
-  goog.object.clear(this.programCache_);
+  ol.object.clear(this.bufferCache_);
+  ol.object.clear(this.shaderCache_);
+  ol.object.clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;

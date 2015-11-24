@@ -8,7 +8,6 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.array');
@@ -16,6 +15,7 @@ goog.require('ol.events.condition');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
+goog.require('ol.object');
 goog.require('ol.source.Vector');
 
 
@@ -301,7 +301,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
       features.extend(selected);
       // Modify object this.featureLayerAssociation_
       if (selected.length === 0) {
-        goog.object.clear(this.featureLayerAssociation_);
+        ol.object.clear(this.featureLayerAssociation_);
       } else {
         if (deselected.length > 0) {
           deselected.forEach(function(feature) {

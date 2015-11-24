@@ -253,7 +253,7 @@ describe('ol.test.source.TileMock', function() {
 
 });
 
-goog.require('goog.object');
+goog.require('ol.object');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');

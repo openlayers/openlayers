@@ -2,11 +2,11 @@ goog.provide('ol.format.WMSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
 goog.require('ol.format.XSD');
+goog.require('ol.object');
 goog.require('ol.xml');
 
 
@@ -344,7 +344,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
   addKeys.forEach(function(key) {
     if (key in parentLayerObject) {
-      var childValue = goog.object.setIfUndefined(layerObject, key, []);
+      var childValue = ol.object.setIfUndefined(layerObject, key, []);
       childValue = childValue.concat(parentLayerObject[key]);
       layerObject[key] = childValue;
     }

@@ -5,11 +5,11 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.math');
-goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.extent');
 goog.require('ol.math');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
@@ -220,7 +220,7 @@ ol.reproj.Tile.prototype.getImage = function(opt_context) {
     var key = goog.getUid(opt_context);
     if (key in this.canvasByContext_) {
       return this.canvasByContext_[key];
-    } else if (goog.object.isEmpty(this.canvasByContext_)) {
+    } else if (ol.object.isEmpty(this.canvasByContext_)) {
       image = this.canvas_;
     } else {
       image = /** @type {HTMLCanvasElement} */ (this.canvas_.cloneNode(false));

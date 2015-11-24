@@ -4,7 +4,6 @@
 goog.provide('ol.format.GeoJSON');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
@@ -15,6 +14,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.object');
 goog.require('ol.proj');
 
 
@@ -542,7 +542,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!goog.object.isEmpty(properties)) {
+  if (!ol.object.isEmpty(properties)) {
     object['properties'] = properties;
   } else {
     object['properties'] = null;

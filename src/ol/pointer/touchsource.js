@@ -31,8 +31,8 @@
 goog.provide('ol.pointer.TouchSource');
 
 goog.require('goog.array');
-goog.require('goog.object');
 goog.require('ol');
+goog.require('ol.object');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
 
@@ -125,7 +125,7 @@ ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
  * @private
  */
 ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
-  var count = goog.object.getCount(this.pointerMap);
+  var count = ol.object.getCount(this.pointerMap);
   if (count === 0 || (count === 1 &&
       ol.pointer.MouseSource.POINTER_ID.toString() in this.pointerMap)) {
     this.firstTouchId_ = inTouch.identifier;
@@ -269,7 +269,7 @@ ol.pointer.TouchSource.prototype.vacuumTouches_ = function(inEvent) {
   var touchList = inEvent.getBrowserEvent().touches;
   // pointerMap.getCount() should be < touchList.length here,
   // as the touchstart has not been processed yet.
-  var keys = goog.object.getKeys(this.pointerMap);
+  var keys = ol.object.getKeys(this.pointerMap);
   var count = keys.length;
   if (count >= touchList.length) {
     var d = [];

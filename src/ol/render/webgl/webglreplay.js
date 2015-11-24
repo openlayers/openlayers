@@ -3,9 +3,9 @@ goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
+goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.imagereplay.shader.Default');
@@ -627,7 +627,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ =
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  if (!goog.object.isEmpty(skippedFeaturesHash)) {
+  if (!ol.object.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(
         gl, skippedFeaturesHash, textures, groupIndices,
         elementType, elementSize);
@@ -1010,7 +1010,7 @@ ol.render.webgl.ReplayGroup.prototype.getReplay =
  * @inheritDoc
  */
 ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
-  return goog.object.isEmpty(this.replays_);
+  return ol.object.isEmpty(this.replays_);
 };
 
 

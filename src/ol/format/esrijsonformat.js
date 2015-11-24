@@ -2,7 +2,6 @@ goog.provide('ol.format.EsriJSON');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
@@ -17,6 +16,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.flat.orient');
+goog.require('ol.object');
 goog.require('ol.proj');
 
 
@@ -71,7 +71,7 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
   } else if (object.rings) {
     var layout = ol.format.EsriJSON.getGeometryLayout_(object);
     var rings = ol.format.EsriJSON.convertRings_(object.rings, layout);
-    object = /** @type {EsriJSONGeometry} */(goog.object.clone(object));
+    object = /** @type {EsriJSONGeometry} */(ol.object.clone(object));
     if (rings.length === 1) {
       type = ol.geom.GeometryType.POLYGON;
       object.rings = rings[0];
@@ -653,7 +653,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!goog.object.isEmpty(properties)) {
+  if (!ol.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
     object['attributes'] = {};

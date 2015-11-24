@@ -9,7 +9,6 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 goog.require('goog.log');
 goog.require('goog.log.Logger');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
@@ -20,6 +19,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
+goog.require('ol.object');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
@@ -383,7 +383,7 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
-  goog.object.forEach(this.getLayerRenderers(),
+  ol.object.forEach(this.getLayerRenderers(),
       /**
        * @param {ol.renderer.Layer} layerRenderer Layer renderer.
        * @param {string} key Key.

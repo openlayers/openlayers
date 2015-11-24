@@ -10,7 +10,6 @@ goog.require('goog.Uri');
 goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.FeatureStyleFunction');
@@ -31,6 +30,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.math');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
@@ -333,9 +333,9 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
       textAlign = 'left';
     }
   }
-  if (!goog.object.isEmpty(foundStyle.getText())) {
+  if (!ol.object.isEmpty(foundStyle.getText())) {
     textStyle = /** @type {ol.style.Text} */
-        (goog.object.clone(foundStyle.getText()));
+        (ol.object.clone(foundStyle.getText()));
     textStyle.setText(name);
     textStyle.setTextAlign(textAlign);
     textStyle.setOffsetX(textOffset[0]);
