@@ -55,7 +55,7 @@
     "debounce": "^1.0.0",
     "expect.js": "0.3.1",
     "gaze": "^0.5.1",
-    "istanbul": "0.4.0",
+    "istanbul": "0.4.1",
     "jquery": "2.1.4",
     "jshint": "2.8.0",
     "mocha": "2.3.4",
