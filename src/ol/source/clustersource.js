@@ -118,7 +118,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
 
   for (var i = 0, ii = features.length; i < ii; i++) {
     var feature = features[i];
-    if (!goog.object.containsKey(clustered, goog.getUid(feature).toString())) {
+    if (!(goog.getUid(feature).toString() in clustered)) {
       var geometry = feature.getGeometry();
       goog.asserts.assert(geometry instanceof ol.geom.Point,
           'feature geometry is a ol.geom.Point instance');
@@ -130,7 +130,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
       goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
       neighbors = neighbors.filter(function(neighbor) {
         var uid = goog.getUid(neighbor).toString();
-        if (!goog.object.containsKey(clustered, uid)) {
+        if (!(uid in clustered)) {
           clustered[uid] = true;
           return true;
         } else {
