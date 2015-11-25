@@ -18,6 +18,23 @@ describe('ol.Map', function() {
         expect(interactions.item(i).getMap()).to.be(map);
       }
     });
+
+    it('creates the viewport', function() {
+      var map = new ol.Map({});
+      var viewport = map.getViewport();
+      var className = 'ol-viewport' + (ol.has.TOUCH ? ' ol-touch' : '');
+      expect(viewport.className).to.be(className);
+    });
+
+    it('creates the overlay containers', function() {
+      var map = new ol.Map({});
+      var container = map.getOverlayContainer();
+      expect(container.className).to.be('ol-overlaycontainer');
+
+      var containerStop = map.getOverlayContainerStopEvent();
+      expect(containerStop.className).to.be('ol-overlaycontainer-stopevent');
+    });
+
   });
 
   describe('#addInteraction()', function() {
