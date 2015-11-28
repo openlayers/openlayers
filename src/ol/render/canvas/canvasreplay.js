@@ -1993,10 +1993,14 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
       flatClipCoords, 0, 8, 2, transform, flatClipCoords);
   context.save();
   context.beginPath();
-  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
-  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
-  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
-  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
+  context.moveTo(
+      Math.floor(flatClipCoords[0]), Math.floor(flatClipCoords[1]));
+  context.lineTo(
+      Math.floor(flatClipCoords[2]), Math.ceil(flatClipCoords[3]));
+  context.lineTo(
+      Math.ceil(flatClipCoords[4]), Math.ceil(flatClipCoords[5]));
+  context.lineTo(
+      Math.ceil(flatClipCoords[6]), Math.floor(flatClipCoords[7]));
   context.closePath();
   context.clip();
 
