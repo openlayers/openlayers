@@ -54,7 +54,7 @@ ol.pointer.MsSource = function(dispatcher) {
 
   /**
    * @const
-   * @type {Object.<string, goog.events.BrowserEvent|Object>}
+   * @type {!Object.<string, goog.events.BrowserEvent|Object>}
    */
   this.pointerMap = dispatcher.pointerMap;
 

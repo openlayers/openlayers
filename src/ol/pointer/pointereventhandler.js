@@ -61,7 +61,7 @@ ol.pointer.PointerEventHandler = function(element) {
 
   /**
    * @const
-   * @type {Object.<string, goog.events.BrowserEvent|Object>}
+   * @type {!Object.<string, goog.events.BrowserEvent|Object>}
    */
   this.pointerMap = {};
 
