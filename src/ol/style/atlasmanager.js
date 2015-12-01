@@ -3,8 +3,8 @@ goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('ol');
+goog.require('ol.object');
 
 
 /**
@@ -315,7 +315,7 @@ ol.style.Atlas = function(size, space) {
  */
 ol.style.Atlas.prototype.get = function(id) {
   return /** @type {?ol.style.AtlasInfo} */ (
-      goog.object.get(this.entries_, id, null));
+      ol.object.get(this.entries_, id, null));
 };
 
 

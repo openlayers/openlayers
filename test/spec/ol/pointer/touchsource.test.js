@@ -1,6 +1,6 @@
 goog.provide('ol.test.pointer.TouchSource');
 
-goog.require('goog.object');
+goog.require('ol.object');
 
 describe('ol.pointer.TouchSource', function() {
   var handler;
@@ -48,7 +48,7 @@ describe('ol.pointer.TouchSource', function() {
       expect(pointerEvent2.clientX).to.be(30);
       expect(pointerEvent2.clientY).to.be(45);
 
-      expect(goog.object.getCount(handler.pointerMap)).to.be(2);
+      expect(ol.object.getCount(handler.pointerMap)).to.be(2);
     });
 
     it('creates the right pointer events', function() {
@@ -59,7 +59,7 @@ describe('ol.pointer.TouchSource', function() {
         {identifier: 3, clientX: 10, clientY: 11}
       ]);
       expect(eventSpy.calledOnce).to.be.ok();
-      expect(goog.object.getCount(handler.pointerMap)).to.be(1);
+      expect(ol.object.getCount(handler.pointerMap)).to.be(1);
 
       // second touch (first touch still down)
       simulateTouchEvent('touchstart', [
@@ -67,7 +67,7 @@ describe('ol.pointer.TouchSource', function() {
       ], [{identifier: 3}, {identifier: 4}]
       );
       expect(eventSpy.calledTwice).to.be.ok();
-      expect(goog.object.getCount(handler.pointerMap)).to.be(2);
+      expect(ol.object.getCount(handler.pointerMap)).to.be(2);
 
       // first touch moves
       var moveEventSpy = sinon.spy();
@@ -89,7 +89,7 @@ describe('ol.pointer.TouchSource', function() {
       ], [{identifier: 3}, {identifier: 4}]
       );
       expect(upEventSpy.calledTwice).to.be.ok();
-      expect(goog.object.getCount(handler.pointerMap)).to.be(0);
+      expect(ol.object.getCount(handler.pointerMap)).to.be(0);
     });
 
     it('handles flawed touches', function() {
@@ -100,7 +100,7 @@ describe('ol.pointer.TouchSource', function() {
         {identifier: 3, clientX: 10, clientY: 11}
       ]);
       expect(eventSpy.calledOnce).to.be.ok();
-      expect(goog.object.getCount(handler.pointerMap)).to.be(1);
+      expect(ol.object.getCount(handler.pointerMap)).to.be(1);
 
       // second touch, but the first touch has disappeared
       var cancelEventSpy = sinon.spy();
@@ -113,7 +113,7 @@ describe('ol.pointer.TouchSource', function() {
 
       // the first (broken) touch is canceled
       expect(cancelEventSpy.calledOnce).to.be.ok();
-      expect(goog.object.getCount(handler.pointerMap)).to.be(1);
+      expect(ol.object.getCount(handler.pointerMap)).to.be(1);
     });
   });
 

@@ -4,7 +4,6 @@ goog.provide('ol.interaction.SnapProperty');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
@@ -17,6 +16,7 @@ goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.object');
 goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEvent');
 goog.require('ol.source.VectorEventType');
@@ -597,7 +597,7 @@ ol.interaction.Snap.handleEvent_ = function(evt) {
  * @private
  */
 ol.interaction.Snap.handleUpEvent_ = function(evt) {
-  var featuresToUpdate = goog.object.getValues(this.pendingFeatures_);
+  var featuresToUpdate = ol.object.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
     featuresToUpdate.forEach(this.updateFeature_, this);
     this.pendingFeatures_ = {};

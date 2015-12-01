@@ -7,11 +7,11 @@ goog.require('goog.dispose');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
+goog.require('ol.object');
 goog.require('ol.renderer.Layer');
 goog.require('ol.style.IconImageCache');
 goog.require('ol.vec.Mat4');
@@ -96,7 +96,7 @@ ol.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
  * @inheritDoc
  */
 ol.renderer.Map.prototype.disposeInternal = function() {
-  goog.object.forEach(this.layerRenderers_, goog.dispose);
+  ol.object.forEach(this.layerRenderers_, goog.dispose);
   goog.base(this, 'disposeInternal');
 };
 

@@ -8,11 +8,11 @@ goog.require('goog.events');
 goog.require('goog.events.BrowserEvent');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
+goog.require('ol.object');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 
@@ -265,7 +265,7 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
   } else if (event.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
     this.trackedTouches_[event.pointerId] = true;
   }
-  this.activePointers_ = goog.object.getCount(this.trackedTouches_);
+  this.activePointers_ = ol.object.getCount(this.trackedTouches_);
 };
 
 

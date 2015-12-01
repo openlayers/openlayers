@@ -2,11 +2,11 @@ goog.provide('ol.source.ImageMapGuide');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.extent');
+goog.require('ol.object');
 goog.require('ol.source.Image');
 
 
@@ -194,7 +194,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @api stable
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
-  goog.object.extend(this.params_, params);
+  ol.object.extend(this.params_, params);
   this.changed();
 };
 
@@ -225,7 +225,7 @@ ol.source.ImageMapGuide.prototype.getUrl =
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  goog.object.extend(baseParams, params);
+  ol.object.extend(baseParams, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
 };
 

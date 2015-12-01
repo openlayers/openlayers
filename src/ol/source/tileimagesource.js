@@ -3,10 +3,10 @@ goog.provide('ol.source.TileImage');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
 goog.require('ol.TileState');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.UrlTile');
@@ -96,7 +96,7 @@ ol.source.TileImage.prototype.canExpireCache = function() {
   if (canExpire) {
     return true;
   } else {
-    return goog.object.some(this.tileCacheForProjection, function(tileCache) {
+    return ol.object.some(this.tileCacheForProjection, function(tileCache) {
       return tileCache.canExpireCache();
     });
   }
@@ -114,7 +114,7 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
   var usedTileCache = this.getTileCacheForProjection(projection);
 
   this.tileCache.expireCache(this.tileCache == usedTileCache ? usedTiles : {});
-  goog.object.forEach(this.tileCacheForProjection, function(tileCache) {
+  ol.object.forEach(this.tileCacheForProjection, function(tileCache) {
     tileCache.expireCache(tileCache == usedTileCache ? usedTiles : {});
   });
 };
@@ -291,7 +291,7 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
     return;
   }
   this.renderReprojectionEdges_ = render;
-  goog.object.forEach(this.tileCacheForProjection, function(tileCache) {
+  ol.object.forEach(this.tileCacheForProjection, function(tileCache) {
     tileCache.clear();
   });
   this.changed();

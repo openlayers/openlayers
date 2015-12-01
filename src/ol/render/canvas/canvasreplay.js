@@ -10,7 +10,6 @@ goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.array');
@@ -21,6 +20,7 @@ goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat.simplify');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
+goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
@@ -246,7 +246,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
-  var skipFeatures = !goog.object.isEmpty(skippedFeaturesHash);
+  var skipFeatures = !ol.object.isEmpty(skippedFeaturesHash);
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
@@ -1962,7 +1962,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay =
  * @inheritDoc
  */
 ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
-  return goog.object.isEmpty(this.replaysByZIndex_);
+  return ol.object.isEmpty(this.replaysByZIndex_);
 };
 
 

@@ -4,8 +4,8 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.xml');
-goog.require('goog.object');
 goog.require('goog.userAgent');
+goog.require('ol.object');
 
 
 /**
@@ -455,7 +455,7 @@ ol.xml.makeObjectPropertyPusher =
               opt_property : node.localName;
           goog.asserts.assert(goog.isObject(object),
               'entity from stack was not an object');
-          var array = goog.object.setIfUndefined(object, property, []);
+          var array = ol.object.setIfUndefined(object, property, []);
           array.push(value);
         }
       });

@@ -2,10 +2,10 @@ goog.provide('ol.geom.GeometryCollection');
 
 goog.require('goog.events');
 goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.object');
 
 
 
@@ -163,7 +163,7 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
 ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
     function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    goog.object.clear(this.simplifiedGeometryCache);
+    ol.object.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
