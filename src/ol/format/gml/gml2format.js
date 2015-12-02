@@ -64,7 +64,9 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var axisOrientation = 'enu';
   if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
-    axisOrientation = proj.getAxisOrientation();
+    if (proj) {
+      axisOrientation = proj.getAxisOrientation();
+    }
   }
   var coords = s.split(/[\s,]+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
