@@ -106,6 +106,8 @@ style of the existing OpenLayers 3 code, which includes:
 
  * Use `array.length = 0` instead of `goog.array.clear`.
 
+ * Use `Object.keys(obj)` instead of `goog.object.getKeys(obj)`.
+
  * Use bracket notation instead of `goog.object.set` and `goog.object.get` (with
    two arguments).
 
