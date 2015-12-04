@@ -6005,7 +6005,7 @@ olx.style.FillOptions.prototype.color;
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
  *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
  *     crossOrigin: (null|string|undefined),
- *     img: (Image|undefined),
+ *     img: (Image|HTMLCanvasElement|undefined),
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
  *     opacity: (number|undefined),
@@ -6074,7 +6074,7 @@ olx.style.IconOptions.prototype.crossOrigin;
  * Image object for the icon. If the `src` option is not provided then the
  * provided image must already be loaded. And in that case, it is required
  * to provide the size of the image, with the `imgSize` option.
- * @type {Image|undefined}
+ * @type {Image|HTMLCanvasElement|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.img;

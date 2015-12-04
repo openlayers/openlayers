@@ -90,7 +90,7 @@ ol.style.Icon = function(opt_options) {
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
-   * @type {Image}
+   * @type {Image|HTMLCanvasElement}
    */
   var image = options.img !== undefined ? options.img : null;
 
@@ -114,7 +114,7 @@ ol.style.Icon = function(opt_options) {
       'imgSize must be set when image is provided');
 
   if ((src === undefined || src.length === 0) && image) {
-    src = image.src;
+    src = image.src || goog.getUid(image).toString();
   }
   goog.asserts.assert(src !== undefined && src.length > 0,
       'must provide a defined and non-empty src or image');
@@ -244,7 +244,7 @@ ol.style.Icon.prototype.getAnchor = function() {
 /**
  * Get the image icon.
  * @param {number} pixelRatio Pixel ratio.
- * @return {Image} Image element.
+ * @return {Image|HTMLCanvasElement} Image or Canvas element.
  * @api
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
@@ -368,7 +368,7 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 
 /**
  * @constructor
- * @param {Image} image Image.
+ * @param {Image|HTMLCanvasElement} image Image.
  * @param {string|undefined} src Src.
  * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
@@ -388,7 +388,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
 
   /**
    * @private
-   * @type {Image}
+   * @type {Image|HTMLCanvasElement}
    */
   this.image_ = !image ? new Image() : image;
 
@@ -434,7 +434,7 @@ goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 
 
 /**
- * @param {Image} image Image.
+ * @param {Image|HTMLCanvasElement} image Image.
  * @param {string} src Src.
  * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
@@ -499,7 +499,7 @@ ol.style.IconImage_.prototype.handleImageLoad_ = function() {
 
 /**
  * @param {number} pixelRatio Pixel ratio.
- * @return {Image} Image element.
+ * @return {Image|HTMLCanvasElement} Image or Canvas element.
  */
 ol.style.IconImage_.prototype.getImage = function(pixelRatio) {
   return this.image_;
