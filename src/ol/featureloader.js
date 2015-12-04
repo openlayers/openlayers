@@ -9,6 +9,9 @@ goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
 goog.require('ol.TileState');
 goog.require('ol.format.FormatType');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
 goog.require('ol.xml');
 
 
@@ -100,12 +103,21 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
                   goog.asserts.fail('unexpected format type');
                 }
                 if (source) {
-                  var features = format.readFeatures(source,
-                      {featureProjection: projection});
                   if (ol.ENABLE_VECTOR_TILE && success.length == 2) {
-                    success.call(this, features, format.readProjection(source));
+                    var dataProjection = format.readProjection(source);
+                    var units = dataProjection.getUnits();
+                    if (units === ol.proj.Units.TILE_PIXELS) {
+                      projection = new ol.proj.Projection({
+                        code: projection.getCode(),
+                        units: units
+                      });
+                      this.setProjection(projection);
+                    }
+                    success.call(this, format.readFeatures(source,
+                        {featureProjection: projection}), dataProjection);
                   } else {
-                    success.call(this, features);
+                    success.call(this, format.readFeatures(source,
+                        {featureProjection: projection}));
                   }
                 } else {
                   goog.asserts.fail('undefined or null source');
@@ -142,7 +154,9 @@ ol.featureloader.tile = function(url, format) {
        * @this {ol.VectorTile}
        */
       function(features, projection) {
-        this.setProjection(projection);
+        if (ol.proj.equivalent(projection, this.getProjection())) {
+          this.setProjection(projection);
+        }
         this.setFeatures(features);
       },
       /**

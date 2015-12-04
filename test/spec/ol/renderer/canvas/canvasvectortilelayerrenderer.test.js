@@ -41,7 +41,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         ol.VectorTile.apply(this, arguments);
         this.setState('loaded');
         this.setFeatures([feature1, feature2]);
-        this.setProjection(ol.proj.get('EPSG:3857'));
       };
       ol.inherits(TileClass, ol.VectorTile);
       var source = new ol.source.VectorTile({
