@@ -2,7 +2,6 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
-goog.require('ol.color');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -24,7 +23,7 @@ var iconStyle = new ol.style.Style({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    color: ol.color.asArray('#8959A8'),
+    color: '#8959A8',
     opacity: 0.75,
     src: 'data/icon.png'
   }))

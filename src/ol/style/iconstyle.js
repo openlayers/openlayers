@@ -129,7 +129,8 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {ol.Color}
    */
-  var color = options.color !== undefined ? options.color : null;
+  var color = options.color !== undefined ? ol.color.asArray(options.color) :
+      null;
 
   /**
    * @private
