@@ -8,6 +8,9 @@ goog.require('ol.vec.Mat4');
 /**
  * Binds a Canvas Immediate API to a canvas context, to allow drawing geometries
  * to the context's canvas.
+ *
+ * The units for geometry coordinates are css pixels relative to the top left
+ * corner of the canvas element.
  * ```js
  * var canvas = document.createElement('canvas');
  * var render = ol.render.toContext(canvas.getContext('2d'),
@@ -16,6 +19,7 @@ goog.require('ol.vec.Mat4');
  * render.drawPolygonGeometry(
  *     new ol.geom.Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]]));
  * ```
+ *
  * Note that {@link ol.render.canvas.Immediate#drawAsync} and
  * {@link ol.render.canvas.Immediate#drawFeature} cannot be used.
  *
