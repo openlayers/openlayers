@@ -18,8 +18,7 @@ describe('ol.rendering.reproj.Tile', function() {
       tile.listen('change', function(e) {
         if (tile.getState() == ol.TileState.LOADED) {
           expect(tilesRequested).to.be(expectedRequests);
-          resembleCanvas(tile.getImage(), expectedUrl,
-              IMAGE_TOLERANCE, done);
+          resembleCanvas(tile.getImage(), expectedUrl, 7.5, done);
         }
       });
       tile.load();
