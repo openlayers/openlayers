@@ -429,11 +429,10 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * the current fill and stroke styles.
  *
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
- * @param {ol.Feature} feature Feature,
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawCircleGeometry =
-    function(circleGeometry, feature) {
+    function(circleGeometry) {
   if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
     return;
   }
@@ -528,11 +527,10 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry =
  * the current style.
  *
  * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry =
-    function(pointGeometry, feature) {
+    function(pointGeometry) {
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   if (this.image_) {
@@ -550,11 +548,10 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry =
  *
  * @param {ol.geom.MultiPoint|ol.render.Feature} multiPointGeometry MultiPoint
  *     geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, feature) {
+    function(multiPointGeometry) {
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   if (this.image_) {
@@ -572,11 +569,10 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry =
  *
  * @param {ol.geom.LineString|ol.render.Feature} lineStringGeometry Line
  *     string geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
-    function(lineStringGeometry, feature) {
+    function(lineStringGeometry) {
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
     return;
   }
@@ -602,11 +598,10 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry =
  *
  * @param {ol.geom.MultiLineString|ol.render.Feature} multiLineStringGeometry
  *     MultiLineString geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry, feature) {
+    function(multiLineStringGeometry) {
   var geometryExtent = multiLineStringGeometry.getExtent();
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
@@ -639,11 +634,10 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry =
  *
  * @param {ol.geom.Polygon|ol.render.Feature} polygonGeometry Polygon
  *     geometry.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
-    function(polygonGeometry, feature) {
+    function(polygonGeometry) {
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
     return;
   }
@@ -676,11 +670,10 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry =
  * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
  * uses the current style.
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
- * @param {ol.Feature} feature Feature.
  * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry, feature) {
+    function(multiPolygonGeometry) {
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
     return;
   }

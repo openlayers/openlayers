@@ -3800,6 +3800,40 @@ olx.layer.VectorTileOptions.prototype.visible;
  * Namespace.
  * @type {Object}
  */
+olx.render;
+
+
+/**
+ * @typedef {{size: (ol.Size|undefined),
+ *     pixelRatio: (number|undefined)}}
+ * @api
+ */
+olx.render.ToContextOptions;
+
+
+/**
+ * Desired size of the canvas in css pixels. When provided, both canvas and css
+ * size will be set according to the `pixelRatio`. If not provided, the current
+ * canvas and css sizes will not be altered.
+ * @type {ol.Size|undefined}
+ * @api
+ */
+olx.render.ToContextOptions.prototype.size;
+
+
+/**
+ * Pixel ratio (canvas pixel to css pixel ratio) for the canvas. Default
+ * is the detected device pixel ratio.
+ * @type {ol.Size|undefined}
+ * @api
+ */
+olx.render.ToContextOptions.prototype.pixelRatio;
+
+
+/**
+ * Namespace.
+ * @type {Object}
+ */
 olx.source;
 
 
