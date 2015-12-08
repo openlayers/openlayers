@@ -8,6 +8,7 @@ goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
 goog.require('ol.TileState');
+goog.require('ol.VectorTile');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
@@ -103,22 +104,18 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
                   goog.asserts.fail('unexpected format type');
                 }
                 if (source) {
-                  if (ol.ENABLE_VECTOR_TILE && success.length == 2) {
-                    var dataProjection = format.readProjection(source);
-                    var units = dataProjection.getUnits();
-                    if (units === ol.proj.Units.TILE_PIXELS) {
+                  if (ol.ENABLE_VECTOR_TILE && this instanceof ol.VectorTile) {
+                    var dataUnits = format.readProjection(source).getUnits();
+                    if (dataUnits === ol.proj.Units.TILE_PIXELS) {
                       projection = new ol.proj.Projection({
                         code: projection.getCode(),
-                        units: units
+                        units: dataUnits
                       });
                       this.setProjection(projection);
                     }
-                    success.call(this, format.readFeatures(source,
-                        {featureProjection: projection}), dataProjection);
-                  } else {
-                    success.call(this, format.readFeatures(source,
-                        {featureProjection: projection}));
                   }
+                  success.call(this, format.readFeatures(source,
+                      {featureProjection: projection}));
                 } else {
                   goog.asserts.fail('undefined or null source');
                 }
@@ -150,13 +147,9 @@ ol.featureloader.tile = function(url, format) {
   return ol.featureloader.loadFeaturesXhr(url, format,
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
-       * @param {ol.proj.Projection} projection Data projection.
        * @this {ol.VectorTile}
        */
-      function(features, projection) {
-        if (ol.proj.equivalent(projection, this.getProjection())) {
-          this.setProjection(projection);
-        }
+      function(features) {
         this.setFeatures(features);
       },
       /**
