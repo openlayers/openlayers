@@ -360,12 +360,12 @@ ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();
   var selectedFeatures =
       this.featureOverlay_.getSource().getFeaturesCollection();
-  if (!goog.isNull(currentMap)) {
+  if (currentMap) {
     selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
   }
   goog.base(this, 'setMap', map);
   this.featureOverlay_.setMap(map);
-  if (!goog.isNull(map)) {
+  if (map) {
     selectedFeatures.forEach(map.skipFeature, map);
   }
 };
@@ -396,7 +396,7 @@ ol.interaction.Select.prototype.addFeature_ = function(evt) {
   var map = this.getMap();
   goog.asserts.assertInstanceof(feature, ol.Feature,
       'feature should be an ol.Feature');
-  if (!goog.isNull(map)) {
+  if (map) {
     map.skipFeature(feature);
   }
 };
@@ -411,7 +411,7 @@ ol.interaction.Select.prototype.removeFeature_ = function(evt) {
   var map = this.getMap();
   goog.asserts.assertInstanceof(feature, ol.Feature,
       'feature should be an ol.Feature');
-  if (!goog.isNull(map)) {
+  if (map) {
     map.unskipFeature(feature);
   }
 };
