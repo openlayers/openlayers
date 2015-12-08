@@ -5537,7 +5537,7 @@ olx.source.VectorOptions.prototype.wrapX;
  *     version: (string|undefined),
  *     format: (string|undefined),
  *     matrixSet: string,
- *     dimensions: (Object|undefined),
+ *     dimensions: (!Object|undefined),
  *     url: (string|undefined),
  *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
@@ -5676,7 +5676,7 @@ olx.source.WMTSOptions.prototype.matrixSet;
 /**
  * Additional "dimensions" for tile requests.  This is an object with properties
  * named like the advertised WMTS dimensions.
- * @type {Object|undefined}
+ * @type {!Object|undefined}
  * @api stable
  */
 olx.source.WMTSOptions.prototype.dimensions;
