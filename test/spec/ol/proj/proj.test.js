@@ -69,6 +69,7 @@ describe('ol.proj', function() {
           });
           expect(ol.proj.equivalent(proj1, proj2)).to.not.be.ok();
         });
+
   });
 
   describe('identify transform', function() {
