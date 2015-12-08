@@ -106,7 +106,12 @@ style of the existing OpenLayers 3 code, which includes:
 
  * Use `array.length = 0` instead of `goog.array.clear`.
 
- * Use `Object.keys(obj)` instead of `goog.object.getKeys(obj)`.
+ * Use `v !== undefined` instead of `goog.isDef(v)` and `v === null` instead of
+   `goog.isNull(v)`.
+
+ * Use ECMAScript 5.1 functions instead of the `goog` equivalents. For example,
+   use `Object.keys(obj)` instead of `goog.object.getKeys(obj)`, `arr.forEach(f)`
+   instead of `goog.array.forEach(arr, f)`, etc ...
 
  * Use bracket notation instead of `goog.object.set` and `goog.object.get` (with
    two arguments).
