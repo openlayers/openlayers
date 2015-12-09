@@ -100,6 +100,8 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
       tile.load();
       ++this.tilesLoading_;
       ++newLoads;
+    } else {
+      this.tileChangeCallback_();
     }
   }
 };
