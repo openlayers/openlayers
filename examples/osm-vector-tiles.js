@@ -18,18 +18,16 @@ var roadColor = {
   'highway': '#f39'
 };
 var landuseStyleCache = {};
-var buildingStyle = [
-  new ol.style.Style({
-    fill: new ol.style.Fill({
-      color: '#666',
-      opacity: 0.4
-    }),
-    stroke: new ol.style.Stroke({
-      color: '#444',
-      width: 1
-    })
+var buildingStyle = new ol.style.Style({
+  fill: new ol.style.Fill({
+    color: '#666',
+    opacity: 0.4
+  }),
+  stroke: new ol.style.Stroke({
+    color: '#444',
+    width: 1
   })
-];
+});
 
 var map = new ol.Map({
   layers: [
