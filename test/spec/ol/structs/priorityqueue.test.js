@@ -28,12 +28,23 @@ describe('ol.structs.PriorityQueue', function() {
     });
 
     it('enqueue adds an element', function() {
-      pq.enqueue(0);
+      var added = pq.enqueue(0);
       expect(function() {
         pq.assertValid();
       }).not.to.throwException();
+      expect(added).to.be(true);
       expect(pq.elements_).to.eql([0]);
       expect(pq.priorities_).to.eql([0]);
+    });
+
+    it('do not enqueue element with DROP priority', function() {
+      var added = pq.enqueue(Infinity);
+      expect(function() {
+        pq.assertValid();
+      }).not.to.throwException();
+      expect(added).to.be(false);
+      expect(pq.elements_).to.eql([]);
+      expect(pq.priorities_).to.eql([]);
     });
 
     it('maintains the pq property while elements are enqueued', function() {
