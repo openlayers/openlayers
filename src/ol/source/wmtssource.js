@@ -53,7 +53,7 @@ ol.source.WMTS = function(options) {
 
   /**
    * @private
-   * @type {Object}
+   * @type {!Object}
    */
   this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
 
@@ -197,7 +197,7 @@ goog.inherits(ol.source.WMTS, ol.source.TileImage);
  * Get the dimensions, i.e. those passed to the constructor through the
  * "dimensions" option, and possibly updated using the updateDimensions
  * method.
- * @return {Object} Dimensions.
+ * @return {!Object} Dimensions.
  * @api
  */
 ol.source.WMTS.prototype.getDimensions = function() {
