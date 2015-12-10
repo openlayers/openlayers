@@ -122,6 +122,7 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
 /**
  * Enqueue an element. O(log N).
  * @param {T} element Element.
+ * @return {boolean} The element was added to the queue.
  */
 ol.structs.PriorityQueue.prototype.enqueue = function(element) {
   goog.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_),
@@ -132,7 +133,9 @@ ol.structs.PriorityQueue.prototype.enqueue = function(element) {
     this.priorities_.push(priority);
     this.queuedElements_[this.keyFunction_(element)] = true;
     this.siftDown_(0, this.elements_.length - 1);
+    return true;
   }
+  return false;
 };
 
 
