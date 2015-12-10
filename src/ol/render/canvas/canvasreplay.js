@@ -398,14 +398,23 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                 goog.vec.Mat4.getElement(localTransform, 0, 3),
                 goog.vec.Mat4.getElement(localTransform, 1, 3));
           }
-          if (stroke) {
-            context.strokeText(text, x, y);
-          }
-          if (fill) {
-            context.fillText(text, x, y);
-          }
-          if (scale != 1 || rotation !== 0) {
-            context.setTransform(1, 0, 0, 1, 0, 0);
+
+          var fontSize = parseFloat(context.font);
+          var lines = text.split('\n');
+          var numLines = lines.length;
+          var lineY = y - (((numLines - 1) / 2) * fontSize);
+
+          for (var lineIndex = 0; lineIndex < numLines; lineIndex++) {
+            var line = lines[lineIndex];
+            if (stroke) {
+              context.strokeText(line, x, lineY);
+            }
+            if (fill) {
+              context.fillText(line, x, lineY);
+            }
+
+            // Add a small padding when calculating the new Y size.
+            lineY = lineY + fontSize + 5;
           }
         }
         ++i;
