@@ -200,7 +200,7 @@ function createIndex(files, metalsmith, done) {
   var exampleInfos = [];
   for (var filename in files) {
     var example = files[filename];
-    if (markupRegEx.test(filename)) {
+    if (markupRegEx.test(filename) && filename !== 'index.html') {
       exampleInfos.push({
         link: filename,
         example: filename,
