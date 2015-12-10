@@ -45,6 +45,7 @@ var map = new ol.Map({
     new ol.layer.VectorTile({
       preload: Infinity,
       source: new ol.source.VectorTile({
+        opaque: true,
         attributions: [new ol.Attribution({
           html: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
               '© <a href="http://www.openstreetmap.org/copyright">' +

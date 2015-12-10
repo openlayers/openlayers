@@ -17,6 +17,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        opaque: true,
         attributions: [new ol.Attribution({
           html: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
               '© <a href="http://www.openstreetmap.org/copyright">' +

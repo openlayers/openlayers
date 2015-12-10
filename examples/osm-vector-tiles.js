@@ -35,6 +35,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        opaque: true,
         format: format,
         tileGrid: tileGrid,
         url: 'http://{a-c}.tile.openstreetmap.us/' +
@@ -48,6 +49,7 @@ var map = new ol.Map({
     }),
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        opaque: true,
         format: format,
         tileGrid: tileGrid,
         url: 'http://{a-c}.tile.openstreetmap.us/' +
@@ -82,6 +84,7 @@ var map = new ol.Map({
     }),
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        opaque: true,
         format: format,
         tileGrid: tileGrid,
         url: 'http://{a-c}.tile.openstreetmap.us/' +
@@ -93,6 +96,7 @@ var map = new ol.Map({
     }),
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        opaque: true,
         format: format,
         tileGrid: tileGrid,
         url: 'http://{a-c}.tile.openstreetmap.us/' +
