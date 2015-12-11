@@ -46,7 +46,7 @@
     "pixelworks": "1.0.0",
     "rbush": "1.4.1",
     "temp": "0.8.3",
-    "vector-tile": "1.1.3",
+    "vector-tile": "1.2.0",
     "walk": "2.3.9"
   },
   "devDependencies": {
