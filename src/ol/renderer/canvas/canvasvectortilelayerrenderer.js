@@ -178,16 +178,18 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       'Source is an ol.source.VectorTile');
   var tileGrid = source.getTileGrid();
   var tileCoord = tile.getTileCoord();
+  var buffer = source.getOpaque() ? 0.25 * pixelRatio : 0;
+  var resolution = tileGrid.getResolution(tileCoord[0]);
   var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
   var extent;
   if (pixelSpace) {
     var tilePixelSize = source.getTilePixelSize(tileCoord[0], pixelRatio,
         tile.getProjection());
-    extent = [0, 0, tilePixelSize[0], tilePixelSize[1]];
+    extent = [-0.25, -0.25, tilePixelSize[0] + 0.25, tilePixelSize[1] + 0.25];
   } else {
-    extent = tileGrid.getTileCoordExtent(tileCoord);
+    extent = ol.extent.buffer(tileGrid.getTileCoordExtent(tileCoord),
+        buffer * resolution);
   }
-  var resolution = tileGrid.getResolution(tileCoord[0]);
   var tileResolution = pixelSpace ? source.getTilePixelRatio() : resolution;
   replayState.dirty = false;
   var replayGroup = new ol.render.canvas.ReplayGroup(0, extent,

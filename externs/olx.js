@@ -4223,7 +4223,11 @@ olx.source.VectorTileOptions.prototype.logo;
 
 
 /**
- * Whether the layer is opaque.
+ * Whether the layer is opaque. Set to true when the layer is at the bottom of
+ * the layer stack, and both the layer and all of its feature styles have an
+ * opacity of 1 or no opacity set. This setting avoids potential gaps at tile
+ * borders in
+ * the rendered map. Default is false.
  * @type {boolean|undefined}
  * @api
  */
