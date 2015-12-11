@@ -3688,9 +3688,11 @@ olx.layer.VectorTileOptions;
 
 
 /**
- * The buffer around the viewport extent used by the renderer when getting
- * features from the vector source for the rendering or hit-detection.
- * Recommended value: the size of the largest symbol, line width or label.
+ * The buffer around the tile extent used by the renderer when getting features
+ * from the vector tile for the rendering or hit-detection.
+ * Recommended value: Vector tiles are usually generated with a buffer, so this
+ * value should match the largest possible buffer of the used tiles. It should
+ * be at least the size of the largest point symbol or line width.
  * Default is 100 pixels.
  * @type {number|undefined}
  * @api
