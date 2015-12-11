@@ -43,6 +43,16 @@ describe('ol.source.TileArcGISRest', function() {
       expect(queryData.get('DPI')).to.be('101');
     });
 
+    it('takes DPI from params if specified', function() {
+      options.params.DPI = 96;
+      var source = new ol.source.TileArcGISRest(options);
+      var tile = source.getTile(3, 2, -7, 1.12, ol.proj.get('EPSG:3857'));
+      var uri = new goog.Uri(tile.src_);
+      var queryData = uri.getQueryData();
+      expect(queryData.get('DPI')).to.be('108');
+      delete options.params.DPI;
+    });
+
     it('returns a tile with the expected URL with url list', function() {
 
       options.urls = ['http://test1.com/MapServer',
