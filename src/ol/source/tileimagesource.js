@@ -204,17 +204,20 @@ ol.source.TileImage.prototype.getTile =
     return this.getTileInternal(z, x, y, pixelRatio, projection);
   } else {
     var cache = this.getTileCacheForProjection(projection);
-    var tileCoordKey = this.getKeyZXY(z, x, y);
+    var tileCoord = [z, x, y];
+    var tileCoordKey = this.getKeyZXY.apply(this, tileCoord);
     if (cache.containsKey(tileCoordKey)) {
       return /** @type {!ol.Tile} */ (cache.get(tileCoordKey));
     } else {
       var sourceProjection = this.getProjection();
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
       var targetTileGrid = this.getTileGridForProjection(projection);
+      var wrappedTileCoord =
+          this.getTileCoordForTileUrlFunction(tileCoord, projection);
       var tile = new ol.reproj.Tile(
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
-          z, x, y, this.getTilePixelRatio(),
+          tileCoord, wrappedTileCoord, this.getTilePixelRatio(),
           goog.bind(function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
           }, this), this.reprojectionErrorThreshold_,
