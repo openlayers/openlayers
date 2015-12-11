@@ -33,9 +33,8 @@ ol.reproj.TileFunctionType;
  * @param {ol.tilegrid.TileGrid} sourceTileGrid Source tile grid.
  * @param {ol.proj.Projection} targetProj Target projection.
  * @param {ol.tilegrid.TileGrid} targetTileGrid Target tile grid.
- * @param {number} z Zoom level.
- * @param {number} x X.
- * @param {number} y Y.
+ * @param {ol.TileCoord} tileCoord Coordinate of the tile.
+ * @param {ol.TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.reproj.TileFunctionType} getTileFunction
  *     Function returning source tiles (z, x, y, pixelRatio).
@@ -43,10 +42,11 @@ ol.reproj.TileFunctionType;
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  */
 ol.reproj.Tile = function(sourceProj, sourceTileGrid,
-    targetProj, targetTileGrid, z, x, y, pixelRatio, getTileFunction,
+    targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
+    pixelRatio, getTileFunction,
     opt_errorThreshold,
     opt_renderEdges) {
-  goog.base(this, [z, x, y], ol.TileState.IDLE);
+  goog.base(this, tileCoord, ol.TileState.IDLE);
 
   /**
    * @private
@@ -86,6 +86,12 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
+   * @type {ol.TileCoord}
+   */
+  this.wrappedTileCoord_ = wrappedTileCoord ? wrappedTileCoord : tileCoord;
+
+  /**
+   * @private
    * @type {!Array.<ol.Tile>}
    */
   this.sourceTiles_ = [];
@@ -102,7 +108,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    */
   this.sourceZ_ = 0;
 
-  var targetExtent = targetTileGrid.getTileCoordExtent(this.getTileCoord());
+  var targetExtent = targetTileGrid.getTileCoordExtent(this.wrappedTileCoord_);
   var maxTargetExtent = this.targetTileGrid_.getExtent();
   var maxSourceExtent = this.sourceTileGrid_.getExtent();
 
@@ -126,7 +132,8 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     }
   }
 
-  var targetResolution = targetTileGrid.getResolution(z);
+  var targetResolution = targetTileGrid.getResolution(
+      this.wrappedTileCoord_[0]);
 
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
@@ -248,15 +255,15 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   }, this);
   this.sourceTiles_.length = 0;
 
-  var tileCoord = this.getTileCoord();
-  var z = tileCoord[0];
+  var z = this.wrappedTileCoord_[0];
   var size = this.targetTileGrid_.getTileSize(z);
   var width = goog.isNumber(size) ? size : size[0];
   var height = goog.isNumber(size) ? size : size[1];
   var targetResolution = this.targetTileGrid_.getResolution(z);
   var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
-  var targetExtent = this.targetTileGrid_.getTileCoordExtent(tileCoord);
+  var targetExtent = this.targetTileGrid_.getTileCoordExtent(
+      this.wrappedTileCoord_);
   this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
       sourceResolution, this.sourceTileGrid_.getExtent(),
       targetResolution, targetExtent, this.triangulation_, sources,

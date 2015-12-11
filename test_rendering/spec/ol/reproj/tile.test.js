@@ -9,7 +9,8 @@ describe('ol.rendering.reproj.Tile', function() {
     var tilesRequested = 0;
 
     var tile = new ol.reproj.Tile(sourceProjection, source.getTileGrid(),
-        ol.proj.get(targetProjection), targetTileGrid, z, x, y, pixelRatio,
+        ol.proj.get(targetProjection), targetTileGrid,
+        [z, x, y], null, pixelRatio,
         function(z, x, y, pixelRatio) {
           tilesRequested++;
           return source.getTile(z, x, y, pixelRatio, sourceProjection);
