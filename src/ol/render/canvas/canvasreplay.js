@@ -398,12 +398,34 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                 goog.vec.Mat4.getElement(localTransform, 0, 3),
                 goog.vec.Mat4.getElement(localTransform, 1, 3));
           }
-          if (stroke) {
-            context.strokeText(text, x, y);
+
+          // Support multiple lines separated by \n
+          var lines = text.split('\n');
+          var numLines = lines.length;
+          var fontSize, lineY;
+          if (numLines > 1) {
+            // Estimate line height using width of capital M, and add padding
+            fontSize = Math.round(context.measureText('M').width * 1.5);
+            lineY = y - (((numLines - 1) / 2) * fontSize);
+          } else {
+            // No need to calculate line height/offset for a single line
+            fontSize = 0;
+            lineY = y;
           }
-          if (fill) {
-            context.fillText(text, x, y);
+
+          for (var lineIndex = 0; lineIndex < numLines; lineIndex++) {
+            var line = lines[lineIndex];
+            if (stroke) {
+              context.strokeText(line, x, lineY);
+            }
+            if (fill) {
+              context.fillText(line, x, lineY);
+            }
+
+            // Move next line down by fontSize px
+            lineY = lineY + fontSize;
           }
+
           if (scale != 1 || rotation !== 0) {
             context.setTransform(1, 0, 0, 1, 0, 0);
           }
