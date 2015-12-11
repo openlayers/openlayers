@@ -108,7 +108,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
                     var dataUnits = format.readProjection(source).getUnits();
                     if (dataUnits === ol.proj.Units.TILE_PIXELS) {
                       projection = new ol.proj.Projection({
-                        code: projection.getCode(),
+                        code: this.getProjection().getCode(),
                         units: dataUnits
                       });
                       this.setProjection(projection);
