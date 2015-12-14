@@ -11,6 +11,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.geom.flat.transform');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.proj.Units');
 goog.require('ol.render.EventType');
@@ -50,6 +51,18 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
    * @type {Array.<ol.VectorTile>}
    */
   this.renderedTiles_ = [];
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.resolution_ = NaN;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.rotation_ = NaN;
 
   /**
    * @private
@@ -110,44 +123,101 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   // see http://jsperf.com/context-save-restore-versus-variable
   var alpha = replayContext.globalAlpha;
   replayContext.globalAlpha = layerState.opacity;
+  var imageSmoothingEnabled = replayContext.imageSmoothingEnabled;
+  replayContext.imageSmoothingEnabled = false;
+
 
   var tilesToDraw = this.renderedTiles_;
   var tileGrid = source.getTileGrid();
 
-  var currentZ, i, ii, origin, tile, tileSize;
-  var tilePixelRatio, tilePixelResolution, tilePixelSize, tileResolution;
+  var currentZ, height, i, ii, insertPoint, insertTransform, origin, pixelScale;
+  var pixelSpace, replayState, rotatedTileExtent, rotatedTileSize, size, tile;
+  var tileCenter, tileContext, tileExtent, tilePixelResolution, tilePixelSize;
+  var tileResolution, tileSize, tileTransform, width;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
+    replayState = tile.getReplayState();
+    tileExtent = tileGrid.getTileCoordExtent(
+        tile.getTileCoord(), this.tmpExtent_);
     currentZ = tile.getTileCoord()[0];
-    tileSize = tileGrid.getTileSize(currentZ);
-    tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
-    tilePixelRatio = tilePixelSize[0] /
-        ol.size.toSize(tileSize, this.tmpSize_)[0];
+    tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ), this.tmpSize_);
+    pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
+    size = frameState.size;
     tileResolution = tileGrid.getResolution(currentZ);
-    tilePixelResolution = tileResolution / tilePixelRatio;
-    if (tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS) {
-      origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(
-          tile.getTileCoord(), this.tmpExtent_));
-      transform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
-          pixelRatio * frameState.size[0] / 2,
-          pixelRatio * frameState.size[1] / 2,
-          pixelRatio * tilePixelResolution / resolution,
-          pixelRatio * tilePixelResolution / resolution,
-          viewState.rotation,
-          (origin[0] - center[0]) / tilePixelResolution,
-          (center[1] - origin[1]) / tilePixelResolution);
+    tilePixelResolution = tileResolution / source.getTilePixelRatio();
+    pixelScale = pixelRatio / resolution;
+    scale = tileResolution / resolution;
+    offsetX = Math.round(pixelRatio * size[0] / 2);
+    offsetY = Math.round(pixelRatio * size[1] / 2);
+    width = tileSize[0] * pixelRatio * scale;
+    height = tileSize[1] * pixelRatio * scale;
+    if (width < 1 || width > size[0]) {
+      if (pixelSpace) {
+        origin = ol.extent.getTopLeft(tileExtent);
+        tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+            pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
+            pixelScale * tilePixelResolution,
+            pixelScale * tilePixelResolution,
+            rotation,
+            (origin[0] - center[0]) / tilePixelResolution,
+            (center[1] - origin[1]) / tilePixelResolution);
+      } else {
+        tileTransform = transform;
+      }
+      replayState.replayGroup.replay(replayContext, pixelRatio,
+          tileTransform, rotation, skippedFeatureUids);
+    } else {
+      rotatedTileExtent = ol.extent.getForViewAndSize(
+          ol.extent.getCenter(tileExtent), tileResolution, rotation, tileSize);
+      rotatedTileSize = [ol.extent.getWidth(rotatedTileExtent),
+            ol.extent.getHeight(rotatedTileExtent)];
+      tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
+      if (pixelSpace) {
+        tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+            width / 2, height / 2,
+            pixelScale * tilePixelResolution, pixelScale * tilePixelResolution,
+            rotation,
+            -tilePixelSize[0] / 2, -tilePixelSize[1] / 2);
+      } else {
+        tileCenter = ol.extent.getCenter(rotatedTileExtent);
+        tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+            width / 2, height / 2,
+            pixelScale, -pixelScale,
+            -rotation,
+            -tileCenter[0], -tileCenter[1]);
+      }
+      tileContext = tile.getContext();
+      if (replayState.resolution !== resolution ||
+          replayState.rotation !== rotation) {
+        replayState.resolution = resolution;
+        replayState.rotation = rotation;
+        tileContext.canvas.width = width + 0.5;
+        tileContext.canvas.height = height + 0.5;
+        replayState.replayGroup.replay(tileContext, pixelRatio,
+            tileTransform, rotation, skippedFeatureUids, rotation !== 0);
+      }
+      insertTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+          (pixelRatio * size[0] - width) / 2,
+          (pixelRatio * size[1] - height) / 2,
+          pixelScale, -pixelScale,
+          -rotation,
+          -center[0], -center[1]);
+      insertPoint = ol.geom.flat.transform.transform2D(
+          ol.extent.getCenter(rotatedTileExtent), 0, 1, 2, insertTransform);
+      replayContext.drawImage(tileContext.canvas,
+          insertPoint[0], insertPoint[1]);
     }
-    tile.getReplayState().replayGroup.replay(replayContext, pixelRatio,
-        transform, rotation, skippedFeatureUids);
   }
 
-  transform = this.getTransform(frameState, 0);
+  this.resolution_ = resolution;
+  this.rotation_ = rotation;
 
   if (replayContext != context) {
     this.dispatchRenderEvent(replayContext, frameState, transform);
     context.drawImage(replayContext.canvas, 0, 0);
   }
   replayContext.globalAlpha = alpha;
+  replayContext.imageSmoothingEnabled = imageSmoothingEnabled;
 
   this.dispatchPostComposeEvent(context, frameState, transform);
 };
@@ -179,16 +249,19 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       'Source is an ol.source.VectorTile');
   var tileGrid = source.getTileGrid();
   var tileCoord = tile.getTileCoord();
+  var buffer = 1;
+  var resolution = tileGrid.getResolution(tileCoord[0]);
   var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
   var extent;
   if (pixelSpace) {
     var tilePixelSize = source.getTilePixelSize(tileCoord[0], pixelRatio,
         tile.getProjection());
-    extent = [0, 0, tilePixelSize[0], tilePixelSize[1]];
+    extent = [-buffer, -buffer,
+      tilePixelSize[0] + buffer, tilePixelSize[1] + buffer];
   } else {
-    extent = tileGrid.getTileCoordExtent(tileCoord);
+    extent = ol.extent.buffer(tileGrid.getTileCoordExtent(tileCoord),
+        buffer * resolution);
   }
-  var resolution = tileGrid.getResolution(tileCoord[0]);
   var tileResolution = pixelSpace ? source.getTilePixelRatio() : resolution;
   replayState.dirty = false;
   var replayGroup = new ol.render.canvas.ReplayGroup(0, extent,
@@ -234,6 +307,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   replayState.renderedRevision = revision;
   replayState.renderedRenderOrder = renderOrder;
   replayState.replayGroup = replayGroup;
+  replayState.resolution = NaN;
 };
 
 
