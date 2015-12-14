@@ -2658,6 +2658,16 @@ olx.interaction.DrawOptions.prototype.geometryName;
  */
 olx.interaction.DrawOptions.prototype.condition;
 
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether the current sketch being drawn should be updated. This
+ * can be used to either limit the scope of the feature being drawn, or to
+ * skip events caused by panning/zooming on a touch device. By default
+ * {@link ol.events.condition.always}, i.e. it is always updated.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.updateSketchCondition;
 
 /**
  * Condition that activates freehand drawing for lines and polygons. This
