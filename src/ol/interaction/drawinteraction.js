@@ -297,6 +297,13 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.events.ConditionType}
    */
+  this.updateSketchCondition_ = options.updateSketchCondition ?
+      options.updateSketchCondition : ol.events.condition.always;
+
+  /**
+   * @private
+   * @type {ol.events.ConditionType}
+   */
   this.freehandCondition_ = options.freehandCondition ?
       options.freehandCondition : ol.events.condition.shiftKeyOnly;
 
@@ -528,6 +535,9 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
+  if (!this.updateSketchCondition_(event)) {
+    return;
+  }
   var coordinate = event.coordinate;
   var geometry = this.sketchFeature_.getGeometry();
   goog.asserts.assertInstanceof(geometry, ol.geom.SimpleGeometry,
