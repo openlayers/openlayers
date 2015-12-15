@@ -2790,7 +2790,7 @@ describe('ol.format.KML', function() {
       var nl = format.readNetworkLinks(text);
       expect(nl).to.have.length(2);
       expect(nl[0].name).to.be('bar');
-      expect(nl[0].href).to.be('bar/bar.kml');
+      expect(nl[0].href.replace(window.location.href, '')).to.be('bar/bar.kml');
       expect(nl[1].href).to.be('http://foo.com/foo.kml');
     });
 
