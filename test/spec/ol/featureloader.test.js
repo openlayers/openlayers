@@ -75,17 +75,18 @@ describe('ol.featureloader', function() {
       loader.call(tile, [], 1, ol.proj.get('EPSG:3857'));
     });
 
-    it('sets features on the tile and updates proj units', function(done) {
-      var url = 'spec/ol/data/14-8938-5680.vector.pbf';
-      var format = new ol.format.MVT();
-      loader = ol.featureloader.tile(url, format);
-      goog.events.listen(tile, 'change', function(e) {
-        expect(tile.getFeatures().length).to.be.greaterThan(0);
-        expect(tile.getProjection().getUnits()).to.be('tile-pixels');
-        done();
-      });
-      loader.call(tile, [], 1, ol.proj.get('EPSG:3857'));
-    });
+    (typeof ArrayBuffer == 'function' ? it : xit)(
+        'sets features on the tile and updates proj units', function(done) {
+          var url = 'spec/ol/data/14-8938-5680.vector.pbf';
+          var format = new ol.format.MVT();
+          loader = ol.featureloader.tile(url, format);
+          goog.events.listen(tile, 'change', function(e) {
+            expect(tile.getFeatures().length).to.be.greaterThan(0);
+            expect(tile.getProjection().getUnits()).to.be('tile-pixels');
+            done();
+          });
+          loader.call(tile, [], 1, ol.proj.get('EPSG:3857'));
+        });
 
   });
 
