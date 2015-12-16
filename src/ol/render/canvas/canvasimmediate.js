@@ -722,7 +722,7 @@ ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
 ol.render.canvas.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  zs.sort(ol.array.defaultCompare);
+  zs.sort(ol.array.numberSafeCompareFunction);
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     callbacks = this.callbacksByZIndex_[zs[i].toString()];
