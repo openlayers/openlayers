@@ -139,6 +139,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @type {!goog.vec.Mat4.Number}
    */
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.tmpLocalTransformInv_ = goog.vec.Mat4.createNumber();
 };
 goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
@@ -252,6 +258,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var d = 0; // data index
   var dd; // end of per-instruction data
   var localTransform = this.tmpLocalTransform_;
+  var localTransformInv = this.tmpLocalTransformInv_;
   var prevX, prevY, roundX, roundY;
   while (i < ii) {
     var instruction = instructions[i];
@@ -331,7 +338,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.vec.Mat4.makeTransform2D(
                 localTransform, centerX, centerY, scale, scale,
                 rotation, -centerX, -centerY);
-            context.setTransform(
+            context.transform(
                 goog.vec.Mat4.getElement(localTransform, 0, 0),
                 goog.vec.Mat4.getElement(localTransform, 1, 0),
                 goog.vec.Mat4.getElement(localTransform, 0, 1),
@@ -351,7 +358,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha;
           }
           if (scale != 1 || rotation !== 0) {
-            context.setTransform(1, 0, 0, 1, 0, 0);
+            goog.vec.Mat4.invert(localTransform, localTransformInv);
+            context.transform(
+                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
           }
         }
         ++i;
@@ -390,7 +404,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             ol.vec.Mat4.makeTransform2D(
                 localTransform, x, y, scale, scale, rotation, -x, -y);
-            context.setTransform(
+            context.transform(
                 goog.vec.Mat4.getElement(localTransform, 0, 0),
                 goog.vec.Mat4.getElement(localTransform, 1, 0),
                 goog.vec.Mat4.getElement(localTransform, 0, 1),
@@ -427,7 +441,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           if (scale != 1 || rotation !== 0) {
-            context.setTransform(1, 0, 0, 1, 0, 0);
+            goog.vec.Mat4.invert(localTransform, localTransformInv);
+            context.transform(
+                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
           }
         }
         ++i;
