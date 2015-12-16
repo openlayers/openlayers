@@ -88,6 +88,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var projection = viewState.projection;
   var resolution = viewState.resolution;
   var rotation = viewState.rotation;
+  var size = frameState.size;
+  var pixelScale = pixelRatio / resolution;
   var layer = this.getLayer();
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
@@ -116,9 +118,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var tileGrid = source.getTileGrid();
 
   var currentZ, height, i, ii, insertPoint, insertTransform, offsetX, offsetY;
-  var origin, pixelScale, pixelSpace, replayState, scale, size, tile;
-  var tileCenter, tileContext, tileExtent, tilePixelResolution, tilePixelSize;
-  var tileResolution, tileSize, tileTransform, width;
+  var origin, pixelSpace, replayState, scale, tile, tileCenter, tileContext;
+  var tileExtent, tilePixelResolution, tilePixelSize, tileResolution, tileSize;
+  var tileTransform, width;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
     replayState = tile.getReplayState();
@@ -127,10 +129,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
     currentZ = tile.getTileCoord()[0];
     tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ), this.tmpSize_);
     pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
-    size = frameState.size;
     tileResolution = tileGrid.getResolution(currentZ);
     tilePixelResolution = tileResolution / source.getTilePixelRatio();
-    pixelScale = pixelRatio / resolution;
     scale = tileResolution / resolution;
     offsetX = Math.round(pixelRatio * size[0] / 2);
     offsetY = Math.round(pixelRatio * size[1] / 2);
