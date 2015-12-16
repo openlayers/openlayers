@@ -2,13 +2,12 @@ goog.provide('ol.test.array');
 
 describe('ol.array', function() {
 
-  describe('defaultCompare', function() {
+  describe('numberSafeCompareFunction', function() {
     it('sorts as expected', function() {
       var arr = [40, 200, 3000];
-      var expected = [40, 200, 3000];
       // default sort would yield [200, 3000, 40]
-      arr.sort(ol.array.defaultCompare);
-      expect(arr).to.eql(expected);
+      arr.sort(ol.array.numberSafeCompareFunction);
+      expect(arr).to.eql(arr);
     });
   });
 

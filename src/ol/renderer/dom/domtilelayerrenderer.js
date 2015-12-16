@@ -178,7 +178,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  zs.sort(ol.array.defaultCompare);
+  zs.sort(ol.array.numberSafeCompareFunction);
 
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
@@ -204,7 +204,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var tileLayerZKeys = Object.keys(this.tileLayerZs_).map(Number);
-  tileLayerZKeys.sort(ol.array.defaultCompare);
+  tileLayerZKeys.sort(ol.array.numberSafeCompareFunction);
 
   var i, ii, j, origin, resolution;
   var transform = goog.vec.Mat4.createNumber();
