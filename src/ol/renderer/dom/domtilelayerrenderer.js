@@ -13,6 +13,7 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
+goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
@@ -177,7 +178,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  zs.sort();
+  zs.sort(ol.array.defaultCompare);
 
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
@@ -203,7 +204,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var tileLayerZKeys = Object.keys(this.tileLayerZs_).map(Number);
-  tileLayerZKeys.sort();
+  tileLayerZKeys.sort(ol.array.defaultCompare);
 
   var i, ii, j, origin, resolution;
   var transform = goog.vec.Mat4.createNumber();

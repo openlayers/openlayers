@@ -8,6 +8,7 @@ goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.VectorTile');
 goog.require('ol.ViewHint');
+goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.VectorTile');
@@ -405,7 +406,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  zs.sort();
+  zs.sort(ol.array.defaultCompare);
   var replayables = [];
   var i, ii, currentZ, tileCoordKey, tilesToDraw;
   for (i = 0, ii = zs.length; i < ii; ++i) {

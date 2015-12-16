@@ -9,6 +9,7 @@ goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.math');
@@ -296,7 +297,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
     /** @type {Array.<number>} */
     var zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort();
+    zs.sort(ol.array.defaultCompare);
     var u_tileOffset = goog.vec.Vec4.createFloat32();
     var i, ii, sx, sy, tileKey, tilesToDraw, tx, ty;
     for (i = 0, ii = zs.length; i < ii; ++i) {
