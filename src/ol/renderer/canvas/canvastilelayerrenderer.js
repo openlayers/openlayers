@@ -365,7 +365,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  zs.sort(ol.array.defaultCompare);
+  zs.sort(ol.array.numberSafeCompareFunction);
   var opaque = tileSource.getOpaque();
   var origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(
       [z, canvasTileRange.minX, canvasTileRange.maxY],

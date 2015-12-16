@@ -41,7 +41,7 @@ ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
   // inside the linear ring.
   var pointX = NaN;
   var maxSegmentLength = -Infinity;
-  intersections.sort(ol.array.defaultCompare);
+  intersections.sort(ol.array.numberSafeCompareFunction);
   x1 = intersections[0];
   for (i = 1, ii = intersections.length; i < ii; ++i) {
     x2 = intersections[i];
