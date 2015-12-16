@@ -8,6 +8,7 @@ goog.require('goog.vec.Mat4');
 goog.require('ol.Size');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
@@ -364,7 +365,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  zs.sort();
+  zs.sort(ol.array.defaultCompare);
   var opaque = tileSource.getOpaque();
   var origin = ol.extent.getTopLeft(tileGrid.getTileCoordExtent(
       [z, canvasTileRange.minX, canvasTileRange.maxY],

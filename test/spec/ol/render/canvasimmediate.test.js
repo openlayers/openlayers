@@ -1,6 +1,22 @@
 goog.provide('ol.test.render.canvas.Immediate');
 
 describe('ol.render.canvas.Immediate', function() {
+
+  describe('#flush', function() {
+    it('calls callback in correct z-order', function() {
+      var canvas = new ol.render.canvas.Immediate();
+      var log = [];
+      canvas.drawAsync(11, function() {
+        log.push(11);
+      });
+      canvas.drawAsync(5, function() {
+        log.push(5);
+      });
+      canvas.flush();
+      expect(log).to.eql([5, 11]);
+    });
+  });
+
   describe('#drawMultiPolygonGeometry', function() {
     it('creates the correct canvas instructions for 3D geometries', function() {
       var log = {

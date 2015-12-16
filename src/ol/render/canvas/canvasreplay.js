@@ -2001,7 +2001,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(
 
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
-  zs.sort();
+  zs.sort(ol.array.defaultCompare);
 
   // setup clipping so that the parts of over-simplified geometries are not
   // visible outside the current extent when panning
