@@ -2361,7 +2361,8 @@ olx.interaction.DragAndDropOptions.prototype.projection;
 
 /**
  * @typedef {{className: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined)}}
+ *     condition: (ol.events.ConditionType|undefined),
+ *     boxEndCondition: (ol.interaction.DragBoxEndConditionType|undefined)}}
  * @api
  */
 olx.interaction.DragBoxOptions;
@@ -2383,6 +2384,25 @@ olx.interaction.DragBoxOptions.prototype.className;
  * @api
  */
 olx.interaction.DragBoxOptions.prototype.condition;
+
+
+/**
+ * A function that takes a {@link ol.MapBrowserEvent} and two
+ * {@link ol.Pixel}s to indicate whether a boxend event should be fired.
+ * Default is:
+ * ```js
+ * function(mapBrowserEvent,
+ *     startPixel, endPixel) {
+ *   var width = endPixel[0] - startPixel[0];
+ *   var height = endPixel[1] - startPixel[1];
+ *   return width * width + height * height >=
+ *     ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED;
+ * }
+ * ```
+ * @type {ol.interaction.DragBoxEndConditionType|undefined}
+ * @api
+ */
+olx.interaction.DragBoxOptions.prototype.boxEndCondition;
 
 
 /**
