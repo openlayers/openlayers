@@ -94,6 +94,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
       'Source is an ol.source.VectorTile');
+  var tilePixelRatio = source.getTilePixelRatio();
+  var maxScale = tilePixelRatio / pixelRatio;
 
   var transform = this.getTransform(frameState, 0);
 
@@ -130,13 +132,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
     tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ), this.tmpSize_);
     pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
     tileResolution = tileGrid.getResolution(currentZ);
-    tilePixelResolution = tileResolution / source.getTilePixelRatio();
+    tilePixelResolution = tileResolution / tilePixelRatio;
     scale = tileResolution / resolution;
     offsetX = Math.round(pixelRatio * size[0] / 2);
     offsetY = Math.round(pixelRatio * size[1] / 2);
     width = tileSize[0] * pixelRatio * scale;
     height = tileSize[1] * pixelRatio * scale;
-    if (width < 1 || width > size[0]) {
+    if (width < 1 || scale > maxScale) {
       if (pixelSpace) {
         origin = ol.extent.getTopLeft(tileExtent);
         tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
