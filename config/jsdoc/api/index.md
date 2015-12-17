@@ -10,7 +10,7 @@
 <td><p>Layers are lightweight containers that get their data from [sources](ol.source.html).</p>
 [ol.layer.Tile](ol.layer.Tile.html)<br>
 [ol.layer.Image](ol.layer.Image.html)<br>
-[ol.layer.Vector](ol.layer.Vector.html)</td>
+[ol.layer.Vector](ol.layer.Vector.html)<br>
 [ol.layer.VectorTile](ol.layer.VectorTile.html)</td>
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
