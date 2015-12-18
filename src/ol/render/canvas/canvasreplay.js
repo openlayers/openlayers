@@ -139,6 +139,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @type {!goog.vec.Mat4.Number}
    */
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.tmpLocalTransformInv_ = goog.vec.Mat4.createNumber();
 };
 goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
@@ -252,6 +258,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var d = 0; // data index
   var dd; // end of per-instruction data
   var localTransform = this.tmpLocalTransform_;
+  var localTransformInv = this.tmpLocalTransformInv_;
   var prevX, prevY, roundX, roundY;
   while (i < ii) {
     var instruction = instructions[i];
@@ -331,7 +338,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.vec.Mat4.makeTransform2D(
                 localTransform, centerX, centerY, scale, scale,
                 rotation, -centerX, -centerY);
-            context.setTransform(
+            context.transform(
                 goog.vec.Mat4.getElement(localTransform, 0, 0),
                 goog.vec.Mat4.getElement(localTransform, 1, 0),
                 goog.vec.Mat4.getElement(localTransform, 0, 1),
@@ -351,7 +358,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha;
           }
           if (scale != 1 || rotation !== 0) {
-            context.setTransform(1, 0, 0, 1, 0, 0);
+            goog.vec.Mat4.invert(localTransform, localTransformInv);
+            context.transform(
+                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
           }
         }
         ++i;
@@ -390,7 +404,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             ol.vec.Mat4.makeTransform2D(
                 localTransform, x, y, scale, scale, rotation, -x, -y);
-            context.setTransform(
+            context.transform(
                 goog.vec.Mat4.getElement(localTransform, 0, 0),
                 goog.vec.Mat4.getElement(localTransform, 1, 0),
                 goog.vec.Mat4.getElement(localTransform, 0, 1),
@@ -427,7 +441,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           if (scale != 1 || rotation !== 0) {
-            context.setTransform(1, 0, 0, 1, 0, 0);
+            goog.vec.Mat4.invert(localTransform, localTransformInv);
+            context.transform(
+                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
+                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
+                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
           }
         }
         ++i;
@@ -1995,32 +2016,35 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
+ * @param {boolean=} opt_clip Clip at `maxExtent`. Default is true.
  */
-ol.render.canvas.ReplayGroup.prototype.replay = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
+    transform, viewRotation, skippedFeaturesHash, opt_clip) {
 
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(ol.array.numberSafeCompareFunction);
 
-  // setup clipping so that the parts of over-simplified geometries are not
-  // visible outside the current extent when panning
-  var maxExtent = this.maxExtent_;
-  var minX = maxExtent[0];
-  var minY = maxExtent[1];
-  var maxX = maxExtent[2];
-  var maxY = maxExtent[3];
-  var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
-  ol.geom.flat.transform.transform2D(
-      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
-  context.save();
-  context.beginPath();
-  context.moveTo(flatClipCoords[0], flatClipCoords[1]);
-  context.lineTo(flatClipCoords[2], flatClipCoords[3]);
-  context.lineTo(flatClipCoords[4], flatClipCoords[5]);
-  context.lineTo(flatClipCoords[6], flatClipCoords[7]);
-  context.closePath();
-  context.clip();
+  if (opt_clip !== false) {
+    // setup clipping so that the parts of over-simplified geometries are not
+    // visible outside the current extent when panning
+    var maxExtent = this.maxExtent_;
+    var minX = maxExtent[0];
+    var minY = maxExtent[1];
+    var maxX = maxExtent[2];
+    var maxY = maxExtent[3];
+    var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
+    ol.geom.flat.transform.transform2D(
+        flatClipCoords, 0, 8, 2, transform, flatClipCoords);
+    context.save();
+    context.beginPath();
+    context.moveTo(flatClipCoords[0], flatClipCoords[1]);
+    context.lineTo(flatClipCoords[2], flatClipCoords[3]);
+    context.lineTo(flatClipCoords[4], flatClipCoords[5]);
+    context.lineTo(flatClipCoords[6], flatClipCoords[7]);
+    context.closePath();
+    context.clip();
+  }
 
   var i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
