@@ -13,7 +13,10 @@ goog.require('ol.proj.Projection');
  *     dirty: boolean,
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedRevision: number,
- *     replayGroup: ol.render.IReplayGroup}}
+ *     renderTime: number,
+ *     replayGroup: ol.render.IReplayGroup,
+ *     resolution: number,
+ *     rotation: number}}
  */
 ol.TileReplayState;
 
@@ -72,7 +75,10 @@ ol.VectorTile =
     dirty: false,
     renderedRenderOrder: null,
     renderedRevision: -1,
-    replayGroup: null
+    renderTime: NaN,
+    replayGroup: null,
+    resolution: NaN,
+    rotation: NaN
   };
 
   /**

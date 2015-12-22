@@ -223,6 +223,16 @@ ol.SIMPLIFY_TOLERANCE = 0.5;
 
 
 /**
+ * @define {number} Maximum time in millsieconds spent for accurate rendering of
+ * a vector tile layer during interactions and animations. When exceeded,
+ * existing tiles will be scaled / rotated to fit the current view. When
+ * `updateWhileAnimating` or `updateWhileInteracting` is set to `true` on the
+ * layer, accurate rendering will always be used. Default is `50` milliseconds.
+ */
+ol.VECTOR_TILE_MAX_RENDER_TIME = 50;
+
+
+/**
  * @define {number} Texture cache high water mark.
  */
 ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
