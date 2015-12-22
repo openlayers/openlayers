@@ -36,6 +36,12 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.busy_ = false;
+
+  /**
+   * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = ol.dom.createCanvasContext2D();
@@ -88,7 +94,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var projection = viewState.projection;
   var resolution = viewState.resolution;
   var rotation = viewState.rotation;
-  var size = frameState.size;
   var pixelScale = pixelRatio / resolution;
   var layer = this.getLayer();
   var source = layer.getSource();
@@ -119,13 +124,14 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
   var tilesToDraw = this.renderedTiles_;
   var tileGrid = source.getTileGrid();
 
-  var currentZ, height, i, ii, insertPoint, insertTransform, offsetX, offsetY;
-  var origin, pixelSpace, replayState, scale, tile, tileCenter, tileContext;
+  var currentZ, fast, height, i, ii, insertPoint, insertTransform, origin;
+  var pixelSpace, replayState, scale, startTime, tile, tileCenter, tileContext;
   var tileExtent, tilePixelResolution, tilePixelSize, tileResolution, tileSize;
   var tileTransform, width;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
     replayState = tile.getReplayState();
+    tileContext = tile.getContext();
     tileExtent = tileGrid.getTileCoordExtent(
         tile.getTileCoord(), this.tmpExtent_);
     currentZ = tile.getTileCoord()[0];
@@ -134,15 +140,23 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
     tileResolution = tileGrid.getResolution(currentZ);
     tilePixelResolution = tileResolution / tilePixelRatio;
     scale = tileResolution / resolution;
-    offsetX = Math.round(pixelRatio * size[0] / 2);
-    offsetY = Math.round(pixelRatio * size[1] / 2);
-    width = tileSize[0] * pixelRatio * scale;
-    height = tileSize[1] * pixelRatio * scale;
-    if (width < 1 || scale > maxScale) {
+    width = Math.round(tileSize[0] * pixelRatio * scale);
+    height = Math.round(tileSize[1] * pixelRatio * scale);
+    fast = true;
+    if (this.busy_ &&
+        replayState.renderTime * ii > ol.VECTOR_TILE_MAX_RENDER_TIME &&
+        !isNaN(replayState.resolution)) {
+      scale = replayState.resolution / resolution;
+      fast = false;
+    }
+    if (!fast) {
+      this.render_(tileContext, replayContext, pixelScale, center, rotation,
+          tileExtent, width, height);
+    } else if (width < 1 || scale > maxScale) {
       if (pixelSpace) {
         origin = ol.extent.getTopLeft(tileExtent);
         tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
-            offsetX, offsetY,
+            replayContext.canvas.width / 2, replayContext.canvas.height / 2,
             pixelScale * tilePixelResolution,
             pixelScale * tilePixelResolution,
             rotation,
@@ -169,28 +183,21 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
             -rotation,
             -tileCenter[0], -tileCenter[1]);
       }
-      tileContext = tile.getContext();
       if (replayState.resolution !== resolution ||
           replayState.rotation !== rotation) {
-        replayState.resolution = resolution;
-        replayState.rotation = rotation;
-        tileContext.canvas.width = width + 0.5;
-        tileContext.canvas.height = height + 0.5;
+        startTime = Date.now();
+        tileContext.canvas.width = width;
+        tileContext.canvas.height = height;
         tileContext.translate(width / 2, height / 2);
         tileContext.rotate(-rotation);
         replayState.replayGroup.replay(tileContext, pixelRatio,
             tileTransform, rotation, skippedFeatureUids, false);
+        replayState.resolution = resolution;
+        replayState.rotation = rotation;
+        replayState.renderTime = Date.now() - startTime;
       }
-      insertTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
-          0, 0, pixelScale, -pixelScale, 0, -center[0], -center[1]);
-      insertPoint = ol.geom.flat.transform.transform2D(
-          ol.extent.getTopLeft(tileExtent), 0, 1, 2, insertTransform);
-      replayContext.translate(offsetX, offsetY);
-      replayContext.rotate(rotation);
-      replayContext.drawImage(tileContext.canvas,
-          Math.round(insertPoint[0]), Math.round(insertPoint[1]));
-      replayContext.rotate(-rotation);
-      replayContext.translate(-offsetX, -offsetY);
+      this.render_(tileContext, replayContext, pixelScale, center, rotation,
+          tileExtent, width, height);
     }
   }
 
@@ -381,9 +388,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
   var updateWhileAnimating = layer.getUpdateWhileAnimating();
   var updateWhileInteracting = layer.getUpdateWhileInteracting();
+  this.busy_ = !!(!updateWhileAnimating && animating) ||
+      !!(!updateWhileInteracting && interacting);
 
-  if (!this.dirty_ && (!updateWhileAnimating && animating) ||
-      (!updateWhileInteracting && interacting)) {
+  if (!this.dirty_ && this.busy_) {
     return true;
   }
 
@@ -476,6 +484,36 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
   this.renderedTiles_ = replayables;
 
   return true;
+};
+
+
+/**
+ * @private
+ * @param {CanvasRenderingContext2D} sourceContext Source context.
+ * @param {CanvasRenderingContext2D} targetContext Target context.
+ * @param {number} pixelScale Pixel scale, i.e. pixel ratio divided by
+ *     view resolution.
+ * @param {ol.Coordinate} center View center.
+ * @param {number} rotation View rotation.
+ * @param {ol.Extent} extent Extent of the source canvas.
+ * @param {number} width Width of the source canvas on the target canvas.
+ * @param {number} height Height of the source canvas on the target canvas.
+ *
+ */
+ol.renderer.canvas.VectorTileLayer.prototype.render_ = function(sourceContext,
+    targetContext, pixelScale, center, rotation, extent, width, height) {
+  var insertTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+      0, 0, pixelScale, -pixelScale, 0, -center[0], -center[1]);
+  var insertPoint = ol.geom.flat.transform.transform2D(
+      ol.extent.getTopLeft(extent), 0, 1, 2, insertTransform);
+  var offsetX = targetContext.canvas.width / 2;
+  var offsetY = targetContext.canvas.height / 2;
+  targetContext.translate(offsetX, offsetY);
+  targetContext.rotate(rotation);
+  targetContext.drawImage(sourceContext.canvas,
+      Math.round(insertPoint[0]), Math.round(insertPoint[1]), width, height);
+  targetContext.rotate(-rotation);
+  targetContext.translate(-offsetX, -offsetY);
 };
 
 
