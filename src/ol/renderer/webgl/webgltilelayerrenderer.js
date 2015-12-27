@@ -18,7 +18,6 @@ goog.require('ol.renderer.webgl.tilelayer.shader.Fragment');
 goog.require('ol.renderer.webgl.tilelayer.shader.Locations');
 goog.require('ol.renderer.webgl.tilelayer.shader.Vertex');
 goog.require('ol.size');
-goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 
@@ -271,7 +270,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
-            tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
+            tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
           }
         } else if (tileState == ol.TileState.EMPTY ||

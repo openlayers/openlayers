@@ -19,7 +19,6 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
-goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
 
@@ -142,7 +141,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       goog.asserts.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
-        tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
+        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
       } else if (tileState == ol.TileState.EMPTY ||
                  (tileState == ol.TileState.ERROR &&
@@ -345,7 +344,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordY = tileCoord[2];
   goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0],
       'tileCoordZ matches z of tileCoordOrigin');
-  var tileCoordKey = ol.tilecoord.toString(tileCoord);
+  var tileCoordKey = tileCoord.toString();
   if (tileCoordKey in this.tiles_) {
     return;
   }
@@ -437,7 +436,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
   var i, ii;
   for (i = 0, ii = tilesToRemove.length; i < ii; ++i) {
     tile = tilesToRemove[i];
-    tileCoordKey = ol.tilecoord.toString(tile.tileCoord);
+    tileCoordKey = tile.tileCoord.toString();
     goog.dom.removeNode(tile.getImage(this));
     delete this.tiles_[tileCoordKey];
   }
