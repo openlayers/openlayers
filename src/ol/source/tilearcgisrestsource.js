@@ -134,19 +134,10 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
 
 
 /**
- * @param {number} z Z.
- * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
- * @return {ol.Size} Size.
+ * @inheritDoc
  */
-ol.source.TileArcGISRest.prototype.getTilePixelSize =
-    function(z, pixelRatio, projection) {
-  var tileSize = goog.base(this, 'getTilePixelSize', z, pixelRatio, projection);
-  if (pixelRatio == 1) {
-    return tileSize;
-  } else {
-    return ol.size.scale(tileSize, pixelRatio, this.tmpSize);
-  }
+ol.source.TileArcGISRest.prototype.getTilePixelRatio = function(pixelRatio) {
+  return pixelRatio;
 };
 
 
