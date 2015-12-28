@@ -243,9 +243,10 @@ ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
 
 
 /**
+ * @param {number} pixelRatio Pixel ratio.
  * @return {number} Tile pixel ratio.
  */
-ol.source.Tile.prototype.getTilePixelRatio = function() {
+ol.source.Tile.prototype.getTilePixelRatio = function(pixelRatio) {
   return this.tilePixelRatio_;
 };
 
@@ -259,8 +260,13 @@ ol.source.Tile.prototype.getTilePixelRatio = function() {
 ol.source.Tile.prototype.getTilePixelSize =
     function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
-  return ol.size.scale(ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize),
-      this.tilePixelRatio_, this.tmpSize);
+  var tilePixelRatio = this.getTilePixelRatio(pixelRatio);
+  var tileSize = ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize);
+  if (tilePixelRatio == 1) {
+    return tileSize;
+  } else {
+    return ol.size.scale(tileSize, tilePixelRatio, this.tmpSize);
+  }
 };
 
 
