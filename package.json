@@ -34,7 +34,7 @@
     "closure-util": "1.9.0",
     "derequire": "2.0.3",
     "fs-extra": "0.26.3",
-    "glob": "6.0.1",
+    "glob": "6.0.2",
     "graceful-fs": "4.1.2",
     "handlebars": "4.0.5",
     "jsdoc": "3.4.0",
