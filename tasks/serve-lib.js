@@ -4,7 +4,6 @@
  */
 
 var path = require('path');
-var url = require('url');
 
 var closure = require('closure-util');
 var nomnom = require('nomnom');
