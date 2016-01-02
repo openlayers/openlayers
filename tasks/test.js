@@ -64,7 +64,7 @@ function runTests(includeCoverage, callback) {
       ];
       var config = {
         ignoreResourceErrors: true,
-        useColors: true,
+        useColors: true
       };
 
       if (includeCoverage) {

@@ -135,7 +135,7 @@ function augmentExamples(files, metalsmith, done) {
         }
         file.extraHead = {
           local: resources.join('\n'),
-          remote: remoteResources.join('\n'),
+          remote: remoteResources.join('\n')
         };
         file.extraResources = file.resources.length ?
             ',' + fiddleResources.join(',') : '';

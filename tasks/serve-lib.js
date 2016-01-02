@@ -21,7 +21,7 @@ var createServer = exports.createServer = function(callback) {
   var manager = new closure.Manager({
     lib: [
       'src/**/*.js',
-      'build/ol.ext/*.js',
+      'build/ol.ext/*.js'
     ],
     cwd: path.join(__dirname, '..')
   });
