@@ -82,7 +82,7 @@ function runTests(includeCoverage, callback) {
 }
 
 if (require.main === module) {
-  runTests(false, function(code){
+  runTests(false, function(code) {
     process.exit(code);
   });
 }

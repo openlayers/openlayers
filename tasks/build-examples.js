@@ -48,7 +48,7 @@ function getLinkToApiHtml(requires) {
   var lis = requires.map(function(symb) {
     var href = '../apidoc/' + symb + '.html';
     return '<li><a href="' + href + '" title="API documentation for ' +
-        symb +'">' + symb + '</a></li>';
+        symb + '">' + symb + '</a></li>';
   });
   return '<ul class="inline">' + lis.join() + '</ul>';
 }
