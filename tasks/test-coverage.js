@@ -43,6 +43,7 @@ var copyOpts = {
 
 /**
  * A small utility method printing out log messages.
+ * @param {string} msg The message.
  */
 var log = function(msg) {
   process.stdout.write(msg + '\n');
@@ -54,6 +55,7 @@ var log = function(msg) {
  *
  * See http://www.geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/
  * adjusted to use path.join
+ * @param {string} p Path to the directory.
  */
 var deleteFolderRecursive = function(p) {
   if (fs.existsSync(p)) {
@@ -108,7 +110,7 @@ var revertBackupAndInstrumentationDir = function() {
 /**
  * Callback for when runTestsuite() has finished.
  */
-var collectAndWriteCoverageData = function(code) {
+var collectAndWriteCoverageData = function() {
   log('• collect data from coverage.json');
 
   var coverageFile = path.join(__dirname,'../coverage/coverage.json');
@@ -128,6 +130,8 @@ var collectAndWriteCoverageData = function(code) {
 /**
  * Will instrument all JavaScript files that are passed as second parameter.
  * This is the callback to the glob call.
+ * @param {Error} err Any error.
+ * @param {Array.<string>} files List of file paths.
  */
 var foundAllJavaScriptSourceFiles = function(err, files) {
   if (err) {
