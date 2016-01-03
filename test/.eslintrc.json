@@ -3,7 +3,9 @@
     "mocha": true
   },
   "globals": {
-    "expect": true,
-    "sinon": true
+    "afterLoadText": false,
+    "expect": false,
+    "proj4": false,
+    "sinon": false
   }
 }
