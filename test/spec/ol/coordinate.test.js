@@ -3,8 +3,7 @@ goog.provide('ol.test.coordinate');
 describe('ol.coordinate', function() {
 
   describe('#add', function() {
-    var coordinate,
-        delta;
+    var coordinate, delta;
 
     beforeEach(function() {
       coordinate = [50.73, 7.1];
@@ -31,13 +30,13 @@ describe('ol.coordinate', function() {
   });
 
   describe('#equals', function() {
-    var cologne = [50.93333, 6.95],
-        bonn1 = [50.73, 7.1],
-        bonn2 = [50.73000, 7.10000];
+    var cologne = [50.93333, 6.95];
+    var bonn1 = [50.73, 7.1];
+    var bonn2 = [50.73000, 7.10000];
 
     it('compares correctly', function() {
-      var bonnEqualsBonn = ol.coordinate.equals(bonn1, bonn2),
-          bonnEqualsCologne = ol.coordinate.equals(bonn1, cologne);
+      var bonnEqualsBonn = ol.coordinate.equals(bonn1, bonn2);
+      var bonnEqualsCologne = ol.coordinate.equals(bonn1, cologne);
       expect(bonnEqualsBonn).to.be(true);
       expect(bonnEqualsCologne).to.be(false);
     });
@@ -61,9 +60,7 @@ describe('ol.coordinate', function() {
   });
 
   describe('#createStringXY', function() {
-    var coordinate,
-        created,
-        formatted;
+    var coordinate, created, formatted;
     beforeEach(function() {
       coordinate = [6.6123, 46.7919];
       created = null;

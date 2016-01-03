@@ -270,8 +270,8 @@ describe('ol.format.EsriJSON', function() {
   describe('#readFeatures', function() {
 
     it('parses feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
 
       expect(array.length).to.be(2);
 
@@ -545,12 +545,12 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses polygon', function() {
-      var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2]
-          });
+      var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2]
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
@@ -563,13 +563,13 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses XYZ polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2],
-            hasZ: true
-          });
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2],
+        hasZ: true
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYZ);
@@ -582,13 +582,13 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses XYM polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2],
-            hasM: true
-          });
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2],
+        hasM: true
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYM);
@@ -601,17 +601,23 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses XYZM polygon', function() {
-      var outer = [[0, 0, 5, 1], [0, 10, 5, 1], [10, 10, 5, 1],
-            [10, 0, 5, 1], [0, 0, 5, 1]],
-          inner1 = [[1, 1, 3, 2], [2, 1, 3, 2], [2, 2, 3, 2],
-            [1, 2, 3, 2], [1, 1, 3, 2]],
-          inner2 = [[8, 8, 2, 1], [9, 8, 2, 1], [9, 9, 2, 1],
-            [8, 9, 2, 1], [8, 8, 2, 1]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2],
-            hasZ: true,
-            hasM: true
-          });
+      var outer = [
+        [0, 0, 5, 1], [0, 10, 5, 1], [10, 10, 5, 1],
+        [10, 0, 5, 1], [0, 0, 5, 1]
+      ];
+      var inner1 = [
+        [1, 1, 3, 2], [2, 1, 3, 2], [2, 2, 3, 2],
+        [1, 2, 3, 2], [1, 1, 3, 2]
+      ];
+      var inner2 = [
+        [8, 8, 2, 1], [9, 8, 2, 1], [9, 9, 2, 1],
+        [8, 9, 2, 1], [8, 8, 2, 1]
+      ];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2],
+        hasZ: true,
+        hasM: true
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYZM);
@@ -811,9 +817,9 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes polygon', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -821,9 +827,9 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZ polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2],
           ol.geom.GeometryLayout.XYZ);
       var esrijson = format.writeGeometry(polygon);
@@ -832,9 +838,9 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2],
           ol.geom.GeometryLayout.XYM);
       var esrijson = format.writeGeometry(polygon);
@@ -843,12 +849,15 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM polygon', function() {
-      var outer = [[0, 0, 5, 1], [0, 10, 5, 2], [10, 10, 5, 1],
-            [10, 0, 5, 1], [0, 0, 5, 1]],
-          inner1 = [[1, 1, 3, 1], [2, 1, 3, 2], [2, 2, 3, 1], [1, 2, 3, 1],
-            [1, 1, 3, 1]],
-          inner2 = [[8, 8, 2, 1], [9, 8, 2, 2], [9, 9, 2, 1], [8, 9, 2, 1],
-            [8, 8, 2, 1]];
+      var outer = [
+        [0, 0, 5, 1], [0, 10, 5, 2], [10, 10, 5, 1], [10, 0, 5, 1], [0, 0, 5, 1]
+      ];
+      var inner1 = [
+        [1, 1, 3, 1], [2, 1, 3, 2], [2, 2, 3, 1], [1, 2, 3, 1], [1, 1, 3, 1]
+      ];
+      var inner2 = [
+        [8, 8, 2, 1], [9, 8, 2, 2], [9, 9, 2, 1], [8, 9, 2, 1], [8, 8, 2, 1]
+      ];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2],
           ol.geom.GeometryLayout.XYZM);
       var esrijson = format.writeGeometry(polygon);
@@ -995,8 +1004,8 @@ describe('ol.format.EsriJSON', function() {
   describe('#writeFeatures', function() {
 
     it('encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var esrijson = format.writeFeaturesObject(array);
       var result = format.readFeatures(esrijson);
       expect(array.length).to.equal(result.length);
@@ -1015,8 +1024,8 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('transforms and encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var esrijson = format.writeFeatures(array, {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326'

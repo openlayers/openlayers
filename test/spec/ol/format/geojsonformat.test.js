@@ -231,8 +231,8 @@ describe('ol.format.GeoJSON', function() {
   describe('#readFeatures', function() {
 
     it('parses feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
 
       expect(array.length).to.be(2);
 
@@ -344,13 +344,13 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('parses polygon', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]],
-          str = JSON.stringify({
-            type: 'Polygon',
-            coordinates: [outer, inner1, inner2]
-          });
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var str = JSON.stringify({
+        type: 'Polygon',
+        coordinates: [outer, inner1, inner2]
+      });
 
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
@@ -495,8 +495,8 @@ describe('ol.format.GeoJSON', function() {
   describe('#writeFeatures', function() {
 
     it('encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var geojson = format.writeFeaturesObject(array);
       var result = format.readFeatures(geojson);
       expect(array.length).to.equal(result.length);
@@ -515,8 +515,8 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('transforms and encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var geojson = format.writeFeatures(array, {
         featureProjection: 'EPSG:3857'
       });
@@ -576,9 +576,9 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('encodes polygon', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
       var geojson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates()).to.eql(

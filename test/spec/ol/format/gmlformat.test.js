@@ -280,7 +280,8 @@ describe('ol.format.GML3', function() {
     describe('axis order', function() {
 
       it('can read and write a linestring geometry with ' +
-          'correct axis order', function() {
+          'correct axis order',
+          function() {
             var text =
                 '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +

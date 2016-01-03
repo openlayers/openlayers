@@ -4,9 +4,9 @@ goog.require('ol.extent');
 
 describe('ol.geom.GeometryCollection', function() {
 
-  var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
-      inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-      inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+  var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]];
+  var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+  var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
 
   describe('constructor', function() {
 
