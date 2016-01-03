@@ -1,3 +1,5 @@
+/* global resemble:false */
+
 // FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
 
 // helper functions for async testing and other utility functions.
@@ -70,6 +72,7 @@
    * Assert value is within some tolerance of a number.
    * @param {Number} n Number.
    * @param {Number} tol Tolerance.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.roughlyEqual = function(n, tol) {
     this.assert(
@@ -88,6 +91,7 @@
 
   /**
    * Assert that a sinon spy was called.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.called = function() {
     this.assert(
@@ -105,7 +109,7 @@
   function getChildNodes(node, options) {
     // check whitespace
     if (options && options.includeWhiteSpace) {
-        return node.childNodes;
+      return node.childNodes;
     } else {
       var nodes = [];
       for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
@@ -154,9 +158,8 @@
         errors.push('nodeValue test failed | expected ' + nv1 + ' to equal ' +
             nv2);
       }
-    }
-    // for element type nodes compare namespace, attributes, and children
-    else if (node1.nodeType === 1) {
+    } else if (node1.nodeType === 1) {
+      // for element type nodes compare namespace, attributes, and children
       // test namespace alias and uri
       if (node1.prefix || node2.prefix) {
         if (testPrefix) {
@@ -208,7 +211,6 @@
         errors.push('Number of attributes test failed for: ' + node1.nodeName +
             ' | expected ' + node1AttrLen + ' to equal ' + node2AttrLen);
       }
-      var gv, ev;
       for (var name in node1Attr) {
         if (node2Attr[name] === undefined) {
           errors.push('Attribute name ' + node1Attr[name].name +
@@ -272,6 +274,9 @@
 
   /**
    * Checks if the XML document sort of equals another XML document.
+   * @param {Object} obj The other object.
+   * @param {Object} options The options.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.xmleql = function(obj, options) {
     if (obj && obj.nodeType == 9) {
@@ -301,6 +306,8 @@
 
   /**
    * Checks if the array sort of equals another array.
+   * @param {Object} obj The other object.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
@@ -319,6 +326,8 @@
 
   /**
    * Checks if the array sort of equals another array (allows NaNs to be equal).
+   * @param {Object} obj The other object.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.arreqlNaN = function(obj) {
     function compare(a, b) {
@@ -359,7 +368,7 @@
   };
 
   global.assertWebGL = function(map) {
-    if(!ol.has.WEBGL) {
+    if (!ol.has.WEBGL) {
       expect().fail('No WebGL support!');
     }
   };
@@ -373,7 +382,7 @@
       .compareTo(canvas.getContext('2d').getImageData(
           0, 0, canvas.width, canvas.height))
       .onComplete(function(data) {
-        if(!data.isSameDimensions) {
+        if (!data.isSameDimensions) {
           expect().fail(
             'The dimensions of the reference image and ' +
             'the test canvas are not the same.');
@@ -388,8 +397,8 @@
           expect(data.misMatchPercentage).to.be.below(tolerance);
         }
         done();
-    });
-  };
+      });
+  }
   global.resembleCanvas = resembleCanvas;
 
   function expectResembleCanvas(map, referenceImage, tolerance, done) {
@@ -398,7 +407,7 @@
       var canvas = event.context.canvas;
       resembleCanvas(canvas, referenceImage, tolerance, done);
     });
-  };
+  }
 
   function expectResembleWebGL(map, referenceImage, tolerance, done) {
     map.render();
@@ -421,7 +430,7 @@
 
       resembleCanvas(canvas, referenceImage, tolerance, done);
     });
-  };
+  }
 
   /**
    * Assert that the given map resembles a reference image.
