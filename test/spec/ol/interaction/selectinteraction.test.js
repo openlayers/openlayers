@@ -159,7 +159,6 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('filter features using the filter option', function() {
-    var select;
 
     describe('with multi set to true', function() {
 

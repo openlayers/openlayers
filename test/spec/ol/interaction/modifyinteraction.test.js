@@ -341,7 +341,7 @@ describe('ol.interaction.Modify', function() {
       map.addInteraction(modify);
 
       var feature = features[0];
-      var listeners, listener;
+      var listeners;
 
       listeners = getListeners(feature, modify);
       expect(listeners).to.have.length(1);
