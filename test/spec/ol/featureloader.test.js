@@ -27,7 +27,8 @@ describe('ol.featureloader', function() {
     describe('when called with urlFunction', function() {
       it('adds features to the source', function(done) {
         url = function(extent, resolution, projection) {
-          return 'spec/ol/data/point.json';};
+          return 'spec/ol/data/point.json';
+        };
         loader = ol.featureloader.xhr(url, format);
 
         source.on(ol.source.VectorEventType.ADDFEATURE, function(e) {
