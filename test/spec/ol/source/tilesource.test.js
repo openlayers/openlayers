@@ -1,3 +1,6 @@
+/* eslint-disable valid-jsdoc */
+// TODO: remove the line above when ESLint 2.0 is released
+
 goog.provide('ol.test.source.TileSource');
 
 describe('ol.source.Tile', function() {
