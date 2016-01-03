@@ -160,7 +160,7 @@ describe('ol.interaction.Modify', function() {
       });
       map.addInteraction(modify);
 
-      events = trackEvents(first, modify);
+      var events = trackEvents(first, modify);
 
       expect(first.getGeometry().getRevision()).to.equal(firstRevision);
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(5);

@@ -56,7 +56,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
       });
 
       it('read empty attributes', function() {
-        text =
+        var text =
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput ' +
             '   xmlns:gml="http://www.opengis.net/gml"' +
@@ -84,7 +84,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
       });
 
       it('read features from multiple layers', function() {
-        text =
+        var text =
             '<?xml version="1.0" encoding="ISO-8859-1"?>' +
             '<msGMLOutput ' +
             '  xmlns:gml="http://www.opengis.net/gml"' +
@@ -143,7 +143,7 @@ describe('ol.format.WMSGetFeatureInfo', function() {
       });
 
       it('read geoserver’s response', function() {
-        text =
+        var text =
             '<?xml version="1.0" encoding="UTF-8"?>' +
             '<wfs:FeatureCollection xmlns="http://www.opengis.net/wfs"' +
             '  xmlns:wfs="http://www.opengis.net/wfs"' +

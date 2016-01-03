@@ -8,6 +8,7 @@ describe('ol.format.Polyline', function() {
   var floats, smallFloats, encodedFloats;
   var signedIntegers, encodedSignedIntegers;
   var unsignedIntegers, encodedUnsignedIntegers;
+  var points3857;
 
   function resetTestingData() {
     format = new ol.format.Polyline();

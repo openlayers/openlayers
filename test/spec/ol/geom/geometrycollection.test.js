@@ -117,6 +117,8 @@ describe('ol.geom.GeometryCollection', function() {
 
   describe('#intersectsExtent()', function() {
 
+    var point, line, poly, multi;
+
     beforeEach(function() {
       point = new ol.geom.Point([5, 20]);
       line = new ol.geom.LineString([[10, 20], [30, 40]]);
@@ -135,7 +137,6 @@ describe('ol.geom.GeometryCollection', function() {
     it('returns true for intersecting part of polygon', function() {
       expect(multi.intersectsExtent([0, 0, 5, 5])).to.be(true);
     });
-
 
     it('returns false for non-matching extent within own extent', function() {
       var extent = [0, 35, 5, 40];
