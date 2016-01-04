@@ -46,11 +46,12 @@ ol.DragBoxEventType = {
  *
  * @param {string} type The event type.
  * @param {ol.Coordinate} coordinate The event coordinate.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
  * @extends {goog.events.Event}
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
-ol.DragBoxEvent = function(type, coordinate) {
+ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   goog.base(this, type);
 
   /**
@@ -60,6 +61,13 @@ ol.DragBoxEvent = function(type, coordinate) {
    * @api stable
    */
   this.coordinate = coordinate;
+
+  /**
+   * @const
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserEvent;
 
 };
 goog.inherits(ol.DragBoxEvent, goog.events.Event);
@@ -169,7 +177,7 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
       ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED) {
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
-        mapBrowserEvent.coordinate));
+        mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
 };
@@ -192,7 +200,7 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
-        mapBrowserEvent.coordinate));
+        mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
     return false;

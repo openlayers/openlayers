@@ -35,6 +35,12 @@ oli.DragBoxEvent = function() {};
 oli.DragBoxEvent.prototype.coordinate;
 
 
+/**
+ * @type {ol.MapBrowserEvent}
+ */
+oli.DragBoxEvent.prototype.mapBrowserEvent;
+
+
 
 /**
  * @interface
