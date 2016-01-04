@@ -200,7 +200,8 @@ ol.interaction.Select = function(opt_options) {
     style: options.style ? options.style :
         ol.interaction.Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
-    updateWhileInteracting: true
+    updateWhileInteracting: true,
+    zIndex: goog.isDef(options.zIndex) ? options.zIndex : Infinity
   });
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
