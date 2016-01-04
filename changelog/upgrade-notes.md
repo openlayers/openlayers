@@ -1,5 +1,17 @@
 ## Upgrade notes
 
+### v3.13.0
+
+#### `proj4js` integration
+
+Before this release, OpenLayers depended on the global proj4 namespace. When using for instance browserify you might not want to depend on the global `proj4` namespace. You can use the `ol.proj.setProj4` function to set the proj4 function object. For example in a browserify ES6 environment:
+
+```js
+import ol from 'openlayers';
+import proj4 from 'proj4';
+ol.proj.setProj4(proj4);
+```
+
 ### v3.12.0
 
 #### `ol.Map#forEachFeatureAtPixel` changes

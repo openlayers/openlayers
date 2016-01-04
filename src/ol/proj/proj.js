@@ -75,7 +75,8 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
  *     http://www.opengis.net/gml/srs/epsg.xml#3857
  *
  * If you use proj4js, aliases can be added using `proj4.defs()`; see
- * [documentation](https://github.com/proj4js/proj4js).
+ * [documentation](https://github.com/proj4js/proj4js). To set an alternative
+ * namespace for proj4, use {@link ol.proj.setProj4}.
  *
  * @constructor
  * @param {olx.ProjectionOptions} options Projection options.
@@ -146,35 +147,37 @@ ol.proj.Projection = function(options) {
   var code = options.code;
   goog.asserts.assert(code !== undefined,
       'Option "code" is required for constructing instance');
-  if (ol.ENABLE_PROJ4JS && typeof proj4 == 'function' &&
-      projections[code] === undefined) {
-    var def = proj4.defs(code);
-    if (def !== undefined) {
-      if (def.axis !== undefined && options.axisOrientation === undefined) {
-        this.axisOrientation_ = def.axis;
-      }
-      if (options.units === undefined) {
-        var units = def.units;
-        if (def.to_meter !== undefined) {
-          if (units === undefined ||
-              ol.proj.METERS_PER_UNIT[units] === undefined) {
-            units = def.to_meter.toString();
-            ol.proj.METERS_PER_UNIT[units] = def.to_meter;
-          }
+  if (ol.ENABLE_PROJ4JS) {
+    var proj4js = ol.proj.proj4_ || goog.global['proj4'];
+    if (typeof proj4js == 'function' && projections[code] === undefined) {
+      var def = proj4js.defs(code);
+      if (def !== undefined) {
+        if (def.axis !== undefined && options.axisOrientation === undefined) {
+          this.axisOrientation_ = def.axis;
         }
-        this.units_ = units;
-      }
-      var currentCode, currentDef, currentProj, proj4Transform;
-      for (currentCode in projections) {
-        currentDef = proj4.defs(currentCode);
-        if (currentDef !== undefined) {
-          currentProj = ol.proj.get(currentCode);
-          if (currentDef === def) {
-            ol.proj.addEquivalentProjections([currentProj, this]);
-          } else {
-            proj4Transform = proj4(currentCode, code);
-            ol.proj.addCoordinateTransforms(currentProj, this,
-                proj4Transform.forward, proj4Transform.inverse);
+        if (options.units === undefined) {
+          var units = def.units;
+          if (def.to_meter !== undefined) {
+            if (units === undefined ||
+                ol.proj.METERS_PER_UNIT[units] === undefined) {
+              units = def.to_meter.toString();
+              ol.proj.METERS_PER_UNIT[units] = def.to_meter;
+            }
+          }
+          this.units_ = units;
+        }
+        var currentCode, currentDef, currentProj, proj4Transform;
+        for (currentCode in projections) {
+          currentDef = proj4js.defs(currentCode);
+          if (currentDef !== undefined) {
+            currentProj = ol.proj.get(currentCode);
+            if (currentDef === def) {
+              ol.proj.addEquivalentProjections([currentProj, this]);
+            } else {
+              proj4Transform = proj4js(currentCode, code);
+              ol.proj.addCoordinateTransforms(currentProj, this,
+                  proj4Transform.forward, proj4Transform.inverse);
+            }
           }
         }
       }
@@ -403,6 +406,34 @@ ol.proj.projections_ = {};
  * @type {Object.<string, Object.<string, ol.TransformFunction>>}
  */
 ol.proj.transforms_ = {};
+
+
+/**
+ * @private
+ * @type {proj4}
+ */
+ol.proj.proj4_ = null;
+
+
+if (ol.ENABLE_PROJ4JS) {
+  /**
+   * Register proj4. If not explicitly registered, it will be assumed that
+   * proj4js will be loaded in the global namespace. For example in a
+   * browserify ES6 environment you could use:
+   *
+   *     import ol from 'openlayers';
+   *     import proj4 from 'proj4';
+   *     ol.proj.setProj4(proj4);
+   *
+   * @param {proj4} proj4 Proj4.
+   * @api
+   */
+  ol.proj.setProj4 = function(proj4) {
+    goog.asserts.assert(typeof proj4 == 'function',
+        'proj4 argument should be a function');
+    ol.proj.proj4_ = proj4;
+  };
+}
 
 
 /**
@@ -653,10 +684,13 @@ ol.proj.get = function(projectionLike) {
   } else if (goog.isString(projectionLike)) {
     var code = projectionLike;
     projection = ol.proj.projections_[code];
-    if (ol.ENABLE_PROJ4JS && projection === undefined &&
-        typeof proj4 == 'function' && proj4.defs(code) !== undefined) {
-      projection = new ol.proj.Projection({code: code});
-      ol.proj.addProjection(projection);
+    if (ol.ENABLE_PROJ4JS) {
+      var proj4js = ol.proj.proj4_ || goog.global['proj4'];
+      if (projection === undefined && typeof proj4js == 'function' &&
+          proj4js.defs(code) !== undefined) {
+        projection = new ol.proj.Projection({code: code});
+        ol.proj.addProjection(projection);
+      }
     }
   } else {
     projection = null;
