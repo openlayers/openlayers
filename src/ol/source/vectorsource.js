@@ -157,7 +157,11 @@ ol.source.Vector = function(opt_options) {
    */
   this.featuresCollection_ = null;
 
-  var collection, features;
+  /**
+   * @type {!ol.Collection.<ol.Feature>}
+   */
+  var collection;
+  var features;
   if (options.features instanceof ol.Collection) {
     collection = options.features;
     features = collection.getArray();
