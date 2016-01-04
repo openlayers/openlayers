@@ -14,7 +14,6 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.size');
-goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
 
 
@@ -336,7 +335,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
       }
       goog.asserts.assert(tile);
       if (drawableTile(tile)) {
-        tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
+        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
       }
       fullyLoaded = tileGrid.forEachTileCoordParentTileRange(
