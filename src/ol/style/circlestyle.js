@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
-goog.require('ol.structs.IHasChecksum');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
@@ -20,7 +19,6 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
- * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Circle = function(opt_options) {
@@ -419,7 +417,7 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
 
 
 /**
- * @inheritDoc
+ * @return {string} The checksum.
  */
 ol.style.Circle.prototype.getChecksum = function() {
   var strokeChecksum = this.stroke_ ?
