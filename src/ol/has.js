@@ -133,7 +133,9 @@ ol.has.WEBGL;
               (gl.getParameter(gl.MAX_TEXTURE_SIZE));
           extensions = gl.getSupportedExtensions();
         }
-      } catch (e) {}
+      } catch (e) {
+        // pass
+      }
     }
     ol.has.WEBGL = hasWebGL;
     ol.WEBGL_EXTENSIONS = extensions;

@@ -272,5 +272,6 @@ ol.pointer.PointerEvent.HAS_BUTTONS = false;
     var ev = new MouseEvent('click', {buttons: 1});
     ol.pointer.PointerEvent.HAS_BUTTONS = ev.buttons === 1;
   } catch (e) {
+    // pass
   }
 })();
