@@ -600,8 +600,8 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
     if (insertVertices.length) {
       this.willModifyFeatures_(evt);
     }
-    for (i = insertVertices.length - 1; i >= 0; --i) {
-      this.insertVertex_.apply(this, insertVertices[i]);
+    for (var j = insertVertices.length - 1; j >= 0; --j) {
+      this.insertVertex_.apply(this, insertVertices[j]);
     }
   }
   return !!this.vertexFeature_;
