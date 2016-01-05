@@ -5179,6 +5179,7 @@ olx.source.TileArcGISRestOptions.prototype.urls;
  *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
+ *     useXhr: (boolean|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
  */
@@ -5230,6 +5231,14 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.url;
+
+
+/**
+ * Use XmlHttpRequest to load the TileJSON. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.useXhr;
 
 
 /**
