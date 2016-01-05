@@ -43,7 +43,8 @@ ol.render.canvas.Instruction = {
   SET_FILL_STYLE: 9,
   SET_STROKE_STYLE: 10,
   SET_TEXT_STYLE: 11,
-  STROKE: 12
+  STROKE: 12,
+  SET_FILL_STYLE_FUNCTION: 13
 };
 
 
@@ -435,14 +436,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_FILL_STYLE:
-        goog.asserts.assert(goog.isString(instruction[1]) ||
-            goog.isFunction(instruction[1]),
-            '2nd instruction should be a string or a function');
-        if (goog.isString(instruction[1])) {
-          context.fillStyle = /** @type {string} */ (instruction[1]);
-        } else {
-          context.fillStyle = instruction[1](context);
-        }
+        goog.asserts.assert(goog.isString(instruction[1]),
+            '2nd instruction should be a string');
+        context.fillStyle = /** @type {string} */ (instruction[1]);
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
@@ -485,6 +481,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.STROKE:
         context.stroke();
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION:
+        goog.asserts.assert(goog.isFunction(instruction[1]),
+            '2nd instruction should be a function');
+        context.fillStyle = instruction[1](context);
         ++i;
         break;
       default:
@@ -1450,8 +1452,14 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
   if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
-    this.instructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
+      // add instruction for either a normal (e.g. solid) fill, or a fill function (e.g. hook for pattern fill, etc.)
+    var setFillStyleInstruction;
+    if (goog.isString(fillStyle)) {
+      setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
+    } else {
+      setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION, fillStyle];
+    }
+    this.instructions.push(setFillStyleInstruction);
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
@@ -1610,8 +1618,15 @@ ol.render.canvas.TextReplay.prototype.setReplayFillState_ =
       replayFillState.fillStyle == fillState.fillStyle) {
     return;
   }
-  var setFillStyleInstruction =
-      [ol.render.canvas.Instruction.SET_FILL_STYLE, fillState.fillStyle];
+
+  // add instruction for either a normal (e.g. solid) fill, or a fill function (e.g. hook for pattern fill, etc.)
+  var setFillStyleInstruction;
+  if (goog.isString(fillState.fillStyle)) {
+    setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillState.fillStyle];
+  } else {
+    setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION, fillState.fillStyle];
+  }
+      
   this.instructions.push(setFillStyleInstruction);
   this.hitDetectionInstructions.push(setFillStyleInstruction);
   if (!replayFillState) {
