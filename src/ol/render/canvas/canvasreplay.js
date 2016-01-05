@@ -1133,14 +1133,14 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {{currentFillStyle: (string|function(CanvasRenderingContext2D)|undefined),
+   * @type {{currentFillStyle: (string|function(CanvasRenderingContext2D):CanvasPattern|undefined),
    *         currentStrokeStyle: (string|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         currentMiterLimit: (number|undefined),
-   *         fillStyle: (string|function(CanvasRenderingContext2D)|undefined),
+   *         fillStyle: (string|function(CanvasRenderingContext2D):CanvasPattern|undefined),
    *         strokeStyle: (string|undefined),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,

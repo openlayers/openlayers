@@ -26,7 +26,7 @@ ol.style.Fill = function(opt_options) {
 
   /**
    * @private
-   * @type {function(CanvasRenderingContext2D)}
+   * @type {function(CanvasRenderingContext2D):CanvasPattern}
    */
   this.renderer_ = options.renderer !== undefined ? options.renderer : null;
 
