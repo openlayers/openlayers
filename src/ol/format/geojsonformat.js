@@ -520,32 +520,33 @@ ol.format.GeoJSON.prototype.writeFeature;
  *
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
- * @return {Object} Object.
+ * @return {GeoJSONObject} Object.
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeatureObject = function(
     feature, opt_options) {
   opt_options = this.adaptOptions(opt_options);
-  var object = {
+
+  var object = /** @type {GeoJSONObject} */ ({
     'type': 'Feature'
-  };
+  });
   var id = feature.getId();
   if (id !== undefined) {
-    object['id'] = id;
+    object.id = id;
   }
   var geometry = feature.getGeometry();
   if (geometry) {
-    object['geometry'] =
+    object.geometry =
         ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
   } else {
-    object['geometry'] = null;
+    object.geometry = null;
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
   if (!goog.object.isEmpty(properties)) {
-    object['properties'] = properties;
+    object.properties = properties;
   } else {
-    object['properties'] = null;
+    object.properties = null;
   }
   return object;
 };
@@ -568,7 +569,7 @@ ol.format.GeoJSON.prototype.writeFeatures;
  *
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
- * @return {Object} GeoJSON Object.
+ * @return {GeoJSONFeatureCollection} GeoJSON Object.
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeaturesObject =
