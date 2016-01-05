@@ -567,6 +567,9 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
       if (coordinate[2] !== 0) {
         properties['time'] = coordinate[2];
       }
+      break;
+    default:
+      // pass
   }
   /* jshint +W086 */
   var orderedKeys = ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];

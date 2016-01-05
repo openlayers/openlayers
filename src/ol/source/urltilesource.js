@@ -143,6 +143,8 @@ ol.source.UrlTile.prototype.handleTileChange = function(event) {
       this.dispatchEvent(
           new ol.source.TileEvent(ol.source.TileEventType.TILELOADERROR, tile));
       break;
+    default:
+      // pass
   }
 };
 

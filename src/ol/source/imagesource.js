@@ -178,6 +178,8 @@ ol.source.Image.prototype.handleImageChange = function(event) {
           new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADERROR,
               image));
       break;
+    default:
+      // pass
   }
 };
 

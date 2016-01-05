@@ -656,6 +656,8 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
         coordinates[depth[1]][depth[0]][segmentData.index + index] = vertex;
         segment[index] = vertex;
         break;
+      default:
+        // pass
     }
 
     this.setGeometryCoordinates_(geometry, coordinates);
@@ -952,6 +954,8 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
             }
           }
           break;
+        default:
+          // pass
       }
 
       if (deleted) {
