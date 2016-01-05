@@ -26,6 +26,12 @@ ol.style.Fill = function(opt_options) {
 
   /**
    * @private
+   * @type {function(CanvasRenderingContext2D)}
+   */
+  this.renderer_ = options.renderer !== undefined ? options.renderer : null;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.checksum_ = undefined;
@@ -50,6 +56,28 @@ ol.style.Fill.prototype.getColor = function() {
  */
 ol.style.Fill.prototype.setColor = function(color) {
   this.color_ = color;
+  this.checksum_ = undefined;
+};
+
+
+/**
+ * Get the fill renderer.
+ * @return {function(CanvasRenderingContext2D)} Function.
+ * @api
+ */
+ol.style.Fill.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
+ * Set the renderer.
+ *
+ * @param {function(CanvasRenderingContext2D)} renderer Function.
+ * @api
+ */
+ol.style.Fill.prototype.setRenderer = function(renderer) {
+  this.renderer_ = renderer;
   this.checksum_ = undefined;
 };
 
