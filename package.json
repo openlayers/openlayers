@@ -74,8 +74,13 @@
   "eslintConfig": {
     "extends": "openlayers",
     "globals": {
+      "ArrayBuffer": false,
+      "Uint16Array": false,
+      "Uint32Array": false,
+      "Uint8Array": false,
       "ol": false,
-      "goog": false
+      "goog": false,
+      "proj4": false
     },
     "rules": {
       "no-multiple-empty-lines": [2, {"max": 3, "maxEOF": 1}]
