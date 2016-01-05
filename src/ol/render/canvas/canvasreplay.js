@@ -1452,12 +1452,19 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
   if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
-      // add instruction for either a normal (e.g. solid) fill, or a fill function (e.g. hook for pattern fill, etc.)
+    // add instruction for either a normal (e.g. solid) fill,
+    // or a fill function (e.g. hook for pattern fill, etc.)
     var setFillStyleInstruction;
     if (goog.isString(fillStyle)) {
-      setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
+      setFillStyleInstruction = [
+        ol.render.canvas.Instruction.SET_FILL_STYLE,
+        fillStyle
+      ];
     } else {
-      setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION, fillStyle];
+      setFillStyleInstruction = [
+        ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION,
+        fillStyle
+      ];
     }
     this.instructions.push(setFillStyleInstruction);
     state.currentFillStyle = state.fillStyle;
@@ -1619,14 +1626,21 @@ ol.render.canvas.TextReplay.prototype.setReplayFillState_ =
     return;
   }
 
-  // add instruction for either a normal (e.g. solid) fill, or a fill function (e.g. hook for pattern fill, etc.)
+  // add instruction for either a normal (e.g. solid) fill,
+  // or a fill function (e.g. hook for pattern fill, etc.)
   var setFillStyleInstruction;
   if (goog.isString(fillState.fillStyle)) {
-    setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillState.fillStyle];
+    setFillStyleInstruction = [
+      ol.render.canvas.Instruction.SET_FILL_STYLE,
+      fillState.fillStyle
+    ];
   } else {
-    setFillStyleInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION, fillState.fillStyle];
+    setFillStyleInstruction = [
+      ol.render.canvas.Instruction.SET_FILL_STYLE_FUNCTION,
+      fillState.fillStyle
+    ];
   }
-      
+
   this.instructions.push(setFillStyleInstruction);
   this.hitDetectionInstructions.push(setFillStyleInstruction);
   if (!replayFillState) {
