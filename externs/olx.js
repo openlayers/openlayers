@@ -1954,7 +1954,7 @@ olx.format.GPXOptions;
  * node is not allowed in GPX 1.0. Moreover, only `extensions`
  * nodes from `wpt`, `rte` and `trk` can be processed, as those are
  * directly mapped to a feature.
- * @type {function(ol.Feature, Node)}
+ * @type {function(ol.Feature, Node)|undefined}
  * @api stable
  */
 olx.format.GPXOptions.prototype.readExtensions;
