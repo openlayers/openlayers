@@ -557,6 +557,7 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
       if (coordinate[3] !== 0) {
         properties['time'] = coordinate[3];
       }
+      // fall through
     case ol.geom.GeometryLayout.XYZ:
       if (coordinate[2] !== 0) {
         properties['ele'] = coordinate[2];
