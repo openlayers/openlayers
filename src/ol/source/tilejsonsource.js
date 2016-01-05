@@ -9,6 +9,7 @@ goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
 goog.require('goog.net.Jsonp');
+goog.require('goog.net.XhrIo');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
@@ -40,9 +41,21 @@ ol.source.TileJSON = function(options) {
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
-  var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, goog.bind(this.handleTileJSONResponse, this),
-      goog.bind(this.handleTileJSONError, this));
+  if (options.useXhr) {
+    goog.net.XhrIo.send(options.url, goog.bind(function(e) {
+      var xhr = /** @type {goog.net.XhrIo} */(e.target);
+      if (xhr.isSuccess()) {
+        var response = /** @type {TileJSON} */(xhr.getResponseJson());
+        this.handleTileJSONResponse(response);
+      } else {
+        this.handleTileJSONError();
+      }
+    }, this));
+  } else {
+    var request = new goog.net.Jsonp(options.url);
+    request.send(undefined, goog.bind(this.handleTileJSONResponse, this),
+        goog.bind(this.handleTileJSONError, this));
+  }
 
 };
 goog.inherits(ol.source.TileJSON, ol.source.TileImage);
