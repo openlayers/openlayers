@@ -78,7 +78,9 @@ ol.source.Raster = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      function() { return 1; },
+      function() {
+        return 1;
+      },
       goog.bind(this.changed, this));
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);

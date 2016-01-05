@@ -195,8 +195,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
  * @this {ol.interaction.Translate}
  * @private
  */
-ol.interaction.Translate.handleMoveEvent_ = function(event)
-    {
+ol.interaction.Translate.handleMoveEvent_ = function(event) {
   var elem = event.map.getTargetElement();
   var intersectingFeature = event.map.forEachFeatureAtPixel(event.pixel,
       function(feature) {

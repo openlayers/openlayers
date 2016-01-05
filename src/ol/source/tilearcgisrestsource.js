@@ -121,11 +121,9 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ =
   // If a MapServer, use export. If an ImageServer, use exportImage.
   if (goog.string.endsWith(url, 'MapServer/')) {
     url = url + 'export';
-  }
-  else if (goog.string.endsWith(url, 'ImageServer/')) {
+  } else if (goog.string.endsWith(url, 'ImageServer/')) {
     url = url + 'exportImage';
-  }
-  else {
+  } else {
     goog.asserts.fail('Unknown Rest Service', url);
   }
 
