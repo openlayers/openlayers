@@ -104,15 +104,6 @@ ol.tilecoord.quadKey = function(tileCoord) {
 
 
 /**
- * @param {ol.TileCoord} tileCoord Tile coord.
- * @return {string} String.
- */
-ol.tilecoord.toString = function(tileCoord) {
-  return ol.tilecoord.getKeyZXY(tileCoord[0], tileCoord[1], tileCoord[2]);
-};
-
-
-/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {ol.proj.Projection} projection Projection.

@@ -41,6 +41,7 @@ ol.source.XYZ = function(options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
+    opaque: options.opaque,
     projection: projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileGrid: tileGrid,

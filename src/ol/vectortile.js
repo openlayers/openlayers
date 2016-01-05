@@ -4,6 +4,7 @@ goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
+goog.require('ol.dom');
 goog.require('ol.proj.Projection');
 
 
@@ -32,6 +33,12 @@ ol.VectorTile =
     function(tileCoord, state, src, format, tileLoadFunction, projection) {
 
   goog.base(this, tileCoord, state);
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.context_ = ol.dom.createCanvasContext2D();
 
   /**
    * @private
@@ -82,6 +89,14 @@ ol.VectorTile =
 
 };
 goog.inherits(ol.VectorTile, ol.Tile);
+
+
+/**
+ * @return {CanvasRenderingContext2D}
+ */
+ol.VectorTile.prototype.getContext = function() {
+  return this.context_;
+};
 
 
 /**

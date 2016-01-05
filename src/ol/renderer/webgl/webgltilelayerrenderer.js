@@ -9,6 +9,7 @@ goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.math');
@@ -17,7 +18,6 @@ goog.require('ol.renderer.webgl.tilelayer.shader.Fragment');
 goog.require('ol.renderer.webgl.tilelayer.shader.Locations');
 goog.require('ol.renderer.webgl.tilelayer.shader.Vertex');
 goog.require('ol.size');
-goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 
@@ -270,7 +270,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
-            tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
+            tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
           }
         } else if (tileState == ol.TileState.EMPTY ||
@@ -296,7 +296,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 
     /** @type {Array.<number>} */
     var zs = Object.keys(tilesToDrawByZ).map(Number);
-    zs.sort();
+    zs.sort(ol.array.numberSafeCompareFunction);
     var u_tileOffset = goog.vec.Vec4.createFloat32();
     var i, ii, sx, sy, tileKey, tilesToDraw, tx, ty;
     for (i = 0, ii = zs.length; i < ii; ++i) {

@@ -3005,7 +3005,7 @@ olx.interaction.SelectOptions.prototype.multi;
  * not set the interaction will create a collection. In any case the collection
  * used by the interaction is returned by
  * {@link ol.interaction.Select#getFeatures}.
- * @type {ol.Collection.<ol.Feature>}
+ * @type {ol.Collection.<ol.Feature>|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.features;

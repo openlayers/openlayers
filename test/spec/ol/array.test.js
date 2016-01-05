@@ -2,6 +2,15 @@ goog.provide('ol.test.array');
 
 describe('ol.array', function() {
 
+  describe('numberSafeCompareFunction', function() {
+    it('sorts as expected', function() {
+      var arr = [40, 200, 3000];
+      // default sort would yield [200, 3000, 40]
+      arr.sort(ol.array.numberSafeCompareFunction);
+      expect(arr).to.eql(arr);
+    });
+  });
+
   describe('binaryFindNearest', function() {
     it('returns expected value', function() {
       var arr = [1000, 500, 100];
