@@ -1757,7 +1757,7 @@ olx.format.PolylineOptions;
 /**
  * The factor by which the coordinates values will be scaled.
  * Default is `1e5`.
- * @type {number}
+ * @type {number|undefined}
  * @api stable
  */
 olx.format.PolylineOptions.prototype.factor;
