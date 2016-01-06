@@ -79,7 +79,7 @@ Progress.prototype.hide = function() {
 var progress = new Progress(document.getElementById('progress'));
 
 var source = new ol.source.TileJSON({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.jsonp',
+  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.json',
   crossOrigin: 'anonymous'
 });
 
