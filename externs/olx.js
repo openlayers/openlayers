@@ -4349,7 +4349,7 @@ olx.source.ImageMapGuideOptions.prototype.resolutions;
 
 /**
  * Optional function to load an image given a URL.
- * @type {ol.TileLoadFunctionType|undefined}
+ * @type {ol.ImageLoadFunctionType|undefined}
  * @api
  */
 olx.source.ImageMapGuideOptions.prototype.imageLoadFunction;
@@ -4965,7 +4965,7 @@ olx.source.ImageStaticOptions.prototype.imageSize;
 
 /**
  * Optional function to load an image given a URL.
- * @type {ol.TileLoadFunctionType|undefined}
+ * @type {ol.ImageLoadFunctionType|undefined}
  * @api
  */
 olx.source.ImageStaticOptions.prototype.imageLoadFunction;
