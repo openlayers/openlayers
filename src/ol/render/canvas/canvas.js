@@ -2,7 +2,7 @@ goog.provide('ol.render.canvas');
 
 
 /**
- * @typedef {{fillStyle: string}}
+ * @typedef {{fillStyle: ol.ColorLike}}
  */
 ol.render.canvas.FillState;
 

@@ -8,6 +8,7 @@ goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 goog.require('ol.array');
 goog.require('ol.color');
+goog.require('ol.colorlike');
 goog.require('ol.extent');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
@@ -835,7 +836,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
-      fillStyle: ol.color.asString(fillStyleColor ?
+      fillStyle: ol.colorlike.asColorLike(fillStyleColor ?
           fillStyleColor : ol.render.canvas.defaultFillStyle)
     };
   }
@@ -919,7 +920,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     } else {
       var textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
-        fillStyle: ol.color.asString(textFillStyleColor ?
+        fillStyle: ol.colorlike.asColorLike(textFillStyleColor ?
             textFillStyleColor : ol.render.canvas.defaultFillStyle)
       };
     }
