@@ -429,6 +429,7 @@ olx.OverlayOptions.prototype.autoPanMargin;
  *     extent: (ol.Extent|undefined),
  *     axisOrientation: (string|undefined),
  *     global: (boolean|undefined),
+ *     metersPerUnit: (number|undefined),
  *     worldExtent: (ol.Extent|undefined),
  *     getPointResolution: (function(number, ol.Coordinate):number|undefined) }}
  * @api
@@ -474,6 +475,15 @@ olx.ProjectionOptions.prototype.axisOrientation;
  * @api stable
  */
 olx.ProjectionOptions.prototype.global;
+
+
+/**
+ * The meters per unit for the SRS. If not provided, the `units` are used to get
+ * the meters per unit from the {@link ol.proj.METERS_PER_UNIT} lookup table.
+ * @type {number|undefined}
+ * @api
+ */
+olx.ProjectionOptions.prototype.metersPerUnit;
 
 
 /**

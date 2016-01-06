@@ -143,6 +143,12 @@ ol.proj.Projection = function(options) {
    */
   this.defaultTileGrid_ = null;
 
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.metersPerUnit_ = options.metersPerUnit;
+
   var projections = ol.proj.projections_;
   var code = options.code;
   goog.asserts.assert(code !== undefined,
@@ -155,16 +161,11 @@ ol.proj.Projection = function(options) {
         if (def.axis !== undefined && options.axisOrientation === undefined) {
           this.axisOrientation_ = def.axis;
         }
+        if (options.metersPerUnit === undefined) {
+          this.metersPerUnit_ = def.to_meter;
+        }
         if (options.units === undefined) {
-          var units = def.units;
-          if (def.to_meter !== undefined) {
-            if (units === undefined ||
-                ol.proj.METERS_PER_UNIT[units] === undefined) {
-              units = def.to_meter.toString();
-              ol.proj.METERS_PER_UNIT[units] = def.to_meter;
-            }
-          }
-          this.units_ = units;
+          this.units_ = def.units;
         }
         var currentCode, currentDef, currentProj, proj4Transform;
         for (currentCode in projections) {
@@ -227,12 +228,13 @@ ol.proj.Projection.prototype.getUnits = function() {
 
 /**
  * Get the amount of meters per unit of this projection.  If the projection is
- * not configured with a units identifier, the return is `undefined`.
+ * not configured with `metersPerUnit` or a units identifier, the return is
+ * `undefined`.
  * @return {number|undefined} Meters.
  * @api stable
  */
 ol.proj.Projection.prototype.getMetersPerUnit = function() {
-  return ol.proj.METERS_PER_UNIT[this.units_];
+  return this.metersPerUnit_ || ol.proj.METERS_PER_UNIT[this.units_];
 };
 
 
