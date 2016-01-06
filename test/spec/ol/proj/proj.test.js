@@ -554,7 +554,8 @@ describe('ol.proj', function() {
 
     it('returns value in meters', function() {
       var epsg4326 = ol.proj.get('EPSG:4326');
-      expect(epsg4326.getMetersPerUnit()).to.eql(111194.87428468118);
+      expect(epsg4326.getMetersPerUnit()).to.eql(
+          ol.proj.EPSG4326.METERS_PER_UNIT);
     });
 
     it('works for proj4js projections without units', function() {
@@ -582,6 +583,7 @@ describe('ol.proj', function() {
 
 
 goog.require('ol.proj');
+goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.proj.common');
