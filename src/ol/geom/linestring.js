@@ -167,6 +167,23 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
+ * Return the coordinate at the provided fraction along the linestring.
+ * The `fraction` is a number between 0 and 1, where 0 is the start of the
+ * linestring and 1 is the end.
+ * @param {number} fraction Fraction.
+ * @param {ol.Coordinate=} opt_dest Optional coordinate whose values will
+ *     be modified. If not provided, a new coordinate will be returned.
+ * @return {ol.Coordinate} Coordinate of the interpolated point.
+ * @api
+ */
+ol.geom.LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
+  return ol.geom.flat.interpolate.lineString(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      fraction, opt_dest);
+};
+
+
+/**
  * Return the length of the linestring on projected plane.
  * @return {number} Length (on projected plane).
  * @api stable
@@ -182,9 +199,7 @@ ol.geom.LineString.prototype.getLength = function() {
  */
 ol.geom.LineString.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
-    this.flatMidpoint_ = ol.geom.flat.interpolate.lineString(
-        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-        0.5, this.flatMidpoint_);
+    this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
     this.flatMidpointRevision_ = this.getRevision();
   }
   return this.flatMidpoint_;

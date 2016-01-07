@@ -89,6 +89,22 @@ describe('ol.geom.LineString', function() {
 
     });
 
+    describe('#getCoordinateAt', function() {
+
+      it('return the first point when fraction is 0', function() {
+        expect(lineString.getCoordinateAt(0)).to.eql([1, 2]);
+      });
+
+      it('return the last point when fraction is 1', function() {
+        expect(lineString.getCoordinateAt(1)).to.eql([3, 4]);
+      });
+
+      it('return the mid point when fraction is 0.5', function() {
+        expect(lineString.getCoordinateAt(0.5)).to.eql([2, 3]);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {
@@ -316,6 +332,23 @@ describe('ol.geom.LineString', function() {
         var simplifiedGeometry2 = lineString.getSimplifiedGeometry(0.01);
         expect(lineString.getSimplifiedGeometryInternal.callCount).to.be(1);
         expect(simplifiedGeometry2).to.be(lineString);
+      });
+
+    });
+
+    describe('#getCoordinateAt', function() {
+
+      it('return the first point when fraction is 0', function() {
+        expect(lineString.getCoordinateAt(0)).to.eql([0, 0]);
+      });
+
+      it('return the last point when fraction is 1', function() {
+        expect(lineString.getCoordinateAt(1)).to.eql([7, 5]);
+      });
+
+      it('return the mid point when fraction is 0.5', function() {
+        var midpoint = lineString.getFlatMidpoint();
+        expect(lineString.getCoordinateAt(0.5)).to.eql(midpoint);
       });
 
     });
