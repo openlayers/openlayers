@@ -12,6 +12,18 @@ import proj4 from 'proj4';
 ol.proj.setProj4(proj4);
 ```
 
+#### `ol.source.TileJSON` changes
+
+The `ol.source.TileJSON` now uses `XmlHttpRequest` to load the TileJSON instead of JSONP with callback.
+When using server without proper CORS support, `jsonp: true` option can be passed to the constructor to get the same behavior as before:
+```js
+new ol.source.TileJSON({
+  url: 'http://serverwithoutcors.com/tilejson.json',
+  jsonp: true
+})
+```
+Also for Mapbox v3, make sure you use urls ending with `.json` (which are able to handle both `XmlHttpRequest` and JSONP) instead of `.jsonp`.
+
 ### v3.12.0
 
 #### `ol.Map#forEachFeatureAtPixel` changes

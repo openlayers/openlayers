@@ -5206,10 +5206,10 @@ olx.source.TileArcGISRestOptions.prototype.urls;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
+ *     jsonp: (boolean|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: string,
- *     useXhr: (boolean|undefined),
  *     wrapX: (boolean|undefined)}}
  * @api
  */
@@ -5239,6 +5239,15 @@ olx.source.TileJSONOptions.prototype.crossOrigin;
 
 
 /**
+ * Use JSONP with callback to load the TileJSON. Useful when the server
+ * does not support CORS. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.jsonp;
+
+
+/**
  * Maximum allowed reprojection error (in pixels). Default is `0.5`.
  * Higher values can increase reprojection performance, but decrease precision.
  * @type {number|undefined}
@@ -5261,14 +5270,6 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.url;
-
-
-/**
- * Use XmlHttpRequest to load the TileJSON. Default is `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.source.TileJSONOptions.prototype.useXhr;
 
 
 /**

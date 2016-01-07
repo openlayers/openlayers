@@ -8,7 +8,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileJSON({
-        url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp',
+        url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json',
         crossOrigin: 'anonymous'
       })
     })
