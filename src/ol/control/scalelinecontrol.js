@@ -256,7 +256,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       Math.log(this.minWidth_ * pointResolution) / Math.log(10));
   var count, width;
   while (true) {
-    count = ol.control.ScaleLine.LEADING_DIGITS[i % 3] *
+    count = ol.control.ScaleLine.LEADING_DIGITS[((i % 3) + 3) % 3] *
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
