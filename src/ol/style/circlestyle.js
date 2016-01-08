@@ -235,7 +235,7 @@ ol.style.Circle.RenderOptions;
 
 /**
  * @private
- * @param {ol.style.AtlasManager|undefined} atlasManager
+ * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
 ol.style.Circle.prototype.render_ = function(atlasManager) {
   var imageSize;
@@ -323,8 +323,8 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.Circle.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The rendering context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
@@ -358,7 +358,7 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
+ * @param {ol.style.Circle.RenderOptions} renderOptions Render options.
  */
 ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];

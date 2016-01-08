@@ -13,7 +13,7 @@ goog.require('ol.source.Image');
  *
  * @constructor
  * @extends {ol.source.Image}
- * @param {olx.source.ImageCanvasOptions} options
+ * @param {olx.source.ImageCanvasOptions} options Constructor options.
  * @api
  */
 ol.source.ImageCanvas = function(options) {

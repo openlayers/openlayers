@@ -344,7 +344,7 @@ ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
 
 
 /**
- * @return {ol.webgl.Context}
+ * @return {ol.webgl.Context} The context.
  */
 ol.renderer.webgl.Map.prototype.getContext = function() {
   return this.context_;

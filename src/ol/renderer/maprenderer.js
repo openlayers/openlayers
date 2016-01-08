@@ -382,9 +382,9 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
 
 
 /**
- * @param {ol.layer.LayerState} state1
- * @param {ol.layer.LayerState} state2
- * @return {number}
+ * @param {ol.layer.LayerState} state1 First layer state.
+ * @param {ol.layer.LayerState} state2 Second layer state.
+ * @return {number} The zIndex difference.
  */
 ol.renderer.Map.sortByZIndex = function(state1, state2) {
   return state1.zIndex - state2.zIndex;

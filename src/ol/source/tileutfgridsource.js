@@ -269,7 +269,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
 /**
  * Synchronously returns data at given coordinate (if available).
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {Object}
+ * @return {Object} The data.
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   if (!this.grid_ || !this.keys_ || !this.data_) {
@@ -346,7 +346,7 @@ ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
 
 
 /**
- * @param {!UTFGridJSON} json
+ * @param {!UTFGridJSON} json UTFGrid data.
  * @private
  */
 ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {

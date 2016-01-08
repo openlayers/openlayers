@@ -633,7 +633,7 @@ ol.View.prototype.setZoom = function(zoom) {
 /**
  * @param {olx.ViewOptions} options View options.
  * @private
- * @return {ol.CenterConstraintType}
+ * @return {ol.CenterConstraintType} The constraint.
  */
 ol.View.createCenterConstraint_ = function(options) {
   if (options.extent !== undefined) {
@@ -648,7 +648,7 @@ ol.View.createCenterConstraint_ = function(options) {
  * @private
  * @param {olx.ViewOptions} options View options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
- *     minResolution: number}}
+ *     minResolution: number}} The constraint.
  */
 ol.View.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;

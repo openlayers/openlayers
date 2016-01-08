@@ -34,6 +34,11 @@ ol.render.IReplayGroup = function() {
 };
 
 
+/* eslint-disable valid-jsdoc */
+// TODO: enable valid-jsdoc for @interface methods when this issue is resolved
+// https://github.com/eslint/eslint/issues/4887
+
+
 /**
  * @param {number|undefined} zIndex Z index.
  * @param {ol.render.ReplayType} replayType Replay type.

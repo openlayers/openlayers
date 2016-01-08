@@ -92,7 +92,7 @@ goog.inherits(ol.VectorTile, ol.Tile);
 
 
 /**
- * @return {CanvasRenderingContext2D}
+ * @return {CanvasRenderingContext2D} The rendering context.
  */
 ol.VectorTile.prototype.getContext = function() {
   return this.context_;
@@ -126,7 +126,7 @@ ol.VectorTile.prototype.getFeatures = function() {
 
 
 /**
- * @return {ol.TileReplayState}
+ * @return {ol.TileReplayState} The replay state.
  */
 ol.VectorTile.prototype.getReplayState = function() {
   return this.replayState_;

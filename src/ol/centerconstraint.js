@@ -12,7 +12,7 @@ ol.CenterConstraintType;
 
 /**
  * @param {ol.Extent} extent Extent.
- * @return {ol.CenterConstraintType}
+ * @return {ol.CenterConstraintType} The constraint.
  */
 ol.CenterConstraint.createExtent = function(extent) {
   return (

@@ -19,7 +19,7 @@ goog.require('ol.source.Vector');
  * Layer source to cluster vector data.
  *
  * @constructor
- * @param {olx.source.ClusterOptions} options
+ * @param {olx.source.ClusterOptions} options Constructor options.
  * @extends {ol.source.Vector}
  * @api
  */
@@ -148,7 +148,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
 
 /**
  * @param {Array.<ol.Feature>} features Features
- * @return {ol.Feature}
+ * @return {ol.Feature} The cluster feature.
  * @private
  */
 ol.source.Cluster.prototype.createCluster_ = function(features) {

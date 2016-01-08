@@ -221,8 +221,8 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 
 
 /**
- * @param {string} featureKey
- * @param {ol.Feature} feature
+ * @param {string} featureKey Unique identifier for the feature.
+ * @param {ol.Feature} feature The feature.
  * @private
  */
 ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
@@ -240,10 +240,10 @@ ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
 
 
 /**
- * @param {string} featureKey
- * @param {ol.Feature} feature
- * @return {boolean} `true` if the feature is "valid", in the sense that it is
- *     also a candidate for insertion into the Rtree, otherwise `false`.
+ * @param {string} featureKey Unique identifier for the feature.
+ * @param {ol.Feature} feature The feature.
+ * @return {boolean} The feature is "valid", in the sense that it is also a
+ *     candidate for insertion into the Rtree.
  * @private
  */
 ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
@@ -536,7 +536,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
  * Get the features collection associated with this source. Will be `null`
  * unless the source was configured with `useSpatialIndex` set to `false`, or
  * with an {@link ol.Collection} as `features`.
- * @return {ol.Collection.<ol.Feature>}
+ * @return {ol.Collection.<ol.Feature>} The collection of features.
  * @api
  */
 ol.source.Vector.prototype.getFeaturesCollection = function() {

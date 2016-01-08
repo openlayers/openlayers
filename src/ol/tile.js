@@ -91,7 +91,7 @@ ol.Tile.prototype.getKey = function() {
 
 /**
  * Get the tile coordinate for this tile.
- * @return {ol.TileCoord}
+ * @return {ol.TileCoord} The tile coordinate.
  * @api
  */
 ol.Tile.prototype.getTileCoord = function() {

@@ -311,7 +311,7 @@ ol.style.Atlas = function(size, space) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.style.AtlasInfo}
+ * @return {?ol.style.AtlasInfo} The atlas info.
  */
 ol.style.Atlas.prototype.get = function(id) {
   return /** @type {?ol.style.AtlasInfo} */ (
