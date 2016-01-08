@@ -77,7 +77,7 @@ ol.Attribution.prototype.intersectsAnyTileRange =
         return true;
       }
       var extentTileRange = tileGrid.getTileRangeForExtentAndZ(
-          projection.getExtent(), parseInt(zKey, 10));
+          ol.tilegrid.extentFromProjection(projection), parseInt(zKey, 10));
       var width = extentTileRange.getWidth();
       if (tileRange.minX < extentTileRange.minX ||
           tileRange.maxX > extentTileRange.maxX) {
