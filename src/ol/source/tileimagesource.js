@@ -229,9 +229,9 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
           tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
-          goog.bind(function(z, x, y, pixelRatio) {
+          function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }, this), this.reprojectionErrorThreshold_,
+          }.bind(this), this.reprojectionErrorThreshold_,
           this.renderReprojectionEdges_);
 
       cache.set(tileCoordKey, tile);

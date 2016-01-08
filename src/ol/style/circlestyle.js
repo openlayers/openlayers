@@ -291,12 +291,12 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     if (hasCustomHitDetectionImage) {
       // render the hit-detection image into a separate atlas image
       renderHitDetectionCallback =
-          goog.bind(this.drawHitDetectionCanvas_, this, renderOptions);
+          this.drawHitDetectionCanvas_.bind(this, renderOptions);
     }
 
     var id = this.getChecksum();
     var info = atlasManager.add(
-        id, size, size, goog.bind(this.draw_, this, renderOptions),
+        id, size, size, this.draw_.bind(this, renderOptions),
         renderHitDetectionCallback);
     goog.asserts.assert(info, 'circle radius is too large');
 

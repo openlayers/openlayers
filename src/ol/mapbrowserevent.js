@@ -236,12 +236,12 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
     this.dispatchEvent(newEvent);
   } else {
     // click
-    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+    this.clickTimeoutId_ = goog.global.setTimeout(function() {
       this.clickTimeoutId_ = 0;
       var newEvent = new ol.MapBrowserPointerEvent(
           ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, pointerEvent);
       this.dispatchEvent(newEvent);
-    }, this), 250);
+    }.bind(this), 250);
   }
 };
 

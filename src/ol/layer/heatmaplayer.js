@@ -102,7 +102,7 @@ ol.layer.Heatmap = function(opt_options) {
   goog.asserts.assert(goog.isFunction(weightFunction),
       'weightFunction should be a function');
 
-  this.setStyle(goog.bind(function(feature, resolution) {
+  this.setStyle(function(feature, resolution) {
     goog.asserts.assert(this.styleCache_, 'this.styleCache_ expected');
     goog.asserts.assert(this.circleImage_ !== undefined,
         'this.circleImage_ should be defined');
@@ -123,7 +123,7 @@ ol.layer.Heatmap = function(opt_options) {
       this.styleCache_[index] = style;
     }
     return style;
-  }, this));
+  }.bind(this));
 
   // For performance reasons, don't sort the features before rendering.
   // The render order is not relevant for a heatmap representation.

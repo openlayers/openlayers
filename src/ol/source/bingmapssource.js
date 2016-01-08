@@ -55,7 +55,7 @@ ol.source.BingMaps = function(options) {
     'include': 'ImageryProviders',
     'uriScheme': 'https',
     'key': options.key
-  }, goog.bind(this.handleImageryMetadataResponse, this));
+  }, this.handleImageryMetadataResponse.bind(this));
 
 };
 goog.inherits(ol.source.BingMaps, ol.source.TileImage);

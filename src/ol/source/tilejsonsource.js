@@ -45,8 +45,8 @@ ol.source.TileJSON = function(options) {
 
   if (options.jsonp) {
     var request = new goog.net.Jsonp(options.url);
-    request.send(undefined, goog.bind(this.handleTileJSONResponse, this),
-        goog.bind(this.handleTileJSONError, this));
+    request.send(undefined, this.handleTileJSONResponse.bind(this),
+        this.handleTileJSONError.bind(this));
   } else {
     var xhr = new goog.net.XhrIo(new goog.net.CorsXmlHttpFactory());
     goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {

@@ -120,7 +120,7 @@ ol.interaction.Snap = function(opt_options) {
    * @type {function(ol.interaction.Snap.SegmentDataType, ol.interaction.Snap.SegmentDataType): number}
    * @private
    */
-  this.sortByDistance_ = goog.bind(ol.interaction.Snap.sortByDistance, this);
+  this.sortByDistance_ = ol.interaction.Snap.sortByDistance.bind(this);
 
 
   /**
@@ -170,7 +170,7 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     if (listen) {
       this.geometryModifyListenerKeys_[feature_uid] = geometry.on(
           goog.events.EventType.CHANGE,
-          goog.bind(this.handleGeometryModify_, this, feature),
+          this.handleGeometryModify_.bind(this, feature),
           this);
       this.geometryChangeListenerKeys_[feature_uid] = feature.on(
           ol.Object.getChangeEventType(feature.getGeometryName()),

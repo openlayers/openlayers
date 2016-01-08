@@ -50,7 +50,7 @@ ol.source.TileUTFGrid = function(options) {
   this.template_ = undefined;
 
   var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
+  request.send(undefined, this.handleTileJSONResponse.bind(this));
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
@@ -361,8 +361,8 @@ ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
     var request = new goog.net.Jsonp(this.src_);
-    request.send(undefined, goog.bind(this.handleLoad_, this),
-                 goog.bind(this.handleError_, this));
+    request.send(undefined, this.handleLoad_.bind(this),
+                 this.handleError_.bind(this));
   }
 };
 

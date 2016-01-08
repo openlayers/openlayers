@@ -42,7 +42,7 @@ ol.source.TileArcGISRest = function(opt_options) {
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
-    tileUrlFunction: goog.bind(this.tileUrlFunction_, this),
+    tileUrlFunction: this.tileUrlFunction_.bind(this),
     url: options.url,
     urls: options.urls,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
