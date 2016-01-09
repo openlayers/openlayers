@@ -8,7 +8,7 @@ goog.require('ol.source.Zoomify');
 var imgWidth = 9911;
 var imgHeight = 6100;
 
-var imgCenter = [imgWidth / 2, - imgHeight / 2];
+var imgCenter = [imgWidth / 2, -imgHeight / 2];
 
 // Maps always need a projection, but Zoomify layers are not geo-referenced, and
 // are only measured in pixels.  So, we create a fake projection that the map

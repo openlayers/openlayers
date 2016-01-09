@@ -215,7 +215,8 @@ String.prototype.trunc = String.prototype.trunc ||
 function stringDivider(str, width, spaceReplacer) {
   if (str.length > width) {
     var p = width;
-    for (; p > 0 && (str[p] != ' ' && str[p] != '-'); p--) {
+    while (p > 0 && (str[p] != ' ' && str[p] != '-')) {
+      p--;
     }
     if (p > 0) {
       var left;

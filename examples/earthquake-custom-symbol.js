@@ -14,7 +14,7 @@ goog.require('ol.style.Style');
 
 
 var styleCache = {};
-var styleFunction = function(feature, resolution) {
+var styleFunction = function(feature) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
   // standards-violating <magnitude> tag in each Placemark.  We extract it from
   // the Placemark's name instead.
@@ -29,8 +29,8 @@ var styleFunction = function(feature, resolution) {
         /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
         {size: [size + 2, size + 2], pixelRatio: size / 10});
     render.setFillStrokeStyle(
-        new ol.style.Fill({ color: 'rgba(255, 153, 0, 0.4)' }),
-        new ol.style.Stroke({ color: 'rgba(255, 204, 0, 0.2)', width: 1 }));
+        new ol.style.Fill({color: 'rgba(255, 153, 0, 0.4)'}),
+        new ol.style.Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 1}));
     render.drawPolygonGeometry(new ol.geom.Polygon(
         [[[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]]]));
     style = new ol.style.Style({

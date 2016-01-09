@@ -89,18 +89,19 @@ function search(query) {
 
 
 /**
- * @param {Event} e Change event.
+ * Handle click event.
+ * @param {Event} event The event.
  */
-searchButton.onclick = function(e) {
+searchButton.onclick = function(event) {
   search(queryInput.value);
-  e.preventDefault();
+  event.preventDefault();
 };
 
 
 /**
- * @param {Event} e Change event.
+ * Handle change event.
  */
-renderEdgesCheckbox.onchange = function(e) {
+renderEdgesCheckbox.onchange = function() {
   map.getLayers().forEach(function(layer) {
     if (layer instanceof ol.layer.Tile) {
       var source = layer.getSource();

@@ -85,8 +85,13 @@ var map = new ol.Map({
   })
 });
 
+// Get the form elements and bind the listeners
+var select = document.getElementById('blend-mode');
+var affectRed = document.getElementById('affect-red');
+var affectGreen = document.getElementById('affect-green');
+var affectBlue = document.getElementById('affect-blue');
 
-// Various helper methods and event handlers
+
 /**
  * This method sets the globalCompositeOperation to the value of the select
  * field and it is bound to the precompose event of the layers.
@@ -153,12 +158,6 @@ var affectLayerClicked = function() {
   map.render();
 };
 
-
-// Get the form elements and bind the listeners
-var select = document.getElementById('blend-mode');
-var affectRed = document.getElementById('affect-red');
-var affectGreen = document.getElementById('affect-green');
-var affectBlue = document.getElementById('affect-blue');
 
 // Rerender map when blend mode changes
 select.addEventListener('change', function() {

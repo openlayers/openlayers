@@ -90,7 +90,7 @@ var vectorSource = new ol.source.Vector({
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  style: function(feature, resolution) {
+  style: function(feature) {
     for (var key in styles) {
       var value = feature.get(key);
       if (value !== undefined) {

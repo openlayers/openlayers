@@ -108,11 +108,16 @@ var styles = {
   })
 };
 
+var animating = false;
+var speed, now;
+var speedInput = document.getElementById('speed');
+var startButton = document.getElementById('start-animation');
+
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: [routeFeature, geoMarker, startMarker, endMarker]
   }),
-  style: function(feature, resolution) {
+  style: function(feature) {
     // hide geoMarker if animation is active
     if (animating && feature.get('type') === 'geoMarker') {
       return null;
@@ -198,8 +203,4 @@ function stopAnimation(ended) {
   map.un('postcompose', moveFeature);
 }
 
-var speed, now;
-var animating = false;
-var speedInput = document.getElementById('speed');
-var startButton = document.getElementById('start-animation');
 startButton.addEventListener('click', startAnimation, false);

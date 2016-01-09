@@ -39,6 +39,6 @@ var map = new ol.Map({
   })
 });
 
-var graticule = new ol.Graticule({
+new ol.Graticule({
   map: map
 });

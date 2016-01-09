@@ -83,14 +83,14 @@ var source = new ol.source.TileJSON({
   crossOrigin: 'anonymous'
 });
 
-source.on('tileloadstart', function(event) {
+source.on('tileloadstart', function() {
   progress.addLoading();
 });
 
-source.on('tileloadend', function(event) {
+source.on('tileloadend', function() {
   progress.addLoaded();
 });
-source.on('tileloaderror', function(event) {
+source.on('tileloaderror', function() {
   progress.addLoaded();
 });
 

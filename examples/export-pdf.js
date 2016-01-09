@@ -54,7 +54,7 @@ var loaded = 0;
 
 var exportButton = document.getElementById('export-pdf');
 
-exportButton.addEventListener('click', function(e) {
+exportButton.addEventListener('click', function() {
 
   exportButton.disabled = true;
   document.body.style.cursor = 'progress';
@@ -73,7 +73,7 @@ exportButton.addEventListener('click', function(e) {
     ++loading;
   };
 
-  var tileLoadEnd = function(callback) {
+  var tileLoadEnd = function() {
     ++loaded;
     if (loading === loaded) {
       var canvas = this;

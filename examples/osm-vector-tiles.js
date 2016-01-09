@@ -10,7 +10,7 @@ goog.require('ol.style.Style');
 
 
 var format = new ol.format.TopoJSON();
-var tileGrid = ol.tilegrid.createXYZ({ maxZoom: 19 });
+var tileGrid = ol.tilegrid.createXYZ({maxZoom: 19});
 var roadStyleCache = {};
 var roadColor = {
   'major_road': '#776',
@@ -51,7 +51,7 @@ var map = new ol.Map({
         url: 'http://{a-c}.tile.openstreetmap.us/' +
             'vectiles-highroad/{z}/{x}/{y}.topojson'
       }),
-      style: function(feature, resolution) {
+      style: function(feature) {
         var kind = feature.get('kind');
         var railway = feature.get('railway');
         var sort_key = feature.get('sort_key');
@@ -97,7 +97,7 @@ var map = new ol.Map({
             'vectiles-land-usages/{z}/{x}/{y}.topojson'
       }),
       visible: false,
-      style: function(feature, resolution) {
+      style: function(feature) {
         var kind = feature.get('kind');
         var styleKey = kind;
         var style = landuseStyleCache[styleKey];

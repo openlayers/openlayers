@@ -34,7 +34,7 @@ var map = new ol.Map({
 var exportPNGElement = document.getElementById('export-png');
 
 if ('download' in exportPNGElement) {
-  exportPNGElement.addEventListener('click', function(e) {
+  exportPNGElement.addEventListener('click', function() {
     map.once('postcompose', function(event) {
       var canvas = event.context.canvas;
       exportPNGElement.href = canvas.toDataURL('image/png');

@@ -202,19 +202,6 @@ function CHtoWGSlng(y, x) {
 }
 
 
-// Convert SEX DMS angle to DEC
-function SEXtoDEC(angle) {
-
-  // Extract DMS
-  var deg = parseInt(angle, 10);
-  var min = parseInt((angle - deg) * 100, 10);
-  var sec = (((angle - deg) * 100) - min) * 100;
-
-  // Result in degrees sex (dd.mmss)
-  return deg + (sec / 60 + min) / 60;
-
-}
-
 // Convert DEC angle to SEX DMS
 function DECtoSEX(angle) {
 

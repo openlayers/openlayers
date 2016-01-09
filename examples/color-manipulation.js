@@ -138,6 +138,8 @@ var raster = new ol.source.Raster({
   }
 });
 
+var controls = {};
+
 raster.on('beforeoperations', function(event) {
   var data = event.data;
   for (var id in controls) {
@@ -160,7 +162,6 @@ var map = new ol.Map({
 });
 
 var controlIds = ['hue', 'chroma', 'lightness'];
-var controls = {};
 controlIds.forEach(function(id) {
   var control = document.getElementById(id);
   var output = document.getElementById(id + 'Out');

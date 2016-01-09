@@ -33,7 +33,7 @@ app.RotateNorthControl = function(opt_options) {
   button.innerHTML = 'N';
 
   var this_ = this;
-  var handleRotateNorth = function(e) {
+  var handleRotateNorth = function() {
     this_.getMap().getView().setRotation(0);
   };
 
