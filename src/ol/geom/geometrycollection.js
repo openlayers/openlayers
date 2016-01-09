@@ -95,8 +95,7 @@ ol.geom.GeometryCollection.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.GeometryCollection.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -160,8 +159,7 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.getSimplifiedGeometry =
-    function(squaredTolerance) {
+ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
     goog.object.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;

@@ -86,8 +86,7 @@ ol.source.TileArcGISRest.prototype.getParams = function() {
  * @return {string|undefined} Request URL.
  * @private
  */
-ol.source.TileArcGISRest.prototype.getRequestUrl_ =
-    function(tileCoord, tileSize, tileExtent,
+ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
         pixelRatio, projection, params) {
 
   var urls = this.urls;
@@ -146,8 +145,7 @@ ol.source.TileArcGISRest.prototype.getTilePixelRatio = function(pixelRatio) {
  * @return {string|undefined} Tile URL.
  * @private
  */
-ol.source.TileArcGISRest.prototype.tileUrlFunction_ =
-    function(tileCoord, pixelRatio, projection) {
+ol.source.TileArcGISRest.prototype.tileUrlFunction_ = function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
   if (!tileGrid) {

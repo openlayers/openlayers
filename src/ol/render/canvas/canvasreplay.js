@@ -158,8 +158,7 @@ goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @protected
  * @return {number} My end.
  */
-ol.render.canvas.Replay.prototype.appendFlatCoordinates =
-    function(flatCoordinates, offset, end, stride, close) {
+ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride, close) {
 
   var myEnd = this.coordinates.length;
   var extent = this.getBufferedMaxExtent();
@@ -601,8 +600,7 @@ ol.render.canvas.Replay.prototype.replayHitDetection = function(
 /**
  * @private
  */
-ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ =
-    function() {
+ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ = function() {
   var hitDetectionInstructions = this.hitDetectionInstructions;
   // step 1 - reverse array
   hitDetectionInstructions.reverse();
@@ -770,8 +768,7 @@ goog.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
  * @private
  * @return {number} My end.
  */
-ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
-    function(flatCoordinates, offset, end, stride) {
+ol.render.canvas.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   return this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false);
 };
@@ -780,8 +777,7 @@ ol.render.canvas.ImageReplay.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
-    function(pointGeometry, feature) {
+ol.render.canvas.ImageReplay.prototype.drawPointGeometry = function(pointGeometry, feature) {
   if (!this.image_) {
     return;
   }
@@ -833,8 +829,7 @@ ol.render.canvas.ImageReplay.prototype.drawPointGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, feature) {
+ol.render.canvas.ImageReplay.prototype.drawMultiPointGeometry = function(multiPointGeometry, feature) {
   if (!this.image_) {
     return;
   }
@@ -995,8 +990,7 @@ goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
  * @private
  * @return {number} end.
  */
-ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ =
-    function(flatCoordinates, offset, end, stride) {
+ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ = function(flatCoordinates, offset, end, stride) {
   var myBegin = this.coordinates.length;
   var myEnd = this.appendFlatCoordinates(
       flatCoordinates, offset, end, stride, false);
@@ -1069,8 +1063,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
-    function(lineStringGeometry, feature) {
+ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry = function(lineStringGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
@@ -1097,8 +1090,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineStringGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry, feature) {
+ol.render.canvas.LineStringReplay.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
@@ -1144,8 +1136,7 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle =
-    function(fillStyle, strokeStyle) {
+ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   goog.asserts.assert(this.state_, 'this.state_ should not be null');
   goog.asserts.assert(!fillStyle, 'fillStyle should be null');
   goog.asserts.assert(strokeStyle, 'strokeStyle should not be null');
@@ -1236,8 +1227,7 @@ goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
  * @private
  * @return {number} End.
  */
-ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
-    function(flatCoordinates, offset, ends, stride) {
+ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
@@ -1277,8 +1267,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ =
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
-    function(circleGeometry, feature) {
+ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry = function(circleGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
@@ -1330,8 +1319,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircleGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
-    function(polygonGeometry, feature) {
+ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry = function(polygonGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
@@ -1366,8 +1354,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygonGeometry =
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry, feature) {
+ol.render.canvas.PolygonReplay.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry, feature) {
   var state = this.state_;
   goog.asserts.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
@@ -1444,8 +1431,7 @@ ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle =
-    function(fillStyle, strokeStyle) {
+ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   goog.asserts.assert(this.state_, 'this.state_ should not be null');
   goog.asserts.assert(fillStyle || strokeStyle,
       'fillStyle or strokeStyle should not be null');
@@ -1624,8 +1610,7 @@ goog.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
 /**
  * @inheritDoc
  */
-ol.render.canvas.TextReplay.prototype.drawText =
-    function(flatCoordinates, offset, end, stride, geometry, feature) {
+ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, feature) {
   if (this.text_ === '' || !this.textState_ ||
       (!this.textFillState_ && !this.textStrokeState_)) {
     return;
@@ -1657,8 +1642,7 @@ ol.render.canvas.TextReplay.prototype.drawText =
  * @param {ol.render.canvas.FillState} fillState Fill state.
  * @private
  */
-ol.render.canvas.TextReplay.prototype.setReplayFillState_ =
-    function(fillState) {
+ol.render.canvas.TextReplay.prototype.setReplayFillState_ = function(fillState) {
   var replayFillState = this.replayFillState_;
   if (replayFillState &&
       replayFillState.fillStyle == fillState.fillStyle) {
@@ -1682,8 +1666,7 @@ ol.render.canvas.TextReplay.prototype.setReplayFillState_ =
  * @param {ol.render.canvas.StrokeState} strokeState Stroke state.
  * @private
  */
-ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ =
-    function(strokeState) {
+ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ = function(strokeState) {
   var replayStrokeState = this.replayStrokeState_;
   if (replayStrokeState &&
       replayStrokeState.lineCap == strokeState.lineCap &&
@@ -1725,8 +1708,7 @@ ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ =
  * @param {ol.render.canvas.TextState} textState Text state.
  * @private
  */
-ol.render.canvas.TextReplay.prototype.setReplayTextState_ =
-    function(textState) {
+ol.render.canvas.TextReplay.prototype.setReplayTextState_ = function(textState) {
   var replayTextState = this.replayTextState_;
   if (replayTextState &&
       replayTextState.font == textState.font &&
@@ -1979,8 +1961,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 /**
  * @inheritDoc
  */
-ol.render.canvas.ReplayGroup.prototype.getReplay =
-    function(zIndex, replayType) {
+ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
   var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
   var replays = this.replaysByZIndex_[zIndexKey];
   if (replays === undefined) {

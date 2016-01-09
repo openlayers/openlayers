@@ -359,8 +359,7 @@ ol.interaction.Modify.prototype.handleFeatureRemove_ = function(evt) {
  * @param {ol.geom.Point} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writePointGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writePointGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
     feature: feature,
@@ -376,8 +375,7 @@ ol.interaction.Modify.prototype.writePointGeometry_ =
  * @param {ol.geom.MultiPoint} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writeMultiPointGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   var points = geometry.getCoordinates();
   var coordinates, i, ii, segmentData;
   for (i = 0, ii = points.length; i < ii; ++i) {
@@ -399,8 +397,7 @@ ol.interaction.Modify.prototype.writeMultiPointGeometry_ =
  * @param {ol.geom.LineString} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writeLineStringGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -421,8 +418,7 @@ ol.interaction.Modify.prototype.writeLineStringGeometry_ =
  * @param {ol.geom.MultiLineString} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
   var lines = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = lines.length; j < jj; ++j) {
@@ -447,8 +443,7 @@ ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ =
  * @param {ol.geom.Polygon} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writePolygonGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writePolygonGeometry_ = function(feature, geometry) {
   var rings = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = rings.length; j < jj; ++j) {
@@ -473,8 +468,7 @@ ol.interaction.Modify.prototype.writePolygonGeometry_ =
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
   var polygons = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
   for (k = 0, kk = polygons.length; k < kk; ++k) {
@@ -502,8 +496,7 @@ ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ =
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @private
  */
-ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
   var i, geometries = geometry.getGeometriesArray();
   for (i = 0; i < geometries.length; ++i) {
     this.SEGMENT_WRITERS_[geometries[i].getType()].call(
@@ -517,8 +510,7 @@ ol.interaction.Modify.prototype.writeGeometryCollectionGeometry_ =
  * @return {ol.Feature} Vertex feature.
  * @private
  */
-ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
-    function(coordinates) {
+ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ = function(coordinates) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
     vertexFeature = new ol.Feature(new ol.geom.Point(coordinates));
@@ -990,8 +982,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
  * @param {Array} coordinates Coordinates.
  * @private
  */
-ol.interaction.Modify.prototype.setGeometryCoordinates_ =
-    function(geometry, coordinates) {
+ol.interaction.Modify.prototype.setGeometryCoordinates_ = function(geometry, coordinates) {
   this.changingFeature_ = true;
   geometry.setCoordinates(coordinates);
   this.changingFeature_ = false;

@@ -170,8 +170,7 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  * @return {?ol.style.AtlasManagerInfo}  The position and atlas image for the
  *    entry, or `null` if the image is too big.
  */
-ol.style.AtlasManager.prototype.add =
-    function(id, width, height,
+ol.style.AtlasManager.prototype.add = function(id, width, height,
         renderCallback, opt_renderHitCallback, opt_this) {
   if (width + this.space_ > this.maxSize_ ||
       height + this.space_ > this.maxSize_) {
@@ -213,8 +212,7 @@ ol.style.AtlasManager.prototype.add =
  * @return {?ol.style.AtlasInfo}  The position and atlas image for the entry,
  *    or `null` if the image is too big.
  */
-ol.style.AtlasManager.prototype.add_ =
-    function(isHitAtlas, id, width, height,
+ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
         renderCallback, opt_this) {
   var atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
   var atlas, info, i, ii;
@@ -329,8 +327,7 @@ ol.style.Atlas.prototype.get = function(id) {
  *    `renderCallback`.
  * @return {?ol.style.AtlasInfo} The position and atlas image for the entry.
  */
-ol.style.Atlas.prototype.add =
-    function(id, width, height, renderCallback, opt_this) {
+ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
   var block, i, ii;
   for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
     block = this.emptyBlocks_[i];
@@ -367,8 +364,7 @@ ol.style.Atlas.prototype.add =
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
-ol.style.Atlas.prototype.split_ =
-    function(index, block, width, height) {
+ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
@@ -426,8 +422,7 @@ ol.style.Atlas.prototype.split_ =
  * @param {ol.style.Atlas.Block} newBlock1 The 1st block to add.
  * @param {ol.style.Atlas.Block} newBlock2 The 2nd block to add.
  */
-ol.style.Atlas.prototype.updateBlocks_ =
-    function(index, newBlock1, newBlock2) {
+ol.style.Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   var args = [index, 1];
   if (newBlock1.width > 0 && newBlock1.height > 0) {
     args.push(newBlock1);

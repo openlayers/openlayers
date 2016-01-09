@@ -389,8 +389,7 @@ ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
-ol.style.Circle.prototype.drawHitDetectionCanvas_ =
-    function(renderOptions, context, x, y) {
+ol.style.Circle.prototype.drawHitDetectionCanvas_ = function(renderOptions, context, x, y) {
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
 

@@ -55,8 +55,7 @@ goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -77,8 +76,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg) {
+ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
@@ -144,8 +142,7 @@ ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
   var viewState = frameState.viewState;

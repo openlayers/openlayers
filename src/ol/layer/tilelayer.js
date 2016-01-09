@@ -94,8 +94,7 @@ ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
  * @observable
  * @api
  */
-ol.layer.Tile.prototype.setUseInterimTilesOnError =
-    function(useInterimTilesOnError) {
+ol.layer.Tile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
       ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };

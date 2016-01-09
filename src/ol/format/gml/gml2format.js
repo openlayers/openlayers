@@ -120,8 +120,7 @@ ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML2.prototype.innerBoundaryIsParser_ =
-    function(node, objectStack) {
+ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'innerBoundaryIs',
@@ -146,8 +145,7 @@ ol.format.GML2.prototype.innerBoundaryIsParser_ =
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML2.prototype.outerBoundaryIsParser_ =
-    function(node, objectStack) {
+ol.format.GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'outerBoundaryIs',

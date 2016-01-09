@@ -117,8 +117,7 @@ ol.source.ImageMapGuide.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageMapGuide.prototype.getImageInternal =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
@@ -207,8 +206,7 @@ ol.source.ImageMapGuide.prototype.updateParams = function(params) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {string} The mapagent map image request URL.
  */
-ol.source.ImageMapGuide.prototype.getUrl =
-    function(baseUrl, params, extent, size, projection) {
+ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, size, projection) {
   var scale = ol.source.ImageMapGuide.getScale(extent, size,
       this.metersPerUnit_, this.displayDpi_);
   var center = ol.extent.getCenter(extent);

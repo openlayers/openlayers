@@ -255,8 +255,7 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) {
   var event = pointerEvent;
 
   if (event.type == ol.MapBrowserEvent.EventType.POINTERUP ||
@@ -306,8 +305,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
  * @return {boolean} If the left mouse button was pressed.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.isMouseActionButton_ = function(pointerEvent) {
   return pointerEvent.button === 0;
 };
 
@@ -316,8 +314,7 @@ ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new ol.MapBrowserPointerEvent(
       ol.MapBrowserEvent.EventType.POINTERDOWN, this.map_, pointerEvent);
@@ -365,8 +362,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
   // Fix IE10 on windows Surface : When you tap the tablet, it triggers
   // multiple pointermove events between pointerdown and pointerup with
   // the exact same coordinates of the pointerdown event. To avoid a

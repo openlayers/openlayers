@@ -122,8 +122,7 @@ ol.renderer.canvas.TileLayer.prototype.getImageTransform = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   //
   // Warning! You're entering a dangerous zone!
@@ -458,8 +457,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg) {
+ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.context_) {
     return undefined;
   }

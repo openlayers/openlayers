@@ -235,7 +235,7 @@ build/timestamps/gjslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                     $(EXAMPLES_JS)
 	@mkdir -p $(@D)
 	@echo "Running gjslint..."
-	@gjslint --jslint_error=all --custom_jsdoc_tags=event,fires,function,classdesc,api,observable --strict $?
+	@gjslint --jslint_error=all --disable 0110 --custom_jsdoc_tags=event,fires,function,classdesc,api,observable --strict $?
 	@touch $@
 
 $(BUILD_HOSTED_EXAMPLES_JS): $(BUILD_HOSTED)/examples/%.js: build/examples/%.js

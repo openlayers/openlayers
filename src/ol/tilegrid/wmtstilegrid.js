@@ -74,8 +74,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
  * @api
  */
-ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
-    function(matrixSet, opt_extent) {
+ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent) {
 
   /** @type {!Array.<number>} */
   var resolutions = [];

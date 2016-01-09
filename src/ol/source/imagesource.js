@@ -89,8 +89,7 @@ ol.source.Image.prototype.getResolutions = function() {
  * @param {number} resolution Resolution.
  * @return {number} Resolution.
  */
-ol.source.Image.prototype.findNearestResolution =
-    function(resolution) {
+ol.source.Image.prototype.findNearestResolution = function(resolution) {
   if (this.resolutions_) {
     var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
@@ -106,8 +105,7 @@ ol.source.Image.prototype.findNearestResolution =
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  */
-ol.source.Image.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   var sourceProjection = this.getProjection();
   if (!ol.ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||

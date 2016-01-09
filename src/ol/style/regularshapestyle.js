@@ -450,8 +450,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
  * @private
  * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
  */
-ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
-    function(renderOptions) {
+ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
   if (this.fill_) {
     this.hitDetectionCanvas_ = this.canvas_;
@@ -480,8 +479,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
-ol.style.RegularShape.prototype.drawHitDetectionCanvas_ =
-    function(renderOptions, context, x, y) {
+ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions, context, x, y) {
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
 

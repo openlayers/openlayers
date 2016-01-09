@@ -169,8 +169,7 @@ ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
  * @return {olx.FrameState} The updated frame state.
  * @private
  */
-ol.source.Raster.prototype.updateFrameState_ =
-    function(extent, resolution, projection) {
+ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
   var frameState = /** @type {olx.FrameState} */ (
       goog.object.clone(this.frameState_));
@@ -214,8 +213,7 @@ ol.source.Raster.prototype.isDirty_ = function(extent, resolution) {
 /**
  * @inheritDoc
  */
-ol.source.Raster.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
 
   if (!this.allSourcesReady_()) {
     return null;
@@ -315,8 +313,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
  * @param {Object} data The user data.
  * @private
  */
-ol.source.Raster.prototype.onWorkerComplete_ =
-    function(frameState, callback, err, output, data) {
+ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, err, output, data) {
   if (err) {
     callback(err);
     return;

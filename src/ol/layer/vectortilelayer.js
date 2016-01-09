@@ -92,8 +92,7 @@ ol.layer.VectorTile.prototype.setPreload = function(preload) {
  * @observable
  * @api
  */
-ol.layer.VectorTile.prototype.setUseInterimTilesOnError =
-    function(useInterimTilesOnError) {
+ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
       ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };

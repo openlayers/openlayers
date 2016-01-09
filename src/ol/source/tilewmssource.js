@@ -117,8 +117,7 @@ goog.inherits(ol.source.TileWMS, ol.source.TileImage);
  * @return {string|undefined} GetFeatureInfo URL.
  * @api stable
  */
-ol.source.TileWMS.prototype.getGetFeatureInfoUrl =
-    function(coordinate, resolution, projection, params) {
+ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
 
   goog.asserts.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
@@ -207,8 +206,7 @@ ol.source.TileWMS.prototype.getParams = function() {
  * @return {string|undefined} Request URL.
  * @private
  */
-ol.source.TileWMS.prototype.getRequestUrl_ =
-    function(tileCoord, tileSize, tileExtent,
+ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
         pixelRatio, projection, params) {
 
   var urls = this.urls;
@@ -312,8 +310,7 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
  * @return {string|undefined} Tile URL.
  * @private
  */
-ol.source.TileWMS.prototype.tileUrlFunction_ =
-    function(tileCoord, pixelRatio, projection) {
+ol.source.TileWMS.prototype.tileUrlFunction_ = function(tileCoord, pixelRatio, projection) {
 
   var tileGrid = this.getTileGrid();
   if (!tileGrid) {

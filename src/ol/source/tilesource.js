@@ -119,8 +119,7 @@ ol.source.Tile.prototype.expireCache = function(projection, usedTiles) {
  *     considered loaded.
  * @return {boolean} The tile range is fully covered with loaded tiles.
  */
-ol.source.Tile.prototype.forEachLoadedTile =
-    function(projection, z, tileRange, callback) {
+ol.source.Tile.prototype.forEachLoadedTile = function(projection, z, tileRange, callback) {
   var tileCache = this.getTileCacheForProjection(projection);
   if (!tileCache) {
     return false;
@@ -257,8 +256,7 @@ ol.source.Tile.prototype.getTilePixelRatio = function(pixelRatio) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.Size} Tile size.
  */
-ol.source.Tile.prototype.getTilePixelSize =
-    function(z, pixelRatio, projection) {
+ol.source.Tile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   var tileGrid = this.getTileGridForProjection(projection);
   var tilePixelRatio = this.getTilePixelRatio(pixelRatio);
   var tileSize = ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize);
@@ -279,8 +277,7 @@ ol.source.Tile.prototype.getTilePixelSize =
  * @return {ol.TileCoord} Tile coordinate to be passed to the tileUrlFunction or
  *     null if no tile URL should be created for the passed `tileCoord`.
  */
-ol.source.Tile.prototype.getTileCoordForTileUrlFunction =
-    function(tileCoord, opt_projection) {
+ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_projection) {
   var projection = opt_projection !== undefined ?
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);

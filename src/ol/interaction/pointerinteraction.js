@@ -108,8 +108,7 @@ ol.interaction.Pointer.centroid = function(pointerEvents) {
  *     or pointerup event.
  * @private
  */
-ol.interaction.Pointer.prototype.isPointerDraggingEvent_ =
-    function(mapBrowserEvent) {
+ol.interaction.Pointer.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return (
       type === ol.MapBrowserEvent.EventType.POINTERDOWN ||
@@ -122,8 +121,7 @@ ol.interaction.Pointer.prototype.isPointerDraggingEvent_ =
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @private
  */
-ol.interaction.Pointer.prototype.updateTrackedPointers_ =
-    function(mapBrowserEvent) {
+ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
 

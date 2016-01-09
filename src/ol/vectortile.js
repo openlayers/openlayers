@@ -29,8 +29,7 @@ ol.TileReplayState;
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @param {ol.proj.Projection} projection Feature projection.
  */
-ol.VectorTile =
-    function(tileCoord, state, src, format, tileLoadFunction, projection) {
+ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction, projection) {
 
   goog.base(this, tileCoord, state);
 

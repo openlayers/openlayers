@@ -181,8 +181,7 @@ ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
  * @param {Touch} inTouch Touch event
  * @return {Object} A pointer object.
  */
-ol.pointer.TouchSource.prototype.touchToPointer_ =
-    function(browserEvent, inTouch) {
+ol.pointer.TouchSource.prototype.touchToPointer_ = function(browserEvent, inTouch) {
   var e = this.dispatcher.cloneEvent(browserEvent, inTouch);
   // Spec specifies that pointerId 1 is reserved for Mouse.
   // Touch identifiers can start at 0.
@@ -217,8 +216,7 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
  * @param {goog.events.BrowserEvent} inEvent Touch event
  * @param {function(goog.events.BrowserEvent, Object)} inFunction In function.
  */
-ol.pointer.TouchSource.prototype.processTouches_ =
-    function(inEvent, inFunction) {
+ol.pointer.TouchSource.prototype.processTouches_ = function(inEvent, inFunction) {
   var touches = Array.prototype.slice.call(
       inEvent.getBrowserEvent().changedTouches);
   var count = touches.length;
@@ -340,8 +338,7 @@ ol.pointer.TouchSource.prototype.touchmove = function(inEvent) {
  * @param {goog.events.BrowserEvent} browserEvent The event.
  * @param {Object} inPointer The in pointer.
  */
-ol.pointer.TouchSource.prototype.moveOverOut_ =
-    function(browserEvent, inPointer) {
+ol.pointer.TouchSource.prototype.moveOverOut_ = function(browserEvent, inPointer) {
   var event = inPointer;
   var pointer = this.pointerMap[event.pointerId];
   // a finger drifted off the screen, ignore it
@@ -412,8 +409,7 @@ ol.pointer.TouchSource.prototype.touchcancel = function(inEvent) {
  * @param {goog.events.BrowserEvent} browserEvent The event.
  * @param {Object} inPointer The in pointer.
  */
-ol.pointer.TouchSource.prototype.cancelOut_ =
-    function(browserEvent, inPointer) {
+ol.pointer.TouchSource.prototype.cancelOut_ = function(browserEvent, inPointer) {
   this.dispatcher.cancel(inPointer, browserEvent);
   this.dispatcher.out(inPointer, browserEvent);
   this.dispatcher.leave(inPointer, browserEvent);

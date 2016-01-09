@@ -38,8 +38,7 @@ goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
-ol.renderer.canvas.Layer.prototype.composeFrame =
-    function(frameState, layerState, context) {
+ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {
 
   this.dispatchPreComposeEvent(context, frameState);
 
@@ -122,8 +121,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame =
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @private
  */
-ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
-    function(type, context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
     var transform = opt_transform !== undefined ?
@@ -145,8 +143,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ =
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
-    function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, frameState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, context,
       frameState, opt_transform);
 };
@@ -158,8 +155,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent =
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
-    function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, frameState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context,
       frameState, opt_transform);
 };
@@ -171,8 +167,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent =
  * @param {goog.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchRenderEvent =
-    function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.EventType.RENDER, context,
       frameState, opt_transform);
 };
@@ -196,8 +191,7 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  * @protected
  * @return {!goog.vec.Mat4.Number} Transform.
  */
-ol.renderer.canvas.Layer.prototype.getTransform =
-    function(frameState, offsetX) {
+ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) {
   var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
   return ol.vec.Mat4.makeTransform2D(this.transform_,
@@ -226,8 +220,7 @@ ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
  * @return {ol.Pixel} The pixel.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.getPixelOnCanvas =
-    function(pixelOnMap, imageTransformInv) {
+ol.renderer.canvas.Layer.prototype.getPixelOnCanvas = function(pixelOnMap, imageTransformInv) {
   var pixelOnCanvas = [0, 0];
   ol.vec.Mat4.multVec2(imageTransformInv, pixelOnMap, pixelOnCanvas);
   return pixelOnCanvas;

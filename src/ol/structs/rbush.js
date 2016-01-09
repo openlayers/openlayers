@@ -197,8 +197,7 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEachInExtent =
-    function(extent, callback, opt_this) {
+ol.structs.RBush.prototype.forEachInExtent = function(extent, callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {

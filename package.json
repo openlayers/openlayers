@@ -12,7 +12,7 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "pretest": "eslint tasks test",
+    "pretest": "eslint tasks test src",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
   },
@@ -84,8 +84,7 @@
     },
     "rules": {
       "no-constant-condition": 0,
-      "no-multiple-empty-lines": [2, {"max": 3, "maxEOF": 1}],
-      "indent": 0
+      "no-multiple-empty-lines": [2, {"max": 3, "maxEOF": 1}]
     }
   },
   "ext": [

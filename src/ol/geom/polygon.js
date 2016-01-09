@@ -118,8 +118,7 @@ ol.geom.Polygon.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -298,8 +297,7 @@ ol.geom.Polygon.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizes(
@@ -359,8 +357,7 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */
-ol.geom.Polygon.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates, ends) {
+ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
   if (!flatCoordinates) {
     goog.asserts.assert(ends && ends.length === 0,
         'ends must be an empty array');

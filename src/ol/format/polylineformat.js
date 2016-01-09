@@ -301,8 +301,7 @@ ol.format.Polyline.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.readFeaturesFromText =
-    function(text, opt_options) {
+ol.format.Polyline.prototype.readFeaturesFromText = function(text, opt_options) {
   var feature = this.readFeatureFromText(text, opt_options);
   return [feature];
 };
@@ -323,8 +322,7 @@ ol.format.Polyline.prototype.readGeometry;
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.readGeometryFromText =
-    function(text, opt_options) {
+ol.format.Polyline.prototype.readGeometryFromText = function(text, opt_options) {
   var stride = ol.geom.SimpleGeometry.getStrideForLayout(this.geometryLayout_);
   var flatCoordinates = ol.format.Polyline.decodeDeltas(
       text, stride, this.factor_);
@@ -368,8 +366,7 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.writeFeaturesText =
-    function(features, opt_options) {
+ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options) {
   goog.asserts.assert(features.length == 1,
       'features array should have 1 item');
   return this.writeFeatureText(features[0], opt_options);
@@ -391,8 +388,7 @@ ol.format.Polyline.prototype.writeGeometry;
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.writeGeometryText =
-    function(geometry, opt_options) {
+ol.format.Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
       'geometry should be an ol.geom.LineString');
   geometry = /** @type {ol.geom.LineString} */

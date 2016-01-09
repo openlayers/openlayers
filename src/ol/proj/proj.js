@@ -470,8 +470,7 @@ ol.proj.addEquivalentProjections = function(projections) {
  * @param {ol.TransformFunction} inverseTransform Transform from any projection
  *   in projection2 to any projection in projection1..
  */
-ol.proj.addEquivalentTransforms =
-    function(projections1, projections2, forwardTransform, inverseTransform) {
+ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTransform, inverseTransform) {
   projections1.forEach(function(projection1) {
     projections2.forEach(function(projection2) {
       ol.proj.addTransform(projection1, projection2, forwardTransform);
@@ -570,8 +569,7 @@ ol.proj.addTransform = function(source, destination, transformFn) {
  *     the transformed {@link ol.Coordinate}.
  * @api stable
  */
-ol.proj.addCoordinateTransforms =
-    function(source, destination, forward, inverse) {
+ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse) {
   var sourceProj = ol.proj.get(source);
   var destProj = ol.proj.get(destination);
   ol.proj.addTransform(sourceProj, destProj,
@@ -752,8 +750,7 @@ ol.proj.getTransform = function(source, destination) {
  *     object.
  * @return {ol.TransformFunction} Transform function.
  */
-ol.proj.getTransformFromProjections =
-    function(sourceProjection, destinationProjection) {
+ol.proj.getTransformFromProjections = function(sourceProjection, destinationProjection) {
   var transforms = ol.proj.transforms_;
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
@@ -853,8 +850,7 @@ ol.proj.transformExtent = function(extent, source, destination) {
  * @param {ol.proj.Projection} destinationProjection Destination projection.
  * @return {ol.Coordinate} Point.
  */
-ol.proj.transformWithProjections =
-    function(point, sourceProjection, destinationProjection) {
+ol.proj.transformWithProjections = function(point, sourceProjection, destinationProjection) {
   var transformFn = ol.proj.getTransformFromProjections(
       sourceProjection, destinationProjection);
   return transformFn(point);

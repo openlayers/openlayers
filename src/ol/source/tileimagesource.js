@@ -172,8 +172,7 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @return {ol.Tile} Tile.
  * @private
  */
-ol.source.TileImage.prototype.createTile_ =
-    function(z, x, y, pixelRatio, projection, key) {
+ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
   var tileCoord = [z, x, y];
   var urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord, projection);
@@ -195,8 +194,7 @@ ol.source.TileImage.prototype.createTile_ =
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTile =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION ||
       !this.getProjection() ||
       !projection ||
@@ -239,8 +237,7 @@ ol.source.TileImage.prototype.getTile =
  * @return {!ol.Tile} Tile.
  * @protected
  */
-ol.source.TileImage.prototype.getTileInternal =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var /** @type {ol.Tile} */ tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
   var paramsKey = this.getKeyParams();
@@ -313,8 +310,7 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
-ol.source.TileImage.prototype.setTileGridForProjection =
-    function(projection, tilegrid) {
+ol.source.TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
   if (ol.ENABLE_RASTER_REPROJECTION) {
     var proj = ol.proj.get(projection);
     if (proj) {

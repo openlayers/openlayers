@@ -72,8 +72,7 @@ goog.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.composeFrame =
-    function(frameState, layerState, context) {
+ol.renderer.webgl.VectorLayer.prototype.composeFrame = function(frameState, layerState, context) {
   this.layerState_ = layerState;
   var viewState = frameState.viewState;
   var replayGroup = this.replayGroup_;
@@ -104,8 +103,7 @@ ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
+ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   if (!this.replayGroup_ || !this.layerState_) {
     return undefined;
   } else {
@@ -138,8 +136,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate =
-    function(coordinate, frameState) {
+ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   if (!this.replayGroup_ || !this.layerState_) {
     return false;
   } else {
@@ -157,8 +154,7 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   var coordinate = pixel.slice();
   ol.vec.Mat4.multVec2(
       frameState.pixelToCoordinateMatrix, coordinate, coordinate);
@@ -177,8 +173,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ =
-    function(event) {
+ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -186,8 +181,7 @@ ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
-    function(frameState, layerState, context) {
+ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector,
@@ -243,12 +237,11 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
       ol.renderer.vector.getTolerance(resolution, pixelRatio),
       extent, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
-  var renderFeature =
-      /**
-       * @param {ol.Feature} feature Feature.
-       * @this {ol.renderer.webgl.VectorLayer}
-       */
-      function(feature) {
+  /**
+   * @param {ol.Feature} feature Feature.
+   * @this {ol.renderer.webgl.VectorLayer}
+   */
+  var renderFeature = function(feature) {
     var styles;
     var styleFunction = feature.getStyleFunction();
     if (styleFunction) {
@@ -301,8 +294,7 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame =
  * @param {ol.render.webgl.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.webgl.VectorLayer.prototype.renderFeature =
-    function(feature, resolution, pixelRatio, styles, replayGroup) {
+ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
   if (!styles) {
     return false;
   }

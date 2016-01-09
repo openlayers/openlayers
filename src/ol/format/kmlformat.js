@@ -2137,8 +2137,7 @@ ol.format.KML.writeColorTextNode_ = function(node, color) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.KML.writeCoordinatesTextNode_ =
-    function(node, coordinates, objectStack) {
+ol.format.KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
 
@@ -2322,8 +2321,7 @@ ol.format.KML.writeLineStyle_ = function(node, style, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.KML.writeMultiGeometry_ =
-    function(node, geometry, objectStack) {
+ol.format.KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
   goog.asserts.assert(
       (geometry instanceof ol.geom.MultiPoint) ||
       (geometry instanceof ol.geom.MultiLineString) ||
@@ -2605,9 +2603,8 @@ ol.format.KML.ICON_SEQUENCE_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, [
       'href'
     ],
-    ol.xml.makeStructureNS(
-        ol.format.KML.GX_NAMESPACE_URIS_, [
-          'x', 'y', 'w', 'h'
+    ol.xml.makeStructureNS(ol.format.KML.GX_NAMESPACE_URIS_, [
+      'x', 'y', 'w', 'h'
     ]));
 
 

@@ -340,8 +340,7 @@ ol.format.GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GMLBase.prototype.lineStringMemberParser_ =
-    function(node, objectStack) {
+ol.format.GMLBase.prototype.lineStringMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'lineStringMember' ||
@@ -357,8 +356,7 @@ ol.format.GMLBase.prototype.lineStringMemberParser_ =
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GMLBase.prototype.polygonMemberParser_ =
-    function(node, objectStack) {
+ol.format.GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'polygonMember' ||
@@ -472,8 +470,7 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
  * @private
  * @return {Array.<number>} Flat coordinates.
  */
-ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ =
-    function(node, objectStack) {
+ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
@@ -583,8 +580,7 @@ ol.format.GMLBase.prototype.RING_PARSERS = Object({
 /**
  * @inheritDoc
  */
-ol.format.GMLBase.prototype.readGeometryFromNode =
-    function(node, opt_options) {
+ol.format.GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
   var geometry = this.readGeometryElement(node,
       [this.getReadOptions(node, opt_options ? opt_options : {})]);
   return geometry ? geometry : null;
@@ -606,8 +602,7 @@ ol.format.GMLBase.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.GMLBase.prototype.readFeaturesFromNode =
-    function(node, opt_options) {
+ol.format.GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = {
     featureType: this.featureType,
     featureNS: this.featureNS

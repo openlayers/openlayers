@@ -76,8 +76,7 @@ goog.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.composeFrame =
-    function(frameState, layerState, context) {
+ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState, layerState, context) {
 
   var pixelRatio = frameState.pixelRatio;
   var skippedFeatureUids = layerState.managed ?
@@ -292,8 +291,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
@@ -356,8 +354,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ =
-    function(event) {
+ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -365,8 +362,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
   var layer = /** @type {ol.layer.Vector} */ (this.getLayer());
   goog.asserts.assertInstanceof(layer, ol.layer.VectorTile,
       'layer is an instance of ol.layer.VectorTile');
@@ -488,8 +484,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame =
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.canvas.VectorTileLayer.prototype.renderFeature =
-    function(feature, squaredTolerance, styles, replayGroup) {
+ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, squaredTolerance, styles, replayGroup) {
   if (!styles) {
     return false;
   }

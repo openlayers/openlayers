@@ -63,8 +63,7 @@ goog.inherits(ol.source.ImageStatic, ol.source.Image);
 /**
  * @inheritDoc
  */
-ol.source.ImageStatic.prototype.getImageInternal =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageStatic.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }

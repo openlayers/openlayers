@@ -7,8 +7,7 @@ goog.provide('ol.geom.flat.reverse');
  * @param {number} end End.
  * @param {number} stride Stride.
  */
-ol.geom.flat.reverse.coordinates =
-    function(flatCoordinates, offset, end, stride) {
+ol.geom.flat.reverse.coordinates = function(flatCoordinates, offset, end, stride) {
   while (offset < end - stride) {
     var i;
     for (i = 0; i < stride; ++i) {

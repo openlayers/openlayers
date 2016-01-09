@@ -45,8 +45,7 @@ goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
+ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -76,8 +75,7 @@ ol.renderer.dom.ImageLayer.prototype.clearFrame = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.ImageLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;

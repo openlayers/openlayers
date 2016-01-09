@@ -100,10 +100,16 @@ ol.render.Feature.prototype.getExtent = function() {
 /**
  * @return {Array.<number>} Flat coordinates.
  */
-ol.render.Feature.prototype.getFlatCoordinates =
-    ol.render.Feature.prototype.getOrientedFlatCoordinates = function() {
+ol.render.Feature.prototype.getOrientedFlatCoordinates = function() {
   return this.flatCoordinates_;
 };
+
+
+/**
+ * @return {Array.<number>} Flat coordinates.
+ */
+ol.render.Feature.prototype.getFlatCoordinates =
+    ol.render.Feature.prototype.getOrientedFlatCoordinates;
 
 
 /**

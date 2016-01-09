@@ -447,8 +447,7 @@ ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
  * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  */
-ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
-    function(coordinate, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, callback, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
@@ -483,8 +482,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
  * @template T,S
  * @api
  */
-ol.source.Vector.prototype.forEachFeatureInExtent =
-    function(extent, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureInExtent = function(extent, callback, opt_this) {
   if (this.featuresRtree_) {
     return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
   } else if (this.featuresCollection_) {
@@ -510,8 +508,7 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @template T,S
  * @api
  */
-ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
-    function(extent, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureIntersectingExtent = function(extent, callback, opt_this) {
   return this.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
@@ -608,8 +605,7 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
  * @return {ol.Feature} Closest feature.
  * @api stable
  */
-ol.source.Vector.prototype.getClosestFeatureToCoordinate =
-    function(coordinate) {
+ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate) {
   // Find the closest feature using branch and bound.  We start searching an
   // infinite extent, and find the distance from the first feature found.  This
   // becomes the closest feature.  We then compute a smaller extent which any

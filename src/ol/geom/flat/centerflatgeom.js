@@ -10,8 +10,7 @@ goog.require('ol.extent');
  * @param {number} stride Stride.
  * @return {Array.<number>} Flat centers.
  */
-ol.geom.flat.center.linearRingss =
-    function(flatCoordinates, offset, endss, stride) {
+ol.geom.flat.center.linearRingss = function(flatCoordinates, offset, endss, stride) {
   var flatCenters = [];
   var i, ii;
   var extent = ol.extent.createEmpty();

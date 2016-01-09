@@ -125,8 +125,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg,
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -200,8 +199,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg,
+ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -238,8 +236,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
  * @return {boolean} Is there a feature at the given coordinate?
  * @template U
  */
-ol.renderer.Map.prototype.hasFeatureAtCoordinate =
-    function(coordinate, frameState, layerFilter, thisArg) {
+ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
 
@@ -344,8 +341,7 @@ ol.renderer.Map.prototype.renderFrame = ol.nullFunction;
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
-    function(map, frameState) {
+ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
@@ -368,8 +364,7 @@ ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
  * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
-ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
-    function(frameState) {
+ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {

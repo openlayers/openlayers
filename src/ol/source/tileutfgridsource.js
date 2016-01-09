@@ -166,8 +166,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 /**
  * @inheritDoc
  */
-ol.source.TileUTFGrid.prototype.getTile =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
@@ -211,8 +210,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
  * @private
  */
-ol.source.TileUTFGridTile_ =
-    function(tileCoord, state, src, extent, preemptive) {
+ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive) {
 
   goog.base(this, tileCoord, state);
 
@@ -309,8 +307,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  *                               The tile data is requested if not yet loaded.
  * @template T
  */
-ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate =
-    function(coordinate, callback, opt_this, opt_request) {
+ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == ol.TileState.IDLE && opt_request === true) {
     goog.events.listenOnce(this, goog.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));

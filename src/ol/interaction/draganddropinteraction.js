@@ -213,8 +213,7 @@ ol.interaction.DragAndDropEventType = {
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
-ol.interaction.DragAndDropEvent =
-    function(type, target, file, opt_features, opt_projection) {
+ol.interaction.DragAndDropEvent = function(type, target, file, opt_features, opt_projection) {
 
   goog.base(this, type, target);
 
