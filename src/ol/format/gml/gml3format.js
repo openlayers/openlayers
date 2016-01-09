@@ -661,7 +661,7 @@ ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
 /**
  * @param {Array.<number>} point Point geometry.
  * @param {string=} opt_srsName Optional srsName
- * @return {string}
+ * @return {string} The coords string.
  * @private
  */
 ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName) {

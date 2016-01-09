@@ -200,7 +200,7 @@ ol.interaction.Snap.prototype.forEachFeatureRemove_ = function(feature) {
 
 
 /**
- * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>}
+ * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>} Features.
  * @private
  */
 ol.interaction.Snap.prototype.getFeatures_ = function() {
@@ -608,9 +608,9 @@ ol.interaction.Snap.handleUpEvent_ = function(evt) {
 
 /**
  * Sort segments by distance, helper function
- * @param {ol.interaction.Snap.SegmentDataType} a
- * @param {ol.interaction.Snap.SegmentDataType} b
- * @return {number}
+ * @param {ol.interaction.Snap.SegmentDataType} a The first segment data.
+ * @param {ol.interaction.Snap.SegmentDataType} b The second segment data.
+ * @return {number} The difference in distance.
  * @this {ol.interaction.Snap}
  */
 ol.interaction.Snap.sortByDistance = function(a, b) {

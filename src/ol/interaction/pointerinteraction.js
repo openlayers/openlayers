@@ -87,7 +87,7 @@ goog.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
 
 
 /**
- * @param {Array.<ol.pointer.PointerEvent>} pointerEvents
+ * @param {Array.<ol.pointer.PointerEvent>} pointerEvents List of events.
  * @return {ol.Pixel} Centroid pixel.
  */
 ol.interaction.Pointer.centroid = function(pointerEvents) {

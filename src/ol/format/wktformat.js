@@ -527,7 +527,7 @@ ol.format.WKT.Lexer.prototype.readText_ = function() {
 
 /**
  * Class to parse the tokens from the WKT string.
- * @param {ol.format.WKT.Lexer} lexer
+ * @param {ol.format.WKT.Lexer} lexer The lexer.
  * @constructor
  * @protected
  */

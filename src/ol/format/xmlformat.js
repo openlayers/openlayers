@@ -17,7 +17,7 @@ ol.format.XML = function() {
 
 /**
  * @param {Document|Node|string} source Source.
- * @return {Object}
+ * @return {Object} The parsed result.
  */
 ol.format.XML.prototype.read = function(source) {
   if (ol.xml.isDocument(source)) {

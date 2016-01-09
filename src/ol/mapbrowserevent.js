@@ -403,7 +403,7 @@ ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
 
 /**
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
- * @return {boolean}
+ * @return {boolean} Is moving.
  * @private
  */
 ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {

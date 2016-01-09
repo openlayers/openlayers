@@ -110,7 +110,7 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
  * Add a new event source that will generate pointer events.
  *
  * @param {string} name A name for the event source
- * @param {ol.pointer.EventSource} source
+ * @param {ol.pointer.EventSource} source The source event.
  */
 ol.pointer.PointerEventHandler.prototype.registerSource =
     function(name, source) {
@@ -227,8 +227,8 @@ ol.pointer.PointerEventHandler.prototype.cloneEvent =
 
 /**
  * Triggers a 'pointerdown' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.down =
     function(pointerEventData, browserEvent) {
@@ -239,8 +239,8 @@ ol.pointer.PointerEventHandler.prototype.down =
 
 /**
  * Triggers a 'pointermove' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.move =
     function(pointerEventData, browserEvent) {
@@ -251,8 +251,8 @@ ol.pointer.PointerEventHandler.prototype.move =
 
 /**
  * Triggers a 'pointerup' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.up =
     function(pointerEventData, browserEvent) {
@@ -263,8 +263,8 @@ ol.pointer.PointerEventHandler.prototype.up =
 
 /**
  * Triggers a 'pointerenter' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.enter =
     function(pointerEventData, browserEvent) {
@@ -276,8 +276,8 @@ ol.pointer.PointerEventHandler.prototype.enter =
 
 /**
  * Triggers a 'pointerleave' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.leave =
     function(pointerEventData, browserEvent) {
@@ -289,8 +289,8 @@ ol.pointer.PointerEventHandler.prototype.leave =
 
 /**
  * Triggers a 'pointerover' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.over =
     function(pointerEventData, browserEvent) {
@@ -302,8 +302,8 @@ ol.pointer.PointerEventHandler.prototype.over =
 
 /**
  * Triggers a 'pointerout' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.out =
     function(pointerEventData, browserEvent) {
@@ -315,8 +315,8 @@ ol.pointer.PointerEventHandler.prototype.out =
 
 /**
  * Triggers a 'pointercancel' event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.cancel =
     function(pointerEventData, browserEvent) {
@@ -327,8 +327,8 @@ ol.pointer.PointerEventHandler.prototype.cancel =
 
 /**
  * Triggers a combination of 'pointerout' and 'pointerleave' events.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.leaveOut =
     function(pointerEventData, browserEvent) {
@@ -343,8 +343,8 @@ ol.pointer.PointerEventHandler.prototype.leaveOut =
 
 /**
  * Triggers a combination of 'pointerover' and 'pointerevents' events.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.enterOver =
     function(pointerEventData, browserEvent) {
@@ -359,8 +359,8 @@ ol.pointer.PointerEventHandler.prototype.enterOver =
 
 /**
  * @private
- * @param {Element} container
- * @param {Element} contained
+ * @param {Element} container The container element.
+ * @param {Element} contained The contained element.
  * @return {boolean} Returns true if the container element
  *   contains the other element.
  */
@@ -379,8 +379,8 @@ ol.pointer.PointerEventHandler.prototype.contains_ =
  * `pointerEventData`.
  *
  * @param {string} inType A string representing the type of event to create.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  * @return {ol.pointer.PointerEvent} A PointerEvent of type `inType`.
  */
 ol.pointer.PointerEventHandler.prototype.makeEvent =
@@ -392,8 +392,8 @@ ol.pointer.PointerEventHandler.prototype.makeEvent =
 /**
  * Make and dispatch an event in one call.
  * @param {string} inType A string representing the type of event.
- * @param {Object} pointerEventData
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {Object} pointerEventData Pointer event data.
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  */
 ol.pointer.PointerEventHandler.prototype.fireEvent =
     function(inType, pointerEventData, browserEvent) {
@@ -419,8 +419,8 @@ ol.pointer.PointerEventHandler.prototype.fireNativeEvent =
  * Wrap a native mouse event into a pointer event.
  * This proxy method is required for the legacy IE support.
  * @param {string} eventType The pointer event type.
- * @param {goog.events.BrowserEvent} browserEvent
- * @return {ol.pointer.PointerEvent}
+ * @param {goog.events.BrowserEvent} browserEvent The event.
+ * @return {ol.pointer.PointerEvent} The wrapped event.
  */
 ol.pointer.PointerEventHandler.prototype.wrapMouseEvent =
     function(eventType, browserEvent) {

@@ -413,7 +413,7 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
 
 
 /**
- * @param {Array.<ol.Feature>} features
+ * @param {Array.<ol.Feature>} features List of features.
  * @private
  */
 ol.format.GPX.prototype.handleReadExtensions_ = function(features) {

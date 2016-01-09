@@ -448,7 +448,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
  */
 ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
     function(renderOptions) {
@@ -475,8 +475,8 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */

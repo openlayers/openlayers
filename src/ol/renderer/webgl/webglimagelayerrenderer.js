@@ -294,9 +294,9 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
 /**
  * The transformation matrix to get the pixel on the image for a
  * pixel on the map.
- * @param {ol.Size} mapSize
- * @param {ol.Size} imageSize
- * @return {goog.vec.Mat4.Number}
+ * @param {ol.Size} mapSize The map size.
+ * @param {ol.Size} imageSize The image size.
+ * @return {goog.vec.Mat4.Number} The transformation matrix.
  * @private
  */
 ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ =

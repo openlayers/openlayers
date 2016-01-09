@@ -179,7 +179,7 @@ ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
  * @private
  * @param {goog.events.BrowserEvent} browserEvent Browser event
  * @param {Touch} inTouch Touch event
- * @return {Object}
+ * @return {Object} A pointer object.
  */
 ol.pointer.TouchSource.prototype.touchToPointer_ =
     function(browserEvent, inTouch) {
@@ -215,7 +215,7 @@ ol.pointer.TouchSource.prototype.touchToPointer_ =
 /**
  * @private
  * @param {goog.events.BrowserEvent} inEvent Touch event
- * @param {function(goog.events.BrowserEvent, Object)} inFunction
+ * @param {function(goog.events.BrowserEvent, Object)} inFunction In function.
  */
 ol.pointer.TouchSource.prototype.processTouches_ =
     function(inEvent, inFunction) {
@@ -337,8 +337,8 @@ ol.pointer.TouchSource.prototype.touchmove = function(inEvent) {
 
 /**
  * @private
- * @param {goog.events.BrowserEvent} browserEvent
- * @param {Object} inPointer
+ * @param {goog.events.BrowserEvent} browserEvent The event.
+ * @param {Object} inPointer The in pointer.
  */
 ol.pointer.TouchSource.prototype.moveOverOut_ =
     function(browserEvent, inPointer) {
@@ -409,8 +409,8 @@ ol.pointer.TouchSource.prototype.touchcancel = function(inEvent) {
 
 /**
  * @private
- * @param {goog.events.BrowserEvent} browserEvent
- * @param {Object} inPointer
+ * @param {goog.events.BrowserEvent} browserEvent The event.
+ * @param {Object} inPointer The in pointer.
  */
 ol.pointer.TouchSource.prototype.cancelOut_ =
     function(browserEvent, inPointer) {

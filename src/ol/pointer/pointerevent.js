@@ -45,7 +45,7 @@ goog.require('goog.events.Event');
  * @constructor
  * @extends {goog.events.Event}
  * @param {string} type The type of the event to create.
- * @param {goog.events.BrowserEvent} browserEvent
+ * @param {goog.events.BrowserEvent} browserEvent The event.
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
@@ -198,8 +198,8 @@ goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
 
 /**
  * @private
- * @param {Object.<string, ?>} eventDict
- * @return {number}
+ * @param {Object.<string, ?>} eventDict The event dictionary.
+ * @return {number} Button indicator.
  */
 ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
   // According to the w3c spec,
@@ -240,9 +240,9 @@ ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
 
 /**
  * @private
- * @param {Object.<string, ?>} eventDict
- * @param {number} buttons
- * @return {number}
+ * @param {Object.<string, ?>} eventDict The event dictionary.
+ * @param {number} buttons Button indicator.
+ * @return {number} The pressure.
  */
 ol.pointer.PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
   // Spec requires that pointers without pressure specified use 0.5 for down

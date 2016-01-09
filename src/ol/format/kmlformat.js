@@ -1164,8 +1164,8 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
  * @param {ol.geom.MultiPoint|ol.geom.MultiLineString|ol.geom.MultiPolygon}
- * multiGeometry
- * @param {Array.<ol.geom.Geometry>} geometries
+ *     multiGeometry A multi-geometry.
+ * @param {Array.<ol.geom.Geometry>} geometries List of geometries.
  * @private
  */
 ol.format.KML.setCommonGeometryProperties_ = function(multiGeometry,

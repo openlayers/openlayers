@@ -533,9 +533,9 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ =
 
 
 /**
- * @param {ol.interaction.SegmentDataType} a
- * @param {ol.interaction.SegmentDataType} b
- * @return {number}
+ * @param {ol.interaction.SegmentDataType} a The first segment data.
+ * @param {ol.interaction.SegmentDataType} b The second segment data.
+ * @return {number} The difference in indexes.
  * @private
  */
 ol.interaction.Modify.compareIndexes_ = function(a, b) {

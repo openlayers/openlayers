@@ -384,8 +384,8 @@ ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.Circle.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */

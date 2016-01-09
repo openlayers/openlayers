@@ -145,9 +145,6 @@ ol.color.equals = function(color1, color2) {
  * @return {ol.Color} Color.
  */
 ol.color.fromString = (
-    /**
-     * @return {function(string): ol.Color}
-     */
     function() {
 
       // We maintain a small cache of parsed strings.  To provide cheap LRU-like

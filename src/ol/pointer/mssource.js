@@ -35,7 +35,7 @@ goog.require('ol.pointer.EventSource');
 
 
 /**
- * @param {ol.pointer.PointerEventHandler} dispatcher
+ * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @constructor
  * @extends {ol.pointer.EventSource}
  */
@@ -78,8 +78,8 @@ goog.inherits(ol.pointer.MsSource, ol.pointer.EventSource);
  * for the fake pointer event.
  *
  * @private
- * @param {goog.events.BrowserEvent} inEvent
- * @return {Object}
+ * @param {goog.events.BrowserEvent} inEvent The in event.
+ * @return {Object} The copied event.
  */
 ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
   var e = inEvent;
@@ -94,7 +94,7 @@ ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
 
 /**
  * Remove this pointer from the list of active pointers.
- * @param {number} pointerId
+ * @param {number} pointerId Pointer identifier.
  */
 ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
   delete this.pointerMap[pointerId.toString()];
@@ -104,7 +104,7 @@ ol.pointer.MsSource.prototype.cleanup = function(pointerId) {
 /**
  * Handler for `msPointerDown`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
   this.pointerMap[inEvent.getBrowserEvent().pointerId.toString()] = inEvent;
@@ -116,7 +116,7 @@ ol.pointer.MsSource.prototype.msPointerDown = function(inEvent) {
 /**
  * Handler for `msPointerMove`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msPointerMove = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
@@ -127,7 +127,7 @@ ol.pointer.MsSource.prototype.msPointerMove = function(inEvent) {
 /**
  * Handler for `msPointerUp`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msPointerUp = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
@@ -139,7 +139,7 @@ ol.pointer.MsSource.prototype.msPointerUp = function(inEvent) {
 /**
  * Handler for `msPointerOut`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msPointerOut = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
@@ -150,7 +150,7 @@ ol.pointer.MsSource.prototype.msPointerOut = function(inEvent) {
 /**
  * Handler for `msPointerOver`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msPointerOver = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
@@ -161,7 +161,7 @@ ol.pointer.MsSource.prototype.msPointerOver = function(inEvent) {
 /**
  * Handler for `msPointerCancel`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msPointerCancel = function(inEvent) {
   var e = this.prepareEvent_(inEvent);
@@ -173,7 +173,7 @@ ol.pointer.MsSource.prototype.msPointerCancel = function(inEvent) {
 /**
  * Handler for `msLostPointerCapture`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msLostPointerCapture = function(inEvent) {
   var e = this.dispatcher.makeEvent('lostpointercapture',
@@ -185,7 +185,7 @@ ol.pointer.MsSource.prototype.msLostPointerCapture = function(inEvent) {
 /**
  * Handler for `msGotPointerCapture`.
  *
- * @param {goog.events.BrowserEvent} inEvent
+ * @param {goog.events.BrowserEvent} inEvent The in event.
  */
 ol.pointer.MsSource.prototype.msGotPointerCapture = function(inEvent) {
   var e = this.dispatcher.makeEvent('gotpointercapture',
