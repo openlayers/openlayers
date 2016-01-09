@@ -63,14 +63,12 @@ describe('ol.pointer.MouseSource', function() {
   });
 
   function simulateTouchEvent(type, x, y) {
-    var touches = [
-      {
-        identifier: 4,
-        clientX: x,
-        clientY: y,
-        target: target
-      }
-    ];
+    var touches = [{
+      identifier: 4,
+      clientX: x,
+      clientY: y,
+      target: target
+    }];
 
     var event = new goog.events.BrowserEvent({
       type: type,

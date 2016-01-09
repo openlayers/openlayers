@@ -71,66 +71,64 @@ describe('ol.format.GeoJSON', function() {
 
   var data = {
     'type': 'FeatureCollection',
-    'features': [
-      {
-        'type': 'Feature',
-        'properties': {
-          'LINK_ID': 573730499,
-          'RP_TYPE': 14,
-          'RP_FUNC': 0,
-          'DIRECTION': 2,
-          'LOGKOD': '',
-          'CHANGED': '',
-          'USERID': '',
-          'ST_NAME': '',
-          'L_REFADDR': '',
-          'L_NREFADDR': '',
-          'R_REFADDR': '',
-          'R_NREFADDR': '',
-          'SPEED_CAT': '7',
-          'ZIPCODE': '59330',
-          'SHAPE_LEN': 46.3826
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [
-            [1549497.66985, 6403707.96],
-            [1549491.1, 6403710.1],
-            [1549488.03995, 6403716.7504],
-            [1549488.5401, 6403724.5504],
-            [1549494.37985, 6403733.54],
-            [1549499.6799, 6403738.0504],
-            [1549506.22, 6403739.2504]
-          ]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'LINK_ID': 30760556,
-          'RP_TYPE': 12,
-          'RP_FUNC': 1,
-          'DIRECTION': 0,
-          'LOGKOD': '',
-          'CHANGED': '',
-          'USERID': '',
-          'ST_NAME': 'BRUNNSGATAN',
-          'L_REFADDR': '24',
-          'L_NREFADDR': '16',
-          'R_REFADDR': '',
-          'R_NREFADDR': '',
-          'SPEED_CAT': '7',
-          'ZIPCODE': '59330',
-          'SHAPE_LEN': 70.3106
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [
-            [1549754.2769, 6403854.8024],
-            [1549728.45985, 6403920.2]
-          ]
-        }
+    'features': [{
+      'type': 'Feature',
+      'properties': {
+        'LINK_ID': 573730499,
+        'RP_TYPE': 14,
+        'RP_FUNC': 0,
+        'DIRECTION': 2,
+        'LOGKOD': '',
+        'CHANGED': '',
+        'USERID': '',
+        'ST_NAME': '',
+        'L_REFADDR': '',
+        'L_NREFADDR': '',
+        'R_REFADDR': '',
+        'R_NREFADDR': '',
+        'SPEED_CAT': '7',
+        'ZIPCODE': '59330',
+        'SHAPE_LEN': 46.3826
+      },
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [
+          [1549497.66985, 6403707.96],
+          [1549491.1, 6403710.1],
+          [1549488.03995, 6403716.7504],
+          [1549488.5401, 6403724.5504],
+          [1549494.37985, 6403733.54],
+          [1549499.6799, 6403738.0504],
+          [1549506.22, 6403739.2504]
+        ]
       }
-    ]
+    }, {
+      'type': 'Feature',
+      'properties': {
+        'LINK_ID': 30760556,
+        'RP_TYPE': 12,
+        'RP_FUNC': 1,
+        'DIRECTION': 0,
+        'LOGKOD': '',
+        'CHANGED': '',
+        'USERID': '',
+        'ST_NAME': 'BRUNNSGATAN',
+        'L_REFADDR': '24',
+        'L_NREFADDR': '16',
+        'R_REFADDR': '',
+        'R_NREFADDR': '',
+        'SPEED_CAT': '7',
+        'ZIPCODE': '59330',
+        'SHAPE_LEN': 70.3106
+      },
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [
+          [1549754.2769, 6403854.8024],
+          [1549728.45985, 6403920.2]
+        ]
+      }
+    }]
   };
 
   describe('#readFeature', function() {
