@@ -23,6 +23,7 @@ var iconStyle = new ol.style.Style({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
+    color: '#8959A8',
     opacity: 0.75,
     src: 'data/icon.png'
   }))
