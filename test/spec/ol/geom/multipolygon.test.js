@@ -5,8 +5,7 @@ describe('ol.geom.MultiPolygon', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var multiPolygon = new ol.geom.MultiPolygon(null);
-      multiPolygon = multiPolygon; // suppress gjslint warning
+      return new ol.geom.MultiPolygon(null);
     }).not.to.throwException();
   });
 

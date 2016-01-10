@@ -93,7 +93,6 @@ compile-examples: build/compiled-examples/all.combined.js
 
 .PHONY: clean
 clean:
-	rm -f build/timestamps/gjslint-timestamp
 	rm -f build/timestamps/eslint-timestamp
 	rm -f build/timestamps/check-*-timestamp
 	rm -f build/ol.css
@@ -120,8 +119,7 @@ examples: $(BUILD_EXAMPLES)
 install: build/timestamps/node-modules-timestamp
 
 .PHONY: lint
-lint: build/timestamps/gjslint-timestamp \
-      build/timestamps/eslint-timestamp \
+lint: build/timestamps/eslint-timestamp \
       build/timestamps/check-requires-timestamp \
       build/timestamps/check-whitespace-timestamp
 
@@ -230,13 +228,6 @@ build/timestamps/jsdoc-$(BRANCH)-timestamp: config/jsdoc/api/index.md \
 	@mkdir -p $(@D)
 	@rm -rf $(BUILD_HOSTED)/apidoc
 	./node_modules/.bin/jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -d $(BUILD_HOSTED)/apidoc
-	@touch $@
-
-build/timestamps/gjslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
-                                    $(EXAMPLES_JS)
-	@mkdir -p $(@D)
-	@echo "Running gjslint..."
-	@gjslint --jslint_error=all --disable 0110 --custom_jsdoc_tags=event,fires,function,classdesc,api,observable --strict $?
 	@touch $@
 
 $(BUILD_HOSTED_EXAMPLES_JS): $(BUILD_HOSTED)/examples/%.js: build/examples/%.js

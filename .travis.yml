@@ -1,5 +1,4 @@
-sudo: required
-dist: trusty
+sudo: false
 
 language: node_js
 
@@ -14,7 +13,6 @@ env:
 
 before_install:
   - "npm prune"
-  - "sudo pip install -r requirements.txt"
 
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"

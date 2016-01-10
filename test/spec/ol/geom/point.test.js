@@ -5,8 +5,7 @@ describe('ol.geom.Point', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var point = new ol.geom.Point(null);
-      point = point; // suppress gjslint warning
+      return new ol.geom.Point(null);
     }).not.to.throwException();
   });
 
