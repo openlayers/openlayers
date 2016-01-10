@@ -120,7 +120,9 @@ examples: $(BUILD_EXAMPLES)
 install: build/timestamps/node-modules-timestamp
 
 .PHONY: lint
-lint: build/timestamps/gjslint-timestamp build/timestamps/jshint-timestamp \
+lint: build/timestamps/gjslint-timestamp \
+			build/timestamps/eslint-timestamp \
+			build/timestamps/jshint-timestamp \
       build/timestamps/check-requires-timestamp \
       build/timestamps/check-whitespace-timestamp
 
@@ -270,6 +272,14 @@ $(BUILD_HOSTED)/build/ol-deps.js: host-libraries
            --root $(BUILD_HOSTED)/closure-library/closure/goog \
            --root_with_prefix "$(BUILD_HOSTED)/closure-library/third_party ../../third_party" \
            --output_file $@
+
+build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
+                                   $(TASKS_JS) $(EXAMPLES_JS) \
+                                   build/timestamps/node-modules-timestamp
+	@mkdir -p $(@D)
+	@echo "Running eslint..."
+	@./node_modules/.bin/eslint $?
+	@touch $@
 
 build/timestamps/jshint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                    $(TASKS_JS) $(EXAMPLES_JS) \
