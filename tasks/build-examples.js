@@ -7,9 +7,7 @@ var marked = require('marked');
 var pkg = require('../package.json');
 
 var markupRegEx = /([^\/^\.]*)\.html$/;
-/* jshint -W101 */
 var cleanupJSRegEx = /.*(\/\/ NOCOMPILE|goog\.require\(.*\);|.*renderer: common\..*,?)[\n]*/g;
-/* jshint +W101 */
 var requiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;

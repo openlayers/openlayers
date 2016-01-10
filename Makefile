@@ -94,7 +94,7 @@ compile-examples: build/compiled-examples/all.combined.js
 .PHONY: clean
 clean:
 	rm -f build/timestamps/gjslint-timestamp
-	rm -f build/timestamps/jshint-timestamp
+	rm -f build/timestamps/eslint-timestamp
 	rm -f build/timestamps/check-*-timestamp
 	rm -f build/ol.css
 	rm -f build/ol.js
@@ -121,8 +121,7 @@ install: build/timestamps/node-modules-timestamp
 
 .PHONY: lint
 lint: build/timestamps/gjslint-timestamp \
-			build/timestamps/eslint-timestamp \
-			build/timestamps/jshint-timestamp \
+      build/timestamps/eslint-timestamp \
       build/timestamps/check-requires-timestamp \
       build/timestamps/check-whitespace-timestamp
 
@@ -279,15 +278,6 @@ build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
 	@mkdir -p $(@D)
 	@echo "Running eslint..."
 	@./node_modules/.bin/eslint $?
-	@touch $@
-
-build/timestamps/jshint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
-                                   $(TASKS_JS) $(EXAMPLES_JS) \
-                                   examples/resources/common.js \
-                                   build/timestamps/node-modules-timestamp
-	@mkdir -p $(@D)
-	@echo "Running jshint..."
-	@./node_modules/.bin/jshint --verbose $?
 	@touch $@
 
 build/timestamps/node-modules-timestamp: package.json
