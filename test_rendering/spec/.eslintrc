@@ -1,0 +1,14 @@
+{
+  "env": {
+    "mocha": true
+  },
+  "globals": {
+    "IMAGE_TOLERANCE": false,
+    "assertWebGL": false,
+    "createMapDiv": false,
+    "disposeMap": false,
+    "expect": false,
+    "expectResemble": false,
+    "resembleCanvas": false
+  }
+}
