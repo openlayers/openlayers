@@ -16,7 +16,6 @@ goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Multi-linestring geometry.

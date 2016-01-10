@@ -17,7 +17,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 ol.webgl.BufferCacheEntry;
 
 
-
 /**
  * @classdesc
  * A WebGL context for accessing low-level WebGL capabilities.

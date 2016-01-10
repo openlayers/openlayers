@@ -12,7 +12,6 @@ goog.require('ol.geom.flat.inflate');
 goog.require('ol.math');
 
 
-
 /**
  * @classdesc
  * Multi-point geometry.

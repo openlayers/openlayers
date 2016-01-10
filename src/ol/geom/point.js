@@ -8,7 +8,6 @@ goog.require('ol.geom.flat.deflate');
 goog.require('ol.math');
 
 
-
 /**
  * @classdesc
  * Point geometry.

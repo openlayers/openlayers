@@ -22,7 +22,6 @@ goog.require('ol.proj.Units');
 goog.require('ol.render.Feature');
 
 
-
 /**
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.

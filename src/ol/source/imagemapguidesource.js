@@ -10,7 +10,6 @@ goog.require('ol.extent');
 goog.require('ol.source.Image');
 
 
-
 /**
  * @classdesc
  * Source for images from Mapguide servers

@@ -7,7 +7,6 @@ goog.require('ol.source.MapQuest');
 goog.require('ol.source.TileImage');
 
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({

@@ -14,7 +14,6 @@ goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
 
 
-
 /**
  * @classdesc
  * Layer source for tile data from ArcGIS Rest services. Map and Image

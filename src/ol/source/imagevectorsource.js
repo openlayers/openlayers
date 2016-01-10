@@ -14,7 +14,6 @@ goog.require('ol.style.Style');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @classdesc
  * An image source whose images are canvas elements into which vector features

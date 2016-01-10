@@ -28,7 +28,6 @@ goog.require('ol.source.TileEvent');
 ol.source.UrlTileOptions;
 
 
-
 /**
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.

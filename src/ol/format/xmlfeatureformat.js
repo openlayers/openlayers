@@ -10,7 +10,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not

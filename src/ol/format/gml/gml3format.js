@@ -23,7 +23,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format
@@ -1322,7 +1321,6 @@ ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
   this.writeFeatureMembers_(node, features, [context]);
   return node;
 };
-
 
 
 /**

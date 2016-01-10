@@ -40,7 +40,6 @@ ol.ViewHint = {
 };
 
 
-
 /**
  * @classdesc
  * An ol.View object represents a simple 2D view of the map.

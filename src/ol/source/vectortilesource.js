@@ -9,7 +9,6 @@ goog.require('ol.featureloader');
 goog.require('ol.source.UrlTile');
 
 
-
 /**
  * @classdesc
  * Class for layer sources providing vector data divided into a tile grid, to be

@@ -173,7 +173,6 @@ describe('ol.source.Tile', function() {
 });
 
 
-
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
  * 256x256 tiles.

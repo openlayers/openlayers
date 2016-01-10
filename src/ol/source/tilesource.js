@@ -32,7 +32,6 @@ goog.require('ol.tilegrid.TileGrid');
 ol.source.TileOptions;
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -297,7 +296,6 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, op
  * @param {ol.proj.Projection} projection Projection.
  */
 ol.source.Tile.prototype.useTile = ol.nullFunction;
-
 
 
 /**

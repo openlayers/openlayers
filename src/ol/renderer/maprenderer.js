@@ -29,7 +29,6 @@ ol.RendererType = {
 };
 
 
-
 /**
  * @constructor
  * @extends {goog.Disposable}

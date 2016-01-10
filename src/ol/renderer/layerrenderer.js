@@ -16,7 +16,6 @@ goog.require('ol.source.Tile');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.Observable}

@@ -22,7 +22,6 @@ goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Multi-polygon geometry.

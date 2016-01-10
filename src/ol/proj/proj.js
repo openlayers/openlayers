@@ -52,7 +52,6 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
 
 
-
 /**
  * @classdesc
  * Projection definition class. One of these is created for each projection

@@ -17,7 +17,6 @@ goog.require('ol.size');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}

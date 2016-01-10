@@ -21,7 +21,6 @@ goog.require('ol.reproj.Triangulation');
 ol.reproj.TileFunctionType;
 
 
-
 /**
  * @classdesc
  * Class encapsulating single reprojected tile.

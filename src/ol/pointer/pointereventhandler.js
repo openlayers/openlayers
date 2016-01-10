@@ -43,7 +43,6 @@ goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.TouchSource');
 
 
-
 /**
  * @constructor
  * @extends {goog.events.EventTarget}

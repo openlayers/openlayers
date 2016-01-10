@@ -6,7 +6,6 @@ goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not

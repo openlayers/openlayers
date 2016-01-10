@@ -23,7 +23,6 @@ goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');
 
 
-
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The

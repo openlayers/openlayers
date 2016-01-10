@@ -8,7 +8,6 @@ goog.require('ol.format.XSD');
 goog.require('ol.xml');
 
 
-
 /**
  * @constructor
  * @extends {ol.format.XML}

@@ -8,7 +8,6 @@ goog.require('goog.webgl');
 goog.require('ol.webgl');
 
 
-
 /**
  * @constructor
  * @param {string} source Source.
@@ -45,7 +44,6 @@ ol.webgl.Shader.prototype.getSource = function() {
 ol.webgl.Shader.prototype.isAnimated = goog.functions.FALSE;
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.Shader}
@@ -64,7 +62,6 @@ goog.inherits(ol.webgl.shader.Fragment, ol.webgl.Shader);
 ol.webgl.shader.Fragment.prototype.getType = function() {
   return goog.webgl.FRAGMENT_SHADER;
 };
-
 
 
 /**

@@ -19,7 +19,6 @@ ol.TileState = {
 };
 
 
-
 /**
  * @classdesc
  * Base class for tiles.

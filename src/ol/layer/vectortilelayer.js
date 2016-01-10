@@ -13,7 +13,6 @@ ol.layer.VectorTileProperty = {
 };
 
 
-
 /**
  * @classdesc
  * Layer for vector tile data that is rendered client-side.

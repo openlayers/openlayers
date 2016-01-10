@@ -13,7 +13,6 @@ goog.require('ol.renderer.Layer');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Layer}

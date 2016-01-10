@@ -20,7 +20,6 @@ goog.require('ol.source.wms.ServerType');
 goog.require('ol.tilecoord');
 
 
-
 /**
  * @classdesc
  * Layer source for tile data from WMS servers.

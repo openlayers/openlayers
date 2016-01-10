@@ -19,7 +19,6 @@ goog.require('ol.size');
 goog.require('ol.tilecoord');
 
 
-
 /**
  * @classdesc
  * Base class for setting the grid pattern for sources accessing tiled-image

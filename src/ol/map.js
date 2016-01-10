@@ -119,7 +119,6 @@ ol.MapProperty = {
 };
 
 
-
 /**
  * @classdesc
  * The map is the core component of OpenLayers. For a map to render, a view,

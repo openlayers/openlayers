@@ -32,7 +32,6 @@ ol.interaction.TranslateEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Translate} instances are instances of
@@ -65,7 +64,6 @@ ol.interaction.TranslateEvent = function(type, features, coordinate) {
   this.coordinate = coordinate;
 };
 goog.inherits(ol.interaction.TranslateEvent, goog.events.Event);
-
 
 
 /**

@@ -10,7 +10,6 @@ goog.require('ol.format.XSD');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Format for reading WMS capabilities data

@@ -10,7 +10,6 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-
 var vectorSource = new ol.source.Vector({
   format: new ol.format.GeoJSON(),
   url: function(extent) {

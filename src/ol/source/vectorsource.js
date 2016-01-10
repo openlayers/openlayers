@@ -63,7 +63,6 @@ ol.source.VectorEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
@@ -838,7 +837,6 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
   }
   return removed;
 };
-
 
 
 /**

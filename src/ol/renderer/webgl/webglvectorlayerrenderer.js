@@ -11,7 +11,6 @@ goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.webgl.Layer}

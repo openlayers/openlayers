@@ -37,7 +37,6 @@ goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
 
 
-
 /**
  * @constructor
  * @param {ol.pointer.PointerEventHandler} dispatcher The event handler.

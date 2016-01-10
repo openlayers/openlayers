@@ -49,7 +49,6 @@ ol.interaction.DrawEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Draw} instances are instances of
@@ -74,7 +73,6 @@ ol.interaction.DrawEvent = function(type, feature) {
 
 };
 goog.inherits(ol.interaction.DrawEvent, goog.events.Event);
-
 
 
 /**

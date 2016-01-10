@@ -20,7 +20,6 @@ ol.DeviceOrientationProperty = {
 };
 
 
-
 /**
  * @classdesc
  * The ol.DeviceOrientation class provides access to information from

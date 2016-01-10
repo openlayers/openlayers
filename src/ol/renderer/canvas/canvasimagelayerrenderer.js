@@ -14,7 +14,6 @@ goog.require('ol.source.ImageVector');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}

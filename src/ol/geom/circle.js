@@ -9,7 +9,6 @@ goog.require('ol.geom.flat.deflate');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Circle geometry.

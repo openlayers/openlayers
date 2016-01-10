@@ -10,7 +10,6 @@ goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 
 
-
 /**
  * @constructor
  * @extends {ol.Tile}

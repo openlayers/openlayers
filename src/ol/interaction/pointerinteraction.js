@@ -9,7 +9,6 @@ goog.require('ol.Pixel');
 goog.require('ol.interaction.Interaction');
 
 
-
 /**
  * @classdesc
  * Base class that calls user-defined functions on `down`, `move` and `up`

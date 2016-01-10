@@ -4,7 +4,6 @@ goog.require('goog.math');
 goog.require('ol.TileRange');
 
 
-
 /**
  * @classdesc
  * An attribution for a layer source.

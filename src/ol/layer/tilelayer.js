@@ -14,7 +14,6 @@ ol.layer.TileProperty = {
 };
 
 
-
 /**
  * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are

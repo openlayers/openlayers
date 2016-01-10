@@ -16,7 +16,6 @@ goog.require('ol.renderer.vector');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.dom.Layer}

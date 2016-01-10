@@ -37,7 +37,6 @@ ol.style.IconOrigin = {
 };
 
 
-
 /**
  * @classdesc
  * Set icon style for vector features.
@@ -372,7 +371,6 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 };
 
 
-
 /**
  * @constructor
  * @param {Image|HTMLCanvasElement} image Image.
@@ -644,7 +642,6 @@ ol.style.IconImage_.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
-
 
 
 /**

@@ -18,7 +18,6 @@ goog.require('ol');
 ol.style.AtlasManagerInfo;
 
 
-
 /**
  * Manages the creation of image atlases.
  *
@@ -249,7 +248,6 @@ ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
  * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
  */
 ol.style.AtlasInfo;
-
 
 
 /**

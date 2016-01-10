@@ -17,7 +17,6 @@ goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @classdesc
  * A concrete subclass of {@link ol.render.VectorContext} that implements

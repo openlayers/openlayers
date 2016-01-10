@@ -13,7 +13,6 @@ goog.require('ol.geom.Point');
 goog.require('ol.source.Vector');
 
 
-
 /**
  * @classdesc
  * Layer source to cluster vector data.

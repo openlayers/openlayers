@@ -24,7 +24,6 @@ goog.require('ol.source.Source');
 ol.source.ImageOptions;
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -191,7 +190,6 @@ ol.source.Image.prototype.handleImageChange = function(event) {
 ol.source.Image.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
 };
-
 
 
 /**

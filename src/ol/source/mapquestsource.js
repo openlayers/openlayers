@@ -6,7 +6,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
 
 
-
 /**
  * @classdesc
  * Layer source for the MapQuest tile server.

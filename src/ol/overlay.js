@@ -47,7 +47,6 @@ ol.OverlayPositioning = {
 };
 
 
-
 /**
  * @classdesc
  * An element to be displayed over the map and attached to a single map

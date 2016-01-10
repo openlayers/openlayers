@@ -23,7 +23,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an array
@@ -467,7 +466,6 @@ ol.source.Raster.createTileRenderer_ = function(source) {
  *            extent: ol.Extent}}
  */
 ol.source.Raster.RenderedState;
-
 
 
 /**

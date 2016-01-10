@@ -19,7 +19,6 @@ ol.ImageState = {
 };
 
 
-
 /**
  * @constructor
  * @extends {goog.events.EventTarget}

@@ -177,8 +177,6 @@ var main = function() {
   glob(dir + '/**/*.js', {}, foundAllJavaScriptSourceFiles);
 };
 
-
-
 if (require.main === module) {
   main();
 }

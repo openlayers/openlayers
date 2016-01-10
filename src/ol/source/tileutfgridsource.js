@@ -15,7 +15,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * Layer source for UTFGrid interaction data loaded from TileJSON format.
@@ -197,7 +196,6 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
     this.tileCache.get(tileCoordKey);
   }
 };
-
 
 
 /**

@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.style.Stroke');
 
 
-
 /**
  * Render a grid for a coordinate system on a map.
  * @constructor

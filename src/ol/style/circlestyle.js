@@ -11,7 +11,6 @@ goog.require('ol.style.ImageState');
 goog.require('ol.style.Stroke');
 
 
-
 /**
  * @classdesc
  * Set circle style for vector features.

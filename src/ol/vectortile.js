@@ -18,7 +18,6 @@ goog.require('ol.proj.Projection');
 ol.TileReplayState;
 
 
-
 /**
  * @constructor
  * @extends {ol.Tile}

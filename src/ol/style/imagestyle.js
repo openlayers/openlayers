@@ -23,7 +23,6 @@ ol.style.ImageState = {
 ol.style.ImageOptions;
 
 
-
 /**
  * @classdesc
  * A base class used for creating subclasses and not instantiated in

@@ -6,7 +6,6 @@ goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 
 
-
 /**
  * Wrapper around the RBush by Vladimir Agafonkin.
  *

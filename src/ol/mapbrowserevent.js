@@ -17,7 +17,6 @@ goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 
 
-
 /**
  * @classdesc
  * Events emitted as map browser events are instances of this type.
@@ -102,7 +101,6 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.MapBrowserEvent}
@@ -126,7 +124,6 @@ ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
 
 };
 goog.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
-
 
 
 /**

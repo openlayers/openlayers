@@ -11,7 +11,6 @@ goog.require('ol.css');
 goog.require('ol.easing');
 
 
-
 /**
  * @classdesc
  * A button control to reset rotation to 0.

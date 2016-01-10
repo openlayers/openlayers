@@ -9,7 +9,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format,

@@ -43,7 +43,6 @@ ol.interaction.SelectEventType = {
 ol.interaction.SelectFilterFunction;
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Select} instances are instances of
@@ -83,7 +82,6 @@ ol.interaction.SelectEvent = function(type, selected, deselected, mapBrowserEven
   this.mapBrowserEvent = mapBrowserEvent;
 };
 goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
-
 
 
 /**

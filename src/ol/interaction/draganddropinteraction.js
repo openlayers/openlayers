@@ -14,7 +14,6 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
@@ -196,7 +195,6 @@ ol.interaction.DragAndDropEventType = {
    */
   ADD_FEATURES: 'addfeatures'
 };
-
 
 
 /**

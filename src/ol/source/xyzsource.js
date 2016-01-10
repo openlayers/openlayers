@@ -3,7 +3,6 @@ goog.provide('ol.source.XYZ');
 goog.require('ol.source.TileImage');
 
 
-
 /**
  * @classdesc
  * Layer source for tile data with URLs in a set XYZ format that are

@@ -12,7 +12,6 @@ goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
 
 
-
 /**
  * @classdesc
  * Container for vector feature rendering styles. Any changes made to the style

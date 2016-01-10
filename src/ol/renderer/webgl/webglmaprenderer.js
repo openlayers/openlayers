@@ -42,7 +42,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 ol.renderer.webgl.TextureCacheEntry;
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Map}

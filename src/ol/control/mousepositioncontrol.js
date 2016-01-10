@@ -23,7 +23,6 @@ ol.control.MousePositionProperty = {
 };
 
 
-
 /**
  * @classdesc
  * A control to show the 2D coordinates of the mouse cursor. By default, these

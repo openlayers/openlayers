@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Generic format for reading non-feature XML data

@@ -12,7 +12,6 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 
 
-
 /**
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.

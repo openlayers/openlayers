@@ -25,7 +25,6 @@ ol.source.WMTSRequestEncoding = {
 };
 
 
-
 /**
  * @classdesc
  * Layer source for tile data from WMTS servers.

@@ -6,7 +6,6 @@ goog.require('ol.proj.Units');
 goog.require('ol.sphere.WGS84');
 
 
-
 /**
  * @classdesc
  * Projection object for WGS84 geographic coordinates (EPSG:4326).

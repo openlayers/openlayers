@@ -18,7 +18,6 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.

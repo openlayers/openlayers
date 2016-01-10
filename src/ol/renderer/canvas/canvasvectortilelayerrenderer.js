@@ -23,7 +23,6 @@ goog.require('ol.source.VectorTile');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}

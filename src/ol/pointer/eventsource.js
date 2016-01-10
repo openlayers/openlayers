@@ -3,7 +3,6 @@ goog.provide('ol.pointer.EventSource');
 goog.require('goog.events.BrowserEvent');
 
 
-
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @param {!Object.<string, function(goog.events.BrowserEvent)>} mapping Event

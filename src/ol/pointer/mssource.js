@@ -33,7 +33,6 @@ goog.provide('ol.pointer.MsSource');
 goog.require('ol.pointer.EventSource');
 
 
-
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @constructor

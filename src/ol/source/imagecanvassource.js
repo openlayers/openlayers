@@ -6,7 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.source.Image');
 
 
-
 /**
  * @classdesc
  * Base class for image sources where a canvas element is the image.

@@ -16,7 +16,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading data in the

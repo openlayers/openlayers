@@ -18,7 +18,6 @@ ol.interaction.InteractionProperty = {
 };
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not

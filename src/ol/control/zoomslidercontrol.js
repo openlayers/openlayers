@@ -21,7 +21,6 @@ goog.require('ol.easing');
 goog.require('ol.math');
 
 
-
 /**
  * @classdesc
  * A slider type of control for zooming.

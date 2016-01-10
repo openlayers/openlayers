@@ -10,7 +10,6 @@ goog.require('ol.proj');
 goog.require('ol.source.Image');
 
 
-
 /**
  * @classdesc
  * A layer source for displaying a single, static image.

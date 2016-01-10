@@ -4,7 +4,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
 
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.

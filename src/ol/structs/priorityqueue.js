@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 
 
-
 /**
  * Priority queue.
  *

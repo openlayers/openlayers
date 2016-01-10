@@ -17,7 +17,6 @@ goog.require('ol.geom.flat.segments');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Linestring geometry.

@@ -18,7 +18,6 @@ goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
 
 
-
 /**
  * @classdesc
  * Source for WMS servers providing single, untiled images.

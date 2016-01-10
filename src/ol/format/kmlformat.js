@@ -57,7 +57,6 @@ ol.format.KMLVec2_;
 ol.format.KMLGxTrackObject_;
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the KML format.

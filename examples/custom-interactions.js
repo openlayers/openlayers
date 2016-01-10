@@ -22,7 +22,6 @@ goog.require('ol.style.Style');
 var app = {};
 
 
-
 /**
  * @constructor
  * @extends {ol.interaction.Pointer}

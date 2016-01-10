@@ -15,7 +15,6 @@ goog.require('ol.proj');
 ol.reproj.Triangle;
 
 
-
 /**
  * @classdesc
  * Class containing triangulation of the given target extent.

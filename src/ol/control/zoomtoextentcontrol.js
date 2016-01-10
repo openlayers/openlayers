@@ -8,7 +8,6 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 
 
-
 /**
  * @classdesc
  * A button control which, when pressed, changes the map view to a specific

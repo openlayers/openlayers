@@ -14,7 +14,6 @@ goog.require('ol.structs.PriorityQueue');
 ol.TilePriorityFunction;
 
 
-
 /**
  * @constructor
  * @extends {ol.structs.PriorityQueue.<Array>}

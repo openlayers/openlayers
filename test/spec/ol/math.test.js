@@ -156,5 +156,4 @@ describe('ol.math.toRadians', function() {
 });
 
 
-
 goog.require('ol.math');

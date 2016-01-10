@@ -8,7 +8,6 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 
 
-
 /**
  * @classdesc
  * An array of {@link ol.geom.Geometry} objects.

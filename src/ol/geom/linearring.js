@@ -11,7 +11,6 @@ goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Linear ring geometry. Only used as part of polygon; cannot be rendered

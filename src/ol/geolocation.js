@@ -32,7 +32,6 @@ ol.GeolocationProperty = {
 };
 
 
-
 /**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.

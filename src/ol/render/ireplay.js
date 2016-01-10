@@ -26,7 +26,6 @@ ol.render.REPLAY_ORDER = [
 ];
 
 
-
 /**
  * @interface
  */

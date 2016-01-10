@@ -23,7 +23,6 @@ ol.format.IGCZ = {
 };
 
 
-
 /**
  * @classdesc
  * Feature format for `*.igc` flight recording files.

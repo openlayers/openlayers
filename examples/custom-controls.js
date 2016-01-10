@@ -19,7 +19,6 @@ var app = window.app;
 //
 
 
-
 /**
  * @constructor
  * @extends {ol.control.Control}

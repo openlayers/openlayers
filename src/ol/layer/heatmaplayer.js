@@ -23,7 +23,6 @@ ol.layer.HeatmapLayerProperty = {
 };
 
 
-
 /**
  * @classdesc
  * Layer for rendering vector data as a heatmap.

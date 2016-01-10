@@ -17,7 +17,6 @@ goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
 
-
 /**
  * @constructor
  * @extends {ol.render.VectorContext}
@@ -909,7 +908,6 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.scale_ = scale;
   this.width_ = size[0];
 };
-
 
 
 /**

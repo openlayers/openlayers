@@ -5,7 +5,6 @@ goog.require('goog.crypt.Md5');
 goog.require('ol.color');
 
 
-
 /**
  * @classdesc
  * Set stroke style for vector features.

@@ -20,7 +20,6 @@ goog.require('ol.geom.flat.orient');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the EsriJSON format.

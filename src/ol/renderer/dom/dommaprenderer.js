@@ -28,7 +28,6 @@ goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Map}

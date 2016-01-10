@@ -6,7 +6,6 @@ goog.require('ol.structs.LRUCache');
 goog.require('ol.tilecoord');
 
 
-
 /**
  * @constructor
  * @extends {ol.structs.LRUCache.<ol.Tile>}

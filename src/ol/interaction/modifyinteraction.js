@@ -49,7 +49,6 @@ ol.ModifyEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Modify} instances are instances of
@@ -92,7 +91,6 @@ goog.inherits(ol.interaction.ModifyEvent, goog.events.Event);
  *            segment: Array.<ol.Extent>}}
  */
 ol.interaction.SegmentDataType;
-
 
 
 /**

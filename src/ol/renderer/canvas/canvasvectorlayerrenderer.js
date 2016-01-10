@@ -13,7 +13,6 @@ goog.require('ol.renderer.vector');
 goog.require('ol.source.Vector');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}

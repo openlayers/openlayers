@@ -23,7 +23,6 @@ goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.dom.Layer}
@@ -261,7 +260,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
 
   return true;
 };
-
 
 
 /**

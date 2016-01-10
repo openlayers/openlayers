@@ -15,7 +15,6 @@ goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Layer}

@@ -12,7 +12,6 @@ goog.require('ol.style.ImageState');
 goog.require('ol.style.Stroke');
 
 
-
 /**
  * @classdesc
  * Set regular shape style for vector features. The resulting shape will be

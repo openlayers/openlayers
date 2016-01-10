@@ -6,7 +6,6 @@ goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.ReplayGroup');
 
 
-
 /**
  * @constructor
  * @extends {ol.render.VectorContext}

@@ -12,7 +12,6 @@ goog.require('ol.reproj.Tile');
 goog.require('ol.source.UrlTile');
 
 
-
 /**
  * @classdesc
  * Base class for sources providing images divided into a tile grid.

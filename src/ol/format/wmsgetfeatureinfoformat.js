@@ -9,7 +9,6 @@ goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses

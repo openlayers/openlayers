@@ -16,7 +16,6 @@ goog.require('ol.css');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * Control to show all the attributions associated with the layer sources

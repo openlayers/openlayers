@@ -4,7 +4,6 @@ goog.provide('ol.style.Text');
 goog.require('ol.style.Fill');
 
 
-
 /**
  * @classdesc
  * Set text style for vector features.

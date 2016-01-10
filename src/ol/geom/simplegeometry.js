@@ -9,7 +9,6 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
 
 
-
 /**
  * @classdesc
  * Abstract base class; only used for creating subclasses; do not instantiate

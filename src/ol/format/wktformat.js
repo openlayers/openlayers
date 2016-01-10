@@ -16,7 +16,6 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 
 
-
 /**
  * @classdesc
  * Geometry format for reading and writing data in the `WellKnownText` (WKT)
@@ -387,7 +386,6 @@ ol.format.WKT.TokenType = {
 };
 
 
-
 /**
  * Class to tokenize a WKT string.
  * @param {string} wkt WKT string.
@@ -522,7 +520,6 @@ ol.format.WKT.Lexer.prototype.readText_ = function() {
   } while (this.isAlpha_(c));
   return this.wkt.substring(index, this.index_--).toUpperCase();
 };
-
 
 
 /**

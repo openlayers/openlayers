@@ -12,7 +12,6 @@ goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the Encoded

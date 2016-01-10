@@ -4,7 +4,6 @@ goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
 
-
 /**
  * @classdesc
  * Layer source for the OpenStreetMap tile server.

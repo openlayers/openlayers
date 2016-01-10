@@ -3,7 +3,6 @@ goog.provide('ol.layer.Image');
 goog.require('ol.layer.Layer');
 
 
-
 /**
  * @classdesc
  * Server-rendered images that are available for arbitrary extents and

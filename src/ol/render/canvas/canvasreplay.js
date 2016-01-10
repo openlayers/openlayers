@@ -47,7 +47,6 @@ ol.render.canvas.Instruction = {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.render.VectorContext}
@@ -665,7 +664,6 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
@@ -932,7 +930,6 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
@@ -1165,7 +1162,6 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
     this.bufferedMaxExtent_ = null;
   }
 };
-
 
 
 /**
@@ -1523,7 +1519,6 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.render.canvas.Replay}
@@ -1831,7 +1826,6 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
     this.textScale_ = textScale !== undefined ? textScale : 1;
   }
 };
-
 
 
 /**

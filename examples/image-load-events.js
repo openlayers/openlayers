@@ -4,7 +4,6 @@ goog.require('ol.layer.Image');
 goog.require('ol.source.ImageWMS');
 
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.

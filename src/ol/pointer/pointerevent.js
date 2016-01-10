@@ -35,7 +35,6 @@ goog.require('goog.events');
 goog.require('goog.events.Event');
 
 
-
 /**
  * A class for pointer events.
  *
