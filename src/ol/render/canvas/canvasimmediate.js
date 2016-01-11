@@ -274,8 +274,8 @@ ol.render.canvas.Immediate.prototype.drawImages_ =
     var x = pixelCoordinates[i] - this.imageAnchorX_;
     var y = pixelCoordinates[i + 1] - this.imageAnchorY_;
     if (this.imageSnapToPixel_) {
-      x = (x + 0.5) | 0;
-      y = (y + 0.5) | 0;
+      x = Math.round(x);
+      y = Math.round(y);
     }
     if (rotation !== 0 || this.imageScale_ != 1) {
       var centerX = x + this.imageAnchorX_;
