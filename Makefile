@@ -119,8 +119,7 @@ examples: $(BUILD_EXAMPLES)
 install: build/timestamps/node-modules-timestamp
 
 .PHONY: lint
-lint: build/timestamps/eslint-timestamp \
-      build/timestamps/check-requires-timestamp
+lint: build/timestamps/eslint-timestamp
 
 .PHONY: npm-install
 npm-install: build/timestamps/node-modules-timestamp
@@ -182,13 +181,6 @@ build/timestamps/check-%-timestamp: $(BUILD_HOSTED)/examples/%.html \
                                     $(BUILD_HOSTED)/css/ol.css
 	@mkdir -p $(@D)
 	./node_modules/.bin/phantomjs --local-to-remote-url-access=true --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js $<
-	@touch $@
-
-build/timestamps/check-requires-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
-                                           $(SRC_SHADER_JS) $(SPEC_JS) \
-                                           $(SPEC_RENDERING_JS)
-	@mkdir -p $(@D)
-	@python bin/check-requires.py $(CLOSURE_LIB) $^
 	@touch $@
 
 build/compiled-examples/all.js: $(EXAMPLES_JS)
