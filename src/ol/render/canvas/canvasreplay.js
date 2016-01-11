@@ -329,8 +329,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           x = pixelCoordinates[d] - anchorX;
           y = pixelCoordinates[d + 1] - anchorY;
           if (snapToPixel) {
-            x = (x + 0.5) | 0;
-            y = (y + 0.5) | 0;
+            x = Math.round(x);
+            y = Math.round(y);
           }
           if (scale != 1 || rotation !== 0) {
             var centerX = x + anchorX;
