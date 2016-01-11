@@ -3942,6 +3942,7 @@ olx.source.BingMapsOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     clusterUnits: (ol.source.ClusterUnits|undefined),
  *     distance: (number|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),

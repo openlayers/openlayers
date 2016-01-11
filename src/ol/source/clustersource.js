@@ -13,6 +13,17 @@ goog.require('ol.geom.Point');
 goog.require('ol.source.Vector');
 
 
+/**
+ * Cluster source clustering units. One of 'pixels', 'meters'.
+ * @enum {string}
+ * @api
+ */
+ol.source.ClusterUnits = {
+  PIXELS: 'pixels',
+  METERS: 'meters'
+};
+
+
 
 /**
  * @classdesc
@@ -43,6 +54,12 @@ ol.source.Cluster = function(options) {
    * @private
    */
   this.distance_ = options.distance !== undefined ? options.distance : 20;
+
+  /**
+   * @type {ol.source.ClusterUnits}
+   * @private
+   */
+  this.clusterUnits_ = options.clusterUnits || ol.source.ClusterUnits.PIXELS;
 
   /**
    * @type {Array.<ol.Feature>}
@@ -109,6 +126,10 @@ ol.source.Cluster.prototype.cluster_ = function() {
   this.features_.length = 0;
   var extent = ol.extent.createEmpty();
   var mapDistance = this.distance_ * this.resolution_;
+  if (this.clusterUnits_ === ol.source.ClusterUnits.METERS) {
+    mapDistance = this.distance_;
+  }
+
   var features = this.source_.getFeatures();
 
   /**
