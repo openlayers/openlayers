@@ -63,7 +63,7 @@
     "mustache": "2.2.1",
     "phantomjs": "1.9.19",
     "proj4": "2.3.12",
-    "resemblejs": "2.0.1",
+    "resemblejs": "2.1.0",
     "sinon": "1.17.2",
     "slimerjs-edge": "0.10.0-pre-3",
     "wrench": "1.5.8"
