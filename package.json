@@ -54,7 +54,7 @@
     "clean-css": "3.4.9",
     "coveralls": "2.11.6",
     "debounce": "^1.0.0",
-    "eslint": "git://github.com/eslint/eslint.git#4356532469ec1b9d4977aff05a03c3e167922ffa",
+    "eslint": "v2.0.0-beta.1",
     "eslint-config-openlayers": "^2.0.0",
     "expect.js": "0.3.1",
     "gaze": "^0.5.1",
