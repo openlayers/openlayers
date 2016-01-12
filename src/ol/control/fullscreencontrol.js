@@ -15,6 +15,10 @@ goog.require('ol.css');
 /**
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
+ * The full screen source element is by default the element containing the map viewport unless
+ * overriden by providing the `source` option. In which case, the dom
+ * element introduced using this parameter will be displayed in full screen.
+ *
  * When in full screen mode, a close button is shown to exit full screen mode.
  * The [Fullscreen API](http://www.w3.org/TR/fullscreen/) is used to
  * toggle the map in full screen mode.
@@ -83,6 +87,12 @@ ol.control.FullScreen = function(opt_options) {
    */
   this.keys_ = options.keys !== undefined ? options.keys : false;
 
+  /**
+   * @private
+   * @type {Element|string|undefined}
+   */
+  this.source_ = options.source;
+
 };
 goog.inherits(ol.control.FullScreen, ol.control.Control);
 
@@ -111,7 +121,8 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
   if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.fullscreen.exitFullScreen();
   } else {
-    var element = map.getTargetElement();
+    var element = this.source_ ?
+        goog.dom.getElement(this.source_) : map.getTargetElement();
     goog.asserts.assert(element, 'element should be defined');
     if (this.keys_) {
       goog.dom.fullscreen.requestFullScreenWithKeys(element);
