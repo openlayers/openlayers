@@ -349,8 +349,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha * opacity;
           }
 
-          context.drawImage(image, originX, originY, width, height,
-              x, y, width * pixelRatio, height * pixelRatio);
+          var w = (width + originX > image.width) ? image.width - originX : width;
+          var h = (height + originY > image.height) ? image.height - originY : height;
+
+          context.drawImage(image, originX, originY, w, h,
+              x, y, w * pixelRatio, h * pixelRatio);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
