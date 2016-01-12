@@ -25,7 +25,7 @@ The minimum requirements are:
 
 * GNU Make
 * Git
-* [Node.js](http://nodejs.org/) (0.10.x or higher)
+* [Node.js](http://nodejs.org/) (higher than 0.12.x)
 * Python 2.6 or 2.7
 * Java 7 (JRE and JDK)
 
