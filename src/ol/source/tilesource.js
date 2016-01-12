@@ -176,7 +176,7 @@ ol.source.Tile.prototype.getKeyZXY = ol.tilecoord.getKeyZXY;
 
 
 /**
- * @param {ol.proj.Projection} projection
+ * @param {ol.proj.Projection} projection Projection.
  * @return {boolean} Opaque.
  */
 ol.source.Tile.prototype.getOpaque = function(projection) {
