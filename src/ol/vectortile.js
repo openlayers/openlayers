@@ -18,7 +18,6 @@ goog.require('ol.proj.Projection');
 ol.TileReplayState;
 
 
-
 /**
  * @constructor
  * @extends {ol.Tile}
@@ -29,8 +28,7 @@ ol.TileReplayState;
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  * @param {ol.proj.Projection} projection Feature projection.
  */
-ol.VectorTile =
-    function(tileCoord, state, src, format, tileLoadFunction, projection) {
+ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction, projection) {
 
   goog.base(this, tileCoord, state);
 
@@ -92,7 +90,7 @@ goog.inherits(ol.VectorTile, ol.Tile);
 
 
 /**
- * @return {CanvasRenderingContext2D}
+ * @return {CanvasRenderingContext2D} The rendering context.
  */
 ol.VectorTile.prototype.getContext = function() {
   return this.context_;
@@ -126,7 +124,7 @@ ol.VectorTile.prototype.getFeatures = function() {
 
 
 /**
- * @return {ol.TileReplayState}
+ * @return {ol.TileReplayState} The replay state.
  */
 ol.VectorTile.prototype.getReplayState = function() {
   return this.replayState_;

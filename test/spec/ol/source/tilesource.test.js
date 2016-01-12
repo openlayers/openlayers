@@ -71,8 +71,9 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(source.getProjection(), zoom,
-                                             range, function() {
+      var covered = source.forEachLoadedTile(
+          source.getProjection(), zoom, range,
+          function() {
             return true;
           });
       expect(covered).to.be(true);
@@ -90,8 +91,9 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(source.getProjection(), zoom,
-                                             range, function() {
+      var covered = source.forEachLoadedTile(
+          source.getProjection(), zoom,
+          range, function() {
             return true;
           });
       expect(covered).to.be(false);
@@ -109,8 +111,9 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(source.getProjection(), zoom,
-                                             range, function() {
+      var covered = source.forEachLoadedTile(
+          source.getProjection(), zoom, range,
+          function() {
             return false;
           });
       expect(covered).to.be(false);
@@ -168,7 +171,6 @@ describe('ol.source.Tile', function() {
   });
 
 });
-
 
 
 /**

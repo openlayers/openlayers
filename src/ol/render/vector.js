@@ -45,8 +45,7 @@ ol.renderer.vector.getTolerance = function(resolution, pixelRatio) {
  * @param {ol.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderCircleGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style, feature) {
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
@@ -131,8 +130,7 @@ ol.renderer.vector.renderFeature_ = function(
  * @param {ol.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderGeometryCollectionGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderGeometryCollectionGeometry_ = function(replayGroup, geometry, style, feature) {
   var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -152,8 +150,7 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ =
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderLineStringGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
   var strokeStyle = style.getStroke();
   if (strokeStyle) {
     var lineStringReplay = replayGroup.getReplay(
@@ -178,8 +175,7 @@ ol.renderer.vector.renderLineStringGeometry_ =
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderMultiLineStringGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
   var strokeStyle = style.getStroke();
   if (strokeStyle) {
     var lineStringReplay = replayGroup.getReplay(
@@ -206,8 +202,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ =
  * @param {ol.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderMultiPolygonGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (strokeStyle || fillStyle) {
@@ -235,8 +230,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ =
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderPointGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -265,8 +259,7 @@ ol.renderer.vector.renderPointGeometry_ =
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderMultiPointGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ol.style.ImageState.LOADED) {
@@ -296,8 +289,7 @@ ol.renderer.vector.renderMultiPointGeometry_ =
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.renderer.vector.renderPolygonGeometry_ =
-    function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {

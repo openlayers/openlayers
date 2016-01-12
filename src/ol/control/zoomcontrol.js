@@ -9,7 +9,6 @@ goog.require('ol.css');
 goog.require('ol.easing');
 
 
-
 /**
  * @classdesc
  * A control with 2 buttons, one for zoom in and one for zoom out.

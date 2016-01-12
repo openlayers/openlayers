@@ -9,7 +9,6 @@ goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses
@@ -61,8 +60,7 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
  * @return {Array.<ol.Feature>} Features.
  * @private
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeatures_ =
-    function(node, objectStack) {
+ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
 
   node.namespaceURI = this.featureNS_;
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -134,8 +132,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures;
 /**
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode =
-    function(node, opt_options) {
+ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = {
     'featureType': this.featureType,
     'featureNS': this.featureNS

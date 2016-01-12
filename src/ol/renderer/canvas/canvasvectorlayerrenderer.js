@@ -13,7 +13,6 @@ goog.require('ol.renderer.vector');
 goog.require('ol.source.Vector');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
@@ -72,8 +71,7 @@ goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.composeFrame =
-    function(frameState, layerState, context) {
+ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, layerState, context) {
 
   var extent = frameState.extent;
   var pixelRatio = frameState.pixelRatio;
@@ -153,8 +151,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
@@ -187,8 +184,7 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate =
  * @param {goog.events.Event} event Image style change event.
  * @private
  */
-ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ =
-    function(event) {
+ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
   this.renderIfReadyAndVisible();
 };
 
@@ -196,8 +192,7 @@ ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ =
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
   goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector,
@@ -267,12 +262,11 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
           ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
           resolution, vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
-  var renderFeature =
-      /**
-       * @param {ol.Feature} feature Feature.
-       * @this {ol.renderer.canvas.VectorLayer}
-       */
-      function(feature) {
+  /**
+   * @param {ol.Feature} feature Feature.
+   * @this {ol.renderer.canvas.VectorLayer}
+   */
+  var renderFeature = function(feature) {
     var styles;
     var styleFunction = feature.getStyleFunction();
     if (styleFunction) {
@@ -325,8 +319,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame =
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.canvas.VectorLayer.prototype.renderFeature =
-    function(feature, resolution, pixelRatio, styles, replayGroup) {
+ol.renderer.canvas.VectorLayer.prototype.renderFeature = function(feature, resolution, pixelRatio, styles, replayGroup) {
   if (!styles) {
     return false;
   }

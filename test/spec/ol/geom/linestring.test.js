@@ -5,8 +5,7 @@ describe('ol.geom.LineString', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var lineString = new ol.geom.LineString(null);
-      lineString = lineString; // suppress gjslint warning
+      return new ol.geom.LineString(null);
     }).not.to.throwException();
   });
 

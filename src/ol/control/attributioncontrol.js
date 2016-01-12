@@ -16,7 +16,6 @@ goog.require('ol.css');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * Control to show all the attributions associated with the layer sources
@@ -238,16 +237,14 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
       delete visibleAttributions[attributionKey];
-    }
-    else if (attributionKey in hiddenAttributions) {
+    } else if (attributionKey in hiddenAttributions) {
       if (this.attributionElementRenderedVisible_[attributionKey]) {
         goog.style.setElementShown(
             this.attributionElements_[attributionKey], false);
         delete this.attributionElementRenderedVisible_[attributionKey];
       }
       delete hiddenAttributions[attributionKey];
-    }
-    else {
+    } else {
       goog.dom.removeNode(this.attributionElements_[attributionKey]);
       delete this.attributionElements_[attributionKey];
       delete this.attributionElementRenderedVisible_[attributionKey];

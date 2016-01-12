@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not

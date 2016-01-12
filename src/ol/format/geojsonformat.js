@@ -18,7 +18,6 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GeoJSON format.
@@ -243,8 +242,7 @@ ol.format.GeoJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {GeoJSONGeometry} GeoJSON geometry.
  */
-ol.format.GeoJSON.writeMultiLineStringGeometry_ =
-    function(geometry, opt_options) {
+ol.format.GeoJSON.writeMultiLineStringGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
       'geometry should be an ol.geom.MultiLineString');
   return /** @type {GeoJSONGeometry} */ ({
@@ -572,8 +570,7 @@ ol.format.GeoJSON.prototype.writeFeatures;
  * @return {GeoJSONFeatureCollection} GeoJSON Object.
  * @api stable
  */
-ol.format.GeoJSON.prototype.writeFeaturesObject =
-    function(features, opt_options) {
+ol.format.GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   var objects = [];
   var i, ii;

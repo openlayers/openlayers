@@ -14,8 +14,7 @@ goog.require('ol.proj');
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.line_ =
-    function(interpolate, transform, squaredTolerance) {
+ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance) {
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
 
@@ -141,8 +140,7 @@ ol.geom.flat.geodesic.greatCircleArc = function(
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.meridian =
-    function(lon, lat1, lat2, projection, squaredTolerance) {
+ol.geom.flat.geodesic.meridian = function(lon, lat1, lat2, projection, squaredTolerance) {
   var epsg4326Projection = ol.proj.get('EPSG:4326');
   return ol.geom.flat.geodesic.line_(
       /**
@@ -165,8 +163,7 @@ ol.geom.flat.geodesic.meridian =
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.parallel =
-    function(lat, lon1, lon2, projection, squaredTolerance) {
+ol.geom.flat.geodesic.parallel = function(lat, lon1, lon2, projection, squaredTolerance) {
   var epsg4326Projection = ol.proj.get('EPSG:4326');
   return ol.geom.flat.geodesic.line_(
       /**

@@ -126,7 +126,7 @@ describe('ol.source.TileArcGISRest', function() {
 
     it('add a new param', function() {
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({ 'TEST': 'value' });
+      source.updateParams({'TEST': 'value'});
 
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       var uri = new goog.Uri(tile.src_);
@@ -139,7 +139,7 @@ describe('ol.source.TileArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({ 'TEST': 'newValue' });
+      source.updateParams({'TEST': 'newValue'});
 
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       var uri = new goog.Uri(tile.src_);
@@ -158,29 +158,29 @@ describe('ol.source.TileArcGISRest', function() {
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({ TEST: 'value' });
+      expect(setParams).to.eql({TEST: 'value'});
     });
 
     it('verify on adding a param', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({ 'TEST2': 'newValue' });
+      source.updateParams({'TEST2': 'newValue'});
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({ TEST: 'value', TEST2: 'newValue' });
+      expect(setParams).to.eql({TEST: 'value', TEST2: 'newValue'});
     });
 
     it('verify on update a param', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({ 'TEST': 'newValue' });
+      source.updateParams({'TEST': 'newValue'});
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({ TEST: 'newValue' });
+      expect(setParams).to.eql({TEST: 'newValue'});
     });
 
   });

@@ -25,7 +25,7 @@ var colors = {
 };
 
 var styleCache = {};
-var styleFunction = function(feature, resolution) {
+var styleFunction = function(feature) {
   var color = colors[feature.get('PLT')];
   var style = styleCache[color];
   if (!style) {

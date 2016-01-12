@@ -5,7 +5,6 @@ goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Layer}

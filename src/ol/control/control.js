@@ -7,7 +7,6 @@ goog.require('ol.MapEventType');
 goog.require('ol.Object');
 
 
-
 /**
  * @classdesc
  * A control is a visible widget with a DOM element in a fixed position on the

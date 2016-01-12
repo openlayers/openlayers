@@ -22,7 +22,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
 
 
-
 /**
  * @classdesc
  * Layer source for tile data in TileJSON format.

@@ -8,6 +8,7 @@ describe('ol.format.Polyline', function() {
   var floats, smallFloats, encodedFloats;
   var signedIntegers, encodedSignedIntegers;
   var unsignedIntegers, encodedUnsignedIntegers;
+  var points3857;
 
   function resetTestingData() {
     format = new ol.format.Polyline();
@@ -64,7 +65,6 @@ describe('ol.format.Polyline', function() {
   });
 
 
-
   describe('encodeFloats', function() {
     it('returns expected value', function() {
       var encodeFloats = ol.format.Polyline.encodeFloats;
@@ -89,7 +89,6 @@ describe('ol.format.Polyline', function() {
   });
 
 
-
   describe('encodeSignedIntegers', function() {
     it('returns expected value', function() {
       var encodeSignedIntegers = ol.format.Polyline.encodeSignedIntegers;
@@ -109,7 +108,6 @@ describe('ol.format.Polyline', function() {
   });
 
 
-
   describe('encodeUnsignedIntegers', function() {
     it('returns expected value', function() {
       var encodeUnsignedIntegers = ol.format.Polyline.encodeUnsignedIntegers;
@@ -127,7 +125,6 @@ describe('ol.format.Polyline', function() {
           encodedUnsignedIntegers)).to.eql(unsignedIntegers);
     });
   });
-
 
 
   describe('encodeFloat', function() {
@@ -177,7 +174,6 @@ describe('ol.format.Polyline', function() {
   });
 
 
-
   describe('encodeSignedInteger', function() {
     it('returns expected value', function() {
       var encodeSignedIntegers = ol.format.Polyline.encodeSignedIntegers;
@@ -213,7 +209,6 @@ describe('ol.format.Polyline', function() {
       expect(decodeSignedIntegers('___@')).to.eql([16 * 32 * 32]);
     });
   });
-
 
 
   describe('encodeUnsignedInteger', function() {

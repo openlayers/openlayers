@@ -6,14 +6,13 @@ goog.require('ol.extent');
 goog.require('ol.source.Image');
 
 
-
 /**
  * @classdesc
  * Base class for image sources where a canvas element is the image.
  *
  * @constructor
  * @extends {ol.source.Image}
- * @param {olx.source.ImageCanvasOptions} options
+ * @param {olx.source.ImageCanvasOptions} options Constructor options.
  * @api
  */
 ol.source.ImageCanvas = function(options) {
@@ -59,8 +58,7 @@ goog.inherits(ol.source.ImageCanvas, ol.source.Image);
 /**
  * @inheritDoc
  */
-ol.source.ImageCanvas.prototype.getImageInternal =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageCanvas.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   resolution = this.findNearestResolution(resolution);
 
   var canvas = this.canvas_;

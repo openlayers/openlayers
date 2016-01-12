@@ -95,7 +95,7 @@ for (i = 0; i < featureCount; i += 30) {
   overlayFeatures.push(clone);
 }
 
-var featureOverlay = new ol.layer.Vector({
+new ol.layer.Vector({
   map: map,
   source: new ol.source.Vector({
     features: overlayFeatures
@@ -112,8 +112,8 @@ map.on('click', function(evt) {
 
   window.setTimeout(function() {
     var features = [];
-    map.forEachFeatureAtPixel(evt.pixel, function(feature, layer) {
-      features.push(features);
+    map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+      features.push(feature);
       return false;
     });
 

@@ -165,8 +165,7 @@ ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
  * @param {Node} node Node to append a TextNode with the decimal to.
  * @param {number} nonNegativeInteger Non negative integer.
  */
-ol.format.XSD.writeNonNegativeIntegerTextNode =
-    function(node, nonNegativeInteger) {
+ol.format.XSD.writeNonNegativeIntegerTextNode = function(node, nonNegativeInteger) {
   goog.asserts.assert(nonNegativeInteger >= 0, 'value should be more than 0');
   goog.asserts.assert(nonNegativeInteger == (nonNegativeInteger | 0),
       'value should be an integer value');

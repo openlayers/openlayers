@@ -28,7 +28,6 @@ goog.require('ol.source.TileEvent');
 ol.source.UrlTileOptions;
 
 
-
 /**
  * @classdesc
  * Base class for sources providing tiles divided into a tile grid over http.
@@ -143,6 +142,8 @@ ol.source.UrlTile.prototype.handleTileChange = function(event) {
       this.dispatchEvent(
           new ol.source.TileEvent(ol.source.TileEventType.TILELOADERROR, tile));
       break;
+    default:
+      // pass
   }
 };
 

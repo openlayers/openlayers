@@ -16,7 +16,7 @@ var raster = new ol.layer.Tile({
 
 var source = new ol.source.Vector();
 
-var styleFunction = function(feature, resolution) {
+var styleFunction = function(feature) {
   var geometry = feature.getGeometry();
   var styles = [
     // linestring

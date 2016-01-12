@@ -6,7 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 
 
-
 /**
  * Lightweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
  * structure, optimized for rendering and styling. Geometry access through the
@@ -100,10 +99,16 @@ ol.render.Feature.prototype.getExtent = function() {
 /**
  * @return {Array.<number>} Flat coordinates.
  */
-ol.render.Feature.prototype.getFlatCoordinates =
-    ol.render.Feature.prototype.getOrientedFlatCoordinates = function() {
+ol.render.Feature.prototype.getOrientedFlatCoordinates = function() {
   return this.flatCoordinates_;
 };
+
+
+/**
+ * @return {Array.<number>} Flat coordinates.
+ */
+ol.render.Feature.prototype.getFlatCoordinates =
+    ol.render.Feature.prototype.getOrientedFlatCoordinates;
 
 
 /**

@@ -5,8 +5,7 @@ describe('ol.geom.MultiLineString', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var multiLineString = new ol.geom.MultiLineString(null);
-      multiLineString = multiLineString; // suppress gjslint warning
+      return new ol.geom.MultiLineString(null);
     }).not.to.throwException();
   });
 

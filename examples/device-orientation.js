@@ -39,7 +39,7 @@ el('track').addEventListener('change', function() {
   deviceOrientation.setTracking(this.checked);
 });
 
-deviceOrientation.on('change', function(event) {
+deviceOrientation.on('change', function() {
   el('alpha').innerText = deviceOrientation.getAlpha() + ' [rad]';
   el('beta').innerText = deviceOrientation.getBeta() + ' [rad]';
   el('gamma').innerText = deviceOrientation.getGamma() + ' [rad]';

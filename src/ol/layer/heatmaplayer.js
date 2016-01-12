@@ -23,7 +23,6 @@ ol.layer.HeatmapLayerProperty = {
 };
 
 
-
 /**
  * @classdesc
  * Layer for rendering vector data as a heatmap.
@@ -145,8 +144,8 @@ ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
 
 
 /**
- * @param {Array.<string>} colors
- * @return {Uint8ClampedArray}
+ * @param {Array.<string>} colors A list of colored.
+ * @return {Uint8ClampedArray} An array.
  * @private
  */
 ol.layer.Heatmap.createGradient_ = function(colors) {
@@ -168,7 +167,7 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 
 
 /**
- * @return {string}
+ * @return {string} Data URL for a circle.
  * @private
  */
 ol.layer.Heatmap.prototype.createCircle_ = function() {

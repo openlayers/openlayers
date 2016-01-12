@@ -5,8 +5,7 @@ describe('ol.geom.Polygon', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var polygon = new ol.geom.Polygon(null);
-      polygon = polygon; // suppress gjslint warning
+      return new ol.geom.Polygon(null);
     }).not.to.throwException();
   });
 

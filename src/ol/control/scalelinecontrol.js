@@ -37,7 +37,6 @@ ol.control.ScaleLineUnits = {
 };
 
 
-
 /**
  * @classdesc
  * A control displaying rough x-axis distances, calculated for the center of the

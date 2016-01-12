@@ -10,7 +10,6 @@ goog.require('ol.format.XSD');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Format for reading WMS capabilities data
@@ -131,8 +130,7 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.Extent|undefined} Bounding box object.
  */
-ol.format.WMSCapabilities.readEXGeographicBoundingBox_ =
-    function(node, objectStack) {
+ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'EX_GeographicBoundingBox',
@@ -201,8 +199,7 @@ ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined} Contact information object.
  */
-ol.format.WMSCapabilities.readContactInformation_ =
-    function(node, objectStack) {
+ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType shpuld be ELEMENT');
   goog.asserts.assert(node.localName == 'ContactInformation',
@@ -219,8 +216,7 @@ ol.format.WMSCapabilities.readContactInformation_ =
  * @private
  * @return {Object|undefined} Contact person object.
  */
-ol.format.WMSCapabilities.readContactPersonPrimary_ =
-    function(node, objectStack) {
+ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'ContactPersonPrimary',
@@ -237,8 +233,7 @@ ol.format.WMSCapabilities.readContactPersonPrimary_ =
  * @private
  * @return {Object|undefined} Contact address object.
  */
-ol.format.WMSCapabilities.readContactAddress_ =
-    function(node, objectStack) {
+ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'ContactAddress',
@@ -396,8 +391,7 @@ ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
-ol.format.WMSCapabilities.readFormatOnlineresource_ =
-    function(node, objectStack) {
+ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   return ol.xml.pushParseAndPop(
@@ -473,8 +467,7 @@ ol.format.WMSCapabilities.readOperationType_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
-ol.format.WMSCapabilities.readSizedFormatOnlineresource_ =
-    function(node, objectStack) {
+ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   var formatOnlineresource =

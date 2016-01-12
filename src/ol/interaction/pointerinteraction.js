@@ -9,7 +9,6 @@ goog.require('ol.Pixel');
 goog.require('ol.interaction.Interaction');
 
 
-
 /**
  * @classdesc
  * Base class that calls user-defined functions on `down`, `move` and `up`
@@ -87,7 +86,7 @@ goog.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
 
 
 /**
- * @param {Array.<ol.pointer.PointerEvent>} pointerEvents
+ * @param {Array.<ol.pointer.PointerEvent>} pointerEvents List of events.
  * @return {ol.Pixel} Centroid pixel.
  */
 ol.interaction.Pointer.centroid = function(pointerEvents) {
@@ -108,8 +107,7 @@ ol.interaction.Pointer.centroid = function(pointerEvents) {
  *     or pointerup event.
  * @private
  */
-ol.interaction.Pointer.prototype.isPointerDraggingEvent_ =
-    function(mapBrowserEvent) {
+ol.interaction.Pointer.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return (
       type === ol.MapBrowserEvent.EventType.POINTERDOWN ||
@@ -122,8 +120,7 @@ ol.interaction.Pointer.prototype.isPointerDraggingEvent_ =
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @private
  */
-ol.interaction.Pointer.prototype.updateTrackedPointers_ =
-    function(mapBrowserEvent) {
+ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEvent) {
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
 

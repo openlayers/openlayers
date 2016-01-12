@@ -28,11 +28,13 @@ iconFeature.set('style', createStyle('data/icon.png', undefined));
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.Stamen({ layer: 'watercolor' })
+      source: new ol.source.Stamen({layer: 'watercolor'})
     }),
     new ol.layer.Vector({
-      style: function(feature) { return feature.get('style'); },
-      source: new ol.source.Vector({ features: [iconFeature] })
+      style: function(feature) {
+        return feature.get('style');
+      },
+      source: new ol.source.Vector({features: [iconFeature]})
     })
   ],
   target: document.getElementById('map'),
@@ -44,7 +46,7 @@ var map = new ol.Map({
 
 var selectStyle = {};
 var select = new ol.interaction.Select({
-  style: function(feature, resolution) {
+  style: function(feature) {
     var image = feature.get('style').getImage().getImage();
     if (!selectStyle[image.src]) {
       var canvas = document.createElement('canvas');

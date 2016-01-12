@@ -14,7 +14,6 @@ ol.webgl.BufferUsage = {
 };
 
 
-
 /**
  * @constructor
  * @param {Array.<number>=} opt_arr Array.

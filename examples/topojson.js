@@ -31,7 +31,7 @@ var vector = new ol.layer.Vector({
     url: 'data/topojson/world-110m.json',
     format: new ol.format.TopoJSON()
   }),
-  style: function(feature, resolution) {
+  style: function(feature) {
     // don't want to render the full world polygon, which repeats all countries
     return feature.getId() !== undefined ? style : null;
   }

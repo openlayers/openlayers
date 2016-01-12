@@ -26,7 +26,6 @@ ol.MapEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted as map events are instances of this type.

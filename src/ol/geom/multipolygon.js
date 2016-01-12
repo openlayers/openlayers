@@ -22,7 +22,6 @@ goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Multi-polygon geometry.
@@ -131,8 +130,7 @@ ol.geom.MultiPolygon.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.MultiPolygon.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -257,8 +255,7 @@ ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @inheritDoc
  */
-ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizess(
@@ -361,8 +358,7 @@ ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
-ol.geom.MultiPolygon.prototype.setCoordinates =
-    function(coordinates, opt_layout) {
+ol.geom.MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.endss_);
   } else {
@@ -389,8 +385,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<Array.<number>>} endss Endss.
  */
-ol.geom.MultiPolygon.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates, endss) {
+ol.geom.MultiPolygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, endss) {
   goog.asserts.assert(endss, 'endss must be truthy');
   if (!flatCoordinates || flatCoordinates.length === 0) {
     goog.asserts.assert(endss.length === 0, 'the length of endss should be 0');

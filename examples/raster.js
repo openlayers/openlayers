@@ -61,6 +61,12 @@ var bing = new ol.source.BingMaps({
  */
 var raster = new ol.source.Raster({
   sources: [bing],
+  /**
+   * Run calculations on pixel data.
+   * @param {Array} pixels List of pixels (one per source).
+   * @param {Object} data User data object.
+   * @return {Array} The output pixel.
+   */
   operation: function(pixels, data) {
     var pixel = pixels[0];
     var value = vgi(pixel);

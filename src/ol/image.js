@@ -9,7 +9,6 @@ goog.require('ol.ImageState');
 goog.require('ol.extent');
 
 
-
 /**
  * @constructor
  * @extends {ol.ImageBase}

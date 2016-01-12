@@ -9,7 +9,6 @@ goog.require('ol.featureloader');
 goog.require('ol.source.UrlTile');
 
 
-
 /**
  * @classdesc
  * Class for layer sources providing vector data divided into a tile grid, to be
@@ -67,8 +66,7 @@ goog.inherits(ol.source.VectorTile, ol.source.UrlTile);
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTile =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));

@@ -17,7 +17,6 @@ goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
 
-
 /**
  * @constructor
  * @extends {ol.render.VectorContext}
@@ -216,8 +215,7 @@ goog.inherits(ol.render.webgl.ImageReplay, ol.render.VectorContext);
  * @param {ol.webgl.Context} context WebGL context.
  * @return {function()} Delete resources function.
  */
-ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction =
-    function(context) {
+ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(context) {
   // We only delete our stuff here. The shaders and the program may
   // be used by other ImageReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
@@ -261,8 +259,7 @@ ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
  * @return {number} My end.
  * @private
  */
-ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
-    function(flatCoordinates, offset, end, stride) {
+ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   goog.asserts.assert(this.anchorX_ !== undefined, 'anchorX is defined');
   goog.asserts.assert(this.anchorY_ !== undefined, 'anchorY is defined');
   goog.asserts.assert(this.height_ !== undefined, 'height is defined');
@@ -373,8 +370,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, feature) {
+ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry = function(multiPointGeometry, feature) {
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -387,8 +383,7 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry =
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawPointGeometry =
-    function(pointGeometry, feature) {
+ol.render.webgl.ImageReplay.prototype.drawPointGeometry = function(pointGeometry, feature) {
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -467,8 +462,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
  * @param {Object.<string, WebGLTexture>} texturePerImage Texture cache.
  * @param {WebGLRenderingContext} gl Gl.
  */
-ol.render.webgl.ImageReplay.prototype.createTextures_ =
-    function(textures, images, texturePerImage, gl) {
+ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, images, texturePerImage, gl) {
   goog.asserts.assert(textures.length === 0,
       'upon creation, textures is empty');
 
@@ -619,8 +613,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  * @param {Array.<WebGLTexture>} textures Textures.
  * @param {Array.<number>} groupIndices Texture group indices.
  */
-ol.render.webgl.ImageReplay.prototype.drawReplay_ =
-    function(gl, context, skippedFeaturesHash, textures, groupIndices) {
+ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, textures, groupIndices) {
   goog.asserts.assert(textures.length === groupIndices.length,
       'number of textures and groupIndeces match');
   var elementType = context.hasOESElementIndexUint ?
@@ -670,8 +663,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ =
  * @param {number} elementType Element type.
  * @param {number} elementSize Element Size.
  */
-ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ =
-    function(gl, skippedFeaturesHash, textures, groupIndices,
+ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, skippedFeaturesHash, textures, groupIndices,
     elementType, elementSize) {
   var featureIndex = 0;
 
@@ -744,8 +736,7 @@ ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
-    function(gl, context, skippedFeaturesHash, featureCallback, oneByOne,
+ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ = function(gl, context, skippedFeaturesHash, featureCallback, oneByOne,
     opt_hitExtent) {
   if (!oneByOne) {
     // draw all hit-detection features in "once" (by texture group)
@@ -769,8 +760,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
-    function(gl, context, skippedFeaturesHash, featureCallback) {
+ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ = function(gl, context, skippedFeaturesHash, featureCallback) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   this.drawReplay_(gl, context, skippedFeaturesHash,
       this.hitDetectionTextures_, this.hitDetectionGroupIndices_);
@@ -796,8 +786,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ =
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ =
-    function(gl, context, skippedFeaturesHash, featureCallback,
+ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function(gl, context, skippedFeaturesHash, featureCallback,
     opt_hitExtent) {
   goog.asserts.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length,
@@ -921,7 +910,6 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 };
 
 
-
 /**
  * @constructor
  * @implements {ol.render.IReplayGroup}
@@ -965,8 +953,7 @@ ol.render.webgl.ReplayGroup = function(
  * @param {ol.webgl.Context} context WebGL context.
  * @return {function()} Delete resources function.
  */
-ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction =
-    function(context) {
+ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
   var functions = [];
   var replayKey;
   for (replayKey in this.replays_) {
@@ -991,8 +978,7 @@ ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.ReplayGroup.prototype.getReplay =
-    function(zIndex, replayType) {
+ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
   var replay = this.replays_[replayType];
   if (replay === undefined) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];

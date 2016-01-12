@@ -16,7 +16,6 @@ goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Multi-linestring geometry.
@@ -90,8 +89,7 @@ ol.geom.MultiLineString.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.MultiLineString.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.MultiLineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -129,8 +127,7 @@ ol.geom.MultiLineString.prototype.closestPointXY =
  * @return {ol.Coordinate} Coordinate.
  * @api stable
  */
-ol.geom.MultiLineString.prototype.getCoordinateAtM =
-    function(m, opt_extrapolate, opt_interpolate) {
+ol.geom.MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_interpolate) {
   if ((this.layout != ol.geom.GeometryLayout.XYM &&
        this.layout != ol.geom.GeometryLayout.XYZM) ||
       this.flatCoordinates.length === 0) {
@@ -229,8 +226,7 @@ ol.geom.MultiLineString.prototype.getFlatMidpoints = function() {
 /**
  * @inheritDoc
  */
-ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeuckers(
@@ -268,8 +264,7 @@ ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
-ol.geom.MultiLineString.prototype.setCoordinates =
-    function(coordinates, opt_layout) {
+ol.geom.MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
   } else {
@@ -290,8 +285,7 @@ ol.geom.MultiLineString.prototype.setCoordinates =
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */
-ol.geom.MultiLineString.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates, ends) {
+ol.geom.MultiLineString.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
   if (!flatCoordinates) {
     goog.asserts.assert(ends && ends.length === 0,
         'ends must be truthy and ends.length should be 0');

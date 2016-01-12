@@ -38,6 +38,7 @@ ol.webgl.getContext = function(canvas, opt_attributes) {
         return /** @type {!WebGLRenderingContext} */ (context);
       }
     } catch (e) {
+      // pass
     }
   }
   return null;

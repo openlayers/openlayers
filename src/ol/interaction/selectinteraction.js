@@ -43,7 +43,6 @@ ol.interaction.SelectEventType = {
 ol.interaction.SelectFilterFunction;
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Select} instances are instances of
@@ -58,8 +57,7 @@ ol.interaction.SelectFilterFunction;
  * @extends {goog.events.Event}
  * @constructor
  */
-ol.interaction.SelectEvent =
-    function(type, selected, deselected, mapBrowserEvent) {
+ol.interaction.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
   goog.base(this, type);
 
   /**
@@ -84,7 +82,6 @@ ol.interaction.SelectEvent =
   this.mapBrowserEvent = mapBrowserEvent;
 };
 goog.inherits(ol.interaction.SelectEvent, goog.events.Event);
-
 
 
 /**
@@ -175,23 +172,21 @@ ol.interaction.Select = function(opt_options) {
   var layerFilter;
   if (options.layers) {
     if (goog.isFunction(options.layers)) {
-      layerFilter =
-          /**
-           * @param {ol.layer.Layer} layer Layer.
-           * @return {boolean} Include.
-           */
-          function(layer) {
+      /**
+       * @param {ol.layer.Layer} layer Layer.
+       * @return {boolean} Include.
+       */
+      layerFilter = function(layer) {
         goog.asserts.assertFunction(options.layers);
         return layer === featureOverlay || options.layers(layer);
       };
     } else {
       var layers = options.layers;
-      layerFilter =
-          /**
-           * @param {ol.layer.Layer} layer Layer.
-           * @return {boolean} Include.
-           */
-          function(layer) {
+      /**
+       * @param {ol.layer.Layer} layer Layer.
+       * @return {boolean} Include.
+       */
+      layerFilter = function(layer) {
         return layer === featureOverlay || ol.array.includes(layers, layer);
       };
     }
@@ -228,8 +223,7 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
  * @param {ol.layer.Layer} layer Layer.
  * @private
  */
-ol.interaction.Select.prototype.addFeatureLayerAssociation_ =
-    function(feature, layer) {
+ol.interaction.Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
   var key = goog.getUid(feature);
   this.featureLayerAssociation_[key] = layer;
 };
@@ -433,8 +427,7 @@ ol.interaction.Select.prototype.removeFeature_ = function(evt) {
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.interaction.Select.prototype.removeFeatureLayerAssociation_ =
-    function(feature) {
+ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
   var key = goog.getUid(feature);
   delete this.featureLayerAssociation_[key];
 };

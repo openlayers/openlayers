@@ -23,7 +23,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format
@@ -224,8 +223,7 @@ ol.format.GML3.prototype.readPolygonPatch_ = function(node, objectStack) {
  * @private
  * @return {Array.<number>|undefined} flat coordinates.
  */
-ol.format.GML3.prototype.readLineStringSegment_ =
-    function(node, objectStack) {
+ol.format.GML3.prototype.readLineStringSegment_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LineStringSegment',
@@ -661,7 +659,7 @@ ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
 /**
  * @param {Array.<number>} point Point geometry.
  * @param {string=} opt_srsName Optional srsName
- * @return {string}
+ * @return {string} The coords string.
  * @private
  */
 ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName) {
@@ -758,8 +756,7 @@ ol.format.GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeLinearRing_ =
-    function(node, geometry, objectStack) {
+ol.format.GML3.prototype.writeLinearRing_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
@@ -779,8 +776,7 @@ ol.format.GML3.prototype.writeLinearRing_ =
  * @return {Node} Node.
  * @private
  */
-ol.format.GML3.prototype.RING_NODE_FACTORY_ =
-    function(value, objectStack, opt_nodeName) {
+ol.format.GML3.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var context = objectStack[objectStack.length - 1];
   var parentNode = context.node;
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
@@ -799,8 +795,7 @@ ol.format.GML3.prototype.RING_NODE_FACTORY_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeSurfaceOrPolygon_ =
-    function(node, geometry, objectStack) {
+ol.format.GML3.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
@@ -829,8 +824,7 @@ ol.format.GML3.prototype.writeSurfaceOrPolygon_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeCurveOrLineString_ =
-    function(node, geometry, objectStack) {
+ol.format.GML3.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
@@ -857,8 +851,7 @@ ol.format.GML3.prototype.writeCurveOrLineString_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_ =
-    function(node, geometry, objectStack) {
+ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
@@ -902,8 +895,7 @@ ol.format.GML3.prototype.writeMultiPoint_ = function(node, geometry,
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeMultiCurveOrLineString_ =
-    function(node, geometry, objectStack) {
+ol.format.GML3.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var srsName = context['srsName'];
@@ -938,8 +930,7 @@ ol.format.GML3.prototype.writeRing_ = function(node, ring, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeSurfaceOrPolygonMember_ =
-    function(node, polygon, objectStack) {
+ol.format.GML3.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var child = this.GEOMETRY_NODE_FACTORY_(
@@ -957,8 +948,7 @@ ol.format.GML3.prototype.writeSurfaceOrPolygonMember_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writePointMember_ =
-    function(node, point, objectStack) {
+ol.format.GML3.prototype.writePointMember_ = function(node, point, objectStack) {
   var child = ol.xml.createElementNS(node.namespaceURI, 'Point');
   node.appendChild(child);
   this.writePoint_(child, point, objectStack);
@@ -971,8 +961,7 @@ ol.format.GML3.prototype.writePointMember_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeLineStringOrCurveMember_ =
-    function(node, line, objectStack) {
+ol.format.GML3.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
@@ -989,8 +978,7 @@ ol.format.GML3.prototype.writeLineStringOrCurveMember_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeSurfacePatches_ =
-    function(node, polygon, objectStack) {
+ol.format.GML3.prototype.writeSurfacePatches_ = function(node, polygon, objectStack) {
   var child = ol.xml.createElementNS(node.namespaceURI, 'PolygonPatch');
   node.appendChild(child);
   this.writeSurfaceOrPolygon_(child, polygon, objectStack);
@@ -1003,8 +991,7 @@ ol.format.GML3.prototype.writeSurfacePatches_ =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeCurveSegments_ =
-    function(node, line, objectStack) {
+ol.format.GML3.prototype.writeCurveSegments_ = function(node, line, objectStack) {
   var child = ol.xml.createElementNS(node.namespaceURI,
       'LineStringSegment');
   node.appendChild(child);
@@ -1017,8 +1004,7 @@ ol.format.GML3.prototype.writeCurveSegments_ =
  * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
  * @param {Array.<*>} objectStack Node stack.
  */
-ol.format.GML3.prototype.writeGeometryElement =
-    function(node, geometry, objectStack) {
+ol.format.GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var item = goog.object.clone(context);
@@ -1049,8 +1035,7 @@ ol.format.GML3.prototype.writeGeometryElement =
  * @param {ol.Feature} feature Feature.
  * @param {Array.<*>} objectStack Node stack.
  */
-ol.format.GML3.prototype.writeFeatureElement =
-    function(node, feature, objectStack) {
+ol.format.GML3.prototype.writeFeatureElement = function(node, feature, objectStack) {
   var fid = feature.getId();
   if (fid) {
     node.setAttribute('fid', fid);
@@ -1099,8 +1084,7 @@ ol.format.GML3.prototype.writeFeatureElement =
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML3.prototype.writeFeatureMembers_ =
-    function(node, features, objectStack) {
+ol.format.GML3.prototype.writeFeatureMembers_ = function(node, features, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var featureType = context['featureType'];
@@ -1225,8 +1209,7 @@ ol.format.GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
  * @return {Node|undefined} Node.
  * @private
  */
-ol.format.GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ =
-    function(value, objectStack, opt_nodeName) {
+ol.format.GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var parentNode = objectStack[objectStack.length - 1].node;
   goog.asserts.assert(ol.xml.isNode(parentNode),
       'parentNode should be a node');
@@ -1243,8 +1226,7 @@ ol.format.GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ =
  * @return {Node|undefined} Node.
  * @private
  */
-ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ =
-    function(value, objectStack, opt_nodeName) {
+ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var multiSurface = context['multiSurface'];
@@ -1339,7 +1321,6 @@ ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
   this.writeFeatureMembers_(node, features, [context]);
   return node;
 };
-
 
 
 /**

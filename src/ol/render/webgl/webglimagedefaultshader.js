@@ -7,7 +7,6 @@ goog.provide('ol.render.webgl.imagereplay.shader.DefaultVertex');
 goog.require('ol.webgl.shader');
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
@@ -43,7 +42,6 @@ ol.render.webgl.imagereplay.shader.DefaultFragment.SOURCE = goog.DEBUG ?
     ol.render.webgl.imagereplay.shader.DefaultFragment.OPTIMIZED_SOURCE;
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
@@ -77,7 +75,6 @@ ol.render.webgl.imagereplay.shader.DefaultVertex.OPTIMIZED_SOURCE = 'varying vec
 ol.render.webgl.imagereplay.shader.DefaultVertex.SOURCE = goog.DEBUG ?
     ol.render.webgl.imagereplay.shader.DefaultVertex.DEBUG_SOURCE :
     ol.render.webgl.imagereplay.shader.DefaultVertex.OPTIMIZED_SOURCE;
-
 
 
 /**

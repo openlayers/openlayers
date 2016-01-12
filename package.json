@@ -12,6 +12,7 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
+    "pretest": "eslint tasks test test_rendering src examples",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
   },
@@ -53,11 +54,12 @@
     "clean-css": "3.4.9",
     "coveralls": "2.11.6",
     "debounce": "^1.0.0",
+    "eslint": "v2.0.0-beta.1",
+    "eslint-config-openlayers": "^2.0.0",
     "expect.js": "0.3.1",
     "gaze": "^0.5.1",
     "istanbul": "0.4.1",
     "jquery": "2.1.4",
-    "jshint": "2.8.0",
     "mocha": "2.3.4",
     "mocha-phantomjs-core": "^1.3.0",
     "mustache": "2.2.1",
@@ -67,6 +69,22 @@
     "sinon": "1.17.2",
     "slimerjs-edge": "0.10.0-pre-3",
     "wrench": "1.5.8"
+  },
+  "eslintConfig": {
+    "extends": "openlayers",
+    "globals": {
+      "ArrayBuffer": false,
+      "Uint16Array": false,
+      "Uint32Array": false,
+      "Uint8Array": false,
+      "Uint8ClampedArray": false,
+      "ol": false,
+      "goog": false,
+      "proj4": false
+    },
+    "rules": {
+      "no-constant-condition": 0
+    }
   },
   "ext": [
     "rbush",

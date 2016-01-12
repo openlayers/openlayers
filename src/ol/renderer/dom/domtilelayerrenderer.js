@@ -23,7 +23,6 @@ goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.dom.Layer}
@@ -76,8 +75,7 @@ ol.renderer.dom.TileLayer.prototype.clearFrame = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   if (!layerState.visible) {
     if (this.renderedVisible_) {
@@ -264,7 +262,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 };
 
 
-
 /**
  * @constructor
  * @private
@@ -420,8 +417,7 @@ ol.renderer.dom.TileLayerZ_.prototype.getResolution = function() {
  * @param {ol.Extent} extent Extent.
  * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
  */
-ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
-    function(extent, opt_tileRange) {
+ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent, opt_tileRange) {
   var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(
       extent, this.tileCoordOrigin_[0], opt_tileRange);
   /** @type {Array.<ol.Tile>} */

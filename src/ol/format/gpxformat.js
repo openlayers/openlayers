@@ -15,7 +15,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GPX format.
@@ -413,7 +412,7 @@ ol.format.GPX.WPT_PARSERS_ = ol.xml.makeStructureNS(
 
 
 /**
- * @param {Array.<ol.Feature>} features
+ * @param {Array.<ol.Feature>} features List of features.
  * @private
  */
 ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
@@ -551,12 +550,12 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   ol.xml.setAttributeNS(node, null, 'lat', coordinate[1]);
   ol.xml.setAttributeNS(node, null, 'lon', coordinate[0]);
   var geometryLayout = context['geometryLayout'];
-  /* jshint -W086 */
   switch (geometryLayout) {
     case ol.geom.GeometryLayout.XYZM:
       if (coordinate[3] !== 0) {
         properties['time'] = coordinate[3];
       }
+      // fall through
     case ol.geom.GeometryLayout.XYZ:
       if (coordinate[2] !== 0) {
         properties['ele'] = coordinate[2];
@@ -566,8 +565,10 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
       if (coordinate[2] !== 0) {
         properties['time'] = coordinate[2];
       }
+      break;
+    default:
+      // pass
   }
-  /* jshint +W086 */
   var orderedKeys = ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */

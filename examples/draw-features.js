@@ -83,10 +83,9 @@ function addInteraction() {
 
 
 /**
- * Let user change the geometry type.
- * @param {Event} e Change event.
+ * Handle change event.
  */
-typeSelect.onchange = function(e) {
+typeSelect.onchange = function() {
   map.removeInteraction(draw);
   addInteraction();
 };

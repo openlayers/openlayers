@@ -23,7 +23,6 @@ goog.require('ol.css');
 goog.require('ol.extent');
 
 
-
 /**
  * Create a new control with a map acting as an overview map for an other
  * defined map.

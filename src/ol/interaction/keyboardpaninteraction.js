@@ -11,7 +11,6 @@ goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 
 
-
 /**
  * @classdesc
  * Allows the user to pan the map using keyboard arrows.

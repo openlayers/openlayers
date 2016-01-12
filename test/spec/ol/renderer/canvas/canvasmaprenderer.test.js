@@ -69,7 +69,9 @@ describe('ol.renderer.canvas.Map', function() {
       map.renderSync();
       var cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
-          function() { return false; });
+          function() {
+            return false;
+          });
       expect(cb).to.not.be.called();
     });
 
@@ -96,8 +98,12 @@ describe('ol.renderer.canvas.Map', function() {
       renderer = map.getRenderer();
       renderer.layerRenderers_ = {};
       var layerRenderer = new ol.renderer.canvas.Layer(layer);
-      layerRenderer.prepareFrame = function() { return true; };
-      layerRenderer.getImage = function() { return null; };
+      layerRenderer.prepareFrame = function() {
+        return true;
+      };
+      layerRenderer.getImage = function() {
+        return null;
+      };
       renderer.layerRenderers_[goog.getUid(layer)] = layerRenderer;
     });
 

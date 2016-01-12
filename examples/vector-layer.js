@@ -92,7 +92,7 @@ var featureOverlay = new ol.layer.Vector({
 var highlight;
 var displayFeatureInfo = function(pixel) {
 
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
 

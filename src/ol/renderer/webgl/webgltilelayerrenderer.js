@@ -22,7 +22,6 @@ goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
@@ -112,8 +111,7 @@ ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
  *     lookup.
  * @protected
  */
-ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
-    function(source, projection, tiles) {
+ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   var mapRenderer = this.mapRenderer;
 
   return (
@@ -123,17 +121,17 @@ ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder =
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
-        return source.forEachLoadedTile(projection, zoom,
-                                        tileRange, function(tile) {
-              var loaded = mapRenderer.isTileTextureLoaded(tile);
-              if (loaded) {
-                if (!tiles[zoom]) {
-                  tiles[zoom] = {};
-                }
-                tiles[zoom][tile.tileCoord.toString()] = tile;
-              }
-              return loaded;
-            });
+        function callback(tile) {
+          var loaded = mapRenderer.isTileTextureLoaded(tile);
+          if (loaded) {
+            if (!tiles[zoom]) {
+              tiles[zoom] = {};
+            }
+            tiles[zoom][tile.tileCoord.toString()] = tile;
+          }
+          return loaded;
+        }
+        return source.forEachLoadedTile(projection, zoom, tileRange, callback);
       });
 };
 
@@ -150,8 +148,7 @@ ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.prepareFrame =
-    function(frameState, layerState, context) {
+ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var mapRenderer = this.mapRenderer;
   var gl = context.getGL();
@@ -385,8 +382,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.framebuffer) {
     return undefined;
   }

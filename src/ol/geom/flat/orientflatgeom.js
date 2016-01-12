@@ -11,8 +11,7 @@ goog.require('ol.geom.flat.reverse');
  * @param {number} stride Stride.
  * @return {boolean} Is clockwise.
  */
-ol.geom.flat.orient.linearRingIsClockwise =
-    function(flatCoordinates, offset, end, stride) {
+ol.geom.flat.orient.linearRingIsClockwise = function(flatCoordinates, offset, end, stride) {
   // http://tinyurl.com/clockwise-method
   // https://github.com/OSGeo/gdal/blob/trunk/gdal/ogr/ogrlinearring.cpp
   var edge = 0;
@@ -42,8 +41,7 @@ ol.geom.flat.orient.linearRingIsClockwise =
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-ol.geom.flat.orient.linearRingsAreOriented =
-    function(flatCoordinates, offset, ends, stride, opt_right) {
+ol.geom.flat.orient.linearRingsAreOriented = function(flatCoordinates, offset, ends, stride, opt_right) {
   var right = opt_right !== undefined ? opt_right : false;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -78,8 +76,7 @@ ol.geom.flat.orient.linearRingsAreOriented =
  *     (counter-clockwise exterior ring and clockwise interior rings).
  * @return {boolean} Rings are correctly oriented.
  */
-ol.geom.flat.orient.linearRingssAreOriented =
-    function(flatCoordinates, offset, endss, stride, opt_right) {
+ol.geom.flat.orient.linearRingssAreOriented = function(flatCoordinates, offset, endss, stride, opt_right) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     if (!ol.geom.flat.orient.linearRingsAreOriented(
@@ -104,8 +101,7 @@ ol.geom.flat.orient.linearRingssAreOriented =
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
  */
-ol.geom.flat.orient.orientLinearRings =
-    function(flatCoordinates, offset, ends, stride, opt_right) {
+ol.geom.flat.orient.orientLinearRings = function(flatCoordinates, offset, ends, stride, opt_right) {
   var right = opt_right !== undefined ? opt_right : false;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -137,8 +133,7 @@ ol.geom.flat.orient.orientLinearRings =
  * @param {boolean=} opt_right Follow the right-hand rule for orientation.
  * @return {number} End.
  */
-ol.geom.flat.orient.orientLinearRingss =
-    function(flatCoordinates, offset, endss, stride, opt_right) {
+ol.geom.flat.orient.orientLinearRingss = function(flatCoordinates, offset, endss, stride, opt_right) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     offset = ol.geom.flat.orient.orientLinearRings(

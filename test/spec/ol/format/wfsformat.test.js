@@ -434,7 +434,6 @@ describe('ol.format.WFS', function() {
   });
 
 
-
   describe('when writing out a GetFeature request', function() {
     var text;
     before(function(done) {

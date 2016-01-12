@@ -132,4 +132,3 @@ If, when reading a value from a child element, you find an invalid value, you sh
 An `ol.format.Format` should read as many features as it can, skipping features with any errors.
 
 
-

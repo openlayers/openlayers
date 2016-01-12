@@ -301,8 +301,7 @@ ol.extent.createOrUpdateFromCoordinates = function(coordinates, opt_extent) {
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
  */
-ol.extent.createOrUpdateFromFlatCoordinates =
-    function(flatCoordinates, offset, end, stride, opt_extent) {
+ol.extent.createOrUpdateFromFlatCoordinates = function(flatCoordinates, offset, end, stride, opt_extent) {
   var extent = ol.extent.createOrUpdateEmpty(opt_extent);
   return ol.extent.extendFlatCoordinates(
       extent, flatCoordinates, offset, end, stride);
@@ -411,8 +410,7 @@ ol.extent.extendCoordinates = function(extent, coordinates) {
  * @param {number} stride Stride.
  * @return {ol.Extent} Extent.
  */
-ol.extent.extendFlatCoordinates =
-    function(extent, flatCoordinates, offset, end, stride) {
+ol.extent.extendFlatCoordinates = function(extent, flatCoordinates, offset, end, stride) {
   for (; offset < end; offset += stride) {
     ol.extent.extendXY(
         extent, flatCoordinates[offset], flatCoordinates[offset + 1]);
@@ -572,8 +570,7 @@ ol.extent.getEnlargedArea = function(extent1, extent2) {
  * @param {ol.Extent=} opt_extent Destination extent.
  * @return {ol.Extent} Extent.
  */
-ol.extent.getForViewAndSize =
-    function(center, resolution, rotation, size, opt_extent) {
+ol.extent.getForViewAndSize = function(center, resolution, rotation, size, opt_extent) {
   var dx = resolution * size[0] / 2;
   var dy = resolution * size[1] / 2;
   var cosRotation = Math.cos(rotation);

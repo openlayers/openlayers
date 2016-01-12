@@ -3,7 +3,6 @@ goog.provide('ol.style.Fill');
 goog.require('ol.color');
 
 
-
 /**
  * @classdesc
  * Set fill style for vector features.

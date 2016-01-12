@@ -20,7 +20,7 @@ function itNoPhantom() {
 (typeof ImageData == 'function' ? describe : xdescribe)('ol.source.Raster',
     function() {
 
-      var target, map, redSource, greenSource, blueSource;
+      var target, map, redSource, greenSource, blueSource, raster;
 
       beforeEach(function() {
         target = document.createElement('div');

@@ -12,8 +12,7 @@ goog.require('goog.vec.Mat4');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.geom.flat.transform.transform2D =
-    function(flatCoordinates, offset, end, stride, transform, opt_dest) {
+ol.geom.flat.transform.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
   var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
   var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
   var m01 = goog.vec.Mat4.getElement(transform, 0, 1);
@@ -46,8 +45,7 @@ ol.geom.flat.transform.transform2D =
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */
-ol.geom.flat.transform.translate =
-    function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
+ol.geom.flat.transform.translate = function(flatCoordinates, offset, end, stride, deltaX, deltaY, opt_dest) {
   var dest = opt_dest ? opt_dest : [];
   var i = 0;
   var j, k;

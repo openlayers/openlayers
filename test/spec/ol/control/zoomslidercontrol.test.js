@@ -25,26 +25,22 @@ describe('ol.control.ZoomSlider', function() {
   describe('DOM creation', function() {
     it('creates the expected DOM elements', function() {
       var zoomSliderContainers = goog.dom.getElementsByClass(
-          'ol-zoomslider', target),
-          zoomSliderContainer,
-          zoomSliderThumbs,
-          zoomSliderThumb,
-          hasUnselectableCls;
+          'ol-zoomslider', target);
 
       expect(zoomSliderContainers.length).to.be(1);
 
-      zoomSliderContainer = zoomSliderContainers[0];
+      var zoomSliderContainer = zoomSliderContainers[0];
       expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
-      hasUnselectableCls = goog.dom.classlist.contains(zoomSliderContainer,
+      var hasUnselectableCls = goog.dom.classlist.contains(zoomSliderContainer,
           'ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
 
-      zoomSliderThumbs = goog.dom.getElementsByClass('ol-zoomslider-thumb',
+      var zoomSliderThumbs = goog.dom.getElementsByClass('ol-zoomslider-thumb',
           zoomSliderContainer);
       expect(zoomSliderThumbs.length).to.be(1);
 
-      zoomSliderThumb = zoomSliderThumbs[0];
+      var zoomSliderThumb = zoomSliderThumbs[0];
       expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
 
       hasUnselectableCls = goog.dom.classlist.contains(zoomSliderThumb,

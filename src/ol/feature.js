@@ -10,7 +10,6 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
 
 
-
 /**
  * @classdesc
  * A vector object for geographic features with a geometry and other

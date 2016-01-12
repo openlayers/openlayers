@@ -109,7 +109,7 @@ function getNewer(date, newer, callback) {
      * pass the sourceDir to the task so it can do the walking.
      */
     if (isWindows) {
-        paths = [sourceDir].concat(externsPaths);
+      paths = [sourceDir].concat(externsPaths);
     }
 
     callback(null, newer ? paths : []);

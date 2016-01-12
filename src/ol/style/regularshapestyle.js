@@ -12,7 +12,6 @@ goog.require('ol.style.ImageState');
 goog.require('ol.style.Stroke');
 
 
-
 /**
  * @classdesc
  * Set regular shape style for vector features. The resulting shape will be
@@ -298,7 +297,7 @@ ol.style.RegularShape.RenderOptions;
 
 /**
  * @private
- * @param {ol.style.AtlasManager|undefined} atlasManager
+ * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
 ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   var imageSize;
@@ -403,8 +402,8 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The rendering context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
@@ -448,10 +447,9 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
  */
-ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
-    function(renderOptions) {
+ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
   if (this.fill_) {
     this.hitDetectionCanvas_ = this.canvas_;
@@ -475,13 +473,12 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ =
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
-ol.style.RegularShape.prototype.drawHitDetectionCanvas_ =
-    function(renderOptions, context, x, y) {
+ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions, context, x, y) {
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
 

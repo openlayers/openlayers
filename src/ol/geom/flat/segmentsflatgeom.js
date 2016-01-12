@@ -16,8 +16,7 @@ goog.provide('ol.geom.flat.segments');
  * @return {T|boolean} Value.
  * @template T,S
  */
-ol.geom.flat.segments.forEach =
-    function(flatCoordinates, offset, end, stride, callback, opt_this) {
+ol.geom.flat.segments.forEach = function(flatCoordinates, offset, end, stride, callback, opt_this) {
   var point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   var point2 = [];
   var ret;

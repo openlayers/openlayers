@@ -63,7 +63,6 @@ ol.source.VectorEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
@@ -221,8 +220,8 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
 
 
 /**
- * @param {string} featureKey
- * @param {ol.Feature} feature
+ * @param {string} featureKey Unique identifier for the feature.
+ * @param {ol.Feature} feature The feature.
  * @private
  */
 ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
@@ -240,10 +239,10 @@ ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
 
 
 /**
- * @param {string} featureKey
- * @param {ol.Feature} feature
- * @return {boolean} `true` if the feature is "valid", in the sense that it is
- *     also a candidate for insertion into the Rtree, otherwise `false`.
+ * @param {string} featureKey Unique identifier for the feature.
+ * @param {ol.Feature} feature The feature.
+ * @return {boolean} The feature is "valid", in the sense that it is also a
+ *     candidate for insertion into the Rtree.
  * @private
  */
 ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
@@ -447,8 +446,7 @@ ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
  * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  */
-ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
-    function(coordinate, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, callback, opt_this) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
@@ -483,8 +481,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect =
  * @template T,S
  * @api
  */
-ol.source.Vector.prototype.forEachFeatureInExtent =
-    function(extent, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureInExtent = function(extent, callback, opt_this) {
   if (this.featuresRtree_) {
     return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
   } else if (this.featuresCollection_) {
@@ -510,8 +507,7 @@ ol.source.Vector.prototype.forEachFeatureInExtent =
  * @template T,S
  * @api
  */
-ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
-    function(extent, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureIntersectingExtent = function(extent, callback, opt_this) {
   return this.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
@@ -536,7 +532,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent =
  * Get the features collection associated with this source. Will be `null`
  * unless the source was configured with `useSpatialIndex` set to `false`, or
  * with an {@link ol.Collection} as `features`.
- * @return {ol.Collection.<ol.Feature>}
+ * @return {ol.Collection.<ol.Feature>} The collection of features.
  * @api
  */
 ol.source.Vector.prototype.getFeaturesCollection = function() {
@@ -608,8 +604,7 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
  * @return {ol.Feature} Closest feature.
  * @api stable
  */
-ol.source.Vector.prototype.getClosestFeatureToCoordinate =
-    function(coordinate) {
+ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate) {
   // Find the closest feature using branch and bound.  We start searching an
   // infinite extent, and find the distance from the first feature found.  This
   // becomes the closest feature.  We then compute a smaller extent which any
@@ -842,7 +837,6 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
   }
   return removed;
 };
-
 
 
 /**

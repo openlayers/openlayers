@@ -14,7 +14,6 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Feature format for reading data in the TopoJSON format.

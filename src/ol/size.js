@@ -18,7 +18,7 @@ ol.Size;
  * @param {ol.Size} size Size.
  * @param {number} buffer Buffer.
  * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size}
+ * @return {ol.Size} The buffered size.
  */
 ol.size.buffer = function(size, buffer, opt_size) {
   if (opt_size === undefined) {
@@ -56,7 +56,7 @@ ol.size.hasArea = function(size) {
  * @param {ol.Size} size Size.
  * @param {number} ratio Ratio.
  * @param {ol.Size=} opt_size Optional reusable size array.
- * @return {ol.Size}
+ * @return {ol.Size} The scaled size.
  */
 ol.size.scale = function(size, ratio, opt_size) {
   if (opt_size === undefined) {

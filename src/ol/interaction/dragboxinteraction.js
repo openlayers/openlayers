@@ -38,7 +38,6 @@ ol.DragBoxEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.DragBox} instances are instances of
@@ -81,7 +80,6 @@ goog.inherits(ol.DragBoxEvent, goog.events.Event);
  * @api
  */
 ol.interaction.DragBoxEndConditionType;
-
 
 
 /**

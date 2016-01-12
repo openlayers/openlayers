@@ -14,7 +14,7 @@ goog.require('ol');
  * Create an html canvas element and returns its 2d context.
  * @param {number=} opt_width Canvas width.
  * @param {number=} opt_height Canvas height.
- * @return {CanvasRenderingContext2D}
+ * @return {CanvasRenderingContext2D} The context.
  */
 ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
   var canvas = document.createElement('CANVAS');
@@ -196,7 +196,7 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
  * padding and border.
  * Equivalent to jQuery's `$(el).outerWidth(true)`.
  * @param {!Element} element Element.
- * @return {number}
+ * @return {number} The width.
  */
 ol.dom.outerWidth = function(element) {
   var width = element.offsetWidth;
@@ -212,7 +212,7 @@ ol.dom.outerWidth = function(element) {
  * padding and border.
  * Equivalent to jQuery's `$(el).outerHeight(true)`.
  * @param {!Element} element Element.
- * @return {number}
+ * @return {number} The height.
  */
 ol.dom.outerHeight = function(element) {
   var height = element.offsetHeight;

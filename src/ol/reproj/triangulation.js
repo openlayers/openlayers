@@ -15,7 +15,6 @@ goog.require('ol.proj');
 ol.reproj.Triangle;
 
 
-
 /**
  * @classdesc
  * Class containing triangulation of the given target extent.
@@ -48,8 +47,8 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   var transformInv = ol.proj.getTransform(this.targetProj_, this.sourceProj_);
 
   /**
-   * @param {ol.Coordinate} c
-   * @return {ol.Coordinate}
+   * @param {ol.Coordinate} c A coordinate.
+   * @return {ol.Coordinate} Transformed coordinate.
    * @private
    */
   this.transformInv_ = function(c) {
@@ -173,12 +172,12 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
 
 /**
  * Adds triangle to the triangulation.
- * @param {ol.Coordinate} a
- * @param {ol.Coordinate} b
- * @param {ol.Coordinate} c
- * @param {ol.Coordinate} aSrc
- * @param {ol.Coordinate} bSrc
- * @param {ol.Coordinate} cSrc
+ * @param {ol.Coordinate} a The target a coordinate.
+ * @param {ol.Coordinate} b The target b coordinate.
+ * @param {ol.Coordinate} c The target c coordinate.
+ * @param {ol.Coordinate} aSrc The source a coordinate.
+ * @param {ol.Coordinate} bSrc The source b coordinate.
+ * @param {ol.Coordinate} cSrc The source c coordinate.
  * @private
  */
 ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
@@ -195,14 +194,14 @@ ol.reproj.Triangulation.prototype.addTriangle_ = function(a, b, c,
  * (and reprojects the vertices) if valid.
  * Performs quad subdivision if needed to increase precision.
  *
- * @param {ol.Coordinate} a
- * @param {ol.Coordinate} b
- * @param {ol.Coordinate} c
- * @param {ol.Coordinate} d
- * @param {ol.Coordinate} aSrc
- * @param {ol.Coordinate} bSrc
- * @param {ol.Coordinate} cSrc
- * @param {ol.Coordinate} dSrc
+ * @param {ol.Coordinate} a The target a coordinate.
+ * @param {ol.Coordinate} b The target b coordinate.
+ * @param {ol.Coordinate} c The target c coordinate.
+ * @param {ol.Coordinate} d The target d coordinate.
+ * @param {ol.Coordinate} aSrc The source a coordinate.
+ * @param {ol.Coordinate} bSrc The source b coordinate.
+ * @param {ol.Coordinate} cSrc The source c coordinate.
+ * @param {ol.Coordinate} dSrc The source d coordinate.
  * @param {number} maxSubdivision Maximal allowed subdivision of the quad.
  * @private
  */

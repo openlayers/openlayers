@@ -70,7 +70,8 @@ describe('ol.geom.flat.intersectsextent', function() {
       });
     });
     describe('boundary does not intersect the extent and ring does not ' +
-        'contain a corner of the extent', function() {
+        'contain a corner of the extent',
+        function() {
           it('returns false', function() {
             var extent = [2.0, 0.5, 3, 1.5];
             var r = ol.geom.flat.intersectsextent.linearRing(

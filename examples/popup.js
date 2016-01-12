@@ -16,17 +16,6 @@ var closer = document.getElementById('popup-closer');
 
 
 /**
- * Add a click handler to hide the popup.
- * @return {boolean} Don't follow the href.
- */
-closer.onclick = function() {
-  overlay.setPosition(undefined);
-  closer.blur();
-  return false;
-};
-
-
-/**
  * Create an overlay to anchor the popup to the map.
  */
 var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
@@ -36,6 +25,17 @@ var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
     duration: 250
   }
 }));
+
+
+/**
+ * Add a click handler to hide the popup.
+ * @return {boolean} Don't follow the href.
+ */
+closer.onclick = function() {
+  overlay.setPosition(undefined);
+  closer.blur();
+  return false;
+};
 
 
 /**

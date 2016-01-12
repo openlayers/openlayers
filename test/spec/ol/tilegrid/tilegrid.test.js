@@ -4,14 +4,12 @@ describe('ol.tilegrid.TileGrid', function() {
   var extent;
   var resolutions;
   var origin;
-  var origins;
   var tileSize;
 
   beforeEach(function() {
     resolutions = [1000, 500, 250, 100];
     extent = [0, 0, 100000, 100000];
     origin = [0, 0];
-    origins = [];
     tileSize = 100;
   });
 

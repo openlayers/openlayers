@@ -7,7 +7,6 @@ goog.provide('ol.renderer.webgl.map.shader.DefaultVertex');
 goog.require('ol.webgl.shader');
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
@@ -43,7 +42,6 @@ ol.renderer.webgl.map.shader.DefaultFragment.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.map.shader.DefaultFragment.OPTIMIZED_SOURCE;
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
@@ -77,7 +75,6 @@ ol.renderer.webgl.map.shader.DefaultVertex.OPTIMIZED_SOURCE = 'varying vec2 a;at
 ol.renderer.webgl.map.shader.DefaultVertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.map.shader.DefaultVertex.DEBUG_SOURCE :
     ol.renderer.webgl.map.shader.DefaultVertex.OPTIMIZED_SOURCE;
-
 
 
 /**

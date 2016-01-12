@@ -8,7 +8,6 @@ goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
 
 
-
 /**
  * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,

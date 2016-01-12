@@ -70,7 +70,6 @@ describe('ol.source.BingMaps', function() {
     });
 
 
-
   });
 
 });

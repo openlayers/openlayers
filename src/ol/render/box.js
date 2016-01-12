@@ -7,7 +7,6 @@ goog.require('goog.asserts');
 goog.require('ol.geom.Polygon');
 
 
-
 /**
  * @constructor
  * @extends {goog.Disposable}

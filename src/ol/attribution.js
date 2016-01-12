@@ -4,7 +4,6 @@ goog.require('goog.math');
 goog.require('ol.TileRange');
 
 
-
 /**
  * @classdesc
  * An attribution for a layer source.
@@ -59,8 +58,7 @@ ol.Attribution.prototype.getHTML = function() {
  * @param {!ol.proj.Projection} projection Projection.
  * @return {boolean} Intersects any tile range.
  */
-ol.Attribution.prototype.intersectsAnyTileRange =
-    function(tileRanges, tileGrid, projection) {
+ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid, projection) {
   if (!this.tileRanges_) {
     return true;
   }

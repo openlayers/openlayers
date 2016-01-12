@@ -8,7 +8,6 @@ goog.require('ol.size');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @constructor
  * @extends {ol.Tile}
@@ -72,7 +71,6 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 
   }
 };
-
 
 
 /**

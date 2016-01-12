@@ -119,7 +119,6 @@ ol.MapProperty = {
 };
 
 
-
 /**
  * @classdesc
  * The map is the core component of OpenLayers. For a map to render, a view,
@@ -615,8 +614,7 @@ ol.Map.prototype.disposeInternal = function() {
  * @template S,T,U
  * @api stable
  */
-ol.Map.prototype.forEachFeatureAtPixel =
-    function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
   if (!this.frameState_) {
     return;
   }
@@ -653,8 +651,7 @@ ol.Map.prototype.forEachFeatureAtPixel =
  * @template S,T,U
  * @api stable
  */
-ol.Map.prototype.forEachLayerAtPixel =
-    function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+ol.Map.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
   if (!this.frameState_) {
     return;
   }
@@ -683,8 +680,7 @@ ol.Map.prototype.forEachLayerAtPixel =
  * @template U
  * @api
  */
-ol.Map.prototype.hasFeatureAtPixel =
-    function(pixel, opt_layerFilter, opt_this) {
+ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_layerFilter, opt_this) {
   if (!this.frameState_) {
     return false;
   }
@@ -928,8 +924,7 @@ ol.Map.prototype.getOverlayContainerStopEvent = function() {
  * @param {number} tileResolution Tile resolution.
  * @return {number} Tile priority.
  */
-ol.Map.prototype.getTilePriority =
-    function(tile, tileSourceKey, tileCenter, tileResolution) {
+ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, tileResolution) {
   // Filter out tiles at higher zoom levels than the current zoom level, or that
   // are outside the visible extent.
   var frameState = this.frameState_;

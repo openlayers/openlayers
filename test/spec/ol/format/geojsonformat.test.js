@@ -71,66 +71,64 @@ describe('ol.format.GeoJSON', function() {
 
   var data = {
     'type': 'FeatureCollection',
-    'features': [
-      {
-        'type': 'Feature',
-        'properties': {
-          'LINK_ID': 573730499,
-          'RP_TYPE': 14,
-          'RP_FUNC': 0,
-          'DIRECTION': 2,
-          'LOGKOD': '',
-          'CHANGED': '',
-          'USERID': '',
-          'ST_NAME': '',
-          'L_REFADDR': '',
-          'L_NREFADDR': '',
-          'R_REFADDR': '',
-          'R_NREFADDR': '',
-          'SPEED_CAT': '7',
-          'ZIPCODE': '59330',
-          'SHAPE_LEN': 46.3826
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [
-            [1549497.66985, 6403707.96],
-            [1549491.1, 6403710.1],
-            [1549488.03995, 6403716.7504],
-            [1549488.5401, 6403724.5504],
-            [1549494.37985, 6403733.54],
-            [1549499.6799, 6403738.0504],
-            [1549506.22, 6403739.2504]
-          ]
-        }
-      }, {
-        'type': 'Feature',
-        'properties': {
-          'LINK_ID': 30760556,
-          'RP_TYPE': 12,
-          'RP_FUNC': 1,
-          'DIRECTION': 0,
-          'LOGKOD': '',
-          'CHANGED': '',
-          'USERID': '',
-          'ST_NAME': 'BRUNNSGATAN',
-          'L_REFADDR': '24',
-          'L_NREFADDR': '16',
-          'R_REFADDR': '',
-          'R_NREFADDR': '',
-          'SPEED_CAT': '7',
-          'ZIPCODE': '59330',
-          'SHAPE_LEN': 70.3106
-        },
-        'geometry': {
-          'type': 'LineString',
-          'coordinates': [
-            [1549754.2769, 6403854.8024],
-            [1549728.45985, 6403920.2]
-          ]
-        }
+    'features': [{
+      'type': 'Feature',
+      'properties': {
+        'LINK_ID': 573730499,
+        'RP_TYPE': 14,
+        'RP_FUNC': 0,
+        'DIRECTION': 2,
+        'LOGKOD': '',
+        'CHANGED': '',
+        'USERID': '',
+        'ST_NAME': '',
+        'L_REFADDR': '',
+        'L_NREFADDR': '',
+        'R_REFADDR': '',
+        'R_NREFADDR': '',
+        'SPEED_CAT': '7',
+        'ZIPCODE': '59330',
+        'SHAPE_LEN': 46.3826
+      },
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [
+          [1549497.66985, 6403707.96],
+          [1549491.1, 6403710.1],
+          [1549488.03995, 6403716.7504],
+          [1549488.5401, 6403724.5504],
+          [1549494.37985, 6403733.54],
+          [1549499.6799, 6403738.0504],
+          [1549506.22, 6403739.2504]
+        ]
       }
-    ]
+    }, {
+      'type': 'Feature',
+      'properties': {
+        'LINK_ID': 30760556,
+        'RP_TYPE': 12,
+        'RP_FUNC': 1,
+        'DIRECTION': 0,
+        'LOGKOD': '',
+        'CHANGED': '',
+        'USERID': '',
+        'ST_NAME': 'BRUNNSGATAN',
+        'L_REFADDR': '24',
+        'L_NREFADDR': '16',
+        'R_REFADDR': '',
+        'R_NREFADDR': '',
+        'SPEED_CAT': '7',
+        'ZIPCODE': '59330',
+        'SHAPE_LEN': 70.3106
+      },
+      'geometry': {
+        'type': 'LineString',
+        'coordinates': [
+          [1549754.2769, 6403854.8024],
+          [1549728.45985, 6403920.2]
+        ]
+      }
+    }]
   };
 
   describe('#readFeature', function() {
@@ -231,8 +229,8 @@ describe('ol.format.GeoJSON', function() {
   describe('#readFeatures', function() {
 
     it('parses feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
 
       expect(array.length).to.be(2);
 
@@ -344,13 +342,13 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('parses polygon', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]],
-          str = JSON.stringify({
-            type: 'Polygon',
-            coordinates: [outer, inner1, inner2]
-          });
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var str = JSON.stringify({
+        type: 'Polygon',
+        coordinates: [outer, inner1, inner2]
+      });
 
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
@@ -495,8 +493,8 @@ describe('ol.format.GeoJSON', function() {
   describe('#writeFeatures', function() {
 
     it('encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var geojson = format.writeFeaturesObject(array);
       var result = format.readFeatures(geojson);
       expect(array.length).to.equal(result.length);
@@ -515,8 +513,8 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('transforms and encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var geojson = format.writeFeatures(array, {
         featureProjection: 'EPSG:3857'
       });
@@ -576,9 +574,9 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('encodes polygon', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
       var geojson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates()).to.eql(

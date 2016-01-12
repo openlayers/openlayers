@@ -8,8 +8,7 @@ goog.provide('ol.geom.flat.length');
  * @param {number} stride Stride.
  * @return {number} Length.
  */
-ol.geom.flat.length.lineString =
-    function(flatCoordinates, offset, end, stride) {
+ol.geom.flat.length.lineString = function(flatCoordinates, offset, end, stride) {
   var x1 = flatCoordinates[offset];
   var y1 = flatCoordinates[offset + 1];
   var length = 0;
@@ -32,8 +31,7 @@ ol.geom.flat.length.lineString =
  * @param {number} stride Stride.
  * @return {number} Perimeter.
  */
-ol.geom.flat.length.linearRing =
-    function(flatCoordinates, offset, end, stride) {
+ol.geom.flat.length.linearRing = function(flatCoordinates, offset, end, stride) {
   var perimeter =
       ol.geom.flat.length.lineString(flatCoordinates, offset, end, stride);
   var dx = flatCoordinates[end - stride] - flatCoordinates[offset];

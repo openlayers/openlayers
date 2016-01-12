@@ -49,7 +49,8 @@ describe('ol.proj', function() {
     });
 
     it('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
-       'equivalent', function() {
+        'equivalent',
+        function() {
           _testAllEquivalent([
             'CRS:84',
             'urn:ogc:def:crs:EPSG:6.6:4326',
@@ -461,7 +462,9 @@ describe('ol.proj', function() {
         units: units,
         extent: extent
       });
-      var transform = function(input, output, dimension) {return input;};
+      var transform = function(input, output, dimension) {
+        return input;
+      };
       ol.proj.addTransform(foo, bar, transform);
       expect(ol.proj.transforms_).not.to.be(undefined);
       expect(ol.proj.transforms_.foo).not.to.be(undefined);

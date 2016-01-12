@@ -5,7 +5,6 @@ goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not

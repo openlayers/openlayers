@@ -1504,7 +1504,6 @@ describe('ol.format.KML', function() {
         var fs = format.readFeatures(text);
 
 
-
         expect(fs).to.have.length(1);
         var f = fs[0];
         expect(f).to.be.an(ol.Feature);

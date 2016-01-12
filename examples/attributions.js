@@ -14,7 +14,7 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  controls: ol.control.defaults({ attribution: false }).extend([attribution]),
+  controls: ol.control.defaults({attribution: false}).extend([attribution]),
   renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
