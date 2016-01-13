@@ -1,6 +1,5 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
@@ -69,43 +68,4 @@ var map = new ol.Map({
     center: ol.proj.fromLonLat([2.896372, 44.60240]),
     zoom: 3
   })
-});
-
-var element = document.getElementById('popup');
-
-var popup = new ol.Overlay({
-  element: element,
-  positioning: 'bottom-center',
-  stopEvent: false
-});
-map.addOverlay(popup);
-
-// display popup on click
-map.on('click', function(evt) {
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature, layer) {
-        return feature;
-      });
-  if (feature) {
-    popup.setPosition(evt.coordinate);
-    $(element).popover({
-      'placement': 'top',
-      'html': true,
-      'content': feature.get('name')
-    });
-    $(element).popover('show');
-  } else {
-    $(element).popover('destroy');
-  }
-});
-
-// change mouse cursor when over marker
-map.on('pointermove', function(e) {
-  if (e.dragging) {
-    $(element).popover('destroy');
-    return;
-  }
-  var pixel = map.getEventPixel(e.originalEvent);
-  var hit = map.hasFeatureAtPixel(pixel);
-  map.getTarget().style.cursor = hit ? 'pointer' : '';
 });
