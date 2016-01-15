@@ -368,7 +368,7 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameSta
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-          goog.bind(this.removeUnusedLayerRenderers_, this));
+          this.removeUnusedLayerRenderers_.bind(this));
       return;
     }
   }

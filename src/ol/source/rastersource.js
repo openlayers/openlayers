@@ -80,7 +80,7 @@ ol.source.Raster = function(options) {
       function() {
         return 1;
       },
-      goog.bind(this.changed, this));
+      this.changed.bind(this));
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
   var layerStates = {};

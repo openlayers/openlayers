@@ -392,8 +392,8 @@ ol.Map = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      goog.bind(this.getTilePriority, this),
-      goog.bind(this.handleTileChange_, this));
+      this.getTilePriority.bind(this),
+      this.handleTileChange_.bind(this));
 
   /**
    * Uids of features to skip at rendering time.

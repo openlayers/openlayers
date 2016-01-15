@@ -120,7 +120,7 @@ ol.pointer.PointerEventHandler.prototype.registerSource = function(name, source)
       var handler = s.getHandlerForEvent(e);
 
       if (handler) {
-        this.eventMap_[e] = goog.bind(handler, s);
+        this.eventMap_[e] = handler.bind(s);
       }
     }, this);
     this.eventSourceList_.push(s);

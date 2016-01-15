@@ -1763,8 +1763,8 @@ ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
         'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
-        'Style': goog.bind(this.readSharedStyle_, this),
-        'StyleMap': goog.bind(this.readSharedStyleMap_, this)
+        'Style': this.readSharedStyle_.bind(this),
+        'StyleMap': this.readSharedStyleMap_.bind(this)
       });
   var features = ol.xml.pushParseAndPop(/** @type {Array.<ol.Feature>} */ ([]),
       parsersNS, node, objectStack, this);

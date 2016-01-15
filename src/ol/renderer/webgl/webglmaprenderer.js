@@ -128,20 +128,19 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {ol.structs.PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new ol.structs.PriorityQueue(
-      goog.bind(
-          /**
-           * @param {Array.<*>} element Element.
-           * @return {number} Priority.
-           * @this {ol.renderer.webgl.Map}
-           */
-          function(element) {
-            var tileCenter = /** @type {ol.Coordinate} */ (element[1]);
-            var tileResolution = /** @type {number} */ (element[2]);
-            var deltaX = tileCenter[0] - this.focus_[0];
-            var deltaY = tileCenter[1] - this.focus_[1];
-            return 65536 * Math.log(tileResolution) +
-                Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
-          }, this),
+      /**
+       * @param {Array.<*>} element Element.
+       * @return {number} Priority.
+       * @this {ol.renderer.webgl.Map}
+       */
+      (function(element) {
+        var tileCenter = /** @type {ol.Coordinate} */ (element[1]);
+        var tileResolution = /** @type {number} */ (element[2]);
+        var deltaX = tileCenter[0] - this.focus_[0];
+        var deltaY = tileCenter[1] - this.focus_[1];
+        return 65536 * Math.log(tileResolution) +
+            Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+      }).bind(this),
       /**
        * @param {Array.<*>} element Element.
        * @return {string} Key.
@@ -150,11 +149,14 @@ ol.renderer.webgl.Map = function(container, map) {
         return /** @type {ol.Tile} */ (element[0]).getKey();
       });
 
-  /**
-   * @private
-   * @type {ol.PostRenderFunction}
-   */
-  this.loadNextTileTexture_ = goog.bind(
+
+ /**
+  * @param {ol.Map} map Map.
+  * @param {?olx.FrameState} frameState Frame state.
+  * @return {boolean} false.
+  * @this {ol.renderer.webgl.Map}
+  */
+  this.loadNextTileTexture_ =
       function(map, frameState) {
         if (!this.tileTextureQueue_.isEmpty()) {
           this.tileTextureQueue_.reprioritize();
@@ -165,7 +167,9 @@ ol.renderer.webgl.Map = function(container, map) {
           this.bindTileTexture(
               tile, tileSize, tileGutter, goog.webgl.LINEAR, goog.webgl.LINEAR);
         }
-      }, this);
+        return false;
+      }.bind(this);
+
 
   /**
    * @private
@@ -514,7 +518,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
       ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-    frameState.postRenderFunctions.push(goog.bind(this.expireCache_, this));
+    frameState.postRenderFunctions.push(this.expireCache_.bind(this));
   }
 
   if (!this.tileTextureQueue_.isEmpty()) {

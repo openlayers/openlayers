@@ -130,10 +130,10 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
 
     this.reprojectedImage_ = new ol.reproj.Image(
         sourceProjection, projection, extent, resolution, pixelRatio,
-        goog.bind(function(extent, resolution, pixelRatio) {
+        function(extent, resolution, pixelRatio) {
           return this.getImageInternal(extent, resolution,
               pixelRatio, sourceProjection);
-        }, this));
+        }.bind(this));
     this.reprojectedRevision_ = this.getRevision();
 
     return this.reprojectedImage_;
