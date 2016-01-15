@@ -161,6 +161,7 @@ ol.VectorTile.prototype.load = function() {
 
 /**
  * @param {Array.<ol.Feature>} features Features.
+ * @api
  */
 ol.VectorTile.prototype.setFeatures = function(features) {
   this.features_ = features;
