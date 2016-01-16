@@ -180,7 +180,7 @@ ol.Collection.prototype.getLength = function() {
  * @api stable
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
-  goog.array.insertAt(this.array_, elem, index);
+  this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
       new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
