@@ -127,3 +127,18 @@ ol.array.reverseSubArray = function(arr, begin, end) {
     --end;
   }
 };
+
+/**
+ * @param {Array.<*>} arr Array.
+ * @return {!Array<?>} Flattened Array.
+ */
+ol.array.flatten = function(arr) {
+  var data = arr.reduce(function(flattened, value) {
+    if (goog.isArray(value)) {
+      return flattened.concat(ol.array.flatten(value));
+    } else {
+      return flattened.concat(value);
+    }
+  }, []);
+  return data;
+};
