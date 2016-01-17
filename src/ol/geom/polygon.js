@@ -436,7 +436,11 @@ ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
   var stride = circle.getStride();
   var layout = circle.getLayout();
   var polygon = new ol.geom.Polygon(null, layout);
-  var flatCoordinates = goog.array.repeat(0, stride * (sides + 1));
+  var arrayLength = stride * (sides + 1);
+  var flatCoordinates = new Array(arrayLength);
+  for (var i = 0; i < arrayLength; i++) {
+    flatCoordinates[i] = 0;
+  }
   var ends = [flatCoordinates.length];
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
   ol.geom.Polygon.makeRegular(
