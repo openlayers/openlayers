@@ -5,7 +5,6 @@ goog.provide('ol.source.Vector');
 goog.provide('ol.source.VectorEvent');
 goog.provide('ol.source.VectorEventType');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -19,6 +18,7 @@ goog.require('ol.Feature');
 goog.require('ol.FeatureLoader');
 goog.require('ol.LoadingStrategy');
 goog.require('ol.ObjectEventType');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.featureloader');
 goog.require('ol.loadingstrategy');
@@ -552,7 +552,7 @@ ol.source.Vector.prototype.getFeatures = function() {
   } else if (this.featuresRtree_) {
     features = this.featuresRtree_.getAll();
     if (!goog.object.isEmpty(this.nullGeometryFeatures_)) {
-      goog.array.extend(
+      ol.array.extend(
           features, goog.object.getValues(this.nullGeometryFeatures_));
     }
   }
