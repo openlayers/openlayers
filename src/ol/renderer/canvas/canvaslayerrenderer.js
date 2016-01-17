@@ -1,8 +1,8 @@
 goog.provide('ol.renderer.canvas.Layer');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
+goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
@@ -262,7 +262,7 @@ ol.renderer.canvas.Layer.testCanvasSize = (function() {
       var y = size[1] - 1;
       context.putImageData(imageData, x, y);
       var result = context.getImageData(x, y, 1, 1);
-      good = goog.array.equals(imageData.data, result.data);
+      good = ol.array.equals(imageData.data, result.data);
     }
     return good;
   };

@@ -8,7 +8,6 @@ goog.provide('ol.render.canvas.Replay');
 goog.provide('ol.render.canvas.ReplayGroup');
 goog.provide('ol.render.canvas.TextReplay');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
@@ -1037,7 +1036,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   goog.asserts.assert(miterLimit !== undefined, 'miterLimit should be defined');
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
-      !goog.array.equals(state.currentLineDash, lineDash) ||
+      !ol.array.equals(state.currentLineDash, lineDash) ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {

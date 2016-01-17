@@ -178,11 +178,11 @@ ol.array.remove = function(arr, obj) {
 /**
  * @param {Array<VALUE>} arr  The array to modify.
  * @param {?function(this:THISVAL, VALUE, number, ?) : boolean} func The function to compare.
- * @param {THISVAL=} thisArg Optional this argument for the function.
+ * @param {THISVAL=} opt_thisArg Optional this argument for the function.
  * @template VALUE,THISVAL
  * @return {VALUE} If the element was removed.
  */
-ol.array.find = function(arr, func, thisArg) {
+ol.array.find = function(arr, func, opt_thisArg) {
   if (typeof func !== 'function') {
     throw new TypeError('func must be a function');
   }
@@ -192,9 +192,50 @@ ol.array.find = function(arr, func, thisArg) {
 
   for (var i = 0; i < length; i++) {
     value = list[i];
-    if (func.call(thisArg, value, i, list)) {
+    if (func.call(opt_thisArg, value, i, list)) {
       return value;
     }
   }
   return null;
+}
+
+
+/**
+* @param {goog.array.ArrayLike} arr1 The first array to compare.
+* @param {goog.array.ArrayLike} arr2 The second array to compare.
+* @param {Function=} opt_equalsFn Optional comparison function.
+* @return {boolean} Whether the two arrays are equal.
+ */
+ol.array.equals = function(arr1, arr2, opt_equalsFn) {
+  if (!goog.isArrayLike(arr1) || !goog.isArrayLike(arr2) || arr1.length !== arr2.length) {
+    return false;
+  }
+  var length = arr1.length;
+  var equalsFn = opt_equalsFn !== undefined ? opt_equalsFn : function(a, b) {
+    return a === b;
+  };
+  for (var i = 0; i < length; i++) {
+    if (!equalsFn(arr1[i], arr2[i])) {
+      return false;
+    }
+  }
+  return true;
+}
+
+ol.array.stableSort = function(arr, compareFnc) {
+  var length = arr.length;
+  var tmp = Array(arr.length);
+  var i;
+  for (i = 0; i < length; i++) {
+    tmp[i] = {index: i, value: arr[i]};
+  }
+  var compare = compareFnc || function(a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  };
+  tmp.sort(function(a, b) {
+    return compare(a.value, b.value) || a.index - b.index;
+  });
+  for (i = 0; i < arr.length; i++) {
+    arr[i] = tmp[i].value;
+  }
 }
