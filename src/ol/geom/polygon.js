@@ -1,6 +1,5 @@
 goog.provide('ol.geom.Polygon');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('ol');
