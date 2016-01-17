@@ -30,11 +30,11 @@
 
 goog.provide('ol.pointer.TouchSource');
 
-goog.require('goog.array');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
+goog.require('ol.array');
 
 
 /**
@@ -443,7 +443,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
 
     goog.global.setTimeout(function() {
       // remove touch after timeout
-      goog.array.remove(lts, lt);
+      ol.array.remove(lts, lt);
     }, ol.pointer.TouchSource.DEDUP_TIMEOUT);
   }
 };

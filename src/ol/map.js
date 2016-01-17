@@ -5,7 +5,6 @@
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.nextTick');
@@ -45,6 +44,7 @@ goog.require('ol.Size');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
+goog.require('ol.array');
 goog.require('ol.control');
 goog.require('ol.extent');
 goog.require('ol.has');
@@ -574,7 +574,7 @@ ol.Map.prototype.beforeRender = function(var_args) {
  * @return {boolean} Whether the preRenderFunction has been found and removed.
  */
 ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
-  return goog.array.remove(this.preRenderFunctions_, preRenderFunction);
+  return ol.array.remove(this.preRenderFunctions_, preRenderFunction);
 };
 
 
