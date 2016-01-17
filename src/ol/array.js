@@ -264,3 +264,16 @@ ol.array.findIndex = function(arr, func, opt_thisArg) {
   }
   return -1;
 }
+
+ol.array.isSorted = function(arr, opt_func, opt_strict) {
+  var compare = opt_func || function(a, b) {
+    return a > b ? 1 : a < b ? -1 : 0;
+  };
+  return arr.every(function(currentVal, index) {
+    if (index === 0) {
+      return true;
+    }
+    var res = compare(arr[index - 1], currentVal);
+    return !(res > 0 ||  opt_strict && res === 0);
+  });
+}
