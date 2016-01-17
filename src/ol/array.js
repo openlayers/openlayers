@@ -142,3 +142,19 @@ ol.array.flatten = function(arr) {
   }, []);
   return data;
 };
+
+
+// TODO: Optimisation by storing length or iterating backwards etc
+/**
+ * @param {Array<VALUE>} arr  The array to modify.
+ * @param {Array<VALUE>|VALUE} data The elements or arrays of elements
+ *     to add to arr1.
+ * @template VALUE
+ */
+ol.array.extend = function(arr, data) {
+  var i;
+  var extension = goog.isArrayLike(data) ? data : [data];
+  for (i = 0; i < extension.length; i++) {
+    arr[arr.length] = extension[i];
+  }
+}

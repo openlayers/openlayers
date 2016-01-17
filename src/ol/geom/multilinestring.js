@@ -1,8 +1,8 @@
 goog.provide('ol.geom.MultiLineString');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -65,7 +65,7 @@ ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = lineString.getFlatCoordinates().slice();
   } else {
-    goog.array.extend(
+    ol.array.extend(
         this.flatCoordinates, lineString.getFlatCoordinates().slice());
   }
   this.ends_.push(this.flatCoordinates.length);
@@ -216,7 +216,7 @@ ol.geom.MultiLineString.prototype.getFlatMidpoints = function() {
     var end = ends[i];
     var midpoint = ol.geom.flat.interpolate.lineString(
         flatCoordinates, offset, end, stride, 0.5);
-    goog.array.extend(midpoints, midpoint);
+    ol.array.extend(midpoints, midpoint);
     offset = end;
   }
   return midpoints;
@@ -319,7 +319,7 @@ ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
       goog.asserts.assert(lineString.getLayout() == layout,
           'layout of lineString should match layout');
     }
-    goog.array.extend(flatCoordinates, lineString.getFlatCoordinates());
+    ol.array.extend(flatCoordinates, lineString.getFlatCoordinates());
     ends.push(flatCoordinates.length);
   }
   this.setFlatCoordinates(layout, flatCoordinates, ends);
