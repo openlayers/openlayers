@@ -1,8 +1,65 @@
 goog.provide('ol.array');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 
+function defaultCompare(a, b) {
+  return a > b ? 1 : a < b ? -1 : 0;
+}
+
+/**
+ * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
+ * https://github.com/darkskyapp/binary-search
+ *
+ * @param {Array<*>} haystack Items to search through.
+ * @param {*} needle The item to look for.
+ * @param {Function=} opt_comparator Comparator function
+ * @param {number=} low Lower bounds.
+ * @param {number=} high Higher bounds.
+ * @return {number} The index of the item if found, -1 if not.
+ */
+ol.array.binarySearch = function(haystack, needle, opt_comparator, low, high) {
+  var mid, cmp;
+  var comparator = opt_comparator || defaultCompare;
+  if (low === undefined)
+    low = 0;
+
+  else {
+    low = low | 0;
+    if (low < 0 || low >= haystack.length)
+      throw new RangeError('invalid lower bound');
+  }
+
+  if (high === undefined)
+    high = haystack.length - 1;
+
+  else {
+    high = high | 0;
+    if (high < low || high >= haystack.length)
+      throw new RangeError('invalid upper bound');
+  }
+
+  while (low <= high) {
+    /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
+     * to double (which gives the wrong results). */
+    mid = low + (high - low >> 1);
+    cmp = +comparator(haystack[mid], needle);
+
+    /* Too low. */
+    if (cmp < 0.0)
+      low  = mid + 1;
+
+    /* Too high. */
+    else if (cmp > 0.0)
+      high = mid - 1;
+
+    /* Key found. */
+    else
+      return mid;
+  }
+
+  /* Key not found. */
+  return ~low;
+}
 
 /**
  * @param {Array.<number>} arr Array.
@@ -10,7 +67,7 @@ goog.require('goog.asserts');
  * @return {number} Index.
  */
 ol.array.binaryFindNearest = function(arr, target) {
-  var index = goog.array.binarySearch(arr, target,
+  var index = ol.array.binarySearch(arr, target,
       /**
        * @param {number} a A.
        * @param {number} b B.
@@ -201,8 +258,8 @@ ol.array.find = function(arr, func, opt_thisArg) {
 
 
 /**
-* @param {goog.array.ArrayLike} arr1 The first array to compare.
-* @param {goog.array.ArrayLike} arr2 The second array to compare.
+* @param {Array|NodeList|Arguments|{length: number}} arr1 The first array to compare.
+* @param {Array|NodeList|Arguments|{length: number}} arr2 The second array to compare.
 * @param {Function=} opt_equalsFn Optional comparison function.
 * @return {boolean} Whether the two arrays are equal.
  */
@@ -242,10 +299,9 @@ ol.array.stableSort = function(arr, compareFnc) {
 
 
 /**
-* @param {goog.array.ArrayLike} arr The first array to compare..
+* @param {Array<*>} arr The first array to compare..
 * @param {Function} func Optional comparison function.
-* @param {THISVAL=} opt_thisArg Optional this argument for the function.
-* @template THISVAL
+* @param {*=} opt_thisArg Optional this argument for the function.
 * @return {number} Whether the two arrays are equal.
  */
 ol.array.findIndex = function(arr, func, opt_thisArg) {
