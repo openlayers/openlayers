@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Modify');
 goog.provide('ol.interaction.ModifyEvent');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -14,6 +13,7 @@ goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.ViewHint');
+goog.require('ol.array');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
@@ -999,7 +999,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
         (depth === undefined || segmentDataMatch.depth === undefined ||
-        goog.array.equals(
+        ol.array.equals(
             /** @type {null|{length: number}} */ (segmentDataMatch.depth),
             depth)) &&
         segmentDataMatch.index > index) {

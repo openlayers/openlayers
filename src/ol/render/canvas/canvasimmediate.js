@@ -4,7 +4,6 @@
 
 goog.provide('ol.render.canvas.Immediate');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 goog.require('ol.array');
@@ -768,7 +767,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
     if (ol.has.CANVAS_LINE_DASH) {
-      if (!goog.array.equals(
+      if (!ol.array.equals(
           contextStrokeState.lineDash, strokeState.lineDash)) {
         context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
       }
