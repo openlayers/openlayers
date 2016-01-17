@@ -158,3 +158,18 @@ ol.array.extend = function(arr, data) {
     arr[arr.length] = extension[i];
   }
 }
+
+
+/**
+ * @param {Array<VALUE>} arr  The array to modify.
+ * @param {VALUE} obj The element to remove.
+ * @template VALUE
+ * @return {boolean} If the element was removed.
+ */
+ol.array.remove = function(arr, obj) {
+  var i = arr.indexOf(obj);
+  if (i > -1) {
+    arr.splice(i, 1);
+  }
+  return i > -1;
+}
