@@ -239,3 +239,28 @@ ol.array.stableSort = function(arr, compareFnc) {
     arr[i] = tmp[i].value;
   }
 }
+
+
+/**
+* @param {goog.array.ArrayLike} arr The first array to compare..
+* @param {Function} func Optional comparison function.
+* @param {THISVAL=} opt_thisArg Optional this argument for the function.
+* @template THISVAL
+* @return {number} Whether the two arrays are equal.
+ */
+ol.array.findIndex = function(arr, func, opt_thisArg) {
+  if (typeof func !== 'function') {
+    throw new TypeError('func must be a function');
+  }
+  var list = Object(arr);
+  var length = list.length >>> 0;
+  var value;
+
+  for (var i = 0; i < length; i++) {
+    value = list[i];
+    if (func.call(opt_thisArg, value, i, list)) {
+      return i;
+    }
+  }
+  return -1;
+}

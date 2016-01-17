@@ -1,7 +1,6 @@
 goog.provide('ol.source.WMTS');
 goog.provide('ol.source.WMTSRequestEncoding');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
@@ -338,7 +337,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var idx, matrixSet;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
-      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+      idx = ol.array.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
             var tileMatrixSet = ol.array.find(tileMatrixSets, function(el) {
               return el['Identifier'] == elt['TileMatrixSet'];
@@ -348,7 +347,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
                    ) == config['projection'];
           });
     } else {
-      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+      idx = ol.array.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
             return elt['TileMatrixSet'] == config['matrixSet'];
           });
@@ -368,7 +367,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   if ('format' in config) {
     format = config['format'];
   }
-  idx = goog.array.findIndex(l['Style'], function(elt, index, array) {
+  idx = ol.array.findIndex(l['Style'], function(elt, index, array) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {
