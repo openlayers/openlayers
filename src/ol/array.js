@@ -173,3 +173,28 @@ ol.array.remove = function(arr, obj) {
   }
   return i > -1;
 }
+
+
+/**
+ * @param {Array<VALUE>} arr  The array to modify.
+ * @param {?function(this:THISVAL, VALUE, number, ?) : boolean} func The function to compare.
+ * @param {THISVAL=} thisArg Optional this argument for the function.
+ * @template VALUE,THISVAL
+ * @return {VALUE} If the element was removed.
+ */
+ol.array.find = function(arr, func, thisArg) {
+  if (typeof func !== 'function') {
+    throw new TypeError('func must be a function');
+  }
+  var list = Object(arr);
+  var length = list.length >>> 0;
+  var value;
+
+  for (var i = 0; i < length; i++) {
+    value = list[i];
+    if (func.call(thisArg, value, i, list)) {
+      return value;
+    }
+  }
+  return null;
+}
