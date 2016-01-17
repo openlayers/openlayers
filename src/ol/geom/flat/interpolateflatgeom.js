@@ -1,8 +1,8 @@
 goog.provide('ol.geom.flat.interpolate');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
+goog.require('ol.array');
 
 
 /**
@@ -46,7 +46,7 @@ ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, str
       y1 = y2;
     }
     var target = fraction * length;
-    var index = goog.array.binarySearch(cumulativeLengths, target);
+    var index = ol.array.binarySearch(cumulativeLengths, target);
     if (index < 0) {
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
