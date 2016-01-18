@@ -120,8 +120,7 @@ install: build/timestamps/node-modules-timestamp
 
 .PHONY: lint
 lint: build/timestamps/eslint-timestamp \
-      build/timestamps/check-requires-timestamp \
-      build/timestamps/check-whitespace-timestamp
+      build/timestamps/check-requires-timestamp
 
 .PHONY: npm-install
 npm-install: build/timestamps/node-modules-timestamp
@@ -190,13 +189,6 @@ build/timestamps/check-requires-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
                                            $(SPEC_RENDERING_JS)
 	@mkdir -p $(@D)
 	@python bin/check-requires.py $(CLOSURE_LIB) $^
-	@touch $@
-
-build/timestamps/check-whitespace-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
-                                             $(SPEC_JS) $(SPEC_RENDERING_JS) \
-                                             $(SRC_JSDOC)
-	@mkdir -p $(@D)
-	@python bin/check-whitespace.py $^
 	@touch $@
 
 build/compiled-examples/all.js: $(EXAMPLES_JS)
