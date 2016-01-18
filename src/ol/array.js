@@ -2,9 +2,6 @@ goog.provide('ol.array');
 
 goog.require('goog.asserts');
 
-function defaultCompare(a, b) {
-  return a > b ? 1 : a < b ? -1 : 0;
-}
 
 /**
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
@@ -12,31 +9,14 @@ function defaultCompare(a, b) {
  *
  * @param {Array<*>} haystack Items to search through.
  * @param {*} needle The item to look for.
- * @param {Function=} opt_comparator Comparator function
- * @param {number=} low Lower bounds.
- * @param {number=} high Higher bounds.
+ * @param {Function=} opt_comparator Comparator function.
  * @return {number} The index of the item if found, -1 if not.
  */
-ol.array.binarySearch = function(haystack, needle, opt_comparator, low, high) {
+ol.array.binarySearch = function(haystack, needle, opt_comparator) {
   var mid, cmp;
-  var comparator = opt_comparator || defaultCompare;
-  if (low === undefined)
-    low = 0;
-
-  else {
-    low = low | 0;
-    if (low < 0 || low >= haystack.length)
-      throw new RangeError('invalid lower bound');
-  }
-
-  if (high === undefined)
-    high = haystack.length - 1;
-
-  else {
-    high = high | 0;
-    if (high < low || high >= haystack.length)
-      throw new RangeError('invalid upper bound');
-  }
+  var comparator = opt_comparator || ol.array.numberSafeCompareFunction;
+  var low = 0;
+  var high = haystack.length - 1;
 
   while (low <= high) {
     /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
@@ -184,6 +164,7 @@ ol.array.reverseSubArray = function(arr, begin, end) {
     --end;
   }
 };
+
 
 /**
  * @param {Array.<*>} arr Array.
