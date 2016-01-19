@@ -115,6 +115,7 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.rotating_) {
     var view = map.getView();
     var rotation = view.getRotation();
+    map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(map, view,
         rotation + rotationDelta, this.anchor_);
   }
@@ -160,6 +161,7 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
     if (!this.handlingDownUpSequence) {
       map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     }
+    map.render();
     return true;
   } else {
     return false;
