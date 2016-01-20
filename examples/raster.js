@@ -50,7 +50,7 @@ function summarize(value, counts) {
  * Use aerial imagery as the input data for the raster source.
  */
 var bing = new ol.source.BingMaps({
-  key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3',
+  key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF',
   imagerySet: 'Aerial'
 });
 
