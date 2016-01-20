@@ -182,17 +182,17 @@ ol.array.flatten = function(arr) {
 };
 
 
-// TODO: Optimisation by storing length or iterating backwards etc
 /**
  * @param {Array<VALUE>} arr  The array to modify.
  * @param {Array<VALUE>|VALUE} data The elements or arrays of elements
- *     to add to arr1.
+ *     to add to arr.
  * @template VALUE
  */
 ol.array.extend = function(arr, data) {
   var i;
   var extension = goog.isArrayLike(data) ? data : [data];
-  for (i = 0; i < extension.length; i++) {
+  var length = extension.length
+  for (i = 0; i < length; i++) {
     arr[arr.length] = extension[i];
   }
 }
@@ -206,31 +206,27 @@ ol.array.extend = function(arr, data) {
  */
 ol.array.remove = function(arr, obj) {
   var i = arr.indexOf(obj);
-  if (i > -1) {
+  var found = i > -1;
+  if (found) {
     arr.splice(i, 1);
   }
-  return i > -1;
+  return found;
 }
 
 
 /**
- * @param {Array<VALUE>} arr  The array to modify.
- * @param {?function(this:THISVAL, VALUE, number, ?) : boolean} func The function to compare.
- * @param {THISVAL=} opt_thisArg Optional this argument for the function.
- * @template VALUE,THISVAL
- * @return {VALUE} If the element was removed.
+ * @param {Array<VALUE>} arr  The array to search in.
+ * @param {function(VALUE, number, ?) : boolean} func The function to compare.
+ * @template VALUE
+ * @return {VALUE} The element found.
  */
-ol.array.find = function(arr, func, opt_thisArg) {
-  if (typeof func !== 'function') {
-    throw new TypeError('func must be a function');
-  }
-  var list = Object(arr);
-  var length = list.length >>> 0;
+ol.array.find = function(arr, func) {
+  var length = arr.length >>> 0;
   var value;
 
   for (var i = 0; i < length; i++) {
-    value = list[i];
-    if (func.call(opt_thisArg, value, i, list)) {
+    value = arr[i];
+    if (func(value, i, arr)) {
       return value;
     }
   }
@@ -241,15 +237,14 @@ ol.array.find = function(arr, func, opt_thisArg) {
 /**
 * @param {Array|NodeList|Arguments|{length: number}} arr1 The first array to compare.
 * @param {Array|NodeList|Arguments|{length: number}} arr2 The second array to compare.
-* @param {Function=} opt_equalsFn Optional comparison function.
 * @return {boolean} Whether the two arrays are equal.
  */
-ol.array.equals = function(arr1, arr2, opt_equalsFn) {
+ol.array.equals = function(arr1, arr2) {
   if (!goog.isArrayLike(arr1) || !goog.isArrayLike(arr2) || arr1.length !== arr2.length) {
     return false;
   }
   var length = arr1.length;
-  var equalsFn = opt_equalsFn !== undefined ? opt_equalsFn : function(a, b) {
+  var equalsFn = function(a, b) {
     return a === b;
   };
   for (var i = 0; i < length; i++) {
@@ -260,6 +255,11 @@ ol.array.equals = function(arr1, arr2, opt_equalsFn) {
   return true;
 }
 
+
+/**
+* @param {Array<*>} arr The array to sort (modifies original).
+* @param {Function} compareFnc Comparison function.
+ */
 ol.array.stableSort = function(arr, compareFnc) {
   var length = arr.length;
   var tmp = Array(arr.length);
@@ -267,9 +267,7 @@ ol.array.stableSort = function(arr, compareFnc) {
   for (i = 0; i < length; i++) {
     tmp[i] = {index: i, value: arr[i]};
   }
-  var compare = compareFnc || function(a, b) {
-    return a > b ? 1 : a < b ? -1 : 0;
-  };
+  var compare = compareFnc || ol.array.numberSafeCompareFunction;
   tmp.sort(function(a, b) {
     return compare(a.value, b.value) || a.index - b.index;
   });
@@ -280,32 +278,28 @@ ol.array.stableSort = function(arr, compareFnc) {
 
 
 /**
-* @param {Array<*>} arr The first array to compare..
-* @param {Function} func Optional comparison function.
-* @param {*=} opt_thisArg Optional this argument for the function.
-* @return {number} Whether the two arrays are equal.
+* @param {Array<*>} arr The array to search in.
+* @param {Function} func Comparison function.
+* @return {number} Return index.
  */
-ol.array.findIndex = function(arr, func, opt_thisArg) {
-  if (typeof func !== 'function') {
-    throw new TypeError('func must be a function');
-  }
-  var list = Object(arr);
-  var length = list.length >>> 0;
-  var value;
-
-  for (var i = 0; i < length; i++) {
-    value = list[i];
-    if (func.call(opt_thisArg, value, i, list)) {
-      return i;
-    }
-  }
-  return -1;
+ol.array.findIndex = function(arr, func) {
+  var index;
+  var found = !arr.every(function(el, idx) {
+    index = idx;
+    return !func(el, idx, arr);
+  });
+  return found ? index : -1;
 }
 
+
+/**
+* @param {Array<*>} arr The array to test.
+* @param {Function=} opt_func Comparison function.
+* @param {boolean=} opt_strict Strictly sorted (default false).
+* @return {boolean} Return index.
+ */
 ol.array.isSorted = function(arr, opt_func, opt_strict) {
-  var compare = opt_func || function(a, b) {
-    return a > b ? 1 : a < b ? -1 : 0;
-  };
+  var compare = opt_func || ol.array.numberSafeCompareFunction;
   return arr.every(function(currentVal, index) {
     if (index === 0) {
       return true;
