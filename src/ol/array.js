@@ -7,7 +7,7 @@ goog.require('goog.asserts');
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
  * https://github.com/darkskyapp/binary-search
  *
- * @param {Array<*>} haystack Items to search through.
+ * @param {Array.<*>} haystack Items to search through.
  * @param {*} needle The item to look for.
  * @param {Function=} opt_comparator Comparator function.
  * @return {number} The index of the item if found, -1 if not.
@@ -168,7 +168,7 @@ ol.array.reverseSubArray = function(arr, begin, end) {
 
 /**
  * @param {Array.<*>} arr Array.
- * @return {!Array<?>} Flattened Array.
+ * @return {!Array.<?>} Flattened Array.
  */
 ol.array.flatten = function(arr) {
   var data = arr.reduce(function(flattened, value) {
@@ -183,8 +183,8 @@ ol.array.flatten = function(arr) {
 
 
 /**
- * @param {Array<VALUE>} arr  The array to modify.
- * @param {Array<VALUE>|VALUE} data The elements or arrays of elements
+ * @param {Array.<VALUE>} arr  The array to modify.
+ * @param {Array.<VALUE>|VALUE} data The elements or arrays of elements
  *     to add to arr.
  * @template VALUE
  */
@@ -199,7 +199,7 @@ ol.array.extend = function(arr, data) {
 
 
 /**
- * @param {Array<VALUE>} arr  The array to modify.
+ * @param {Array.<VALUE>} arr  The array to modify.
  * @param {VALUE} obj The element to remove.
  * @template VALUE
  * @return {boolean} If the element was removed.
@@ -215,7 +215,7 @@ ol.array.remove = function(arr, obj) {
 
 
 /**
- * @param {Array<VALUE>} arr  The array to search in.
+ * @param {Array.<VALUE>} arr  The array to search in.
  * @param {function(VALUE, number, ?) : boolean} func The function to compare.
  * @template VALUE
  * @return {VALUE} The element found.
@@ -235,20 +235,13 @@ ol.array.find = function(arr, func) {
 
 
 /**
-* @param {Array|NodeList|Arguments|{length: number}} arr1 The first array to compare.
-* @param {Array|NodeList|Arguments|{length: number}} arr2 The second array to compare.
+* @param {Array|Uint8ClampedArray} arr1 The first array to compare.
+* @param {Array|Uint8ClampedArray} arr2 The second array to compare.
 * @return {boolean} Whether the two arrays are equal.
  */
 ol.array.equals = function(arr1, arr2) {
-  if (!goog.isArrayLike(arr1) || !goog.isArrayLike(arr2) || arr1.length !== arr2.length) {
-    return false;
-  }
-  var length = arr1.length;
-  var equalsFn = function(a, b) {
-    return a === b;
-  };
-  for (var i = 0; i < length; i++) {
-    if (!equalsFn(arr1[i], arr2[i])) {
+  for (var i = 0, ii = arr1.length; i < ii; i++) {
+    if (arr1[i] !== arr2[i]) {
       return false;
     }
   }
@@ -257,7 +250,7 @@ ol.array.equals = function(arr1, arr2) {
 
 
 /**
-* @param {Array<*>} arr The array to sort (modifies original).
+* @param {Array.<*>} arr The array to sort (modifies original).
 * @param {Function} compareFnc Comparison function.
  */
 ol.array.stableSort = function(arr, compareFnc) {
@@ -267,9 +260,8 @@ ol.array.stableSort = function(arr, compareFnc) {
   for (i = 0; i < length; i++) {
     tmp[i] = {index: i, value: arr[i]};
   }
-  var compare = compareFnc || ol.array.numberSafeCompareFunction;
   tmp.sort(function(a, b) {
-    return compare(a.value, b.value) || a.index - b.index;
+    return compareFnc(a.value, b.value) || a.index - b.index;
   });
   for (i = 0; i < arr.length; i++) {
     arr[i] = tmp[i].value;
@@ -278,7 +270,7 @@ ol.array.stableSort = function(arr, compareFnc) {
 
 
 /**
-* @param {Array<*>} arr The array to search in.
+* @param {Array.<*>} arr The array to search in.
 * @param {Function} func Comparison function.
 * @return {number} Return index.
  */
@@ -293,7 +285,7 @@ ol.array.findIndex = function(arr, func) {
 
 
 /**
-* @param {Array<*>} arr The array to test.
+* @param {Array.<*>} arr The array to test.
 * @param {Function=} opt_func Comparison function.
 * @param {boolean=} opt_strict Strictly sorted (default false).
 * @return {boolean} Return index.
@@ -305,6 +297,6 @@ ol.array.isSorted = function(arr, opt_func, opt_strict) {
       return true;
     }
     var res = compare(arr[index - 1], currentVal);
-    return !(res > 0 ||  opt_strict && res === 0);
+    return !(res > 0 || opt_strict && res === 0);
   });
 }
