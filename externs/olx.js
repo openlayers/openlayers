@@ -6266,6 +6266,7 @@ olx.style.IconOptions.prototype.src;
  *     snapToPixel: (boolean|undefined),
  *     stroke: (ol.style.Stroke|undefined),
  *     rotation: (number|undefined),
+ *     rotateWithView: (boolean|undefined),
  *     atlasManager: (ol.style.AtlasManager|undefined)}}
  * @api
  */
@@ -6351,6 +6352,14 @@ olx.style.RegularShapeOptions.prototype.stroke;
  * @api
  */
 olx.style.RegularShapeOptions.prototype.rotation;
+
+
+/**
+ * Whether to rotate the shape with the view. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.RegularShapeOptions.prototype.rotateWithView;
 
 
 /**
