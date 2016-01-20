@@ -63,8 +63,9 @@ ol.source.UrlTile = function(options) {
    * @protected
    * @type {ol.TileUrlFunctionType}
    */
-  this.tileUrlFunction =
-      this.fixedTileUrlFunction || ol.TileUrlFunction.nullTileUrlFunction;
+  this.tileUrlFunction = this.fixedTileUrlFunction ?
+      this.fixedTileUrlFunction.bind(this) :
+      ol.TileUrlFunction.nullTileUrlFunction;
 
   /**
    * @protected
@@ -184,7 +185,8 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction) {
 ol.source.UrlTile.prototype.setUrl = function(url) {
   this.urls = [url];
   var urls = ol.TileUrlFunction.expandUrl(url);
-  this.setTileUrlFunction(this.fixedTileUrlFunction ||
+  this.setTileUrlFunction(this.fixedTileUrlFunction ?
+      this.fixedTileUrlFunction.bind(this) :
       ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
 };
 
@@ -196,7 +198,8 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
  */
 ol.source.UrlTile.prototype.setUrls = function(urls) {
   this.urls = urls;
-  this.setTileUrlFunction(this.fixedTileUrlFunction ||
+  this.setTileUrlFunction(this.fixedTileUrlFunction ?
+      this.fixedTileUrlFunction.bind(this) :
       ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
 };
 
