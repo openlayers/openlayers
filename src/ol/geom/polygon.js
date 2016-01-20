@@ -1,9 +1,9 @@
 goog.provide('ol.geom.Polygon');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.math');
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -94,7 +94,7 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
-    goog.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+    ol.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
   }
   this.ends_.push(this.flatCoordinates.length);
   this.changed();
@@ -390,7 +390,7 @@ ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
   var flatCoordinates = [];
   var i;
   for (i = 0; i < n; ++i) {
-    goog.array.extend(
+    ol.array.extend(
         flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
@@ -435,7 +435,11 @@ ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
   var stride = circle.getStride();
   var layout = circle.getLayout();
   var polygon = new ol.geom.Polygon(null, layout);
-  var flatCoordinates = goog.array.repeat(0, stride * (sides + 1));
+  var arrayLength = stride * (sides + 1);
+  var flatCoordinates = new Array(arrayLength);
+  for (var i = 0; i < arrayLength; i++) {
+    flatCoordinates[i] = 0;
+  }
   var ends = [flatCoordinates.length];
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
   ol.geom.Polygon.makeRegular(

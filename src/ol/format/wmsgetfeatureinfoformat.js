@@ -1,9 +1,9 @@
 goog.provide('ol.format.WMSGetFeatureInfo');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
@@ -101,7 +101,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (layerFeatures) {
-        goog.array.extend(features, layerFeatures);
+        ol.array.extend(features, layerFeatures);
       }
     }
   }

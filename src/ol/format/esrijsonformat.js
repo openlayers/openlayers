@@ -1,8 +1,8 @@
 goog.provide('ol.format.EsriJSON');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
+goog.require('ol.array');
 goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
@@ -104,7 +104,7 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
   var holes = [];
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
-    var flatRing = goog.array.flatten(rings[i]);
+    var flatRing = ol.array.flatten(rings[i]);
     // is this ring an outer ring? is it clockwise?
     var clockwise = ol.geom.flat.orient.linearRingIsClockwise(flatRing, 0,
         flatRing.length, layout.length);
