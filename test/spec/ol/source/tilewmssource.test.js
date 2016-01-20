@@ -258,6 +258,14 @@ describe('ol.source.TileWMS', function() {
       expect(uri.getFragment()).to.be.empty();
     });
   });
+
+  describe('#setUrl()', function() {
+    var source = new ol.source.TileWMS(options);
+    var url = 'http://foo/';
+    source.setUrl(url);
+    var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
+    expect(tileUrl.indexOf(url)).to.be(0);
+  });
 });
 
 

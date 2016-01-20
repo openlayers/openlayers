@@ -253,6 +253,9 @@ describe('ol.source.TileArcGISRest', function() {
       var urls = source.getUrls();
 
       expect(urls).to.eql(['http://test3.com/MapServer']);
+
+      var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
+      expect(tileUrl.indexOf(urls[0])).to.be(0);
     });
 
 
