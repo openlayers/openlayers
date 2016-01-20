@@ -8,8 +8,6 @@ var startDate = new Date(Date.parse('2012-01-01T19:00:00Z'));
 var frameRate = 0.5; // frames per second
 var animationId = null;
 
-var counter = 0;
-
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.MapQuest({layer: 'sat'})
@@ -32,6 +30,11 @@ var map = new ol.Map({
   })
 });
 
+var updateInfo = function() {
+  var el = document.getElementById('info');
+  el.innerHTML = startDate.toISOString();
+};
+
 var setTime = function() {
   startDate.setHours(startDate.getHours() + 1);
   layers[1].getSource().updateParams({'TIME': startDate.toISOString()});
@@ -48,11 +51,6 @@ var stop = function() {
 var play = function() {
   stop();
   animationId = window.setInterval(setTime, 1000 / frameRate);
-};
-
-var updateInfo = function() {
-  var el = document.getElementById('info');
-  el.innerHTML = startDate.toISOString();
 };
 
 var startButton = document.getElementById('play');
