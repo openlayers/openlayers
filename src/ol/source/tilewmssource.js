@@ -65,6 +65,13 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
+   * @type {string}
+   */
+  this.paramsKey_ = '';
+  this.resetParamsKey_();
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.v13_ = true;
@@ -172,6 +179,14 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
  */
 ol.source.TileWMS.prototype.getGutter = function() {
   return this.gutter_;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.TileWMS.prototype.getKeyParams = function() {
+  return this.paramsKey_;
 };
 
 
@@ -290,12 +305,20 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
     }
   }
 
-  var key;
-  for (key in this.params_) {
+  this.coordKeyPrefix_ = res.join('#');
+};
+
+
+/**
+ * @private
+ */
+ol.source.TileWMS.prototype.resetParamsKey_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
-
-  this.coordKeyPrefix_ = res.join('#');
+  this.paramsKey_ = res.join('/');
 };
 
 
@@ -355,6 +378,7 @@ ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRati
 ol.source.TileWMS.prototype.updateParams = function(params) {
   goog.object.extend(this.params_, params);
   this.resetCoordKeyPrefix_();
+  this.resetParamsKey_();
   this.updateV13_();
   this.changed();
 };
