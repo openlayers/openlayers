@@ -8,8 +8,6 @@ var startDate = new Date(Date.parse('2012-01-01T19:00:00Z'));
 var frameRate = 0.5; // frames per second
 var animationId = null;
 
-var counter = 0;
-
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.MapQuest({layer: 'sat'})
