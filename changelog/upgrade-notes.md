@@ -1,10 +1,12 @@
 ## Upgrade notes
 
+### v3.14.0
+
 ### v3.13.0
 
 #### `proj4js` integration
 
-Before this release, OpenLayers depended on the global proj4 namespace. When using for instance browserify you might not want to depend on the global `proj4` namespace. You can use the `ol.proj.setProj4` function to set the proj4 function object. For example in a browserify ES6 environment:
+Before this release, OpenLayers depended on the global proj4 namespace. When using a module loader like Browserify, you might not want to depend on the global `proj4` namespace. You can use the `ol.proj.setProj4` function to set the proj4 function object. For example in a browserify ES6 environment:
 
 ```js
 import ol from 'openlayers';
@@ -14,7 +16,7 @@ ol.proj.setProj4(proj4);
 
 #### `ol.source.TileJSON` changes
 
-The `ol.source.TileJSON` now uses `XmlHttpRequest` to load the TileJSON instead of JSONP with callback.
+The `ol.source.TileJSON` now uses `XMLHttpRequest` to load the TileJSON instead of JSONP with callback.
 When using server without proper CORS support, `jsonp: true` option can be passed to the constructor to get the same behavior as before:
 ```js
 new ol.source.TileJSON({
@@ -22,7 +24,7 @@ new ol.source.TileJSON({
   jsonp: true
 })
 ```
-Also for Mapbox v3, make sure you use urls ending with `.json` (which are able to handle both `XmlHttpRequest` and JSONP) instead of `.jsonp`.
+Also for Mapbox v3, make sure you use urls ending with `.json` (which are able to handle both `XMLHttpRequest` and JSONP) instead of `.jsonp`.
 
 ### v3.12.0
 
