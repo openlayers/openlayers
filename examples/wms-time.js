@@ -30,6 +30,11 @@ var map = new ol.Map({
   })
 });
 
+var updateInfo = function() {
+  var el = document.getElementById('info');
+  el.innerHTML = startDate.toISOString();
+};
+
 var setTime = function() {
   startDate.setHours(startDate.getHours() + 1);
   layers[1].getSource().updateParams({'TIME': startDate.toISOString()});
@@ -46,11 +51,6 @@ var stop = function() {
 var play = function() {
   stop();
   animationId = window.setInterval(setTime, 1000 / frameRate);
-};
-
-var updateInfo = function() {
-  var el = document.getElementById('info');
-  el.innerHTML = startDate.toISOString();
 };
 
 var startButton = document.getElementById('play');
