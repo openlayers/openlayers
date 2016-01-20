@@ -999,9 +999,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
   this.rBush_.forEachInExtent(geometry.getExtent(), function(segmentDataMatch) {
     if (segmentDataMatch.geometry === geometry &&
         (depth === undefined || segmentDataMatch.depth === undefined ||
-        ol.array.equals(
-            /** @type {null|{length: number}} */ (segmentDataMatch.depth),
-            depth)) &&
+        ol.array.equals(segmentDataMatch.depth, depth)) &&
         segmentDataMatch.index > index) {
       segmentDataMatch.index += delta;
     }
