@@ -195,6 +195,12 @@ ol.Graticule = function(opt_options) {
    */
   this.latLabelPosition_ = options.latLabelPosition !== undefined ?
       ol.math.clamp(options.latLabelPosition, 0.0, 1.0) : 1.0;
+      
+  /**
+   * @type {number} between 0.0 and 1.0
+   * @private
+   */
+  this.latLabelPositionUser_ = this.latLabelPosition_;
 
   this.setMap(options.map !== undefined ? options.map : null);
 };
@@ -262,6 +268,27 @@ ol.Graticule.prototype.addMeridianLabel_ =
 };
 
 
+/**
+ *
+ * @param {number} lon Longitude
+ * @param {number} squaredTolerance Squared tolerance.
+ * @param {ol.Extent} extent Extent.
+ * @param {number} index Index.
+ * @private
+ */
+ol.Graticule.prototype.checkLatLabelPosition_ =
+	function(lon, squaredTolerance, extent, index) {
+  var textPoint = this.getMeridianPoint_(lon, squaredTolerance, extent, index);
+  var lon = textPoint.getCoordinates()[0];
+  if(extent[2] > lon) {	
+    if(lon < 0) lon = Math.abs(lon);
+	this.latLabelPosition_ = Math.abs(extent[0] - lon)
+		/ Math.abs(extent[0] - extent[2]) - (1 - this.latLabelPositionUser_);
+  }else{
+	this.latLabelPosition_ = this.latLabelPositionUser_;
+  }
+};
+	
 /**
  *
  * @param {number} lon Longitude
@@ -414,6 +441,7 @@ ol.Graticule.prototype.createGraticule_ =
     lon = Math.max(lon - interval, this.minLon_);
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
     if (this.showLabels_) {
+	  this.checkLatLabelPosition_(lon, squaredTolerance, extent, idxLabels);
       idxLabels = this.addMeridianLabel_(
           lon, squaredTolerance, extent, idxLabels);
     }
@@ -426,6 +454,7 @@ ol.Graticule.prototype.createGraticule_ =
     lon = Math.min(lon + interval, this.maxLon_);
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
     if (this.showLabels_) {
+	  this.checkLatLabelPosition_(lon, squaredTolerance, extent, idxLabels);
       idxLabels = this.addMeridianLabel_(
           lon, squaredTolerance, extent, idxLabels);
     }
