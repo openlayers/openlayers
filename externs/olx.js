@@ -4053,7 +4053,7 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            reprojectionErrorThreshold: (number|undefined),
- *            state: (ol.source.State|string|undefined),
+ *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
  *                                 ol.TileState, string, ?string,
  *                                 ol.TileLoadFunctionType)|undefined),
@@ -4124,7 +4124,7 @@ olx.source.TileImageOptions.prototype.reprojectionErrorThreshold;
 
 /**
  * Source state.
- * @type {ol.source.State|string|undefined}
+ * @type {ol.source.State|undefined}
  * @api
  */
 olx.source.TileImageOptions.prototype.state;
@@ -4210,7 +4210,7 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|string|undefined),
+ *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined),
@@ -4270,7 +4270,7 @@ olx.source.VectorTileOptions.prototype.projection;
 
 /**
  * Source state.
- * @type {ol.source.State|string|undefined}
+ * @type {ol.source.State|undefined}
  * @api
  */
 olx.source.VectorTileOptions.prototype.state;
@@ -4608,7 +4608,7 @@ olx.source.OSMOptions.prototype.wrapX;
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
- *     state: (ol.source.State|string|undefined)}}
+ *     state: (ol.source.State|undefined)}}
  * @api
  */
 olx.source.ImageCanvasOptions;
@@ -4674,7 +4674,7 @@ olx.source.ImageCanvasOptions.prototype.resolutions;
 
 /**
  * Source state.
- * @type {ol.source.State|string|undefined}
+ * @type {ol.source.State|undefined}
  * @api
  */
 olx.source.ImageCanvasOptions.prototype.state;

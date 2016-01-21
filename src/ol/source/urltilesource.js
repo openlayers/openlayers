@@ -17,7 +17,7 @@ goog.require('ol.source.TileEvent');
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|string|undefined),
+ *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: ol.TileLoadFunctionType,
  *            tilePixelRatio: (number|undefined),
@@ -47,8 +47,7 @@ ol.source.UrlTile = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    state: options.state ?
-        /** @type {ol.source.State} */ (options.state) : undefined,
+    state: options.state,
     tileGrid: options.tileGrid,
     tilePixelRatio: options.tilePixelRatio,
     wrapX: options.wrapX
