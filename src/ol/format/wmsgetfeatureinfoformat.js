@@ -4,6 +4,7 @@ goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.xml');
@@ -16,9 +17,12 @@ goog.require('ol.xml');
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
+ * @param {olx.format.WMSGetFeatureInfoOptions=} opt_options Options.
  * @api
  */
-ol.format.WMSGetFeatureInfo = function() {
+ol.format.WMSGetFeatureInfo = function(opt_options) {
+
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
@@ -32,6 +36,13 @@ ol.format.WMSGetFeatureInfo = function() {
    * @type {ol.format.GML2}
    */
   this.gmlFormat_ = new ol.format.GML2();
+
+
+  /**
+   * @private
+   * @type {Array.<string>}
+   */
+  this.layers_ = options.layers ? options.layers : null;
 
   goog.base(this);
 };
@@ -86,7 +97,13 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
           'localName of layer node should match layerIdentifier');
 
       var toRemove = ol.format.WMSGetFeatureInfo.layerIdentifier_;
-      var featureType = layer.localName.replace(toRemove, '') +
+      var layerName = layer.localName.replace(toRemove, '');
+
+      if (this.layers_ && !ol.array.includes(this.layers_, layerName)) {
+        continue;
+      }
+
+      var featureType = layerName +
           ol.format.WMSGetFeatureInfo.featureIdentifier_;
 
       context['featureType'] = featureType;

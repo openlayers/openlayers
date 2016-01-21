@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<msGMLOutput 
+	 xmlns:gml="http://www.opengis.net/gml"
+	 xmlns:xlink="http://www.w3.org/1999/xlink"
+	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<restaurant_layer>
+	<gml:name>Restaurants</gml:name>
+		<restaurant_feature>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:21781">
+					<gml:coordinates>537750.006175,150923.784252 537750.006175,150923.784252</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<THE_GEOM>
+			<gml:Point srsName="EPSG:21781">
+			  <gml:coordinates>537750.006175,150923.784252</gml:coordinates>
+			</gml:Point>
+			</THE_GEOM>
+			<display_name>Château d&#39;Ouchy</display_name>
+			<name>Château d&#39;Ouchy</name>
+			<osm_id>1230808910</osm_id>
+			<access></access>
+			<aerialway></aerialway>
+			<amenity>restaurant</amenity>
+			<barrier></barrier>
+			<bicycle></bicycle>
+			<brand></brand>
+			<building></building>
+			<covered></covered>
+			<denomination></denomination>
+			<ele></ele>
+			<foot></foot>
+			<highway></highway>
+			<layer></layer>
+			<leisure></leisure>
+			<man_made></man_made>
+			<motorcar></motorcar>
+			<natural></natural>
+			<operator></operator>
+			<population></population>
+			<power></power>
+			<place></place>
+			<railway></railway>
+			<ref></ref>
+			<religion></religion>
+			<shop></shop>
+			<sport></sport>
+			<surface></surface>
+			<tourism></tourism>
+			<waterway></waterway>
+			<wood></wood>
+		</restaurant_feature>
+		<restaurant_feature>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:21781">
+					<gml:coordinates>537770.247124,150975.613968 537770.247124,150975.613968</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<THE_GEOM>
+			<gml:Point srsName="EPSG:21781">
+			  <gml:coordinates>537770.247124,150975.613968</gml:coordinates>
+			</gml:Point>
+			</THE_GEOM>
+			<display_name>Cafe du Vieil Ouchy</display_name>
+			<name>Cafe du Vieil Ouchy</name>
+			<osm_id>1433812389</osm_id>
+			<access></access>
+			<aerialway></aerialway>
+			<amenity>restaurant</amenity>
+			<barrier></barrier>
+			<bicycle></bicycle>
+			<brand></brand>
+			<building></building>
+			<covered></covered>
+			<denomination></denomination>
+			<ele></ele>
+			<foot></foot>
+			<highway></highway>
+			<layer></layer>
+			<leisure></leisure>
+			<man_made></man_made>
+			<motorcar></motorcar>
+			<natural></natural>
+			<operator>Carine Duca</operator>
+			<population></population>
+			<power></power>
+			<place></place>
+			<railway></railway>
+			<ref></ref>
+			<religion></religion>
+			<shop></shop>
+			<sport></sport>
+			<surface></surface>
+			<tourism></tourism>
+			<waterway></waterway>
+			<wood></wood>
+		</restaurant_feature>
+		<restaurant_feature>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:21781">
+					<gml:coordinates>537789.197617,150976.218227 537789.197617,150976.218227</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<THE_GEOM>
+			<gml:Point srsName="EPSG:21781">
+			  <gml:coordinates>537789.197617,150976.218227</gml:coordinates>
+			</gml:Point>
+			</THE_GEOM>
+			<display_name>Creperie</display_name>
+			<name>Creperie</name>
+			<osm_id>1433812391</osm_id>
+			<access></access>
+			<aerialway></aerialway>
+			<amenity>restaurant</amenity>
+			<barrier></barrier>
+			<bicycle></bicycle>
+			<brand></brand>
+			<building></building>
+			<covered></covered>
+			<denomination></denomination>
+			<ele></ele>
+			<foot></foot>
+			<highway></highway>
+			<layer></layer>
+			<leisure></leisure>
+			<man_made></man_made>
+			<motorcar></motorcar>
+			<natural></natural>
+			<operator></operator>
+			<population></population>
+			<power></power>
+			<place></place>
+			<railway></railway>
+			<ref></ref>
+			<religion></religion>
+			<shop></shop>
+			<sport></sport>
+			<surface></surface>
+			<tourism></tourism>
+			<waterway></waterway>
+			<wood></wood>
+		</restaurant_feature>
+		<restaurant_feature>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:21781">
+					<gml:coordinates>537810.679909,150983.377694 537810.679909,150983.377694</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<THE_GEOM>
+			<gml:Point srsName="EPSG:21781">
+			  <gml:coordinates>537810.679909,150983.377694</gml:coordinates>
+			</gml:Point>
+			</THE_GEOM>
+			<display_name>1433812390</display_name>
+			<name></name>
+			<osm_id>1433812390</osm_id>
+			<access></access>
+			<aerialway></aerialway>
+			<amenity>restaurant</amenity>
+			<barrier></barrier>
+			<bicycle></bicycle>
+			<brand></brand>
+			<building></building>
+			<covered></covered>
+			<denomination></denomination>
+			<ele></ele>
+			<foot></foot>
+			<highway></highway>
+			<layer></layer>
+			<leisure></leisure>
+			<man_made></man_made>
+			<motorcar></motorcar>
+			<natural></natural>
+			<operator></operator>
+			<population></population>
+			<power></power>
+			<place></place>
+			<railway></railway>
+			<ref></ref>
+			<religion></religion>
+			<shop></shop>
+			<sport></sport>
+			<surface></surface>
+			<tourism></tourism>
+			<waterway></waterway>
+			<wood></wood>
+		</restaurant_feature>
+	</restaurant_layer>
+	<hotel_layer>
+	<gml:name>Hôtels</gml:name>
+		<hotel_feature>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:21781">
+					<gml:coordinates>537762.425297,150971.904013 537762.425297,150971.904013</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<THE_GEOM>
+			<gml:Point srsName="EPSG:21781">
+			  <gml:coordinates>537762.425297,150971.904013</gml:coordinates>
+			</gml:Point>
+			</THE_GEOM>
+			<display_name>Hotel du port</display_name>
+			<name>Hotel du port</name>
+			<osm_id>2886793101</osm_id>
+			<access></access>
+			<aerialway></aerialway>
+			<amenity></amenity>
+			<barrier></barrier>
+			<bicycle></bicycle>
+			<brand></brand>
+			<building></building>
+			<covered></covered>
+			<denomination></denomination>
+			<ele></ele>
+			<foot></foot>
+			<highway></highway>
+			<layer></layer>
+			<leisure></leisure>
+			<man_made></man_made>
+			<motorcar></motorcar>
+			<natural></natural>
+			<operator></operator>
+			<population></population>
+			<power></power>
+			<place></place>
+			<railway></railway>
+			<ref></ref>
+			<religion></religion>
+			<shop></shop>
+			<sport></sport>
+			<surface></surface>
+			<tourism>hotel</tourism>
+			<waterway></waterway>
+			<wood></wood>
+		</hotel_feature>
+		<hotel_feature>
+			<gml:boundedBy>
+				<gml:Box srsName="EPSG:21781">
+					<gml:coordinates>537798.352160,150985.584164 537798.352160,150985.584164</gml:coordinates>
+				</gml:Box>
+			</gml:boundedBy>
+			<THE_GEOM>
+			<gml:Point srsName="EPSG:21781">
+			  <gml:coordinates>537798.352160,150985.584164</gml:coordinates>
+			</gml:Point>
+			</THE_GEOM>
+			<display_name>Angleterre</display_name>
+			<name>Angleterre</name>
+			<osm_id>1433812387</osm_id>
+			<access></access>
+			<aerialway></aerialway>
+			<amenity></amenity>
+			<barrier></barrier>
+			<bicycle></bicycle>
+			<brand></brand>
+			<building></building>
+			<covered></covered>
+			<denomination></denomination>
+			<ele></ele>
+			<foot></foot>
+			<highway></highway>
+			<layer></layer>
+			<leisure></leisure>
+			<man_made></man_made>
+			<motorcar></motorcar>
+			<natural></natural>
+			<operator></operator>
+			<population></population>
+			<power></power>
+			<place></place>
+			<railway></railway>
+			<ref></ref>
+			<religion></religion>
+			<shop></shop>
+			<sport></sport>
+			<surface></surface>
+			<tourism>hotel</tourism>
+			<waterway></waterway>
+			<wood></wood>
+		</hotel_feature>
+	</hotel_layer>
+</msGMLOutput>
