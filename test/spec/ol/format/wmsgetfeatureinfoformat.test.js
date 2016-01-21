@@ -140,6 +140,18 @@ describe('ol.format.WMSGetFeatureInfo', function() {
         expect(features.length).to.be(2);
         expect(features[0].get('OBJECTID')).to.be('287');
         expect(features[1].get('OBJECTID')).to.be('1251');
+        var aaa64Features = new ol.format.WMSGetFeatureInfo({
+          layers: ['AAA64']
+        }).readFeatures(text);
+        expect(aaa64Features.length).to.be(1);
+        var allFeatures = new ol.format.WMSGetFeatureInfo({
+          layers: ['AAA64', 'AAA62']
+        }).readFeatures(text);
+        expect(allFeatures.length).to.be(2);
+        var dummyFeatures = new ol.format.WMSGetFeatureInfo({
+          layers: ['foo', 'bar']
+        }).readFeatures(text);
+        expect(dummyFeatures.length).to.be(0);
       });
 
       it('read geoserver’s response', function() {

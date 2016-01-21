@@ -2218,6 +2218,24 @@ olx.format.WKTOptions.prototype.splitCollection;
 
 
 /**
+ * @typedef {{
+ *     layers: (Array.<string>|undefined)
+ * }}
+ * @api
+ */
+olx.format.WMSGetFeatureInfoOptions;
+
+
+/**
+ * If set, only features of the given layers will be returned by the format
+ * when read.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.format.WMSGetFeatureInfoOptions.prototype.layers;
+
+
+/**
  * Namespace.
  * @type {Object}
  */
