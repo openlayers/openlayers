@@ -329,10 +329,10 @@ ol.Graticule.prototype.addMeridianLabel_ =
 ol.Graticule.prototype.checkLatLabelPosition_ =
 	function(lon, squaredTolerance, extent, index) {
   var textPoint = this.getMeridianPoint_(lon, squaredTolerance, extent, index);
-  var lon = textPoint.getCoordinates()[0];
-  if(extent[2] > lon) {	
-    if(lon < 0) lon = Math.abs(lon);
-	this.latLabelPosition_ = Math.abs(extent[0] - lon)
+  var textLon = textPoint.getCoordinates()[0];
+  if(extent[2] > textLon) {	
+    if(textLon < 0) textLon = Math.abs(textLon);
+	this.latLabelPosition_ = Math.abs(extent[0] - textLon)
 		/ Math.abs(extent[0] - extent[2]) - (1 - this.latLabelPositionUser_);
   }else{
 	this.latLabelPosition_ = this.latLabelPositionUser_;
