@@ -6,7 +6,6 @@ goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.style.Stroke');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -23,12 +22,14 @@ var map = new ol.Map({
 
 var lonFormatter = function(lon) {
   var formattedLon = Math.abs(Math.round(lon * 100) / 100);
+  formattedLon += "°00'";
   formattedLon += (lon < 0) ? 'W' : ((lon > 0) ? 'E' : '');
   return formattedLon;
 };
 
 var latFormatter = function(lat) {
   var formattedLat = Math.abs(Math.round(lat * 100) / 100);
+  formattedLat += "°00'";
   formattedLat += (lat < 0) ? 'S' : ((lat > 0) ? 'N' : '');
   return formattedLat;
 };
@@ -41,10 +42,22 @@ var graticule = new ol.Graticule({
     width: 2,
     lineDash: [0.5, 4]
   }),
+  lonLabelStyle: new ol.style.Text({
+    font: '14px Calibri,sans-serif',
+    fill: new ol.style.Fill({
+      color: 'rgba(0,0,0,1)'
+    })
+  }),
+  latLabelStyle: new ol.style.Text({
+    font: '14px Calibri,sans-serif',
+	  offsetX: -2,
+    textBaseline: 'bottom',
+    fill: new ol.style.Fill({
+      color: 'rgba(0,0,0,1)'
+    })
+  }),
   showLabels: true,
   lonLabelFormatter: lonFormatter,
-  lonLabelPosition: 0.05,
-  latLabelFormatter: latFormatter,
-  latLabelPosition: 0.95
+  latLabelFormatter: latFormatter
 });
 graticule.setMap(map);
