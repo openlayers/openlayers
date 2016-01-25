@@ -12,8 +12,6 @@ goog.require('goog.debug.Console');
 goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.dom.classlist');
-goog.require('goog.events.MouseWheelHandler');
-goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.functions');
 goog.require('goog.log');
 goog.require('goog.log.Level');
@@ -311,11 +309,10 @@ ol.Map = function(options) {
    */
   this.keyHandlerKey_;
 
-  var mouseWheelHandler = new goog.events.MouseWheelHandler(this.viewport_);
-  ol.events.listen(mouseWheelHandler,
-      goog.events.MouseWheelHandler.EventType.MOUSEWHEEL,
+  ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, false, this);
-  this.registerDisposable(mouseWheelHandler);
+  ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
+      this.handleBrowserEvent, false, this);
 
   /**
    * @type {ol.Collection.<ol.control.Control>}
@@ -577,6 +574,14 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
+  ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
+      this.handleBrowserEvent, false, this);
+  ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
+      this.handleBrowserEvent, false, this);
+  if (this.handleResize_ !== undefined) {
+    goog.global.removeEventListener(ol.events.EventType.RESIZE,
+        this.handleResize_, false, this);
+  }
   goog.dom.removeNode(this.viewport_);
   goog.base(this, 'disposeInternal');
 };

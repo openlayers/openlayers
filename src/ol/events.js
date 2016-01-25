@@ -5,6 +5,7 @@ goog.provide('ol.events.KeyCode');
 
 /**
  * @enum {string}
+ * @const
  */
 ol.events.EventType = {
   /**
@@ -25,14 +26,17 @@ ol.events.EventType = {
   MOUSEDOWN: 'mousedown',
   MOUSEMOVE: 'mousemove',
   MOUSEOUT: 'mouseout',
+  MOUSEWHEEL: 'mousewheel',
   MSPOINTERDOWN: 'mspointerdown',
   RESIZE: 'resize',
-  TOUCHSTART: 'touchstart'
+  TOUCHSTART: 'touchstart',
+  WHEEL: 'wheel'
 };
 
 
 /**
  * @enum {number}
+ * @const
  */
 ol.events.KeyCode = {
   LEFT: 37,
