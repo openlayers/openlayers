@@ -1,12 +1,12 @@
 goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.asserts');
-goog.require('goog.events.KeyCodes');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
+goog.require('ol.events.EventType');
+goog.require('ol.events.KeyCode');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 
@@ -73,25 +73,24 @@ goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
  */
 ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
-    var keyEvent = /** @type {Event} */
-        (mapBrowserEvent.originalEvent);
+  if (mapBrowserEvent.type == ol.events.EventType.KEYDOWN) {
+    var keyEvent = mapBrowserEvent.originalEvent;
     var keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&
-        (keyCode == goog.events.KeyCodes.DOWN ||
-        keyCode == goog.events.KeyCodes.LEFT ||
-        keyCode == goog.events.KeyCodes.RIGHT ||
-        keyCode == goog.events.KeyCodes.UP)) {
+        (keyCode == ol.events.KeyCode.DOWN ||
+        keyCode == ol.events.KeyCode.LEFT ||
+        keyCode == ol.events.KeyCode.RIGHT ||
+        keyCode == ol.events.KeyCode.UP)) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
       goog.asserts.assert(view, 'map must have view');
       var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
-      if (keyCode == goog.events.KeyCodes.DOWN) {
+      if (keyCode == ol.events.KeyCode.DOWN) {
         deltaY = -mapUnitsDelta;
-      } else if (keyCode == goog.events.KeyCodes.LEFT) {
+      } else if (keyCode == ol.events.KeyCode.LEFT) {
         deltaX = -mapUnitsDelta;
-      } else if (keyCode == goog.events.KeyCodes.RIGHT) {
+      } else if (keyCode == ol.events.KeyCode.RIGHT) {
         deltaX = mapUnitsDelta;
       } else {
         deltaY = mapUnitsDelta;

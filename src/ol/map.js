@@ -12,11 +12,6 @@ goog.require('goog.debug.Console');
 goog.require('goog.dom');
 goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.dom.classlist');
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventType');
-goog.require('goog.events.KeyHandler');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('goog.events.MouseWheelHandler');
 goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('goog.functions');
@@ -312,12 +307,9 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.events.KeyHandler}
+   * @type {ol.events.Key|undefined}
    */
-  this.keyHandler_ = new goog.events.KeyHandler();
-  ol.events.listen(this.keyHandler_, goog.events.KeyHandler.EventType.KEY,
-      this.handleBrowserEvent, false, this);
-  this.registerDisposable(this.keyHandler_);
+  this.keyHandlerKey_;
 
   var mouseWheelHandler = new goog.events.MouseWheelHandler(this.viewport_);
   ol.events.listen(mouseWheelHandler,
@@ -1061,7 +1053,9 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
   var targetElement = this.getTargetElement();
 
-  this.keyHandler_.detach();
+  if (this.keyHandlerKey_) {
+    ol.events.unlistenByKey(this.keyHandlerKey_);
+  }
 
   if (!targetElement) {
     goog.dom.removeNode(this.viewport_);
@@ -1074,7 +1068,9 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
-    this.keyHandler_.attach(keyboardEventTarget);
+    this.keyHandlerKey_ = ol.events.listen(keyboardEventTarget,
+        [ol.events.EventType.KEYDOWN, ol.events.EventType.KEYPRESS],
+        this.handleBrowserEvent, false, this);
 
     if (!this.viewportResizeListenerKey_) {
       this.viewportResizeListenerKey_ = ol.events.listen(

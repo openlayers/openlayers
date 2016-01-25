@@ -1,5 +1,6 @@
 goog.provide('ol.events');
 goog.provide('ol.events.EventType');
+goog.provide('ol.events.KeyCode');
 
 
 /**
@@ -18,6 +19,8 @@ ol.events.EventType = {
   DRAGOVER: 'dragover',
   DROP: 'drop',
   ERROR: 'error',
+  KEYDOWN: 'keydown',
+  KEYPRESS: 'keypress',
   LOAD: 'load',
   MOUSEDOWN: 'mousedown',
   MOUSEMOVE: 'mousemove',
@@ -26,6 +29,18 @@ ol.events.EventType = {
   RESIZE: 'resize',
   TOUCHSTART: 'touchstart'
 };
+
+
+/**
+ * @enum {number}
+ */
+ol.events.KeyCode = {
+  LEFT: 37,
+  UP: 38,
+  RIGHT: 39,
+  DOWN: 40
+};
+
 
 /**
  * Key to use with {@link ol.Observable#unByKey}.
