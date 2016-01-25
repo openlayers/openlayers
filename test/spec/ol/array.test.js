@@ -318,6 +318,42 @@ describe('ol.array', function() {
     });
   });
 
+  describe('equals', function() {
+    it('returns true for [] == []', function() {
+      expect(ol.array.equals([], [])).to.be(true);
+    });
+    it('returns true for [1] == [1]', function() {
+      expect(ol.array.equals([1], [1])).to.be(true);
+    });
+    it('returns true for [\'1\'] == [\'1\']', function() {
+      expect(ol.array.equals(['1'], ['1'])).to.be(true);
+    });
+    it('returns false for [1] == [\'1\']', function() {
+      expect(ol.array.equals([1], ['1'])).to.be(false);
+    });
+    it('returns true for [null] == [null]', function() {
+      expect(ol.array.equals([null], [null])).to.be(true);
+    });
+    it('returns false for [null] == [undefined]', function() {
+      expect(ol.array.equals([null], [undefined])).to.be(false);
+    });
+    it('returns true for [1, 2] == [1, 2]', function() {
+      expect(ol.array.equals([1, 2], [1, 2])).to.be(true);
+    });
+    it('returns false for [1, 2] == [2, 1]', function() {
+      expect(ol.array.equals([1, 2], [2, 1])).to.be(false);
+    });
+    it('returns false for [1, 2] == [1]', function() {
+      expect(ol.array.equals([1, 2], [1])).to.be(false);
+    });
+    it('returns false for [1] == [1, 2]', function() {
+      expect(ol.array.equals([1], [1, 2])).to.be(false);
+    });
+    it('returns false for [{}] == [{}]', function() {
+      expect(ol.array.equals([{}], [{}])).to.be(false);
+    });
+  });
+
   describe('linearFindNearest', function() {
     it('returns expected value', function() {
       var arr = [1000, 500, 100];
