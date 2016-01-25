@@ -402,6 +402,22 @@ describe('ol.array', function() {
     });
   });
 
+  describe('find', function() {
+    // TODO
+  });
+
+  describe('findIndex', function() {
+    // TODO
+  });
+
+  describe('flatten', function() {
+    // TODO
+  });
+
+  describe('isSorted', function() {
+    // TODO
+  });
+
   describe('linearFindNearest', function() {
     it('returns expected value', function() {
       var arr = [1000, 500, 100];
@@ -461,6 +477,10 @@ describe('ol.array', function() {
     });
   });
 
+  describe('remove', function() {
+    // TODO
+  });
+
   describe('reverseSubArray', function() {
     it('returns expected value', function() {
       var arr;
@@ -483,6 +503,11 @@ describe('ol.array', function() {
       expect(arr).to.eql(expected);
     });
   });
+
+  describe('stableSort', function() {
+    // TODO
+  });
+
 });
 
 goog.require('ol.array');
