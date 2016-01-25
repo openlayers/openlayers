@@ -16,6 +16,7 @@ ol.geom.flat.contains.linearRingContainsExtent = function(flatCoordinates, offse
   var outside = ol.extent.forEachCorner(extent,
       /**
        * @param {ol.Coordinate} coordinate Coordinate.
+       * @return {boolean} Contains (x, y).
        */
       function(coordinate) {
         return !ol.geom.flat.contains.linearRingContainsXY(flatCoordinates,

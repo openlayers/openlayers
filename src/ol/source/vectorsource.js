@@ -511,7 +511,7 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent = function(extent, c
   return this.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
-       * @return {S|undefined}
+       * @return {S|undefined} The return value from the last call to the callback.
        * @template S
        */
       function(feature) {
