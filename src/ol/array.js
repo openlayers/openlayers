@@ -240,7 +240,11 @@ ol.array.find = function(arr, func) {
 * @return {boolean} Whether the two arrays are equal.
  */
 ol.array.equals = function(arr1, arr2) {
-  for (var i = 0, ii = arr1.length; i < ii; i++) {
+  var len1 = arr1.length;
+  if (len1 !== arr2.length) {
+    return false;
+  }
+  for (var i = 0; i < len1; i++) {
     if (arr1[i] !== arr2[i]) {
       return false;
     }
