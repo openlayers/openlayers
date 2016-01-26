@@ -16,29 +16,26 @@ ol.array.binarySearch = function(haystack, needle, opt_comparator) {
   var mid, cmp;
   var comparator = opt_comparator || ol.array.numberSafeCompareFunction;
   var low = 0;
-  var high = haystack.length - 1;
+  var high = haystack.length;
+  var found = false;
 
-  while (low <= high) {
+  while (low < high) {
     /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
      * to double (which gives the wrong results). */
     mid = low + (high - low >> 1);
     cmp = +comparator(haystack[mid], needle);
 
-    /* Too low. */
-    if (cmp < 0.0)
+    if (cmp < 0.0) { /* Too low. */
       low  = mid + 1;
 
-    /* Too high. */
-    else if (cmp > 0.0)
-      high = mid - 1;
-
-    /* Key found. */
-    else
-      return mid;
+    } else { /* Key found or too high */
+      high = mid;
+      found = !cmp;
+    }
   }
 
   /* Key not found. */
-  return ~low;
+  return found ? low : ~low;
 }
 
 /**
