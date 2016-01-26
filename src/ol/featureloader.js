@@ -12,7 +12,6 @@ goog.require('ol.VectorTile');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
 goog.require('ol.xml');
 
 
@@ -142,14 +141,7 @@ ol.featureloader.tile = function(url, format) {
        * @this {ol.VectorTile}
        */
       function(features, dataProjection) {
-        var dataUnits = dataProjection.getUnits();
-        if (dataUnits === ol.proj.Units.TILE_PIXELS) {
-          var projection = new ol.proj.Projection({
-            code: this.getProjection().getCode(),
-            units: dataUnits
-          });
-          this.setProjection(projection);
-        }
+        this.setProjection(dataProjection);
         this.setFeatures(features);
       },
       /**
