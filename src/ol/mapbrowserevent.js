@@ -48,7 +48,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
    * @type {ol.Pixel}
    * @api stable
    */
-  this.pixel = map.getEventPixel(this.originalEvent);
+  this.pixel = map.getEventPixel(browserEvent);
 
   /**
    * The coordinate of the original browser event.
@@ -106,7 +106,7 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
     opt_frameState) {
 
-  goog.base(this, type, map, pointerEvent.originalEvent, opt_dragging,
+  goog.base(this, type, map, pointerEvent.browserEvent, opt_dragging,
       opt_frameState);
 
   /**

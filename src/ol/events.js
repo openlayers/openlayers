@@ -14,6 +14,7 @@ ol.events.EventType = {
    * @api
    */
   CHANGE: 'change',
+
   CLICK: 'click',
   DBLCLICK: 'dblclick',
   DRAGENTER: 'dragenter',
@@ -26,10 +27,13 @@ ol.events.EventType = {
   MOUSEDOWN: 'mousedown',
   MOUSEMOVE: 'mousemove',
   MOUSEOUT: 'mouseout',
+  MOUSEUP: 'mouseup',
   MOUSEWHEEL: 'mousewheel',
   MSPOINTERDOWN: 'mspointerdown',
   RESIZE: 'resize',
   TOUCHSTART: 'touchstart',
+  TOUCHMOVE: 'touchmove',
+  TOUCHEND: 'touchend',
   WHEEL: 'wheel'
 };
 

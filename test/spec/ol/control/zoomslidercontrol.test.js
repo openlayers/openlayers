@@ -50,10 +50,10 @@ describe('ol.control.ZoomSlider', function() {
 
   });
 
-  describe('dragger setup', function() {
-    it('creates a goog.fx.Dragger', function() {
-      expect(zoomslider.dragger_ instanceof goog.fx.Dragger).to.be(true);
-      expect(zoomslider.dragger_.limits instanceof goog.math.Rect).to.be(true);
+  describe('#initSlider_', function() {
+    it('sets limits', function() {
+      zoomslider.initSlider_();
+      expect(zoomslider.limits_ instanceof goog.math.Rect).to.be(true);
     });
   });
 
@@ -90,7 +90,6 @@ describe('ol.control.ZoomSlider', function() {
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('goog.fx.Dragger');
 goog.require('goog.math.Rect');
 goog.require('ol.Map');
 goog.require('ol.control.ZoomSlider');

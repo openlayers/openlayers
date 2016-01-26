@@ -55,7 +55,7 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
    * @const
    * @type {Event}
    */
-  this.originalEvent = browserEvent;
+  this.browserEvent = browserEvent;
 
   var eventDict = opt_eventDict ? opt_eventDict : {};
 
