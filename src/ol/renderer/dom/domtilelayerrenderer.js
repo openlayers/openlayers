@@ -94,7 +94,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
       'layer is an instance of ol.layer.Tile');
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
-  var tileGutter = tileSource.getGutter();
+  var tileGutter = tileSource.getGutter(projection);
   var z = tileGrid.getZForResolution(viewState.resolution);
   var tileResolution = tileGrid.getResolution(z);
   var center = viewState.center;

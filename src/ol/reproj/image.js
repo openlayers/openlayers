@@ -163,7 +163,7 @@ ol.reproj.Image.prototype.reproject_ = function() {
         this.targetResolution_, this.targetExtent_, this.triangulation_, [{
           extent: this.sourceImage_.getExtent(),
           image: this.sourceImage_.getImage()
-        }]);
+        }], 0);
   }
   this.state = sourceState;
   this.changed();
