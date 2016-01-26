@@ -254,21 +254,25 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   }, this);
   this.sourceTiles_.length = 0;
 
-  var z = this.wrappedTileCoord_[0];
-  var size = this.targetTileGrid_.getTileSize(z);
-  var width = goog.isNumber(size) ? size : size[0];
-  var height = goog.isNumber(size) ? size : size[1];
-  var targetResolution = this.targetTileGrid_.getResolution(z);
-  var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
+  if (sources.length === 0) {
+    this.state = ol.TileState.ERROR;
+  } else {
+    var z = this.wrappedTileCoord_[0];
+    var size = this.targetTileGrid_.getTileSize(z);
+    var width = goog.isNumber(size) ? size : size[0];
+    var height = goog.isNumber(size) ? size : size[1];
+    var targetResolution = this.targetTileGrid_.getResolution(z);
+    var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
-  var targetExtent = this.targetTileGrid_.getTileCoordExtent(
-      this.wrappedTileCoord_);
-  this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
-      sourceResolution, this.sourceTileGrid_.getExtent(),
-      targetResolution, targetExtent, this.triangulation_, sources,
-      this.renderEdges_);
+    var targetExtent = this.targetTileGrid_.getTileCoordExtent(
+        this.wrappedTileCoord_);
+    this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
+        sourceResolution, this.sourceTileGrid_.getExtent(),
+        targetResolution, targetExtent, this.triangulation_, sources,
+        this.renderEdges_);
 
-  this.state = ol.TileState.LOADED;
+    this.state = ol.TileState.LOADED;
+  }
   this.changed();
 };
 
