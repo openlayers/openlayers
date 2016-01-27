@@ -3,7 +3,6 @@ goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.Event');
@@ -383,9 +382,9 @@ ol.interaction.Select.prototype.setMap = function(map) {
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
   var styles = ol.style.createDefaultEditingStyles();
-  goog.array.extend(styles[ol.geom.GeometryType.POLYGON],
+  ol.array.extend(styles[ol.geom.GeometryType.POLYGON],
       styles[ol.geom.GeometryType.LINE_STRING]);
-  goog.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
+  ol.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
       styles[ol.geom.GeometryType.LINE_STRING]);
 
   return function(feature, resolution) {

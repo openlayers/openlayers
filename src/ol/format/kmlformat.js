@@ -7,7 +7,6 @@
 goog.provide('ol.format.KML');
 
 goog.require('goog.Uri');
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
@@ -1021,7 +1020,7 @@ ol.format.KML.readMultiGeometry_ = function(node, objectStack) {
             'geometry should be an ol.geom.Point');
         goog.asserts.assert(geometry.getLayout() == layout,
             'geometry layout should be consistent');
-        goog.array.extend(flatCoordinates, geometry.getFlatCoordinates());
+        ol.array.extend(flatCoordinates, geometry.getFlatCoordinates());
       }
       var multiPoint = new ol.geom.MultiPoint(null);
       multiPoint.setFlatCoordinates(layout, flatCoordinates);
@@ -1100,7 +1099,7 @@ ol.format.KML.readPolygon_ = function(node, objectStack) {
     var ends = [flatCoordinates.length];
     var i, ii;
     for (i = 1, ii = flatLinearRings.length; i < ii; ++i) {
-      goog.array.extend(flatCoordinates, flatLinearRings[i]);
+      ol.array.extend(flatCoordinates, flatLinearRings[i]);
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
@@ -1955,7 +1954,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node, opt_options) {
     for (n = node.firstElementChild; n; n = n.nextElementSibling) {
       var fs = this.readFeaturesFromNode(n, opt_options);
       if (fs) {
-        goog.array.extend(features, fs);
+        ol.array.extend(features, fs);
       }
     }
     return features;
@@ -2044,14 +2043,14 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
 ol.format.KML.prototype.readNetworkLinks = function(source) {
   var networkLinks = [];
   if (ol.xml.isDocument(source)) {
-    goog.array.extend(networkLinks, this.readNetworkLinksFromDocument(
+    ol.array.extend(networkLinks, this.readNetworkLinksFromDocument(
         /** @type {Document} */ (source)));
   } else if (ol.xml.isNode(source)) {
-    goog.array.extend(networkLinks, this.readNetworkLinksFromNode(
+    ol.array.extend(networkLinks, this.readNetworkLinksFromNode(
         /** @type {Node} */ (source)));
   } else if (goog.isString(source)) {
     var doc = ol.xml.parse(source);
-    goog.array.extend(networkLinks, this.readNetworkLinksFromDocument(doc));
+    ol.array.extend(networkLinks, this.readNetworkLinksFromDocument(doc));
   } else {
     goog.asserts.fail('unknown type for source');
   }
@@ -2067,7 +2066,7 @@ ol.format.KML.prototype.readNetworkLinksFromDocument = function(doc) {
   var n, networkLinks = [];
   for (n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
-      goog.array.extend(networkLinks, this.readNetworkLinksFromNode(n));
+      ol.array.extend(networkLinks, this.readNetworkLinksFromNode(n));
     }
   }
   return networkLinks;
@@ -2094,7 +2093,7 @@ ol.format.KML.prototype.readNetworkLinksFromNode = function(node) {
         (localName == 'Document' ||
          localName == 'Folder' ||
          localName == 'kml')) {
-      goog.array.extend(networkLinks, this.readNetworkLinksFromNode(n));
+      ol.array.extend(networkLinks, this.readNetworkLinksFromNode(n));
     }
   }
   return networkLinks;

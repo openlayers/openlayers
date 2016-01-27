@@ -1,6 +1,5 @@
 goog.provide('ol.tilegrid.TileGrid');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol');
@@ -42,7 +41,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @type {!Array.<number>}
    */
   this.resolutions_ = options.resolutions;
-  goog.asserts.assert(goog.array.isSorted(this.resolutions_, function(a, b) {
+  goog.asserts.assert(ol.array.isSorted(this.resolutions_, function(a, b) {
     return b - a;
   }, true), 'resolutions must be sorted in descending order');
 

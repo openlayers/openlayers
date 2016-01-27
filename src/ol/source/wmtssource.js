@@ -1,7 +1,6 @@
 goog.provide('ol.source.WMTS');
 goog.provide('ol.source.WMTSRequestEncoding');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
@@ -327,7 +326,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       'config "layer" must not be null');
 
   var layers = wmtsCap['Contents']['Layer'];
-  var l = goog.array.find(layers, function(elt, index, array) {
+  var l = ol.array.find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
   goog.asserts.assert(l, 'found a matching layer in Contents/Layer');
@@ -338,9 +337,9 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var idx, matrixSet;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
-      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+      idx = ol.array.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
-            var tileMatrixSet = goog.array.find(tileMatrixSets, function(el) {
+            var tileMatrixSet = ol.array.find(tileMatrixSets, function(el) {
               return el['Identifier'] == elt['TileMatrixSet'];
             });
             return tileMatrixSet['SupportedCRS'].replace(
@@ -348,7 +347,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
                    ) == config['projection'];
           });
     } else {
-      idx = goog.array.findIndex(l['TileMatrixSetLink'],
+      idx = ol.array.findIndex(l['TileMatrixSetLink'],
           function(elt, index, array) {
             return elt['TileMatrixSet'] == config['matrixSet'];
           });
@@ -368,7 +367,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   if ('format' in config) {
     format = config['format'];
   }
-  idx = goog.array.findIndex(l['Style'], function(elt, index, array) {
+  idx = ol.array.findIndex(l['Style'], function(elt, index, array) {
     if ('style' in config) {
       return elt['Title'] == config['style'];
     } else {
@@ -397,7 +396,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
 
   var matrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  var matrixSetObj = goog.array.find(matrixSets, function(elt, index, array) {
+  var matrixSetObj = ol.array.find(matrixSets, function(elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
   goog.asserts.assert(matrixSetObj,
@@ -457,7 +456,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
-      var constraint = goog.array.find(gets[i]['Constraint'],
+      var constraint = ol.array.find(gets[i]['Constraint'],
           function(elt, index, array) {
             return elt['name'] == 'GetEncoding';
           });

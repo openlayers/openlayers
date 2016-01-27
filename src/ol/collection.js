@@ -7,7 +7,6 @@ goog.provide('ol.Collection');
 goog.provide('ol.CollectionEvent');
 goog.provide('ol.CollectionEventType');
 
-goog.require('goog.array');
 goog.require('goog.events.Event');
 goog.require('ol.Object');
 
@@ -180,7 +179,7 @@ ol.Collection.prototype.getLength = function() {
  * @api stable
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
-  goog.array.insertAt(this.array_, elem, index);
+  this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
       new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
@@ -238,7 +237,7 @@ ol.Collection.prototype.remove = function(elem) {
  */
 ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
-  goog.array.removeAt(this.array_, index);
+  this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
       new ol.CollectionEvent(ol.CollectionEventType.REMOVE, prev, this));

@@ -1,10 +1,10 @@
 // FIXME add typedef for stack state objects
 goog.provide('ol.format.OSMXML');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.object');
+goog.require('ol.array');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
@@ -103,7 +103,7 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
   var flatCoordinates = /** @type {Array.<number>} */ ([]);
   for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
     var point = state.nodes[values.ndrefs[i]];
-    goog.array.extend(flatCoordinates, point);
+    ol.array.extend(flatCoordinates, point);
   }
   var geometry;
   if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {

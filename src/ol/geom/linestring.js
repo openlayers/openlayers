@@ -1,8 +1,8 @@
 goog.provide('ol.geom.LineString');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -72,7 +72,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
   if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {
-    goog.array.extend(this.flatCoordinates, coordinate);
+    ol.array.extend(this.flatCoordinates, coordinate);
   }
   this.changed();
 };

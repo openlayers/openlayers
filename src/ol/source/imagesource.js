@@ -1,7 +1,6 @@
 goog.provide('ol.source.Image');
 goog.provide('ol.source.ImageEvent');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.events.Event');
 goog.require('ol.Attribution');
@@ -52,7 +51,7 @@ ol.source.Image = function(options) {
   this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
   goog.asserts.assert(!this.resolutions_ ||
-      goog.array.isSorted(this.resolutions_,
+      ol.array.isSorted(this.resolutions_,
           function(a, b) {
             return b - a;
           }, true), 'resolutions must be null or sorted in descending order');
