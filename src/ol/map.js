@@ -10,7 +10,6 @@ goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.nextTick');
 goog.require('goog.debug.Console');
 goog.require('goog.dom');
-goog.require('goog.dom.ViewportSizeMonitor');
 goog.require('goog.dom.classlist');
 goog.require('goog.functions');
 goog.require('goog.log');
@@ -348,17 +347,10 @@ ol.Map = function(options) {
   this.registerDisposable(this.renderer_);
 
   /**
-   * @type {goog.dom.ViewportSizeMonitor}
+   * @type {function(Event)|undefined}
    * @private
    */
-  this.viewportSizeMonitor_ = new goog.dom.ViewportSizeMonitor();
-  this.registerDisposable(this.viewportSizeMonitor_);
-
-  /**
-   * @type {ol.events.Key}
-   * @private
-   */
-  this.viewportResizeListenerKey_ = null;
+  this.handleResize_;
 
   /**
    * @private
@@ -580,7 +572,7 @@ ol.Map.prototype.disposeInternal = function() {
       this.handleBrowserEvent, false, this);
   if (this.handleResize_ !== undefined) {
     goog.global.removeEventListener(ol.events.EventType.RESIZE,
-        this.handleResize_, false, this);
+        this.handleResize_, false);
   }
   goog.dom.removeNode(this.viewport_);
   goog.base(this, 'disposeInternal');
@@ -1064,9 +1056,10 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
   if (!targetElement) {
     goog.dom.removeNode(this.viewport_);
-    if (this.viewportResizeListenerKey_) {
-      ol.events.unlistenByKey(this.viewportResizeListenerKey_);
-      this.viewportResizeListenerKey_ = null;
+    if (this.handleResize_ !== undefined) {
+      goog.global.removeEventListener(ol.events.EventType.RESIZE,
+          this.handleResize_);
+      this.handleResize_ = undefined;
     }
   } else {
     targetElement.appendChild(this.viewport_);
@@ -1077,10 +1070,10 @@ ol.Map.prototype.handleTargetChanged_ = function() {
         [ol.events.EventType.KEYDOWN, ol.events.EventType.KEYPRESS],
         this.handleBrowserEvent, false, this);
 
-    if (!this.viewportResizeListenerKey_) {
-      this.viewportResizeListenerKey_ = ol.events.listen(
-          this.viewportSizeMonitor_, ol.events.EventType.RESIZE,
-          this.updateSize, false, this);
+    if (!this.handleResize_) {
+      this.handleResize_ = this.updateSize.bind(this);
+      goog.global.addEventListener(ol.events.EventType.RESIZE,
+          this.handleResize_);
     }
   }
 

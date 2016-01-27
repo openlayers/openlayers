@@ -211,17 +211,13 @@ describe('ol.Map', function() {
       map = new ol.Map({
         target: document.createElement('div')
       });
-      var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-          ol.events.EventType.RESIZE, false);
-      expect(viewportResizeListeners).to.have.length(1);
+      expect(map.handleResize_).to.be.ok();
     });
 
     describe('call setTarget with null', function() {
       it('unregisters the viewport resize listener', function() {
         map.setTarget(null);
-        var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-            ol.events.EventType.RESIZE, false);
-        expect(viewportResizeListeners).to.have.length(0);
+        expect(map.handleResize_).to.be(undefined);
       });
     });
 
@@ -229,9 +225,7 @@ describe('ol.Map', function() {
       it('registers a viewport resize listener', function() {
         map.setTarget(null);
         map.setTarget(document.createElement('div'));
-        var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-            ol.events.EventType.RESIZE, false);
-        expect(viewportResizeListeners).to.have.length(1);
+        expect(map.handleResize_).to.be.ok();
       });
     });
 
@@ -401,7 +395,6 @@ describe('ol.Map', function() {
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
-goog.require('ol.events.EventType');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Overlay');
