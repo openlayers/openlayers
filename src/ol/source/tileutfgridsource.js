@@ -2,9 +2,6 @@ goog.provide('ol.source.TileUTFGrid');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
@@ -12,6 +9,7 @@ goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
+goog.require('ol.net.Jsonp');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
@@ -51,8 +49,7 @@ ol.source.TileUTFGrid = function(options) {
    */
   this.template_ = undefined;
 
-  var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, this.handleTileJSONResponse.bind(this));
+  ol.net.Jsonp(options.url, this.handleTileJSONResponse.bind(this));
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
@@ -362,9 +359,8 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
 ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
-    var request = new goog.net.Jsonp(this.src_);
-    request.send(undefined, this.handleLoad_.bind(this),
-                 this.handleError_.bind(this));
+    ol.net.Jsonp(this.src_, this.handleLoad_.bind(this),
+        this.handleError_.bind(this));
   }
 };
 

@@ -86,7 +86,7 @@ ol.events.condition.click = function(mapBrowserEvent) {
 ol.events.condition.mouseActionButton = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.originalEvent;
   return browserEvent.button == 0 &&
-      !(goog.userAgent.WEBKIT && goog.userAgent.MAC && browserEvent.ctrlKey);
+      !(goog.userAgent.WEBKIT && ol.has.MAC && browserEvent.ctrlKey);
 };
 
 
@@ -168,7 +168,7 @@ ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
   var browserEvent = mapBrowserEvent.originalEvent;
   return (
       !browserEvent.altKey &&
-      (goog.userAgent.MAC ? browserEvent.metaKey : browserEvent.ctrlKey) &&
+      (ol.has.MAC ? browserEvent.metaKey : browserEvent.ctrlKey) &&
       !browserEvent.shiftKey);
 };
 

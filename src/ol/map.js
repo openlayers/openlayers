@@ -6,7 +6,6 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.asserts');
-goog.require('goog.async.AnimationDelay');
 goog.require('goog.async.nextTick');
 goog.require('goog.debug.Console');
 goog.require('goog.dom');
@@ -199,11 +198,17 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.async.AnimationDelay}
+   * @type {number|undefined}
    */
-  this.animationDelay_ =
-      new goog.async.AnimationDelay(this.renderFrame_, undefined, this);
-  this.registerDisposable(this.animationDelay_);
+  this.animationDelayKey_;
+
+  /**
+   * @private
+   */
+  this.animationDelay_ = function() {
+    this.animationDelayKey_ = undefined;
+    this.renderFrame_.call(this, Date.now());
+  }.bind(this);
 
   /**
    * @private
@@ -1200,7 +1205,10 @@ ol.Map.prototype.isRendered = function() {
  * @api stable
  */
 ol.Map.prototype.renderSync = function() {
-  this.animationDelay_.fire();
+  if (this.animationDelayKey_) {
+    goog.global.cancelAnimationFrame(this.animationDelayKey_);
+  }
+  this.animationDelay_();
 };
 
 
@@ -1209,8 +1217,9 @@ ol.Map.prototype.renderSync = function() {
  * @api stable
  */
 ol.Map.prototype.render = function() {
-  if (!this.animationDelay_.isActive()) {
-    this.animationDelay_.start();
+  if (this.animationDelayKey_ === undefined) {
+    this.animationDelayKey_ = goog.global.requestAnimationFrame(
+        this.animationDelay_);
   }
 };
 

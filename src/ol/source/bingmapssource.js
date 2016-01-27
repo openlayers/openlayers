@@ -1,12 +1,11 @@
 goog.provide('ol.source.BingMaps');
 
-goog.require('goog.Uri');
 goog.require('goog.asserts');
-goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
+goog.require('ol.net.Jsonp');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
@@ -46,16 +45,12 @@ ol.source.BingMaps = function(options) {
    */
   this.maxZoom_ = options.maxZoom !== undefined ? options.maxZoom : -1;
 
-  var uri = new goog.Uri(
-      'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-      options.imagerySet);
+  var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+      options.imagerySet +
+      '?uriScheme=https&include=ImageryProviders&key=' + options.key;
 
-  var jsonp = new goog.net.Jsonp(uri, 'jsonp');
-  jsonp.send({
-    'include': 'ImageryProviders',
-    'uriScheme': 'https',
-    'key': options.key
-  }, this.handleImageryMetadataResponse.bind(this));
+  ol.net.Jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
+      'jsonp');
 
 };
 goog.inherits(ol.source.BingMaps, ol.source.TileImage);
