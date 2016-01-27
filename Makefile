@@ -181,7 +181,7 @@ build/timestamps/check-%-timestamp: $(BUILD_HOSTED)/examples/%.html \
                                     $(BUILD_HOSTED)/build/ol.js \
                                     $(BUILD_HOSTED)/css/ol.css
 	@mkdir -p $(@D)
-	./node_modules/.bin/phantomjs --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js $(addsuffix ?mode=advanced, $<)
+	./node_modules/.bin/phantomjs --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js $<
 	@touch $@
 
 build/timestamps/check-requires-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
