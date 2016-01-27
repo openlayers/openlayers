@@ -9,7 +9,7 @@ cache:
   directories:
     - node_modules
 env:
-  - DISPLAY=:99.0
+  - DISPLAY=:99.0 NPM_CONFIG_PROGRESS="false"
 
 before_install:
   - "npm prune"
