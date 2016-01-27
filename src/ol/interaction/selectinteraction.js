@@ -322,7 +322,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          if (layer !== this.featureOverlay_) {
+          goog.asserts.assertInstanceof(feature, ol.Feature);
+          if (layer !== null) {
             if (add || toggle) {
               if (this.filter_(feature, layer) &&
                   !ol.array.includes(features.getArray(), feature) &&
@@ -331,7 +332,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
                 this.addFeatureLayerAssociation_(feature, layer);
               }
             }
-          } else {
+          } else if (this.featureOverlay_.getSource().hasFeature(feature)) {
             if (remove || toggle) {
               deselected.push(feature);
               this.removeFeatureLayerAssociation_(feature);
