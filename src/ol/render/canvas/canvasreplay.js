@@ -269,8 +269,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             !feature.getGeometry()) {
           i = /** @type {number} */ (instruction[2]);
         } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
-            /** @type {Array<number>} */ (opt_hitExtent),
-            feature.getGeometry().getExtent())) {
+            opt_hitExtent, feature.getGeometry().getExtent())) {
           i = /** @type {number} */ (instruction[2]);
         } else {
           ++i;

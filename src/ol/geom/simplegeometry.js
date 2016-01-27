@@ -240,7 +240,7 @@ ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesti
         coordinates = /** @type {Array} */ (coordinates[0]);
       }
     }
-    stride = (/** @type {Array} */ (coordinates)).length;
+    stride = coordinates.length;
     layout = ol.geom.SimpleGeometry.getLayoutForStride_(stride);
   }
   this.layout = layout;

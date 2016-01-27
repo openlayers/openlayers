@@ -177,7 +177,8 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = objectStack[0];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   context['srsName'] = node.firstElementChild.getAttribute('srsName');
-  var geometry = ol.xml.pushParseAndPop(/** @type {ol.geom.Geometry} */(null),
+  /** @type {ol.geom.Geometry} */
+  var geometry = ol.xml.pushParseAndPop(null,
       this.GEOMETRY_PARSERS_, node, objectStack, this);
   if (geometry) {
     return /** @type {ol.geom.Geometry} */ (
@@ -261,8 +262,8 @@ ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'MultiPoint',
       'localName should be MultiPoint');
-  var coordinates = ol.xml.pushParseAndPop(
-      /** @type {Array.<Array.<number>>} */ ([]),
+  /** @type {Array.<Array.<number>>} */
+  var coordinates = ol.xml.pushParseAndPop([],
       this.MULTIPOINT_PARSERS_, node, objectStack, this);
   if (coordinates) {
     return new ol.geom.MultiPoint(coordinates);
@@ -282,8 +283,8 @@ ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'MultiLineString',
       'localName should be MultiLineString');
-  var lineStrings = ol.xml.pushParseAndPop(
-      /** @type {Array.<ol.geom.LineString>} */ ([]),
+  /** @type {Array.<ol.geom.LineString>} */
+  var lineStrings = ol.xml.pushParseAndPop([],
       this.MULTILINESTRING_PARSERS_, node, objectStack, this);
   if (lineStrings) {
     var multiLineString = new ol.geom.MultiLineString(null);
@@ -305,8 +306,8 @@ ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'MultiPolygon',
       'localName should be MultiPolygon');
-  var polygons = ol.xml.pushParseAndPop(
-      /** @type {Array.<ol.geom.Polygon>} */ ([]),
+  /** @type {Array.<ol.geom.Polygon>} */
+  var polygons = ol.xml.pushParseAndPop([],
       this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
   if (polygons) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
@@ -399,7 +400,7 @@ ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LinearRing',
       'localName should be LinearRing');
-  var ring = ol.xml.pushParseAndPop(/** @type {Array.<number>} */(null),
+  var ring = ol.xml.pushParseAndPop(null,
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
       objectStack, this);
   if (ring) {
@@ -442,8 +443,8 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Polygon',
       'localName should be Polygon');
-  var flatLinearRings = ol.xml.pushParseAndPop(
-      /** @type {Array.<Array.<number>>} */ ([null]),
+  /** @type {Array.<Array.<number>>} */
+  var flatLinearRings = ol.xml.pushParseAndPop([null],
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
   if (flatLinearRings && flatLinearRings[0]) {
     var polygon = new ol.geom.Polygon(null);
@@ -472,10 +473,9 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
 ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
-      null,
+  return ol.xml.pushParseAndPop(null,
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
-      objectStack, this));
+      objectStack, this);
 };
 
 

@@ -154,10 +154,10 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectSt
       eastBoundLongitude === undefined || northBoundLatitude === undefined) {
     return undefined;
   }
-  return /** @type {ol.Extent} */ ([
+  return [
     westBoundLongitude, southBoundLatitude,
     eastBoundLongitude, northBoundLatitude
-  ]);
+  ];
 };
 
 
@@ -288,8 +288,8 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var parentLayerObject = /**  @type {Object.<string,*>} */
       (objectStack[objectStack.length - 1]);
 
-  var layerObject = /**  @type {Object.<string,*>} */ (ol.xml.pushParseAndPop(
-      {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack));
+  var layerObject = ol.xml.pushParseAndPop(
+      {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 
   if (!layerObject) {
     return undefined;
