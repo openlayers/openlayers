@@ -106,19 +106,11 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
   for (i = 0, ii = formatConstructors.length; i < ii; ++i) {
     var formatConstructor = formatConstructors[i];
     var format = new formatConstructor();
-    var readFeatures = this.tryReadFeatures_(format, result);
-    if (readFeatures) {
-      var featureProjection = format.readProjection(result);
-      var transform = ol.proj.getTransform(featureProjection, projection);
-      var j, jj;
-      for (j = 0, jj = readFeatures.length; j < jj; ++j) {
-        var feature = readFeatures[j];
-        var geometry = feature.getGeometry();
-        if (geometry) {
-          geometry.applyTransform(transform);
-        }
-        features.push(feature);
-      }
+    features = this.tryReadFeatures_(format, result, {
+      featureProjection: projection
+    });
+    if (features && features.length > 0) {
+      break;
     }
   }
   this.dispatchEvent(
@@ -167,12 +159,13 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
 /**
  * @param {ol.format.Feature} format Format.
  * @param {string} text Text.
+ * @param {olx.format.ReadOptions} options Read options.
  * @private
  * @return {Array.<ol.Feature>} Features.
  */
-ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text) {
+ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text, options) {
   try {
-    return format.readFeatures(text);
+    return format.readFeatures(text, options);
   } catch (e) {
     return null;
   }
