@@ -44,7 +44,6 @@
     "metalsmith-layouts": "1.4.2",
     "nomnom": "1.8.1",
     "pbf": "1.3.5",
-    "phantomjs": "^2.1.2",
     "pixelworks": "1.0.0",
     "rbush": "1.4.2",
     "temp": "0.8.3",
