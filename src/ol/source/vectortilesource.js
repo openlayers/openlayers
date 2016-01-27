@@ -1,6 +1,5 @@
 goog.provide('ol.source.VectorTile');
 
-goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventType');
 goog.require('ol.TileState');
@@ -54,7 +53,7 @@ ol.source.VectorTile = function(options) {
   /**
    * @protected
    * @type {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
-   *        ol.format.Feature, ol.TileLoadFunctionType, ol.proj.Projection)}
+   *        ol.format.Feature, ol.TileLoadFunctionType)}
    */
   this.tileClass = options.tileClass ? options.tileClass : ol.VectorTile;
 
@@ -70,7 +69,6 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    goog.asserts.assert(projection, 'argument projection is truthy');
     var tileCoord = [z, x, y];
     var urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
@@ -80,7 +78,7 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileCoord,
         tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
-        this.format_, this.tileLoadFunction, projection);
+        this.format_, this.tileLoadFunction);
     goog.events.listen(tile, goog.events.EventType.CHANGE,
         this.handleTileChange, false, this);
 

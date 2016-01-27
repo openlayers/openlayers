@@ -26,9 +26,8 @@ ol.TileReplayState;
  * @param {string} src Data source url.
  * @param {ol.format.Feature} format Feature format.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
- * @param {ol.proj.Projection} projection Feature projection.
  */
-ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction, projection) {
+ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
 
   goog.base(this, tileCoord, state);
 
@@ -57,10 +56,11 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction, projec
   this.loader_;
 
   /**
+   * Data projection
    * @private
    * @type {ol.proj.Projection}
    */
-  this.projection_ = projection;
+  this.projection_;
 
   /**
    * @private
@@ -154,7 +154,7 @@ ol.VectorTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {
     this.setState(ol.TileState.LOADING);
     this.tileLoadFunction_(this, this.url_);
-    this.loader_(null, NaN, this.projection_);
+    this.loader_(null, NaN, null);
   }
 };
 

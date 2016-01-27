@@ -13,6 +13,7 @@ goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.layer.VectorTile');
+goog.require('ol.proj');
 goog.require('ol.proj.Units');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -205,9 +206,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
  * @param {ol.VectorTile} tile Tile.
  * @param {ol.layer.VectorTile} layer Vector tile layer.
  * @param {number} pixelRatio Pixel ratio.
+ * @param {ol.proj.Projection} projection Projection.
  */
 ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
-    layer, pixelRatio) {
+    layer, pixelRatio, projection) {
   var revision = layer.getRevision();
   var renderOrder = layer.getRenderOrder() || null;
 
@@ -227,14 +229,19 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       'Source is an ol.source.VectorTile');
   var tileGrid = source.getTileGrid();
   var tileCoord = tile.getTileCoord();
-  var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
-  var extent;
+  var tileProjection = tile.getProjection();
+  var pixelSpace = tileProjection.getUnits() == ol.proj.Units.TILE_PIXELS;
+  var extent, reproject;
   if (pixelSpace) {
     var tilePixelSize = source.getTilePixelSize(tileCoord[0], pixelRatio,
         tile.getProjection());
     extent = [0, 0, tilePixelSize[0], tilePixelSize[1]];
   } else {
     extent = tileGrid.getTileCoordExtent(tileCoord);
+    if (!ol.proj.equivalent(projection, tileProjection)) {
+      reproject = true;
+      tile.setProjection(projection);
+    }
   }
   var resolution = tileGrid.getResolution(tileCoord[0]);
   var tileResolution =
@@ -276,7 +283,14 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   if (renderOrder && renderOrder !== replayState.renderedRenderOrder) {
     features.sort(renderOrder);
   }
-  features.forEach(renderFeature, this);
+  var feature;
+  for (var i = 0, ii = features.length; i < ii; ++i) {
+    feature = features[i];
+    if (reproject) {
+      feature.getGeometry().transform(tileProjection, projection);
+    }
+    renderFeature.call(this, feature);
+  }
 
   replayGroup.finish();
 
@@ -464,7 +478,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState,
       tile = tilesToDraw[tileCoordKey];
       if (tile.getState() == ol.TileState.LOADED) {
         replayables.push(tile);
-        this.createReplayGroup(tile, layer, pixelRatio);
+        this.createReplayGroup(tile, layer, pixelRatio, projection);
       }
     }
   }
