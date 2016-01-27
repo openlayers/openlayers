@@ -92,7 +92,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
       'Source is an ol.source.VectorTile');
   var tilePixelRatio = source.getTilePixelRatio(pixelRatio);
-  var maxScale = tilePixelRatio / pixelRatio;
 
   var transform = this.getTransform(frameState, 0);
 
@@ -117,9 +116,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
   var tileGrid = source.getTileGrid();
 
   var currentZ, height, i, ii, insertPoint, insertTransform, offsetX, offsetY;
-  var origin, pixelSpace, replayState, scale, tile, tileCenter, tileContext;
-  var tileExtent, tilePixelResolution, tilePixelSize, tileResolution, tileSize;
-  var tileTransform, width;
+  var origin, pixelSpace, replayState, resolutionRatio, tile, tileCenter;
+  var tileContext, tileExtent, tilePixelResolution, tilePixelSize;
+  var tileResolution, tileSize, tileTransform, width;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
     replayState = tile.getReplayState();
@@ -130,12 +129,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
     pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
     tileResolution = tileGrid.getResolution(currentZ);
     tilePixelResolution = tileResolution / tilePixelRatio;
-    scale = tileResolution / resolution;
+    resolutionRatio = tileResolution / resolution;
     offsetX = Math.round(pixelRatio * size[0] / 2);
     offsetY = Math.round(pixelRatio * size[1] / 2);
-    width = tileSize[0] * pixelRatio * scale;
-    height = tileSize[1] * pixelRatio * scale;
-    if (width < 1 || scale > maxScale) {
+    width = tileSize[0] * pixelRatio * resolutionRatio;
+    height = tileSize[1] * pixelRatio * resolutionRatio;
+    var unscaledPixelTileSize = tileSize[0] * pixelRatio;
+    if (width < unscaledPixelTileSize / 4 || width > unscaledPixelTileSize * 4) {
       if (pixelSpace) {
         origin = ol.extent.getTopLeft(tileExtent);
         tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
