@@ -66,7 +66,7 @@
     "phantomjs": "2.1.2",
     "proj4": "2.3.12",
     "resemblejs": "2.1.0",
-    "sinon": "1.17.2",
+    "sinon": "1.17.3",
     "slimerjs-edge": "0.10.0-pre-3",
     "wrench": "1.5.8"
   },
