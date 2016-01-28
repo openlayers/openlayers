@@ -6,7 +6,7 @@
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var phantomjs = require('phantomjs');
+var phantomjs = require('phantomjs-prebuilt');
 
 var serve = require('./serve');
 
