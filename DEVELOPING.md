@@ -25,11 +25,11 @@ The minimum requirements are:
 
 * GNU Make
 * Git
-* [Node.js](http://nodejs.org/) (0.10.x or higher)
-* Python 2.6 or 2.7 with a couple of extra modules (see below)
+* [Node.js](http://nodejs.org/) (higher than 0.12.x)
+* Python 2.6 or 2.7
 * Java 7 (JRE and JDK)
 
-The executables `git`, `node`, `python` and `java` should be in your `PATH`.
+The executables `git`, `node`, and `java` should be in your `PATH`.
 
 You can check your configuration by running:
 
@@ -38,17 +38,6 @@ You can check your configuration by running:
 To install the Node.js dependencies run
 
     $ npm install
-
-To install the extra Python modules, run:
-
-    $ sudo pip install -r requirements.txt
-or
-
-    $ cat requirements.txt | sudo xargs easy_install
-
-depending on your OS and Python installation.
-
-(You can also install the Python modules in a Python virtual environment if you want to.)
 
 ## Working with the build tool
 

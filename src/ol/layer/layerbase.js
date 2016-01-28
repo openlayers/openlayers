@@ -37,7 +37,6 @@ ol.layer.LayerProperty = {
 ol.layer.LayerState;
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not

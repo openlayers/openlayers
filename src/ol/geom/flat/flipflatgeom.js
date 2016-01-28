@@ -12,8 +12,7 @@ goog.require('goog.asserts');
  * @param {number=} opt_destOffset Destination offset.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.flip.flipXY =
-    function(flatCoordinates, offset, end, stride, opt_dest, opt_destOffset) {
+ol.geom.flat.flip.flipXY = function(flatCoordinates, offset, end, stride, opt_dest, opt_destOffset) {
   var dest, destOffset;
   if (opt_dest !== undefined) {
     dest = opt_dest;
@@ -24,12 +23,12 @@ ol.geom.flat.flip.flipXY =
     dest = [];
     destOffset = 0;
   }
-  var j, k;
-  for (j = offset; j < end; ) {
+  var j = offset;
+  while (j < end) {
     var x = flatCoordinates[j++];
     dest[destOffset++] = flatCoordinates[j++];
     dest[destOffset++] = x;
-    for (k = 2; k < stride; ++k) {
+    for (var k = 2; k < stride; ++k) {
       dest[destOffset++] = flatCoordinates[j++];
     }
   }

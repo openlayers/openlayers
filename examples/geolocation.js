@@ -86,7 +86,7 @@ geolocation.on('change:position', function() {
       new ol.geom.Point(coordinates) : null);
 });
 
-var featuresOverlay = new ol.layer.Vector({
+new ol.layer.Vector({
   map: map,
   source: new ol.source.Vector({
     features: [accuracyFeature, positionFeature]

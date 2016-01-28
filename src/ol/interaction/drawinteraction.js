@@ -49,7 +49,6 @@ ol.interaction.DrawEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Draw} instances are instances of
@@ -74,7 +73,6 @@ ol.interaction.DrawEvent = function(type, feature) {
 
 };
 goog.inherits(ol.interaction.DrawEvent, goog.events.Event);
-
 
 
 /**
@@ -166,8 +164,9 @@ ol.interaction.Draw = function(options) {
     if (this.type_ === ol.geom.GeometryType.CIRCLE) {
       /**
        * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
-       * @param {ol.geom.SimpleGeometry=} opt_geometry
-       * @return {ol.geom.SimpleGeometry}
+       *     The coordinates.
+       * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
+       * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var circle = opt_geometry ? opt_geometry :
@@ -191,8 +190,9 @@ ol.interaction.Draw = function(options) {
       }
       /**
        * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
-       * @param {ol.geom.SimpleGeometry=} opt_geometry
-       * @return {ol.geom.SimpleGeometry}
+       *     The coordinates.
+       * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
+       * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var geometry = opt_geometry;

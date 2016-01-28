@@ -10,7 +10,6 @@ goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
 
 
-
 /**
  * @classdesc
  * Allows the user to pan the map by dragging the map.

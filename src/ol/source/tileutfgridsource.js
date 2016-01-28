@@ -15,7 +15,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * Layer source for UTFGrid interaction data loaded from TileJSON format.
@@ -51,7 +50,7 @@ ol.source.TileUTFGrid = function(options) {
   this.template_ = undefined;
 
   var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
+  request.send(undefined, this.handleTileJSONResponse.bind(this));
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
@@ -166,8 +165,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 /**
  * @inheritDoc
  */
-ol.source.TileUTFGrid.prototype.getTile =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
@@ -200,7 +198,6 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.Tile}
@@ -211,8 +208,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
  * @private
  */
-ol.source.TileUTFGridTile_ =
-    function(tileCoord, state, src, extent, preemptive) {
+ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive) {
 
   goog.base(this, tileCoord, state);
 
@@ -269,7 +265,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
 /**
  * Synchronously returns data at given coordinate (if available).
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {Object}
+ * @return {Object} The data.
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   if (!this.grid_ || !this.keys_ || !this.data_) {
@@ -309,8 +305,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  *                               The tile data is requested if not yet loaded.
  * @template T
  */
-ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate =
-    function(coordinate, callback, opt_this, opt_request) {
+ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == ol.TileState.IDLE && opt_request === true) {
     goog.events.listenOnce(this, goog.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
@@ -346,7 +341,7 @@ ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
 
 
 /**
- * @param {!UTFGridJSON} json
+ * @param {!UTFGridJSON} json UTFGrid data.
  * @private
  */
 ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
@@ -366,8 +361,8 @@ ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
     var request = new goog.net.Jsonp(this.src_);
-    request.send(undefined, goog.bind(this.handleLoad_, this),
-                 goog.bind(this.handleError_, this));
+    request.send(undefined, this.handleLoad_.bind(this),
+                 this.handleError_.bind(this));
   }
 };
 

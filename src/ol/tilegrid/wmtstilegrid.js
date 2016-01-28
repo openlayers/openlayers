@@ -6,7 +6,6 @@ goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
 
 
-
 /**
  * @classdesc
  * Set the grid pattern for sources accessing WMTS tiled-image servers.

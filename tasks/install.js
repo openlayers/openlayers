@@ -1,5 +1,3 @@
-var async = require('async');
-
 var buildExt = require('./build-ext');
 
 buildExt(function(err) {

@@ -1,8 +1,6 @@
 goog.provide('ol.style.Fill');
 
 goog.require('ol.color');
-goog.require('ol.structs.IHasChecksum');
-
 
 
 /**
@@ -11,7 +9,6 @@ goog.require('ol.structs.IHasChecksum');
  *
  * @constructor
  * @param {olx.style.FillOptions=} opt_options Options.
- * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Fill = function(opt_options) {
@@ -55,7 +52,7 @@ ol.style.Fill.prototype.setColor = function(color) {
 
 
 /**
- * @inheritDoc
+ * @return {string} The checksum.
  */
 ol.style.Fill.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {

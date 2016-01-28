@@ -9,7 +9,6 @@ goog.require('ol.geom.flat.deflate');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Circle geometry.
@@ -44,8 +43,7 @@ ol.geom.Circle.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Circle.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.Circle.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   var flatCoordinates = this.flatCoordinates;
   var dx = x - flatCoordinates[0];
   var dy = y - flatCoordinates[1];
@@ -187,8 +185,7 @@ ol.geom.Circle.prototype.setCenter = function(center) {
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api
  */
-ol.geom.Circle.prototype.setCenterAndRadius =
-    function(center, radius, opt_layout) {
+ol.geom.Circle.prototype.setCenterAndRadius = function(center, radius, opt_layout) {
   if (!center) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
@@ -215,8 +212,7 @@ ol.geom.Circle.prototype.setCenterAndRadius =
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-ol.geom.Circle.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates) {
+ol.geom.Circle.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };

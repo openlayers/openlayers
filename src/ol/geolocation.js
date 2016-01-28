@@ -32,7 +32,6 @@ ol.GeolocationProperty = {
 };
 
 
-
 /**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
@@ -136,8 +135,8 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
       this.watchId_ = goog.global.navigator.geolocation.watchPosition(
-          goog.bind(this.positionChange_, this),
-          goog.bind(this.positionError_, this),
+          this.positionChange_.bind(this),
+          this.positionError_.bind(this),
           this.getTrackingOptions());
     } else if (!tracking && this.watchId_ !== undefined) {
       goog.global.navigator.geolocation.clearWatch(this.watchId_);

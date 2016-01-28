@@ -12,7 +12,7 @@ goog.require('ol.style.Style');
 
 var raster = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/mapbox.world-dark.jsonp'
+    url: 'http://api.tiles.mapbox.com/v3/mapbox.world-dark.json'
   })
 });
 
@@ -31,7 +31,7 @@ var vector = new ol.layer.Vector({
     url: 'data/topojson/world-110m.json',
     format: new ol.format.TopoJSON()
   }),
-  style: function(feature, resolution) {
+  style: function(feature) {
     // don't want to render the full world polygon, which repeats all countries
     return feature.getId() !== undefined ? style : null;
   }

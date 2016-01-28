@@ -23,7 +23,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an array
@@ -78,8 +77,10 @@ ol.source.Raster = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      function() { return 1; },
-      goog.bind(this.changed, this));
+      function() {
+        return 1;
+      },
+      this.changed.bind(this));
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
   var layerStates = {};
@@ -167,8 +168,7 @@ ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
  * @return {olx.FrameState} The updated frame state.
  * @private
  */
-ol.source.Raster.prototype.updateFrameState_ =
-    function(extent, resolution, projection) {
+ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
   var frameState = /** @type {olx.FrameState} */ (
       goog.object.clone(this.frameState_));
@@ -212,8 +212,7 @@ ol.source.Raster.prototype.isDirty_ = function(extent, resolution) {
 /**
  * @inheritDoc
  */
-ol.source.Raster.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
 
   if (!this.allSourcesReady_()) {
     return null;
@@ -313,8 +312,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
  * @param {Object} data The user data.
  * @private
  */
-ol.source.Raster.prototype.onWorkerComplete_ =
-    function(frameState, callback, err, output, data) {
+ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, err, output, data) {
   if (err) {
     callback(err);
     return;
@@ -468,7 +466,6 @@ ol.source.Raster.createTileRenderer_ = function(source) {
  *            extent: ol.Extent}}
  */
 ol.source.Raster.RenderedState;
-
 
 
 /**

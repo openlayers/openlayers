@@ -20,7 +20,6 @@ ol.DeviceOrientationProperty = {
 };
 
 
-
 /**
  * @classdesc
  * The ol.DeviceOrientation class provides access to information from
@@ -66,10 +65,10 @@ ol.DeviceOrientationProperty = {
  * equivalent properties in ol.DeviceOrientation are in radians for consistency
  * with all other uses of angles throughout OpenLayers.
  *
- * @see http://www.w3.org/TR/orientation-event/
- *
  * To get notified of device orientation changes, register a listener for the
  * generic `change` event on your `ol.DeviceOrientation` instance.
+ *
+ * @see {@link http://www.w3.org/TR/orientation-event/}
  *
  * @constructor
  * @extends {ol.Object}

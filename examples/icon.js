@@ -23,7 +23,6 @@ var iconStyle = new ol.style.Style({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
-    opacity: 0.75,
     src: 'data/icon.png'
   }))
 });
@@ -40,7 +39,7 @@ var vectorLayer = new ol.layer.Vector({
 
 var rasterLayer = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp',
+    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json',
     crossOrigin: ''
   })
 });
@@ -67,7 +66,7 @@ map.addOverlay(popup);
 // display popup on click
 map.on('click', function(evt) {
   var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature, layer) {
+      function(feature) {
         return feature;
       });
   if (feature) {

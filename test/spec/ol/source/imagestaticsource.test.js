@@ -23,13 +23,14 @@ describe('ol.source.ImageStatic', function() {
         projection: projection
       });
 
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+
       source.on('imageloadend', function(event) {
         expect(image.getImage().width).to.be(128);
         expect(image.getImage().height).to.be(256);
         done();
       });
 
-      var image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
     });
 
@@ -43,13 +44,14 @@ describe('ol.source.ImageStatic', function() {
         projection: projection
       });
 
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+
       source.on('imageloadend', function(event) {
         expect(image.getImage().width).to.be(127);
         expect(image.getImage().height).to.be(254);
         done();
       });
 
-      var image = source.getImage(extent, resolution, pixelRatio, projection);
       image.load();
     });
 

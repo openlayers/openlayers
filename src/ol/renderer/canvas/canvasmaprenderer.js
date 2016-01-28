@@ -29,7 +29,6 @@ goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Map}
@@ -97,8 +96,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ =
-    function(type, frameState) {
+ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameState) {
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {

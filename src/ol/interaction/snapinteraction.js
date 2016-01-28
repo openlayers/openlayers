@@ -23,7 +23,6 @@ goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');
 
 
-
 /**
  * @classdesc
  * Handles snapping of vector features while modifying or drawing them.  The
@@ -121,7 +120,7 @@ ol.interaction.Snap = function(opt_options) {
    * @type {function(ol.interaction.Snap.SegmentDataType, ol.interaction.Snap.SegmentDataType): number}
    * @private
    */
-  this.sortByDistance_ = goog.bind(ol.interaction.Snap.sortByDistance, this);
+  this.sortByDistance_ = ol.interaction.Snap.sortByDistance.bind(this);
 
 
   /**
@@ -171,7 +170,7 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     if (listen) {
       this.geometryModifyListenerKeys_[feature_uid] = geometry.on(
           goog.events.EventType.CHANGE,
-          goog.bind(this.handleGeometryModify_, this, feature),
+          this.handleGeometryModify_.bind(this, feature),
           this);
       this.geometryChangeListenerKeys_[feature_uid] = feature.on(
           ol.Object.getChangeEventType(feature.getGeometryName()),
@@ -200,7 +199,7 @@ ol.interaction.Snap.prototype.forEachFeatureRemove_ = function(feature) {
 
 
 /**
- * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>}
+ * @return {ol.Collection.<ol.Feature>|Array.<ol.Feature>} Features.
  * @private
  */
 ol.interaction.Snap.prototype.getFeatures_ = function() {
@@ -416,8 +415,7 @@ ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
   var i, geometries = geometry.getGeometriesArray();
   for (i = 0; i < geometries.length; ++i) {
     this.SEGMENT_WRITERS_[geometries[i].getType()].call(
@@ -431,8 +429,7 @@ ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ =
  * @param {ol.geom.LineString} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writeLineStringGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writeLineStringGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
@@ -451,8 +448,7 @@ ol.interaction.Snap.prototype.writeLineStringGeometry_ =
  * @param {ol.geom.MultiLineString} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writeMultiLineStringGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writeMultiLineStringGeometry_ = function(feature, geometry) {
   var lines = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = lines.length; j < jj; ++j) {
@@ -474,8 +470,7 @@ ol.interaction.Snap.prototype.writeMultiLineStringGeometry_ =
  * @param {ol.geom.MultiPoint} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writeMultiPointGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writeMultiPointGeometry_ = function(feature, geometry) {
   var points = geometry.getCoordinates();
   var coordinates, i, ii, segmentData;
   for (i = 0, ii = points.length; i < ii; ++i) {
@@ -494,8 +489,7 @@ ol.interaction.Snap.prototype.writeMultiPointGeometry_ =
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writeMultiPolygonGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writeMultiPolygonGeometry_ = function(feature, geometry) {
   var polygons = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, k, kk, rings, segment, segmentData;
   for (k = 0, kk = polygons.length; k < kk; ++k) {
@@ -520,8 +514,7 @@ ol.interaction.Snap.prototype.writeMultiPolygonGeometry_ =
  * @param {ol.geom.Point} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writePointGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writePointGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
   var segmentData = /** @type {ol.interaction.Snap.SegmentDataType} */ ({
     feature: feature,
@@ -536,8 +529,7 @@ ol.interaction.Snap.prototype.writePointGeometry_ =
  * @param {ol.geom.Polygon} geometry Geometry.
  * @private
  */
-ol.interaction.Snap.prototype.writePolygonGeometry_ =
-    function(feature, geometry) {
+ol.interaction.Snap.prototype.writePolygonGeometry_ = function(feature, geometry) {
   var rings = geometry.getCoordinates();
   var coordinates, i, ii, j, jj, segment, segmentData;
   for (j = 0, jj = rings.length; j < jj; ++j) {
@@ -608,9 +600,9 @@ ol.interaction.Snap.handleUpEvent_ = function(evt) {
 
 /**
  * Sort segments by distance, helper function
- * @param {ol.interaction.Snap.SegmentDataType} a
- * @param {ol.interaction.Snap.SegmentDataType} b
- * @return {number}
+ * @param {ol.interaction.Snap.SegmentDataType} a The first segment data.
+ * @param {ol.interaction.Snap.SegmentDataType} b The second segment data.
+ * @return {number} The difference in distance.
  * @this {ol.interaction.Snap}
  */
 ol.interaction.Snap.sortByDistance = function(a, b) {

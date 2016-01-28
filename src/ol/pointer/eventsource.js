@@ -3,10 +3,10 @@ goog.provide('ol.pointer.EventSource');
 goog.require('goog.events.BrowserEvent');
 
 
-
 /**
- * @param {ol.pointer.PointerEventHandler} dispatcher
- * @param {!Object.<string, function(goog.events.BrowserEvent)>} mapping
+ * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
+ * @param {!Object.<string, function(goog.events.BrowserEvent)>} mapping Event
+ *     mapping.
  * @constructor
  */
 ol.pointer.EventSource = function(dispatcher, mapping) {
@@ -46,7 +46,7 @@ ol.pointer.EventSource.prototype.getMapping = function() {
 
 /**
  * Returns the handler that should handle a given event type.
- * @param {string} eventType
+ * @param {string} eventType The event type.
  * @return {function(goog.events.BrowserEvent)} Handler
  */
 ol.pointer.EventSource.prototype.getHandlerForEvent = function(eventType) {

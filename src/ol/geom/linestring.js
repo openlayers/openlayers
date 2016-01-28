@@ -17,7 +17,6 @@ goog.require('ol.geom.flat.segments');
 goog.require('ol.geom.flat.simplify');
 
 
-
 /**
  * @classdesc
  * Linestring geometry.
@@ -94,8 +93,7 @@ ol.geom.LineString.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.LineString.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.LineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -167,6 +165,23 @@ ol.geom.LineString.prototype.getCoordinates = function() {
 
 
 /**
+ * Return the coordinate at the provided fraction along the linestring.
+ * The `fraction` is a number between 0 and 1, where 0 is the start of the
+ * linestring and 1 is the end.
+ * @param {number} fraction Fraction.
+ * @param {ol.Coordinate=} opt_dest Optional coordinate whose values will
+ *     be modified. If not provided, a new coordinate will be returned.
+ * @return {ol.Coordinate} Coordinate of the interpolated point.
+ * @api
+ */
+ol.geom.LineString.prototype.getCoordinateAt = function(fraction, opt_dest) {
+  return ol.geom.flat.interpolate.lineString(
+      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
+      fraction, opt_dest);
+};
+
+
+/**
  * Return the length of the linestring on projected plane.
  * @return {number} Length (on projected plane).
  * @api stable
@@ -182,9 +197,7 @@ ol.geom.LineString.prototype.getLength = function() {
  */
 ol.geom.LineString.prototype.getFlatMidpoint = function() {
   if (this.flatMidpointRevision_ != this.getRevision()) {
-    this.flatMidpoint_ = ol.geom.flat.interpolate.lineString(
-        this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-        0.5, this.flatMidpoint_);
+    this.flatMidpoint_ = this.getCoordinateAt(0.5, this.flatMidpoint_);
     this.flatMidpointRevision_ = this.getRevision();
   }
   return this.flatMidpoint_;
@@ -194,8 +207,7 @@ ol.geom.LineString.prototype.getFlatMidpoint = function() {
 /**
  * @inheritDoc
  */
-ol.geom.LineString.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.LineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
       this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
@@ -233,8 +245,7 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
-ol.geom.LineString.prototype.setCoordinates =
-    function(coordinates, opt_layout) {
+ol.geom.LineString.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
   } else {
@@ -253,8 +264,7 @@ ol.geom.LineString.prototype.setCoordinates =
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
-ol.geom.LineString.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates) {
+ol.geom.LineString.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.changed();
 };

@@ -7,6 +7,7 @@ goog.require('goog.asserts');
 goog.require('goog.events');
 goog.require('goog.events.EventTarget');
 goog.require('goog.events.EventType');
+goog.require('ol.color');
 goog.require('ol.dom');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
@@ -34,7 +35,6 @@ ol.style.IconOrigin = {
   TOP_LEFT: 'top-left',
   TOP_RIGHT: 'top-right'
 };
-
 
 
 /**
@@ -90,7 +90,7 @@ ol.style.Icon = function(opt_options) {
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
-   * @type {Image}
+   * @type {Image|HTMLCanvasElement}
    */
   var image = options.img !== undefined ? options.img : null;
 
@@ -114,7 +114,7 @@ ol.style.Icon = function(opt_options) {
       'imgSize must be set when image is provided');
 
   if ((src === undefined || src.length === 0) && image) {
-    src = image.src;
+    src = image.src || goog.getUid(image).toString();
   }
   goog.asserts.assert(src !== undefined && src.length > 0,
       'must provide a defined and non-empty src or image');
@@ -126,11 +126,17 @@ ol.style.Icon = function(opt_options) {
       ol.style.ImageState.IDLE : ol.style.ImageState.LOADED;
 
   /**
+   * @type {ol.Color}
+   */
+  var color = options.color !== undefined ? ol.color.asArray(options.color) :
+      null;
+
+  /**
    * @private
    * @type {ol.style.IconImage_}
    */
   this.iconImage_ = ol.style.IconImage_.get(
-      image, src, imgSize, crossOrigin, imageState);
+      image, src, imgSize, crossOrigin, imageState, color);
 
   /**
    * @private
@@ -244,7 +250,7 @@ ol.style.Icon.prototype.getAnchor = function() {
 /**
  * Get the image icon.
  * @param {number} pixelRatio Pixel ratio.
- * @return {Image} Image element.
+ * @return {Image|HTMLCanvasElement} Image or Canvas element.
  * @api
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
@@ -365,18 +371,19 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 };
 
 
-
 /**
  * @constructor
- * @param {Image} image Image.
+ * @param {Image|HTMLCanvasElement} image Image.
  * @param {string|undefined} src Src.
  * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
+ * @param {ol.Color} color Color.
  * @extends {goog.events.EventTarget}
  * @private
  */
-ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
+ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
+                               color) {
 
   goog.base(this);
 
@@ -388,13 +395,27 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState) {
 
   /**
    * @private
-   * @type {Image}
+   * @type {Image|HTMLCanvasElement}
    */
   this.image_ = !image ? new Image() : image;
 
   if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
+
+  /**
+   * @private
+   * @type {HTMLCanvasElement}
+   */
+  this.canvas_ = color ?
+      /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
+      null;
+
+  /**
+   * @private
+   * @type {ol.Color}
+   */
+  this.color_ = color;
 
   /**
    * @private
@@ -434,20 +455,22 @@ goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
 
 
 /**
- * @param {Image} image Image.
+ * @param {Image|HTMLCanvasElement} image Image.
  * @param {string} src Src.
  * @param {ol.Size} size Size.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
+ * @param {ol.Color} color Color.
  * @return {ol.style.IconImage_} Icon image.
  */
-ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState) {
+ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState,
+                                   color) {
   var iconImageCache = ol.style.IconImageCache.getInstance();
-  var iconImage = iconImageCache.get(src, crossOrigin);
+  var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
     iconImage = new ol.style.IconImage_(
-        image, src, size, crossOrigin, imageState);
-    iconImageCache.set(src, crossOrigin, iconImage);
+        image, src, size, crossOrigin, imageState, color);
+    iconImageCache.set(src, crossOrigin, color, iconImage);
   }
   return iconImage;
 };
@@ -493,16 +516,17 @@ ol.style.IconImage_.prototype.handleImageLoad_ = function() {
   this.size_ = [this.image_.width, this.image_.height];
   this.unlistenImage_();
   this.determineTainting_();
+  this.replaceColor_();
   this.dispatchChangeEvent_();
 };
 
 
 /**
  * @param {number} pixelRatio Pixel ratio.
- * @return {Image} Image element.
+ * @return {Image|HTMLCanvasElement} Image or Canvas element.
  */
 ol.style.IconImage_.prototype.getImage = function(pixelRatio) {
-  return this.image_;
+  return this.canvas_ ? this.canvas_ : this.image_;
 };
 
 
@@ -576,6 +600,38 @@ ol.style.IconImage_.prototype.load = function() {
 
 
 /**
+ * @private
+ */
+ol.style.IconImage_.prototype.replaceColor_ = function() {
+  if (this.tainting_ || this.color_ === null) {
+    return;
+  }
+
+  goog.asserts.assert(this.canvas_ !== null,
+      'this.canvas_ must not be null');
+
+  this.canvas_.width = this.image_.width;
+  this.canvas_.height = this.image_.height;
+
+  var ctx = this.canvas_.getContext('2d');
+  ctx.drawImage(this.image_, 0, 0);
+
+  var imgData = ctx.getImageData(0, 0, this.image_.width, this.image_.height);
+  var data = imgData.data;
+  var r = this.color_[0] / 255.0;
+  var g = this.color_[1] / 255.0;
+  var b = this.color_[2] / 255.0;
+
+  for (var i = 0, ii = data.length; i < ii; i += 4) {
+    data[i] *= r;
+    data[i + 1] *= g;
+    data[i + 2] *= b;
+  }
+  ctx.putImageData(imgData, 0, 0);
+};
+
+
+/**
  * Discards event handlers which listen for load completion or errors.
  *
  * @private
@@ -586,7 +642,6 @@ ol.style.IconImage_.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
-
 
 
 /**
@@ -619,12 +674,14 @@ goog.addSingletonGetter(ol.style.IconImageCache);
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
+ * @param {ol.Color} color Color.
  * @return {string} Cache key.
  */
-ol.style.IconImageCache.getKey = function(src, crossOrigin) {
+ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
   goog.asserts.assert(crossOrigin !== undefined,
       'argument crossOrigin must be defined');
-  return crossOrigin + ':' + src;
+  var colorString = color ? ol.color.asString(color) : 'null';
+  return crossOrigin + ':' + src + ':' + colorString;
 };
 
 
@@ -658,10 +715,11 @@ ol.style.IconImageCache.prototype.expire = function() {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
+ * @param {ol.Color} color Color.
  * @return {ol.style.IconImage_} Icon image.
  */
-ol.style.IconImageCache.prototype.get = function(src, crossOrigin) {
-  var key = ol.style.IconImageCache.getKey(src, crossOrigin);
+ol.style.IconImageCache.prototype.get = function(src, crossOrigin, color) {
+  var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   return key in this.cache_ ? this.cache_[key] : null;
 };
 
@@ -669,10 +727,12 @@ ol.style.IconImageCache.prototype.get = function(src, crossOrigin) {
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
+ * @param {ol.Color} color Color.
  * @param {ol.style.IconImage_} iconImage Icon image.
  */
-ol.style.IconImageCache.prototype.set = function(src, crossOrigin, iconImage) {
-  var key = ol.style.IconImageCache.getKey(src, crossOrigin);
+ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color,
+                                                 iconImage) {
+  var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;
 };

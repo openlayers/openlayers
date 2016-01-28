@@ -59,6 +59,7 @@ describe('ol.interaction.Modify', function() {
    * @param {number} x Horizontal offset from map center.
    * @param {number} y Vertical offset from map center.
    * @param {boolean=} opt_shiftKey Shift key is pressed.
+   * @param {number} button The mouse button.
    */
   function simulateEvent(type, x, y, opt_shiftKey, button) {
     var viewport = map.getViewport();
@@ -82,7 +83,7 @@ describe('ol.interaction.Modify', function() {
    * Tracks events triggered by the interaction as well as feature
    * modifications. Helper function to
    * @param {ol.Feature} feature Modified feature.
-   * @param {ol.interaction.Modify} interaction
+   * @param {ol.interaction.Modify} interaction The interaction.
    * @return {Array<ol.interaction.ModifyEvent|string>} events
    */
   function trackEvents(feature, interaction) {
@@ -103,8 +104,8 @@ describe('ol.interaction.Modify', function() {
   * Validates the event array to verify proper event sequence. Checks
   * that first and last event are correct ModifyEvents and that feature
   * modifications event are in between.
-  * @param {Array<ol.interaction.ModifyEvent|string>} event
-  * @param {Array<ol.Feature>} features
+  * @param {Array<ol.interaction.ModifyEvent|string>} events The events.
+  * @param {Array<ol.Feature>} features The features.
   */
   function validateEvents(events, features) {
 
@@ -160,7 +161,7 @@ describe('ol.interaction.Modify', function() {
       });
       map.addInteraction(modify);
 
-      events = trackEvents(first, modify);
+      var events = trackEvents(first, modify);
 
       expect(first.getGeometry().getRevision()).to.equal(firstRevision);
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(5);
@@ -341,7 +342,7 @@ describe('ol.interaction.Modify', function() {
       map.addInteraction(modify);
 
       var feature = features[0];
-      var listeners, listener;
+      var listeners;
 
       listeners = getListeners(feature, modify);
       expect(listeners).to.have.length(1);

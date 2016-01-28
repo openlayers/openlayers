@@ -404,11 +404,7 @@ describe('ol.View', function() {
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            constrainResolution: false
-          }
-      );
+          {padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
@@ -416,10 +412,7 @@ describe('ol.View', function() {
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100]
-          }
-      );
+          {padding: [100, 0, 0, 100]});
       expect(view.getResolution()).to.be(20);
       expect(view.getCenter()[0]).to.be(5500);
       expect(view.getCenter()[1]).to.be(47550);
@@ -427,11 +420,7 @@ describe('ol.View', function() {
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            nearest: true
-          }
-      );
+          {padding: [100, 0, 0, 100], nearest: true});
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(47050);
@@ -439,11 +428,7 @@ describe('ol.View', function() {
       view.fit(
           new ol.geom.Point([6000, 46000]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            minResolution: 2
-          }
-      );
+          {padding: [100, 0, 0, 100], minResolution: 2});
       expect(view.getResolution()).to.be(2);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
@@ -451,11 +436,7 @@ describe('ol.View', function() {
       view.fit(
           new ol.geom.Point([6000, 46000]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            maxZoom: 6
-          }
-      );
+          {padding: [100, 0, 0, 100], maxZoom: 6});
       expect(view.getResolution()).to.be(2);
       expect(view.getZoom()).to.be(6);
       expect(view.getCenter()[0]).to.be(5900);
@@ -465,11 +446,7 @@ describe('ol.View', function() {
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            constrainResolution: false
-          }
-      );
+          {padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);

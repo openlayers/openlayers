@@ -1,6 +1,5 @@
 goog.provide('ol.has');
 
-goog.require('goog.dom');
 goog.require('ol');
 goog.require('ol.dom');
 goog.require('ol.webgl');
@@ -124,7 +123,7 @@ ol.has.WEBGL;
     if ('WebGLRenderingContext' in goog.global) {
       try {
         var canvas = /** @type {HTMLCanvasElement} */
-            (goog.dom.createElement('CANVAS'));
+            (document.createElement('CANVAS'));
         var gl = ol.webgl.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
         });
@@ -134,7 +133,9 @@ ol.has.WEBGL;
               (gl.getParameter(gl.MAX_TEXTURE_SIZE));
           extensions = gl.getSupportedExtensions();
         }
-      } catch (e) {}
+      } catch (e) {
+        // pass
+      }
     }
     ol.has.WEBGL = hasWebGL;
     ol.WEBGL_EXTENSIONS = extensions;

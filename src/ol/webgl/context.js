@@ -17,7 +17,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 ol.webgl.BufferCacheEntry;
 
 
-
 /**
  * @classdesc
  * A WebGL context for accessing low-level WebGL capabilities.
@@ -356,7 +355,7 @@ ol.webgl.Context.prototype.logger_ = goog.log.getLogger('ol.webgl.Context');
  * @param {WebGLRenderingContext} gl WebGL rendering context.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture}
+ * @return {WebGLTexture} The texture.
  * @private
  */
 ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
@@ -384,7 +383,7 @@ ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
  * @param {number} height Height.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture}
+ * @return {WebGLTexture} The texture.
  */
 ol.webgl.Context.createEmptyTexture = function(
     gl, width, height, opt_wrapS, opt_wrapT) {
@@ -402,7 +401,7 @@ ol.webgl.Context.createEmptyTexture = function(
  * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture}
+ * @return {WebGLTexture} The texture.
  */
 ol.webgl.Context.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
   var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);

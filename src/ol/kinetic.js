@@ -5,7 +5,6 @@ goog.require('ol.PreRenderFunction');
 goog.require('ol.animation');
 
 
-
 /**
  * @classdesc
  * Implementation of inertial deceleration for map movement.

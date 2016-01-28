@@ -1,0 +1,17 @@
+{
+  "globals": {
+    "FastClick": false,
+    "$": false,
+    "arc": false,
+    "common": false,
+    "createMapboxStreetsV6Style": false,
+    "d3": false,
+    "jsPDF": false,
+    "jsts": false,
+    "topojson": false,
+    "turf": false
+  },
+  "rules": {
+    "no-unused-vars": [2, {"varsIgnorePattern": "^map"}]
+  }
+}

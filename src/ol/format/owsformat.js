@@ -8,7 +8,6 @@ goog.require('ol.format.XSD');
 goog.require('ol.xml');
 
 
-
 /**
  * @constructor
  * @extends {ol.format.XML}
@@ -52,7 +51,7 @@ ol.format.OWS.prototype.readFromNode = function(node) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The address.
  */
 ol.format.OWS.readAddress_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -68,7 +67,7 @@ ol.format.OWS.readAddress_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The values.
  */
 ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -84,7 +83,7 @@ ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The constraint.
  */
 ol.format.OWS.readConstraint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -105,7 +104,7 @@ ol.format.OWS.readConstraint_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The contact info.
  */
 ol.format.OWS.readContactInfo_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -121,7 +120,7 @@ ol.format.OWS.readContactInfo_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The DCP.
  */
 ol.format.OWS.readDcp_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -136,7 +135,7 @@ ol.format.OWS.readDcp_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The GET object.
  */
 ol.format.OWS.readGet_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -155,7 +154,7 @@ ol.format.OWS.readGet_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The HTTP object.
  */
 ol.format.OWS.readHttp_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -170,7 +169,7 @@ ol.format.OWS.readHttp_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The operation.
  */
 ol.format.OWS.readOperation_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -195,7 +194,7 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The operations metadata.
  */
 ol.format.OWS.readOperationsMetadata_ = function(node,
     objectStack) {
@@ -213,7 +212,7 @@ ol.format.OWS.readOperationsMetadata_ = function(node,
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The phone.
  */
 ol.format.OWS.readPhone_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -228,7 +227,7 @@ ol.format.OWS.readPhone_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The service identification.
  */
 ol.format.OWS.readServiceIdentification_ = function(node,
     objectStack) {
@@ -246,7 +245,7 @@ ol.format.OWS.readServiceIdentification_ = function(node,
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The service contact.
  */
 ol.format.OWS.readServiceContact_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -263,7 +262,7 @@ ol.format.OWS.readServiceContact_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {Object|undefined}
+ * @return {Object|undefined} The service provider.
  */
 ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -280,7 +279,7 @@ ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
- * @return {string|undefined}
+ * @return {string|undefined} The value.
  */
 ol.format.OWS.readValue_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,

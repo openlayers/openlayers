@@ -7,7 +7,6 @@ goog.provide('ol.renderer.webgl.tilelayer.shader.Vertex');
 goog.require('ol.webgl.shader');
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.shader.Fragment}
@@ -43,7 +42,6 @@ ol.renderer.webgl.tilelayer.shader.Fragment.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayer.shader.Fragment.OPTIMIZED_SOURCE;
 
 
-
 /**
  * @constructor
  * @extends {ol.webgl.shader.Vertex}
@@ -77,7 +75,6 @@ ol.renderer.webgl.tilelayer.shader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;att
 ol.renderer.webgl.tilelayer.shader.Vertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayer.shader.Vertex.DEBUG_SOURCE :
     ol.renderer.webgl.tilelayer.shader.Vertex.OPTIMIZED_SOURCE;
-
 
 
 /**

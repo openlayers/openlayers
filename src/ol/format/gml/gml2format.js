@@ -9,7 +9,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format,
@@ -64,7 +63,9 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var axisOrientation = 'enu';
   if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
-    axisOrientation = proj.getAxisOrientation();
+    if (proj) {
+      axisOrientation = proj.getAxisOrientation();
+    }
   }
   var coords = s.split(/[\s,]+/);
   // The "dimension" attribute is from the GML 3.0.1 spec.
@@ -118,8 +119,7 @@ ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML2.prototype.innerBoundaryIsParser_ =
-    function(node, objectStack) {
+ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'innerBoundaryIs',
@@ -144,8 +144,7 @@ ol.format.GML2.prototype.innerBoundaryIsParser_ =
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GML2.prototype.outerBoundaryIsParser_ =
-    function(node, objectStack) {
+ol.format.GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'outerBoundaryIs',

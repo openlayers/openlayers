@@ -9,7 +9,6 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
 
 
-
 /**
  * @classdesc
  * Abstract base class; only used for creating subclasses; do not instantiate
@@ -145,8 +144,7 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
-    function(squaredTolerance) {
+ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
     goog.object.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
@@ -188,8 +186,7 @@ ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
  * @return {ol.geom.SimpleGeometry} Simplified geometry.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.SimpleGeometry.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   return this;
 };
 
@@ -207,8 +204,7 @@ ol.geom.SimpleGeometry.prototype.getStride = function() {
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
-    function(layout, flatCoordinates) {
+ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoordinates) {
   this.stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
@@ -228,8 +224,7 @@ ol.geom.SimpleGeometry.prototype.setCoordinates = goog.abstractMethod;
  * @param {number} nesting Nesting.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.setLayout =
-    function(layout, coordinates, nesting) {
+ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
   /** @type {number} */
   var stride;
   if (layout) {
@@ -287,8 +282,7 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
-ol.geom.transformSimpleGeometry2D =
-    function(simpleGeometry, transform, opt_dest) {
+ol.geom.transformSimpleGeometry2D = function(simpleGeometry, transform, opt_dest) {
   var flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;

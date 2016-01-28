@@ -32,9 +32,6 @@ goog.require('ol.interaction.PinchZoom');
  * * {@link ol.interaction.MouseWheelZoom}
  * * {@link ol.interaction.DragZoom}
  *
- * Note that DragZoom renders a box as a vector polygon, so this interaction
- * should be excluded if you want a build with no vector support.
- *
  * @param {olx.interaction.DefaultsOptions=} opt_options Defaults options.
  * @return {ol.Collection.<ol.interaction.Interaction>} A collection of
  * interactions to be used with the ol.Map constructor's interactions option.

@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.style.Stroke');
 
 
-
 /**
  * Render a grid for a coordinate system on a map.
  * @constructor
@@ -167,8 +166,7 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
  * @return {number} Index.
  * @private
  */
-ol.Graticule.prototype.addMeridian_ =
-    function(lon, minLat, maxLat, squaredTolerance, extent, index) {
+ol.Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredTolerance, extent, index) {
   var lineString = this.getMeridian_(lon, minLat, maxLat,
       squaredTolerance, index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
@@ -188,8 +186,7 @@ ol.Graticule.prototype.addMeridian_ =
  * @return {number} Index.
  * @private
  */
-ol.Graticule.prototype.addParallel_ =
-    function(lat, minLon, maxLon, squaredTolerance, extent, index) {
+ol.Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredTolerance, extent, index) {
   var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
       index);
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
@@ -206,8 +203,7 @@ ol.Graticule.prototype.addParallel_ =
  * @param {number} squaredTolerance Squared tolerance.
  * @private
  */
-ol.Graticule.prototype.createGraticule_ =
-    function(extent, center, resolution, squaredTolerance) {
+ol.Graticule.prototype.createGraticule_ = function(extent, center, resolution, squaredTolerance) {
 
   var interval = this.getInterval_(resolution);
   if (interval == -1) {

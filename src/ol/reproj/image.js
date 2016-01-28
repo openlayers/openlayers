@@ -18,7 +18,6 @@ goog.require('ol.reproj.Triangulation');
 ol.reproj.ImageFunctionType;
 
 
-
 /**
  * @classdesc
  * Class encapsulating single reprojected image.

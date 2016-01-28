@@ -6,7 +6,6 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Interaction');
 
 
-
 /**
  * @classdesc
  * Allows the user to zoom by double-clicking on the map.

@@ -10,7 +10,6 @@ goog.provide('ol.Sphere');
 goog.require('ol.math');
 
 
-
 /**
  * @classdesc
  * Class to create objects that can be used with {@link

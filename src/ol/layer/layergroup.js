@@ -22,7 +22,6 @@ ol.layer.GroupProperty = {
 };
 
 
-
 /**
  * @classdesc
  * A {@link ol.Collection} of layers that are handled together.

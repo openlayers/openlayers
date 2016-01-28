@@ -4,7 +4,6 @@ goog.require('ol.layer.Image');
 goog.require('ol.source.ImageWMS');
 
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.
@@ -84,14 +83,14 @@ var source = new ol.source.ImageWMS({
   serverType: 'geoserver'
 });
 
-source.on('imageloadstart', function(event) {
+source.on('imageloadstart', function() {
   progress.addLoading();
 });
 
-source.on('imageloadend', function(event) {
+source.on('imageloadend', function() {
   progress.addLoaded();
 });
-source.on('imageloaderror', function(event) {
+source.on('imageloaderror', function() {
   progress.addLoaded();
 });
 

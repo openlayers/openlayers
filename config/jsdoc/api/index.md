@@ -10,7 +10,8 @@
 <td><p>Layers are lightweight containers that get their data from [sources](ol.source.html).</p>
 [ol.layer.Tile](ol.layer.Tile.html)<br>
 [ol.layer.Image](ol.layer.Image.html)<br>
-[ol.layer.Vector](ol.layer.Vector.html)</td>
+[ol.layer.Vector](ol.layer.Vector.html)<br>
+[ol.layer.VectorTile](ol.layer.VectorTile.html)</td>
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
 </tr><tr>
@@ -27,6 +28,7 @@ Interactions for [vector features](ol.Feature.html)
 <td>[Tile sources](ol.source.Tile.html) for [ol.layer.Tile](ol.layer.Tile.html)
 <br>[Image sources](ol.source.Image.html) for [ol.layer.Image](ol.layer.Image.html)
 <br>[Vector sources](ol.source.Vector.html) for [ol.layer.Vector](ol.layer.Vector.html)
+<br>[Vector tile sources](ol.source.VectorTile.html) for [ol.layer.VectorTile](ol.layer.VectorTile.html)
 <br>[Formats](ol.format.Feature.html) for reading/writing vector data
 <br>[ol.format.WMSCapabilities](ol.format.WMSCapabilities.html)</td></tr>
 <tr><th>Projections</th><th>Observable objects</th><th>Other components</th></tr>

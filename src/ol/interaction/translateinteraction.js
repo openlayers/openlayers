@@ -32,7 +32,6 @@ ol.interaction.TranslateEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Translate} instances are instances of
@@ -65,7 +64,6 @@ ol.interaction.TranslateEvent = function(type, features, coordinate) {
   this.coordinate = coordinate;
 };
 goog.inherits(ol.interaction.TranslateEvent, goog.events.Event);
-
 
 
 /**
@@ -195,8 +193,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
  * @this {ol.interaction.Translate}
  * @private
  */
-ol.interaction.Translate.handleMoveEvent_ = function(event)
-    {
+ol.interaction.Translate.handleMoveEvent_ = function(event) {
   var elem = event.map.getTargetElement();
   var intersectingFeature = event.map.forEachFeatureAtPixel(event.pixel,
       function(feature) {

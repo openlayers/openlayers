@@ -24,13 +24,13 @@ describe('ol.interaction.Translate', function() {
     source.addFeatures(features);
     var layer = new ol.layer.Vector({source: source});
     map = new ol.Map({
-            target: target,
-            layers: [layer],
-            view: new ol.View({
+      target: target,
+      layers: [layer],
+      view: new ol.View({
         projection: 'EPSG:4326',
         center: [0, 0],
         resolution: 1
-            })
+      })
     });
     map.once('postrender', function() {
       done();

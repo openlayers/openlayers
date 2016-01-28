@@ -45,7 +45,7 @@ var vectorSource = new ol.source.Vector({
 });
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  style: function(feature, resolution) {
+  style: function(feature) {
     return styles[feature.get('size')];
   }
 });

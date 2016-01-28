@@ -8,7 +8,11 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
+goog.require('goog.events');
+goog.require('goog.net.CorsXmlHttpFactory');
+goog.require('goog.net.EventType');
 goog.require('goog.net.Jsonp');
+goog.require('goog.net.XhrIo');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
@@ -16,7 +20,6 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
-
 
 
 /**
@@ -40,9 +43,23 @@ ol.source.TileJSON = function(options) {
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
-  var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, goog.bind(this.handleTileJSONResponse, this),
-      goog.bind(this.handleTileJSONError, this));
+  if (options.jsonp) {
+    var request = new goog.net.Jsonp(options.url);
+    request.send(undefined, this.handleTileJSONResponse.bind(this),
+        this.handleTileJSONError.bind(this));
+  } else {
+    var xhr = new goog.net.XhrIo(new goog.net.CorsXmlHttpFactory());
+    goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
+      if (xhr.isSuccess()) {
+        var response = /** @type {TileJSON} */(xhr.getResponseJson());
+        this.handleTileJSONResponse(response);
+      } else {
+        this.handleTileJSONError();
+      }
+      xhr.dispose();
+    }, false, this);
+    xhr.send(options.url);
+  }
 
 };
 goog.inherits(ol.source.TileJSON, ol.source.TileImage);

@@ -22,7 +22,6 @@ goog.require('ol.proj.Units');
 goog.require('ol.render.Feature');
 
 
-
 /**
  * @classdesc
  * Feature format for reading data in the Mapbox MVT format.
@@ -42,7 +41,7 @@ ol.format.MVT = function(opt_options) {
    * @type {ol.proj.Projection}
    */
   this.defaultDataProjection = new ol.proj.Projection({
-    code: 'EPSG:3857',
+    code: '',
     units: ol.proj.Units.TILE_PIXELS
   });
 
@@ -207,11 +206,11 @@ ol.format.MVT.prototype.setLayers = function(layers) {
 ol.format.MVT.calculateFlatCoordinates_ = function(
     coords, flatCoordinates, ends) {
   var end = 0;
-  var line, coord;
   for (var i = 0, ii = coords.length; i < ii; ++i) {
-    line = coords[i];
-    for (var j = 0, jj = line.length; j < jj; ++j) {
-      coord = line[j];
+    var line = coords[i];
+    var j, jj;
+    for (j = 0, jj = line.length; j < jj; ++j) {
+      var coord = line[j];
       // Non-tilespace coords can be calculated here when a TileGrid and
       // TileCoord are known.
       flatCoordinates.push(coord.x, coord.y);

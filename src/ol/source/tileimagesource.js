@@ -12,7 +12,6 @@ goog.require('ol.reproj.Tile');
 goog.require('ol.source.UrlTile');
 
 
-
 /**
  * @classdesc
  * Base class for sources providing images divided into a tile grid.
@@ -31,8 +30,7 @@ ol.source.TileImage = function(options) {
     logo: options.logo,
     opaque: options.opaque,
     projection: options.projection,
-    state: options.state !== undefined ?
-        /** @type {ol.source.State} */ (options.state) : undefined,
+    state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
         options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
@@ -123,6 +121,20 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
 /**
  * @inheritDoc
  */
+ol.source.TileImage.prototype.getOpaque = function(projection) {
+  if (ol.ENABLE_RASTER_REPROJECTION &&
+      this.getProjection() && projection &&
+      !ol.proj.equivalent(this.getProjection(), projection)) {
+    return false;
+  } else {
+    return goog.base(this, 'getOpaque', projection);
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
     return goog.base(this, 'getTileGridForProjection', projection);
@@ -172,8 +184,7 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @return {ol.Tile} Tile.
  * @private
  */
-ol.source.TileImage.prototype.createTile_ =
-    function(z, x, y, pixelRatio, projection, key) {
+ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
   var tileCoord = [z, x, y];
   var urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord, projection);
@@ -195,8 +206,7 @@ ol.source.TileImage.prototype.createTile_ =
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTile =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION ||
       !this.getProjection() ||
       !projection ||
@@ -204,20 +214,23 @@ ol.source.TileImage.prototype.getTile =
     return this.getTileInternal(z, x, y, pixelRatio, projection);
   } else {
     var cache = this.getTileCacheForProjection(projection);
-    var tileCoordKey = this.getKeyZXY(z, x, y);
+    var tileCoord = [z, x, y];
+    var tileCoordKey = this.getKeyZXY.apply(this, tileCoord);
     if (cache.containsKey(tileCoordKey)) {
       return /** @type {!ol.Tile} */ (cache.get(tileCoordKey));
     } else {
       var sourceProjection = this.getProjection();
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
       var targetTileGrid = this.getTileGridForProjection(projection);
+      var wrappedTileCoord =
+          this.getTileCoordForTileUrlFunction(tileCoord, projection);
       var tile = new ol.reproj.Tile(
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
-          z, x, y, this.getTilePixelRatio(),
-          goog.bind(function(z, x, y, pixelRatio) {
+          tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
+          function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }, this), this.reprojectionErrorThreshold_,
+          }.bind(this), this.reprojectionErrorThreshold_,
           this.renderReprojectionEdges_);
 
       cache.set(tileCoordKey, tile);
@@ -236,8 +249,7 @@ ol.source.TileImage.prototype.getTile =
  * @return {!ol.Tile} Tile.
  * @protected
  */
-ol.source.TileImage.prototype.getTileInternal =
-    function(z, x, y, pixelRatio, projection) {
+ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var /** @type {ol.Tile} */ tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
   var paramsKey = this.getKeyParams();
@@ -310,8 +322,7 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
-ol.source.TileImage.prototype.setTileGridForProjection =
-    function(projection, tilegrid) {
+ol.source.TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
   if (ol.ENABLE_RASTER_REPROJECTION) {
     var proj = ol.proj.get(projection);
     if (proj) {

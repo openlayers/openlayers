@@ -12,7 +12,7 @@ goog.require('ol.style.Style');
 
 
 var styleCache = {};
-var styleFunction = function(feature, resolution) {
+var styleFunction = function(feature) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
   // standards-violating <magnitude> tag in each Placemark.  We extract it from
   // the Placemark's name instead.
@@ -74,7 +74,7 @@ var displayFeatureInfo = function(pixel) {
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'
   });
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
   if (feature) {

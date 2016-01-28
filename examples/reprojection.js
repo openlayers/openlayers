@@ -192,9 +192,9 @@ function updateViewProjection() {
 
 
 /**
- * @param {Event} e Change event.
+ * Handle change event.
  */
-viewProjSelect.onchange = function(e) {
+viewProjSelect.onchange = function() {
   updateViewProjection();
 };
 
@@ -211,9 +211,9 @@ var updateRenderEdgesOnLayer = function(layer) {
 
 
 /**
- * @param {Event} e Change event.
+ * Handle change event.
  */
-baseLayerSelect.onchange = function(e) {
+baseLayerSelect.onchange = function() {
   var layer = layers[baseLayerSelect.value];
   if (layer) {
     layer.setOpacity(1);
@@ -224,9 +224,9 @@ baseLayerSelect.onchange = function(e) {
 
 
 /**
- * @param {Event} e Change event.
+ * Handle change event.
  */
-overlayLayerSelect.onchange = function(e) {
+overlayLayerSelect.onchange = function() {
   var layer = layers[overlayLayerSelect.value];
   if (layer) {
     layer.setOpacity(0.7);
@@ -237,9 +237,9 @@ overlayLayerSelect.onchange = function(e) {
 
 
 /**
- * @param {Event} e Change event.
+ * Handle change event.
  */
-renderEdgesCheckbox.onchange = function(e) {
+renderEdgesCheckbox.onchange = function() {
   renderEdges = renderEdgesCheckbox.checked;
   map.getLayers().forEach(function(layer) {
     updateRenderEdgesOnLayer(layer);

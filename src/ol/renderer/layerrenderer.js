@@ -13,9 +13,7 @@ goog.require('ol.layer.Layer');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
-goog.require('ol.tilecoord');
 goog.require('ol.vec.Mat4');
-
 
 
 /**
@@ -59,8 +57,7 @@ ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
  * @return {T|undefined} Callback result.
  * @template S,T
  */
-ol.renderer.Layer.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg) {
+ol.renderer.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   var coordinate = pixel.slice();
   ol.vec.Mat4.multVec2(
       frameState.pixelToCoordinateMatrix, coordinate, coordinate);
@@ -95,8 +92,7 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
  *     lookup.
  * @protected
  */
-ol.renderer.Layer.prototype.createLoadedTileFinder =
-    function(source, projection, tiles) {
+ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   return (
       /**
        * @param {number} zoom Zoom level.
@@ -104,13 +100,13 @@ ol.renderer.Layer.prototype.createLoadedTileFinder =
        * @return {boolean} The tile range is fully loaded.
        */
       function(zoom, tileRange) {
-        return source.forEachLoadedTile(projection, zoom,
-                                        tileRange, function(tile) {
-              if (!tiles[zoom]) {
-                tiles[zoom] = {};
-              }
-              tiles[zoom][tile.tileCoord.toString()] = tile;
-            });
+        function callback(tile) {
+          if (!tiles[zoom]) {
+            tiles[zoom] = {};
+          }
+          tiles[zoom][tile.tileCoord.toString()] = tile;
+        }
+        return source.forEachLoadedTile(projection, zoom, tileRange, callback);
       });
 };
 
@@ -183,8 +179,7 @@ ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
  * @param {ol.source.Tile} tileSource Tile source.
  * @protected
  */
-ol.renderer.Layer.prototype.scheduleExpireCache =
-    function(frameState, tileSource) {
+ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     frameState.postRenderFunctions.push(
         goog.partial(
@@ -208,8 +203,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache =
  * @param {Array.<ol.Attribution>} attributions Attributions (source).
  * @protected
  */
-ol.renderer.Layer.prototype.updateAttributions =
-    function(attributionsSet, attributions) {
+ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attributions) {
   if (attributions) {
     var attribution, i, ii;
     for (i = 0, ii = attributions.length; i < ii; ++i) {
@@ -246,8 +240,7 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
  * @param {ol.TileRange} tileRange Tile range.
  * @protected
  */
-ol.renderer.Layer.prototype.updateUsedTiles =
-    function(usedTiles, tileSource, z, tileRange) {
+ol.renderer.Layer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
   var tileSourceKey = goog.getUid(tileSource).toString();
   var zKey = z.toString();
@@ -271,8 +264,7 @@ ol.renderer.Layer.prototype.updateUsedTiles =
  * @protected
  * @return {ol.Coordinate} Snapped center.
  */
-ol.renderer.Layer.prototype.snapCenterToPixel =
-    function(center, resolution, size) {
+ol.renderer.Layer.prototype.snapCenterToPixel = function(center, resolution, size) {
   return [
     resolution * (Math.round(center[0] / resolution) + (size[0] % 2) / 2),
     resolution * (Math.round(center[1] / resolution) + (size[1] % 2) / 2)
@@ -319,7 +311,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
         if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, pixelRatio, projection);
           if (tile.getState() == ol.TileState.IDLE) {
-            wantedTiles[ol.tilecoord.toString(tile.tileCoord)] = true;
+            wantedTiles[tile.tileCoord.toString()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {
               tileQueue.enqueue([tile, tileSourceKey,
                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);

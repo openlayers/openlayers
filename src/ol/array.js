@@ -38,6 +38,18 @@ ol.array.binaryFindNearest = function(arr, target) {
 
 
 /**
+ * Compare function for array sort that is safe for numbers.
+ * @param {*} a The first object to be compared.
+ * @param {*} b The second object to be compared.
+ * @return {number} A negative number, zero, or a positive number as the first
+ *     argument is less than, equal to, or greater than the second.
+ */
+ol.array.numberSafeCompareFunction = function(a, b) {
+  return a > b ? 1 : a < b ? -1 : 0;
+};
+
+
+/**
  * Whether the array contains the given object.
  * @param {Array.<*>} arr The array to test for the presence of the element.
  * @param {*} obj The object for which to test.

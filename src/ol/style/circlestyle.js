@@ -1,17 +1,14 @@
 goog.provide('ol.style.Circle');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
-goog.require('ol.structs.IHasChecksum');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
 goog.require('ol.style.Stroke');
-
 
 
 /**
@@ -21,7 +18,6 @@ goog.require('ol.style.Stroke');
  * @constructor
  * @param {olx.style.CircleOptions=} opt_options Options.
  * @extends {ol.style.Image}
- * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Circle = function(opt_options) {
@@ -238,7 +234,7 @@ ol.style.Circle.RenderOptions;
 
 /**
  * @private
- * @param {ol.style.AtlasManager|undefined} atlasManager
+ * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
 ol.style.Circle.prototype.render_ = function(atlasManager) {
   var imageSize;
@@ -272,7 +268,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
   if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
     this.canvas_ = /** @type {HTMLCanvasElement} */
-        (goog.dom.createElement('CANVAS'));
+        (document.createElement('CANVAS'));
     this.canvas_.height = size;
     this.canvas_.width = size;
 
@@ -295,12 +291,12 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     if (hasCustomHitDetectionImage) {
       // render the hit-detection image into a separate atlas image
       renderHitDetectionCallback =
-          goog.bind(this.drawHitDetectionCanvas_, this, renderOptions);
+          this.drawHitDetectionCanvas_.bind(this, renderOptions);
     }
 
     var id = this.getChecksum();
     var info = atlasManager.add(
-        id, size, size, goog.bind(this.draw_, this, renderOptions),
+        id, size, size, this.draw_.bind(this, renderOptions),
         renderHitDetectionCallback);
     goog.asserts.assert(info, 'circle radius is too large');
 
@@ -326,8 +322,8 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.Circle.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The rendering context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
@@ -361,7 +357,7 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
+ * @param {ol.style.Circle.RenderOptions} renderOptions Render options.
  */
 ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
@@ -373,7 +369,7 @@ ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
   this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement('CANVAS'));
+      (document.createElement('CANVAS'));
   var canvas = this.hitDetectionCanvas_;
 
   canvas.height = renderOptions.size;
@@ -387,13 +383,12 @@ ol.style.Circle.prototype.createHitDetectionCanvas_ = function(renderOptions) {
 
 /**
  * @private
- * @param {ol.style.Circle.RenderOptions} renderOptions
- * @param {CanvasRenderingContext2D} context
+ * @param {ol.style.Circle.RenderOptions} renderOptions Render options.
+ * @param {CanvasRenderingContext2D} context The context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
  */
-ol.style.Circle.prototype.drawHitDetectionCanvas_ =
-    function(renderOptions, context, x, y) {
+ol.style.Circle.prototype.drawHitDetectionCanvas_ = function(renderOptions, context, x, y) {
   // reset transform
   context.setTransform(1, 0, 0, 1, 0, 0);
 
@@ -420,7 +415,7 @@ ol.style.Circle.prototype.drawHitDetectionCanvas_ =
 
 
 /**
- * @inheritDoc
+ * @return {string} The checksum.
  */
 ol.style.Circle.prototype.getChecksum = function() {
   var strokeChecksum = this.stroke_ ?

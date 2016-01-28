@@ -1,9 +1,9 @@
 goog.provide('ol.render.webgl.Immediate');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.ReplayGroup');
-
 
 
 /**
@@ -79,7 +79,7 @@ goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
 ol.render.webgl.Immediate.prototype.flush = function() {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  zs.sort();
+  zs.sort(ol.array.numberSafeCompareFunction);
   var i, ii, callbacks, j, jj;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     callbacks = this.callbacksByZIndex_[zs[i].toString()];
@@ -113,8 +113,7 @@ ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawCircleGeometry =
-    function(circleGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawCircleGeometry = function(circleGeometry, data) {
 };
 
 
@@ -151,8 +150,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry =
-    function(geometryCollectionGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry = function(geometryCollectionGeometry, data) {
   var geometries = geometryCollectionGeometry.getGeometriesArray();
   var renderers = ol.render.webgl.Immediate.GEOMETRY_RENDERERS_;
   var i, ii;
@@ -173,8 +171,7 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawPointGeometry =
-    function(pointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
@@ -198,8 +195,7 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawLineStringGeometry =
-    function(lineStringGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry, data) {
 };
 
 
@@ -207,8 +203,7 @@ ol.render.webgl.Immediate.prototype.drawLineStringGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry =
-    function(multiLineStringGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry, data) {
 };
 
 
@@ -216,8 +211,7 @@ ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
-    function(multiPointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
@@ -240,8 +234,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry =
-    function(multiPolygonGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry, data) {
 };
 
 
@@ -249,8 +242,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
-    function(polygonGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry, data) {
 };
 
 
@@ -258,8 +250,7 @@ ol.render.webgl.Immediate.prototype.drawPolygonGeometry =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawText =
-    function(flatCoordinates, offset, end, stride, geometry, data) {
+ol.render.webgl.Immediate.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, data) {
 };
 
 
@@ -267,8 +258,7 @@ ol.render.webgl.Immediate.prototype.drawText =
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.setFillStrokeStyle =
-    function(fillStyle, strokeStyle) {
+ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
 };
 
 

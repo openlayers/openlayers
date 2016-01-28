@@ -17,7 +17,6 @@ goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 
 
-
 /**
  * @classdesc
  * Events emitted as map browser events are instances of this type.
@@ -102,7 +101,6 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 };
 
 
-
 /**
  * @constructor
  * @extends {ol.MapBrowserEvent}
@@ -126,7 +124,6 @@ ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
 
 };
 goog.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
-
 
 
 /**
@@ -239,12 +236,12 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
     this.dispatchEvent(newEvent);
   } else {
     // click
-    this.clickTimeoutId_ = goog.global.setTimeout(goog.bind(function() {
+    this.clickTimeoutId_ = goog.global.setTimeout(function() {
       this.clickTimeoutId_ = 0;
       var newEvent = new ol.MapBrowserPointerEvent(
           ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, pointerEvent);
       this.dispatchEvent(newEvent);
-    }, this), 250);
+    }.bind(this), 250);
   }
 };
 
@@ -255,8 +252,7 @@ ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.updateActivePointers_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEvent) {
   var event = pointerEvent;
 
   if (event.type == ol.MapBrowserEvent.EventType.POINTERUP ||
@@ -306,8 +302,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
  * @return {boolean} If the left mouse button was pressed.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.isMouseActionButton_ = function(pointerEvent) {
   return pointerEvent.button === 0;
 };
 
@@ -316,8 +311,7 @@ ol.MapBrowserEventHandler.prototype.isMouseActionButton_ =
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new ol.MapBrowserPointerEvent(
       ol.MapBrowserEvent.EventType.POINTERDOWN, this.map_, pointerEvent);
@@ -365,8 +359,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ =
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
  * @private
  */
-ol.MapBrowserEventHandler.prototype.handlePointerMove_ =
-    function(pointerEvent) {
+ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
   // Fix IE10 on windows Surface : When you tap the tablet, it triggers
   // multiple pointermove events between pointerdown and pointerup with
   // the exact same coordinates of the pointerdown event. To avoid a
@@ -403,7 +396,7 @@ ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
 
 /**
  * @param {ol.pointer.PointerEvent} pointerEvent Pointer event.
- * @return {boolean}
+ * @return {boolean} Is moving.
  * @private
  */
 ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {

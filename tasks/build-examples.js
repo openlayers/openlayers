@@ -7,9 +7,7 @@ var marked = require('marked');
 var pkg = require('../package.json');
 
 var markupRegEx = /([^\/^\.]*)\.html$/;
-/* jshint -W101 */
 var cleanupJSRegEx = /.*(\/\/ NOCOMPILE|goog\.require\(.*\);|.*renderer: common\..*,?)[\n]*/g;
-/* jshint +W101 */
 var requiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
 var isCssRegEx = /\.css$/;
 var isJsRegEx = /\.js$/;
@@ -48,7 +46,7 @@ function getLinkToApiHtml(requires) {
   var lis = requires.map(function(symb) {
     var href = '../apidoc/' + symb + '.html';
     return '<li><a href="' + href + '" title="API documentation for ' +
-        symb +'">' + symb + '</a></li>';
+        symb + '">' + symb + '</a></li>';
   });
   return '<ul class="inline">' + lis.join() + '</ul>';
 }
@@ -135,7 +133,7 @@ function augmentExamples(files, metalsmith, done) {
         }
         file.extraHead = {
           local: resources.join('\n'),
-          remote: remoteResources.join('\n'),
+          remote: remoteResources.join('\n')
         };
         file.extraResources = file.resources.length ?
             ',' + fiddleResources.join(',') : '';
@@ -200,7 +198,7 @@ function createIndex(files, metalsmith, done) {
   var exampleInfos = [];
   for (var filename in files) {
     var example = files[filename];
-    if (markupRegEx.test(filename)) {
+    if (markupRegEx.test(filename) && filename !== 'index.html') {
       exampleInfos.push({
         link: filename,
         example: filename,

@@ -24,7 +24,6 @@ goog.require('ol.source.Source');
 ol.source.ImageOptions;
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -89,8 +88,7 @@ ol.source.Image.prototype.getResolutions = function() {
  * @param {number} resolution Resolution.
  * @return {number} Resolution.
  */
-ol.source.Image.prototype.findNearestResolution =
-    function(resolution) {
+ol.source.Image.prototype.findNearestResolution = function(resolution) {
   if (this.resolutions_) {
     var idx = ol.array.linearFindNearest(this.resolutions_, resolution, 0);
     resolution = this.resolutions_[idx];
@@ -106,8 +104,7 @@ ol.source.Image.prototype.findNearestResolution =
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  */
-ol.source.Image.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
   var sourceProjection = this.getProjection();
   if (!ol.ENABLE_RASTER_REPROJECTION ||
       !sourceProjection ||
@@ -133,10 +130,10 @@ ol.source.Image.prototype.getImage =
 
     this.reprojectedImage_ = new ol.reproj.Image(
         sourceProjection, projection, extent, resolution, pixelRatio,
-        goog.bind(function(extent, resolution, pixelRatio) {
+        function(extent, resolution, pixelRatio) {
           return this.getImageInternal(extent, resolution,
               pixelRatio, sourceProjection);
-        }, this));
+        }.bind(this));
     this.reprojectedRevision_ = this.getRevision();
 
     return this.reprojectedImage_;
@@ -178,6 +175,8 @@ ol.source.Image.prototype.handleImageChange = function(event) {
           new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADERROR,
               image));
       break;
+    default:
+      // pass
   }
 };
 
@@ -191,7 +190,6 @@ ol.source.Image.prototype.handleImageChange = function(event) {
 ol.source.Image.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
 };
-
 
 
 /**

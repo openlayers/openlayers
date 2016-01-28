@@ -10,7 +10,6 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
 
-
 /**
  * @classdesc
  * Allows the user to rotate the map by twisting with two fingers

@@ -4,7 +4,6 @@ goog.require('goog.asserts');
 goog.require('goog.object');
 
 
-
 /**
  * Implements a Least-Recently-Used cache where the keys do not conflict with
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring

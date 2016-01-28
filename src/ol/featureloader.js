@@ -8,7 +8,10 @@ goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
 goog.require('ol.TileState');
+goog.require('ol.VectorTile');
 goog.require('ol.format.FormatType');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.xml');
 
 
@@ -100,13 +103,9 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
                   goog.asserts.fail('unexpected format type');
                 }
                 if (source) {
-                  var features = format.readFeatures(source,
-                      {featureProjection: projection});
-                  if (ol.ENABLE_VECTOR_TILE && success.length == 2) {
-                    success.call(this, features, format.readProjection(source));
-                  } else {
-                    success.call(this, features);
-                  }
+                  success.call(this, format.readFeatures(source,
+                      {featureProjection: projection}),
+                      format.readProjection(source));
                 } else {
                   goog.asserts.fail('undefined or null source');
                 }
@@ -138,11 +137,11 @@ ol.featureloader.tile = function(url, format) {
   return ol.featureloader.loadFeaturesXhr(url, format,
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
-       * @param {ol.proj.Projection} projection Data projection.
+       * @param {ol.proj.Projection} dataProjection Data projection.
        * @this {ol.VectorTile}
        */
-      function(features, projection) {
-        this.setProjection(projection);
+      function(features, dataProjection) {
+        this.setProjection(dataProjection);
         this.setFeatures(features);
       },
       /**
@@ -167,9 +166,10 @@ ol.featureloader.xhr = function(url, format) {
   return ol.featureloader.loadFeaturesXhr(url, format,
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
+       * @param {ol.proj.Projection} dataProjection Data projection.
        * @this {ol.source.Vector}
        */
-      function(features) {
+      function(features, dataProjection) {
         this.addFeatures(features);
       }, /* FIXME handle error */ ol.nullFunction);
 };

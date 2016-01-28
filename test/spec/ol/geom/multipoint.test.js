@@ -5,8 +5,7 @@ describe('ol.geom.MultiPoint', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var multiPoint = new ol.geom.MultiPoint(null);
-      multiPoint = multiPoint; // suppress gjslint warning
+      return new ol.geom.MultiPoint(null);
     }).not.to.throwException();
   });
 

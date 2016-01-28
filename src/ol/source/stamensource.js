@@ -76,7 +76,6 @@ ol.source.StamenProviderConfig = {
 };
 
 
-
 /**
  * @classdesc
  * Layer source for the Stamen tile server.

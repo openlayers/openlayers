@@ -9,7 +9,6 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.math');
 
 
-
 /**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
@@ -99,7 +98,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
     goog.global.clearTimeout(this.timeoutId_);
     this.timeoutId_ = goog.global.setTimeout(
-        goog.bind(this.doZoom_, this, map), timeLeft);
+        this.doZoom_.bind(this, map), timeLeft);
 
     mapBrowserEvent.preventDefault();
     stopEvent = true;

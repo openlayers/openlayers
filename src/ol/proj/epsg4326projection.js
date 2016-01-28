@@ -3,7 +3,7 @@ goog.provide('ol.proj.EPSG4326');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
-
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -27,6 +27,7 @@ ol.proj.EPSG4326_ = function(code, opt_axisOrientation) {
     extent: ol.proj.EPSG4326.EXTENT,
     axisOrientation: opt_axisOrientation,
     global: true,
+    metersPerUnit: ol.proj.EPSG4326.METERS_PER_UNIT,
     worldExtent: ol.proj.EPSG4326.EXTENT
   });
 };
@@ -48,6 +49,13 @@ ol.proj.EPSG4326_.prototype.getPointResolution = function(resolution, point) {
  * @type {ol.Extent}
  */
 ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
+
+
+/**
+ * @const
+ * @type {number}
+ */
+ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.sphere.WGS84.radius / 180;
 
 
 /**

@@ -13,15 +13,14 @@ goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
+goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
-goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
-
 
 
 /**
@@ -31,7 +30,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.dom.TileLayer = function(tileLayer) {
 
-  var target = goog.dom.createElement('DIV');
+  var target = document.createElement('DIV');
   target.style.position = 'absolute';
 
   goog.base(this, tileLayer, target);
@@ -76,8 +75,7 @@ ol.renderer.dom.TileLayer.prototype.clearFrame = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.dom.TileLayer.prototype.prepareFrame =
-    function(frameState, layerState) {
+ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   if (!layerState.visible) {
     if (this.renderedVisible_) {
@@ -141,7 +139,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
       goog.asserts.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
-        tilesToDrawByZ[z][ol.tilecoord.toString(tile.tileCoord)] = tile;
+        tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
       } else if (tileState == ol.TileState.EMPTY ||
                  (tileState == ol.TileState.ERROR &&
@@ -177,7 +175,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
-  zs.sort();
+  zs.sort(ol.array.numberSafeCompareFunction);
 
   /** @type {Object.<number, boolean>} */
   var newTileLayerZKeys = {};
@@ -203,7 +201,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 
   /** @type {Array.<number>} */
   var tileLayerZKeys = Object.keys(this.tileLayerZs_).map(Number);
-  tileLayerZKeys.sort();
+  tileLayerZKeys.sort(ol.array.numberSafeCompareFunction);
 
   var i, ii, j, origin, resolution;
   var transform = goog.vec.Mat4.createNumber();
@@ -264,7 +262,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame =
 };
 
 
-
 /**
  * @constructor
  * @private
@@ -276,7 +273,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
   /**
    * @type {!Element}
    */
-  this.target = goog.dom.createElement('DIV');
+  this.target = document.createElement('DIV');
   this.target.style.position = 'absolute';
   this.target.style.width = '100%';
   this.target.style.height = '100%';
@@ -344,7 +341,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordY = tileCoord[2];
   goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0],
       'tileCoordZ matches z of tileCoordOrigin');
-  var tileCoordKey = ol.tilecoord.toString(tileCoord);
+  var tileCoordKey = tileCoord.toString();
   if (tileCoordKey in this.tiles_) {
     return;
   }
@@ -359,7 +356,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileElement;
   var tileElementStyle;
   if (tileGutter > 0) {
-    tileElement = goog.dom.createElement('DIV');
+    tileElement = document.createElement('DIV');
     tileElementStyle = tileElement.style;
     tileElementStyle.overflow = 'hidden';
     tileElementStyle.width = tileSize[0] + 'px';
@@ -420,8 +417,7 @@ ol.renderer.dom.TileLayerZ_.prototype.getResolution = function() {
  * @param {ol.Extent} extent Extent.
  * @param {ol.TileRange=} opt_tileRange Temporary ol.TileRange object.
  */
-ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
-    function(extent, opt_tileRange) {
+ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent, opt_tileRange) {
   var tileRange = this.tileGrid_.getTileRangeForExtentAndZ(
       extent, this.tileCoordOrigin_[0], opt_tileRange);
   /** @type {Array.<ol.Tile>} */
@@ -436,7 +432,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent =
   var i, ii;
   for (i = 0, ii = tilesToRemove.length; i < ii; ++i) {
     tile = tilesToRemove[i];
-    tileCoordKey = ol.tilecoord.toString(tile.tileCoord);
+    tileCoordKey = tile.tileCoord.toString();
     goog.dom.removeNode(tile.getImage(this));
     delete this.tiles_[tileCoordKey];
   }

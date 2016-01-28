@@ -7,7 +7,6 @@ goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 
 
-
 /**
  * @classdesc
  * Projection object for web/spherical Mercator (EPSG:3857).

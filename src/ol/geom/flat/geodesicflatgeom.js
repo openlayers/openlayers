@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.geodesic');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.TransformFunction');
 goog.require('ol.math');
 goog.require('ol.proj');
@@ -15,8 +14,7 @@ goog.require('ol.proj');
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.line_ =
-    function(interpolate, transform, squaredTolerance) {
+ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance) {
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
 
@@ -49,7 +47,7 @@ ol.geom.flat.geodesic.line_ =
     a = stack.pop();
     // Add the a coordinate if it has not been added yet
     key = fracA.toString();
-    if (!goog.object.containsKey(fractions, key)) {
+    if (!(key in fractions)) {
       flatCoordinates.push(a[0], a[1]);
       fractions[key] = true;
     }
@@ -68,7 +66,7 @@ ol.geom.flat.geodesic.line_ =
       // segment.
       flatCoordinates.push(b[0], b[1]);
       key = fracB.toString();
-      goog.asserts.assert(!goog.object.containsKey(fractions, key),
+      goog.asserts.assert(!(key in fractions),
           'fractions object should contain key : ' + key);
       fractions[key] = true;
     } else {
@@ -142,8 +140,7 @@ ol.geom.flat.geodesic.greatCircleArc = function(
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.meridian =
-    function(lon, lat1, lat2, projection, squaredTolerance) {
+ol.geom.flat.geodesic.meridian = function(lon, lat1, lat2, projection, squaredTolerance) {
   var epsg4326Projection = ol.proj.get('EPSG:4326');
   return ol.geom.flat.geodesic.line_(
       /**
@@ -166,8 +163,7 @@ ol.geom.flat.geodesic.meridian =
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.parallel =
-    function(lat, lon1, lon2, projection, squaredTolerance) {
+ol.geom.flat.geodesic.parallel = function(lat, lon1, lon2, projection, squaredTolerance) {
   var epsg4326Projection = ol.proj.get('EPSG:4326');
   return ol.geom.flat.geodesic.line_(
       /**

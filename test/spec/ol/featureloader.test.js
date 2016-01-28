@@ -1,6 +1,7 @@
 goog.provide('ol.test.featureloader');
 
 describe('ol.featureloader', function() {
+
   describe('ol.featureloader.xhr', function() {
     var loader;
     var source;
@@ -26,7 +27,8 @@ describe('ol.featureloader', function() {
     describe('when called with urlFunction', function() {
       it('adds features to the source', function(done) {
         url = function(extent, resolution, projection) {
-          return 'spec/ol/data/point.json';};
+          return 'spec/ol/data/point.json';
+        };
         loader = ol.featureloader.xhr(url, format);
 
         source.on(ol.source.VectorEventType.ADDFEATURE, function(e) {
@@ -53,9 +55,49 @@ describe('ol.featureloader', function() {
     });
 
   });
+
+  describe('ol.featureloader.tile', function() {
+    var loader;
+    var tile;
+
+    beforeEach(function() {
+      tile = new ol.VectorTile([0, 0, 0], undefined, undefined, undefined,
+          undefined, ol.proj.get('EPSG:3857'));
+    });
+
+    it('sets features on the tile', function(done) {
+      var url = 'spec/ol/data/point.json';
+      var format = new ol.format.GeoJSON();
+      loader = ol.featureloader.tile(url, format);
+      goog.events.listen(tile, 'change', function(e) {
+        expect(tile.getFeatures().length).to.be.greaterThan(0);
+        done();
+      });
+      loader.call(tile, [], 1, ol.proj.get('EPSG:3857'));
+    });
+
+    (typeof ArrayBuffer == 'function' ? it : xit)(
+        'sets features on the tile and updates proj units', function(done) {
+          var url = 'spec/ol/data/14-8938-5680.vector.pbf';
+          var format = new ol.format.MVT();
+          loader = ol.featureloader.tile(url, format);
+          goog.events.listen(tile, 'change', function(e) {
+            expect(tile.getFeatures().length).to.be.greaterThan(0);
+            expect(tile.getProjection().getUnits()).to.be('tile-pixels');
+            done();
+          });
+          loader.call(tile, [], 1, ol.proj.get('EPSG:3857'));
+        });
+
+  });
+
 });
 
+goog.require('goog.events');
+goog.require('ol.VectorTile');
 goog.require('ol.featureloader');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.format.MVT');
+goog.require('ol.proj');
 goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEventType');

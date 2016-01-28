@@ -35,3 +35,11 @@ h2 {
 .edit-form-elem select {
   width: 130px;
 }
+
+.edit-form br {
+  clear: left;
+}
+
+.clearall {
+  clear: both;
+}

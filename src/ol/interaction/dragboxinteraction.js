@@ -29,6 +29,14 @@ ol.DragBoxEventType = {
    * @api stable
    */
   BOXSTART: 'boxstart',
+
+  /**
+   * Triggered on drag when box is active.
+   * @event ol.DragBoxEvent#boxdrag
+   * @api
+   */
+  BOXDRAG: 'boxdrag',
+
   /**
    * Triggered upon drag box end.
    * @event ol.DragBoxEvent#boxend
@@ -38,7 +46,6 @@ ol.DragBoxEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.DragBox} instances are instances of
@@ -46,11 +53,12 @@ ol.DragBoxEventType = {
  *
  * @param {string} type The event type.
  * @param {ol.Coordinate} coordinate The event coordinate.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
  * @extends {goog.events.Event}
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
-ol.DragBoxEvent = function(type, coordinate) {
+ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   goog.base(this, type);
 
   /**
@@ -61,9 +69,25 @@ ol.DragBoxEvent = function(type, coordinate) {
    */
   this.coordinate = coordinate;
 
+  /**
+   * @const
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserEvent;
+
 };
 goog.inherits(ol.DragBoxEvent, goog.events.Event);
 
+
+/**
+ * A function that takes a {@link ol.MapBrowserEvent} and two
+ * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
+ * true should be returned.
+ * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
+ * @api
+ */
+ol.interaction.DragBoxEndConditionType;
 
 
 /**
@@ -112,8 +136,32 @@ ol.interaction.DragBox = function(opt_options) {
   this.condition_ = options.condition ?
       options.condition : ol.events.condition.always;
 
+  /**
+   * @private
+   * @type {ol.interaction.DragBoxEndConditionType}
+   */
+  this.boxEndCondition_ = options.boxEndCondition ?
+      options.boxEndCondition : ol.interaction.DragBox.defaultBoxEndCondition;
 };
 goog.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
+
+
+/**
+ * The default condition for determining whether the boxend event
+ * should fire.
+ * @param  {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
+ *  leading to the box end.
+ * @param  {ol.Pixel} startPixel      The starting pixel of the box.
+ * @param  {ol.Pixel} endPixel        The end pixel of the box.
+ * @return {boolean} Whether or not the boxend condition should be fired.
+ */
+ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent,
+    startPixel, endPixel) {
+  var width = endPixel[0] - startPixel[0];
+  var height = endPixel[1] - startPixel[1];
+  return width * width + height * height >=
+      ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED;
+};
 
 
 /**
@@ -127,6 +175,9 @@ ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
   }
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
+
+  this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXDRAG,
+    mapBrowserEvent.coordinate, mapBrowserEvent));
 };
 
 
@@ -162,14 +213,11 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
 
   this.box_.setMap(null);
 
-  var deltaX = mapBrowserEvent.pixel[0] - this.startPixel_[0];
-  var deltaY = mapBrowserEvent.pixel[1] - this.startPixel_[1];
-
-  if (deltaX * deltaX + deltaY * deltaY >=
-      ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED) {
+  if (this.boxEndCondition_(mapBrowserEvent,
+      this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
-        mapBrowserEvent.coordinate));
+        mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
 };
@@ -192,7 +240,7 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
-        mapBrowserEvent.coordinate));
+        mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
     return false;

@@ -14,7 +14,6 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Handles input of vector data by drag and drop.
@@ -198,7 +197,6 @@ ol.interaction.DragAndDropEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
@@ -213,8 +211,7 @@ ol.interaction.DragAndDropEventType = {
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
-ol.interaction.DragAndDropEvent =
-    function(type, target, file, opt_features, opt_projection) {
+ol.interaction.DragAndDropEvent = function(type, target, file, opt_features, opt_projection) {
 
   goog.base(this, type, target);
 

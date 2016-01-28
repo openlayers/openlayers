@@ -43,8 +43,9 @@ var copyOpts = {
 
 /**
  * A small utility method printing out log messages.
+ * @param {string} msg The message.
  */
-var log = function(msg){
+var log = function(msg) {
   process.stdout.write(msg + '\n');
 };
 
@@ -54,12 +55,13 @@ var log = function(msg){
  *
  * See http://www.geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/
  * adjusted to use path.join
+ * @param {string} p Path to the directory.
  */
 var deleteFolderRecursive = function(p) {
-  if( fs.existsSync(p) ) {
-    fs.readdirSync(p).forEach(function(file,index){
+  if (fs.existsSync(p)) {
+    fs.readdirSync(p).forEach(function(file,index) {
       var curPath = path.join(p, file);
-      if(fs.lstatSync(curPath).isDirectory()) { // recurse
+      if (fs.lstatSync(curPath).isDirectory()) { // recurse
         deleteFolderRecursive(curPath);
       } else { // delete file
         fs.unlinkSync(curPath);
@@ -73,7 +75,7 @@ var deleteFolderRecursive = function(p) {
  * Creates folders for backup and instrumentation and copies the contents of the
  * current src folder into them.
  */
-var setupBackupAndInstrumentationDir = function(){
+var setupBackupAndInstrumentationDir = function() {
   if (!fs.existsSync(backupDir)) {
     log('• create directory for backup of src: ' + backupDir);
     fs.mkdirSync(backupDir);
@@ -95,7 +97,7 @@ var setupBackupAndInstrumentationDir = function(){
  * backup over the src directory and removes the instrumentation and backup
  * directory.
  */
-var revertBackupAndInstrumentationDir = function(){
+var revertBackupAndInstrumentationDir = function() {
   log('• copy original src back to src folder');
   wrench.copyDirSyncRecursive(backupDir, dir, copyOpts);
   log('• delete backup directory');
@@ -108,7 +110,7 @@ var revertBackupAndInstrumentationDir = function(){
 /**
  * Callback for when runTestsuite() has finished.
  */
-var collectAndWriteCoverageData = function(code) {
+var collectAndWriteCoverageData = function() {
   log('• collect data from coverage.json');
 
   var coverageFile = path.join(__dirname,'../coverage/coverage.json');
@@ -120,7 +122,7 @@ var collectAndWriteCoverageData = function(code) {
   revertBackupAndInstrumentationDir();
 
   log('• write report from collected data');
-  reporter.write(collector, true, function () {
+  reporter.write(collector, true, function() {
     process.exit(0);
   });
 };
@@ -128,6 +130,8 @@ var collectAndWriteCoverageData = function(code) {
 /**
  * Will instrument all JavaScript files that are passed as second parameter.
  * This is the callback to the glob call.
+ * @param {Error} err Any error.
+ * @param {Array.<string>} files List of file paths.
  */
 var foundAllJavaScriptSourceFiles = function(err, files) {
   if (err) {
@@ -168,17 +172,13 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
  * coverage process by gathering all JavaScript files and then instrumenting
  * them.
  */
-var main = function(){
+var main = function() {
   setupBackupAndInstrumentationDir();
   glob(dir + '/**/*.js', {}, foundAllJavaScriptSourceFiles);
 };
-
-
 
 if (require.main === module) {
   main();
 }
 
 module.exports = main;
-
-

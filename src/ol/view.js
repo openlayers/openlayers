@@ -40,7 +40,6 @@ ol.ViewHint = {
 };
 
 
-
 /**
  * @classdesc
  * An ol.View object represents a simple 2D view of the map.
@@ -633,7 +632,7 @@ ol.View.prototype.setZoom = function(zoom) {
 /**
  * @param {olx.ViewOptions} options View options.
  * @private
- * @return {ol.CenterConstraintType}
+ * @return {ol.CenterConstraintType} The constraint.
  */
 ol.View.createCenterConstraint_ = function(options) {
   if (options.extent !== undefined) {
@@ -648,7 +647,7 @@ ol.View.createCenterConstraint_ = function(options) {
  * @private
  * @param {olx.ViewOptions} options View options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
- *     minResolution: number}}
+ *     minResolution: number}} The constraint.
  */
 ol.View.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
@@ -682,7 +681,7 @@ ol.View.createResolutionConstraint_ = function(options) {
     var size = !extent ?
         // use an extent that can fit the whole world if need be
         360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
-            ol.proj.METERS_PER_UNIT[projection.getUnits()] :
+            projection.getMetersPerUnit() :
         Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent));
 
     var defaultMaxResolution = size / ol.DEFAULT_TILE_SIZE / Math.pow(

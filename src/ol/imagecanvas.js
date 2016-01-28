@@ -5,7 +5,6 @@ goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 
 
-
 /**
  * @constructor
  * @extends {ol.ImageBase}
@@ -81,7 +80,7 @@ ol.ImageCanvas.prototype.load = function() {
     goog.asserts.assert(this.loader_, 'this.loader_ must be set');
     this.state = ol.ImageState.LOADING;
     this.changed();
-    this.loader_(goog.bind(this.handleLoad_, this));
+    this.loader_(this.handleLoad_.bind(this));
   }
 };
 

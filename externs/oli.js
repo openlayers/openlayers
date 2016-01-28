@@ -35,6 +35,12 @@ oli.DragBoxEvent = function() {};
 oli.DragBoxEvent.prototype.coordinate;
 
 
+/**
+ * @type {ol.MapBrowserEvent}
+ */
+oli.DragBoxEvent.prototype.mapBrowserEvent;
+
+
 
 /**
  * @interface
@@ -328,6 +334,6 @@ oli.source.VectorEvent = function() {};
 
 
 /**
- * @type {ol.Feature}
+ * @type {ol.Feature|undefined}
  */
 oli.source.VectorEvent.prototype.feature;

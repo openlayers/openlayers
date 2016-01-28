@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -153,11 +152,11 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
 
 
 /**
- * Sets the layer to be rendered on a map. The map will not manage this layer in
- * its layers collection, layer filters in {@link ol.Map#forEachLayerAtPixel}
- * will not filter the layer, and it will be rendered on top. This is useful for
- * temporary layers. To remove an unmanaged layer from the map, use
- * `#setMap(null)`.
+ * Sets the layer to be rendered on top of other layers on a map. The map will
+ * not manage this layer in its layers collection, and the callback in
+ * {@link ol.Map#forEachLayerAtPixel} will receive `null` as layer. This
+ * is useful for temporary layers. To remove an unmanaged layer from the map,
+ * use `#setMap(null)`.
  *
  * To add the layer to a map and have it managed by the map, use
  * {@link ol.Map#addLayer} instead.

@@ -57,7 +57,6 @@ ol.format.KMLVec2_;
 ol.format.KMLGxTrackObject_;
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the KML format.
@@ -1164,8 +1163,8 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
  * Reads an array of geometries and creates arrays for common geometry
  * properties. Then sets them to the multi geometry.
  * @param {ol.geom.MultiPoint|ol.geom.MultiLineString|ol.geom.MultiPolygon}
- * multiGeometry
- * @param {Array.<ol.geom.Geometry>} geometries
+ *     multiGeometry A multi-geometry.
+ * @param {Array.<ol.geom.Geometry>} geometries List of geometries.
  * @private
  */
 ol.format.KML.setCommonGeometryProperties_ = function(multiGeometry,
@@ -1764,8 +1763,8 @@ ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
         'Document': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Folder': ol.xml.makeArrayExtender(this.readDocumentOrFolder_, this),
         'Placemark': ol.xml.makeArrayPusher(this.readPlacemark_, this),
-        'Style': goog.bind(this.readSharedStyle_, this),
-        'StyleMap': goog.bind(this.readSharedStyleMap_, this)
+        'Style': this.readSharedStyle_.bind(this),
+        'StyleMap': this.readSharedStyleMap_.bind(this)
       });
   var features = ol.xml.pushParseAndPop(/** @type {Array.<ol.Feature>} */ ([]),
       parsersNS, node, objectStack, this);
@@ -2137,8 +2136,7 @@ ol.format.KML.writeColorTextNode_ = function(node, color) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.KML.writeCoordinatesTextNode_ =
-    function(node, coordinates, objectStack) {
+ol.format.KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
 
@@ -2322,8 +2320,7 @@ ol.format.KML.writeLineStyle_ = function(node, style, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.KML.writeMultiGeometry_ =
-    function(node, geometry, objectStack) {
+ol.format.KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
   goog.asserts.assert(
       (geometry instanceof ol.geom.MultiPoint) ||
       (geometry instanceof ol.geom.MultiLineString) ||
@@ -2605,9 +2602,8 @@ ol.format.KML.ICON_SEQUENCE_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, [
       'href'
     ],
-    ol.xml.makeStructureNS(
-        ol.format.KML.GX_NAMESPACE_URIS_, [
-          'x', 'y', 'w', 'h'
+    ol.xml.makeStructureNS(ol.format.KML.GX_NAMESPACE_URIS_, [
+      'x', 'y', 'w', 'h'
     ]));
 
 

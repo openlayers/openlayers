@@ -58,7 +58,7 @@ var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
 var deltaMean = 500; // the geolocation sampling period mean in ms
 
 // Listen to position changes
-geolocation.on('change', function(evt) {
+geolocation.on('change', function() {
   var position = geolocation.getPosition();
   var accuracy = geolocation.getAccuracy();
   var heading = geolocation.getHeading() || 0;
@@ -113,7 +113,7 @@ function addPosition(position, heading, m, speed) {
     // force the rotation change to be less than 180°
     if (Math.abs(headingDiff) > Math.PI) {
       var sign = (headingDiff >= 0) ? 1 : -1;
-      headingDiff = - sign * (2 * Math.PI - Math.abs(headingDiff));
+      headingDiff = -sign * (2 * Math.PI - Math.abs(headingDiff));
     }
     heading = prevHeading + headingDiff;
   }

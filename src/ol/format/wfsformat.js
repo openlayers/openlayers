@@ -13,7 +13,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the WFS format.
@@ -192,8 +191,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
  * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
-ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument =
-    function(doc) {
+ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
       'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; n; n = n.nextSibling) {

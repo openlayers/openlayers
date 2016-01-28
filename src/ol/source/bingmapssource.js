@@ -13,7 +13,6 @@ goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
 
 
-
 /**
  * @classdesc
  * Layer source for Bing Maps tile data.
@@ -56,7 +55,7 @@ ol.source.BingMaps = function(options) {
     'include': 'ImageryProviders',
     'uriScheme': 'https',
     'key': options.key
-  }, goog.bind(this.handleImageryMetadataResponse, this));
+  }, this.handleImageryMetadataResponse.bind(this));
 
 };
 goog.inherits(ol.source.BingMaps, ol.source.TileImage);
@@ -79,8 +78,7 @@ ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-ol.source.BingMaps.prototype.handleImageryMetadataResponse =
-    function(response) {
+ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) {
 
   if (response.statusCode != 200 ||
       response.statusDescription != 'OK' ||

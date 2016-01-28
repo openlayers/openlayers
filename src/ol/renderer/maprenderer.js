@@ -29,7 +29,6 @@ ol.RendererType = {
 };
 
 
-
 /**
  * @constructor
  * @extends {goog.Disposable}
@@ -125,8 +124,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg,
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -167,9 +165,8 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (!layerState.managed ||
-        (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer))) {
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
@@ -201,8 +198,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate =
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg,
+ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -239,8 +235,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel =
  * @return {boolean} Is there a feature at the given coordinate?
  * @template U
  */
-ol.renderer.Map.prototype.hasFeatureAtCoordinate =
-    function(coordinate, frameState, layerFilter, thisArg) {
+ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this, layerFilter, thisArg);
 
@@ -345,8 +340,7 @@ ol.renderer.Map.prototype.renderFrame = ol.nullFunction;
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.Map.prototype.removeUnusedLayerRenderers_ =
-    function(map, frameState) {
+ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
@@ -369,13 +363,12 @@ ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
  * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
-ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
-    function(frameState) {
+ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-          goog.bind(this.removeUnusedLayerRenderers_, this));
+          this.removeUnusedLayerRenderers_.bind(this));
       return;
     }
   }
@@ -383,9 +376,9 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers =
 
 
 /**
- * @param {ol.layer.LayerState} state1
- * @param {ol.layer.LayerState} state2
- * @return {number}
+ * @param {ol.layer.LayerState} state1 First layer state.
+ * @param {ol.layer.LayerState} state2 Second layer state.
+ * @return {number} The zIndex difference.
  */
 ol.renderer.Map.sortByZIndex = function(state1, state2) {
   return state1.zIndex - state2.zIndex;

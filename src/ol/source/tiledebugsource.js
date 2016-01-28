@@ -6,8 +6,6 @@ goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.size');
 goog.require('ol.source.Tile');
-goog.require('ol.tilecoord');
-
 
 
 /**
@@ -75,7 +73,6 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
 };
 
 
-
 /**
  * @classdesc
  * A pseudo tile source, which does not fetch tiles from a server, but renders
@@ -113,8 +110,8 @@ ol.source.TileDebug.prototype.getTile = function(z, x, y) {
     var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
     var tileCoord = [z, x, y];
     var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-    var text = !textTileCoord ? '' : ol.tilecoord.toString(
-        this.getTileCoordForTileUrlFunction(textTileCoord));
+    var text = !textTileCoord ? '' :
+        this.getTileCoordForTileUrlFunction(textTileCoord).toString();
     var tile = new ol.DebugTile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);
     return tile;

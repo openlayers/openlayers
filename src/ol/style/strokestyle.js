@@ -3,8 +3,6 @@ goog.provide('ol.style.Stroke');
 goog.require('goog.crypt');
 goog.require('goog.crypt.Md5');
 goog.require('ol.color');
-goog.require('ol.structs.IHasChecksum');
-
 
 
 /**
@@ -16,7 +14,6 @@ goog.require('ol.structs.IHasChecksum');
  *
  * @constructor
  * @param {olx.style.StrokeOptions=} opt_options Options.
- * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Stroke = function(opt_options) {
@@ -200,7 +197,7 @@ ol.style.Stroke.prototype.setWidth = function(width) {
 
 
 /**
- * @inheritDoc
+ * @return {string} The checksum.
  */
 ol.style.Stroke.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {

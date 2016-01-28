@@ -108,11 +108,16 @@ var styles = {
   })
 };
 
+var animating = false;
+var speed, now;
+var speedInput = document.getElementById('speed');
+var startButton = document.getElementById('start-animation');
+
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
     features: [routeFeature, geoMarker, startMarker, endMarker]
   }),
-  style: function(feature, resolution) {
+  style: function(feature) {
     // hide geoMarker if animation is active
     if (animating && feature.get('type') === 'geoMarker') {
       return null;
@@ -135,7 +140,7 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.BingMaps({
         imagerySet: 'AerialWithLabels',
-        key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3'
+        key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
       })
     }),
     vectorLayer
@@ -198,8 +203,4 @@ function stopAnimation(ended) {
   map.un('postcompose', moveFeature);
 }
 
-var speed, now;
-var animating = false;
-var speedInput = document.getElementById('speed');
-var startButton = document.getElementById('start-animation');
 startButton.addEventListener('click', startAnimation, false);

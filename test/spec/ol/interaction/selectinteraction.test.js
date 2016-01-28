@@ -159,30 +159,6 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('filter features using the filter option', function() {
-    var select;
-
-    describe('with unmanaged layers', function() {
-      it('does not call filter for unmanaged layers', function() {
-        var spy = sinon.spy();
-        var select = new ol.interaction.Select({
-          multi: false,
-          filter: spy
-        });
-        map.addInteraction(select);
-        var feature = new ol.Feature(
-            new ol.geom.Polygon([[[0, 0], [0, 40], [40, 40], [40, 0]]]));
-        var unmanaged = new ol.layer.Vector({
-          source: new ol.source.Vector({
-            features: [feature]
-          })
-        });
-        unmanaged.setMap(map);
-        map.renderSync();
-        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
-        expect(spy.getCalls().length).to.be(0);
-        unmanaged.setMap(null);
-      });
-    });
 
     describe('with multi set to true', function() {
 

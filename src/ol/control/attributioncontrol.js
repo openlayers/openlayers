@@ -16,7 +16,6 @@ goog.require('ol.css');
 goog.require('ol.source.Tile');
 
 
-
 /**
  * @classdesc
  * Control to show all the attributions associated with the layer sources
@@ -37,13 +36,13 @@ ol.control.Attribution = function(opt_options) {
    * @private
    * @type {Element}
    */
-  this.ulElement_ = goog.dom.createElement('UL');
+  this.ulElement_ = document.createElement('UL');
 
   /**
    * @private
    * @type {Element}
    */
-  this.logoLi_ = goog.dom.createElement('LI');
+  this.logoLi_ = document.createElement('LI');
 
   this.ulElement_.appendChild(this.logoLi_);
   goog.style.setElementShown(this.logoLi_, false);
@@ -98,13 +97,6 @@ ol.control.Attribution = function(opt_options) {
 
   goog.events.listen(button, goog.events.EventType.CLICK,
       this.handleClick_, false, this);
-
-  goog.events.listen(button, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
-    this.blur();
-  }, false);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL +
@@ -245,23 +237,21 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
       delete visibleAttributions[attributionKey];
-    }
-    else if (attributionKey in hiddenAttributions) {
+    } else if (attributionKey in hiddenAttributions) {
       if (this.attributionElementRenderedVisible_[attributionKey]) {
         goog.style.setElementShown(
             this.attributionElements_[attributionKey], false);
         delete this.attributionElementRenderedVisible_[attributionKey];
       }
       delete hiddenAttributions[attributionKey];
-    }
-    else {
+    } else {
       goog.dom.removeNode(this.attributionElements_[attributionKey]);
       delete this.attributionElements_[attributionKey];
       delete this.attributionElementRenderedVisible_[attributionKey];
     }
   }
   for (attributionKey in visibleAttributions) {
-    attributionElement = goog.dom.createElement('LI');
+    attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         visibleAttributions[attributionKey].getHTML();
     this.ulElement_.appendChild(attributionElement);
@@ -269,7 +259,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     this.attributionElementRenderedVisible_[attributionKey] = true;
   }
   for (attributionKey in hiddenAttributions) {
-    attributionElement = goog.dom.createElement('LI');
+    attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         hiddenAttributions[attributionKey].getHTML();
     goog.style.setElementShown(attributionElement, false);

@@ -31,7 +31,7 @@ function growRegion(inputs, data) {
       // As noted in the Raster source constructor, this function is provided
       // using the `lib` option. Other functions will NOT be visible unless
       // provided using the `lib` option.
-      var next = nextEdges(edge[i]);
+      var next = next4Edges(edge[i]);
       for (var j = 0, jj = next.length; j < jj; j++) {
         var s = next[j][0], t = next[j][1];
         if (s >= 0 && s < width && t >= 0 && t < height) {
@@ -72,7 +72,7 @@ function next4Edges(edge) {
   ];
 }
 
-var key = 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3';
+var key = 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF';
 
 var imagery = new ol.layer.Tile({
   source: new ol.source.BingMaps({key: key, imagerySet: 'Aerial'})
@@ -85,7 +85,7 @@ var raster = new ol.source.Raster({
   // Functions in the `lib` object will be available to the operation run in
   // the web worker.
   lib: {
-    nextEdges: next4Edges
+    next4Edges: next4Edges
   }
 });
 
@@ -110,6 +110,8 @@ map.on('click', function(event) {
   raster.changed();
 });
 
+var thresholdControl = document.getElementById('threshold');
+
 raster.on('beforeoperations', function(event) {
   // the event.data object will be passed to operations
   var data = event.data;
@@ -118,8 +120,6 @@ raster.on('beforeoperations', function(event) {
     data.pixel = map.getPixelFromCoordinate(coordinate);
   }
 });
-
-var thresholdControl = document.getElementById('threshold');
 
 function updateControlValue() {
   document.getElementById('threshold-value').innerText = thresholdControl.value;

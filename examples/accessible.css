@@ -14,3 +14,6 @@ a.skiplink:focus {
   background-color: #fff;
   padding: 0.3em;
 }
+#map:focus {
+  outline: #4A74A8 solid 0.15em;
+}

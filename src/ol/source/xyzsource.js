@@ -3,7 +3,6 @@ goog.provide('ol.source.XYZ');
 goog.require('ol.source.TileImage');
 
 
-
 /**
  * @classdesc
  * Layer source for tile data with URLs in a set XYZ format that are
@@ -41,6 +40,7 @@ ol.source.XYZ = function(options) {
     attributions: options.attributions,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
+    opaque: options.opaque,
     projection: projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileGrid: tileGrid,

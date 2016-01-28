@@ -31,7 +31,6 @@ ol.CollectionEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.Collection} instances are instances of this
@@ -65,7 +64,6 @@ goog.inherits(ol.CollectionEvent, goog.events.Event);
 ol.CollectionProperty = {
   LENGTH: 'length'
 };
-
 
 
 /**

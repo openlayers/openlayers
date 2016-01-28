@@ -22,7 +22,6 @@ goog.require('ol.style.Style');
 var app = {};
 
 
-
 /**
  * @constructor
  * @extends {ol.interaction.Pointer}
@@ -72,7 +71,7 @@ app.Drag.prototype.handleDownEvent = function(evt) {
   var map = evt.map;
 
   var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature, layer) {
+      function(feature) {
         return feature;
       });
 
@@ -89,13 +88,6 @@ app.Drag.prototype.handleDownEvent = function(evt) {
  * @param {ol.MapBrowserEvent} evt Map browser event.
  */
 app.Drag.prototype.handleDragEvent = function(evt) {
-  var map = evt.map;
-
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature, layer) {
-        return feature;
-      });
-
   var deltaX = evt.coordinate[0] - this.coordinate_[0];
   var deltaY = evt.coordinate[1] - this.coordinate_[1];
 
@@ -115,7 +107,7 @@ app.Drag.prototype.handleMoveEvent = function(evt) {
   if (this.cursor_) {
     var map = evt.map;
     var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature, layer) {
+        function(feature) {
           return feature;
         });
     var element = evt.map.getTargetElement();
@@ -133,10 +125,9 @@ app.Drag.prototype.handleMoveEvent = function(evt) {
 
 
 /**
- * @param {ol.MapBrowserEvent} evt Map browser event.
  * @return {boolean} `false` to stop the drag sequence.
  */
-app.Drag.prototype.handleUpEvent = function(evt) {
+app.Drag.prototype.handleUpEvent = function() {
   this.coordinate_ = null;
   this.feature_ = null;
   return false;
@@ -158,7 +149,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileJSON({
-        url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp'
+        url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'
       })
     }),
     new ol.layer.Vector({

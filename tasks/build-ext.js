@@ -66,8 +66,7 @@ function wrapModule(mod, callback) {
   };
 
   if (mod.browserify) {
-    var b = browserify(mod.main, {standalone: mod.name}).
-        bundle(function(err, buf) {
+    browserify(mod.main, {standalone: mod.name}).bundle(function(err, buf) {
       if (err) {
         callback(err);
         return;

@@ -4,20 +4,15 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('constructor', function() {
 
-    it('creates a new instance', function() {
-      var layer = new ol.layer.VectorTile({
-        source: new ol.source.VectorTile({})
-      });
-      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
-    });
+    var map, layer, feature1, feature2, target, tileCallback;
 
-    it('gives precedence to feature styles over layer styles', function() {
-      var target = document.createElement('div');
+    beforeEach(function() {
+      tileCallback = function() {};
+      target = document.createElement('div');
       target.style.width = '256px';
       target.style.height = '256px';
       document.body.appendChild(target);
-      var map = new ol.Map({
+      map = new ol.Map({
         view: new ol.View({
           center: [0, 0],
           zoom: 0
@@ -34,14 +29,15 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           text: 'feature'
         })
       })];
-      var feature1 = new ol.Feature(new ol.geom.Point([0, 0]));
-      var feature2 = new ol.Feature(new ol.geom.Point([0, 0]));
+      feature1 = new ol.Feature(new ol.geom.Point([1, -1]));
+      feature2 = new ol.Feature(new ol.geom.Point([0, 0]));
       feature2.setStyle(featureStyle);
       var TileClass = function() {
         ol.VectorTile.apply(this, arguments);
         this.setState('loaded');
         this.setFeatures([feature1, feature2]);
-        this.setProjection(ol.proj.get('EPSG:3857'));
+        this.setProjection(ol.proj.get('EPSG:4326'));
+        tileCallback(this);
       };
       ol.inherits(TileClass, ol.VectorTile);
       var source = new ol.source.VectorTile({
@@ -49,17 +45,52 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: ol.tilegrid.createXYZ()
       });
-      var layer = new ol.layer.VectorTile({
+      layer = new ol.layer.VectorTile({
         source: source,
         style: layerStyle
       });
       map.addLayer(layer);
+    });
+
+    it('creates a new instance', function() {
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
+    });
+
+    afterEach(function() {
+      document.body.removeChild(target);
+      map.dispose();
+    });
+
+    it('gives precedence to feature styles over layer styles', function() {
       var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
           'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layerStyle);
-      expect(spy.getCall(1).args[2]).to.be(featureStyle);
-      document.body.removeChild(target);
+      expect(spy.getCall(0).args[2]).to.be(layer.getStyle());
+      expect(spy.getCall(1).args[2]).to.be(feature2.getStyle());
+    });
+
+    it('transforms geometries when tile and view projection are different', function() {
+      var tile;
+      tileCallback = function(t) {
+        tile = t;
+      }
+      map.renderSync();
+      expect(tile.getProjection()).to.equal(ol.proj.get('EPSG:3857'));
+      expect(feature1.getGeometry().getCoordinates()).to.eql(
+          ol.proj.fromLonLat([1, -1]));
+    });
+
+    it('leaves geometries untouched when units are tile-pixels', function() {
+      var proj = new ol.proj.Projection({code: '', units: 'tile-pixels'});
+      var tile;
+      tileCallback = function(t) {
+        t.setProjection(proj);
+        tile = t;
+      }
+      map.renderSync();
+      expect(tile.getProjection()).to.equal(proj);
+      expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);
     });
 
   });
@@ -122,6 +153,7 @@ goog.require('ol.format.MVT');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.VectorTile');
 goog.require('ol.style.Style');

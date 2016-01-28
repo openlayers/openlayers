@@ -42,7 +42,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 ol.renderer.webgl.TextureCacheEntry;
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Map}
@@ -58,7 +57,7 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement('CANVAS'));
+      (document.createElement('CANVAS'));
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
@@ -129,20 +128,19 @@ ol.renderer.webgl.Map = function(container, map) {
    * @type {ol.structs.PriorityQueue.<Array>}
    */
   this.tileTextureQueue_ = new ol.structs.PriorityQueue(
-      goog.bind(
-          /**
-           * @param {Array.<*>} element Element.
-           * @return {number} Priority.
-           * @this {ol.renderer.webgl.Map}
-           */
-          function(element) {
-            var tileCenter = /** @type {ol.Coordinate} */ (element[1]);
-            var tileResolution = /** @type {number} */ (element[2]);
-            var deltaX = tileCenter[0] - this.focus_[0];
-            var deltaY = tileCenter[1] - this.focus_[1];
-            return 65536 * Math.log(tileResolution) +
-                Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
-          }, this),
+      /**
+       * @param {Array.<*>} element Element.
+       * @return {number} Priority.
+       * @this {ol.renderer.webgl.Map}
+       */
+      (function(element) {
+        var tileCenter = /** @type {ol.Coordinate} */ (element[1]);
+        var tileResolution = /** @type {number} */ (element[2]);
+        var deltaX = tileCenter[0] - this.focus_[0];
+        var deltaY = tileCenter[1] - this.focus_[1];
+        return 65536 * Math.log(tileResolution) +
+            Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+      }).bind(this),
       /**
        * @param {Array.<*>} element Element.
        * @return {string} Key.
@@ -151,11 +149,14 @@ ol.renderer.webgl.Map = function(container, map) {
         return /** @type {ol.Tile} */ (element[0]).getKey();
       });
 
-  /**
-   * @private
-   * @type {ol.PostRenderFunction}
-   */
-  this.loadNextTileTexture_ = goog.bind(
+
+ /**
+  * @param {ol.Map} map Map.
+  * @param {?olx.FrameState} frameState Frame state.
+  * @return {boolean} false.
+  * @this {ol.renderer.webgl.Map}
+  */
+  this.loadNextTileTexture_ =
       function(map, frameState) {
         if (!this.tileTextureQueue_.isEmpty()) {
           this.tileTextureQueue_.reprioritize();
@@ -166,7 +167,9 @@ ol.renderer.webgl.Map = function(container, map) {
           this.bindTileTexture(
               tile, tileSize, tileGutter, goog.webgl.LINEAR, goog.webgl.LINEAR);
         }
-      }, this);
+        return false;
+      }.bind(this);
+
 
   /**
    * @private
@@ -187,8 +190,7 @@ goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
  * @param {number} magFilter Mag filter.
  * @param {number} minFilter Min filter.
  */
-ol.renderer.webgl.Map.prototype.bindTileTexture =
-    function(tile, tileSize, tileGutter, magFilter, minFilter) {
+ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileGutter, magFilter, minFilter) {
   var gl = this.getGL();
   var tileKey = tile.getKey();
   if (this.textureCache_.containsKey(tileKey)) {
@@ -270,8 +272,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ =
-    function(type, frameState) {
+ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameState) {
   var map = this.getMap();
   if (map.hasListener(type)) {
     var context = this.context_;
@@ -344,7 +345,7 @@ ol.renderer.webgl.Map.prototype.expireCache_ = function(map, frameState) {
 
 
 /**
- * @return {ol.webgl.Context}
+ * @return {ol.webgl.Context} The context.
  */
 ol.renderer.webgl.Map.prototype.getContext = function() {
   return this.context_;
@@ -517,7 +518,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
       ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-    frameState.postRenderFunctions.push(goog.bind(this.expireCache_, this));
+    frameState.postRenderFunctions.push(this.expireCache_.bind(this));
   }
 
   if (!this.tileTextureQueue_.isEmpty()) {
@@ -536,8 +537,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg,
+ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
 
@@ -570,8 +570,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate =
-    function(coordinate, frameState, layerFilter, thisArg) {
+ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = false;
 
   if (this.getGL().isContextLost()) {
@@ -603,8 +602,7 @@ ol.renderer.webgl.Map.prototype.hasFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg,
+ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
         layerFilter, thisArg2) {
   if (this.getGL().isContextLost()) {
     return false;

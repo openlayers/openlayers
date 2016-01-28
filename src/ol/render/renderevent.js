@@ -27,7 +27,6 @@ ol.render.EventType = {
 };
 
 
-
 /**
  * @constructor
  * @extends {goog.events.Event}

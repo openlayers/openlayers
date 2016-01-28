@@ -1,6 +1,3 @@
-var fs = require('fs');
-var path = require('path');
-
 var async = require('async');
 var fse = require('fs-extra');
 var nomnom = require('nomnom');

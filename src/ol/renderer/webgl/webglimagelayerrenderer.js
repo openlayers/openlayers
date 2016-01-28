@@ -18,7 +18,6 @@ goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Context');
 
 
-
 /**
  * @constructor
  * @extends {ol.renderer.webgl.Layer}
@@ -74,8 +73,7 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate =
-    function(coordinate, frameState, callback, thisArg) {
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
@@ -97,8 +95,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
-    function(frameState, layerState, context) {
+ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var gl = this.mapRenderer.getGL();
 
@@ -194,8 +191,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame =
  * @param {ol.Extent} imageExtent Image extent.
  * @private
  */
-ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
-    function(canvasWidth, canvasHeight, pixelRatio,
+ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio,
         viewCenter, viewResolution, viewRotation, imageExtent) {
 
   var canvasExtentWidth = canvasWidth * viewResolution;
@@ -223,8 +219,7 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
-    function(coordinate, frameState) {
+ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, goog.functions.TRUE, this);
   return hasFeature !== undefined;
@@ -234,8 +229,7 @@ ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate =
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
-    function(pixel, frameState, callback, thisArg) {
+ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   if (!this.image_ || !this.image_.getImage()) {
     return undefined;
   }
@@ -294,13 +288,12 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel =
 /**
  * The transformation matrix to get the pixel on the image for a
  * pixel on the map.
- * @param {ol.Size} mapSize
- * @param {ol.Size} imageSize
- * @return {goog.vec.Mat4.Number}
+ * @param {ol.Size} mapSize The map size.
+ * @param {ol.Size} imageSize The image size.
+ * @return {goog.vec.Mat4.Number} The transformation matrix.
  * @private
  */
-ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ =
-    function(mapSize, imageSize) {
+ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
   // the first matrix takes a map pixel, flips the y-axis and scales to
   // a range between -1 ... 1
   var mapCoordMatrix = goog.vec.Mat4.createNumber();

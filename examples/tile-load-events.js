@@ -4,7 +4,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
 
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.
@@ -79,18 +78,18 @@ Progress.prototype.hide = function() {
 var progress = new Progress(document.getElementById('progress'));
 
 var source = new ol.source.TileJSON({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.jsonp',
+  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.json',
   crossOrigin: 'anonymous'
 });
 
-source.on('tileloadstart', function(event) {
+source.on('tileloadstart', function() {
   progress.addLoading();
 });
 
-source.on('tileloadend', function(event) {
+source.on('tileloadend', function() {
   progress.addLoaded();
 });
-source.on('tileloaderror', function(event) {
+source.on('tileloaderror', function() {
   progress.addLoaded();
 });
 

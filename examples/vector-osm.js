@@ -90,7 +90,7 @@ var vectorSource = new ol.source.Vector({
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  style: function(feature, resolution) {
+  style: function(feature) {
     for (var key in styles) {
       var value = feature.get(key);
       if (value !== undefined) {
@@ -108,7 +108,7 @@ var vector = new ol.layer.Vector({
 var raster = new ol.layer.Tile({
   source: new ol.source.BingMaps({
     imagerySet: 'Aerial',
-    key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3'
+    key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
   })
 });
 

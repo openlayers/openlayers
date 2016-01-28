@@ -20,7 +20,6 @@ goog.require('ol.geom.flat.orient');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the EsriJSON format.
@@ -353,8 +352,7 @@ ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
  * @private
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
-ol.format.EsriJSON.writeMultiLineStringGeometry_ =
-    function(geometry, opt_options) {
+ol.format.EsriJSON.writeMultiLineStringGeometry_ = function(geometry, opt_options) {
   goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
       'geometry should be an ol.geom.MultiLineString');
   var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
@@ -688,8 +686,7 @@ ol.format.EsriJSON.prototype.writeFeatures;
  * @return {Object} EsriJSON Object.
  * @api
  */
-ol.format.EsriJSON.prototype.writeFeaturesObject =
-    function(features, opt_options) {
+ol.format.EsriJSON.prototype.writeFeaturesObject = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   var objects = [];
   var i, ii;

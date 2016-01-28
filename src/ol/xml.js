@@ -436,8 +436,7 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
-ol.xml.makeObjectPropertyPusher =
-    function(valueReader, opt_property, opt_this) {
+ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
   goog.asserts.assert(valueReader !== undefined,
       'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
@@ -470,8 +469,7 @@ ol.xml.makeObjectPropertyPusher =
  * @return {ol.xml.Parser} Parser.
  * @template T
  */
-ol.xml.makeObjectPropertySetter =
-    function(valueReader, opt_property, opt_this) {
+ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
   goog.asserts.assert(valueReader !== undefined,
       'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (

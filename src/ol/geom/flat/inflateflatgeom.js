@@ -9,8 +9,7 @@ goog.provide('ol.geom.flat.inflate');
  * @param {Array.<ol.Coordinate>=} opt_coordinates Coordinates.
  * @return {Array.<ol.Coordinate>} Coordinates.
  */
-ol.geom.flat.inflate.coordinates =
-    function(flatCoordinates, offset, end, stride, opt_coordinates) {
+ol.geom.flat.inflate.coordinates = function(flatCoordinates, offset, end, stride, opt_coordinates) {
   var coordinates = opt_coordinates !== undefined ? opt_coordinates : [];
   var i = 0;
   var j;
@@ -30,8 +29,7 @@ ol.geom.flat.inflate.coordinates =
  * @param {Array.<Array.<ol.Coordinate>>=} opt_coordinatess Coordinatess.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinatess.
  */
-ol.geom.flat.inflate.coordinatess =
-    function(flatCoordinates, offset, ends, stride, opt_coordinatess) {
+ol.geom.flat.inflate.coordinatess = function(flatCoordinates, offset, ends, stride, opt_coordinatess) {
   var coordinatess = opt_coordinatess !== undefined ? opt_coordinatess : [];
   var i = 0;
   var j, jj;
@@ -55,8 +53,7 @@ ol.geom.flat.inflate.coordinatess =
  *     Coordinatesss.
  * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinatesss.
  */
-ol.geom.flat.inflate.coordinatesss =
-    function(flatCoordinates, offset, endss, stride, opt_coordinatesss) {
+ol.geom.flat.inflate.coordinatesss = function(flatCoordinates, offset, endss, stride, opt_coordinatesss) {
   var coordinatesss = opt_coordinatesss !== undefined ? opt_coordinatesss : [];
   var i = 0;
   var j, jj;
