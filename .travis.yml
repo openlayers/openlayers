@@ -17,6 +17,7 @@ before_install:
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
   - "sh -e /etc/init.d/xvfb start"
+  - "npm ls"
 
 script: "make ci"
 
