@@ -77,8 +77,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
  * @api
  */
-ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
-    function(matrixSet, opt_extent, opt_matrixLimits) {
+ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent, opt_matrixLimits) {
 
   var matrixLimits = goog.isDef(opt_matrixLimits) ? opt_matrixLimits : [];
 

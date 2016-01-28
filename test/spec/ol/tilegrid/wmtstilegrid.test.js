@@ -52,8 +52,8 @@ describe('ol.tilegrid.WMTS', function() {
         });
   });
 
-  describe('when creating tileGrid from capabilities with and without' +
-      'TileMatrixSetLimits', function() {
+  describe('when creating tileGrid from capabilities with and without TileMatrixSetLimits',
+      function() {
         var parser = new ol.format.WMTSCapabilities();
         var capabilities;
         before(function(done) {

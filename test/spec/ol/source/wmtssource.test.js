@@ -189,16 +189,16 @@ describe('ol.source.WMTS', function() {
 
     it('can create a tileGrid limited by layer TileMatrixSetLimits' +
         'of capabilities', function() {
-          var options = ol.source.WMTS.optionsFromCapabilities(
-              capabilities, {
-                layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
-                matrixSet: 'PM'
-              });
+      var options = ol.source.WMTS.optionsFromCapabilities(
+        capabilities, {
+          layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+          matrixSet: 'PM'
+        }
+      );
 
-          expect(options.tileGrid.getMatrixIds().length).to.be.eql(
-              capabilities.Contents.Layer[0].TileMatrixSetLink[0]
-              .TileMatrixSetLimits.length);
-        });
+      expect(options.tileGrid.getMatrixIds().length).to.be.eql(
+        capabilities.Contents.Layer[0].TileMatrixSetLink[0].TileMatrixSetLimits.length);
+    });
   });
 
   describe('#getUrls', function() {
