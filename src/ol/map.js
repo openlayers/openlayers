@@ -1063,7 +1063,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
     goog.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
       goog.global.removeEventListener(ol.events.EventType.RESIZE,
-          this.handleResize_);
+          this.handleResize_, false);
       this.handleResize_ = undefined;
     }
   } else {
@@ -1078,7 +1078,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
       goog.global.addEventListener(ol.events.EventType.RESIZE,
-          this.handleResize_);
+          this.handleResize_, false);
     }
   }
 

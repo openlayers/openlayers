@@ -44,7 +44,7 @@ ol.source.TileJSON = function(options) {
         this.handleTileJSONError.bind(this));
   } else {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', options.url);
+    xhr.open('GET', options.url, true);
     xhr.onload = function(e) {
       if (xhr.status < 400) {
         var response = /** @type {TileJSON} */(JSON.parse(xhr.responseText));

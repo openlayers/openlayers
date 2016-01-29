@@ -105,7 +105,7 @@ ol.events.createListenOnce_ = function(target, type, listener, opt_useCapture, o
   var key = ol.events.getKey.apply(undefined, arguments);
   return function listenOnce(evt) {
     listener.call(opt_this || this, evt);
-    target.removeEventListener(evt.type, listenOnce, opt_useCapture);
+    target.removeEventListener(evt.type, listenOnce, !!opt_useCapture);
     --count;
     if (count === 0) {
       delete ol.events.listenersByKey_[key];
@@ -177,7 +177,7 @@ ol.events.listen = function(target, type, listener, opt_useCapture, opt_this) {
   var key = ol.events.getKey.apply(undefined, arguments);
   if (!ol.events.listenersByKey_[key]) {
     for (var i = 0, ii = types.length; i < ii; ++i) {
-      target.addEventListener(types[i], targetListener, opt_useCapture);
+      target.addEventListener(types[i], targetListener, !!opt_useCapture);
     }
     ol.events.listenersByKey_[key] = /** @type {ol.events.ListenerData} */ ({
       listener: targetListener,
@@ -248,7 +248,7 @@ ol.events.unlistenByKey = function(key) {
     var types = Array.isArray(type) ? type : [type];
     for (var i = 0, ii = types.length; i < ii; ++i) {
       listenerData.target.removeEventListener(types[i],
-          listenerData.listener, listenerData.useCapture);
+          listenerData.listener, !!listenerData.useCapture);
     }
     delete ol.events.listenersByKey_[key];
   }
