@@ -2,8 +2,8 @@ goog.provide('ol.reproj.Tile');
 goog.provide('ol.reproj.TileFunctionType');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.math');
 goog.require('goog.object');
 goog.require('ol.Tile');
@@ -97,7 +97,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<ol.events.Key>}
    */
   this.sourcesListenerKeys_ = null;
 
@@ -297,13 +297,13 @@ ol.reproj.Tile.prototype.load = function() {
         leftToLoad++;
 
         var sourceListenKey;
-        sourceListenKey = tile.listen(goog.events.EventType.CHANGE,
+        sourceListenKey = ol.events.listen(tile, ol.events.EventType.CHANGE,
             function(e) {
               var state = tile.getState();
               if (state == ol.TileState.LOADED ||
                   state == ol.TileState.ERROR ||
                   state == ol.TileState.EMPTY) {
-                goog.events.unlistenByKey(sourceListenKey);
+                ol.events.unlistenByKey(sourceListenKey);
                 leftToLoad--;
                 goog.asserts.assert(leftToLoad >= 0,
                     'leftToLoad should not be negative');
@@ -337,6 +337,6 @@ ol.reproj.Tile.prototype.load = function() {
 ol.reproj.Tile.prototype.unlistenSources_ = function() {
   goog.asserts.assert(this.sourcesListenerKeys_,
       'this.sourcesListenerKeys_ should not be null');
-  this.sourcesListenerKeys_.forEach(goog.events.unlistenByKey);
+  this.sourcesListenerKeys_.forEach(ol.events.unlistenByKey);
   this.sourcesListenerKeys_ = null;
 };

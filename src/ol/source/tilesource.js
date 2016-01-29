@@ -3,7 +3,7 @@ goog.provide('ol.source.TileEvent');
 goog.provide('ol.source.TileOptions');
 
 goog.require('goog.asserts');
-goog.require('goog.events.Event');
+goog.require('ol.events.Event');
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
@@ -305,7 +305,7 @@ ol.source.Tile.prototype.useTile = ol.nullFunction;
  * type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.source.TileEvent}
  * @param {string} type Type.
  * @param {ol.Tile} tile The tile.
@@ -322,7 +322,7 @@ ol.source.TileEvent = function(type, tile) {
   this.tile = tile;
 
 };
-goog.inherits(ol.source.TileEvent, goog.events.Event);
+goog.inherits(ol.source.TileEvent, ol.events.Event);
 
 
 /**

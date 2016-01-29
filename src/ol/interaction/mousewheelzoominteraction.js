@@ -79,7 +79,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   if (mapBrowserEvent.type ==
       goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
-    var mouseWheelEvent = mapBrowserEvent.browserEvent;
+    var mouseWheelEvent = mapBrowserEvent.originalEvent;
     goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
         'mouseWheelEvent should be of type MouseWheelEvent');
 

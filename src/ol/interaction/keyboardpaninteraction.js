@@ -74,8 +74,8 @@ goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
 ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
-    var keyEvent = /** @type {goog.events.KeyEvent} */
-        (mapBrowserEvent.browserEvent);
+    var keyEvent = /** @type {Event} */
+        (mapBrowserEvent.originalEvent);
     var keyCode = keyEvent.keyCode;
     if (this.condition_(mapBrowserEvent) &&
         (keyCode == goog.events.KeyCodes.DOWN ||

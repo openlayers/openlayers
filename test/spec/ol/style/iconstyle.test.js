@@ -194,14 +194,14 @@ describe('ol.style.IconImageCache', function() {
 
       src = '0';
       iconImage = new ol.style.IconImage_(src, null);
-      goog.events.listen(iconImage, goog.events.EventType.CHANGE,
+      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
-      goog.events.listen(iconImage, goog.events.EventType.CHANGE,
+      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
@@ -217,6 +217,6 @@ describe('ol.style.IconImageCache', function() {
   });
 });
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.style.IconImageCache');

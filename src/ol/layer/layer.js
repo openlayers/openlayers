@@ -1,7 +1,7 @@
 goog.provide('ol.layer.Layer');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Object');
@@ -41,19 +41,19 @@ ol.layer.Layer = function(options) {
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {ol.events.Key}
    */
   this.mapPrecomposeKey_ = null;
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {ol.events.Key}
    */
   this.mapRenderKey_ = null;
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {ol.events.Key}
    */
   this.sourceChangeKey_ = null;
 
@@ -61,7 +61,7 @@ ol.layer.Layer = function(options) {
     this.setMap(options.map);
   }
 
-  goog.events.listen(this,
+  ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.LayerProperty.SOURCE),
       this.handleSourcePropertyChange_, false, this);
 
@@ -139,13 +139,13 @@ ol.layer.Layer.prototype.handleSourceChange_ = function() {
  */
 ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
   if (this.sourceChangeKey_) {
-    goog.events.unlistenByKey(this.sourceChangeKey_);
+    ol.events.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
   var source = this.getSource();
   if (source) {
-    this.sourceChangeKey_ = goog.events.listen(source,
-        goog.events.EventType.CHANGE, this.handleSourceChange_, false, this);
+    this.sourceChangeKey_ = ol.events.listen(source,
+        ol.events.EventType.CHANGE, this.handleSourceChange_, false, this);
   }
   this.changed();
 };
@@ -164,15 +164,15 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
  * @api
  */
 ol.layer.Layer.prototype.setMap = function(map) {
-  goog.events.unlistenByKey(this.mapPrecomposeKey_);
+  ol.events.unlistenByKey(this.mapPrecomposeKey_);
   this.mapPrecomposeKey_ = null;
   if (!map) {
     this.changed();
   }
-  goog.events.unlistenByKey(this.mapRenderKey_);
+  ol.events.unlistenByKey(this.mapRenderKey_);
   this.mapRenderKey_ = null;
   if (map) {
-    this.mapPrecomposeKey_ = goog.events.listen(
+    this.mapPrecomposeKey_ = ol.events.listen(
         map, ol.render.EventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
@@ -180,8 +180,8 @@ ol.layer.Layer.prototype.setMap = function(map) {
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[goog.getUid(this)] = layerState;
         }, false, this);
-    this.mapRenderKey_ = goog.events.listen(
-        this, goog.events.EventType.CHANGE, map.render, false, map);
+    this.mapRenderKey_ = ol.events.listen(
+        this, ol.events.EventType.CHANGE, map.render, false, map);
     this.changed();
   }
 };

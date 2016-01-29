@@ -68,14 +68,14 @@ describe('ol.layer.Group', function() {
     });
 
     it('is dispatched by the group when layer opacity changes', function() {
-      group.on(goog.events.EventType.CHANGE, listener);
+      group.on(ol.events.EventType.CHANGE, listener);
 
       layer.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
     it('is dispatched by the group when layer visibility changes', function() {
-      group.on(goog.events.EventType.CHANGE, listener);
+      group.on(ol.events.EventType.CHANGE, listener);
 
       layer.setVisible(false);
       expect(listener.callCount).to.be(1);
@@ -286,14 +286,14 @@ describe('ol.layer.Group', function() {
 
       var listeners = layerGroup.listenerKeys_[goog.getUid(layer)];
       expect(listeners.length).to.eql(2);
-      expect(listeners[0]).to.be.a(goog.events.Listener);
-      expect(listeners[1]).to.be.a(goog.events.Listener);
+      expect(typeof listeners[0]).to.be('string');
+      expect(typeof listeners[1]).to.be('string');
 
       // remove the layer from the group
       layers.pop();
       expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(0);
-      expect(listeners[0].removed).to.eql(true);
-      expect(listeners[1].removed).to.eql(true);
+      expect(ol.events.listenersByKey_[listeners[0]]).to.be(undefined);
+      expect(ol.events.listenersByKey_[listeners[1]]).to.be(undefined);
     });
 
   });
@@ -491,8 +491,8 @@ describe('ol.layer.Group', function() {
 
 goog.require('goog.array');
 goog.require('goog.dispose');
-goog.require('goog.events.EventType');
-goog.require('goog.events.Listener');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.extent');

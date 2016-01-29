@@ -1,7 +1,7 @@
 goog.provide('ol.control.Control');
 
 goog.require('goog.dom');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
@@ -108,7 +108,7 @@ ol.control.Control.prototype.setMap = function(map) {
     goog.dom.removeNode(this.element);
   }
   if (this.listenerKeys.length > 0) {
-    this.listenerKeys.forEach(goog.events.unlistenByKey);
+    this.listenerKeys.forEach(/** @type {Function} */ (ol.events.unlistenByKey));
     this.listenerKeys.length = 0;
   }
   this.map_ = map;
@@ -117,7 +117,7 @@ ol.control.Control.prototype.setMap = function(map) {
         this.target_ : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
-      this.listenerKeys.push(goog.events.listen(map,
+      this.listenerKeys.push(ol.events.listen(map,
           ol.MapEventType.POSTRENDER, this.render, false, this));
     }
     map.render();

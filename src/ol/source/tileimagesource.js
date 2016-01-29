@@ -1,8 +1,8 @@
 goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
@@ -197,7 +197,7 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
       this.crossOrigin,
       this.tileLoadFunction);
   tile.key = key;
-  goog.events.listen(tile, goog.events.EventType.CHANGE,
+  ol.events.listen(tile, ol.events.EventType.CHANGE,
       this.handleTileChange, false, this);
   return tile;
 };

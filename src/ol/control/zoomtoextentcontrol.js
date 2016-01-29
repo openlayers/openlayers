@@ -2,8 +2,8 @@ goog.provide('ol.control.ZoomToExtent');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -38,7 +38,7 @@ ol.control.ZoomToExtent = function(opt_options) {
     'title': tipLabel
   }, label);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
+  ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, false, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
@@ -54,7 +54,7 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {

@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.dom.VectorLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -202,7 +202,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
 ol.renderer.dom.VectorLayer.prototype.handleStyleImageChange_ = function(event) {

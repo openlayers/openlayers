@@ -1,8 +1,8 @@
 goog.provide('ol.source.ImageVector');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -89,7 +89,7 @@ ol.source.ImageVector = function(options) {
 
   this.setStyle(options.style);
 
-  goog.events.listen(this.source_, goog.events.EventType.CHANGE,
+  ol.events.listen(this.source_, ol.events.EventType.CHANGE,
       this.handleSourceChange_, undefined, this);
 
 };
@@ -226,7 +226,7 @@ ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pix
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
 ol.source.ImageVector.prototype.handleImageChange_ = function(event) {

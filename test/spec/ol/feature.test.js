@@ -462,7 +462,7 @@ describe('ol.Feature.createStyleFunction()', function() {
 });
 
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');

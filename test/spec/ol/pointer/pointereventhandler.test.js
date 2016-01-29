@@ -6,7 +6,7 @@ describe('ol.pointer.PointerEventHandler', function() {
   var eventSpy;
 
   beforeEach(function() {
-    target = goog.dom.createElement('DIV');
+    target = new ol.events.EventTarget();
 
     // make sure that a mouse event source is used
     ol.has.POINTER = false;
@@ -29,18 +29,18 @@ describe('ol.pointer.PointerEventHandler', function() {
   });
 
   function simulateEvent(type, x, y) {
-    var event = new goog.events.BrowserEvent({
+    var event = {
       type: type,
       clientX: x,
       clientY: y,
       target: target
-    });
-    goog.events.fireListeners(target, type, false, event);
+    };
+    ol.events.fireListeners(target, type, event);
   }
 
   describe('pointer down', function() {
     it('fires pointerdown events', function() {
-      goog.events.listen(handler, 'pointerdown', eventSpy);
+      ol.events.listen(handler, 'pointerdown', eventSpy);
       simulateEvent('mousedown', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
 
@@ -54,7 +54,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer up', function() {
     it('fires pointerup events', function() {
-      goog.events.listen(handler, 'pointerup', eventSpy);
+      ol.events.listen(handler, 'pointerup', eventSpy);
       simulateEvent('mousedown', 0, 0);
       simulateEvent('mouseup', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
@@ -63,7 +63,7 @@ describe('ol.pointer.PointerEventHandler', function() {
 
   describe('pointer move', function() {
     it('fires pointermove events', function() {
-      goog.events.listen(handler, 'pointermove', eventSpy);
+      ol.events.listen(handler, 'pointermove', eventSpy);
       simulateEvent('mousemove', 0, 0);
       expect(eventSpy.calledOnce).to.be.ok();
     });
@@ -74,8 +74,8 @@ describe('ol.pointer.PointerEventHandler', function() {
       var enterEventSpy = sinon.spy();
       var overEventSpy = sinon.spy();
 
-      goog.events.listen(handler, 'pointerenter', enterEventSpy);
-      goog.events.listen(handler, 'pointerover', overEventSpy);
+      ol.events.listen(handler, 'pointerenter', enterEventSpy);
+      ol.events.listen(handler, 'pointerover', overEventSpy);
 
       simulateEvent('mouseover', 0, 0);
 
@@ -89,8 +89,8 @@ describe('ol.pointer.PointerEventHandler', function() {
       var leaveEventSpy = sinon.spy();
       var outEventSpy = sinon.spy();
 
-      goog.events.listen(handler, 'pointerleave', leaveEventSpy);
-      goog.events.listen(handler, 'pointerout', outEventSpy);
+      ol.events.listen(handler, 'pointerleave', leaveEventSpy);
+      ol.events.listen(handler, 'pointerout', outEventSpy);
 
       simulateEvent('mouseout', 0, 0);
 
@@ -107,7 +107,7 @@ describe('ol.pointer.PointerEventHandler', function() {
         clientX: 1,
         clientY: 2
       };
-      var browserEvent = new goog.events.BrowserEvent(event);
+      var browserEvent = event;
 
       var eventClone = handler.cloneEvent(browserEvent, event);
 
@@ -136,7 +136,7 @@ describe('ol.pointer.PointerEventHandler', function() {
         clientX: 1,
         clientY: 2
       };
-      var browserEvent = new goog.events.BrowserEvent(event);
+      var browserEvent = event;
 
       var eventClone = handler.cloneEvent(browserEvent, event);
       var pointerEvent = handler.makeEvent('pointerdown',
@@ -161,8 +161,8 @@ describe('ol.pointer.PointerEventHandler', function() {
 });
 
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.BrowserEvent');
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
 goog.require('ol.has');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.PointerEvent');

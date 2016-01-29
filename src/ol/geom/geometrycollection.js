@@ -1,7 +1,7 @@
 goog.provide('ol.geom.GeometryCollection');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
@@ -56,8 +56,8 @@ ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
     return;
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
-    goog.events.unlisten(
-        this.geometries_[i], goog.events.EventType.CHANGE,
+    ol.events.unlisten(
+        this.geometries_[i], ol.events.EventType.CHANGE,
         this.changed, false, this);
   }
 };
@@ -72,8 +72,8 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
     return;
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
-    goog.events.listen(
-        this.geometries_[i], goog.events.EventType.CHANGE,
+    ol.events.listen(
+        this.geometries_[i], ol.events.EventType.CHANGE,
         this.changed, false, this);
   }
 };

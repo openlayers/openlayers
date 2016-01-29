@@ -11,7 +11,7 @@ describe('ol.source.TileJSON', function() {
       var source = new ol.source.TileJSON({
         url: 'invalid.jsonp'
       });
-      goog.events.listen(source, 'change', changeSpy);
+      ol.events.listen(source, 'change', changeSpy);
     });
 
   });
@@ -73,7 +73,7 @@ describe('ol.source.TileJSON', function() {
 
 });
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.source.State');
 goog.require('ol.source.TileJSON');
 goog.require('ol.Observable');

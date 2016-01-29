@@ -2,8 +2,8 @@ goog.provide('ol.interaction.Snap');
 goog.provide('ol.interaction.SnapProperty');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Collection');
@@ -68,19 +68,19 @@ ol.interaction.Snap = function(opt_options) {
   this.features_ = options.features ? options.features : null;
 
   /**
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<ol.events.Key>}
    * @private
    */
   this.featuresListenerKeys_ = [];
 
   /**
-   * @type {Object.<number, goog.events.Key>}
+   * @type {Object.<number, ol.events.Key>}
    * @private
    */
   this.geometryChangeListenerKeys_ = {};
 
   /**
-   * @type {Object.<number, goog.events.Key>}
+   * @type {Object.<number, ol.events.Key>}
    * @private
    */
   this.geometryModifyListenerKeys_ = {};
@@ -169,7 +169,7 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
 
     if (listen) {
       this.geometryModifyListenerKeys_[feature_uid] = geometry.on(
-          goog.events.EventType.CHANGE,
+          ol.events.EventType.CHANGE,
           this.handleGeometryModify_.bind(this, feature),
           this);
       this.geometryChangeListenerKeys_[feature_uid] = feature.on(
@@ -249,11 +249,11 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
 
 
 /**
- * @param {goog.events.Event} evt Event.
+ * @param {ol.events.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
-  var feature = evt.currentTarget;
+  var feature = evt.target;
   goog.asserts.assertInstanceof(feature, ol.Feature);
   this.removeFeature(feature, true);
   this.addFeature(feature, true);
@@ -262,7 +262,7 @@ ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
 
 /**
  * @param {ol.Feature} feature Feature which geometry was modified.
- * @param {goog.events.Event} evt Event.
+ * @param {ol.events.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {

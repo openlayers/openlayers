@@ -34,15 +34,15 @@
      * that we don't have other global leaks, we preemptively set the property
      * so Mocha can compare the global before and after our tests.
      *
-     * In addition, calling goog.events.listen on the global object (as done
+     * In addition, calling ol.events.listen on the global object (as done
      * in deviceorientation.js) creates a second leak by setting
-     * goog.events.LISTENER_MAP_PROP_ on the global object.
+     * ol.events.listenER_MAP_PROP_ on the global object.
      *
      * We preemptively set both of these properties so Mocha can compare the
-     * global before and after tests.  The call to goog.events.listen also
+     * global before and after tests.  The call to ol.events.listen also
      * calls goog.getUid.
      */
-    goog.events.listen(this, 'test', function() {});
+    ol.events.listen(this, 'test', function() {});
 
     var errors = [];
     var runner = mocha.run(function(evt) {

@@ -4,9 +4,9 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventType');
 goog.require('goog.fx.DragEvent');
 goog.require('goog.fx.Dragger');
 goog.require('goog.fx.Dragger.EventType');
@@ -92,17 +92,17 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragger_ = new goog.fx.Dragger(thumbElement);
   this.registerDisposable(this.dragger_);
 
-  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
+  ol.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
       this.handleDraggerStart_, false, this);
-  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.DRAG,
+  ol.events.listen(this.dragger_, goog.fx.Dragger.EventType.DRAG,
       this.handleDraggerDrag_, false, this);
-  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
+  ol.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
       this.handleDraggerEnd_, false, this);
 
-  goog.events.listen(containerElement, goog.events.EventType.CLICK,
+  ol.events.listen(containerElement, ol.events.EventType.CLICK,
       this.handleContainerClick_, false, this);
-  goog.events.listen(thumbElement, goog.events.EventType.CLICK,
-      goog.events.Event.stopPropagation);
+  ol.events.listen(thumbElement, ol.events.EventType.CLICK,
+      ol.events.Event.stopPropagation);
 
   var render = options.render ? options.render : ol.control.ZoomSlider.render;
 
@@ -196,7 +196,7 @@ ol.control.ZoomSlider.render = function(mapEvent) {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent The browser event to handle.
+ * @param {Event} browserEvent The browser event to handle.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {

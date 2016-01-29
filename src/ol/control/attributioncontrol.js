@@ -5,8 +5,8 @@ goog.provide('ol.control.Attribution');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol');
@@ -95,7 +95,7 @@ ol.control.Attribution = function(opt_options) {
     'title': tipLabel
   }, activeLabel);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
+  ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, false, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
@@ -328,7 +328,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.Attribution.prototype.handleClick_ = function(event) {

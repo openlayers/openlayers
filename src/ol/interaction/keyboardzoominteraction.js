@@ -67,8 +67,8 @@ goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
 ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
-    var keyEvent = /** @type {goog.events.KeyEvent} */
-        (mapBrowserEvent.browserEvent);
+    var keyEvent = /** @type {Event} */
+        (mapBrowserEvent.originalEvent);
     var charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {

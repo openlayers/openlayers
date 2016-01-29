@@ -4,10 +4,9 @@ goog.provide('ol.MapBrowserEventHandler');
 goog.provide('ol.MapBrowserPointerEvent');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.BrowserEvent');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Coordinate');
@@ -27,7 +26,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @implements {oli.MapBrowserEvent}
  * @param {string} type Event type.
  * @param {ol.Map} map Map.
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {Event} browserEvent Browser event.
  * @param {boolean=} opt_dragging Is the map currently being dragged?
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
@@ -37,18 +36,12 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   goog.base(this, type, map, opt_frameState);
 
   /**
-   * @const
-   * @type {goog.events.BrowserEvent}
-   */
-  this.browserEvent = browserEvent;
-
-  /**
    * The original browser event.
    * @const
    * @type {Event}
    * @api stable
    */
-  this.originalEvent = browserEvent.getBrowserEvent();
+  this.originalEvent = browserEvent;
 
   /**
    * The pixel of the original browser event.
@@ -85,7 +78,7 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   goog.base(this, 'preventDefault');
-  this.browserEvent.preventDefault();
+  this.originalEvent.preventDefault();
 };
 
 
@@ -97,7 +90,7 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
   goog.base(this, 'stopPropagation');
-  this.browserEvent.stopPropagation();
+  this.originalEvent.stopPropagation();
 };
 
 
@@ -113,7 +106,7 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
     opt_frameState) {
 
-  goog.base(this, type, map, pointerEvent.browserEvent, opt_dragging,
+  goog.base(this, type, map, pointerEvent.originalEvent, opt_dragging,
       opt_frameState);
 
   /**
@@ -129,7 +122,7 @@ goog.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
 /**
  * @param {ol.Map} map The map with the viewport to listen to events on.
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.events.EventTarget}
  */
 ol.MapBrowserEventHandler = function(map) {
 
@@ -155,13 +148,13 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragging_ = false;
 
   /**
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<ol.events.Key>}
    * @private
    */
   this.dragListenerKeys_ = null;
 
   /**
-   * @type {goog.events.Key}
+   * @type {ol.events.Key}
    * @private
    */
   this.pointerdownListenerKey_ = null;
@@ -206,16 +199,16 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.documentPointerEventHandler_ = null;
 
-  this.pointerdownListenerKey_ = goog.events.listen(this.pointerEventHandler_,
+  this.pointerdownListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
       this.handlePointerDown_, false, this);
 
-  this.relayedListenerKey_ = goog.events.listen(this.pointerEventHandler_,
+  this.relayedListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERMOVE,
       this.relayEvent_, false, this);
 
 };
-goog.inherits(ol.MapBrowserEventHandler, goog.events.EventTarget);
+goog.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
 
 
 /**
@@ -287,7 +280,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   goog.asserts.assert(this.activePointers_ >= 0,
       'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
-    this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
+    this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
     this.dragListenerKeys_ = null;
     this.dragging_ = false;
     this.down_ = null;
@@ -328,10 +321,10 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
         new ol.pointer.PointerEventHandler(document);
 
     this.dragListenerKeys_ = [
-      goog.events.listen(this.documentPointerEventHandler_,
+      ol.events.listen(this.documentPointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERMOVE,
           this.handlePointerMove_, false, this),
-      goog.events.listen(this.documentPointerEventHandler_,
+      ol.events.listen(this.documentPointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERUP,
           this.handlePointerUp_, false, this),
       /* Note that the listener for `pointercancel is set up on
@@ -347,7 +340,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
        * only receive a `touchcancel` from `pointerEventHandler_`, because it is
        * only registered there.
        */
-      goog.events.listen(this.pointerEventHandler_,
+      ol.events.listen(this.pointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERCANCEL,
           this.handlePointerUp_, false, this)
     ];
@@ -410,15 +403,15 @@ ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
  */
 ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   if (this.relayedListenerKey_) {
-    goog.events.unlistenByKey(this.relayedListenerKey_);
+    ol.events.unlistenByKey(this.relayedListenerKey_);
     this.relayedListenerKey_ = null;
   }
   if (this.pointerdownListenerKey_) {
-    goog.events.unlistenByKey(this.pointerdownListenerKey_);
+    ol.events.unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
   }
   if (this.dragListenerKeys_) {
-    this.dragListenerKeys_.forEach(goog.events.unlistenByKey);
+    this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
     this.dragListenerKeys_ = null;
   }
   if (this.documentPointerEventHandler_) {
@@ -452,14 +445,14 @@ ol.MapBrowserEvent.EventType = {
    * @event ol.MapBrowserEvent#click
    * @api stable
    */
-  CLICK: goog.events.EventType.CLICK,
+  CLICK: ol.events.EventType.CLICK,
 
   /**
    * A true double click, with no dragging.
    * @event ol.MapBrowserEvent#dblclick
    * @api stable
    */
-  DBLCLICK: goog.events.EventType.DBLCLICK,
+  DBLCLICK: ol.events.EventType.DBLCLICK,
 
   /**
    * Triggered when a pointer is dragged.

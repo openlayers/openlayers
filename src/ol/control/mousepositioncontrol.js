@@ -3,8 +3,8 @@
 goog.provide('ol.control.MousePosition');
 
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.CoordinateFormatType');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
@@ -53,7 +53,7 @@ ol.control.MousePosition = function(opt_options) {
     target: options.target
   });
 
-  goog.events.listen(this,
+  ol.events.listen(this,
       ol.Object.getChangeEventType(ol.control.MousePositionProperty.PROJECTION),
       this.handleProjectionChanged_, false, this);
 
@@ -154,18 +154,18 @@ ol.control.MousePosition.prototype.getProjection = function() {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {Event} browserEvent Browser event.
  * @protected
  */
 ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
   var map = this.getMap();
-  this.lastMouseMovePixel_ = map.getEventPixel(browserEvent.getBrowserEvent());
+  this.lastMouseMovePixel_ = map.getEventPixel(browserEvent);
   this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {Event} browserEvent Browser event.
  * @protected
  */
 ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
@@ -183,9 +183,9 @@ ol.control.MousePosition.prototype.setMap = function(map) {
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
-        goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
+        ol.events.listen(viewport, ol.events.EventType.MOUSEMOVE,
             this.handleMouseMove, false, this),
-        goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
+        ol.events.listen(viewport, ol.events.EventType.MOUSEOUT,
             this.handleMouseOut, false, this)
     );
   }

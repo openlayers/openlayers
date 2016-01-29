@@ -2,8 +2,8 @@ goog.provide('ol.control.Rotate');
 
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
@@ -53,7 +53,7 @@ ol.control.Rotate = function(opt_options) {
     'title': tipLabel
   }, this.label_);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
+  ol.events.listen(button, ol.events.EventType.CLICK,
       ol.control.Rotate.prototype.handleClick_, false, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
@@ -97,7 +97,7 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {

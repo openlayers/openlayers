@@ -2,7 +2,7 @@ goog.provide('ol.source.Image');
 goog.provide('ol.source.ImageEvent');
 
 goog.require('goog.asserts');
-goog.require('goog.events.Event');
+goog.require('ol.events.Event');
 goog.require('ol.Attribution');
 goog.require('ol.ImageState');
 goog.require('ol.array');
@@ -153,7 +153,7 @@ ol.source.Image.prototype.getImageInternal = goog.abstractMethod;
 
 /**
  * Handle image change events.
- * @param {goog.events.Event} event Event.
+ * @param {ol.events.Event} event Event.
  * @protected
  */
 ol.source.Image.prototype.handleImageChange = function(event) {
@@ -197,7 +197,7 @@ ol.source.Image.defaultImageLoadFunction = function(image, src) {
  * type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.source.ImageEvent}
  * @param {string} type Type.
  * @param {ol.Image} image The image.
@@ -214,7 +214,7 @@ ol.source.ImageEvent = function(type, image) {
   this.image = image;
 
 };
-goog.inherits(ol.source.ImageEvent, goog.events.Event);
+goog.inherits(ol.source.ImageEvent, ol.events.Event);
 
 
 /**

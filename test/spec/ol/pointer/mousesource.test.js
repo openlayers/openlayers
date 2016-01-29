@@ -8,7 +8,7 @@ describe('ol.pointer.MouseSource', function() {
 
   beforeEach(function() {
     clock = sinon.useFakeTimers();
-    target = goog.dom.createElement('DIV');
+    target = new ol.events.EventTarget();
 
     // make sure that a mouse and touch event source is used
     ol.has.POINTER = false;
@@ -26,7 +26,7 @@ describe('ol.pointer.MouseSource', function() {
 
   describe('simulated mouse events', function() {
     it('prevents simulated mouse events', function() {
-      goog.events.listen(handler, 'pointerdown', eventSpy);
+      ol.events.listen(handler, 'pointerdown', eventSpy);
 
       // simulates that a mouse event is triggered from a touch
       simulateTouchEvent('touchstart', 10, 20);
@@ -37,7 +37,7 @@ describe('ol.pointer.MouseSource', function() {
     });
 
     it('dispatches real mouse events', function() {
-      goog.events.listen(handler, 'pointerdown', eventSpy);
+      ol.events.listen(handler, 'pointerdown', eventSpy);
 
       // the two events are at different positions
       simulateTouchEvent('touchstart', 10, 20);
@@ -50,7 +50,7 @@ describe('ol.pointer.MouseSource', function() {
       // set the timeout to a lower value, to speed up the tests
       ol.pointer.TouchSource.DEDUP_TIMEOUT = 100;
 
-      goog.events.listen(handler, 'pointerdown', eventSpy);
+      ol.events.listen(handler, 'pointerdown', eventSpy);
 
       // first simulate a touch event, then a mouse event
       // at the same position after a timeout
@@ -70,28 +70,28 @@ describe('ol.pointer.MouseSource', function() {
       target: target
     }];
 
-    var event = new goog.events.BrowserEvent({
+    var event = {
       type: type,
       touches: touches,
       changedTouches: touches
-    });
-    goog.events.fireListeners(target, type, false, event);
+    };
+    ol.events.fireListeners(target, type, event);
   }
 
   function simulateEvent(type, x, y) {
-    var event = new goog.events.BrowserEvent({
+    var event = {
       type: type,
       clientX: x,
       clientY: y,
       target: target
-    });
-    goog.events.fireListeners(target, type, false, event);
+    };
+    ol.events.fireListeners(target, type, event);
   }
 });
 
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.BrowserEvent');
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
 goog.require('ol.has');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.PointerEvent');

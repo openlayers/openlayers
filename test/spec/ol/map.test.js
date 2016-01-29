@@ -212,7 +212,7 @@ describe('ol.Map', function() {
         target: document.createElement('div')
       });
       var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-          goog.events.EventType.RESIZE, false);
+          ol.events.EventType.RESIZE, false);
       expect(viewportResizeListeners).to.have.length(1);
     });
 
@@ -220,7 +220,7 @@ describe('ol.Map', function() {
       it('unregisters the viewport resize listener', function() {
         map.setTarget(null);
         var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-            goog.events.EventType.RESIZE, false);
+            ol.events.EventType.RESIZE, false);
         expect(viewportResizeListeners).to.have.length(0);
       });
     });
@@ -230,7 +230,7 @@ describe('ol.Map', function() {
         map.setTarget(null);
         map.setTarget(document.createElement('div'));
         var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-            goog.events.EventType.RESIZE, false);
+            ol.events.EventType.RESIZE, false);
         expect(viewportResizeListeners).to.have.length(1);
       });
     });
@@ -316,15 +316,15 @@ describe('ol.Map', function() {
           target: target
         });
 
-        var browserEvent = new goog.events.BrowserEvent({
+        var browserEvent = {
           type: 'touchend',
           target: target,
           changedTouches: [{
             clientX: 100,
             clientY: 200
           }]
-        });
-        var position = map.getEventPixel(browserEvent.getBrowserEvent());
+        };
+        var position = map.getEventPixel(browserEvent);
         // 80 = clientX - target.style.left
         expect(position[0]).to.eql(80);
         // 190 = clientY - target.style.top
@@ -401,8 +401,7 @@ describe('ol.Map', function() {
 
 goog.require('goog.dispose');
 goog.require('goog.dom');
-goog.require('goog.events.BrowserEvent');
-goog.require('goog.events.EventType');
+goog.require('ol.events.EventType');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Overlay');

@@ -3,7 +3,7 @@ goog.provide('ol.FeatureUrlFunction');
 goog.provide('ol.featureloader');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.net.EventType');
 goog.require('goog.net.XhrIo');
 goog.require('goog.net.XhrIo.ResponseType');
@@ -72,7 +72,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
             format.getType() == ol.format.FormatType.ARRAY_BUFFER ?
                 goog.net.XhrIo.ResponseType.ARRAY_BUFFER :
                 goog.net.XhrIo.ResponseType.TEXT);
-        goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
+        ol.events.listen(xhrIo, goog.net.EventType.COMPLETE,
             /**
              * @param {Event} event Event.
              * @private

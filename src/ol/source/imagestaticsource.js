@@ -1,7 +1,7 @@
 goog.provide('ol.source.ImageStatic');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.ImageState');
@@ -52,7 +52,7 @@ ol.source.ImageStatic = function(options) {
    */
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
+  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
       this.handleImageChange, false, this);
 
 };

@@ -7,7 +7,7 @@ describe('ol.Observable', function() {
     it('creates a new observable', function() {
       var observable = new ol.Observable();
       expect(observable).to.be.a(ol.Observable);
-      expect(observable).to.be.a(goog.events.EventTarget);
+      expect(observable).to.be.a(ol.events.EventTarget);
     });
 
   });
@@ -51,7 +51,7 @@ describe('ol.Observable', function() {
     it('returns a listener key', function() {
       var key = observable.on('foo', listener);
 
-      expect(key).to.be.a(goog.events.Listener);
+      expect(typeof key).to.be('string');
     });
 
   });
@@ -101,7 +101,7 @@ describe('ol.Observable', function() {
     it('returns a listener key', function() {
       var key = observable.once('foo', listener);
 
-      expect(key).to.be.a(goog.events.Listener);
+      expect(typeof key).to.be('string');
     });
 
   });
@@ -167,6 +167,5 @@ describe('ol.Observable', function() {
 });
 
 
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.Listener');
+goog.require('ol.events.EventTarget');
 goog.require('ol.Observable');

@@ -4,8 +4,8 @@ goog.provide('ol.interaction.DragAndDrop');
 goog.provide('ol.interaction.DragAndDropEvent');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.Event');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 goog.require('goog.events.FileDropHandler');
 goog.require('goog.events.FileDropHandler.EventType');
 goog.require('goog.fs.FileReader');
@@ -54,7 +54,7 @@ ol.interaction.DragAndDrop = function(opt_options) {
 
   /**
    * @private
-   * @type {goog.events.Key|undefined}
+   * @type {ol.events.Key|undefined}
    */
   this.dropListenKey_ = undefined;
 
@@ -67,18 +67,18 @@ goog.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
  */
 ol.interaction.DragAndDrop.prototype.disposeInternal = function() {
   if (this.dropListenKey_) {
-    goog.events.unlistenByKey(this.dropListenKey_);
+    ol.events.unlistenByKey(this.dropListenKey_);
   }
   goog.base(this, 'disposeInternal');
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} event Event.
+ * @param {Event} event Event.
  * @private
  */
 ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
-  var files = event.getBrowserEvent().dataTransfer.files;
+  var files = event.dataTransfer.files;
   var i, ii, file;
   for (i = 0, ii = files.length; i < ii; ++i) {
     file = files[i];
@@ -150,7 +150,7 @@ ol.interaction.DragAndDrop.handleEvent = goog.functions.TRUE;
  */
 ol.interaction.DragAndDrop.prototype.setMap = function(map) {
   if (this.dropListenKey_) {
-    goog.events.unlistenByKey(this.dropListenKey_);
+    ol.events.unlistenByKey(this.dropListenKey_);
     this.dropListenKey_ = undefined;
   }
   if (this.fileDropHandler_) {
@@ -162,7 +162,7 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   if (map) {
     this.fileDropHandler_ = new goog.events.FileDropHandler(map.getViewport());
-    this.dropListenKey_ = goog.events.listen(
+    this.dropListenKey_ = ol.events.listen(
         this.fileDropHandler_, goog.events.FileDropHandler.EventType.DROP,
         this.handleDrop_, false, this);
   }
@@ -203,7 +203,7 @@ ol.interaction.DragAndDropEventType = {
  * of this type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
  * @param {Object} target Target.
@@ -237,4 +237,4 @@ ol.interaction.DragAndDropEvent = function(type, target, file, opt_features, opt
   this.projection = opt_projection;
 
 };
-goog.inherits(ol.interaction.DragAndDropEvent, goog.events.Event);
+goog.inherits(ol.interaction.DragAndDropEvent, ol.events.Event);

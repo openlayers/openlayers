@@ -1,6 +1,6 @@
 goog.provide('ol.source.UrlTile');
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
@@ -126,7 +126,7 @@ ol.source.UrlTile.prototype.getUrls = function() {
 
 /**
  * Handle tile change events.
- * @param {goog.events.Event} event Event.
+ * @param {ol.events.Event} event Event.
  * @protected
  */
 ol.source.UrlTile.prototype.handleTileChange = function(event) {

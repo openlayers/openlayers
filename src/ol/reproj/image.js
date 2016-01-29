@@ -2,8 +2,8 @@ goog.provide('ol.reproj.Image');
 goog.provide('ol.reproj.ImageFunctionType');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.extent');
@@ -102,7 +102,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {ol.events.Key|null}
    */
   this.sourceListenerKey_ = null;
 
@@ -183,8 +183,8 @@ ol.reproj.Image.prototype.load = function() {
         sourceState == ol.ImageState.ERROR) {
       this.reproject_();
     } else {
-      this.sourceListenerKey_ = this.sourceImage_.listen(
-          goog.events.EventType.CHANGE, function(e) {
+      this.sourceListenerKey_ = ol.events.listen(this.sourceImage_,
+          ol.events.EventType.CHANGE, function(e) {
             var sourceState = this.sourceImage_.getState();
             if (sourceState == ol.ImageState.LOADED ||
                 sourceState == ol.ImageState.ERROR) {
@@ -204,6 +204,6 @@ ol.reproj.Image.prototype.load = function() {
 ol.reproj.Image.prototype.unlistenSource_ = function() {
   goog.asserts.assert(this.sourceListenerKey_,
       'this.sourceListenerKey_ should not be null');
-  goog.events.unlistenByKey(this.sourceListenerKey_);
+  ol.events.unlistenByKey(this.sourceListenerKey_);
   this.sourceListenerKey_ = null;
 };

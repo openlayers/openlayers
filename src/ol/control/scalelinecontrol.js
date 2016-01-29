@@ -4,7 +4,7 @@ goog.provide('ol.control.ScaleLineUnits');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Object');
@@ -109,7 +109,7 @@ ol.control.ScaleLine = function(opt_options) {
     target: options.target
   });
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.control.ScaleLineProperty.UNITS),
       this.handleUnitsChanged_, false, this);
 

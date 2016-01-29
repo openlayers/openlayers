@@ -5,8 +5,8 @@ goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -64,10 +64,10 @@ ol.control.FullScreen = function(opt_options) {
     'title': tipLabel
   }, this.labelNode_);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
+  ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, false, this);
 
-  goog.events.listen(goog.global.document,
+  ol.events.listen(goog.global.document,
       goog.dom.fullscreen.EventType.CHANGE,
       this.handleFullScreenChange_, false, this);
 
@@ -98,7 +98,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(event) {

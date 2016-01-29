@@ -4,8 +4,8 @@ goog.provide('ol.renderer.Map');
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.functions');
 goog.require('goog.object');
 goog.require('goog.vec.Mat4');
@@ -55,7 +55,7 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Object.<string, goog.events.Key>}
+   * @type {Object.<string, ol.events.Key>}
    */
   this.layerRendererListeners_ = {};
 
@@ -255,8 +255,8 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
   } else {
     var layerRenderer = this.createLayerRenderer(layer);
     this.layerRenderers_[layerKey] = layerRenderer;
-    this.layerRendererListeners_[layerKey] = goog.events.listen(layerRenderer,
-        goog.events.EventType.CHANGE, this.handleLayerRendererChange_,
+    this.layerRendererListeners_[layerKey] = ol.events.listen(layerRenderer,
+        ol.events.EventType.CHANGE, this.handleLayerRendererChange_,
         false, this);
 
     return layerRenderer;
@@ -321,7 +321,7 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
 
   goog.asserts.assert(layerKey in this.layerRendererListeners_,
       'given layerKey (%s) exists in layerRendererListeners', layerKey);
-  goog.events.unlistenByKey(this.layerRendererListeners_[layerKey]);
+  ol.events.unlistenByKey(this.layerRendererListeners_[layerKey]);
   delete this.layerRendererListeners_[layerKey];
 
   return layerRenderer;

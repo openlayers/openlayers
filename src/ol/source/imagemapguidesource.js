@@ -1,7 +1,7 @@
 goog.provide('ol.source.ImageMapGuide');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
@@ -143,7 +143,7 @@ ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution
     image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
-    goog.events.listen(image, goog.events.EventType.CHANGE,
+    ol.events.listen(image, ol.events.EventType.CHANGE,
         this.handleImageChange, false, this);
   } else {
     image = null;

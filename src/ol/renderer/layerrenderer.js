@@ -1,8 +1,8 @@
 goog.provide('ol.renderer.Layer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.ImageState');
@@ -121,7 +121,7 @@ ol.renderer.Layer.prototype.getLayer = function() {
 
 /**
  * Handle changes in image state.
- * @param {goog.events.Event} event Image change event.
+ * @param {ol.events.Event} event Image change event.
  * @private
  */
 ol.renderer.Layer.prototype.handleImageChange_ = function(event) {
@@ -149,7 +149,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
     goog.asserts.assert(imageState == ol.ImageState.IDLE ||
         imageState == ol.ImageState.LOADING,
         'imageState is "idle" or "loading"');
-    goog.events.listen(image, goog.events.EventType.CHANGE,
+    ol.events.listen(image, ol.events.EventType.CHANGE,
         this.handleImageChange_, false, this);
   }
   if (imageState == ol.ImageState.IDLE) {

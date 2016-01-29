@@ -8,7 +8,7 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.net.CorsXmlHttpFactory');
 goog.require('goog.net.EventType');
 goog.require('goog.net.Jsonp');
@@ -49,7 +49,7 @@ ol.source.TileJSON = function(options) {
         this.handleTileJSONError.bind(this));
   } else {
     var xhr = new goog.net.XhrIo(new goog.net.CorsXmlHttpFactory());
-    goog.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
+    ol.events.listen(xhr, goog.net.EventType.COMPLETE, function(e) {
       if (xhr.isSuccess()) {
         var response = /** @type {TileJSON} */(xhr.getResponseJson());
         this.handleTileJSONResponse(response);

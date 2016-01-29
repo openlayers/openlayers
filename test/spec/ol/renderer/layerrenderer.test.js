@@ -2,7 +2,7 @@ goog.provide('ol.test.renderer.Layer');
 
 describe('ol.renderer.Layer', function() {
   var renderer;
-  var eventType = goog.events.EventType.CHANGE;
+  var eventType = ol.events.EventType.CHANGE;
 
   beforeEach(function() {
     var layer = new ol.layer.Layer({});
@@ -79,7 +79,7 @@ describe('ol.renderer.Layer', function() {
   });
 });
 
-goog.require('goog.events.EventType');
+goog.require('ol.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.ImageState');
 goog.require('ol.layer.Layer');

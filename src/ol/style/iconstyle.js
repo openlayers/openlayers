@@ -4,9 +4,9 @@ goog.provide('ol.style.IconImageCache');
 goog.provide('ol.style.IconOrigin');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+goog.require('ol.events.EventType');
 goog.require('ol.color');
 goog.require('ol.dom');
 goog.require('ol.style.Image');
@@ -345,7 +345,7 @@ ol.style.Icon.prototype.getSize = function() {
  * @inheritDoc
  */
 ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
-  return goog.events.listen(this.iconImage_, goog.events.EventType.CHANGE,
+  return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE,
       listener, false, thisArg);
 };
 
@@ -366,7 +366,7 @@ ol.style.Icon.prototype.load = function() {
  * @inheritDoc
  */
 ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
-  goog.events.unlisten(this.iconImage_, goog.events.EventType.CHANGE,
+  ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,
       listener, false, thisArg);
 };
 
@@ -379,7 +379,7 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.style.ImageState} imageState Image state.
  * @param {ol.Color} color Color.
- * @extends {goog.events.EventTarget}
+ * @extends {ol.events.EventTarget}
  * @private
  */
 ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
@@ -419,7 +419,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
 
   /**
    * @private
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<ol.events.Key>}
    */
   this.imageListenerKeys_ = null;
 
@@ -451,7 +451,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
   }
 
 };
-goog.inherits(ol.style.IconImage_, goog.events.EventTarget);
+goog.inherits(ol.style.IconImage_, ol.events.EventTarget);
 
 
 /**
@@ -494,7 +494,7 @@ ol.style.IconImage_.prototype.determineTainting_ = function() {
  * @private
  */
 ol.style.IconImage_.prototype.dispatchChangeEvent_ = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  this.dispatchEvent(ol.events.EventType.CHANGE);
 };
 
 
@@ -585,9 +585,9 @@ ol.style.IconImage_.prototype.load = function() {
         'no listener keys existing');
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
-      goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
+      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
           this.handleImageError_, false, this),
-      goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
+      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
           this.handleImageLoad_, false, this)
     ];
     try {
@@ -639,7 +639,7 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
   goog.asserts.assert(this.imageListenerKeys_,
       'we must have listeners registered');
-  this.imageListenerKeys_.forEach(goog.events.unlistenByKey);
+  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
 
@@ -703,7 +703,7 @@ ol.style.IconImageCache.prototype.expire = function() {
     var key, iconImage;
     for (key in this.cache_) {
       iconImage = this.cache_[key];
-      if ((i++ & 3) === 0 && !goog.events.hasListener(iconImage)) {
+      if ((i++ & 3) === 0 && !iconImage.hasListener()) {
         delete this.cache_[key];
         --this.cacheSize_;
       }
