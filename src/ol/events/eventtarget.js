@@ -5,6 +5,25 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 
 /**
+ * @classdesc
+ * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
+ * @see {@link https://www.w3.org/TR/2000/REC-DOM-Level-2-Events-20001113/events.html#Events-EventTarget}
+ *
+ * There are two important simplifications compared to the specification:
+ *
+ * 1. The handling of `useCapture` in `addEventListener` and
+ *    `removeEventListener`. There is no real capture model. Instead, when
+ *    adding a listener, `useCapture` means that it will be added as first
+ *    listener, causing it to be called before other listeners. When removing a
+ *    listener, the `useCapture` argument will be ignored, and the listener will
+ *    be removed regardless of whether it was added with `useCapture` set to
+ *    true or false.
+ * 2. The handling of `stopPropagation` and `preventDefault` on `dispatchEvent`.
+ *    There is no event target hierarchy. When a listener calls
+ *    `stopPropagation` or `preventDefault` on an event object, it means that no
+ *    more listeners after this one will be called. Same as when the listener
+ *    returns false.
+ *
  * @constructor
  * @extends {goog.Disposable}
  */
@@ -28,7 +47,8 @@ goog.inherits(ol.events.EventTarget, goog.Disposable);
  * @param {boolean=} opt_capture Call listener before already registered
  *     listeners. Default is false.
  */
-ol.events.EventTarget.prototype.addEventListener = function(type, listener, opt_capture) {
+ol.events.EventTarget.prototype.addEventListener = function(
+    type, listener, opt_capture) {
   var listeners = this.listeners_[type];
   if (!listeners) {
     listeners = this.listeners_[type] = [];
@@ -76,6 +96,9 @@ ol.events.EventTarget.prototype.disposeInternal = function() {
 
 
 /**
+ * Get the listeners for a specified event type. Listeners are returned in the
+ * opposite order that they will be called in.
+ *
  * @param {ol.events.EventType|string} type Type.
  * @return {Array.<ol.events.ListenerFunctionType>} Listeners.
  */
@@ -99,10 +122,10 @@ ol.events.EventTarget.prototype.hasListener = function(opt_type) {
 /**
  * @param {ol.events.EventType|string} type Type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
- * @param {boolean=} opt_capture Call listener before already registered
- *     listeners. Default is false.
+ * @param {boolean=} opt_capture Ignored. For W3C compatibility only.
  */
-ol.events.EventTarget.prototype.removeEventListener = function(type, listener, opt_capture) {
+ol.events.EventTarget.prototype.removeEventListener = function(
+    type, listener, opt_capture) {
   var listeners = this.listeners_[type];
   if (listeners) {
     var index = listeners.indexOf(listener);
