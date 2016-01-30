@@ -286,14 +286,14 @@ describe('ol.layer.Group', function() {
 
       var listeners = layerGroup.listenerKeys_[goog.getUid(layer)];
       expect(listeners.length).to.eql(2);
-      expect(typeof listeners[0]).to.be('string');
-      expect(typeof listeners[1]).to.be('string');
+      expect(typeof listeners[0]).to.be('object');
+      expect(typeof listeners[1]).to.be('object');
 
       // remove the layer from the group
       layers.pop();
       expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(0);
-      expect(ol.events.listenersByKey_[listeners[0]]).to.be(undefined);
-      expect(ol.events.listenersByKey_[listeners[1]]).to.be(undefined);
+      expect(listeners[0].listener).to.be(undefined);
+      expect(listeners[1].listener).to.be(undefined);
     });
 
   });

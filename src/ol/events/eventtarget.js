@@ -57,7 +57,8 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   var listeners = this.listeners_[type];
   if (listeners) {
     for (var i = listeners.length - 1; i >= 0; --i) {
-      if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
+      if (listeners[i].call(this, evt) === false ||
+          evt.propagationStopped) {
         return false;
       }
     }

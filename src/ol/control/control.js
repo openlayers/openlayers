@@ -60,7 +60,7 @@ ol.control.Control = function(options) {
 
   /**
    * @protected
-   * @type {!Array.<?number>}
+   * @type {!Array.<ol.events.Key>}
    */
   this.listenerKeys = [];
 
@@ -108,7 +108,7 @@ ol.control.Control.prototype.setMap = function(map) {
     goog.dom.removeNode(this.element);
   }
   if (this.listenerKeys.length > 0) {
-    this.listenerKeys.forEach(/** @type {Function} */ (ol.events.unlistenByKey));
+    ol.events.unlistenByKey(this.listenerKeys);
     this.listenerKeys.length = 0;
   }
   this.map_ = map;

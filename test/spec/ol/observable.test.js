@@ -51,7 +51,7 @@ describe('ol.Observable', function() {
     it('returns a listener key', function() {
       var key = observable.on('foo', listener);
 
-      expect(typeof key).to.be('string');
+      expect(typeof key).to.be('object');
     });
 
   });
@@ -101,7 +101,7 @@ describe('ol.Observable', function() {
     it('returns a listener key', function() {
       var key = observable.once('foo', listener);
 
-      expect(typeof key).to.be('string');
+      expect(typeof key).to.be('object');
     });
 
   });

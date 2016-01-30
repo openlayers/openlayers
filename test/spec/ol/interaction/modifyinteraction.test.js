@@ -328,9 +328,9 @@ describe('ol.interaction.Modify', function() {
     beforeEach(function() {
       getListeners = function(feature, modify) {
         var listeners = ol.events.getListeners(
-            feature, ol.events.EventType.CHANGE);
+            feature, 'change');
         return listeners.filter(function(listener) {
-          return listener.handler == modify;
+          return listener.bindTo === modify;
         });
       };
     });
@@ -378,7 +378,6 @@ describe('ol.interaction.Modify', function() {
 
 goog.require('goog.dispose');
 goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
