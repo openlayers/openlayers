@@ -54,15 +54,6 @@ ol.layer.VectorTile.prototype.getPreload = function() {
 
 
 /**
- * Return the associated {@link ol.source.VectorTile source} of the layer.
- * @function
- * @return {ol.source.VectorTile} Source.
- * @api
- */
-ol.layer.VectorTile.prototype.getSource;
-
-
-/**
  * Whether we use interim tiles on error.
  * @return {boolean} Use interim tiles on error.
  * @observable
