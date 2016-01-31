@@ -125,7 +125,7 @@ describe('ol.pointer.TouchSource', function() {
       touches: touches,
       changedTouches: changedTouches
     });
-    ol.events.fireListeners(target, type, event);
+    target.dispatchEvent(event);
   }
 });
 

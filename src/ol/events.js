@@ -53,23 +53,20 @@ ol.events.KeyCode = {
 };
 
 
-// Event manager inspired by
-// https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html
-
-
 /**
  * Property name on an event target for the listener map associated with the
  * event target.
  * @const {string}
  * @private
  */
-ol.events.LISTENER_MAP_PROP_ = 'olm_' + ((Math.random() * 1e6) | 0);
+ol.events.LISTENER_MAP_PROP_ = 'olm_' + ((Math.random() * 1e4) | 0);
 
 
 /**
  * @typedef {EventTarget|ol.events.EventTarget|
  *     {addEventListener: function(string, Function, boolean=),
- *     removeEventListener: function(string, Function, boolean=)}}
+ *     removeEventListener: function(string, Function, boolean=),
+ *     dispatchEvent: function((ol.events.EventType|string))}}
  */
 ol.events.EventTargetLike;
 
@@ -106,24 +103,26 @@ ol.events.ListenerObjType;
 
 
 /**
- * @param {ol.events.ListenerFunctionType} listener Listener.
  * @param {ol.events.ListenerObjType} listenerObj Listener object.
  * @return {ol.events.ListenerFunctionType} Bound listener.
  */
-ol.events.bindListener_ = function(listener, listenerObj) {
-  return function(evt) {
+ol.events.bindListener_ = function(listenerObj) {
+  var boundListener = function(evt) {
     var rv = listenerObj.listener.call(listenerObj.bindTo, evt);
     if (listenerObj.callOnce) {
       ol.events.unlistenByKey(listenerObj);
     }
     return rv;
   }
+  listenerObj.boundListener = boundListener;
+  return boundListener;
 };
 
 
 /**
  * Finds the matching {@link ol.events.ListenerObjType} in the given listener
  * array.
+ *
  * @param {!Array<!ol.events.ListenerObjType>} listenerArray Array of listeners.
  * @param {!Function} listener The listener function.
  * @param {boolean} useCapture The capture flag for the listener.
@@ -151,19 +150,6 @@ ol.events.findListener_ = function(
 
 
 /**
- * @param {EventTarget|ol.events.EventTarget} target Event target.
- * @param {ol.events.EventType|string|Array.<(ol.events.EventType|string)>} type
- *     Event t@param {Event|ol.events.Event} event Event to dispatch on the
- *     `target`.
- * @param {Event|ol.events.Event} event Event.
- */
-ol.events.fireListeners = function(target, type, event) {
-  event.type = type;
-  target.dispatchEvent(event);
-};
-
-
-/**
  * @param {ol.events.EventTargetLike} target Target.
  * @param {ol.events.EventType|string} type Type.
  * @return {Array.<ol.events.ListenerObjType>|undefined} Listeners.
@@ -175,6 +161,12 @@ ol.events.getListeners = function(target, type) {
 
 
 /**
+ * Registers an event listener on an event target. Inspired by
+ * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ *
+ * This function efficiently binds a `listener` to a `this` object, and returns
+ * a key for use with {@link ol.events.unlistenByKey}.
+ *
  * @param {EventTarget|ol.events.EventTarget|
  *     {removeEventListener: function(string, Function, boolean=)}} target
  *     Event target.
@@ -199,7 +191,7 @@ ol.events.listen = function(
     });
     return keys;
   }
-  goog.asserts.assertString(type);
+
   var useCapture = !!opt_useCapture;
   var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
   if (!listenerMap) {
@@ -225,8 +217,8 @@ ol.events.listen = function(
       type: type,
       useCapture: useCapture
     });
-    listenerObj.boundListener = ol.events.bindListener_(listener, listenerObj);
-    target.addEventListener(type, listenerObj.boundListener, useCapture);
+    target.addEventListener(type, ol.events.bindListener_(listenerObj),
+        useCapture);
     listenerArray.push(listenerObj);
   }
 
@@ -235,6 +227,18 @@ ol.events.listen = function(
 
 
 /**
+ * Registers a one-off event listener on an event target. Inspired by
+ * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ *
+ * This function efficiently binds a `listener` as self-unregistering listener
+ * to a `this` object, and returns a key for use with
+ * {@link ol.events.unlistenByKey} in case the listener needs to be unregistered
+ * before it is called.
+ *
+ * When {@link ol.events.listen} is called with the same arguments after this
+ * function, the self-unregistering listener will be turned into a permanent
+ * listener.
+ *
  * @param {ol.events.EventTargetLike} target Event target.
  * @param {ol.events.EventType|string|Array.<(ol.events.EventType|string)>} type
  *     Event type.
@@ -254,6 +258,12 @@ ol.events.listenOnce = function(
 
 
 /**
+ * Unregisters an event listener on an event target. Inspired by
+ * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ *
+ * To return a listener, this function needs to be called with the exact same
+ * arguments that were used for a previous {@link ol.events.listen} call.
+ *
  * @param {ol.events.EventTargetLike} target Event target.
  * @param {ol.events.EventType|string|Array.<(ol.events.EventType|string)>} type
  *     Event type.
@@ -272,7 +282,7 @@ ol.events.unlisten = function(
     });
     return;
   }
-
+  goog.asserts.assertString(type, 'type is a string');
   var listenerArray = ol.events.getListeners(target, type);
   if (listenerArray) {
     var listenerObj = ol.events.findListener_(listenerArray, listener,
@@ -285,6 +295,12 @@ ol.events.unlisten = function(
 
 
 /**
+ * Unregisters event listeners on an event target. Inspired by
+ * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ *
+ * The argument passed to this function is the key returned from
+ * {@link ol.events.listen} or {@link ol.events.listenOnce}.
+ *
  * @param {ol.events.Key} key Key or keys.
  */
 ol.events.unlistenByKey = function(key) {
@@ -313,7 +329,10 @@ ol.events.unlistenByKey = function(key) {
 
 
 /**
- * @param {EventTarget|ol.events.EventTarget} target Target.
+ * Unregisters all event listeners on an event target. Inspired by
+ * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
+ *
+ * @param {ol.events.EventTargetLike} target Target.
  */
 ol.events.unlistenAll = function(target) {
   var listenerMap = target[ol.events.LISTENER_MAP_PROP_];

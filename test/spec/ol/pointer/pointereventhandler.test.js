@@ -35,7 +35,7 @@ describe('ol.pointer.PointerEventHandler', function() {
       clientY: y,
       target: target
     };
-    ol.events.fireListeners(target, type, event);
+    target.dispatchEvent(event);
   }
 
   describe('pointer down', function() {

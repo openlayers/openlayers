@@ -75,7 +75,7 @@ describe('ol.pointer.MouseSource', function() {
       touches: touches,
       changedTouches: touches
     };
-    ol.events.fireListeners(target, type, event);
+    target.dispatchEvent(event);
   }
 
   function simulateEvent(type, x, y) {
@@ -85,7 +85,7 @@ describe('ol.pointer.MouseSource', function() {
       clientY: y,
       target: target
     };
-    ol.events.fireListeners(target, type, event);
+    target.dispatchEvent(event);
   }
 });
 
