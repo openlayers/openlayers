@@ -5,7 +5,7 @@ goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
-goog.require('ol.net.Jsonp');
+goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
@@ -49,7 +49,7 @@ ol.source.BingMaps = function(options) {
       options.imagerySet +
       '?uriScheme=https&include=ImageryProviders&key=' + options.key;
 
-  ol.net.Jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
+  ol.net.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
       'jsonp');
 
 };

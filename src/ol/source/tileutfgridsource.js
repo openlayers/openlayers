@@ -9,7 +9,7 @@ goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
-goog.require('ol.net.Jsonp');
+goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
@@ -49,7 +49,7 @@ ol.source.TileUTFGrid = function(options) {
    */
   this.template_ = undefined;
 
-  ol.net.Jsonp(options.url, this.handleTileJSONResponse.bind(this));
+  ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this));
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
@@ -359,7 +359,7 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
 ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
-    ol.net.Jsonp(this.src_, this.handleLoad_.bind(this),
+    ol.net.jsonp(this.src_, this.handleLoad_.bind(this),
         this.handleError_.bind(this));
   }
 };

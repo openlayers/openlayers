@@ -12,7 +12,7 @@ goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
-goog.require('ol.net.Jsonp');
+goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
@@ -40,7 +40,7 @@ ol.source.TileJSON = function(options) {
   });
 
   if (options.jsonp) {
-    ol.net.Jsonp(options.url, this.handleTileJSONResponse.bind(this),
+    ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
         this.handleTileJSONError.bind(this));
   } else {
     var xhr = new XMLHttpRequest();
