@@ -2,6 +2,15 @@ goog.provide('ol.events.Event');
 
 
 /**
+ * @classdesc
+ * Stripped down implementation of the W3C DOM Level 2 Event interface.
+ * @see {@link https://www.w3.org/TR/DOM-Level-2-Events/events.html#Events-interface}
+ *
+ * This implementation only provides `type` and `target` properties, and
+ * `stopPropagation` and `preventDefault` methods. It is meant as base class
+ * for higher level events defined in the library, and works with
+ * {@link ol.events.EventTarget}.
+ *
  * @constructor
  * @param {ol.events.EventType|string} type Type.
  * @param {Object=} opt_target Target.
