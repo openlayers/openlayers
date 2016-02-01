@@ -5,6 +5,9 @@
 
 [OpenLayers 3](http://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web.
 
+
+[![The OpenLayers logo](./resources/img/openlayers-logo.svg)](http://openlayers.org/)
+
 ## Getting Started
 
 - Download the [latest release](http://openlayers.org/download/)
