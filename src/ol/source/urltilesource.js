@@ -182,9 +182,9 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction) {
  * @api stable
  */
 ol.source.UrlTile.prototype.setUrl = function(url) {
-  this.urls = [url];
-  var urls = ol.TileUrlFunction.expandUrl(url);
-  this.setTileUrlFunction(this.fixedTileUrlFunction ||
+  var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
+  this.setTileUrlFunction(this.fixedTileUrlFunction ?
+      this.fixedTileUrlFunction.bind(this) :
       ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
 };
 
