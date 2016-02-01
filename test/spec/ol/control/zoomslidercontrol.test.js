@@ -1,3 +1,4 @@
+/*global createMapDiv, disposeMap*/
 goog.provide('ol.test.control.ZoomSlider');
 
 describe('ol.control.ZoomSlider', function() {
@@ -85,11 +86,104 @@ describe('ol.control.ZoomSlider', function() {
     });
   });
 
+  describe('Pointer event handling', function() {
+    var map;
+
+    beforeEach(function() {
+      map = new ol.Map({
+        target: createMapDiv(500, 100),
+        view: new ol.View({
+          center: [0, 0],
+          resolutions: [16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625]
+        })
+      });
+    });
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('[horizontal] handles a drag sequence', function() {
+      var spy = sinon.spy(goog.Disposable.prototype, 'registerDisposable');
+      var control = new ol.control.ZoomSlider();
+      map.addControl(control);
+      map.getView().setZoom(0);
+      control.element.style.width = '500px';
+      control.element.style.height = '10px';
+      control.element.firstChild.style.width = '100px';
+      control.element.firstChild.style.height = '10px';
+      map.renderSync();
+      var dragger = spy.firstCall.args[0];
+      spy.restore();
+      var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
+        target: control.element.firstElementChild
+      });
+      event.clientX = control.limits_.width;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(16);
+      expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_).to.be.ok();
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 6 * control.limits_.width / 8;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(4);
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 4 * control.limits_.width / 8;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      event.type = ol.pointer.EventType.POINTERUP;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(1);
+      expect(control.dragListenerKeys_).to.be(null);
+      expect(control.dragging_).to.be(false);
+    });
+    it('[vertical] handles a drag sequence', function() {
+      var spy = sinon.spy(goog.Disposable.prototype, 'registerDisposable');
+      var control = new ol.control.ZoomSlider();
+      control.element.style.width = '10px';
+      control.element.style.height = '100px';
+      control.element.firstChild.style.width = '10px';
+      control.element.firstChild.style.height = '20px';
+      map.addControl(control);
+      map.getView().setZoom(8);
+      map.renderSync();
+      var dragger = spy.firstCall.args[0];
+      spy.restore();
+      var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
+        target: control.element.firstElementChild
+      });
+      event.clientX = 0;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(0.0625);
+      expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_).to.be.ok();
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 0;
+      event.clientY = 2 * control.limits_.height / 8;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(0.25);
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 0;
+      event.clientY = 4 * control.limits_.height / 8;
+      dragger.dispatchEvent(event);
+      event.type = ol.pointer.EventType.POINTERUP;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(1);
+      expect(control.dragListenerKeys_).to.be(null);
+      expect(control.dragging_).to.be(false);
+    });
+  });
+
 });
 
+goog.require('goog.Disposable');
 goog.require('goog.dispose');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('goog.math.Rect');
 goog.require('ol.Map');
+goog.require('ol.View');
 goog.require('ol.control.ZoomSlider');
+goog.require('ol.pointer.PointerEvent');
