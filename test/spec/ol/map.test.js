@@ -147,16 +147,43 @@ describe('ol.Map', function() {
       document.body.removeChild(target);
     });
 
-    it('results in an postrender event', function(done) {
+    it('calls renderFrame_ and results in an postrender event', function(done) {
 
+      var spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
+        expect(typeof spy.firstCall.args[0]).to.be('number');
+        spy.restore();
         var frameState = event.frameState;
         expect(frameState).not.to.be(null);
         done();
       });
 
+    });
+
+    it('uses the same render frame for subsequent calls', function(done) {
+      var id1, id2;
+      map.render();
+      id1 = map.animationDelayKey_;
+      map.once('postrender', function() {
+        expect(id2).to.be(id1);
+        done();
+      });
+      map.render();
+      id2 = map.animationDelayKey_;
+    });
+
+    it('creates a new render frame after renderSync()', function(done) {
+      var id1, id2;
+      map.render();
+      id1 = map.animationDelayKey_;
+      map.once('postrender', function() {
+        expect(id2).to.not.be(id1);
+        done();
+      });
+      map.renderSync();
+      id2 = map.animationDelayKey_;
     });
 
     it('results in an postrender event (for zero height map)', function(done) {
@@ -201,6 +228,11 @@ describe('ol.Map', function() {
     it('removes the viewport from its parent', function() {
       goog.dispose(map);
       expect(goog.dom.getParentElement(map.getViewport())).to.be(null);
+    });
+
+    it('removes window listeners', function() {
+      goog.dispose(map);
+      expect(map.handleResize_).to.be(undefined);
     });
   });
 

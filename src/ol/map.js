@@ -291,7 +291,7 @@ ol.Map = function(options) {
     ol.events.EventType.TOUCHSTART,
     ol.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
-    goog.userAgent.GECKO ? 'DOMMouseScroll' : 'mousewheel'
+    goog.userAgent.GECKO ? 'DOMMouseScroll' : ol.events.EventType.MOUSEWHEEL
   ], ol.events.Event.stopPropagation);
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
@@ -578,6 +578,11 @@ ol.Map.prototype.disposeInternal = function() {
   if (this.handleResize_ !== undefined) {
     goog.global.removeEventListener(ol.events.EventType.RESIZE,
         this.handleResize_, false);
+    this.handleResize_ = undefined;
+  }
+  if (this.animationDelayKey_) {
+    goog.global.cancelAnimationFrame(this.animationDelayKey_);
+    this.animationDelayKey_ = undefined;
   }
   goog.dom.removeNode(this.viewport_);
   goog.base(this, 'disposeInternal');
