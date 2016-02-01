@@ -28,3 +28,5 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 - Need help? Find it on [stackoverflow using the tag 'openlayers-3'](http://stackoverflow.com/questions/tagged/openlayers-3)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 - Discuss with openlayers users on IRC in `#openlayers` at `chat.freenode`
+
+<img src="./resources/img/OSGeo_project.svg" width="150" alt="OpenLayers is a proud OSGeo project" />
