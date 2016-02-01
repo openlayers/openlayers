@@ -101,5 +101,16 @@
       "name": "vectortile",
       "browserify": true
     }
-  ]
+  ],
+  "jspm" : {
+    "main": "ol",
+    "dependencies": {
+      "css": "jspm:css@*"
+    },
+    "shim": {
+      "ol": {
+        "deps": ["./ol.css!"]
+      }
+    }
+  }
 }
