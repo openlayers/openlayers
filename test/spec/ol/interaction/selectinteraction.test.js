@@ -158,6 +158,38 @@ describe('ol.interaction.Select', function() {
     });
   });
 
+  describe('toggle selecting polygons', function() {
+    var select;
+
+    beforeEach(function() {
+      select = new ol.interaction.Select({
+        multi: true
+      });
+      map.addInteraction(select);
+    });
+
+    it('with SHIFT + single-click', function() {
+      var listenerSpy = sinon.spy();
+      select.on('select', listenerSpy);
+
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20, true);
+
+      expect(listenerSpy.callCount).to.be(1);
+
+      var features = select.getFeatures();
+      expect(features.getLength()).to.equal(4);
+
+      map.renderSync();
+
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20, true);
+
+      expect(listenerSpy.callCount).to.be(2);
+
+      features = select.getFeatures();
+      expect(features.getLength()).to.equal(0);
+    });
+  });
+
   describe('filter features using the filter option', function() {
 
     describe('with multi set to true', function() {
