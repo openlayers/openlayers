@@ -75,7 +75,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
          * @private
          */
         xhr.onload = function(event) {
-          if (xhr.status < 400) {
+          if (xhr.status >= 200 && xhr.status < 300) {
             var type = format.getType();
             /** @type {Document|Node|Object|string|undefined} */
             var source;

@@ -6,12 +6,15 @@ describe('ol.net', function() {
   describe('jsonp()', function() {
     var head = goog.global.document.getElementsByTagName('head')[0];
     var origAppendChild = head.appendChild;
+    var origCreateElement = document.createElement;
     var origSetTimeout = goog.global.setTimeout;
-    var key;
+    var key, removeChild;
 
     function createCallback(url, done) {
+      removeChild = sinon.spy();
       var callback = function(data) {
         expect(data).to.be(url + key);
+        expect(removeChild.called).to.be(true);
         done();
       };
       key = 'olc_' + goog.getUid(callback);
@@ -19,9 +22,15 @@ describe('ol.net', function() {
     }
 
     beforeEach(function() {
+      document.createElement = function() {
+        return {}
+      };
       head.appendChild = function(element) {
+        element.parentNode = {
+          removeChild: removeChild
+        };
         origSetTimeout(function() {
-          goog.global[key](element.getAttribute('src'));
+          goog.global[key](element.src);
         }, 0);
       };
       goog.global.setTimeout = function(fn, time) {
@@ -30,6 +39,7 @@ describe('ol.net', function() {
     });
 
     afterEach(function() {
+      document.createElement = origCreateElement;
       head.appendChild = origAppendChild;
       goog.global.setTimeout = origSetTimeout;
     });
@@ -42,12 +52,17 @@ describe('ol.net', function() {
       ol.net.jsonp('http://foo/bar?baz', callback);
     });
     it('calls errback when jsonp is not executed, cleans up', function(done) {
-      head.appendChild = function() {};
+      head.appendChild = function(element) {
+        element.parentNode = {
+          removeChild: removeChild
+        };
+      };
       function callback() {
         expect.fail();
       }
       function errback() {
         expect(goog.global[key]).to.be(undefined);
+        expect(removeChild.called).to.be(true);
         done();
       }
       ol.net.jsonp('foo', callback, errback);

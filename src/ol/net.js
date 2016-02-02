@@ -14,19 +14,23 @@ goog.provide('ol.net');
  */
 ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
   var script = goog.global.document.createElement('script');
-  script.async = true;
   var key = 'olc_' + goog.getUid(callback);
+  function cleanup() {
+    delete goog.global[key];
+    script.parentNode.removeChild(script);
+  }
+  script.async = true;
   script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
       (opt_callbackParam || 'callback') + '=' + key;
   var timer = goog.global.setTimeout(function() {
-    delete goog.global[key];
+    cleanup();
     if (opt_errback) {
       opt_errback();
     }
   }, 10000);
   goog.global[key] = function(data) {
     goog.global.clearTimeout(timer);
-    delete goog.global[key];
+    cleanup();
     callback(data);
   };
   goog.global.document.getElementsByTagName('head')[0].appendChild(script);
