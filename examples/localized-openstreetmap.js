@@ -28,6 +28,7 @@ var openSeaMapLayer = new ol.layer.Tile({
       }),
       ol.source.OSM.ATTRIBUTION
     ],
+    opaque: false,
     url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
   })
 });
