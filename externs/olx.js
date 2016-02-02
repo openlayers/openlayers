@@ -5585,6 +5585,16 @@ olx.style.FillOptions.prototype.color;
 
 
 /**
+ * Renderer. A factory function which takes a canvas context and returns 
+ * a pattern. Default null; if null, behavior will be defined by the 
+ * {@link olx.style.FillOptions#color}.
+ * @type {function(CanvasRenderingContext2D):CanvasPattern|undefined}
+ * @api
+ */
+olx.style.FillOptions.prototype.renderer;
+
+
+/**
  * @typedef {{anchor: (Array.<number>|undefined),
  *     anchorOrigin: (ol.style.IconOrigin|undefined),
  *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
