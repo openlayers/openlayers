@@ -250,17 +250,15 @@ ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
     this.dragging_ = true;
 
     if (!this.dragListenerKeys_) {
+      var drag = this.handleDraggerDrag_;
+      var end = this.handleDraggerEnd_;
       this.dragListenerKeys_ = [
-        ol.events.listen(document, [
-          ol.events.EventType.MOUSEMOVE,
-          ol.events.EventType.TOUCHMOVE,
-          ol.pointer.EventType.POINTERMOVE
-        ], this.handleDraggerDrag_, this),
-        ol.events.listen(document, [
-          ol.events.EventType.MOUSEUP,
-          ol.events.EventType.TOUCHEND,
-          ol.pointer.EventType.POINTERUP
-        ], this.handleDraggerEnd_, this)
+        ol.events.listen(document, ol.events.EventType.MOUSEMOVE, drag, this),
+        ol.events.listen(document, ol.events.EventType.TOUCHMOVE, drag, this),
+        ol.events.listen(document, ol.pointer.EventType.POINTERMOVE, drag, this),
+        ol.events.listen(document, ol.events.EventType.MOUSEUP, end, this),
+        ol.events.listen(document, ol.events.EventType.TOUCHEND, end, this),
+        ol.events.listen(document, ol.pointer.EventType.POINTERUP, end, this)
       ];
     }
   }

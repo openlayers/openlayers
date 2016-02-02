@@ -154,7 +154,7 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragListenerKeys_ = null;
 
   /**
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    * @private
    */
   this.pointerdownListenerKey_ = null;

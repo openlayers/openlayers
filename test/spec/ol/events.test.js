@@ -84,16 +84,9 @@ describe('ol.events', function() {
       ol.events.listen(target, 'foo', function() {});
       expect(add.callCount).to.be(1);
     });
-    it('adds listeners for multiple types with a single call', function() {
-      ol.events.listen(target, ['foo', 'bar'], function() {});
-      expect(add.getCall(0).args[0]).to.be('foo');
-      expect(add.getCall(1).args[0]).to.be('bar');
-    });
     it('returns a key', function() {
       var key = ol.events.listen(target, 'foo', function() {});
       expect(key).to.be.a(Object);
-      key = ol.events.listen(target, ['foo', 'bar'], function() {});
-      expect(key).to.be.a(Array);
     });
     it('does not add the same listener twice', function() {
       var listener = function() {};
@@ -173,12 +166,15 @@ describe('ol.events', function() {
 
   describe('unlistenAll()', function() {
     it('unregisters all listeners registered for a target', function() {
-      var key = ol.events.listen(target, ['foo', 'bar'], function() {});
+      var keys = [
+        ol.events.listen(target, 'foo', function() {}),
+        ol.events.listen(target, 'bar', function() {})
+      ];
       ol.events.unlistenAll(target);
       expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
       expect(ol.events.getListeners(target, 'bar')).to.be(undefined);
       expect(ol.events.LISTENER_MAP_PROP_ in target).to.be(false);
-      expect(key).to.eql([{}, {}]);
+      expect(keys).to.eql([{}, {}]);
     });
   });
 

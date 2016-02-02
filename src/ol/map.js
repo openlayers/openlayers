@@ -243,7 +243,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    */
   this.viewPropertyListenerKey_ = null;
 
@@ -284,7 +284,7 @@ ol.Map = function(options) {
    */
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
-  ol.events.listen(this.overlayContainerStopEvent_, [
+  var overlayEvents = [
     ol.events.EventType.CLICK,
     ol.events.EventType.DBLCLICK,
     ol.events.EventType.MOUSEDOWN,
@@ -292,13 +292,18 @@ ol.Map = function(options) {
     ol.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
     goog.userAgent.GECKO ? 'DOMMouseScroll' : ol.events.EventType.MOUSEWHEEL
-  ], ol.events.Event.stopPropagation);
+  ];
+  for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
+    ol.events.listen(this.overlayContainerStopEvent_, overlayEvents[i],
+        ol.events.Event.stopPropagation);
+  }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
-  ol.events.listen(mapBrowserEventHandler,
-      goog.object.getValues(ol.MapBrowserEvent.EventType),
-      this.handleMapBrowserEvent, this);
+  for (var key in ol.MapBrowserEvent.EventType) {
+    ol.events.listen(mapBrowserEventHandler, ol.MapBrowserEvent.EventType[key],
+        this.handleMapBrowserEvent, this);
+  }
   this.registerDisposable(mapBrowserEventHandler);
 
   /**
@@ -309,9 +314,9 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.events.Key|undefined}
+   * @type {Array.<ol.events.Key>}
    */
-  this.keyHandlerKey_;
+  this.keyHandlerKeys_ = null;
 
   ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
@@ -1060,8 +1065,11 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
   var targetElement = this.getTargetElement();
 
-  if (this.keyHandlerKey_) {
-    ol.events.unlistenByKey(this.keyHandlerKey_);
+  if (this.keyHandlerKeys_) {
+    for (var i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
+      ol.events.unlistenByKey(this.keyHandlerKeys_[i]);
+    }
+    this.keyHandlerKeys_ = null;
   }
 
   if (!targetElement) {
@@ -1076,9 +1084,12 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
         targetElement : this.keyboardEventTarget_;
-    this.keyHandlerKey_ = ol.events.listen(keyboardEventTarget,
-        [ol.events.EventType.KEYDOWN, ol.events.EventType.KEYPRESS],
-        this.handleBrowserEvent, this);
+    this.keyHandlerKeys_ = [
+      ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYDOWN,
+          this.handleBrowserEvent, this),
+      ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYPRESS,
+          this.handleBrowserEvent, this)
+    ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);

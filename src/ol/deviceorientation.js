@@ -83,7 +83,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    */
   this.listenerKey_ = null;
 

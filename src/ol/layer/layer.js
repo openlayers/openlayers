@@ -41,19 +41,19 @@ ol.layer.Layer = function(options) {
 
   /**
    * @private
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    */
   this.mapPrecomposeKey_ = null;
 
   /**
    * @private
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    */
   this.mapRenderKey_ = null;
 
   /**
    * @private
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    */
   this.sourceChangeKey_ = null;
 
@@ -164,13 +164,17 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
  * @api
  */
 ol.layer.Layer.prototype.setMap = function(map) {
-  ol.events.unlistenByKey(this.mapPrecomposeKey_);
-  this.mapPrecomposeKey_ = null;
+  if (this.mapPrecomposeKey_) {
+    ol.events.unlistenByKey(this.mapPrecomposeKey_);
+    this.mapPrecomposeKey_ = null;
+  }
   if (!map) {
     this.changed();
   }
-  ol.events.unlistenByKey(this.mapRenderKey_);
-  this.mapRenderKey_ = null;
+  if (this.mapRenderKey_) {
+    ol.events.unlistenByKey(this.mapRenderKey_);
+    this.mapRenderKey_ = null;
+  }
   if (map) {
     this.mapPrecomposeKey_ = ol.events.listen(
         map, ol.render.EventType.PRECOMPOSE, function(evt) {

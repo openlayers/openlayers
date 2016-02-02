@@ -102,7 +102,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {ol.events.Key|null}
+   * @type {?ol.events.Key}
    */
   this.sourceListenerKey_ = null;
 

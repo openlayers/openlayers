@@ -107,10 +107,10 @@ ol.control.Control.prototype.setMap = function(map) {
   if (this.map_) {
     goog.dom.removeNode(this.element);
   }
-  if (this.listenerKeys.length > 0) {
-    ol.events.unlistenByKey(this.listenerKeys);
-    this.listenerKeys.length = 0;
+  for (var i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
+    ol.events.unlistenByKey(this.listenerKeys[i]);
   }
+  this.listenerKeys.length = 0;
   this.map_ = map;
   if (this.map_) {
     var target = this.target_ ?

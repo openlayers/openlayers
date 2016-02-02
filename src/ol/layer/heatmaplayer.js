@@ -83,10 +83,12 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-  ol.events.listen(this, [
-    ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
-    ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS)
-  ], this.handleStyleChanged_, this);
+  ol.events.listen(this,
+      ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
+      this.handleStyleChanged_, this);
+  ol.events.listen(this,
+      ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS),
+      this.handleStyleChanged_, this);
 
   this.handleStyleChanged_();
 

@@ -87,7 +87,7 @@ ol.Feature = function(opt_geometryOrProperties) {
 
   /**
    * @private
-   * @type {ol.events.Key}
+   * @type {?ol.events.Key}
    */
   this.geometryChangeKey_ = null;
 

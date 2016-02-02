@@ -168,11 +168,13 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     segmentWriter.call(this, feature, geometry);
 
     if (listen) {
-      this.geometryModifyListenerKeys_[feature_uid] = geometry.on(
+      this.geometryModifyListenerKeys_[feature_uid] = ol.events.listen(
+          geometry,
           ol.events.EventType.CHANGE,
           this.handleGeometryModify_.bind(this, feature),
           this);
-      this.geometryChangeListenerKeys_[feature_uid] = feature.on(
+      this.geometryChangeListenerKeys_[feature_uid] = ol.events.listen(
+          feature,
           ol.Object.getChangeEventType(feature.getGeometryName()),
           this.handleGeometryChange_, this);
     }
