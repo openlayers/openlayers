@@ -93,6 +93,7 @@ ol.events.ListenerFunctionType;
  * @typedef {{bindTo: (Object|undefined),
  *     boundListener: (ol.events.ListenerFunctionType|undefined),
  *     callOnce: boolean,
+ *     deleteIndex: (number|undefined),
  *     listener: ol.events.ListenerFunctionType,
  *     target: (EventTarget|ol.events.EventTarget),
  *     type: string}}
@@ -121,22 +122,23 @@ ol.events.bindListener_ = function(listenerObj) {
  * Finds the matching {@link ol.events.ListenerObjType} in the given listener
  * array.
  *
- * @param {!Array<!ol.events.ListenerObjType>} listenerArray Array of listeners.
+ * @param {!Array<!ol.events.ListenerObjType>} listeners Array of listeners.
  * @param {!Function} listener The listener function.
  * @param {Object=} opt_this The `this` value inside the listener.
- * @param {boolean=} opt_remove Remove the found listener from the array.
- * @return {ol.events.ListenerObjType|undefined} The matching listener.
+ * @param {boolean=} opt_setDeleteIndex Set the deleteIndex on the matching
+ *     listener, for {@link ol.events.unlistenByKey}.
+ * @return {ol.events.ListenerObjType|undefined} The matching listener object.
  * @private
  */
-ol.events.findListener_ = function(
-    listenerArray, listener, opt_this, opt_remove) {
+ol.events.findListener_ = function(listeners, listener, opt_this,
+    opt_setDeleteIndex) {
   var listenerObj;
-  for (var i = 0, ii = listenerArray.length; i < ii; ++i) {
-    listenerObj = listenerArray[i];
+  for (var i = 0, ii = listeners.length; i < ii; ++i) {
+    listenerObj = listeners[i];
     if (listenerObj.listener === listener &&
         listenerObj.bindTo === opt_this) {
-      if (opt_remove) {
-        listenerArray.splice(i, 1);
+      if (opt_setDeleteIndex) {
+        listenerObj.deleteIndex = i;
       }
       return listenerObj;
     }
@@ -217,11 +219,11 @@ ol.events.removeListeners_ = function(target, type) {
  */
 ol.events.listen = function(target, type, listener, opt_this, opt_once) {
   var listenerMap = ol.events.getListenerMap_(target);
-  var listenerArray = listenerMap[type];
-  if (!listenerArray) {
-    listenerArray = listenerMap[type] = [];
+  var listeners = listenerMap[type];
+  if (!listeners) {
+    listeners = listenerMap[type] = [];
   }
-  var listenerObj = ol.events.findListener_(listenerArray, listener, opt_this,
+  var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
       false);
   if (listenerObj) {
     if (!opt_once) {
@@ -237,7 +239,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
       type: type
     });
     target.addEventListener(type, ol.events.bindListener_(listenerObj));
-    listenerArray.push(listenerObj);
+    listeners.push(listenerObj);
   }
 
   return listenerObj;
@@ -284,10 +286,10 @@ ol.events.listenOnce = function(
  *     listener. Default is the `target`.
  */
 ol.events.unlisten = function(target, type, listener, opt_this) {
-  var listenerArray = ol.events.getListeners(target, type);
-  if (listenerArray) {
-    var listenerObj = ol.events.findListener_(listenerArray, listener,
-        opt_this, false);
+  var listeners = ol.events.getListeners(target, type);
+  if (listeners) {
+    var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
+        true);
     if (listenerObj) {
       ol.events.unlistenByKey(listenerObj);
     }
@@ -307,10 +309,13 @@ ol.events.unlisten = function(target, type, listener, opt_this) {
 ol.events.unlistenByKey = function(key) {
   if (key && key.target) {
     key.target.removeEventListener(key.type, key.boundListener);
-    var listenerArray = ol.events.getListeners(key.target, key.type);
-    if (listenerArray) {
-      ol.events.findListener_(listenerArray, key.listener, key.bindTo, true);
-      if (listenerArray.length === 0) {
+    var listeners = ol.events.getListeners(key.target, key.type);
+    if (listeners) {
+      var i = 'deleteIndex' in key ? key.deleteIndex : listeners.indexOf(key);
+      if (i !== -1) {
+        listeners.splice(i, 1);
+      }
+      if (listeners.length === 0) {
         ol.events.removeListeners_(key.target, key.type);
       }
     }

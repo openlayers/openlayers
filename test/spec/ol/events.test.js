@@ -46,24 +46,34 @@ describe('ol.events', function() {
   });
 
   describe('findListener_()', function() {
-    it('searches a listener array for a specific listener', function() {
-      var bindTo = {id: 1};
-      var listener = function() {};
-      var listenerObj = {
+    var listener, listenerObj, listeners;
+
+    beforeEach(function() {
+      listener = function() {};
+      listenerObj = {
         type: 'foo',
         target: target,
         listener: listener
       };
-      var listenerArray = [listenerObj];
-      var result = ol.events.findListener_(listenerArray, listener);
+      listeners = [listenerObj];
+    });
+
+    it('searches a listener array for a specific listener', function() {
+      var bindTo = {id: 1};
+      var result = ol.events.findListener_(listeners, listener);
       expect(result).to.be(listenerObj);
-      result = ol.events.findListener_(listenerArray, listener, bindTo);
+      result = ol.events.findListener_(listeners, listener, bindTo);
       expect(result).to.be(undefined);
       listenerObj.bindTo = bindTo;
-      result = ol.events.findListener_(listenerArray, listener);
+      result = ol.events.findListener_(listeners, listener);
       expect(result).to.be(undefined);
-      result = ol.events.findListener_(listenerArray, listener, bindTo);
+      result = ol.events.findListener_(listeners, listener, bindTo);
       expect(result).to.be(listenerObj);
+    });
+    it('marks the delete index on a listener object', function() {
+      var result = ol.events.findListener_(listeners, listener, undefined, true);
+      expect(result).to.be(listenerObj);
+      expect(listenerObj.deleteIndex).to.be(0);
     });
   });
 
