@@ -125,15 +125,13 @@ describe('ol.array', function() {
         var pos = ol.array.binarySearch(d, -900000);
         expect(insertionPoint(pos)).to.be(0);
       });
-      // TODO The original tests also use a string here, I cannot see why.
-      it('should not find \'54255\'', function() {
-        var pos = ol.array.binarySearch(d, '54255');
+      it('should not find 54255', function() {
+        var pos = ol.array.binarySearch(d, 54255);
         expect(pos < 0).to.be(true);
       });
-      // TODO The original tests also use a string here, I cannot see why.
-      it('should have an insertion point of ' + (d.length) + ' for \'54255\'',
+      it('should have an insertion point of ' + (d.length) + ' for 54255',
         function() {
-          var pos = ol.array.binarySearch(d, '54255');
+          var pos = ol.array.binarySearch(d, 54255);
           expect(insertionPoint(pos)).to.be(d.length);
         }
       );
@@ -163,7 +161,6 @@ describe('ol.array', function() {
           var pos = ol.array.binarySearch(e, -3, revNumCompare);
           expect(pos).to.be(10);
         });
-        // TODO this test differs from the original one, which checks 7, 9, 10.
         it('should find 0 at index 7 || 8 || 9', function() {
           var pos = ol.array.binarySearch(e, 0, revNumCompare);
           expect(pos == 7 || pos == 8 || pos == 9).to.be(true);
@@ -212,7 +209,7 @@ describe('ol.array', function() {
     describe('single element array with custom comparison function',
       function() {
         var g = [1];
-        it('shouldn find 1 at index 0', function() {
+        it('should not find 1 at index 0', function() {
           var pos = ol.array.binarySearch(g, 1, revNumCompare);
           expect(pos).to.be(0);
         });
@@ -237,8 +234,6 @@ describe('ol.array', function() {
 
     describe('finding first index when multiple candidates', function() {
       it('should find the index of the first 0', function() {
-        // TODO here our implementation is different from the goog-one
-        //      we need to ensure this is intended.
         expect(ol.array.binarySearch([0, 0, 1], 0)).to.be(0);
       });
       it('should find the index of the first 1', function() {
@@ -294,6 +289,19 @@ describe('ol.array', function() {
       }
     );
 
+    describe('when items are not found', function() {
+      var arr = [1, 2, 2, 2, 3, 5, 9];
+
+      it('should return the index of where the item would go plus one, negated, if the item is not found', function() {
+        expect(ol.array.binarySearch(arr, 4)).to.equal(-6);
+      });
+      it('should work even on empty arrays', function() {
+        expect(ol.array.binarySearch([], 42)).to.equal(-1);
+      });
+      it('should work even on arrays of doubles', function() {
+        expect(ol.array.binarySearch([0.0, 0.1, 0.2, 0.3, 0.4], 0.25)).to.equal(-4);
+      });
+    });
   });
 
   describe('binaryFindNearest', function() {
@@ -378,7 +386,7 @@ describe('ol.array', function() {
     });
     it('extends an array in place with a big array', function() {
       var a = [];
-      var i = 500000; // original test has 1.000.000, but that was to slow
+      var i = 500000; // original test has 1.000.000, but that was too slow
       var bigArray = Array(i);
       while (i--) {
         bigArray[i] = i;
@@ -403,19 +411,93 @@ describe('ol.array', function() {
   });
 
   describe('find', function() {
-    // TODO
+    it('finds numbers in an array', function() {
+      var a = [0, 1, 2, 3];
+      var b = ol.array.find(a, function(val, index, a2) {
+        expect(a).to.equal(a2);
+        expect(typeof index).to.be('number');
+        return val > 1;
+      });
+      expect(b).to.be(2);
+    });
+
+    it('returns null when an item in an array is not found', function() {
+      var a = [0, 1, 2, 3];
+      var b = ol.array.find(a, function(val, index, a2) {
+        return val > 100;
+      });
+      expect(b).to.be(null);
+    });
+
+    it('finds items in an array-like', function() {
+      var a = 'abCD';
+      var b = ol.array.find(a, function(val, index, a2) {
+        expect(a).to.equal(a2);
+        expect(typeof index).to.be('number');
+        return val >= 'A' && val <= 'Z';
+      });
+      expect(b).to.be('C');
+    });
+
+    it('returns null when nothing in an array-like is found', function() {
+      var a = 'abcd';
+      var b = ol.array.find(a, function(val, index, a2) {
+        return val >= 'A' && val <= 'Z';
+      });
+      expect(b).to.be(null);
+    });
   });
 
   describe('findIndex', function() {
-    // TODO
+    it('finds index of numbers in an array', function() {
+      var a = [0, 1, 2, 3];
+      var b = ol.array.findIndex(a, function(val, index, a2) {
+        expect(a).to.equal(a2);
+        expect(typeof index).to.be('number');
+        return val > 1;
+      });
+      expect(b).to.be(2);
+    });
+
+    it('returns -1 when an item in an array is not found', function() {
+      var a = [0, 1, 2, 3];
+      var b = ol.array.findIndex(a, function(val, index, a2) {
+        return val > 100;
+      });
+      expect(b).to.be(-1);
+    });
   });
 
   describe('flatten', function() {
-    // TODO
+    it('flattens different kinds of nested arrays', function() {
+      expect(ol.array.flatten([1, 2])).to.eql([1, 2]);
+      expect(ol.array.flatten([1, [2, [3, [4, 5]]]])).to.eql([1, 2, 3, 4, 5]);
+      expect(ol.array.flatten([[[[1], 2], 3], 4])).to.eql([1, 2, 3, 4]);
+      expect(ol.array.flatten([[1]])).to.eql([1]);
+      expect(ol.array.flatten([])).to.eql([]);
+    });
   });
 
   describe('isSorted', function() {
-    // TODO
+    it('works with just an array as argument', function() {
+      expect(ol.array.isSorted([1, 2, 3])).to.be(true);
+      expect(ol.array.isSorted([1, 2, 2])).to.be(true);
+      expect(ol.array.isSorted([1, 2, 1])).to.be(false);
+    });
+
+    it('works with strict comparison without compare function', function() {
+      expect(ol.array.isSorted([1, 2, 3], null, true)).to.be(true);
+      expect(ol.array.isSorted([1, 2, 2], null, true)).to.be(false);
+      expect(ol.array.isSorted([1, 2, 1], null, true)).to.be(false);
+    });
+
+    it('works with a compare function', function() {
+      function compare(a, b) {
+        return b - a;
+      }
+      expect(ol.array.isSorted([1, 2, 3], compare)).to.be(false);
+      expect(ol.array.isSorted([3, 2, 2], compare)).to.be(true);
+    });
   });
 
   describe('linearFindNearest', function() {
@@ -478,7 +560,13 @@ describe('ol.array', function() {
   });
 
   describe('remove', function() {
-    // TODO
+    it('removes elements from an array', function() {
+      var a = ['a', 'b', 'c', 'd'];
+      ol.array.remove(a, 'c');
+      expect(a).to.eql(['a', 'b', 'd']);
+      ol.array.remove(a, 'x');
+      expect(a).to.eql(['a', 'b', 'd']);
+    });
   });
 
   describe('reverseSubArray', function() {
@@ -505,7 +593,25 @@ describe('ol.array', function() {
   });
 
   describe('stableSort', function() {
-    // TODO
+    var arr, wantedSortedValues;
+
+    beforeEach(function() {
+      arr = [{key: 3, val: 'a'}, {key: 2, val: 'b'}, {key: 3, val: 'c'},
+                 {key: 4, val: 'd'}, {key: 3, val: 'e'}];
+      wantedSortedValues = ['b', 'a', 'c', 'e', 'd'];
+    });
+
+    it('works on an array with custom comparison function', function() {
+      function comparisonFn(obj1, obj2) {
+        return obj1.key - obj2.key;
+      }
+      ol.array.stableSort(arr, comparisonFn);
+      var sortedValues = [];
+      for (var i = 0; i < arr.length; i++) {
+        sortedValues.push(arr[i].val);
+      }
+      expect(wantedSortedValues).to.eql(sortedValues);
+    });
   });
 
 });
