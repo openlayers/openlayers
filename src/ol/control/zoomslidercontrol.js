@@ -111,14 +111,14 @@ ol.control.ZoomSlider = function(opt_options) {
   this.registerDisposable(dragger);
 
   ol.events.listen(dragger, ol.pointer.EventType.POINTERDOWN,
-      this.handleDraggerStart_, false, this);
+      this.handleDraggerStart_, this);
   ol.events.listen(dragger, ol.pointer.EventType.POINTERMOVE,
-      this.handleDraggerDrag_, false, this);
+      this.handleDraggerDrag_, this);
   ol.events.listen(dragger, ol.pointer.EventType.POINTERUP,
-      this.handleDraggerEnd_, false, this);
+      this.handleDraggerEnd_, this);
 
   ol.events.listen(containerElement, ol.events.EventType.CLICK,
-      this.handleContainerClick_, false, this);
+      this.handleContainerClick_, this);
   ol.events.listen(thumbElement, ol.events.EventType.CLICK,
       ol.events.Event.stopPropagation);
 
@@ -255,12 +255,12 @@ ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
           ol.events.EventType.MOUSEMOVE,
           ol.events.EventType.TOUCHMOVE,
           ol.pointer.EventType.POINTERMOVE
-        ], this.handleDraggerDrag_, false, this),
+        ], this.handleDraggerDrag_, this),
         ol.events.listen(document, [
           ol.events.EventType.MOUSEUP,
           ol.events.EventType.TOUCHEND,
           ol.pointer.EventType.POINTERUP
-        ], this.handleDraggerEnd_, false, this)
+        ], this.handleDraggerEnd_, this)
       ];
     }
   }

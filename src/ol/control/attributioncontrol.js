@@ -95,8 +95,7 @@ ol.control.Attribution = function(opt_options) {
     'title': tipLabel
   }, activeLabel);
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL +

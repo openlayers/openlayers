@@ -152,10 +152,10 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
     var dropArea = map.getViewport();
     this.dropListenKeys_ = [
       ol.events.listen(dropArea, ol.events.EventType.DROP,
-          ol.interaction.DragAndDrop.handleDrop_, false, this),
+          ol.interaction.DragAndDrop.handleDrop_, this),
       ol.events.listen(dropArea, [ol.events.EventType.DRAGENTER,
               ol.events.EventType.DRAGOVER, ol.events.EventType.DROP],
-          ol.interaction.DragAndDrop.handleStop_, false, this)
+          ol.interaction.DragAndDrop.handleStop_, this)
     ]
   }
 };

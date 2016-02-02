@@ -44,7 +44,7 @@ ol.control.Zoom = function(opt_options) {
 
   ol.events.listen(inElement,
       ol.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, delta), false, this);
+          ol.control.Zoom.prototype.handleClick_, delta), this);
 
   var outElement = goog.dom.createDom('BUTTON', {
     'class': className + '-out',
@@ -54,7 +54,7 @@ ol.control.Zoom = function(opt_options) {
 
   ol.events.listen(outElement,
       ol.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, -delta), false, this);
+          ol.control.Zoom.prototype.handleClick_, -delta), this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;

@@ -94,7 +94,7 @@ ol.Observable.prototype.getRevision = function() {
  * @api stable
  */
 ol.Observable.prototype.on = function(type, listener, opt_this) {
-  return ol.events.listen(this, type, listener, false, opt_this);
+  return ol.events.listen(this, type, listener, opt_this);
 };
 
 
@@ -107,7 +107,7 @@ ol.Observable.prototype.on = function(type, listener, opt_this) {
  * @api stable
  */
 ol.Observable.prototype.once = function(type, listener, opt_this) {
-  return ol.events.listenOnce(this, type, listener, false, opt_this);
+  return ol.events.listenOnce(this, type, listener, opt_this);
 };
 
 
@@ -120,7 +120,7 @@ ol.Observable.prototype.once = function(type, listener, opt_this) {
  * @api stable
  */
 ol.Observable.prototype.un = function(type, listener, opt_this) {
-  ol.events.unlisten(this, type, listener, false, opt_this);
+  ol.events.unlisten(this, type, listener, opt_this);
 };
 
 

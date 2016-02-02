@@ -209,9 +209,9 @@ ol.interaction.Select = function(opt_options) {
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
   ol.events.listen(features, ol.CollectionEventType.ADD,
-      this.addFeature_, false, this);
+      this.addFeature_, this);
   ol.events.listen(features, ol.CollectionEventType.REMOVE,
-      this.removeFeature_, false, this);
+      this.removeFeature_, this);
 
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);

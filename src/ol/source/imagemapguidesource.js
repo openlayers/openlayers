@@ -144,7 +144,7 @@ ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
     ol.events.listen(image, ol.events.EventType.CHANGE,
-        this.handleImageChange, false, this);
+        this.handleImageChange, this);
   } else {
     image = null;
   }

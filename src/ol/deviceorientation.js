@@ -89,7 +89,7 @@ ol.DeviceOrientation = function(opt_options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.DeviceOrientationProperty.TRACKING),
-      this.handleTrackingChanged_, false, this);
+      this.handleTrackingChanged_, this);
 
   this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
@@ -209,7 +209,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
     var tracking = this.getTracking();
     if (tracking && !this.listenerKey_) {
       this.listenerKey_ = ol.events.listen(goog.global, 'deviceorientation',
-          this.orientationChange_, false, this);
+          this.orientationChange_, this);
     } else if (!tracking && this.listenerKey_ !== null) {
       ol.events.unlistenByKey(this.listenerKey_);
       this.listenerKey_ = null;

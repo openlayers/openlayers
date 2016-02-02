@@ -63,7 +63,7 @@ ol.source.Raster = function(options) {
 
   for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
     ol.events.listen(this.renderers_[r], ol.events.EventType.CHANGE,
-        this.changed, false, this);
+        this.changed, this);
   }
 
   /**

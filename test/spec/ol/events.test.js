@@ -56,14 +56,14 @@ describe('ol.events', function() {
         useCapture: false
       };
       var listenerArray = [listenerObj];
-      var result = ol.events.findListener_(listenerArray, listener, false);
+      var result = ol.events.findListener_(listenerArray, listener);
       expect(result).to.be(listenerObj);
-      result = ol.events.findListener_(listenerArray, listener, false, bindTo);
+      result = ol.events.findListener_(listenerArray, listener, bindTo);
       expect(result).to.be(undefined);
       listenerObj.bindTo = bindTo;
-      result = ol.events.findListener_(listenerArray, listener, false);
+      result = ol.events.findListener_(listenerArray, listener);
       expect(result).to.be(undefined);
-      result = ol.events.findListener_(listenerArray, listener, false, bindTo);
+      result = ol.events.findListener_(listenerArray, listener, bindTo);
       expect(result).to.be(listenerObj);
     });
   });
@@ -105,9 +105,9 @@ describe('ol.events', function() {
     });
     it('only treats listeners as same when all args are equal', function() {
       var listener = function() {};
-      ol.events.listen(target, 'foo', listener, false);
-      ol.events.listen(target, 'foo', listener, true);
-      ol.events.listen(target, 'foo', listener, true, {});
+      ol.events.listen(target, 'foo', listener, {}, false);
+      ol.events.listen(target, 'foo', listener, {}, true);
+      ol.events.listen(target, 'foo', listener, undefined, true);
       expect(add.callCount).to.be(3);
     });
   });
@@ -187,16 +187,18 @@ describe('ol.events', function() {
     it('works despite different meaning of the useCapture arg', function() {
       var target = new ol.events.EventTarget();
       var listener = function() {};
-      var key1 = ol.events.listen(target, 'foo', listener, false);
+      var key1 = ol.events.listen(target, 'foo', listener, undefined, undefined,
+          false);
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
-      var key2 = ol.events.listen(target, 'foo', listener, true);
+      var key2 = ol.events.listen(target, 'foo', listener, undefined, undefined,
+          true);
       expect(target.getListeners('foo')).to.eql(
           [key1.boundListener, key2.boundListener]);
     });
     it('because the created bound listeners are different', function() {
       var listener = function() {};
-      var key1 = ol.events.listen(target, 'foo', listener, false);
-      var key2 = ol.events.listen(target, 'foo', listener, true);
+      var key1 = ol.events.listen(target, 'foo', listener, {}, false);
+      var key2 = ol.events.listen(target, 'foo', listener, {}, true);
       expect(key1.boundListener).to.not.equal(key2.boundListener);
     });
   });

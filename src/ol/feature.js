@@ -93,7 +93,7 @@ ol.Feature = function(opt_geometryOrProperties) {
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, false, this);
+      this.handleGeometryChanged_, this);
 
   if (opt_geometryOrProperties !== undefined) {
     if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
@@ -215,7 +215,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
   var geometry = this.getGeometry();
   if (geometry) {
     this.geometryChangeKey_ = ol.events.listen(geometry,
-        ol.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
+        ol.events.EventType.CHANGE, this.handleGeometryChange_, this);
   }
   this.changed();
 };
@@ -275,11 +275,11 @@ ol.Feature.prototype.setId = function(id) {
 ol.Feature.prototype.setGeometryName = function(name) {
   ol.events.unlisten(
       this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, false, this);
+      this.handleGeometryChanged_, this);
   this.geometryName_ = name;
   ol.events.listen(
       this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, false, this);
+      this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };
 

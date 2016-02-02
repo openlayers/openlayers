@@ -312,7 +312,7 @@ ol.reproj.Tile.prototype.load = function() {
                   this.reproject_();
                 }
               }
-            }, false, this);
+            }, this);
         this.sourcesListenerKeys_.push(sourceListenKey);
       }
     }, this);

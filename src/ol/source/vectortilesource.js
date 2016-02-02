@@ -80,7 +80,7 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileUrl !== undefined ? tileUrl : '',
         this.format_, this.tileLoadFunction);
     ol.events.listen(tile, ol.events.EventType.CHANGE,
-        this.handleTileChange, false, this);
+        this.handleTileChange, this);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;

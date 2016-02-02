@@ -150,7 +150,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
         imageState == ol.ImageState.LOADING,
         'imageState is "idle" or "loading"');
     ol.events.listen(image, ol.events.EventType.CHANGE,
-        this.handleImageChange_, false, this);
+        this.handleImageChange_, this);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();

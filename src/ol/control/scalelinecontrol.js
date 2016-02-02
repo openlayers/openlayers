@@ -111,7 +111,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.control.ScaleLineProperty.UNITS),
-      this.handleUnitsChanged_, false, this);
+      this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
       ol.control.ScaleLineUnits.METRIC);

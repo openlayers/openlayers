@@ -72,7 +72,7 @@ ol.TileQueue.prototype.enqueue = function(element) {
   if (added) {
     var tile = element[0];
     ol.events.listen(tile, ol.events.EventType.CHANGE,
-        this.handleTileChange, false, this);
+        this.handleTileChange, this);
   }
   return added;
 };
@@ -96,7 +96,7 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
   if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
       state === ol.TileState.EMPTY) {
     ol.events.unlisten(tile, ol.events.EventType.CHANGE,
-        this.handleTileChange, false, this);
+        this.handleTileChange, this);
     var tileKey = tile.getKey();
     if (tileKey in this.tilesLoadingKeys_) {
       delete this.tilesLoadingKeys_[tileKey];

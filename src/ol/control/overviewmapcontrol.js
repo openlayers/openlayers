@@ -84,7 +84,7 @@ ol.control.OverviewMap = function(opt_options) {
   }, activeLabel);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, false, this);
+      this.handleClick_, this);
 
   var ovmapDiv = goog.dom.createDom('DIV', 'ol-overviewmap-map');
 
@@ -161,7 +161,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
   if (map) {
     this.listenerKeys.push(ol.events.listen(
         map, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, false, this));
+        this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked
     if (this.ovmap_.getLayers().getLength() === 0) {
@@ -205,7 +205,7 @@ ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
 ol.control.OverviewMap.prototype.bindView_ = function(view) {
   ol.events.listen(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, false, this);
+      this.handleRotationChanged_, this);
 };
 
 
@@ -217,7 +217,7 @@ ol.control.OverviewMap.prototype.bindView_ = function(view) {
 ol.control.OverviewMap.prototype.unbindView_ = function(view) {
   ol.events.unlisten(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, false, this);
+      this.handleRotationChanged_, this);
 };
 
 
@@ -463,7 +463,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
         function(event) {
           this.updateBox_();
         },
-        false, this);
+        this);
   }
 };
 

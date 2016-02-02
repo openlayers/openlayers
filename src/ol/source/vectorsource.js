@@ -228,12 +228,10 @@ ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
   goog.asserts.assert(!(featureKey in this.featureChangeKeys_),
       'key (%s) not yet registered in featureChangeKey', featureKey);
   this.featureChangeKeys_[featureKey] = [
-    ol.events.listen(feature,
-        ol.events.EventType.CHANGE,
-        this.handleFeatureChange_, false, this),
-    ol.events.listen(feature,
-        ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleFeatureChange_, false, this)
+    ol.events.listen(feature, ol.events.EventType.CHANGE,
+        this.handleFeatureChange_, this),
+    ol.events.listen(feature, ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleFeatureChange_, this)
   ];
 };
 
@@ -352,7 +350,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           this.addFeature(feature);
           modifyingCollection = false;
         }
-      }, false, this);
+      }, this);
   ol.events.listen(collection, ol.CollectionEventType.REMOVE,
       function(evt) {
         if (!modifyingCollection) {
@@ -362,7 +360,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           this.removeFeature(feature);
           modifyingCollection = false;
         }
-      }, false, this);
+      }, this);
   this.featuresCollection_ = collection;
 };
 

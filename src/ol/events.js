@@ -125,20 +125,21 @@ ol.events.bindListener_ = function(listenerObj) {
  *
  * @param {!Array<!ol.events.ListenerObjType>} listenerArray Array of listeners.
  * @param {!Function} listener The listener function.
- * @param {boolean} useCapture The capture flag for the listener.
  * @param {Object=} opt_this The `this` value inside the listener.
  * @param {boolean=} opt_remove Remove the found listener from the array.
+ * @param {boolean=} opt_useCapture The capture flag for the listener.
  * @return {ol.events.ListenerObjType|undefined} The matching listener.
  * @private
  */
 ol.events.findListener_ = function(
-    listenerArray, listener, useCapture, opt_this, opt_remove) {
+    listenerArray, listener, opt_this, opt_remove, opt_useCapture) {
   var listenerObj;
+  var useCapture = !!opt_useCapture;
   for (var i = 0, ii = listenerArray.length; i < ii; ++i) {
     listenerObj = listenerArray[i];
     if (listenerObj.listener === listener &&
-        listenerObj.useCapture == useCapture &&
-        listenerObj.bindTo === opt_this) {
+        listenerObj.bindTo === opt_this &&
+        listenerObj.useCapture === useCapture) {
       if (opt_remove) {
         listenerArray.splice(i, 1);
       }
@@ -173,21 +174,21 @@ ol.events.getListeners = function(target, type) {
  * @param {ol.events.EventType|string|Array.<(ol.events.EventType|string)>} type
  *     Event type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
- * @param {boolean=} opt_useCapture Use capture. For listeners on an
- *     {@link ol.events.EventTarget}, `true` simply means that the listener will
- *     be called before already registered listeners. Default is false.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  * @param {boolean=} opt_once If true, add the listener as one-off listener.
+ * @param {boolean=} opt_useCapture Use capture. For listeners on an
+ *     {@link ol.events.EventTarget}, `true` simply means that the listener will
+ *     be called before already registered listeners. Default is false.
  * @return {ol.events.Key} Unique key for the listener.
  */
 ol.events.listen = function(
-    target, type, listener, opt_useCapture, opt_this, opt_once) {
+    target, type, listener, opt_this, opt_once, opt_useCapture) {
   if (Array.isArray(type)) {
     var keys = [];
     type.forEach(function(t) {
-      keys.push(ol.events.listen(target, t, listener, opt_useCapture, opt_this,
-          opt_once));
+      keys.push(ol.events.listen(target, t, listener, opt_this, opt_once,
+          opt_useCapture));
     });
     return keys;
   }
@@ -201,8 +202,8 @@ ol.events.listen = function(
   if (!listenerArray) {
     listenerArray = listenerMap[type] = [];
   }
-  var listenerObj = ol.events.findListener_(listenerArray, listener, useCapture,
-      opt_this);
+  var listenerObj = ol.events.findListener_(listenerArray, listener, opt_this,
+      false, useCapture);
   if (listenerObj) {
     if (!opt_once) {
       // Turn one-off listener into a permanent one.
@@ -243,17 +244,17 @@ ol.events.listen = function(
  * @param {ol.events.EventType|string|Array.<(ol.events.EventType|string)>} type
  *     Event type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ *     listener. Default is the `target`.
  * @param {boolean=} opt_useCapture Use capture. For listeners on an
  *     {@link ol.events.EventTarget}, `true` simply means that the listener will
  *     be called before already registered listeners. Default is false.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
- *     listener. Default is the `target`.
  * @return {ol.events.Key} Key for unlistenByKey.
  */
 ol.events.listenOnce = function(
-    target, type, listener, opt_useCapture, opt_this) {
-  return ol.events.listen(target, type, listener, opt_useCapture, opt_this,
-      true);
+    target, type, listener, opt_this, opt_useCapture) {
+  return ol.events.listen(target, type, listener, opt_this, true,
+      opt_useCapture);
 };
 
 
@@ -268,17 +269,17 @@ ol.events.listenOnce = function(
  * @param {ol.events.EventType|string|Array.<(ol.events.EventType|string)>} type
  *     Event type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {Object=} opt_this Object referenced by the `this` keyword in the
+ *     listener. Default is the `target`.
  * @param {boolean=} opt_useCapture Use capture. For listeners on an
  *     {@link ol.events.EventTarget}, `true` simply means that the listener will
  *     be called before already registered listeners. Default is false.
- * @param {Object=} opt_this Object referenced by the `this` keyword in the
- *     listener. Default is the `target`.
  */
 ol.events.unlisten = function(
-    target, type, listener, opt_useCapture, opt_this) {
+    target, type, listener, opt_this, opt_useCapture) {
   if (Array.isArray(type)) {
     type.forEach(function(t) {
-      ol.events.unlisten(target, t, listener, opt_useCapture, opt_this);
+      ol.events.unlisten(target, t, listener, opt_this, opt_useCapture);
     });
     return;
   }
@@ -286,7 +287,7 @@ ol.events.unlisten = function(
   var listenerArray = ol.events.getListeners(target, type);
   if (listenerArray) {
     var listenerObj = ol.events.findListener_(listenerArray, listener,
-        !!opt_useCapture, opt_this);
+        opt_this, false, !!opt_useCapture);
     if (listenerObj) {
       ol.events.unlistenByKey(listenerObj);
     }
@@ -314,7 +315,7 @@ ol.events.unlistenByKey = function(key) {
     var listenerArray = ol.events.getListeners(key.target, key.type);
     if (listenerArray) {
       ol.events.findListener_(listenerArray, key.listener,
-          key.useCapture, key.bindTo, true);
+          key.bindTo, true, key.useCapture);
       if (listenerArray.length === 0) {
         var listenerMap = key.target[ol.events.LISTENER_MAP_PROP_];
         delete listenerMap[key.type];

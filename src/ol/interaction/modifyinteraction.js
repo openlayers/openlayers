@@ -230,9 +230,9 @@ ol.interaction.Modify = function(options) {
 
   this.features_.forEach(this.addFeature_, this);
   ol.events.listen(this.features_, ol.CollectionEventType.ADD,
-      this.handleFeatureAdd_, false, this);
+      this.handleFeatureAdd_, this);
   ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-      this.handleFeatureRemove_, false, this);
+      this.handleFeatureRemove_, this);
 
 };
 goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
@@ -252,7 +252,7 @@ ol.interaction.Modify.prototype.addFeature_ = function(feature) {
     this.handlePointerAtPixel_(this.lastPixel_, map);
   }
   ol.events.listen(feature, ol.events.EventType.CHANGE,
-      this.handleFeatureChange_, false, this);
+      this.handleFeatureChange_, this);
 };
 
 
@@ -282,7 +282,7 @@ ol.interaction.Modify.prototype.removeFeature_ = function(feature) {
     this.vertexFeature_ = null;
   }
   ol.events.unlisten(feature, ol.events.EventType.CHANGE,
-      this.handleFeatureChange_, false, this);
+      this.handleFeatureChange_, this);
 };
 
 

@@ -256,8 +256,7 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
     var layerRenderer = this.createLayerRenderer(layer);
     this.layerRenderers_[layerKey] = layerRenderer;
     this.layerRendererListeners_[layerKey] = ol.events.listen(layerRenderer,
-        ol.events.EventType.CHANGE, this.handleLayerRendererChange_,
-        false, this);
+        ol.events.EventType.CHANGE, this.handleLayerRendererChange_, this);
 
     return layerRenderer;
   }

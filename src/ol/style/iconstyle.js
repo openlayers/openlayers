@@ -346,7 +346,7 @@ ol.style.Icon.prototype.getSize = function() {
  */
 ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
   return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE,
-      listener, false, thisArg);
+      listener, thisArg);
 };
 
 
@@ -367,7 +367,7 @@ ol.style.Icon.prototype.load = function() {
  */
 ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
   ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,
-      listener, false, thisArg);
+      listener, thisArg);
 };
 
 
@@ -586,9 +586,9 @@ ol.style.IconImage_.prototype.load = function() {
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, false, this),
+          this.handleImageError_, this),
       ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, false, this)
+          this.handleImageLoad_, this)
     ];
     try {
       this.image_.src = this.src_;

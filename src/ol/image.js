@@ -132,9 +132,9 @@ ol.Image.prototype.load = function() {
         'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, false, this),
+          this.handleImageError_, this),
       ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, false, this)
+          this.handleImageLoad_, this)
     ];
     this.imageLoadFunction_(this, this.src_);
   }

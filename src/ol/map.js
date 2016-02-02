@@ -298,7 +298,7 @@ ol.Map = function(options) {
   var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
   ol.events.listen(mapBrowserEventHandler,
       goog.object.getValues(ol.MapBrowserEvent.EventType),
-      this.handleMapBrowserEvent, false, this);
+      this.handleMapBrowserEvent, this);
   this.registerDisposable(mapBrowserEventHandler);
 
   /**
@@ -314,9 +314,9 @@ ol.Map = function(options) {
   this.keyHandlerKey_;
 
   ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
-      this.handleBrowserEvent, false, this);
+      this.handleBrowserEvent, this);
   ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, false, this);
+      this.handleBrowserEvent, this);
 
   /**
    * @type {ol.Collection.<ol.control.Control>}
@@ -392,13 +392,13 @@ ol.Map = function(options) {
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
-      this.handleLayerGroupChanged_, false, this);
+      this.handleLayerGroupChanged_, this);
   ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
-      this.handleViewChanged_, false, this);
+      this.handleViewChanged_, this);
   ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
-      this.handleSizeChanged_, false, this);
+      this.handleSizeChanged_, this);
   ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
-      this.handleTargetChanged_, false, this);
+      this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
   // is "defined" already.
@@ -419,7 +419,7 @@ ol.Map = function(options) {
        */
       function(event) {
         event.element.setMap(this);
-      }, false, this);
+      }, this);
 
   ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
       /**
@@ -427,7 +427,7 @@ ol.Map = function(options) {
        */
       function(event) {
         event.element.setMap(null);
-      }, false, this);
+      }, this);
 
   this.interactions_.forEach(
       /**
@@ -444,7 +444,7 @@ ol.Map = function(options) {
        */
       function(event) {
         event.element.setMap(this);
-      }, false, this);
+      }, this);
 
   ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
       /**
@@ -452,7 +452,7 @@ ol.Map = function(options) {
        */
       function(event) {
         event.element.setMap(null);
-      }, false, this);
+      }, this);
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
@@ -462,7 +462,7 @@ ol.Map = function(options) {
        */
       function(event) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
-      }, false, this);
+      }, this);
 
   ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
       /**
@@ -474,7 +474,7 @@ ol.Map = function(options) {
           delete this.overlayIdIndex_[id.toString()];
         }
         event.element.setMap(null);
-      }, false, this);
+      }, this);
 
 };
 goog.inherits(ol.Map, ol.Object);
@@ -572,9 +572,9 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  */
 ol.Map.prototype.disposeInternal = function() {
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
-      this.handleBrowserEvent, false, this);
+      this.handleBrowserEvent, this);
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, false, this);
+      this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
     goog.global.removeEventListener(ol.events.EventType.RESIZE,
         this.handleResize_, false);
@@ -1078,7 +1078,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
         targetElement : this.keyboardEventTarget_;
     this.keyHandlerKey_ = ol.events.listen(keyboardEventTarget,
         [ol.events.EventType.KEYDOWN, ol.events.EventType.KEYPRESS],
-        this.handleBrowserEvent, false, this);
+        this.handleBrowserEvent, this);
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
@@ -1121,7 +1121,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
   if (view) {
     this.viewPropertyListenerKey_ = ol.events.listen(
         view, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleViewPropertyChanged_, false, this);
+        this.handleViewPropertyChanged_, this);
   }
   this.render();
 };
@@ -1162,10 +1162,10 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
     this.layerGroupPropertyListenerKeys_ = [
       ol.events.listen(
           layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
-          this.handleLayerGroupPropertyChanged_, false, this),
+          this.handleLayerGroupPropertyChanged_, this),
       ol.events.listen(
           layerGroup, ol.events.EventType.CHANGE,
-          this.handleLayerGroupMemberChanged_, false, this)
+          this.handleLayerGroupMemberChanged_, this)
     ];
   }
   this.render();

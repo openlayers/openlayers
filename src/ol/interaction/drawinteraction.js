@@ -302,7 +302,7 @@ ol.interaction.Draw = function(options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.InteractionProperty.ACTIVE),
-      this.updateState_, false, this);
+      this.updateState_, this);
 
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);

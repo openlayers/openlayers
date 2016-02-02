@@ -54,7 +54,7 @@ ol.control.Rotate = function(opt_options) {
   }, this.label_);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      ol.control.Rotate.prototype.handleClick_, false, this);
+      ol.control.Rotate.prototype.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;

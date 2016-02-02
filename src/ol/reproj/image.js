@@ -191,7 +191,7 @@ ol.reproj.Image.prototype.load = function() {
               this.unlistenSource_();
               this.reproject_();
             }
-          }, false, this);
+          }, this);
       this.sourceImage_.load();
     }
   }

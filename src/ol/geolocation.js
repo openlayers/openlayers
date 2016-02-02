@@ -85,10 +85,10 @@ ol.Geolocation = function(opt_options) {
 
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.PROJECTION),
-      this.handleProjectionChanged_, false, this);
+      this.handleProjectionChanged_, this);
   ol.events.listen(
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
-      this.handleTrackingChanged_, false, this);
+      this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {
     this.setProjection(ol.proj.get(options.projection));

@@ -55,7 +55,7 @@ ol.control.MousePosition = function(opt_options) {
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.control.MousePositionProperty.PROJECTION),
-      this.handleProjectionChanged_, false, this);
+      this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
@@ -184,9 +184,9 @@ ol.control.MousePosition.prototype.setMap = function(map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
         ol.events.listen(viewport, ol.events.EventType.MOUSEMOVE,
-            this.handleMouseMove, false, this),
+            this.handleMouseMove, this),
         ol.events.listen(viewport, ol.events.EventType.MOUSEOUT,
-            this.handleMouseOut, false, this)
+            this.handleMouseOut, this)
     );
   }
 };

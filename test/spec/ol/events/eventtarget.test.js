@@ -144,7 +144,7 @@ describe('ol.events.EventTarget', function() {
 
   describe('#dispose()', function() {
     it('cleans up foreign references', function() {
-      ol.events.listen(eventTarget, 'foo', spy1, false, document);
+      ol.events.listen(eventTarget, 'foo', spy1, document);
       expect(eventTarget.hasListener('foo')).to.be(true);
       eventTarget.dispose();
       expect(eventTarget.hasListener('foo')).to.be(false);

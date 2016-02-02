@@ -90,7 +90,7 @@ ol.source.ImageVector = function(options) {
   this.setStyle(options.style);
 
   ol.events.listen(this.source_, ol.events.EventType.CHANGE,
-      this.handleSourceChange_, undefined, this);
+      this.handleSourceChange_, this);
 
 };
 goog.inherits(ol.source.ImageVector, ol.source.ImageCanvas);

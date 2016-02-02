@@ -65,11 +65,11 @@ ol.control.FullScreen = function(opt_options) {
   }, this.labelNode_);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, false, this);
+      this.handleClick_, this);
 
   ol.events.listen(goog.global.document,
       goog.dom.fullscreen.EventType.CHANGE,
-      this.handleFullScreenChange_, false, this);
+      this.handleFullScreenChange_, this);
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL + ' ' +

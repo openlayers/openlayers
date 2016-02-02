@@ -308,7 +308,7 @@ ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, 
   if (this.state == ol.TileState.IDLE && opt_request === true) {
     ol.events.listenOnce(this, ol.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
-    }, false, this);
+    }, this);
     this.loadInternal_();
   } else {
     if (opt_request === true) {

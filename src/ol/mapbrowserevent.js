@@ -201,11 +201,11 @@ ol.MapBrowserEventHandler = function(map) {
 
   this.pointerdownListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
-      this.handlePointerDown_, false, this);
+      this.handlePointerDown_, this);
 
   this.relayedListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERMOVE,
-      this.relayEvent_, false, this);
+      this.relayEvent_, this);
 
 };
 goog.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
@@ -323,10 +323,10 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
     this.dragListenerKeys_ = [
       ol.events.listen(this.documentPointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERMOVE,
-          this.handlePointerMove_, false, this),
+          this.handlePointerMove_, this),
       ol.events.listen(this.documentPointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERUP,
-          this.handlePointerUp_, false, this),
+          this.handlePointerUp_, this),
       /* Note that the listener for `pointercancel is set up on
        * `pointerEventHandler_` and not `documentPointerEventHandler_` like
        * the `pointerup` and `pointermove` listeners.
@@ -342,7 +342,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
        */
       ol.events.listen(this.pointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERCANCEL,
-          this.handlePointerUp_, false, this)
+          this.handlePointerUp_, this)
     ];
   }
 };
