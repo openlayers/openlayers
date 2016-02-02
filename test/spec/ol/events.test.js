@@ -52,8 +52,7 @@ describe('ol.events', function() {
       var listenerObj = {
         type: 'foo',
         target: target,
-        listener: listener,
-        useCapture: false
+        listener: listener
       };
       var listenerArray = [listenerObj];
       var result = ol.events.findListener_(listenerArray, listener);
@@ -105,9 +104,9 @@ describe('ol.events', function() {
     });
     it('only treats listeners as same when all args are equal', function() {
       var listener = function() {};
-      ol.events.listen(target, 'foo', listener, {}, false);
-      ol.events.listen(target, 'foo', listener, {}, true);
-      ol.events.listen(target, 'foo', listener, undefined, true);
+      ol.events.listen(target, 'foo', listener, {});
+      ol.events.listen(target, 'foo', listener, {});
+      ol.events.listen(target, 'foo', listener, undefined);
       expect(add.callCount).to.be(3);
     });
   });
@@ -184,22 +183,23 @@ describe('ol.events', function() {
   });
 
   describe('Compatibility with ol.events.EventTarget', function() {
-    it('works despite different meaning of the useCapture arg', function() {
+    it('does not register duplicated listeners', function() {
       var target = new ol.events.EventTarget();
       var listener = function() {};
-      var key1 = ol.events.listen(target, 'foo', listener, undefined, undefined,
-          false);
+      var key1 = ol.events.listen(target, 'foo', listener);
       expect(target.getListeners('foo')).to.eql([key1.boundListener]);
-      var key2 = ol.events.listen(target, 'foo', listener, undefined, undefined,
-          true);
-      expect(target.getListeners('foo')).to.eql(
-          [key1.boundListener, key2.boundListener]);
+      var key2 = ol.events.listen(target, 'foo', listener);
+      expect(key2.boundListener).to.equal(key1.boundListener);
+      expect(target.getListeners('foo')).to.eql([key1.boundListener]);
     });
-    it('because the created bound listeners are different', function() {
+    it('registers multiple listeners if this object is different', function() {
+      var target = new ol.events.EventTarget();
       var listener = function() {};
-      var key1 = ol.events.listen(target, 'foo', listener, {}, false);
-      var key2 = ol.events.listen(target, 'foo', listener, {}, true);
+      var key1 = ol.events.listen(target, 'foo', listener, {});
+      var key2 = ol.events.listen(target, 'foo', listener, {});
       expect(key1.boundListener).to.not.equal(key2.boundListener);
+      expect(target.getListeners('foo')).to.eql(
+          [key2.boundListener, key1.boundListener]);
     });
   });
 

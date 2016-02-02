@@ -12,12 +12,7 @@ goog.require('ol.events.Event');
  * There are two important simplifications compared to the specification:
  *
  * 1. The handling of `useCapture` in `addEventListener` and
- *    `removeEventListener`. There is no real capture model. Instead, when
- *    adding a listener, `useCapture` means that it will be added as first
- *    listener, causing it to be called before other listeners. When removing a
- *    listener, the `useCapture` argument will be ignored, and the listener will
- *    be removed regardless of whether it was added with `useCapture` set to
- *    true or false.
+ *    `removeEventListener`. There is no real capture model.
  * 2. The handling of `stopPropagation` and `preventDefault` on `dispatchEvent`.
  *    There is no event target hierarchy. When a listener calls
  *    `stopPropagation` or `preventDefault` on an event object, it means that no
@@ -44,21 +39,15 @@ goog.inherits(ol.events.EventTarget, goog.Disposable);
 /**
  * @param {ol.events.EventType|string} type Type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
- * @param {boolean=} opt_capture Call listener before already registered
- *     listeners. Default is false.
  */
 ol.events.EventTarget.prototype.addEventListener = function(
-    type, listener, opt_capture) {
+    type, listener) {
   var listeners = this.listeners_[type];
   if (!listeners) {
     listeners = this.listeners_[type] = [];
   }
   if (listeners.indexOf(listener) === -1) {
-    if (opt_capture) {
-      listeners.push(listener);
-    } else {
-      listeners.unshift(listener);
-    }
+    listeners.unshift(listener);
   }
 };
 
@@ -122,10 +111,8 @@ ol.events.EventTarget.prototype.hasListener = function(opt_type) {
 /**
  * @param {ol.events.EventType|string} type Type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
- * @param {boolean=} opt_capture Ignored. For W3C compatibility only.
  */
-ol.events.EventTarget.prototype.removeEventListener = function(
-    type, listener, opt_capture) {
+ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
   if (listeners) {
     var index = listeners.indexOf(listener);
