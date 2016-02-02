@@ -72,9 +72,9 @@ ol.Observable.prototype.changed = function() {
  * of this type. The event parameter can either be a string or an
  * Object with a `type` property.
  *
- * @param {{type: (ol.events.EventType|string),
+ * @param {{type: string,
  *     target: (EventTarget|ol.events.EventTarget|undefined)}|ol.events.Event|
- *     ol.events.EventType|string} event Event object.
+ *     string} event Event object.
  * @function
  * @api
  */

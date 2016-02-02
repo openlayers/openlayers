@@ -12,7 +12,7 @@ goog.provide('ol.events.Event');
  * {@link ol.events.EventTarget}.
  *
  * @constructor
- * @param {ol.events.EventType|string} type Type.
+ * @param {string} type Type.
  * @param {Object=} opt_target Target.
  */
 ol.events.Event = function(type, opt_target) {

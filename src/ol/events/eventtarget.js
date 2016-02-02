@@ -37,11 +37,10 @@ goog.inherits(ol.events.EventTarget, goog.Disposable);
 
 
 /**
- * @param {ol.events.EventType|string} type Type.
+ * @param {string} type Type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
  */
-ol.events.EventTarget.prototype.addEventListener = function(
-    type, listener) {
+ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
   if (!listeners) {
     listeners = this.listeners_[type] = [];
@@ -53,9 +52,9 @@ ol.events.EventTarget.prototype.addEventListener = function(
 
 
 /**
- * @param {{type: (ol.events.EventType|string),
+ * @param {{type: string,
  *     target: (EventTarget|ol.events.EventTarget|undefined)}|ol.events.Event|
- *     ol.events.EventType|string} event Event or event type.
+ *     string} event Event or event type.
  * @return {boolean|undefined} `false` if anyone called preventDefault on the
  *     event object or if any of the listeners returned false.
  */
@@ -88,7 +87,7 @@ ol.events.EventTarget.prototype.disposeInternal = function() {
  * Get the listeners for a specified event type. Listeners are returned in the
  * opposite order that they will be called in.
  *
- * @param {ol.events.EventType|string} type Type.
+ * @param {string} type Type.
  * @return {Array.<ol.events.ListenerFunctionType>} Listeners.
  */
 ol.events.EventTarget.prototype.getListeners = function(type) {
@@ -97,7 +96,7 @@ ol.events.EventTarget.prototype.getListeners = function(type) {
 
 
 /**
- * @param {(ol.events.EventType|string)=} opt_type Type. If not provided,
+ * @param {string=} opt_type Type. If not provided,
  *     `true` will be returned if this EventTarget has any listeners.
  * @return {boolean} Has listeners.
  */
@@ -109,7 +108,7 @@ ol.events.EventTarget.prototype.hasListener = function(opt_type) {
 
 
 /**
- * @param {ol.events.EventType|string} type Type.
+ * @param {string} type Type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
  */
 ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {

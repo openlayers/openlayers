@@ -65,7 +65,7 @@ ol.events.LISTENER_MAP_PROP_ = 'olm_' + ((Math.random() * 1e4) | 0);
  * @typedef {EventTarget|ol.events.EventTarget|
  *     {addEventListener: function(string, Function, boolean=),
  *     removeEventListener: function(string, Function, boolean=),
- *     dispatchEvent: function((ol.events.EventType|string))}}
+ *     dispatchEvent: function(string)}}
  */
 ol.events.EventTargetLike;
 
@@ -95,7 +95,7 @@ ol.events.ListenerFunctionType;
  *     callOnce: boolean,
  *     listener: ol.events.ListenerFunctionType,
  *     target: (EventTarget|ol.events.EventTarget),
- *     type: (ol.events.EventType|string)}}
+ *     type: string}}
  */
 ol.events.ListenerObjType;
 
@@ -147,7 +147,7 @@ ol.events.findListener_ = function(
 
 /**
  * @param {ol.events.EventTargetLike} target Target.
- * @param {ol.events.EventType|string} type Type.
+ * @param {string} type Type.
  * @return {Array.<ol.events.ListenerObjType>|undefined} Listeners.
  */
 ol.events.getListeners = function(target, type) {
@@ -178,7 +178,7 @@ ol.events.getListenerMap_ = function(target) {
  * listener objects will be removed, and if no listeners remain in the listener
  * map, it will be removed from the target.
  * @param {ol.events.EventTargetLike} target Target.
- * @param {ol.events.EventType|string} type Type.
+ * @param {string} type Type.
  * @private
  */
 ol.events.removeListeners_ = function(target, type) {
@@ -208,8 +208,7 @@ ol.events.removeListeners_ = function(target, type) {
  * a key for use with {@link ol.events.unlistenByKey}.
  *
  * @param {ol.events.EventTargetLike} target Event target.
- * @param {ol.events.EventType|string} type
- *     Event type.
+ * @param {string} type Event type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
@@ -259,7 +258,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
  * listener.
  *
  * @param {ol.events.EventTargetLike} target Event target.
- * @param {ol.events.EventType|string} type Event type.
+ * @param {string} type Event type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
@@ -279,7 +278,7 @@ ol.events.listenOnce = function(
  * arguments that were used for a previous {@link ol.events.listen} call.
  *
  * @param {ol.events.EventTargetLike} target Event target.
- * @param {ol.events.EventType|string} type Event type.
+ * @param {string} type Event type.
  * @param {ol.events.ListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
