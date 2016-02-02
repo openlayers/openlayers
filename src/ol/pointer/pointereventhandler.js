@@ -196,20 +196,17 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
 /**
  * Returns a snapshot of inEvent, with writable properties.
  *
- * @param {Event} browserEvent Browser event.
+ * @param {Event} event Browser event.
  * @param {Event|Touch} inEvent An event that contains
  *    properties to copy.
  * @return {Object} An object containing shallow copies of
  *    `inEvent`'s properties.
  */
-ol.pointer.PointerEventHandler.prototype.cloneEvent = function(browserEvent, inEvent) {
+ol.pointer.PointerEventHandler.prototype.cloneEvent = function(event, inEvent) {
   var eventCopy = {}, p;
   for (var i = 0, ii = ol.pointer.CLONE_PROPS.length; i < ii; i++) {
     p = ol.pointer.CLONE_PROPS[i][0];
-    eventCopy[p] =
-        browserEvent[p] ||
-        inEvent[p] ||
-        ol.pointer.CLONE_PROPS[i][1];
+    eventCopy[p] = event[p] || inEvent[p] || ol.pointer.CLONE_PROPS[i][1];
   }
 
   return eventCopy;
@@ -221,122 +218,110 @@ ol.pointer.PointerEventHandler.prototype.cloneEvent = function(browserEvent, inE
 
 /**
  * Triggers a 'pointerdown' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.down = function(pointerEventData, browserEvent) {
-  this.fireEvent(ol.pointer.EventType.POINTERDOWN,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.down = function(data, event) {
+  this.fireEvent(ol.pointer.EventType.POINTERDOWN, data, event);
 };
 
 
 /**
  * Triggers a 'pointermove' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.move = function(pointerEventData, browserEvent) {
-  this.fireEvent(ol.pointer.EventType.POINTERMOVE,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.move = function(data, event) {
+  this.fireEvent(ol.pointer.EventType.POINTERMOVE, data, event);
 };
 
 
 /**
  * Triggers a 'pointerup' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.up = function(pointerEventData, browserEvent) {
-  this.fireEvent(ol.pointer.EventType.POINTERUP,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.up = function(data, event) {
+  this.fireEvent(ol.pointer.EventType.POINTERUP, data, event);
 };
 
 
 /**
  * Triggers a 'pointerenter' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.enter = function(pointerEventData, browserEvent) {
-  pointerEventData.bubbles = false;
-  this.fireEvent(ol.pointer.EventType.POINTERENTER,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.enter = function(data, event) {
+  data.bubbles = false;
+  this.fireEvent(ol.pointer.EventType.POINTERENTER, data, event);
 };
 
 
 /**
  * Triggers a 'pointerleave' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.leave = function(pointerEventData, browserEvent) {
-  pointerEventData.bubbles = false;
-  this.fireEvent(ol.pointer.EventType.POINTERLEAVE,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.leave = function(data, event) {
+  data.bubbles = false;
+  this.fireEvent(ol.pointer.EventType.POINTERLEAVE, data, event);
 };
 
 
 /**
  * Triggers a 'pointerover' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.over = function(pointerEventData, browserEvent) {
-  pointerEventData.bubbles = true;
-  this.fireEvent(ol.pointer.EventType.POINTEROVER,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.over = function(data, event) {
+  data.bubbles = true;
+  this.fireEvent(ol.pointer.EventType.POINTEROVER, data, event);
 };
 
 
 /**
  * Triggers a 'pointerout' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.out = function(pointerEventData, browserEvent) {
-  pointerEventData.bubbles = true;
-  this.fireEvent(ol.pointer.EventType.POINTEROUT,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.out = function(data, event) {
+  data.bubbles = true;
+  this.fireEvent(ol.pointer.EventType.POINTEROUT, data, event);
 };
 
 
 /**
  * Triggers a 'pointercancel' event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.cancel = function(pointerEventData, browserEvent) {
-  this.fireEvent(ol.pointer.EventType.POINTERCANCEL,
-      pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.cancel = function(data, event) {
+  this.fireEvent(ol.pointer.EventType.POINTERCANCEL, data, event);
 };
 
 
 /**
  * Triggers a combination of 'pointerout' and 'pointerleave' events.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.leaveOut = function(pointerEventData, browserEvent) {
-  this.out(pointerEventData, browserEvent);
-  if (!this.contains_(
-      pointerEventData.target,
-      pointerEventData.relatedTarget)) {
-    this.leave(pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.leaveOut = function(data, event) {
+  this.out(data, event);
+  if (!this.contains_(data.target, data.relatedTarget)) {
+    this.leave(data, event);
   }
 };
 
 
 /**
  * Triggers a combination of 'pointerover' and 'pointerevents' events.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.enterOver = function(pointerEventData, browserEvent) {
-  this.over(pointerEventData, browserEvent);
-  if (!this.contains_(
-      pointerEventData.target,
-      pointerEventData.relatedTarget)) {
-    this.enter(pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.enterOver = function(data, event) {
+  this.over(data, event);
+  if (!this.contains_(data.target, data.relatedTarget)) {
+    this.enter(data, event);
   }
 };
 
@@ -359,26 +344,26 @@ ol.pointer.PointerEventHandler.prototype.contains_ = function(container, contain
 // EVENT CREATION AND TRACKING
 /**
  * Creates a new Event of type `inType`, based on the information in
- * `pointerEventData`.
+ * `data`.
  *
  * @param {string} inType A string representing the type of event to create.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  * @return {ol.pointer.PointerEvent} A PointerEvent of type `inType`.
  */
-ol.pointer.PointerEventHandler.prototype.makeEvent = function(inType, pointerEventData, browserEvent) {
-  return new ol.pointer.PointerEvent(inType, browserEvent, pointerEventData);
+ol.pointer.PointerEventHandler.prototype.makeEvent = function(inType, data, event) {
+  return new ol.pointer.PointerEvent(inType, event, data);
 };
 
 
 /**
  * Make and dispatch an event in one call.
  * @param {string} inType A string representing the type of event.
- * @param {Object} pointerEventData Pointer event data.
- * @param {Event} browserEvent The event.
+ * @param {Object} data Pointer event data.
+ * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.fireEvent = function(inType, pointerEventData, browserEvent) {
-  var e = this.makeEvent(inType, pointerEventData, browserEvent);
+ol.pointer.PointerEventHandler.prototype.fireEvent = function(inType, data, event) {
+  var e = this.makeEvent(inType, data, event);
   this.dispatchEvent(e);
 };
 
@@ -386,11 +371,10 @@ ol.pointer.PointerEventHandler.prototype.fireEvent = function(inType, pointerEve
 /**
  * Creates a pointer event from a native pointer event
  * and dispatches this event.
- * @param {Event} nativeEvent A platform event with a target.
+ * @param {Event} event A platform event with a target.
  */
-ol.pointer.PointerEventHandler.prototype.fireNativeEvent = function(nativeEvent) {
-  var e = this.makeEvent(nativeEvent.type, nativeEvent,
-      nativeEvent);
+ol.pointer.PointerEventHandler.prototype.fireNativeEvent = function(event) {
+  var e = this.makeEvent(event.type, event, event);
   this.dispatchEvent(e);
 };
 
@@ -399,15 +383,12 @@ ol.pointer.PointerEventHandler.prototype.fireNativeEvent = function(nativeEvent)
  * Wrap a native mouse event into a pointer event.
  * This proxy method is required for the legacy IE support.
  * @param {string} eventType The pointer event type.
- * @param {Event} browserEvent The event.
+ * @param {Event} event The event.
  * @return {ol.pointer.PointerEvent} The wrapped event.
  */
-ol.pointer.PointerEventHandler.prototype.wrapMouseEvent = function(eventType, browserEvent) {
+ol.pointer.PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
   var pointerEvent = this.makeEvent(
-      eventType,
-      ol.pointer.MouseSource.prepareEvent(browserEvent, this),
-      browserEvent
-      );
+      eventType, ol.pointer.MouseSource.prepareEvent(event, this), event);
   return pointerEvent;
 };
 

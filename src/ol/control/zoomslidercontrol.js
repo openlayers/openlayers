@@ -214,10 +214,10 @@ ol.control.ZoomSlider.render = function(mapEvent) {
 
 
 /**
- * @param {Event} browserEvent The browser event to handle.
+ * @param {Event} event The browser event to handle.
  * @private
  */
-ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
+ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
   var map = this.getMap();
   var view = map.getView();
   var currentResolution = view.getResolution();
@@ -229,8 +229,8 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
     easing: ol.easing.easeOut
   }));
   var relativePosition = this.getRelativePosition_(
-      browserEvent.offsetX - this.thumbSize_[0] / 2,
-      browserEvent.offsetY - this.thumbSize_[1] / 2);
+      event.offsetX - this.thumbSize_[0] / 2,
+      event.offsetY - this.thumbSize_[1] / 2);
   var resolution = this.getResolutionForPosition_(relativePosition);
   view.setResolution(view.constrainResolution(resolution));
 };
@@ -243,7 +243,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
  */
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
   if (!this.dragging_ &&
-      event.browserEvent.target === this.element.firstElementChild) {
+      event.originalEvent.target === this.element.firstElementChild) {
     this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;

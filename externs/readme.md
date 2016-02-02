@@ -28,7 +28,7 @@ In the source file (`src/ol/MapBrowserEvent.js`), the class needs to implement t
  * @constructor
  * @implements {oli.MapBrowserEvent}
  */
-ol.MapBrowserEvent = function(type, map, browserEvent, opt_frameState) {
+ol.MapBrowserEvent = function(type, map, originalEvent, opt_frameState) {
 
   // ...
 

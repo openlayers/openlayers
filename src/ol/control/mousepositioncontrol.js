@@ -154,21 +154,21 @@ ol.control.MousePosition.prototype.getProjection = function() {
 
 
 /**
- * @param {Event} browserEvent Browser event.
+ * @param {Event} event Browser event.
  * @protected
  */
-ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
+ol.control.MousePosition.prototype.handleMouseMove = function(event) {
   var map = this.getMap();
-  this.lastMouseMovePixel_ = map.getEventPixel(browserEvent);
+  this.lastMouseMovePixel_ = map.getEventPixel(event);
   this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 
 /**
- * @param {Event} browserEvent Browser event.
+ * @param {Event} event Browser event.
  * @protected
  */
-ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
+ol.control.MousePosition.prototype.handleMouseOut = function(event) {
   this.updateHTML_(null);
   this.lastMouseMovePixel_ = null;
 };

@@ -26,11 +26,11 @@ ol.events.ConditionType;
  * @api stable
  */
 ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.originalEvent;
+  var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      browserEvent.altKey &&
-      !(browserEvent.metaKey || browserEvent.ctrlKey) &&
-      !browserEvent.shiftKey);
+      originalEvent.altKey &&
+      !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+      !originalEvent.shiftKey);
 };
 
 
@@ -43,11 +43,11 @@ ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.originalEvent;
+  var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      browserEvent.altKey &&
-      !(browserEvent.metaKey || browserEvent.ctrlKey) &&
-      browserEvent.shiftKey);
+      originalEvent.altKey &&
+      !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+      originalEvent.shiftKey);
 };
 
 
@@ -84,9 +84,9 @@ ol.events.condition.click = function(mapBrowserEvent) {
  * @return {boolean} The result.
  */
 ol.events.condition.mouseActionButton = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.originalEvent;
-  return browserEvent.button == 0 &&
-      !(goog.userAgent.WEBKIT && ol.has.MAC && browserEvent.ctrlKey);
+  var originalEvent = mapBrowserEvent.originalEvent;
+  return originalEvent.button == 0 &&
+      !(goog.userAgent.WEBKIT && ol.has.MAC && originalEvent.ctrlKey);
 };
 
 
@@ -147,11 +147,11 @@ ol.events.condition.doubleClick = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.originalEvent;
+  var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !browserEvent.altKey &&
-      !(browserEvent.metaKey || browserEvent.ctrlKey) &&
-      !browserEvent.shiftKey);
+      !originalEvent.altKey &&
+      !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+      !originalEvent.shiftKey);
 };
 
 
@@ -165,11 +165,11 @@ ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.originalEvent;
+  var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !browserEvent.altKey &&
-      (ol.has.MAC ? browserEvent.metaKey : browserEvent.ctrlKey) &&
-      !browserEvent.shiftKey);
+      !originalEvent.altKey &&
+      (ol.has.MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
+      !originalEvent.shiftKey);
 };
 
 
@@ -182,11 +182,11 @@ ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
-  var browserEvent = mapBrowserEvent.originalEvent;
+  var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !browserEvent.altKey &&
-      !(browserEvent.metaKey || browserEvent.ctrlKey) &&
-      browserEvent.shiftKey);
+      !originalEvent.altKey &&
+      !(originalEvent.metaKey || originalEvent.ctrlKey) &&
+      originalEvent.shiftKey);
 };
 
 

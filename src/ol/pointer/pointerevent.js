@@ -44,18 +44,18 @@ goog.require('ol.events.Event');
  * @constructor
  * @extends {ol.events.Event}
  * @param {string} type The type of the event to create.
- * @param {Event} browserEvent The event.
+ * @param {Event} originalEvent The event.
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
-ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
+ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
   goog.base(this, type);
 
   /**
    * @const
    * @type {Event}
    */
-  this.browserEvent = browserEvent;
+  this.originalEvent = originalEvent;
 
   var eventDict = opt_eventDict ? opt_eventDict : {};
 
@@ -186,9 +186,9 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
   this.isPrimary = 'isPrimary' in eventDict ? eventDict['isPrimary'] : false;
 
   // keep the semantics of preventDefault
-  if (browserEvent.preventDefault) {
+  if (originalEvent.preventDefault) {
     this.preventDefault = function() {
-      browserEvent.preventDefault();
+      originalEvent.preventDefault();
     };
   }
 };

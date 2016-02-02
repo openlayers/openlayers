@@ -108,11 +108,10 @@ ol.DeviceOrientation.prototype.disposeInternal = function() {
 
 /**
  * @private
- * @param {Event} browserEvent Event.
+ * @param {Event} originalEvent Event.
  */
-ol.DeviceOrientation.prototype.orientationChange_ = function(browserEvent) {
-  var event = /** @type {DeviceOrientationEvent} */
-      (browserEvent);
+ol.DeviceOrientation.prototype.orientationChange_ = function(originalEvent) {
+  var event = /** @type {DeviceOrientationEvent} */ (originalEvent);
   if (event.alpha !== null) {
     var alpha = ol.math.toRadians(event.alpha);
     this.set(ol.DeviceOrientationProperty.ALPHA, alpha);
