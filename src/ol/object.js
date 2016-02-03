@@ -199,12 +199,7 @@ ol.Object.prototype.getKeys = function() {
  * @api stable
  */
 ol.Object.prototype.getProperties = function() {
-  var properties = {};
-  var key;
-  for (key in this.values_) {
-    properties[key] = this.values_[key];
-  }
-  return properties;
+  return ol.object.assign({}, this.values_);
 };
 
 
