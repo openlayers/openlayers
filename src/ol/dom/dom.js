@@ -213,3 +213,20 @@ ol.dom.outerHeight = function(element) {
 
   return height;
 };
+
+ol.dom.setBoxSizingSize = function(element, size, boxSizing) {
+  var style = element.style;
+  if (goog.userAgent.GECKO) {
+    style.MozBoxSizing = boxSizing;
+  } else if (goog.userAgent.WEBKIT) {
+    style.WebkitBoxSizing = boxSizing;
+  } else {
+  // Includes IE8 and Opera 9.50+
+    style.boxSizing = boxSizing;
+  }
+
+  // Setting this to a negative value will throw an exception on IE
+  // (and doesn't do anything different than setting it to 0).
+  style.width = Math.max(size.width, 0) + 'px';
+  style.height = Math.max(size.height, 0) + 'px';
+};

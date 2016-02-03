@@ -17,6 +17,7 @@ goog.require('ol.View');
 goog.require('ol.ViewProperty');
 goog.require('ol.control.Control');
 goog.require('ol.coordinate');
+goog.require('ol.dom');
 goog.require('ol.css');
 goog.require('ol.extent');
 
