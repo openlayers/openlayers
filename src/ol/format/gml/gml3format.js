@@ -3,7 +3,6 @@ goog.provide('ol.format.GML3');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.Feature');
@@ -1270,7 +1269,7 @@ ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
     curve: this.curve_, surface: this.surface_,
     multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
   if (opt_options) {
-    goog.object.extend(context, opt_options);
+    ol.object.assign(context, opt_options);
   }
   this.writeGeometryElement(geom, geometry, [context]);
   return geom;
@@ -1313,7 +1312,7 @@ ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
     featureType: this.featureType
   };
   if (opt_options) {
-    goog.object.extend(context, opt_options);
+    ol.object.assign(context, opt_options);
   }
   this.writeFeatureMembers_(node, features, [context]);
   return node;

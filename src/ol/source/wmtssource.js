@@ -2,12 +2,12 @@ goog.provide('ol.source.WMTS');
 goog.provide('ol.source.WMTSRequestEncoding');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('goog.uri.utils');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.TileUrlFunctionType');
 goog.require('ol.array');
 goog.require('ol.extent');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.WMTS');
@@ -111,7 +111,7 @@ ol.source.WMTS = function(options) {
   };
 
   if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
-    goog.object.extend(context, {
+    ol.object.assign(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
       'Version': this.version_,
@@ -153,7 +153,7 @@ ol.source.WMTS = function(options) {
               'TileCol': tileCoord[1],
               'TileRow': -tileCoord[2] - 1
             };
-            goog.object.extend(localContext, dimensions);
+            ol.object.assign(localContext, dimensions);
             var url = template;
             if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
               url = goog.uri.utils.appendParamsFromMap(url, localContext);
@@ -290,7 +290,7 @@ ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
  * @api
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
-  goog.object.extend(this.dimensions_, dimensions);
+  ol.object.assign(this.dimensions_, dimensions);
   this.resetDimensionsKey_();
   this.changed();
 };
