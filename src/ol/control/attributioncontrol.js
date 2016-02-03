@@ -13,6 +13,7 @@ goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.object');
 goog.require('ol.source.Tile');
 
 
@@ -150,7 +151,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
-  var attributions = goog.object.clone(frameState.attributions);
+  var attributions = ol.object.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var projection = frameState.viewState.projection;

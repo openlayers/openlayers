@@ -1,9 +1,9 @@
 goog.provide('ol.layer.Group');
 
 goog.require('goog.asserts');
+goog.require('goog.object');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
@@ -11,6 +11,7 @@ goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
+goog.require('ol.object');
 goog.require('ol.source.State');
 
 
@@ -37,7 +38,7 @@ ol.layer.Group = function(opt_options) {
 
   var options = opt_options || {};
   var baseOptions = /** @type {olx.layer.GroupOptions} */
-      (goog.object.clone(options));
+      (ol.object.assign({}, options));
   delete baseOptions.layers;
 
   var layers = options.layers;

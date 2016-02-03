@@ -2,11 +2,11 @@ goog.provide('ol.layer.Layer');
 
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.object');
 goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
@@ -34,7 +34,7 @@ goog.require('ol.source.State');
  */
 ol.layer.Layer = function(options) {
 
-  var baseOptions = goog.object.clone(options);
+  var baseOptions = ol.object.assign({}, options);
   delete baseOptions.source;
 
   goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
