@@ -3,6 +3,17 @@ goog.provide('ol.test.source.UrlTile');
 
 describe('ol.source.UrlTile', function() {
 
+  describe('url option', function() {
+    it('expands url template', function() {
+      var tileSource = new ol.source.UrlTile({
+        url: '{1-3}'
+      });
+
+      var urls = tileSource.getUrls();
+      expect(urls).to.eql(['1', '2', '3']);
+    });
+  });
+
   describe('tileUrlFunction', function() {
 
     var tileSource, tileGrid;
