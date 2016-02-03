@@ -209,7 +209,7 @@ describe('ol.array', function() {
     describe('single element array with custom comparison function',
       function() {
         var g = [1];
-        it('should not find 1 at index 0', function() {
+        it('should find 1 at index 0', function() {
           var pos = ol.array.binarySearch(g, 1, revNumCompare);
           expect(pos).to.be(0);
         });
