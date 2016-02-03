@@ -3,8 +3,8 @@ goog.provide('ol.control.OverviewMap');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.dom.classlist');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.math.Size');
 goog.require('goog.style');
 goog.require('ol');
@@ -83,8 +83,8 @@ ol.control.OverviewMap = function(opt_options) {
     'title': tipLabel
   }, activeLabel);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK,
+      this.handleClick_, this);
 
   var ovmapDiv = goog.dom.createDom('DIV', 'ol-overviewmap-map');
 
@@ -159,9 +159,9 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
 
   if (map) {
-    this.listenerKeys.push(goog.events.listen(
+    this.listenerKeys.push(ol.events.listen(
         map, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, false, this));
+        this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked
     if (this.ovmap_.getLayers().getLength() === 0) {
@@ -203,9 +203,9 @@ ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  * @private
  */
 ol.control.OverviewMap.prototype.bindView_ = function(view) {
-  goog.events.listen(view,
+  ol.events.listen(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, false, this);
+      this.handleRotationChanged_, this);
 };
 
 
@@ -215,9 +215,9 @@ ol.control.OverviewMap.prototype.bindView_ = function(view) {
  * @private
  */
 ol.control.OverviewMap.prototype.unbindView_ = function(view) {
-  goog.events.unlisten(view,
+  ol.events.unlisten(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, false, this);
+      this.handleRotationChanged_, this);
 };
 
 
@@ -432,7 +432,7 @@ ol.control.OverviewMap.prototype.calculateCoordinateRotate_ = function(
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.OverviewMap.prototype.handleClick_ = function(event) {
@@ -459,11 +459,11 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    goog.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
+    ol.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
         },
-        false, this);
+        this);
   }
 };
 

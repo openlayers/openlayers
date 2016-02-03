@@ -2,9 +2,9 @@ goog.provide('ol.renderer.dom.Map');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventType');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -68,8 +68,8 @@ ol.renderer.dom.Map = function(container, map) {
   style.height = '100%';
 
   // prevent the img context menu on mobile devices
-  goog.events.listen(this.layersPane_, goog.events.EventType.TOUCHSTART,
-      goog.events.Event.preventDefault);
+  ol.events.listen(this.layersPane_, ol.events.EventType.TOUCHSTART,
+      ol.events.Event.preventDefault);
 
   goog.dom.insertChildAt(container, this.layersPane_, 0);
 

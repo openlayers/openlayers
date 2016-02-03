@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.TileRange');
@@ -364,7 +364,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
 ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(event) {

@@ -113,10 +113,10 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      goog.events.listen(o, 'change:k', listener1);
+      ol.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
+      ol.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
     });
 
     it('dispatches events', function() {
@@ -146,10 +146,10 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      goog.events.listen(o, 'change:k', listener1);
+      ol.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      goog.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
+      ol.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
     });
 
     it('dispatches events to object', function() {
@@ -222,9 +222,9 @@ describe('ol.Object', function() {
 
     beforeEach(function() {
       listener1 = sinon.spy();
-      goog.events.listen(o, 'change:k', listener1);
+      ol.events.listen(o, 'change:k', listener1);
       listener2 = sinon.spy();
-      goog.events.listen(o, 'change:K', listener2);
+      ol.events.listen(o, 'change:K', listener2);
     });
 
     it('dispatches the expected event', function() {
@@ -239,6 +239,6 @@ describe('ol.Object', function() {
 });
 
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');

@@ -32,22 +32,6 @@
 
     goog.json.USE_NATIVE_JSON = true;
 
-    /**
-     * The goog.dom.ViewportSizeMonitor (used in map.js) creates a global leak
-     * by setting goog.UID_PROPERTY_ on the monitored window.  In order to test
-     * that we don't have other global leaks, we preemptively set the property
-     * so Mocha can compare the global before and after our tests.
-     *
-     * In addition, calling goog.events.listen on the global object (as done
-     * in deviceorientation.js) creates a second leak by setting
-     * goog.events.LISTENER_MAP_PROP_ on the global object.
-     *
-     * We preemptively set both of these properties so Mocha can compare the
-     * global before and after tests.  The call to goog.events.listen also
-     * calls goog.getUid.
-     */
-    goog.events.listen(this, 'test', function() {});
-
     var runner = mocha.run();
     if (window.console && console.log) {
       // write stacks to the console for failed tests

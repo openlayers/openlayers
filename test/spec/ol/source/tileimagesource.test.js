@@ -124,7 +124,7 @@ describe('ol.source.TileImage', function() {
       var tile = source.getTile(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.a(ol.reproj.Tile);
 
-      tile.listen('change', function() {
+      ol.events.listen(tile, 'change', function() {
         if (tile.getState() == ol.TileState.LOADED) {
           done();
         }
@@ -143,7 +143,7 @@ describe('ol.source.TileImage', function() {
       var tile = source.getTile(0, 0, -1, 1, proj);
       expect(tile).to.be.a(ol.reproj.Tile);
 
-      tile.listen('change', function() {
+      ol.events.listen(tile, 'change', function() {
         if (tile.getState() == ol.TileState.LOADED) {
           done();
         }
@@ -157,6 +157,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.reproj.Tile');

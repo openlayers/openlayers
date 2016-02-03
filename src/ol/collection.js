@@ -7,7 +7,7 @@ goog.provide('ol.Collection');
 goog.provide('ol.CollectionEvent');
 goog.provide('ol.CollectionEventType');
 
-goog.require('goog.events.Event');
+goog.require('ol.events.Event');
 goog.require('ol.Object');
 
 
@@ -36,7 +36,7 @@ ol.CollectionEventType = {
  * type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.CollectionEvent}
  * @param {ol.CollectionEventType} type Type.
  * @param {*=} opt_element Element.
@@ -54,7 +54,7 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   this.element = opt_element;
 
 };
-goog.inherits(ol.CollectionEvent, goog.events.Event);
+goog.inherits(ol.CollectionEvent, ol.events.Event);
 
 
 /**

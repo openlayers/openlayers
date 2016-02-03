@@ -39,8 +39,8 @@ describe('ol.renderer.vector', function() {
             style, squaredTolerance, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
-        listeners = goog.events.getListeners(
-            iconStyle.iconImage_, goog.events.EventType.CHANGE, false);
+        listeners = ol.events.getListeners(
+            iconStyle.iconImage_, ol.events.EventType.CHANGE);
         expect(listeners.length).to.eql(1);
 
         // call #2
@@ -48,8 +48,8 @@ describe('ol.renderer.vector', function() {
             style, squaredTolerance, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
-        listeners = goog.events.getListeners(
-            iconStyle.iconImage_, goog.events.EventType.CHANGE, false);
+        listeners = ol.events.getListeners(
+            iconStyle.iconImage_, ol.events.EventType.CHANGE);
         expect(listeners.length).to.eql(1);
       });
 
@@ -155,8 +155,8 @@ describe('ol.renderer.vector', function() {
   });
 });
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');

@@ -82,11 +82,11 @@ describe('ol.interaction.Select', function() {
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
     var event = new ol.MapBrowserPointerEvent(type, map,
         new ol.pointer.PointerEvent(type,
-            new goog.events.BrowserEvent({
+            {
               clientX: position.x + x + width / 2,
               clientY: position.y + y + height / 2,
               shiftKey: shiftKey
-            })));
+            }));
     map.handleMapBrowserEvent(event);
   }
 
@@ -333,8 +333,6 @@ describe('ol.interaction.Select', function() {
 });
 
 goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.BrowserEvent');
 goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.Feature');

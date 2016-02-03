@@ -4,7 +4,7 @@
 goog.provide('ol.source.Cluster');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.coordinate');
@@ -55,7 +55,7 @@ ol.source.Cluster = function(options) {
    */
   this.source_ = options.source;
 
-  this.source_.on(goog.events.EventType.CHANGE,
+  this.source_.on(ol.events.EventType.CHANGE,
       ol.source.Cluster.prototype.onSourceChange_, this);
 };
 goog.inherits(ol.source.Cluster, ol.source.Vector);

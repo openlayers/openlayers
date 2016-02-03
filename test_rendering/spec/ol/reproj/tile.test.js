@@ -16,7 +16,7 @@ describe('ol.rendering.reproj.Tile', function() {
           return source.getTile(z, x, y, pixelRatio, sourceProjection);
         });
     if (tile.getState() == ol.TileState.IDLE) {
-      tile.listen('change', function(e) {
+      ol.events.listen(tile, 'change', function(e) {
         if (tile.getState() == ol.TileState.LOADED) {
           expect(tilesRequested).to.be(expectedRequests);
           resembleCanvas(tile.getImage(), expectedUrl, 7.5, done);
@@ -172,6 +172,7 @@ describe('ol.rendering.reproj.Tile', function() {
   });
 });
 
+goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.XYZ');

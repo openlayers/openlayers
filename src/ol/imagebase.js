@@ -2,8 +2,8 @@ goog.provide('ol.ImageBase');
 goog.provide('ol.ImageState');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
+goog.require('ol.events.EventTarget');
+goog.require('ol.events.EventType');
 goog.require('ol.Attribution');
 goog.require('ol.Extent');
 
@@ -21,7 +21,7 @@ ol.ImageState = {
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.events.EventTarget}
  * @param {ol.Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
@@ -63,14 +63,14 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
   this.state = state;
 
 };
-goog.inherits(ol.ImageBase, goog.events.EventTarget);
+goog.inherits(ol.ImageBase, ol.events.EventTarget);
 
 
 /**
  * @protected
  */
 ol.ImageBase.prototype.changed = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  this.dispatchEvent(ol.events.EventType.CHANGE);
 };
 
 

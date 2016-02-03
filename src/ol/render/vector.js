@@ -69,7 +69,7 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
- * @param {function(this: T, goog.events.Event)} listener Listener function.
+ * @param {function(this: T, ol.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {boolean} `true` if style is loading.
  * @template T

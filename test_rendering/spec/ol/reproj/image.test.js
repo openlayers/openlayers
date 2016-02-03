@@ -15,7 +15,7 @@ describe('ol.rendering.reproj.Image', function() {
           return source.getImage(extent, resolution, pixelRatio, sourceProj);
         });
     if (image.getState() == ol.ImageState.IDLE) {
-      image.listen('change', function(e) {
+      ol.events.listen(image, 'change', function(e) {
         if (image.getState() == ol.ImageState.LOADED) {
           expect(imagesRequested).to.be(1);
           resembleCanvas(image.getImage(), expectedUrl, IMAGE_TOLERANCE, done);
@@ -53,7 +53,7 @@ describe('ol.rendering.reproj.Image', function() {
   });
 });
 
-goog.require('ol.extent');
+goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
 goog.require('ol.reproj.Image');

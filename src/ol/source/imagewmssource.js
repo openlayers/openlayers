@@ -3,8 +3,8 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
@@ -241,8 +241,8 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
 
   this.renderedRevision_ = this.getRevision();
 
-  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
-      this.handleImageChange, false, this);
+  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
+      this.handleImageChange, this);
 
   return this.image_;
 

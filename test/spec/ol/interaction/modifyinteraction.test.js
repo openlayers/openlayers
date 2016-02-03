@@ -68,13 +68,13 @@ describe('ol.interaction.Modify', function() {
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
     var event = new ol.MapBrowserPointerEvent(type, map,
         new ol.pointer.PointerEvent(type,
-            new goog.events.BrowserEvent({
+            {
               type: type,
               button: button,
               clientX: position.x + x + width / 2,
               clientY: position.y + y + height / 2,
               shiftKey: shiftKey
-            })));
+            }));
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
@@ -327,10 +327,10 @@ describe('ol.interaction.Modify', function() {
 
     beforeEach(function() {
       getListeners = function(feature, modify) {
-        var listeners = goog.events.getListeners(
-            feature, goog.events.EventType.CHANGE, false);
+        var listeners = ol.events.getListeners(
+            feature, 'change');
         return listeners.filter(function(listener) {
-          return listener.handler == modify;
+          return listener.bindTo === modify;
         });
       };
     });
@@ -377,9 +377,7 @@ describe('ol.interaction.Modify', function() {
 });
 
 goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.events.BrowserEvent');
+goog.require('ol.events');
 goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
