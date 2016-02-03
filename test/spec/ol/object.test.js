@@ -238,7 +238,37 @@ describe('ol.Object', function() {
 
 });
 
+describe('ol.object.assign()', function() {
 
-goog.require('ol.events');
+  it('is an alias for Object.assign() where available', function() {
+    if (typeof Object.assign === 'function') {
+      expect(ol.object.assign).to.be(Object.assign);
+    }
+  });
+
+  it('assigns properties from a source object to a target object', function() {
+
+    var source = {
+      sourceProp1: 'sourceValue1',
+      sourceProp2: 'sourceValue2'
+    };
+
+    var target = {
+      sourceProp1: 'overridden',
+      targetProp1: 'targetValue1'
+    };
+
+    var assigned = ol.object.assign(target, source);
+    expect(assigned).to.be(target);
+    expect(assigned.sourceProp1).to.be('sourceValue1');
+    expect(assigned.sourceProp2).to.be('sourceValue2');
+    expect(assigned.targetProp1).to.be('targetValue1');
+
+  });
+
+});
+
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.events');
+goog.require('ol.object');
