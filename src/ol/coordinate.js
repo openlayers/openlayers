@@ -2,8 +2,8 @@ goog.provide('ol.Coordinate');
 goog.provide('ol.CoordinateFormatType');
 goog.provide('ol.coordinate');
 
-goog.require('goog.math');
 goog.require('goog.string');
+goog.require('ol.math');
 
 
 /**
@@ -129,7 +129,7 @@ ol.coordinate.createStringXY = function(opt_fractionDigits) {
  * @return {string} String.
  */
 ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres, opt_fractionDigits) {
-  var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
+  var normalizedDegrees = ol.math.modulo(degrees + 180, 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   var dflPrecision = opt_fractionDigits || 0;
   return Math.floor(x / 3600) + '\u00b0 ' +

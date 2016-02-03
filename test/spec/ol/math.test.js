@@ -155,5 +155,29 @@ describe('ol.math.toRadians', function() {
   });
 });
 
+describe('ol.math.modulo', function() {
+  it('256 / 8 returns 0', function() {
+    expect(ol.math.modulo(256, 8)).to.be(0);
+  });
+  it('positive and positive returns a positive ', function() {
+    expect(ol.math.modulo(7, 8)).to.be(7);
+  });
+  it('same Dividend and Divisor returns 0', function() {
+    expect(ol.math.modulo(4, 4)).to.be(0);
+  });
+  it('negative and positive returns negative', function() {
+    expect(ol.math.modulo(-3, 4)).to.be(1);
+  });
+  it('negative and negative returns positive', function() {
+    expect(ol.math.modulo(-4, -5)).to.be(-4);
+    expect(ol.math.modulo(-3, -4)).to.be(-3);
+  });
+  it('positive and negative returns negative', function() {
+    expect(ol.math.modulo(3, -4)).to.be(-1);
+    expect(ol.math.modulo(1, -5)).to.be(-4);
+    expect(ol.math.modulo(6, -5)).to.be(-4);
+  });
+});
+
 
 goog.require('ol.math');
