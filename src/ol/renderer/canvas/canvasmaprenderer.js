@@ -2,13 +2,13 @@
 
 goog.provide('ol.renderer.canvas.Map');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.RendererType');
+goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.layer.Image');
@@ -171,7 +171,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
-  goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+  ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
 
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layer, layerRenderer, layerState;
