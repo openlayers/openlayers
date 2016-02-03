@@ -567,8 +567,7 @@ ol.format.KML.readScale_ = function(node) {
  * @return {Array.<ol.style.Style>|string|undefined} StyleMap.
  */
 ol.format.KML.readStyleMapValue_ = function(node, objectStack) {
-  return ol.xml.pushParseAndPop(
-      /** @type {Array.<ol.style.Style>|string|undefined} */ (undefined),
+  return ol.xml.pushParseAndPop(undefined,
       ol.format.KML.STYLE_MAP_PARSERS_, node, objectStack);
 };
 
@@ -784,8 +783,8 @@ ol.format.KML.readFlatLinearRing_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LinearRing',
       'localName should be LinearRing');
-  return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(
-      null, ol.format.KML.FLAT_LINEAR_RING_PARSERS_, node, objectStack));
+  return ol.xml.pushParseAndPop(null,
+      ol.format.KML.FLAT_LINEAR_RING_PARSERS_, node, objectStack);
 };
 
 
@@ -835,8 +834,7 @@ ol.format.KML.readGxMultiTrack_ = function(node, objectStack) {
       'namespaceURI of the node should be known to the KML parser');
   goog.asserts.assert(node.localName == 'MultiTrack',
       'localName should be MultiTrack');
-  var lineStrings = ol.xml.pushParseAndPop(
-      /** @type {Array.<ol.geom.LineString>} */ ([]),
+  var lineStrings = ol.xml.pushParseAndPop([],
       ol.format.KML.GX_MULTITRACK_GEOMETRY_PARSERS_, node, objectStack);
   if (!lineStrings) {
     return undefined;
@@ -913,8 +911,8 @@ ol.format.KML.readIcon_ = function(node, objectStack) {
 ol.format.KML.readFlatCoordinatesFromNode_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  return /** @type {Array.<number>} */ (ol.xml.pushParseAndPop(null,
-      ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack));
+  return ol.xml.pushParseAndPop(null,
+      ol.format.KML.GEOMETRY_FLAT_COORDINATES_PARSERS_, node, objectStack);
 };
 
 
@@ -929,7 +927,7 @@ ol.format.KML.readLineString_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LineString',
       'localName should be LineString');
-  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+  var properties = ol.xml.pushParseAndPop({},
       ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
       objectStack);
   var flatCoordinates =
@@ -956,7 +954,7 @@ ol.format.KML.readLinearRing_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'LinearRing',
       'localName should be LinearRing');
-  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+  var properties = ol.xml.pushParseAndPop({},
       ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
       objectStack);
   var flatCoordinates =
@@ -984,8 +982,7 @@ ol.format.KML.readMultiGeometry_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'MultiGeometry',
       'localName should be MultiGeometry');
-  var geometries = ol.xml.pushParseAndPop(
-      /** @type {Array.<ol.geom.Geometry>} */ ([]),
+  var geometries = ol.xml.pushParseAndPop([],
       ol.format.KML.MULTI_GEOMETRY_PARSERS_, node, objectStack);
   if (!geometries) {
     return null;
@@ -1058,7 +1055,7 @@ ol.format.KML.readPoint_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Point', 'localName should be Point');
-  var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
+  var properties = ol.xml.pushParseAndPop({},
       ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
       objectStack);
   var flatCoordinates =
@@ -1090,8 +1087,7 @@ ol.format.KML.readPolygon_ = function(node, objectStack) {
   var properties = ol.xml.pushParseAndPop(/** @type {Object<string,*>} */ ({}),
       ol.format.KML.EXTRUDE_AND_ALTITUDE_MODE_PARSERS_, node,
       objectStack);
-  var flatLinearRings = ol.xml.pushParseAndPop(
-      /** @type {Array.<Array.<number>>} */ ([null]),
+  var flatLinearRings = ol.xml.pushParseAndPop([null],
       ol.format.KML.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack);
   if (flatLinearRings && flatLinearRings[0]) {
     var polygon = new ol.geom.Polygon(null);
@@ -1329,8 +1325,8 @@ ol.format.KML.innerBoundaryIsParser_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'innerBoundaryIs',
       'localName should be innerBoundaryIs');
-  var flatLinearRing = ol.xml.pushParseAndPop(
-      /** @type {Array.<number>|undefined} */ (undefined),
+  /** @type {Array.<number>|undefined} */
+  var flatLinearRing = ol.xml.pushParseAndPop(undefined,
       ol.format.KML.INNER_BOUNDARY_IS_PARSERS_, node, objectStack);
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
@@ -1354,8 +1350,8 @@ ol.format.KML.outerBoundaryIsParser_ = function(node, objectStack) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'outerBoundaryIs',
       'localName should be outerBoundaryIs');
-  var flatLinearRing = ol.xml.pushParseAndPop(
-      /** @type {Array.<number>|undefined} */ (undefined),
+  /** @type {Array.<number>|undefined} */
+  var flatLinearRing = ol.xml.pushParseAndPop(undefined,
       ol.format.KML.OUTER_BOUNDARY_IS_PARSERS_, node, objectStack);
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
@@ -1765,8 +1761,8 @@ ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
         'Style': this.readSharedStyle_.bind(this),
         'StyleMap': this.readSharedStyleMap_.bind(this)
       });
-  var features = ol.xml.pushParseAndPop(/** @type {Array.<ol.Feature>} */ ([]),
-      parsersNS, node, objectStack, this);
+  /** @type {Array.<ol.Feature>} */
+  var features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack, this);
   if (features) {
     return features;
   } else {

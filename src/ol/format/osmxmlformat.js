@@ -64,10 +64,11 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var id = node.getAttribute('id');
-  var coordinates = /** @type {Array.<number>} */ ([
+  /** @type {ol.Coordinate} */
+  var coordinates = [
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))
-  ]);
+  ];
   state.nodes[id] = coordinates;
 
   var values = ol.xml.pushParseAndPop({
@@ -100,7 +101,8 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     tags: {}
   }, ol.format.OSMXML.WAY_PARSERS_, node, objectStack);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  var flatCoordinates = /** @type {Array.<number>} */ ([]);
+  /** @type {Array.<number>} */
+  var flatCoordinates = [];
   for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
     var point = state.nodes[values.ndrefs[i]];
     ol.array.extend(flatCoordinates, point);

@@ -98,13 +98,13 @@ ol.Feature = function(opt_geometryOrProperties) {
   if (opt_geometryOrProperties !== undefined) {
     if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
         !opt_geometryOrProperties) {
-      var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrProperties);
+      var geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);
     } else {
       goog.asserts.assert(goog.isObject(opt_geometryOrProperties),
           'opt_geometryOrProperties should be an Object');
-      var properties = /** @type {Object.<string, *>} */
-          (opt_geometryOrProperties);
+      /** @type {Object.<string, *>} */
+      var properties = opt_geometryOrProperties;
       this.setProperties(properties);
     }
   }

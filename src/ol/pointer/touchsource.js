@@ -438,7 +438,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
   // only the primary finger will synth mouse events
   if (this.isPrimaryTouch_(t)) {
     // remember x/y of last touch
-    var lt = /** @type {ol.Pixel} */ ([t.clientX, t.clientY]);
+    var lt = [t.clientX, t.clientY];
     lts.push(lt);
 
     goog.global.setTimeout(function() {
