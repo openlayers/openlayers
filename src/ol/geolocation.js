@@ -52,6 +52,7 @@ ol.GeolocationProperty = {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
+ * @fires error
  * @constructor
  * @extends {ol.Object}
  * @param {olx.GeolocationOptions=} opt_options Options.
@@ -177,6 +178,11 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.changed();
 };
 
+/**
+ * Triggered when the Geolocation returns an error.
+ * @event error
+ * @api
+ */
 
 /**
  * @private
