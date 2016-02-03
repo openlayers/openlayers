@@ -139,7 +139,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layer
         texture = this.createTexture_(image_);
         if (this.texture) {
           frameState.postRenderFunctions.push(
-              goog.partial(
+              /** @type {ol.PostRenderFunction} */ (goog.partial(
                   /**
                    * @param {WebGLRenderingContext} gl GL.
                    * @param {WebGLTexture} texture Texture.
@@ -148,7 +148,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layer
                     if (!gl.isContextLost()) {
                       gl.deleteTexture(texture);
                     }
-                  }, gl, this.texture));
+                  }, gl, this.texture)));
         }
       }
     }

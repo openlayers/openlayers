@@ -351,7 +351,9 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
-  frameState.postRenderFunctions.push(ol.renderer.Map.expireIconCache_);
+  frameState.postRenderFunctions.push(
+    /** @type {ol.PostRenderFunction} */ (ol.renderer.Map.expireIconCache_)
+  );
 };
 
 
@@ -364,7 +366,8 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameSta
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-          this.removeUnusedLayerRenderers_.bind(this));
+        /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
+      );
       return;
     }
   }
