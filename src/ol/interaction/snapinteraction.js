@@ -330,15 +330,19 @@ ol.interaction.Snap.prototype.setMap = function(map) {
 
   if (map) {
     if (this.features_) {
-      keys.push(this.features_.on(ol.CollectionEventType.ADD,
-          this.handleFeatureAdd_, this));
-      keys.push(this.features_.on(ol.CollectionEventType.REMOVE,
-          this.handleFeatureRemove_, this));
+      keys.push(
+        ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+            this.handleFeatureAdd_, this),
+        ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+            this.handleFeatureRemove_, this)
+      );
     } else if (this.source_) {
-      keys.push(this.source_.on(ol.source.VectorEventType.ADDFEATURE,
-          this.handleFeatureAdd_, this));
-      keys.push(this.source_.on(ol.source.VectorEventType.REMOVEFEATURE,
-          this.handleFeatureRemove_, this));
+      keys.push(
+        ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
+            this.handleFeatureAdd_, this),
+        ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
+            this.handleFeatureRemove_, this)
+      );
     }
     features.forEach(this.forEachFeatureAdd_, this);
   }
