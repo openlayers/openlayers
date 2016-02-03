@@ -1,11 +1,11 @@
 goog.provide('ol.webgl.Context');
 
 goog.require('goog.asserts');
-goog.require('ol.events');
 goog.require('goog.log');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.array');
+goog.require('ol.events');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
 
@@ -42,13 +42,13 @@ ol.webgl.Context = function(canvas, gl) {
 
   /**
    * @private
-   * @type {Object.<number, ol.webgl.BufferCacheEntry>}
+   * @type {Object.<string, ol.webgl.BufferCacheEntry>}
    */
   this.bufferCache_ = {};
 
   /**
    * @private
-   * @type {Object.<number, WebGLShader>}
+   * @type {Object.<string, WebGLShader>}
    */
   this.shaderCache_ = {};
 
@@ -113,7 +113,7 @@ ol.webgl.Context = function(canvas, gl) {
 ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   var gl = this.getGL();
   var arr = buf.getArray();
-  var bufferKey = goog.getUid(buf);
+  var bufferKey = String(goog.getUid(buf));
   if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -146,7 +146,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
  */
 ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
-  var bufferKey = goog.getUid(buf);
+  var bufferKey = String(goog.getUid(buf));
   goog.asserts.assert(bufferKey in this.bufferCache_,
       'attempted to delete uncached buffer');
   var bufferCacheEntry = this.bufferCache_[bufferKey];
@@ -163,15 +163,16 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
 ol.webgl.Context.prototype.disposeInternal = function() {
   var gl = this.getGL();
   if (!gl.isContextLost()) {
-    goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
-      gl.deleteBuffer(bufferCacheEntry.buffer);
-    });
-    goog.object.forEach(this.programCache_, function(program) {
-      gl.deleteProgram(program);
-    });
-    goog.object.forEach(this.shaderCache_, function(shader) {
-      gl.deleteShader(shader);
-    });
+    var key;
+    for (key in this.bufferCache_) {
+      gl.deleteBuffer(this.bufferCache_[key].buffer);
+    }
+    for (key in this.programCache_) {
+      gl.deleteProgram(this.programCache_[key]);
+    }
+    for (key in this.shaderCache_) {
+      gl.deleteShader(this.shaderCache_[key]);
+    }
     // delete objects for hit-detection
     gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
     gl.deleteRenderbuffer(this.hitDetectionRenderbuffer_);
@@ -217,7 +218,7 @@ ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
  * @return {WebGLShader} Shader.
  */
 ol.webgl.Context.prototype.getShader = function(shaderObject) {
-  var shaderKey = goog.getUid(shaderObject);
+  var shaderKey = String(goog.getUid(shaderObject));
   if (shaderKey in this.shaderCache_) {
     return this.shaderCache_[shaderKey];
   } else {

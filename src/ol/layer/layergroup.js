@@ -104,9 +104,9 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
       ol.events.listen(layers, ol.CollectionEventType.REMOVE,
           this.handleLayersRemove_, this));
 
-  goog.object.forEach(this.listenerKeys_, function(keys) {
-    keys.forEach(ol.events.unlistenByKey);
-  });
+  for (var id in this.listenerKeys_) {
+    this.listenerKeys_[id].forEach(ol.events.unlistenByKey);
+  }
   goog.object.clear(this.listenerKeys_);
 
   var layersArray = layers.getArray();

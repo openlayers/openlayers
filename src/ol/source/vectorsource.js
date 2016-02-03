@@ -6,9 +6,6 @@ goog.provide('ol.source.VectorEvent');
 goog.provide('ol.source.VectorEventType');
 
 goog.require('goog.asserts');
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventType');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Collection');
@@ -19,6 +16,9 @@ goog.require('ol.FeatureLoader');
 goog.require('ol.LoadingStrategy');
 goog.require('ol.ObjectEventType');
 goog.require('ol.array');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.featureloader');
 goog.require('ol.loadingstrategy');
@@ -382,10 +382,11 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
       this.undefIdIndex_ = {};
     }
   } else {
-    var rmFeatureInternal = this.removeFeatureInternal;
     if (this.featuresRtree_) {
-      this.featuresRtree_.forEach(rmFeatureInternal, this);
-      goog.object.forEach(this.nullGeometryFeatures_, rmFeatureInternal, this);
+      this.featuresRtree_.forEach(this.removeFeatureInternal, this);
+      for (var id in this.nullGeometryFeatures_) {
+        this.removeFeatureInternal(this.nullGeometryFeatures_[id]);
+      }
     }
   }
   if (this.featuresCollection_) {
