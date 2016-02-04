@@ -124,14 +124,17 @@ ol.coordinate.createStringXY = function(opt_fractionDigits) {
  * @private
  * @param {number} degrees Degrees.
  * @param {string} hemispheres Hemispheres.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
  * @return {string} String.
  */
-ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres) {
+ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres, opt_fractionDigits) {
   var normalizedDegrees = goog.math.modulo(degrees + 180, 360) - 180;
-  var x = Math.abs(Math.round(3600 * normalizedDegrees));
+  var x = Math.abs(3600 * normalizedDegrees);
+  var dflPrecision = opt_fractionDigits || 0;
   return Math.floor(x / 3600) + '\u00b0 ' +
       goog.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-      goog.string.padNumber(Math.floor(x % 60), 2) + '\u2033 ' +
+      goog.string.padNumber((x % 60), 2, dflPrecision) + '\u2033 ' +
       hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
 };
 
@@ -284,20 +287,28 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
  * Format a geographic coordinate with the hemisphere, degrees, minutes, and
  * seconds.
  *
- * Example:
+ * Example without specifying fractional digits:
  *
  *     var coord = [7.85, 47.983333];
  *     var out = ol.coordinate.toStringHDMS(coord);
- *     // out is now '47° 59′ 0″ N 7° 51′ 0″ E'
+ *     // out is now '47° 58′ 60″ N 7° 50′ 60″ E'
+ *
+ * Example explicitly specifying 1 fractional digit:
+ *
+ *     var coord = [7.85, 47.983333];
+ *     var out = ol.coordinate.toStringHDMS(coord, 1);
+ *     // out is now '47° 58′ 60.0″ N 7° 50′ 60.0″ E'
  *
  * @param {ol.Coordinate|undefined} coordinate Coordinate.
+ * @param {number=} opt_fractionDigits The number of digits to include
+ *    after the decimal point. Default is `0`.
  * @return {string} Hemisphere, degrees, minutes and seconds.
  * @api stable
  */
-ol.coordinate.toStringHDMS = function(coordinate) {
+ol.coordinate.toStringHDMS = function(coordinate, opt_fractionDigits) {
   if (coordinate) {
-    return ol.coordinate.degreesToStringHDMS_(coordinate[1], 'NS') + ' ' +
-        ol.coordinate.degreesToStringHDMS_(coordinate[0], 'EW');
+    return ol.coordinate.degreesToStringHDMS_(coordinate[1], 'NS', opt_fractionDigits) + ' ' +
+        ol.coordinate.degreesToStringHDMS_(coordinate[0], 'EW', opt_fractionDigits);
   } else {
     return '';
   }
