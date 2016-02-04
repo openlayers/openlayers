@@ -443,7 +443,7 @@ describe('ol.layer.Group', function() {
 
       var layerStatesArray = layerGroup.getLayerStatesArray();
       var initialArray = layerStatesArray.slice();
-      goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+      ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
       expect(layerStatesArray[0]).to.eql(initialArray[0]);
       expect(layerStatesArray[1]).to.eql(initialArray[1]);
 
@@ -471,7 +471,7 @@ describe('ol.layer.Group', function() {
 
       var layerStatesArray = layerGroup.getLayerStatesArray();
       var initialArray = layerStatesArray.slice();
-      goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+      ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
       expect(layerStatesArray[0]).to.eql(initialArray[3]);
       expect(layerStatesArray[1]).to.eql(initialArray[0]);
       expect(layerStatesArray[2]).to.eql(initialArray[2]);
@@ -489,7 +489,7 @@ describe('ol.layer.Group', function() {
 
 });
 
-goog.require('goog.array');
+goog.require('ol.array');
 goog.require('goog.dispose');
 goog.require('ol.events');
 goog.require('ol.events.EventType');

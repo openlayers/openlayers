@@ -2658,7 +2658,7 @@ describe('ol.format.KML', function() {
     });
 
     it('creates a Point and a MultiPolygon for Alaska', function() {
-      var alaska = goog.array.find(features, function(feature) {
+      var alaska = ol.array.find(features, function(feature) {
         return feature.get('name') === 'Alaska';
       });
       expect(alaska).to.be.an(ol.Feature);
@@ -2798,7 +2798,7 @@ describe('ol.format.KML', function() {
 });
 
 
-goog.require('goog.array');
+goog.require('ol.array');
 goog.require('goog.dom.xml');
 goog.require('ol.Feature');
 goog.require('ol.format.GeoJSON');
