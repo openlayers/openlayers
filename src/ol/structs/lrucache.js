@@ -262,9 +262,31 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
 
 
 /**
- * @typedef {{key_: string,
- *            newer: ol.structs.LRUCacheEntry,
- *            older: ol.structs.LRUCacheEntry,
- *            value_: *}}
+ * @interface
+ * @struct
  */
-ol.structs.LRUCacheEntry;
+ol.structs.LRUCacheEntry = function() {};
+
+
+/**
+ * @type {string}
+ */
+ol.structs.LRUCacheEntry.prototype.key_;
+
+
+/**
+ * @type {ol.structs.LRUCacheEntry}
+ */
+ol.structs.LRUCacheEntry.prototype.newer;
+
+
+/**
+ * @type {ol.structs.LRUCacheEntry}
+ */
+ol.structs.LRUCacheEntry.prototype.older;
+
+
+/**
+ * @type {*}
+ */
+ol.structs.LRUCacheEntry.prototype.value_;
