@@ -81,7 +81,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
             var source;
             if (type == ol.format.FormatType.JSON ||
                 type == ol.format.FormatType.TEXT) {
-              source = /** @type {string} */ (xhr.responseText);
+              source = xhr.responseText;
             } else if (type == ol.format.FormatType.XML) {
               source = xhr.responseXML;
               if (!source) {
