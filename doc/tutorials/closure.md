@@ -167,7 +167,6 @@ The minimum config file looks like this:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
@@ -223,7 +222,6 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
