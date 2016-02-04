@@ -4,9 +4,9 @@
 
 
 /**
- * @type {Object}
+ * @const
  */
-var oli;
+var oli = {};
 
 
 
@@ -168,9 +168,9 @@ oli.SelectEvent.prototype.mapBrowserEvent;
 
 
 /**
- * @type {Object}
+ * @const
  */
-oli.control;
+oli.control = {};
 
 
 /**
@@ -188,9 +188,9 @@ oli.control.Control.prototype.setMap = function(map) {};
 
 
 /**
- * @type {Object}
+ * @const
  */
-oli.interaction;
+oli.interaction = {};
 
 
 /**
@@ -237,9 +237,9 @@ oli.interaction.TranslateEvent.prototype.coordinate;
 
 
 /**
- * @type {Object}
+ * @const
  */
-oli.render;
+oli.render = {};
 
 
 
@@ -274,9 +274,9 @@ oli.render.Event.prototype.vectorContext;
 
 
 /**
- * @type {Object}
+ * @const
  */
-oli.source;
+oli.source = {};
 
 
 /**
