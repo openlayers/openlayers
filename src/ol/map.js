@@ -13,7 +13,6 @@ goog.require('goog.dom.classlist');
 goog.require('goog.functions');
 goog.require('goog.log');
 goog.require('goog.log.Level');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
@@ -1028,7 +1027,7 @@ ol.Map.prototype.handlePostRender = function() {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      tileSourceCount = goog.object.getCount(frameState.wantedTiles);
+      tileSourceCount = Object.keys(frameState.wantedTiles).length;
     }
     maxTotalLoading *= tileSourceCount;
     maxNewLoads *= tileSourceCount;

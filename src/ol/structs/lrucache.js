@@ -22,7 +22,7 @@ ol.structs.LRUCache = function() {
 
   /**
    * @private
-   * @type {Object.<string, ol.structs.LRUCacheEntry>}
+   * @type {!Object.<string, ol.structs.LRUCacheEntry>}
    */
   this.entries_ = {};
 
@@ -53,7 +53,7 @@ ol.structs.LRUCache.prototype.assertValid = function() {
     goog.asserts.assert(!this.newest_,
         'newest must be null (count = 0)');
   } else {
-    goog.asserts.assert(goog.object.getCount(this.entries_) == this.count_,
+    goog.asserts.assert(Object.keys(this.entries_).length == this.count_,
         'number of entries matches count');
     goog.asserts.assert(this.oldest_,
         'we have an oldest entry');

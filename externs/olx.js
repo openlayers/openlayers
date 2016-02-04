@@ -7012,7 +7012,7 @@ olx.view.FitOptions.prototype.maxZoom;
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
  *     viewState: olx.ViewState,
  *     viewHints: Array.<number>,
- *     wantedTiles: Object.<string, Object.<string, boolean>>}}
+ *     wantedTiles: !Object.<string, Object.<string, boolean>>}}
  * @api
  */
 olx.FrameState;
