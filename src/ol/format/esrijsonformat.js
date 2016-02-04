@@ -1,9 +1,8 @@
 goog.provide('ol.format.EsriJSON');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
-goog.require('ol.array');
 goog.require('ol.Feature');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
@@ -652,7 +651,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!goog.object.isEmpty(properties)) {
+  if (!ol.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
     object['attributes'] = {};

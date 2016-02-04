@@ -38,6 +38,20 @@ ol.object.assign = (typeof Object.assign === 'function') ? Object.assign : funct
 
 
 /**
+ * Determine if an object has any properties.
+ * @param {Object} object The object to check.
+ * @return {boolean} The object is empty.
+ */
+ol.object.isEmpty = function(object) {
+  var property;
+  for (property in object) {
+    return false;
+  }
+  return !property;
+};
+
+
+/**
  * @enum {string}
  */
 ol.ObjectEventType = {

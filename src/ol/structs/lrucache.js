@@ -1,7 +1,7 @@
 goog.provide('ol.structs.LRUCache');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
+goog.require('ol.object');
 
 
 /**
@@ -46,7 +46,7 @@ ol.structs.LRUCache = function() {
  */
 ol.structs.LRUCache.prototype.assertValid = function() {
   if (this.count_ === 0) {
-    goog.asserts.assert(goog.object.isEmpty(this.entries_),
+    goog.asserts.assert(ol.object.isEmpty(this.entries_),
         'entries must be an empty object (count = 0)');
     goog.asserts.assert(!this.oldest_,
         'oldest must be null (count = 0)');

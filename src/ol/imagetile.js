@@ -1,13 +1,13 @@
 goog.provide('ol.ImageTile');
 
 goog.require('goog.asserts');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileCoord');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol.object');
 
 
 /**
@@ -87,7 +87,7 @@ ol.ImageTile.prototype.getImage = function(opt_context) {
     var key = goog.getUid(opt_context);
     if (key in this.imageByContext_) {
       return this.imageByContext_[key];
-    } else if (goog.object.isEmpty(this.imageByContext_)) {
+    } else if (ol.object.isEmpty(this.imageByContext_)) {
       image = this.image_;
     } else {
       image = /** @type {Image} */ (this.image_.cloneNode(false));

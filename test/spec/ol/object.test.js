@@ -268,6 +268,17 @@ describe('ol.object.assign()', function() {
 
 });
 
+describe('ol.object.isEmpty()', function() {
+
+  it('checks if an object has any properties', function() {
+    expect(ol.object.isEmpty({})).to.be(true);
+    expect(ol.object.isEmpty(null)).to.be(true);
+    expect(ol.object.isEmpty({foo: 'bar'})).to.be(false);
+    expect(ol.object.isEmpty({foo: false})).to.be(false);
+  });
+
+});
+
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.events');
