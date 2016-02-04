@@ -7138,30 +7138,11 @@ olx.view.FitOptions.prototype.maxZoom;
 
 
 /**
- * @typedef {{
- *     animate: boolean,
- *     attributions: Object.<string, ol.Attribution>,
- *     coordinateToPixelMatrix: ol.vec.Mat4.Number,
- *     extent: (null|ol.Extent),
- *     focus: ol.Coordinate,
- *     index: number,
- *     layerStates: Object.<number, ol.layer.LayerState>,
- *     layerStatesArray: Array.<ol.layer.LayerState>,
- *     logos: Object.<string, string>,
- *     pixelRatio: number,
- *     pixelToCoordinateMatrix: ol.vec.Mat4.Number,
- *     postRenderFunctions: Array.<ol.PostRenderFunction>,
- *     size: ol.Size,
- *     skippedFeatureUids: Object.<string, boolean>,
- *     tileQueue: ol.TileQueue,
- *     time: number,
- *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
- *     viewState: olx.ViewState,
- *     viewHints: Array.<number>,
- *     wantedTiles: !Object.<string, Object.<string, boolean>>}}
+ * @interface
+ * @struct
  * @api
  */
-olx.FrameState;
+olx.FrameState = function() {};
 
 
 /**
