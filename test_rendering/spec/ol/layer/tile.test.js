@@ -44,7 +44,7 @@ describe('ol.rendering.layer.Tile', function() {
       var options = {
         source: source
       };
-      goog.object.extend(options, layerOptions);
+      ol.object.assign(options, layerOptions);
       map.addLayer(new ol.layer.Tile(options));
     });
   }
@@ -190,11 +190,11 @@ describe('ol.rendering.layer.Tile', function() {
 
 });
 
-goog.require('goog.object');
-goog.require('ol.proj');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
+goog.require('ol.object');
+goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.XYZ');
 goog.require('ol.tilegrid.TileGrid');

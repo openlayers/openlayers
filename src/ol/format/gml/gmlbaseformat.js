@@ -5,7 +5,6 @@ goog.provide('ol.format.GMLBase');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('ol.array');
 goog.require('ol.Feature');
@@ -20,6 +19,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
@@ -122,14 +122,19 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
         if (child.nodeType === 1) {
           var ft = child.nodeName.split(':').pop();
           if (featureType.indexOf(ft) === -1) {
-            var key;
-            if (!goog.object.contains(featureNS, child.namespaceURI)) {
-              key = prefix + goog.object.getCount(featureNS);
-              featureNS[key] = child.namespaceURI;
-            } else {
-              key = goog.object.findKey(featureNS, function(value) {
-                return value === child.namespaceURI;
-              });
+            var key = '';
+            var count = 0;
+            var uri = child.namespaceURI;
+            for (var candidate in featureNS) {
+              if (featureNS[candidate] === uri) {
+                key = candidate;
+                break;
+              }
+              ++count;
+            }
+            if (!key) {
+              key = prefix + count;
+              featureNS[key] = uri;
             }
             featureType.push(key + ':' + ft);
           }
@@ -607,7 +612,7 @@ ol.format.GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
     featureNS: this.featureNS
   };
   if (opt_options) {
-    goog.object.extend(options, this.getReadOptions(node, opt_options));
+    ol.object.assign(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeaturesInternal(node, [options]);
 };

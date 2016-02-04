@@ -4,10 +4,9 @@
 goog.provide('ol.source.Cluster');
 
 goog.require('goog.asserts');
-goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.coordinate');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.source.Vector');
@@ -111,7 +110,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
   var features = this.source_.getFeatures();
 
   /**
-   * @type {Object.<string, boolean>}
+   * @type {!Object.<string, boolean>}
    */
   var clustered = {};
 
@@ -140,7 +139,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
     }
   }
   goog.asserts.assert(
-      goog.object.getCount(clustered) == this.source_.getFeatures().length,
+      Object.keys(clustered).length == this.source_.getFeatures().length,
       'number of clustered equals number of features in the source');
 };
 

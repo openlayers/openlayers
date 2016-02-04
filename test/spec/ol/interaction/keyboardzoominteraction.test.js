@@ -41,7 +41,6 @@ describe('ol.interaction.KeyboardZoom', function() {
 });
 
 
-goog.require('goog.object');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.View');

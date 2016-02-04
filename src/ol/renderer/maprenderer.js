@@ -4,12 +4,11 @@ goog.provide('ol.renderer.Map');
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
 goog.require('goog.dispose');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
@@ -95,7 +94,9 @@ ol.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
  * @inheritDoc
  */
 ol.renderer.Map.prototype.disposeInternal = function() {
-  goog.object.forEach(this.layerRenderers_, goog.dispose);
+  for (var id in this.layerRenderers_) {
+    goog.dispose(this.layerRenderers_[id]);
+  }
   goog.base(this, 'disposeInternal');
 };
 
@@ -277,7 +278,7 @@ ol.renderer.Map.prototype.getLayerRendererByKey = function(layerKey) {
 
 /**
  * @protected
- * @return {Object.<number, ol.renderer.Layer>} Layer renderers.
+ * @return {Object.<string, ol.renderer.Layer>} Layer renderers.
  */
 ol.renderer.Map.prototype.getLayerRenderers = function() {
   return this.layerRenderers_;

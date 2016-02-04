@@ -279,10 +279,10 @@ describe('ol.layer.Group', function() {
       var layerGroup = new ol.layer.Group({
         layers: layers
       });
-      expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(0);
+      expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(0);
       var layer = new ol.layer.Layer({});
       layers.push(layer);
-      expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(1);
+      expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(1);
 
       var listeners = layerGroup.listenerKeys_[goog.getUid(layer)];
       expect(listeners.length).to.eql(2);
@@ -291,7 +291,7 @@ describe('ol.layer.Group', function() {
 
       // remove the layer from the group
       layers.pop();
-      expect(goog.object.getCount(layerGroup.listenerKeys_)).to.eql(0);
+      expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(0);
       expect(listeners[0].listener).to.be(undefined);
       expect(listeners[1].listener).to.be(undefined);
     });
@@ -364,9 +364,9 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
 
       // layer state should match except for layer reference
-      var layerState = goog.object.clone(layerStatesArray[0]);
+      var layerState = ol.object.assign({}, layerStatesArray[0]);
       delete layerState.layer;
-      var groupState = goog.object.clone(layerGroup.getLayerState());
+      var groupState = ol.object.assign({}, layerGroup.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
@@ -413,14 +413,14 @@ describe('ol.layer.Group', function() {
       var groupState, layerState;
 
       // layer state should match except for layer reference
-      layerState = goog.object.clone(layerStatesArray[0]);
+      layerState = ol.object.assign({}, layerStatesArray[0]);
       delete layerState.layer;
-      groupState = goog.object.clone(layerGroup.getLayerState());
+      groupState = ol.object.assign({}, layerGroup.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
       // layer state should be transformed (and we ignore layer reference)
-      layerState = goog.object.clone(layerStatesArray[1]);
+      layerState = ol.object.assign({}, layerStatesArray[1]);
       delete layerState.layer;
       expect(layerState).to.eql({
         opacity: 0.25,
@@ -491,14 +491,14 @@ describe('ol.layer.Group', function() {
 
 goog.require('ol.array');
 goog.require('goog.dispose');
+goog.require('ol.Collection');
+goog.require('ol.ObjectEventType');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.object');
-goog.require('ol.ObjectEventType');
 goog.require('ol.extent');
-goog.require('ol.layer.Layer');
 goog.require('ol.layer.Group');
+goog.require('ol.layer.Layer');
+goog.require('ol.object');
 goog.require('ol.renderer.Map');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
-goog.require('ol.Collection');

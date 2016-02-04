@@ -2,10 +2,10 @@ goog.provide('ol.format.WMSGetFeatureInfo');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
+goog.require('ol.object');
 goog.require('ol.xml');
 
 
@@ -154,7 +154,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_
     'featureNS': this.featureNS
   };
   if (opt_options) {
-    goog.object.extend(options, this.getReadOptions(node, opt_options));
+    ol.object.assign(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);
 };

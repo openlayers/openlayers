@@ -239,6 +239,6 @@ describe('ol.Object', function() {
 });
 
 
-goog.require('ol.events');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.events');

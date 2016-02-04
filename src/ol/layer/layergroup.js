@@ -1,16 +1,16 @@
 goog.provide('ol.layer.Group');
 
 goog.require('goog.asserts');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
+goog.require('ol.object');
 goog.require('ol.source.State');
 
 
@@ -37,7 +37,7 @@ ol.layer.Group = function(opt_options) {
 
   var options = opt_options || {};
   var baseOptions = /** @type {olx.layer.GroupOptions} */
-      (goog.object.clone(options));
+      (ol.object.assign({}, options));
   delete baseOptions.layers;
 
   var layers = options.layers;
@@ -103,10 +103,10 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
       ol.events.listen(layers, ol.CollectionEventType.REMOVE,
           this.handleLayersRemove_, this));
 
-  goog.object.forEach(this.listenerKeys_, function(keys) {
-    keys.forEach(ol.events.unlistenByKey);
-  });
-  goog.object.clear(this.listenerKeys_);
+  for (var id in this.listenerKeys_) {
+    this.listenerKeys_[id].forEach(ol.events.unlistenByKey);
+  }
+  ol.object.clear(this.listenerKeys_);
 
   var layersArray = layers.getArray();
   var i, ii, layer;

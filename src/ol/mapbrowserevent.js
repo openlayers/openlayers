@@ -4,14 +4,13 @@ goog.provide('ol.MapBrowserEventHandler');
 goog.provide('ol.MapBrowserPointerEvent');
 
 goog.require('goog.asserts');
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');
-goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
 goog.require('ol.Pixel');
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+goog.require('ol.events.EventType');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 
@@ -176,7 +175,7 @@ ol.MapBrowserEventHandler = function(map) {
   this.activePointers_ = 0;
 
   /**
-   * @type {Object.<number, boolean>}
+   * @type {!Object.<number, boolean>}
    * @private
    */
   this.trackedTouches_ = {};
@@ -254,7 +253,7 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEven
   } else if (event.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
     this.trackedTouches_[event.pointerId] = true;
   }
-  this.activePointers_ = goog.object.getCount(this.trackedTouches_);
+  this.activePointers_ = Object.keys(this.trackedTouches_).length;
 };
 
 

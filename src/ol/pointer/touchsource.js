@@ -30,11 +30,10 @@
 
 goog.provide('ol.pointer.TouchSource');
 
-goog.require('goog.object');
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.pointer.EventSource');
 goog.require('ol.pointer.MouseSource');
-goog.require('ol.array');
 
 
 /**
@@ -124,7 +123,7 @@ ol.pointer.TouchSource.prototype.isPrimaryTouch_ = function(inTouch) {
  * @private
  */
 ol.pointer.TouchSource.prototype.setPrimaryTouch_ = function(inTouch) {
-  var count = goog.object.getCount(this.pointerMap);
+  var count = Object.keys(this.pointerMap).length;
   if (count === 0 || (count === 1 &&
       ol.pointer.MouseSource.POINTER_ID.toString() in this.pointerMap)) {
     this.firstTouchId_ = inTouch.identifier;

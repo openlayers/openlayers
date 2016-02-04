@@ -13,7 +13,6 @@ goog.require('goog.dom.classlist');
 goog.require('goog.functions');
 goog.require('goog.log');
 goog.require('goog.log.Level');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
@@ -44,6 +43,7 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
@@ -1027,7 +1027,7 @@ ol.Map.prototype.handlePostRender = function() {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      tileSourceCount = goog.object.getCount(frameState.wantedTiles);
+      tileSourceCount = frameState.tileSourceCount;
     }
     maxTotalLoading *= tileSourceCount;
     maxNewLoads *= tileSourceCount;
@@ -1325,13 +1325,14 @@ ol.Map.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
-      logos: goog.object.clone(this.logos_),
+      logos: ol.object.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
       postRenderFunctions: [],
       size: size,
       skippedFeatureUids: this.skippedFeatureUids_,
       tileQueue: this.tileQueue_,
+      tileSourceCount: 0,
       time: time,
       usedTiles: {},
       viewState: viewState,

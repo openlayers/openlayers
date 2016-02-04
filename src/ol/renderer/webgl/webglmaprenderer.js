@@ -4,11 +4,8 @@ goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('ol.events');
-goog.require('ol.events.Event');
 goog.require('goog.log');
 goog.require('goog.log.Logger');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
@@ -16,6 +13,8 @@ goog.require('ol.RendererType');
 goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
@@ -384,17 +383,12 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
-  goog.object.forEach(this.getLayerRenderers(),
-      /**
-       * @param {ol.renderer.Layer} layerRenderer Layer renderer.
-       * @param {string} key Key.
-       * @param {Object.<string, ol.renderer.Layer>} object Object.
-       */
-      function(layerRenderer, key, object) {
-        goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-            'renderer is an instance of ol.renderer.webgl.Layer');
-        layerRenderer.handleWebGLContextLost();
-      });
+
+  var renderers = this.getLayerRenderers();
+  for (var id in renderers) {
+    var renderer = /** @type {ol.renderer.webgl.Layer} */ (renderers[id]);
+    renderer.handleWebGLContextLost();
+  }
 };
 
 

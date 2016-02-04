@@ -1,7 +1,6 @@
 goog.provide('ol.geom.MultiPolygon');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -119,8 +118,13 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
  */
 ol.geom.MultiPolygon.prototype.clone = function() {
   var multiPolygon = new ol.geom.MultiPolygon(null);
-  var newEndss = /** @type {Array.<Array.<number>>} */
-      (goog.object.unsafeClone(this.endss_));
+
+  var len = this.endss_.length;
+  var newEndss = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    newEndss[i] = this.endss_.slice();
+  }
+
   multiPolygon.setFlatCoordinates(
       this.layout, this.flatCoordinates.slice(), newEndss);
   return multiPolygon;
