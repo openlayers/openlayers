@@ -58,8 +58,7 @@ ol.control.Zoom = function(opt_options) {
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom('DIV', cssClasses, inElement,
-      outElement);
+  var element = goog.dom.createDom('DIV', cssClasses, inElement, outElement);
 
   goog.base(this, {
     element: element,
