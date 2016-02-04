@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileImage');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
 goog.require('ol.TileState');
@@ -90,14 +89,16 @@ ol.source.TileImage.prototype.canExpireCache = function() {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
     return goog.base(this, 'canExpireCache');
   }
-  var canExpire = this.tileCache.canExpireCache();
-  if (canExpire) {
+  if (this.tileCache.canExpireCache()) {
     return true;
   } else {
-    return goog.object.some(this.tileCacheForProjection, function(tileCache) {
-      return tileCache.canExpireCache();
-    });
+    for (var key in this.tileCacheForProjection) {
+      if (this.tileCacheForProjection[key].canExpireCache()) {
+        return true;
+      }
+    }
   }
+  return false;
 };
 
 
