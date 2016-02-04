@@ -2,7 +2,7 @@ goog.provide('ol.events');
 goog.provide('ol.events.EventType');
 goog.provide('ol.events.KeyCode');
 
-goog.require('goog.object');
+goog.require('ol.object');
 
 
 /**
@@ -188,7 +188,7 @@ ol.events.removeListeners_ = function(target, type) {
   if (listeners) {
     for (var i = 0, ii = listeners.length; i < ii; ++i) {
       target.removeEventListener(type, listeners[i].boundListener);
-      goog.object.clear(listeners[i])
+      ol.object.clear(listeners[i])
     }
     listeners.length = 0;
     var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
@@ -318,7 +318,7 @@ ol.events.unlistenByKey = function(key) {
         ol.events.removeListeners_(key.target, key.type);
       }
     }
-    goog.object.clear(key);
+    ol.object.clear(key);
   }
 };
 

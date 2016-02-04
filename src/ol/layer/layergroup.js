@@ -1,14 +1,13 @@
 goog.provide('ol.layer.Group');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
 goog.require('ol.object');
@@ -107,7 +106,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   for (var id in this.listenerKeys_) {
     this.listenerKeys_[id].forEach(ol.events.unlistenByKey);
   }
-  goog.object.clear(this.listenerKeys_);
+  ol.object.clear(this.listenerKeys_);
 
   var layersArray = layers.getArray();
   var i, ii, layer;

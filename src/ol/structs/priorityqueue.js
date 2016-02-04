@@ -1,7 +1,7 @@
 goog.provide('ol.structs.PriorityQueue');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
+goog.require('ol.object');
 
 
 /**
@@ -88,7 +88,7 @@ ol.structs.PriorityQueue.prototype.assertValid = function() {
 ol.structs.PriorityQueue.prototype.clear = function() {
   this.elements_.length = 0;
   this.priorities_.length = 0;
-  goog.object.clear(this.queuedElements_);
+  ol.object.clear(this.queuedElements_);
 };
 
 
