@@ -1308,8 +1308,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var view = this.getView();
   /** @type {?olx.FrameState} */
   var frameState = null;
-  if (size !== undefined && ol.size.hasArea(size) &&
-      view && view.isDef()) {
+  if (size !== undefined && ol.size.hasArea(size) && view && view.isDef()) {
     var viewHints = view.getHints();
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};

@@ -266,8 +266,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
  *     listener. Default is the `target`.
  * @return {ol.events.Key} Key for unlistenByKey.
  */
-ol.events.listenOnce = function(
-    target, type, listener, opt_this) {
+ol.events.listenOnce = function(target, type, listener, opt_this) {
   return ol.events.listen(target, type, listener, opt_this, true);
 };
 

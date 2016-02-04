@@ -26,8 +26,7 @@ ol.control.Rotate = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var className = options.className ?
-      options.className : 'ol-rotate';
+  var className = options.className ? options.className : 'ol-rotate';
 
   var label = options.label ? options.label : '\u21E7';
 

@@ -61,8 +61,7 @@ ol.control.ScaleLine = function(opt_options) {
    * @private
    * @type {Element}
    */
-  this.innerElement_ = goog.dom.createDom('DIV',
-      className + '-inner');
+  this.innerElement_ = goog.dom.createDom('DIV', className + '-inner');
 
   /**
    * @private
