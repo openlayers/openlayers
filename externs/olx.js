@@ -1720,10 +1720,8 @@ olx.format.EsriJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{featureClass: (function((ol.geom.Geometry|Object.<string, *>)=)|
- *         function(ol.geom.GeometryType,Array.<number>,
- *             (Array.<number>|Array.<Array.<number>>),Object.<string, *>)|
- *         undefined),
+ * @typedef {{
+ *     featureClass: (Function|undefined),
  *     geometryName: (string|undefined),
  *     layers: (Array.<string>|undefined),
  *     layerName: (string|undefined)}}

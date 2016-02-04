@@ -47,9 +47,7 @@ ol.format.MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {function((ol.geom.Geometry|Object.<string, *>)=)|
-   *     function(ol.geom.GeometryType,Array.<number>,
-   *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
+   * @type {Function}
    */
   this.featureClass_ = options.featureClass ?
       options.featureClass : ol.render.Feature;
