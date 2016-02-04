@@ -43,6 +43,15 @@ describe('ol.object.clear()', function() {
 
 });
 
+describe('ol.object.getValues()', function() {
+
+  it('gets a list of property values from an object', function() {
+    expect(ol.object.getValues({foo: 'bar', num: 42}).sort()).to.eql([42, 'bar']);
+    expect(ol.object.getValues(null)).to.eql([]);
+  });
+
+});
+
 describe('ol.object.isEmpty()', function() {
 
   it('checks if an object has any properties', function() {

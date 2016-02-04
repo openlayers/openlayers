@@ -6,7 +6,6 @@ goog.provide('ol.source.VectorEvent');
 goog.provide('ol.source.VectorEventType');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
@@ -553,7 +552,7 @@ ol.source.Vector.prototype.getFeatures = function() {
     features = this.featuresRtree_.getAll();
     if (!ol.object.isEmpty(this.nullGeometryFeatures_)) {
       ol.array.extend(
-          features, goog.object.getValues(this.nullGeometryFeatures_));
+          features, ol.object.getValues(this.nullGeometryFeatures_));
     }
   }
   goog.asserts.assert(features !== undefined,

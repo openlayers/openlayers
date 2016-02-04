@@ -42,6 +42,21 @@ ol.object.clear = function(object) {
 
 
 /**
+ * Get an array of property values from an object.
+ * @param {Object<K,V>} object The object from which to get the values.
+ * @return {!Array<V>} The property values.
+ * @template K,V
+ */
+ol.object.getValues = function(object) {
+  var values = [];
+  for (var property in object) {
+    values.push(object[property]);
+  }
+  return values;
+};
+
+
+/**
  * Determine if an object has any properties.
  * @param {Object} object The object to check.
  * @return {boolean} The object is empty.
