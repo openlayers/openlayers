@@ -1332,27 +1332,3 @@ ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
  * @api stable
  */
 ol.format.GML = ol.format.GML3;
-
-
-/**
- * Encode an array of features in GML 3.1.1 Simple Features.
- *
- * @function
- * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {string} Result.
- * @api stable
- */
-ol.format.GML.prototype.writeFeatures;
-
-
-/**
- * Encode an array of features in the GML 3.1.1 format as an XML node.
- *
- * @function
- * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {Node} Node.
- * @api
- */
-ol.format.GML.prototype.writeFeaturesNode;
