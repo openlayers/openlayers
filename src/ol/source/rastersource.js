@@ -122,6 +122,7 @@ ol.source.Raster = function(options) {
     size: [0, 0],
     skippedFeatureUids: {},
     tileQueue: this.tileQueue_,
+    tileSourceCount: 0,
     time: Date.now(),
     usedTiles: {},
     viewState: /** @type {olx.ViewState} */ ({

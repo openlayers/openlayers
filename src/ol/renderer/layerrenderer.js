@@ -298,6 +298,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
   var tileSourceKey = goog.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
+    ++frameState.tileSourceCount;
   }
   var wantedTiles = frameState.wantedTiles[tileSourceKey];
   var tileQueue = frameState.tileQueue;
