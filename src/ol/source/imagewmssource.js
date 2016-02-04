@@ -3,14 +3,13 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.proj');
@@ -372,7 +371,6 @@ ol.source.ImageWMS.prototype.updateParams = function(params) {
  * @private
  */
 ol.source.ImageWMS.prototype.updateV13_ = function() {
-  var version =
-      goog.object.get(this.params_, 'VERSION', ol.DEFAULT_WMS_VERSION);
+  var version = this.params_['VERSION'] || ol.DEFAULT_WMS_VERSION;
   this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };

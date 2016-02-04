@@ -6,7 +6,6 @@ goog.provide('ol.source.TileWMS');
 
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('goog.object');
 goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
@@ -36,7 +35,7 @@ ol.source.TileWMS = function(opt_options) {
 
   var params = options.params || {};
 
-  var transparent = goog.object.get(params, 'TRANSPARENT', true);
+  var transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
   goog.base(this, {
     attributions: options.attributions,
@@ -389,7 +388,6 @@ ol.source.TileWMS.prototype.updateParams = function(params) {
  * @private
  */
 ol.source.TileWMS.prototype.updateV13_ = function() {
-  var version =
-      goog.object.get(this.params_, 'VERSION', ol.DEFAULT_WMS_VERSION);
+  var version = this.params_['VERSION'] || ol.DEFAULT_WMS_VERSION;
   this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
 };

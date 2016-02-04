@@ -3,7 +3,6 @@ goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('ol');
 
 
@@ -310,8 +309,7 @@ ol.style.Atlas = function(size, space) {
  * @return {?ol.style.AtlasInfo} The atlas info.
  */
 ol.style.Atlas.prototype.get = function(id) {
-  return /** @type {?ol.style.AtlasInfo} */ (
-      goog.object.get(this.entries_, id, null));
+  return this.entries_[id] || null;
 };
 
 
