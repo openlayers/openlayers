@@ -7008,7 +7008,6 @@ olx.view.FitOptions.prototype.maxZoom;
  *     size: ol.Size,
  *     skippedFeatureUids: Object.<string, boolean>,
  *     tileQueue: ol.TileQueue,
- *     tileSourceCount: number,
  *     time: number,
  *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
  *     viewState: olx.ViewState,

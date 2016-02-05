@@ -1016,7 +1016,6 @@ ol.Map.prototype.handlePostRender = function() {
   if (!tileQueue.isEmpty()) {
     var maxTotalLoading = 16;
     var maxNewLoads = maxTotalLoading;
-    var tileSourceCount = 0;
     if (frameState) {
       var hints = frameState.viewHints;
       if (hints[ol.ViewHint.ANIMATING]) {
@@ -1027,10 +1026,7 @@ ol.Map.prototype.handlePostRender = function() {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      tileSourceCount = frameState.tileSourceCount;
     }
-    maxTotalLoading *= tileSourceCount;
-    maxNewLoads *= tileSourceCount;
     if (tileQueue.getTilesLoading() < maxTotalLoading) {
       tileQueue.reprioritize(); // FIXME only call if view has changed
       tileQueue.loadMoreTiles(maxTotalLoading, maxNewLoads);
@@ -1332,7 +1328,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
       size: size,
       skippedFeatureUids: this.skippedFeatureUids_,
       tileQueue: this.tileQueue_,
-      tileSourceCount: 0,
       time: time,
       usedTiles: {},
       viewState: viewState,
