@@ -311,7 +311,7 @@
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
-        goog.array.equals(this.obj, obj),
+        ol.array.equals(this.obj, obj),
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
@@ -330,12 +330,13 @@
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.arreqlNaN = function(obj) {
-    function compare(a, b) {
+    function compare(a, i) {
+      var b = obj[i];
       return a === b || (typeof a === 'number' && typeof b === 'number' &&
           isNaN(a) && isNaN(b));
     }
     this.assert(
-        goog.array.equals(this.obj, obj, compare),
+        this.obj.length === obj.length && this.obj.every(compare),
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
