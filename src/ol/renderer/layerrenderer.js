@@ -222,7 +222,7 @@ ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attri
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
   if (logo !== undefined) {
-    if (goog.isString(logo)) {
+    if (typeof logo === 'string') {
       frameState.logos[logo] = '';
     } else if (goog.isObject(logo)) {
       goog.asserts.assertString(logo.href, 'logo.href is a string');

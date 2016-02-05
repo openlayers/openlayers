@@ -431,7 +431,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
 ol.format.KML.findStyle_ = function(styleValue, defaultStyle, sharedStyles) {
   if (goog.isArray(styleValue)) {
     return styleValue;
-  } else if (goog.isString(styleValue)) {
+  } else if (typeof styleValue === 'string') {
     // KML files in the wild occasionally forget the leading `#` on styleUrls
     // defined in the same document.  Add a leading `#` if it enables to find
     // a style.
@@ -1274,7 +1274,7 @@ ol.format.KML.PlacemarkStyleMapParser_ = function(node, objectStack) {
       'placemarkObject should be an Object');
   if (goog.isArray(styleMapValue)) {
     placemarkObject['Style'] = styleMapValue;
-  } else if (goog.isString(styleMapValue)) {
+  } else if (typeof styleMapValue === 'string') {
     placemarkObject['styleUrl'] = styleMapValue;
   } else {
     goog.asserts.fail('styleMapValue has an unknown type');
@@ -1973,7 +1973,7 @@ ol.format.KML.prototype.readName = function(source) {
     return this.readNameFromDocument(/** @type {Document} */ (source));
   } else if (ol.xml.isNode(source)) {
     return this.readNameFromNode(/** @type {Node} */ (source));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readNameFromDocument(doc);
   } else {
@@ -2045,7 +2045,7 @@ ol.format.KML.prototype.readNetworkLinks = function(source) {
   } else if (ol.xml.isNode(source)) {
     ol.array.extend(networkLinks, this.readNetworkLinksFromNode(
         /** @type {Node} */ (source)));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     ol.array.extend(networkLinks, this.readNetworkLinksFromDocument(doc));
   } else {

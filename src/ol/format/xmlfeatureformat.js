@@ -42,7 +42,7 @@ ol.format.XMLFeature.prototype.readFeature = function(source, opt_options) {
         /** @type {Document} */ (source), opt_options);
   } else if (ol.xml.isNode(source)) {
     return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFeatureFromDocument(doc, opt_options);
   } else {
@@ -85,7 +85,7 @@ ol.format.XMLFeature.prototype.readFeatures = function(source, opt_options) {
         /** @type {Document} */ (source), opt_options);
   } else if (ol.xml.isNode(source)) {
     return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFeaturesFromDocument(doc, opt_options);
   } else {
@@ -133,7 +133,7 @@ ol.format.XMLFeature.prototype.readGeometry = function(source, opt_options) {
         /** @type {Document} */ (source), opt_options);
   } else if (ol.xml.isNode(source)) {
     return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readGeometryFromDocument(doc, opt_options);
   } else {
@@ -169,7 +169,7 @@ ol.format.XMLFeature.prototype.readProjection = function(source) {
     return this.readProjectionFromDocument(/** @type {Document} */ (source));
   } else if (ol.xml.isNode(source)) {
     return this.readProjectionFromNode(/** @type {Node} */ (source));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readProjectionFromDocument(doc);
   } else {

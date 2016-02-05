@@ -36,7 +36,7 @@ ol.control.Rotate = function(opt_options) {
    */
   this.label_ = null;
 
-  if (goog.isString(label)) {
+  if (typeof label === 'string') {
     this.label_ = goog.dom.createDom('SPAN',
         'ol-compass', label);
   } else {

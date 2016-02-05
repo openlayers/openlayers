@@ -151,7 +151,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
         /** @type {Document} */ (source));
   } else if (ol.xml.isNode(source)) {
     return this.readTransactionResponseFromNode(/** @type {Node} */ (source));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readTransactionResponseFromDocument(doc);
   } else {
@@ -176,7 +176,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
   } else if (ol.xml.isNode(source)) {
     return this.readFeatureCollectionMetadataFromNode(
         /** @type {Node} */ (source));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFeatureCollectionMetadataFromDocument(doc);
   } else {

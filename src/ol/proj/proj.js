@@ -520,7 +520,7 @@ ol.proj.clearAllProjections = function() {
 ol.proj.createProjection = function(projection, defaultCode) {
   if (!projection) {
     return ol.proj.get(defaultCode);
-  } else if (goog.isString(projection)) {
+  } else if (typeof projection === 'string') {
     return ol.proj.get(projection);
   } else {
     goog.asserts.assertInstanceof(projection, ol.proj.Projection,
@@ -680,7 +680,7 @@ ol.proj.get = function(projectionLike) {
   var projection;
   if (projectionLike instanceof ol.proj.Projection) {
     projection = projectionLike;
-  } else if (goog.isString(projectionLike)) {
+  } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
     projection = ol.proj.projections_[code];
     if (ol.ENABLE_PROJ4JS) {
