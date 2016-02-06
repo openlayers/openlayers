@@ -94,7 +94,7 @@ ol.layer.Heatmap = function(opt_options) {
 
   var weight = options.weight ? options.weight : 'weight';
   var weightFunction;
-  if (goog.isString(weight)) {
+  if (typeof weight === 'string') {
     weightFunction = function(feature) {
       return feature.get(weight);
     };

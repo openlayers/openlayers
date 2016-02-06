@@ -106,7 +106,7 @@ ol.color.asArray = function(color) {
   if (goog.isArray(color)) {
     return color;
   } else {
-    goog.asserts.assert(goog.isString(color), 'Color should be a string');
+    goog.asserts.assert(typeof color === 'string', 'Color should be a string');
     return ol.color.fromString(color);
   }
 };
@@ -119,7 +119,7 @@ ol.color.asArray = function(color) {
  * @api
  */
 ol.color.asString = function(color) {
-  if (goog.isString(color)) {
+  if (typeof color === 'string') {
     return color;
   } else {
     goog.asserts.assert(goog.isArray(color), 'Color should be an array');
@@ -322,10 +322,10 @@ ol.color.stringOrColorEquals = function(color1, color2) {
   if (color1 === color2 || color1 == color2) {
     return true;
   }
-  if (goog.isString(color1)) {
+  if (typeof color1 === 'string') {
     color1 = ol.color.fromString(color1);
   }
-  if (goog.isString(color2)) {
+  if (typeof color2 === 'string') {
     color2 = ol.color.fromString(color2);
   }
   return ol.color.equals(color1, color2);

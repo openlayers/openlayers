@@ -1495,7 +1495,7 @@ ol.Map.createOptionsInternal = function(options) {
   if (options.keyboardEventTarget !== undefined) {
     // cannot use goog.dom.getElement because its argument cannot be
     // of type Document
-    keyboardEventTarget = goog.isString(options.keyboardEventTarget) ?
+    keyboardEventTarget = typeof options.keyboardEventTarget === 'string' ?
         document.getElementById(options.keyboardEventTarget) :
         options.keyboardEventTarget;
   }
@@ -1511,7 +1511,7 @@ ol.Map.createOptionsInternal = function(options) {
     logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
   } else {
     var logo = options.logo;
-    if (goog.isString(logo)) {
+    if (typeof logo === 'string') {
       logos[logo] = '';
     } else if (goog.isObject(logo)) {
       goog.asserts.assertString(logo.href, 'logo.href should be a string');
@@ -1541,7 +1541,7 @@ ol.Map.createOptionsInternal = function(options) {
   if (options.renderer !== undefined) {
     if (goog.isArray(options.renderer)) {
       rendererTypes = options.renderer;
-    } else if (goog.isString(options.renderer)) {
+    } else if (typeof options.renderer === 'string') {
       rendererTypes = [options.renderer];
     } else {
       goog.asserts.fail('Incorrect format for renderer option');

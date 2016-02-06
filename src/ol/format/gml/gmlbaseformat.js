@@ -143,7 +143,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
       context['featureType'] = featureType;
       context['featureNS'] = featureNS;
     }
-    if (goog.isString(featureNS)) {
+    if (typeof featureNS === 'string') {
       var ns = featureNS;
       featureNS = {};
       featureNS[defaultPrefix] = ns;

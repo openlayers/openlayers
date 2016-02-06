@@ -29,7 +29,7 @@ goog.inherits(ol.format.JSONFeature, ol.format.Feature);
 ol.format.JSONFeature.prototype.getObject_ = function(source) {
   if (goog.isObject(source)) {
     return source;
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var object = goog.json.parse(source);
     return object ? object : null;
   } else {

@@ -277,7 +277,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
 
   var row = this.grid_[Math.floor((1 - yRelative) * this.grid_.length)];
 
-  if (!goog.isString(row)) {
+  if (typeof row !== 'string') {
     return null;
   }
 

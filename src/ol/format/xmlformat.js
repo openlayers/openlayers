@@ -23,7 +23,7 @@ ol.format.XML.prototype.read = function(source) {
     return this.readFromDocument(/** @type {Document} */ (source));
   } else if (ol.xml.isNode(source)) {
     return this.readFromNode(/** @type {Node} */ (source));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFromDocument(doc);
   } else {
