@@ -264,7 +264,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       }
     }
     if (styles) {
-      if (!goog.isArray(styles)) {
+      if (!Array.isArray(styles)) {
         styles = [styles];
       }
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
@@ -495,7 +495,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
     return false;
   }
   var loading = false;
-  if (goog.isArray(styles)) {
+  if (Array.isArray(styles)) {
     for (var i = 0, ii = styles.length; i < ii; ++i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i], squaredTolerance,

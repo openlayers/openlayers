@@ -169,7 +169,7 @@ ol.array.reverseSubArray = function(arr, begin, end) {
  */
 ol.array.flatten = function(arr) {
   var data = arr.reduce(function(flattened, value) {
-    if (goog.isArray(value)) {
+    if (Array.isArray(value)) {
       return flattened.concat(ol.array.flatten(value));
     } else {
       return flattened.concat(value);

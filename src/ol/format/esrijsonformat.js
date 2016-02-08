@@ -170,7 +170,7 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} LineString.
  */
 ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
-  goog.asserts.assert(goog.isArray(object.paths),
+  goog.asserts.assert(Array.isArray(object.paths),
       'object.paths should be an array');
   goog.asserts.assert(object.paths.length === 1,
       'object.paths array length should be 1');
@@ -185,7 +185,7 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiLineString.
  */
 ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
-  goog.asserts.assert(goog.isArray(object.paths),
+  goog.asserts.assert(Array.isArray(object.paths),
       'object.paths should be an array');
   goog.asserts.assert(object.paths.length > 1,
       'object.paths array length should be more than 1');

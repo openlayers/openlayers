@@ -664,7 +664,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     bbox: options.bbox,
     propertyNames: options.propertyNames ? options.propertyNames : []
   };
-  goog.asserts.assert(goog.isArray(options.featureTypes),
+  goog.asserts.assert(Array.isArray(options.featureTypes),
       'options.featureTypes should be an array');
   ol.format.WFS.writeGetFeature_(node, options.featureTypes, [context]);
   return node;

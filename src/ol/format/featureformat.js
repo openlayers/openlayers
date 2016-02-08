@@ -203,7 +203,7 @@ ol.format.Feature.transformWithOptions = function(
       return coordinates;
     };
     if (Array.isArray(transformed)) {
-      transform(/** @type {ol.Extent} */ (transformed));
+      transform(transformed);
     } else {
       transformed.applyTransform(transform);
     }

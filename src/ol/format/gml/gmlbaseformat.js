@@ -163,7 +163,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
       featureNS[defaultPrefix] = ns;
     }
     var parsersNS = {};
-    var featureTypes = goog.isArray(featureType) ? featureType : [featureType];
+    var featureTypes = Array.isArray(featureType) ? featureType : [featureType];
     for (var p in featureNS) {
       var parsers = {};
       for (i = 0, ii = featureTypes.length; i < ii; ++i) {

@@ -505,7 +505,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   goog.asserts.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
-  goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
+  goog.asserts.assert(Array.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
   goog.asserts.assert(positioning !== undefined,
