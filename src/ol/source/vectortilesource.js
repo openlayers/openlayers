@@ -26,9 +26,12 @@ goog.require('ol.source.UrlTile');
  */
 ol.source.VectorTile = function(options) {
 
+  var cacheSize = options.cacheSize !== undefined ?
+      options.cacheSize : ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK / 16;
+
   goog.base(this, {
     attributions: options.attributions,
-    cacheSize: ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK / 16,
+    cacheSize: cacheSize,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,
