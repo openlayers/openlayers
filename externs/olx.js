@@ -3881,7 +3881,7 @@ olx.render.ToContextOptions.prototype.size;
 /**
  * Pixel ratio (canvas pixel to css pixel ratio) for the canvas. Default
  * is the detected device pixel ratio.
- * @type {ol.Size|undefined}
+ * @type {number|undefined}
  * @api
  */
 olx.render.ToContextOptions.prototype.pixelRatio;
