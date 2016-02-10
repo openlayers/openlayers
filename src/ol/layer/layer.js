@@ -37,7 +37,7 @@ ol.layer.Layer = function(options) {
   var baseOptions = ol.object.assign({}, options);
   delete baseOptions.source;
 
-  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  goog.base(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
 
   /**
    * @private
