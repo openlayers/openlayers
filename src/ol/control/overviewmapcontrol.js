@@ -52,11 +52,11 @@ ol.control.OverviewMap = function(opt_options) {
     this.collapsed_ = false;
   }
 
-  var className = options.className ? options.className : 'ol-overviewmap';
+  var className = options.className !== undefined ? options.className : 'ol-overviewmap';
 
-  var tipLabel = options.tipLabel ? options.tipLabel : 'Overview map';
+  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
 
-  var collapseLabel = options.collapseLabel ? options.collapseLabel : '\u00AB';
+  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00AB';
 
   /**
    * @private
@@ -66,7 +66,7 @@ ol.control.OverviewMap = function(opt_options) {
       goog.dom.createDom('SPAN', {}, collapseLabel) :
       collapseLabel;
 
-  var label = options.label ? options.label : '\u00BB';
+  var label = options.label !== undefined ? options.label : '\u00BB';
 
   /**
    * @private
