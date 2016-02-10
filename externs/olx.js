@@ -5855,6 +5855,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     opaque: (boolean|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     maxZoom: (number|undefined),
@@ -5898,6 +5899,14 @@ olx.source.XYZOptions.prototype.crossOrigin;
  * @api stable
  */
 olx.source.XYZOptions.prototype.logo;
+
+
+/**
+ * Whether the layer is opaque.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.XYZOptions.prototype.opaque;
 
 
 /**
