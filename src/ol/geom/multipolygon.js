@@ -122,7 +122,7 @@ ol.geom.MultiPolygon.prototype.clone = function() {
   var len = this.endss_.length;
   var newEndss = new Array(len);
   for (var i = 0; i < len; ++i) {
-    newEndss[i] = this.endss_.slice();
+    newEndss[i] = this.endss_[i].slice();
   }
 
   multiPolygon.setFlatCoordinates(
