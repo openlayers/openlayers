@@ -98,7 +98,7 @@ ol.control.ZoomSlider = function(opt_options) {
    */
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
-  var className = options.className ? options.className : 'ol-zoomslider';
+  var className = options.className !== undefined ? options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom('BUTTON', {
     'type': 'button',
     'class': className + '-thumb ' + ol.css.CLASS_UNSELECTABLE
