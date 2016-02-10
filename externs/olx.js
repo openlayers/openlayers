@@ -5944,7 +5944,7 @@ olx.source.XYZOptions.prototype.minZoom;
 
 /**
  * Tile grid.
- * @type {ol.tilegrid.TileGrid}
+ * @type {ol.tilegrid.TileGrid|undefined}
  * @api
  */
 olx.source.XYZOptions.prototype.tileGrid;
