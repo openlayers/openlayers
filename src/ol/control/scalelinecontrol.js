@@ -55,7 +55,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var className = options.className ? options.className : 'ol-scale-line';
+  var className = options.className !== undefined ? options.className : 'ol-scale-line';
 
   /**
    * @private
