@@ -2390,10 +2390,10 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
     // FIXME the styles returned by the style function are supposed to be
     // resolution-independent here
     var styles = styleFunction.call(feature, 0);
-    if (styles && styles.length > 0) {
-      var style = styles[0];
+    if (styles) {
+      var style = goog.isArray(styles) ? styles[0] : styles;
       if (this.writeStyles_) {
-        properties['Style'] = styles[0];
+        properties['Style'] = style;
       }
       var textStyle = style.getText();
       if (textStyle) {
