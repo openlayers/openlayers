@@ -2910,7 +2910,7 @@ olx.interaction.PointerOptions.prototype.handleDownEvent;
 /**
  * Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
- * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @type {(function(ol.MapBrowserPointerEvent)|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleDragEvent;
@@ -2931,7 +2931,7 @@ olx.interaction.PointerOptions.prototype.handleEvent;
  * Function handling "move" events. This function is called on "move" events,
  * also during a drag sequence (so during a drag sequence both the
  * `handleDragEvent` function and this function are called).
- * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @type {(function(ol.MapBrowserPointerEvent)|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleMoveEvent;
