@@ -209,11 +209,13 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinat
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
+  var uid = goog.getUid(feature).toString();
+  var extent = geometry ? geometry.getExtent() : null;
   this.beginGeometryInstruction1_ =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
+      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, uid, 0, extent];
   this.instructions.push(this.beginGeometryInstruction1_);
   this.beginGeometryInstruction2_ =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
+      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, uid, 0, extent];
   this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
 };
 
@@ -263,13 +265,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     var feature, fill, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
-        feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
-        if ((skipFeatures &&
-            skippedFeaturesHash[goog.getUid(feature).toString()]) ||
-            !feature.getGeometry()) {
+        var uid = /** @type {string} */ (instruction[1]);
+        var extent = /** @type {ol.Extent|null} */ (instruction[3]);
+        if ((skipFeatures && skippedFeaturesHash[uid]) || !extent) {
           i = /** @type {number} */ (instruction[2]);
-        } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
-            opt_hitExtent, feature.getGeometry().getExtent())) {
+        } else if (opt_hitExtent && !ol.extent.intersects(opt_hitExtent, extent)) {
           i = /** @type {number} */ (instruction[2]);
         } else {
           ++i;
