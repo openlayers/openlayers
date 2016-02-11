@@ -368,7 +368,7 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
   var continueDrawing = this.dispatchEvent(new ol.interaction.DrawEvent(
       ol.interaction.DrawEventType.BEFOREDRAWSTART, event));
   if (continueDrawing === false) {
-      return false;
+    return false;
   }
   if (this.condition_(event)) {
     this.downPx_ = event.pixel;
