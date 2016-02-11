@@ -24,16 +24,16 @@ ol.control.Zoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var className = options.className ? options.className : 'ol-zoom';
+  var className = options.className !== undefined ? options.className : 'ol-zoom';
 
-  var delta = options.delta ? options.delta : 1;
+  var delta = options.delta !== undefined ? options.delta : 1;
 
-  var zoomInLabel = options.zoomInLabel ? options.zoomInLabel : '+';
-  var zoomOutLabel = options.zoomOutLabel ? options.zoomOutLabel : '\u2212';
+  var zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
+  var zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
 
-  var zoomInTipLabel = options.zoomInTipLabel ?
+  var zoomInTipLabel = options.zoomInTipLabel !== undefined ?
       options.zoomInTipLabel : 'Zoom in';
-  var zoomOutTipLabel = options.zoomOutTipLabel ?
+  var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
       options.zoomOutTipLabel : 'Zoom out';
 
   var inElement = goog.dom.createDom('BUTTON', {

@@ -27,11 +27,11 @@ ol.control.ZoomToExtent = function(opt_options) {
    */
   this.extent_ = options.extent ? options.extent : null;
 
-  var className = options.className ? options.className :
+  var className = options.className !== undefined ? options.className :
       'ol-zoom-extent';
 
-  var label = options.label ? options.label : 'E';
-  var tipLabel = options.tipLabel ?
+  var label = options.label !== undefined ? options.label : 'E';
+  var tipLabel = options.tipLabel !== undefined ?
       options.tipLabel : 'Fit to extent';
   var button = goog.dom.createDom('BUTTON', {
     'type': 'button',

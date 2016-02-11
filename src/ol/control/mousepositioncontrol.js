@@ -40,7 +40,8 @@ ol.control.MousePosition = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var className = options.className ? options.className : 'ol-mouse-position';
+  var className = options.className !== undefined ? options.className :
+      'ol-mouse-position';
 
   var element = goog.dom.createDom('DIV', className);
 
@@ -68,7 +69,7 @@ ol.control.MousePosition = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = options.undefinedHTML ? options.undefinedHTML : '';
+  this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '';
 
   /**
    * @private
