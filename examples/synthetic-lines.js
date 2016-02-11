@@ -38,7 +38,8 @@ for (i = 0; i < count; ++i) {
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    features: features
+    features: features,
+    wrapX: false
   }),
   style: new ol.style.Style({
     stroke: new ol.style.Stroke({

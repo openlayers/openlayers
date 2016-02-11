@@ -41,7 +41,8 @@ var styles = {
 };
 
 var vectorSource = new ol.source.Vector({
-  features: features
+  features: features,
+  wrapX: false
 });
 var vector = new ol.layer.Vector({
   source: vectorSource,
