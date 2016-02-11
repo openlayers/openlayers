@@ -19,6 +19,7 @@ goog.require('ol.style.Stroke');
  * feature or layer that uses the style is re-rendered.
  *
  * @constructor
+ * @struct
  * @param {olx.style.StyleOptions=} opt_options Style options.
  * @api
  */

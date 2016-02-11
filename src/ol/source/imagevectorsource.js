@@ -264,6 +264,9 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
     return false;
   }
   var i, ii, loading = false;
+  if (!goog.isArray(styles)) {
+    styles = [styles];
+  }
   for (i = 0, ii = styles.length; i < ii; ++i) {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
