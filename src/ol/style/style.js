@@ -198,9 +198,11 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
  * the view's resolution. The function should return an array of
  * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
  *
- * @typedef {function((ol.Feature|ol.render.Feature), number):
- *     (ol.style.Style|Array.<ol.style.Style>)}
  * @api
+ * @callback ol.style.StyleFunction
+ * @param {(ol.Feature|ol.render.Feature)} feature The feature
+ * @param {number} resolution The view's resolution
+ * @return {ol.style.Style|Array.<ol.style.Style>} The style(s) for the feature
  */
 ol.style.StyleFunction;
 
@@ -355,9 +357,10 @@ ol.style.createDefaultEditingStyles = function() {
  * A function that takes an {@link ol.Feature} as argument and returns an
  * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function((ol.Feature|ol.render.Feature)):
- *     (ol.geom.Geometry|ol.render.Feature|undefined)}
  * @api
+ * @callback ol.style.GeometryFunction
+ * @param {ol.Feature|ol.render.Feature} feature The feature
+ * @return {ol.geom.Geometry|ol.render.Feature|undefined} The geometry of feature that will be rendered and styled for the feature
  */
 ol.style.GeometryFunction;
 

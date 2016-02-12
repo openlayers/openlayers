@@ -84,8 +84,12 @@ goog.inherits(ol.DragBoxEvent, ol.events.Event);
  * A function that takes a {@link ol.MapBrowserEvent} and two
  * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
- * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
  * @api
+ * @callback ol.interaction.DragBoxEndConditionType
+ * @param {ol.MapBrowserEvent} evt The map browser event
+ * @param {ol.Pixel} firstPixel The first pixel
+ * @param {ol.Pixel} secondPixel The second pixel
+ * @return {boolean} Returns true if the condition is met. Returns false if it is not.
  */
 ol.interaction.DragBoxEndConditionType;
 

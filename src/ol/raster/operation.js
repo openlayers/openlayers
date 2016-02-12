@@ -15,7 +15,7 @@ ol.raster.OperationType = {
 
 /**
  * A function that takes an array of input data, performs some operation, and
- * returns an array of ouput data.  For `'pixel'` type operations, functions
+ * returns an array of output data.  For `'pixel'` type operations, functions
  * will be called with an array of {@link ol.raster.Pixel} data and should
  * return an array of the same.  For `'image'` type operations, functions will
  * be called with an array of {@link ImageData
@@ -25,8 +25,10 @@ ol.raster.OperationType = {
  * from raster events, where it can be initialized in "beforeoperations" and
  * accessed again in "afteroperations".
  *
- * @typedef {function((Array.<ol.raster.Pixel>|Array.<ImageData>), Object):
- *     (Array.<ol.raster.Pixel>|Array.<ImageData>)}
  * @api
+ * @callback ol.raster.Operation
+ * @param {(Array.<ol.raster.Pixel>|Array.<ImageData>)} input An aray of input data
+ * @param {Object} data The data object
+ * @returns {Array.<ol.raster.Pixel>|Array.<ImageData>} An array of output data
  */
 ol.raster.Operation;

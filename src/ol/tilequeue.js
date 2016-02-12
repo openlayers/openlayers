@@ -3,13 +3,14 @@ goog.provide('ol.TileQueue');
 
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.Coordinate');
 goog.require('ol.TileState');
 goog.require('ol.structs.PriorityQueue');
 
 
 /**
- * @typedef {function(ol.Tile, string, ol.Coordinate, number): number}
+ * @callback ol.TilePriorityFunction
+ * @param {Array} element Element
+ * @return {number}
  */
 ol.TilePriorityFunction;
 

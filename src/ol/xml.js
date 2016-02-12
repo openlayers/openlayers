@@ -17,13 +17,18 @@ ol.xml.NodeStackItem;
 
 
 /**
- * @typedef {function(Node, Array.<*>)}
+ * @callback ol.xml.Parser
+ * @param {Node} node The node
+ * @param {Array.<*>} objStack The object stack
  */
 ol.xml.Parser;
 
 
 /**
- * @typedef {function(Node, *, Array.<*>)}
+ * @callback ol.xml.Serializer
+ * @param {Node} node The node
+ * @param {*} value The value
+ * @param {Array.<*>} objStack The object stack
  */
 ol.xml.Serializer;
 

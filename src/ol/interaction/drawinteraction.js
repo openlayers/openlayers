@@ -845,10 +845,12 @@ ol.interaction.Draw.getMode_ = function(type) {
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
- *     ol.geom.SimpleGeometry}
+ *
  * @api
+ * @callback ol.interaction.DrawGeometryFunctionType
+ * @param {(ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>)} coords Coordinates
+ * @param {ol.geom.SimpleGeometry} [geom] The existing geometry
+ * @return {ol.geom.SimpleGeometry}
  */
 ol.interaction.DrawGeometryFunctionType;
 

@@ -15,7 +15,9 @@ goog.provide('ol.ImageLoadFunctionType');
  * post requests or - in general - through XHR requests, where the src of the
  * image element would be set to a data URI when the content is loaded.
  *
- * @typedef {function(ol.Image, string)}
  * @api
+ * @callback ol.ImageLoadFunctionType
+ * @param {ol.Image} img The image
+ * @param {string} src The source
  */
 ol.ImageLoadFunctionType;

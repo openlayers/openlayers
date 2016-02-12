@@ -83,7 +83,9 @@ ol.events.Key;
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
  *
- * @typedef {function(ol.events.Event)|function(ol.events.Event): boolean}
+ * @callback ol.events.ListenerFunctionType
+ * @param {ol.events.Event} evt The event object
+ * @return {boolean} If false, event propagation will stop
  * @api
  */
 ol.events.ListenerFunctionType;

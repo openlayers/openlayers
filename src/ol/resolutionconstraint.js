@@ -6,7 +6,11 @@ goog.require('ol.math');
 
 
 /**
- * @typedef {function((number|undefined), number, number): (number|undefined)}
+ * @callback ol.ResolutionConstraintType
+ * @param {(number|undefined)} resolution The resolution
+ * @param {number} delta The delta
+ * @param {number} direction The direction
+ * @return {number|undefined}
  */
 ol.ResolutionConstraintType;
 

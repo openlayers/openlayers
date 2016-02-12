@@ -7,7 +7,11 @@ goog.provide('ol.TransformFunction');
  * transforms the input coordinate values, populates the output array, and
  * returns the output array.
  *
- * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
  * @api stable
+ * @callback ol.TransformFunction
+ * @param {Array.<number>} input The array of input coordinate values
+ * @param {Array.<number>} [output] The output array
+ * @param {number} [dimension] The dimension
+ * @return {Array.<number>} The output array
  */
 ol.TransformFunction;

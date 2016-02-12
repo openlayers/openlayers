@@ -17,16 +17,22 @@ goog.require('ol.tilecoord');
  * URL, or undefined if no tile should be requested for the passed tile
  * coordinate.
  *
- * @typedef {function(ol.TileCoord, number,
- *           ol.proj.Projection): (string|undefined)}
  * @api
+ * @callback ol.TileUrlFunctionType
+ * @param {ol.TileCoord} coord The tile coordinate
+ * @param {number} pixelRatio The pixel ratio
+ * @param {ol.proj.Projection} proj The projection
+ * @return {string|undefined}
  */
 ol.TileUrlFunctionType;
 
 
 /**
- * @typedef {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
- *     ol.TileCoord}
+ * @callback ol.TileCoordTransformType
+ * @param {ol.TileCoord} tileCoord The tile coordinate
+ * @param {ol.proj.Projection} proj The projection
+ * @param {ol.TileCoord} [opt_tileCoord] An optional tile coordinate
+ * @return {ol.TileCoord}
  */
 ol.TileCoordTransformType;
 

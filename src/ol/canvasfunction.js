@@ -10,8 +10,12 @@ goog.provide('ol.CanvasFunctionType');
  * this function is cached by the source. The this keyword inside the function
  * references the {@link ol.source.ImageCanvas}.
  *
- * @typedef {function(this:ol.source.ImageCanvas, ol.Extent, number,
- *     number, ol.Size, ol.proj.Projection): HTMLCanvasElement}
+ * @callback ol.CanvasFunctionType
+ * @param {ol.Extent} extent The image extent
+ * @param {number} imgResolution The image resolution
+ * @param {number} pixelRatio The device pixel ratio
+ * @param {ol.Size} imgSize The image size
+ * @param {ol.proj.Projection} proj The image projection
  * @api
  */
 ol.CanvasFunctionType;
