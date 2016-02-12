@@ -5,7 +5,6 @@ goog.provide('ol.format.GMLBase');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.string');
 goog.require('ol.array');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
@@ -87,6 +86,21 @@ goog.inherits(ol.format.GMLBase, ol.format.XMLFeature);
  * @type {string}
  */
 ol.format.GMLBase.GMLNS = 'http://www.opengis.net/gml';
+
+
+/**
+ * A regular expression that matches if a string only contains whitespace
+ * characters. It will e.g. match `''`, `' '`, `'\n'` etc. The non-breaking
+ * space (0xa0) is explicitly included as IE doesn't include it in its
+ * definition of `\s`.
+ *
+ * Information from `goog.string.isEmptyOrWhitespace`: https://github.com/google/closure-library/blob/e877b1e/closure/goog/string/string.js#L156-L160
+ *
+ * @const
+ * @type {RegExp}
+ * @private
+ */
+ol.format.GMLBase.ONLY_WHITESPACE_RE_ = /^[\s\xa0]*$/;
 
 
 /**
@@ -213,7 +227,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
         (n.childNodes.length === 1 &&
         (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
       var value = ol.xml.getAllTextContent(n, false);
-      if (goog.string.isEmpty(value)) {
+      if (ol.format.GMLBase.ONLY_WHITESPACE_RE_.test(value)) {
         value = undefined;
       }
       values[localName] = value;
