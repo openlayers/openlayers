@@ -2949,7 +2949,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
 /**
  * @typedef {{addCondition: (ol.events.ConditionType|undefined),
  *     condition: (ol.events.ConditionType|undefined),
- *     layers: (Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined),
+ *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
@@ -2994,7 +2994,7 @@ olx.interaction.SelectOptions.prototype.condition;
  * function will be called for each layer in the map and should return
  * `true` for layers that you want to be selectable. If the option is
  * absent, all visible layers will be considered selectable.
- * @type {Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean|undefined}
+ * @type {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean}
  * @api
  */
 olx.interaction.SelectOptions.prototype.layers;
