@@ -1184,7 +1184,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     collapseLabel: (string|Node|undefined),
  *     collapsible: (boolean|undefined),
  *     label: (string|Node|undefined),
- *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
+ *     layers: (Array.<ol.layer.Layer>|ol.Collection<ol.layer.Layer>|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),

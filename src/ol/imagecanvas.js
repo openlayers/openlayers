@@ -99,6 +99,7 @@ ol.ImageCanvas.prototype.getImage = function(opt_context) {
  * If any error occurs during drawing, the "done" callback should be called with
  * that error.
  *
- * @typedef {function(function(Error))}
+ * @callback ol.ImageCanvasLoader
+ * @param {Error} error The error
  */
 ol.ImageCanvasLoader;

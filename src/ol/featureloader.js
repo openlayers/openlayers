@@ -23,8 +23,10 @@ goog.require('ol.xml');
  * The function is responsible for loading the features and adding them to the
  * source.
  * @api
- * @typedef {function(this:ol.source.Vector, ol.Extent, number,
- *                    ol.proj.Projection)}
+ * @callback ol.FeatureLoader
+ * @param {ol.Extent} extent The area to be loaded
+ * @param {number} resolution The resolution (map units per pixel)
+ * @param {ol.proj.Projection} projection The projection
  */
 ol.FeatureLoader;
 
@@ -38,7 +40,11 @@ ol.FeatureLoader;
  * {@link ol.proj.Projection} for the projection  as arguments and returns a
  * `{string}` representing the URL.
  * @api
- * @typedef {function(ol.Extent, number, ol.proj.Projection) : string}
+ * @callback ol.FeatureUrlFunction
+ * @param {ol.Extent} extent The area to be loaded
+ * @param {number} resolution The resolution (map units per pixel)
+ * @param {ol.proj.Projection} projection The projection
+ * @return {string} The URL
  */
 ol.FeatureUrlFunction;
 

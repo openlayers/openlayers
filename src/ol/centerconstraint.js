@@ -5,7 +5,9 @@ goog.require('ol.math');
 
 
 /**
- * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
+ * @callback ol.CenterConstraintType
+ * @param {(ol.Coordinate|undefined)} coord The coordinate
+ * @return {ol.Coordinate|undefined}
  */
 ol.CenterConstraintType;
 

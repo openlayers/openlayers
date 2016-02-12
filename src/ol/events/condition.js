@@ -11,7 +11,9 @@ goog.require('ol.MapBrowserPointerEvent');
  * A function that takes an {@link ol.MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
- * @typedef {function(ol.MapBrowserEvent): boolean}
+ * @callback ol.events.ConditionType
+ * @param {ol.MapBrowserEvent} evt The map browser event
+ * @return {boolean} Returns true if the condition is met, otherwise false is returned
  * @api stable
  */
 ol.events.ConditionType;

@@ -16,7 +16,12 @@ goog.require('ol.reproj.Triangulation');
 
 
 /**
- * @typedef {function(number, number, number, number) : ol.Tile}
+ * @callback ol.reproj.TileFunctionType
+ * @param {number} srcZ Z
+ * @param {number} srcX X
+ * @param {number} srcY Y
+ * @param {number} pixelRatio Pixel ratio
+ * @return {ol.Tile}
  */
 ol.reproj.TileFunctionType;
 

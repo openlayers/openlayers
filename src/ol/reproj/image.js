@@ -13,7 +13,11 @@ goog.require('ol.reproj.Triangulation');
 
 
 /**
- * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
+ * @callback ol.reproj.ImageFunctionType
+ * @param {ol.Extent} extent The extent
+ * @param {number} resolution The resolution
+ * @param {number} pixelRatio The pixel ratio
+ * @return {ol.ImageBase}
  */
 ol.reproj.ImageFunctionType;
 

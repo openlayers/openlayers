@@ -5,8 +5,11 @@ goog.require('ol.TileCoord');
 
 
 /**
- * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
  * @api
+ * @callback ol.LoadingStrategy
+ * @param {ol.Extent} extent The extent
+ * @param {number} resolution The resolution
+ * @return {Array.<ol.Extent>}
  */
 ol.LoadingStrategy;
 

@@ -10,7 +10,9 @@ goog.require('goog.string');
  * A function that takes a {@link ol.Coordinate} and transforms it into a
  * `{string}`.
  *
- * @typedef {function((ol.Coordinate|undefined)): string}
+ * @callback ol.CoordinateFormatType
+ * @param {(ol.Coordinate|undefined)} coord The coordinate
+ * @return {string}
  * @api stable
  */
 ol.CoordinateFormatType;

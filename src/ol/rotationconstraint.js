@@ -5,7 +5,10 @@ goog.require('ol.math');
 
 
 /**
- * @typedef {function((number|undefined), number): (number|undefined)}
+ * @callback ol.RotationConstraintType
+ * @param {(number|undefined)} rotation The rotation
+ * @param {number} delta The delta
+ * @return {number|undefined}
  */
 ol.RotationConstraintType;
 
