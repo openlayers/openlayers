@@ -26,6 +26,19 @@ body {
   margin-right: 5px;
   display: inline-block;
 }
+.nav>li>a:hover, .nav>li>a:focus, .nav>li>a.active {
+  background-color: #268591;
+}
+.navbar-nav>li>a {
+  color: white;
+}
+.search-form, .version-form {
+  position: absolute;
+  left: 450px;
+}
+.version-form {
+  top: 5px;
+}
 
 #title {
   margin-top: 0;
