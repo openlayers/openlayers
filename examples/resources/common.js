@@ -74,7 +74,7 @@
 
   select.className = 'input-medium';
 
-  form.className = 'navbar-form pull-right';
+  form.className = 'navbar-form pull-right version-form';
   form.appendChild(select);
 
   container.appendChild(form);
