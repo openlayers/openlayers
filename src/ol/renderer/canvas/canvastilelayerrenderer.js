@@ -61,7 +61,6 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   var center = viewState.center;
   var projection = viewState.projection;
   var resolution = viewState.resolution;
-  var rotation = viewState.rotation;
   var size = frameState.size;
   var pixelScale = pixelRatio / resolution;
   var layer = this.getLayer();
@@ -86,12 +85,6 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   }
   var offsetX = Math.round(pixelRatio * size[0] / 2);
   var offsetY = Math.round(pixelRatio * size[1] / 2);
-  // Sub-pixel overlap between tiles to avoid gaps
-  var overlap = (rotation * 180 / Math.PI) % 90 === 0 ? 0 :
-      opaque ? 0.25 : 0.125;
-
-  renderContext.translate(offsetX, offsetY);
-  renderContext.rotate(rotation);
 
   // for performance reasons, context.save / context.restore is not used
   // to save and restore the transformation matrix and the opacity.
@@ -115,25 +108,25 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
       // filled by a higher resolution tile
       renderContext.save();
       renderContext.beginPath();
-      renderContext.moveTo((tileExtent[0] - center[0]) * pixelScale,
-          (center[1] - tileExtent[1]) * pixelScale);
-      renderContext.lineTo((tileExtent[2] - center[0]) * pixelScale,
-          (center[1] - tileExtent[1]) * pixelScale);
-      renderContext.lineTo((tileExtent[2] - center[0]) * pixelScale,
-          (center[1] - tileExtent[3]) * pixelScale);
-      renderContext.lineTo((tileExtent[0] - center[0]) * pixelScale,
-          (center[1] - tileExtent[3]) * pixelScale);
+      renderContext.moveTo((tileExtent[0] - center[0]) * pixelScale + offsetX,
+          (center[1] - tileExtent[1]) * pixelScale + offsetY);
+      renderContext.lineTo((tileExtent[2] - center[0]) * pixelScale + offsetX,
+          (center[1] - tileExtent[1]) * pixelScale + offsetY);
+      renderContext.lineTo((tileExtent[2] - center[0]) * pixelScale + offsetX,
+          (center[1] - tileExtent[3]) * pixelScale + offsetY);
+      renderContext.lineTo((tileExtent[0] - center[0]) * pixelScale + offsetX,
+          (center[1] - tileExtent[3]) * pixelScale + offsetY);
       renderContext.closePath();
       for (j = 0, jj = clipExtents.length; j < jj; ++j) {
         clipExtent = clipExtents[j];
-        renderContext.moveTo((clipExtent[0] - center[0]) * pixelScale,
-            (center[1] - clipExtent[1]) * pixelScale);
-        renderContext.lineTo((clipExtent[0] - center[0]) * pixelScale,
-            (center[1] - clipExtent[3]) * pixelScale);
-        renderContext.lineTo((clipExtent[2] - center[0]) * pixelScale,
-            (center[1] - clipExtent[3]) * pixelScale);
-        renderContext.lineTo((clipExtent[2] - center[0]) * pixelScale,
-            (center[1] - clipExtent[1]) * pixelScale);
+        renderContext.moveTo((clipExtent[0] - center[0]) * pixelScale + offsetX,
+            (center[1] - clipExtent[1]) * pixelScale + offsetY);
+        renderContext.lineTo((clipExtent[0] - center[0]) * pixelScale + offsetX,
+            (center[1] - clipExtent[3]) * pixelScale + offsetY);
+        renderContext.lineTo((clipExtent[2] - center[0]) * pixelScale + offsetX,
+            (center[1] - clipExtent[3]) * pixelScale + offsetY);
+        renderContext.lineTo((clipExtent[2] - center[0]) * pixelScale + offsetX,
+            (center[1] - clipExtent[1]) * pixelScale + offsetY);
         renderContext.closePath();
       }
       renderContext.clip();
@@ -147,22 +140,18 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
     // gaps caused by rounding
     origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
         tileGrid.getTileCoordForCoordAndZ(center, currentZ)));
-    tileOffsetX = Math.round((origin[0] - center[0]) * pixelScale);
-    tileOffsetY = Math.round((center[1] - origin[1]) * pixelScale);
+    tileOffsetX = offsetX + Math.round((origin[0] - center[0]) * pixelScale);
+    tileOffsetY = offsetY + Math.round((center[1] - origin[1]) * pixelScale);
     renderContext.drawImage(tile.getImage(), tileGutter, tileGutter,
         tilePixelSize[0], tilePixelSize[1],
         Math.round((insertPoint[0] - origin[0]) * pixelScale / tileWidth) *
-            tileWidth + tileOffsetX - overlap,
+            tileWidth + tileOffsetX,
         Math.round((origin[1] - insertPoint[1]) * pixelScale / tileHeight) *
-            tileHeight + tileOffsetY - overlap,
-        tileWidth + 2 * overlap, tileHeight + 2 * overlap);
+            tileHeight + tileOffsetY, tileWidth, tileHeight);
     if (clipExtents) {
       renderContext.restore();
     }
   }
-
-  renderContext.rotate(-rotation);
-  renderContext.translate(-offsetX, -offsetY);
 
   if (renderContext != context) {
     this.dispatchRenderEvent(renderContext, frameState, transform);

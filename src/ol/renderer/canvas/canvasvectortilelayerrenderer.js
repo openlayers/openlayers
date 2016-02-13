@@ -183,12 +183,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
           0, 0, pixelScale, -pixelScale, 0, -center[0], -center[1]);
       insertPoint = ol.geom.flat.transform.transform2D(
           ol.extent.getTopLeft(tileExtent), 0, 1, 2, insertTransform);
-      replayContext.translate(offsetX, offsetY);
-      replayContext.rotate(rotation);
       replayContext.drawImage(tileContext.canvas,
-          Math.round(insertPoint[0]), Math.round(insertPoint[1]));
-      replayContext.rotate(-rotation);
-      replayContext.translate(-offsetX, -offsetY);
+          Math.round(insertPoint[0] + offsetX),
+          Math.round(insertPoint[1]) + offsetY);
     }
   }
 

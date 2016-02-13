@@ -147,7 +147,6 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;
   var viewResolution = viewState.resolution;
-  var viewRotation = viewState.rotation;
 
   var image;
   var imageLayer = this.getLayer();
@@ -195,7 +194,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
         pixelRatio * frameState.size[0] / 2,
         pixelRatio * frameState.size[1] / 2,
         scale, scale,
-        viewRotation,
+        0,
         imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
         imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
     this.imageTransformInv_ = null;

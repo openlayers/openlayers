@@ -106,6 +106,11 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var alpha = replayContext.globalAlpha;
     replayContext.globalAlpha = layerState.opacity;
 
+    var width = frameState.size[0] * pixelRatio;
+    var height = frameState.size[1] * pixelRatio;
+    replayContext.translate(width / 2, height / 2);
+    replayContext.rotate(-rotation);
+    replayContext.translate(-width / 2, -height / 2);
     replayGroup.replay(replayContext, pixelRatio, transform, rotation,
         skippedFeatureUids);
     if (vectorSource.getWrapX() && projection.canWrapX() &&
@@ -135,6 +140,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
       // restore original transform for render and compose events
       transform = this.getTransform(frameState, 0);
     }
+    replayContext.translate(width / 2, height / 2);
+    replayContext.rotate(rotation);
+    replayContext.translate(-width / 2, -height / 2);
 
     if (replayContext != context) {
       this.dispatchRenderEvent(replayContext, frameState, transform);

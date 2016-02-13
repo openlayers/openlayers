@@ -51,6 +51,8 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
       goog.asserts.assert(extent !== undefined,
           'layerState extent is defined');
       var pixelRatio = frameState.pixelRatio;
+      var width = frameState.size[0] * pixelRatio;
+      var height = frameState.size[1] * pixelRatio;
       var topLeft = ol.extent.getTopLeft(extent);
       var topRight = ol.extent.getTopRight(extent);
       var bottomRight = ol.extent.getBottomRight(extent);
@@ -66,12 +68,18 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
           bottomLeft, bottomLeft);
 
       context.save();
+      context.translate(width / 2, height / 2);
+      context.rotate(-frameState.viewState.rotation);
+      context.translate(-width / 2, -height / 2);
       context.beginPath();
       context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
       context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
       context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
       context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
       context.clip();
+      context.translate(width / 2, height / 2);
+      context.rotate(frameState.viewState.rotation);
+      context.translate(-width / 2, -height / 2);
     }
 
     var imageTransform = this.getImageTransform();
@@ -83,24 +91,12 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
 
     // for performance reasons, context.setTransform is only used
     // when the view is rotated. see http://jsperf.com/canvas-transform
-    if (frameState.viewState.rotation === 0) {
-      var dx = goog.vec.Mat4.getElement(imageTransform, 0, 3);
-      var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
-      var dw = image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0);
-      var dh = image.height * goog.vec.Mat4.getElement(imageTransform, 1, 1);
-      context.drawImage(image, 0, 0, +image.width, +image.height,
-          Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
-    } else {
-      context.setTransform(
-          goog.vec.Mat4.getElement(imageTransform, 0, 0),
-          goog.vec.Mat4.getElement(imageTransform, 1, 0),
-          goog.vec.Mat4.getElement(imageTransform, 0, 1),
-          goog.vec.Mat4.getElement(imageTransform, 1, 1),
-          goog.vec.Mat4.getElement(imageTransform, 0, 3),
-          goog.vec.Mat4.getElement(imageTransform, 1, 3));
-      context.drawImage(image, 0, 0);
-      context.setTransform(1, 0, 0, 1, 0, 0);
-    }
+    var dx = goog.vec.Mat4.getElement(imageTransform, 0, 3);
+    var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
+    var dw = image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0);
+    var dh = image.height * goog.vec.Mat4.getElement(imageTransform, 1, 1);
+    context.drawImage(image, 0, 0, +image.width, +image.height,
+        Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
     context.globalAlpha = alpha;
 
     if (clipped) {
@@ -123,6 +119,11 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
 ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
+    var width = frameState.size[0] * frameState.pixelRatio;
+    var height = frameState.size[1] * frameState.pixelRatio;
+    context.translate(width / 2, height / 2);
+    context.rotate(-frameState.viewState.rotation);
+    context.translate(-width / 2, -height / 2);
     var transform = opt_transform !== undefined ?
         opt_transform : this.getTransform(frameState, 0);
     var render = new ol.render.canvas.Immediate(
@@ -132,6 +133,9 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
         context, null);
     layer.dispatchEvent(composeEvent);
     render.flush();
+    context.translate(width / 2, height / 2);
+    context.rotate(frameState.viewState.rotation);
+    context.translate(-width / 2, -height / 2);
   }
 };
 
