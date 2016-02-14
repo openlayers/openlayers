@@ -188,5 +188,6 @@ ol.math.toRadians = function(angleInDegrees) {
  * @return {number} Modulo.
  */
 ol.math.modulo = function(a, b) {
-  return ((a % b) + b) % b;
+  var r = a % b;
+  return r * b < 0 ? r + b : r;
 };

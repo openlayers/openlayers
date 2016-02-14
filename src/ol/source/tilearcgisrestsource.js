@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.TileCoord');
