@@ -2,7 +2,6 @@ goog.provide('ol.source.TileArcGISRest');
 
 goog.require('goog.asserts');
 goog.require('goog.math');
-goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.TileCoord');
@@ -11,6 +10,7 @@ goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
+goog.require('ol.string');
 goog.require('ol.tilecoord');
 
 
@@ -109,14 +109,14 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
     url = urls[index];
   }
 
-  if (!goog.string.endsWith(url, '/')) {
+  if (!ol.string.endsWith(url, '/')) {
     url = url + '/';
   }
 
   // If a MapServer, use export. If an ImageServer, use exportImage.
-  if (goog.string.endsWith(url, 'MapServer/')) {
+  if (ol.string.endsWith(url, 'MapServer/')) {
     url = url + 'export';
-  } else if (goog.string.endsWith(url, 'ImageServer/')) {
+  } else if (ol.string.endsWith(url, 'ImageServer/')) {
     url = url + 'exportImage';
   } else {
     goog.asserts.fail('Unknown Rest Service', url);
