@@ -41,7 +41,7 @@
     "jsdoc": "3.4.0",
     "marked": "0.3.5",
     "metalsmith": "2.1.0",
-    "metalsmith-layouts": "1.4.4",
+    "metalsmith-layouts": "1.5.4",
     "nomnom": "1.8.1",
     "pbf": "1.3.5",
     "pixelworks": "1.0.0",
