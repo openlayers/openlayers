@@ -3,6 +3,7 @@ goog.provide('ol.style.RegularShape');
 goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.color');
+goog.require('ol.colorlike');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.style.AtlasManager');
@@ -433,7 +434,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   }
 
   if (this.fill_) {
-    context.fillStyle = ol.color.asString(this.fill_.getColor());
+    context.fillStyle = ol.colorlike.asColorLike(this.fill_.getColor());
     context.fill();
   }
   if (this.stroke_) {

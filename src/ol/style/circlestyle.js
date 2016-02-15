@@ -3,6 +3,7 @@ goog.provide('ol.style.Circle');
 goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.color');
+goog.require('ol.colorlike');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.style.Fill');
@@ -340,7 +341,7 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
       this.radius_, 0, 2 * Math.PI, true);
 
   if (this.fill_) {
-    context.fillStyle = ol.color.asString(this.fill_.getColor());
+    context.fillStyle = ol.colorlike.asColorLike(this.fill_.getColor());
     context.fill();
   }
   if (this.stroke_) {
