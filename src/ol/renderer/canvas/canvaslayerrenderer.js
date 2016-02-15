@@ -2,12 +2,11 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
-goog.require('ol.array');
-goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
+goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.vec.Mat4');
@@ -53,6 +52,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
       var pixelRatio = frameState.pixelRatio;
       var width = frameState.size[0] * pixelRatio;
       var height = frameState.size[1] * pixelRatio;
+      var rotation = frameState.viewState.rotation;
       var topLeft = ol.extent.getTopLeft(extent);
       var topRight = ol.extent.getTopRight(extent);
       var bottomRight = ol.extent.getBottomRight(extent);
@@ -68,18 +68,14 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
           bottomLeft, bottomLeft);
 
       context.save();
-      context.translate(width / 2, height / 2);
-      context.rotate(-frameState.viewState.rotation);
-      context.translate(-width / 2, -height / 2);
+      ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
       context.beginPath();
       context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
       context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
       context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
       context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
       context.clip();
-      context.translate(width / 2, height / 2);
-      context.rotate(frameState.viewState.rotation);
-      context.translate(-width / 2, -height / 2);
+      ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
     }
 
     var imageTransform = this.getImageTransform();
@@ -121,9 +117,8 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
   if (layer.hasListener(type)) {
     var width = frameState.size[0] * frameState.pixelRatio;
     var height = frameState.size[1] * frameState.pixelRatio;
-    context.translate(width / 2, height / 2);
-    context.rotate(-frameState.viewState.rotation);
-    context.translate(-width / 2, -height / 2);
+    var rotation = frameState.viewState.rotation;
+    ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
     var transform = opt_transform !== undefined ?
         opt_transform : this.getTransform(frameState, 0);
     var render = new ol.render.canvas.Immediate(
@@ -133,9 +128,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
         context, null);
     layer.dispatchEvent(composeEvent);
     render.flush();
-    context.translate(width / 2, height / 2);
-    context.rotate(frameState.viewState.rotation);
-    context.translate(-width / 2, -height / 2);
+    ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
   }
 };
 
@@ -228,46 +221,3 @@ ol.renderer.canvas.Layer.prototype.getPixelOnCanvas = function(pixelOnMap, image
   ol.vec.Mat4.multVec2(imageTransformInv, pixelOnMap, pixelOnCanvas);
   return pixelOnCanvas;
 };
-
-
-/**
- * @param {ol.Size} size Size.
- * @return {boolean} True when the canvas with the current size does not exceed
- *     the maximum dimensions.
- */
-ol.renderer.canvas.Layer.testCanvasSize = (function() {
-
-  /**
-   * @type {CanvasRenderingContext2D}
-   */
-  var context = null;
-
-  /**
-   * @type {ImageData}
-   */
-  var imageData = null;
-
-  return function(size) {
-    if (!context) {
-      context = ol.dom.createCanvasContext2D(1, 1);
-      imageData = context.createImageData(1, 1);
-      var data = imageData.data;
-      data[0] = 42;
-      data[1] = 84;
-      data[2] = 126;
-      data[3] = 255;
-    }
-    var canvas = context.canvas;
-    var good = size[0] <= canvas.width && size[1] <= canvas.height;
-    if (!good) {
-      canvas.width = size[0];
-      canvas.height = size[1];
-      var x = size[0] - 1;
-      var y = size[1] - 1;
-      context.putImageData(imageData, x, y);
-      var result = context.getImageData(x, y, 1, 1);
-      good = ol.array.equals(imageData.data, result.data);
-    }
-    return good;
-  };
-})();
