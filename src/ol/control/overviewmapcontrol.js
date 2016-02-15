@@ -86,7 +86,8 @@ ol.control.OverviewMap = function(opt_options) {
   ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, this);
 
-  var ovmapDiv = goog.dom.createDom('DIV', 'ol-overviewmap-map');
+  var ovmapDiv = document.createElement('DIV');
+  ovmapDiv.className = 'ol-overviewmap-map';
 
   /**
    * @type {ol.Map}
