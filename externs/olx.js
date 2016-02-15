@@ -1350,7 +1350,7 @@ olx.control.RotateOptions.prototype.className;
 /**
  * Text label to use for the rotate button. Default is `⇧`.
  * Instead of text, also a Node (e.g. a `span` element) can be used.
- * @type {string|Node|undefined}
+ * @type {string|Element|undefined}
  * @api stable
  */
 olx.control.RotateOptions.prototype.label;
@@ -2910,7 +2910,7 @@ olx.interaction.PointerOptions.prototype.handleDownEvent;
 /**
  * Function handling "drag" events. This function is called on "move" events
  * during a drag sequence.
- * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @type {(function(ol.MapBrowserPointerEvent)|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleDragEvent;
@@ -2931,7 +2931,7 @@ olx.interaction.PointerOptions.prototype.handleEvent;
  * Function handling "move" events. This function is called on "move" events,
  * also during a drag sequence (so during a drag sequence both the
  * `handleDragEvent` function and this function are called).
- * @type {(function(ol.MapBrowserPointerEvent):boolean|undefined)}
+ * @type {(function(ol.MapBrowserPointerEvent)|undefined)}
  * @api
  */
 olx.interaction.PointerOptions.prototype.handleMoveEvent;
@@ -3881,7 +3881,7 @@ olx.render.ToContextOptions.prototype.size;
 /**
  * Pixel ratio (canvas pixel to css pixel ratio) for the canvas. Default
  * is the detected device pixel ratio.
- * @type {ol.Size|undefined}
+ * @type {number|undefined}
  * @api
  */
 olx.render.ToContextOptions.prototype.pixelRatio;
@@ -5855,6 +5855,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     opaque: (boolean|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     maxZoom: (number|undefined),
@@ -5901,6 +5902,14 @@ olx.source.XYZOptions.prototype.logo;
 
 
 /**
+ * Whether the layer is opaque.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.XYZOptions.prototype.opaque;
+
+
+/**
  * Projection. Default is `EPSG:3857`.
  * @type {ol.proj.ProjectionLike}
  * @api
@@ -5935,7 +5944,7 @@ olx.source.XYZOptions.prototype.minZoom;
 
 /**
  * Tile grid.
- * @type {ol.tilegrid.TileGrid}
+ * @type {ol.tilegrid.TileGrid|undefined}
  * @api
  */
 olx.source.XYZOptions.prototype.tileGrid;
