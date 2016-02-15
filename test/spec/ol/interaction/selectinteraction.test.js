@@ -80,14 +80,12 @@ describe('ol.interaction.Select', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = goog.style.getClientPosition(viewport);
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new ol.MapBrowserPointerEvent(type, map,
-        new ol.pointer.PointerEvent(type,
-            {
-              clientX: position.x + x + width / 2,
-              clientY: position.y + y + height / 2,
-              shiftKey: shiftKey
-            }));
-    map.handleMapBrowserEvent(event);
+    var event = new ol.pointer.PointerEvent(type, {
+      clientX: position.x + x + width / 2,
+      clientY: position.y + y + height / 2,
+      shiftKey: shiftKey
+    });
+    map.handleMapBrowserEvent(new ol.MapBrowserPointerEvent(type, map, event));
   }
 
   describe('constructor', function() {
