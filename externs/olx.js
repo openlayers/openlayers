@@ -90,7 +90,7 @@ olx.LogoOptions.prototype.href;
 
 
 /**
- * Image src for the logo
+ * Image src for the logo.
  * @type {string}
  * @api
  */
