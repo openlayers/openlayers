@@ -19,7 +19,7 @@ describe('ol.control.Control', function() {
   describe('dispose', function() {
     it('removes the control element from its parent', function() {
       goog.dispose(control);
-      expect(goog.dom.getParentElement(control.element)).to.be(null);
+      expect(control.element.parentNode).to.be(null);
     });
   });
 });
@@ -51,6 +51,5 @@ describe('ol.control.Control\'s target', function() {
 });
 
 goog.require('goog.dispose');
-goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.control.Control');

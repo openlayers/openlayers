@@ -227,7 +227,7 @@ describe('ol.Map', function() {
 
     it('removes the viewport from its parent', function() {
       goog.dispose(map);
-      expect(goog.dom.getParentElement(map.getViewport())).to.be(null);
+      expect(map.getViewport().parentNode).to.be(null);
     });
 
     it('removes window listeners', function() {
@@ -426,7 +426,6 @@ describe('ol.Map', function() {
 });
 
 goog.require('goog.dispose');
-goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Overlay');
