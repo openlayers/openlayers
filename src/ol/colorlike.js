@@ -34,7 +34,7 @@ ol.colorlike.asColorLike = function(color) {
  */
 ol.colorlike.isColorLike = function(color) {
   return (
-      goog.isString(color) ||
+      typeof color === 'string' ||
       color instanceof CanvasPattern ||
       color instanceof CanvasGradient
   );
