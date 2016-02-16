@@ -1184,7 +1184,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
  *     collapseLabel: (string|Node|undefined),
  *     collapsible: (boolean|undefined),
  *     label: (string|Node|undefined),
- *     layers: (Array.<ol.layer.Layer>|ol.Collection|undefined),
+ *     layers: (Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
  *     tipLabel: (string|undefined),
@@ -1232,7 +1232,7 @@ olx.control.OverviewMapOptions.prototype.label;
 /**
  * Layers for the overview map. If not set, then all main map layers are used
  * instead.
- * @type {!Array.<ol.layer.Layer>|!ol.Collection|undefined}
+ * @type {Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined}
  * @api
  */
 olx.control.OverviewMapOptions.prototype.layers;
