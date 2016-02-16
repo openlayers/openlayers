@@ -392,10 +392,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.asserts.assert(goog.isNumber(instruction[7]),
             '8th instruction should be a number');
         scale = /** @type {number} */ (instruction[7]) * pixelRatio;
-        goog.asserts.assert(goog.isBoolean(instruction[8]),
+        goog.asserts.assert(typeof instruction[8] === 'boolean',
             '9th instruction should be a boolean');
         fill = /** @type {boolean} */ (instruction[8]);
-        goog.asserts.assert(goog.isBoolean(instruction[9]),
+        goog.asserts.assert(typeof instruction[9] === 'boolean',
             '10th instruction should be a boolean');
         stroke = /** @type {boolean} */ (instruction[9]);
         for (; d < dd; d += 2) {

@@ -1502,7 +1502,7 @@ ol.Map.createOptionsInternal = function(options) {
 
   var logos = {};
   if (options.logo === undefined ||
-      (goog.isBoolean(options.logo) && options.logo)) {
+      (typeof options.logo === 'boolean' && options.logo)) {
     logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
   } else {
     var logo = options.logo;
