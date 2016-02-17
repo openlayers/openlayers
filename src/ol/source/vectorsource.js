@@ -739,16 +739,6 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
 
 
 /**
- * @param {ol.Feature} feature Feature.
- * @return {boolean} Feature is in source.
- */
-ol.source.Vector.prototype.hasFeature = function(feature) {
-  var id = feature.getId();
-  return id ? id in this.idIndex_ : goog.getUid(feature) in this.undefIdIndex_;
-};
-
-
-/**
  * @return {boolean} Is empty.
  */
 ol.source.Vector.prototype.isEmpty = function() {

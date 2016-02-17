@@ -177,7 +177,7 @@ ol.interaction.Select = function(opt_options) {
        */
       layerFilter = function(layer) {
         goog.asserts.assertFunction(options.layers);
-        return layer === featureOverlay || options.layers(layer);
+        return options.layers(layer);
       };
     } else {
       var layers = options.layers;
@@ -186,7 +186,7 @@ ol.interaction.Select = function(opt_options) {
        * @return {boolean} Include.
        */
       layerFilter = function(layer) {
-        return layer === featureOverlay || ol.array.includes(layers, layer);
+        return ol.array.includes(layers, layer);
       };
     }
   } else {
@@ -322,18 +322,13 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
          * @param {ol.layer.Layer} layer Layer.
          */
         function(feature, layer) {
-          goog.asserts.assertInstanceof(feature, ol.Feature);
-          if (layer !== null) {
-            if (add || toggle) {
-              if (this.filter_(feature, layer) &&
-                  !ol.array.includes(features.getArray(), feature) &&
-                  !ol.array.includes(selected, feature)) {
-                selected.push(feature);
-                this.addFeatureLayerAssociation_(feature, layer);
-              }
-            }
-          } else if (this.featureOverlay_.getSource().hasFeature(feature)) {
-            if (remove || toggle) {
+          if (this.filter_(feature, layer)) {
+            if ((add || toggle) &&
+                !ol.array.includes(features.getArray(), feature)) {
+              selected.push(feature);
+              this.addFeatureLayerAssociation_(feature, layer);
+            } else if ((remove || toggle) &&
+                ol.array.includes(features.getArray(), feature)) {
               deselected.push(feature);
               this.removeFeatureLayerAssociation_(feature);
             }

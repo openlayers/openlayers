@@ -64,6 +64,23 @@ describe('ol.renderer.canvas.Map', function() {
       expect(cb.firstCall.args[1]).to.be(null);
     });
 
+    it('calls callback with main layer when skipped feature on unmanaged layer', function() {
+      var feature = layer.getSource().getFeatures()[0];
+      var managedLayer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        })
+      });
+      map.addLayer(managedLayer);
+      map.skipFeature(feature);
+      layer.setMap(map);
+      map.renderSync();
+      var cb = sinon.spy();
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
+      expect(cb.callCount).to.be(1);
+      expect(cb.firstCall.args[1]).to.be(managedLayer);
+    });
+
     it('filters managed layers', function() {
       map.addLayer(layer);
       map.renderSync();
