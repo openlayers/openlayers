@@ -191,7 +191,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
 ol.Geolocation.prototype.positionError_ = function(error) {
   error.type = ol.events.EventType.ERROR;
   this.setTracking(false);
-  this.dispatchEvent(/** @type {{type: string}} */ (error));
+  this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
 };
 
 
