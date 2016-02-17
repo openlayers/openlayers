@@ -1,7 +1,6 @@
 goog.provide('ol.webgl.Context');
 
 goog.require('goog.asserts');
-goog.require('goog.log');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.events');
@@ -229,7 +228,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     if (goog.DEBUG) {
       if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
           !gl.isContextLost()) {
-        goog.log.error(this.logger_, gl.getShaderInfoLog(shader));
+        console.error('ol.webgl.Context', gl.getShaderInfoLog(shader));
       }
     }
     goog.asserts.assert(
@@ -265,7 +264,7 @@ ol.webgl.Context.prototype.getProgram = function(
     if (goog.DEBUG) {
       if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
           !gl.isContextLost()) {
-        goog.log.error(this.logger_, gl.getProgramInfoLog(program));
+        console.error('ol.webgl.Context', gl.getProgramInfoLog(program));
       }
     }
     goog.asserts.assert(
@@ -343,13 +342,6 @@ ol.webgl.Context.prototype.useProgram = function(program) {
     return true;
   }
 };
-
-
-/**
- * @private
- * @type {goog.log.Logger}
- */
-ol.webgl.Context.prototype.logger_ = goog.log.getLogger('ol.webgl.Context');
 
 
 /**
