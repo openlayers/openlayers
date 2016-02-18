@@ -153,12 +153,6 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragListenerKeys_ = [];
 
   /**
-   * @type {?ol.events.Key}
-   * @private
-   */
-  this.pointerdownListenerKey_ = null;
-
-  /**
    * The most recent "down" type event (or null if none have occurred).
    * Set on pointerdown.
    * @type {ol.pointer.PointerEvent}
@@ -198,10 +192,18 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.documentPointerEventHandler_ = null;
 
+  /**
+   * @type {?ol.events.Key}
+   * @private
+   */
   this.pointerdownListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
       this.handlePointerDown_, this);
 
+  /**
+   * @type {?ol.events.Key}
+   * @private
+   */
   this.relayedListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERMOVE,
       this.relayEvent_, this);
