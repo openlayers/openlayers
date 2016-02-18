@@ -170,6 +170,24 @@ describe('ol.source.Tile', function() {
     });
   });
 
+  describe('#refresh()', function() {
+    it('checks clearing of internal state', function() {
+      // create a source with one loaded tile
+      var source = new ol.test.source.TileMock({
+        '1/0/0': ol.TileState.LOADED
+      });
+      // check the loaded tile is there
+      var tile = source.getTile(1, 0, 0);
+      expect(tile).to.be.a(ol.Tile);
+      // check tile cache is filled
+      expect(source.tileCache.getCount()).to.eql(1);
+      // refresh the source
+      source.refresh();
+      // check tile cache after refresh (should be empty)
+      expect(source.tileCache.getCount()).to.eql(0);
+    });
+  });
+
 });
 
 
