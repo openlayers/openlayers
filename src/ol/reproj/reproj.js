@@ -128,17 +128,17 @@ ol.reproj.render = function(width, height, pixelRatio,
       Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
       Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
 
-  stitchContext.scale(pixelRatio / sourceResolution,
-                      pixelRatio / sourceResolution);
-  stitchContext.translate(-sourceDataExtent[0], sourceDataExtent[3]);
+  var stitchScale = pixelRatio / sourceResolution;
 
   sources.forEach(function(src, i, arr) {
-    var xPos = src.extent[0];
-    var yPos = -src.extent[3];
+    var xPos = src.extent[0] - sourceDataExtent[0];
+    var yPos = -(src.extent[3] - sourceDataExtent[3]);
     var srcWidth = ol.extent.getWidth(src.extent);
     var srcHeight = ol.extent.getHeight(src.extent);
 
-    stitchContext.drawImage(src.image, xPos, yPos, srcWidth, srcHeight);
+    stitchContext.drawImage(src.image,
+                            xPos * stitchScale, yPos * stitchScale,
+                            srcWidth * stitchScale, srcHeight * stitchScale);
   });
 
   var targetTopLeft = ol.extent.getTopLeft(targetExtent);
