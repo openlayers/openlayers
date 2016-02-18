@@ -78,7 +78,7 @@ describe('ol.rendering.Map', function() {
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'spec/ol/expected/rotate-canvas.png', IMAGE_TOLERANCE, done);
+          map, 'spec/ol/expected/rotate-canvas.png', 2.8, done);
     });
 
     it('tests the WebGL renderer', function(done) {
