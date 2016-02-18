@@ -25,8 +25,7 @@ describe('ol.control.ZoomSlider', function() {
 
   describe('DOM creation', function() {
     it('creates the expected DOM elements', function() {
-      var zoomSliderContainers = goog.dom.getElementsByClass(
-          'ol-zoomslider', target);
+      var zoomSliderContainers = target.querySelectorAll('.ol-zoomslider');
 
       expect(zoomSliderContainers.length).to.be(1);
 
@@ -37,8 +36,7 @@ describe('ol.control.ZoomSlider', function() {
           'ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
 
-      var zoomSliderThumbs = goog.dom.getElementsByClass('ol-zoomslider-thumb',
-          zoomSliderContainer);
+      var zoomSliderThumbs = zoomSliderContainer.querySelectorAll('.ol-zoomslider-thumb');
       expect(zoomSliderThumbs.length).to.be(1);
 
       var zoomSliderThumb = zoomSliderThumbs[0];
@@ -180,7 +178,6 @@ describe('ol.control.ZoomSlider', function() {
 
 goog.require('goog.Disposable');
 goog.require('goog.dispose');
-goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('goog.math.Rect');
 goog.require('ol.Map');
