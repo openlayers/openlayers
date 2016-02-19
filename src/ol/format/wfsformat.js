@@ -411,6 +411,7 @@ ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
 ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
+  goog.asserts.assert(feature.getId() !== undefined, 'feature should have an id');
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   featurePrefix = featurePrefix ? featurePrefix :
@@ -420,7 +421,7 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
-  if (fid) {
+  if (fid !== undefined) {
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
@@ -435,6 +436,7 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
 ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
+  goog.asserts.assert(feature.getId() !== undefined, 'feature should have an id');
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   featurePrefix = featurePrefix ? featurePrefix :
@@ -444,7 +446,7 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
       featureNS);
   var fid = feature.getId();
-  if (fid) {
+  if (fid !== undefined) {
     var keys = feature.getKeys();
     var values = [];
     for (var i = 0, ii = keys.length; i < ii; i++) {
