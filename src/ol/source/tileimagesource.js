@@ -123,6 +123,29 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
 /**
  * @inheritDoc
  */
+ol.source.TileImage.prototype.getGutter = function(projection) {
+  if (ol.ENABLE_RASTER_REPROJECTION &&
+      this.getProjection() && projection &&
+      !ol.proj.equivalent(this.getProjection(), projection)) {
+    return 0;
+  } else {
+    return this.getGutterInternal();
+  }
+};
+
+
+/**
+ * @protected
+ * @return {number} Gutter.
+ */
+ol.source.TileImage.prototype.getGutterInternal = function() {
+  return 0;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.source.TileImage.prototype.getOpaque = function(projection) {
   if (ol.ENABLE_RASTER_REPROJECTION &&
       this.getProjection() && projection &&
@@ -230,6 +253,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
           sourceProjection, sourceTileGrid,
           projection, targetTileGrid,
           tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
+          this.getGutterInternal(),
           function(z, x, y, pixelRatio) {
             return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
           }.bind(this), this.reprojectionErrorThreshold_,

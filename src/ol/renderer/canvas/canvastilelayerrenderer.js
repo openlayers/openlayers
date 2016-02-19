@@ -67,7 +67,7 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   var source = layer.getSource();
   goog.asserts.assertInstanceof(source, ol.source.Tile,
       'source is an ol.source.Tile');
-  var tileGutter = source.getGutter();
+  var tileGutter = source.getGutter(projection);
   var opaque = source.getOpaque(projection);
 
   var transform = this.getTransform(frameState, 0);

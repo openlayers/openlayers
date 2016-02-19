@@ -21,7 +21,7 @@ describe('ol.reproj.Tile', function() {
     return new ol.reproj.Tile(
         proj3857, ol.tilegrid.createForProjection(proj3857), proj4326,
         ol.tilegrid.createForProjection(proj4326, 3, opt_tileSize),
-        [3, 2, -2], null, pixelRatio, function(z, x, y, pixelRatio) {
+        [3, 2, -2], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
           return new ol.ImageTile([z, x, y], ol.TileState.IDLE,
               'data:image/gif;base64,' +
               'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,
@@ -48,7 +48,7 @@ describe('ol.reproj.Tile', function() {
     var tile = new ol.reproj.Tile(
         proj3857, ol.tilegrid.createForProjection(proj3857),
         proj4326, ol.tilegrid.createForProjection(proj4326),
-        [0, -1, 0], null, 1, function() {
+        [0, -1, 0], null, 1, 0, function() {
           expect().fail('No tiles should be required');
         });
     expect(tile.getState()).to.be(ol.TileState.EMPTY);
@@ -60,7 +60,7 @@ describe('ol.reproj.Tile', function() {
     var tile = new ol.reproj.Tile(
         proj27700, ol.tilegrid.createForProjection(proj27700),
         proj4326, ol.tilegrid.createForProjection(proj4326),
-        [3, 2, -2], null, 1, function() {
+        [3, 2, -2], null, 1, 0, function() {
           expect().fail('No tiles should be required');
         });
     expect(tile.getState()).to.be(ol.TileState.EMPTY);

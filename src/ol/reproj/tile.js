@@ -35,6 +35,7 @@ ol.reproj.TileFunctionType;
  * @param {ol.TileCoord} tileCoord Coordinate of the tile.
  * @param {ol.TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
+ * @param {number} gutter Gutter of the source tiles.
  * @param {ol.reproj.TileFunctionType} getTileFunction
  *     Function returning source tiles (z, x, y, pixelRatio).
  * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
@@ -42,7 +43,7 @@ ol.reproj.TileFunctionType;
  */
 ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
-    pixelRatio, getTileFunction,
+    pixelRatio, gutter, getTileFunction,
     opt_errorThreshold,
     opt_renderEdges) {
   goog.base(this, tileCoord, ol.TileState.IDLE);
@@ -58,6 +59,12 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
    * @type {number}
    */
   this.pixelRatio_ = pixelRatio;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.gutter_ = gutter;
 
   /**
    * @private
@@ -269,7 +276,7 @@ ol.reproj.Tile.prototype.reproject_ = function() {
     this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
         sourceResolution, this.sourceTileGrid_.getExtent(),
         targetResolution, targetExtent, this.triangulation_, sources,
-        this.renderEdges_);
+        this.gutter_, this.renderEdges_);
 
     this.state = ol.TileState.LOADED;
   }
