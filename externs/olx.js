@@ -2372,7 +2372,8 @@ olx.interaction.DoubleClickZoomOptions.prototype.delta;
 
 /**
  * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
- *     projection: ol.proj.ProjectionLike}}
+ *     projection: ol.proj.ProjectionLike,
+ *     target: (Element|undefined)}}
  * @api
  */
 olx.interaction.DragAndDropOptions;
@@ -2392,6 +2393,14 @@ olx.interaction.DragAndDropOptions.prototype.formatConstructors;
  * @api
  */
 olx.interaction.DragAndDropOptions.prototype.projection;
+
+
+/**
+ * The element that is used as the drop target, default is the viewport element.
+ * @type {Element|undefined}
+ * @api
+ */
+olx.interaction.DragAndDropOptions.prototype.target;
 
 
 /**

@@ -50,6 +50,12 @@ ol.interaction.DragAndDrop = function(opt_options) {
    */
   this.dropListenKeys_ = null;
 
+  /**
+   * @private
+   * @type {Element}
+   */
+  this.target = options.target ? options.target : null;
+
 };
 goog.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
 
@@ -141,7 +147,7 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
   }
   goog.base(this, 'setMap', map);
   if (map) {
-    var dropArea = map.getViewport();
+    var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
       ol.events.listen(dropArea, ol.events.EventType.DROP,
           ol.interaction.DragAndDrop.handleDrop_, this),
