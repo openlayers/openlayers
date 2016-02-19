@@ -147,16 +147,10 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragging_ = false;
 
   /**
-   * @type {Array.<ol.events.Key>}
+   * @type {!Array.<ol.events.Key>}
    * @private
    */
-  this.dragListenerKeys_ = null;
-
-  /**
-   * @type {?ol.events.Key}
-   * @private
-   */
-  this.pointerdownListenerKey_ = null;
+  this.dragListenerKeys_ = [];
 
   /**
    * The most recent "down" type event (or null if none have occurred).
@@ -198,10 +192,18 @@ ol.MapBrowserEventHandler = function(map) {
    */
   this.documentPointerEventHandler_ = null;
 
+  /**
+   * @type {?ol.events.Key}
+   * @private
+   */
   this.pointerdownListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERDOWN,
       this.handlePointerDown_, this);
 
+  /**
+   * @type {?ol.events.Key}
+   * @private
+   */
   this.relayedListenerKey_ = ol.events.listen(this.pointerEventHandler_,
       ol.pointer.EventType.POINTERMOVE,
       this.relayEvent_, this);
@@ -280,7 +282,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
       'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
     this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
-    this.dragListenerKeys_ = null;
+    this.dragListenerKeys_.length = 0;
     this.dragging_ = false;
     this.down_ = null;
     goog.dispose(this.documentPointerEventHandler_);
@@ -311,7 +313,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
 
   this.down_ = pointerEvent;
 
-  if (!this.dragListenerKeys_) {
+  if (this.dragListenerKeys_.length === 0) {
     /* Set up a pointer event handler on the `document`,
      * which is required when the pointer is moved outside
      * the viewport when dragging.
@@ -319,7 +321,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
     this.documentPointerEventHandler_ =
         new ol.pointer.PointerEventHandler(document);
 
-    this.dragListenerKeys_ = [
+    this.dragListenerKeys_.push(
       ol.events.listen(this.documentPointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERMOVE,
           this.handlePointerMove_, this),
@@ -342,7 +344,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
       ol.events.listen(this.pointerEventHandler_,
           ol.MapBrowserEvent.EventType.POINTERCANCEL,
           this.handlePointerUp_, this)
-    ];
+    );
   }
 };
 
@@ -409,10 +411,10 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     ol.events.unlistenByKey(this.pointerdownListenerKey_);
     this.pointerdownListenerKey_ = null;
   }
-  if (this.dragListenerKeys_) {
-    this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
-    this.dragListenerKeys_ = null;
-  }
+
+  this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.dragListenerKeys_.length = 0;
+
   if (this.documentPointerEventHandler_) {
     goog.dispose(this.documentPointerEventHandler_);
     this.documentPointerEventHandler_ = null;
