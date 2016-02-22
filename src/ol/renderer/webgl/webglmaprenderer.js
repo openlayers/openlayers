@@ -4,8 +4,6 @@ goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.log');
-goog.require('goog.log.Logger');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
@@ -427,14 +425,6 @@ ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
 
 
 /**
- * @private
- * @type {goog.log.Logger}
- */
-ol.renderer.webgl.Map.prototype.logger_ =
-    goog.log.getLogger('ol.renderer.webgl.Map');
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
@@ -512,7 +502,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
       ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-    frameState.postRenderFunctions.push(this.expireCache_.bind(this));
+    frameState.postRenderFunctions.push(
+      /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
+    );
   }
 
   if (!this.tileTextureQueue_.isEmpty()) {

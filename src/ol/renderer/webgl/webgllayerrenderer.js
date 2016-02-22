@@ -95,7 +95,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebu
       this.framebufferDimension != framebufferDimension) {
 
     frameState.postRenderFunctions.push(
-        goog.partial(
+        /** @type {ol.PostRenderFunction} */ (goog.partial(
             /**
              * @param {WebGLRenderingContext} gl GL.
              * @param {WebGLFramebuffer} framebuffer Framebuffer.
@@ -106,7 +106,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebu
                 gl.deleteFramebuffer(framebuffer);
                 gl.deleteTexture(texture);
               }
-            }, gl, this.framebuffer, this.texture));
+            }, gl, this.framebuffer, this.texture)));
 
     var texture = ol.webgl.Context.createEmptyTexture(
         gl, framebufferDimension, framebufferDimension);

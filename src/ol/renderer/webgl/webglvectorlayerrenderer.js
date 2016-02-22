@@ -117,7 +117,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
         frameState.size, frameState.pixelRatio, layerState.opacity,
         {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {

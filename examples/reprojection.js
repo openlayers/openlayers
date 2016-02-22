@@ -53,7 +53,7 @@ var proj54009 = ol.proj.get('ESRI:54009');
 proj54009.setExtent([-18e6, -9e6, 18e6, 9e6]);
 
 
-var layers = [];
+var layers = {};
 
 layers['bng'] = new ol.layer.Tile({
   source: new ol.source.XYZ({
