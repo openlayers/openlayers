@@ -4,8 +4,6 @@ goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.log');
-goog.require('goog.log.Logger');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
@@ -424,14 +422,6 @@ ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
 ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
   return this.textureCache_.containsKey(tile.getKey());
 };
-
-
-/**
- * @private
- * @type {goog.log.Logger}
- */
-ol.renderer.webgl.Map.prototype.logger_ =
-    goog.log.getLogger('ol.renderer.webgl.Map');
 
 
 /**
