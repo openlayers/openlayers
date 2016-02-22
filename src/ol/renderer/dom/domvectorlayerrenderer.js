@@ -179,11 +179,10 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
-    var layerState = frameState.layerStates[goog.getUid(layer)];
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-        rotation, layerState.managed ? frameState.skippedFeatureUids : {},
+        rotation, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
