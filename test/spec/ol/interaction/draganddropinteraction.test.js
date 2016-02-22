@@ -43,6 +43,22 @@ describe('ol.interaction.DragAndDrop', function() {
       expect(viewport.hasListener(ol.events.EventType.DRAGOVER)).to.be(false);
       expect(viewport.hasListener(ol.events.EventType.DROP)).to.be(false);
     });
+
+    it('registers and unregisters listeners on a custom target', function() {
+      var customTarget = new ol.events.EventTarget();
+      interaction = new ol.interaction.DragAndDrop({
+        formatConstructors: [ol.format.GeoJSON],
+        target: customTarget
+      });
+      interaction.setMap(map);
+      expect(customTarget.hasListener(ol.events.EventType.DRAGENTER)).to.be(true);
+      expect(customTarget.hasListener(ol.events.EventType.DRAGOVER)).to.be(true);
+      expect(customTarget.hasListener(ol.events.EventType.DROP)).to.be(true);
+      interaction.setMap(null);
+      expect(customTarget.hasListener(ol.events.EventType.DRAGENTER)).to.be(false);
+      expect(customTarget.hasListener(ol.events.EventType.DRAGOVER)).to.be(false);
+      expect(customTarget.hasListener(ol.events.EventType.DROP)).to.be(false);
+    });
   });
 
   describe('#handleDrop_', function() {
