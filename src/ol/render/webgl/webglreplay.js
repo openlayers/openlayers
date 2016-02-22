@@ -197,7 +197,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
   /**
    * Start index per feature (the feature).
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<ol.Feature|ol.render.Feature>}
    * @private
    */
   this.startIndicesFeature_ = [];
@@ -494,7 +494,7 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, image
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -729,7 +729,7 @@ ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -756,7 +756,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ = function(gl, con
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -780,7 +780,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ = function(gl, 
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
@@ -1038,7 +1038,7 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -1075,7 +1075,7 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
  * @param {number} opacity Global opacity.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {function(ol.Feature): T|undefined} callback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} callback Feature callback.
  * @return {T|undefined} Callback result.
  * @template T
  */
@@ -1104,7 +1104,7 @@ ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
       coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
       pixelRatio, opacity, skippedFeaturesHash,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
        */
       function(feature) {
@@ -1145,7 +1145,7 @@ ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
       coordinate, resolution, rotation, ol.render.webgl.HIT_DETECTION_SIZE_,
       pixelRatio, opacity, skippedFeaturesHash,
       /**
-       * @param {ol.Feature} feature Feature.
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {boolean} Is there a feature?
        */
       function(feature) {
