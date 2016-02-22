@@ -23,13 +23,8 @@
     ],
     "jscomp_off": [
       "useOfGoogBase",
-      "lintChecks"
-    ],
-    "hide_warnings_for": [
-      "node_modules/closure-util"
-    ],
-    "jscomp_warning": [
-      "unnecessaryCasts"
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"

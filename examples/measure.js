@@ -243,10 +243,10 @@ function addInteraction() {
           var geom = evt.target;
           var output;
           if (geom instanceof ol.geom.Polygon) {
-            output = formatArea(/** @type {ol.geom.Polygon} */ (geom));
+            output = formatArea(geom);
             tooltipCoord = geom.getInteriorPoint().getCoordinates();
           } else if (geom instanceof ol.geom.LineString) {
-            output = formatLength(/** @type {ol.geom.LineString} */ (geom));
+            output = formatLength(geom);
             tooltipCoord = geom.getLastCoordinate();
           }
           measureTooltipElement.innerHTML = output;

@@ -15,13 +15,3 @@
  * @see http://www.w3.org/TR/pointerevents/#the-touch-action-css-property
  */
 CSSProperties.prototype.touchAction;
-
-/**
- * @type {number}
- */
-WheelEvent.DOM_DELTA_LINE;
-
-/**
- * @type {number}
- */
-WheelEvent.DOM_DELTA_PIXEL;
