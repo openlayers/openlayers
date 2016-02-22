@@ -5,12 +5,13 @@ describe('ol.rendering.reproj.Tile', function() {
   function testSingleTile(source, targetProjection, targetTileGrid, z, x, y,
                           pixelRatio, expectedUrl, expectedRequests, done) {
     var sourceProjection = source.getProjection();
+    var sourceGutter = source.getGutter(sourceProjection);
 
     var tilesRequested = 0;
 
     var tile = new ol.reproj.Tile(sourceProjection, source.getTileGrid(),
         ol.proj.get(targetProjection), targetTileGrid,
-        [z, x, y], null, pixelRatio,
+        [z, x, y], null, pixelRatio, sourceGutter,
         function(z, x, y, pixelRatio) {
           tilesRequested++;
           return source.getTile(z, x, y, pixelRatio, sourceProjection);

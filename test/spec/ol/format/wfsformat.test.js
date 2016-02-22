@@ -328,6 +328,33 @@ describe('ol.format.WFS', function() {
     });
   });
 
+  describe('when writing out a Transaction request', function() {
+
+    it('does not create an update if no fid', function() {
+      var format = new ol.format.WFS();
+      var updateFeature = new ol.Feature();
+      updateFeature.setGeometryName('the_geom');
+      updateFeature.setGeometry(new ol.geom.MultiLineString([[
+        [-12279454, 6741885],
+        [-12064207, 6732101],
+        [-11941908, 6595126],
+        [-12240318, 6507071],
+        [-12416429, 6604910]
+      ]]));
+      var error = false;
+      try {
+        format.writeTransaction(null, [updateFeature], null, {
+          featureNS: 'http://foo',
+          featureType: 'FAULTS',
+          featurePrefix: 'foo',
+          gmlOptions: {srsName: 'EPSG:900913'}
+        });
+      } catch (e) {
+        error = true;
+      }
+      expect(error).to.be(true);
+    });
+  });
 
   describe('when writing out a Transaction request', function() {
     var text, filename = 'spec/ol/format/wfs/TransactionUpdateMultiGeoms.xml';

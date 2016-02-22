@@ -344,39 +344,20 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
  */
 ol.source.Raster.getImageData_ = function(renderer, frameState, layerState) {
   renderer.prepareFrame(frameState, layerState);
-  // We should be able to call renderer.composeFrame(), but this is inefficient
-  // for tiled sources (we've already rendered to an intermediate canvas in the
-  // prepareFrame call and we don't need to render again to the output canvas).
-  // TODO: make all canvas renderers render to a single canvas
-  var image = renderer.getImage();
-  if (!image) {
-    return null;
-  }
-  var imageTransform = renderer.getImageTransform();
-  var dx = Math.round(goog.vec.Mat4.getElement(imageTransform, 0, 3));
-  var dy = Math.round(goog.vec.Mat4.getElement(imageTransform, 1, 3));
   var width = frameState.size[0];
   var height = frameState.size[1];
-  if (image instanceof Image) {
-    if (!ol.source.Raster.context_) {
+  if (!ol.source.Raster.context_) {
+    ol.source.Raster.context_ = ol.dom.createCanvasContext2D(width, height);
+  } else {
+    var canvas = ol.source.Raster.context_.canvas;
+    if (canvas.width !== width || canvas.height !== height) {
       ol.source.Raster.context_ = ol.dom.createCanvasContext2D(width, height);
     } else {
-      var canvas = ol.source.Raster.context_.canvas;
-      if (canvas.width !== width || canvas.height !== height) {
-        ol.source.Raster.context_ = ol.dom.createCanvasContext2D(width, height);
-      } else {
-        ol.source.Raster.context_.clearRect(0, 0, width, height);
-      }
+      ol.source.Raster.context_.clearRect(0, 0, width, height);
     }
-    var dw = Math.round(
-        image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0));
-    var dh = Math.round(
-        image.height * goog.vec.Mat4.getElement(imageTransform, 1, 1));
-    ol.source.Raster.context_.drawImage(image, dx, dy, dw, dh);
-    return ol.source.Raster.context_.getImageData(0, 0, width, height);
-  } else {
-    return image.getContext('2d').getImageData(-dx, -dy, width, height);
   }
+  renderer.composeFrame(frameState, layerState, ol.source.Raster.context_);
+  return ol.source.Raster.context_.getImageData(0, 0, width, height);
 };
 
 

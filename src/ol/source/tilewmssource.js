@@ -177,7 +177,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
 /**
  * @inheritDoc
  */
-ol.source.TileWMS.prototype.getGutter = function() {
+ol.source.TileWMS.prototype.getGutterInternal = function() {
   return this.gutter_;
 };
 
