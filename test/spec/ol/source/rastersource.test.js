@@ -103,7 +103,7 @@ try {
 
           var log = [];
 
-          raster = new ol.source.Raster({
+          var source = new ol.source.Raster({
             threads: 0,
             sources: [redSource, greenSource, blueSource],
             operation: function(inputs) {
@@ -112,7 +112,7 @@ try {
             }
           });
 
-          raster.on('afteroperations', function() {
+          source.on('afteroperations', function() {
             expect(log.length).to.equal(4);
             var inputs = log[0];
             var pixel = inputs[0];
@@ -120,41 +120,39 @@ try {
             done();
           });
 
-          map.getLayers().item(0).setSource(raster);
+          map.getLayers().item(0).setSource(source);
           var view = map.getView();
           view.setCenter([0, 0]);
           view.setZoom(0);
 
         });
 
-        itNoPhantom('allows operation type to be set to "image"',
-            function(done) {
+        itNoPhantom('allows operation type to be set to "image"', function(done) {
+          var log = [];
 
-              var log = [];
+          var source = new ol.source.Raster({
+            operationType: ol.raster.OperationType.IMAGE,
+            threads: 0,
+            sources: [redSource, greenSource, blueSource],
+            operation: function(inputs) {
+              log.push(inputs);
+              return inputs[0];
+            }
+          });
 
-              raster = new ol.source.Raster({
-                operationType: ol.raster.OperationType.IMAGE,
-                threads: 0,
-                sources: [redSource, greenSource, blueSource],
-                operation: function(inputs) {
-                  log.push(inputs);
-                  return inputs[0];
-                }
-              });
+          source.on('afteroperations', function() {
+            expect(log.length).to.equal(1);
+            var inputs = log[0];
+            expect(inputs[0]).to.be.an(ImageData);
+            done();
+          });
 
-              raster.on('afteroperations', function() {
-                expect(log.length).to.equal(1);
-                var inputs = log[0];
-                expect(inputs[0]).to.be.an(ImageData);
-                done();
-              });
+          map.getLayers().item(0).setSource(source);
+          var view = map.getView();
+          view.setCenter([0, 0]);
+          view.setZoom(0);
 
-              map.getLayers().item(0).setSource(raster);
-              var view = map.getView();
-              view.setCenter([0, 0]);
-              view.setZoom(0);
-
-            });
+        });
 
       });
 
