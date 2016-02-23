@@ -2,6 +2,10 @@
 
 ### v3.14.0
 
+#### Internet Explorer 9 support
+
+As of this release, OpenLayers requires a `requestAnimationFrame`/`cancelAnimationFrame` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features/#requestAnimationFrame.
+
 #### Layer pre-/postcompose event changes
 
 It is the responsibility of the application to undo any canvas transform changes at the end of a layer 'precompose' or 'postcompose' handler. Previously, it was ok to set a null transform. The API now guarantees a device pixel coordinate system on the canvas with its origin in the top left corner of the map. However, applications should not rely on the underlying canvas being the same size as the visible viewport.
