@@ -9,13 +9,7 @@ var green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
 var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
     'ABAAEAAAICRAEAOw==';
 
-function itNoPhantom() {
-  if (window.checkForMocha) {
-    return xit.apply(this, arguments);
-  } else {
-    return it.apply(this, arguments);
-  }
-}
+var itNoPhantom = window.checkForMocha ? xit : it;
 
 var hasImageDataConstructor = true;
 try {
