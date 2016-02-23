@@ -1034,7 +1034,7 @@ describe('ol.format.GML3', function() {
 
     it('writes back features as GML', function() {
       var serialized = gmlFormat.writeFeaturesNode(features);
-      expect(serialized).to.xmleql(ol.xml.parse(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text), {ignoreElementOrder: true});
     });
 
   });
