@@ -140,7 +140,7 @@ maybeDescribe('ol.source.Raster', function() {
         }
       });
 
-      source.on('afteroperations', function() {
+      source.once('afteroperations', function() {
         expect(log.length).to.equal(1);
         var inputs = log[0];
         expect(inputs[0]).to.be.an(ImageData);
@@ -176,7 +176,7 @@ maybeDescribe('ol.source.Raster', function() {
       view.setCenter([0, 0]);
       view.setZoom(0);
 
-      raster.on('afteroperations', function(event) {
+      raster.once('afteroperations', function(event) {
         expect(count).to.equal(4);
         done();
       });
@@ -215,7 +215,7 @@ maybeDescribe('ol.source.Raster', function() {
         return inputs[0];
       });
 
-      raster.on('beforeoperations', function(event) {
+      raster.once('beforeoperations', function(event) {
         expect(count).to.equal(0);
         expect(!!event).to.be(true);
         expect(event.extent).to.be.an('array');
@@ -242,7 +242,7 @@ maybeDescribe('ol.source.Raster', function() {
         event.data.count = 0;
       });
 
-      raster.on('afteroperations', function(event) {
+      raster.once('afteroperations', function(event) {
         expect(event.data.count).to.equal(4);
         done();
       });
@@ -265,7 +265,7 @@ maybeDescribe('ol.source.Raster', function() {
         return inputs[0];
       });
 
-      raster.on('afteroperations', function(event) {
+      raster.once('afteroperations', function(event) {
         expect(count).to.equal(4);
         expect(!!event).to.be(true);
         expect(event.extent).to.be.an('array');
@@ -287,7 +287,7 @@ maybeDescribe('ol.source.Raster', function() {
         return inputs[0];
       });
 
-      raster.on('afteroperations', function(event) {
+      raster.once('afteroperations', function(event) {
         expect(event.data.message).to.equal('hello world');
         done();
       });
