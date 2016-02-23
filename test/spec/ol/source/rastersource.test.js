@@ -17,7 +17,14 @@ function itNoPhantom() {
   }
 }
 
-(typeof ImageData == 'function' ? describe : xdescribe)('ol.source.Raster',
+var hasImageDataConstructor = true;
+try {
+  new ImageData(1, 1);
+} catch (e) {
+  hasImageDataConstructor = false;
+}
+
+(hasImageDataConstructor ? describe : xdescribe)('ol.source.Raster',
     function() {
 
       var target, map, redSource, greenSource, blueSource, raster;
