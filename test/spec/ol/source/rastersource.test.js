@@ -85,7 +85,12 @@ maybeDescribe('ol.source.Raster', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.setTarget(null);
+    map.dispose();
+    raster.dispose();
+    greenSource.dispose();
+    redSource.dispose();
+    blueSource.dispose();
     document.body.removeChild(target);
   });
 
