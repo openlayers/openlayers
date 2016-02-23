@@ -280,8 +280,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
-      goog.dom.insertChildAt(/** @type {!Element} */ (
-          container), this.element_, 0);
+      goog.dom.insertChildAt(container, this.element_, 0);
     } else {
       container.appendChild(this.element_);
     }

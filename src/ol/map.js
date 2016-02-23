@@ -272,7 +272,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {!Element}
    */
   this.overlayContainer_ = document.createElement('DIV');
   this.overlayContainer_.className = 'ol-overlaycontainer';
@@ -280,7 +280,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {!Element}
    */
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
@@ -904,7 +904,7 @@ ol.Map.prototype.getViewport = function() {
  * this container will let mousedown and touchstart events through to the map,
  * so clicks and gestures on an overlay will trigger {@link ol.MapBrowserEvent}
  * events.
- * @return {Element} The map's overlay container.
+ * @return {!Element} The map's overlay container.
  */
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
@@ -916,7 +916,7 @@ ol.Map.prototype.getOverlayContainer = function() {
  * event propagation. Elements added to this container won't let mousedown and
  * touchstart events through to the map, so clicks and gestures on an overlay
  * don't trigger any {@link ol.MapBrowserEvent}.
- * @return {Element} The map's overlay container that stops events.
+ * @return {!Element} The map's overlay container that stops events.
  */
 ol.Map.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
