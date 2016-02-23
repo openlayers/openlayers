@@ -112,7 +112,7 @@ maybeDescribe('ol.source.Raster', function() {
         }
       });
 
-      source.on('afteroperations', function() {
+      source.once('afteroperations', function() {
         expect(log.length).to.equal(4);
         var inputs = log[0];
         var pixel = inputs[0];
