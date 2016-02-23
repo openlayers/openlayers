@@ -343,7 +343,9 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
  * @private
  */
 ol.source.Raster.getImageData_ = function(renderer, frameState, layerState) {
-  renderer.prepareFrame(frameState, layerState);
+  if (!renderer.prepareFrame(frameState, layerState)) {
+    return null;
+  }
   var width = frameState.size[0];
   var height = frameState.size[1];
   if (!ol.source.Raster.context_) {
