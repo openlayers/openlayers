@@ -388,7 +388,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
         }
 
         if (drawName) {
-          name = /** @type {string} */ (this.getProperties()['name']);
+          name = /** @type {string} */ (this.get('name'));
           drawName = drawName && name;
         }
 
