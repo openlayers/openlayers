@@ -2,7 +2,6 @@ goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
 goog.require('goog.functions');
-goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.ViewHint');
@@ -104,11 +103,10 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   // rotate anchor point.
   // FIXME: should be the intersection point between the lines:
   //     touch0,touch1 and previousTouch0,previousTouch1
-  var viewportPosition = goog.style.getClientPosition(map.getViewport());
-  var centroid =
-      ol.interaction.Pointer.centroid(this.targetPointers);
-  centroid[0] -= viewportPosition.x;
-  centroid[1] -= viewportPosition.y;
+  var viewportPosition = map.getViewport().getBoundingClientRect();
+  var centroid = ol.interaction.Pointer.centroid(this.targetPointers);
+  centroid[0] -= viewportPosition.left;
+  centroid[1] -= viewportPosition.top;
   this.anchor_ = map.getCoordinateFromPixel(centroid);
 
   // rotate
