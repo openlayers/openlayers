@@ -636,6 +636,6 @@ ol.format.GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @inheritDoc
  */
 ol.format.GMLBase.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get(this.srsName_ ? this.srsName_ :
+  return ol.proj.get(this.srsName ? this.srsName :
       node.firstElementChild.getAttribute('srsName'));
 };
