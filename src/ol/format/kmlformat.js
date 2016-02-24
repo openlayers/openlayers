@@ -1,6 +1,5 @@
 // FIXME http://earth.google.com/kml/1.0 namespace?
 // FIXME why does node.getAttribute return an unknown type?
-// FIXME text
 // FIXME serialize arbitrary feature properties
 // FIXME don't parse style if extractStyles is false
 
@@ -318,7 +317,6 @@ ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
  * @private
  */
 ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
-  /** @type {?ol.style.Text} */
   var textStyle = null;
   var textOffset = [0, 0];
   var textAlign = 'start';
@@ -378,7 +376,6 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
         var drawName = showPointNames;
         /** @type {ol.style.Style|undefined} */
         var nameStyle;
-        /** @type {string} */
         var name = '';
         if (drawName) {
           if (this.getGeometry()) {
@@ -388,7 +385,7 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
         }
 
         if (drawName) {
-          name = /** @type {string} */ (this.getProperties()['name']);
+          name = /** @type {string} */ (this.get('name'));
           drawName = drawName && name;
         }
 
@@ -1002,9 +999,7 @@ ol.format.KML.readMultiGeometry_ = function(node, objectStack) {
     }
   }
   if (homogeneous) {
-    /** @type {ol.geom.GeometryLayout} */
     var layout;
-    /** @type {Array.<number>} */
     var flatCoordinates;
     if (type == ol.geom.GeometryType.POINT) {
       var point = geometries[0];
