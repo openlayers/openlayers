@@ -55,25 +55,31 @@ ol.control.ZoomSlider = function(opt_options) {
 
   /**
    * @type {boolean}
+   * @private
    */
   this.dragging_;
+
   /**
    * @type {Array.<ol.events.Key>}
+   * @private
    */
   this.dragListenerKeys_;
 
   /**
    * @type {goog.math.Rect}
+   * @private
    */
   this.limits_;
 
   /**
    * @type {number|undefined}
+   * @private
    */
   this.previousX_;
 
   /**
    * @type {number|undefined}
+   * @private
    */
   this.previousY_;
 
@@ -93,8 +99,8 @@ ol.control.ZoomSlider = function(opt_options) {
   this.sliderInitialized_ = false;
 
   /**
-   * @private
    * @type {number}
+   * @private
    */
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
