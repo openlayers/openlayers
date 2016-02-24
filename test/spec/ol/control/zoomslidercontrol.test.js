@@ -52,7 +52,8 @@ describe('ol.control.ZoomSlider', function() {
   describe('#initSlider_', function() {
     it('sets limits', function() {
       zoomslider.initSlider_();
-      expect(zoomslider.limits_ instanceof goog.math.Rect).to.be(true);
+      expect(zoomslider.widthLimit_).not.to.be(0);
+      expect(zoomslider.heightLimit_).to.be(0);
     });
   });
 
@@ -115,19 +116,19 @@ describe('ol.control.ZoomSlider', function() {
       var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
         target: control.element.firstElementChild
       });
-      event.clientX = control.limits_.width;
+      event.clientX = control.widthLimit_;
       event.clientY = 0;
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(16);
       expect(control.dragging_).to.be(true);
       expect(control.dragListenerKeys_).to.be.ok();
       event.type = ol.pointer.EventType.POINTERMOVE;
-      event.clientX = 6 * control.limits_.width / 8;
+      event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(4);
       event.type = ol.pointer.EventType.POINTERMOVE;
-      event.clientX = 4 * control.limits_.width / 8;
+      event.clientX = 4 * control.widthLimit_ / 8;
       event.clientY = 0;
       dragger.dispatchEvent(event);
       event.type = ol.pointer.EventType.POINTERUP;
@@ -159,12 +160,12 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.dragListenerKeys_).to.be.ok();
       event.type = ol.pointer.EventType.POINTERMOVE;
       event.clientX = 0;
-      event.clientY = 2 * control.limits_.height / 8;
+      event.clientY = 2 * control.heightLimit_ / 8;
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.25);
       event.type = ol.pointer.EventType.POINTERMOVE;
       event.clientX = 0;
-      event.clientY = 4 * control.limits_.height / 8;
+      event.clientY = 4 * control.heightLimit_ / 8;
       dragger.dispatchEvent(event);
       event.type = ol.pointer.EventType.POINTERUP;
       dragger.dispatchEvent(event);
@@ -179,7 +180,6 @@ describe('ol.control.ZoomSlider', function() {
 goog.require('goog.Disposable');
 goog.require('goog.dispose');
 goog.require('goog.dom.classlist');
-goog.require('goog.math.Rect');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.ZoomSlider');
