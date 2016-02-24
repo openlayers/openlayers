@@ -125,6 +125,11 @@
           }
         }
       }
+      if (options && options.ignoreElementOrder) {
+        nodes.sort(function(a, b) {
+          return a.nodeName > b.nodeName ? 1 : a.nodeName < b.nodeName ? -1 : 0;
+        });
+      }
       return nodes;
     }
   }
@@ -275,7 +280,8 @@
   /**
    * Checks if the XML document sort of equals another XML document.
    * @param {Object} obj The other object.
-   * @param {Object} options The options.
+   * @param {{includeWhiteSpace: (boolean|undefined),
+   *     ignoreElementOrder: (boolean|undefined)}=} options The options.
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.xmleql = function(obj, options) {
