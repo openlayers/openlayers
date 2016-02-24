@@ -34,8 +34,8 @@
     ],
     "jscomp_off": [
       "useOfGoogBase",
-      "unnecessaryCasts",
-      "lintChecks"
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"
