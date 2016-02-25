@@ -717,8 +717,12 @@ ol.Map.prototype.getEventCoordinate = function(event) {
  * @api stable
  */
 ol.Map.prototype.getEventPixel = function(event) {
-  var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
-  return [eventPosition.x, eventPosition.y];
+  var viewportPosition = this.viewport_.getBoundingClientRect();
+  var eventPosition = event.changedTouches ? event.changedTouches[0] : event;
+  return [
+    eventPosition.clientX - viewportPosition.left,
+    eventPosition.clientY - viewportPosition.top
+  ];
 };
 
 
