@@ -291,6 +291,15 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, op
 
 
 /**
+ * @inheritDoc
+ */
+ol.source.Tile.prototype.refresh = function() {
+  this.tileCache.clear();
+  this.changed();
+};
+
+
+/**
  * Marks a tile coord as being used, without triggering a load.
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
