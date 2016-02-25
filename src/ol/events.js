@@ -107,11 +107,12 @@ ol.events.ListenerObjType;
  */
 ol.events.bindListener_ = function(listenerObj) {
   var boundListener = function(evt) {
-    var rv = listenerObj.listener.call(listenerObj.bindTo, evt);
+    var listener = listenerObj.listener;
+    var bindTo = listenerObj.bindTo || listenerObj.target;
     if (listenerObj.callOnce) {
       ol.events.unlistenByKey(listenerObj);
     }
-    return rv;
+    return listener.call(bindTo, evt);
   }
   listenerObj.boundListener = boundListener;
   return boundListener;
