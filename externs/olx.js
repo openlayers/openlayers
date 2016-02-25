@@ -3984,6 +3984,7 @@ olx.source.BingMapsOptions.prototype.wrapX;
  *     distance: (number|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),
+ *     geometryFunction: (undefined|function(ol.Feature):ol.geom.Point),
  *     logo: (string|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     source: ol.source.Vector,
@@ -4015,6 +4016,25 @@ olx.source.ClusterOptions.prototype.distance;
  * @api
  */
 olx.source.ClusterOptions.prototype.extent;
+
+
+/**
+ * Function that takes an {@link ol.Feature} as argument and returns an
+ * {@link ol.geom.Point} as cluster calculation point for the feature. When a
+ * feature should not be considered for clustering, the function should return
+ * `null`. The default, which works when the underyling source contains point
+ * features only, is
+ * ```js
+ * function(feature) {
+ *   return feature.getGeometry();
+ * }
+ * ```
+ * See {@link ol.geom.Polygon#getInteriorPoint} for a way to get a cluster
+ * calculation point for polygons.
+ * @type {undefined|function(ol.Feature):ol.geom.Point}
+ * @api
+ */
+olx.source.ClusterOptions.prototype.geometryFunction;
 
 
 /**
@@ -6174,8 +6194,8 @@ olx.style.FillOptions;
 
 
 /**
- * A color, gradient or pattern. See {@link ol.color} 
- * and {@link ol.colorlike} for possible formats. Default null; 
+ * A color, gradient or pattern. See {@link ol.color}
+ * and {@link ol.colorlike} for possible formats. Default null;
  * if null, the Canvas/renderer default black will be used.
  * @type {ol.Color|ol.ColorLike|undefined}
  * @api
