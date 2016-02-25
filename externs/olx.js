@@ -9,8 +9,7 @@ var olx;
 
 
 /**
- * @typedef {{html: string,
- *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
+ * @record
  * @api
  */
 olx.AttributionOptions;
@@ -25,7 +24,7 @@ olx.AttributionOptions.prototype.html;
 
 
 /**
- * @typedef {{tracking: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.DeviceOrientationOptions;
@@ -40,9 +39,7 @@ olx.DeviceOrientationOptions.prototype.tracking;
 
 
 /**
- * @typedef {{tracking: (boolean|undefined),
- *     trackingOptions: (GeolocationPositionOptions|undefined),
- *     projection: ol.proj.ProjectionLike}}
+ * @record
  * @api
  */
 olx.GeolocationOptions;
@@ -75,7 +72,7 @@ olx.GeolocationOptions.prototype.projection;
 
 /**
  * Object literal with config options for the map logo.
- * @typedef {{href: (string), src: (string)}}
+ * @record
  * @api
  */
 olx.LogoOptions;
@@ -98,10 +95,7 @@ olx.LogoOptions.prototype.src;
 
 
 /**
- * @typedef {{map: (ol.Map|undefined),
- *     maxLines: (number|undefined),
- *     strokeStyle: (ol.style.Stroke|undefined),
- *     targetSize: (number|undefined)}}
+ * @record
  * @api
  */
 olx.GraticuleOptions;
@@ -149,7 +143,7 @@ olx.GraticuleOptions.prototype.targetSize;
 
 /**
  * Object literal with config options for interactions.
- * @typedef {{handleEvent: function(ol.MapBrowserEvent):boolean}}
+ * @record
  * @api
  */
 olx.interaction.InteractionOptions;
@@ -168,18 +162,7 @@ olx.interaction.InteractionOptions.prototype.handleEvent;
 
 /**
  * Object literal with config options for the map.
- * @typedef {{controls: (ol.Collection.<ol.control.Control>|Array.<ol.control.Control>|undefined),
- *     pixelRatio: (number|undefined),
- *     interactions: (ol.Collection.<ol.interaction.Interaction>|Array.<ol.interaction.Interaction>|undefined),
- *     keyboardEventTarget: (Element|Document|string|undefined),
- *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
- *     loadTilesWhileAnimating: (boolean|undefined),
- *     loadTilesWhileInteracting: (boolean|undefined),
- *     logo: (boolean|string|olx.LogoOptions|undefined),
- *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
- *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
- *     target: (Element|string|undefined),
- *     view: (ol.View|undefined)}}
+ * @record
  * @api
  */
 olx.MapOptions;
@@ -309,16 +292,7 @@ olx.MapOptions.prototype.view;
 
 /**
  * Object literal with config options for the overlay.
- * @typedef {{id: (number|string|undefined),
- *     element: (Element|undefined),
- *     offset: (Array.<number>|undefined),
- *     position: (ol.Coordinate|undefined),
- *     positioning: (ol.OverlayPositioning|string|undefined),
- *     stopEvent: (boolean|undefined),
- *     insertFirst: (boolean|undefined),
- *     autoPan: (boolean|undefined),
- *     autoPanAnimation: (olx.animation.PanOptions|undefined),
- *     autoPanMargin: (number|undefined)}}
+ * @record
  * @api stable
  */
 olx.OverlayOptions;
@@ -424,14 +398,7 @@ olx.OverlayOptions.prototype.autoPanMargin;
 
 /**
  * Object literal with config options for the projection.
- * @typedef {{code: string,
- *     units: (ol.proj.Units|string|undefined),
- *     extent: (ol.Extent|undefined),
- *     axisOrientation: (string|undefined),
- *     global: (boolean|undefined),
- *     metersPerUnit: (number|undefined),
- *     worldExtent: (ol.Extent|undefined),
- *     getPointResolution: (function(number, ol.Coordinate):number|undefined) }}
+ * @record
  * @api
  */
 olx.ProjectionOptions;
@@ -506,20 +473,7 @@ olx.ProjectionOptions.prototype.getPointResolution;
 
 /**
  * Object literal with config options for the view.
- * @typedef {{center: (ol.Coordinate|undefined),
- *     constrainRotation: (boolean|number|undefined),
- *     enableRotation: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined),
- *     minZoom: (number|undefined),
- *     maxZoom: (number|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     resolution: (number|undefined),
- *     resolutions: (Array.<number>|undefined),
- *     rotation: (number|undefined),
- *     zoom: (number|undefined),
- *     zoomFactor: (number|undefined)}}
+ * @record
  * @api
  */
 olx.ViewOptions;
@@ -677,10 +631,7 @@ olx.animation;
 
 
 /**
- * @typedef {{resolution: number,
- *     start: (number|undefined),
- *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ * @record
  * @api
  */
 olx.animation.BounceOptions;
@@ -721,10 +672,7 @@ olx.animation.BounceOptions.prototype.easing;
 
 
 /**
- * @typedef {{source: ol.Coordinate,
- *     start: (number|undefined),
- *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ * @record
  * @api
  */
 olx.animation.PanOptions;
@@ -764,11 +712,7 @@ olx.animation.PanOptions.prototype.easing;
 
 
 /**
- * @typedef {{rotation: (number|undefined),
- *     anchor: (ol.Coordinate|undefined),
- *     start: (number|undefined),
- *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ * @record
  * @api
  */
 olx.animation.RotateOptions;
@@ -818,10 +762,7 @@ olx.animation.RotateOptions.prototype.easing;
 
 
 /**
- * @typedef {{resolution: number,
- *     start: (number|undefined),
- *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ * @record
  * @api
  */
 olx.animation.ZoomOptions;
@@ -869,14 +810,7 @@ olx.control;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     collapsible: (boolean|undefined),
- *     collapsed: (boolean|undefined),
- *     tipLabel: (string|undefined),
- *     label: (string|Node|undefined),
- *     collapseLabel: (string|Node|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined)}}
+ * @record
  * @api
  */
 olx.control.AttributionOptions;
@@ -953,9 +887,7 @@ olx.control.AttributionOptions.prototype.render;
 
 
 /**
- * @typedef {{element: (Element|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|string|undefined)}}
+ * @record
  * @api stable
  */
 olx.control.ControlOptions;
@@ -989,12 +921,7 @@ olx.control.ControlOptions.prototype.target;
 
 
 /**
- * @typedef {{attribution: (boolean|undefined),
- *     attributionOptions: (olx.control.AttributionOptions|undefined),
- *     rotate: (boolean|undefined),
- *     rotateOptions: (olx.control.RotateOptions|undefined),
- *     zoom: (boolean|undefined),
- *     zoomOptions: (olx.control.ZoomOptions|undefined)}}
+ * @record
  * @api
  */
 olx.control.DefaultsOptions;
@@ -1049,13 +976,7 @@ olx.control.DefaultsOptions.prototype.zoomOptions;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     label: (string|Node|undefined),
- *     labelActive: (string|Node|undefined),
- *     tipLabel: (string|undefined),
- *     keys: (boolean|undefined),
- *     target: (Element|undefined),
- *     source: (Element|string|undefined)}}
+ * @record
  * @api
  */
 olx.control.FullScreenOptions;
@@ -1119,12 +1040,7 @@ olx.control.FullScreenOptions.prototype.target;
 olx.control.FullScreenOptions.prototype.source;
 
 /**
- * @typedef {{className: (string|undefined),
- *     coordinateFormat: (ol.CoordinateFormatType|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined),
- *     undefinedHTML: (string|undefined)}}
+ * @record
  * @api stable
  */
 olx.control.MousePositionOptions;
@@ -1180,15 +1096,7 @@ olx.control.MousePositionOptions.prototype.undefinedHTML;
 
 
 /**
- * @typedef {{collapsed: (boolean|undefined),
- *     collapseLabel: (string|Node|undefined),
- *     collapsible: (boolean|undefined),
- *     label: (string|Node|undefined),
- *     layers: (Array.<ol.layer.Layer>|ol.Collection.<ol.layer.Layer>|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined),
- *     tipLabel: (string|undefined),
- *     view: (ol.View|undefined)}}
+ * @record
  * @api
  */
 olx.control.OverviewMapOptions;
@@ -1274,11 +1182,7 @@ olx.control.OverviewMapOptions.prototype.view;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     minWidth: (number|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     target: (Element|undefined),
- *     units: (ol.control.ScaleLineUnits|string|undefined)}}
+ * @record
  * @api stable
  */
 olx.control.ScaleLineOptions;
@@ -1326,14 +1230,7 @@ olx.control.ScaleLineOptions.prototype.units;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     className: (string|undefined),
- *     label: (string|Element|undefined),
- *     tipLabel: (string|undefined),
- *     target: (Element|undefined),
- *     render: (function(ol.MapEvent)|undefined),
- *     resetNorth: (function()|undefined),
- *     autoHide: (boolean|undefined)}}
+ * @record
  * @api stable
  */
 olx.control.RotateOptions;
@@ -1407,14 +1304,7 @@ olx.control.RotateOptions.prototype.target;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     className: (string|undefined),
- *     zoomInLabel: (string|Node|undefined),
- *     zoomOutLabel: (string|Node|undefined),
- *     zoomInTipLabel: (string|undefined),
- *     zoomOutTipLabel: (string|undefined),
- *     delta: (number|undefined),
- *     target: (Element|undefined)}}
+ * @record
  * @api stable
  */
 olx.control.ZoomOptions;
@@ -1487,11 +1377,7 @@ olx.control.ZoomOptions.prototype.target;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     duration: (number|undefined),
- *     maxResolution: (number|undefined),
- *     minResolution: (number|undefined),
- *     render: (function(ol.MapEvent)|undefined)}}
+ * @record
  * @api
  */
 olx.control.ZoomSliderOptions;
@@ -1539,11 +1425,7 @@ olx.control.ZoomSliderOptions.prototype.render;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     target: (Element|undefined),
- *     label: (string|Node|undefined),
- *     tipLabel: (string|undefined),
- *     extent: (ol.Extent|undefined)}}
+ * @record
  * @api stable
  */
 olx.control.ZoomToExtentOptions;
@@ -1599,9 +1481,7 @@ olx.format;
 
 
 /**
- * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike,
- *     rightHanded: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.format.ReadOptions;
@@ -1629,9 +1509,7 @@ olx.format.ReadOptions.prototype.featureProjection;
 
 
 /**
- * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike,
- *     rightHanded: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.format.WriteOptions;
@@ -1674,8 +1552,7 @@ olx.format.WriteOptions.prototype.rightHanded;
 
 
 /**
- * @typedef {{defaultDataProjection: ol.proj.ProjectionLike,
- *     geometryName: (string|undefined)}}
+ * @record
  * @api
  */
 olx.format.GeoJSONOptions;
@@ -1698,7 +1575,7 @@ olx.format.GeoJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{geometryName: (string|undefined)}}
+ * @record
  * @api
  */
 olx.format.EsriJSONOptions;
@@ -1713,13 +1590,7 @@ olx.format.EsriJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{featureClass: (function((ol.geom.Geometry|Object.<string, *>)=)|
- *         function(ol.geom.GeometryType,Array.<number>,
- *             (Array.<number>|Array.<Array.<number>>),Object.<string, *>)|
- *         undefined),
- *     geometryName: (string|undefined),
- *     layers: (Array.<string>|undefined),
- *     layerName: (string|undefined)}}
+ * @record
  * @api
  */
 olx.format.MVTOptions;
@@ -1764,8 +1635,7 @@ olx.format.MVTOptions.prototype.layers;
 
 
 /**
- * @typedef {{factor: (number|undefined),
- *     geometryLayout: (ol.geom.GeometryLayout|undefined)}}
+ * @record
  * @api
  */
 olx.format.PolylineOptions;
@@ -1790,7 +1660,7 @@ olx.format.PolylineOptions.prototype.geometryLayout;
 
 
 /**
- * @typedef {{defaultDataProjection: ol.proj.ProjectionLike}}
+ * @record
  * @api
  */
 olx.format.TopoJSONOptions;
@@ -1805,7 +1675,7 @@ olx.format.TopoJSONOptions.prototype.defaultDataProjection;
 
 
 /**
- * @typedef {{altitudeMode: (ol.format.IGCZ|undefined)}}
+ * @record
  * @api
  */
 olx.format.IGCOptions;
@@ -1821,10 +1691,7 @@ olx.format.IGCOptions.prototype.altitudeMode;
 
 
 /**
- * @typedef {{extractStyles: (boolean|undefined),
- *     defaultStyle: (Array.<ol.style.Style>|undefined),
- *     showPointNames: (boolean|undefined),
- *     writeStyles: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.format.KMLOptions;
@@ -1863,14 +1730,7 @@ olx.format.KMLOptions.prototype.writeStyles;
 
 
 /**
- * @typedef {{featureNS: (Object.<string, string>|string|undefined),
- *     featureType: (Array.<string>|string|undefined),
- *     srsName: string,
- *     surface: (boolean|undefined),
- *     curve: (boolean|undefined),
- *     multiCurve: (boolean|undefined),
- *     multiSurface: (boolean|undefined),
- *     schemaLocation: (string|undefined)}}
+ * @record
  * @api
  */
 olx.format.GMLOptions;
@@ -1958,7 +1818,7 @@ olx.format.GMLOptions.prototype.schemaLocation;
 
 
 /**
- * @typedef {{readExtensions: (function(ol.Feature, Node)|undefined)}}
+ * @record
  * @api
  */
 olx.format.GPXOptions;
@@ -1978,10 +1838,7 @@ olx.format.GPXOptions.prototype.readExtensions;
 
 
 /**
- * @typedef {{featureNS: (Object.<string, string>|string|undefined),
- *     featureType: (Array.<string>|string|undefined),
- *     gmlFormat: (ol.format.GMLBase|undefined),
- *     schemaLocation: (string|undefined)}}
+ * @record
  * @api
  */
 olx.format.WFSOptions;
@@ -2021,18 +1878,7 @@ olx.format.WFSOptions.prototype.schemaLocation;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featurePrefix: string,
- *     featureTypes: Array.<string>,
- *     srsName: (string|undefined),
- *     handle: (string|undefined),
- *     outputFormat: (string|undefined),
- *     maxFeatures: (number|undefined),
- *     geometryName: (string|undefined),
- *     propertyNames: (Array.<string>|undefined),
- *     startIndex: (number|undefined),
- *     count: (number|undefined),
- *     bbox: (ol.Extent|undefined)}}
+ * @record
  * @api
  */
 olx.format.WFSWriteGetFeatureOptions;
@@ -2139,13 +1985,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
 
 
 /**
- * @typedef {{featureNS: string,
- *     featurePrefix: string,
- *     featureType: string,
- *     srsName: (string|undefined),
- *     handle: (string|undefined),
- *     nativeElements: Array.<Object>,
- *     gmlOptions: (olx.format.GMLOptions|undefined)}}
+ * @record
  * @api stable
  */
 olx.format.WFSWriteTransactionOptions;
@@ -2209,7 +2049,7 @@ olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
 
 
 /**
- * @typedef {{splitCollection: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.format.WKTOptions;
@@ -2225,9 +2065,7 @@ olx.format.WKTOptions.prototype.splitCollection;
 
 
 /**
- * @typedef {{
- *     layers: (Array.<string>|undefined)
- * }}
+ * @record
  * @api
  */
 olx.format.WMSGetFeatureInfoOptions;
@@ -2251,16 +2089,7 @@ olx.interaction;
 
 /**
  * Interactions for the map. Default is `true` for all options.
- * @typedef {{altShiftDragRotate: (boolean|undefined),
- *     doubleClickZoom: (boolean|undefined),
- *     keyboard: (boolean|undefined),
- *     mouseWheelZoom: (boolean|undefined),
- *     shiftDragZoom: (boolean|undefined),
- *     dragPan: (boolean|undefined),
- *     pinchRotate: (boolean|undefined),
- *     pinchZoom: (boolean|undefined),
- *     zoomDelta: (number|undefined),
- *     zoomDuration: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DefaultsOptions;
@@ -2347,8 +2176,7 @@ olx.interaction.DefaultsOptions.prototype.zoomDuration;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     delta: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DoubleClickZoomOptions;
@@ -2371,9 +2199,7 @@ olx.interaction.DoubleClickZoomOptions.prototype.delta;
 
 
 /**
- * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     target: (Element|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DragAndDropOptions;
@@ -2404,9 +2230,7 @@ olx.interaction.DragAndDropOptions.prototype.target;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     boxEndCondition: (ol.interaction.DragBoxEndConditionType|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DragBoxOptions;
@@ -2450,7 +2274,7 @@ olx.interaction.DragBoxOptions.prototype.boxEndCondition;
 
 
 /**
- * @typedef {{kinetic: (ol.Kinetic|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DragPanOptions;
@@ -2465,8 +2289,7 @@ olx.interaction.DragPanOptions.prototype.kinetic;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DragRotateAndZoomOptions;
@@ -2491,8 +2314,7 @@ olx.interaction.DragRotateAndZoomOptions.prototype.duration;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DragRotateOptions;
@@ -2517,9 +2339,7 @@ olx.interaction.DragRotateOptions.prototype.duration;
 
 
 /**
- * @typedef {{className: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DragZoomOptions;
@@ -2552,19 +2372,7 @@ olx.interaction.DragZoomOptions.prototype.duration;
 
 
 /**
- * @typedef {{clickTolerance: (number|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
- *     source: (ol.source.Vector|undefined),
- *     snapTolerance: (number|undefined),
- *     type: ol.geom.GeometryType,
- *     maxPoints: (number|undefined),
- *     minPoints: (number|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     geometryFunction: (ol.interaction.DrawGeometryFunctionType|undefined),
- *     geometryName: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     freehandCondition: (ol.events.ConditionType|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.DrawOptions;
@@ -2689,7 +2497,7 @@ olx.interaction.DrawOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{features: (ol.Collection.<ol.Feature>|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.TranslateOptions;
@@ -2705,9 +2513,7 @@ olx.interaction.TranslateOptions.prototype.features;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined),
- *     pixelDelta: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.KeyboardPanOptions;
@@ -2741,9 +2547,7 @@ olx.interaction.KeyboardPanOptions.prototype.pixelDelta;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     delta: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.KeyboardZoomOptions;
@@ -2776,11 +2580,7 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
 
 
 /**
- * @typedef {{deleteCondition: (ol.events.ConditionType|undefined),
- *     pixelTolerance: (number|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     features: ol.Collection.<ol.Feature>,
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.ModifyOptions;
@@ -2832,8 +2632,7 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{duration: (number|undefined),
- *     useAnchor: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.MouseWheelZoomOptions;
@@ -2858,8 +2657,7 @@ olx.interaction.MouseWheelZoomOptions.prototype.useAnchor;
 
 
 /**
- * @typedef {{threshold: (number|undefined),
- *     duration: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.PinchRotateOptions;
@@ -2882,7 +2680,7 @@ olx.interaction.PinchRotateOptions.prototype.threshold;
 
 
 /**
- * @typedef {{duration: (number|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.PinchZoomOptions;
@@ -2897,11 +2695,7 @@ olx.interaction.PinchZoomOptions.prototype.duration;
 
 
 /**
- * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
- *     handleDragEvent: (function(ol.MapBrowserPointerEvent)|undefined),
- *     handleEvent: (function(ol.MapBrowserEvent):boolean|undefined),
- *     handleMoveEvent: (function(ol.MapBrowserPointerEvent)|undefined),
- *     handleUpEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.PointerOptions;
@@ -2956,16 +2750,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
 
 
 /**
- * @typedef {{addCondition: (ol.events.ConditionType|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     removeCondition: (ol.events.ConditionType|undefined),
- *     toggleCondition: (ol.events.ConditionType|undefined),
- *     multi: (boolean|undefined),
- *     features: (ol.Collection.<ol.Feature>|undefined),
- *     filter: (ol.interaction.SelectFilterFunction|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.interaction.SelectOptions;
@@ -3084,11 +2869,7 @@ olx.interaction.SelectOptions.prototype.wrapX;
 
 /**
  * Options for snap
- * @typedef {{
- *     features: (ol.Collection.<ol.Feature>|undefined),
- *     pixelTolerance: (number|undefined),
- *     source: (ol.source.Vector|undefined)
- * }}
+ * @record
  * @api
  */
 olx.interaction.SnapOptions;
@@ -3127,12 +2908,7 @@ olx.layer;
 
 
 /**
- * @typedef {{opacity: (number|undefined),
- *     visible: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     zIndex: (number|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined)}}
+ * @record
  * @api
  */
 olx.layer.BaseOptions;
@@ -3189,13 +2965,7 @@ olx.layer.BaseOptions.prototype.maxResolution;
 
 
 /**
- * @typedef {{opacity: (number|undefined),
- *     source: (ol.source.Source|undefined),
- *     visible: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     zIndex: (number|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined)}}
+ * @record
  * @api
  */
 olx.layer.LayerOptions;
@@ -3262,13 +3032,7 @@ olx.layer.LayerOptions.prototype.maxResolution;
 
 
 /**
- * @typedef {{opacity: (number|undefined),
- *     visible: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     zIndex: (number|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined),
- *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined)}}
+ * @record
  * @api
  */
 olx.layer.GroupOptions;
@@ -3333,17 +3097,7 @@ olx.layer.GroupOptions.prototype.layers;
 
 
 /**
- * @typedef {{gradient: (Array.<string>|undefined),
- *     radius: (number|undefined),
- *     blur: (number|undefined),
- *     shadow: (number|undefined),
- *     weight: (string|function(ol.Feature):number|undefined),
- *     extent: (ol.Extent|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined),
- *     opacity: (number|undefined),
- *     source: (ol.source.Vector|undefined),
- *     visible: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.layer.HeatmapOptions;
@@ -3442,13 +3196,7 @@ olx.layer.HeatmapOptions.prototype.visible;
 
 
 /**
- * @typedef {{opacity: (number|undefined),
- *     map: (ol.Map|undefined),
- *     source: (ol.source.Image|undefined),
- *     visible: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined)}}
+ * @record
  * @api
  */
 olx.layer.ImageOptions;
@@ -3515,15 +3263,7 @@ olx.layer.ImageOptions.prototype.maxResolution;
 
 
 /**
- * @typedef {{opacity: (number|undefined),
- *     preload: (number|undefined),
- *     source: (ol.source.Tile|undefined),
- *     map: (ol.Map|undefined),
- *     visible: (boolean|undefined),
- *     extent: (ol.Extent|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined),
- *     useInterimTilesOnError: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.layer.TileOptions;
@@ -3607,17 +3347,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
 
 
 /**
- * @typedef {{renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined),
- *     opacity: (number|undefined),
- *     renderBuffer: (number|undefined),
- *     source: (ol.source.Vector|undefined),
- *     map: (ol.Map|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     updateWhileAnimating: (boolean|undefined),
- *     updateWhileInteracting: (boolean|undefined),
- *     visible: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.layer.VectorOptions;
@@ -3734,18 +3464,7 @@ olx.layer.VectorOptions.prototype.visible;
 
 
 /**
- * @typedef {{extent: (ol.Extent|undefined),
- *     map: (ol.Map|undefined),
- *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined),
- *     opacity: (number|undefined),
- *     renderBuffer: (number|undefined),
- *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
- *     source: (ol.source.VectorTile|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     updateWhileAnimating: (boolean|undefined),
- *     updateWhileInteracting: (boolean|undefined),
- *     visible: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.layer.VectorTileOptions;
@@ -3870,8 +3589,7 @@ olx.render;
 
 
 /**
- * @typedef {{size: (ol.Size|undefined),
- *     pixelRatio: (number|undefined)}}
+ * @record
  * @api
  */
 olx.render.ToContextOptions;
@@ -3904,14 +3622,7 @@ olx.source;
 
 
 /**
- * @typedef {{cacheSize: (number|undefined),
- *     culture: (string|undefined),
- *     key: string,
- *     imagerySet: string,
- *     maxZoom: (number|undefined),
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.BingMapsOptions;
@@ -3989,15 +3700,7 @@ olx.source.BingMapsOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     distance: (number|undefined),
- *     extent: (ol.Extent|undefined),
- *     format: (ol.format.Feature|undefined),
- *     geometryFunction: (undefined|function(ol.Feature):ol.geom.Point),
- *     logo: (string|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     source: ol.source.Vector,
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.ClusterOptions;
@@ -4087,8 +3790,7 @@ olx.source.ClusterOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{preemptive: (boolean|undefined),
- *            url: string}}
+ * @record
  * @api
  */
 olx.source.TileUTFGridOptions;
@@ -4115,24 +3817,7 @@ olx.source.TileUTFGridOptions.prototype.url;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            cacheSize: (number|undefined),
- *            crossOrigin: (null|string|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            reprojectionErrorThreshold: (number|undefined),
- *            state: (ol.source.State|undefined),
- *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
- *                                 ol.TileState, string, ?string,
- *                                 ol.TileLoadFunctionType)|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.TileImageOptions;
@@ -4287,23 +3972,7 @@ olx.source.TileImageOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *            cacheSize: (number|undefined),
- *            format: (ol.format.Feature|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
- *                 ol.TileState, string, ol.format.Feature,
- *                 ol.TileLoadFunctionType)|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.VectorTileOptions;
@@ -4447,16 +4116,7 @@ olx.source.VectorTileOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{url: (string|undefined),
- *     displayDpi: (number|undefined),
- *     metersPerUnit: (number|undefined),
- *     hidpi: (boolean|undefined),
- *     useOverlay: (boolean|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     ratio: (number|undefined),
- *     resolutions: (Array.<number>|undefined),
- *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
- *     params: (Object|undefined)}}
+ * @record
  * @api
  */
 olx.source.ImageMapGuideOptions;
@@ -4546,11 +4206,7 @@ olx.source.ImageMapGuideOptions.prototype.params;
 
 
 /**
- * @typedef {{cacheSize: (number|undefined),
- *     layer: string,
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
+ * @record
  * @api
  */
 olx.source.MapQuestOptions;
@@ -4603,9 +4259,7 @@ olx.source.MapQuestOptions.prototype.url;
 
 
 /**
- * @typedef {{projection: ol.proj.ProjectionLike,
- *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.TileDebugOptions;
@@ -4636,15 +4290,7 @@ olx.source.TileDebugOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     crossOrigin: (null|string|undefined),
- *     maxZoom: (number|undefined),
- *     opaque: (boolean|undefined),
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.OSMOptions;
@@ -4736,13 +4382,7 @@ olx.source.OSMOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     canvasFunction: ol.CanvasFunctionType,
- *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     ratio: (number|undefined),
- *     resolutions: (Array.<number>|undefined),
- *     state: (ol.source.State|undefined)}}
+ * @record
  * @api
  */
 olx.source.ImageCanvasOptions;
@@ -4815,13 +4455,7 @@ olx.source.ImageCanvasOptions.prototype.state;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     ratio: (number|undefined),
- *     resolutions: (Array.<number>|undefined),
- *     source: ol.source.Vector,
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
+ * @record
  * @api
  */
 olx.source.ImageVectorOptions;
@@ -4888,11 +4522,7 @@ olx.source.ImageVectorOptions.prototype.style;
 
 
 /**
- * @typedef {{sources: Array.<ol.source.Source>,
- *     operation: (ol.raster.Operation|undefined),
- *     lib: (Object|undefined),
- *     threads: (number|undefined),
- *     operationType: (ol.raster.OperationType|undefined)}}
+ * @record
  * @api
  */
 olx.source.RasterOptions;
@@ -4947,17 +4577,7 @@ olx.source.RasterOptions.prototype.operationType;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
- *     hidpi: (boolean|undefined),
- *     serverType: (ol.source.wms.ServerType|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
- *     params: Object.<string,*>,
- *     projection: ol.proj.ProjectionLike,
- *     ratio: (number|undefined),
- *     resolutions: (Array.<number>|undefined),
- *     url: (string|undefined)}}
+ * @record
  * @api
  */
 olx.source.ImageWMSOptions;
@@ -5062,14 +4682,7 @@ olx.source.ImageWMSOptions.prototype.url;
 
 
 /**
- * @typedef {{cacheSize: (number|undefined),
- *     layer: string,
- *     minZoom: (number|undefined),
- *     maxZoom: (number|undefined),
- *     opaque: (boolean|undefined),
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
+ * @record
  * @api
  */
 olx.source.StamenOptions;
@@ -5145,14 +4758,7 @@ olx.source.StamenOptions.prototype.url;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     crossOrigin: (null|string|undefined),
- *     imageExtent: (ol.Extent),
- *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
- *     imageSize: (ol.Size|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     url: string}}
+ * @record
  * @api
  */
 olx.source.ImageStaticOptions;
@@ -5229,18 +4835,7 @@ olx.source.ImageStaticOptions.prototype.url;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     crossOrigin: (null|string|undefined),
- *     params: (Object.<string, *>|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.TileArcGISRestOptions;
@@ -5365,14 +4960,7 @@ olx.source.TileArcGISRestOptions.prototype.urls;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     crossOrigin: (null|string|undefined),
- *     jsonp: (boolean|undefined),
- *     reprojectionErrorThreshold: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: string,
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.TileJSONOptions;
@@ -5456,22 +5044,7 @@ olx.source.TileJSONOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     params: Object.<string,*>,
- *     crossOrigin: (null|string|undefined),
- *     gutter: (number|undefined),
- *     hidpi: (boolean|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     maxZoom: (number|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     reprojectionErrorThreshold: (number|undefined),
- *     serverType: (ol.source.wms.ServerType|string|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.TileWMSOptions;
@@ -5635,15 +5208,7 @@ olx.source.TileWMSOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
- *     format: (ol.format.Feature|undefined),
- *     loader: (ol.FeatureLoader|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     strategy: (ol.LoadingStrategy|undefined),
- *     url: (string|ol.FeatureUrlFunction|undefined),
- *     useSpatialIndex: (boolean|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.VectorOptions;
@@ -5755,29 +5320,7 @@ olx.source.VectorOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     crossOrigin: (string|null|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     tileGrid: ol.tilegrid.WMTS,
- *     projection: ol.proj.ProjectionLike,
- *     reprojectionErrorThreshold: (number|undefined),
- *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
- *     layer: string,
- *     style: string,
- *     tilePixelRatio: (number|undefined),
- *     version: (string|undefined),
- *     format: (string|undefined),
- *     matrixSet: string,
- *     dimensions: (!Object|undefined),
- *     url: (string|undefined),
- *     maxZoom: (number|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     urls: (Array.<string>|undefined),
- *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
- *                          ol.TileState, string, ?string,
- *                          ol.TileLoadFunctionType)|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.WMTSOptions;
@@ -5971,23 +5514,7 @@ olx.source.WMTSOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     crossOrigin: (null|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     opaque: (boolean|undefined),
- *     projection: ol.proj.ProjectionLike,
- *     reprojectionErrorThreshold: (number|undefined),
- *     maxZoom: (number|undefined),
- *     minZoom: (number|undefined),
- *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     tilePixelRatio: (number|undefined),
- *     tileSize: (number|ol.Size|undefined),
- *     tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *     url: (string|undefined),
- *     urls: (Array.<string>|undefined),
- *     wrapX: (boolean|undefined)}}
+ * @record
  * @api
  */
 olx.source.XYZOptions;
@@ -6146,14 +5673,7 @@ olx.source.XYZOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
- *     cacheSize: (number|undefined),
- *     crossOrigin: (null|string|undefined),
- *     logo: (string|olx.LogoOptions|undefined),
- *     reprojectionErrorThreshold: (number|undefined),
- *     url: !string,
- *     tierSizeCalculation: (string|undefined),
- *     size: ol.Size}}
+ * @record
  * @api
  */
 olx.source.ZoomifyOptions;
@@ -6236,11 +5756,7 @@ olx.style;
 
 
 /**
- * @typedef {{fill: (ol.style.Fill|undefined),
- *     radius: number,
- *     snapToPixel: (boolean|undefined),
- *     stroke: (ol.style.Stroke|undefined),
- *     atlasManager: (ol.style.AtlasManager|undefined)}}
+ * @record
  * @api
  */
 olx.style.CircleOptions;
@@ -6295,7 +5811,7 @@ olx.style.CircleOptions.prototype.atlasManager;
 
 
 /**
- * @typedef {{color: (ol.Color|ol.ColorLike|undefined)}}
+ * @record
  * @api
  */
 olx.style.FillOptions;
@@ -6312,23 +5828,7 @@ olx.style.FillOptions.prototype.color;
 
 
 /**
- * @typedef {{anchor: (Array.<number>|undefined),
- *     anchorOrigin: (ol.style.IconOrigin|undefined),
- *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
- *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
- *     color: (ol.Color|string|undefined),
- *     crossOrigin: (null|string|undefined),
- *     img: (Image|HTMLCanvasElement|undefined),
- *     offset: (Array.<number>|undefined),
- *     offsetOrigin: (ol.style.IconOrigin|undefined),
- *     opacity: (number|undefined),
- *     scale: (number|undefined),
- *     snapToPixel: (boolean|undefined),
- *     rotateWithView: (boolean|undefined),
- *     rotation: (number|undefined),
- *     size: (ol.Size|undefined),
- *     imgSize: (ol.Size|undefined),
- *     src: (string|undefined)}}
+ * @record
  * @api
  */
 olx.style.IconOptions;
@@ -6493,17 +5993,7 @@ olx.style.IconOptions.prototype.src;
 
 /**
  * Specify radius for regular polygons, or radius1 and radius2 for stars.
- * @typedef {{fill: (ol.style.Fill|undefined),
- *     points: number,
- *     radius: (number|undefined),
- *     radius1: (number|undefined),
- *     radius2: (number|undefined),
- *     angle: (number|undefined),
- *     snapToPixel: (boolean|undefined),
- *     stroke: (ol.style.Stroke|undefined),
- *     rotation: (number|undefined),
- *     rotateWithView: (boolean|undefined),
- *     atlasManager: (ol.style.AtlasManager|undefined)}}
+ * @record
  * @api
  */
 olx.style.RegularShapeOptions;
@@ -6609,12 +6099,7 @@ olx.style.RegularShapeOptions.prototype.atlasManager;
 
 
 /**
- * @typedef {{color: (ol.Color|string|undefined),
- *     lineCap: (string|undefined),
- *     lineJoin: (string|undefined),
- *     lineDash: (Array.<number>|undefined),
- *     miterLimit: (number|undefined),
- *     width: (number|undefined)}}
+ * @record
  * @api
  */
 olx.style.StrokeOptions;
@@ -6670,16 +6155,7 @@ olx.style.StrokeOptions.prototype.width;
 
 
 /**
- * @typedef {{font: (string|undefined),
- *     offsetX: (number|undefined),
- *     offsetY: (number|undefined),
- *     scale: (number|undefined),
- *     rotation: (number|undefined),
- *     text: (string|undefined),
- *     textAlign: (string|undefined),
- *     textBaseline: (string|undefined),
- *     fill: (ol.style.Fill|undefined),
- *     stroke: (ol.style.Stroke|undefined)}}
+ * @record
  * @api
  */
 olx.style.TextOptions;
@@ -6772,12 +6248,7 @@ olx.style.TextOptions.prototype.stroke;
 
 
 /**
- * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.style.GeometryFunction),
- *     fill: (ol.style.Fill|undefined),
- *     image: (ol.style.Image|undefined),
- *     stroke: (ol.style.Stroke|undefined),
- *     text: (ol.style.Text|undefined),
- *     zIndex: (number|undefined)}}
+ * @record
  * @api
  */
 olx.style.StyleOptions;
@@ -6840,14 +6311,7 @@ olx.tilegrid;
 
 
 /**
- * @typedef {{extent: (ol.Extent|undefined),
- *     minZoom: (number|undefined),
- *     origin: (ol.Coordinate|undefined),
- *     origins: (Array.<ol.Coordinate>|undefined),
- *     resolutions: !Array.<number>,
- *     sizes: (Array.<ol.Size>|undefined),
- *     tileSize: (number|ol.Size|undefined),
- *     tileSizes: (Array.<number|ol.Size>|undefined)}}
+ * @record
  * @api
  */
 olx.tilegrid.TileGridOptions;
@@ -6921,14 +6385,7 @@ olx.tilegrid.TileGridOptions.prototype.tileSizes;
 
 
 /**
- * @typedef {{extent: (ol.Extent|undefined),
- *     origin: (ol.Coordinate|undefined),
- *     origins: (Array.<ol.Coordinate>|undefined),
- *     resolutions: !Array.<number>,
- *     matrixIds: !Array.<string>,
- *     sizes: (Array.<ol.Size>|undefined),
- *     tileSize: (number|ol.Size|undefined),
- *     tileSizes: (Array.<number|ol.Size>|undefined)}}
+ * @record
  * @api
  */
 olx.tilegrid.WMTSOptions;
@@ -7030,10 +6487,7 @@ olx.tilegrid.WMTSOptions.prototype.widths;
 
 
 /**
- * @typedef {{extent: (ol.Extent|undefined),
- *     maxZoom: (number|undefined),
- *     minZoom: (number|undefined),
- *     tileSize: (number|ol.Size|undefined)}}
+ * @record
  * @api
  */
 olx.tilegrid.XYZOptions;
@@ -7084,11 +6538,7 @@ olx.view;
 
 
 /**
- * @typedef {{padding: !Array.<number>,
- *     constrainResolution: (boolean|undefined),
- *     nearest: (boolean|undefined),
- *     maxZoom: (number|undefined),
- *     minResolution: (number|undefined)}}
+ * @record
  * @api
  */
 olx.view.FitOptions;
@@ -7140,26 +6590,7 @@ olx.view.FitOptions.prototype.maxZoom;
 
 
 /**
- * @typedef {{animate: boolean,
- *     attributions: Object.<string, ol.Attribution>,
- *     coordinateToPixelMatrix: ol.vec.Mat4.Number,
- *     extent: (null|ol.Extent),
- *     focus: ol.Coordinate,
- *     index: number,
- *     layerStates: Object.<number, ol.layer.LayerState>,
- *     layerStatesArray: Array.<ol.layer.LayerState>,
- *     logos: Object.<string, string>,
- *     pixelRatio: number,
- *     pixelToCoordinateMatrix: ol.vec.Mat4.Number,
- *     postRenderFunctions: Array.<ol.PostRenderFunction>,
- *     size: ol.Size,
- *     skippedFeatureUids: Object.<string, boolean>,
- *     tileQueue: ol.TileQueue,
- *     time: number,
- *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
- *     viewState: olx.ViewState,
- *     viewHints: Array.<number>,
- *     wantedTiles: !Object.<string, Object.<string, boolean>>}}
+ * @record
  * @api
  */
 olx.FrameState;
@@ -7187,10 +6618,7 @@ olx.FrameState.prototype.viewState;
 
 
 /**
- * @typedef {{center: ol.Coordinate,
- *     projection: ol.proj.Projection,
- *     resolution: number,
- *     rotation: number}}
+ * @record
  * @api
  */
 olx.ViewState;
@@ -7225,9 +6653,7 @@ olx.ViewState.prototype.rotation;
 
 
 /**
- * @typedef {{initialSize: (number|undefined),
- *     maxSize: (number|undefined),
- *     space: (number|undefined)}}
+ * @record
  * @api
  */
 olx.style.AtlasManagerOptions;
