@@ -191,17 +191,20 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
 ```json
 {
   "exports": [
-    "ol.layer.Heatmap",
-    "ol.source.KML",
+     "ol.layer.Heatmap",
+    "ol.source.Vector",
+    "ol.format.KML",
     "ol.layer.Heatmap#getSource",
-    "ol.source.KML#on",
+    "ol.source.Vector#on",
     "ol.source.VectorEvent#feature",
     "ol.Feature#get",
     "ol.Feature#set",
     "ol.layer.Tile",
     "ol.source.Stamen",
     "ol.Map",
-    "ol.View"
+    "ol.View",
+    "ol.layer.Heatmap#setRadius",
+    "ol.layer.Heatmap#setBlur"
   ],
   "compile": {
     "externs": [
