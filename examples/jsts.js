@@ -18,7 +18,7 @@ fetch('data/geojson/roads-seoul.geojson').then(function(response) {
   var format = new ol.format.GeoJSON();
   var features = format.readFeatures(json, {featureProjection: 'EPSG:3857'});
 
-  var parser = new jsts.io.olParser();
+  var parser = new jsts.io.OL3Parser();
 
   for (var i = 0; i < features.length; i++) {
     var feature = features[i];
