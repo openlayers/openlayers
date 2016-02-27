@@ -88,6 +88,15 @@ describe('ol.geom.MultiPolygon', function() {
           [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
     });
 
+    describe('#clone()', function() {
+
+      it('has the expected endss_', function() {
+        var clone = multiPolygon.clone();
+        expect(multiPolygon.endss_).to.eql(clone.endss_);
+      });
+
+    });
+
     describe('#getCoordinates()', function() {
 
       var cw = [[-180, -90], [-180, 90], [180, 90], [180, -90], [-180, -90]];
