@@ -9,6 +9,7 @@ goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
+goog.require('ol.object');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.Tile');
@@ -25,9 +26,9 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {Object.<string, Array.<ol.Extent>>}
+   * @type {!Object.<string, Array.<ol.Extent>>}
    */
-  this.clipExtents_ = null;
+  this.clipExtents_ = {};
 
   /**
    * @private
@@ -68,7 +69,6 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   goog.asserts.assertInstanceof(source, ol.source.Tile,
       'source is an ol.source.Tile');
   var tileGutter = source.getGutter(projection);
-  var opaque = source.getOpaque(projection);
 
   var transform = this.getTransform(frameState, 0);
 
@@ -102,7 +102,7 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
     tile = tilesToDraw[i];
     tileExtent = tileGrid.getTileCoordExtent(
         tile.getTileCoord(), this.tmpExtent_);
-    clipExtents = !opaque && this.clipExtents_[tile.tileCoord.toString()];
+    clipExtents = this.clipExtents_[tile.tileCoord.toString()];
     if (clipExtents) {
       // Create a clip mask for regions in this low resolution tile that will be
       // filled by a higher resolution tile
@@ -266,8 +266,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
     }
   }
   this.renderedTiles_ = renderables;
-  if (!tileSource.getOpaque(projection)) {
-    var clipExtents = {};
+  ol.object.clear(this.clipExtents_);
+  if (!(tileSource.getOpaque(projection) && layerState.opacity == 1)) {
+    var clipExtents = this.clipExtents_;
     var tileCoord;
     for (i = renderables.length - 1; i >= 0; --i) {
       tileCoord = renderables[i].getTileCoord();
@@ -291,7 +292,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
             return false;
           }, this, tmpTileRange, tmpExtent);
     }
-    this.clipExtents_ = clipExtents;
   }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
