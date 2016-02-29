@@ -1,5 +1,19 @@
 ## Upgrade notes
 
+### v3.15.0
+
+#### Removal of `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK`
+
+The `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK` define has been removed. The size of the cache can now be defined on every tile based `ol.source`:
+```js
+new ol.layer.Tile({
+  source: new ol.source.OSM({
+    cacheSize: 128
+  })
+})
+```
+The default cache size is `2048`.
+
 ### v3.14.0
 
 #### Internet Explorer 9 support
