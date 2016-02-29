@@ -149,10 +149,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures;
  * @inheritDoc
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
-  var options = {
-    'featureType': this.featureType,
-    'featureNS': this.featureNS
-  };
+  var options = {};
   if (opt_options) {
     ol.object.assign(options, this.getReadOptions(node, opt_options));
   }
