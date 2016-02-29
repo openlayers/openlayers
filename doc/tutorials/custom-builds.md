@@ -61,7 +61,6 @@ Creating a custom build requires writing a build configuration file. The format 
     ],
     "define": [
       "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false"
     ],
     "jscomp_off": [
