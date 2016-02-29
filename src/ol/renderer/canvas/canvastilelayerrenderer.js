@@ -95,9 +95,8 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   var tileGrid = source.getTileGridForProjection(projection);
   var tilesToDraw = this.renderedTiles_;
 
-  var clipExtents, clipExtent, currentZ, i, ii, j, jj, insertPoint;
-  var origin, tile, tileExtent, tileHeight, tileOffsetX, tileOffsetY;
-  var tilePixelSize, tileWidth;
+  var clipExtent, clipExtents, currentZ, h, i, ii, j, jj, left, origin, tile;
+  var tileExtent, tilePixelSize, top, w;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
     tileExtent = tileGrid.getTileCoordExtent(
@@ -132,22 +131,19 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
       renderContext.clip();
     }
     currentZ = tile.getTileCoord()[0];
-    tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
-    insertPoint = ol.extent.getTopLeft(tileExtent);
-    tileWidth = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
-    tileHeight = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
-    // Calculate all insert points from a common origin and tile widths to avoid
+    // Calculate all insert points by tile widths from a common origin to avoid
     // gaps caused by rounding
     origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
         tileGrid.getTileCoordForCoordAndZ(center, currentZ)));
-    tileOffsetX = offsetX + Math.round((origin[0] - center[0]) * pixelScale);
-    tileOffsetY = offsetY + Math.round((center[1] - origin[1]) * pixelScale);
+    w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
+    h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
+    left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
+        offsetX + Math.round((origin[0] - center[0]) * pixelScale);
+    top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
+        offsetY + Math.round((center[1] - origin[1]) * pixelScale);
+    tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
     renderContext.drawImage(tile.getImage(), tileGutter, tileGutter,
-        tilePixelSize[0], tilePixelSize[1],
-        Math.round((insertPoint[0] - origin[0]) * pixelScale / tileWidth) *
-            tileWidth + tileOffsetX,
-        Math.round((origin[1] - insertPoint[1]) * pixelScale / tileHeight) *
-            tileHeight + tileOffsetY, tileWidth, tileHeight);
+        tilePixelSize[0], tilePixelSize[1], left, top, w, h);
     if (clipExtents) {
       renderContext.restore();
     }
