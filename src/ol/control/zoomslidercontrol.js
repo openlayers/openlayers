@@ -176,7 +176,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
   var containerSize = goog.style.getSize(container);
 
-  var thumb = goog.dom.getFirstElementChild(container);
+  var thumb = container.firstElementChild;
   var thumbMargins = goog.style.getMarginBox(thumb);
   var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
   var thumbWidth = thumbBorderBoxSize.width +
@@ -328,7 +328,7 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
  */
 ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
   var position = this.getPositionForResolution_(res);
-  var thumb = goog.dom.getFirstElementChild(this.element);
+  var thumb = this.element.firstElementChild;
 
   if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
     thumb.style.left = this.widthLimit_ * position + 'px';
