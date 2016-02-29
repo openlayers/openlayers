@@ -101,21 +101,30 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
     tile = tilesToDraw[i];
     tileExtent = tileGrid.getTileCoordExtent(
         tile.getTileCoord(), this.tmpExtent_);
+    currentZ = tile.getTileCoord()[0];
+    // Calculate all insert points by tile widths from a common origin to avoid
+    // gaps caused by rounding
+    origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
+        tileGrid.getTileCoordForCoordAndZ(center, currentZ)));
+    w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
+    h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
+    left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
+        offsetX + Math.round((origin[0] - center[0]) * pixelScale);
+    top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
+        offsetY + Math.round((center[1] - origin[1]) * pixelScale);
     clipExtents = this.clipExtents_[tile.tileCoord.toString()];
     if (clipExtents) {
       // Create a clip mask for regions in this low resolution tile that will be
       // filled by a higher resolution tile
       renderContext.save();
       renderContext.beginPath();
-      renderContext.moveTo((tileExtent[0] - center[0]) * pixelScale + offsetX,
-          (center[1] - tileExtent[1]) * pixelScale + offsetY);
-      renderContext.lineTo((tileExtent[2] - center[0]) * pixelScale + offsetX,
-          (center[1] - tileExtent[1]) * pixelScale + offsetY);
-      renderContext.lineTo((tileExtent[2] - center[0]) * pixelScale + offsetX,
-          (center[1] - tileExtent[3]) * pixelScale + offsetY);
-      renderContext.lineTo((tileExtent[0] - center[0]) * pixelScale + offsetX,
-          (center[1] - tileExtent[3]) * pixelScale + offsetY);
+      // counter-clockwise (outer ring) for current tile
+      renderContext.moveTo(left + w, top);
+      renderContext.lineTo(left, top);
+      renderContext.lineTo(left, top + h);
+      renderContext.lineTo(left + w, top + h);
       renderContext.closePath();
+      // clockwise (inner rings) for lower resolution tiles
       for (j = 0, jj = clipExtents.length; j < jj; ++j) {
         clipExtent = clipExtents[j];
         renderContext.moveTo((clipExtent[0] - center[0]) * pixelScale + offsetX,
@@ -130,17 +139,6 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
       }
       renderContext.clip();
     }
-    currentZ = tile.getTileCoord()[0];
-    // Calculate all insert points by tile widths from a common origin to avoid
-    // gaps caused by rounding
-    origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
-        tileGrid.getTileCoordForCoordAndZ(center, currentZ)));
-    w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
-    h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
-    left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
-        offsetX + Math.round((origin[0] - center[0]) * pixelScale);
-    top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
-        offsetY + Math.round((center[1] - origin[1]) * pixelScale);
     tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
     renderContext.drawImage(tile.getImage(), tileGutter, tileGutter,
         tilePixelSize[0], tilePixelSize[1], left, top, w, h);
