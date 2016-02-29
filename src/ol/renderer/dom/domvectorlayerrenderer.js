@@ -94,8 +94,9 @@ goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
  * @inheritDoc
  */
 ol.renderer.dom.VectorLayer.prototype.clearFrame = function() {
-  this.context_.canvas.width = 0;
-  this.context_.canvas.height = 0;
+  // Clear the canvas
+  var canvas = this.context_.canvas;
+  canvas.width = canvas.width;
   this.renderedRevision_ = 0;
 };
 
