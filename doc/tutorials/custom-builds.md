@@ -70,7 +70,7 @@ Creating a custom build requires writing a build configuration file. The format 
     "extra_annotation_name": [
       "api", "observable"
     ],
-    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "compilation_level": "ADVANCED",
     "manage_closure_dependencies": true
   }
 }
@@ -191,7 +191,7 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
 ```json
 {
   "exports": [
-     "ol.layer.Heatmap",
+    "ol.layer.Heatmap",
     "ol.source.Vector",
     "ol.format.KML",
     "ol.layer.Heatmap#getSource",
@@ -219,7 +219,7 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false"
     ],
-    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "compilation_level": "ADVANCED",
     "manage_closure_dependencies": true
   }
 }
