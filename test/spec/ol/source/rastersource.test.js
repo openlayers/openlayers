@@ -11,16 +11,7 @@ var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
 
 var itNoPhantom = window.checkForMocha ? xit : it;
 
-var hasImageDataConstructor = true;
-try {
-  new ImageData(1, 1);
-} catch (e) {
-  hasImageDataConstructor = false;
-}
-
-var maybeDescribe = hasImageDataConstructor ? describe : xdescribe;
-
-maybeDescribe('ol.source.Raster', function() {
+describe('ol.source.Raster', function() {
 
   var target, map, redSource, greenSource, blueSource, raster;
 
