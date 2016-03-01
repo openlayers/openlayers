@@ -36,6 +36,7 @@ ol.source.MapQuest = function(opt_options) {
 
   goog.base(this, {
     attributions: layerConfig.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     logo: 'https://developer.mapquest.com/content/osm/mq_logo.png',
     maxZoom: layerConfig.maxZoom,

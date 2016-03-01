@@ -31,6 +31,7 @@ ol.source.TileJSON = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     projection: ol.proj.get('EPSG:3857'),
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,

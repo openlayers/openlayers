@@ -1,6 +1,5 @@
 goog.provide('ol.TileCache');
 
-goog.require('ol');
 goog.require('ol.TileRange');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.tilecoord');
@@ -20,8 +19,7 @@ ol.TileCache = function(opt_highWaterMark) {
    * @private
    * @type {number}
    */
-  this.highWaterMark_ = opt_highWaterMark !== undefined ?
-      opt_highWaterMark : ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK;
+  this.highWaterMark_ = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
 
 };
 goog.inherits(ol.TileCache, ol.structs.LRUCache);
