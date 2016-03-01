@@ -9,8 +9,6 @@ var green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
 var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
     'ABAAEAAAICRAEAOw==';
 
-var itNoPhantom = window.checkForMocha ? xit : it;
-
 describe('ol.source.Raster', function() {
 
   var target, map, redSource, greenSource, blueSource, raster;
@@ -90,7 +88,7 @@ describe('ol.source.Raster', function() {
       expect(source).to.be.a(ol.source.Raster);
     });
 
-    itNoPhantom('defaults to "pixel" operation', function(done) {
+    it('defaults to "pixel" operation', function(done) {
 
       var log = [];
 
@@ -118,7 +116,7 @@ describe('ol.source.Raster', function() {
 
     });
 
-    itNoPhantom('allows operation type to be set to "image"', function(done) {
+    it('allows operation type to be set to "image"', function(done) {
       var log = [];
 
       var source = new ol.source.Raster({
@@ -134,7 +132,10 @@ describe('ol.source.Raster', function() {
       source.once('afteroperations', function() {
         expect(log.length).to.equal(1);
         var inputs = log[0];
-        expect(inputs[0]).to.be.an(ImageData);
+        var imageData = inputs[0];
+        expect(imageData.data).to.be.a(Uint8ClampedArray);
+        expect(imageData.width).to.be(2);
+        expect(imageData.height).to.be(2);
         done();
       });
 
@@ -149,7 +150,7 @@ describe('ol.source.Raster', function() {
 
   describe('#setOperation()', function() {
 
-    itNoPhantom('allows operation to be set', function(done) {
+    it('allows operation to be set', function(done) {
 
       var count = 0;
       raster.setOperation(function(pixels) {
@@ -174,7 +175,7 @@ describe('ol.source.Raster', function() {
 
     });
 
-    itNoPhantom('updates and re-runs the operation', function(done) {
+    it('updates and re-runs the operation', function(done) {
 
       var view = map.getView();
       view.setCenter([0, 0]);
@@ -198,7 +199,7 @@ describe('ol.source.Raster', function() {
 
   describe('beforeoperations', function() {
 
-    itNoPhantom('gets called before operations are run', function(done) {
+    it('gets called before operations are run', function(done) {
 
       var count = 0;
       raster.setOperation(function(inputs) {
@@ -222,7 +223,7 @@ describe('ol.source.Raster', function() {
     });
 
 
-    itNoPhantom('allows data to be set for the operation', function(done) {
+    it('allows data to be set for the operation', function(done) {
 
       raster.setOperation(function(inputs, data) {
         ++data.count;
@@ -248,7 +249,7 @@ describe('ol.source.Raster', function() {
 
   describe('afteroperations', function() {
 
-    itNoPhantom('gets called after operations are run', function(done) {
+    it('gets called after operations are run', function(done) {
 
       var count = 0;
       raster.setOperation(function(inputs) {
@@ -271,7 +272,7 @@ describe('ol.source.Raster', function() {
 
     });
 
-    itNoPhantom('receives data set by the operation', function(done) {
+    it('receives data set by the operation', function(done) {
 
       raster.setOperation(function(inputs, data) {
         data.message = 'hello world';
