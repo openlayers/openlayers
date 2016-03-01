@@ -99,7 +99,7 @@ function shade(inputs, data) {
     }
   }
 
-  return new ImageData(shadeData, width, height);
+  return {data: shadeData, width: width, height: height};
 }
 
 var elevation = new ol.source.XYZ({
