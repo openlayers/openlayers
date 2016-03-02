@@ -3,7 +3,6 @@ goog.provide('ol.xml');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
 goog.require('goog.dom.xml');
-goog.require('goog.userAgent');
 goog.require('ol.array');
 
 
@@ -100,29 +99,11 @@ ol.xml.isDocument = function(value) {
 
 /**
  * @param {?} value Value.
- * @private
  * @return {boolean} Is node.
  */
-ol.xml.isNode_ = function(value) {
+ol.xml.isNode = function(value) {
   return value instanceof Node;
 };
-
-
-/**
- * @param {?} value Value.
- * @private
- * @return {boolean} Is node.
- */
-ol.xml.isNodeIE_ = function(value) {
-  return goog.isObject(value) && value.nodeType !== undefined;
-};
-
-
-/**
- * @param {?} value Value.
- * @return {boolean} Is node.
- */
-ol.xml.isNode = goog.userAgent.IE ? ol.xml.isNodeIE_ : ol.xml.isNode_;
 
 
 /**
