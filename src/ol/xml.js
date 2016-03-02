@@ -171,40 +171,10 @@ ol.xml.getAttributeNodeNS = function(node, namespaceURI, name) {
  * @param {?string} namespaceURI Namespace URI.
  * @param {string} name Attribute name.
  * @param {string|number} value Value.
- * @private
  */
-ol.xml.setAttributeNS_ = function(node, namespaceURI, name, value) {
+ol.xml.setAttributeNS = function(node, namespaceURI, name, value) {
   node.setAttributeNS(namespaceURI, name, value);
 };
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @param {string|number} value Value.
- * @private
- */
-ol.xml.setAttributeNSActiveX_ = function(node, namespaceURI, name, value) {
-  if (namespaceURI) {
-    var attribute = node.ownerDocument.createNode(2, name, namespaceURI);
-    attribute.nodeValue = value;
-    node.setAttributeNode(attribute);
-  } else {
-    node.setAttribute(name, value);
-  }
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @param {string|number} value Value.
- */
-ol.xml.setAttributeNS =
-    (document.implementation && document.implementation.createDocument) ?
-        ol.xml.setAttributeNS_ : ol.xml.setAttributeNSActiveX_;
 
 
 /**
