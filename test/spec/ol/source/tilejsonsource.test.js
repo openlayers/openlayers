@@ -4,14 +4,32 @@ goog.provide('ol.test.source.TileJSON');
 describe('ol.source.TileJSON', function() {
 
   describe('#getState', function() {
+
     it('returns ol.source.State.ERROR on HTTP 404', function() {
-      var changeSpy = sinon.spy(function(event) {
-        expect(event.target.getState()).to.eql('error');
-      });
       var source = new ol.source.TileJSON({
         url: 'invalid.jsonp'
       });
-      ol.events.listen(source, 'change', changeSpy);
+      source.on('change', function() {
+        expect(source.getState()).to.eql('error');
+      });
+    });
+
+    it('returns ol.source.State.ERROR on CORS issues', function() {
+      var source = new ol.source.TileJSON({
+        url: 'http://example.com'
+      });
+      source.on('change', function() {
+        expect(source.getState()).to.eql('error');
+      });
+    });
+
+    it('returns ol.source.State.ERROR on JSON parsing issues', function() {
+      var source = new ol.source.TileJSON({
+        url: '/'
+      });
+      source.on('change', function() {
+        expect(source.getState()).to.eql('error');
+      });
     });
 
   });
