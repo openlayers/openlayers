@@ -9,7 +9,6 @@ goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
-goog.require('ol.object');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.Tile');
@@ -23,12 +22,6 @@ goog.require('ol.source.Tile');
 ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   goog.base(this, tileLayer);
-
-  /**
-   * @private
-   * @type {!Object.<string, Array.<ol.TileCoord>>}
-   */
-  this.clipTileCoords_ = {};
 
   /**
    * @private
@@ -95,60 +88,56 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   var tileGrid = source.getTileGridForProjection(projection);
   var tilesToDraw = this.renderedTiles_;
 
-  var clipExtent, clipH, clipLeft, clipOrigin, clipTileCoord, clipTileCoords;
-  var clipTop, clipW, currentZ, h, i, ii, j, jj, left, origin, tile, tileExtent;
-  var tilePixelSize, top, w;
-  for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
-    tile = tilesToDraw[i];
-    tileExtent = tileGrid.getTileCoordExtent(
-        tile.getTileCoord(), this.tmpExtent_);
-    currentZ = tile.getTileCoord()[0];
+  var pixelExtents;
+  var opaque = source.getOpaque(projection) && layerState.opacity == 1;
+  if (!opaque) {
+    tilesToDraw.reverse();
+    pixelExtents = [];
+  }
+  for (var i = 0, ii = tilesToDraw.length; i < ii; ++i) {
+    var tile = tilesToDraw[i];
+    var tileCoord = tile.getTileCoord();
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
+    var currentZ = tileCoord[0];
     // Calculate all insert points by tile widths from a common origin to avoid
     // gaps caused by rounding
-    origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
+    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
         tileGrid.getTileCoordForCoordAndZ(center, currentZ)));
-    w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
-    h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
-    left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
+    var w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
+    var h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
+    var left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
         offsetX + Math.round((origin[0] - center[0]) * pixelScale);
-    top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
+    var top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
         offsetY + Math.round((center[1] - origin[1]) * pixelScale);
-    clipTileCoords = this.clipTileCoords_[tile.tileCoord.toString()];
-    if (clipTileCoords) {
-      // Create a clip mask for regions in this low resolution tile that will be
-      // filled by a higher resolution tile
+    if (!opaque) {
+      var pixelExtent = [left, top, left + w, top + h];
+      // Create a clip mask for regions in this low resolution tile that are
+      // already filled by a higher resolution tile
       renderContext.save();
-      renderContext.beginPath();
-      // counter-clockwise (outer ring) for current tile
-      renderContext.moveTo(left + w, top);
-      renderContext.lineTo(left, top);
-      renderContext.lineTo(left, top + h);
-      renderContext.lineTo(left + w, top + h);
-      renderContext.closePath();
-      // clockwise (inner rings) for lower resolution tiles
-      for (j = 0, jj = clipTileCoords.length; j < jj; ++j) {
-        clipTileCoord = clipTileCoords[j];
-        clipExtent = tileGrid.getTileCoordExtent(clipTileCoord);
-        clipOrigin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
-            tileGrid.getTileCoordForCoordAndZ(center, clipTileCoord[0])));
-        clipW = Math.round(ol.extent.getWidth(clipExtent) * pixelScale);
-        clipH = Math.round(ol.extent.getHeight(clipExtent) * pixelScale);
-        clipLeft = Math.round((clipExtent[0] - clipOrigin[0]) * pixelScale / clipW) * clipW +
-            offsetX + Math.round((clipOrigin[0] - center[0]) * pixelScale);
-        clipTop = Math.round((clipOrigin[1] - clipExtent[3]) * pixelScale / clipH) * clipH +
-            offsetY + Math.round((center[1] - clipOrigin[1]) * pixelScale);
-        renderContext.moveTo(clipLeft, clipTop + clipH);
-        renderContext.lineTo(clipLeft, clipTop);
-        renderContext.lineTo(clipLeft + clipW, clipTop);
-        renderContext.lineTo(clipLeft + clipW, clipTop + clipH);
-        renderContext.closePath();
+      for (var j = 0, jj = pixelExtents.length; j < jj; ++j) {
+        var clipExtent = pixelExtents[j];
+        if (ol.extent.intersects(pixelExtent, clipExtent)) {
+          renderContext.beginPath();
+          // counter-clockwise (outer ring) for current tile
+          renderContext.moveTo(pixelExtent[0], pixelExtent[1]);
+          renderContext.lineTo(pixelExtent[0], pixelExtent[3]);
+          renderContext.lineTo(pixelExtent[2], pixelExtent[3]);
+          renderContext.lineTo(pixelExtent[2], pixelExtent[1]);
+          // clockwise (inner ring) for higher resolution tile
+          renderContext.moveTo(clipExtent[0], clipExtent[1]);
+          renderContext.lineTo(clipExtent[2], clipExtent[1]);
+          renderContext.lineTo(clipExtent[2], clipExtent[3]);
+          renderContext.lineTo(clipExtent[0], clipExtent[3]);
+          renderContext.closePath();
+          renderContext.clip();
+        }
       }
-      renderContext.clip();
+      pixelExtents.push(pixelExtent);
     }
-    tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
+    var tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
     renderContext.drawImage(tile.getImage(), tileGutter, tileGutter,
         tilePixelSize[0], tilePixelSize[1], left, top, w, h);
-    if (clipTileCoords) {
+    if (!opaque) {
       renderContext.restore();
     }
   }
@@ -266,33 +255,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
     }
   }
   this.renderedTiles_ = renderables;
-  ol.object.clear(this.clipTileCoords_);
-  if (!(tileSource.getOpaque(projection) && layerState.opacity == 1)) {
-    var clipTileCoords = this.clipTileCoords_;
-    var tileCoord;
-    for (i = renderables.length - 1; i >= 0; --i) {
-      tileCoord = renderables[i].getTileCoord();
-      tileGrid.forEachTileCoordParentTileRange(tileCoord,
-          function(z, tileRange) {
-            var tiles = tilesToDrawByZ[z];
-            if (tiles) {
-              var key, tile;
-              for (key in tiles) {
-                tile = tiles[key];
-                if (tileRange.contains(tile.getTileCoord()) &&
-                    tile.getState() == ol.TileState.LOADED) {
-                  if (!(key in clipTileCoords)) {
-                    clipTileCoords[key] = [];
-                  }
-                  clipTileCoords[key].push(tileCoord);
-                  return true;
-                }
-              }
-            }
-            return false;
-          }, this, tmpTileRange, tmpExtent);
-    }
-  }
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
