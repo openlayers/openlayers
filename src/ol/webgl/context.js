@@ -5,6 +5,7 @@ goog.require('goog.log');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.events');
+goog.require('ol.events.EventTarget');
 goog.require('ol.object');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
@@ -101,6 +102,7 @@ ol.webgl.Context = function(canvas, gl) {
       this.handleWebGLContextRestored, this);
 
 };
+goog.inherits(ol.webgl.Context, ol.events.EventTarget);
 
 
 /**
