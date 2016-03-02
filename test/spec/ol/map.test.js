@@ -97,7 +97,7 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      goog.dispose(map);
+      map.dispose();
       document.body.removeChild(target);
     });
 
@@ -143,7 +143,7 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      goog.dispose(map);
+      map.dispose();
       document.body.removeChild(target);
     });
 
@@ -226,12 +226,12 @@ describe('ol.Map', function() {
     });
 
     it('removes the viewport from its parent', function() {
-      goog.dispose(map);
+      map.dispose();
       expect(map.getViewport().parentNode).to.be(null);
     });
 
     it('removes window listeners', function() {
-      goog.dispose(map);
+      map.dispose();
       expect(map.handleResize_).to.be(undefined);
     });
   });
@@ -383,7 +383,7 @@ describe('ol.Map', function() {
 
       afterEach(function() {
         map.removeOverlay(overlay);
-        goog.dispose(map);
+        map.dispose();
         document.body.removeChild(target);
       });
 
@@ -425,7 +425,6 @@ describe('ol.Map', function() {
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Overlay');

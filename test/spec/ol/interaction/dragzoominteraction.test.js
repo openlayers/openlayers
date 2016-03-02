@@ -33,7 +33,7 @@ describe('ol.interaction.DragZoom', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -82,7 +82,6 @@ describe('ol.interaction.DragZoom', function() {
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.extent');

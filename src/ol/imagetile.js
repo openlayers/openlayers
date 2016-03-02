@@ -70,7 +70,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
     this.unlistenImage_();
   }
   if (this.interimTile) {
-    goog.dispose(this.interimTile);
+    this.interimTile.dispose();
   }
   goog.base(this, 'disposeInternal');
 };

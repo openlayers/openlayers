@@ -216,8 +216,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     return;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(replayState.replayGroup);
   replayState.replayGroup = null;
   replayState.dirty = false;
 

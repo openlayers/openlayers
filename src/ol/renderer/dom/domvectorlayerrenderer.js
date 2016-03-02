@@ -268,8 +268,6 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame = function(frameState, layerS
     return true;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
   this.dirty_ = false;

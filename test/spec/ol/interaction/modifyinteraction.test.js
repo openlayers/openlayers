@@ -48,7 +48,7 @@ describe('ol.interaction.Modify', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -375,7 +375,6 @@ describe('ol.interaction.Modify', function() {
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.events');
 goog.require('ol.Collection');
 goog.require('ol.Feature');

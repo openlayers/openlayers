@@ -3,7 +3,6 @@ goog.provide('ol.renderer.Map');
 
 goog.require('goog.Disposable');
 goog.require('goog.asserts');
-goog.require('goog.dispose');
 goog.require('goog.functions');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -95,7 +94,7 @@ ol.renderer.Map.prototype.createLayerRenderer = goog.abstractMethod;
  */
 ol.renderer.Map.prototype.disposeInternal = function() {
   for (var id in this.layerRenderers_) {
-    goog.dispose(this.layerRenderers_[id]);
+    this.layerRenderers_[id].dispose();
   }
   goog.base(this, 'disposeInternal');
 };
@@ -340,7 +339,7 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
-      goog.dispose(this.removeLayerRendererByKey_(layerKey));
+      this.removeLayerRendererByKey_(layerKey).dispose();
     }
   }
 };

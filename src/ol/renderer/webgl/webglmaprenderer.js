@@ -311,7 +311,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
           }
         });
   }
-  goog.dispose(this.context_);
+  this.context_.dispose();
   goog.base(this, 'disposeInternal');
 };
 

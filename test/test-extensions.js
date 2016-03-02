@@ -370,7 +370,7 @@
   global.disposeMap = function(map) {
     var target = map.getTarget();
     map.setTarget(null);
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   };
 
