@@ -43,21 +43,45 @@ ol.source.TileJSON = function(options) {
     ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
         this.handleTileJSONError.bind(this));
   } else {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', options.url, true);
-    xhr.onload = function(e) {
-      if (xhr.status >= 200 && xhr.status < 300) {
-        var response = /** @type {TileJSON} */(JSON.parse(xhr.responseText));
-        this.handleTileJSONResponse(response);
-      } else {
-        this.handleTileJSONError();
-      }
-    }.bind(this);
-    xhr.send();
+    var client = new XMLHttpRequest();
+    client.addEventListener('load', this.onXHRLoad_.bind(this));
+    client.addEventListener('error', this.onXHRError_.bind(this));
+    client.open('GET', options.url);
+    client.send();
   }
 
 };
 goog.inherits(ol.source.TileJSON, ol.source.TileImage);
+
+
+/**
+ * @private
+ * @param {Event} event The load event.
+ */
+ol.source.TileJSON.prototype.onXHRLoad_ = function(event) {
+  var client = /** @type {XMLHttpRequest} */ (event.target);
+  if (client.status >= 200 && client.status < 300) {
+    var response;
+    try {
+      response = /** @type {TileJSON} */(JSON.parse(client.responseText));
+    } catch (err) {
+      this.handleTileJSONError();
+      return;
+    }
+    this.handleTileJSONResponse(response);
+  } else {
+    this.handleTileJSONError();
+  }
+};
+
+
+/**
+ * @private
+ * @param {Event} event The error event.
+ */
+ol.source.TileJSON.prototype.onXHRError_ = function(event) {
+  this.handleTileJSONError();
+};
 
 
 /**
