@@ -459,6 +459,7 @@
   };
 
   var features = {
+    ArrayBuffer: typeof ArrayBuffer === 'function',
     Uint8ClampedArray: ('Uint8ClampedArray' in global)
   };
 
