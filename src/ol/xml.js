@@ -2,7 +2,6 @@ goog.provide('ol.xml');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.xml');
 goog.require('ol.array');
 
 
@@ -34,7 +33,7 @@ ol.xml.Serializer;
  * @const
  * @type {Document}
  */
-ol.xml.DOCUMENT = goog.dom.xml.createDocument();
+ol.xml.DOCUMENT = document.implementation.createDocument('', '', null);
 
 
 /**
