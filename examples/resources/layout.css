@@ -32,12 +32,15 @@ body {
 .navbar-nav>li>a {
   color: white;
 }
-.search-form, .version-form {
-  position: absolute;
-  left: 450px;
+.display-table {
+  display: table;
+}
+.version-form, .navbar-form {
+  display: table-cell;
+  vertical-align: middle;
 }
 .version-form {
-  top: 5px;
+  color: #333;
 }
 
 #title {
