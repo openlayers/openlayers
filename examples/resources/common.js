@@ -22,7 +22,7 @@
     return;
   }
 
-  var container = document.getElementById('navbar-inner-container');
+  var container = document.getElementById('navbar-logo-container');
   if (!container) {
     return;
   }
@@ -74,7 +74,7 @@
 
   select.className = 'input-medium';
 
-  form.className = 'navbar-form pull-right version-form';
+  form.className = 'navbar-form version-form';
   form.appendChild(select);
 
   container.appendChild(form);
