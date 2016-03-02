@@ -458,4 +458,25 @@
     }
   };
 
+  var features = {
+    Uint8ClampedArray: ('Uint8ClampedArray' in global)
+  };
+
+  /**
+   * Allow tests to be skipped where certain features are not available.  The
+   * provided key must be in the above `features` lookup.  Keys should
+   * correspond to the feature that is required, but can be any string.
+   * @param {string} key The required feature name.
+   * @return {Object} An object with a `describe` function that will run tests
+   *     if the required feature is available and skip them otherwise.
+   */
+  global.where = function(key) {
+    if (!(key in features)) {
+      throw new Error('where() called with unknown key: ' + key);
+    }
+    return {
+      describe: features[key] ? global.describe : global.xdescribe
+    };
+  };
+
 })(this);
