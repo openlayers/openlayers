@@ -1745,7 +1745,7 @@ ol.format.KML.prototype.getExtensions = function() {
 ol.format.KML.prototype.readDocumentOrFolder_ = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  var localName = ol.xml.getLocalName(node);
+  var localName = node.localName;
   goog.asserts.assert(localName == 'Document' || localName == 'Folder',
       'localName should be Document or Folder');
   // FIXME use scope somehow
@@ -1923,7 +1923,7 @@ ol.format.KML.prototype.readFeaturesFromNode = function(node, opt_options) {
     return [];
   }
   var features;
-  var localName = ol.xml.getLocalName(node);
+  var localName = node.localName;
   if (localName == 'Document' || localName == 'Folder') {
     features = this.readDocumentOrFolder_(
         node, [this.getReadOptions(node, opt_options)]);
@@ -2009,7 +2009,7 @@ ol.format.KML.prototype.readNameFromNode = function(node) {
     }
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    var localName = ol.xml.getLocalName(n);
+    var localName = n.localName;
     if (ol.array.includes(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||
@@ -2080,7 +2080,7 @@ ol.format.KML.prototype.readNetworkLinksFromNode = function(node) {
     }
   }
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    var localName = ol.xml.getLocalName(n);
+    var localName = n.localName;
     if (ol.array.includes(ol.format.KML.NAMESPACE_URIS_, n.namespaceURI) &&
         (localName == 'Document' ||
          localName == 'Folder' ||

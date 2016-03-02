@@ -111,7 +111,7 @@ ol.format.GMLBase.ONLY_WHITESPACE_RE_ = /^[\s\xa0]*$/;
 ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  var localName = ol.xml.getLocalName(node);
+  var localName = node.localName;
   var features;
   if (localName == 'FeatureCollection') {
     if (node.namespaceURI === 'http://www.opengis.net/wfs') {
@@ -219,7 +219,7 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
       ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
-    var localName = ol.xml.getLocalName(n);
+    var localName = n.localName;
     // Assume attribute elements have one child node and that the child
     // is a text or CDATA node (to be treated as text).
     // Otherwise assume it is a geometry node.
