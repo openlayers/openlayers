@@ -160,48 +160,10 @@ ol.xml.getAttributeNS = function(node, namespaceURI, name) {
  * @param {?string} namespaceURI Namespace URI.
  * @param {string} name Attribute name.
  * @return {?Node} Attribute node or null if none found.
- * @private
  */
-ol.xml.getAttributeNodeNS_ = function(node, namespaceURI, name) {
+ol.xml.getAttributeNodeNS = function(node, namespaceURI, name) {
   return node.getAttributeNodeNS(namespaceURI, name);
 };
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @return {?Node} Attribute node or null if none found.
- * @private
- */
-ol.xml.getAttributeNodeNSActiveX_ = function(node, namespaceURI, name) {
-  var attributeNode = null;
-  var attributes = node.attributes;
-  var potentialNode, fullName;
-  for (var i = 0, len = attributes.length; i < len; ++i) {
-    potentialNode = attributes[i];
-    if (potentialNode.namespaceURI == namespaceURI) {
-      fullName = (potentialNode.prefix) ?
-          (potentialNode.prefix + ':' + name) : name;
-      if (fullName == potentialNode.nodeName) {
-        attributeNode = potentialNode;
-        break;
-      }
-    }
-  }
-  return attributeNode;
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @return {?Node} Attribute node or null if none found.
- */
-ol.xml.getAttributeNodeNS =
-    (document.implementation && document.implementation.createDocument) ?
-        ol.xml.getAttributeNodeNS_ : ol.xml.getAttributeNodeNSActiveX_;
 
 
 /**
