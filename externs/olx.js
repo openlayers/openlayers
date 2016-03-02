@@ -6218,7 +6218,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     minZoom: (number|undefined),
  *     wrapX: (boolean|undefined),
  *     config: (Object|undefined),
- *     map: string,
+ *     map: (string|undefined),
  *     account: (string|undefined)}}
  * @api
  */
@@ -6294,7 +6294,7 @@ olx.source.CartoDBOptions.prototype.config;
  * If using named maps, this will be the name of the template to load.
  * See {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#named-maps}
  * for more detail.
- * @type {boolean|undefined}
+ * @type {string|undefined}
  * @api
  */
 olx.source.CartoDBOptions.prototype.map;
