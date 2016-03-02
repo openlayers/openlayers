@@ -1,5 +1,7 @@
 goog.provide('ol.Disposable');
 
+goog.require('ol');
+
 /**
  * Objects that need to clean up after themselves.
  * @constructor
@@ -27,4 +29,4 @@ ol.Disposable.prototype.dispose = function() {
  * Extension point for disposable objects.
  * @protected
  */
-ol.Disposable.prototype.disposeInternal = function() {};
+ol.Disposable.prototype.disposeInternal = ol.nullFunction;
