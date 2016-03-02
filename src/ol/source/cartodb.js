@@ -75,8 +75,7 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
     this.applyTemplate_(this.templateCache_[paramHash]);
     return;
   }
-  var protocol = window.location.protocol;
-  var mapUrl = protocol + '//' + this.account_ +
+  var mapUrl = 'https://' + this.account_ +
       '.cartodb.com/api/v1/map';
 
   if (this.mapId_) {
