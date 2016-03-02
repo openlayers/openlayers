@@ -9,7 +9,7 @@ var green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
 var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
     'ABAAEAAAICRAEAOw==';
 
-describe('ol.source.Raster', function() {
+where('Uint8ClampedArray').describe('ol.source.Raster', function() {
 
   var target, map, redSource, greenSource, blueSource, raster;
 

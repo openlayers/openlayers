@@ -6,6 +6,7 @@
     "afterLoadText": false,
     "expect": false,
     "proj4": false,
-    "sinon": false
+    "sinon": false,
+    "where": false
   }
 }
