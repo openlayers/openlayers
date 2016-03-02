@@ -149,39 +149,10 @@ ol.xml.isNode = goog.userAgent.IE ? ol.xml.isNodeIE_ : ol.xml.isNode_;
  * @param {?string} namespaceURI Namespace URI.
  * @param {string} name Attribute name.
  * @return {string} Value
- * @private
  */
-ol.xml.getAttributeNS_ = function(node, namespaceURI, name) {
+ol.xml.getAttributeNS = function(node, namespaceURI, name) {
   return node.getAttributeNS(namespaceURI, name) || '';
 };
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @return {string} Value
- * @private
- */
-ol.xml.getAttributeNSActiveX_ = function(node, namespaceURI, name) {
-  var attributeValue = '';
-  var attributeNode = ol.xml.getAttributeNodeNS(node, namespaceURI, name);
-  if (attributeNode !== undefined) {
-    attributeValue = attributeNode.nodeValue;
-  }
-  return attributeValue;
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
- * @return {string} Value
- */
-ol.xml.getAttributeNS =
-    (document.implementation && document.implementation.createDocument) ?
-        ol.xml.getAttributeNS_ : ol.xml.getAttributeNSActiveX_;
 
 
 /**
