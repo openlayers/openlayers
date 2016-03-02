@@ -300,12 +300,15 @@ ol.Map = function(options) {
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
-  var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
+  /**
+   * @private
+   * @type {ol.MapBrowserEventHandler}
+   */
+  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this);
   for (var key in ol.MapBrowserEvent.EventType) {
-    ol.events.listen(mapBrowserEventHandler, ol.MapBrowserEvent.EventType[key],
+    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEvent.EventType[key],
         this.handleMapBrowserEvent, this);
   }
-  this.registerDisposable(mapBrowserEventHandler);
 
   /**
    * @private
@@ -353,9 +356,7 @@ ol.Map = function(options) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ =
-      new optionsInternal.rendererConstructor(this.viewport_, this);
-  this.registerDisposable(this.renderer_);
+  this.renderer_ = new optionsInternal.rendererConstructor(this.viewport_, this);
 
   /**
    * @type {function(Event)|undefined}
@@ -577,6 +578,8 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
+  this.mapBrowserEventHandler_.dispose();
+  this.renderer_.dispose();
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
