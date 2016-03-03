@@ -163,6 +163,7 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
  * @inheritDoc
  */
 ol.webgl.Context.prototype.disposeInternal = function() {
+  ol.events.unlistenAll(this.canvas_);
   var gl = this.getGL();
   if (!gl.isContextLost()) {
     var key;
