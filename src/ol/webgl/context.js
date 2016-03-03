@@ -3,6 +3,7 @@ goog.provide('ol.webgl.Context');
 goog.require('goog.asserts');
 goog.require('goog.log');
 goog.require('ol');
+goog.require('ol.Disposable');
 goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.object');
@@ -22,7 +23,7 @@ ol.webgl.BufferCacheEntry;
  * A WebGL context for accessing low-level WebGL capabilities.
  *
  * @constructor
- * @extends {ol.events.EventTarget}
+ * @extends {ol.Disposable}
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {WebGLRenderingContext} gl GL.
  */
@@ -101,6 +102,7 @@ ol.webgl.Context = function(canvas, gl) {
       this.handleWebGLContextRestored, this);
 
 };
+goog.inherits(ol.webgl.Context, ol.Disposable);
 
 
 /**
@@ -161,6 +163,7 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
  * @inheritDoc
  */
 ol.webgl.Context.prototype.disposeInternal = function() {
+  ol.events.unlistenAll(this.canvas_);
   var gl = this.getGL();
   if (!gl.isContextLost()) {
     var key;

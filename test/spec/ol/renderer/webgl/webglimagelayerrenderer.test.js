@@ -40,7 +40,7 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     });
 
     afterEach(function() {
-      goog.dispose(map);
+      map.dispose();
     });
 
     it('produces a correct matrix', function() {
@@ -80,7 +80,6 @@ describe('ol.renderer.webgl.ImageLayer', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('ol.Map');

@@ -32,7 +32,7 @@ describe('ol.interaction.Draw', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -811,7 +811,6 @@ describe('ol.interaction.Draw', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.events');
 goog.require('ol.Feature');
 goog.require('ol.Map');

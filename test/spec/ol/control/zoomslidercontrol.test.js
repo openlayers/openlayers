@@ -15,8 +15,8 @@ describe('ol.control.ZoomSlider', function() {
   });
 
   afterEach(function() {
-    goog.dispose(zoomslider);
-    goog.dispose(map);
+    zoomslider.dispose();
+    map.dispose();
     document.body.removeChild(target);
     zoomslider = null;
     map = null;
@@ -68,7 +68,7 @@ describe('ol.control.ZoomSlider', function() {
       var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
       expect(control.direction_).to.be(horizontal);
 
-      goog.dispose(control);
+      control.dispose();
     });
 
     it('is vertical for tall containers', function() {
@@ -81,7 +81,7 @@ describe('ol.control.ZoomSlider', function() {
       var vertical = ol.control.ZoomSlider.direction.VERTICAL;
       expect(control.direction_).to.be(vertical);
 
-      goog.dispose(control);
+      control.dispose();
     });
   });
 
@@ -102,7 +102,6 @@ describe('ol.control.ZoomSlider', function() {
     });
 
     it('[horizontal] handles a drag sequence', function() {
-      var spy = sinon.spy(goog.Disposable.prototype, 'registerDisposable');
       var control = new ol.control.ZoomSlider();
       map.addControl(control);
       map.getView().setZoom(0);
@@ -111,8 +110,7 @@ describe('ol.control.ZoomSlider', function() {
       control.element.firstChild.style.width = '100px';
       control.element.firstChild.style.height = '10px';
       map.renderSync();
-      var dragger = spy.firstCall.args[0];
-      spy.restore();
+      var dragger = control.dragger_;
       var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
         target: control.element.firstElementChild
       });
@@ -138,7 +136,6 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.dragging_).to.be(false);
     });
     it('[vertical] handles a drag sequence', function() {
-      var spy = sinon.spy(goog.Disposable.prototype, 'registerDisposable');
       var control = new ol.control.ZoomSlider();
       control.element.style.width = '10px';
       control.element.style.height = '100px';
@@ -147,8 +144,7 @@ describe('ol.control.ZoomSlider', function() {
       map.addControl(control);
       map.getView().setZoom(8);
       map.renderSync();
-      var dragger = spy.firstCall.args[0];
-      spy.restore();
+      var dragger = control.dragger_;
       var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
         target: control.element.firstElementChild
       });
@@ -177,8 +173,6 @@ describe('ol.control.ZoomSlider', function() {
 
 });
 
-goog.require('goog.Disposable');
-goog.require('goog.dispose');
 goog.require('goog.dom.classlist');
 goog.require('ol.Map');
 goog.require('ol.View');

@@ -13,7 +13,7 @@ describe('ol.layer.VectorTile', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layer);
+      layer.dispose();
     });
 
     it('creates an instance', function() {
@@ -32,6 +32,5 @@ describe('ol.layer.VectorTile', function() {
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.source.VectorTile');

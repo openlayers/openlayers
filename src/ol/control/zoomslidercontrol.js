@@ -118,14 +118,17 @@ ol.control.ZoomSlider = function(opt_options) {
       [className, ol.css.CLASS_UNSELECTABLE, ol.css.CLASS_CONTROL],
       thumbElement);
 
-  var dragger = new ol.pointer.PointerEventHandler(containerElement);
-  this.registerDisposable(dragger);
+  /**
+   * @type {ol.pointer.PointerEventHandler}
+   * @private
+   */
+  this.dragger_ = new ol.pointer.PointerEventHandler(containerElement);
 
-  ol.events.listen(dragger, ol.pointer.EventType.POINTERDOWN,
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERDOWN,
       this.handleDraggerStart_, this);
-  ol.events.listen(dragger, ol.pointer.EventType.POINTERMOVE,
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERMOVE,
       this.handleDraggerDrag_, this);
-  ol.events.listen(dragger, ol.pointer.EventType.POINTERUP,
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERUP,
       this.handleDraggerEnd_, this);
 
   ol.events.listen(containerElement, ol.events.EventType.CLICK,
@@ -141,6 +144,15 @@ ol.control.ZoomSlider = function(opt_options) {
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
+
+
+/**
+ * @inheritDoc
+ */
+ol.control.ZoomSlider.prototype.disposeInternal = function() {
+  this.dragger_.dispose();
+  goog.base(this, 'disposeInternal');
+};
 
 
 /**

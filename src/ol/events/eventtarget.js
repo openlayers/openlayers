@@ -1,6 +1,6 @@
 goog.provide('ol.events.EventTarget');
 
-goog.require('goog.Disposable');
+goog.require('ol.Disposable');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 
@@ -20,7 +20,7 @@ goog.require('ol.events.Event');
  *    returns false.
  *
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.Disposable}
  */
 ol.events.EventTarget = function() {
 
@@ -33,7 +33,7 @@ ol.events.EventTarget = function() {
   this.listeners_ = {};
 
 };
-goog.inherits(ol.events.EventTarget, goog.Disposable);
+goog.inherits(ol.events.EventTarget, ol.Disposable);
 
 
 /**
@@ -79,7 +79,6 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
  */
 ol.events.EventTarget.prototype.disposeInternal = function() {
   ol.events.unlistenAll(this);
-  goog.base(this, 'disposeInternal');
 };
 
 

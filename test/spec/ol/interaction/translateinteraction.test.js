@@ -38,7 +38,7 @@ describe('ol.interaction.Translate', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -108,7 +108,6 @@ describe('ol.interaction.Translate', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');

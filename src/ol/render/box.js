@@ -2,14 +2,14 @@
 
 goog.provide('ol.render.Box');
 
-goog.require('goog.Disposable');
 goog.require('goog.asserts');
+goog.require('ol.Disposable');
 goog.require('ol.geom.Polygon');
 
 
 /**
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.Disposable}
  * @param {string} className CSS class name.
  */
 ol.render.Box = function(className) {
@@ -47,7 +47,7 @@ ol.render.Box = function(className) {
   this.endPixel_ = null;
 
 };
-goog.inherits(ol.render.Box, goog.Disposable);
+goog.inherits(ol.render.Box, ol.Disposable);
 
 
 /**
@@ -55,7 +55,6 @@ goog.inherits(ol.render.Box, goog.Disposable);
  */
 ol.render.Box.prototype.disposeInternal = function() {
   this.setMap(null);
-  goog.base(this, 'disposeInternal');
 };
 
 

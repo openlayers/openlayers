@@ -22,7 +22,7 @@ describe('ol.render.Box', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 

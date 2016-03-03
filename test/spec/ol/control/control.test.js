@@ -13,12 +13,12 @@ describe('ol.control.Control', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
   });
 
   describe('dispose', function() {
     it('removes the control element from its parent', function() {
-      goog.dispose(control);
+      control.dispose();
       expect(control.element.parentNode).to.be(null);
     });
   });
@@ -32,7 +32,7 @@ describe('ol.control.Control\'s target', function() {
       document.body.appendChild(target);
       var ctrl = new ol.control.Control({target: 'mycontrol'});
       expect(ctrl.target_.id).to.equal('mycontrol');
-      goog.dispose(ctrl);
+      ctrl.dispose();
     });
     it('accepts element for target', function() {
       var target = document.createElement('div');
@@ -40,16 +40,15 @@ describe('ol.control.Control\'s target', function() {
       document.body.appendChild(target);
       var ctrl = new ol.control.Control({target: target});
       expect(ctrl.target_.id).to.equal('mycontrol');
-      goog.dispose(ctrl);
+      ctrl.dispose();
     });
     it('ignores non-existing target id', function() {
       var ctrl = new ol.control.Control({target: 'doesnotexist'});
       expect(ctrl.target_).to.equal(null);
-      goog.dispose(ctrl);
+      ctrl.dispose();
     });
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Map');
 goog.require('ol.control.Control');

@@ -11,7 +11,7 @@ describe('ol.layer.Group', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('creates an instance', function() {
@@ -63,8 +63,8 @@ describe('ol.layer.Group', function() {
     });
 
     afterEach(function() {
-      goog.dispose(group);
-      goog.dispose(layer);
+      group.dispose();
+      layer.dispose();
     });
 
     it('is dispatched by the group when layer opacity changes', function() {
@@ -102,8 +102,8 @@ describe('ol.layer.Group', function() {
     });
 
     afterEach(function() {
-      goog.dispose(group);
-      goog.dispose(layer);
+      group.dispose();
+      layer.dispose();
     });
 
     it('is dispatched by the group when group opacity changes', function() {
@@ -161,8 +161,8 @@ describe('ol.layer.Group', function() {
       expect(layerGroup.getLayers().getLength()).to.be(1);
       expect(layerGroup.getLayers().item(0)).to.be(layer);
 
-      goog.dispose(layer);
-      goog.dispose(layerGroup);
+      layer.dispose();
+      layerGroup.dispose();
     });
 
     it('accepts an extent option', function() {
@@ -202,8 +202,8 @@ describe('ol.layer.Group', function() {
       expect(layerGroup.getLayers().getLength()).to.be(1);
       expect(layerGroup.getLayers().item(0)).to.be(layer);
 
-      goog.dispose(layer);
-      goog.dispose(layerGroup);
+      layer.dispose();
+      layerGroup.dispose();
     });
   });
 
@@ -216,7 +216,7 @@ describe('ol.layer.Group', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('returns a layerState from the properties values', function() {
@@ -312,9 +312,9 @@ describe('ol.layer.Group', function() {
       layerGroup.setLayers(layers);
       expect(layerGroup.getLayers()).to.be(layers);
 
-      goog.dispose(layerGroup);
-      goog.dispose(layer);
-      goog.dispose(layers);
+      layerGroup.dispose();
+      layer.dispose();
+      layers.dispose();
     });
 
   });
@@ -329,7 +329,7 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(0);
 
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     var layer1 = new ol.layer.Layer({
@@ -372,7 +372,7 @@ describe('ol.layer.Group', function() {
 
       expect(layerStatesArray[1]).to.eql(layer2.getLayerState());
 
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('uses the layer group extent if layer has no extent', function() {
@@ -383,7 +383,7 @@ describe('ol.layer.Group', function() {
       });
       var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(groupExtent);
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('uses the intersection of group and child extent', function() {
@@ -395,7 +395,7 @@ describe('ol.layer.Group', function() {
       var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(
           ol.extent.getIntersection(layer3.getExtent(), groupExtent));
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('transforms layerStates correctly', function() {
@@ -433,7 +433,7 @@ describe('ol.layer.Group', function() {
         minResolution: 0.25
       });
 
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('let order of layers without Z-index unchanged', function() {
@@ -447,7 +447,7 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray[0]).to.eql(initialArray[0]);
       expect(layerStatesArray[1]).to.eql(initialArray[1]);
 
-      goog.dispose(layerGroup);
+      layerGroup.dispose();
     });
 
     it('orders layer with higher Z-index on top', function() {
@@ -477,20 +477,19 @@ describe('ol.layer.Group', function() {
       expect(layerStatesArray[2]).to.eql(initialArray[2]);
       expect(layerStatesArray[3]).to.eql(initialArray[1]);
 
-      goog.dispose(layer10);
-      goog.dispose(layerM1);
-      goog.dispose(layerGroup);
+      layer10.dispose();
+      layerM1.dispose();
+      layerGroup.dispose();
     });
 
-    goog.dispose(layer1);
-    goog.dispose(layer2);
-    goog.dispose(layer3);
+    layer1.dispose();
+    layer2.dispose();
+    layer3.dispose();
   });
 
 });
 
 goog.require('ol.array');
-goog.require('goog.dispose');
 goog.require('ol.Collection');
 goog.require('ol.ObjectEventType');
 goog.require('ol.events');

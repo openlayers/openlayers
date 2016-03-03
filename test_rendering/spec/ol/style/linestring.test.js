@@ -91,7 +91,6 @@ describe('ol.rendering.style.LineString', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
 goog.require('ol.Map');

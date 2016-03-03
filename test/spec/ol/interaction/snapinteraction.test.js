@@ -43,7 +43,7 @@ describe('ol.interaction.Snap', function() {
     });
 
     afterEach(function() {
-      goog.dispose(map);
+      map.dispose();
       document.body.removeChild(target);
     });
 
