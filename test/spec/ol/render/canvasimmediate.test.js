@@ -2,6 +2,14 @@ goog.provide('ol.test.render.canvas.Immediate');
 
 describe('ol.render.canvas.Immediate', function() {
 
+  describe('constructor', function() {
+    it('creates an instance', function() {
+      var instance = new ol.render.canvas.Immediate();
+      expect(instance).to.be.a(ol.render.canvas.Immediate);
+      expect(instance).to.be.a(ol.render.VectorContext);
+    });
+  });
+
   describe('#flush', function() {
     it('calls callback in correct z-order', function() {
       var canvas = new ol.render.canvas.Immediate();
@@ -110,4 +118,5 @@ describe('ol.render.canvas.Immediate', function() {
 });
 
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas.Immediate');
