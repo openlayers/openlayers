@@ -36,6 +36,7 @@ goog.require('ol.vec.Mat4');
  * @struct
  */
 ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, viewRotation) {
+  goog.base(this);
 
   /**
    * @private
@@ -237,6 +238,7 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
   this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
 
 };
+goog.inherits(ol.render.canvas.Immediate, ol.render.VectorContext);
 
 
 /**
@@ -694,12 +696,6 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry = function(multiPo
     this.drawText_(flatInteriorPoints, 0, flatInteriorPoints.length, 2);
   }
 };
-
-
-/**
- * @inheritDoc
- */
-ol.render.canvas.Immediate.prototype.drawText = goog.abstractMethod;
 
 
 /**
