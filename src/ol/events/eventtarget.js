@@ -20,6 +20,7 @@ goog.require('ol.events.Event');
  *    returns false.
  *
  * @constructor
+ * @struct
  * @extends {ol.Disposable}
  */
 ol.events.EventTarget = function() {
