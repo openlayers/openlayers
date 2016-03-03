@@ -20,6 +20,7 @@ describe('ol.events.EventTarget', function() {
   describe('constructor', function() {
     it('creates an instance', function() {
       expect(eventTarget).to.be.a(ol.events.EventTarget);
+      expect(eventTarget).to.be.a(ol.Disposable);
     });
     it('creates an empty listeners_ object', function() {
       expect(Object.keys(eventTarget.listeners_)).to.have.length(0);
@@ -127,6 +128,7 @@ describe('ol.events.EventTarget', function() {
 });
 
 
+goog.require('ol.Disposable');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
