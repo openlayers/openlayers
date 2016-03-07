@@ -593,7 +593,7 @@ ol.Map.prototype.disposeInternal = function() {
     goog.global.cancelAnimationFrame(this.animationDelayKey_);
     this.animationDelayKey_ = undefined;
   }
-  goog.dom.removeNode(this.viewport_);
+  this.setTarget(null);
   goog.base(this, 'disposeInternal');
 };
 
