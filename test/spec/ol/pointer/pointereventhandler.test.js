@@ -160,7 +160,6 @@ describe('ol.pointer.PointerEventHandler', function() {
 
 });
 
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.has');
