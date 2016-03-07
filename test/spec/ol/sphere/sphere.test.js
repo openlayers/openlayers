@@ -105,7 +105,6 @@ describe('ol.Sphere', function() {
 });
 
 
-goog.require('goog.math');
 goog.require('ol.Sphere');
 goog.require('ol.sphere.WGS84');
 goog.require('ol.format.WKT');

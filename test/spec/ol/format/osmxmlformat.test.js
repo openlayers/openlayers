@@ -109,7 +109,6 @@ describe('ol.format.OSMXML', function() {
 });
 
 
-goog.require('goog.dom.xml');
 goog.require('ol.Feature');
 goog.require('ol.format.OSMXML');
 goog.require('ol.geom.Point');

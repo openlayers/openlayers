@@ -215,5 +215,4 @@ describe('ol.format.WMSGetFeatureInfo', function() {
 });
 
 
-goog.require('goog.dom');
 goog.require('ol.format.WMSGetFeatureInfo');
