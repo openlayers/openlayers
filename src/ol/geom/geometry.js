@@ -170,6 +170,16 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
 
 
 /**
+ * Rotate the geometry around a given coordinate. This modifies the geometry
+ * coordinates in place.
+ * @param {number} angle Rotation angle in radians.
+ * @param {ol.Coordinate} anchor The rotation center.
+ * @api
+ */
+ol.geom.Geometry.prototype.rotate = goog.abstractMethod;
+
+
+/**
  * Create a simplified version of this geometry.  For linestrings, this uses
  * the the {@link
  * https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
