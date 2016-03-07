@@ -3934,7 +3934,7 @@ olx.source.BingMapsOptions.prototype.culture;
 
 
 /**
- * Bing Maps API key. Get yours at http://bingmapsportal.com/.
+ * Bing Maps API key. Get yours at http://www.bingmapsportal.com/.
  * @type {string}
  * @api stable
  */
