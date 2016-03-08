@@ -214,7 +214,7 @@ describe('ol.events', function() {
       var key2 = ol.events.listen(target, 'foo', listener, {});
       expect(key1.boundListener).to.not.equal(key2.boundListener);
       expect(target.getListeners('foo')).to.eql(
-          [key2.boundListener, key1.boundListener]);
+          [key1.boundListener, key2.boundListener]);
     });
   });
 
