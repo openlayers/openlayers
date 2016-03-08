@@ -9,7 +9,6 @@ goog.provide('ol.color');
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.color.names');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.math');
 
@@ -254,19 +253,4 @@ ol.color.toString = function(color) {
   }
   var a = color[3] === undefined ? 1 : color[3];
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-};
-
-
-/**
- * @param {!ol.Color} color Color.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {!ol.Color=} opt_color Color.
- * @return {ol.Color} Transformed color.
- */
-ol.color.transform = function(color, transform, opt_color) {
-  var result = opt_color ? opt_color : [];
-  result = goog.vec.Mat4.multVec3(transform, color, result);
-  goog.asserts.assert(goog.isArray(result), 'result should be an array');
-  result[3] = color[3];
-  return ol.color.normalize(result, result);
 };
