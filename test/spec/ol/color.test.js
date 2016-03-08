@@ -28,6 +28,26 @@ describe('ol.color', function() {
 
   });
 
+  describe('ol.color.asString()', function() {
+
+    it('returns the same for a string', function() {
+      var color = 'rgba(0,1,2,0.3)';
+      var got = ol.color.asString(color);
+      expect(got).to.be(color);
+    });
+
+    it('returns a string given an rgba array', function() {
+      var color = ol.color.asString([1, 2, 3, 0.4]);
+      expect(color).to.eql('rgba(1,2,3,0.4)');
+    });
+
+    it('returns a string given an rgb array', function() {
+      var color = ol.color.asString([1, 2, 3]);
+      expect(color).to.eql('rgba(1,2,3,1)');
+    });
+
+  });
+
   describe('ol.color.fromString', function() {
 
     before(function() {
