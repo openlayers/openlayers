@@ -17,7 +17,8 @@ goog.require('ol.math');
 /**
  * A color represented as a short array [red, green, blue, alpha].
  * red, green, and blue should be integers in the range 0..255 inclusive.
- * alpha should be a float in the range 0..1 inclusive.
+ * alpha should be a float in the range 0..1 inclusive. If no alpha value is
+ * given then `1` will be used.
  * @typedef {Array.<number>}
  * @api
  */
@@ -293,7 +294,7 @@ ol.color.toString = function(color) {
   if (b != (b | 0)) {
     b = (b + 0.5) | 0;
   }
-  var a = color[3];
+  var a = color[3] === undefined ? 1 : color[3];
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
 };
 
