@@ -129,6 +129,10 @@ describe('ol.color', function() {
       expect(ol.color.toString([1.2, 2.5, 3.7, 0.4])).to.be('rgba(1,3,4,0.4)');
     });
 
+    it('sets default alpha value if undefined', function() {
+      expect(ol.color.toString([0, 0, 0])).to.be('rgba(0,0,0,1)');
+    });
+
   });
 });
 
