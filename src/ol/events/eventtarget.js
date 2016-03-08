@@ -72,7 +72,9 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   var listeners = this.listeners_[type];
   var propagate;
   if (listeners) {
-    this.pendingRemovals_[type] = 0;
+    if (!(type in this.pendingRemovals_)) {
+      this.pendingRemovals_[type] = 0;
+    }
     for (var i = 0, ii = listeners.length; i < ii; ++i) {
       if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
         propagate = false;
