@@ -270,22 +270,3 @@ ol.color.transform = function(color, transform, opt_color) {
   result[3] = color[3];
   return ol.color.normalize(result, result);
 };
-
-
-/**
- * @param {ol.Color|string} color1 Color2.
- * @param {ol.Color|string} color2 Color2.
- * @return {boolean} Equals.
- */
-ol.color.stringOrColorEquals = function(color1, color2) {
-  if (color1 === color2 || color1 == color2) {
-    return true;
-  }
-  if (typeof color1 === 'string') {
-    color1 = ol.color.fromString(color1);
-  }
-  if (typeof color2 === 'string') {
-    color2 = ol.color.fromString(color2);
-  }
-  return ol.color.equals(color1, color2);
-};
