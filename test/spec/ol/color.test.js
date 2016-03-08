@@ -3,6 +3,31 @@ goog.provide('ol.test.color');
 
 describe('ol.color', function() {
 
+  describe('ol.color.asArray()', function() {
+
+    it('returns the same for an array', function() {
+      var color = [1, 2, 3, 0.4];
+      var got = ol.color.asArray(color);
+      expect(got).to.be(color);
+    });
+
+    it('returns an array given an rgba string', function() {
+      var color = ol.color.asArray('rgba(1,2,3,0.4)');
+      expect(color).to.eql([1, 2, 3, 0.4]);
+    });
+
+    it('returns an array given an rgb string', function() {
+      var color = ol.color.asArray('rgb(1,2,3)');
+      expect(color).to.eql([1, 2, 3, 1]);
+    });
+
+    it('returns an array given a hex string', function() {
+      var color = ol.color.asArray('#00ccff');
+      expect(color).to.eql([0, 204, 255, 1]);
+    });
+
+  });
+
   describe('ol.color.fromString', function() {
 
     before(function() {
