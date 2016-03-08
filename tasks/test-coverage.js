@@ -164,7 +164,7 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
   wrench.copyDirSyncRecursive(instrumentedDir, dir, copyOpts);
 
   log('• run test suite on instrumented code');
-  runTestsuite(true, collectAndWriteCoverageData);
+  runTestsuite({coverage: true, reporter: 'dot'}, collectAndWriteCoverageData);
 };
 
 /**
