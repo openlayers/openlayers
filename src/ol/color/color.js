@@ -9,7 +9,6 @@ goog.provide('ol.color');
 goog.require('goog.asserts');
 goog.require('goog.color');
 goog.require('goog.color.names');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.math');
 
@@ -55,48 +54,6 @@ ol.color.rgbaColorRe_ =
 
 
 /**
- * @param {ol.Color} dst Destination.
- * @param {ol.Color} src Source.
- * @param {ol.Color=} opt_color Color.
- * @return {ol.Color} Color.
- */
-ol.color.blend = function(dst, src, opt_color) {
-  // http://en.wikipedia.org/wiki/Alpha_compositing
-  // FIXME do we need to scale by 255?
-  var out = opt_color ? opt_color : [];
-  var dstA = dst[3];
-  var srcA = src[3];
-  if (dstA == 1) {
-    out[0] = (src[0] * srcA + dst[0] * (1 - srcA) + 0.5) | 0;
-    out[1] = (src[1] * srcA + dst[1] * (1 - srcA) + 0.5) | 0;
-    out[2] = (src[2] * srcA + dst[2] * (1 - srcA) + 0.5) | 0;
-    out[3] = 1;
-  } else if (srcA === 0) {
-    out[0] = dst[0];
-    out[1] = dst[1];
-    out[2] = dst[2];
-    out[3] = dstA;
-  } else {
-    var outA = srcA + dstA * (1 - srcA);
-    if (outA === 0) {
-      out[0] = 0;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 0;
-    } else {
-      out[0] = ((src[0] * srcA + dst[0] * dstA * (1 - srcA)) / outA + 0.5) | 0;
-      out[1] = ((src[1] * srcA + dst[1] * dstA * (1 - srcA)) / outA + 0.5) | 0;
-      out[2] = ((src[2] * srcA + dst[2] * dstA * (1 - srcA)) / outA + 0.5) | 0;
-      out[3] = outA;
-    }
-  }
-  goog.asserts.assert(ol.color.isValid(out),
-      'Output color of blend should be a valid color');
-  return out;
-};
-
-
-/**
  * Return the color as an array. This function maintains a cache of calculated
  * arrays which means the result should not be modified.
  * @param {ol.Color|string} color Color.
@@ -126,18 +83,6 @@ ol.color.asString = function(color) {
     goog.asserts.assert(goog.isArray(color), 'Color should be an array');
     return ol.color.toString(color);
   }
-};
-
-
-/**
- * @param {ol.Color} color1 Color1.
- * @param {ol.Color} color2 Color2.
- * @return {boolean} Equals.
- */
-ol.color.equals = function(color1, color2) {
-  return color1 === color2 || (
-      color1[0] == color2[0] && color1[1] == color2[1] &&
-      color1[2] == color2[2] && color1[3] == color2[3]);
 };
 
 
@@ -296,38 +241,4 @@ ol.color.toString = function(color) {
   }
   var a = color[3] === undefined ? 1 : color[3];
   return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')';
-};
-
-
-/**
- * @param {!ol.Color} color Color.
- * @param {goog.vec.Mat4.Number} transform Transform.
- * @param {!ol.Color=} opt_color Color.
- * @return {ol.Color} Transformed color.
- */
-ol.color.transform = function(color, transform, opt_color) {
-  var result = opt_color ? opt_color : [];
-  result = goog.vec.Mat4.multVec3(transform, color, result);
-  goog.asserts.assert(goog.isArray(result), 'result should be an array');
-  result[3] = color[3];
-  return ol.color.normalize(result, result);
-};
-
-
-/**
- * @param {ol.Color|string} color1 Color2.
- * @param {ol.Color|string} color2 Color2.
- * @return {boolean} Equals.
- */
-ol.color.stringOrColorEquals = function(color1, color2) {
-  if (color1 === color2 || color1 == color2) {
-    return true;
-  }
-  if (typeof color1 === 'string') {
-    color1 = ol.color.fromString(color1);
-  }
-  if (typeof color2 === 'string') {
-    color2 = ol.color.fromString(color2);
-  }
-  return ol.color.equals(color1, color2);
 };
