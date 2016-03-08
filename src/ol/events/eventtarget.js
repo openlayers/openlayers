@@ -70,11 +70,13 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   var type = evt.type;
   evt.target = this;
   var listeners = this.listeners_[type];
+  var propagate;
   if (listeners) {
     this.pendingRemovals_[type] = 0;
     for (var i = 0, ii = listeners.length; i < ii; ++i) {
       if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
-        return false;
+        propagate = false;
+        break;
       }
     }
     var pendingRemovals = this.pendingRemovals_[type];
@@ -82,6 +84,7 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
     while (pendingRemovals--) {
       this.removeEventListener(type, ol.nullFunction);
     }
+    return propagate;
   }
 };
 
