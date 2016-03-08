@@ -3,6 +3,33 @@ goog.provide('ol.test.source.TileJSON');
 
 describe('ol.source.TileJSON', function() {
 
+  describe('constructor', function() {
+
+    it('returns a tileJSON source', function() {
+      var source = new ol.source.TileJSON({
+        url: 'spec/ol/data/tilejson.json'
+      });
+      expect(source).to.be.a(ol.source.Source);
+      expect(source).to.be.a(ol.source.TileJSON);
+    });
+  });
+
+  describe('#getTileJSON', function() {
+
+    it('parses the tilejson file', function() {
+      var source = new ol.source.TileJSON({
+        url: 'spec/ol/data/tilejson.json'
+      });
+      source.on('change', function() {
+        if (source.getState() === 'ready') {
+          var tileJSON = source.getTileJSON();
+          expect(tileJSON.name).to.eql('Geography Class');
+          expect(tileJSON.version).to.eql('1.0.0');
+        }
+      });
+    });
+  });
+
   describe('#getState', function() {
 
     it('returns ol.source.State.ERROR on HTTP 404', function() {
@@ -11,6 +38,7 @@ describe('ol.source.TileJSON', function() {
       });
       source.on('change', function() {
         expect(source.getState()).to.eql('error');
+        expect(source.getTileJSON()).to.eql(null);
       });
     });
 
@@ -20,6 +48,7 @@ describe('ol.source.TileJSON', function() {
       });
       source.on('change', function() {
         expect(source.getState()).to.eql('error');
+        expect(source.getTileJSON()).to.eql(null);
       });
     });
 
@@ -29,6 +58,7 @@ describe('ol.source.TileJSON', function() {
       });
       source.on('change', function() {
         expect(source.getState()).to.eql('error');
+        expect(source.getTileJSON()).to.eql(null);
       });
     });
 
@@ -93,5 +123,6 @@ describe('ol.source.TileJSON', function() {
 
 goog.require('ol.events');
 goog.require('ol.source.State');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileJSON');
 goog.require('ol.Observable');

@@ -29,6 +29,12 @@ goog.require('ol.source.TileImage');
  */
 ol.source.TileJSON = function(options) {
 
+  /**
+   * @type {TileJSON}
+   * @private
+   */
+  this.tileJSON_ = null;
+
   goog.base(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
@@ -86,6 +92,15 @@ ol.source.TileJSON.prototype.onXHRError_ = function(event) {
 
 
 /**
+ * @return {TileJSON} The tilejson object.
+ * @api
+ */
+ol.source.TileJSON.prototype.getTileJSON = function() {
+  return this.tileJSON_;
+};
+
+
+/**
  * @protected
  * @param {TileJSON} tileJSON Tile JSON.
  */
@@ -134,7 +149,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
       })
     ]);
   }
-
+  this.tileJSON_ = tileJSON;
   this.setState(ol.source.State.READY);
 
 };
