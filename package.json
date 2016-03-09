@@ -55,7 +55,7 @@
     "coveralls": "2.11.8",
     "debounce": "^1.0.0",
     "eslint": "2.3.0",
-    "eslint-config-openlayers": "4.0.0",
+    "eslint-config-openlayers": "4.1.0",
     "expect.js": "0.3.1",
     "gaze": "^0.5.1",
     "istanbul": "0.4.2",
