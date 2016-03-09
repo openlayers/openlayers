@@ -1188,31 +1188,6 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
 
 
 /**
- * Returns `true` if the map is defined, `false` otherwise. The map is defined
- * if it is contained in `document`, visible, has non-zero height and width, and
- * has a defined view.
- * @return {boolean} Is defined.
- */
-ol.Map.prototype.isDef = function() {
-  if (!goog.dom.contains(document, this.viewport_)) {
-    return false;
-  }
-  if (!goog.style.isElementShown(this.viewport_)) {
-    return false;
-  }
-  var size = this.getSize();
-  if (!size || size[0] <= 0 || size[1] <= 0) {
-    return false;
-  }
-  var view = this.getView();
-  if (!view || !view.isDef()) {
-    return false;
-  }
-  return true;
-};
-
-
-/**
  * @return {boolean} Is rendered.
  */
 ol.Map.prototype.isRendered = function() {
