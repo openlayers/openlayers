@@ -282,17 +282,17 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
       ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
   var bottomRightPixel =
       ovmap.getPixelFromCoordinate(ol.extent.getBottomRight(extent));
-  var boxSize = new goog.math.Size(
-      Math.abs(topLeftPixel[0] - bottomRightPixel[0]),
-      Math.abs(topLeftPixel[1] - bottomRightPixel[1]));
+
+  var boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
+  var boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
 
   var ovmapWidth = ovmapSize[0];
   var ovmapHeight = ovmapSize[1];
 
-  if (boxSize.width < ovmapWidth * ol.OVERVIEWMAP_MIN_RATIO ||
-      boxSize.height < ovmapHeight * ol.OVERVIEWMAP_MIN_RATIO ||
-      boxSize.width > ovmapWidth * ol.OVERVIEWMAP_MAX_RATIO ||
-      boxSize.height > ovmapHeight * ol.OVERVIEWMAP_MAX_RATIO) {
+  if (boxWidth < ovmapWidth * ol.OVERVIEWMAP_MIN_RATIO ||
+      boxHeight < ovmapHeight * ol.OVERVIEWMAP_MIN_RATIO ||
+      boxWidth > ovmapWidth * ol.OVERVIEWMAP_MAX_RATIO ||
+      boxHeight > ovmapHeight * ol.OVERVIEWMAP_MAX_RATIO) {
     this.resetExtent_();
   } else if (!ol.extent.containsExtent(ovextent, extent)) {
     this.recenter_();
