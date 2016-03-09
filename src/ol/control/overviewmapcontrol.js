@@ -5,8 +5,6 @@ goog.require('goog.dom');
 goog.require('goog.dom.classlist');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.math.Size');
-goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
@@ -111,7 +109,9 @@ ol.control.OverviewMap = function(opt_options) {
         }, this);
   }
 
-  var box = goog.dom.createDom('DIV', 'ol-overviewmap-box');
+  var box = document.createElement('DIV');
+  box.className = 'ol-overviewmap-box';
+  box.style.boxSizing = 'border-box';
 
   /**
    * @type {ol.Overlay}
@@ -396,10 +396,8 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
 
   // set box size calculated from map extent size and overview map resolution
   if (box) {
-    var boxWidth = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution);
-    var boxHeight = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution);
-    goog.style.setBorderBoxSize(box, new goog.math.Size(
-        boxWidth, boxHeight));
+    box.style.width = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution) + 'px';
+    box.style.height = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution) + 'px';
   }
 };
 
