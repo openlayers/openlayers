@@ -73,7 +73,13 @@ ol.events.EventTargetLike;
 /**
  * Key to use with {@link ol.Observable#unByKey}.
  *
- * @typedef {ol.events.ListenerObjType}
+ * @typedef {{bindTo: (Object|undefined),
+ *     boundListener: (ol.events.ListenerFunctionType|undefined),
+ *     callOnce: boolean,
+ *     deleteIndex: (number|undefined),
+ *     listener: ol.events.ListenerFunctionType,
+ *     target: (EventTarget|ol.events.EventTarget),
+ *     type: string}}
  * @api
  */
 ol.events.Key;
@@ -90,19 +96,7 @@ ol.events.ListenerFunctionType;
 
 
 /**
- * @typedef {{bindTo: (Object|undefined),
- *     boundListener: (ol.events.ListenerFunctionType|undefined),
- *     callOnce: boolean,
- *     deleteIndex: (number|undefined),
- *     listener: ol.events.ListenerFunctionType,
- *     target: (EventTarget|ol.events.EventTarget),
- *     type: string}}
- */
-ol.events.ListenerObjType;
-
-
-/**
- * @param {ol.events.ListenerObjType} listenerObj Listener object.
+ * @param {ol.events.Key} listenerObj Listener object.
  * @return {ol.events.ListenerFunctionType} Bound listener.
  */
 ol.events.bindListener_ = function(listenerObj) {
@@ -120,15 +114,15 @@ ol.events.bindListener_ = function(listenerObj) {
 
 
 /**
- * Finds the matching {@link ol.events.ListenerObjType} in the given listener
+ * Finds the matching {@link ol.events.Key} in the given listener
  * array.
  *
- * @param {!Array<!ol.events.ListenerObjType>} listeners Array of listeners.
+ * @param {!Array<!ol.events.Key>} listeners Array of listeners.
  * @param {!Function} listener The listener function.
  * @param {Object=} opt_this The `this` value inside the listener.
  * @param {boolean=} opt_setDeleteIndex Set the deleteIndex on the matching
  *     listener, for {@link ol.events.unlistenByKey}.
- * @return {ol.events.ListenerObjType|undefined} The matching listener object.
+ * @return {ol.events.Key|undefined} The matching listener object.
  * @private
  */
 ol.events.findListener_ = function(listeners, listener, opt_this,
@@ -151,7 +145,7 @@ ol.events.findListener_ = function(listeners, listener, opt_this,
 /**
  * @param {ol.events.EventTargetLike} target Target.
  * @param {string} type Type.
- * @return {Array.<ol.events.ListenerObjType>|undefined} Listeners.
+ * @return {Array.<ol.events.Key>|undefined} Listeners.
  */
 ol.events.getListeners = function(target, type) {
   var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
@@ -163,7 +157,7 @@ ol.events.getListeners = function(target, type) {
  * Get the lookup of listeners.  If one does not exist on the target, it is
  * created.
  * @param {ol.events.EventTargetLike} target Target.
- * @return {!Object.<string, Array.<ol.events.ListenerObjType>>} Map of
+ * @return {!Object.<string, Array.<ol.events.Key>>} Map of
  *     listeners by event type.
  * @private
  */
@@ -232,7 +226,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
       listenerObj.callOnce = false;
     }
   } else {
-    listenerObj = /** @type {ol.events.ListenerObjType} */ ({
+    listenerObj = /** @type {ol.events.Key} */ ({
       bindTo: opt_this,
       callOnce: !!opt_once,
       listener: listener,
