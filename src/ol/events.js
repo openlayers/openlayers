@@ -211,6 +211,7 @@ ol.events.removeListeners_ = function(target, type) {
  *     listener. Default is the `target`.
  * @param {boolean=} opt_once If true, add the listener as one-off listener.
  * @return {ol.events.Key} Unique key for the listener.
+ * @api
  */
 ol.events.listen = function(target, type, listener, opt_this, opt_once) {
   var listenerMap = ol.events.getListenerMap_(target);
@@ -260,6 +261,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  * @return {ol.events.Key} Key for unlistenByKey.
+ * @api
  */
 ol.events.listenOnce = function(target, type, listener, opt_this) {
   return ol.events.listen(target, type, listener, opt_this, true);
@@ -278,6 +280,7 @@ ol.events.listenOnce = function(target, type, listener, opt_this) {
  * @param {ol.events.ListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
+ * @api
  */
 ol.events.unlisten = function(target, type, listener, opt_this) {
   var listeners = ol.events.getListeners(target, type);
@@ -299,6 +302,7 @@ ol.events.unlisten = function(target, type, listener, opt_this) {
  * {@link ol.events.listen} or {@link ol.events.listenOnce}.
  *
  * @param {ol.events.Key} key The key.
+ * @api
  */
 ol.events.unlistenByKey = function(key) {
   if (key && key.target) {
@@ -323,6 +327,7 @@ ol.events.unlistenByKey = function(key) {
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
  *
  * @param {ol.events.EventTargetLike} target Target.
+ * @api
  */
 ol.events.unlistenAll = function(target) {
   var listenerMap = ol.events.getListenerMap_(target);
