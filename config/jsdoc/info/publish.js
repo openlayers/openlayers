@@ -69,12 +69,13 @@ exports.publish = function(data, opts) {
           types: ['{}']
         });
       } else {
-        var typedef = typedefs[typedefs.length - 1];
-        var type = typedef.types[0];
-        typedef.types[0] = type
-            .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
-                ': (' + getTypes(doc.type.names).join('|') + ')}')
-            .replace('{, ', '{');
+// Nothing to do!
+//        var typedef = typedefs[typedefs.length - 1];
+//        var type = typedef.types[0];
+//        typedef.types[0] = type
+//            .replace(/\}$/, ', ' + doc.longname.split('#')[1] +
+//                ': (' + getTypes(doc.type.names).join('|') + ')}')
+//            .replace('{, ', '{');
       }
     } else if (doc.define) {
       defines.push({

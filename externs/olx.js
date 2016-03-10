@@ -1,8 +1,8 @@
 
 /**
- * @type {Object}
+ * @const
  */
-var olx;
+var olx = {};
 
 
 /* typedefs for object literals provided by applications */
@@ -145,6 +145,13 @@ olx.GraticuleOptions.prototype.strokeStyle;
  * @api
  */
 olx.GraticuleOptions.prototype.targetSize;
+
+
+/**
+ * Namespace.
+ * @const
+ */
+olx.interaction = {};
 
 
 /**
@@ -671,9 +678,9 @@ olx.ViewOptions.prototype.zoomFactor;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.animation;
+olx.animation = {};
 
 
 /**
@@ -863,9 +870,9 @@ olx.animation.ZoomOptions.prototype.easing;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.control;
+olx.control = {};
 
 
 /**
@@ -1593,9 +1600,9 @@ olx.control.ZoomToExtentOptions.prototype.extent;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.format;
+olx.format = {};
 
 
 /**
@@ -1713,10 +1720,8 @@ olx.format.EsriJSONOptions.prototype.geometryName;
 
 
 /**
- * @typedef {{featureClass: (function((ol.geom.Geometry|Object.<string, *>)=)|
- *         function(ol.geom.GeometryType,Array.<number>,
- *             (Array.<number>|Array.<Array.<number>>),Object.<string, *>)|
- *         undefined),
+ * @typedef {{
+ *     featureClass: (Function|undefined),
  *     geometryName: (string|undefined),
  *     layers: (Array.<string>|undefined),
  *     layerName: (string|undefined)}}
@@ -2240,13 +2245,6 @@ olx.format.WMSGetFeatureInfoOptions;
  * @api
  */
 olx.format.WMSGetFeatureInfoOptions.prototype.layers;
-
-
-/**
- * Namespace.
- * @type {Object}
- */
-olx.interaction;
 
 
 /**
@@ -3121,9 +3119,9 @@ olx.interaction.SnapOptions.prototype.source;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.layer;
+olx.layer = {};
 
 
 /**
@@ -3864,9 +3862,9 @@ olx.layer.VectorTileOptions.prototype.visible;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.render;
+olx.render = {};
 
 
 /**
@@ -3898,9 +3896,9 @@ olx.render.ToContextOptions.prototype.pixelRatio;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.source;
+olx.source = {};
 
 
 /**
@@ -6230,9 +6228,9 @@ olx.source.ZoomifyOptions.prototype.size;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.style;
+olx.style = {};
 
 
 /**
@@ -6834,9 +6832,9 @@ olx.style.StyleOptions.prototype.zIndex;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.tilegrid;
+olx.tilegrid = {};
 
 
 /**
@@ -7078,9 +7076,9 @@ olx.tilegrid.XYZOptions.prototype.tileSize;
 
 /**
  * Namespace.
- * @type {Object}
+ * @const
  */
-olx.view;
+olx.view = {};
 
 
 /**
@@ -7140,29 +7138,11 @@ olx.view.FitOptions.prototype.maxZoom;
 
 
 /**
- * @typedef {{animate: boolean,
- *     attributions: Object.<string, ol.Attribution>,
- *     coordinateToPixelMatrix: ol.vec.Mat4.Number,
- *     extent: (null|ol.Extent),
- *     focus: ol.Coordinate,
- *     index: number,
- *     layerStates: Object.<number, ol.layer.LayerState>,
- *     layerStatesArray: Array.<ol.layer.LayerState>,
- *     logos: Object.<string, string>,
- *     pixelRatio: number,
- *     pixelToCoordinateMatrix: ol.vec.Mat4.Number,
- *     postRenderFunctions: Array.<ol.PostRenderFunction>,
- *     size: ol.Size,
- *     skippedFeatureUids: Object.<string, boolean>,
- *     tileQueue: ol.TileQueue,
- *     time: number,
- *     usedTiles: Object.<string, Object.<string, ol.TileRange>>,
- *     viewState: olx.ViewState,
- *     viewHints: Array.<number>,
- *     wantedTiles: !Object.<string, Object.<string, boolean>>}}
+ * @interface
+ * @struct
  * @api
  */
-olx.FrameState;
+olx.FrameState = function() {};
 
 
 /**

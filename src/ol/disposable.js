@@ -5,6 +5,7 @@ goog.require('ol');
 /**
  * Objects that need to clean up after themselves.
  * @constructor
+ * @struct
  */
 ol.Disposable = function() {};
 
