@@ -12,6 +12,7 @@ goog.provide('ol.events.Event');
  * {@link ol.events.EventTarget}.
  *
  * @constructor
+ * @implements {oli.events.Event}
  * @param {string} type Type.
  * @param {Object=} opt_target Target.
  */
@@ -23,22 +24,34 @@ ol.events.Event = function(type, opt_target) {
   this.propagationStopped;
 
   /**
+   * The event type.
    * @type {string}
+   * @api stable
    */
   this.type = type;
 
   /**
-   * @type {Object|undefined}
+   * The event target.
+   * @type {Object}
+   * @api stable
    */
-  this.target = opt_target;
+  this.target = opt_target || null;
 
 };
 
 
 /**
- * Stop event propagation
+ * Stop event propagation.
+ * @function
+ * @api stable
  */
 ol.events.Event.prototype.preventDefault =
+
+/**
+ * Stop event propagation.
+ * @function
+ * @api stable
+ */
 ol.events.Event.prototype.stopPropagation = function() {
   this.propagationStopped = true;
 };
