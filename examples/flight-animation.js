@@ -76,10 +76,8 @@ var animateFlights = function(event) {
 
 flightsSource = new ol.source.Vector({
   wrapX: false,
-  attributions: [new ol.Attribution({
-    html: 'Flight data by ' +
-        '<a href="http://openflights.org/data.html">OpenFlights</a>,'
-  })],
+  attributions: 'Flight data by ' +
+        '<a href="http://openflights.org/data.html">OpenFlights</a>,',
   loader: function() {
     var url = 'data/openflights/flights.json';
     fetch(url).then(function(response) {
