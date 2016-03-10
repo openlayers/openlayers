@@ -170,7 +170,9 @@ ol.VectorTile.prototype.setFeatures = function(features) {
 
 
 /**
+ * Set the projection of the features that were added with {@link #setFeatures}.
  * @param {ol.proj.Projection} projection Feature projection.
+ * @api
  */
 ol.VectorTile.prototype.setProjection = function(projection) {
   this.projection_ = projection;
