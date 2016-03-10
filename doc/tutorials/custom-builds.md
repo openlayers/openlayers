@@ -60,11 +60,7 @@ Creating a custom build requires writing a build configuration file. The format 
       "externs/topojson.js"
     ],
     "define": [
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false"
-    ],
-    "jscomp_off": [
-      "unknownDefines"
     ],
     "extra_annotation_name": [
       "api", "observable"
@@ -215,7 +211,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
       "ol.ENABLE_WEBGL=false",
       "ol.ENABLE_PROJ4JS=false",
       "ol.ENABLE_IMAGE=false",
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false"
     ],
     "compilation_level": "ADVANCED",
