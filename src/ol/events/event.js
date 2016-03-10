@@ -38,7 +38,11 @@ ol.events.Event = function(type, opt_target) {
 /**
  * Stop event propagation
  */
-ol.events.Event.prototype.preventDefault =
+ol.events.Event.prototype.preventDefault = function() {
+  this.stopPropagation();
+};
+
+
 ol.events.Event.prototype.stopPropagation = function() {
   this.propagationStopped = true;
 };
