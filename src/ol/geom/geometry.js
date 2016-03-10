@@ -175,6 +175,7 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
  * @param {number} angle Rotation angle in radians.
  * @param {ol.Coordinate} anchor The rotation center.
  * @api
+ * @function
  */
 ol.geom.Geometry.prototype.rotate = goog.abstractMethod;
 
