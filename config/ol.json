@@ -28,6 +28,7 @@
     "extra_annotation_name": [
       "api", "observable"
     ],
+    "new_type_inf": true,
     "compilation_level": "ADVANCED",
     "warning_level": "VERBOSE",
     "use_types_for_optimization": true,
