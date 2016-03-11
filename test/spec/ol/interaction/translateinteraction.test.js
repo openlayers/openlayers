@@ -38,7 +38,7 @@ describe('ol.interaction.Translate', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -53,12 +53,12 @@ describe('ol.interaction.Translate', function() {
   function simulateEvent(type, x, y, opt_shiftKey) {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
-    var position = goog.style.getClientPosition(viewport);
+    var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
     var event = new ol.MapBrowserPointerEvent(type, map,
         new ol.pointer.PointerEvent(type, {
-          clientX: position.x + x + width / 2,
-          clientY: position.y + y + height / 2,
+          clientX: position.left + x + width / 2,
+          clientY: position.top + y + height / 2,
           shiftKey: shiftKey
         }));
     map.handleMapBrowserEvent(event);
@@ -108,8 +108,6 @@ describe('ol.interaction.Translate', function() {
   });
 });
 
-goog.require('goog.dispose');
-goog.require('goog.style');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');

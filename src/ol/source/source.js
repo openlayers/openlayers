@@ -151,6 +151,15 @@ ol.source.Source.prototype.getWrapX = function() {
 
 
 /**
+ * Refreshes the source and finally dispatches a 'change' event.
+ * @api
+ */
+ol.source.Source.prototype.refresh = function() {
+  this.changed();
+};
+
+
+/**
  * Set the attributions of the source.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  * @api

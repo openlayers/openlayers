@@ -706,6 +706,7 @@ ol.proj.get = function(projectionLike) {
  * @param {ol.proj.Projection} projection1 Projection 1.
  * @param {ol.proj.Projection} projection2 Projection 2.
  * @return {boolean} Equivalent.
+ * @api
  */
 ol.proj.equivalent = function(projection1, projection2) {
   if (projection1 === projection2) {

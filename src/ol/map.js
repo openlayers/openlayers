@@ -272,7 +272,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {!Element}
    */
   this.overlayContainer_ = document.createElement('DIV');
   this.overlayContainer_.className = 'ol-overlaycontainer';
@@ -280,7 +280,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Element}
+   * @type {!Element}
    */
   this.overlayContainerStopEvent_ = document.createElement('DIV');
   this.overlayContainerStopEvent_.className = 'ol-overlaycontainer-stopevent';
@@ -291,7 +291,8 @@ ol.Map = function(options) {
     ol.events.EventType.TOUCHSTART,
     ol.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
-    goog.userAgent.GECKO ? 'DOMMouseScroll' : ol.events.EventType.MOUSEWHEEL
+    ol.events.EventType.MOUSEWHEEL,
+    ol.events.EventType.WHEEL
   ];
   for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
     ol.events.listen(this.overlayContainerStopEvent_, overlayEvents[i],
@@ -299,12 +300,15 @@ ol.Map = function(options) {
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
-  var mapBrowserEventHandler = new ol.MapBrowserEventHandler(this);
+  /**
+   * @private
+   * @type {ol.MapBrowserEventHandler}
+   */
+  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this);
   for (var key in ol.MapBrowserEvent.EventType) {
-    ol.events.listen(mapBrowserEventHandler, ol.MapBrowserEvent.EventType[key],
+    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEvent.EventType[key],
         this.handleMapBrowserEvent, this);
   }
-  this.registerDisposable(mapBrowserEventHandler);
 
   /**
    * @private
@@ -352,9 +356,7 @@ ol.Map = function(options) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ =
-      new optionsInternal.rendererConstructor(this.viewport_, this);
-  this.registerDisposable(this.renderer_);
+  this.renderer_ = new optionsInternal.rendererConstructor(this.viewport_, this);
 
   /**
    * @type {function(Event)|undefined}
@@ -576,6 +578,8 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
+  this.mapBrowserEventHandler_.dispose();
+  this.renderer_.dispose();
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
       this.handleBrowserEvent, this);
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
@@ -589,7 +593,7 @@ ol.Map.prototype.disposeInternal = function() {
     goog.global.cancelAnimationFrame(this.animationDelayKey_);
     this.animationDelayKey_ = undefined;
   }
-  goog.dom.removeNode(this.viewport_);
+  this.setTarget(null);
   goog.base(this, 'disposeInternal');
 };
 
@@ -717,8 +721,12 @@ ol.Map.prototype.getEventCoordinate = function(event) {
  * @api stable
  */
 ol.Map.prototype.getEventPixel = function(event) {
-  var eventPosition = goog.style.getRelativePosition(event, this.viewport_);
-  return [eventPosition.x, eventPosition.y];
+  var viewportPosition = this.viewport_.getBoundingClientRect();
+  var eventPosition = event.changedTouches ? event.changedTouches[0] : event;
+  return [
+    eventPosition.clientX - viewportPosition.left,
+    eventPosition.clientY - viewportPosition.top
+  ];
 };
 
 
@@ -904,7 +912,7 @@ ol.Map.prototype.getViewport = function() {
  * this container will let mousedown and touchstart events through to the map,
  * so clicks and gestures on an overlay will trigger {@link ol.MapBrowserEvent}
  * events.
- * @return {Element} The map's overlay container.
+ * @return {!Element} The map's overlay container.
  */
 ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
@@ -916,7 +924,7 @@ ol.Map.prototype.getOverlayContainer = function() {
  * event propagation. Elements added to this container won't let mousedown and
  * touchstart events through to the map, so clicks and gestures on an overlay
  * don't trigger any {@link ol.MapBrowserEvent}.
- * @return {Element} The map's overlay container that stops events.
+ * @return {!Element} The map's overlay container that stops events.
  */
 ol.Map.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
@@ -1176,31 +1184,6 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
     ];
   }
   this.render();
-};
-
-
-/**
- * Returns `true` if the map is defined, `false` otherwise. The map is defined
- * if it is contained in `document`, visible, has non-zero height and width, and
- * has a defined view.
- * @return {boolean} Is defined.
- */
-ol.Map.prototype.isDef = function() {
-  if (!goog.dom.contains(document, this.viewport_)) {
-    return false;
-  }
-  if (!goog.style.isElementShown(this.viewport_)) {
-    return false;
-  }
-  var size = this.getSize();
-  if (!size || size[0] <= 0 || size[1] <= 0) {
-    return false;
-  }
-  var view = this.getView();
-  if (!view || !view.isDef()) {
-    return false;
-  }
-  return true;
 };
 
 

@@ -202,5 +202,5 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     this.updateLogos(frameState, imageSource);
   }
 
-  return true;
+  return !!this.image_;
 };

@@ -36,12 +36,6 @@ ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
 
 
 /**
- * @define {number} Default high water mark.
- */
-ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
-
-
-/**
  * @define {number} Default tile size.
  */
 ol.DEFAULT_TILE_SIZE = 256;

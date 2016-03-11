@@ -2,7 +2,6 @@ goog.provide('ol.reproj');
 
 goog.require('goog.labs.userAgent.browser');
 goog.require('goog.labs.userAgent.platform');
-goog.require('goog.math');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.math');
@@ -61,7 +60,7 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
       sourceProj.getPointResolution(sourceResolution, sourceCenter) /
       sourceResolution;
 
-  if (goog.math.isFiniteNumber(compensationFactor) && compensationFactor > 0) {
+  if (isFinite(compensationFactor) && compensationFactor > 0) {
     sourceResolution /= compensationFactor;
   }
 

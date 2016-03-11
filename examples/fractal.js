@@ -33,7 +33,7 @@ var map = new ol.Map({
 });
 
 function makeFractal(depth) {
-  var geometry = /** @type {ol.geom.LineString} */ (triangle.clone());
+  var geometry = triangle.clone();
   var graph = coordsToGraph(geometry.getCoordinates());
   for (var i = 0; i < depth; ++i) {
     var node = graph;

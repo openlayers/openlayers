@@ -1,7 +1,6 @@
 goog.provide('ol.format.JSONFeature');
 
 goog.require('goog.asserts');
-goog.require('goog.json');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
@@ -30,8 +29,8 @@ ol.format.JSONFeature.prototype.getObject_ = function(source) {
   if (goog.isObject(source)) {
     return source;
   } else if (typeof source === 'string') {
-    var object = goog.json.parse(source);
-    return object ? object : null;
+    var object = JSON.parse(source);
+    return object ? /** @type {Object} */ (object) : null;
   } else {
     goog.asserts.fail();
     return null;
@@ -121,7 +120,7 @@ ol.format.JSONFeature.prototype.readProjectionFromObject = goog.abstractMethod;
  * @inheritDoc
  */
 ol.format.JSONFeature.prototype.writeFeature = function(feature, opt_options) {
-  return goog.json.serialize(this.writeFeatureObject(feature, opt_options));
+  return JSON.stringify(this.writeFeatureObject(feature, opt_options));
 };
 
 
@@ -136,9 +135,8 @@ ol.format.JSONFeature.prototype.writeFeatureObject = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.JSONFeature.prototype.writeFeatures = function(
-    features, opt_options) {
-  return goog.json.serialize(this.writeFeaturesObject(features, opt_options));
+ol.format.JSONFeature.prototype.writeFeatures = function(features, opt_options) {
+  return JSON.stringify(this.writeFeaturesObject(features, opt_options));
 };
 
 
@@ -153,9 +151,8 @@ ol.format.JSONFeature.prototype.writeFeaturesObject = goog.abstractMethod;
 /**
  * @inheritDoc
  */
-ol.format.JSONFeature.prototype.writeGeometry = function(
-    geometry, opt_options) {
-  return goog.json.serialize(this.writeGeometryObject(geometry, opt_options));
+ol.format.JSONFeature.prototype.writeGeometry = function(geometry, opt_options) {
+  return JSON.stringify(this.writeGeometryObject(geometry, opt_options));
 };
 
 

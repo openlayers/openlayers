@@ -174,6 +174,7 @@ ol.source.WMTS = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     projection: options.projection,

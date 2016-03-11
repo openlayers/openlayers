@@ -93,6 +93,17 @@ goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
 /**
  * @inheritDoc
  */
+ol.renderer.dom.VectorLayer.prototype.clearFrame = function() {
+  // Clear the canvas
+  var canvas = this.context_.canvas;
+  canvas.width = canvas.width;
+  this.renderedRevision_ = 0;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerState) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
@@ -179,11 +190,10 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
-    var layerState = frameState.layerStates[goog.getUid(layer)];
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-        rotation, layerState.managed ? frameState.skippedFeatureUids : {},
+        rotation, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
@@ -258,8 +268,6 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame = function(frameState, layerS
     return true;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
   this.dirty_ = false;

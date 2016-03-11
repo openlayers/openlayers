@@ -285,7 +285,7 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
     this.dragListenerKeys_.length = 0;
     this.dragging_ = false;
     this.down_ = null;
-    goog.dispose(this.documentPointerEventHandler_);
+    this.documentPointerEventHandler_.dispose();
     this.documentPointerEventHandler_ = null;
   }
 };
@@ -416,11 +416,11 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
   this.dragListenerKeys_.length = 0;
 
   if (this.documentPointerEventHandler_) {
-    goog.dispose(this.documentPointerEventHandler_);
+    this.documentPointerEventHandler_.dispose();
     this.documentPointerEventHandler_ = null;
   }
   if (this.pointerEventHandler_) {
-    goog.dispose(this.pointerEventHandler_);
+    this.pointerEventHandler_.dispose();
     this.pointerEventHandler_ = null;
   }
   goog.base(this, 'disposeInternal');

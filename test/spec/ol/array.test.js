@@ -386,7 +386,7 @@ describe('ol.array', function() {
     });
     it('extends an array in place with a big array', function() {
       var a = [];
-      var i = 500000; // original test has 1.000.000, but that was too slow
+      var i = 250000; // original test has 1.000.000, but that was too slow
       var bigArray = Array(i);
       while (i--) {
         bigArray[i] = i;

@@ -2,7 +2,6 @@ goog.provide('ol.reproj.Tile');
 goog.provide('ol.reproj.TileFunctionType');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.events');
@@ -145,7 +144,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   var sourceResolution = ol.reproj.calculateSourceResolution(
       sourceProj, targetProj, targetCenter, targetResolution);
 
-  if (!goog.math.isFiniteNumber(sourceResolution) || sourceResolution <= 0) {
+  if (!isFinite(sourceResolution) || sourceResolution <= 0) {
     // invalid sourceResolution -> EMPTY
     // probably edges of the projections when no extent is defined
     this.state = ol.TileState.EMPTY;

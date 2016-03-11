@@ -61,7 +61,6 @@ Creating a custom build requires writing a build configuration file. The format 
     ],
     "define": [
       "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false"
     ],
     "jscomp_off": [
@@ -70,7 +69,7 @@ Creating a custom build requires writing a build configuration file. The format 
     "extra_annotation_name": [
       "api", "observable"
     ],
-    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "compilation_level": "ADVANCED",
     "manage_closure_dependencies": true
   }
 }
@@ -192,16 +191,19 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
 {
   "exports": [
     "ol.layer.Heatmap",
-    "ol.source.KML",
+    "ol.source.Vector",
+    "ol.format.KML",
     "ol.layer.Heatmap#getSource",
-    "ol.source.KML#on",
+    "ol.source.Vector#on",
     "ol.source.VectorEvent#feature",
     "ol.Feature#get",
     "ol.Feature#set",
     "ol.layer.Tile",
     "ol.source.Stamen",
     "ol.Map",
-    "ol.View"
+    "ol.View",
+    "ol.layer.Heatmap#setRadius",
+    "ol.layer.Heatmap#setBlur"
   ],
   "compile": {
     "externs": [
@@ -216,7 +218,7 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
       "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false"
     ],
-    "compilation_level": "ADVANCED_OPTIMIZATIONS",
+    "compilation_level": "ADVANCED",
     "manage_closure_dependencies": true
   }
 }

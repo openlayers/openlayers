@@ -59,7 +59,7 @@ function growRegion(inputs, data) {
     }
     edge = newedge;
   }
-  return new ImageData(outputData, width, height);
+  return {data: outputData, width: width, height: height};
 }
 
 function next4Edges(edge) {

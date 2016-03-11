@@ -22,16 +22,25 @@ describe('ol.net', function() {
     }
 
     beforeEach(function() {
-      document.createElement = function() {
-        return {}
+      var element = {};
+      document.createElement = function(arg) {
+        if (arg == 'script') {
+          return element;
+        } else {
+          return origCreateElement.apply(goog.global.document, arguments);
+        }
       };
-      head.appendChild = function(element) {
-        element.parentNode = {
-          removeChild: removeChild
-        };
-        origSetTimeout(function() {
-          goog.global[key](element.src);
-        }, 0);
+      head.appendChild = function(el) {
+        if (el === element) {
+          element.parentNode = {
+            removeChild: removeChild
+          };
+          origSetTimeout(function() {
+            goog.global[key](element.src);
+          }, 0);
+        } else {
+          origAppendChild.apply(head, arguments);
+        }
       };
       goog.global.setTimeout = function(fn, time) {
         origSetTimeout(fn, 100);

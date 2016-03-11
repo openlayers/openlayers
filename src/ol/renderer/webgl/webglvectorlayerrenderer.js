@@ -115,9 +115,9 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio, layerState.opacity,
-        layerState.managed ? frameState.skippedFeatureUids : {},
+        {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {

@@ -20,6 +20,7 @@ describe('ol.events.EventTarget', function() {
   describe('constructor', function() {
     it('creates an instance', function() {
       expect(eventTarget).to.be.a(ol.events.EventTarget);
+      expect(eventTarget).to.be.a(ol.Disposable);
     });
     it('creates an empty listeners_ object', function() {
       expect(Object.keys(eventTarget.listeners_)).to.have.length(0);
@@ -114,6 +115,38 @@ describe('ol.events.EventTarget', function() {
       expect(events[0]).to.equal(event);
       expect(events[0].target).to.equal(eventTarget);
     });
+    it('is safe to remove listeners in listeners', function() {
+      eventTarget.addEventListener('foo', spy3);
+      eventTarget.addEventListener('foo', function() {
+        eventTarget.removeEventListener('foo', spy1);
+        eventTarget.removeEventListener('foo', spy2);
+        eventTarget.removeEventListener('foo', spy3);
+      });
+      eventTarget.addEventListener('foo', spy1);
+      eventTarget.addEventListener('foo', spy2);
+      expect(function() {
+        eventTarget.dispatchEvent('foo');
+      }).not.to.throwException();
+      expect(called).to.eql([3]);
+      expect(eventTarget.getListeners('foo')).to.have.length(1);
+    });
+    it('is safe to do weird things in listeners', function() {
+      eventTarget.addEventListener('foo', spy2);
+      eventTarget.addEventListener('foo', function weird(evt) {
+        eventTarget.removeEventListener('foo', weird);
+        eventTarget.removeEventListener('foo', spy1);
+        eventTarget.dispatchEvent('foo');
+        eventTarget.removeEventListener('foo', spy2);
+        eventTarget.dispatchEvent('foo');
+        evt.preventDefault();
+      });
+      eventTarget.addEventListener('foo', spy1);
+      expect(function() {
+        eventTarget.dispatchEvent('foo');
+      }).not.to.throwException();
+      expect(called).to.eql([2, 2]);
+      expect(eventTarget.getListeners('foo')).to.be(undefined);
+    });
   });
 
   describe('#dispose()', function() {
@@ -127,6 +160,7 @@ describe('ol.events.EventTarget', function() {
 });
 
 
+goog.require('ol.Disposable');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');

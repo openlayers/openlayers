@@ -182,7 +182,7 @@ ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
 ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     frameState.postRenderFunctions.push(
-        goog.partial(
+        /** @type {ol.PostRenderFunction} */ (goog.partial(
             /**
              * @param {ol.source.Tile} tileSource Tile source.
              * @param {ol.Map} map Map.
@@ -192,7 +192,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
               var tileSourceKey = goog.getUid(tileSource).toString();
               tileSource.expireCache(frameState.viewState.projection,
                                      frameState.usedTiles[tileSourceKey]);
-            }, tileSource));
+            }, tileSource)));
   }
 };
 

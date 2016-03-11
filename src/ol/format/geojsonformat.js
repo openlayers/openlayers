@@ -518,14 +518,13 @@ ol.format.GeoJSON.prototype.writeFeature;
  *
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
- * @return {GeoJSONObject} Object.
+ * @return {GeoJSONFeature} Object.
  * @api stable
  */
-ol.format.GeoJSON.prototype.writeFeatureObject = function(
-    feature, opt_options) {
+ol.format.GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
   opt_options = this.adaptOptions(opt_options);
 
-  var object = /** @type {GeoJSONObject} */ ({
+  var object = /** @type {GeoJSONFeature} */ ({
     'type': 'Feature'
   });
   var id = feature.getId();

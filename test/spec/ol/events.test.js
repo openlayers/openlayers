@@ -24,23 +24,32 @@ describe('ol.events', function() {
       boundListener();
       expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.bindTo);
     });
-    it('binds a self-unregistering listener when callOnce is true', function() {
-      var bindTo = {id: 1};
-      var listener = sinon.spy();
-      target.removeEventListener = function() {};
+    it('binds to the target when bindTo is not provided', function() {
       var listenerObj = {
-        type: 'foo',
-        target: target,
-        listener: listener,
-        bindTo: bindTo,
-        callOnce: true
+        listener: sinon.spy(),
+        target: {id: 1}
       };
       var boundListener = ol.events.bindListener_(listenerObj);
       expect(listenerObj.boundListener).to.equal(boundListener);
-      var spy = sinon.spy(ol.events, 'unlistenByKey');
       boundListener();
-      expect(listener.thisValues[0]).to.equal(bindTo);
-      expect(spy.firstCall.args[0]).to.eql(listenerObj);
+      expect(listenerObj.listener.thisValues[0]).to.equal(listenerObj.target);
+    });
+    it('binds a self-unregistering listener when callOnce is true', function() {
+      var bindTo = {id: 1};
+      var listenerObj = {
+        type: 'foo',
+        target: target,
+        bindTo: bindTo,
+        callOnce: true
+      };
+      var unlistenSpy = sinon.spy(ol.events, 'unlistenByKey');
+      listenerObj.listener = function() {
+        expect(this).to.equal(bindTo);
+        expect(unlistenSpy.firstCall.args[0]).to.eql(listenerObj);
+      }
+      var boundListener = ol.events.bindListener_(listenerObj);
+      expect(listenerObj.boundListener).to.equal(boundListener);
+      boundListener();
       ol.events.unlistenByKey.restore();
     });
   });
@@ -205,7 +214,7 @@ describe('ol.events', function() {
       var key2 = ol.events.listen(target, 'foo', listener, {});
       expect(key1.boundListener).to.not.equal(key2.boundListener);
       expect(target.getListeners('foo')).to.eql(
-          [key2.boundListener, key1.boundListener]);
+          [key1.boundListener, key2.boundListener]);
     });
   });
 

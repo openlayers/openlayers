@@ -1,6 +1,7 @@
 goog.provide('ol.events.EventTarget');
 
-goog.require('goog.Disposable');
+goog.require('goog.asserts');
+goog.require('ol.Disposable');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 
@@ -20,11 +21,17 @@ goog.require('ol.events.Event');
  *    returns false.
  *
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.Disposable}
  */
 ol.events.EventTarget = function() {
 
   goog.base(this);
+
+  /**
+   * @private
+   * @type {!Object.<string, number>}
+   */
+  this.pendingRemovals_ = {};
 
   /**
    * @private
@@ -33,7 +40,7 @@ ol.events.EventTarget = function() {
   this.listeners_ = {};
 
 };
-goog.inherits(ol.events.EventTarget, goog.Disposable);
+goog.inherits(ol.events.EventTarget, ol.Disposable);
 
 
 /**
@@ -46,7 +53,7 @@ ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
     listeners = this.listeners_[type] = [];
   }
   if (listeners.indexOf(listener) === -1) {
-    listeners.unshift(listener);
+    listeners.push(listener);
   }
 };
 
@@ -63,13 +70,23 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   var type = evt.type;
   evt.target = this;
   var listeners = this.listeners_[type];
+  var propagate;
   if (listeners) {
-    for (var i = listeners.length - 1; i >= 0; --i) {
-      if (listeners[i].call(this, evt) === false ||
-          evt.propagationStopped) {
-        return false;
+    if (!(type in this.pendingRemovals_)) {
+      this.pendingRemovals_[type] = 0;
+    }
+    for (var i = 0, ii = listeners.length; i < ii; ++i) {
+      if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
+        propagate = false;
+        break;
       }
     }
+    var pendingRemovals = this.pendingRemovals_[type];
+    delete this.pendingRemovals_[type];
+    while (pendingRemovals--) {
+      this.removeEventListener(type, ol.nullFunction);
+    }
+    return propagate;
   }
 };
 
@@ -79,13 +96,12 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
  */
 ol.events.EventTarget.prototype.disposeInternal = function() {
   ol.events.unlistenAll(this);
-  goog.base(this, 'disposeInternal');
 };
 
 
 /**
  * Get the listeners for a specified event type. Listeners are returned in the
- * opposite order that they will be called in.
+ * order that they will be called in.
  *
  * @param {string} type Type.
  * @return {Array.<ol.events.ListenerFunctionType>} Listeners.
@@ -115,9 +131,16 @@ ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
   if (listeners) {
     var index = listeners.indexOf(listener);
-    listeners.splice(index, 1);
-    if (listeners.length === 0) {
-      delete this.listeners_[type];
+    goog.asserts.assert(index != -1, 'listener not found');
+    if (type in this.pendingRemovals_) {
+      // make listener a no-op, and remove later in #dispatchEvent()
+      listeners[index] = ol.nullFunction;
+      ++this.pendingRemovals_[type];
+    } else {
+      listeners.splice(index, 1);
+      if (listeners.length === 0) {
+        delete this.listeners_[type];
+      }
     }
   }
 };

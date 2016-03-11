@@ -165,11 +165,10 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
-    var layerState = frameState.layerStates[goog.getUid(layer)];
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-        rotation, layerState.managed ? frameState.skippedFeatureUids : {},
+        rotation, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
@@ -258,8 +257,6 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
     return true;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
   this.dirty_ = false;

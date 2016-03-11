@@ -24,6 +24,7 @@ goog.require('ol.tilecoord');
 ol.source.BingMaps = function(options) {
 
   goog.base(this, {
+    cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     opaque: true,
     projection: ol.proj.get('EPSG:3857'),

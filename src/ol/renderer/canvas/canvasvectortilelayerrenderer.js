@@ -216,8 +216,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     return;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(replayState.replayGroup);
   replayState.replayGroup = null;
   replayState.dirty = false;
 
@@ -306,7 +304,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var layer = this.getLayer();
-  var layerState = frameState.layerStates[goog.getUid(layer)];
   /** @type {Object.<string, boolean>} */
   var features = {};
 
@@ -340,8 +337,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     }
     replayGroup = tile.getReplayState().replayGroup;
     found = found || replayGroup.forEachFeatureAtCoordinate(
-        tileSpaceCoordinate, resolution, rotation,
-        layerState.managed ? frameState.skippedFeatureUids : {},
+        tileSpaceCoordinate, resolution, rotation, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.

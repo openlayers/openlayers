@@ -22,11 +22,17 @@ describe('ol.render.Box', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
   describe('constructor', function() {
+    it('creates an instance', function() {
+      var obj = new ol.render.Box('test-box');
+      expect(obj).to.be.a(ol.render.Box);
+      expect(obj).to.be.a(ol.Disposable);
+      obj.dispose();
+    })
     it('creates an absolutely positioned DIV with a className', function() {
       expect(box.element_).to.be.a(HTMLDivElement);
       expect(box.element_.style.position).to.be('absolute');
@@ -62,6 +68,7 @@ describe('ol.render.Box', function() {
 
 });
 
+goog.require('ol.Disposable');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.geom.Polygon');

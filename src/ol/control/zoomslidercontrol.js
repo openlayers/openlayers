@@ -4,7 +4,6 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.math.Rect');
 goog.require('goog.style');
 goog.require('ol.events');
 goog.require('ol.events.Event');
@@ -55,25 +54,37 @@ ol.control.ZoomSlider = function(opt_options) {
 
   /**
    * @type {boolean}
+   * @private
    */
   this.dragging_;
+
   /**
    * @type {Array.<ol.events.Key>}
+   * @private
    */
   this.dragListenerKeys_;
 
   /**
-   * @type {goog.math.Rect}
+   * @type {number}
+   * @private
    */
-  this.limits_;
+  this.heightLimit_ = 0;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.widthLimit_ = 0;
 
   /**
    * @type {number|undefined}
+   * @private
    */
   this.previousX_;
 
   /**
    * @type {number|undefined}
+   * @private
    */
   this.previousY_;
 
@@ -93,8 +104,8 @@ ol.control.ZoomSlider = function(opt_options) {
   this.sliderInitialized_ = false;
 
   /**
-   * @private
    * @type {number}
+   * @private
    */
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
@@ -107,14 +118,17 @@ ol.control.ZoomSlider = function(opt_options) {
       [className, ol.css.CLASS_UNSELECTABLE, ol.css.CLASS_CONTROL],
       thumbElement);
 
-  var dragger = new ol.pointer.PointerEventHandler(containerElement);
-  this.registerDisposable(dragger);
+  /**
+   * @type {ol.pointer.PointerEventHandler}
+   * @private
+   */
+  this.dragger_ = new ol.pointer.PointerEventHandler(containerElement);
 
-  ol.events.listen(dragger, ol.pointer.EventType.POINTERDOWN,
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERDOWN,
       this.handleDraggerStart_, this);
-  ol.events.listen(dragger, ol.pointer.EventType.POINTERMOVE,
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERMOVE,
       this.handleDraggerDrag_, this);
-  ol.events.listen(dragger, ol.pointer.EventType.POINTERUP,
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERUP,
       this.handleDraggerEnd_, this);
 
   ol.events.listen(containerElement, ol.events.EventType.CLICK,
@@ -130,6 +144,15 @@ ol.control.ZoomSlider = function(opt_options) {
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
+
+
+/**
+ * @inheritDoc
+ */
+ol.control.ZoomSlider.prototype.disposeInternal = function() {
+  this.dragger_.dispose();
+  goog.base(this, 'disposeInternal');
+};
 
 
 /**
@@ -165,7 +188,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
   var containerSize = goog.style.getSize(container);
 
-  var thumb = goog.dom.getFirstElementChild(container);
+  var thumb = container.firstElementChild;
   var thumbMargins = goog.style.getMarginBox(thumb);
   var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
   var thumbWidth = thumbBorderBoxSize.width +
@@ -174,18 +197,13 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
       thumbMargins.top + thumbMargins.bottom;
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
-  var width = containerSize.width - thumbWidth;
-  var height = containerSize.height - thumbHeight;
-
-  var limits;
   if (containerSize.width > containerSize.height) {
     this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
-    limits = new goog.math.Rect(0, 0, width, 0);
+    this.widthLimit_ = containerSize.width - thumbWidth;
   } else {
     this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
-    limits = new goog.math.Rect(0, 0, 0, height);
+    this.heightLimit_ = containerSize.height - thumbHeight;
   }
-  this.limits_ = limits;
   this.sliderInitialized_ = true;
 };
 
@@ -322,14 +340,12 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
  */
 ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
   var position = this.getPositionForResolution_(res);
-  var thumb = goog.dom.getFirstElementChild(this.element);
+  var thumb = this.element.firstElementChild;
 
   if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
-    var left = this.limits_.left + this.limits_.width * position;
-    goog.style.setPosition(thumb, left);
+    thumb.style.left = this.widthLimit_ * position + 'px';
   } else {
-    var top = this.limits_.top + this.limits_.height * position;
-    goog.style.setPosition(thumb, this.limits_.left, top);
+    thumb.style.top = this.heightLimit_ * position + 'px';
   }
 };
 
@@ -345,12 +361,11 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
  * @private
  */
 ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
-  var draggerLimits = this.limits_;
   var amount;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
-    amount = (x - draggerLimits.left) / draggerLimits.width;
+    amount = x / this.widthLimit_;
   } else {
-    amount = (y - draggerLimits.top) / draggerLimits.height;
+    amount = y / this.heightLimit_;
   }
   return ol.math.clamp(amount, 0, 1);
 };

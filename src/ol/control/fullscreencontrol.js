@@ -140,7 +140,7 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
   var opened = this.cssClassName_ + '-true';
   var closed = this.cssClassName_ + '-false';
-  var button = goog.dom.getFirstElementChild(this.element);
+  var button = this.element.firstElementChild;
   var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
     goog.dom.classlist.swap(button, closed, opened);

@@ -125,6 +125,11 @@
           }
         }
       }
+      if (options && options.ignoreElementOrder) {
+        nodes.sort(function(a, b) {
+          return a.nodeName > b.nodeName ? 1 : a.nodeName < b.nodeName ? -1 : 0;
+        });
+      }
       return nodes;
     }
   }
@@ -275,7 +280,8 @@
   /**
    * Checks if the XML document sort of equals another XML document.
    * @param {Object} obj The other object.
-   * @param {Object} options The options.
+   * @param {{includeWhiteSpace: (boolean|undefined),
+   *     ignoreElementOrder: (boolean|undefined)}=} options The options.
    * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.xmleql = function(obj, options) {
@@ -364,7 +370,7 @@
   global.disposeMap = function(map) {
     var target = map.getTarget();
     map.setTarget(null);
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   };
 
@@ -450,6 +456,28 @@
       expect().fail(
         'resemble only works with the canvas and WebGL renderer.');
     }
+  };
+
+  var features = {
+    ArrayBuffer: typeof ArrayBuffer === 'function',
+    Uint8ClampedArray: ('Uint8ClampedArray' in global)
+  };
+
+  /**
+   * Allow tests to be skipped where certain features are not available.  The
+   * provided key must be in the above `features` lookup.  Keys should
+   * correspond to the feature that is required, but can be any string.
+   * @param {string} key The required feature name.
+   * @return {Object} An object with a `describe` function that will run tests
+   *     if the required feature is available and skip them otherwise.
+   */
+  global.where = function(key) {
+    if (!(key in features)) {
+      throw new Error('where() called with unknown key: ' + key);
+    }
+    return {
+      describe: features[key] ? global.describe : global.xdescribe
+    };
   };
 
 })(this);

@@ -8,7 +8,7 @@ describe('ol.source.TileImage', function() {
       tileGrid: opt_tileGrid ||
           ol.tilegrid.createForProjection(proj, undefined, [2, 2]),
       tileUrlFunction: ol.TileUrlFunction.createFromTemplate(
-          'data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAA=')
+          'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
     });
   }
 
