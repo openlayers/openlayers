@@ -4,7 +4,7 @@ describe('ol.geom.flat.area', function() {
 
   describe('ol.geom.flat.area.linearRing', function() {
 
-    it('calcaultes the area of a triangle', function() {
+    it('calculates the area of a triangle', function() {
       var area = ol.geom.flat.area.linearRing([0, 0, 0.5, 1, 1, 0], 0, 6, 2);
       expect(area).to.be(0.5);
     });
