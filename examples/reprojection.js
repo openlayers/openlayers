@@ -81,12 +81,8 @@ layers['wms4326'] = new ol.layer.Tile({
 
 layers['wms21781'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
-    attributions: [new ol.Attribution({
-      html: '&copy; ' +
-          '<a href="http://www.geo.admin.ch/internet/geoportal/' +
-          'en/home.html">' +
-          'Pixelmap 1:1000000 / geo.admin.ch</a>'
-    })],
+    attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+      'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
     crossOrigin: 'anonymous',
     params: {
       'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
@@ -120,10 +116,8 @@ layers['grandcanyon'] = new ol.layer.Tile({
     crossOrigin: '',
     tilePixelRatio: 2,
     maxZoom: 15,
-    attributions: [new ol.Attribution({
-      html: 'Tiles &copy; USGS, rendered with ' +
-          '<a href="http://www.maptiler.com/">MapTiler</a>'
-    })]
+    attributions: 'Tiles © USGS, rendered with ' +
+      '<a href="http://www.maptiler.com/">MapTiler</a>'
   })
 });
 
