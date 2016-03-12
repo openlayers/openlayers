@@ -19,12 +19,12 @@ describe('ol.geom.flat.center', function() {
 
     it('calculates the centers of two squares', function() {
       var squareMultiPoly = new ol.geom.MultiPolygon([
-          [
-            [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
-          ],
-          [
-            [[3, 0], [3, 1], [4, 1], [4, 0], [3, 0]]
-          ]
+        [
+          [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
+        ],
+        [
+          [[3, 0], [3, 1], [4, 1], [4, 0], [3, 0]]
+        ]
       ]);
       var got = ol.geom.flat.center.linearRingss(
         squareMultiPoly.flatCoordinates,
