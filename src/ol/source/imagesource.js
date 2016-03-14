@@ -3,7 +3,6 @@ goog.provide('ol.source.ImageEvent');
 
 goog.require('goog.asserts');
 goog.require('ol.events.Event');
-goog.require('ol.Attribution');
 goog.require('ol.ImageState');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -13,7 +12,7 @@ goog.require('ol.source.Source');
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ * @typedef {{attributions: (olx.source.AttributionOption|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,

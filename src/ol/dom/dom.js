@@ -4,7 +4,6 @@ goog.provide('ol.dom');
 goog.provide('ol.dom.BrowserFeature');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -61,7 +60,7 @@ ol.dom.canUseCssTransform = (function() {
                 transforms[t]);
           }
         }
-        goog.dom.removeNode(el);
+        document.body.removeChild(el);
 
         canUseCssTransform = (has2d && has2d !== 'none');
       }
@@ -104,7 +103,7 @@ ol.dom.canUseCssTransform3D = (function() {
                 transforms[t]);
           }
         }
-        goog.dom.removeNode(el);
+        document.body.removeChild(el);
 
         canUseCssTransform3D = (has3d && has3d !== 'none');
       }

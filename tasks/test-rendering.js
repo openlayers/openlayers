@@ -6,7 +6,7 @@
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var slimerjs = require('slimerjs-edge');
+var slimerjs = require('slimerjs');
 
 var serve = require('./serve');
 var listen = require('./test').listen;
@@ -38,14 +38,23 @@ serve.createServer(function(err, server) {
       url + '/test_rendering/index.html'
     ];
 
-    // The current version of slimerjs is 0.9.6, but this version does not work
-    // for us because of https://github.com/laurentj/slimerjs/issues/333. This
-    // issue is now fixed in master and slimerjs-edge (nightly builds) works for
-    // us. But we should use slimerjs instead of slimerjs-edge when a new
-    // release is published.
-    var child = spawn(slimerjs.path, args, {stdio: 'inherit'});
-    child.on('exit', function(code) {
-      process.exit(code);
+    // TODO
+    // Workaround for https://github.com/laurentj/slimerjs/issues/333. When a
+    // version with the fix is released, replace block below with:
+    // var child = spawn(slimerjs.path, args, {stdio: 'pipe'});
+    // child.on('exit', function(code) {
+    //   process.exit(code);
+    // }
+
+    var child = spawn(slimerjs.path, args, {stdio: 'pipe'});
+    child.stdout.on('data', function(data) {
+      process.stdout.write(data);
+      if (data == 'All tests passed.\n') {
+        process.exit(0);
+      }
+    });
+    child.on('exit', function() {
+      process.exit(1);
     });
   });
 

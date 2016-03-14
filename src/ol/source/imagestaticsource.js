@@ -20,10 +20,6 @@ goog.require('ol.source.Image');
  * @api stable
  */
 ol.source.ImageStatic = function(options) {
-
-  var attributions = options.attributions !== undefined ?
-      options.attributions : null;
-
   var imageExtent = options.imageExtent;
 
   var crossOrigin = options.crossOrigin !== undefined ?
@@ -34,7 +30,7 @@ ol.source.ImageStatic = function(options) {
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   goog.base(this, {
-    attributions: attributions,
+    attributions: options.attributions,
     logo: options.logo,
     projection: ol.proj.get(options.projection)
   });
@@ -43,7 +39,7 @@ ol.source.ImageStatic = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, undefined, 1, attributions,
+  this.image_ = new ol.Image(imageExtent, undefined, 1, this.getAttributions(),
       options.url, crossOrigin, imageLoadFunction);
 
   /**

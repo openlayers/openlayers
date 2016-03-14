@@ -183,10 +183,14 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   var context;
   var pixelRatio = frameState.pixelRatio;
-  var width = frameState.size[0] * pixelRatio;
-  var height = frameState.size[1] * pixelRatio;
-  this.canvas_.width = width;
-  this.canvas_.height = height;
+  var width = Math.round(frameState.size[0] * pixelRatio);
+  var height = Math.round(frameState.size[1] * pixelRatio);
+  if (this.canvas_.width != width || this.canvas_.height != height) {
+    this.canvas_.width = width;
+    this.canvas_.height = height;
+  } else {
+    this.context_.clearRect(0, 0, width, height);
+  }
 
   var rotation = frameState.viewState.rotation;
   var pixelExtent;
@@ -194,12 +198,17 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     context = this.renderContext_;
     pixelExtent = ol.extent.getForViewAndSize(this.pixelCenter_, pixelRatio,
         rotation, frameState.size, this.pixelExtent_);
-    var renderWidth = ol.extent.getWidth(pixelExtent);
-    var renderHeight = ol.extent.getHeight(pixelExtent);
-    this.renderCanvas_.width = renderWidth + 0.5;
-    this.renderCanvas_.height = renderHeight + 0.5;
-    this.renderContext_.translate(Math.round((renderWidth - width) / 2),
-        Math.round((renderHeight - height) / 2));
+    var renderWidth = Math.round(ol.extent.getWidth(pixelExtent));
+    var renderHeight = Math.round(ol.extent.getHeight(pixelExtent));
+    var renderCanvas = this.renderCanvas_;
+    if (renderCanvas.width != renderWidth || renderCanvas.height != renderHeight) {
+      renderCanvas.width = renderWidth;
+      renderCanvas.height = renderHeight;
+      this.renderContext_.translate(Math.round((renderWidth - width) / 2),
+          Math.round((renderHeight - height) / 2));
+    } else {
+      this.renderContext_.clearRect(0, 0, renderWidth, renderHeight);
+    }
   } else {
     context = this.context_;
   }
