@@ -1650,7 +1650,8 @@ olx.format.WriteOptions.prototype.dataProjection;
 
 /**
  * Projection of the feature geometries that will be serialized by the format
- * writer.
+ * writer. If not provided, geometries are assumed to be in the
+ * `dataProjection` if that is set; in other words, they are not transformed.
  * @type {ol.proj.ProjectionLike}
  * @api stable
  */
