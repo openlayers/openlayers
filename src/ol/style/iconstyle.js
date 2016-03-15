@@ -107,9 +107,6 @@ ol.style.Icon = function(opt_options) {
   goog.asserts.assert(!(src !== undefined && image),
       'image and src can not provided at the same time');
   goog.asserts.assert(
-      src === undefined || (src !== undefined && !imgSize),
-      'imgSize should not be set when src is provided');
-  goog.asserts.assert(
       !image || (image && imgSize),
       'imgSize must be set when image is provided');
 
@@ -513,6 +510,10 @@ ol.style.IconImage_.prototype.handleImageError_ = function() {
  */
 ol.style.IconImage_.prototype.handleImageLoad_ = function() {
   this.imageState_ = ol.style.ImageState.LOADED;
+  if (this.size_) {
+    this.image_.width = this.size_[0];
+    this.image_.height = this.size_[1];
+  }
   this.size_ = [this.image_.width, this.image_.height];
   this.unlistenImage_();
   this.determineTainting_();

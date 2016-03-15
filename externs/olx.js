@@ -6487,7 +6487,9 @@ olx.style.IconOptions.prototype.size;
 
 
 /**
- * Image size in pixel. Only required if `img` is set and `src` is not.
+ * Image size in pixels. Only required if `img` is set and `src` is not, and for
+ * SVG images in Internet Explorer 11. The provided `imgSize` needs to match
+ * the actual size of the image.
  * @type {ol.Size|undefined}
  * @api
  */
