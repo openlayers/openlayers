@@ -143,7 +143,7 @@ ol.format.WMSCapabilities1_1.readLatLonBoundingBox_ = function(node, objectStack
 		ol.format.XSD.readDecimalString(node.getAttribute('maxy'))
 	];
 	return {
-		extent: extent,
+		extent: extent
 	};
 };
 
@@ -271,9 +271,9 @@ ol.format.WMSCapabilities1_1.readScaleHint_ = function(node, objectStack) {
 	goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
 		'node.nodeType should be ELEMENT');
 	goog.asserts.assert(node.localName == 'ScaleHint', 'localName should be ScaleHint');
-	return{
+	return {
 		min: ol.format.XSD.readDecimalString(node.getAttribute('min')),
-		max: ol.format.XSD.readDecimalString(node.getAttribute('max')),
+		max: ol.format.XSD.readDecimalString(node.getAttribute('max'))
 	};
 };
 
@@ -370,7 +370,7 @@ ol.format.WMSCapabilities1_1.readDimension_ = function(node, objectStack) {
 	var dimensionObject = {
 		'name': node.getAttribute('name'),
 		'units': node.getAttribute('units'),
-		'unitSymbol': node.getAttribute('unitSymbol'),
+		'unitSymbol': node.getAttribute('unitSymbol')
 	};
 	return dimensionObject;
 };
@@ -708,7 +708,6 @@ ol.format.WMSCapabilities1_1.LAYER_PARSERS_ = ol.xml.makeStructureNS(
 			ol.format.WMSCapabilities1_1.readLayer_),
 		'ScaleHint': ol.xml.makeObjectPropertyPusher(
 			ol.format.WMSCapabilities1_1.readScaleHint_)
-		
 	});
 
 
