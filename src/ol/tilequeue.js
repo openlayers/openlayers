@@ -95,7 +95,7 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   var state = tile.getState();
   if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
-      state === ol.TileState.EMPTY) {
+      state === ol.TileState.EMPTY || state === ol.TileState.ABORT) {
     ol.events.unlisten(tile, ol.events.EventType.CHANGE,
         this.handleTileChange, this);
     var tileKey = tile.getKey();
