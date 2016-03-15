@@ -21,6 +21,7 @@ var closer = document.getElementById('popup-closer');
 var overlay = new ol.Overlay(/** @type {olx.OverlayOptions} */ ({
   element: container,
   autoPan: true,
+  autoPanIncludeMargin: true,
   autoPanAnimation: {
     duration: 250
   }
