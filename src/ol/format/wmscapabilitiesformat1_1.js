@@ -705,7 +705,7 @@ ol.format.WMSCapabilities1_1.LAYER_PARSERS_ = ol.xml.makeStructureNS(
 		'Style': ol.xml.makeObjectPropertyPusher(
 			ol.format.WMSCapabilities1_1.readStyle_),
 		'Layer': ol.xml.makeObjectPropertyPusher(
-			ol.format.WMSCapabilities1_1.readLayer_)
+			ol.format.WMSCapabilities1_1.readLayer_),
 		'ScaleHint': ol.xml.makeObjectPropertyPusher(
 			ol.format.WMSCapabilities1_1.readScaleHint_)
 		
