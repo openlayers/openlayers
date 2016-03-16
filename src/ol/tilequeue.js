@@ -1,6 +1,7 @@
 goog.provide('ol.TilePriorityFunction');
 goog.provide('ol.TileQueue');
 
+goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.Coordinate');
@@ -56,7 +57,7 @@ ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
 
   /**
    * @private
-   * @type {Object.<string,boolean>}
+   * @type {!Object.<string,boolean>}
    */
   this.tilesLoadingKeys_ = {};
 
@@ -94,7 +95,7 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
   var tile = /** @type {ol.Tile} */ (event.target);
   var state = tile.getState();
   if (state === ol.TileState.LOADED || state === ol.TileState.ERROR ||
-      state === ol.TileState.EMPTY) {
+      state === ol.TileState.EMPTY || state === ol.TileState.ABORT) {
     ol.events.unlisten(tile, ol.events.EventType.CHANGE,
         this.handleTileChange, this);
     var tileKey = tile.getKey();
@@ -104,6 +105,7 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
     }
     this.tileChangeCallback_();
   }
+  goog.asserts.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
 };
 
 
@@ -113,15 +115,17 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
  */
 ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var newLoads = 0;
-  var tile;
+  var tile, tileKey;
   while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
          this.getCount() > 0) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
-    if (tile.getState() === ol.TileState.IDLE) {
-      this.tilesLoadingKeys_[tile.getKey()] = true;
+    tileKey = tile.getKey();
+    if (tile.getState() === ol.TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+      this.tilesLoadingKeys_[tileKey] = true;
       ++this.tilesLoading_;
       ++newLoads;
       tile.load();
     }
+    goog.asserts.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
   }
 };
