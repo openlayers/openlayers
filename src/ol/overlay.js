@@ -114,6 +114,13 @@ ol.Overlay = function(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.autoPanIncludeMargin_ = options.autoPanIncludeMargin !== undefined ?
+      options.autoPanIncludeMargin : false;
+
+  /**
+   * @private
    * @type {number}
    */
   this.autoPanMargin_ = options.autoPanMargin !== undefined ?
@@ -383,12 +390,16 @@ ol.Overlay.prototype.panIntoView_ = function() {
   }
 
   var mapRect = this.getRect_(map.getTargetElement(), map.getSize());
+  var margin = this.autoPanMargin_;
+  var incMargin = this.autoPanIncludeMargin_
+  if (incMargin) {
+    ol.extent.buffer(mapRect, -margin, mapRect);
+  }
   var element = this.getElement();
   goog.asserts.assert(element, 'element should be defined');
   var overlayRect = this.getRect_(element,
       [ol.dom.outerWidth(element), ol.dom.outerHeight(element)]);
 
-  var margin = this.autoPanMargin_;
   if (!ol.extent.containsExtent(mapRect, overlayRect)) {
     // the overlay is not completely inside the viewport, so pan the map
     var offsetLeft = overlayRect[0] - mapRect[0];
@@ -399,17 +410,17 @@ ol.Overlay.prototype.panIntoView_ = function() {
     var delta = [0, 0];
     if (offsetLeft < 0) {
       // move map to the left
-      delta[0] = offsetLeft - margin;
+      delta[0] = offsetLeft - (incMargin ? 0 : margin);
     } else if (offsetRight < 0) {
       // move map to the right
-      delta[0] = Math.abs(offsetRight) + margin;
+      delta[0] = Math.abs(offsetRight) + (incMargin ? 0 : margin);
     }
     if (offsetTop < 0) {
       // move map up
-      delta[1] = offsetTop - margin;
+      delta[1] = offsetTop - (incMargin ? 0 : margin);
     } else if (offsetBottom < 0) {
       // move map down
-      delta[1] = Math.abs(offsetBottom) + margin;
+      delta[1] = Math.abs(offsetBottom) + (incMargin ? 0 : margin);
     }
 
     if (delta[0] !== 0 || delta[1] !== 0) {

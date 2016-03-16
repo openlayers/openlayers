@@ -318,6 +318,7 @@ olx.MapOptions.prototype.view;
  *     insertFirst: (boolean|undefined),
  *     autoPan: (boolean|undefined),
  *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanIncludeMargin: (boolean|undefined),
  *     autoPanMargin: (number|undefined)}}
  * @api stable
  */
@@ -411,6 +412,16 @@ olx.OverlayOptions.prototype.autoPan;
  * @api
  */
 olx.OverlayOptions.prototype.autoPanAnimation;
+
+
+/**
+ * When set, the `autoPanMargin` value is included in the calculation to
+ * determine whether to automatically pan the map when the overlay is close
+ * to an edge. The default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.OverlayOptions.prototype.autoPanIncludeMargin;
 
 
 /**
