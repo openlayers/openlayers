@@ -1,7 +1,4 @@
-// FIXME add tests for browser features (Modernizr?)
-
 goog.provide('ol.dom');
-goog.provide('ol.dom.BrowserFeature');
 
 goog.require('goog.asserts');
 goog.require('goog.userAgent');
