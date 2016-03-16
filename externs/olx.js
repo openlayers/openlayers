@@ -2520,7 +2520,8 @@ olx.interaction.DragRotateOptions.prototype.duration;
 /**
  * @typedef {{className: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined)}}
+ *     duration: (number|undefined),
+ *     out: (boolean|undefined)}}
  * @api
  */
 olx.interaction.DragZoomOptions;
@@ -2550,6 +2551,14 @@ olx.interaction.DragZoomOptions.prototype.condition;
  * @api
  */
 olx.interaction.DragZoomOptions.prototype.duration;
+
+
+/**
+ * Use interaction for zooming out. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DragZoomOptions.prototype.out;
 
 
 /**
