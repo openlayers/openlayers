@@ -281,8 +281,8 @@ olx.MapOptions.prototype.overlays;
  * Renderer. By default, Canvas, DOM and WebGL renderers are tested for support
  * in that order, and the first supported used. Specify a
  * {@link ol.RendererType} here to use a specific renderer.
- * Note that at present only the Canvas renderer fully supports vector data,
- * though WebGL can render Point geometries.
+ * Note that at present the Canvas and DOM renderers fully support vector data,
+ * but WebGL can only render Point geometries.
  * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
  * @api stable
  */
