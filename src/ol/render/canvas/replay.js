@@ -384,6 +384,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         goog.DEBUG && console.assert(typeof instruction[9] === 'boolean',
             '10th instruction should be a boolean');
         stroke = /** @type {boolean} */ (instruction[9]);
+        rotateWithView = /** @type {boolean} */ (instruction[10]);
+        if (rotateWithView) {
+          rotation += viewRotation;
+        }
         for (; d < dd; d += 2) {
           x = pixelCoordinates[d] + offsetX;
           y = pixelCoordinates[d + 1] + offsetY;
@@ -1547,6 +1551,12 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
+   * @type {boolean|undefined}
+   */
+  this.textRotateWithView_ = undefined;
+
+  /**
+   * @private
    * @type {number}
    */
   this.textRotation_ = 0;
@@ -1603,7 +1613,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offse
   var drawTextInstruction = [
     ol.render.canvas.Instruction.DRAW_TEXT, myBegin, myEnd, this.text_,
     this.textOffsetX_, this.textOffsetY_, this.textRotation_, this.textScale_,
-    fill, stroke];
+    fill, stroke, this.textRotateWithView_];
   this.instructions.push(drawTextInstruction);
   this.hitDetectionInstructions.push(drawTextInstruction);
   this.endGeometry(geometry, feature);
@@ -1773,6 +1783,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
     var textFont = textStyle.getFont();
     var textOffsetX = textStyle.getOffsetX();
     var textOffsetY = textStyle.getOffsetY();
+    var textRotateWithView = textStyle.getRotateWithView();
     var textRotation = textStyle.getRotation();
     var textScale = textStyle.getScale();
     var textText = textStyle.getText();
@@ -1799,6 +1810,7 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
     this.text_ = textText !== undefined ? textText : '';
     this.textOffsetX_ = textOffsetX !== undefined ? textOffsetX : 0;
     this.textOffsetY_ = textOffsetY !== undefined ? textOffsetY : 0;
+    this.textRotateWithView_ = textRotateWithView !== undefined ? textRotateWithView : false;
     this.textRotation_ = textRotation !== undefined ? textRotation : 0;
     this.textScale_ = textScale !== undefined ? textScale : 1;
   }

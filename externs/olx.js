@@ -6841,6 +6841,14 @@ olx.style.RegularShapeOptions.prototype.stroke;
 
 
 /**
+ * Whether to rotate the text with the view. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.TextOptions.prototype.rotateWithView;
+
+
+/**
  * Rotation in radians (positive rotation clockwise). Default is `0`.
  * @type {number|undefined}
  * @api
@@ -6937,6 +6945,7 @@ olx.style.StrokeOptions.prototype.width;
  *     offsetX: (number|undefined),
  *     offsetY: (number|undefined),
  *     scale: (number|undefined),
+ *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     text: (string|undefined),
  *     textAlign: (string|undefined),
