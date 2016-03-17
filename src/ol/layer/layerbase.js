@@ -25,6 +25,7 @@ ol.layer.LayerProperty = {
 
 /**
  * @typedef {{layer: ol.layer.Layer,
+ *            parent: (ol.layer.Base|undefined),
  *            opacity: number,
  *            sourceState: ol.source.State,
  *            visible: boolean,
