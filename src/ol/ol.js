@@ -256,14 +256,6 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
  *     var child = new ChildClass('a', 'b', 'see');
  *     child.foo(); // This works.
  *
- * In addition, a superclass' implementation of a method can be invoked as
- * follows:
- *
- *     ChildClass.prototype.foo = function(a) {
- *       ChildClass.base(this, 'foo', a);
- *       // Other code here.
- *     };
- *
  * @param {!Function} childCtor Child constructor.
  * @param {!Function} parentCtor Parent constructor.
  * @function
