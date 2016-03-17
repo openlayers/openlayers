@@ -1632,7 +1632,8 @@ olx.format.ReadOptions.prototype.featureProjection;
 /**
  * @typedef {{dataProjection: ol.proj.ProjectionLike,
  *     featureProjection: ol.proj.ProjectionLike,
- *     rightHanded: (boolean|undefined)}}
+ *     rightHanded: (boolean|undefined),
+ *     decimals: (number|undefined)}}
  * @api
  */
 olx.format.WriteOptions;
@@ -1673,6 +1674,20 @@ olx.format.WriteOptions.prototype.featureProjection;
  * @api stable
  */
 olx.format.WriteOptions.prototype.rightHanded;
+
+
+/**
+ * Maximum number of decimal places for coordinates. Coordinates are stored
+ * internally as floats, but floating-point arithmetic can create coordinates
+ * with a large number of decimal places, not generally wanted on output.
+ * Set a number here to round coordinates. Can also be used to ensure that
+ * coordinates read in can be written back out with the same number of decimals.
+ * Default is no rounding.
+ *
+ * @type {number|undefined}
+ * @api
+ */
+olx.format.WriteOptions.prototype.decimals;
 
 
 /**

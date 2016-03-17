@@ -746,6 +746,26 @@ describe('ol.format.GeoJSON', function() {
       expect(geometries[1].getCoordinates()[0][1]).to.roughlyEqual(
           gotGeometries[1].getCoordinates()[0][1], 1e-8);
     });
+
+    it('truncates transformed point with decimals option', function() {
+      var point = new ol.geom.Point([2, 3]).transform('EPSG:4326','EPSG:3857');
+      var geojson = format.writeGeometry(point, {
+        featureProjection: 'EPSG:3857',
+        decimals: 2
+      });
+      expect(format.readGeometry(geojson).getCoordinates()).to.eql(
+          [2, 3]);
+    });
+
+    it('truncates a linestring with decimals option', function() {
+      var linestring = new ol.geom.LineString([[42.123456789, 38.987654321],
+          [43, 39]]);
+      var geojson = format.writeGeometry(linestring, {
+        decimals: 6
+      });
+      expect(format.readGeometry(geojson).getCoordinates()).to.eql(
+          [[42.123457, 38.987654], [43, 39]]);
+    });
   });
 
 });
