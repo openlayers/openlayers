@@ -159,7 +159,7 @@ olx.interaction.InteractionOptions;
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
- * chain. Required.
+ * chain.
  * @type {function(ol.MapBrowserEvent):boolean}
  * @api
  */
