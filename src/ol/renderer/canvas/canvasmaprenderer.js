@@ -19,6 +19,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
+goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.ImageLayer');
@@ -181,7 +182,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     return;
   }
 
-  var context;
+  var context = this.context_;
   var pixelRatio = frameState.pixelRatio;
   var width = Math.round(frameState.size[0] * pixelRatio);
   var height = Math.round(frameState.size[1] * pixelRatio);
@@ -189,29 +190,10 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     this.canvas_.width = width;
     this.canvas_.height = height;
   } else {
-    this.context_.clearRect(0, 0, width, height);
+    context.clearRect(0, 0, width, height);
   }
 
   var rotation = frameState.viewState.rotation;
-  var pixelExtent;
-  if (rotation) {
-    context = this.renderContext_;
-    pixelExtent = ol.extent.getForViewAndSize(this.pixelCenter_, pixelRatio,
-        rotation, frameState.size, this.pixelExtent_);
-    var renderWidth = Math.round(ol.extent.getWidth(pixelExtent));
-    var renderHeight = Math.round(ol.extent.getHeight(pixelExtent));
-    var renderCanvas = this.renderCanvas_;
-    if (renderCanvas.width != renderWidth || renderCanvas.height != renderHeight) {
-      renderCanvas.width = renderWidth;
-      renderCanvas.height = renderHeight;
-      this.renderContext_.translate(Math.round((renderWidth - width) / 2),
-          Math.round((renderHeight - height) / 2));
-    } else {
-      this.renderContext_.clearRect(0, 0, renderWidth, renderHeight);
-    }
-  } else {
-    context = this.context_;
-  }
 
   this.calculateMatrices2D(frameState);
 
@@ -219,6 +201,8 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   var layerStatesArray = frameState.layerStatesArray;
   ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+
+  ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
 
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layer, layerRenderer, layerState;
@@ -237,14 +221,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     }
   }
 
-  if (rotation) {
-    this.context_.translate(width / 2, height / 2);
-    this.context_.rotate(rotation);
-    this.context_.drawImage(this.renderCanvas_,
-        Math.round(pixelExtent[0]), Math.round(pixelExtent[1]));
-    this.context_.rotate(-rotation);
-    this.context_.translate(-width / 2, -height / 2);
-  }
+  ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
 
   this.dispatchComposeEvent_(
       ol.render.EventType.POSTCOMPOSE, frameState);

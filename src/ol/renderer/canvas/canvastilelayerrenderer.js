@@ -3,6 +3,7 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.asserts');
+goog.require('goog.vec.Mat4');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.array');
@@ -12,6 +13,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.Tile');
+goog.require('ol.vec.Mat4');
 
 
 /**
@@ -41,6 +43,12 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
+  /**
+   * @private
+   * @type {!goog.vec.Mat4.Number}
+   */
+  this.imageTransform_ = goog.vec.Mat4.createNumber();
+
 };
 goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
 
@@ -55,7 +63,10 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
   var center = viewState.center;
   var projection = viewState.projection;
   var resolution = viewState.resolution;
+  var rotation = viewState.rotation;
   var size = frameState.size;
+  var offsetX = Math.round(pixelRatio * size[0] / 2);
+  var offsetY = Math.round(pixelRatio * size[1] / 2);
   var pixelScale = pixelRatio / resolution;
   var layer = this.getLayer();
   var source = layer.getSource();
@@ -67,17 +78,29 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
 
   this.dispatchPreComposeEvent(context, frameState, transform);
 
-  var renderContext;
-  if (layer.hasListener(ol.render.EventType.RENDER)) {
-    // resize and clear
-    this.context_.canvas.width = context.canvas.width;
-    this.context_.canvas.height = context.canvas.height;
+  var renderContext = context;
+  var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
+  var drawOffsetX, drawOffsetY, drawScale, drawSize;
+  if (rotation || hasRenderListeners) {
     renderContext = this.context_;
-  } else {
-    renderContext = context;
+    var renderCanvas = renderContext.canvas;
+    var tilePixelRatio = source.getTilePixelRatio(pixelRatio);
+    drawScale = tilePixelRatio / pixelRatio;
+    var width = context.canvas.width * drawScale;
+    var height = context.canvas.height * drawScale;
+    // Make sure the canvas is big enough for all possible rotation angles
+    drawSize = Math.round(Math.sqrt(width * width + height * height));
+    if (renderCanvas.width != drawSize) {
+      renderCanvas.width = renderCanvas.height = drawSize;
+    } else {
+      renderContext.clearRect(0, 0, drawSize, drawSize);
+    }
+    drawOffsetX = (drawSize - width) / 2 / drawScale;
+    drawOffsetY = (drawSize - height) / 2 / drawScale;
+    pixelScale *= drawScale;
+    offsetX = Math.round(drawScale * (offsetX + drawOffsetX))
+    offsetY = Math.round(drawScale * (offsetY + drawOffsetY));
   }
-  var offsetX = Math.round(pixelRatio * size[0] / 2);
-  var offsetY = Math.round(pixelRatio * size[1] / 2);
 
   // for performance reasons, context.save / context.restore is not used
   // to save and restore the transformation matrix and the opacity.
@@ -142,9 +165,17 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
     }
   }
 
-  if (renderContext != context) {
-    this.dispatchRenderEvent(renderContext, frameState, transform);
-    context.drawImage(renderContext.canvas, 0, 0);
+  if (hasRenderListeners) {
+    var dX = drawOffsetX - offsetX / drawScale + offsetX;
+    var dY = drawOffsetY - offsetY / drawScale + offsetY;
+    var imageTransform = ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+        drawSize / 2 - dX, drawSize / 2 - dY, pixelScale, -pixelScale,
+        -rotation, -center[0] + dX / pixelScale, -center[1] - dY / pixelScale);
+    this.dispatchRenderEvent(renderContext, frameState, imageTransform);
+  }
+  if (rotation || hasRenderListeners) {
+    context.drawImage(renderContext.canvas, -Math.round(drawOffsetX),
+        -Math.round(drawOffsetY), drawSize / drawScale, drawSize / drawScale);
   }
   renderContext.globalAlpha = alpha;
 
