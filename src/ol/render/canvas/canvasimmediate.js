@@ -541,7 +541,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
     render.setImageStyle(style.getImage());
     render.setTextStyle(style.getText());
-    goog.asserts.assert(geometry);
+    goog.asserts.assert(geometry, 'geometry must be truthy');
     render.drawGeometry(geometry);
   });
 };

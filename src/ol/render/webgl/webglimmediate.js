@@ -164,7 +164,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
   }
   this.drawAsync(zIndex, function(render) {
     render.setStyle(style);
-    goog.asserts.assert(geometry);
+    goog.asserts.assert(geometry, 'geometry must be truthy');
     render.drawGeometry(geometry);
   });
 };
