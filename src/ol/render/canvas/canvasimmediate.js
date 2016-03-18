@@ -426,11 +426,11 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * Render a circle geometry into the canvas.  Rendering is immediate and uses
  * the current fill and stroke styles.
  *
- * @param {ol.geom.Circle} circleGeometry Circle geometry.
+ * @param {ol.geom.Circle} geometry Circle geometry.
  * @api
  */
-ol.render.canvas.Immediate.prototype.drawCircle = function(circleGeometry) {
-  if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawCircle = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.fillState_ || this.strokeState_) {
@@ -441,7 +441,7 @@ ol.render.canvas.Immediate.prototype.drawCircle = function(circleGeometry) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
-        circleGeometry, this.transform_, this.pixelCoordinates_);
+        geometry, this.transform_, this.pixelCoordinates_);
     var dx = pixelCoordinates[2] - pixelCoordinates[0];
     var dy = pixelCoordinates[3] - pixelCoordinates[1];
     var radius = Math.sqrt(dx * dx + dy * dy);
@@ -457,7 +457,7 @@ ol.render.canvas.Immediate.prototype.drawCircle = function(circleGeometry) {
     }
   }
   if (this.text_ !== '') {
-    this.drawText_(circleGeometry.getCenter(), 0, 2, 2);
+    this.drawText_(geometry.getCenter(), 0, 2, 2);
   }
 };
 

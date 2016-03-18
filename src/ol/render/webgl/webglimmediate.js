@@ -20,8 +20,7 @@ goog.require('ol.render.webgl.ReplayGroup');
  * @param {number} pixelRatio Pixel ratio.
  * @struct
  */
-ol.render.webgl.Immediate = function(context,
-    center, resolution, rotation, size, extent, pixelRatio) {
+ol.render.webgl.Immediate = function(context, center, resolution, rotation, size, extent, pixelRatio) {
   goog.base(this);
 
   /**
@@ -173,8 +172,8 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometryCollectionGeometry, data) {
-  var geometries = geometryCollectionGeometry.getGeometriesArray();
+ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometry, data) {
+  var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     this.drawGeometry(geometries[i]);
@@ -185,13 +184,13 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometryCo
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawPoint = function(pointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawPoint = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
       replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
-  replay.drawPoint(pointGeometry, data);
+  replay.drawPoint(geometry, data);
   replay.finish(context);
   // default colors
   var opacity = 1;
@@ -208,13 +207,13 @@ ol.render.webgl.Immediate.prototype.drawPoint = function(pointGeometry, data) {
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawMultiPoint = function(multiPointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiPoint = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
       replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
-  replay.drawMultiPoint(multiPointGeometry, data);
+  replay.drawMultiPoint(geometry, data);
   replay.finish(context);
   var opacity = 1;
   var skippedFeatures = {};
