@@ -505,7 +505,7 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
       this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry));
       break;
     case ol.geom.GeometryType.GEOMETRY_COLLECTION:
-      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
+      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry));
       break;
     case ol.geom.GeometryType.CIRCLE:
       this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
@@ -553,9 +553,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  *
  * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
  *     collection.
- * @param {ol.Feature} feature Feature.
  */
-ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometryCollectionGeometry, feature) {
+ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometryCollectionGeometry) {
   var geometries = geometryCollectionGeometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
