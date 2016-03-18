@@ -25,13 +25,14 @@ var styleFunction = function(feature) {
   if (!style) {
     var canvas =
         /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
-    var render = ol.render.toContext(
+    var vectorContext = ol.render.toContext(
         /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
         {size: [size + 2, size + 2], pixelRatio: size / 10});
-    render.setFillStrokeStyle(
-        new ol.style.Fill({color: 'rgba(255, 153, 0, 0.4)'}),
-        new ol.style.Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 1}));
-    render.drawPolygonGeometry(new ol.geom.Polygon(
+    vectorContext.setStyle(new ol.style.Style({
+      fill: new ol.style.Fill({color: 'rgba(255, 153, 0, 0.4)'}),
+      stroke: new ol.style.Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 1})
+    }));
+    vectorContext.drawGeometry(new ol.geom.Polygon(
         [[[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]]]));
     style = new ol.style.Style({
       image: new ol.style.Icon({

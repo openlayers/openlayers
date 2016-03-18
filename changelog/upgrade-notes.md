@@ -1,6 +1,35 @@
 ## Upgrade notes
 
-### v3.15.0
+### <NEXT RELEASE>
+
+#### Immediate rendering API
+
+Listeners for `precompose`, `render`, and `postcompose` receive an event with a `vectorContext` property with methods for immediate vector rendering.  The previous geometry drawing methods have been replaced with a single `vectorContext.drawGeometry(geometry)` method.  If you were using any of the following experimental methods on the vector context, replace them with `drawGeometry`:
+
+ * Removed experimental geometry drawing methods: `drawPointGeometry`, `drawLineStringGeometry`, `drawPolygonGeometry`, `drawMultiPointGeometry`, `drawMultiLineStringGeometry`, `drawMultiPolygonGeometry`, and `drawCircleGeometry` (all have been replaced with `drawGeometry`).
+
+In addition, the previous methods for setting style parts have been replaced with a single `vectorContext.setStyle(style)` method.  If you were using any of the following experimental methods on the vector context, replace them with `setStyle`:
+
+ * Removed experimental style setting methods: `setFillStrokeStyle`, `setImageStyle`, `setTextStyle` (all have been replaced with `setStyle`).
+
+Below is an example of how the vector context might have been used in the past:
+
+```js
+// OLD WAY, NO LONGER SUPPORTED
+map.on('postcompose', function(event) {
+  event.vectorContext.setFillStrokeStyle(style.getFill(), style.getStroke());
+  event.vectorContext.drawPointGeometry(geometry);
+});
+```
+
+Here is an example of how you could accomplish the same with the new methods:
+```js
+// NEW WAY, USE THIS INSTEAD OF THE CODE ABOVE
+map.on('postcompose', function(event) {
+  event.vectorContext.setStyle(style);
+  event.vectorContext.drawGeometry(geometry);
+});
+```
 
 #### Removal of `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK`
 

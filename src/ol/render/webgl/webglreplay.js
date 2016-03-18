@@ -370,7 +370,7 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinate
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry = function(multiPointGeometry, feature) {
+ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -383,7 +383,7 @@ ol.render.webgl.ImageReplay.prototype.drawMultiPointGeometry = function(multiPoi
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.drawPointGeometry = function(pointGeometry, feature) {
+ol.render.webgl.ImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
   this.startIndices_.push(this.indices_.length);
   this.startIndicesFeature_.push(feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();

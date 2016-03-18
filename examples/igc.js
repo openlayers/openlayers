@@ -152,27 +152,26 @@ map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
-var imageStyle = new ol.style.Circle({
-  radius: 5,
-  fill: null,
-  stroke: new ol.style.Stroke({
-    color: 'rgba(255,0,0,0.9)',
-    width: 1
-  })
-});
-var strokeStyle = new ol.style.Stroke({
+var stroke = new ol.style.Stroke({
   color: 'rgba(255,0,0,0.9)',
   width: 1
+})
+var style = new ol.style.Style({
+  stroke: stroke,
+  image: new ol.style.Circle({
+    radius: 5,
+    fill: null,
+    stroke: stroke
+  })
 });
 map.on('postcompose', function(evt) {
   var vectorContext = evt.vectorContext;
+  vectorContext.setStyle(style);
   if (point !== null) {
-    vectorContext.setImageStyle(imageStyle);
-    vectorContext.drawPointGeometry(point);
+    vectorContext.drawGeometry(point);
   }
   if (line !== null) {
-    vectorContext.setFillStrokeStyle(null, strokeStyle);
-    vectorContext.drawLineStringGeometry(line);
+    vectorContext.drawGeometry(line);
   }
 });
 
@@ -184,8 +183,7 @@ var featureOverlay = new ol.layer.Vector({
       radius: 5,
       fill: new ol.style.Fill({
         color: 'rgba(255,0,0,0.9)'
-      }),
-      stroke: null
+      })
     })
   })
 });

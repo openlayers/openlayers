@@ -10,6 +10,7 @@ goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.colorlike');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.render.VectorContext');
@@ -425,11 +426,11 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * Render a circle geometry into the canvas.  Rendering is immediate and uses
  * the current fill and stroke styles.
  *
- * @param {ol.geom.Circle} circleGeometry Circle geometry.
+ * @param {ol.geom.Circle} geometry Circle geometry.
  * @api
  */
-ol.render.canvas.Immediate.prototype.drawCircleGeometry = function(circleGeometry) {
-  if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawCircle = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.fillState_ || this.strokeState_) {
@@ -440,7 +441,7 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry = function(circleGeometr
       this.setContextStrokeState_(this.strokeState_);
     }
     var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
-        circleGeometry, this.transform_, this.pixelCoordinates_);
+        geometry, this.transform_, this.pixelCoordinates_);
     var dx = pixelCoordinates[2] - pixelCoordinates[0];
     var dy = pixelCoordinates[3] - pixelCoordinates[1];
     var radius = Math.sqrt(dx * dx + dy * dy);
@@ -456,7 +457,61 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry = function(circleGeometr
     }
   }
   if (this.text_ !== '') {
-    this.drawText_(circleGeometry.getCenter(), 0, 2, 2);
+    this.drawText_(geometry.getCenter(), 0, 2, 2);
+  }
+};
+
+
+/**
+ * Set the rendering style.  Note that since this is an immediate rendering API,
+ * any `zIndex` on the provided style will be ignored.
+ *
+ * @param {ol.style.Style} style The rendering style.
+ * @api
+ */
+ol.render.canvas.Immediate.prototype.setStyle = function(style) {
+  this.setFillStrokeStyle(style.getFill(), style.getStroke());
+  this.setImageStyle(style.getImage());
+  this.setTextStyle(style.getText());
+};
+
+
+/**
+ * Render a geometry into the canvas.  Call
+ * {@link ol.render.canvas.Immediate#setStyle} first to set the rendering style.
+ *
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry The geometry to render.
+ * @api
+ */
+ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
+  var type = geometry.getType();
+  switch (type) {
+    case ol.geom.GeometryType.POINT:
+      this.drawPoint(/** @type {ol.geom.Point} */ (geometry));
+      break;
+    case ol.geom.GeometryType.LINE_STRING:
+      this.drawLineString(/** @type {ol.geom.LineString} */ (geometry));
+      break;
+    case ol.geom.GeometryType.POLYGON:
+      this.drawPolygon(/** @type {ol.geom.Polygon} */ (geometry));
+      break;
+    case ol.geom.GeometryType.MULTI_POINT:
+      this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry));
+      break;
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+      this.drawMultiLineString(/** @type {ol.geom.MultiLineString} */ (geometry));
+      break;
+    case ol.geom.GeometryType.MULTI_POLYGON:
+      this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry));
+      break;
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry));
+      break;
+    case ol.geom.GeometryType.CIRCLE:
+      this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
+      break;
+    default:
+      goog.asserts.fail('Unsupported geometry type: ' + type);
   }
 };
 
@@ -486,11 +541,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
     render.setImageStyle(style.getImage());
     render.setTextStyle(style.getText());
-    var renderGeometry =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(renderGeometry !== undefined,
-        'renderGeometry should be defined');
-    renderGeometry.call(render, geometry, null);
+    goog.asserts.assert(geometry, 'geometry must be truthy');
+    render.drawGeometry(geometry);
   });
 };
 
@@ -499,20 +551,13 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  * Render a GeometryCollection to the canvas.  Rendering is immediate and
  * uses the current styles appropriate for each geometry in the collection.
  *
- * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
- *     collection.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.geom.GeometryCollection} geometry Geometry collection.
  */
-ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry = function(geometryCollectionGeometry, feature) {
-  var geometries = geometryCollectionGeometry.getGeometriesArray();
+ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometry) {
+  var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    var geometry = geometries[i];
-    var geometryRenderer =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(geometryRenderer !== undefined,
-        'geometryRenderer should be defined');
-    geometryRenderer.call(this, geometry, feature);
+    this.drawGeometry(geometries[i]);
   }
 };
 
@@ -521,12 +566,11 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry = function(g
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
- * @api
+ * @param {ol.geom.Point|ol.render.Feature} geometry Point geometry.
  */
-ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry) {
-  var flatCoordinates = pointGeometry.getFlatCoordinates();
-  var stride = pointGeometry.getStride();
+ol.render.canvas.Immediate.prototype.drawPoint = function(geometry) {
+  var flatCoordinates = geometry.getFlatCoordinates();
+  var stride = geometry.getStride();
   if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
@@ -540,13 +584,11 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry)
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
  *
- * @param {ol.geom.MultiPoint|ol.render.Feature} multiPointGeometry MultiPoint
- *     geometry.
- * @api
+ * @param {ol.geom.MultiPoint|ol.render.Feature} geometry MultiPoint geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry) {
-  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
-  var stride = multiPointGeometry.getStride();
+ol.render.canvas.Immediate.prototype.drawMultiPoint = function(geometry) {
+  var flatCoordinates = geometry.getFlatCoordinates();
+  var stride = geometry.getStride();
   if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
@@ -560,25 +602,23 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPoin
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.LineString|ol.render.Feature} lineStringGeometry Line
- *     string geometry.
- * @api
+ * @param {ol.geom.LineString|ol.render.Feature} geometry LineString geometry.
  */
-ol.render.canvas.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry) {
-  if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawLineString = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
-    var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+    var flatCoordinates = geometry.getFlatCoordinates();
     context.beginPath();
     this.moveToLineTo_(flatCoordinates, 0, flatCoordinates.length,
-        lineStringGeometry.getStride(), false);
+        geometry.getStride(), false);
     context.stroke();
   }
   if (this.text_ !== '') {
-    var flatMidpoint = lineStringGeometry.getFlatMidpoint();
+    var flatMidpoint = geometry.getFlatMidpoint();
     this.drawText_(flatMidpoint, 0, 2, 2);
   }
 };
@@ -588,22 +628,21 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry = function(lineStrin
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
  * and uses the current style.
  *
- * @param {ol.geom.MultiLineString|ol.render.Feature} multiLineStringGeometry
- *     MultiLineString geometry.
- * @api
+ * @param {ol.geom.MultiLineString|ol.render.Feature} geometry MultiLineString
+ *     geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry) {
-  var geometryExtent = multiLineStringGeometry.getExtent();
+ol.render.canvas.Immediate.prototype.drawMultiLineString = function(geometry) {
+  var geometryExtent = geometry.getExtent();
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
   }
   if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
-    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+    var flatCoordinates = geometry.getFlatCoordinates();
     var offset = 0;
-    var ends = multiLineStringGeometry.getEnds();
-    var stride = multiLineStringGeometry.getStride();
+    var ends = geometry.getEnds();
+    var stride = geometry.getStride();
     context.beginPath();
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -613,7 +652,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(mult
     context.stroke();
   }
   if (this.text_ !== '') {
-    var flatMidpoints = multiLineStringGeometry.getFlatMidpoints();
+    var flatMidpoints = geometry.getFlatMidpoints();
     this.drawText_(flatMidpoints, 0, flatMidpoints.length, 2);
   }
 };
@@ -623,12 +662,10 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(mult
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Polygon|ol.render.Feature} polygonGeometry Polygon
- *     geometry.
- * @api
+ * @param {ol.geom.Polygon|ol.render.Feature} geometry Polygon geometry.
  */
-ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry) {
-  if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawPolygon = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_ || this.fillState_) {
@@ -640,8 +677,8 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeome
     }
     var context = this.context_;
     context.beginPath();
-    this.drawRings_(polygonGeometry.getOrientedFlatCoordinates(),
-        0, polygonGeometry.getEnds(), polygonGeometry.getStride());
+    this.drawRings_(geometry.getOrientedFlatCoordinates(),
+        0, geometry.getEnds(), geometry.getStride());
     if (this.fillState_) {
       context.fill();
     }
@@ -650,7 +687,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeome
     }
   }
   if (this.text_ !== '') {
-    var flatInteriorPoint = polygonGeometry.getFlatInteriorPoint();
+    var flatInteriorPoint = geometry.getFlatInteriorPoint();
     this.drawText_(flatInteriorPoint, 0, 2, 2);
   }
 };
@@ -659,11 +696,10 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeome
 /**
  * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
  * uses the current style.
- * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
- * @api
+ * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry) {
-  if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_ || this.fillState_) {
@@ -674,10 +710,10 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry = function(multiPo
       this.setContextStrokeState_(this.strokeState_);
     }
     var context = this.context_;
-    var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
+    var flatCoordinates = geometry.getOrientedFlatCoordinates();
     var offset = 0;
-    var endss = multiPolygonGeometry.getEndss();
-    var stride = multiPolygonGeometry.getStride();
+    var endss = geometry.getEndss();
+    var stride = geometry.getStride();
     var i, ii;
     for (i = 0, ii = endss.length; i < ii; ++i) {
       var ends = endss[i];
@@ -692,7 +728,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry = function(multiPo
     }
   }
   if (this.text_ !== '') {
-    var flatInteriorPoints = multiPolygonGeometry.getFlatInteriorPoints();
+    var flatInteriorPoints = geometry.getFlatInteriorPoints();
     this.drawText_(flatInteriorPoints, 0, flatInteriorPoints.length, 2);
   }
 };
@@ -824,7 +860,6 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) 
  *
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
- * @api
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   if (!fillStyle) {
@@ -868,7 +903,6 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
  * the image style.
  *
  * @param {ol.style.Image} imageStyle Image style.
- * @api
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (!imageStyle) {
@@ -904,7 +938,6 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
  * remove the text style.
  *
  * @param {ol.style.Text} textStyle Text style.
- * @api
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   if (!textStyle) {
@@ -970,25 +1003,4 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
         textScale : 1);
   }
-};
-
-
-/**
- * @const
- * @private
- * @type {Object.<ol.geom.GeometryType,
- *     function(this: ol.render.canvas.Immediate,
- *         (ol.geom.Geometry|ol.render.Feature), Object)>}
- */
-ol.render.canvas.Immediate.GEOMETRY_RENDERERS_ = {
-  'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,
-  'LineString': ol.render.canvas.Immediate.prototype.drawLineStringGeometry,
-  'Polygon': ol.render.canvas.Immediate.prototype.drawPolygonGeometry,
-  'MultiPoint': ol.render.canvas.Immediate.prototype.drawMultiPointGeometry,
-  'MultiLineString':
-      ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry,
-  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry,
-  'GeometryCollection':
-      ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry,
-  'Circle': ol.render.canvas.Immediate.prototype.drawCircleGeometry
 };
