@@ -169,7 +169,6 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry = function(ge
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, data) {
   var context = this.context_;
@@ -193,7 +192,6 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, 
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry, data) {
 };
@@ -201,7 +199,6 @@ ol.render.webgl.Immediate.prototype.drawLineStringGeometry = function(lineString
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry, data) {
 };
@@ -209,7 +206,6 @@ ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry = function(multi
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry, data) {
   var context = this.context_;
@@ -232,7 +228,6 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPoint
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry, data) {
 };
@@ -240,7 +235,6 @@ ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry = function(multiPol
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry, data) {
 };
@@ -248,7 +242,6 @@ ol.render.webgl.Immediate.prototype.drawPolygonGeometry = function(polygonGeomet
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, data) {
 };
@@ -256,7 +249,6 @@ ol.render.webgl.Immediate.prototype.drawText = function(flatCoordinates, offset,
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
 };
@@ -264,7 +256,6 @@ ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, str
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
   this.imageStyle_ = imageStyle;
@@ -273,7 +264,6 @@ ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
 
 /**
  * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
 };

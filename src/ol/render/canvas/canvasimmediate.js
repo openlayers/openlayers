@@ -569,7 +569,6 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry = function(g
  * the current style.
  *
  * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
- * @api
  */
 ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry) {
   var flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -589,7 +588,6 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry)
  *
  * @param {ol.geom.MultiPoint|ol.render.Feature} multiPointGeometry MultiPoint
  *     geometry.
- * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry) {
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -609,7 +607,6 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPoin
  *
  * @param {ol.geom.LineString|ol.render.Feature} lineStringGeometry Line
  *     string geometry.
- * @api
  */
 ol.render.canvas.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry) {
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
@@ -637,7 +634,6 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry = function(lineStrin
  *
  * @param {ol.geom.MultiLineString|ol.render.Feature} multiLineStringGeometry
  *     MultiLineString geometry.
- * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry) {
   var geometryExtent = multiLineStringGeometry.getExtent();
@@ -672,7 +668,6 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(mult
  *
  * @param {ol.geom.Polygon|ol.render.Feature} polygonGeometry Polygon
  *     geometry.
- * @api
  */
 ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry) {
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
@@ -707,7 +702,6 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeome
  * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
  * uses the current style.
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
- * @api
  */
 ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry) {
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
@@ -871,7 +865,6 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) 
  *
  * @param {ol.style.Fill} fillStyle Fill style.
  * @param {ol.style.Stroke} strokeStyle Stroke style.
- * @api
  */
 ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   if (!fillStyle) {
@@ -915,7 +908,6 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
  * the image style.
  *
  * @param {ol.style.Image} imageStyle Image style.
- * @api
  */
 ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   if (!imageStyle) {
@@ -951,7 +943,6 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
  * remove the text style.
  *
  * @param {ol.style.Text} textStyle Text style.
- * @api
  */
 ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
   if (!textStyle) {
