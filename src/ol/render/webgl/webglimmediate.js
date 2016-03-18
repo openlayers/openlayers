@@ -113,7 +113,7 @@ ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawCircleGeometry = function(circleGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawCircle = function(circleGeometry, data) {
 };
 
 
@@ -150,7 +150,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
  * @inheritDoc
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry = function(geometryCollectionGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometryCollectionGeometry, data) {
   var geometries = geometryCollectionGeometry.getGeometriesArray();
   var renderers = ol.render.webgl.Immediate.GEOMETRY_RENDERERS_;
   var i, ii;
@@ -170,13 +170,13 @@ ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry = function(ge
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawPoint = function(pointGeometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
       replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
-  replay.drawPointGeometry(pointGeometry, data);
+  replay.drawPoint(pointGeometry, data);
   replay.finish(context);
   // default colors
   var opacity = 1;
@@ -193,27 +193,27 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, 
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawLineString = function(lineStringGeometry, data) {
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiLineString = function(multiLineStringGeometry, data) {
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiPoint = function(multiPointGeometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
       replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
-  replay.drawMultiPointGeometry(multiPointGeometry, data);
+  replay.drawMultiPoint(multiPointGeometry, data);
   replay.finish(context);
   var opacity = 1;
   var skippedFeatures = {};
@@ -229,14 +229,14 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPoint
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiPolygon = function(multiPolygonGeometry, data) {
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawPolygon = function(polygonGeometry, data) {
 };
 
 
@@ -277,8 +277,8 @@ ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
  *          (ol.geom.Geometry|ol.render.Feature), Object)>}
  */
 ol.render.webgl.Immediate.GEOMETRY_RENDERERS_ = {
-  'Point': ol.render.webgl.Immediate.prototype.drawPointGeometry,
-  'MultiPoint': ol.render.webgl.Immediate.prototype.drawMultiPointGeometry,
+  'Point': ol.render.webgl.Immediate.prototype.drawPoint,
+  'MultiPoint': ol.render.webgl.Immediate.prototype.drawMultiPoint,
   'GeometryCollection':
-      ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry
+      ol.render.webgl.Immediate.prototype.drawGeometryCollection
 };

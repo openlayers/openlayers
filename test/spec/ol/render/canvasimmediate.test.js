@@ -67,72 +67,72 @@ describe('ol.render.canvas.Immediate', function() {
 
     var extent = [-10, -10, 10, 10];
 
-    it('calls drawPointGeometry() with a Point', function() {
+    it('calls drawPoint() with a Point', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawPointGeometry');
+      sinon.spy(context, 'drawPoint');
 
       var geometry = new ol.geom.Point([1, 2]);
       context.drawGeometry(geometry);
-      expect(context.drawPointGeometry.calledOnce).to.be(true);
-      expect(context.drawPointGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawPoint.calledOnce).to.be(true);
+      expect(context.drawPoint.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
-    it('calls drawLineStringGeometry() with a LineString', function() {
+    it('calls drawLineString() with a LineString', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawLineStringGeometry');
+      sinon.spy(context, 'drawLineString');
 
       var geometry = new ol.geom.LineString([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
-      expect(context.drawLineStringGeometry.calledOnce).to.be(true);
-      expect(context.drawLineStringGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawLineString.calledOnce).to.be(true);
+      expect(context.drawLineString.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
-    it('calls drawPolygonGeometry() with a Polygon', function() {
+    it('calls drawPolygon() with a Polygon', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawPolygonGeometry');
+      sinon.spy(context, 'drawPolygon');
 
       var geometry = new ol.geom.Polygon([[[1, 2], [3, 4], [5, 6], [1, 2]]]);
       context.drawGeometry(geometry);
-      expect(context.drawPolygonGeometry.calledOnce).to.be(true);
-      expect(context.drawPolygonGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawPolygon.calledOnce).to.be(true);
+      expect(context.drawPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
-    it('calls drawMultiPointGeometry() with a MultiPoint', function() {
+    it('calls drawMultiPoint() with a MultiPoint', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawMultiPointGeometry');
+      sinon.spy(context, 'drawMultiPoint');
 
       var geometry = new ol.geom.MultiPoint([[1, 2], [3, 4]]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiPointGeometry.calledOnce).to.be(true);
-      expect(context.drawMultiPointGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawMultiPoint.calledOnce).to.be(true);
+      expect(context.drawMultiPoint.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
-    it('calls drawMultiLineStringGeometry() with a MultiLineString', function() {
+    it('calls drawMultiLineString() with a MultiLineString', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawMultiLineStringGeometry');
+      sinon.spy(context, 'drawMultiLineString');
 
       var geometry = new ol.geom.MultiLineString([[[1, 2], [3, 4]]]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiLineStringGeometry.calledOnce).to.be(true);
-      expect(context.drawMultiLineStringGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawMultiLineString.calledOnce).to.be(true);
+      expect(context.drawMultiLineString.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
-    it('calls drawMultiPolygonGeometry() with a MultiPolygon', function() {
+    it('calls drawMultiPolygon() with a MultiPolygon', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawMultiPolygonGeometry');
+      sinon.spy(context, 'drawMultiPolygon');
 
       var geometry = new ol.geom.MultiPolygon([[[[1, 2], [3, 4], [5, 6], [1, 2]]]]);
       context.drawGeometry(geometry);
-      expect(context.drawMultiPolygonGeometry.calledOnce).to.be(true);
-      expect(context.drawMultiPolygonGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawMultiPolygon.calledOnce).to.be(true);
+      expect(context.drawMultiPolygon.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
-    it('calls drawGeometryCollectionGeometry() with a GeometryCollection', function() {
+    it('calls drawGeometryCollection() with a GeometryCollection', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawGeometryCollectionGeometry');
-      sinon.spy(context, 'drawPointGeometry');
-      sinon.spy(context, 'drawLineStringGeometry');
-      sinon.spy(context, 'drawPolygonGeometry');
+      sinon.spy(context, 'drawGeometryCollection');
+      sinon.spy(context, 'drawPoint');
+      sinon.spy(context, 'drawLineString');
+      sinon.spy(context, 'drawPolygon');
 
       var point = new ol.geom.Point([1, 2]);
       var linestring = new ol.geom.LineString([[1, 2], [3, 4]]);
@@ -141,29 +141,29 @@ describe('ol.render.canvas.Immediate', function() {
       var geometry = new ol.geom.GeometryCollection([point, linestring, polygon]);
       context.drawGeometry(geometry);
 
-      expect(context.drawGeometryCollectionGeometry.calledOnce).to.be(true);
-      expect(context.drawPointGeometry.calledOnce).to.be(true);
-      expect(context.drawPointGeometry.firstCall.calledWithExactly(point)).to.be(true);
-      expect(context.drawLineStringGeometry.calledOnce).to.be(true);
-      expect(context.drawLineStringGeometry.firstCall.calledWithExactly(linestring)).to.be(true);
-      expect(context.drawPolygonGeometry.calledOnce).to.be(true);
-      expect(context.drawPolygonGeometry.firstCall.calledWithExactly(polygon)).to.be(true);
+      expect(context.drawGeometryCollection.calledOnce).to.be(true);
+      expect(context.drawPoint.calledOnce).to.be(true);
+      expect(context.drawPoint.firstCall.calledWithExactly(point)).to.be(true);
+      expect(context.drawLineString.calledOnce).to.be(true);
+      expect(context.drawLineString.firstCall.calledWithExactly(linestring)).to.be(true);
+      expect(context.drawPolygon.calledOnce).to.be(true);
+      expect(context.drawPolygon.firstCall.calledWithExactly(polygon)).to.be(true);
     });
 
     it('calls drawCircle() with a Circle', function() {
       var context = new ol.render.canvas.Immediate(getMockContext(), 1, extent);
-      sinon.spy(context, 'drawCircleGeometry');
+      sinon.spy(context, 'drawCircle');
 
       var geometry = new ol.geom.Circle([0, 0]);
       context.drawGeometry(geometry);
 
-      expect(context.drawCircleGeometry.calledOnce).to.be(true);
-      expect(context.drawCircleGeometry.firstCall.calledWithExactly(geometry)).to.be(true);
+      expect(context.drawCircle.calledOnce).to.be(true);
+      expect(context.drawCircle.firstCall.calledWithExactly(geometry)).to.be(true);
     });
 
   });
 
-  describe('#drawMultiPolygonGeometry', function() {
+  describe('#drawMultiPolygon', function() {
     it('creates the correct canvas instructions for 3D geometries', function() {
       var log = {
         lineTo: [],
@@ -214,7 +214,7 @@ describe('ol.render.canvas.Immediate', function() {
           [-82.128838, 26.693342, 0],
           [-82.102127, 26.585724, 0]]]
       ]).transform('EPSG:4326', 'EPSG:3857');
-      canvas.drawMultiPolygonGeometry(multiPolygonGeometry, null);
+      canvas.drawMultiPolygon(multiPolygonGeometry, null);
       expect(log.lineTo.length).to.be(15);
       expect(log.lineTo[0][0]).to.roughlyEqual(805.3521540835154, 1e-9);
       expect(log.lineTo[0][1]).to.roughlyEqual(158.76358389011807, 1e-9);

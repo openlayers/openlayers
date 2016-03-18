@@ -442,11 +442,11 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
   var i, l, line;
   for (i = 0, l = this.meridians_.length; i < l; ++i) {
     line = this.meridians_[i];
-    vectorContext.drawLineStringGeometry(line, null);
+    vectorContext.drawLineString(line, null);
   }
   for (i = 0, l = this.parallels_.length; i < l; ++i) {
     line = this.parallels_[i];
-    vectorContext.drawLineStringGeometry(line, null);
+    vectorContext.drawLineString(line, null);
   }
 };
 

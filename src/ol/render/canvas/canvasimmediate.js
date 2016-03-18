@@ -429,7 +429,7 @@ ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @api
  */
-ol.render.canvas.Immediate.prototype.drawCircleGeometry = function(circleGeometry) {
+ol.render.canvas.Immediate.prototype.drawCircle = function(circleGeometry) {
   if (!ol.extent.intersects(this.extent_, circleGeometry.getExtent())) {
     return;
   }
@@ -487,28 +487,28 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
   var type = geometry.getType();
   switch (type) {
     case ol.geom.GeometryType.POINT:
-      this.drawPointGeometry(/** @type {ol.geom.Point} */ (geometry));
+      this.drawPoint(/** @type {ol.geom.Point} */ (geometry));
       break;
     case ol.geom.GeometryType.LINE_STRING:
-      this.drawLineStringGeometry(/** @type {ol.geom.LineString} */ (geometry));
+      this.drawLineString(/** @type {ol.geom.LineString} */ (geometry));
       break;
     case ol.geom.GeometryType.POLYGON:
-      this.drawPolygonGeometry(/** @type {ol.geom.Polygon} */ (geometry));
+      this.drawPolygon(/** @type {ol.geom.Polygon} */ (geometry));
       break;
     case ol.geom.GeometryType.MULTI_POINT:
-      this.drawMultiPointGeometry(/** @type {ol.geom.MultiPoint} */ (geometry));
+      this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry));
       break;
     case ol.geom.GeometryType.MULTI_LINE_STRING:
-      this.drawMultiLineStringGeometry(/** @type {ol.geom.MultiLineString} */ (geometry));
+      this.drawMultiLineString(/** @type {ol.geom.MultiLineString} */ (geometry));
       break;
     case ol.geom.GeometryType.MULTI_POLYGON:
-      this.drawMultiPolygonGeometry(/** @type {ol.geom.MultiPolygon} */ (geometry));
+      this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry));
       break;
     case ol.geom.GeometryType.GEOMETRY_COLLECTION:
-      this.drawGeometryCollectionGeometry(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
+      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
       break;
     case ol.geom.GeometryType.CIRCLE:
-      this.drawCircleGeometry(/** @type {ol.geom.Circle} */ (geometry));
+      this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
       break;
     default:
       goog.asserts.fail('Unsupported geometry type: ' + type);
@@ -555,7 +555,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  *     collection.
  * @param {ol.Feature} feature Feature.
  */
-ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry = function(geometryCollectionGeometry, feature) {
+ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometryCollectionGeometry, feature) {
   var geometries = geometryCollectionGeometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -570,7 +570,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry = function(g
  *
  * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
  */
-ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry) {
+ol.render.canvas.Immediate.prototype.drawPoint = function(pointGeometry) {
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   if (this.image_) {
@@ -589,7 +589,7 @@ ol.render.canvas.Immediate.prototype.drawPointGeometry = function(pointGeometry)
  * @param {ol.geom.MultiPoint|ol.render.Feature} multiPointGeometry MultiPoint
  *     geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry) {
+ol.render.canvas.Immediate.prototype.drawMultiPoint = function(multiPointGeometry) {
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   if (this.image_) {
@@ -608,7 +608,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPointGeometry = function(multiPoin
  * @param {ol.geom.LineString|ol.render.Feature} lineStringGeometry Line
  *     string geometry.
  */
-ol.render.canvas.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry) {
+ol.render.canvas.Immediate.prototype.drawLineString = function(lineStringGeometry) {
   if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
     return;
   }
@@ -635,7 +635,7 @@ ol.render.canvas.Immediate.prototype.drawLineStringGeometry = function(lineStrin
  * @param {ol.geom.MultiLineString|ol.render.Feature} multiLineStringGeometry
  *     MultiLineString geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry) {
+ol.render.canvas.Immediate.prototype.drawMultiLineString = function(multiLineStringGeometry) {
   var geometryExtent = multiLineStringGeometry.getExtent();
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
@@ -669,7 +669,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry = function(mult
  * @param {ol.geom.Polygon|ol.render.Feature} polygonGeometry Polygon
  *     geometry.
  */
-ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry) {
+ol.render.canvas.Immediate.prototype.drawPolygon = function(polygonGeometry) {
   if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
     return;
   }
@@ -703,7 +703,7 @@ ol.render.canvas.Immediate.prototype.drawPolygonGeometry = function(polygonGeome
  * uses the current style.
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry) {
+ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(multiPolygonGeometry) {
   if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
     return;
   }

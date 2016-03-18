@@ -82,7 +82,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
   });
 
-  describe('#drawPointGeometry', function() {
+  describe('#drawPoint', function() {
     beforeEach(function() {
       var imageStyle = createImageStyle(new Image());
       replay.setImageStyle(imageStyle);
@@ -92,7 +92,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       var point;
 
       point = new ol.geom.Point([1000, 2000]);
-      replay.drawPointGeometry(point, null);
+      replay.drawPoint(point, null);
       expect(replay.vertices_).to.have.length(32);
       expect(replay.indices_).to.have.length(6);
       expect(replay.indices_[0]).to.be(0);
@@ -103,7 +103,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices_[5]).to.be(3);
 
       point = new ol.geom.Point([2000, 3000]);
-      replay.drawPointGeometry(point, null);
+      replay.drawPoint(point, null);
       expect(replay.vertices_).to.have.length(64);
       expect(replay.indices_).to.have.length(12);
       expect(replay.indices_[6]).to.be(4);
@@ -115,7 +115,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
   });
 
-  describe('#drawMultiPointGeometry', function() {
+  describe('#drawMultiPoint', function() {
     beforeEach(function() {
       var imageStyle = createImageStyle(new Image());
       replay.setImageStyle(imageStyle);
@@ -126,7 +126,7 @@ describe('ol.render.webgl.ImageReplay', function() {
 
       multiPoint = new ol.geom.MultiPoint(
           [[1000, 2000], [2000, 3000]]);
-      replay.drawMultiPointGeometry(multiPoint, null);
+      replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices_).to.have.length(64);
       expect(replay.indices_).to.have.length(12);
       expect(replay.indices_[0]).to.be(0);
@@ -144,7 +144,7 @@ describe('ol.render.webgl.ImageReplay', function() {
 
       multiPoint = new ol.geom.MultiPoint(
           [[3000, 4000], [4000, 5000]]);
-      replay.drawMultiPointGeometry(multiPoint, null);
+      replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices_).to.have.length(128);
       expect(replay.indices_).to.have.length(24);
       expect(replay.indices_[12]).to.be(8);

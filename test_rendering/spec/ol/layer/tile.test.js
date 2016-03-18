@@ -203,7 +203,7 @@ describe('ol.rendering.layer.Tile', function() {
             fill: new ol.style.Fill({color: 'yellow'}),
             stroke: new ol.style.Stroke({color: 'red', width: 1})
           }));
-          e.vectorContext.drawPointGeometry(new ol.geom.Point(
+          e.vectorContext.drawPoint(new ol.geom.Point(
               ol.proj.transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
         });
       }

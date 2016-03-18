@@ -16,7 +16,7 @@ goog.require('ol.vec.Mat4');
  * var render = ol.render.toContext(canvas.getContext('2d'),
  *     { size: [100, 100] });
  * render.setFillStrokeStyle(new ol.style.Fill({ color: blue }));
- * render.drawPolygonGeometry(
+ * render.drawPolygon(
  *     new ol.geom.Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]]));
  * ```
  *
