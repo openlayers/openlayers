@@ -10,6 +10,7 @@ goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.colorlike');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.render.VectorContext');
@@ -476,6 +477,46 @@ ol.render.canvas.Immediate.prototype.setStyle = function(style) {
 
 
 /**
+ * Render a geometry into the canvas.  Call
+ * {@link ol.render.canvas.Immediate#setStyle} first to set the rendering style.
+ *
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry The geometry to render.
+ * @api
+ */
+ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
+  var type = geometry.getType();
+  switch (type) {
+    case ol.geom.GeometryType.POINT:
+      this.drawPointGeometry(/** @type {ol.geom.Point} */ (geometry));
+      break;
+    case ol.geom.GeometryType.LINE_STRING:
+      this.drawLineStringGeometry(/** @type {ol.geom.LineString} */ (geometry));
+      break;
+    case ol.geom.GeometryType.POLYGON:
+      this.drawPolygonGeometry(/** @type {ol.geom.Polygon} */ (geometry));
+      break;
+    case ol.geom.GeometryType.MULTI_POINT:
+      this.drawMultiPointGeometry(/** @type {ol.geom.MultiPoint} */ (geometry));
+      break;
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+      this.drawMultiLineStringGeometry(/** @type {ol.geom.MultiLineString} */ (geometry));
+      break;
+    case ol.geom.GeometryType.MULTI_POLYGON:
+      this.drawMultiPolygonGeometry(/** @type {ol.geom.MultiPolygon} */ (geometry));
+      break;
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      this.drawGeometryCollectionGeometry(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
+      break;
+    case ol.geom.GeometryType.CIRCLE:
+      this.drawCircleGeometry(/** @type {ol.geom.Circle} */ (geometry));
+      break;
+    default:
+      goog.asserts.fail('Unsupported geometry type: ' + type);
+  }
+};
+
+
+/**
  * Render a feature into the canvas.  In order to respect the zIndex of the
  * style this method draws asynchronously and thus *after* calls to
  * drawXxxxGeometry have been finished, effectively drawing the feature
@@ -500,11 +541,8 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     render.setFillStrokeStyle(style.getFill(), style.getStroke());
     render.setImageStyle(style.getImage());
     render.setTextStyle(style.getText());
-    var renderGeometry =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(renderGeometry !== undefined,
-        'renderGeometry should be defined');
-    renderGeometry.call(render, geometry, null);
+    goog.asserts.assert(geometry);
+    render.drawGeometry(geometry);
   });
 };
 
@@ -521,12 +559,7 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry = function(g
   var geometries = geometryCollectionGeometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    var geometry = geometries[i];
-    var geometryRenderer =
-        ol.render.canvas.Immediate.GEOMETRY_RENDERERS_[geometry.getType()];
-    goog.asserts.assert(geometryRenderer !== undefined,
-        'geometryRenderer should be defined');
-    geometryRenderer.call(this, geometry, feature);
+    this.drawGeometry(geometries[i]);
   }
 };
 
@@ -984,25 +1017,4 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
         textScale : 1);
   }
-};
-
-
-/**
- * @const
- * @private
- * @type {Object.<ol.geom.GeometryType,
- *     function(this: ol.render.canvas.Immediate,
- *         (ol.geom.Geometry|ol.render.Feature), Object)>}
- */
-ol.render.canvas.Immediate.GEOMETRY_RENDERERS_ = {
-  'Point': ol.render.canvas.Immediate.prototype.drawPointGeometry,
-  'LineString': ol.render.canvas.Immediate.prototype.drawLineStringGeometry,
-  'Polygon': ol.render.canvas.Immediate.prototype.drawPolygonGeometry,
-  'MultiPoint': ol.render.canvas.Immediate.prototype.drawMultiPointGeometry,
-  'MultiLineString':
-      ol.render.canvas.Immediate.prototype.drawMultiLineStringGeometry,
-  'MultiPolygon': ol.render.canvas.Immediate.prototype.drawMultiPolygonGeometry,
-  'GeometryCollection':
-      ol.render.canvas.Immediate.prototype.drawGeometryCollectionGeometry,
-  'Circle': ol.render.canvas.Immediate.prototype.drawCircleGeometry
 };
