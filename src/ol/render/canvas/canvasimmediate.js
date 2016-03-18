@@ -551,11 +551,10 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  * Render a GeometryCollection to the canvas.  Rendering is immediate and
  * uses the current styles appropriate for each geometry in the collection.
  *
- * @param {ol.geom.GeometryCollection} geometryCollectionGeometry Geometry
- *     collection.
+ * @param {ol.geom.GeometryCollection} geometry Geometry collection.
  */
-ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometryCollectionGeometry) {
-  var geometries = geometryCollectionGeometry.getGeometriesArray();
+ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometry) {
+  var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     this.drawGeometry(geometries[i]);
@@ -567,11 +566,11 @@ ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometryC
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
+ * @param {ol.geom.Point|ol.render.Feature} geometry Point geometry.
  */
-ol.render.canvas.Immediate.prototype.drawPoint = function(pointGeometry) {
-  var flatCoordinates = pointGeometry.getFlatCoordinates();
-  var stride = pointGeometry.getStride();
+ol.render.canvas.Immediate.prototype.drawPoint = function(geometry) {
+  var flatCoordinates = geometry.getFlatCoordinates();
+  var stride = geometry.getStride();
   if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
@@ -585,12 +584,11 @@ ol.render.canvas.Immediate.prototype.drawPoint = function(pointGeometry) {
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
  *
- * @param {ol.geom.MultiPoint|ol.render.Feature} multiPointGeometry MultiPoint
- *     geometry.
+ * @param {ol.geom.MultiPoint|ol.render.Feature} geometry MultiPoint geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiPoint = function(multiPointGeometry) {
-  var flatCoordinates = multiPointGeometry.getFlatCoordinates();
-  var stride = multiPointGeometry.getStride();
+ol.render.canvas.Immediate.prototype.drawMultiPoint = function(geometry) {
+  var flatCoordinates = geometry.getFlatCoordinates();
+  var stride = geometry.getStride();
   if (this.image_) {
     this.drawImages_(flatCoordinates, 0, flatCoordinates.length, stride);
   }
@@ -604,24 +602,23 @@ ol.render.canvas.Immediate.prototype.drawMultiPoint = function(multiPointGeometr
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.LineString|ol.render.Feature} lineStringGeometry Line
- *     string geometry.
+ * @param {ol.geom.LineString|ol.render.Feature} geometry LineString geometry.
  */
-ol.render.canvas.Immediate.prototype.drawLineString = function(lineStringGeometry) {
-  if (!ol.extent.intersects(this.extent_, lineStringGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawLineString = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
-    var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+    var flatCoordinates = geometry.getFlatCoordinates();
     context.beginPath();
     this.moveToLineTo_(flatCoordinates, 0, flatCoordinates.length,
-        lineStringGeometry.getStride(), false);
+        geometry.getStride(), false);
     context.stroke();
   }
   if (this.text_ !== '') {
-    var flatMidpoint = lineStringGeometry.getFlatMidpoint();
+    var flatMidpoint = geometry.getFlatMidpoint();
     this.drawText_(flatMidpoint, 0, 2, 2);
   }
 };
@@ -631,21 +628,21 @@ ol.render.canvas.Immediate.prototype.drawLineString = function(lineStringGeometr
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
  * and uses the current style.
  *
- * @param {ol.geom.MultiLineString|ol.render.Feature} multiLineStringGeometry
- *     MultiLineString geometry.
+ * @param {ol.geom.MultiLineString|ol.render.Feature} geometry MultiLineString
+ *     geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiLineString = function(multiLineStringGeometry) {
-  var geometryExtent = multiLineStringGeometry.getExtent();
+ol.render.canvas.Immediate.prototype.drawMultiLineString = function(geometry) {
+  var geometryExtent = geometry.getExtent();
   if (!ol.extent.intersects(this.extent_, geometryExtent)) {
     return;
   }
   if (this.strokeState_) {
     this.setContextStrokeState_(this.strokeState_);
     var context = this.context_;
-    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+    var flatCoordinates = geometry.getFlatCoordinates();
     var offset = 0;
-    var ends = multiLineStringGeometry.getEnds();
-    var stride = multiLineStringGeometry.getStride();
+    var ends = geometry.getEnds();
+    var stride = geometry.getStride();
     context.beginPath();
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -655,7 +652,7 @@ ol.render.canvas.Immediate.prototype.drawMultiLineString = function(multiLineStr
     context.stroke();
   }
   if (this.text_ !== '') {
-    var flatMidpoints = multiLineStringGeometry.getFlatMidpoints();
+    var flatMidpoints = geometry.getFlatMidpoints();
     this.drawText_(flatMidpoints, 0, flatMidpoints.length, 2);
   }
 };
@@ -665,11 +662,10 @@ ol.render.canvas.Immediate.prototype.drawMultiLineString = function(multiLineStr
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
  * the current style.
  *
- * @param {ol.geom.Polygon|ol.render.Feature} polygonGeometry Polygon
- *     geometry.
+ * @param {ol.geom.Polygon|ol.render.Feature} geometry Polygon geometry.
  */
-ol.render.canvas.Immediate.prototype.drawPolygon = function(polygonGeometry) {
-  if (!ol.extent.intersects(this.extent_, polygonGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawPolygon = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_ || this.fillState_) {
@@ -681,8 +677,8 @@ ol.render.canvas.Immediate.prototype.drawPolygon = function(polygonGeometry) {
     }
     var context = this.context_;
     context.beginPath();
-    this.drawRings_(polygonGeometry.getOrientedFlatCoordinates(),
-        0, polygonGeometry.getEnds(), polygonGeometry.getStride());
+    this.drawRings_(geometry.getOrientedFlatCoordinates(),
+        0, geometry.getEnds(), geometry.getStride());
     if (this.fillState_) {
       context.fill();
     }
@@ -691,7 +687,7 @@ ol.render.canvas.Immediate.prototype.drawPolygon = function(polygonGeometry) {
     }
   }
   if (this.text_ !== '') {
-    var flatInteriorPoint = polygonGeometry.getFlatInteriorPoint();
+    var flatInteriorPoint = geometry.getFlatInteriorPoint();
     this.drawText_(flatInteriorPoint, 0, 2, 2);
   }
 };
@@ -700,10 +696,10 @@ ol.render.canvas.Immediate.prototype.drawPolygon = function(polygonGeometry) {
 /**
  * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
  * uses the current style.
- * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
+ * @param {ol.geom.MultiPolygon} geometry MultiPolygon geometry.
  */
-ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(multiPolygonGeometry) {
-  if (!ol.extent.intersects(this.extent_, multiPolygonGeometry.getExtent())) {
+ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(geometry) {
+  if (!ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   if (this.strokeState_ || this.fillState_) {
@@ -714,10 +710,10 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(multiPolygonGeo
       this.setContextStrokeState_(this.strokeState_);
     }
     var context = this.context_;
-    var flatCoordinates = multiPolygonGeometry.getOrientedFlatCoordinates();
+    var flatCoordinates = geometry.getOrientedFlatCoordinates();
     var offset = 0;
-    var endss = multiPolygonGeometry.getEndss();
-    var stride = multiPolygonGeometry.getStride();
+    var endss = geometry.getEndss();
+    var stride = geometry.getStride();
     var i, ii;
     for (i = 0, ii = endss.length; i < ii; ++i) {
       var ends = endss[i];
@@ -732,7 +728,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(multiPolygonGeo
     }
   }
   if (this.text_ !== '') {
-    var flatInteriorPoints = multiPolygonGeometry.getFlatInteriorPoints();
+    var flatInteriorPoints = geometry.getFlatInteriorPoints();
     this.drawText_(flatInteriorPoints, 0, flatInteriorPoints.length, 2);
   }
 };
