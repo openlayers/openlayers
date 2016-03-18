@@ -25,6 +25,33 @@ describe('ol.render.canvas.Immediate', function() {
     });
   });
 
+  describe('#setStyle()', function() {
+    it('calls the more specific methods with style parts', function() {
+      var context = new ol.render.canvas.Immediate();
+      sinon.spy(context, 'setFillStrokeStyle');
+      sinon.spy(context, 'setImageStyle');
+      sinon.spy(context, 'setTextStyle');
+      var fill = new ol.style.Fill({});
+      var stroke = new ol.style.Stroke({});
+      var text = new ol.style.Text({});
+      var image = new ol.style.Circle({});
+      var style = new ol.style.Style({
+        fill: fill,
+        stroke: stroke,
+        image: image,
+        text: text
+      });
+
+      context.setStyle(style);
+      expect(context.setFillStrokeStyle.calledOnce).to.be(true);
+      expect(context.setFillStrokeStyle.firstCall.calledWithExactly(fill, stroke)).to.be(true);
+      expect(context.setImageStyle.calledOnce).to.be(true);
+      expect(context.setImageStyle.firstCall.calledWithExactly(image)).to.be(true);
+      expect(context.setTextStyle.calledOnce).to.be(true);
+      expect(context.setTextStyle.firstCall.calledWithExactly(text)).to.be(true);
+    });
+  });
+
   describe('#drawMultiPolygonGeometry', function() {
     it('creates the correct canvas instructions for 3D geometries', function() {
       var log = {
@@ -120,3 +147,8 @@ describe('ol.render.canvas.Immediate', function() {
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas.Immediate');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
+goog.require('ol.style.Text');

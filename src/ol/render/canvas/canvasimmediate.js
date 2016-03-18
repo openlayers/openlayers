@@ -462,6 +462,20 @@ ol.render.canvas.Immediate.prototype.drawCircleGeometry = function(circleGeometr
 
 
 /**
+ * Set the rendering style.  Note that since this is an immediate rendering API,
+ * any `zIndex` on the provided style will be ignored.
+ *
+ * @param {ol.style.Style} style The rendering style.
+ * @api
+ */
+ol.render.canvas.Immediate.prototype.setStyle = function(style) {
+  this.setFillStrokeStyle(style.getFill(), style.getStroke());
+  this.setImageStyle(style.getImage());
+  this.setTextStyle(style.getText());
+};
+
+
+/**
  * Render a feature into the canvas.  In order to respect the zIndex of the
  * style this method draws asynchronously and thus *after* calls to
  * drawXxxxGeometry have been finished, effectively drawing the feature
