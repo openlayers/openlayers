@@ -175,7 +175,6 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ = function(type, frameState
     var event = new ol.render.Event(type, layer, render, frameState,
         context, null);
     layer.dispatchEvent(event);
-    render.flush();
   }
 };
 

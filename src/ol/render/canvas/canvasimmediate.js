@@ -41,13 +41,6 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {!Object.<string,
-   *        Array.<function(ol.render.canvas.Immediate)>>}
-   */
-  this.callbacksByZIndex_ = {};
-
-  /**
-   * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = context;
@@ -403,26 +396,6 @@ ol.render.canvas.Immediate.prototype.drawRings_ = function(flatCoordinates, offs
 
 
 /**
- * Register a function to be called for rendering at a given zIndex.  The
- * function will be called asynchronously.  The callback will receive a
- * reference to {@link ol.render.canvas.Immediate} context for drawing.
- *
- * @param {number} zIndex Z index.
- * @param {function(ol.render.canvas.Immediate)} callback Callback.
- * @api
- */
-ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
-  var zIndexKey = zIndex.toString();
-  var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (callbacks !== undefined) {
-    callbacks.push(callback);
-  } else {
-    this.callbacksByZIndex_[zIndexKey] = [callback];
-  }
-};
-
-
-/**
  * Render a circle geometry into the canvas.  Rendering is immediate and uses
  * the current fill and stroke styles.
  *
@@ -721,23 +694,6 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(geometry) {
   if (this.text_ !== '') {
     var flatInteriorPoints = geometry.getFlatInteriorPoints();
     this.drawText_(flatInteriorPoints, 0, flatInteriorPoints.length, 2);
-  }
-};
-
-
-/**
- * FIXME: empty description for jsdoc
- */
-ol.render.canvas.Immediate.prototype.flush = function() {
-  /** @type {Array.<number>} */
-  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  zs.sort(ol.array.numberSafeCompareFunction);
-  var i, ii, callbacks, j, jj;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    callbacks = this.callbacksByZIndex_[zs[i].toString()];
-    for (j = 0, jj = callbacks.length; j < jj; ++j) {
-      callbacks[j](this);
-    }
   }
 };
 
