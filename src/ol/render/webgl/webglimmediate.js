@@ -112,6 +112,18 @@ ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
 
 
 /**
+ * Set the rendering style.  Note that since this is an immediate rendering API,
+ * any `zIndex` on the provided style will be ignored.
+ *
+ * @param {ol.style.Style} style The rendering style.
+ * @api
+ */
+ol.render.webgl.Immediate.prototype.setStyle = function(style) {
+  this.setImageStyle(style.getImage());
+};
+
+
+/**
  * Render a geometry into the canvas.  Call
  * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
  *
@@ -151,9 +163,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
     zIndex = 0;
   }
   this.drawAsync(zIndex, function(render) {
-    render.setFillStrokeStyle(style.getFill(), style.getStroke());
-    render.setImageStyle(style.getImage());
-    render.setTextStyle(style.getText());
+    render.setStyle(style);
     goog.asserts.assert(geometry);
     render.drawGeometry(geometry);
   });
