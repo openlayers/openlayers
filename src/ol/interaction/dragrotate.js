@@ -72,7 +72,6 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
     var delta = theta - this.lastAngle_;
     var view = map.getView();
     var rotation = view.getRotation();
-    map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(
         map, view, rotation - delta);
   }
@@ -116,7 +115,6 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
       this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     map.getView().setHint(ol.View.Hint.INTERACTING, 1);
-    map.render();
     this.lastAngle_ = undefined;
     return true;
   } else {
