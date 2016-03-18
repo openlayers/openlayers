@@ -20,6 +20,22 @@ ol.render.VectorContext.prototype.drawAsync = goog.abstractMethod;
 
 
 /**
+ * Render a geometry.
+ *
+ * @param {ol.geom.Geometry} geometry The geometry to render.
+ */
+ol.render.VectorContext.prototype.drawGeometry = goog.abstractMethod;
+
+
+/**
+ * Set the rendering style.
+ *
+ * @param {ol.style.Style} style The rendering style.
+ */
+ol.render.VectorContext.prototype.setStyle = goog.abstractMethod;
+
+
+/**
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {ol.Feature} feature Feature,
  */
