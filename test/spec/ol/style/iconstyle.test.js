@@ -8,6 +8,8 @@ goog.require('ol.style.IconOrigin');
 
 describe('ol.style.Icon', function() {
   var size = [36, 48];
+  var src = 'data:image/gif;base64,' +
+      'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
 
   describe('constructor', function() {
 
@@ -19,6 +21,19 @@ describe('ol.style.Icon', function() {
       });
       expect(ol.style.IconImage_.get(
           canvas, goog.getUid(canvas), size, '').getImage()).to.eql(canvas);
+    });
+
+    it('imgSize overrides img.width and img.height', function(done) {
+      var style = new ol.style.Icon({
+        src: src,
+        imgSize: size
+      });
+      var iconImage = style.iconImage_;
+      iconImage.addEventListener('change', function() {
+        expect([iconImage.image_.width, iconImage.image_.height]).to.eql(size);
+        done();
+      });
+      style.load();
     });
 
   });

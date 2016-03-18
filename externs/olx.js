@@ -159,7 +159,7 @@ olx.interaction.InteractionOptions;
  * Method called by the map to notify the interaction that a browser event was
  * dispatched to the map. The function may return `false` to prevent the
  * propagation of the event to other interactions in the map's interactions
- * chain. Required.
+ * chain.
  * @type {function(ol.MapBrowserEvent):boolean}
  * @api
  */
@@ -281,7 +281,8 @@ olx.MapOptions.prototype.overlays;
  * Renderer. By default, Canvas, DOM and WebGL renderers are tested for support
  * in that order, and the first supported used. Specify a
  * {@link ol.RendererType} here to use a specific renderer.
- * Note that at present only the Canvas renderer supports vector data.
+ * Note that at present the Canvas and DOM renderers fully support vector data,
+ * but WebGL can only render Point geometries.
  * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
  * @api stable
  */
@@ -2520,7 +2521,8 @@ olx.interaction.DragRotateOptions.prototype.duration;
 /**
  * @typedef {{className: (string|undefined),
  *     condition: (ol.events.ConditionType|undefined),
- *     duration: (number|undefined)}}
+ *     duration: (number|undefined),
+ *     out: (boolean|undefined)}}
  * @api
  */
 olx.interaction.DragZoomOptions;
@@ -2550,6 +2552,14 @@ olx.interaction.DragZoomOptions.prototype.condition;
  * @api
  */
 olx.interaction.DragZoomOptions.prototype.duration;
+
+
+/**
+ * Use interaction for zooming out. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DragZoomOptions.prototype.out;
 
 
 /**
@@ -6487,7 +6497,9 @@ olx.style.IconOptions.prototype.size;
 
 
 /**
- * Image size in pixel. Only required if `img` is set and `src` is not.
+ * Image size in pixels. Only required if `img` is set and `src` is not, and for
+ * SVG images in Internet Explorer 11. The provided `imgSize` needs to match
+ * the actual size of the image.
  * @type {ol.Size|undefined}
  * @api
  */

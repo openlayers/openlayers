@@ -868,6 +868,8 @@ ol.format.GPX.GPX_SERIALIZERS_ = ol.xml.makeStructureNS(
 
 /**
  * Encode an array of features in the GPX format.
+ * LineString geometries are output as routes (`<rte>`), and MultiLineString
+ * as tracks (`<trk>`).
  *
  * @function
  * @param {Array.<ol.Feature>} features Features.
@@ -880,6 +882,8 @@ ol.format.GPX.prototype.writeFeatures;
 
 /**
  * Encode an array of features in the GPX format as an XML node.
+ * LineString geometries are output as routes (`<rte>`), and MultiLineString
+ * as tracks (`<trk>`).
  *
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.

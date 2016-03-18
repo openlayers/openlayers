@@ -72,6 +72,8 @@ ol.ImageTile.prototype.disposeInternal = function() {
   if (this.interimTile) {
     this.interimTile.dispose();
   }
+  this.state = ol.TileState.ABORT;
+  this.changed();
   goog.base(this, 'disposeInternal');
 };
 
