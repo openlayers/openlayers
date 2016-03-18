@@ -13,13 +13,6 @@ ol.render.VectorContext = function() {
 
 
 /**
- * @param {number} zIndex Z index.
- * @param {function(ol.render.VectorContext)} callback Callback.
- */
-ol.render.VectorContext.prototype.drawAsync = goog.abstractMethod;
-
-
-/**
  * Render a geometry.
  *
  * @param {ol.geom.Geometry} geometry The geometry to render.

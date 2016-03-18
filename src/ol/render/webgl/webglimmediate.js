@@ -1,6 +1,5 @@
 goog.provide('ol.render.webgl.Immediate');
 goog.require('goog.asserts');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.render.VectorContext');
@@ -64,50 +63,8 @@ ol.render.webgl.Immediate = function(context, center, resolution, rotation, size
    */
   this.imageStyle_ = null;
 
-  /**
-   * @private
-   * @type {!Object.<string,
-   *        Array.<function(ol.render.webgl.Immediate)>>}
-   */
-  this.callbacksByZIndex_ = {};
 };
 goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
-
-
-/**
- * FIXME: empty description for jsdoc
- */
-ol.render.webgl.Immediate.prototype.flush = function() {
-  /** @type {Array.<number>} */
-  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  zs.sort(ol.array.numberSafeCompareFunction);
-  var i, ii, callbacks, j, jj;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    callbacks = this.callbacksByZIndex_[zs[i].toString()];
-    for (j = 0, jj = callbacks.length; j < jj; ++j) {
-      callbacks[j](this);
-    }
-  }
-};
-
-
-/**
- * Register a function to be called for rendering at a given zIndex.  The
- * function will be called asynchronously.  The callback will receive a
- * reference to {@link ol.render.canvas.Immediate} context for drawing.
- * @param {number} zIndex Z index.
- * @param {function(ol.render.webgl.Immediate)} callback Callback.
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
-  var zIndexKey = zIndex.toString();
-  var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (callbacks !== undefined) {
-    callbacks.push(callback);
-  } else {
-    this.callbacksByZIndex_[zIndexKey] = [callback];
-  }
-};
 
 
 /**
@@ -157,15 +114,9 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
-  var zIndex = style.getZIndex();
-  if (zIndex === undefined) {
-    zIndex = 0;
-  }
-  this.drawAsync(zIndex, function(render) {
-    render.setStyle(style);
-    goog.asserts.assert(geometry, 'geometry must be truthy');
-    render.drawGeometry(geometry);
-  });
+  this.setStyle(style);
+  goog.asserts.assert(geometry, 'geometry must be truthy');
+  this.drawGeometry(geometry);
 };
 
 

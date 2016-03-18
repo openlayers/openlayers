@@ -20,9 +20,6 @@ goog.require('ol.vec.Mat4');
  *     new ol.geom.Polygon([[[0, 0], [100, 100], [100, 0], [0, 0]]]));
  * ```
  *
- * Note that {@link ol.render.canvas.Immediate#drawAsync} and
- * {@link ol.render.canvas.Immediate#drawFeature} cannot be used.
- *
  * @param {CanvasRenderingContext2D} context Canvas context.
  * @param {olx.render.ToContextOptions=} opt_options Options.
  * @return {ol.render.canvas.Immediate} Canvas Immediate.

@@ -288,8 +288,6 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameStat
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         frameState, null, context);
     map.dispatchEvent(composeEvent);
-
-    vectorContext.flush();
   }
 };
 

@@ -246,12 +246,6 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(cont
 
 
 /**
- * @inheritDoc
- */
-ol.render.webgl.ImageReplay.prototype.drawAsync = goog.abstractMethod;
-
-
-/**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
  * @param {number} end End.
