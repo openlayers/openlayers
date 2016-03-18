@@ -188,13 +188,51 @@ describe('ol.rendering.layer.Tile', function() {
 
   });
 
+  describe('tile layer with render listener', function() {
+    var source, onAddLayer;
+
+    beforeEach(function() {
+      source = new ol.source.XYZ({
+        url: 'spec/ol/data/tiles/osm/{z}/{x}/{y}.png'
+      });
+      onAddLayer = function(evt) {
+        evt.element.on('render', function(e) {
+          e.vectorContext.setImageStyle(new ol.style.Circle({
+            radius: 5,
+            snapToPixel: false,
+            fill: new ol.style.Fill({color: 'yellow'}),
+            stroke: new ol.style.Stroke({color: 'red', width: 1})
+          }));
+          e.vectorContext.drawPointGeometry(new ol.geom.Point(
+              ol.proj.transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
+        });
+      }
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('works with the canvas renderer', function(done) {
+      map = createMap('canvas');
+      map.getLayers().on('add', onAddLayer);
+      waitForTiles([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/render-canvas.png',
+            2.6, done);
+      });
+    });
+  });
 });
 
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.XYZ');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
 goog.require('ol.tilegrid.TileGrid');
