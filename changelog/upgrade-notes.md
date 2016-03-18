@@ -12,12 +12,12 @@ In addition, the previous methods for setting style parts have been replaced wit
 
  * Removed experimental style setting methods: `setFillStrokeStyle`, `setImageStyle`, `setTextStyle` (all have been replaced with `setStyle`).
 
-Below is an example of how the vector context may have been used in the past:
+Below is an example of how the vector context might have been used in the past:
 
 ```js
 // OLD WAY, NO LONGER SUPPORTED
 map.on('postcompose', function(event) {
-  event.vectorContext.setFillStrokeStyle(style.getStroke(), style.getFill());
+  event.vectorContext.setFillStrokeStyle(style.getFill(), style.getStroke());
   event.vectorContext.drawPointGeometry(geometry);
 });
 ```
