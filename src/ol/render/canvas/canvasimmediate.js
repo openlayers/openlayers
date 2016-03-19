@@ -41,13 +41,6 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {!Object.<string,
-   *        Array.<function(ol.render.canvas.Immediate)>>}
-   */
-  this.callbacksByZIndex_ = {};
-
-  /**
-   * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = context;
@@ -403,26 +396,6 @@ ol.render.canvas.Immediate.prototype.drawRings_ = function(flatCoordinates, offs
 
 
 /**
- * Register a function to be called for rendering at a given zIndex.  The
- * function will be called asynchronously.  The callback will receive a
- * reference to {@link ol.render.canvas.Immediate} context for drawing.
- *
- * @param {number} zIndex Z index.
- * @param {function(ol.render.canvas.Immediate)} callback Callback.
- * @api
- */
-ol.render.canvas.Immediate.prototype.drawAsync = function(zIndex, callback) {
-  var zIndexKey = zIndex.toString();
-  var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (callbacks !== undefined) {
-    callbacks.push(callback);
-  } else {
-    this.callbacksByZIndex_[zIndexKey] = [callback];
-  }
-};
-
-
-/**
  * Render a circle geometry into the canvas.  Rendering is immediate and uses
  * the current fill and stroke styles.
  *
@@ -517,11 +490,10 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
 
 
 /**
- * Render a feature into the canvas.  In order to respect the zIndex of the
- * style this method draws asynchronously and thus *after* calls to
- * drawXxxxGeometry have been finished, effectively drawing the feature
- * *on top* of everything else.  You probably should be using an
- * {@link ol.layer.Vector} instead of calling this method directly.
+ * Render a feature into the canvas.  Note that any `zIndex` on the provided
+ * style will be ignored - features are rendered immediately in the order that
+ * this method is called.  If you need `zIndex` support, you should be using an
+ * {@link ol.layer.Vector} instead.
  *
  * @param {ol.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
@@ -533,17 +505,9 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
-  var zIndex = style.getZIndex();
-  if (zIndex === undefined) {
-    zIndex = 0;
-  }
-  this.drawAsync(zIndex, function(render) {
-    render.setFillStrokeStyle(style.getFill(), style.getStroke());
-    render.setImageStyle(style.getImage());
-    render.setTextStyle(style.getText());
-    goog.asserts.assert(geometry, 'geometry must be truthy');
-    render.drawGeometry(geometry);
-  });
+  this.setStyle(style);
+  goog.asserts.assert(geometry, 'geometry must be truthy');
+  this.drawGeometry(geometry);
 };
 
 
@@ -730,23 +694,6 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(geometry) {
   if (this.text_ !== '') {
     var flatInteriorPoints = geometry.getFlatInteriorPoints();
     this.drawText_(flatInteriorPoints, 0, flatInteriorPoints.length, 2);
-  }
-};
-
-
-/**
- * FIXME: empty description for jsdoc
- */
-ol.render.canvas.Immediate.prototype.flush = function() {
-  /** @type {Array.<number>} */
-  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  zs.sort(ol.array.numberSafeCompareFunction);
-  var i, ii, callbacks, j, jj;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    callbacks = this.callbacksByZIndex_[zs[i].toString()];
-    for (j = 0, jj = callbacks.length; j < jj; ++j) {
-      callbacks[j](this);
-    }
   }
 };
 

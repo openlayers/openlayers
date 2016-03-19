@@ -21,21 +21,6 @@ describe('ol.render.canvas.Immediate', function() {
     });
   });
 
-  describe('#flush', function() {
-    it('calls callback in correct z-order', function() {
-      var canvas = new ol.render.canvas.Immediate();
-      var log = [];
-      canvas.drawAsync(11, function() {
-        log.push(11);
-      });
-      canvas.drawAsync(5, function() {
-        log.push(5);
-      });
-      canvas.flush();
-      expect(log).to.eql([5, 11]);
-    });
-  });
-
   describe('#setStyle()', function() {
     it('calls the more specific methods with style parts', function() {
       var context = new ol.render.canvas.Immediate();
