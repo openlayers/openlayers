@@ -31,7 +31,7 @@ map.on('postcompose', function(event) {
 });
 ```
 
-A final change to the immediate rendering API is that `vectorContext.drawFeature()` calls are not "immediate" as well.  The drawing now occurs synchronously.  This means that any `zIndex` in a style passed to `drawFeature()` will be ignored.  To achieve `zIndex` ordering, order your calls to `drawFeature()` instead.
+A final change to the immediate rendering API is that `vectorContext.drawFeature()` calls are now "immediate" as well.  The drawing now occurs synchronously.  This means that any `zIndex` in a style passed to `drawFeature()` will be ignored.  To achieve `zIndex` ordering, order your calls to `drawFeature()` instead.
 
 #### Removal of `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK`
 
