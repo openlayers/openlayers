@@ -3098,7 +3098,9 @@ olx.interaction.SelectOptions.prototype.wrapX;
  * @typedef {{
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     pixelTolerance: (number|undefined),
- *     source: (ol.source.Vector|undefined)
+ *     source: (ol.source.Vector|undefined),
+ *     edge: (boolean|undefined),
+ *     vertex: (boolean|undefined)
  * }}
  * @api
  */
@@ -3111,6 +3113,21 @@ olx.interaction.SnapOptions;
  * @api
  */
 olx.interaction.SnapOptions.prototype.features;
+
+/**
+ * Snap to edges. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.SnapOptions.prototype.edge;
+
+
+/**
+ * Snap to vertices. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.SnapOptions.prototype.vertex;
 
 
 /**

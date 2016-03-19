@@ -64,6 +64,42 @@ describe('ol.interaction.Snap', function() {
       expect(event.coordinate).to.eql([0, 0]);
     });
 
+    it('snaps to edges only', function() {
+      var point = new ol.Feature(new ol.geom.LineString([[-10, 0], [10, 0]]));
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([point]),
+        pixelTolerance: 5,
+        vertex: false
+      });
+      snapInteraction.setMap(map);
+
+      var event = {
+        pixel: [7 + width / 2,  height / 2 - 4],
+        coordinate: [7, 4],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+      expect(event.coordinate).to.eql([7, 0]);
+    });
+
+    it('snaps to vertices only', function() {
+      var point = new ol.Feature(new ol.geom.LineString([[-10, 0], [10, 0]]));
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([point]),
+        pixelTolerance: 5,
+        edge: false
+      });
+      snapInteraction.setMap(map);
+
+      var event = {
+        pixel: [7 + width / 2,  height / 2 - 4],
+        coordinate: [7, 4],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+      expect(event.coordinate).to.eql([10, 0]);
+    });
+
   });
 
 });
@@ -73,4 +109,5 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
 goog.require('ol.interaction.Snap');
