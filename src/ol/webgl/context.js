@@ -1,7 +1,6 @@
 goog.provide('ol.webgl.Context');
 
 goog.require('goog.asserts');
-goog.require('goog.log');
 goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.array');
@@ -229,12 +228,6 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     var shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
-    if (goog.DEBUG) {
-      if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
-          !gl.isContextLost()) {
-        goog.log.error(this.logger_, gl.getShaderInfoLog(shader));
-      }
-    }
     goog.asserts.assert(
         gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) ||
         gl.isContextLost(),
@@ -265,12 +258,6 @@ ol.webgl.Context.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
-    if (goog.DEBUG) {
-      if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
-          !gl.isContextLost()) {
-        goog.log.error(this.logger_, gl.getProgramInfoLog(program));
-      }
-    }
     goog.asserts.assert(
         gl.getProgramParameter(program, goog.webgl.LINK_STATUS) ||
         gl.isContextLost(),
@@ -346,13 +333,6 @@ ol.webgl.Context.prototype.useProgram = function(program) {
     return true;
   }
 };
-
-
-/**
- * @private
- * @type {goog.log.Logger}
- */
-ol.webgl.Context.prototype.logger_ = goog.log.getLogger('ol.webgl.Context');
 
 
 /**
