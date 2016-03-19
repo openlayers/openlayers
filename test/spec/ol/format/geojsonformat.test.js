@@ -725,6 +725,28 @@ describe('ol.format.GeoJSON', function() {
           .to.be.lessThan(0.0000001);
     });
 
+    it('transforms and encodes geometry collection', function() {
+      var collection = new ol.geom.GeometryCollection([
+        new ol.geom.Point([2, 3]),
+        new ol.geom.LineString([[3, 2], [2, 1]])
+      ]);
+      var geojson = format.writeGeometry(collection, {
+        featureProjection: 'EPSG:3857'
+      });
+      var got = format.readGeometry(geojson, {
+        featureProjection: 'EPSG:3857'
+      });
+      var gotGeometries = got.getGeometries();
+      var geometries = collection.getGeometries();
+      expect(geometries[0].getCoordinates()[0]).to.roughlyEqual(
+          gotGeometries[0].getCoordinates()[0], 1e-8);
+      expect(geometries[0].getCoordinates()[1]).to.roughlyEqual(
+          gotGeometries[0].getCoordinates()[1], 1e-8);
+      expect(geometries[1].getCoordinates()[0][0]).to.roughlyEqual(
+          gotGeometries[1].getCoordinates()[0][0], 1e-8);
+      expect(geometries[1].getCoordinates()[0][1]).to.roughlyEqual(
+          gotGeometries[1].getCoordinates()[0][1], 1e-8);
+    });
   });
 
 });
