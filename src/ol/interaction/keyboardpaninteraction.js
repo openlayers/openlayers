@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
@@ -38,12 +37,20 @@ ol.interaction.KeyboardPan = function(opt_options) {
 
   /**
    * @private
+   * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+   * @return {boolean} Combined condition result.
+   */
+  this.defaultCondition_ = function(mapBrowserEvent) {
+    return ol.events.condition.noModifierKeys.call(this, mapBrowserEvent) &&
+      ol.events.condition.targetNotEditable.call(this, mapBrowserEvent)
+  }
+
+  /**
+   * @private
    * @type {ol.events.ConditionType}
    */
   this.condition_ = options.condition !== undefined ?
-      options.condition :
-      goog.functions.and(ol.events.condition.noModifierKeys,
-          ol.events.condition.targetNotEditable);
+      options.condition : this.defaultCondition_
 
   /**
    * @private
@@ -60,7 +67,6 @@ ol.interaction.KeyboardPan = function(opt_options) {
 
 };
 goog.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
-
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} if it was a

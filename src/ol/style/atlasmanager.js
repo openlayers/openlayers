@@ -2,9 +2,7 @@ goog.provide('ol.style.Atlas');
 goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol');
-
 
 /**
  * Provides information for an image inside an atlas manager.
@@ -186,7 +184,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
   var renderHitCallback = opt_renderHitCallback !== undefined ?
-      opt_renderHitCallback : goog.functions.NULL;
+      opt_renderHitCallback : ol.nullFunction
 
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.add_(true,

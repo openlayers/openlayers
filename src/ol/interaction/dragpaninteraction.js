@@ -6,6 +6,7 @@ goog.require('ol.Pixel');
 goog.require('ol.PreRenderFunction');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
+goog.require('ol.functions');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
 
@@ -165,4 +166,4 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragPan.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.DragPan.prototype.shouldStopEvent = ol.functions.FALSE;
