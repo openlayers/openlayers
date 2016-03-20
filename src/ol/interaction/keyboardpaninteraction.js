@@ -1,13 +1,13 @@
 goog.provide('ol.interaction.KeyboardPan');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.EventType');
 goog.require('ol.events.KeyCode');
 goog.require('ol.events.condition');
+goog.require('ol.functions');
 goog.require('ol.interaction.Interaction');
 
 
@@ -42,7 +42,7 @@ ol.interaction.KeyboardPan = function(opt_options) {
    */
   this.condition_ = options.condition !== undefined ?
       options.condition :
-      goog.functions.and(ol.events.condition.noModifierKeys,
+      ol.functions.and(ol.events.condition.noModifierKeys,
           ol.events.condition.targetNotEditable);
 
   /**
