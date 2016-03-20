@@ -1,10 +1,10 @@
 goog.provide('ol.interaction.Pointer');
 
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.Pixel');
+goog.require('ol.functions');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.object');
 
@@ -215,4 +215,4 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
  * @return {boolean} Should the event be stopped?
  * @protected
  */
-ol.interaction.Pointer.prototype.shouldStopEvent = goog.functions.identity;
+ol.interaction.Pointer.prototype.shouldStopEvent = ol.functions.identity;

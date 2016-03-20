@@ -28,3 +28,13 @@ ol.functions.and = function(args) {
     return true;
   };
 };
+
+/**
+* @param {TEMPLATE=} arg Argument to be returned.
+* @param {...*} opt_args Other arguments
+* @returns {TEMPLATE} First argument that is returned.
+* @template TEMPLATE
+*/
+ol.functions.identity = function(arg, opt_args) {
+  return arg;
+}
