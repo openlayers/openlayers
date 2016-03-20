@@ -1,8 +1,8 @@
 goog.provide('ol.geom.SimpleGeometry');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
@@ -84,7 +84,7 @@ ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
+ol.geom.SimpleGeometry.prototype.containsXY = ol.functions.FALSE;
 
 
 /**

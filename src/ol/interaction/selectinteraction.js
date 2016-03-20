@@ -4,13 +4,13 @@ goog.provide('ol.interaction.SelectEventType');
 goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.condition');
+goog.require('ol.functions');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
@@ -148,7 +148,7 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.interaction.SelectFilterFunction}
    */
   this.filter_ = options.filter ? options.filter :
-      goog.functions.TRUE;
+      ol.functions.TRUE;
 
   var featureOverlay = new ol.layer.Vector({
     source: new ol.source.Vector({
@@ -190,7 +190,7 @@ ol.interaction.Select = function(opt_options) {
       };
     }
   } else {
-    layerFilter = goog.functions.TRUE;
+    layerFilter = ol.functions.TRUE;
   }
 
   /**

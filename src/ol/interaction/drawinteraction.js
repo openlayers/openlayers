@@ -741,7 +741,7 @@ ol.interaction.Draw.prototype.extend = function(feature) {
 /**
  * @inheritDoc
  */
-ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.Draw.prototype.shouldStopEvent = ol.functions.FALSE;
 
 
 /**

@@ -150,7 +150,7 @@ ol.interaction.Pointer.handleDragEvent = ol.nullFunction;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleUpEvent = goog.functions.FALSE;
+ol.interaction.Pointer.handleUpEvent = ol.functions.FALSE;
 
 
 /**
@@ -158,7 +158,7 @@ ol.interaction.Pointer.handleUpEvent = goog.functions.FALSE;
  * @return {boolean} Capture dragging.
  * @this {ol.interaction.Pointer}
  */
-ol.interaction.Pointer.handleDownEvent = goog.functions.FALSE;
+ol.interaction.Pointer.handleDownEvent = ol.functions.FALSE;
 
 
 /**
