@@ -1064,7 +1064,12 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   // If it's not now an Element we remove the viewport from the DOM.
   // If it's an Element we append the viewport element to it.
 
-  var targetElement = this.getTargetElement();
+  var targetElement;
+  if (this.getTarget()) {
+    targetElement = this.getTargetElement();
+    goog.asserts.assert(targetElement !== null,
+        'expects a non-null value for targetElement');
+  }
 
   if (this.keyHandlerKeys_) {
     for (var i = 0, ii = this.keyHandlerKeys_.length; i < ii; ++i) {
