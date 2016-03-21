@@ -720,9 +720,8 @@ describe('ol.format.GeoJSON', function() {
       });
       expect(point.getCoordinates()[0]).to.roughlyEqual(
           newPoint.getCoordinates()[0], 1e-8);
-      expect(
-          Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]))
-          .to.be.lessThan(0.0000001);
+      expect(point.getCoordinates()[1]).to.roughlyEqual(
+          newPoint.getCoordinates()[1], 1e-8);
     });
 
     it('transforms and encodes geometry collection', function() {
