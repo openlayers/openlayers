@@ -17,7 +17,10 @@ Then every time you push to your fork, the test suite will be run. This means
 errors can be caught before creating a pull request. For those making
 small or occasional contributions, this may be enough to check that your contributions
 are ok; in this case, you do not need to install the build tools on your local environment
-as described below.
+as described below. Note though that `.travis.yml` is set to run only on the `master`
+branch. To run Travis on a development branch, the `branches` section of `.travis.yml` will
+have to be changed, for example, by changing `only` to `except`. If you change this,
+don't forget to change it back again before submitting your pull request.
 
 ### Development dependencies
 
