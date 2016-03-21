@@ -364,12 +364,15 @@ ol.render.canvas.Immediate.prototype.moveToLineTo_ = function(flatCoordinates, o
       flatCoordinates, offset, end, stride, this.transform_,
       this.pixelCoordinates_);
   context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
-  var i;
-  for (i = 2; i < pixelCoordinates.length; i += 2) {
+  var length = pixelCoordinates.length;
+  if (close) {
+    length -= 2;
+  }
+  for (var i = 2; i < length; i += 2) {
     context.lineTo(pixelCoordinates[i], pixelCoordinates[i + 1]);
   }
   if (close) {
-    context.lineTo(pixelCoordinates[0], pixelCoordinates[1]);
+    context.closePath();
   }
   return end;
 };
@@ -384,12 +387,10 @@ ol.render.canvas.Immediate.prototype.moveToLineTo_ = function(flatCoordinates, o
  * @return {number} End.
  */
 ol.render.canvas.Immediate.prototype.drawRings_ = function(flatCoordinates, offset, ends, stride) {
-  var context = this.context_;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     offset = this.moveToLineTo_(
         flatCoordinates, offset, ends[i], stride, true);
-    context.closePath(); // FIXME is this needed here?
   }
   return offset;
 };
