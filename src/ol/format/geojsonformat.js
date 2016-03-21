@@ -211,7 +211,9 @@ ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(
   goog.asserts.assertInstanceof(geometry, ol.geom.GeometryCollection,
       'geometry should be an ol.geom.GeometryCollection');
   var geometries = geometry.getGeometriesArray().map(function(geometry) {
-    return ol.format.GeoJSON.writeGeometry_(geometry, opt_options);
+    var options = ol.object.assign({}, opt_options);
+    delete options.featureProjection;
+    return ol.format.GeoJSON.writeGeometry_(geometry, options);
   });
   return /** @type {GeoJSONGeometryCollection} */ ({
     type: 'GeometryCollection',
