@@ -231,7 +231,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     goog.asserts.assert(
         gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) ||
         gl.isContextLost(),
-        'illegal state, shader not compiled or context lost');
+        gl.getShaderInfoLog(shader) || 'illegal state, shader not compiled or context lost');
     this.shaderCache_[shaderKey] = shader;
     return shader;
   }
@@ -261,7 +261,7 @@ ol.webgl.Context.prototype.getProgram = function(
     goog.asserts.assert(
         gl.getProgramParameter(program, goog.webgl.LINK_STATUS) ||
         gl.isContextLost(),
-        'illegal state, shader not linked or context lost');
+        gl.getProgramInfoLog(program) || 'illegal state, shader not linked or context lost');
     this.programCache_[programKey] = program;
     return program;
   }
