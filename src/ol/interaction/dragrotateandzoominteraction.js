@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
-goog.require('goog.math.Vec2');
 goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.events.ConditionType');
@@ -82,11 +81,10 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var size = map.getSize();
   var offset = mapBrowserEvent.pixel;
-  var delta = new goog.math.Vec2(
-      offset[0] - size[0] / 2,
-      size[1] / 2 - offset[1]);
-  var theta = Math.atan2(delta.y, delta.x);
-  var magnitude = delta.magnitude();
+  var deltaX = offset[0] - size[0] / 2;
+  var deltaY = size[1] / 2 - offset[1];
+  var theta = Math.atan2(deltaY, deltaX);
+  var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var view = map.getView();
   map.render();
   if (this.lastAngle_ !== undefined) {
