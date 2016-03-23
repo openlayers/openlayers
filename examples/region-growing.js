@@ -10,16 +10,34 @@ goog.require('ol.source.Raster');
 function growRegion(inputs, data) {
   var image = inputs[0];
   var seed = data.pixel;
+  var rotation = data.rotation;
+  var center = data.center;
+  var mapSize = data.size;
   var delta = parseInt(data.delta);
   if (!seed) {
     return image;
   }
 
-  seed = seed.map(Math.round);
   var width = image.width;
   var height = image.height;
   var inputData = image.data;
   var outputData = new Uint8ClampedArray(inputData);
+
+  // We have to recalculate seed pixel if view is rotated
+  var dx = (width - mapSize[0]) / 2;
+  var dy = (height - mapSize[1]) / 2;
+  var cx = center[0] + dx;
+  var cy = center[1] + dy;
+  var x = seed[0] + dx;
+  var y = seed[1] + dy;
+  x -= cx;
+  y -= cy;
+  seed[0] = x * Math.cos(rotation) + y * Math.sin(rotation);
+  seed[1] = y * Math.cos(rotation) - x * Math.sin(rotation);
+  seed[0] += cx;
+  seed[1] += cy;
+  seed = seed.map(Math.round);
+
   var seedIdx = (seed[1] * width + seed[0]) * 4;
   var seedR = inputData[seedIdx];
   var seedG = inputData[seedIdx + 1];
@@ -116,6 +134,9 @@ raster.on('beforeoperations', function(event) {
   // the event.data object will be passed to operations
   var data = event.data;
   data.delta = thresholdControl.value;
+  data.size = map.getSize();
+  data.rotation = map.getView().getRotation();
+  data.center = map.getPixelFromCoordinate(map.getView().getCenter());
   if (coordinate) {
     data.pixel = map.getPixelFromCoordinate(coordinate);
   }
