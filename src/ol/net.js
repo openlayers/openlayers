@@ -9,7 +9,7 @@ goog.provide('ol.net');
  *     appended.
  * @param {Function} callback Callback on success.
  * @param {function()=} opt_errback Callback on error.
- * @param {string=} opt_callbackParam Custom qurey parameter for the JSONP
+ * @param {string=} opt_callbackParam Custom query parameter for the JSONP
  *     callback. Default is 'callback'.
  */
 ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
