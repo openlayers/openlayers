@@ -120,17 +120,6 @@ ol.xml.getAttributeNS = function(node, namespaceURI, name) {
  * @param {Node} node Node.
  * @param {?string} namespaceURI Namespace URI.
  * @param {string} name Attribute name.
- * @return {?Node} Attribute node or null if none found.
- */
-ol.xml.getAttributeNodeNS = function(node, namespaceURI, name) {
-  return node.getAttributeNodeNS(namespaceURI, name);
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {?string} namespaceURI Namespace URI.
- * @param {string} name Attribute name.
  * @param {string|number} value Value.
  */
 ol.xml.setAttributeNS = function(node, namespaceURI, name, value) {
