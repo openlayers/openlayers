@@ -33,6 +33,7 @@ ol.source.XYZ = function(options) {
       ol.tilegrid.createXYZ({
         extent: ol.tilegrid.extentFromProjection(projection),
         maxZoom: options.maxZoom,
+        minZoom: options.minZoom,
         tileSize: options.tileSize
       });
 

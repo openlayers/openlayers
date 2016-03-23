@@ -6128,7 +6128,7 @@ olx.source.XYZOptions.prototype.maxZoom;
 
 
 /**
- * Unsupported (TODO: remove this).
+ * Optional min zoom level. Default is `0`.
  * @type {number|undefined}
  * @api
  */
