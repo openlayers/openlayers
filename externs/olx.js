@@ -4123,7 +4123,8 @@ olx.source.ClusterOptions.prototype.wrapX;
 
 /**
  * @typedef {{preemptive: (boolean|undefined),
- *            url: string}}
+ *     tileJSON: (TileJSON|undefined),
+ *     url: (string|undefined)}}
  * @api
  */
 olx.source.TileUTFGridOptions;
@@ -4143,7 +4144,18 @@ olx.source.TileUTFGridOptions.prototype.preemptive;
 
 
 /**
- * @type {string}
+ * TileJSON configuration for this source. If not provided, `url` must be
+ * configured.
+ * @type {TileJSON|undefined}
+ * @api
+ */
+olx.source.TileUTFGridOptions.prototype.tileJSON;
+
+
+/**
+ * TileJSON endpoint that provides the configuration for this source. Request
+ * will be made through JSONP. If not provided, `tileJSON` must be configured.
+ * @type {string|undefined}
  * @api
  */
 olx.source.TileUTFGridOptions.prototype.url;
