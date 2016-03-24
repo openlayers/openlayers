@@ -155,7 +155,7 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
  * @inheritDoc
  * @api stable
  */
-ol.control.FullScreen.prototype.setMap = function (map) {
+ol.control.FullScreen.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
   if (map) {
     this.listenerKeys.push(
