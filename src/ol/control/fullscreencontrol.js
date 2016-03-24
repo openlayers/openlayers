@@ -2,7 +2,6 @@ goog.provide('ol.control.FullScreen');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
 goog.require('ol.events');
@@ -134,15 +133,13 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
  * @private
  */
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
-  var opened = this.cssClassName_ + '-true';
-  var closed = this.cssClassName_ + '-false';
   var button = this.element.firstElementChild;
   var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.classlist.swap(button, closed, opened);
+    button.className = this.cssClassName_ + '-true';
     goog.dom.replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
-    goog.dom.classlist.swap(button, opened, closed);
+    button.className = this.cssClassName_ + '-false';
     goog.dom.replaceNode(this.labelNode_, this.labelActiveNode_);
   }
   if (map) {

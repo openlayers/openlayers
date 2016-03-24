@@ -8,7 +8,6 @@ goog.provide('ol.MapProperty');
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('goog.functions');
 goog.require('goog.style');
 goog.require('goog.vec.Mat4');
@@ -255,7 +254,7 @@ ol.Map = function(options) {
    * @type {Element}
    */
   this.viewport_ = document.createElement('DIV');
-  this.viewport_.className = 'ol-viewport';
+  this.viewport_.className = 'ol-viewport' + (ol.has.TOUCH ? ' ol-touch' : '');
   this.viewport_.style.position = 'relative';
   this.viewport_.style.overflow = 'hidden';
   this.viewport_.style.width = '100%';
@@ -263,9 +262,6 @@ ol.Map = function(options) {
   // prevent page zoom on IE >= 10 browsers
   this.viewport_.style.msTouchAction = 'none';
   this.viewport_.style.touchAction = 'none';
-  if (ol.has.TOUCH) {
-    goog.dom.classlist.add(this.viewport_, 'ol-touch');
-  }
 
   /**
    * @private
