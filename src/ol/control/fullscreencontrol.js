@@ -160,7 +160,7 @@ ol.control.FullScreen.prototype.setMap = function (map) {
   if (map) {
     this.listenerKeys.push(
         ol.events.listen(goog.global.document, goog.dom.fullscreen.EventType.CHANGE,
-          this.handleFullScreenChange_, this);
+          this.handleFullScreenChange_, this)
     );
   }
 };
