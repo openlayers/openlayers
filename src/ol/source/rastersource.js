@@ -31,6 +31,7 @@ goog.require('ol.source.Tile');
  *
  * @constructor
  * @extends {ol.source.Image}
+ * @fires ol.source.RasterEvent
  * @param {olx.source.RasterOptions} options Options.
  * @api
  */
