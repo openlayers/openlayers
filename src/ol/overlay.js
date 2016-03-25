@@ -469,7 +469,7 @@ ol.Overlay.prototype.setPositioning = function(positioning) {
  */
 ol.Overlay.prototype.setVisible = function(visible) {
   if (this.rendered_.visible !== visible) {
-    goog.style.setElementShown(this.element_, visible);
+    this.element_.style.display = visible ? '' : 'none';
     this.rendered_.visible = visible;
   }
 };

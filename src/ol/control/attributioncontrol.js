@@ -4,7 +4,6 @@ goog.provide('ol.control.Attribution');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
@@ -44,7 +43,7 @@ ol.control.Attribution = function(opt_options) {
   this.logoLi_ = document.createElement('LI');
 
   this.ulElement_.appendChild(this.logoLi_);
-  goog.style.setElementShown(this.logoLi_, false);
+  this.logoLi_.style.display = 'none'; // Hide the logo
 
   /**
    * @private
@@ -214,7 +213,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.element, false);
+      this.element.style.display = 'none'; //Hide the element
       this.renderedVisible_ = false;
     }
     return;
@@ -230,15 +229,13 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   for (attributionKey in this.attributionElements_) {
     if (attributionKey in visibleAttributions) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.setElementShown(
-            this.attributionElements_[attributionKey], true);
+        this.attributionElements_[attributionKey].style.display = ''; // Show the element
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
       delete visibleAttributions[attributionKey];
     } else if (attributionKey in hiddenAttributions) {
       if (this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.setElementShown(
-            this.attributionElements_[attributionKey], false);
+        this.attributionElements_[attributionKey].style.display = 'none'; //Hide the element
         delete this.attributionElementRenderedVisible_[attributionKey];
       }
       delete hiddenAttributions[attributionKey];
@@ -260,7 +257,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         hiddenAttributions[attributionKey].getHTML();
-    goog.style.setElementShown(attributionElement, false);
+    attributionElement.style.display = 'none'; //Hide the element
     this.ulElement_.appendChild(attributionElement);
     this.attributionElements_[attributionKey] = attributionElement;
   }
@@ -269,7 +266,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
       !ol.object.isEmpty(this.attributionElementRenderedVisible_) ||
       !ol.object.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
-    goog.style.setElementShown(this.element, renderVisible);
+    this.element.style.display = renderVisible ? '' : 'none'; //Conditionally hide
     this.renderedVisible_ = renderVisible;
   }
   if (renderVisible &&
@@ -324,7 +321,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     }
   }
 
-  goog.style.setElementShown(this.logoLi_, !ol.object.isEmpty(logos));
+  this.logoLi_.style.display = !ol.object.isEmpty(logos) ? '' : 'none';
 
 };
 

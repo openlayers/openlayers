@@ -5,7 +5,6 @@ goog.provide('ol.renderer.dom.TileLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.TileRange');
@@ -77,7 +76,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
 
   if (!layerState.visible) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.target, false);
+      this.target.style.display = 'none'; //Hide the element
       this.renderedVisible_ = false;
     }
     return true;
@@ -246,7 +245,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   }
 
   if (layerState.visible && !this.renderedVisible_) {
-    goog.style.setElementShown(this.target, true);
+    this.target.style.display = ''; //Show the element
     this.renderedVisible_ = true;
   }
 
