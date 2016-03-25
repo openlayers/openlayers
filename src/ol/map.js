@@ -8,7 +8,6 @@ goog.provide('ol.MapProperty');
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
 goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
@@ -1426,7 +1425,30 @@ ol.Map.prototype.updateSize = function() {
   if (!targetElement) {
     this.setSize(undefined);
   } else {
-    var size = goog.style.getContentBoxSize(targetElement);
+    var targetElementComputedStyle = window.getComputedStyle(targetElement);
+    var borderBoxSize = {
+      width: targetElement.offsetWidth, height: targetElement.offsetHeight
+    };
+    var paddingBox = {
+      left: parseFloat(targetElementComputedStyle['paddingLeft']),
+      right: parseFloat(targetElementComputedStyle['paddingRight']),
+      top: parseFloat(targetElementComputedStyle['paddingTop']),
+      bottom: parseFloat(targetElementComputedStyle['paddingBottom'])
+    }; //goog.style.getPaddingBox(element);
+    var borderBox = {
+      left: parseFloat(targetElementComputedStyle['borderLeftWidth']),
+      right: parseFloat(targetElementComputedStyle['borderRightWidth']),
+      top: parseFloat(targetElementComputedStyle['borderTopWidth']),
+      bottom: parseFloat(targetElementComputedStyle['borderBottomWidth'])
+    }; //goog.style.getBorderBox(element);
+    var size = {
+      width: borderBoxSize.width -
+      borderBox.left - paddingBox.left -
+      paddingBox.right - borderBox.right,
+      height: borderBoxSize.height -
+      borderBox.top - paddingBox.top -
+      paddingBox.bottom - borderBox.bottom
+    };
     this.setSize([size.width, size.height]);
   }
 };
