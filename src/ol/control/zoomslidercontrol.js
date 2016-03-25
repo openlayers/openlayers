@@ -190,7 +190,13 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   };
 
   var thumb = container.firstElementChild;
-  var thumbMargins = goog.style.getMarginBox(thumb);
+  var thumbComputedStyles = window.getComputedStyle(thumb);
+  var thumbMargins = {
+    left: parseFloat(thumbComputedStyles['marginLeft']),
+    right: parseFloat(thumbComputedStyles['marginRight']),
+    top: parseFloat(thumbComputedStyles['marginTop']),
+    bottom: parseFloat(thumbComputedStyles['marginBottom'])
+  };
   var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
   var thumbWidth = thumbBorderBoxSize.width +
       thumbMargins.right + thumbMargins.left;
