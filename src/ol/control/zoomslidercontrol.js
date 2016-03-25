@@ -4,7 +4,6 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -197,7 +196,9 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
     top: parseFloat(thumbComputedStyles['marginTop']),
     bottom: parseFloat(thumbComputedStyles['marginBottom'])
   };
-  var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
+  var thumbBorderBoxSize = {
+    width:thumb.offsetWidth, height: thumb.offsetHeight
+  };
   var thumbWidth = thumbBorderBoxSize.width +
       thumbMargins.right + thumbMargins.left;
   var thumbHeight = thumbBorderBoxSize.height +
