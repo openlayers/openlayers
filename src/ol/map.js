@@ -1434,13 +1434,13 @@ ol.Map.prototype.updateSize = function() {
       right: parseFloat(targetElementComputedStyle['paddingRight']),
       top: parseFloat(targetElementComputedStyle['paddingTop']),
       bottom: parseFloat(targetElementComputedStyle['paddingBottom'])
-    }; //goog.style.getPaddingBox(element);
+    };
     var borderBox = {
       left: parseFloat(targetElementComputedStyle['borderLeftWidth']),
       right: parseFloat(targetElementComputedStyle['borderRightWidth']),
       top: parseFloat(targetElementComputedStyle['borderTopWidth']),
       bottom: parseFloat(targetElementComputedStyle['borderBottomWidth'])
-    }; //goog.style.getBorderBox(element);
+    };
     var size = {
       width: borderBoxSize.width -
       borderBox.left - paddingBox.left -

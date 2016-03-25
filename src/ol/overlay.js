@@ -5,7 +5,6 @@ goog.provide('ol.OverlayProperty');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('ol.events');
-goog.require('goog.style');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
@@ -440,12 +439,14 @@ ol.Overlay.prototype.getRect_ = function(element, size) {
   goog.asserts.assert(element, 'element should be defined');
   goog.asserts.assert(size !== undefined, 'size should be defined');
 
-  var offset = goog.style.getPageOffset(element);
+  var box = element.getBoundingClientRect();
+  var offsetX = box.left + window.pageXOffset;
+  var offsetY = box.top + window.pageYOffset;
   return [
-    offset.x,
-    offset.y,
-    offset.x + size[0],
-    offset.y + size[1]
+    offsetX,
+    offsetY,
+    offsetX + size[0],
+    offsetY + size[1]
   ];
 };
 
