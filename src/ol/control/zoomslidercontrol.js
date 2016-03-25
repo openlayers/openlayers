@@ -185,7 +185,9 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
  */
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
-  var containerSize = goog.style.getSize(container);
+  var containerSize = {
+    width: container.offsetWidth, height: container.offsetHeight
+  };
 
   var thumb = container.firstElementChild;
   var thumbMargins = goog.style.getMarginBox(thumb);
