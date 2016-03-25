@@ -275,9 +275,9 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
   if (renderVisible &&
       ol.object.isEmpty(this.attributionElementRenderedVisible_)) {
-    goog.dom.classlist.add(this.element, 'ol-logo-only');
+    this.element.classList.add('ol-logo-only');
   } else {
-    goog.dom.classlist.remove(this.element, 'ol-logo-only');
+    this.element.classList.remove('ol-logo-only');
   }
 
   this.insertLogos_(frameState);

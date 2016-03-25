@@ -41,7 +41,7 @@ ol.control.Rotate = function(opt_options) {
         'ol-compass', label);
   } else {
     this.label_ = label;
-    goog.dom.classlist.add(this.label_, 'ol-compass');
+    this.label_.classList.add(this.label_, 'ol-compass');
   }
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
@@ -88,7 +88,7 @@ ol.control.Rotate = function(opt_options) {
   this.rotation_ = undefined;
 
   if (this.autoHide_) {
-    goog.dom.classlist.add(this.element, ol.css.CLASS_HIDDEN);
+    this.element.classList.add(ol.css.CLASS_HIDDEN);
   }
 
 };
