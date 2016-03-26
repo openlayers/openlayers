@@ -177,6 +177,18 @@ describe('ol.math.modulo', function() {
     expect(ol.math.modulo(1, -5)).to.be(-4);
     expect(ol.math.modulo(6, -5)).to.be(-4);
   });
+
+  describe('ol.math.lerp', function() {
+    it('correctly interpolated numbers', function() {
+      expect(ol.math.lerp(0, 0, 0)).to.be(0);
+      expect(ol.math.lerp(0, 1, 0)).to.be(0);
+      expect(ol.math.lerp(1, 11, 5)).to.be(51);
+    });
+    it('correctly interpolates floats', function() {
+      expect(ol.math.lerp(0, 1, 0.5)).to.be(0.5);
+      expect(ol.math.lerp(0.25, 0.75, 0.5)).to.be(0.5);
+    });
+  });
 });
 
 
