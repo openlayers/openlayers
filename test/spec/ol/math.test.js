@@ -165,10 +165,10 @@ describe('ol.math.modulo', function() {
   it('same Dividend and Divisor returns 0', function() {
     expect(ol.math.modulo(4, 4)).to.be(0);
   });
-  it('negative and positive returns negative', function() {
+  it('negative and positive returns positive', function() {
     expect(ol.math.modulo(-3, 4)).to.be(1);
   });
-  it('negative and negative returns positive', function() {
+  it('negative and negative returns negative', function() {
     expect(ol.math.modulo(-4, -5)).to.be(-4);
     expect(ol.math.modulo(-3, -4)).to.be(-3);
   });
