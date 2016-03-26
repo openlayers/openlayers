@@ -191,3 +191,15 @@ ol.math.modulo = function(a, b) {
   var r = a % b;
   return r * b < 0 ? r + b : r;
 };
+
+/**
+ * Calculates the linearly interpolated value of x between a and b.
+ *
+ * @param {number} a Number
+ * @param {number} b Number
+ * @param {number} x Value to be interpolated.
+ * @return {number} Interpolated value.
+ */
+ol.math.lerp = function(a, b, x) {
+  return a + x * (b - a);
+};

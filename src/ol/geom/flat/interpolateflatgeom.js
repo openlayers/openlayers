@@ -1,8 +1,8 @@
 goog.provide('ol.geom.flat.interpolate');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.array');
+goog.require('ol.math');
 
 
 /**
@@ -52,9 +52,9 @@ ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, str
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       var o = offset + (-index - 2) * stride;
-      pointX = goog.math.lerp(
+      pointX = ol.math.lerp(
           flatCoordinates[o], flatCoordinates[o + stride], t);
-      pointY = goog.math.lerp(
+      pointY = ol.math.lerp(
           flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
     } else {
       pointX = flatCoordinates[offset + index * stride];
@@ -127,7 +127,7 @@ ol.geom.flat.lineStringCoordinateAtM = function(flatCoordinates, offset, end, st
   coordinate = [];
   var i;
   for (i = 0; i < stride - 1; ++i) {
-    coordinate.push(goog.math.lerp(flatCoordinates[(lo - 1) * stride + i],
+    coordinate.push(ol.math.lerp(flatCoordinates[(lo - 1) * stride + i],
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);
