@@ -1,6 +1,5 @@
 goog.provide('ol.control.Zoom');
 
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.animation');
@@ -36,27 +35,34 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
       options.zoomOutTipLabel : 'Zoom out';
 
-  var inElement = goog.dom.createDom('BUTTON', {
-    'class': className + '-in',
-    'type' : 'button',
-    'title': zoomInTipLabel
-  }, zoomInLabel);
+  var inElement = document.createElement('button');
+  inElement.className = className + '-in';
+  inElement.setAttribute('type', 'button');
+  inElement.title = zoomInTipLabel;
+  inElement.appendChild(
+    typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
+  );
 
   ol.events.listen(inElement, ol.events.EventType.CLICK,
       ol.control.Zoom.prototype.handleClick_.bind(this, delta));
 
-  var outElement = goog.dom.createDom('BUTTON', {
-    'class': className + '-out',
-    'type' : 'button',
-    'title': zoomOutTipLabel
-  }, zoomOutLabel);
+  var outElement = document.createElement('button');
+  outElement.className = className + '-out';
+  outElement.setAttribute('type', 'button');
+  outElement.title = zoomOutTipLabel;
+  outElement.appendChild(
+    typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
+  );
 
   ol.events.listen(outElement, ol.events.EventType.CLICK,
       ol.control.Zoom.prototype.handleClick_.bind(this, -delta));
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom('DIV', cssClasses, inElement, outElement);
+  var element = document.createElement('div');
+  element.className = cssClasses;
+  element.appendChild(inElement);
+  element.appendChild(outElement);
 
   ol.control.Control.call(this, {
     element: element,

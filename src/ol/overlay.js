@@ -3,7 +3,6 @@ goog.provide('ol.OverlayPositioning');
 goog.provide('ol.OverlayProperty');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
@@ -252,7 +251,7 @@ ol.Overlay.prototype.getPositioning = function() {
  * @protected
  */
 ol.Overlay.prototype.handleElementChanged = function() {
-  goog.dom.removeChildren(this.element_);
+  ol.dom.removeChildren(this.element_);
   var element = this.getElement();
   if (element) {
     this.element_.appendChild(element);
@@ -265,7 +264,7 @@ ol.Overlay.prototype.handleElementChanged = function() {
  */
 ol.Overlay.prototype.handleMapChanged = function() {
   if (this.mapPostrenderListenerKey_) {
-    goog.dom.removeNode(this.element_);
+    ol.dom.removeNode(this.element_);
     ol.events.unlistenByKey(this.mapPostrenderListenerKey_);
     this.mapPostrenderListenerKey_ = null;
   }
@@ -277,7 +276,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
-      goog.dom.insertChildAt(container, this.element_, 0);
+      container.insertBefore(this.element_, container.childNodes[0] || null);
     } else {
       container.appendChild(this.element_);
     }

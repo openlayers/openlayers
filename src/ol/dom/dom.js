@@ -213,3 +213,31 @@ ol.dom.outerHeight = function(element) {
 
   return height;
 };
+
+/**
+ * @param {Node} newNode Node to replace old node
+ * @param {Node} oldNode The node to be replaced
+ */
+ol.dom.replaceNode = function(newNode, oldNode) {
+  var parent = oldNode.parentNode;
+  if (parent) {
+    parent.replaceChild(newNode, oldNode);
+  }
+};
+
+/**
+ * @param {Node} node The node to remove.
+ * @returns {Node} The node that was removed or null.
+ */
+ol.dom.removeNode = function(node) {
+  return node && node.parentNode ? node.parentNode.removeChild(node) : null;
+};
+
+/**
+ * @param {Node} node The node to remove the children from.
+ */
+ol.dom.removeChildren = function(node) {
+  while (node.lastChild) {
+    node.removeChild(node.lastChild);
+  }
+};

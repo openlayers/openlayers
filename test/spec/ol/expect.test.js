@@ -80,48 +80,46 @@ describe('expect.js', function() {
     it('Test XML document with single root, different prefix', function() {
       var doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
       var doc2 = '<foo xmlns="http://foo"></foo>';
-      expect(goog.dom.xml.loadXml(doc1)).to.xmleql(
-          goog.dom.xml.loadXml(doc2));
+      expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.xmleql(
+          new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test XML document with single root, different prefix, prefix true',
         function() {
           var doc1 = '<bar:foo xmlns:bar="http://foo"></bar:foo>';
           var doc2 = '<foo xmlns="http://foo"></foo>';
-          expect(goog.dom.xml.loadXml(doc1)).to.not.xmleql(
-              goog.dom.xml.loadXml(doc2), {prefix: true});
+          expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
+              new DOMParser().parseFromString(doc2, 'application/xml'), {prefix: true});
         });
 
     it('Test XML document with different root', function() {
       var doc1 = '<foo></foo>';
       var doc2 = '<bar></bar>';
-      expect(goog.dom.xml.loadXml(doc1)).to.not.xmleql(
-          goog.dom.xml.loadXml(doc2));
+      expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
+          new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test different number of attributes', function() {
       var doc1 = '<foo attr="bla"></foo>';
       var doc2 = '<foo></foo>';
-      expect(goog.dom.xml.loadXml(doc1)).to.not.xmleql(
-          goog.dom.xml.loadXml(doc2));
+      expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
+          new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test different attribute value', function() {
       var doc1 = '<foo attr="bla"></foo>';
       var doc2 = '<foo attr="foo"></foo>';
-      expect(goog.dom.xml.loadXml(doc1)).to.not.xmleql(
-          goog.dom.xml.loadXml(doc2));
+      expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
+          new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
     it('Test different number of children', function() {
       var doc1 = '<foo><mynode></mynode></foo>';
       var doc2 = '<foo></foo>';
-      expect(goog.dom.xml.loadXml(doc1)).to.not.xmleql(
-          goog.dom.xml.loadXml(doc2));
+      expect(new DOMParser().parseFromString(doc1, 'application/xml')).to.not.xmleql(
+          new DOMParser().parseFromString(doc2, 'application/xml'));
     });
 
   });
 
 });
-
-goog.require('goog.dom.xml');

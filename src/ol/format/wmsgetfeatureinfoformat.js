@@ -1,7 +1,6 @@
 goog.provide('ol.format.WMSGetFeatureInfo');
 
 goog.require('goog.asserts');
-goog.require('goog.dom.NodeType');
 goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
@@ -73,7 +72,7 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
 ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
 
   node.setAttribute('namespaceURI', this.featureNS_);
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
@@ -84,7 +83,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
   if (localName == 'msGMLOutput') {
     for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
       var layer = node.childNodes[i];
-      if (layer.nodeType !== goog.dom.NodeType.ELEMENT) {
+      if (layer.nodeType !== Node.ELEMENT_NODE) {
         continue;
       }
       var context = objectStack[0];

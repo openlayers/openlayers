@@ -1,7 +1,6 @@
 goog.provide('ol.format.XMLFeature');
 
 goog.require('goog.asserts');
-goog.require('goog.dom.NodeType');
 goog.require('ol.array');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
@@ -113,7 +112,7 @@ ol.format.XMLFeature.prototype.readFeaturesFromDocument = function(
   var features = [];
   var n;
   for (n = doc.firstChild; n; n = n.nextSibling) {
-    if (n.nodeType == goog.dom.NodeType.ELEMENT) {
+    if (n.nodeType == Node.ELEMENT_NODE) {
       ol.array.extend(features, this.readFeaturesFromNode(n, opt_options));
     }
   }
@@ -210,7 +209,7 @@ ol.format.XMLFeature.prototype.readProjectionFromNode = function(node) {
  */
 ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
   var node = this.writeFeatureNode(feature, opt_options);
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -230,7 +229,7 @@ ol.format.XMLFeature.prototype.writeFeatureNode = goog.abstractMethod;
  */
 ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
   var node = this.writeFeaturesNode(features, opt_options);
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -249,7 +248,7 @@ ol.format.XMLFeature.prototype.writeFeaturesNode = goog.abstractMethod;
  */
 ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
   var node = this.writeGeometryNode(geometry, opt_options);
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return this.xmlSerializer_.serializeToString(node);
 };

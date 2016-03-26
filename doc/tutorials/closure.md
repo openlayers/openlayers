@@ -221,7 +221,6 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"

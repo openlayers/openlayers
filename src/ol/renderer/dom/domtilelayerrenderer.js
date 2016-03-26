@@ -4,7 +4,6 @@
 goog.provide('ol.renderer.dom.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.TileRange');
@@ -64,7 +63,7 @@ ol.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
  * @inheritDoc
  */
 ol.renderer.dom.TileLayer.prototype.clearFrame = function() {
-  goog.dom.removeChildren(this.target);
+  ol.dom.removeChildren(this.target);
   this.renderedRevision_ = 0;
 };
 
@@ -164,7 +163,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   if (this.renderedRevision_ != tileSource.getRevision()) {
     for (tileLayerZKey in this.tileLayerZs_) {
       tileLayerZ = this.tileLayerZs_[+tileLayerZKey];
-      goog.dom.removeNode(tileLayerZ.target);
+      ol.dom.removeNode(tileLayerZ.target);
     }
     this.tileLayerZs_ = {};
     this.renderedRevision_ = tileSource.getRevision();
@@ -206,7 +205,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
     tileLayerZKey = tileLayerZKeys[i];
     tileLayerZ = this.tileLayerZs_[tileLayerZKey];
     if (!(tileLayerZKey in tilesToDrawByZ)) {
-      goog.dom.removeNode(tileLayerZ.target);
+      ol.dom.removeNode(tileLayerZ.target);
       delete this.tileLayerZs_[tileLayerZKey];
       continue;
     }
@@ -223,13 +222,14 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
     if (tileLayerZKey in newTileLayerZKeys) {
       for (j = tileLayerZKey - 1; j >= 0; --j) {
         if (j in this.tileLayerZs_) {
-          goog.dom.insertSiblingAfter(
-              tileLayerZ.target, this.tileLayerZs_[j].target);
+          if (this.tileLayerZs_[j].target.parentNode) {
+            this.tileLayerZs_[j].target.parentNode.insertBefore(tileLayerZ.target, this.tileLayerZs_[j].target.nextSibling);
+          }
           break;
         }
       }
       if (j < 0) {
-        goog.dom.insertChildAt(this.target, tileLayerZ.target, 0);
+        this.target.insertBefore(tileLayerZ.target, this.target.childNodes[0] || null);
       }
     } else {
       if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
@@ -430,7 +430,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent
   for (i = 0, ii = tilesToRemove.length; i < ii; ++i) {
     tile = tilesToRemove[i];
     tileCoordKey = tile.tileCoord.toString();
-    goog.dom.removeNode(tile.getImage(this));
+    ol.dom.removeNode(tile.getImage(this));
     delete this.tiles_[tileCoordKey];
   }
 };

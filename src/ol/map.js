@@ -7,7 +7,6 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
-goog.require('goog.dom');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
@@ -25,6 +24,7 @@ goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.control');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -742,7 +742,13 @@ ol.Map.prototype.getTarget = function() {
  */
 ol.Map.prototype.getTargetElement = function() {
   var target = this.getTarget();
-  return target !== undefined ? goog.dom.getElement(target) : null;
+  if (target !== undefined) {
+    return typeof target === 'string' ?
+      document.getElementById(target) :
+      target;
+  } else {
+    return null;
+  }
 };
 
 
@@ -1070,7 +1076,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   }
 
   if (!targetElement) {
-    goog.dom.removeNode(this.viewport_);
+    ol.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
       ol.global.removeEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
