@@ -5,10 +5,6 @@ goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');
 
-// Adapted from http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome
-var winNav = window.navigator;
-var isOpera = winNav.userAgent.indexOf('OPR') > -1;
-var isIEedge = winNav.userAgent.indexOf('Edge') > -1;
 
 /**
  * We need to employ more sophisticated solution
@@ -20,9 +16,18 @@ var isIEedge = winNav.userAgent.indexOf('Edge') > -1;
  * @type {boolean}
  * @private
  */
-ol.reproj.browserAntialiasesClip_ = !(!winNav.userAgent.match('CriOS') && window.chrome !== null &&
-    window.chrome !== undefined && winNav.vendor === 'Google Inc.' &&
-    isOpera == false && isIEedge == false);
+ol.reproj.browserAntialiasesClip_ = (function(winNav, winChrome) {
+  // Adapted from http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome
+  var isOpera = winNav.userAgent.indexOf('OPR') > -1;
+  var isIEedge = winNav.userAgent.indexOf('Edge') > -1;
+  return !(
+    !winNav.userAgent.match('CriOS') &&  // Not Chrome on iOS
+    winChrome !== null && winChrome !== undefined && // Has chrome in window
+    winNav.vendor === 'Google Inc.' && // Vendor is Google.
+    isOpera == false && // Not Opera
+    isIEedge == false // Not Edge
+  );
+})(window.navigator, window.chrome)
 
 
 /**
