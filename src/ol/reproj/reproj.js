@@ -1,12 +1,14 @@
 goog.provide('ol.reproj');
 
-goog.require('goog.labs.userAgent.browser');
-goog.require('goog.labs.userAgent.platform');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');
 
+// Adapted from http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome
+var winNav = window.navigator;
+var isOpera = winNav.userAgent.indexOf('OPR') > -1;
+var isIEedge = winNav.userAgent.indexOf('Edge') > -1;
 
 /**
  * We need to employ more sophisticated solution
@@ -18,8 +20,9 @@ goog.require('ol.proj');
  * @type {boolean}
  * @private
  */
-ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
-                                    goog.labs.userAgent.platform.isIos();
+ol.reproj.browserAntialiasesClip_ = !(!winNav.userAgent.match('CriOS') && window.chrome !== null &&
+    window.chrome !== undefined && winNav.vendor === 'Google Inc.' &&
+    isOpera == false && isIEedge == false);
 
 
 /**
