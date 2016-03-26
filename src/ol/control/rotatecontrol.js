@@ -1,7 +1,6 @@
 goog.provide('ol.control.Rotate');
 
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
@@ -156,8 +155,14 @@ ol.control.Rotate.render = function(mapEvent) {
   if (rotation != this.rotation_) {
     var transform = 'rotate(' + rotation + 'rad)';
     if (this.autoHide_) {
-      goog.dom.classlist.enable(
-          this.element, ol.css.CLASS_HIDDEN, rotation === 0);
+      var contains = this.element.classList.contains(ol.css.CLASS_HIDDEN);
+      if (!contains && rotation === 0) {
+        this.element.classList.add(ol.css.CLASS_HIDDEN);
+      } else if (contains && rotation !== 0) {
+        this.element.classList.remove(ol.css.CLASS_HIDDEN);
+      }
+      //goog.dom.classlist.enable(
+      //    this.element, ol.css.CLASS_HIDDEN, rotation === 0);
     }
     this.label_.style.msTransform = transform;
     this.label_.style.webkitTransform = transform;
