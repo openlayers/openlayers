@@ -1,9 +1,9 @@
 goog.provide('ol.format.XSD');
 
 goog.require('goog.asserts');
-goog.require('goog.string');
 goog.require('ol');
 goog.require('ol.xml');
+goog.require('ol.string');
 
 
 /**
@@ -142,11 +142,11 @@ ol.format.XSD.writeBooleanTextNode = function(node, bool) {
 ol.format.XSD.writeDateTimeTextNode = function(node, dateTime) {
   var date = new Date(dateTime * 1000);
   var string = date.getUTCFullYear() + '-' +
-      goog.string.padNumber(date.getUTCMonth() + 1, 2) + '-' +
-      goog.string.padNumber(date.getUTCDate(), 2) + 'T' +
-      goog.string.padNumber(date.getUTCHours(), 2) + ':' +
-      goog.string.padNumber(date.getUTCMinutes(), 2) + ':' +
-      goog.string.padNumber(date.getUTCSeconds(), 2) + 'Z';
+      ol.string.padNumber(date.getUTCMonth() + 1, 2) + '-' +
+      ol.string.padNumber(date.getUTCDate(), 2) + 'T' +
+      ol.string.padNumber(date.getUTCHours(), 2) + ':' +
+      ol.string.padNumber(date.getUTCMinutes(), 2) + ':' +
+      ol.string.padNumber(date.getUTCSeconds(), 2) + 'Z';
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };
 

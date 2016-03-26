@@ -3,7 +3,6 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
-goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
@@ -16,6 +15,7 @@ goog.require('ol.proj');
 goog.require('ol.source.Image');
 goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
+goog.require('ol.string');
 
 
 /**
@@ -372,5 +372,5 @@ ol.source.ImageWMS.prototype.updateParams = function(params) {
  */
 ol.source.ImageWMS.prototype.updateV13_ = function() {
   var version = this.params_['VERSION'] || ol.DEFAULT_WMS_VERSION;
-  this.v13_ = goog.string.compareVersions(version, '1.3') >= 0;
+  this.v13_ = ol.string.compareVersions(version, '1.3') >= 0;
 };
