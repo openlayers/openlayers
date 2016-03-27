@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
@@ -17,6 +16,7 @@ goog.require('ol.array');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
@@ -118,7 +118,7 @@ ol.interaction.Modify = function(options) {
    */
   this.deleteCondition_ = options.deleteCondition ?
       options.deleteCondition :
-      /** @type {ol.events.ConditionType} */ (goog.functions.and(
+      /** @type {ol.events.ConditionType} */ (ol.functions.and(
           ol.events.condition.noModifierKeys,
           ol.events.condition.singleClick));
 

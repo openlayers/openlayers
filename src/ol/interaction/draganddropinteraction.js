@@ -4,8 +4,8 @@ goog.provide('ol.interaction.DragAndDrop');
 goog.provide('ol.interaction.DragAndDropEvent');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.events');
+goog.require('ol.functions');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('ol.interaction.Interaction');
@@ -134,7 +134,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
  * @this {ol.interaction.DragAndDrop}
  * @api
  */
-ol.interaction.DragAndDrop.handleEvent = goog.functions.TRUE;
+ol.interaction.DragAndDrop.handleEvent = ol.functions.TRUE;
 
 
 /**
