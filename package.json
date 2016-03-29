@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "clean-css": "3.4.10",
-    "coveralls": "2.11.8",
+    "coveralls": "2.11.9",
     "debounce": "^1.0.0",
     "eslint": "2.4.0",
     "eslint-config-openlayers": "4.1.0",
