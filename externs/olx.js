@@ -6713,7 +6713,13 @@ olx.style.StrokeOptions.prototype.lineJoin;
 
 
 /**
- * Line dash pattern. Default is `undefined` (no dash).
+ * Line dash pattern. Default is `undefined` (no dash). Please note that
+ * Internet Explorer 10 and lower [do not support][mdn] the `setLineDash`
+ * method on the `CanvasRenderingContext2D` and therefore this option will
+ * have no visual effect in these browsers.
+ *
+ * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
+ *
  * @type {Array.<number>|undefined}
  * @api
  */
