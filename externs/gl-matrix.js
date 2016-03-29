@@ -51,3 +51,13 @@ var quat;
  * @typedef {Array}
  */
 var quat4;
+
+/**
+ * @typedef {*}
+ */
+var global;
+
+/**
+ * @typedef {*}
+ */
+var require;
