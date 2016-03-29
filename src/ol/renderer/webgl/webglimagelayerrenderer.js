@@ -8,6 +8,7 @@ goog.require('ol.Extent');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
+goog.require('ol.ext.glmatrix');
 goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.layer.Image');
@@ -166,7 +167,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layer
 
     // Translate and scale to flip the Y coord.
     var texCoordMatrix = this.texCoordMatrix;
-    goog.vec.Mat4.makeIdentity(texCoordMatrix);
+    ol.ext.glmatrix.mat4.identity(texCoordMatrix);
     goog.vec.Mat4.scale(texCoordMatrix, 1, -1, 1);
     goog.vec.Mat4.translate(texCoordMatrix, 0, -1, 0);
 
@@ -198,7 +199,7 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvas
   var canvasExtentHeight = canvasHeight * viewResolution;
 
   var projectionMatrix = this.projectionMatrix;
-  goog.vec.Mat4.makeIdentity(projectionMatrix);
+  ol.ext.glmatrix.mat4.identity(projectionMatrix);
   goog.vec.Mat4.scale(projectionMatrix,
       pixelRatio * 2 / canvasExtentWidth,
       pixelRatio * 2 / canvasExtentHeight, 1);
@@ -297,7 +298,7 @@ ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(ma
   // the first matrix takes a map pixel, flips the y-axis and scales to
   // a range between -1 ... 1
   var mapCoordMatrix = goog.vec.Mat4.createNumber();
-  goog.vec.Mat4.makeIdentity(mapCoordMatrix);
+  ol.ext.glmatrix.mat4.identity(mapCoordMatrix);
   goog.vec.Mat4.translate(mapCoordMatrix, -1, -1, 0);
   goog.vec.Mat4.scale(mapCoordMatrix, 2 / mapSize[0], 2 / mapSize[1], 1);
   goog.vec.Mat4.translate(mapCoordMatrix, 0, mapSize[1], 0);
@@ -310,7 +311,7 @@ ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(ma
 
   // the third matrix scales to the image dimensions and flips the y-axis again
   var imageCoordMatrix = goog.vec.Mat4.createNumber();
-  goog.vec.Mat4.makeIdentity(imageCoordMatrix);
+  ol.ext.glmatrix.mat4.identity(imageCoordMatrix);
   goog.vec.Mat4.translate(imageCoordMatrix, 0, imageSize[1], 0);
   goog.vec.Mat4.scale(imageCoordMatrix, 1, -1, 1);
   goog.vec.Mat4.scale(imageCoordMatrix, imageSize[0] / 2, imageSize[1] / 2, 1);

@@ -2,6 +2,7 @@ goog.provide('ol.vec.Mat4');
 goog.provide('ol.vec.Mat4.Number');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.ext.glmatrix');
 
 
 /**
@@ -24,7 +25,7 @@ ol.vec.Mat4.Number;
  */
 ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
     scaleX, scaleY, rotation, translateX2, translateY2) {
-  goog.vec.Mat4.makeIdentity(mat);
+  ol.ext.glmatrix.mat4.identity(mat);
   if (translateX1 !== 0 || translateY1 !== 0) {
     goog.vec.Mat4.translate(mat, translateX1, translateY1, 0);
   }

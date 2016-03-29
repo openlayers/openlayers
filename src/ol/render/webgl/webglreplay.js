@@ -3,6 +3,7 @@ goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
+goog.require('ol.ext.glmatrix');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
@@ -564,7 +565,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
 
   var offsetRotateMatrix = this.offsetRotateMatrix_;
-  goog.vec.Mat4.makeIdentity(offsetRotateMatrix);
+  ol.ext.glmatrix.mat4.identity(offsetRotateMatrix);
   if (rotation !== 0) {
     goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
   }

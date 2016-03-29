@@ -10,6 +10,7 @@ goog.require('goog.webgl');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.array');
+goog.require('ol.ext.glmatrix');
 goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.math');
@@ -354,7 +355,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   this.updateLogos(frameState, tileSource);
 
   var texCoordMatrix = this.texCoordMatrix;
-  goog.vec.Mat4.makeIdentity(texCoordMatrix);
+  ol.ext.glmatrix.mat4.identity(texCoordMatrix);
   goog.vec.Mat4.translate(texCoordMatrix,
       (center[0] - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
