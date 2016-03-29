@@ -27,7 +27,7 @@ ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
     scaleX, scaleY, rotation, translateX2, translateY2) {
   ol.ext.glmatrix.mat4.identity(mat);
   if (translateX1 !== 0 || translateY1 !== 0) {
-    goog.vec.Mat4.translate(mat, translateX1, translateY1, 0);
+    ol.ext.glmatrix.mat4.translate(mat, mat, [translateX1, translateY1, 0]);
   }
   if (scaleX != 1 || scaleY != 1) {
     goog.vec.Mat4.scale(mat, scaleX, scaleY, 1);
@@ -36,7 +36,7 @@ ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
     goog.vec.Mat4.rotateZ(mat, rotation);
   }
   if (translateX2 !== 0 || translateY2 !== 0) {
-    goog.vec.Mat4.translate(mat, translateX2, translateY2, 0);
+    ol.ext.glmatrix.mat4.translate(mat, mat, [translateX2, translateY2, 0]);
   }
   return mat;
 };

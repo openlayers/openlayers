@@ -356,12 +356,12 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 
   var texCoordMatrix = this.texCoordMatrix;
   ol.ext.glmatrix.mat4.identity(texCoordMatrix);
-  goog.vec.Mat4.translate(texCoordMatrix,
-      (center[0] - framebufferExtent[0]) /
+  ol.ext.glmatrix.mat4.translate(texCoordMatrix, texCoordMatrix,
+      [(center[0] - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
       (center[1] - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]),
-      0);
+      0]);
   if (viewState.rotation !== 0) {
     goog.vec.Mat4.rotateZ(texCoordMatrix, viewState.rotation);
   }
@@ -371,10 +371,10 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
       frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]),
       1);
-  goog.vec.Mat4.translate(texCoordMatrix,
+  ol.ext.glmatrix.mat4.translate(texCoordMatrix, texCoordMatrix,
+      [-0.5,
       -0.5,
-      -0.5,
-      0);
+      0]);
 
   return true;
 };
