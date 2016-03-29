@@ -54,7 +54,7 @@
     "clean-css": "3.4.10",
     "coveralls": "2.11.9",
     "debounce": "^1.0.0",
-    "eslint": "2.4.0",
+    "eslint": "2.5.3",
     "eslint-config-openlayers": "4.1.0",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",
@@ -74,6 +74,7 @@
     "extends": "openlayers",
     "globals": {
       "ArrayBuffer": false,
+      "Float32Array": false,
       "Uint16Array": false,
       "Uint32Array": false,
       "Uint8Array": false,
