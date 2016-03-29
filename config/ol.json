@@ -21,6 +21,7 @@
       "*"
     ],
     "jscomp_off": [
+      "unnecessaryCasts",
       "useOfGoogBase",
       "lintChecks",
       "analyzerChecks"
