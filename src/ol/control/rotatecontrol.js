@@ -161,8 +161,6 @@ ol.control.Rotate.render = function(mapEvent) {
       } else if (contains && rotation !== 0) {
         this.element.classList.remove(ol.css.CLASS_HIDDEN);
       }
-      //goog.dom.classlist.enable(
-      //    this.element, ol.css.CLASS_HIDDEN, rotation === 0);
     }
     this.label_.style.msTransform = transform;
     this.label_.style.webkitTransform = transform;
