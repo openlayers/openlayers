@@ -365,12 +365,12 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   if (viewState.rotation !== 0) {
     goog.vec.Mat4.rotateZ(texCoordMatrix, viewState.rotation);
   }
-  goog.vec.Mat4.scale(texCoordMatrix,
-      frameState.size[0] * viewState.resolution /
+  ol.ext.glmatrix.mat4.scale(texCoordMatrix, texCoordMatrix,
+      [frameState.size[0] * viewState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
       frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]),
-      1);
+      1]);
   ol.ext.glmatrix.mat4.translate(texCoordMatrix, texCoordMatrix,
       [-0.5,
       -0.5,
