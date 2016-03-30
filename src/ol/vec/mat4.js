@@ -89,3 +89,22 @@ ol.vec.Mat4.multVec2 = function(mat, vec, resultVec) {
   resultVec[1] = m10 * x + m11 * y + m13;
   return resultVec;
 };
+
+/**
+ * @return {!Array.<number>} newly created array.
+ */
+ol.vec.Mat4.create = function() {
+  var out = ol.ext.glmatrix.mat4.create();
+  out[0] = 0;
+  out[5] = 0;
+  out[10] = 0;
+  out[15] = 0;
+  return out;
+}
+
+/**
+ * @param {Array|Float32Array} type type of array
+ */
+ol.vec.Mat4.setType = function(type) {
+  ol.ext.glmatrix.glMatrix.setMatrixArrayType(type);
+}

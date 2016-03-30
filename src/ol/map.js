@@ -210,13 +210,13 @@ ol.Map = function(options) {
    * @private
    * @type {goog.vec.Mat4.Number}
    */
-  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
+  this.coordinateToPixelMatrix_ = ol.vec.Mat4.create();
 
   /**
    * @private
    * @type {goog.vec.Mat4.Number}
    */
-  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+  this.pixelToCoordinateMatrix_ = ol.vec.Mat4.create();
 
   /**
    * @private

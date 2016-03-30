@@ -43,7 +43,7 @@ ol.source.ImageVector = function(options) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.vec.Mat4.create();
 
   /**
    * @private

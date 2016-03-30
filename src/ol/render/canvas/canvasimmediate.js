@@ -229,7 +229,7 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+  this.tmpLocalTransform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.render.canvas.Immediate, ol.render.VectorContext);

@@ -13,6 +13,7 @@ goog.require('ol.renderer.webgl.map.shader.DefaultFragment');
 goog.require('ol.renderer.webgl.map.shader.DefaultVertex');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
+goog.require('ol.vec.Mat4');
 
 
 /**
@@ -64,7 +65,7 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
    * @protected
    * @type {!goog.vec.Mat4.Number}
    */
-  this.texCoordMatrix = goog.vec.Mat4.createNumber();
+  this.texCoordMatrix = ol.vec.Mat4.create();
 
   /**
    * @protected

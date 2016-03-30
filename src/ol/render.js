@@ -1,6 +1,5 @@
 goog.provide('ol.render');
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.vec.Mat4');
 
@@ -37,7 +36,7 @@ ol.render.toContext = function(context, opt_options) {
     canvas.style.height = size[1] + 'px';
   }
   var extent = [0, 0, canvas.width, canvas.height];
-  var transform = ol.vec.Mat4.makeTransform2D(goog.vec.Mat4.createNumber(),
+  var transform = ol.vec.Mat4.makeTransform2D(ol.vec.Mat4.create(),
       0, 0, pixelRatio, pixelRatio, 0, 0, 0);
   return new ol.render.canvas.Immediate(context, pixelRatio, extent, transform,
       0);

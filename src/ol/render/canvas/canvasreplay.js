@@ -119,7 +119,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @private
    * @type {goog.vec.Mat4.Number}
    */
-  this.renderedTransform_ = goog.vec.Mat4.createNumber();
+  this.renderedTransform_ = ol.vec.Mat4.create();
 
   /**
    * @protected
@@ -137,13 +137,13 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+  this.tmpLocalTransform_ = ol.vec.Mat4.create();
 
   /**
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.tmpLocalTransformInv_ = goog.vec.Mat4.createNumber();
+  this.tmpLocalTransformInv_ = ol.vec.Mat4.create();
 };
 goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
@@ -1885,7 +1885,7 @@ ol.render.canvas.ReplayGroup = function(
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
+  this.hitDetectionTransform_ = ol.vec.Mat4.create();
 
 };
 

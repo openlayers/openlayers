@@ -78,13 +78,13 @@ ol.renderer.dom.VectorLayer = function(vectorLayer) {
    * @private
    * @type {goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.vec.Mat4.create();
 
   /**
    * @private
    * @type {goog.vec.Mat4.Number}
    */
-  this.elementTransform_ = goog.vec.Mat4.createNumber();
+  this.elementTransform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);

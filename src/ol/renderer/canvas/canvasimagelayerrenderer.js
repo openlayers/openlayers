@@ -33,7 +33,7 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.imageTransform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = ol.vec.Mat4.create();
 
   /**
    * @private
@@ -97,7 +97,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   } else {
     // for all other image sources directly check the image
     if (!this.imageTransformInv_) {
-      this.imageTransformInv_ = goog.vec.Mat4.createNumber();
+      this.imageTransformInv_ = ol.vec.Mat4.create();
       goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
     }
 

@@ -204,7 +204,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   tileLayerZKeys.sort(ol.array.numberSafeCompareFunction);
 
   var i, ii, j, origin, resolution;
-  var transform = goog.vec.Mat4.createNumber();
+  var transform = ol.vec.Mat4.create();
   for (i = 0, ii = tileLayerZKeys.length; i < ii; ++i) {
     tileLayerZKey = tileLayerZKeys[i];
     tileLayerZ = this.tileLayerZs_[tileLayerZKey];

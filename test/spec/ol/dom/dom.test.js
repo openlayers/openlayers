@@ -147,8 +147,9 @@ describe('ol.dom', function() {
 
   describe('ol.dom.transformElement2D', function() {
     var element = null;
-    var transform = goog.vec.Mat4.createNumber();
-    var transformFloat = goog.vec.Mat4.createNumber();
+    ol.vec.Mat4.setType(Array);
+    var transform = ol.vec.Mat4.create();
+    var transformFloat = ol.vec.Mat4.create();
     transformFloat[0] = 0.12345;
     beforeEach(function() {
       element = document.createElement('div');
@@ -564,5 +565,5 @@ describe('ol.dom', function() {
 });
 
 goog.require('goog.userAgent');
-goog.require('goog.vec.Mat4');
+goog.require('ol.vec.Mat4');
 goog.require('ol.dom');

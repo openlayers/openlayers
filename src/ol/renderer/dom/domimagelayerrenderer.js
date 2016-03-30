@@ -119,7 +119,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
   if (image) {
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
-    var transform = goog.vec.Mat4.createNumber();
+    var transform = ol.vec.Mat4.create();
     ol.vec.Mat4.makeTransform2D(transform,
         frameState.size[0] / 2, frameState.size[1] / 2,
         imageResolution / viewResolution, imageResolution / viewResolution,

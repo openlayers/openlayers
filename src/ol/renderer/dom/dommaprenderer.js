@@ -54,7 +54,7 @@ ol.renderer.dom.Map = function(container, map) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.vec.Mat4.create();
 
   /**
    * @type {!Element}

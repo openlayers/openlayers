@@ -92,7 +92,7 @@ ol.renderer.canvas.Map = function(container, map) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);

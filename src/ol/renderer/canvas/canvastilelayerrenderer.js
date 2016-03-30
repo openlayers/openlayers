@@ -47,7 +47,7 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
    * @private
    * @type {!goog.vec.Mat4.Number}
    */
-  this.imageTransform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
