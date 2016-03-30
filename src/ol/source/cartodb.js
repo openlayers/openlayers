@@ -1,10 +1,6 @@
 goog.provide('ol.source.CartoDB');
 
-goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.net.EventType');
-goog.require('goog.net.XhrIo');
-goog.require('goog.net.XhrIo.ResponseType');
+goog.require('ol.source.State');
 goog.require('ol.source.XYZ');
 
 
@@ -82,15 +78,12 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
     mapUrl += '/named/' + this.mapId_;
   }
 
-  var xhrIo = new goog.net.XhrIo();
-  xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
-  xhrIo.setWithCredentials(false);
-  goog.events.listen(xhrIo, goog.net.EventType.COMPLETE,
-      this.handleInitResponse_.bind(this, paramHash));
-  xhrIo.send(mapUrl,
-      'POST',
-      JSON.stringify(this.config_),
-      {'Content-Type': 'application/json'});
+  var client = new XMLHttpRequest();
+  client.addEventListener('load', this.handleInitResponse_.bind(this, paramHash));
+  client.addEventListener('error', this.handleInitError_.bind(this));
+  client.open('POST', mapUrl);
+  client.setRequestHeader('Content-type', 'application/json');
+  client.send(JSON.stringify(this.config_));
 };
 
 
@@ -102,16 +95,29 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
  * @private
  */
 ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
-  var xhrIo = event.target;
-  goog.asserts.assertInstanceof(xhrIo, goog.net.XhrIo,
-      'event.target/xhrIo is an instance of goog.net.XhrIo');
-  var data = xhrIo.getResponseJson();
-  if (xhrIo.isSuccess()) {
-    this.applyTemplate_(data);
+  var client = /** @type {XMLHttpRequest} */ (event.target);
+  if (client.status >= 200 && client.status < 300) {
+    var response;
+    try {
+      response = /** @type {Object} */(JSON.parse(client.responseText));
+    } catch (err) {
+      this.setState(ol.source.State.ERROR);
+      return;
+    }
+    this.applyTemplate_(response);
+    this.templateCache_[paramHash] = response;
+  } else {
+    this.setState(ol.source.State.ERROR);
   }
-  this.templateCache_[paramHash] = data;
 };
 
+/**
+ * @private
+ * @param {Event} event Event.
+ */
+ol.source.CartoDB.prototype.handleInitError_ = function(event) {
+  this.setState(ol.source.State.ERROR);
+}
 
 /**
  * Apply the new tile urls returned by carto db
