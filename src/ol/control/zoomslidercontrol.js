@@ -59,10 +59,10 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragging_;
 
   /**
-   * @type {Array.<ol.events.Key>}
+   * @type {!Array.<ol.events.Key>}
    * @private
    */
-  this.dragListenerKeys_;
+  this.dragListenerKeys_ = [];
 
   /**
    * @type {number}
@@ -267,17 +267,17 @@ ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
     this.previousY_ = event.clientY;
     this.dragging_ = true;
 
-    if (!this.dragListenerKeys_) {
+    if (this.dragListenerKeys_.length === 0) {
       var drag = this.handleDraggerDrag_;
       var end = this.handleDraggerEnd_;
-      this.dragListenerKeys_ = [
+      this.dragListenerKeys_.push(
         ol.events.listen(document, ol.events.EventType.MOUSEMOVE, drag, this),
         ol.events.listen(document, ol.events.EventType.TOUCHMOVE, drag, this),
         ol.events.listen(document, ol.pointer.EventType.POINTERMOVE, drag, this),
         ol.events.listen(document, ol.events.EventType.MOUSEUP, end, this),
         ol.events.listen(document, ol.events.EventType.TOUCHEND, end, this),
         ol.events.listen(document, ol.pointer.EventType.POINTERUP, end, this)
-      ];
+      );
     }
   }
 };
@@ -327,7 +327,7 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
     this.previousX_ = undefined;
     this.previousY_ = undefined;
     this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
-    this.dragListenerKeys_ = null;
+    this.dragListenerKeys_.length = 0;
   }
 };
 
