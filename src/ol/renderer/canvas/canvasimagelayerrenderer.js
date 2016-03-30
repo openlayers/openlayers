@@ -98,7 +98,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
     // for all other image sources directly check the image
     if (!this.imageTransformInv_) {
       this.imageTransformInv_ = ol.vec.Mat4.create();
-      goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
+      ol.ext.glmatrix.mat4.invert(this.imageTransformInv_, this.imageTransform_);
     }
 
     var pixelOnCanvas =

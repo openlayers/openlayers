@@ -358,7 +358,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha;
           }
           if (scale != 1 || rotation !== 0) {
-            goog.vec.Mat4.invert(localTransform, localTransformInv);
+            ol.ext.glmatrix.mat4.invert(localTransformInv, localTransform);
             context.transform(
                 goog.vec.Mat4.getElement(localTransformInv, 0, 0),
                 goog.vec.Mat4.getElement(localTransformInv, 1, 0),
@@ -441,7 +441,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           if (scale != 1 || rotation !== 0) {
-            goog.vec.Mat4.invert(localTransform, localTransformInv);
+            ol.ext.glmatrix.mat4.invert(localTransformInv, localTransform);
             context.transform(
                 goog.vec.Mat4.getElement(localTransformInv, 0, 0),
                 goog.vec.Mat4.getElement(localTransformInv, 1, 0),

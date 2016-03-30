@@ -307,7 +307,7 @@ ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(ma
   // the second matrix is the inverse of the projection matrix used in the
   // shader for drawing
   var projectionMatrixInv = ol.vec.Mat4.create();
-  goog.vec.Mat4.invert(this.projectionMatrix, projectionMatrixInv);
+  ol.ext.glmatrix.mat4.invert(projectionMatrixInv, this.projectionMatrix);
 
   // the third matrix scales to the image dimensions and flips the y-axis again
   var imageCoordMatrix = ol.vec.Mat4.create();

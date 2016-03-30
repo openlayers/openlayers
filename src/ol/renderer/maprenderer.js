@@ -2,7 +2,6 @@ goog.provide('ol.RendererType');
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.events');
@@ -75,8 +74,8 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
       1 / viewState.resolution, -1 / viewState.resolution,
       -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
-  var inverted = goog.vec.Mat4.invert(
-      coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
+  var inverted = ol.ext.glmatrix.mat4.invert(
+      frameState.pixelToCoordinateMatrix, coordinateToPixelMatrix);
   goog.asserts.assert(inverted, 'matrix could be inverted');
 };
 
