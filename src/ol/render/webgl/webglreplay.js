@@ -567,7 +567,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   var offsetRotateMatrix = this.offsetRotateMatrix_;
   ol.ext.glmatrix.mat4.identity(offsetRotateMatrix);
   if (rotation !== 0) {
-    goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
+    ol.ext.glmatrix.mat4.rotateZ(offsetRotateMatrix, offsetRotateMatrix, -rotation);
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);

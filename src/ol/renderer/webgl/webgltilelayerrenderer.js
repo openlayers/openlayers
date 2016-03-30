@@ -4,7 +4,6 @@
 goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.TileRange');
@@ -363,7 +362,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
           (framebufferExtent[3] - framebufferExtent[1]),
       0]);
   if (viewState.rotation !== 0) {
-    goog.vec.Mat4.rotateZ(texCoordMatrix, viewState.rotation);
+    ol.ext.glmatrix.mat4.rotateZ(texCoordMatrix, texCoordMatrix, viewState.rotation);
   }
   ol.ext.glmatrix.mat4.scale(texCoordMatrix, texCoordMatrix,
       [frameState.size[0] * viewState.resolution /

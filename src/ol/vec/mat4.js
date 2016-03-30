@@ -33,7 +33,7 @@ ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
     ol.ext.glmatrix.mat4.scale(mat, mat, [scaleX, scaleY, 1]);
   }
   if (rotation !== 0) {
-    goog.vec.Mat4.rotateZ(mat, rotation);
+    ol.ext.glmatrix.mat4.rotateZ(mat, mat, rotation);
   }
   if (translateX2 !== 0 || translateY2 !== 0) {
     ol.ext.glmatrix.mat4.translate(mat, mat, [translateX2, translateY2, 0]);
