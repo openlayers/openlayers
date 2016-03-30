@@ -246,7 +246,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     pixelCoordinates = ol.geom.flat.transform.transform2D(
         this.coordinates, 0, this.coordinates.length, 2,
         transform, this.pixelCoordinates_);
-    goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
+    ol.ext.glmatrix.mat4.copy(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
