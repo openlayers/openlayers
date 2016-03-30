@@ -70,7 +70,7 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
    * @protected
    * @type {!goog.vec.Mat4.Number}
    */
-  this.projectionMatrix = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix = ol.ext.glmatrix.mat4.create();
 
   /**
    * @private

@@ -120,13 +120,13 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @type {!goog.vec.Mat4.Number}
    * @private
    */
-  this.offsetRotateMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.offsetRotateMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @type {!goog.vec.Mat4.Number}
    * @private
    */
-  this.offsetScaleMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.offsetScaleMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @type {number|undefined}
@@ -144,7 +144,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @type {!goog.vec.Mat4.Number}
    * @private
    */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @private

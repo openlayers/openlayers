@@ -27,7 +27,7 @@ describe('ol.renderer.canvas.Layer', function() {
         pixelToCoordinateMatrix: goog.vec.Mat4.createNumber()
       };
       renderer.getImageTransform = function() {
-        return goog.vec.Mat4.createNumberIdentity();
+        return ol.ext.glmatrix.mat4.create();
       }
       ol.renderer.Map.prototype.calculateMatrices2D(frameState);
       var layerState = layer.getLayerState();

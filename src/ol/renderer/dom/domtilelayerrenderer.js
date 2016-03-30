@@ -319,7 +319,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
    * @private
    * @type {goog.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumberIdentity();
+  this.transform_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @private
