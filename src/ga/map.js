@@ -289,7 +289,7 @@ ga.Map.prototype.recenterToResult_ = function(resultItem) {
   var originZoom = {
     'address': '10',
     'parcel': '10',
-    'sn25': '8'
+    'gazetteer': '8'
   };
   if (originZoom.hasOwnProperty(origin)) {
     var zoom = parseInt(originZoom[origin],10);
