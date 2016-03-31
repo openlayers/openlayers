@@ -1,8 +1,7 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 
 var async = require('async');
-var fse = require('fs-extra');
 var browserify = require('browserify');
 var derequire = require('derequire');
 
@@ -95,7 +94,7 @@ function buildModules(modules, callback) {
     var output = path.join(buildDir, mod.name) + '.js';
     async.waterfall([
       wrapModule.bind(null, mod),
-      fse.outputFile.bind(fse, output)
+      fs.outputFile.bind(fs, output)
     ], done);
   }, callback);
 }
