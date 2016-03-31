@@ -42,28 +42,6 @@ var log = function(msg) {
   process.stdout.write(msg + '\n');
 };
 
-
-/**
- * A utility method to recursively delete a non-empty folder.
- *
- * See http://www.geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/
- * adjusted to use path.join
- * @param {string} p Path to the directory.
- */
-var deleteFolderRecursive = function(p) {
-  if (fs.existsSync(p)) {
-    fs.readdirSync(p).forEach(function(file,index) {
-      var curPath = path.join(p, file);
-      if (fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(p);
-  }
-};
-
 /**
  * Creates folders for backup and instrumentation and copies the contents of the
  * current src folder into them.
@@ -94,9 +72,9 @@ var revertBackupAndInstrumentationDir = function() {
   log('• copy original src back to src folder');
   fse.copySync(backupDir, dir, copyOpts);
   log('• delete backup directory');
-  deleteFolderRecursive(backupDir);
+  fse.removeSync(backupDir);
   log('• delete instrumentation directory');
-  deleteFolderRecursive(instrumentedDir);
+  fse.removeSync(instrumentedDir);
 };
 
 
