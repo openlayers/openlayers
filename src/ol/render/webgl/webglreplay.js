@@ -562,7 +562,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
       -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
 
   var offsetScaleMatrix = this.offsetScaleMatrix_;
-  goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
+  ol.ext.glmatrix.mat4.fromScaling(offsetScaleMatrix, [2 / size[0], 2 / size[1], 1]);
 
   var offsetRotateMatrix = this.offsetRotateMatrix_;
   ol.ext.glmatrix.mat4.identity(offsetRotateMatrix);
