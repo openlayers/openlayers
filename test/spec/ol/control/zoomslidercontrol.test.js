@@ -32,8 +32,7 @@ describe('ol.control.ZoomSlider', function() {
       var zoomSliderContainer = zoomSliderContainers[0];
       expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
-      var hasUnselectableCls = goog.dom.classlist.contains(zoomSliderContainer,
-          'ol-unselectable');
+      var hasUnselectableCls = zoomSliderContainer.classList.contains('ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
 
       var zoomSliderThumbs = zoomSliderContainer.querySelectorAll('.ol-zoomslider-thumb');
@@ -42,8 +41,7 @@ describe('ol.control.ZoomSlider', function() {
       var zoomSliderThumb = zoomSliderThumbs[0];
       expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
 
-      hasUnselectableCls = goog.dom.classlist.contains(zoomSliderThumb,
-          'ol-unselectable');
+      hasUnselectableCls = zoomSliderThumb.classList.contains('ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
     });
 
@@ -173,7 +171,6 @@ describe('ol.control.ZoomSlider', function() {
 
 });
 
-goog.require('goog.dom.classlist');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.ZoomSlider');
