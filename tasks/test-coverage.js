@@ -7,8 +7,7 @@
  *      async.waterfall.
  */
 
-var fs = require('fs');
-var fse = require('fs-extra');
+var fs = require('fs-extra');
 var istanbul = require('istanbul');
 var path = require('path');
 var glob = require('glob');
@@ -58,9 +57,9 @@ var setupBackupAndInstrumentationDir = function() {
   }
 
   log('• copy src files to backup folder');
-  fse.copySync(dir, backupDir, copyOpts);
+  fs.copySync(dir, backupDir, copyOpts);
   log('• copy src files to instrumentation folder');
-  fse.copySync(dir, instrumentedDir, copyOpts);
+  fs.copySync(dir, instrumentedDir, copyOpts);
 };
 
 /**
@@ -70,11 +69,11 @@ var setupBackupAndInstrumentationDir = function() {
  */
 var revertBackupAndInstrumentationDir = function() {
   log('• copy original src back to src folder');
-  fse.copySync(backupDir, dir, copyOpts);
+  fs.copySync(backupDir, dir, copyOpts);
   log('• delete backup directory');
-  fse.removeSync(backupDir);
+  fs.removeSync(backupDir);
   log('• delete instrumentation directory');
-  fse.removeSync(instrumentedDir);
+  fs.removeSync(instrumentedDir);
 };
 
 
@@ -132,7 +131,7 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
   log('  • done. ' + cnt + ' files instrumented');
   log('• copy instrumented src back to src folder');
 
-  fse.copySync(instrumentedDir, dir, copyOpts);
+  fs.copySync(instrumentedDir, dir, copyOpts);
 
   log('• run test suite on instrumented code');
   runTestsuite({coverage: true, reporter: 'dot'}, collectAndWriteCoverageData);

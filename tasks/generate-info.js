@@ -1,9 +1,8 @@
-var fs = require('fs');
+var fs = require('fs-extra');
 var path = require('path');
 var spawn = require('child_process').spawn;
 
 var async = require('async');
-var fse = require('fs-extra');
 var walk = require('walk').walk;
 var isWindows = process.platform.indexOf('win') === 0;
 
@@ -253,7 +252,7 @@ function addSymbolProvides(info, callback) {
 function writeInfo(info, callback) {
   if (info) {
     var str = JSON.stringify(info, null, '  ');
-    fse.outputFile(infoPath, str, callback);
+    fs.outputFile(infoPath, str, callback);
   } else {
     process.nextTick(function() {
       callback(null);
