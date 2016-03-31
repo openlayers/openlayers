@@ -67,8 +67,7 @@
     "proj4": "2.3.14",
     "resemblejs": "2.2.0",
     "sinon": "1.17.3",
-    "slimerjs": "0.906.1",
-    "wrench": "1.5.8"
+    "slimerjs": "0.906.1"
   },
   "eslintConfig": {
     "extends": "openlayers",

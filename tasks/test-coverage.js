@@ -8,8 +8,8 @@
  */
 
 var fs = require('fs');
+var fse = require('fs-extra');
 var istanbul = require('istanbul');
-var wrench = require('wrench');
 var path = require('path');
 var glob = require('glob');
 
@@ -28,17 +28,10 @@ var collector = new istanbul.Collector();
 
 // General options used for the resource shuffling / directory copying
 var copyOpts = {
-  // Whether to overwrite existing directory or not
-  forceDelete: true,
-  // Whether to copy hidden Unix files or not (preceding .)
-  excludeHiddenUnix: false,
-  // If we're overwriting something and the file already exists, keep the
-  // existing
-  preserveFiles: false,
+  // Overwrite existing file or directory
+  clobber: true,
   // Preserve the mtime and atime when copying files
-  preserveTimestamps: true,
-  // Whether to follow symlinks or not when copying files
-  inflateSymlinks: false
+  preserveTimestamps: true
 };
 
 /**
@@ -87,9 +80,9 @@ var setupBackupAndInstrumentationDir = function() {
   }
 
   log('• copy src files to backup folder');
-  wrench.copyDirSyncRecursive(dir, backupDir, copyOpts);
+  fse.copySync(dir, backupDir, copyOpts);
   log('• copy src files to instrumentation folder');
-  wrench.copyDirSyncRecursive(dir, instrumentedDir, copyOpts);
+  fse.copySync(dir, instrumentedDir, copyOpts);
 };
 
 /**
@@ -99,7 +92,7 @@ var setupBackupAndInstrumentationDir = function() {
  */
 var revertBackupAndInstrumentationDir = function() {
   log('• copy original src back to src folder');
-  wrench.copyDirSyncRecursive(backupDir, dir, copyOpts);
+  fse.copySync(backupDir, dir, copyOpts);
   log('• delete backup directory');
   deleteFolderRecursive(backupDir);
   log('• delete instrumentation directory');
@@ -161,7 +154,7 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
   log('  • done. ' + cnt + ' files instrumented');
   log('• copy instrumented src back to src folder');
 
-  wrench.copyDirSyncRecursive(instrumentedDir, dir, copyOpts);
+  fse.copySync(instrumentedDir, dir, copyOpts);
 
   log('• run test suite on instrumented code');
   runTestsuite({coverage: true, reporter: 'dot'}, collectAndWriteCoverageData);
