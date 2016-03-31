@@ -153,11 +153,10 @@ goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {boolean} close Close.
  * @protected
  * @return {number} My end.
  */
-ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride, close) {
+ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride) {
 
   var myEnd = this.coordinates.length;
   var extent = this.getBufferedMaxExtent();
@@ -196,10 +195,6 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinat
     this.coordinates[myEnd++] = lastCoord[1];
   }
 
-  if (close) {
-    this.coordinates[myEnd++] = flatCoordinates[offset];
-    this.coordinates[myEnd++] = flatCoordinates[offset + 1];
-  }
   return myEnd;
 };
 
@@ -771,8 +766,7 @@ goog.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
  * @return {number} My end.
  */
 ol.render.canvas.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-  return this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false);
+  return this.appendFlatCoordinates(flatCoordinates, offset, end, stride);
 };
 
 
@@ -993,8 +987,7 @@ goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
  */
 ol.render.canvas.LineStringReplay.prototype.drawFlatCoordinates_ = function(flatCoordinates, offset, end, stride) {
   var myBegin = this.coordinates.length;
-  var myEnd = this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false);
+  var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride);
   var moveToLineToInstruction =
       [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
   this.instructions.push(moveToLineToInstruction);
@@ -1245,8 +1238,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     var myBegin = this.coordinates.length;
-    var myEnd = this.appendFlatCoordinates(
-        flatCoordinates, offset, end, stride, true);
+    var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride);
     var moveToLineToInstruction =
         [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
     var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
@@ -1300,7 +1292,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   var stride = circleGeometry.getStride();
   var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
-      flatCoordinates, 0, flatCoordinates.length, stride, false);
+      flatCoordinates, 0, flatCoordinates.length, stride);
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
   if (!state.pendingFill && !state.pendingStroke) {
@@ -1648,8 +1640,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offse
   this.setReplayTextState_(this.textState_);
   this.beginGeometry(geometry, feature);
   var myBegin = this.coordinates.length;
-  var myEnd =
-      this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false);
+  var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride);
   var fill = !!this.textFillState_;
   var stroke = !!this.textStrokeState_;
   var drawTextInstruction = [
