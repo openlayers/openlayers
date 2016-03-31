@@ -318,10 +318,10 @@ ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(ma
   ol.ext.glmatrix.mat4.translate(imageCoordMatrix, imageCoordMatrix, [1, 1, 0]);
 
   var transformMatrix = ol.vec.Mat4.create();
-  goog.vec.Mat4.multMat(
-      imageCoordMatrix, projectionMatrixInv, transformMatrix);
-  goog.vec.Mat4.multMat(
-      transformMatrix, mapCoordMatrix, transformMatrix);
+  ol.ext.glmatrix.mat4.multiply(
+      transformMatrix, imageCoordMatrix, projectionMatrixInv);
+  ol.ext.glmatrix.mat4.multiply(
+      transformMatrix, transformMatrix, mapCoordMatrix);
 
   return transformMatrix;
 };
