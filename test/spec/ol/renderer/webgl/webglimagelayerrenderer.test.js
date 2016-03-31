@@ -53,27 +53,27 @@ describe('ol.renderer.webgl.ImageLayer', function() {
       var output = goog.vec.Vec4.createNumber();
 
       input = goog.vec.Vec4.createFromValues(-1, -1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.ext.glmatrix.vec4.transformMat4(output, input, matrix);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(-6);
 
       input = goog.vec.Vec4.createFromValues(1, -1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.ext.glmatrix.vec4.transformMat4(output, input, matrix);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(-6);
 
       input = goog.vec.Vec4.createFromValues(-1, 1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.ext.glmatrix.vec4.transformMat4(output, input, matrix);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(6);
 
       input = goog.vec.Vec4.createFromValues(1, 1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.ext.glmatrix.vec4.transformMat4(output, input, matrix);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(6);
 
       input = goog.vec.Vec4.createFromValues(0, 0, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.ext.glmatrix.vec4.transformMat4(output, input, matrix);
       expect(output[0]).to.eql(-2);
       expect(output[1]).to.eql(0);
     });
