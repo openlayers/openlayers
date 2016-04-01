@@ -20,6 +20,13 @@ describe('ol.source.XYZ', function() {
       expect(tileSource.getTileGrid().getTileSize(0)).to.be(512);
     });
 
+    it('can be constructed with a custom min zoom', function() {
+      var tileSource = new ol.source.XYZ({
+        minZoom: 2
+      });
+      expect(tileSource.getTileGrid().getMinZoom()).to.be(2);
+    });
+
   });
 
   describe('tileUrlFunction', function() {
