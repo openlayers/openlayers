@@ -6219,7 +6219,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     wrapX: (boolean|undefined),
  *     config: (Object|undefined),
  *     map: (string|undefined),
- *     account: (string|undefined)}}
+ *     account: string}}
  * @api
  */
 olx.source.CartoDBOptions;
@@ -6267,6 +6267,14 @@ olx.source.CartoDBOptions.prototype.projection;
  * @api
  */
 olx.source.CartoDBOptions.prototype.maxZoom;
+
+
+/**
+ * Minimum zoom.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.minZoom;
 
 
 /**

@@ -111,6 +111,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   }
 };
 
+
 /**
  * @private
  * @param {Event} event Event.
@@ -118,6 +119,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
 ol.source.CartoDB.prototype.handleInitError_ = function(event) {
   this.setState(ol.source.State.ERROR);
 }
+
 
 /**
  * Apply the new tile urls returned by carto db
