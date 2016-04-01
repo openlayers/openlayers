@@ -6279,10 +6279,10 @@ olx.source.CartoDBOptions.prototype.wrapX;
 
 /**
  * If using anonymous maps, the CartoDB config to use. See
- * {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#anonymous-maps}
+ * {@link http://docs.cartodb.com/cartodb-platform/maps-api/anonymous-maps/}
  * for more detail.
  * If using named maps, a key-value lookup with the template parameters.
- * See {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#named-maps}
+ * See {@link http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/}
  * for more detail.
  * @type {Object|undefined}
  * @api
@@ -6292,7 +6292,7 @@ olx.source.CartoDBOptions.prototype.config;
 
 /**
  * If using named maps, this will be the name of the template to load.
- * See {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#named-maps}
+ * See {@link http://docs.cartodb.com/cartodb-platform/maps-api/named-maps/}
  * for more detail.
  * @type {string|undefined}
  * @api
