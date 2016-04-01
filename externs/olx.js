@@ -6209,6 +6209,104 @@ olx.source.XYZOptions.prototype.urls;
  */
 olx.source.XYZOptions.prototype.wrapX;
 
+/**
+ * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ *     crossOrigin: (null|string|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     projection: ol.proj.ProjectionLike,
+ *     maxZoom: (number|undefined),
+ *     minZoom: (number|undefined),
+ *     wrapX: (boolean|undefined),
+ *     config: (Object|undefined),
+ *     map: (string|undefined),
+ *     account: (string|undefined)}}
+ * @api
+ */
+olx.source.CartoDBOptions;
+
+
+/**
+ * Attributions.
+ * @type {Array.<ol.Attribution>|undefined}
+ * @api stable
+ */
+olx.source.CartoDBOptions.prototype.attributions;
+
+
+/**
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ * @type {null|string|undefined}
+ * @api stable
+ */
+olx.source.CartoDBOptions.prototype.crossOrigin;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api stable
+ */
+olx.source.CartoDBOptions.prototype.logo;
+
+
+/**
+ * Projection. Default is `EPSG:3857`.
+ * @type {ol.proj.ProjectionLike}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.projection;
+
+
+/**
+ * Optional max zoom level. Default is `18`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.maxZoom;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.wrapX;
+
+
+/**
+ * If using anonymous maps, the CartoDB config to use. See
+ * {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#anonymous-maps}
+ * for more detail.
+ * If using named maps, a key-value lookup with the template parameters.
+ * See {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#named-maps}
+ * for more detail.
+ * @type {Object|undefined}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.config;
+
+
+/**
+ * If using named maps, this will be the name of the template to load.
+ * See {@link http://docs.cartodb.com/cartodb-platform/maps-api.html#named-maps}
+ * for more detail.
+ * @type {string|undefined}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.map;
+
+
+/**
+ * CartoDB account name
+ * @type {string}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.account;
+
 
 /**
  * @typedef {{attributions: (olx.source.AttributionOption|undefined),
