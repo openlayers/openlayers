@@ -50,7 +50,7 @@
     "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css": "3.4.10",
+    "clean-css": "3.4.11",
     "coveralls": "2.11.9",
     "debounce": "^1.0.0",
     "eslint": "2.5.3",
