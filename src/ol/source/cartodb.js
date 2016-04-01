@@ -14,10 +14,31 @@ goog.require('ol.source.XYZ');
  * @api
  */
 ol.source.CartoDB = function(options) {
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.account_ = options.account;
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = options.map || '';
+
+  /**
+   * @type {Object}
+   * @private
+   */
   this.config_ = options.config || {};
+
+  /**
+   * @type {Object.<string, Object>}
+   * @private
+   */
   this.templateCache_ = {};
+
   delete options.map;
   goog.base(this, options);
   this.initializeMap_();
