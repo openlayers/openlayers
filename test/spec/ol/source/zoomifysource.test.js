@@ -209,21 +209,26 @@ describe('ol.source.Zoomify', function() {
       expect(img).to.be(img2);
     });
 
-    it('"tile.getImage" returns and caches a loaded canvas', function() {
+    it('"tile.getImage" returns and caches a loaded canvas', function(done) {
       // It'll only cache if the same context is passed, see below
       var context = ol.dom.createCanvasContext2D(256, 256);
       var source = getZoomifySource();
 
       var tile = source.getTile(0, 0, -1, 1, proj);
-      tile.state = ol.TileState.LOADED;
-      var img = tile.getImage(context);
 
-      var tile2 = source.getTile(0, 0, -1, 1, proj);
-      tile2.state = ol.TileState.LOADED;
-      var img2 = tile2.getImage(context);
+      ol.events.listen(tile, 'change', function() {
+        if (tile.getState() == ol.TileState.LOADED) {
+          var img = tile.getImage(context);
+          expect(img).to.be.a(HTMLCanvasElement);
 
-      expect(img).to.be.a(HTMLCanvasElement);
-      expect(img).to.be(img2);
+          var tile2 = source.getTile(0, 0, -1, 1, proj);
+          expect(tile2.getState()).to.be(ol.TileState.LOADED);
+          var img2 = tile2.getImage(context);
+          expect(img).to.be(img2);
+          done();
+        }
+      });
+      tile.load();
     });
 
     it('"tile.getImage" returns and caches an image only for same context', function() {
@@ -254,6 +259,7 @@ describe('ol.source.Zoomify', function() {
 
 
 goog.require('ol.dom');
+goog.require('ol.events');
 goog.require('ol.proj.Projection');
 goog.require('ol.source.Zoomify');
 goog.require('ol.TileState');
