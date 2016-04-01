@@ -39,8 +39,15 @@ ol.source.CartoDB = function(options) {
    */
   this.templateCache_ = {};
 
-  delete options.map;
-  goog.base(this, options);
+  goog.base(this, {
+    attributions: options.attributions,
+    crossOrigin: options.crossOrigin,
+    logo: options.logo,
+    maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
+    minZoom: options.minZoom,
+    projection: options.projection,
+    wrapX: options.wrapX
+  });
   this.initializeMap_();
 };
 goog.inherits(ol.source.CartoDB, ol.source.XYZ);
