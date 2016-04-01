@@ -34,7 +34,7 @@ ol.source.CartoDB = function(options) {
   this.config_ = options.config || {};
 
   /**
-   * @type {Object.<string, Object>}
+   * @type {!Object.<string, CartoDBLayerInfo>}
    * @private
    */
   this.templateCache_ = {};
@@ -128,7 +128,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   if (client.status >= 200 && client.status < 300) {
     var response;
     try {
-      response = /** @type {Object} */(JSON.parse(client.responseText));
+      response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));
     } catch (err) {
       this.setState(ol.source.State.ERROR);
       return;
@@ -152,12 +152,11 @@ ol.source.CartoDB.prototype.handleInitError_ = function(event) {
 
 /**
  * Apply the new tile urls returned by carto db
- * @param {Object} data Result of carto db call.
+ * @param {CartoDBLayerInfo} data Result of carto db call.
  * @private
  */
 ol.source.CartoDB.prototype.applyTemplate_ = function(data) {
-  var layerId = data['layergroupid'];
-  var tilesUrl = 'https://' + data['cdn_url']['https'] + '/' + this.account_ +
-      '/api/v1/map/' + layerId + '/{z}/{x}/{y}.png';
+  var tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
+      '/api/v1/map/' + data.layergroupid + '/{z}/{x}/{y}.png';
   this.setUrl(tilesUrl);
 };
