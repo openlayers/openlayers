@@ -6210,7 +6210,7 @@ olx.source.XYZOptions.prototype.urls;
 olx.source.XYZOptions.prototype.wrapX;
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ * @typedef {{attributions: (olx.source.AttributionOption|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -6227,7 +6227,7 @@ olx.source.CartoDBOptions;
 
 /**
  * Attributions.
- * @type {Array.<ol.Attribution>|undefined}
+ * @type {olx.source.AttributionOption|undefined}
  * @api stable
  */
 olx.source.CartoDBOptions.prototype.attributions;
