@@ -2,7 +2,7 @@ goog.provide('ol.events.ConditionType');
 goog.provide('ol.events.condition');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
+goog.require('ol.functions');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 
@@ -59,7 +59,7 @@ ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
  * @function
  * @api stable
  */
-ol.events.condition.always = goog.functions.TRUE;
+ol.events.condition.always = ol.functions.TRUE;
 
 
 /**
@@ -98,7 +98,7 @@ ol.events.condition.mouseActionButton = function(mapBrowserEvent) {
  * @function
  * @api stable
  */
-ol.events.condition.never = goog.functions.FALSE;
+ol.events.condition.never = ol.functions.FALSE;
 
 
 /**

@@ -3,12 +3,16 @@ goog.provide('ol.test.structs.PriorityQueue');
 
 describe('ol.structs.PriorityQueue', function() {
 
+  var identity = function(a) {
+    return a;
+  }
+
   describe('when empty', function() {
 
     var pq;
     beforeEach(function() {
       pq = new ol.structs.PriorityQueue(
-          goog.functions.identity, goog.functions.identity);
+          identity, identity);
     });
 
     it('is valid', function() {
@@ -65,7 +69,7 @@ describe('ol.structs.PriorityQueue', function() {
     beforeEach(function() {
       elements = [];
       pq = new ol.structs.PriorityQueue(
-          goog.functions.identity, goog.functions.identity);
+          identity, identity);
       var element, i;
       for (i = 0; i < 32; ++i) {
         element = Math.random();
@@ -92,7 +96,7 @@ describe('ol.structs.PriorityQueue', function() {
       target = 0.5;
       pq = new ol.structs.PriorityQueue(function(element) {
         return Math.abs(element - target);
-      }, goog.functions.identity);
+      }, identity);
       var i;
       for (i = 0; i < 32; ++i) {
         pq.enqueue(Math.random());
@@ -149,7 +153,7 @@ describe('ol.structs.PriorityQueue', function() {
     var pq;
     beforeEach(function() {
       pq = new ol.structs.PriorityQueue(
-          goog.functions.identity, goog.functions.identity);
+          identity, identity);
       pq.enqueue('a');
       pq.enqueue('b');
       pq.enqueue('c');
@@ -194,5 +198,4 @@ describe('ol.structs.PriorityQueue', function() {
 });
 
 
-goog.require('goog.functions');
 goog.require('ol.structs.PriorityQueue');

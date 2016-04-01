@@ -1,9 +1,9 @@
 goog.provide('ol.interaction.PinchRotate');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Coordinate');
+goog.require('ol.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
@@ -170,4 +170,4 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.PinchRotate.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.PinchRotate.prototype.shouldStopEvent = ol.functions.FALSE;

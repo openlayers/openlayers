@@ -3,7 +3,7 @@ goog.provide('ol.geom.GeometryLayout');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
+goog.require('ol.functions');
 goog.require('ol.Object');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -151,7 +151,7 @@ ol.geom.Geometry.prototype.computeExtent = goog.abstractMethod;
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
+ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
 
 
 /**

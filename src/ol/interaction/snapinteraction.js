@@ -16,6 +16,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.functions');
 goog.require('ol.object');
 goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEvent');
@@ -49,7 +50,7 @@ ol.interaction.Snap = function(opt_options) {
 
   goog.base(this, {
     handleEvent: ol.interaction.Snap.handleEvent_,
-    handleDownEvent: goog.functions.TRUE,
+    handleDownEvent: ol.functions.TRUE,
     handleUpEvent: ol.interaction.Snap.handleUpEvent_
   });
 
@@ -364,7 +365,7 @@ ol.interaction.Snap.prototype.setMap = function(map) {
 /**
  * @inheritDoc
  */
-ol.interaction.Snap.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.Snap.prototype.shouldStopEvent = ol.functions.FALSE;
 
 
 /**
