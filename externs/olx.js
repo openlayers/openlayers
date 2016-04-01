@@ -6211,6 +6211,7 @@ olx.source.XYZOptions.prototype.wrapX;
 
 /**
  * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -6231,6 +6232,14 @@ olx.source.CartoDBOptions;
  * @api stable
  */
 olx.source.CartoDBOptions.prototype.attributions;
+
+
+/**
+ * Cache size. Default is `2048`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.CartoDBOptions.prototype.cacheSize;
 
 
 /**

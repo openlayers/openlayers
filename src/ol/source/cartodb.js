@@ -41,6 +41,7 @@ ol.source.CartoDB = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
