@@ -1,6 +1,7 @@
 goog.provide('ol.geom.flat.transform');
 
 goog.require('goog.vec.Mat4');
+goog.require('ol.vec.Mat4');
 
 
 /**
@@ -13,12 +14,12 @@ goog.require('goog.vec.Mat4');
  * @return {Array.<number>} Transformed coordinates.
  */
 ol.geom.flat.transform.transform2D = function(flatCoordinates, offset, end, stride, transform, opt_dest) {
-  var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
-  var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
-  var m01 = goog.vec.Mat4.getElement(transform, 0, 1);
-  var m11 = goog.vec.Mat4.getElement(transform, 1, 1);
-  var m03 = goog.vec.Mat4.getElement(transform, 0, 3);
-  var m13 = goog.vec.Mat4.getElement(transform, 1, 3);
+  var m00 = ol.vec.Mat4.getElement(transform, 0, 0);
+  var m10 = ol.vec.Mat4.getElement(transform, 1, 0);
+  var m01 = ol.vec.Mat4.getElement(transform, 0, 1);
+  var m11 = ol.vec.Mat4.getElement(transform, 1, 1);
+  var m03 = ol.vec.Mat4.getElement(transform, 0, 3);
+  var m13 = ol.vec.Mat4.getElement(transform, 1, 3);
   var dest = opt_dest ? opt_dest : [];
   var i = 0;
   var j;

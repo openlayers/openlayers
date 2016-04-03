@@ -336,12 +336,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
                 localTransform, centerX, centerY, scale, scale,
                 rotation, -centerX, -centerY);
             context.transform(
-                goog.vec.Mat4.getElement(localTransform, 0, 0),
-                goog.vec.Mat4.getElement(localTransform, 1, 0),
-                goog.vec.Mat4.getElement(localTransform, 0, 1),
-                goog.vec.Mat4.getElement(localTransform, 1, 1),
-                goog.vec.Mat4.getElement(localTransform, 0, 3),
-                goog.vec.Mat4.getElement(localTransform, 1, 3));
+                ol.vec.Mat4.getElement(localTransform, 0, 0),
+                ol.vec.Mat4.getElement(localTransform, 1, 0),
+                ol.vec.Mat4.getElement(localTransform, 0, 1),
+                ol.vec.Mat4.getElement(localTransform, 1, 1),
+                ol.vec.Mat4.getElement(localTransform, 0, 3),
+                ol.vec.Mat4.getElement(localTransform, 1, 3));
           }
           var alpha = context.globalAlpha;
           if (opacity != 1) {
@@ -360,12 +360,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             ol.ext.glmatrix.mat4.invert(localTransformInv, localTransform);
             context.transform(
-                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
+                ol.vec.Mat4.getElement(localTransformInv, 0, 0),
+                ol.vec.Mat4.getElement(localTransformInv, 1, 0),
+                ol.vec.Mat4.getElement(localTransformInv, 0, 1),
+                ol.vec.Mat4.getElement(localTransformInv, 1, 1),
+                ol.vec.Mat4.getElement(localTransformInv, 0, 3),
+                ol.vec.Mat4.getElement(localTransformInv, 1, 3));
           }
         }
         ++i;
@@ -405,12 +405,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.vec.Mat4.makeTransform2D(
                 localTransform, x, y, scale, scale, rotation, -x, -y);
             context.transform(
-                goog.vec.Mat4.getElement(localTransform, 0, 0),
-                goog.vec.Mat4.getElement(localTransform, 1, 0),
-                goog.vec.Mat4.getElement(localTransform, 0, 1),
-                goog.vec.Mat4.getElement(localTransform, 1, 1),
-                goog.vec.Mat4.getElement(localTransform, 0, 3),
-                goog.vec.Mat4.getElement(localTransform, 1, 3));
+                ol.vec.Mat4.getElement(localTransform, 0, 0),
+                ol.vec.Mat4.getElement(localTransform, 1, 0),
+                ol.vec.Mat4.getElement(localTransform, 0, 1),
+                ol.vec.Mat4.getElement(localTransform, 1, 1),
+                ol.vec.Mat4.getElement(localTransform, 0, 3),
+                ol.vec.Mat4.getElement(localTransform, 1, 3));
           }
 
           // Support multiple lines separated by \n
@@ -443,12 +443,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             ol.ext.glmatrix.mat4.invert(localTransformInv, localTransform);
             context.transform(
-                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
+                ol.vec.Mat4.getElement(localTransformInv, 0, 0),
+                ol.vec.Mat4.getElement(localTransformInv, 1, 0),
+                ol.vec.Mat4.getElement(localTransformInv, 0, 1),
+                ol.vec.Mat4.getElement(localTransformInv, 1, 1),
+                ol.vec.Mat4.getElement(localTransformInv, 0, 3),
+                ol.vec.Mat4.getElement(localTransformInv, 1, 3));
           }
         }
         ++i;

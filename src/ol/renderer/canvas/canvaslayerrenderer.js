@@ -87,10 +87,10 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
 
     // for performance reasons, context.setTransform is only used
     // when the view is rotated. see http://jsperf.com/canvas-transform
-    var dx = goog.vec.Mat4.getElement(imageTransform, 0, 3);
-    var dy = goog.vec.Mat4.getElement(imageTransform, 1, 3);
-    var dw = image.width * goog.vec.Mat4.getElement(imageTransform, 0, 0);
-    var dh = image.height * goog.vec.Mat4.getElement(imageTransform, 1, 1);
+    var dx = ol.vec.Mat4.getElement(imageTransform, 0, 3);
+    var dy = ol.vec.Mat4.getElement(imageTransform, 1, 3);
+    var dw = image.width * ol.vec.Mat4.getElement(imageTransform, 0, 0);
+    var dh = image.height * ol.vec.Mat4.getElement(imageTransform, 1, 1);
     context.drawImage(image, 0, 0, +image.width, +image.height,
         Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
     context.globalAlpha = alpha;

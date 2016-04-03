@@ -50,18 +50,18 @@ ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
  */
 ol.vec.Mat4.equals2D = function(mat1, mat2) {
   return (
-      goog.vec.Mat4.getElement(mat1, 0, 0) ==
-      goog.vec.Mat4.getElement(mat2, 0, 0) &&
-      goog.vec.Mat4.getElement(mat1, 1, 0) ==
-      goog.vec.Mat4.getElement(mat2, 1, 0) &&
-      goog.vec.Mat4.getElement(mat1, 0, 1) ==
-      goog.vec.Mat4.getElement(mat2, 0, 1) &&
-      goog.vec.Mat4.getElement(mat1, 1, 1) ==
-      goog.vec.Mat4.getElement(mat2, 1, 1) &&
-      goog.vec.Mat4.getElement(mat1, 0, 3) ==
-      goog.vec.Mat4.getElement(mat2, 0, 3) &&
-      goog.vec.Mat4.getElement(mat1, 1, 3) ==
-      goog.vec.Mat4.getElement(mat2, 1, 3));
+      ol.vec.Mat4.getElement(mat1, 0, 0) ==
+      ol.vec.Mat4.getElement(mat2, 0, 0) &&
+      ol.vec.Mat4.getElement(mat1, 1, 0) ==
+      ol.vec.Mat4.getElement(mat2, 1, 0) &&
+      ol.vec.Mat4.getElement(mat1, 0, 1) ==
+      ol.vec.Mat4.getElement(mat2, 0, 1) &&
+      ol.vec.Mat4.getElement(mat1, 1, 1) ==
+      ol.vec.Mat4.getElement(mat2, 1, 1) &&
+      ol.vec.Mat4.getElement(mat1, 0, 3) ==
+      ol.vec.Mat4.getElement(mat2, 0, 3) &&
+      ol.vec.Mat4.getElement(mat1, 1, 3) ==
+      ol.vec.Mat4.getElement(mat2, 1, 3));
 };
 
 
@@ -78,12 +78,12 @@ ol.vec.Mat4.equals2D = function(mat1, mat2) {
  *     chained together.
  */
 ol.vec.Mat4.multVec2 = function(mat, vec, resultVec) {
-  var m00 = goog.vec.Mat4.getElement(mat, 0, 0);
-  var m10 = goog.vec.Mat4.getElement(mat, 1, 0);
-  var m01 = goog.vec.Mat4.getElement(mat, 0, 1);
-  var m11 = goog.vec.Mat4.getElement(mat, 1, 1);
-  var m03 = goog.vec.Mat4.getElement(mat, 0, 3);
-  var m13 = goog.vec.Mat4.getElement(mat, 1, 3);
+  var m00 = ol.vec.Mat4.getElement(mat, 0, 0);
+  var m10 = ol.vec.Mat4.getElement(mat, 1, 0);
+  var m01 = ol.vec.Mat4.getElement(mat, 0, 1);
+  var m11 = ol.vec.Mat4.getElement(mat, 1, 1);
+  var m03 = ol.vec.Mat4.getElement(mat, 0, 3);
+  var m13 = ol.vec.Mat4.getElement(mat, 1, 3);
   var x = vec[0], y = vec[1];
   resultVec[0] = m00 * x + m01 * y + m03;
   resultVec[1] = m10 * x + m11 * y + m13;
@@ -107,4 +107,8 @@ ol.vec.Mat4.create = function() {
  */
 ol.vec.Mat4.setType = function(type) {
   ol.ext.glmatrix.glMatrix.setMatrixArrayType(type);
+}
+
+ol.vec.Mat4.getElement = function(mat, row, column) {
+  return mat[row + column * 4];
 }
