@@ -5,8 +5,7 @@ goog.require('ol.ext.glmatrix');
 
 
 /**
- * A alias for the goog.vec.Number type.
- * @typedef {goog.vec.Number}
+ * @typedef {!Array<number>}
  */
 ol.vec.Mat4.Number;
 

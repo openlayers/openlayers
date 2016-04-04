@@ -4,7 +4,6 @@
 goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Vec4');
 goog.require('goog.webgl');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -294,7 +293,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
     /** @type {Array.<number>} */
     var zs = Object.keys(tilesToDrawByZ).map(Number);
     zs.sort(ol.array.numberSafeCompareFunction);
-    var u_tileOffset = goog.vec.Vec4.createFloat32();
+    var u_tileOffset = ol.ext.glmatrix.vec4.create();
     var i, ii, sx, sy, tileKey, tilesToDraw, tx, ty;
     for (i = 0, ii = zs.length; i < ii; ++i) {
       tilesToDraw = tilesToDrawByZ[zs[i]];
@@ -309,7 +308,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
             framebufferExtentDimension - 1;
         ty = 2 * (tileExtent[1] - framebufferExtent[1]) /
             framebufferExtentDimension - 1;
-        goog.vec.Vec4.setFromValues(u_tileOffset, sx, sy, tx, ty);
+        ol.ext.glmatrix.vec4.set(u_tileOffset, sx, sy, tx, ty);
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, tilePixelSize,
             tileGutter * pixelRatio, goog.webgl.LINEAR, goog.webgl.LINEAR);
