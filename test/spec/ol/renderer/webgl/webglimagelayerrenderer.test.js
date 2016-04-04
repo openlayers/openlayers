@@ -80,7 +80,6 @@ describe('ol.renderer.webgl.ImageLayer', function() {
   });
 });
 
-goog.require('goog.vec.Mat4');
 goog.require('goog.vec.Vec4');
 goog.require('ol.Map');
 goog.require('ol.proj.common');

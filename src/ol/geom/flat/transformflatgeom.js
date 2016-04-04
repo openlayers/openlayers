@@ -1,7 +1,7 @@
 goog.provide('ol.geom.flat.transform');
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -9,7 +9,7 @@ goog.require('ol.vec.Mat4');
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */

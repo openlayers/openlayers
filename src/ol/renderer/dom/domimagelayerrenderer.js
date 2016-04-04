@@ -2,7 +2,6 @@ goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -11,6 +10,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -33,7 +33,7 @@ ol.renderer.dom.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
   this.transform_ = ol.ext.glmatrix.mat4.create();
 
@@ -147,7 +147,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
 
 
 /**
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @private
  */
 ol.renderer.dom.ImageLayer.prototype.setTransform_ = function(transform) {

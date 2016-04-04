@@ -5,7 +5,6 @@
 goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.colorlike');
@@ -16,6 +15,7 @@ goog.require('ol.has');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -32,7 +32,7 @@ goog.require('ol.vec.Mat4');
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @struct
  */
@@ -59,7 +59,7 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
   this.transform_ = transform;
 
@@ -227,7 +227,7 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.tmpLocalTransform_ = ol.vec.Mat4.create();
 

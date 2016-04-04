@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.webgl.Layer');
 
-goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
@@ -14,6 +13,7 @@ goog.require('ol.renderer.webgl.map.shader.DefaultVertex');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -63,13 +63,13 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @protected
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.texCoordMatrix = ol.vec.Mat4.create();
 
   /**
    * @protected
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.projectionMatrix = ol.ext.glmatrix.mat4.create();
 
@@ -208,7 +208,7 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ = function(type, context
 
 
 /**
- * @return {!goog.vec.Mat4.Number} Matrix.
+ * @return {!ol.vec.Mat4.Number} Matrix.
  */
 ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = function() {
   return this.texCoordMatrix;
@@ -224,7 +224,7 @@ ol.renderer.webgl.Layer.prototype.getTexture = function() {
 
 
 /**
- * @return {!goog.vec.Mat4.Number} Matrix.
+ * @return {!ol.vec.Mat4.Number} Matrix.
  */
 ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
   return this.projectionMatrix;

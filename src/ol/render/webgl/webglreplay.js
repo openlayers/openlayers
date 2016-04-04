@@ -2,7 +2,6 @@ goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.ext.glmatrix');
 goog.require('ol.extent');
 goog.require('ol.object');
@@ -15,6 +14,7 @@ goog.require('ol.render.webgl.imagereplay.shader.DefaultVertex');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -117,13 +117,13 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.opacity_ = undefined;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    * @private
    */
   this.offsetRotateMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    * @private
    */
   this.offsetScaleMatrix_ = ol.ext.glmatrix.mat4.create();
@@ -141,7 +141,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.originY_ = undefined;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    * @private
    */
   this.projectionMatrix_ = ol.ext.glmatrix.mat4.create();

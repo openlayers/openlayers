@@ -6,7 +6,6 @@ goog.provide('ol.renderer.dom.TileLayer');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
@@ -21,6 +20,7 @@ goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -317,7 +317,7 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
   this.transform_ = ol.ext.glmatrix.mat4.create();
 
@@ -440,7 +440,7 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent
 
 
 /**
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {

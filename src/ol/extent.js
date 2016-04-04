@@ -4,11 +4,11 @@ goog.provide('ol.extent.Corner');
 goog.provide('ol.extent.Relationship');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.Coordinate');
 goog.require('ol.Size');
 goog.require('ol.TransformFunction');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -884,7 +884,7 @@ ol.extent.applyTransform = function(extent, transformFn, opt_extent) {
 /**
  * Apply a 2d transform to an extent.
  * @param {ol.Extent} extent Input extent.
- * @param {goog.vec.Mat4.Number} transform The transform matrix.
+ * @param {ol.vec.Mat4.Number} transform The transform matrix.
  * @param {ol.Extent=} opt_extent Optional extent for return values.
  * @return {ol.Extent} The transformed extent.
  */

@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.webgl.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
 goog.require('ol.Coordinate');
 goog.require('ol.Extent');
@@ -16,6 +15,7 @@ goog.require('ol.proj');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.source.ImageVector');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 goog.require('ol.webgl.Context');
 
 
@@ -44,7 +44,7 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
 
   /**
    * @private
-   * @type {?goog.vec.Mat4.Number}
+   * @type {?ol.vec.Mat4.Number}
    */
   this.hitTransformationMatrix_ = null;
 
@@ -291,7 +291,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fra
  * pixel on the map.
  * @param {ol.Size} mapSize The map size.
  * @param {ol.Size} imageSize The image size.
- * @return {goog.vec.Mat4.Number} The transformation matrix.
+ * @return {ol.vec.Mat4.Number} The transformation matrix.
  * @private
  */
 ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {

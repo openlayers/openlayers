@@ -1,7 +1,6 @@
 goog.provide('ol.vec.Mat4');
 goog.provide('ol.vec.Mat4.Number');
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.ext.glmatrix');
 
 
@@ -13,7 +12,7 @@ ol.vec.Mat4.Number;
 
 
 /**
- * @param {!goog.vec.Mat4.Number} mat Matrix.
+ * @param {!ol.vec.Mat4.Number} mat Matrix.
  * @param {number} translateX1 Translate X1.
  * @param {number} translateY1 Translate Y1.
  * @param {number} scaleX Scale X.
@@ -21,7 +20,7 @@ ol.vec.Mat4.Number;
  * @param {number} rotation Rotation.
  * @param {number} translateX2 Translate X2.
  * @param {number} translateY2 Translate Y2.
- * @return {!goog.vec.Mat4.Number} Matrix.
+ * @return {!ol.vec.Mat4.Number} Matrix.
  */
 ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
     scaleX, scaleY, rotation, translateX2, translateY2) {
@@ -44,8 +43,8 @@ ol.vec.Mat4.makeTransform2D = function(mat, translateX1, translateY1,
 
 /**
  * Returns true if mat1 and mat2 represent the same 2D transformation.
- * @param {goog.vec.Mat4.Number} mat1 Matrix 1.
- * @param {goog.vec.Mat4.Number} mat2 Matrix 2.
+ * @param {ol.vec.Mat4.Number} mat1 Matrix 1.
+ * @param {ol.vec.Mat4.Number} mat2 Matrix 2.
  * @return {boolean} Equal 2D.
  */
 ol.vec.Mat4.equals2D = function(mat1, mat2) {
@@ -70,7 +69,7 @@ ol.vec.Mat4.equals2D = function(mat1, mat2) {
  * transformed vector into resultVec. The input vector is multiplied against the
  * upper 2x4 matrix omitting the projective component.
  *
- * @param {goog.vec.Mat4.Number} mat The matrix supplying the transformation.
+ * @param {ol.vec.Mat4.Number} mat The matrix supplying the transformation.
  * @param {Array.<number>} vec The 3 element vector to transform.
  * @param {Array.<number>} resultVec The 3 element vector to receive the results
  *     (may be vec).

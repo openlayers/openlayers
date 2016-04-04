@@ -904,7 +904,6 @@ describe('ol.extent', function() {
 });
 
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.extent.Relationship');

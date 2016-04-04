@@ -9,7 +9,6 @@ goog.provide('ol.render.canvas.ReplayGroup');
 goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.color');
@@ -25,6 +24,7 @@ goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -117,7 +117,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
   this.renderedTransform_ = ol.vec.Mat4.create();
 
@@ -135,13 +135,13 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.tmpLocalTransform_ = ol.vec.Mat4.create();
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.tmpLocalTransformInv_ = ol.vec.Mat4.create();
 };
@@ -223,7 +223,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @private
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -565,7 +565,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -580,7 +580,7 @@ ol.render.canvas.Replay.prototype.replay = function(
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -1883,7 +1883,7 @@ ol.render.canvas.ReplayGroup = function(
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.hitDetectionTransform_ = ol.vec.Mat4.create();
 
@@ -1991,7 +1991,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -2044,7 +2044,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.

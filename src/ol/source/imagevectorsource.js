@@ -3,7 +3,6 @@ goog.provide('ol.source.ImageVector');
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.vec.Mat4');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -12,6 +11,7 @@ goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -41,7 +41,7 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.transform_ = ol.vec.Mat4.create();
 
@@ -212,7 +212,7 @@ ol.source.ImageVector.prototype.getStyleFunction = function() {
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Size} size Size.
- * @return {!goog.vec.Mat4.Number} Transform.
+ * @return {!ol.vec.Mat4.Number} Transform.
  * @private
  */
 ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {

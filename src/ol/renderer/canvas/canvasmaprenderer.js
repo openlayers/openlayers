@@ -5,7 +5,6 @@ goog.provide('ol.renderer.canvas.Map');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -29,6 +28,7 @@ goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -90,7 +90,7 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.transform_ = ol.vec.Mat4.create();
 
@@ -145,7 +145,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameSta
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @protected
- * @return {!goog.vec.Mat4.Number} Transform.
+ * @return {!ol.vec.Mat4.Number} Transform.
  */
 ol.renderer.canvas.Map.prototype.getTransform = function(frameState) {
   var pixelRatio = frameState.pixelRatio;

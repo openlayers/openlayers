@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
@@ -10,6 +9,7 @@ goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -23,7 +23,7 @@ ol.renderer.canvas.Layer = function(layer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.transform_ = ol.vec.Mat4.create();
 
@@ -109,7 +109,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {goog.vec.Mat4.Number=} opt_transform Transform.
+ * @param {ol.vec.Mat4.Number=} opt_transform Transform.
  * @private
  */
 ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
@@ -135,7 +135,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {goog.vec.Mat4.Number=} opt_transform Transform.
+ * @param {ol.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, frameState, opt_transform) {
@@ -147,7 +147,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, 
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {goog.vec.Mat4.Number=} opt_transform Transform.
+ * @param {ol.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, frameState, opt_transform) {
@@ -159,7 +159,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, f
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {goog.vec.Mat4.Number=} opt_transform Transform.
+ * @param {ol.vec.Mat4.Number=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
@@ -175,7 +175,7 @@ ol.renderer.canvas.Layer.prototype.getImage = goog.abstractMethod;
 
 
 /**
- * @return {!goog.vec.Mat4.Number} Image transform.
+ * @return {!ol.vec.Mat4.Number} Image transform.
  */
 ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
@@ -184,7 +184,7 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
- * @return {!goog.vec.Mat4.Number} Transform.
+ * @return {!ol.vec.Mat4.Number} Transform.
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) {
   var viewState = frameState.viewState;
@@ -210,7 +210,7 @@ ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
 
 /**
  * @param {ol.Pixel} pixelOnMap Pixel.
- * @param {goog.vec.Mat4.Number} imageTransformInv The transformation matrix
+ * @param {ol.vec.Mat4.Number} imageTransformInv The transformation matrix
  *        to convert from a map pixel to a canvas pixel.
  * @return {ol.Pixel} The pixel.
  * @protected

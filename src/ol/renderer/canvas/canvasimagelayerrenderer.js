@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.functions');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -12,6 +11,7 @@ goog.require('ol.proj');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.ImageVector');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -31,13 +31,13 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
   this.imageTransform_ = ol.vec.Mat4.create();
 
   /**
    * @private
-   * @type {?goog.vec.Mat4.Number}
+   * @type {?ol.vec.Mat4.Number}
    */
   this.imageTransformInv_ = null;
 
