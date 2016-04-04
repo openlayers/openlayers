@@ -32,11 +32,3 @@ geolocation.once('change:position', function() {
   view.setCenter(geolocation.getPosition());
   view.setResolution(2.388657133911758);
 });
-
-// Use FastClick to eliminate the 300ms delay between a physical tap
-// and the firing of a click event on mobile browsers.
-// See http://updates.html5rocks.com/2013/12/300ms-tap-delay-gone-away
-// for more information.
-document.addEventListener('DOMContentLoaded', function() {
-  FastClick.attach(document.body);
-});
