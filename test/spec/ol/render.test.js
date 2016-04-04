@@ -31,7 +31,6 @@ describe('ol.render', function() {
 });
 
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.render');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.vec.Mat4');
