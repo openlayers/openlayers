@@ -1,5 +1,6 @@
 goog.provide('ol.source.CartoDB');
 
+goog.require('ol.object');
 goog.require('ol.source.State');
 goog.require('ol.source.XYZ');
 
@@ -28,7 +29,7 @@ ol.source.CartoDB = function(options) {
   this.mapId_ = options.map || '';
 
   /**
-   * @type {Object}
+   * @type {!Object}
    * @private
    */
   this.config_ = options.config || {};
@@ -57,7 +58,7 @@ goog.inherits(ol.source.CartoDB, ol.source.XYZ);
 
 /**
  * Returns the current config.
- * @return {Object} The current configuration.
+ * @return {!Object} The current configuration.
  * @api
  */
 ol.source.CartoDB.prototype.getConfig = function() {
@@ -72,9 +73,7 @@ ol.source.CartoDB.prototype.getConfig = function() {
  * @api
  */
 ol.source.CartoDB.prototype.updateConfig = function(config) {
-  for (var key in config) {
-    this.config_[key] = config[key];
-  }
+  ol.object.assign(this.config_, config);
   this.initializeMap_();
 };
 
