@@ -247,7 +247,7 @@ ol.format.GML3.prototype.interiorParser_ = function(node, objectStack) {
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
-    goog.asserts.assert(goog.isArray(flatLinearRings),
+    goog.asserts.assert(Array.isArray(flatLinearRings),
         'flatLinearRings should be an array');
     goog.asserts.assert(flatLinearRings.length > 0,
         'flatLinearRings should have an array length of 1 or more');
@@ -272,7 +272,7 @@ ol.format.GML3.prototype.exteriorParser_ = function(node, objectStack) {
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
-    goog.asserts.assert(goog.isArray(flatLinearRings),
+    goog.asserts.assert(Array.isArray(flatLinearRings),
         'flatLinearRings should be an array');
     goog.asserts.assert(flatLinearRings.length > 0,
         'flatLinearRings should have an array length of 1 or more');
@@ -1006,7 +1006,7 @@ ol.format.GML3.prototype.writeGeometryElement = function(node, geometry, objectS
   var item = ol.object.assign({}, context);
   item.node = node;
   var value;
-  if (goog.isArray(geometry)) {
+  if (Array.isArray(geometry)) {
     if (context.dataProjection) {
       value = ol.proj.transformExtent(
           geometry, context.featureProjection, context.dataProjection);
@@ -1233,7 +1233,7 @@ ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, o
   goog.asserts.assert(ol.xml.isNode(parentNode),
       'parentNode should be a node');
   var nodeName;
-  if (!goog.isArray(value)) {
+  if (!Array.isArray(value)) {
     goog.asserts.assertInstanceof(value, ol.geom.Geometry,
         'value should be an ol.geom.Geometry');
     nodeName = value.getType();

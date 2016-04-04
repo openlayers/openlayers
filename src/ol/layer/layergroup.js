@@ -61,7 +61,7 @@ ol.layer.Group = function(opt_options) {
       this.handleLayersChanged_, this);
 
   if (layers) {
-    if (goog.isArray(layers)) {
+    if (Array.isArray(layers)) {
       layers = new ol.Collection(layers.slice());
     } else {
       goog.asserts.assertInstanceof(layers, ol.Collection,

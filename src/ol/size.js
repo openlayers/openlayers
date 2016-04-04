@@ -78,7 +78,7 @@ ol.size.scale = function(size, ratio, opt_size) {
  * @api stable
  */
 ol.size.toSize = function(size, opt_size) {
-  if (goog.isArray(size)) {
+  if (Array.isArray(size)) {
     return size;
   } else {
     goog.asserts.assert(goog.isNumber(size));

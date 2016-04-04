@@ -61,7 +61,7 @@ ol.color.rgbaColorRe_ =
  * @api
  */
 ol.color.asArray = function(color) {
-  if (goog.isArray(color)) {
+  if (Array.isArray(color)) {
     return color;
   } else {
     goog.asserts.assert(typeof color === 'string', 'Color should be a string');
@@ -80,7 +80,7 @@ ol.color.asString = function(color) {
   if (typeof color === 'string') {
     return color;
   } else {
-    goog.asserts.assert(goog.isArray(color), 'Color should be an array');
+    goog.asserts.assert(Array.isArray(color), 'Color should be an array');
     return ol.color.toString(color);
   }
 };

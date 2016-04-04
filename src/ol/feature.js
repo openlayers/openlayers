@@ -314,7 +314,7 @@ ol.Feature.createStyleFunction = function(obj) {
      * @type {Array.<ol.style.Style>}
      */
     var styles;
-    if (goog.isArray(obj)) {
+    if (Array.isArray(obj)) {
       styles = obj;
     } else {
       goog.asserts.assertInstanceof(obj, ol.style.Style,
