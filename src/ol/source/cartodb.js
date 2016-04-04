@@ -47,6 +47,7 @@ ol.source.CartoDB = function(options) {
     maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
     minZoom: options.minZoom,
     projection: options.projection,
+    state: ol.source.State.LOADING,
     wrapX: options.wrapX
   });
   this.initializeMap_();
@@ -100,8 +101,7 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
     this.applyTemplate_(this.templateCache_[paramHash]);
     return;
   }
-  var mapUrl = 'https://' + this.account_ +
-      '.cartodb.com/api/v1/map';
+  var mapUrl = 'https://' + this.account_ + '.cartodb.com/api/v1/map';
 
   if (this.mapId_) {
     mapUrl += '/named/' + this.mapId_;
@@ -135,6 +135,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
     }
     this.applyTemplate_(response);
     this.templateCache_[paramHash] = response;
+    this.setState(ol.source.State.READY);
   } else {
     this.setState(ol.source.State.ERROR);
   }
