@@ -8,7 +8,7 @@ describe('ol.source.CartoDB', function() {
   describe('constructor', function() {
     it('returns a CartoDB source', function() {
       var source = new ol.source.CartoDB({
-        map: 'example',
+        account: 'documentation',
         config: {}
       });
       expect(source).to.be.a(ol.source.XYZ);

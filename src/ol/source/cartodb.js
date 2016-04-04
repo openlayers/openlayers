@@ -14,12 +14,41 @@ goog.require('ol.source.XYZ');
  * @api
  */
 ol.source.CartoDB = function(options) {
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.account_ = options.account;
+
+  /**
+   * @type {string}
+   * @private
+   */
   this.mapId_ = options.map || '';
+
+  /**
+   * @type {Object}
+   * @private
+   */
   this.config_ = options.config || {};
+
+  /**
+   * @type {!Object.<string, CartoDBLayerInfo>}
+   * @private
+   */
   this.templateCache_ = {};
-  delete options.map;
-  goog.base(this, options);
+
+  goog.base(this, {
+    attributions: options.attributions,
+    cacheSize: options.cacheSize,
+    crossOrigin: options.crossOrigin,
+    logo: options.logo,
+    maxZoom: options.maxZoom !== undefined ? options.maxZoom : 18,
+    minZoom: options.minZoom,
+    projection: options.projection,
+    wrapX: options.wrapX
+  });
   this.initializeMap_();
 };
 goog.inherits(ol.source.CartoDB, ol.source.XYZ);
@@ -99,7 +128,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   if (client.status >= 200 && client.status < 300) {
     var response;
     try {
-      response = /** @type {Object} */(JSON.parse(client.responseText));
+      response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));
     } catch (err) {
       this.setState(ol.source.State.ERROR);
       return;
@@ -111,6 +140,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   }
 };
 
+
 /**
  * @private
  * @param {Event} event Event.
@@ -119,14 +149,14 @@ ol.source.CartoDB.prototype.handleInitError_ = function(event) {
   this.setState(ol.source.State.ERROR);
 }
 
+
 /**
  * Apply the new tile urls returned by carto db
- * @param {Object} data Result of carto db call.
+ * @param {CartoDBLayerInfo} data Result of carto db call.
  * @private
  */
 ol.source.CartoDB.prototype.applyTemplate_ = function(data) {
-  var layerId = data['layergroupid'];
-  var tilesUrl = 'https://' + data['cdn_url']['https'] + '/' + this.account_ +
-      '/api/v1/map/' + layerId + '/{z}/{x}/{y}.png';
+  var tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
+      '/api/v1/map/' + data.layergroupid + '/{z}/{x}/{y}.png';
   this.setUrl(tilesUrl);
 };

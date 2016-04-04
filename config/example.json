@@ -12,6 +12,7 @@
     ],
     "externs": [
       "externs/bingmaps.js",
+      "externs/cartodb.js",
       "externs/bootstrap.js",
       "externs/closure-compiler.js",
       "externs/esrijson.js",
