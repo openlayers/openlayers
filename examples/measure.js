@@ -117,7 +117,7 @@ var pointerMoveHandler = function(evt) {
   helpTooltipElement.innerHTML = helpMsg;
   helpTooltip.setPosition(evt.coordinate);
 
-  $(helpTooltipElement).removeClass('hidden');
+  helpTooltipElement.classList.remove('hidden');
 };
 
 
@@ -132,8 +132,8 @@ var map = new ol.Map({
 
 map.on('pointermove', pointerMoveHandler);
 
-$(map.getViewport()).on('mouseout', function() {
-  $(helpTooltipElement).addClass('hidden');
+map.getViewport().addEventListener('mouseout', function() {
+  helpTooltipElement.classList.add('hidden');
 });
 
 var typeSelect = document.getElementById('type');
