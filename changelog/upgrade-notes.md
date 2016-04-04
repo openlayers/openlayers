@@ -1,6 +1,10 @@
 ## Upgrade notes
 
-### <NEXT RELEASE>
+### v3.15.0
+
+#### Internet Explorer 9 support
+
+As of this release, OpenLayers requires a `classList` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features#Element_prototype_classList.
 
 #### Immediate rendering API
 
