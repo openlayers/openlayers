@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.closest');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.math');
 
 
@@ -31,7 +30,7 @@ ol.geom.flat.closest.point = function(flatCoordinates, offset1, offset2, stride,
       offset = offset2;
     } else if (t > 0) {
       for (i = 0; i < stride; ++i) {
-        closestPoint[i] = goog.math.lerp(flatCoordinates[offset1 + i],
+        closestPoint[i] = ol.math.lerp(flatCoordinates[offset1 + i],
             flatCoordinates[offset2 + i], t);
       }
       closestPoint.length = stride;

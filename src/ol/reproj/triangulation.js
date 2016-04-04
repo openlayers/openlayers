@@ -1,8 +1,8 @@
 goog.provide('ol.reproj.Triangulation');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.extent');
+goog.require('ol.math');
 goog.require('ol.proj');
 
 
@@ -262,10 +262,10 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
       if (wrapsX) {
         goog.asserts.assert(this.sourceWorldWidth_);
         var centerSrcEstimX =
-            (goog.math.modulo(aSrc[0], this.sourceWorldWidth_) +
-             goog.math.modulo(cSrc[0], this.sourceWorldWidth_)) / 2;
+            (ol.math.modulo(aSrc[0], this.sourceWorldWidth_) +
+             ol.math.modulo(cSrc[0], this.sourceWorldWidth_)) / 2;
         dx = centerSrcEstimX -
-            goog.math.modulo(centerSrc[0], this.sourceWorldWidth_);
+            ol.math.modulo(centerSrc[0], this.sourceWorldWidth_);
       } else {
         dx = (aSrc[0] + cSrc[0]) / 2 - centerSrc[0];
       }

@@ -1,12 +1,12 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.extent');
 goog.require('ol.object');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
@@ -105,7 +105,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = goog.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
+    var index = ol.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
     url = urls[index];
   }
 
