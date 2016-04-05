@@ -5,6 +5,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.ImageState');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
@@ -78,17 +79,16 @@ ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
       imageWidth = this.imageSize_[0];
       imageHeight = this.imageSize_[1];
     } else {
-      imageWidth = image.width;
-      imageHeight = image.height;
+      // TODO: remove the type cast when a closure-compiler > 20160315 is used.
+      // see: https://github.com/google/closure-compiler/pull/1664
+      imageWidth = /** @type {number} */ (image.width);
+      imageHeight = /** @type {number} */ (image.height);
     }
     var resolution = ol.extent.getHeight(imageExtent) / imageHeight;
     var targetWidth = Math.ceil(ol.extent.getWidth(imageExtent) / resolution);
     if (targetWidth != imageWidth) {
-      var canvas = /** @type {HTMLCanvasElement} */
-          (document.createElement('canvas'));
-      canvas.width = targetWidth;
-      canvas.height = /** @type {number} */ (imageHeight);
-      var context = canvas.getContext('2d');
+      var context = ol.dom.createCanvasContext2D(targetWidth, imageHeight);
+      var canvas = context.canvas;
       context.drawImage(image, 0, 0, imageWidth, imageHeight,
           0, 0, canvas.width, canvas.height);
       this.image_.setImage(canvas);
