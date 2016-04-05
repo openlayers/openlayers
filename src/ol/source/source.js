@@ -21,7 +21,7 @@ ol.source.State = {
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|undefined),
@@ -84,7 +84,7 @@ goog.inherits(ol.source.Source, ol.Object);
 /**
  * Turns various ways of defining an attribution to an array of `ol.Attributions`.
  *
- * @param {olx.source.AttributionOption|undefined}
+ * @param {ol.AttributionLike|undefined}
  *     attributionLike The attributions as string, array of strings,
  *     `ol.Attribution`, array of `ol.Attribution` or undefined.
  * @return {Array.<ol.Attribution>} The array of `ol.Attribution` or null if
@@ -191,7 +191,7 @@ ol.source.Source.prototype.refresh = function() {
 
 /**
  * Set the attributions of the source.
- * @param {olx.source.AttributionOption|undefined} attributions Attributions.
+ * @param {ol.AttributionLike|undefined} attributions Attributions.
  *     Can be passed as `string`, `Array<string>`, `{@link ol.Attribution}`,
  *     `Array<{@link ol.Attribution}>` or `undefined`.
  * @api

@@ -3947,13 +3947,6 @@ olx.source;
 
 
 /**
- * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
- * @api
- */
-olx.source.AttributionOption;
-
-
-/**
  * @typedef {{cacheSize: (number|undefined),
  *     culture: (string|undefined),
  *     key: string,
@@ -4039,7 +4032,7 @@ olx.source.BingMapsOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     distance: (number|undefined),
  *     extent: (ol.Extent|undefined),
  *     format: (ol.format.Feature|undefined),
@@ -4055,7 +4048,7 @@ olx.source.ClusterOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.ClusterOptions.prototype.attributions;
@@ -4177,7 +4170,7 @@ olx.source.TileUTFGridOptions.prototype.url;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            crossOrigin: (null|string|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
@@ -4202,7 +4195,7 @@ olx.source.TileImageOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.TileImageOptions.prototype.attributions;
@@ -4349,7 +4342,7 @@ olx.source.TileImageOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            format: (ol.format.Feature|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
@@ -4373,7 +4366,7 @@ olx.source.VectorTileOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.VectorTileOptions.prototype.attributions;
@@ -4701,7 +4694,7 @@ olx.source.TileDebugOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     maxZoom: (number|undefined),
@@ -4717,7 +4710,7 @@ olx.source.OSMOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.OSMOptions.prototype.attributions;
@@ -4801,7 +4794,7 @@ olx.source.OSMOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     canvasFunction: ol.CanvasFunctionType,
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
@@ -4815,7 +4808,7 @@ olx.source.ImageCanvasOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.ImageCanvasOptions.prototype.attributions;
@@ -4880,7 +4873,7 @@ olx.source.ImageCanvasOptions.prototype.state;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.proj.ProjectionLike,
  *     ratio: (number|undefined),
@@ -4894,7 +4887,7 @@ olx.source.ImageVectorOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.ImageVectorOptions.prototype.attributions;
@@ -5012,7 +5005,7 @@ olx.source.RasterOptions.prototype.operationType;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     crossOrigin: (null|string|undefined),
  *     hidpi: (boolean|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
@@ -5030,7 +5023,7 @@ olx.source.ImageWMSOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.ImageWMSOptions.prototype.attributions;
@@ -5210,7 +5203,7 @@ olx.source.StamenOptions.prototype.url;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     crossOrigin: (null|string|undefined),
  *     imageExtent: (ol.Extent),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
@@ -5225,7 +5218,7 @@ olx.source.ImageStaticOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.ImageStaticOptions.prototype.attributions;
@@ -5294,7 +5287,7 @@ olx.source.ImageStaticOptions.prototype.url;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     params: (Object.<string, *>|undefined),
@@ -5313,7 +5306,7 @@ olx.source.TileArcGISRestOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.attributions;
@@ -5430,7 +5423,7 @@ olx.source.TileArcGISRestOptions.prototype.urls;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     jsonp: (boolean|undefined),
@@ -5447,7 +5440,7 @@ olx.source.TileJSONOptions;
  * Optional attributions for the source.  If provided, these will be used
  * instead of any attribution data advertised by the server.  If not provided,
  * any attributions advertised by the server will be used.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.TileJSONOptions.prototype.attributions;
@@ -5521,7 +5514,7 @@ olx.source.TileJSONOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     params: Object.<string,*>,
  *     crossOrigin: (null|string|undefined),
@@ -5544,7 +5537,7 @@ olx.source.TileWMSOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.TileWMSOptions.prototype.attributions;
@@ -5700,7 +5693,7 @@ olx.source.TileWMSOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     features: (Array.<ol.Feature>|ol.Collection.<ol.Feature>|undefined),
  *     format: (ol.format.Feature|undefined),
  *     loader: (ol.FeatureLoader|undefined),
@@ -5716,7 +5709,7 @@ olx.source.VectorOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.VectorOptions.prototype.attributions;
@@ -5820,7 +5813,7 @@ olx.source.VectorOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (string|null|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -5850,7 +5843,7 @@ olx.source.WMTSOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api
  */
 olx.source.WMTSOptions.prototype.attributions;
@@ -6036,7 +6029,7 @@ olx.source.WMTSOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -6060,7 +6053,7 @@ olx.source.XYZOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.XYZOptions.prototype.attributions;
@@ -6210,7 +6203,7 @@ olx.source.XYZOptions.prototype.urls;
 olx.source.XYZOptions.prototype.wrapX;
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -6228,7 +6221,7 @@ olx.source.CartoDBOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.CartoDBOptions.prototype.attributions;
@@ -6326,7 +6319,7 @@ olx.source.CartoDBOptions.prototype.account;
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
@@ -6341,7 +6334,7 @@ olx.source.ZoomifyOptions;
 
 /**
  * Attributions.
- * @type {olx.source.AttributionOption|undefined}
+ * @type {ol.AttributionLike|undefined}
  * @api stable
  */
 olx.source.ZoomifyOptions.prototype.attributions;
