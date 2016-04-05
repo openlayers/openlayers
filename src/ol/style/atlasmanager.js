@@ -3,6 +3,7 @@ goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
 goog.require('ol');
+goog.require('ol.dom');
 
 /**
  * Provides information for an image inside an atlas manager.
@@ -286,19 +287,15 @@ ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
+   * @type {CanvasRenderingContext2D}
    */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (document.createElement('CANVAS'));
-  this.canvas_.width = size;
-  this.canvas_.height = size;
+  this.context_ = ol.dom.createCanvasContext2D(size, size);
 
   /**
    * @private
-   * @type {CanvasRenderingContext2D}
+   * @type {HTMLCanvasElement}
    */
-  this.context_ = /** @type {CanvasRenderingContext2D} */
-      (this.canvas_.getContext('2d'));
+  this.canvas_ = this.context_.canvas;
 };
 
 
