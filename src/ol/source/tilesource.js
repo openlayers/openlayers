@@ -17,7 +17,7 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
- * @typedef {{attributions: (olx.source.AttributionOption|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),

@@ -5,6 +5,13 @@ goog.require('ol.math');
 
 
 /**
+ * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
+ * @api
+ */
+ol.AttributionLike;
+
+
+/**
  * @classdesc
  * An attribution for a layer source.
  *
