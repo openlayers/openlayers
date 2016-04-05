@@ -52,14 +52,22 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       map.addLayer(layer);
     });
 
-    it('creates a new instance', function() {
-      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
-    });
-
     afterEach(function() {
       document.body.removeChild(target);
       map.dispose();
+    });
+
+    it('creates a new instance', function() {
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
+      expect(renderer.zDirection).to.be(0);
+    });
+
+    it('uses lower resolution for pure vector rendering', function() {
+      layer.renderMode_ = 'vector';
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
+      expect(renderer.zDirection).to.be(1);
     });
 
     it('gives precedence to feature styles over layer styles', function() {
@@ -134,7 +142,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         }
       };
       frameState.layerStates[goog.getUid(layer)] = {};
-      renderer.renderedTiles_ = [new TileClass([0, 0, -1])];
+      renderer.renderedTiles = [new TileClass([0, 0, -1])];
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);

@@ -5,6 +5,7 @@ goog.require('ol.VectorTile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.featureloader');
+goog.require('ol.size');
 goog.require('ol.source.UrlTile');
 
 
@@ -31,7 +32,7 @@ ol.source.VectorTile = function(options) {
     cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
     extent: options.extent,
     logo: options.logo,
-    opaque: options.opaque,
+    opaque: false,
     projection: options.projection,
     state: options.state,
     tileGrid: options.tileGrid,
@@ -85,6 +86,15 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
+  var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
+  return [tileSize[0] * pixelRatio, tileSize[1] * pixelRatio];
 };
 
 

@@ -12,8 +12,10 @@ goog.require('ol.proj.Projection');
  * @typedef {{
  *     dirty: boolean,
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
+ *     renderedTileRevision: number,
  *     renderedRevision: number,
- *     replayGroup: ol.render.IReplayGroup}}
+ *     replayGroup: ol.render.IReplayGroup,
+ *     skippedFeatures: Array.<string>}}
  */
 ol.TileReplayState;
 
@@ -70,7 +72,9 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
     dirty: false,
     renderedRenderOrder: null,
     renderedRevision: -1,
-    replayGroup: null
+    renderedTileRevision: -1,
+    replayGroup: null,
+    skippedFeatures: []
   };
 
   /**
@@ -100,8 +104,9 @@ ol.VectorTile.prototype.getContext = function() {
 /**
  * @inheritDoc
  */
-ol.VectorTile.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
+ol.VectorTile.prototype.getImage = function() {
+  return this.replayState_.renderedTileRevision == -1 ?
+      null : this.context_.canvas;
 };
 
 
