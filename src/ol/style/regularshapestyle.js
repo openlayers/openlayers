@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.colorlike');
+goog.require('ol.dom');
 goog.require('ol.has');
 goog.require('ol.render.canvas');
 goog.require('ol.style.AtlasManager');
@@ -354,18 +355,13 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
   if (atlasManager === undefined) {
     // no atlas manager is used, create a new canvas
-    this.canvas_ = /** @type {HTMLCanvasElement} */
-        (document.createElement('CANVAS'));
-
-    this.canvas_.height = size;
-    this.canvas_.width = size;
+    var context = ol.dom.createCanvasContext2D(size, size);
+    this.canvas_ = context.canvas;
 
     // canvas.width and height are rounded to the closest integer
     size = this.canvas_.width;
     imageSize = size;
 
-    var context = /** @type {CanvasRenderingContext2D} */
-        (this.canvas_.getContext('2d'));
     this.draw_(renderOptions, context, 0, 0);
 
     this.createHitDetectionCanvas_(renderOptions);
@@ -465,15 +461,9 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptio
 
   // if no fill style is set, create an extra hit-detection image with a
   // default fill style
-  this.hitDetectionCanvas_ = /** @type {HTMLCanvasElement} */
-      (document.createElement('CANVAS'));
-  var canvas = this.hitDetectionCanvas_;
+  var context = ol.dom.createCanvasContext2D(renderOptions.size, renderOptions.size);
+  this.hitDetectionCanvas_ = context.canvas;
 
-  canvas.height = renderOptions.size;
-  canvas.width = renderOptions.size;
-
-  var context = /** @type {CanvasRenderingContext2D} */
-      (canvas.getContext('2d'));
   this.drawHitDetectionCanvas_(renderOptions, context, 0, 0);
 };
 
