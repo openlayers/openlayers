@@ -27,7 +27,7 @@ ol.reproj.browserAntialiasesClip_ = (function(winNav, winChrome) {
     isOpera == false && // Not Opera
     isIEedge == false // Not Edge
   );
-})(window.navigator, window.chrome)
+})(this.navigator, this.chrome)
 
 
 /**
