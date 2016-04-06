@@ -883,93 +883,111 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
   var component, coordinates, dragSegment, geometry, i, index, left;
-  var newIndex, newSegment, right, segmentData, uid, deleted;
+  var newIndex, right, segmentData, uid, deleted;
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
-    geometry = segmentData.geometry;
-    coordinates = geometry.getCoordinates();
     uid = goog.getUid(segmentData.feature);
     if (segmentData.depth) {
       // separate feature components
       uid += '-' + segmentData.depth.join('-');
     }
-    left = right = index = undefined;
-    if (dragSegment[1] === 0) {
-      right = segmentData;
-      index = segmentData.index;
-    } else if (dragSegment[1] == 1) {
-      left = segmentData;
-      index = segmentData.index + 1;
-    }
     if (!(uid in segmentsByFeature)) {
-      segmentsByFeature[uid] = [left, right, index];
+      segmentsByFeature[uid] = {};
     }
-    newSegment = segmentsByFeature[uid];
+    if (dragSegment[1] === 0) {
+      segmentsByFeature[uid].right = segmentData;
+      segmentsByFeature[uid].index = segmentData.index;
+    } else if (dragSegment[1] == 1) {
+      segmentsByFeature[uid].left = segmentData;
+      segmentsByFeature[uid].index = segmentData.index + 1;
+    }
+
+  }
+  for (uid in segmentsByFeature) {
+    right = segmentsByFeature[uid].right;
+    left = segmentsByFeature[uid].left;
+    index = segmentsByFeature[uid].index;
+    newIndex = index - 1;
     if (left !== undefined) {
-      newSegment[0] = left;
+      segmentData = left;
+    } else {
+      segmentData = right;
     }
-    if (right !== undefined) {
-      newSegment[1] = right;
+    if (newIndex < 0) {
+      newIndex = 0;
     }
-    if (newSegment[0] !== undefined && newSegment[1] !== undefined) {
-      component = coordinates;
-      deleted = false;
-      newIndex = index - 1;
-      switch (geometry.getType()) {
-        case ol.geom.GeometryType.MULTI_LINE_STRING:
+    geometry = segmentData.geometry;
+    coordinates = geometry.getCoordinates();
+    component = coordinates;
+    deleted = false;
+    switch (geometry.getType()) {
+      case ol.geom.GeometryType.MULTI_LINE_STRING:
+        if (coordinates[segmentData.depth[0]].length > 2) {
           coordinates[segmentData.depth[0]].splice(index, 1);
           deleted = true;
-          break;
-        case ol.geom.GeometryType.LINE_STRING:
+        }
+        break;
+      case ol.geom.GeometryType.LINE_STRING:
+        if (coordinates.length > 2) {
           coordinates.splice(index, 1);
           deleted = true;
-          break;
-        case ol.geom.GeometryType.MULTI_POLYGON:
-          component = component[segmentData.depth[1]];
-          /* falls through */
-        case ol.geom.GeometryType.POLYGON:
-          component = component[segmentData.depth[0]];
-          if (component.length > 4) {
-            if (index == component.length - 1) {
-              index = 0;
-            }
-            component.splice(index, 1);
-            deleted = true;
-            if (index === 0) {
-              // close the ring again
-              component.pop();
-              component.push(component[0]);
-              newIndex = component.length - 1;
-            }
+        }
+        break;
+      case ol.geom.GeometryType.MULTI_POLYGON:
+        component = component[segmentData.depth[1]];
+        /* falls through */
+      case ol.geom.GeometryType.POLYGON:
+        component = component[segmentData.depth[0]];
+        if (component.length > 4) {
+          if (index == component.length - 1) {
+            index = 0;
           }
-          break;
-        default:
-          // pass
-      }
+          component.splice(index, 1);
+          deleted = true;
+          if (index === 0) {
+            // close the ring again
+            component.pop();
+            component.push(component[0]);
+            newIndex = component.length - 1;
+          }
+        }
+        break;
+      default:
+        // pass
+    }
 
-      if (deleted) {
-        this.rBush_.remove(newSegment[0]);
-        this.rBush_.remove(newSegment[1]);
-        this.setGeometryCoordinates_(geometry, coordinates);
+    if (deleted) {
+      this.setGeometryCoordinates_(geometry, coordinates);
+      var segments = [];
+      if (left !== undefined) {
+        this.rBush_.remove(left);
+        segments.push(left.segment[0]);
+      }
+      if (right !== undefined) {
+        this.rBush_.remove(right);
+        segments.push(right.segment[1]);
+      }
+      if (left !== undefined && right !== undefined) {
         goog.asserts.assert(newIndex >= 0, 'newIndex should be larger than 0');
+
         var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
           depth: segmentData.depth,
           feature: segmentData.feature,
           geometry: segmentData.geometry,
           index: newIndex,
-          segment: [newSegment[0].segment[0], newSegment[1].segment[1]]
+          segment: segments
         });
         this.rBush_.insert(ol.extent.boundingExtent(newSegmentData.segment),
             newSegmentData);
-        this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
-
-        if (this.vertexFeature_) {
-          this.overlay_.getSource().removeFeature(this.vertexFeature_);
-          this.vertexFeature_ = null;
-        }
+      }
+      this.updateSegmentIndices_(geometry, index, segmentData.depth, -1);
+      if (this.vertexFeature_) {
+        this.overlay_.getSource().removeFeature(this.vertexFeature_);
+        this.vertexFeature_ = null;
       }
     }
+
   }
   return true;
 };

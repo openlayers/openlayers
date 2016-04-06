@@ -180,6 +180,78 @@ describe('ol.interaction.Modify', function() {
       validateEvents(events, features);
     });
 
+    it('deletes first vertex of a LineString', function() {
+      var lineFeature = new ol.Feature({
+        geometry: new ol.geom.LineString(
+          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+        )
+      });
+      features.length = 0;
+      features.push(lineFeature);
+      features.push(lineFeature.clone());
+
+      var first = features[0];
+      var firstRevision = first.getGeometry().getRevision();
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var events = trackEvents(first, modify);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+
+      simulateEvent('pointerdown', 0, 0, false, 0);
+      simulateEvent('pointerup', 0, 0, false, 0);
+      simulateEvent('click', 0, 0, false, 0);
+      simulateEvent('singleclick', 0, 0, false, 0);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(first.getGeometry().getCoordinates()).to.have.length(4);
+      expect(first.getGeometry().getCoordinates()[0][0]).to.equal(10);
+      expect(first.getGeometry().getCoordinates()[0][1]).to.equal(20);
+
+      validateEvents(events, features);
+    });
+
+    it('deletes last vertex of a LineString', function() {
+      var lineFeature = new ol.Feature({
+        geometry: new ol.geom.LineString(
+          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+        )
+      });
+      features.length = 0;
+      features.push(lineFeature);
+      features.push(lineFeature.clone());
+
+      var first = features[0];
+      var firstRevision = first.getGeometry().getRevision();
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var events = trackEvents(first, modify);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+
+      simulateEvent('pointerdown', 40, 0, false, 0);
+      simulateEvent('pointerup', 40, 0, false, 0);
+      simulateEvent('click', 40, 0, false, 0);
+      simulateEvent('singleclick', 40, 0, false, 0);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(first.getGeometry().getCoordinates()).to.have.length(4);
+      expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
+      expect(first.getGeometry().getCoordinates()[3][1]).to.equal(40);
+
+      validateEvents(events, features);
+    });
+
   });
 
   describe('boundary modification', function() {
@@ -382,6 +454,7 @@ goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
 goog.require('ol.events.condition');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Modify');
