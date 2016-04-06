@@ -272,3 +272,12 @@ ol.inherits =
  * @return {undefined} Nothing.
  */
 ol.nullFunction = function() {};
+
+
+ol.global = (function() {
+  if (typeof global !== 'undefined') {
+    return global;
+  } else if (typeof window !== 'undefined') {
+    return window;
+  }
+})();

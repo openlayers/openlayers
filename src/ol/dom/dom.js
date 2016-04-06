@@ -36,7 +36,7 @@ ol.dom.canUseCssTransform = (function() {
     if (canUseCssTransform === undefined) {
       goog.asserts.assert(document.body,
           'document.body should not be null');
-      goog.asserts.assert(goog.global.getComputedStyle,
+      goog.asserts.assert(ol.global.getComputedStyle,
           'getComputedStyle is required (unsupported browser?)');
 
       var el = document.createElement('P'),
@@ -52,7 +52,7 @@ ol.dom.canUseCssTransform = (function() {
       for (var t in transforms) {
         if (t in el.style) {
           el.style[t] = 'translate(1px,1px)';
-          has2d = goog.global.getComputedStyle(el).getPropertyValue(
+          has2d = ol.global.getComputedStyle(el).getPropertyValue(
               transforms[t]);
         }
       }
@@ -77,7 +77,7 @@ ol.dom.canUseCssTransform3D = (function() {
     if (canUseCssTransform3D === undefined) {
       goog.asserts.assert(document.body,
           'document.body should not be null');
-      goog.asserts.assert(goog.global.getComputedStyle,
+      goog.asserts.assert(ol.global.getComputedStyle,
           'getComputedStyle is required (unsupported browser?)');
 
       var el = document.createElement('P'),
@@ -93,7 +93,7 @@ ol.dom.canUseCssTransform3D = (function() {
       for (var t in transforms) {
         if (t in el.style) {
           el.style[t] = 'translate3d(1px,1px,1px)';
-          has3d = goog.global.getComputedStyle(el).getPropertyValue(
+          has3d = ol.global.getComputedStyle(el).getPropertyValue(
               transforms[t]);
         }
       }
@@ -192,7 +192,7 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
  */
 ol.dom.outerWidth = function(element) {
   var width = element.offsetWidth;
-  var style = element.currentStyle || goog.global.getComputedStyle(element);
+  var style = element.currentStyle || ol.global.getComputedStyle(element);
   width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
 
   return width;
@@ -208,7 +208,7 @@ ol.dom.outerWidth = function(element) {
  */
 ol.dom.outerHeight = function(element) {
   var height = element.offsetHeight;
-  var style = element.currentStyle || goog.global.getComputedStyle(element);
+  var style = element.currentStyle || ol.global.getComputedStyle(element);
   height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 
   return height;

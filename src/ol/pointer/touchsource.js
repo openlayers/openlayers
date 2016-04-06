@@ -148,7 +148,7 @@ ol.pointer.TouchSource.prototype.removePrimaryPointer_ = function(inPointer) {
  * @private
  */
 ol.pointer.TouchSource.prototype.resetClickCount_ = function() {
-  this.resetId_ = goog.global.setTimeout(
+  this.resetId_ = ol.global.setTimeout(
       this.resetClickCountHandler_.bind(this),
       ol.pointer.TouchSource.CLICK_COUNT_TIMEOUT);
 };
@@ -168,7 +168,7 @@ ol.pointer.TouchSource.prototype.resetClickCountHandler_ = function() {
  */
 ol.pointer.TouchSource.prototype.cancelResetClickCount_ = function() {
   if (this.resetId_ !== undefined) {
-    goog.global.clearTimeout(this.resetId_);
+    ol.global.clearTimeout(this.resetId_);
   }
 };
 
@@ -440,7 +440,7 @@ ol.pointer.TouchSource.prototype.dedupSynthMouse_ = function(inEvent) {
     var lt = [t.clientX, t.clientY];
     lts.push(lt);
 
-    goog.global.setTimeout(function() {
+    ol.global.setTimeout(function() {
       // remove touch after timeout
       ol.array.remove(lts, lt);
     }, ol.pointer.TouchSource.DEDUP_TIMEOUT);
