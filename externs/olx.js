@@ -7441,9 +7441,3 @@ olx.style.AtlasManagerOptions.prototype.maxSize;
  * @api
  */
 olx.style.AtlasManagerOptions.prototype.space;
-
-
-/**
- * @type {Object}
- */
-var global;
