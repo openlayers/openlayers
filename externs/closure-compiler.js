@@ -15,9 +15,3 @@
  * @see http://www.w3.org/TR/pointerevents/#the-touch-action-css-property
  */
 CSSProperties.prototype.touchAction;
-
-
-/**
- * @type {Object}
- */
-var global;
