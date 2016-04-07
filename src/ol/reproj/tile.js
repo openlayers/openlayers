@@ -331,7 +331,7 @@ ol.reproj.Tile.prototype.load = function() {
     });
 
     if (leftToLoad === 0) {
-      goog.global.setTimeout(this.reproject_.bind(this), 0);
+      ol.global.setTimeout(this.reproject_.bind(this), 0);
     }
   }
 };

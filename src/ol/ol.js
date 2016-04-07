@@ -272,3 +272,6 @@ ol.inherits =
  * @return {undefined} Nothing.
  */
 ol.nullFunction = function() {};
+
+
+ol.global = Function('return this')();

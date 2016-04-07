@@ -13,25 +13,25 @@ goog.provide('ol.net');
  *     callback. Default is 'callback'.
  */
 ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
-  var script = goog.global.document.createElement('script');
+  var script = ol.global.document.createElement('script');
   var key = 'olc_' + goog.getUid(callback);
   function cleanup() {
-    delete goog.global[key];
+    delete ol.global[key];
     script.parentNode.removeChild(script);
   }
   script.async = true;
   script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
       (opt_callbackParam || 'callback') + '=' + key;
-  var timer = goog.global.setTimeout(function() {
+  var timer = ol.global.setTimeout(function() {
     cleanup();
     if (opt_errback) {
       opt_errback();
     }
   }, 10000);
-  goog.global[key] = function(data) {
-    goog.global.clearTimeout(timer);
+  ol.global[key] = function(data) {
+    ol.global.clearTimeout(timer);
     cleanup();
     callback(data);
   };
-  goog.global.document.getElementsByTagName('head')[0].appendChild(script);
+  ol.global.document.getElementsByTagName('head')[0].appendChild(script);
 };

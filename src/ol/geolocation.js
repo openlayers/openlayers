@@ -135,12 +135,12 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.GEOLOCATION) {
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
-      this.watchId_ = goog.global.navigator.geolocation.watchPosition(
+      this.watchId_ = ol.global.navigator.geolocation.watchPosition(
           this.positionChange_.bind(this),
           this.positionError_.bind(this),
           this.getTrackingOptions());
     } else if (!tracking && this.watchId_ !== undefined) {
-      goog.global.navigator.geolocation.clearWatch(this.watchId_);
+      ol.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }
   }

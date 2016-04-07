@@ -578,12 +578,12 @@ ol.Map.prototype.disposeInternal = function() {
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    goog.global.removeEventListener(ol.events.EventType.RESIZE,
+    ol.global.removeEventListener(ol.events.EventType.RESIZE,
         this.handleResize_, false);
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
-    goog.global.cancelAnimationFrame(this.animationDelayKey_);
+    ol.global.cancelAnimationFrame(this.animationDelayKey_);
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
@@ -1077,7 +1077,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   if (!targetElement) {
     goog.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      goog.global.removeEventListener(ol.events.EventType.RESIZE,
+      ol.global.removeEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
       this.handleResize_ = undefined;
     }
@@ -1095,7 +1095,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      goog.global.addEventListener(ol.events.EventType.RESIZE,
+      ol.global.addEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
     }
   }
@@ -1199,7 +1199,7 @@ ol.Map.prototype.isRendered = function() {
  */
 ol.Map.prototype.renderSync = function() {
   if (this.animationDelayKey_) {
-    goog.global.cancelAnimationFrame(this.animationDelayKey_);
+    ol.global.cancelAnimationFrame(this.animationDelayKey_);
   }
   this.animationDelay_();
 };
@@ -1211,7 +1211,7 @@ ol.Map.prototype.renderSync = function() {
  */
 ol.Map.prototype.render = function() {
   if (this.animationDelayKey_ === undefined) {
-    this.animationDelayKey_ = goog.global.requestAnimationFrame(
+    this.animationDelayKey_ = ol.global.requestAnimationFrame(
         this.animationDelay_);
   }
 };

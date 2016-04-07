@@ -62,7 +62,7 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('#handleDrop_', function() {
-    var origFileReader = goog.global.FileReader;
+    var origFileReader = ol.global.FileReader;
 
     beforeEach(function() {
       FileReader = function() {
@@ -76,7 +76,7 @@ describe('ol.interaction.DragAndDrop', function() {
     });
 
     afterEach(function() {
-      goog.global.FileReader = origFileReader;
+      ol.global.FileReader = origFileReader;
     });
 
     it('reads dropped files', function(done) {
