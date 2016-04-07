@@ -41,6 +41,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
           beginPathCount--;
         },
         save: function() {},
+        arc: function() {},
         moveTo: function() {},
         lineTo: function() {},
         closePath: function() {},
@@ -115,6 +116,18 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
       expect(beginPathCount).to.be(1);
+    });
+
+    it('interrupts batches for circles', function() {
+      ol.renderer.vector.renderFeature(replay, feature1, style1, 1);
+      ol.renderer.vector.renderFeature(replay, feature2, style1, 1);
+      ol.renderer.vector.renderFeature(replay,
+          new ol.Feature(new ol.geom.Circle([0, 0], 30)), style1, 1);
+      ol.renderer.vector.renderFeature(replay, feature3, style1, 1);
+      replay.replay(context, 1, transform, 0, {});
+      expect(fillCount).to.be(2);
+      expect(strokeCount).to.be(2);
+      expect(beginPathCount).to.be(2);
     });
   });
 
@@ -244,6 +257,7 @@ describe('ol.render.canvas.PolygonReplay', function() {
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.canvas.LineStringReplay');
 goog.require('ol.render.canvas.PolygonReplay');

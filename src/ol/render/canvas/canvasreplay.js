@@ -255,6 +255,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
+  var circle = false;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -301,6 +302,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
           context.beginPath();
         }
+        circle = true;
         d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
@@ -472,6 +474,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
+        circle = false;
         if (featureCallback !== undefined) {
           feature =
               /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
@@ -483,7 +486,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.FILL:
-        if (instructions == this.instructions) {
+        if (instructions == this.instructions && !circle) {
           pendingFill++;
         } else {
           context.fill();
@@ -577,7 +580,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
-        if (instructions == this.instructions) {
+        if (instructions == this.instructions && !circle) {
           pendingStroke++;
         } else {
           context.stroke();
