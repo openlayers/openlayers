@@ -290,6 +290,17 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.CIRCLE:
         goog.asserts.assert(goog.isNumber(instruction[1]),
             'second instruction should be a number');
+        if (pendingFill || pendingStroke) {
+          if (pendingFill) {
+            context.fill();
+            pendingFill = 0;
+          }
+          if (pendingStroke) {
+            context.stroke();
+            pendingStroke = 0;
+          }
+          context.beginPath();
+        }
         d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
@@ -1273,17 +1284,15 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
         closePathInstruction);
     offset = end;
   }
-  var fillInstruction = [ol.render.canvas.Instruction.FILL];
-  this.hitDetectionInstructions.push(fillInstruction);
+  this.hitDetectionInstructions.push([ol.render.canvas.Instruction.FILL]);
   if (state.fillStyle !== undefined) {
-    this.instructions.push(fillInstruction);
+    this.instructions.push([ol.render.canvas.Instruction.FILL, true]);
   }
   if (state.strokeStyle !== undefined) {
     goog.asserts.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
-    var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
-    this.instructions.push(strokeInstruction);
-    this.hitDetectionInstructions.push(strokeInstruction);
+    this.instructions.push([ol.render.canvas.Instruction.STROKE, true]);
+    this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   return offset;
 };
