@@ -24,7 +24,7 @@ goog.require('ol.source.Source');
  */
 ol.source.Image = function(options) {
 
-  goog.base(this, {
+  ol.source.Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
@@ -59,7 +59,7 @@ ol.source.Image = function(options) {
   this.reprojectedRevision_ = 0;
 
 };
-goog.inherits(ol.source.Image, ol.source.Source);
+ol.inherits(ol.source.Image, ol.source.Source);
 
 
 /**
@@ -192,7 +192,7 @@ ol.source.Image.defaultImageLoadFunction = function(image, src) {
  */
 ol.source.ImageEvent = function(type, image) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The image related to the event.
@@ -202,7 +202,7 @@ ol.source.ImageEvent = function(type, image) {
   this.image = image;
 
 };
-goog.inherits(ol.source.ImageEvent, ol.events.Event);
+ol.inherits(ol.source.ImageEvent, ol.events.Event);
 
 
 /**

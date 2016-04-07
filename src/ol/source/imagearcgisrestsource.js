@@ -31,7 +31,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
@@ -91,7 +91,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
   this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
 };
-goog.inherits(ol.source.ImageArcGISRest, ol.source.Image);
+ol.inherits(ol.source.ImageArcGISRest, ol.source.Image);
 
 
 /**

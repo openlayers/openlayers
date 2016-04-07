@@ -132,14 +132,14 @@ ol.source.Raster = function(options) {
     wantedTiles: {}
   };
 
-  goog.base(this, {});
+  ol.source.Image.call(this, {});
 
   if (options.operation !== undefined) {
     this.setOperation(options.operation, options.lib);
   }
 
 };
-goog.inherits(ol.source.Raster, ol.source.Image);
+ol.inherits(ol.source.Raster, ol.source.Image);
 
 
 /**
@@ -458,7 +458,7 @@ ol.source.Raster.createTileRenderer_ = function(source) {
  * @param {Object} data An object made available to operations.
  */
 ol.source.RasterEvent = function(type, frameState, data) {
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The raster extent.
@@ -483,7 +483,7 @@ ol.source.RasterEvent = function(type, frameState, data) {
   this.data = data;
 
 };
-goog.inherits(ol.source.RasterEvent, ol.events.Event);
+ol.inherits(ol.source.RasterEvent, ol.events.Event);
 
 
 /**

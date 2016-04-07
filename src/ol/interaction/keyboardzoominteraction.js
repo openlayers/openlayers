@@ -25,7 +25,7 @@ goog.require('ol.interaction.Interaction');
  */
 ol.interaction.KeyboardZoom = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.KeyboardZoom.handleEvent
   });
 
@@ -51,7 +51,7 @@ ol.interaction.KeyboardZoom = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 100;
 
 };
-goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
+ol.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
 
 
 /**

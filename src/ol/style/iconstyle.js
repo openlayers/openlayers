@@ -185,7 +185,7 @@ ol.style.Icon = function(opt_options) {
   var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
-  goog.base(this, {
+  ol.style.Image.call(this, {
     opacity: opacity,
     rotation: rotation,
     scale: scale,
@@ -194,7 +194,7 @@ ol.style.Icon = function(opt_options) {
   });
 
 };
-goog.inherits(ol.style.Icon, ol.style.Image);
+ol.inherits(ol.style.Icon, ol.style.Image);
 
 
 /**
@@ -380,7 +380,7 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
                                color) {
 
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * @private
@@ -446,7 +446,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
   }
 
 };
-goog.inherits(ol.style.IconImage_, ol.events.EventTarget);
+ol.inherits(ol.style.IconImage_, ol.events.EventTarget);
 
 
 /**

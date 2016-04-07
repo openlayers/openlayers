@@ -19,7 +19,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.canvas.Layer = function(layer) {
 
-  goog.base(this, layer);
+  ol.renderer.Layer.call(this, layer);
 
   /**
    * @private
@@ -28,7 +28,7 @@ ol.renderer.canvas.Layer = function(layer) {
   this.transform_ = goog.vec.Mat4.createNumber();
 
 };
-goog.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
+ol.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 
 
 /**

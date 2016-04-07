@@ -57,7 +57,7 @@ ol.render.canvas.Instruction = {
  * @struct
  */
 ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
-  goog.base(this);
+  ol.render.VectorContext.call(this);
 
   /**
    * @protected
@@ -145,7 +145,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    */
   this.tmpLocalTransformInv_ = goog.vec.Mat4.createNumber();
 };
-goog.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
+ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
 
 /**
@@ -678,7 +678,7 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
  * @struct
  */
 ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
-  goog.base(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -759,7 +759,7 @@ ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
   this.width_ = undefined;
 
 };
-goog.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
+ol.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
 
 
 /**
@@ -945,7 +945,7 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  */
 ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -980,7 +980,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
   };
 
 };
-goog.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
+ol.inherits(ol.render.canvas.LineStringReplay, ol.render.canvas.Replay);
 
 
 /**
@@ -1179,7 +1179,7 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
  */
 ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -1216,7 +1216,7 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
   };
 
 };
-goog.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
+ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
 
 
 /**
@@ -1534,7 +1534,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  */
 ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
 
-  goog.base(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
 
   /**
    * @private
@@ -1603,7 +1603,7 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
   this.textState_ = null;
 
 };
-goog.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
+ol.inherits(ol.render.canvas.TextReplay, ol.render.canvas.Replay);
 
 
 /**

@@ -13,7 +13,7 @@ goog.require('ol.tilecoord');
  */
 ol.TileCache = function(opt_highWaterMark) {
 
-  goog.base(this);
+  ol.structs.LRUCache.call(this);
 
   /**
    * @private
@@ -22,7 +22,7 @@ ol.TileCache = function(opt_highWaterMark) {
   this.highWaterMark_ = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
 
 };
-goog.inherits(ol.TileCache, ol.structs.LRUCache);
+ol.inherits(ol.TileCache, ol.structs.LRUCache);
 
 
 /**

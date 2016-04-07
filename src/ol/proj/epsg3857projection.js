@@ -17,7 +17,7 @@ goog.require('ol.proj.Units');
  * @private
  */
 ol.proj.EPSG3857_ = function(code) {
-  goog.base(this, {
+  ol.proj.Projection.call(this, {
     code: code,
     units: ol.proj.Units.METERS,
     extent: ol.proj.EPSG3857.EXTENT,
@@ -25,7 +25,7 @@ ol.proj.EPSG3857_ = function(code) {
     worldExtent: ol.proj.EPSG3857.WORLD_EXTENT
   });
 };
-goog.inherits(ol.proj.EPSG3857_, ol.proj.Projection);
+ol.inherits(ol.proj.EPSG3857_, ol.proj.Projection);
 
 
 /**

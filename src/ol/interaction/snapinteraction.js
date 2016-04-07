@@ -47,7 +47,7 @@ goog.require('ol.structs.RBush');
  */
 ol.interaction.Snap = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleEvent: ol.interaction.Snap.handleEvent_,
     handleDownEvent: ol.functions.TRUE,
     handleUpEvent: ol.interaction.Snap.handleUpEvent_
@@ -159,7 +159,7 @@ ol.interaction.Snap = function(opt_options) {
     'GeometryCollection': this.writeGeometryCollectionGeometry_
   };
 };
-goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
+ol.inherits(ol.interaction.Snap, ol.interaction.Pointer);
 
 
 /**
@@ -344,8 +344,7 @@ ol.interaction.Snap.prototype.setMap = function(map) {
     keys.length = 0;
     features.forEach(this.forEachFeatureRemove_, this);
   }
-
-  goog.base(this, 'setMap', map);
+  ol.interaction.Pointer.prototype.setMap.call(this, map);
 
   if (map) {
     if (this.features_) {

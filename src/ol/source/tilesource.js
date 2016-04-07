@@ -27,7 +27,7 @@ goog.require('ol.tilegrid.TileGrid');
  */
 ol.source.Tile = function(options) {
 
-  goog.base(this, {
+  ol.source.Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
@@ -74,7 +74,7 @@ ol.source.Tile = function(options) {
   this.key_ = '';
 
 };
-goog.inherits(ol.source.Tile, ol.source.Source);
+ol.inherits(ol.source.Tile, ol.source.Source);
 
 
 /**
@@ -322,7 +322,7 @@ ol.source.Tile.prototype.useTile = ol.nullFunction;
  */
 ol.source.TileEvent = function(type, tile) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The tile related to the event.
@@ -332,7 +332,7 @@ ol.source.TileEvent = function(type, tile) {
   this.tile = tile;
 
 };
-goog.inherits(ol.source.TileEvent, ol.events.Event);
+ol.inherits(ol.source.TileEvent, ol.events.Event);
 
 
 /**

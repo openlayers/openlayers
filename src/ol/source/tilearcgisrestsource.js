@@ -30,7 +30,7 @@ ol.source.TileArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -57,7 +57,7 @@ ol.source.TileArcGISRest = function(opt_options) {
   this.tmpExtent_ = ol.extent.createEmpty();
 
 };
-goog.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
+ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
 
 
 /**

@@ -155,7 +155,7 @@ ol.MapProperty = {
  */
 ol.Map = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   var optionsInternal = ol.Map.createOptionsInternal(options);
 
@@ -473,7 +473,7 @@ ol.Map = function(options) {
       }, this);
 
 };
-goog.inherits(ol.Map, ol.Object);
+ol.inherits(ol.Map, ol.Object);
 
 
 /**
@@ -583,7 +583,7 @@ ol.Map.prototype.disposeInternal = function() {
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
-  goog.base(this, 'disposeInternal');
+  ol.Object.prototype.disposeInternal.call(this);
 };
 
 

@@ -31,7 +31,7 @@ ol.source.ImageWMS = function(opt_options) {
 
   var options = opt_options || {};
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
@@ -109,7 +109,7 @@ ol.source.ImageWMS = function(opt_options) {
   this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
 };
-goog.inherits(ol.source.ImageWMS, ol.source.Image);
+ol.inherits(ol.source.ImageWMS, ol.source.Image);
 
 
 /**

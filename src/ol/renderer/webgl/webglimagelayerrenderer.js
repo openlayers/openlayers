@@ -24,7 +24,7 @@ goog.require('ol.webgl.Context');
  */
 ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
 
-  goog.base(this, mapRenderer, imageLayer);
+  ol.renderer.webgl.Layer.call(this, mapRenderer, imageLayer);
 
   /**
    * The last rendered image.
@@ -46,7 +46,7 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
   this.hitTransformationMatrix_ = null;
 
 };
-goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
+ol.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
 
 
 /**

@@ -33,7 +33,7 @@ goog.require('ol.math');
  */
 ol.geom.Polygon = function(coordinates, opt_layout) {
 
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
 
   /**
    * @type {Array.<number>}
@@ -80,7 +80,7 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 
 
 /**

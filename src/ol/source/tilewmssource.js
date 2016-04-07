@@ -36,7 +36,7 @@ ol.source.TileWMS = function(opt_options) {
 
   var transparent = 'TRANSPARENT' in params ? params['TRANSPARENT'] : true;
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -99,7 +99,7 @@ ol.source.TileWMS = function(opt_options) {
   this.setKey(this.getKeyForParams_());
 
 };
-goog.inherits(ol.source.TileWMS, ol.source.TileImage);
+ol.inherits(ol.source.TileWMS, ol.source.TileImage);
 
 
 /**
@@ -180,7 +180,7 @@ ol.source.TileWMS.prototype.getGutterInternal = function() {
  * @inheritDoc
  */
 ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
-  return this.coordKeyPrefix_ + goog.base(this, 'getKeyZXY', z, x, y);
+  return this.coordKeyPrefix_ + ol.source.TileImage.prototype.getKeyZXY.call(this, z, x, y);
 };
 
 

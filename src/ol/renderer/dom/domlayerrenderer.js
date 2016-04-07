@@ -13,7 +13,7 @@ goog.require('ol.renderer.Layer');
  */
 ol.renderer.dom.Layer = function(layer, target) {
 
-  goog.base(this, layer);
+  ol.renderer.Layer.call(this, layer);
 
   /**
    * @type {!Element}
@@ -22,7 +22,7 @@ ol.renderer.dom.Layer = function(layer, target) {
   this.target = target;
 
 };
-goog.inherits(ol.renderer.dom.Layer, ol.renderer.Layer);
+ol.inherits(ol.renderer.dom.Layer, ol.renderer.Layer);
 
 
 /**

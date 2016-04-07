@@ -21,7 +21,7 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.DragPan = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.DragPan.handleDownEvent_,
     handleDragEvent: ol.interaction.DragPan.handleDragEvent_,
     handleUpEvent: ol.interaction.DragPan.handleUpEvent_
@@ -60,7 +60,7 @@ ol.interaction.DragPan = function(opt_options) {
   this.noKinetic_ = false;
 
 };
-goog.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
+ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
 
 
 /**

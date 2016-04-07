@@ -58,7 +58,7 @@ ol.DragBoxEventType = {
  * @implements {oli.DragBoxEvent}
  */
 ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The coordinate of the drag event.
@@ -76,7 +76,7 @@ ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-goog.inherits(ol.DragBoxEvent, ol.events.Event);
+ol.inherits(ol.DragBoxEvent, ol.events.Event);
 
 
 /**
@@ -98,7 +98,7 @@ goog.inherits(ol.DragBoxEvent, ol.events.Event);
  */
 ol.interaction.DragBox = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.DragBox.handleDownEvent_,
     handleDragEvent: ol.interaction.DragBox.handleDragEvent_,
     handleUpEvent: ol.interaction.DragBox.handleUpEvent_
@@ -132,7 +132,7 @@ ol.interaction.DragBox = function(opt_options) {
   this.boxEndCondition_ = options.boxEndCondition ?
       options.boxEndCondition : ol.interaction.DragBox.defaultBoxEndCondition;
 };
-goog.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
+ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
 
 
 /**

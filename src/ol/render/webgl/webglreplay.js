@@ -25,7 +25,7 @@ goog.require('ol.webgl.Context');
  * @struct
  */
 ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
-  goog.base(this);
+  ol.render.VectorContext.call(this);
 
   /**
    * @type {number|undefined}
@@ -207,7 +207,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    */
   this.width_ = undefined;
 };
-goog.inherits(ol.render.webgl.ImageReplay, ol.render.VectorContext);
+ol.inherits(ol.render.webgl.ImageReplay, ol.render.VectorContext);
 
 
 /**

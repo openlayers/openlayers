@@ -23,7 +23,7 @@ goog.require('ol.webgl.Context');
  */
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
-  goog.base(this, layer);
+  ol.renderer.Layer.call(this, layer);
 
   /**
    * @protected
@@ -79,7 +79,7 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
   this.defaultLocations_ = null;
 
 };
-goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
+ol.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 
 
 /**

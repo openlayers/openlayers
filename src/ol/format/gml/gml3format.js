@@ -39,7 +39,7 @@ ol.format.GML3 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (opt_options ? opt_options : {});
 
-  goog.base(this, options);
+  ol.format.GMLBase.call(this, options);
 
   /**
    * @private
@@ -74,7 +74,7 @@ ol.format.GML3 = function(opt_options) {
       options.schemaLocation : ol.format.GML3.schemaLocation_;
 
 };
-goog.inherits(ol.format.GML3, ol.format.GMLBase);
+ol.inherits(ol.format.GML3, ol.format.GMLBase);
 
 
 /**

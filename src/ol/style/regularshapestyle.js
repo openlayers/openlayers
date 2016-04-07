@@ -131,7 +131,7 @@ ol.style.RegularShape = function(options) {
   var rotateWithView = options.rotateWithView !== undefined ?
       options.rotateWithView : false;
 
-  goog.base(this, {
+  ol.style.Image.call(this, {
     opacity: 1,
     rotateWithView: rotateWithView,
     rotation: options.rotation !== undefined ? options.rotation : 0,
@@ -140,7 +140,7 @@ ol.style.RegularShape = function(options) {
   });
 
 };
-goog.inherits(ol.style.RegularShape, ol.style.Image);
+ol.inherits(ol.style.RegularShape, ol.style.Image);
 
 
 /**

@@ -26,14 +26,14 @@ goog.require('ol.xml');
  * @api stable
  */
 ol.format.OSMXML = function() {
-  goog.base(this);
+  ol.format.XMLFeature.call(this);
 
   /**
    * @inheritDoc
    */
   this.defaultDataProjection = ol.proj.get('EPSG:4326');
 };
-goog.inherits(ol.format.OSMXML, ol.format.XMLFeature);
+ol.inherits(ol.format.OSMXML, ol.format.XMLFeature);
 
 
 /**

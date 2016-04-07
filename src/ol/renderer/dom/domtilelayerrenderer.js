@@ -31,7 +31,7 @@ ol.renderer.dom.TileLayer = function(tileLayer) {
   var target = document.createElement('DIV');
   target.style.position = 'absolute';
 
-  goog.base(this, tileLayer, target);
+  ol.renderer.dom.Layer.call(this, tileLayer, target);
 
   /**
    * @private
@@ -58,7 +58,7 @@ ol.renderer.dom.TileLayer = function(tileLayer) {
   this.tileLayerZs_ = {};
 
 };
-goog.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
+ol.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
 
 
 /**

@@ -37,7 +37,7 @@ ol.layer.LayerProperty = {
  */
 ol.layer.Base = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @type {Object.<string, *>}
@@ -56,7 +56,7 @@ ol.layer.Base = function(options) {
 
   this.setProperties(properties);
 };
-goog.inherits(ol.layer.Base, ol.Object);
+ol.inherits(ol.layer.Base, ol.Object);
 
 
 /**

@@ -43,9 +43,9 @@ ol.format.WMSGetFeatureInfo = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
-  goog.base(this);
+  ol.format.XMLFeature.call(this);
 };
-goog.inherits(ol.format.WMSGetFeatureInfo, ol.format.XMLFeature);
+ol.inherits(ol.format.WMSGetFeatureInfo, ol.format.XMLFeature);
 
 
 /**

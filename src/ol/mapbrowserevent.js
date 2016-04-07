@@ -30,7 +30,7 @@ goog.require('ol.pointer.PointerEventHandler');
 ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
     opt_frameState) {
 
-  goog.base(this, type, map, opt_frameState);
+  ol.MapEvent.call(this, type, map, opt_frameState);
 
   /**
    * The original browser event.
@@ -64,7 +64,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   this.dragging = opt_dragging !== undefined ? opt_dragging : false;
 
 };
-goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
+ol.inherits(ol.MapBrowserEvent, ol.MapEvent);
 
 
 /**
@@ -74,7 +74,7 @@ goog.inherits(ol.MapBrowserEvent, ol.MapEvent);
  * @api stable
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
-  goog.base(this, 'preventDefault');
+  ol.MapEvent.prototype.preventDefault.call(this);
   this.originalEvent.preventDefault();
 };
 
@@ -86,7 +86,7 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
  * @api stable
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
-  goog.base(this, 'stopPropagation');
+  ol.MapEvent.prototype.stopPropagation.call(this);
   this.originalEvent.stopPropagation();
 };
 
@@ -103,7 +103,7 @@ ol.MapBrowserEvent.prototype.stopPropagation = function() {
 ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
     opt_frameState) {
 
-  goog.base(this, type, map, pointerEvent.originalEvent, opt_dragging,
+  ol.MapBrowserEvent.call(this, type, map, pointerEvent.originalEvent, opt_dragging,
       opt_frameState);
 
   /**
@@ -113,7 +113,7 @@ ol.MapBrowserPointerEvent = function(type, map, pointerEvent, opt_dragging,
   this.pointerEvent = pointerEvent;
 
 };
-goog.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
+ol.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
 
 
 /**
@@ -123,7 +123,7 @@ goog.inherits(ol.MapBrowserPointerEvent, ol.MapBrowserEvent);
  */
 ol.MapBrowserEventHandler = function(map) {
 
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * This is the element that we will listen to the real events on.
@@ -207,7 +207,7 @@ ol.MapBrowserEventHandler = function(map) {
       this.relayEvent_, this);
 
 };
-goog.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
+ol.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
 
 
 /**
@@ -421,7 +421,7 @@ ol.MapBrowserEventHandler.prototype.disposeInternal = function() {
     this.pointerEventHandler_.dispose();
     this.pointerEventHandler_ = null;
   }
-  goog.base(this, 'disposeInternal');
+  ol.events.EventTarget.prototype.disposeInternal.call(this);
 };
 
 

@@ -61,7 +61,7 @@ ol.interaction.DrawEventType = {
  */
 ol.interaction.DrawEvent = function(type, feature) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The feature being drawn.
@@ -71,7 +71,7 @@ ol.interaction.DrawEvent = function(type, feature) {
   this.feature = feature;
 
 };
-goog.inherits(ol.interaction.DrawEvent, ol.events.Event);
+ol.inherits(ol.interaction.DrawEvent, ol.events.Event);
 
 
 /**
@@ -86,7 +86,7 @@ goog.inherits(ol.interaction.DrawEvent, ol.events.Event);
  */
 ol.interaction.Draw = function(options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Draw.handleDownEvent_,
     handleEvent: ol.interaction.Draw.handleEvent,
     handleUpEvent: ol.interaction.Draw.handleUpEvent_
@@ -311,7 +311,7 @@ ol.interaction.Draw = function(options) {
       this.updateState_, this);
 
 };
-goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
+ol.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
 
 /**
@@ -329,7 +329,7 @@ ol.interaction.Draw.getDefaultStyleFunction = function() {
  * @inheritDoc
  */
 ol.interaction.Draw.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
+  ol.interaction.Pointer.prototype.setMap.call(this, map);
   this.updateState_();
 };
 

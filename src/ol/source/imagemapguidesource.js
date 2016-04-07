@@ -21,7 +21,7 @@ goog.require('ol.source.Image');
  */
 ol.source.ImageMapGuide = function(options) {
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     projection: options.projection,
     resolutions: options.resolutions
   });
@@ -98,7 +98,7 @@ ol.source.ImageMapGuide = function(options) {
   this.renderedRevision_ = 0;
 
 };
-goog.inherits(ol.source.ImageMapGuide, ol.source.Image);
+ol.inherits(ol.source.ImageMapGuide, ol.source.Image);
 
 
 /**

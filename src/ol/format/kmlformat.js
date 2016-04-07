@@ -54,7 +54,7 @@ ol.format.KML = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.XMLFeature.call(this);
 
   /**
    * @inheritDoc
@@ -96,7 +96,7 @@ ol.format.KML = function(opt_options) {
       options.showPointNames : true;
 
 };
-goog.inherits(ol.format.KML, ol.format.XMLFeature);
+ol.inherits(ol.format.KML, ol.format.XMLFeature);
 
 
 /**

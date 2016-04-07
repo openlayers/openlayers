@@ -63,9 +63,9 @@ ol.format.WFS = function(opt_options) {
   this.schemaLocation_ = options.schemaLocation ?
       options.schemaLocation : ol.format.WFS.SCHEMA_LOCATION;
 
-  goog.base(this);
+  ol.format.XMLFeature.call(this);
 };
-goog.inherits(ol.format.WFS, ol.format.XMLFeature);
+ol.inherits(ol.format.WFS, ol.format.XMLFeature);
 
 
 /**

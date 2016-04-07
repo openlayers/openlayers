@@ -20,7 +20,7 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.PinchRotate = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.PinchRotate.handleDownEvent_,
     handleDragEvent: ol.interaction.PinchRotate.handleDragEvent_,
     handleUpEvent: ol.interaction.PinchRotate.handleUpEvent_
@@ -65,7 +65,7 @@ ol.interaction.PinchRotate = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
-goog.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
+ol.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
 
 
 /**

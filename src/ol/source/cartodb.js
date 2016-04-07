@@ -40,7 +40,7 @@ ol.source.CartoDB = function(options) {
    */
   this.templateCache_ = {};
 
-  goog.base(this, {
+  ol.source.XYZ.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -53,7 +53,7 @@ ol.source.CartoDB = function(options) {
   });
   this.initializeMap_();
 };
-goog.inherits(ol.source.CartoDB, ol.source.XYZ);
+ol.inherits(ol.source.CartoDB, ol.source.XYZ);
 
 
 /**

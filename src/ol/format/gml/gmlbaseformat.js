@@ -76,9 +76,9 @@ ol.format.GMLBase = function(opt_options) {
         ol.format.GMLBase.prototype.readFeaturesInternal)
   };
 
-  goog.base(this);
+  ol.format.XMLFeature.call(this);
 };
-goog.inherits(ol.format.GMLBase, ol.format.XMLFeature);
+ol.inherits(ol.format.GMLBase, ol.format.XMLFeature);
 
 
 /**

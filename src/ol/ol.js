@@ -261,9 +261,10 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
  * @function
  * @api
  */
-ol.inherits =
-    goog.inherits;
-// note that the newline above is necessary to satisfy the linter
+ol.inherits = function(childCtor, parentCtor) {
+  childCtor.prototype = Object.create(parentCtor.prototype);
+  childCtor.prototype.constructor = childCtor;
+};
 
 
 /**

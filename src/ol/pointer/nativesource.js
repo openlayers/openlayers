@@ -49,9 +49,9 @@ ol.pointer.NativeSource = function(dispatcher) {
     'gotpointercapture': this.gotPointerCapture,
     'lostpointercapture': this.lostPointerCapture
   };
-  goog.base(this, dispatcher, mapping);
+  ol.pointer.EventSource.call(this, dispatcher, mapping);
 };
-goog.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
+ol.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
 
 
 /**

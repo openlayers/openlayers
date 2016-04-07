@@ -41,7 +41,7 @@ goog.require('ol.webgl.WebGLContextEventType');
  */
 ol.renderer.webgl.Map = function(container, map) {
 
-  goog.base(this, container, map);
+  ol.renderer.Map.call(this, container, map);
 
   /**
    * @private
@@ -171,7 +171,7 @@ ol.renderer.webgl.Map = function(container, map) {
   this.initializeGL_();
 
 };
-goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 
 
 /**
@@ -304,7 +304,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
         });
   }
   this.context_.dispose();
-  goog.base(this, 'disposeInternal');
+  ol.renderer.Map.prototype.disposeInternal.call(this);
 };
 
 

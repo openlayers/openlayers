@@ -42,7 +42,7 @@ ol.render.Event = function(
     type, opt_target, opt_vectorContext, opt_frameState, opt_context,
     opt_glContext) {
 
-  goog.base(this, type, opt_target);
+  ol.events.Event.call(this, type, opt_target);
 
   /**
    * For canvas, this is an instance of {@link ol.render.canvas.Immediate}.
@@ -75,4 +75,4 @@ ol.render.Event = function(
   this.glContext = opt_glContext;
 
 };
-goog.inherits(ol.render.Event, ol.events.Event);
+ol.inherits(ol.render.Event, ol.events.Event);

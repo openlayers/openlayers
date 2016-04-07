@@ -20,7 +20,7 @@ goog.require('ol.object');
  */
 ol.geom.SimpleGeometry = function() {
 
-  goog.base(this);
+  ol.geom.Geometry.call(this);
 
   /**
    * @protected
@@ -41,7 +41,7 @@ ol.geom.SimpleGeometry = function() {
   this.flatCoordinates = null;
 
 };
-goog.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
+ol.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
 
 
 /**

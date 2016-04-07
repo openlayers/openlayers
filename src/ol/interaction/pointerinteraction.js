@@ -29,7 +29,7 @@ ol.interaction.Pointer = function(opt_options) {
   var handleEvent = options.handleEvent ?
       options.handleEvent : ol.interaction.Pointer.handleEvent;
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: handleEvent
   });
 
@@ -80,7 +80,7 @@ ol.interaction.Pointer = function(opt_options) {
   this.targetPointers = [];
 
 };
-goog.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
+ol.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
 
 
 /**
