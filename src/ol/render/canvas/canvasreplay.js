@@ -298,6 +298,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dx = x2 - x1;
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
+        context.moveTo(x2, y2);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
         ++i;
         break;
@@ -1322,8 +1323,9 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   this.appendFlatCoordinates(flatCoordinates, 0, flatCoordinates.length, stride);
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
-  this.instructions.push(beginPathInstruction, circleInstruction);
-  this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction);
+  var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
+  this.instructions.push(beginPathInstruction, circleInstruction, closePathInstruction);
+  this.hitDetectionInstructions.push(beginPathInstruction, circleInstruction, closePathInstruction);
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (state.fillStyle !== undefined) {
