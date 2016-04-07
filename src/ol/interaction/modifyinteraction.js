@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
-goog.require('goog.functions');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
@@ -113,14 +112,21 @@ ol.interaction.Modify = function(options) {
   });
 
   /**
+   * @private
+   * @param {ol.MapBrowserEvent} mapBrowserEvent Browser event.
+   * @return {boolean} Combined condition result.
+   */
+  this.defaultDeleteCondition_ = function(mapBrowserEvent) {
+    return ol.events.condition.noModifierKeys(mapBrowserEvent) &&
+      ol.events.condition.singleClick(mapBrowserEvent);
+  }
+
+  /**
    * @type {ol.events.ConditionType}
    * @private
    */
   this.deleteCondition_ = options.deleteCondition ?
-      options.deleteCondition :
-      /** @type {ol.events.ConditionType} */ (goog.functions.and(
-          ol.events.condition.noModifierKeys,
-          ol.events.condition.singleClick));
+      options.deleteCondition : this.defaultDeleteCondition_;
 
   /**
    * Editing vertex.

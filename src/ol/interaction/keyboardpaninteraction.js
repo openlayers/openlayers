@@ -41,8 +41,8 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @return {boolean} Combined condition result.
    */
   this.defaultCondition_ = function(mapBrowserEvent) {
-    return ol.events.condition.noModifierKeys.call(this, mapBrowserEvent) &&
-      ol.events.condition.targetNotEditable.call(this, mapBrowserEvent)
+    return ol.events.condition.noModifierKeys(mapBrowserEvent) &&
+      ol.events.condition.targetNotEditable(mapBrowserEvent);
   }
 
   /**
