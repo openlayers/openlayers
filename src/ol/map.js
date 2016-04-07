@@ -188,7 +188,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Object.<string, string>}
+   * @type {Object.<string, Array.<string>>}
    */
   this.logos_ = optionsInternal.logos;
 
@@ -1449,7 +1449,7 @@ ol.Map.prototype.unskipFeature = function(feature) {
  * @typedef {{controls: ol.Collection.<ol.control.Control>,
  *            interactions: ol.Collection.<ol.interaction.Interaction>,
  *            keyboardEventTarget: (Element|Document),
- *            logos: Object.<string, string>,
+ *            logos: Object.<string, Array.<string>>,
  *            overlays: ol.Collection.<ol.Overlay>,
  *            rendererConstructor:
  *                function(new: ol.renderer.Map, Element, ol.Map),
@@ -1484,15 +1484,21 @@ ol.Map.createOptionsInternal = function(options) {
   var logos = {};
   if (options.logo === undefined ||
       (typeof options.logo === 'boolean' && options.logo)) {
-    logos[ol.OL3_LOGO_URL] = ol.OL3_URL;
+    logos[ol.OL3_LOGO_URL] = [ol.OL3_URL];
   } else {
     var logo = options.logo;
     if (typeof logo === 'string') {
-      logos[logo] = '';
+      logos[logo] = [''];
     } else if (goog.isObject(logo)) {
       goog.asserts.assertString(logo.href, 'logo.href should be a string');
       goog.asserts.assertString(logo.src, 'logo.src should be a string');
-      logos[logo.src] = logo.href;
+      logos[logo.src] = [logo.href];
+
+      if (logo.target !== undefined) {
+        goog.asserts.assertString(logo.target,
+            'logo.target should be a string');
+        logos[logo.src].push(logo.target);
+      }
     }
   }
 
