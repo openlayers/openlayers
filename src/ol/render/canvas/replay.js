@@ -72,6 +72,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
   this.maxExtent = maxExtent;
 
   /**
+   * @protected
+   * @type {boolean}
+   */
+  this.transparency = false;
+
+  /**
    * @private
    * @type {ol.Extent}
    */
@@ -257,6 +263,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var localTransform = this.tmpLocalTransform_;
   var localTransformInv = this.tmpLocalTransformInv_;
   var prevX, prevY, roundX, roundY;
+  var pendingFill = 0;
+  var pendingStroke = 0;
+  var batchSize =
+      this.instructions != instructions || this.transparency ? 0 : 200;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -276,7 +286,17 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         }
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
-        context.beginPath();
+        if (pendingFill > batchSize) {
+          context.fill();
+          pendingFill = 0;
+        }
+        if (pendingStroke > batchSize) {
+          context.stroke();
+          pendingStroke = 0;
+        }
+        if (!pendingFill && !pendingStroke) {
+          context.beginPath();
+        }
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
@@ -290,6 +310,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dx = x2 - x1;
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
+        context.moveTo(x2, y2);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
         ++i;
         break;
@@ -442,7 +463,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.FILL:
-        context.fill();
+        if (batchSize) {
+          pendingFill++;
+        } else {
+          context.fill();
+        }
         ++i;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
@@ -479,6 +504,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
+        if (pendingFill) {
+          context.fill();
+          pendingFill = 0;
+        }
+
         context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
         ++i;
         break;
@@ -498,6 +528,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var usePixelRatio = instruction[7] !== undefined ?
             instruction[7] : true;
         var lineWidth = /** @type {number} */ (instruction[2]);
+        if (pendingStroke) {
+          context.stroke();
+          pendingStroke = 0;
+        }
         context.strokeStyle = /** @type {string} */ (instruction[1]);
         context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
         context.lineCap = /** @type {string} */ (instruction[3]);
@@ -523,7 +557,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
-        context.stroke();
+        if (batchSize) {
+          pendingStroke++;
+        } else {
+          context.stroke();
+        }
         ++i;
         break;
       default:
@@ -531,6 +569,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i; // consume the instruction anyway, to avoid an infinite loop
         break;
     }
+  }
+  if (pendingFill) {
+    context.fill();
+  }
+  if (pendingStroke) {
+    context.stroke();
   }
   // assert that all instructions were consumed
   goog.DEBUG && console.assert(i == instructions.length,
@@ -551,7 +595,7 @@ ol.render.canvas.Replay.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
   this.replay_(context, pixelRatio, transform, viewRotation,
-      skippedFeaturesHash, instructions, undefined);
+      skippedFeaturesHash, instructions, undefined, undefined);
 };
 
 
@@ -1417,6 +1461,10 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
     var fillStyleColor = fillStyle.getColor();
     state.fillStyle = ol.colorlike.asColorLike(fillStyleColor ?
         fillStyleColor : ol.render.canvas.defaultFillStyle);
+    if (!this.transparency && ol.color.isRgba(state.fillStyle)) {
+      this.transparency = ol.color.asArray(
+          /** @type {ol.Color|string} */ (state.fillStyle))[0] != 1;
+    }
   } else {
     state.fillStyle = undefined;
   }
@@ -1424,6 +1472,9 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
     var strokeStyleColor = strokeStyle.getColor();
     state.strokeStyle = ol.color.asString(strokeStyleColor ?
         strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
+    if (!this.transparency && ol.color.isRgba(state.strokeStyle)) {
+      this.transparency = ol.color.asArray(state.strokeStyle)[3] != 1;
+    }
     var strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?
         strokeStyleLineCap : ol.render.canvas.defaultLineCap;
