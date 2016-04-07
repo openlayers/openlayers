@@ -47,7 +47,7 @@ describe('ol.rendering.layer.Vector', function() {
       disposeMap(map);
     });
 
-    it('renders correctly with the canvas renderer', function(done) {
+    it('renders opacity correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
       var smallLine = new ol.Feature(new ol.geom.LineString([
         [center[0], center[1] - 1],
@@ -73,6 +73,29 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
+    it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
+      map = createMap('canvas');
+      addPolygon(100);
+      addCircle(200);
+      addPolygon(250);
+      addCircle(500);
+      addPolygon(600);
+      addPolygon(720);
+      map.addLayer(new ol.layer.Vector({
+        source: source,
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: '#3399CC',
+            width: 1.25
+          })
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-opaque.png',
+            17, done);
+      })
+    });
+
   });
 
 });
@@ -84,3 +107,5 @@ goog.require('ol.geom.Circle');
 goog.require('ol.geom.Polygon');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');

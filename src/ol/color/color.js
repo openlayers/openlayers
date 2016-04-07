@@ -184,6 +184,16 @@ ol.color.fromStringInternal_ = function(s) {
 
 
 /**
+ * @param {ol.ColorLike|string} color Color.
+ * @return {boolean} Is rgba.
+ */
+ol.color.isRgba = function(color) {
+  return Array.isArray(color) && color.length == 4 ||
+      typeof color == 'string' && ol.color.rgbaColorRe_.test(color);
+};
+
+
+/**
  * @param {ol.Color} color Color.
  * @return {boolean} Is valid.
  */
