@@ -2,7 +2,6 @@ goog.provide('ol.renderer.dom.VectorLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('goog.vec.Mat4');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -14,6 +13,7 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.vector');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -76,15 +76,15 @@ ol.renderer.dom.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.vec.Mat4.create();
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
-  this.elementTransform_ = goog.vec.Mat4.createNumber();
+  this.elementTransform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
@@ -162,7 +162,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @private
  */
 ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ = function(type, frameState, transform) {

@@ -2,8 +2,9 @@ goog.provide('ol.dom');
 
 goog.require('goog.asserts');
 goog.require('goog.userAgent');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
+goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -127,7 +128,7 @@ ol.dom.setTransform = function(element, value) {
 
 /**
  * @param {!Element} element Element.
- * @param {goog.vec.Mat4.Number} transform Matrix.
+ * @param {ol.vec.Mat4.Number} transform Matrix.
  * @param {number=} opt_precision Precision.
  */
 ol.dom.transformElement2D = function(element, transform, opt_precision) {
@@ -151,12 +152,12 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
   } else if (ol.dom.canUseCssTransform()) {
     /** @type {Array.<number>} */
     var transform2D = [
-      goog.vec.Mat4.getElement(transform, 0, 0),
-      goog.vec.Mat4.getElement(transform, 1, 0),
-      goog.vec.Mat4.getElement(transform, 0, 1),
-      goog.vec.Mat4.getElement(transform, 1, 1),
-      goog.vec.Mat4.getElement(transform, 0, 3),
-      goog.vec.Mat4.getElement(transform, 1, 3)
+      transform[0],
+      ol.vec.Mat4.getElement(transform, 1, 0),
+      ol.vec.Mat4.getElement(transform, 0, 1),
+      ol.vec.Mat4.getElement(transform, 1, 1),
+      ol.vec.Mat4.getElement(transform, 0, 3),
+      ol.vec.Mat4.getElement(transform, 1, 3)
     ];
     var value2D;
     if (opt_precision !== undefined) {
@@ -172,9 +173,9 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
     ol.dom.setTransform(element, 'matrix(' + value2D + ')');
   } else {
     element.style.left =
-        Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + 'px';
+        Math.round(ol.vec.Mat4.getElement(transform, 0, 3)) + 'px';
     element.style.top =
-        Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + 'px';
+        Math.round(ol.vec.Mat4.getElement(transform, 1, 3)) + 'px';
 
     // TODO: Add scaling here. This isn't quite as simple as multiplying
     // width/height, because that only changes the container size, not the

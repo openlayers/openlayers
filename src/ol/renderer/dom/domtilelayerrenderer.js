@@ -6,7 +6,6 @@ goog.provide('ol.renderer.dom.TileLayer');
 goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.Coordinate');
 goog.require('ol.TileCoord');
@@ -21,6 +20,7 @@ goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -204,7 +204,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   tileLayerZKeys.sort(ol.array.numberSafeCompareFunction);
 
   var i, ii, j, origin, resolution;
-  var transform = goog.vec.Mat4.createNumber();
+  var transform = ol.vec.Mat4.create();
   for (i = 0, ii = tileLayerZKeys.length; i < ii; ++i) {
     tileLayerZKey = tileLayerZKeys[i];
     tileLayerZ = this.tileLayerZs_[tileLayerZKey];
@@ -317,9 +317,9 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumberIdentity();
+  this.transform_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @private
@@ -440,11 +440,11 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent
 
 
 /**
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
   if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
-    goog.vec.Mat4.setFromArray(this.transform_, transform);
+    ol.ext.glmatrix.mat4.copy(this.transform_, transform);
   }
 };

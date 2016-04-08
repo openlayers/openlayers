@@ -869,15 +869,15 @@ describe('ol.extent', function() {
     });
 
     it('applies a translate transform', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeTranslate(mat, 10, 20, 0);
+      var mat = ol.vec.Mat4.create();
+      ol.ext.glmatrix.mat4.fromTranslation(mat, [10, 20, 0]);
       var transformed = ol.extent.transform2D(extent, mat);
       expect(transformed).to.eql([-170, -70, 190, 110]);
     });
 
     it('applies a rotate transform', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeRotateZ(mat, Math.PI / 2);
+      var mat = ol.vec.Mat4.create();
+      ol.ext.glmatrix.mat4.fromZRotation(mat, Math.PI / 2);
       var transformed = ol.extent.transform2D(extent, mat);
       expect(transformed[0]).to.roughlyEqual(-90, 1e-5);
       expect(transformed[1]).to.roughlyEqual(-180, 1e-5);
@@ -886,15 +886,15 @@ describe('ol.extent', function() {
     });
 
     it('does not modify original', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeRotateZ(mat, Math.PI / 2);
+      var mat = ol.vec.Mat4.create();
+      ol.ext.glmatrix.mat4.fromZRotation(mat, Math.PI / 2);
       ol.extent.transform2D(extent, mat);
       expect(extent).to.eql([-180, -90, 180, 90]);
     });
 
     it('accepts an extent to modify', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeScale(mat, 2, 0.5);
+      var mat = ol.vec.Mat4.create();
+      ol.ext.glmatrix.mat4.fromScaling(mat, [2, 0.5, 1]);
       ol.extent.transform2D(extent, mat, extent);
       expect(extent).to.eql([-360, -45, 360, 45]);
     });
@@ -904,8 +904,8 @@ describe('ol.extent', function() {
 });
 
 
-goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.extent.Relationship');
 goog.require('ol.proj');
+goog.require('ol.vec.Mat4');

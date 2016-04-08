@@ -9,7 +9,6 @@ goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
 goog.require('goog.dom');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
@@ -49,6 +48,7 @@ goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -208,15 +208,15 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
-  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
+  this.coordinateToPixelMatrix_ = ol.vec.Mat4.create();
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.vec.Mat4.Number}
    */
-  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+  this.pixelToCoordinateMatrix_ = ol.vec.Mat4.create();
 
   /**
    * @private

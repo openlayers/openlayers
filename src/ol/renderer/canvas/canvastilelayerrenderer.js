@@ -3,7 +3,6 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.array');
@@ -14,6 +13,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.Tile');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -45,9 +45,9 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
-  this.imageTransform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);

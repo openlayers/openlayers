@@ -23,11 +23,11 @@ describe('ol.renderer.canvas.Layer', function() {
         },
         size: [10, 10],
         pixelRatio: 1,
-        coordinateToPixelMatrix: goog.vec.Mat4.createNumber(),
-        pixelToCoordinateMatrix: goog.vec.Mat4.createNumber()
+        coordinateToPixelMatrix: ol.vec.Mat4.create(),
+        pixelToCoordinateMatrix: ol.vec.Mat4.create()
       };
       renderer.getImageTransform = function() {
-        return goog.vec.Mat4.createNumberIdentity();
+        return ol.ext.glmatrix.mat4.create();
       }
       ol.renderer.Map.prototype.calculateMatrices2D(frameState);
       var layerState = layer.getLayerState();
@@ -62,7 +62,7 @@ describe('ol.renderer.canvas.Layer', function() {
 
 
 goog.require('ol.render.canvas');
-goog.require('goog.vec.Mat4');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.vec.Mat4');

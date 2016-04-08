@@ -6,7 +6,6 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('goog.style');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -26,6 +25,7 @@ goog.require('ol.renderer.dom.TileLayer');
 goog.require('ol.renderer.dom.VectorLayer');
 goog.require('ol.source.State');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -52,9 +52,9 @@ ol.renderer.dom.Map = function(container, map) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.vec.Mat4.create();
 
   /**
    * @type {!Element}

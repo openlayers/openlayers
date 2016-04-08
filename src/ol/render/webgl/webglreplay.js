@@ -2,7 +2,7 @@ goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.ext.glmatrix');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
@@ -14,6 +14,7 @@ goog.require('ol.render.webgl.imagereplay.shader.DefaultVertex');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -116,16 +117,16 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.opacity_ = undefined;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    * @private
    */
-  this.offsetRotateMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.offsetRotateMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    * @private
    */
-  this.offsetScaleMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.offsetScaleMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @type {number|undefined}
@@ -140,10 +141,10 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.originY_ = undefined;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    * @private
    */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix_ = ol.ext.glmatrix.mat4.create();
 
   /**
    * @private
@@ -561,12 +562,12 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
       -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
 
   var offsetScaleMatrix = this.offsetScaleMatrix_;
-  goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
+  ol.ext.glmatrix.mat4.fromScaling(offsetScaleMatrix, [2 / size[0], 2 / size[1], 1]);
 
   var offsetRotateMatrix = this.offsetRotateMatrix_;
-  goog.vec.Mat4.makeIdentity(offsetRotateMatrix);
+  ol.ext.glmatrix.mat4.identity(offsetRotateMatrix);
   if (rotation !== 0) {
-    goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
+    ol.ext.glmatrix.mat4.rotateZ(offsetRotateMatrix, offsetRotateMatrix, -rotation);
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);

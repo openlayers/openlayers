@@ -35,6 +35,7 @@
     "closure-util": "1.13.0",
     "derequire": "2.0.3",
     "fs-extra": "0.26.6",
+    "gl-matrix": "git://github.com/nicholas-l/gl-matrix.git",
     "glob": "6.0.4",
     "handlebars": "4.0.5",
     "jsdoc": "3.4.0",
@@ -98,6 +99,11 @@
     {
       "module": "vector-tile",
       "name": "vectortile",
+      "browserify": true
+    },
+    {
+      "module": "gl-matrix",
+      "name": "glmatrix",
       "browserify": true
     }
   ]

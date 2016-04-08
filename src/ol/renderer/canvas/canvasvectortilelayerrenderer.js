@@ -2,7 +2,6 @@ goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -22,6 +21,7 @@ goog.require('ol.renderer.vector');
 goog.require('ol.size');
 goog.require('ol.source.VectorTile');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -65,9 +65,9 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
-  this.tmpTransform_ = goog.vec.Mat4.createNumber();
+  this.tmpTransform_ = ol.vec.Mat4.create();
 
 };
 goog.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.Layer);

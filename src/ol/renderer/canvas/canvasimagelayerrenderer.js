@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
 goog.require('ol.functions');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -12,6 +11,7 @@ goog.require('ol.proj');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.ImageVector');
 goog.require('ol.vec.Mat4');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -31,13 +31,13 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {!ol.vec.Mat4.Number}
    */
-  this.imageTransform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = ol.vec.Mat4.create();
 
   /**
    * @private
-   * @type {?goog.vec.Mat4.Number}
+   * @type {?ol.vec.Mat4.Number}
    */
   this.imageTransformInv_ = null;
 
@@ -97,8 +97,8 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   } else {
     // for all other image sources directly check the image
     if (!this.imageTransformInv_) {
-      this.imageTransformInv_ = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
+      this.imageTransformInv_ = ol.vec.Mat4.create();
+      ol.ext.glmatrix.mat4.invert(this.imageTransformInv_, this.imageTransform_);
     }
 
     var pixelOnCanvas =

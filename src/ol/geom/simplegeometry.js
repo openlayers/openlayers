@@ -7,6 +7,7 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.object');
+goog.require('ol.vec.Mat4.Number');
 
 
 /**
@@ -294,7 +295,7 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
 
 /**
  * @param {ol.geom.SimpleGeometry} simpleGeometry Simple geometry.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.vec.Mat4.Number} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
