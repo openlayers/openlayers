@@ -40,7 +40,7 @@ ol.control.Rotate = function(opt_options) {
         'ol-compass', label);
   } else {
     this.label_ = label;
-    this.label_.classList.add(this.label_, 'ol-compass');
+    this.label_.classList.add('ol-compass');
   }
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
