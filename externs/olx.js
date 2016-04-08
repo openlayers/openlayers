@@ -5735,8 +5735,8 @@ olx.source.VectorOptions.prototype.format;
 
 /**
  * The loader function used to load features, from a remote source for example.
- * Note that the source will create and use an XHR feature loader when `url` is
- * set.
+ * If this is not set and `url` is set, the source will create and use an XHR
+ * feature loader.
  * @type {ol.FeatureLoader|undefined}
  * @api
  */
