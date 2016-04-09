@@ -432,6 +432,8 @@ ol.format.GPX.prototype.handleReadExtensions_ = function(features) {
 
 /**
  * Read the first feature from a GPX source.
+ * Routes (`<rte>`) are converted into LineString geometries, and tracks (`<trk>`)
+ * into MultiLineString. Any properties on route and track waypoints are ignored.
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
@@ -466,6 +468,8 @@ ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
 
 /**
  * Read all features from a GPX source.
+ * Routes (`<rte>`) are converted into LineString geometries, and tracks (`<trk>`)
+ * into MultiLineString. Any properties on route and track waypoints are ignored.
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
@@ -569,7 +573,9 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
     default:
       // pass
   }
-  var orderedKeys = ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
+  var orderedKeys = (node.nodeName == 'rtept') ?
+      ol.format.GPX.RTEPT_TYPE_SEQUENCE_[namespaceURI] :
+      ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       ({node: node, 'properties': properties}),
@@ -721,6 +727,17 @@ ol.format.GPX.RTE_SERIALIZERS_ = ol.xml.makeStructureNS(
       'rtept': ol.xml.makeArraySerializer(ol.xml.makeChildAppender(
           ol.format.GPX.writeWptType_))
     });
+
+
+/**
+ * @const
+ * @type {Object.<string, Array.<string>>}
+ * @private
+ */
+ol.format.GPX.RTEPT_TYPE_SEQUENCE_ = ol.xml.makeStructureNS(
+    ol.format.GPX.NAMESPACE_URIS_, [
+      'ele', 'time'
+    ]);
 
 
 /**
