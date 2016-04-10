@@ -2313,11 +2313,12 @@ ol.format.KML.writeLineStyle_ = function(node, style, objectStack) {
  */
 ol.format.KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
   goog.asserts.assert(
+      (geometry instanceof ol.geom.GeometryCollection) ||
       (geometry instanceof ol.geom.MultiPoint) ||
       (geometry instanceof ol.geom.MultiLineString) ||
       (geometry instanceof ol.geom.MultiPolygon),
-      'geometry should be one of: ol.geom.MultiPoint, ' +
-      'ol.geom.MultiLineString or ol.geom.MultiPolygon');
+      'geometry should be one of: ol.geom.GeometryCollection, ' +
+      'ol.geom.MultiPoint, ol.geom.MultiLineString or ol.geom.MultiPolygon');
   /** @type {ol.xml.NodeStackItem} */
   var context = {node: node};
   var type = geometry.getType();
@@ -2325,7 +2326,10 @@ ol.format.KML.writeMultiGeometry_ = function(node, geometry, objectStack) {
   var geometries;
   /** @type {function(*, Array.<*>, string=): (Node|undefined)} */
   var factory;
-  if (type == ol.geom.GeometryType.MULTI_POINT) {
+  if (type == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
+    geometries = geometry.getGeometries();
+    factory = ol.format.KML.GEOMETRY_NODE_FACTORY_;
+  } else if (type == ol.geom.GeometryType.MULTI_POINT) {
     geometries =
         (/** @type {ol.geom.MultiPoint} */ (geometry)).getPoints();
     factory = ol.format.KML.POINT_NODE_FACTORY_;
@@ -2582,7 +2586,8 @@ ol.format.KML.GEOMETRY_TYPE_TO_NODENAME_ = {
   'Polygon': 'Polygon',
   'MultiPoint': 'MultiGeometry',
   'MultiLineString': 'MultiGeometry',
-  'MultiPolygon': 'MultiGeometry'
+  'MultiPolygon': 'MultiGeometry',
+  'GeometryCollection': 'MultiGeometry'
 };
 
 
@@ -2711,7 +2716,9 @@ ol.format.KML.MULTI_GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
           ol.format.KML.writePrimitiveGeometry_),
       'Point': ol.xml.makeChildAppender(
           ol.format.KML.writePrimitiveGeometry_),
-      'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_)
+      'Polygon': ol.xml.makeChildAppender(ol.format.KML.writePolygon_),
+      'GeometryCollection': ol.xml.makeChildAppender(
+          ol.format.KML.writeMultiGeometry_)
     });
 
 
