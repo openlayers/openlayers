@@ -83,6 +83,7 @@ ol.source.CartoDB.prototype.updateConfig = function(config) {
  * @param {Object} config In the case of anonymous maps, a CartoDB configuration
  *     object.
  * If using named maps, a key-value lookup with the template parameters.
+ * @api
  */
 ol.source.CartoDB.prototype.setConfig = function(config) {
   this.config_ = config || {};
