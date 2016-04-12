@@ -77,6 +77,37 @@ describe('ol.source.Vector', function() {
 
   });
 
+  describe('when populated with 3 features', function() {
+
+    var features = [];
+    var vectorSource;
+    beforeEach(function() {
+      features.push(new ol.Feature(new ol.geom.LineString([[0, 0], [10, 10]])));
+      features.push(new ol.Feature(new ol.geom.Point([0, 10])));
+      features.push(new ol.Feature(new ol.geom.Point([10, 5])));
+      vectorSource = new ol.source.Vector({
+        features: features
+      });
+    });
+
+    describe('#getClosestFeatureToCoordinate', function() {
+
+      it('returns the expected feature', function() {
+        var feature = vectorSource.getClosestFeatureToCoordinate([1, 9]);
+        expect(feature).to.be(features[1]);
+      });
+
+      it('returns the expected feature when a filter is used', function() {
+        var feature = vectorSource.getClosestFeatureToCoordinate([1, 9], function(feature) {
+          return feature.getGeometry().getType() == 'LineString';
+        });
+        expect(feature).to.be(features[0]);
+      });
+
+    });
+
+  });
+
   describe('when populated with 10 random points and a null', function() {
 
     var features;
@@ -558,5 +589,6 @@ goog.require('ol.events');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
