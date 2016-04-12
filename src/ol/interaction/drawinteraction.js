@@ -243,14 +243,14 @@ ol.interaction.Draw = function(options) {
   this.sketchCoords_ = null;
 
   /**
-   * Sketch line. Used when drawing polygon.
+   * Sketch line. Used when drawing a circle.
    * @type {ol.Feature}
    * @private
    */
   this.sketchLine_ = null;
 
   /**
-   * Sketch line coordinates. Used when drawing a polygon or circle.
+   * Sketch line coordinates. Used when drawing a circle.
    * @type {Array.<ol.Coordinate>}
    * @private
    */
@@ -501,16 +501,12 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
     this.sketchCoords_ = start.slice();
   } else if (this.mode_ === ol.interaction.DrawMode.POLYGON) {
     this.sketchCoords_ = [[start.slice(), start.slice()]];
-    this.sketchLineCoords_ = this.sketchCoords_[0];
   } else {
     this.sketchCoords_ = [start.slice(), start.slice()];
     if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
       this.sketchLineCoords_ = this.sketchCoords_;
+      this.sketchLine_ = new ol.Feature(new ol.geom.LineString(this.sketchLineCoords_));
     }
-  }
-  if (this.sketchLineCoords_) {
-    this.sketchLine_ = new ol.Feature(
-        new ol.geom.LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
   goog.asserts.assert(geometry !== undefined, 'geometry should be defined');
