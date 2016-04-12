@@ -33,7 +33,7 @@ describe('ol.interaction.DragZoom', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -77,12 +77,36 @@ describe('ol.interaction.DragZoom', function() {
 
     });
 
+    it('sets new resolution while zooming out', function(done) {
+      var interaction = new ol.interaction.DragZoom({
+        duration: 10,
+        out: true
+      });
+      map.addInteraction(interaction);
+
+      var box = new ol.render.Box();
+      var extent = [-11.25, -11.25, 11.25, 11.25];
+      box.geometry_ = ol.geom.Polygon.fromExtent(extent);
+      interaction.box_ = box;
+
+      map.getView().setResolution(0.25);
+      setTimeout(function() {
+        interaction.onBoxEnd();
+        setTimeout(function() {
+          var view = map.getView();
+          var resolution = view.getResolution();
+          expect(resolution).to.eql(view.constrainResolution(0.5));
+          done();
+        }, 50);
+      }, 50);
+
+    });
+
   });
 
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.extent');

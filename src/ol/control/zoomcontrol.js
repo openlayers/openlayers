@@ -1,8 +1,8 @@
 goog.provide('ol.control.Zoom');
 
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -24,16 +24,16 @@ ol.control.Zoom = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var className = options.className ? options.className : 'ol-zoom';
+  var className = options.className !== undefined ? options.className : 'ol-zoom';
 
-  var delta = options.delta ? options.delta : 1;
+  var delta = options.delta !== undefined ? options.delta : 1;
 
-  var zoomInLabel = options.zoomInLabel ? options.zoomInLabel : '+';
-  var zoomOutLabel = options.zoomOutLabel ? options.zoomOutLabel : '\u2212';
+  var zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
+  var zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
 
-  var zoomInTipLabel = options.zoomInTipLabel ?
+  var zoomInTipLabel = options.zoomInTipLabel !== undefined ?
       options.zoomInTipLabel : 'Zoom in';
-  var zoomOutTipLabel = options.zoomOutTipLabel ?
+  var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
       options.zoomOutTipLabel : 'Zoom out';
 
   var inElement = goog.dom.createDom('BUTTON', {
@@ -42,9 +42,9 @@ ol.control.Zoom = function(opt_options) {
     'title': zoomInTipLabel
   }, zoomInLabel);
 
-  goog.events.listen(inElement,
-      goog.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, delta), false, this);
+  ol.events.listen(inElement,
+      ol.events.EventType.CLICK, goog.partial(
+          ol.control.Zoom.prototype.handleClick_, delta), this);
 
   var outElement = goog.dom.createDom('BUTTON', {
     'class': className + '-out',
@@ -52,14 +52,13 @@ ol.control.Zoom = function(opt_options) {
     'title': zoomOutTipLabel
   }, zoomOutLabel);
 
-  goog.events.listen(outElement,
-      goog.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, -delta), false, this);
+  ol.events.listen(outElement,
+      ol.events.EventType.CLICK, goog.partial(
+          ol.control.Zoom.prototype.handleClick_, -delta), this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom('DIV', cssClasses, inElement,
-      outElement);
+  var element = goog.dom.createDom('DIV', cssClasses, inElement, outElement);
 
   goog.base(this, {
     element: element,
@@ -78,7 +77,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 
 /**
  * @param {number} delta Zoom delta.
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.Zoom.prototype.handleClick_ = function(delta, event) {

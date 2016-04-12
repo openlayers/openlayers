@@ -1,12 +1,12 @@
 goog.provide('ol.source.ImageMapGuide');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.extent');
+goog.require('ol.object');
 goog.require('ol.source.Image');
 
 
@@ -43,9 +43,9 @@ ol.source.ImageMapGuide = function(options) {
 
   /**
    * @private
-   * @type {Object}
+   * @type {!Object}
    */
-  this.params_ = options.params !== undefined ? options.params : {};
+  this.params_ = options.params || {};
 
   /**
    * @private
@@ -143,8 +143,8 @@ ol.source.ImageMapGuide.prototype.getImageInternal = function(extent, resolution
     image = new ol.Image(extent, resolution, pixelRatio,
         this.getAttributions(), imageUrl, this.crossOrigin_,
         this.imageLoadFunction_);
-    goog.events.listen(image, goog.events.EventType.CHANGE,
-        this.handleImageChange, false, this);
+    ol.events.listen(image, ol.events.EventType.CHANGE,
+        this.handleImageChange, this);
   } else {
     image = null;
   }
@@ -192,7 +192,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @api stable
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
-  goog.object.extend(this.params_, params);
+  ol.object.assign(this.params_, params);
   this.changed();
 };
 
@@ -222,7 +222,7 @@ ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, siz
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  goog.object.extend(baseParams, params);
+  ol.object.assign(baseParams, params);
   return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
 };
 

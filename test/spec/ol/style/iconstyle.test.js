@@ -8,6 +8,8 @@ goog.require('ol.style.IconOrigin');
 
 describe('ol.style.Icon', function() {
   var size = [36, 48];
+  var src = 'data:image/gif;base64,' +
+      'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
 
   describe('constructor', function() {
 
@@ -19,6 +21,19 @@ describe('ol.style.Icon', function() {
       });
       expect(ol.style.IconImage_.get(
           canvas, goog.getUid(canvas), size, '').getImage()).to.eql(canvas);
+    });
+
+    it('imgSize overrides img.width and img.height', function(done) {
+      var style = new ol.style.Icon({
+        src: src,
+        imgSize: size
+      });
+      var iconImage = style.iconImage_;
+      iconImage.addEventListener('change', function() {
+        expect([iconImage.image_.width, iconImage.image_.height]).to.eql(size);
+        done();
+      });
+      style.load();
     });
 
   });
@@ -194,14 +209,14 @@ describe('ol.style.IconImageCache', function() {
 
       src = '0';
       iconImage = new ol.style.IconImage_(src, null);
-      goog.events.listen(iconImage, goog.events.EventType.CHANGE,
+      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
-      goog.events.listen(iconImage, goog.events.EventType.CHANGE,
+      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
@@ -217,6 +232,6 @@ describe('ol.style.IconImageCache', function() {
   });
 });
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.style.IconImageCache');

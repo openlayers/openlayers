@@ -1,12 +1,12 @@
 goog.provide('ol.layer.Layer');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
+goog.require('ol.object');
 goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
@@ -34,26 +34,26 @@ goog.require('ol.source.State');
  */
 ol.layer.Layer = function(options) {
 
-  var baseOptions = goog.object.clone(options);
+  var baseOptions = ol.object.assign({}, options);
   delete baseOptions.source;
 
-  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  goog.base(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {?ol.events.Key}
    */
   this.mapPrecomposeKey_ = null;
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {?ol.events.Key}
    */
   this.mapRenderKey_ = null;
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {?ol.events.Key}
    */
   this.sourceChangeKey_ = null;
 
@@ -61,9 +61,9 @@ ol.layer.Layer = function(options) {
     this.setMap(options.map);
   }
 
-  goog.events.listen(this,
+  ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.LayerProperty.SOURCE),
-      this.handleSourcePropertyChange_, false, this);
+      this.handleSourcePropertyChange_, this);
 
   var source = options.source ? options.source : null;
   this.setSource(source);
@@ -139,13 +139,13 @@ ol.layer.Layer.prototype.handleSourceChange_ = function() {
  */
 ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
   if (this.sourceChangeKey_) {
-    goog.events.unlistenByKey(this.sourceChangeKey_);
+    ol.events.unlistenByKey(this.sourceChangeKey_);
     this.sourceChangeKey_ = null;
   }
   var source = this.getSource();
   if (source) {
-    this.sourceChangeKey_ = goog.events.listen(source,
-        goog.events.EventType.CHANGE, this.handleSourceChange_, false, this);
+    this.sourceChangeKey_ = ol.events.listen(source,
+        ol.events.EventType.CHANGE, this.handleSourceChange_, this);
   }
   this.changed();
 };
@@ -164,24 +164,28 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
  * @api
  */
 ol.layer.Layer.prototype.setMap = function(map) {
-  goog.events.unlistenByKey(this.mapPrecomposeKey_);
-  this.mapPrecomposeKey_ = null;
+  if (this.mapPrecomposeKey_) {
+    ol.events.unlistenByKey(this.mapPrecomposeKey_);
+    this.mapPrecomposeKey_ = null;
+  }
   if (!map) {
     this.changed();
   }
-  goog.events.unlistenByKey(this.mapRenderKey_);
-  this.mapRenderKey_ = null;
+  if (this.mapRenderKey_) {
+    ol.events.unlistenByKey(this.mapRenderKey_);
+    this.mapRenderKey_ = null;
+  }
   if (map) {
-    this.mapPrecomposeKey_ = goog.events.listen(
+    this.mapPrecomposeKey_ = ol.events.listen(
         map, ol.render.EventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
           layerState.zIndex = Infinity;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[goog.getUid(this)] = layerState;
-        }, false, this);
-    this.mapRenderKey_ = goog.events.listen(
-        this, goog.events.EventType.CHANGE, map.render, false, map);
+        }, this);
+    this.mapRenderKey_ = ol.events.listen(
+        this, ol.events.EventType.CHANGE, map.render, map);
     this.changed();
   }
 };

@@ -200,10 +200,16 @@ describe('ol.coordinate', function() {
       var expected = '';
       expect(got).to.be(expected);
     });
-    it('formats a coord as expected', function() {
+    it('formats with zero fractional digits as default', function() {
       var coord = [7.85, 47.983333];
       var got = ol.coordinate.toStringHDMS(coord);
-      var expected = '47° 59′ 00″ N 7° 51′ 00″ E';
+      var expected = '47° 58′ 60″ N 7° 50′ 60″ E';
+      expect(got).to.be(expected);
+    });
+    it('formats with given fractional digits, if passed', function() {
+      var coord = [7.85, 47.983333];
+      var got = ol.coordinate.toStringHDMS(coord, 3);
+      var expected = '47° 58′ 59.999″ N 7° 50′ 60.000″ E';
       expect(got).to.be(expected);
     });
   });

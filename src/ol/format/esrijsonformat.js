@@ -1,9 +1,8 @@
 goog.provide('ol.format.EsriJSON');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.Feature');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
@@ -17,6 +16,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.flat.orient');
+goog.require('ol.object');
 goog.require('ol.proj');
 
 
@@ -70,7 +70,7 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
   } else if (object.rings) {
     var layout = ol.format.EsriJSON.getGeometryLayout_(object);
     var rings = ol.format.EsriJSON.convertRings_(object.rings, layout);
-    object = /** @type {EsriJSONGeometry} */(goog.object.clone(object));
+    object = /** @type {EsriJSONGeometry} */(ol.object.assign({}, object));
     if (rings.length === 1) {
       type = ol.geom.GeometryType.POLYGON;
       object.rings = rings[0];
@@ -104,7 +104,7 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
   var holes = [];
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
-    var flatRing = goog.array.flatten(rings[i]);
+    var flatRing = ol.array.flatten(rings[i]);
     // is this ring an outer ring? is it clockwise?
     var clockwise = ol.geom.flat.orient.linearRingIsClockwise(flatRing, 0,
         flatRing.length, layout.length);
@@ -170,7 +170,7 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} LineString.
  */
 ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
-  goog.asserts.assert(goog.isArray(object.paths),
+  goog.asserts.assert(Array.isArray(object.paths),
       'object.paths should be an array');
   goog.asserts.assert(object.paths.length === 1,
       'object.paths array length should be 1');
@@ -185,7 +185,7 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiLineString.
  */
 ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
-  goog.asserts.assert(goog.isArray(object.paths),
+  goog.asserts.assert(Array.isArray(object.paths),
       'object.paths should be an array');
   goog.asserts.assert(object.paths.length > 1,
       'object.paths array length should be more than 1');
@@ -651,7 +651,7 @@ ol.format.EsriJSON.prototype.writeFeatureObject = function(
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!goog.object.isEmpty(properties)) {
+  if (!ol.object.isEmpty(properties)) {
     object['attributes'] = properties;
   } else {
     object['attributes'] = {};

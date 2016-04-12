@@ -36,12 +36,6 @@ ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD = 0.5;
 
 
 /**
- * @define {number} Default high water mark.
- */
-ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK = 2048;
-
-
-/**
  * @define {number} Default tile size.
  */
 ol.DEFAULT_TILE_SIZE = 256;
@@ -262,14 +256,6 @@ ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
  *     var child = new ChildClass('a', 'b', 'see');
  *     child.foo(); // This works.
  *
- * In addition, a superclass' implementation of a method can be invoked as
- * follows:
- *
- *     ChildClass.prototype.foo = function(a) {
- *       ChildClass.base(this, 'foo', a);
- *       // Other code here.
- *     };
- *
  * @param {!Function} childCtor Child constructor.
  * @param {!Function} parentCtor Parent constructor.
  * @function
@@ -286,3 +272,6 @@ ol.inherits =
  * @return {undefined} Nothing.
  */
 ol.nullFunction = function() {};
+
+
+ol.global = Function('return this')();

@@ -1,9 +1,9 @@
 goog.provide('ol.structs.RBush');
 
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.ext.rbush');
 goog.require('ol.extent');
+goog.require('ol.object');
 
 
 /**
@@ -234,7 +234,7 @@ ol.structs.RBush.prototype.forEach_ = function(values, callback, opt_this) {
  * @return {boolean} Is empty.
  */
 ol.structs.RBush.prototype.isEmpty = function() {
-  return goog.object.isEmpty(this.items_);
+  return ol.object.isEmpty(this.items_);
 };
 
 

@@ -3,8 +3,8 @@
 goog.provide('ol.Geolocation');
 goog.provide('ol.GeolocationProperty');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
@@ -52,6 +52,7 @@ ol.GeolocationProperty = {
  *       window.console.log(geolocation.getPosition());
  *     });
  *
+ * @fires error
  * @constructor
  * @extends {ol.Object}
  * @param {olx.GeolocationOptions=} opt_options Options.
@@ -82,12 +83,12 @@ ol.Geolocation = function(opt_options) {
    */
   this.watchId_ = undefined;
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.PROJECTION),
-      this.handleProjectionChanged_, false, this);
-  goog.events.listen(
+      this.handleProjectionChanged_, this);
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
-      this.handleTrackingChanged_, false, this);
+      this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {
     this.setProjection(ol.proj.get(options.projection));
@@ -134,12 +135,12 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.GEOLOCATION) {
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
-      this.watchId_ = goog.global.navigator.geolocation.watchPosition(
+      this.watchId_ = ol.global.navigator.geolocation.watchPosition(
           this.positionChange_.bind(this),
           this.positionError_.bind(this),
           this.getTrackingOptions());
     } else if (!tracking && this.watchId_ !== undefined) {
-      goog.global.navigator.geolocation.clearWatch(this.watchId_);
+      ol.global.navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }
   }
@@ -177,15 +178,20 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.changed();
 };
 
+/**
+ * Triggered when the Geolocation returns an error.
+ * @event error
+ * @api
+ */
 
 /**
  * @private
  * @param {GeolocationPositionError} error error object.
  */
 ol.Geolocation.prototype.positionError_ = function(error) {
-  error.type = goog.events.EventType.ERROR;
+  error.type = ol.events.EventType.ERROR;
   this.setTracking(false);
-  this.dispatchEvent(error);
+  this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
 };
 
 

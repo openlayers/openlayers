@@ -2,8 +2,8 @@ goog.provide('ol.TileUrlFunction');
 goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.TileCoord');
+goog.require('ol.math');
 goog.require('ol.tilecoord');
 
 
@@ -109,7 +109,7 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
           return undefined;
         } else {
           var h = ol.tilecoord.hash(tileCoord);
-          var index = goog.math.modulo(h, tileUrlFunctions.length);
+          var index = ol.math.modulo(h, tileUrlFunctions.length);
           return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
         }
       });

@@ -1,9 +1,9 @@
 goog.provide('ol.source.VectorTile');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('ol.TileState');
 goog.require('ol.VectorTile');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.featureloader');
 goog.require('ol.source.UrlTile');
 
@@ -28,7 +28,7 @@ ol.source.VectorTile = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    cacheSize: ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK / 16,
+    cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
     extent: options.extent,
     logo: options.logo,
     opaque: options.opaque,
@@ -79,8 +79,8 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
         this.format_, this.tileLoadFunction);
-    goog.events.listen(tile, goog.events.EventType.CHANGE,
-        this.handleTileChange, false, this);
+    ol.events.listen(tile, ol.events.EventType.CHANGE,
+        this.handleTileChange, this);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;

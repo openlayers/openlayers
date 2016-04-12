@@ -2,11 +2,10 @@ goog.provide('ol.control.FullScreen');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
 goog.require('goog.dom.fullscreen');
 goog.require('goog.dom.fullscreen.EventType');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -37,24 +36,25 @@ ol.control.FullScreen = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.cssClassName_ = options.className ? options.className : 'ol-full-screen';
+  this.cssClassName_ = options.className !== undefined ? options.className :
+      'ol-full-screen';
 
-  var label = options.label ? options.label : '\u2922';
+  var label = options.label !== undefined ? options.label : '\u2922';
 
   /**
    * @private
    * @type {Node}
    */
-  this.labelNode_ = goog.isString(label) ?
+  this.labelNode_ = typeof label === 'string' ?
       document.createTextNode(label) : label;
 
-  var labelActive = options.labelActive ? options.labelActive : '\u00d7';
+  var labelActive = options.labelActive !== undefined ? options.labelActive : '\u00d7';
 
   /**
    * @private
    * @type {Node}
    */
-  this.labelActiveNode_ = goog.isString(labelActive) ?
+  this.labelActiveNode_ = typeof labelActive === 'string' ?
       document.createTextNode(labelActive) : labelActive;
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Toggle full-screen';
@@ -64,12 +64,8 @@ ol.control.FullScreen = function(opt_options) {
     'title': tipLabel
   }, this.labelNode_);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
-
-  goog.events.listen(goog.global.document,
-      goog.dom.fullscreen.EventType.CHANGE,
-      this.handleFullScreenChange_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK,
+      this.handleClick_, this);
 
   var cssClasses = this.cssClassName_ + ' ' + ol.css.CLASS_UNSELECTABLE +
       ' ' + ol.css.CLASS_CONTROL + ' ' +
@@ -98,7 +94,7 @@ goog.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.FullScreen.prototype.handleClick_ = function(event) {
@@ -137,18 +133,31 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
  * @private
  */
 ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
-  var opened = this.cssClassName_ + '-true';
-  var closed = this.cssClassName_ + '-false';
-  var button = goog.dom.getFirstElementChild(this.element);
+  var button = this.element.firstElementChild;
   var map = this.getMap();
   if (goog.dom.fullscreen.isFullScreen()) {
-    goog.dom.classlist.swap(button, closed, opened);
+    button.className = this.cssClassName_ + '-true';
     goog.dom.replaceNode(this.labelActiveNode_, this.labelNode_);
   } else {
-    goog.dom.classlist.swap(button, opened, closed);
+    button.className = this.cssClassName_ + '-false';
     goog.dom.replaceNode(this.labelNode_, this.labelActiveNode_);
   }
   if (map) {
     map.updateSize();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ * @api stable
+ */
+ol.control.FullScreen.prototype.setMap = function(map) {
+  goog.base(this, 'setMap', map);
+  if (map) {
+    this.listenerKeys.push(
+        ol.events.listen(ol.global.document, goog.dom.fullscreen.EventType.CHANGE,
+          this.handleFullScreenChange_, this)
+    );
   }
 };

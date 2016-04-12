@@ -17,11 +17,9 @@ var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
-        attributions: [new ol.Attribution({
-          html: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
-              '© <a href="http://www.openstreetmap.org/copyright">' +
-              'OpenStreetMap contributors</a>'
-        })],
+        attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
+          '© <a href="http://www.openstreetmap.org/copyright">' +
+          'OpenStreetMap contributors</a>',
         format: new ol.format.MVT(),
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
         tilePixelRatio: 16,

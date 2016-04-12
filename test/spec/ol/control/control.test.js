@@ -7,19 +7,19 @@ describe('ol.control.Control', function() {
     map = new ol.Map({
       target: document.createElement('div')
     });
-    var element = goog.dom.createDom('DIV');
+    var element = document.createElement('DIV');
     control = new ol.control.Control({element: element});
     control.setMap(map);
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
   });
 
   describe('dispose', function() {
     it('removes the control element from its parent', function() {
-      goog.dispose(control);
-      expect(goog.dom.getParentElement(control.element)).to.be(null);
+      control.dispose();
+      expect(control.element.parentNode).to.be(null);
     });
   });
 });
@@ -27,28 +27,28 @@ describe('ol.control.Control', function() {
 describe('ol.control.Control\'s target', function() {
   describe('target as string or element', function() {
     it('transforms target from string to element', function() {
-      var target = goog.dom.createDom('div', {'id': 'mycontrol'});
+      var target = document.createElement('div');
+      target.id = 'mycontrol';
       document.body.appendChild(target);
       var ctrl = new ol.control.Control({target: 'mycontrol'});
       expect(ctrl.target_.id).to.equal('mycontrol');
-      goog.dispose(ctrl);
+      ctrl.dispose();
     });
     it('accepts element for target', function() {
-      var target = goog.dom.createDom('div', {'id': 'mycontrol'});
+      var target = document.createElement('div');
+      target.id = 'mycontrol';
       document.body.appendChild(target);
       var ctrl = new ol.control.Control({target: target});
       expect(ctrl.target_.id).to.equal('mycontrol');
-      goog.dispose(ctrl);
+      ctrl.dispose();
     });
     it('ignores non-existing target id', function() {
       var ctrl = new ol.control.Control({target: 'doesnotexist'});
       expect(ctrl.target_).to.equal(null);
-      goog.dispose(ctrl);
+      ctrl.dispose();
     });
   });
 });
 
-goog.require('goog.dispose');
-goog.require('goog.dom');
 goog.require('ol.Map');
 goog.require('ol.control.Control');

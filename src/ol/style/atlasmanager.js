@@ -2,10 +2,8 @@ goog.provide('ol.style.Atlas');
 goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('ol');
-
+goog.require('ol.dom');
 
 /**
  * Provides information for an image inside an atlas manager.
@@ -187,7 +185,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
   var renderHitCallback = opt_renderHitCallback !== undefined ?
-      opt_renderHitCallback : goog.functions.NULL;
+      opt_renderHitCallback : ol.nullFunction
 
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.add_(true,
@@ -289,19 +287,15 @@ ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
+   * @type {CanvasRenderingContext2D}
    */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (document.createElement('CANVAS'));
-  this.canvas_.width = size;
-  this.canvas_.height = size;
+  this.context_ = ol.dom.createCanvasContext2D(size, size);
 
   /**
    * @private
-   * @type {CanvasRenderingContext2D}
+   * @type {HTMLCanvasElement}
    */
-  this.context_ = /** @type {CanvasRenderingContext2D} */
-      (this.canvas_.getContext('2d'));
+  this.canvas_ = this.context_.canvas;
 };
 
 
@@ -310,8 +304,7 @@ ol.style.Atlas = function(size, space) {
  * @return {?ol.style.AtlasInfo} The atlas info.
  */
 ol.style.Atlas.prototype.get = function(id) {
-  return /** @type {?ol.style.AtlasInfo} */ (
-      goog.object.get(this.entries_, id, null));
+  return this.entries_[id] || null;
 };
 
 

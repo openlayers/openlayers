@@ -15,7 +15,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layer);
+      layer.dispose();
     });
 
     it('creates an instance', function() {
@@ -86,7 +86,7 @@ describe('ol.layer.Layer', function() {
         minResolution: 0.25
       });
 
-      goog.dispose(layer);
+      layer.dispose();
     });
 
   });
@@ -103,7 +103,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layer);
+      layer.dispose();
     });
 
     it('returns false if layer is not visible', function() {
@@ -153,7 +153,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layer);
+      layer.dispose();
     });
 
     it('returns a layerState from the properties values', function() {
@@ -323,7 +323,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layer);
+      layer.dispose();
     });
 
     it('accepts a positive number', function() {
@@ -353,7 +353,7 @@ describe('ol.layer.Layer', function() {
     });
 
     afterEach(function() {
-      goog.dispose(layer);
+      layer.dispose();
     });
 
     it('sets visible property', function() {
@@ -432,7 +432,6 @@ describe('ol.layer.Layer', function() {
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Map');
 goog.require('ol.ObjectEventType');
 goog.require('ol.layer.Layer');

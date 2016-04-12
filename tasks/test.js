@@ -6,7 +6,7 @@
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var phantomjs = require('phantomjs');
+var phantomjs = require('phantomjs-prebuilt');
 
 var serve = require('./serve');
 
@@ -40,7 +40,9 @@ function listen(min, max, server, callback) {
 }
 
 
-function runTests(includeCoverage, callback) {
+function runTests(conf, callback) {
+  var coverage = 'coverage' in conf ? conf.coverage : false;
+  var reporter = 'reporter' in conf ? conf.reporter : 'spec';
   /**
    * Create the debug server and run tests.
    */
@@ -60,14 +62,14 @@ function runTests(includeCoverage, callback) {
       var args = [
         require.resolve('mocha-phantomjs-core'),
         url + '/test/index.html',
-        'spec'
+        reporter
       ];
       var config = {
         ignoreResourceErrors: true,
         useColors: true
       };
 
-      if (includeCoverage) {
+      if (coverage) {
         config.hooks = path.join(__dirname, '../test/phantom_hooks.js');
       }
 
@@ -82,7 +84,7 @@ function runTests(includeCoverage, callback) {
 }
 
 if (require.main === module) {
-  runTests(false, function(code) {
+  runTests({coverage: false, reporter: 'spec'}, function(code) {
     process.exit(code);
   });
 }

@@ -41,7 +41,8 @@ var styles = {
 };
 
 var vectorSource = new ol.source.Vector({
-  features: features
+  features: features,
+  wrapX: false
 });
 var vector = new ol.layer.Vector({
   source: vectorSource,
@@ -95,27 +96,26 @@ map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
-var imageStyle = new ol.style.Circle({
-  radius: 10,
-  fill: null,
-  stroke: new ol.style.Stroke({
-    color: 'rgba(255,255,0,0.9)',
-    width: 3
-  })
-});
-var strokeStyle = new ol.style.Stroke({
+var stroke = new ol.style.Stroke({
   color: 'rgba(255,255,0,0.9)',
   width: 3
 });
+var style = new ol.style.Style({
+  stroke: stroke,
+  image: new ol.style.Circle({
+    radius: 10,
+    stroke: stroke
+  })
+});
+
 map.on('postcompose', function(evt) {
   var vectorContext = evt.vectorContext;
+  vectorContext.setStyle(style);
   if (point !== null) {
-    vectorContext.setImageStyle(imageStyle);
-    vectorContext.drawPointGeometry(point);
+    vectorContext.drawGeometry(point);
   }
   if (line !== null) {
-    vectorContext.setFillStrokeStyle(null, strokeStyle);
-    vectorContext.drawLineStringGeometry(line);
+    vectorContext.drawGeometry(line);
   }
 });
 

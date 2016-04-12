@@ -2,9 +2,6 @@ goog.provide('ol.interaction.Snap');
 goog.provide('ol.interaction.SnapProperty');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
@@ -14,9 +11,13 @@ goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.functions');
+goog.require('ol.object');
 goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEvent');
 goog.require('ol.source.VectorEventType');
@@ -49,7 +50,7 @@ ol.interaction.Snap = function(opt_options) {
 
   goog.base(this, {
     handleEvent: ol.interaction.Snap.handleEvent_,
-    handleDownEvent: goog.functions.TRUE,
+    handleDownEvent: ol.functions.TRUE,
     handleUpEvent: ol.interaction.Snap.handleUpEvent_
   });
 
@@ -62,25 +63,37 @@ ol.interaction.Snap = function(opt_options) {
   this.source_ = options.source ? options.source : null;
 
   /**
+   * @private
+   * @type {boolean}
+   */
+  this.vertex_ = options.vertex !== undefined ? options.vertex : true;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.edge_ = options.edge !== undefined ? options.edge : true;
+
+  /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
   this.features_ = options.features ? options.features : null;
 
   /**
-   * @type {Array.<goog.events.Key>}
+   * @type {Array.<ol.events.Key>}
    * @private
    */
   this.featuresListenerKeys_ = [];
 
   /**
-   * @type {Object.<number, goog.events.Key>}
+   * @type {Object.<number, ol.events.Key>}
    * @private
    */
   this.geometryChangeListenerKeys_ = {};
 
   /**
-   * @type {Object.<number, goog.events.Key>}
+   * @type {Object.<number, ol.events.Key>}
    * @private
    */
   this.geometryModifyListenerKeys_ = {};
@@ -168,11 +181,13 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
     segmentWriter.call(this, feature, geometry);
 
     if (listen) {
-      this.geometryModifyListenerKeys_[feature_uid] = geometry.on(
-          goog.events.EventType.CHANGE,
+      this.geometryModifyListenerKeys_[feature_uid] = ol.events.listen(
+          geometry,
+          ol.events.EventType.CHANGE,
           this.handleGeometryModify_.bind(this, feature),
           this);
-      this.geometryChangeListenerKeys_[feature_uid] = feature.on(
+      this.geometryChangeListenerKeys_[feature_uid] = ol.events.listen(
+          feature,
           ol.Object.getChangeEventType(feature.getGeometryName()),
           this.handleGeometryChange_, this);
     }
@@ -249,11 +264,11 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
 
 
 /**
- * @param {goog.events.Event} evt Event.
+ * @param {ol.events.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
-  var feature = evt.currentTarget;
+  var feature = evt.target;
   goog.asserts.assertInstanceof(feature, ol.Feature);
   this.removeFeature(feature, true);
   this.addFeature(feature, true);
@@ -262,7 +277,7 @@ ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
 
 /**
  * @param {ol.Feature} feature Feature which geometry was modified.
- * @param {goog.events.Event} evt Event.
+ * @param {ol.events.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
@@ -328,15 +343,19 @@ ol.interaction.Snap.prototype.setMap = function(map) {
 
   if (map) {
     if (this.features_) {
-      keys.push(this.features_.on(ol.CollectionEventType.ADD,
-          this.handleFeatureAdd_, this));
-      keys.push(this.features_.on(ol.CollectionEventType.REMOVE,
-          this.handleFeatureRemove_, this));
+      keys.push(
+        ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+            this.handleFeatureAdd_, this),
+        ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+            this.handleFeatureRemove_, this)
+      );
     } else if (this.source_) {
-      keys.push(this.source_.on(ol.source.VectorEventType.ADDFEATURE,
-          this.handleFeatureAdd_, this));
-      keys.push(this.source_.on(ol.source.VectorEventType.REMOVEFEATURE,
-          this.handleFeatureRemove_, this));
+      keys.push(
+        ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
+            this.handleFeatureAdd_, this),
+        ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
+            this.handleFeatureRemove_, this)
+      );
     }
     features.forEach(this.forEachFeatureAdd_, this);
   }
@@ -346,7 +365,7 @@ ol.interaction.Snap.prototype.setMap = function(map) {
 /**
  * @inheritDoc
  */
-ol.interaction.Snap.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.Snap.prototype.shouldStopEvent = ol.functions.FALSE;
 
 
 /**
@@ -368,28 +387,48 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
   var snapped = false;
   var vertex = null;
   var vertexPixel = null;
+  var dist, pixel1, pixel2, squaredDist1, squaredDist2;
   if (segments.length > 0) {
     this.pixelCoordinate_ = pixelCoordinate;
     segments.sort(this.sortByDistance_);
     var closestSegment = segments[0].segment;
-    vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
-        closestSegment));
-    vertexPixel = map.getPixelFromCoordinate(vertex);
-    if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
-        this.pixelTolerance_) {
-      snapped = true;
-      var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
-      var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
-      var squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
-      var squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
-      var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+    if (this.vertex_ && !this.edge_) {
+      pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+      pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+      squaredDist1 = ol.coordinate.squaredDistance(pixel, pixel1);
+      squaredDist2 = ol.coordinate.squaredDistance(pixel, pixel2);
+      dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       snappedToVertex = dist <= this.pixelTolerance_;
       if (snappedToVertex) {
+        snapped = true;
         vertex = squaredDist1 > squaredDist2 ?
             closestSegment[1] : closestSegment[0];
         vertexPixel = map.getPixelFromCoordinate(vertex);
-        vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
       }
+    } else if (this.edge_) {
+      vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
+          closestSegment));
+      vertexPixel = map.getPixelFromCoordinate(vertex);
+      if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
+          this.pixelTolerance_) {
+        snapped = true;
+        if (this.vertex_) {
+          pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
+          pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
+          squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
+          squaredDist2 = ol.coordinate.squaredDistance(vertexPixel, pixel2);
+          dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
+          snappedToVertex = dist <= this.pixelTolerance_;
+          if (snappedToVertex) {
+            vertex = squaredDist1 > squaredDist2 ?
+                closestSegment[1] : closestSegment[0];
+            vertexPixel = map.getPixelFromCoordinate(vertex);
+          }
+        }
+      }
+    }
+    if (snapped) {
+      vertexPixel = [Math.round(vertexPixel[0]), Math.round(vertexPixel[1])];
     }
   }
   return /** @type {ol.interaction.Snap.ResultType} */ ({
@@ -589,7 +628,7 @@ ol.interaction.Snap.handleEvent_ = function(evt) {
  * @private
  */
 ol.interaction.Snap.handleUpEvent_ = function(evt) {
-  var featuresToUpdate = goog.object.getValues(this.pendingFeatures_);
+  var featuresToUpdate = ol.object.getValues(this.pendingFeatures_);
   if (featuresToUpdate.length) {
     featuresToUpdate.forEach(this.updateFeature_, this);
     this.pendingFeatures_ = {};

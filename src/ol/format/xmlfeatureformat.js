@@ -1,9 +1,8 @@
 goog.provide('ol.format.XMLFeature');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.dom.xml');
+goog.require('ol.array');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.proj');
@@ -20,6 +19,13 @@ goog.require('ol.xml');
  * @extends {ol.format.Feature}
  */
 ol.format.XMLFeature = function() {
+
+  /**
+   * @type {XMLSerializer}
+   * @private
+   */
+  this.xmlSerializer_ = new XMLSerializer();
+
   goog.base(this);
 };
 goog.inherits(ol.format.XMLFeature, ol.format.Feature);
@@ -42,7 +48,7 @@ ol.format.XMLFeature.prototype.readFeature = function(source, opt_options) {
         /** @type {Document} */ (source), opt_options);
   } else if (ol.xml.isNode(source)) {
     return this.readFeatureFromNode(/** @type {Node} */ (source), opt_options);
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFeatureFromDocument(doc, opt_options);
   } else {
@@ -85,7 +91,7 @@ ol.format.XMLFeature.prototype.readFeatures = function(source, opt_options) {
         /** @type {Document} */ (source), opt_options);
   } else if (ol.xml.isNode(source)) {
     return this.readFeaturesFromNode(/** @type {Node} */ (source), opt_options);
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFeaturesFromDocument(doc, opt_options);
   } else {
@@ -108,7 +114,7 @@ ol.format.XMLFeature.prototype.readFeaturesFromDocument = function(
   var n;
   for (n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == goog.dom.NodeType.ELEMENT) {
-      goog.array.extend(features, this.readFeaturesFromNode(n, opt_options));
+      ol.array.extend(features, this.readFeaturesFromNode(n, opt_options));
     }
   }
   return features;
@@ -133,7 +139,7 @@ ol.format.XMLFeature.prototype.readGeometry = function(source, opt_options) {
         /** @type {Document} */ (source), opt_options);
   } else if (ol.xml.isNode(source)) {
     return this.readGeometryFromNode(/** @type {Node} */ (source), opt_options);
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readGeometryFromDocument(doc, opt_options);
   } else {
@@ -169,7 +175,7 @@ ol.format.XMLFeature.prototype.readProjection = function(source) {
     return this.readProjectionFromDocument(/** @type {Document} */ (source));
   } else if (ol.xml.isNode(source)) {
     return this.readProjectionFromNode(/** @type {Node} */ (source));
-  } else if (goog.isString(source)) {
+  } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readProjectionFromDocument(doc);
   } else {
@@ -206,7 +212,7 @@ ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
   var node = this.writeFeatureNode(feature, opt_options);
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  return goog.dom.xml.serialize(/** @type {Element} */(node));
+  return this.xmlSerializer_.serializeToString(node);
 };
 
 
@@ -226,7 +232,7 @@ ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
   var node = this.writeFeaturesNode(features, opt_options);
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  return goog.dom.xml.serialize(/** @type {Element} */(node));
+  return this.xmlSerializer_.serializeToString(node);
 };
 
 
@@ -245,7 +251,7 @@ ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
   var node = this.writeGeometryNode(geometry, opt_options);
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  return goog.dom.xml.serialize(/** @type {Element} */(node));
+  return this.xmlSerializer_.serializeToString(node);
 };
 
 

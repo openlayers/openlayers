@@ -13,17 +13,26 @@ ol.render.VectorContext = function() {
 
 
 /**
- * @param {number} zIndex Z index.
- * @param {function(ol.render.VectorContext)} callback Callback.
+ * Render a geometry.
+ *
+ * @param {ol.geom.Geometry} geometry The geometry to render.
  */
-ol.render.VectorContext.prototype.drawAsync = goog.abstractMethod;
+ol.render.VectorContext.prototype.drawGeometry = goog.abstractMethod;
+
+
+/**
+ * Set the rendering style.
+ *
+ * @param {ol.style.Style} style The rendering style.
+ */
+ol.render.VectorContext.prototype.setStyle = goog.abstractMethod;
 
 
 /**
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
  * @param {ol.Feature} feature Feature,
  */
-ol.render.VectorContext.prototype.drawCircleGeometry = goog.abstractMethod;
+ol.render.VectorContext.prototype.drawCircle = goog.abstractMethod;
 
 
 /**
@@ -38,8 +47,7 @@ ol.render.VectorContext.prototype.drawFeature = goog.abstractMethod;
  *     collection.
  * @param {ol.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawGeometryCollectionGeometry =
-    goog.abstractMethod;
+ol.render.VectorContext.prototype.drawGeometryCollection = goog.abstractMethod;
 
 
 /**
@@ -47,8 +55,7 @@ ol.render.VectorContext.prototype.drawGeometryCollectionGeometry =
  *     string geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawLineStringGeometry =
-    goog.abstractMethod;
+ol.render.VectorContext.prototype.drawLineString = goog.abstractMethod;
 
 
 /**
@@ -56,8 +63,7 @@ ol.render.VectorContext.prototype.drawLineStringGeometry =
  *     MultiLineString geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawMultiLineStringGeometry =
-    goog.abstractMethod;
+ol.render.VectorContext.prototype.drawMultiLineString = goog.abstractMethod;
 
 
 /**
@@ -65,22 +71,21 @@ ol.render.VectorContext.prototype.drawMultiLineStringGeometry =
  *     geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawMultiPointGeometry = goog.abstractMethod;
+ol.render.VectorContext.prototype.drawMultiPoint = goog.abstractMethod;
 
 
 /**
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
  * @param {ol.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawMultiPolygonGeometry =
-    goog.abstractMethod;
+ol.render.VectorContext.prototype.drawMultiPolygon = goog.abstractMethod;
 
 
 /**
  * @param {ol.geom.Point|ol.render.Feature} pointGeometry Point geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawPointGeometry = goog.abstractMethod;
+ol.render.VectorContext.prototype.drawPoint = goog.abstractMethod;
 
 
 /**
@@ -88,7 +93,7 @@ ol.render.VectorContext.prototype.drawPointGeometry = goog.abstractMethod;
  *     geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
-ol.render.VectorContext.prototype.drawPolygonGeometry = goog.abstractMethod;
+ol.render.VectorContext.prototype.drawPolygon = goog.abstractMethod;
 
 
 /**

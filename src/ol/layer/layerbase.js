@@ -2,10 +2,10 @@ goog.provide('ol.layer.Base');
 goog.provide('ol.layer.LayerProperty');
 goog.provide('ol.layer.LayerState');
 
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.math');
+goog.require('ol.object');
 goog.require('ol.source.State');
 
 
@@ -57,7 +57,7 @@ ol.layer.Base = function(options) {
   /**
    * @type {Object.<string, *>}
    */
-  var properties = goog.object.clone(options);
+  var properties = ol.object.assign({}, options);
   properties[ol.layer.LayerProperty.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;
   properties[ol.layer.LayerProperty.VISIBLE] =

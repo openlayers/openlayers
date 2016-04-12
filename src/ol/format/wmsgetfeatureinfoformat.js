@@ -1,12 +1,11 @@
 goog.provide('ol.format.WMSGetFeatureInfo');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
+goog.require('ol.object');
 goog.require('ol.xml');
 
 
@@ -73,10 +72,10 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
 
-  node.namespaceURI = this.featureNS_;
+  node.setAttribute('namespaceURI', this.featureNS_);
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
-  var localName = ol.xml.getLocalName(node);
+  var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
   var features = [];
   if (node.childNodes.length === 0) {
@@ -114,11 +113,11 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
           this.gmlFormat_.readFeatureElement, this.gmlFormat_);
       var parsersNS = ol.xml.makeStructureNS(
           [context['featureNS'], null], parsers);
-      layer.namespaceURI = this.featureNS_;
+      layer.setAttribute('namespaceURI', this.featureNS_);
       var layerFeatures = ol.xml.pushParseAndPop(
           [], parsersNS, layer, objectStack, this.gmlFormat_);
       if (layerFeatures) {
-        goog.array.extend(features, layerFeatures);
+        ol.array.extend(features, layerFeatures);
       }
     }
   }
@@ -150,12 +149,9 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures;
  * @inheritDoc
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
-  var options = {
-    'featureType': this.featureType,
-    'featureNS': this.featureNS
-  };
+  var options = {};
   if (opt_options) {
-    goog.object.extend(options, this.getReadOptions(node, opt_options));
+    ol.object.assign(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);
 };

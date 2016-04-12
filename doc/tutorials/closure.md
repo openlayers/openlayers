@@ -167,9 +167,6 @@ The minimum config file looks like this:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
@@ -177,9 +174,6 @@ The minimum config file looks like this:
     "js": [
       "node_modules/openlayers/externs/olx.js",
       "node_modules/openlayers/externs/oli.js"
-    ],
-    "jscomp_off": [
-      "unknownDefines"
     ],
     "extra_annotation_name": [
       "api", "observable"
@@ -223,9 +217,7 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
       "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
@@ -235,41 +227,13 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
-      "accessControls",
-      "ambiguousFunctionDecl",
-      "checkEventfulObjectDisposal",
-      "checkRegExp",
-      "checkTypes",
-      "checkVars",
-      "const",
-      "constantProperty",
-      "deprecated",
-      "duplicateMessage",
-      "es3",
-      "es5Strict",
-      "externsValidation",
-      "fileoverviewTags",
-      "globalThis",
-      "internetExplorerChecks",
-      "invalidCasts",
-      "misplacedTypeAnnotation",
-      "missingGetCssName",
-      "missingProperties",
-      "missingProvide",
-      "missingRequire",
-      "missingReturn",
-      "newCheckTypes",
-      "nonStandardJsDocs",
-      "suspiciousCode",
-      "strictModuleDepCheck",
-      "typeInvalidation",
-      "undefinedNames",
-      "undefinedVars",
-      "uselessCode",
-      "visibility"
+      "*"
     ],
     "jscomp_off": [
       "unknownDefines"
+      "useOfGoogBase",
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"

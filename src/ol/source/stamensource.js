@@ -70,7 +70,7 @@ ol.source.StamenProviderConfig = {
     maxZoom: 20
   },
   'watercolor': {
-    minZoom: 3,
+    minZoom: 1,
     maxZoom: 16
   }
 };
@@ -103,10 +103,10 @@ ol.source.Stamen = function(options) {
 
   goog.base(this, {
     attributions: ol.source.Stamen.ATTRIBUTIONS,
+    cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     maxZoom: providerConfig.maxZoom,
-    // FIXME uncomment the following when tilegrid supports minZoom
-    //minZoom: providerConfig.minZoom,
+    minZoom: providerConfig.minZoom,
     opaque: layerConfig.opaque,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileLoadFunction: options.tileLoadFunction,

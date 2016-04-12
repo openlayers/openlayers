@@ -1,10 +1,9 @@
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('goog.asserts');
-goog.require('goog.events.MouseWheelEvent');
-goog.require('goog.events.MouseWheelHandler.EventType');
 goog.require('ol');
 goog.require('ol.Coordinate');
+goog.require('ol.events.EventType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.math');
 
@@ -76,18 +75,36 @@ goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
  */
 ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type ==
-      goog.events.MouseWheelHandler.EventType.MOUSEWHEEL) {
+  if (mapBrowserEvent.type == ol.events.EventType.WHEEL ||
+      mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
     var map = mapBrowserEvent.map;
-    var mouseWheelEvent = mapBrowserEvent.browserEvent;
-    goog.asserts.assertInstanceof(mouseWheelEvent, goog.events.MouseWheelEvent,
-        'mouseWheelEvent should be of type MouseWheelEvent');
+    var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
 
     if (this.useAnchor_) {
       this.lastAnchor_ = mapBrowserEvent.coordinate;
     }
 
-    this.delta_ += mouseWheelEvent.deltaY;
+    // Delta normalisation inspired by
+    // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
+    //TODO There's more good stuff in there for inspiration to improve this interaction.
+    var delta;
+    if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
+      delta = wheelEvent.deltaY;
+      if (ol.has.FIREFOX &&
+          wheelEvent.deltaMode === ol.global.WheelEvent.DOM_DELTA_PIXEL) {
+        delta /= ol.has.DEVICE_PIXEL_RATIO;
+      }
+      if (wheelEvent.deltaMode === ol.global.WheelEvent.DOM_DELTA_LINE) {
+        delta *= 40;
+      }
+    } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
+      delta = -wheelEvent.wheelDeltaY;
+      if (ol.has.SAFARI) {
+        delta /= 3;
+      }
+    }
+
+    this.delta_ += delta;
 
     if (this.startTime_ === undefined) {
       this.startTime_ = Date.now();
@@ -96,8 +113,8 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
     var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
 
-    goog.global.clearTimeout(this.timeoutId_);
-    this.timeoutId_ = goog.global.setTimeout(
+    ol.global.clearTimeout(this.timeoutId_);
+    this.timeoutId_ = ol.global.setTimeout(
         this.doZoom_.bind(this, map), timeLeft);
 
     mapBrowserEvent.preventDefault();

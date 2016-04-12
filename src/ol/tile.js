@@ -1,9 +1,9 @@
 goog.provide('ol.Tile');
 goog.provide('ol.TileState');
 
-goog.require('goog.events');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+goog.require('ol.events.EventType');
 goog.require('ol.TileCoord');
 
 
@@ -15,7 +15,8 @@ ol.TileState = {
   LOADING: 1,
   LOADED: 2,
   ERROR: 3,
-  EMPTY: 4
+  EMPTY: 4,
+  ABORT: 5
 };
 
 
@@ -24,7 +25,7 @@ ol.TileState = {
  * Base class for tiles.
  *
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
  */
@@ -60,14 +61,14 @@ ol.Tile = function(tileCoord, state) {
   this.key = '';
 
 };
-goog.inherits(ol.Tile, goog.events.EventTarget);
+goog.inherits(ol.Tile, ol.events.EventTarget);
 
 
 /**
  * @protected
  */
 ol.Tile.prototype.changed = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
+  this.dispatchEvent(ol.events.EventType.CHANGE);
 };
 
 

@@ -26,6 +26,22 @@ body {
   margin-right: 5px;
   display: inline-block;
 }
+.nav>li>a:hover, .nav>li>a:focus, .nav>li>a.active {
+  background-color: #268591;
+}
+.navbar-nav>li>a {
+  color: white;
+}
+.display-table {
+  display: table;
+}
+.version-form, .navbar-form {
+  display: table-cell;
+  vertical-align: middle;
+}
+.version-form {
+  color: #333;
+}
 
 #title {
   margin-top: 0;

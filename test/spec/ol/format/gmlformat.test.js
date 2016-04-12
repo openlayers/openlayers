@@ -3,7 +3,7 @@ goog.provide('ol.test.format.GML');
 var readGeometry = function(format, text, opt_options) {
   var doc = ol.xml.parse(text);
   // we need an intermediate node for testing purposes
-  var node = goog.dom.createElement('PRE');
+  var node = document.createElement('PRE');
   node.appendChild(doc.documentElement);
   return format.readGeometryFromNode(node, opt_options);
 };
@@ -1034,7 +1034,7 @@ describe('ol.format.GML3', function() {
 
     it('writes back features as GML', function() {
       var serialized = gmlFormat.writeFeaturesNode(features);
-      expect(serialized).to.xmleql(ol.xml.parse(text));
+      expect(serialized).to.xmleql(ol.xml.parse(text), {ignoreElementOrder: true});
     });
 
   });
@@ -1256,7 +1256,6 @@ describe('ol.format.GML3', function() {
 });
 
 
-goog.require('goog.dom');
 goog.require('ol.format.GML');
 goog.require('ol.format.GML2');
 goog.require('ol.format.GML3');

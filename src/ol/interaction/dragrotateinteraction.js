@@ -2,6 +2,7 @@ goog.provide('ol.interaction.DragRotate');
 
 goog.require('ol');
 goog.require('ol.ViewHint');
+goog.require('ol.functions');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
@@ -112,8 +113,8 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
+  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
+      this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     map.render();
@@ -128,4 +129,4 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotate.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.DragRotate.prototype.shouldStopEvent = ol.functions.FALSE;

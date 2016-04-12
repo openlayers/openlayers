@@ -1,10 +1,6 @@
-// FIXME add tests for browser features (Modernizr?)
-
 goog.provide('ol.dom');
-goog.provide('ol.dom.BrowserFeature');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.userAgent');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
@@ -40,31 +36,29 @@ ol.dom.canUseCssTransform = (function() {
     if (canUseCssTransform === undefined) {
       goog.asserts.assert(document.body,
           'document.body should not be null');
-      if (!goog.global.getComputedStyle) {
-        // this browser is ancient
-        canUseCssTransform = false;
-      } else {
-        var el = document.createElement('P'),
-            has2d,
-            transforms = {
-              'webkitTransform': '-webkit-transform',
-              'OTransform': '-o-transform',
-              'msTransform': '-ms-transform',
-              'MozTransform': '-moz-transform',
-              'transform': 'transform'
-            };
-        document.body.appendChild(el);
-        for (var t in transforms) {
-          if (t in el.style) {
-            el.style[t] = 'translate(1px,1px)';
-            has2d = goog.global.getComputedStyle(el).getPropertyValue(
-                transforms[t]);
-          }
-        }
-        goog.dom.removeNode(el);
+      goog.asserts.assert(ol.global.getComputedStyle,
+          'getComputedStyle is required (unsupported browser?)');
 
-        canUseCssTransform = (has2d && has2d !== 'none');
+      var el = document.createElement('P'),
+          has2d,
+          transforms = {
+            'webkitTransform': '-webkit-transform',
+            'OTransform': '-o-transform',
+            'msTransform': '-ms-transform',
+            'MozTransform': '-moz-transform',
+            'transform': 'transform'
+          };
+      document.body.appendChild(el);
+      for (var t in transforms) {
+        if (t in el.style) {
+          el.style[t] = 'translate(1px,1px)';
+          has2d = ol.global.getComputedStyle(el).getPropertyValue(
+              transforms[t]);
+        }
       }
+      document.body.removeChild(el);
+
+      canUseCssTransform = (has2d && has2d !== 'none');
     }
     return canUseCssTransform;
   };
@@ -83,31 +77,29 @@ ol.dom.canUseCssTransform3D = (function() {
     if (canUseCssTransform3D === undefined) {
       goog.asserts.assert(document.body,
           'document.body should not be null');
-      if (!goog.global.getComputedStyle) {
-        // this browser is ancient
-        canUseCssTransform3D = false;
-      } else {
-        var el = document.createElement('P'),
-            has3d,
-            transforms = {
-              'webkitTransform': '-webkit-transform',
-              'OTransform': '-o-transform',
-              'msTransform': '-ms-transform',
-              'MozTransform': '-moz-transform',
-              'transform': 'transform'
-            };
-        document.body.appendChild(el);
-        for (var t in transforms) {
-          if (t in el.style) {
-            el.style[t] = 'translate3d(1px,1px,1px)';
-            has3d = goog.global.getComputedStyle(el).getPropertyValue(
-                transforms[t]);
-          }
-        }
-        goog.dom.removeNode(el);
+      goog.asserts.assert(ol.global.getComputedStyle,
+          'getComputedStyle is required (unsupported browser?)');
 
-        canUseCssTransform3D = (has3d && has3d !== 'none');
+      var el = document.createElement('P'),
+          has3d,
+          transforms = {
+            'webkitTransform': '-webkit-transform',
+            'OTransform': '-o-transform',
+            'msTransform': '-ms-transform',
+            'MozTransform': '-moz-transform',
+            'transform': 'transform'
+          };
+      document.body.appendChild(el);
+      for (var t in transforms) {
+        if (t in el.style) {
+          el.style[t] = 'translate3d(1px,1px,1px)';
+          has3d = ol.global.getComputedStyle(el).getPropertyValue(
+              transforms[t]);
+        }
       }
+      document.body.removeChild(el);
+
+      canUseCssTransform3D = (has3d && has3d !== 'none');
     }
     return canUseCssTransform3D;
   };
@@ -200,7 +192,7 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
  */
 ol.dom.outerWidth = function(element) {
   var width = element.offsetWidth;
-  var style = element.currentStyle || window.getComputedStyle(element);
+  var style = element.currentStyle || ol.global.getComputedStyle(element);
   width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
 
   return width;
@@ -216,7 +208,7 @@ ol.dom.outerWidth = function(element) {
  */
 ol.dom.outerHeight = function(element) {
   var height = element.offsetHeight;
-  var style = element.currentStyle || window.getComputedStyle(element);
+  var style = element.currentStyle || ol.global.getComputedStyle(element);
   height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 
   return height;

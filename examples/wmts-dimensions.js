@@ -33,13 +33,9 @@ var wmtsSource = new ol.source.WMTS({
   format: 'image/png',
   matrixSet: 'EPSG:3857',
   attributions: [
-    new ol.Attribution({
-      html: '<a href="http://scalgo.com">SCALGO</a>'
-    }),
-    new ol.Attribution({
-      html: '<a href="http://www.cgiar-csi.org/data/' +
-          'srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>'
-    })
+    '<a href="http://scalgo.com">SCALGO</a>',
+    '<a href="http://www.cgiar-csi.org/data/' +
+        'srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>'
   ],
   tileGrid: tileGrid,
   style: 'default',

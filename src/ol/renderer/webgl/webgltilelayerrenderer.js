@@ -169,7 +169,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   var pixelRatio = tilePixelSize[0] /
       ol.size.toSize(tileGrid.getTileSize(z), this.tmpSize_)[0];
   var tilePixelResolution = tileResolution / pixelRatio;
-  var tileGutter = tileSource.getGutter();
+  var tileGutter = tileSource.getGutter(projection);
 
   var center = viewState.center;
   var extent;

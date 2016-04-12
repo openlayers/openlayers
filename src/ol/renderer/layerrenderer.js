@@ -1,10 +1,10 @@
 goog.provide('ol.renderer.Layer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.functions');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol');
+goog.require('ol.functions');
 goog.require('ol.ImageState');
 goog.require('ol.Observable');
 goog.require('ol.TileRange');
@@ -63,7 +63,7 @@ ol.renderer.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
       frameState.pixelToCoordinateMatrix, coordinate, coordinate);
 
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, goog.functions.TRUE, this);
+      coordinate, frameState, ol.functions.TRUE, this);
 
   if (hasFeature) {
     return callback.call(thisArg, this.layer_);
@@ -78,7 +78,7 @@ ol.renderer.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, ca
  * @param {olx.FrameState} frameState Frame state.
  * @return {boolean} Is there a feature at the given coordinate?
  */
-ol.renderer.Layer.prototype.hasFeatureAtCoordinate = goog.functions.FALSE;
+ol.renderer.Layer.prototype.hasFeatureAtCoordinate = ol.functions.FALSE;
 
 
 /**
@@ -121,7 +121,7 @@ ol.renderer.Layer.prototype.getLayer = function() {
 
 /**
  * Handle changes in image state.
- * @param {goog.events.Event} event Image change event.
+ * @param {ol.events.Event} event Image change event.
  * @private
  */
 ol.renderer.Layer.prototype.handleImageChange_ = function(event) {
@@ -149,8 +149,8 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
     goog.asserts.assert(imageState == ol.ImageState.IDLE ||
         imageState == ol.ImageState.LOADING,
         'imageState is "idle" or "loading"');
-    goog.events.listen(image, goog.events.EventType.CHANGE,
-        this.handleImageChange_, false, this);
+    ol.events.listen(image, ol.events.EventType.CHANGE,
+        this.handleImageChange_, this);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();
@@ -182,7 +182,7 @@ ol.renderer.Layer.prototype.renderIfReadyAndVisible = function() {
 ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSource) {
   if (tileSource.canExpireCache()) {
     frameState.postRenderFunctions.push(
-        goog.partial(
+        /** @type {ol.PostRenderFunction} */ (goog.partial(
             /**
              * @param {ol.source.Tile} tileSource Tile source.
              * @param {ol.Map} map Map.
@@ -192,7 +192,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
               var tileSourceKey = goog.getUid(tileSource).toString();
               tileSource.expireCache(frameState.viewState.projection,
                                      frameState.usedTiles[tileSourceKey]);
-            }, tileSource));
+            }, tileSource)));
   }
 };
 
@@ -222,7 +222,7 @@ ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attri
 ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   var logo = source.getLogo();
   if (logo !== undefined) {
-    if (goog.isString(logo)) {
+    if (typeof logo === 'string') {
       frameState.logos[logo] = '';
     } else if (goog.isObject(logo)) {
       goog.asserts.assertString(logo.href, 'logo.href is a string');

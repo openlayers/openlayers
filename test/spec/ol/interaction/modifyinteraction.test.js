@@ -48,7 +48,7 @@ describe('ol.interaction.Modify', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -64,17 +64,16 @@ describe('ol.interaction.Modify', function() {
   function simulateEvent(type, x, y, opt_shiftKey, button) {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
-    var position = goog.style.getClientPosition(viewport);
+    var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new ol.MapBrowserPointerEvent(type, map,
-        new ol.pointer.PointerEvent(type,
-            new goog.events.BrowserEvent({
-              type: type,
-              button: button,
-              clientX: position.x + x + width / 2,
-              clientY: position.y + y + height / 2,
-              shiftKey: shiftKey
-            })));
+    var pointerEvent = new ol.pointer.PointerEvent(type, {
+      type: type,
+      button: button,
+      clientX: position.left + x + width / 2,
+      clientY: position.top + y + height / 2,
+      shiftKey: shiftKey
+    });
+    var event = new ol.MapBrowserPointerEvent(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
@@ -177,6 +176,78 @@ describe('ol.interaction.Modify', function() {
       expect(first.getGeometry().getCoordinates()[0]).to.have.length(4);
       expect(second.getGeometry().getRevision()).to.equal(secondRevision + 1);
       expect(second.getGeometry().getCoordinates()[0]).to.have.length(4);
+
+      validateEvents(events, features);
+    });
+
+    it('deletes first vertex of a LineString', function() {
+      var lineFeature = new ol.Feature({
+        geometry: new ol.geom.LineString(
+          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+        )
+      });
+      features.length = 0;
+      features.push(lineFeature);
+      features.push(lineFeature.clone());
+
+      var first = features[0];
+      var firstRevision = first.getGeometry().getRevision();
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var events = trackEvents(first, modify);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+
+      simulateEvent('pointerdown', 0, 0, false, 0);
+      simulateEvent('pointerup', 0, 0, false, 0);
+      simulateEvent('click', 0, 0, false, 0);
+      simulateEvent('singleclick', 0, 0, false, 0);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(first.getGeometry().getCoordinates()).to.have.length(4);
+      expect(first.getGeometry().getCoordinates()[0][0]).to.equal(10);
+      expect(first.getGeometry().getCoordinates()[0][1]).to.equal(20);
+
+      validateEvents(events, features);
+    });
+
+    it('deletes last vertex of a LineString', function() {
+      var lineFeature = new ol.Feature({
+        geometry: new ol.geom.LineString(
+          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+        )
+      });
+      features.length = 0;
+      features.push(lineFeature);
+      features.push(lineFeature.clone());
+
+      var first = features[0];
+      var firstRevision = first.getGeometry().getRevision();
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      var events = trackEvents(first, modify);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision);
+      expect(first.getGeometry().getCoordinates()).to.have.length(5);
+
+      simulateEvent('pointerdown', 40, 0, false, 0);
+      simulateEvent('pointerup', 40, 0, false, 0);
+      simulateEvent('click', 40, 0, false, 0);
+      simulateEvent('singleclick', 40, 0, false, 0);
+
+      expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
+      expect(first.getGeometry().getCoordinates()).to.have.length(4);
+      expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
+      expect(first.getGeometry().getCoordinates()[3][1]).to.equal(40);
 
       validateEvents(events, features);
     });
@@ -327,10 +398,10 @@ describe('ol.interaction.Modify', function() {
 
     beforeEach(function() {
       getListeners = function(feature, modify) {
-        var listeners = goog.events.getListeners(
-            feature, goog.events.EventType.CHANGE, false);
+        var listeners = ol.events.getListeners(
+            feature, 'change');
         return listeners.filter(function(listener) {
-          return listener.handler == modify;
+          return listener.bindTo === modify;
         });
       };
     });
@@ -376,17 +447,14 @@ describe('ol.interaction.Modify', function() {
 
 });
 
-goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.events.BrowserEvent');
-goog.require('goog.style');
+goog.require('ol.events');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
 goog.require('ol.events.condition');
+goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Modify');

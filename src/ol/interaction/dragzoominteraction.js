@@ -34,6 +34,12 @@ ol.interaction.DragZoom = function(opt_options) {
    */
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.out_ = options.out !== undefined ? options.out : false;
+
   goog.base(this, {
     condition: condition,
     className: options.className || 'ol-dragzoom'
@@ -56,6 +62,17 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   goog.asserts.assert(size !== undefined, 'size should be defined');
 
   var extent = this.getGeometry().getExtent();
+
+  if (this.out_) {
+    var mapExtent = view.calculateExtent(size);
+    var boxPixelExtent = ol.extent.createOrUpdateFromCoordinates([
+      map.getPixelFromCoordinate(ol.extent.getBottomLeft(extent)),
+      map.getPixelFromCoordinate(ol.extent.getTopRight(extent))]);
+    var factor = view.getResolutionForExtent(boxPixelExtent, size);
+
+    ol.extent.scaleFromCenter(mapExtent, 1 / factor);
+    extent = mapExtent;
+  }
 
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));

@@ -4,7 +4,7 @@ goog.provide('ol.OverlayProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.style');
 goog.require('ol.Coordinate');
 goog.require('ol.Map');
@@ -137,29 +137,29 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {?ol.events.Key}
    */
   this.mapPostrenderListenerKey_ = null;
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.ELEMENT),
-      this.handleElementChanged, false, this);
+      this.handleElementChanged, this);
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.MAP),
-      this.handleMapChanged, false, this);
+      this.handleMapChanged, this);
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.OFFSET),
-      this.handleOffsetChanged, false, this);
+      this.handleOffsetChanged, this);
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITION),
-      this.handlePositionChanged, false, this);
+      this.handlePositionChanged, this);
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
-      this.handlePositioningChanged, false, this);
+      this.handlePositioningChanged, this);
 
   if (options.element !== undefined) {
     this.setElement(options.element);
@@ -269,19 +269,18 @@ ol.Overlay.prototype.handleElementChanged = function() {
 ol.Overlay.prototype.handleMapChanged = function() {
   if (this.mapPostrenderListenerKey_) {
     goog.dom.removeNode(this.element_);
-    goog.events.unlistenByKey(this.mapPostrenderListenerKey_);
+    ol.events.unlistenByKey(this.mapPostrenderListenerKey_);
     this.mapPostrenderListenerKey_ = null;
   }
   var map = this.getMap();
   if (map) {
-    this.mapPostrenderListenerKey_ = goog.events.listen(map,
-        ol.MapEventType.POSTRENDER, this.render, false, this);
+    this.mapPostrenderListenerKey_ = ol.events.listen(map,
+        ol.MapEventType.POSTRENDER, this.render, this);
     this.updatePixelPosition();
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
-      goog.dom.insertChildAt(/** @type {!Element} */ (
-          container), this.element_, 0);
+      goog.dom.insertChildAt(container, this.element_, 0);
     } else {
       container.appendChild(this.element_);
     }
@@ -506,7 +505,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   goog.asserts.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
-  goog.asserts.assert(goog.isArray(offset), 'offset should be an array');
+  goog.asserts.assert(Array.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
   goog.asserts.assert(positioning !== undefined,

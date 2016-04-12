@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.dom.VectorLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -93,6 +93,17 @@ goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
 /**
  * @inheritDoc
  */
+ol.renderer.dom.VectorLayer.prototype.clearFrame = function() {
+  // Clear the canvas
+  var canvas = this.context_.canvas;
+  canvas.width = canvas.width;
+  this.renderedRevision_ = 0;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerState) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
@@ -164,7 +175,6 @@ ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ = function(type, frameState
     var event = new ol.render.Event(type, layer, render, frameState,
         context, null);
     layer.dispatchEvent(event);
-    render.flush();
   }
 };
 
@@ -179,11 +189,10 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var layer = this.getLayer();
-    var layerState = frameState.layerStates[goog.getUid(layer)];
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate, resolution,
-        rotation, layerState.managed ? frameState.skippedFeatureUids : {},
+        rotation, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
@@ -202,7 +211,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
 ol.renderer.dom.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
@@ -258,8 +267,6 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame = function(frameState, layerS
     return true;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(this.replayGroup_);
   this.replayGroup_ = null;
 
   this.dirty_ = false;
@@ -331,7 +338,7 @@ ol.renderer.dom.VectorLayer.prototype.renderFeature = function(feature, resoluti
     return false;
   }
   var loading = false;
-  if (goog.isArray(styles)) {
+  if (Array.isArray(styles)) {
     for (var i = 0, ii = styles.length; i < ii; ++i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],

@@ -1,6 +1,6 @@
 goog.provide('ol.source.UrlTile');
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
@@ -11,7 +11,7 @@ goog.require('ol.source.TileEvent');
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
@@ -126,7 +126,7 @@ ol.source.UrlTile.prototype.getUrls = function() {
 
 /**
  * Handle tile change events.
- * @param {goog.events.Event} event Event.
+ * @param {ol.events.Event} event Event.
  * @protected
  */
 ol.source.UrlTile.prototype.handleTileChange = function(event) {
@@ -183,8 +183,7 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction) {
  * @api stable
  */
 ol.source.UrlTile.prototype.setUrl = function(url) {
-  this.urls = [url];
-  var urls = ol.TileUrlFunction.expandUrl(url);
+  var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) :
       ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));

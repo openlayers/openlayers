@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Feature');
 goog.require('ol.TileRange');
@@ -93,7 +93,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
   goog.asserts.assertInstanceof(source, ol.source.VectorTile,
       'Source is an ol.source.VectorTile');
   var tilePixelRatio = source.getTilePixelRatio(pixelRatio);
-  var maxScale = tilePixelRatio / pixelRatio;
 
   var transform = this.getTransform(frameState, 0);
 
@@ -118,9 +117,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
   var tileGrid = source.getTileGrid();
 
   var currentZ, height, i, ii, insertPoint, insertTransform, offsetX, offsetY;
-  var origin, pixelSpace, replayState, scale, tile, tileCenter, tileContext;
-  var tileExtent, tilePixelResolution, tilePixelSize, tileResolution, tileSize;
-  var tileTransform, width;
+  var origin, pixelSpace, replayState, resolutionRatio, tile, tileCenter;
+  var tileContext, tileExtent, tilePixelResolution, tilePixelSize;
+  var tileResolution, tileSize, tileTransform, width;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     tile = tilesToDraw[i];
     replayState = tile.getReplayState();
@@ -131,12 +130,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
     pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
     tileResolution = tileGrid.getResolution(currentZ);
     tilePixelResolution = tileResolution / tilePixelRatio;
-    scale = tileResolution / resolution;
+    resolutionRatio = tileResolution / resolution;
     offsetX = Math.round(pixelRatio * size[0] / 2);
     offsetY = Math.round(pixelRatio * size[1] / 2);
-    width = tileSize[0] * pixelRatio * scale;
-    height = tileSize[1] * pixelRatio * scale;
-    if (width < 1 || scale > maxScale) {
+    width = tileSize[0] * pixelRatio * resolutionRatio;
+    height = tileSize[1] * pixelRatio * resolutionRatio;
+    var unscaledPixelTileSize = tileSize[0] * pixelRatio;
+    if (width < unscaledPixelTileSize / 4 || width > unscaledPixelTileSize * 4) {
       if (pixelSpace) {
         origin = ol.extent.getTopLeft(tileExtent);
         tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
@@ -183,12 +183,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(frameState,
           0, 0, pixelScale, -pixelScale, 0, -center[0], -center[1]);
       insertPoint = ol.geom.flat.transform.transform2D(
           ol.extent.getTopLeft(tileExtent), 0, 1, 2, insertTransform);
-      replayContext.translate(offsetX, offsetY);
-      replayContext.rotate(rotation);
       replayContext.drawImage(tileContext.canvas,
-          Math.round(insertPoint[0]), Math.round(insertPoint[1]));
-      replayContext.rotate(-rotation);
-      replayContext.translate(-offsetX, -offsetY);
+          Math.round(insertPoint[0] + offsetX),
+          Math.round(insertPoint[1]) + offsetY);
     }
   }
 
@@ -219,8 +216,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     return;
   }
 
-  // FIXME dispose of old replayGroup in post render
-  goog.dispose(replayState.replayGroup);
   replayState.replayGroup = null;
   replayState.dirty = false;
 
@@ -269,7 +264,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       }
     }
     if (styles) {
-      if (!goog.isArray(styles)) {
+      if (!Array.isArray(styles)) {
         styles = [styles];
       }
       var dirty = this.renderFeature(feature, squaredTolerance, styles,
@@ -309,7 +304,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var layer = this.getLayer();
-  var layerState = frameState.layerStates[goog.getUid(layer)];
   /** @type {Object.<string, boolean>} */
   var features = {};
 
@@ -343,8 +337,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     }
     replayGroup = tile.getReplayState().replayGroup;
     found = found || replayGroup.forEachFeatureAtCoordinate(
-        tileSpaceCoordinate, resolution, rotation,
-        layerState.managed ? frameState.skippedFeatureUids : {},
+        tileSpaceCoordinate, resolution, rotation, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
@@ -364,7 +357,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
 ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(event) {
@@ -502,7 +495,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
     return false;
   }
   var loading = false;
-  if (goog.isArray(styles)) {
+  if (Array.isArray(styles)) {
     for (var i = 0, ii = styles.length; i < ii; ++i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i], squaredTolerance,

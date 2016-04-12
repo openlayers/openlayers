@@ -14,15 +14,16 @@ describe('ol.TileQueue', function() {
   }
 
   var tileId = 0;
-  function createImageTile() {
+  function createImageTile(opt_tileLoadFunction) {
     ++tileId;
     var tileCoord = [tileId, tileId, tileId];
     var state = ol.TileState.IDLE;
     var src = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///' +
         'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' + tileId;
 
-    return new ol.ImageTile(tileCoord, state, src, null,
-        ol.source.Image.defaultImageLoadFunction);
+    var tileLoadFunction = opt_tileLoadFunction ?
+        opt_tileLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    return new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
 
   describe('#loadMoreTiles()', function() {
@@ -121,11 +122,47 @@ describe('ol.TileQueue', function() {
 
     });
   });
+
+  describe('tile change event', function() {
+    var noop = function() {};
+
+    it('abort queued tiles', function() {
+      var tq = new ol.TileQueue(noop, noop);
+      var tile = createImageTile();
+      expect(tile.hasListener(ol.events.EventType.CHANGE)).to.be(false);
+
+      tq.enqueue([tile]);
+      expect(tile.hasListener(ol.events.EventType.CHANGE)).to.be(true);
+
+      tile.dispose();
+      expect(tile.hasListener(ol.events.EventType.CHANGE)).to.be(false);
+      expect(tile.getState()).to.eql(ol.TileState.ABORT);
+    });
+
+    it('abort loading tiles', function() {
+      var tq = new ol.TileQueue(noop, noop);
+      var tile = createImageTile(noop);
+
+      tq.enqueue([tile]);
+      tq.loadMoreTiles(Infinity, Infinity);
+      expect(tq.getTilesLoading()).to.eql(1);
+      expect(tile.getState()).to.eql(ol.TileState.LOADING);
+
+      tile.dispose();
+      expect(tq.getTilesLoading()).to.eql(0);
+      expect(tile.hasListener(ol.events.EventType.CHANGE)).to.be(false);
+      expect(tile.getState()).to.eql(ol.TileState.ABORT);
+
+    });
+
+  });
+
 });
 
 goog.require('ol.ImageTile');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.TileQueue');
+goog.require('ol.events.EventType');
 goog.require('ol.source.Image');
 goog.require('ol.structs.PriorityQueue');

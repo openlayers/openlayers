@@ -3,9 +3,8 @@ goog.provide('ol.source.TileEvent');
 goog.provide('ol.source.TileOptions');
 
 goog.require('goog.asserts');
-goog.require('goog.events.Event');
+goog.require('ol.events.Event');
 goog.require('ol');
-goog.require('ol.Attribution');
 goog.require('ol.Extent');
 goog.require('ol.TileCache');
 goog.require('ol.TileRange');
@@ -18,7 +17,7 @@ goog.require('ol.tilegrid.TileGrid');
 
 
 /**
- * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            cacheSize: (number|undefined),
  *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
@@ -147,9 +146,10 @@ ol.source.Tile.prototype.forEachLoadedTile = function(projection, z, tileRange, 
 
 
 /**
+ * @param {ol.proj.Projection} projection Projection.
  * @return {number} Gutter.
  */
-ol.source.Tile.prototype.getGutter = function() {
+ol.source.Tile.prototype.getGutter = function(projection) {
   return 0;
 };
 
@@ -290,6 +290,15 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, op
 
 
 /**
+ * @inheritDoc
+ */
+ol.source.Tile.prototype.refresh = function() {
+  this.tileCache.clear();
+  this.changed();
+};
+
+
+/**
  * Marks a tile coord as being used, without triggering a load.
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
@@ -305,7 +314,7 @@ ol.source.Tile.prototype.useTile = ol.nullFunction;
  * type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.source.TileEvent}
  * @param {string} type Type.
  * @param {ol.Tile} tile The tile.
@@ -322,7 +331,7 @@ ol.source.TileEvent = function(type, tile) {
   this.tile = tile;
 
 };
-goog.inherits(ol.source.TileEvent, goog.events.Event);
+goog.inherits(ol.source.TileEvent, ol.events.Event);
 
 
 /**

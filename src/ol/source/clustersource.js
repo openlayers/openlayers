@@ -4,10 +4,9 @@
 goog.provide('ol.source.Cluster');
 
 goog.require('goog.asserts');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.coordinate');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.source.Vector');
@@ -15,7 +14,9 @@ goog.require('ol.source.Vector');
 
 /**
  * @classdesc
- * Layer source to cluster vector data.
+ * Layer source to cluster vector data. Works out of the box with point
+ * geometries. For other geometry types, or if not all geometries should be
+ * considered for clustering, a custom `geometryFunction` can be defined.
  *
  * @constructor
  * @param {olx.source.ClusterOptions} options Constructor options.
@@ -50,12 +51,23 @@ ol.source.Cluster = function(options) {
   this.features_ = [];
 
   /**
+   * @param {ol.Feature} feature Feature.
+   * @return {ol.geom.Point} Cluster calculation point.
+   */
+  this.geometryFunction_ = options.geometryFunction || function(feature) {
+    var geometry = feature.getGeometry();
+    goog.asserts.assert(geometry instanceof ol.geom.Point,
+        'feature geometry is a ol.geom.Point instance');
+    return geometry;
+  };
+
+  /**
    * @type {ol.source.Vector}
    * @private
    */
   this.source_ = options.source;
 
-  this.source_.on(goog.events.EventType.CHANGE,
+  this.source_.on(ol.events.EventType.CHANGE,
       ol.source.Cluster.prototype.onSourceChange_, this);
 };
 goog.inherits(ol.source.Cluster, ol.source.Vector);
@@ -111,36 +123,36 @@ ol.source.Cluster.prototype.cluster_ = function() {
   var features = this.source_.getFeatures();
 
   /**
-   * @type {Object.<string, boolean>}
+   * @type {!Object.<string, boolean>}
    */
   var clustered = {};
 
   for (var i = 0, ii = features.length; i < ii; i++) {
     var feature = features[i];
     if (!(goog.getUid(feature).toString() in clustered)) {
-      var geometry = feature.getGeometry();
-      goog.asserts.assert(geometry instanceof ol.geom.Point,
-          'feature geometry is a ol.geom.Point instance');
-      var coordinates = geometry.getCoordinates();
-      ol.extent.createOrUpdateFromCoordinate(coordinates, extent);
-      ol.extent.buffer(extent, mapDistance, extent);
+      var geometry = this.geometryFunction_(feature);
+      if (geometry) {
+        var coordinates = geometry.getCoordinates();
+        ol.extent.createOrUpdateFromCoordinate(coordinates, extent);
+        ol.extent.buffer(extent, mapDistance, extent);
 
-      var neighbors = this.source_.getFeaturesInExtent(extent);
-      goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
-      neighbors = neighbors.filter(function(neighbor) {
-        var uid = goog.getUid(neighbor).toString();
-        if (!(uid in clustered)) {
-          clustered[uid] = true;
-          return true;
-        } else {
-          return false;
-        }
-      });
-      this.features_.push(this.createCluster_(neighbors));
+        var neighbors = this.source_.getFeaturesInExtent(extent);
+        goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
+        neighbors = neighbors.filter(function(neighbor) {
+          var uid = goog.getUid(neighbor).toString();
+          if (!(uid in clustered)) {
+            clustered[uid] = true;
+            return true;
+          } else {
+            return false;
+          }
+        });
+        this.features_.push(this.createCluster_(neighbors));
+      }
     }
   }
   goog.asserts.assert(
-      goog.object.getCount(clustered) == this.source_.getFeatures().length,
+      Object.keys(clustered).length == this.source_.getFeatures().length,
       'number of clustered equals number of features in the source');
 };
 
@@ -151,16 +163,16 @@ ol.source.Cluster.prototype.cluster_ = function() {
  * @private
  */
 ol.source.Cluster.prototype.createCluster_ = function(features) {
-  var length = features.length;
   var centroid = [0, 0];
-  for (var i = 0; i < length; i++) {
-    var geometry = features[i].getGeometry();
-    goog.asserts.assert(geometry instanceof ol.geom.Point,
-        'feature geometry is a ol.geom.Point instance');
-    var coordinates = geometry.getCoordinates();
-    ol.coordinate.add(centroid, coordinates);
+  for (var i = features.length - 1; i >= 0; --i) {
+    var geometry = this.geometryFunction_(features[i]);
+    if (geometry) {
+      ol.coordinate.add(centroid, geometry.getCoordinates());
+    } else {
+      features.splice(i, 1);
+    }
   }
-  ol.coordinate.scale(centroid, 1 / length);
+  ol.coordinate.scale(centroid, 1 / features.length);
 
   var cluster = new ol.Feature(new ol.geom.Point(centroid));
   cluster.set('features', features);

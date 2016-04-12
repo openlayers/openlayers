@@ -49,7 +49,7 @@ goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
  */
 ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  var browserEvent = mapBrowserEvent.browserEvent;
+  var browserEvent = mapBrowserEvent.originalEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.coordinate;

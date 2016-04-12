@@ -19,6 +19,7 @@ goog.require('ol.style.Stroke');
  * feature or layer that uses the style is re-rendered.
  *
  * @constructor
+ * @struct
  * @param {olx.style.StyleOptions=} opt_options Style options.
  * @api
  */
@@ -159,7 +160,7 @@ ol.style.Style.prototype.getZIndex = function() {
 ol.style.Style.prototype.setGeometry = function(geometry) {
   if (goog.isFunction(geometry)) {
     this.geometryFunction_ = geometry;
-  } else if (goog.isString(geometry)) {
+  } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
       if (result) {
@@ -194,8 +195,8 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
 
 /**
  * A function that takes an {@link ol.Feature} and a `{number}` representing
- * the view's resolution. The function should return an array of
- * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
+ * the view's resolution. The function should return a {@link ol.style.Style}
+ * or an array of them. This way e.g. a vector layer can be styled.
  *
  * @typedef {function((ol.Feature|ol.render.Feature), number):
  *     (ol.style.Style|Array.<ol.style.Style>)}
@@ -222,7 +223,7 @@ ol.style.createStyleFunction = function(obj) {
      * @type {Array.<ol.style.Style>}
      */
     var styles;
-    if (goog.isArray(obj)) {
+    if (Array.isArray(obj)) {
       styles = obj;
     } else {
       goog.asserts.assertInstanceof(obj, ol.style.Style,

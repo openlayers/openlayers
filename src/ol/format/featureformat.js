@@ -71,6 +71,9 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
           options.dataProjection : this.defaultDataProjection,
       rightHanded: options.rightHanded
     };
+    if (options.decimals) {
+      updatedOptions.decimals = options.decimals;
+    }
   }
   return updatedOptions;
 };
@@ -165,21 +168,45 @@ ol.format.Feature.transformWithOptions = function(
       ol.proj.get(opt_options.featureProjection) : null;
   var dataProjection = opt_options ?
       ol.proj.get(opt_options.dataProjection) : null;
+  /**
+   * @type {ol.geom.Geometry|ol.Extent}
+   */
+  var transformed;
   if (featureProjection && dataProjection &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {
     if (geometry instanceof ol.geom.Geometry) {
-      return (write ? geometry.clone() : geometry).transform(
+      transformed = (write ? geometry.clone() : geometry).transform(
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);
     } else {
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
-      return ol.proj.transformExtent(
+      transformed = ol.proj.transformExtent(
           write ? geometry.slice() : geometry,
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);
     }
   } else {
-    return geometry;
+    transformed = geometry;
   }
+  if (write && opt_options && opt_options.decimals) {
+    var power = Math.pow(10, opt_options.decimals);
+    // if decimals option on write, round each coordinate appropriately
+    /**
+     * @param {Array.<number>} coordinates Coordinates.
+     * @return {Array.<number>} Transformed coordinates.
+     */
+    var transform = function(coordinates) {
+      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+        coordinates[i] = Math.round(coordinates[i] * power) / power;
+      }
+      return coordinates;
+    };
+    if (Array.isArray(transformed)) {
+      transform(transformed);
+    } else {
+      transformed.applyTransform(transform);
+    }
+  }
+  return transformed;
 };

@@ -2,14 +2,14 @@ goog.provide('ol.source.TileUTFGrid');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
+goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
@@ -49,8 +49,13 @@ ol.source.TileUTFGrid = function(options) {
    */
   this.template_ = undefined;
 
-  var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, this.handleTileJSONResponse.bind(this));
+  if (options.url) {
+    ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this));
+  } else if (options.tileJSON) {
+    this.handleTileJSONResponse(options.tileJSON);
+  } else {
+    goog.asserts.fail('Either url or tileJSON options must be provided');
+  }
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
@@ -278,7 +283,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
 
   var row = this.grid_[Math.floor((1 - yRelative) * this.grid_.length)];
 
-  if (!goog.isString(row)) {
+  if (typeof row !== 'string') {
     return null;
   }
 
@@ -307,9 +312,9 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  */
 ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == ol.TileState.IDLE && opt_request === true) {
-    goog.events.listenOnce(this, goog.events.EventType.CHANGE, function(e) {
+    ol.events.listenOnce(this, ol.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
-    }, false, this);
+    }, this);
     this.loadInternal_();
   } else {
     if (opt_request === true) {
@@ -360,9 +365,8 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
 ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
-    var request = new goog.net.Jsonp(this.src_);
-    request.send(undefined, this.handleLoad_.bind(this),
-                 this.handleError_.bind(this));
+    ol.net.jsonp(this.src_, this.handleLoad_.bind(this),
+        this.handleError_.bind(this));
   }
 };
 

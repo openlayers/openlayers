@@ -1,6 +1,7 @@
 goog.provide('ol.render.webgl.Immediate');
-goog.require('ol.array');
+goog.require('goog.asserts');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.ReplayGroup');
@@ -18,8 +19,7 @@ goog.require('ol.render.webgl.ReplayGroup');
  * @param {number} pixelRatio Pixel ratio.
  * @struct
  */
-ol.render.webgl.Immediate = function(context,
-    center, resolution, rotation, size, extent, pixelRatio) {
+ol.render.webgl.Immediate = function(context, center, resolution, rotation, size, extent, pixelRatio) {
   goog.base(this);
 
   /**
@@ -63,57 +63,44 @@ ol.render.webgl.Immediate = function(context,
    */
   this.imageStyle_ = null;
 
-  /**
-   * @private
-   * @type {!Object.<string,
-   *        Array.<function(ol.render.webgl.Immediate)>>}
-   */
-  this.callbacksByZIndex_ = {};
 };
 goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
 
 
 /**
- * FIXME: empty description for jsdoc
+ * Set the rendering style.  Note that since this is an immediate rendering API,
+ * any `zIndex` on the provided style will be ignored.
+ *
+ * @param {ol.style.Style} style The rendering style.
+ * @api
  */
-ol.render.webgl.Immediate.prototype.flush = function() {
-  /** @type {Array.<number>} */
-  var zs = Object.keys(this.callbacksByZIndex_).map(Number);
-  zs.sort(ol.array.numberSafeCompareFunction);
-  var i, ii, callbacks, j, jj;
-  for (i = 0, ii = zs.length; i < ii; ++i) {
-    callbacks = this.callbacksByZIndex_[zs[i].toString()];
-    for (j = 0, jj = callbacks.length; j < jj; ++j) {
-      callbacks[j](this);
-    }
-  }
+ol.render.webgl.Immediate.prototype.setStyle = function(style) {
+  this.setImageStyle(style.getImage());
 };
 
 
 /**
- * Register a function to be called for rendering at a given zIndex.  The
- * function will be called asynchronously.  The callback will receive a
- * reference to {@link ol.render.canvas.Immediate} context for drawing.
- * @param {number} zIndex Z index.
- * @param {function(ol.render.webgl.Immediate)} callback Callback.
+ * Render a geometry into the canvas.  Call
+ * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
+ *
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry The geometry to render.
  * @api
  */
-ol.render.webgl.Immediate.prototype.drawAsync = function(zIndex, callback) {
-  var zIndexKey = zIndex.toString();
-  var callbacks = this.callbacksByZIndex_[zIndexKey];
-  if (callbacks !== undefined) {
-    callbacks.push(callback);
-  } else {
-    this.callbacksByZIndex_[zIndexKey] = [callback];
+ol.render.webgl.Immediate.prototype.drawGeometry = function(geometry) {
+  var type = geometry.getType();
+  switch (type) {
+    case ol.geom.GeometryType.POINT:
+      this.drawPoint(/** @type {ol.geom.Point} */ (geometry), null);
+      break;
+    case ol.geom.GeometryType.MULTI_POINT:
+      this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry), null);
+      break;
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION:
+      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
+      break;
+    default:
+      goog.asserts.fail('Unsupported geometry type: ' + type);
   }
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawCircleGeometry = function(circleGeometry, data) {
 };
 
 
@@ -127,57 +114,34 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
       !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
-  var zIndex = style.getZIndex();
-  if (zIndex === undefined) {
-    zIndex = 0;
-  }
-  this.drawAsync(zIndex, function(render) {
-    render.setFillStrokeStyle(style.getFill(), style.getStroke());
-    render.setImageStyle(style.getImage());
-    render.setTextStyle(style.getText());
-    var type = geometry.getType();
-    var renderGeometry = ol.render.webgl.Immediate.GEOMETRY_RENDERERS_[type];
-    // Do not assert since all kinds of geometries are not handled yet.
-    // In spite, render what we support.
-    if (renderGeometry) {
-      renderGeometry.call(render, geometry, null);
-    }
-  });
+  this.setStyle(style);
+  goog.asserts.assert(geometry, 'geometry must be truthy');
+  this.drawGeometry(geometry);
 };
 
 
 /**
  * @inheritDoc
- * @api
  */
-ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry = function(geometryCollectionGeometry, data) {
-  var geometries = geometryCollectionGeometry.getGeometriesArray();
-  var renderers = ol.render.webgl.Immediate.GEOMETRY_RENDERERS_;
+ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometry, data) {
+  var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
-    var geometry = geometries[i];
-    var geometryRenderer = renderers[geometry.getType()];
-    // Do not assert since all kinds of geometries are not handled yet.
-    // In order to support hierarchies, delegate instead what we can to
-    // valid renderers.
-    if (geometryRenderer) {
-      geometryRenderer.call(this, geometry, data);
-    }
+    this.drawGeometry(geometries[i]);
   }
 };
 
 
 /**
  * @inheritDoc
- * @api
  */
-ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawPoint = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
       replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
-  replay.drawPointGeometry(pointGeometry, data);
+  replay.drawPoint(geometry, data);
   replay.finish(context);
   // default colors
   var opacity = 1;
@@ -193,31 +157,14 @@ ol.render.webgl.Immediate.prototype.drawPointGeometry = function(pointGeometry, 
 
 /**
  * @inheritDoc
- * @api
  */
-ol.render.webgl.Immediate.prototype.drawLineStringGeometry = function(lineStringGeometry, data) {
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawMultiLineStringGeometry = function(multiLineStringGeometry, data) {
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPointGeometry, data) {
+ol.render.webgl.Immediate.prototype.drawMultiPoint = function(geometry, data) {
   var context = this.context_;
   var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
   var replay = /** @type {ol.render.webgl.ImageReplay} */ (
       replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
   replay.setImageStyle(this.imageStyle_);
-  replay.drawMultiPointGeometry(multiPointGeometry, data);
+  replay.drawMultiPoint(geometry, data);
   replay.finish(context);
   var opacity = 1;
   var skippedFeatures = {};
@@ -232,63 +179,7 @@ ol.render.webgl.Immediate.prototype.drawMultiPointGeometry = function(multiPoint
 
 /**
  * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawMultiPolygonGeometry = function(multiPolygonGeometry, data) {
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawPolygonGeometry = function(polygonGeometry, data) {
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.drawText = function(flatCoordinates, offset, end, stride, geometry, data) {
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-};
-
-
-/**
- * @inheritDoc
- * @api
  */
 ol.render.webgl.Immediate.prototype.setImageStyle = function(imageStyle) {
   this.imageStyle_ = imageStyle;
-};
-
-
-/**
- * @inheritDoc
- * @api
- */
-ol.render.webgl.Immediate.prototype.setTextStyle = function(textStyle) {
-};
-
-
-/**
- * @const
- * @private
- * @type {Object.<ol.geom.GeometryType,
- *      function(this: ol.render.webgl.Immediate,
- *          (ol.geom.Geometry|ol.render.Feature), Object)>}
- */
-ol.render.webgl.Immediate.GEOMETRY_RENDERERS_ = {
-  'Point': ol.render.webgl.Immediate.prototype.drawPointGeometry,
-  'MultiPoint': ol.render.webgl.Immediate.prototype.drawMultiPointGeometry,
-  'GeometryCollection':
-      ol.render.webgl.Immediate.prototype.drawGeometryCollectionGeometry
 };

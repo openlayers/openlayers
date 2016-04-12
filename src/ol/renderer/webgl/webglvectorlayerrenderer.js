@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.layer.Vector');
@@ -115,9 +115,9 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
     return this.replayGroup_.forEachFeatureAtCoordinate(coordinate,
         context, viewState.center, viewState.resolution, viewState.rotation,
         frameState.size, frameState.pixelRatio, layerState.opacity,
-        layerState.managed ? frameState.skippedFeatureUids : {},
+        {},
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
@@ -169,7 +169,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, fr
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
 ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event) {
@@ -298,7 +298,7 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolu
     return false;
   }
   var loading = false;
-  if (goog.isArray(styles)) {
+  if (Array.isArray(styles)) {
     for (var i = 0, ii = styles.length; i < ii; ++i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],

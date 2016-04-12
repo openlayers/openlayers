@@ -7,24 +7,21 @@ describe('ol.source.BingMaps', function() {
     var source, tileGrid;
 
     beforeEach(function(done) {
-      var googNetJsonp = goog.net.Jsonp;
-      // mock goog.net.Jsonp (used in the ol.source.TileJSON constructor)
-      goog.net.Jsonp = function() {
-        this.send = function() {
-          var callback = arguments[1];
-          var client = new XMLHttpRequest();
-          client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
-          client.onload = function() {
-            callback(JSON.parse(client.responseText));
-          };
-          client.send();
+      var olNetJsonp = ol.net.jsonp;
+      // mock ol.net.Jsonp (used in the ol.source.TileJSON constructor)
+      ol.net.jsonp = function(url, callback) {
+        var client = new XMLHttpRequest();
+        client.open('GET', 'spec/ol/data/bing_aerialwithlabels.json', true);
+        client.onload = function() {
+          callback(JSON.parse(client.responseText));
         };
+        client.send();
       };
       source = new ol.source.BingMaps({
         imagerySet: 'AerialWithLabels',
         key: ''
       });
-      goog.net.Jsonp = googNetJsonp;
+      ol.net.jsonp = olNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
           ol.Observable.unByKey(key);
@@ -75,7 +72,7 @@ describe('ol.source.BingMaps', function() {
 });
 
 
-goog.require('goog.net.Jsonp');
+goog.require('ol.net');
 goog.require('ol.source.BingMaps');
 goog.require('ol.tilecoord');
 goog.require('ol.Observable');

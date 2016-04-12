@@ -27,12 +27,11 @@ var map = new ol.Map({
   })
 });
 
-var defaultStroke = new ol.style.Stroke({
-  color: '#EAE911',
-  width: 2
-});
-var defaultStyle = new ol.style.Style({
-  stroke: defaultStroke
+var style = new ol.style.Style({
+  stroke: new ol.style.Stroke({
+    color: '#EAE911',
+    width: 2
+  })
 });
 
 var flightsSource;
@@ -47,14 +46,13 @@ var pointsPerMs = 0.1;
 var animateFlights = function(event) {
   var vectorContext = event.vectorContext;
   var frameState = event.frameState;
-  vectorContext.setFillStrokeStyle(null, defaultStroke);
+  vectorContext.setStyle(style);
 
   var features = flightsSource.getFeatures();
   for (var i = 0; i < features.length; i++) {
     var feature = features[i];
     if (!feature.get('finished')) {
-      // only draw the lines for which the animation has not
-      // finished yet
+      // only draw the lines for which the animation has not finished yet
       var coords = feature.getGeometry().getCoordinates();
       var elapsedTime = frameState.time - feature.get('start');
       var elapsedPoints = elapsedTime * pointsPerMs;
@@ -67,19 +65,17 @@ var animateFlights = function(event) {
       var currentLine = new ol.geom.LineString(coords.slice(0, maxIndex));
 
       // directly draw the line with the vector context
-      vectorContext.drawLineStringGeometry(currentLine, feature);
+      vectorContext.drawGeometry(currentLine);
     }
   }
-  // tell OL3 to continue the postcompose animation
+  // tell OL3 to continue the animation
   map.render();
 };
 
 flightsSource = new ol.source.Vector({
   wrapX: false,
-  attributions: [new ol.Attribution({
-    html: 'Flight data by ' +
-        '<a href="http://openflights.org/data.html">OpenFlights</a>,'
-  })],
+  attributions: 'Flight data by ' +
+        '<a href="http://openflights.org/data.html">OpenFlights</a>,',
   loader: function() {
     var url = 'data/openflights/flights.json';
     fetch(url).then(function(response) {
@@ -121,7 +117,7 @@ var flightsLayer = new ol.layer.Vector({
     // if the animation is still active for a feature, do not
     // render the feature with the layer style
     if (feature.get('finished')) {
-      return defaultStyle;
+      return style;
     } else {
       return null;
     }

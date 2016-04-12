@@ -2,9 +2,10 @@ goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
-goog.require('goog.events');
-goog.require('goog.events.Event');
 goog.require('ol.Observable');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.object');
 
 
 /**
@@ -27,7 +28,7 @@ ol.ObjectEventType = {
  * @param {string} type The event type.
  * @param {string} key The property name.
  * @param {*} oldValue The old value for `key`.
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.ObjectEvent}
  * @constructor
  */
@@ -50,7 +51,7 @@ ol.ObjectEvent = function(type, key, oldValue) {
   this.oldValue = oldValue;
 
 };
-goog.inherits(ol.ObjectEvent, goog.events.Event);
+goog.inherits(ol.ObjectEvent, ol.events.Event);
 
 
 /**
@@ -169,12 +170,7 @@ ol.Object.prototype.getKeys = function() {
  * @api stable
  */
 ol.Object.prototype.getProperties = function() {
-  var properties = {};
-  var key;
-  for (key in this.values_) {
-    properties[key] = this.values_[key];
-  }
-  return properties;
+  return ol.object.assign({}, this.values_);
 };
 
 

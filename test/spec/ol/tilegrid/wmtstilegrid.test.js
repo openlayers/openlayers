@@ -42,12 +42,13 @@ describe('ol.tilegrid.WMTS', function() {
           expect(tileGrid.origins_).to.be.an('array');
           expect(tileGrid.origins_).to.have.length(20);
           expect(tileGrid.origins_).to.eql(
-              goog.array.repeat([-20037508.3428, 20037508.3428], 20));
+              Array.apply(null, Array(20)).map(Array.prototype.valueOf,
+                  [-20037508.3428, 20037508.3428]));
 
           expect(tileGrid.tileSizes_).to.be.an('array');
           expect(tileGrid.tileSizes_).to.have.length(20);
           expect(tileGrid.tileSizes_).to.eql(
-              goog.array.repeat(256, 20));
+              Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256));
 
         });
   });
@@ -143,6 +144,5 @@ describe('ol.tilegrid.WMTS', function() {
 
 });
 
-goog.require('goog.array');
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.tilegrid.WMTS');

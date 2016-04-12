@@ -1,13 +1,12 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
-goog.require('goog.object');
-goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.TileCoord');
 goog.require('ol.extent');
+goog.require('ol.object');
+goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
@@ -32,10 +31,9 @@ ol.source.TileArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
 
-  var params = options.params !== undefined ? options.params : {};
-
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     projection: options.projection,
@@ -49,9 +47,9 @@ ol.source.TileArcGISRest = function(opt_options) {
 
   /**
    * @private
-   * @type {Object}
+   * @type {!Object}
    */
-  this.params_ = params;
+  this.params_ = options.params || {};
 
   /**
    * @private
@@ -107,24 +105,17 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   if (urls.length == 1) {
     url = urls[0];
   } else {
-    var index = goog.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
+    var index = ol.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
     url = urls[index];
   }
 
-  if (!goog.string.endsWith(url, '/')) {
-    url = url + '/';
-  }
-
-  // If a MapServer, use export. If an ImageServer, use exportImage.
-  if (goog.string.endsWith(url, 'MapServer/')) {
-    url = url + 'export';
-  } else if (goog.string.endsWith(url, 'ImageServer/')) {
-    url = url + 'exportImage';
-  } else {
+  var modifiedUrl = url
+      .replace(/MapServer\/?$/, 'MapServer/export')
+      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+  if (modifiedUrl == url) {
     goog.asserts.fail('Unknown Rest Service', url);
   }
-
-  return goog.uri.utils.appendParamsFromMap(url, params);
+  return goog.uri.utils.appendParamsFromMap(modifiedUrl, params);
 };
 
 
@@ -165,7 +156,7 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  goog.object.extend(baseParams, this.params_);
+  ol.object.assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       pixelRatio, projection, baseParams);
@@ -178,6 +169,6 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
  * @api stable
  */
 ol.source.TileArcGISRest.prototype.updateParams = function(params) {
-  goog.object.extend(this.params_, params);
+  ol.object.assign(this.params_, params);
   this.changed();
 };

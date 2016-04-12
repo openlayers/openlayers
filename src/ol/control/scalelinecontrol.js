@@ -3,8 +3,7 @@ goog.provide('ol.control.ScaleLineProperty');
 goog.provide('ol.control.ScaleLineUnits');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Object');
@@ -55,21 +54,22 @@ ol.control.ScaleLine = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  var className = options.className ? options.className : 'ol-scale-line';
+  var className = options.className !== undefined ? options.className : 'ol-scale-line';
 
   /**
    * @private
    * @type {Element}
    */
-  this.innerElement_ = goog.dom.createDom('DIV',
-      className + '-inner');
+  this.innerElement_ = document.createElement('DIV');
+  this.innerElement_.className = className + '-inner';
 
   /**
    * @private
    * @type {Element}
    */
-  this.element_ = goog.dom.createDom('DIV',
-      className + ' ' + ol.css.CLASS_UNSELECTABLE, this.innerElement_);
+  this.element_ = document.createElement('DIV');
+  this.element_.className = className + ' ' + ol.css.CLASS_UNSELECTABLE;
+  this.element_.appendChild(this.innerElement_);
 
   /**
    * @private
@@ -109,9 +109,9 @@ ol.control.ScaleLine = function(opt_options) {
     target: options.target
   });
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(ol.control.ScaleLineProperty.UNITS),
-      this.handleUnitsChanged_, false, this);
+      this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
       ol.control.ScaleLineUnits.METRIC);

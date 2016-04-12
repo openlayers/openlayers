@@ -11,15 +11,26 @@
     <link rel="stylesheet" href="./resources/layout.css" type="text/css">
     {{{ extraHead.local }}}
     {{{ css.tag }}}
-    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch"></script>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch,requestAnimationFrame,Element.prototype.classList"></script>
     <script src="./resources/zeroclipboard/ZeroClipboard.min.js"></script>
     <title>{{ title }}</title>
   </head>
   <body>
 
     <header class="navbar" role="navigation">
-      <div class="container" id="navbar-inner-container">
-        <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers 3 Examples</a>
+      <div class="container">
+        <div class="display-table pull-left" id="navbar-logo-container">
+          <a class="navbar-brand" href="./"><img src="./resources/logo-70x70.png">&nbsp;OpenLayers Examples</a>
+        </div>
+        <!-- menu items that get hidden below 768px width -->
+        <nav class='collapse navbar-collapse navbar-responsive-collapse'>
+          <ul class="nav navbar-nav pull-right">
+            <li><a href="../doc">Docs</a></li>
+            <li><a class="active" href="index.html">Examples</a></li>
+            <li><a href="../apidoc">API</a></li>
+            <li><a href="https://github.com/openlayers/ol3">Code</a></li>
+          </ul>
+        </nav>
       </div>
     </header>
 

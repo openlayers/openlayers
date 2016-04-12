@@ -1,8 +1,5 @@
 goog.provide('ol.reproj');
 
-goog.require('goog.labs.userAgent.browser');
-goog.require('goog.labs.userAgent.platform');
-goog.require('goog.math');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.math');
@@ -19,8 +16,18 @@ goog.require('ol.proj');
  * @type {boolean}
  * @private
  */
-ol.reproj.browserAntialiasesClip_ = !goog.labs.userAgent.browser.isChrome() ||
-                                    goog.labs.userAgent.platform.isIos();
+ol.reproj.browserAntialiasesClip_ = (function(winNav, winChrome) {
+  // Adapted from http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome
+  var isOpera = winNav.userAgent.indexOf('OPR') > -1;
+  var isIEedge = winNav.userAgent.indexOf('Edge') > -1;
+  return !(
+    !winNav.userAgent.match('CriOS') &&  // Not Chrome on iOS
+    winChrome !== null && winChrome !== undefined && // Has chrome in window
+    winNav.vendor === 'Google Inc.' && // Vendor is Google.
+    isOpera == false && // Not Opera
+    isIEedge == false // Not Edge
+  );
+})(goog.global.navigator, goog.global.chrome)
 
 
 /**
@@ -61,7 +68,7 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
       sourceProj.getPointResolution(sourceResolution, sourceCenter) /
       sourceResolution;
 
-  if (goog.math.isFiniteNumber(compensationFactor) && compensationFactor > 0) {
+  if (isFinite(compensationFactor) && compensationFactor > 0) {
     sourceResolution /= compensationFactor;
   }
 
@@ -101,12 +108,13 @@ ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {Array.<{extent: ol.Extent,
  *                 image: (HTMLCanvasElement|Image|HTMLVideoElement)}>} sources
  *             Array of sources.
+ * @param {number} gutter Gutter of the sources.
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
 ol.reproj.render = function(width, height, pixelRatio,
     sourceResolution, sourceExtent, targetResolution, targetExtent,
-    triangulation, sources, opt_renderEdges) {
+    triangulation, sources, gutter, opt_renderEdges) {
 
   var context = ol.dom.createCanvasContext2D(Math.round(pixelRatio * width),
                                              Math.round(pixelRatio * height));
@@ -128,17 +136,20 @@ ol.reproj.render = function(width, height, pixelRatio,
       Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
       Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
 
-  stitchContext.scale(pixelRatio / sourceResolution,
-                      pixelRatio / sourceResolution);
-  stitchContext.translate(-sourceDataExtent[0], sourceDataExtent[3]);
+  var stitchScale = pixelRatio / sourceResolution;
 
   sources.forEach(function(src, i, arr) {
-    var xPos = src.extent[0];
-    var yPos = -src.extent[3];
+    var xPos = src.extent[0] - sourceDataExtent[0];
+    var yPos = -(src.extent[3] - sourceDataExtent[3]);
     var srcWidth = ol.extent.getWidth(src.extent);
     var srcHeight = ol.extent.getHeight(src.extent);
 
-    stitchContext.drawImage(src.image, xPos, yPos, srcWidth, srcHeight);
+    stitchContext.drawImage(
+        src.image,
+        gutter, gutter,
+        src.image.width - 2 * gutter, src.image.height - 2 * gutter,
+        xPos * stitchScale, yPos * stitchScale,
+        srcWidth * stitchScale, srcHeight * stitchScale);
   });
 
   var targetTopLeft = ol.extent.getTopLeft(targetExtent);

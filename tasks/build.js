@@ -5,8 +5,7 @@ var path = require('path');
 
 var async = require('async');
 var closure = require('closure-util');
-var fse = require('fs-extra');
-var fs = require('graceful-fs');
+var fs = require('fs-extra');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
 var exec = require('child_process').exec;
@@ -285,7 +284,7 @@ if (require.main === module) {
   async.waterfall([
     readConfig.bind(null, options.config),
     main,
-    fse.outputFile.bind(fse, options.output)
+    fs.outputFile.bind(fs, options.output)
   ], function(err) {
     if (err) {
       log.error(err.message);

@@ -2,6 +2,7 @@
 
 [![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.svg)](http://travis-ci.org/#!/openlayers/ol3)
 [![Coverage Status](https://coveralls.io/repos/openlayers/ol3/badge.svg?branch=master)](https://coveralls.io/r/openlayers/ol3?branch=master)
+[![OSGeo Project](https://img.shields.io/badge/OSGeo-Project-brightgreen.svg)](http://osgeo.org/)
 
 [OpenLayers 3](http://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web.
 

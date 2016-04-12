@@ -1,6 +1,97 @@
 ## Upgrade notes
 
+### v3.15.0
+
+#### Internet Explorer 9 support
+
+As of this release, OpenLayers requires a `classList` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features#Element_prototype_classList.
+
+#### Immediate rendering API
+
+Listeners for `precompose`, `render`, and `postcompose` receive an event with a `vectorContext` property with methods for immediate vector rendering.  The previous geometry drawing methods have been replaced with a single `vectorContext.drawGeometry(geometry)` method.  If you were using any of the following experimental methods on the vector context, replace them with `drawGeometry`:
+
+ * Removed experimental geometry drawing methods: `drawPointGeometry`, `drawLineStringGeometry`, `drawPolygonGeometry`, `drawMultiPointGeometry`, `drawMultiLineStringGeometry`, `drawMultiPolygonGeometry`, and `drawCircleGeometry` (all have been replaced with `drawGeometry`).
+
+In addition, the previous methods for setting style parts have been replaced with a single `vectorContext.setStyle(style)` method.  If you were using any of the following experimental methods on the vector context, replace them with `setStyle`:
+
+ * Removed experimental style setting methods: `setFillStrokeStyle`, `setImageStyle`, `setTextStyle` (all have been replaced with `setStyle`).
+
+Below is an example of how the vector context might have been used in the past:
+
+```js
+// OLD WAY, NO LONGER SUPPORTED
+map.on('postcompose', function(event) {
+  event.vectorContext.setFillStrokeStyle(style.getFill(), style.getStroke());
+  event.vectorContext.drawPointGeometry(geometry);
+});
+```
+
+Here is an example of how you could accomplish the same with the new methods:
+```js
+// NEW WAY, USE THIS INSTEAD OF THE CODE ABOVE
+map.on('postcompose', function(event) {
+  event.vectorContext.setStyle(style);
+  event.vectorContext.drawGeometry(geometry);
+});
+```
+
+A final change to the immediate rendering API is that `vectorContext.drawFeature()` calls are now "immediate" as well.  The drawing now occurs synchronously.  This means that any `zIndex` in a style passed to `drawFeature()` will be ignored.  To achieve `zIndex` ordering, order your calls to `drawFeature()` instead.
+
+#### Removal of `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK`
+
+The `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK` define has been removed. The size of the cache can now be defined on every tile based `ol.source`:
+```js
+new ol.layer.Tile({
+  source: new ol.source.OSM({
+    cacheSize: 128
+  })
+})
+```
+The default cache size is `2048`.
+
 ### v3.14.0
+
+#### Internet Explorer 9 support
+
+As of this release, OpenLayers requires a `requestAnimationFrame`/`cancelAnimationFrame` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features/#requestAnimationFrame.
+
+#### Layer pre-/postcompose event changes
+
+It is the responsibility of the application to undo any canvas transform changes at the end of a layer 'precompose' or 'postcompose' handler. Previously, it was ok to set a null transform. The API now guarantees a device pixel coordinate system on the canvas with its origin in the top left corner of the map. However, applications should not rely on the underlying canvas being the same size as the visible viewport.
+
+Old code:
+```js
+layer.on('precompose', function(e) {
+  // rely on canvas dimensions to move coordinate origin to center
+  e.context.translate(e.context.canvas.width / 2, e.context.canvas.height / 2);
+  e.context.scale(3, 3);
+  // draw an x in the center of the viewport
+  e.context.moveTo(-20, -20);
+  e.context.lineTo(20, 20);
+  e.context.moveTo(-20, 20);
+  e.context.lineTo(20, -20);
+  // rely on the canvas having a null transform
+  e.context.setTransform(1, 0, 0, 1, 0, 0);
+});
+```
+New code:
+```js
+layer.on('precompose', function(e) {
+  // use map size and pixel ratio to move coordinate origin to center
+  var size = map.getSize();
+  var pixelRatio = e.frameState.pixelRatio;
+  e.context.translate(size[0] / 2 * pixelRatio, size[1] / 2 * pixelRatio);
+  e.context.scale(3, 3);
+  // draw an x in the center of the viewport
+  e.context.moveTo(-20, -20);
+  e.context.lineTo(20, 20);
+  e.context.moveTo(-20, 20);
+  e.context.lineTo(20, -20);
+  // undo all transforms
+  e.context.scale(1 / 3, 1 / 3);
+  e.context.translate(-size[0] / 2 * pixelRatio, -size[1] / 2 * pixelRatio);
+});
+```
 
 ### v3.13.0
 

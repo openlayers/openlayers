@@ -28,7 +28,7 @@ describe('ol.Overlay', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -72,7 +72,6 @@ describe('ol.Overlay', function() {
 
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');

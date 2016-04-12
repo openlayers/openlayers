@@ -12,6 +12,7 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 
 var map = new ol.Map({
@@ -67,17 +68,19 @@ function flash(feature) {
     var radius = ol.easing.easeOut(elapsedRatio) * 25 + 5;
     var opacity = ol.easing.easeOut(1 - elapsedRatio);
 
-    var flashStyle = new ol.style.Circle({
-      radius: radius,
-      snapToPixel: false,
-      stroke: new ol.style.Stroke({
-        color: 'rgba(255, 0, 0, ' + opacity + ')',
-        width: 1
+    var style = new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: radius,
+        snapToPixel: false,
+        stroke: new ol.style.Stroke({
+          color: 'rgba(255, 0, 0, ' + opacity + ')',
+          width: 0.25 + opacity
+        })
       })
     });
 
-    vectorContext.setImageStyle(flashStyle);
-    vectorContext.drawPointGeometry(flashGeom, null);
+    vectorContext.setStyle(style);
+    vectorContext.drawGeometry(flashGeom);
     if (elapsed > duration) {
       ol.Observable.unByKey(listenerKey);
       return;

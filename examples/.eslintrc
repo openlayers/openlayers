@@ -1,6 +1,5 @@
 {
   "globals": {
-    "FastClick": false,
     "$": false,
     "arc": false,
     "common": false,

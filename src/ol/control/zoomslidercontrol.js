@@ -4,14 +4,11 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.events.EventType');
-goog.require('goog.fx.DragEvent');
-goog.require('goog.fx.Dragger');
-goog.require('goog.fx.Dragger.EventType');
-goog.require('goog.math.Rect');
 goog.require('goog.style');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventType');
+goog.require('ol.pointer.PointerEventHandler');
 goog.require('ol.Size');
 goog.require('ol.ViewHint');
 goog.require('ol.animation');
@@ -56,6 +53,42 @@ ol.control.ZoomSlider = function(opt_options) {
   this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.dragging_;
+
+  /**
+   * @type {!Array.<ol.events.Key>}
+   * @private
+   */
+  this.dragListenerKeys_ = [];
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.heightLimit_ = 0;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.widthLimit_ = 0;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.previousX_;
+
+  /**
+   * @type {number|undefined}
+   * @private
+   */
+  this.previousY_;
+
+  /**
    * The calculated thumb size (border box plus margins).  Set when initSlider_
    * is called.
    * @type {ol.Size}
@@ -71,12 +104,12 @@ ol.control.ZoomSlider = function(opt_options) {
   this.sliderInitialized_ = false;
 
   /**
-   * @private
    * @type {number}
+   * @private
    */
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
-  var className = options.className ? options.className : 'ol-zoomslider';
+  var className = options.className !== undefined ? options.className : 'ol-zoomslider';
   var thumbElement = goog.dom.createDom('BUTTON', {
     'type': 'button',
     'class': className + '-thumb ' + ol.css.CLASS_UNSELECTABLE
@@ -86,23 +119,22 @@ ol.control.ZoomSlider = function(opt_options) {
       thumbElement);
 
   /**
-   * @type {goog.fx.Dragger}
+   * @type {ol.pointer.PointerEventHandler}
    * @private
    */
-  this.dragger_ = new goog.fx.Dragger(thumbElement);
-  this.registerDisposable(this.dragger_);
+  this.dragger_ = new ol.pointer.PointerEventHandler(containerElement);
 
-  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.START,
-      this.handleDraggerStart_, false, this);
-  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.DRAG,
-      this.handleDraggerDrag_, false, this);
-  goog.events.listen(this.dragger_, goog.fx.Dragger.EventType.END,
-      this.handleDraggerEnd_, false, this);
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERDOWN,
+      this.handleDraggerStart_, this);
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERMOVE,
+      this.handleDraggerDrag_, this);
+  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERUP,
+      this.handleDraggerEnd_, this);
 
-  goog.events.listen(containerElement, goog.events.EventType.CLICK,
-      this.handleContainerClick_, false, this);
-  goog.events.listen(thumbElement, goog.events.EventType.CLICK,
-      goog.events.Event.stopPropagation);
+  ol.events.listen(containerElement, ol.events.EventType.CLICK,
+      this.handleContainerClick_, this);
+  ol.events.listen(thumbElement, ol.events.EventType.CLICK,
+      ol.events.Event.stopPropagation);
 
   var render = options.render ? options.render : ol.control.ZoomSlider.render;
 
@@ -112,6 +144,15 @@ ol.control.ZoomSlider = function(opt_options) {
   });
 };
 goog.inherits(ol.control.ZoomSlider, ol.control.Control);
+
+
+/**
+ * @inheritDoc
+ */
+ol.control.ZoomSlider.prototype.disposeInternal = function() {
+  this.dragger_.dispose();
+  goog.base(this, 'disposeInternal');
+};
 
 
 /**
@@ -147,7 +188,7 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
   var containerSize = goog.style.getSize(container);
 
-  var thumb = goog.dom.getFirstElementChild(container);
+  var thumb = container.firstElementChild;
   var thumbMargins = goog.style.getMarginBox(thumb);
   var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
   var thumbWidth = thumbBorderBoxSize.width +
@@ -156,18 +197,13 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
       thumbMargins.top + thumbMargins.bottom;
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
-  var width = containerSize.width - thumbWidth;
-  var height = containerSize.height - thumbHeight;
-
-  var limits;
   if (containerSize.width > containerSize.height) {
     this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
-    limits = new goog.math.Rect(0, 0, width, 0);
+    this.widthLimit_ = containerSize.width - thumbWidth;
   } else {
     this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
-    limits = new goog.math.Rect(0, 0, 0, height);
+    this.heightLimit_ = containerSize.height - thumbHeight;
   }
-  this.dragger_.setLimits(limits);
   this.sliderInitialized_ = true;
 };
 
@@ -196,10 +232,10 @@ ol.control.ZoomSlider.render = function(mapEvent) {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent The browser event to handle.
+ * @param {Event} event The browser event to handle.
  * @private
  */
-ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
+ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
   var map = this.getMap();
   var view = map.getView();
   var currentResolution = view.getResolution();
@@ -211,8 +247,8 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
     easing: ol.easing.easeOut
   }));
   var relativePosition = this.getRelativePosition_(
-      browserEvent.offsetX - this.thumbSize_[0] / 2,
-      browserEvent.offsetY - this.thumbSize_[1] / 2);
+      event.offsetX - this.thumbSize_[0] / 2,
+      event.offsetY - this.thumbSize_[1] / 2);
   var resolution = this.getResolutionForPosition_(relativePosition);
   view.setResolution(view.constrainResolution(resolution));
 };
@@ -220,45 +256,79 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(browserEvent) {
 
 /**
  * Handle dragger start events.
- * @param {goog.fx.DragEvent} event The drag event.
+ * @param {ol.pointer.PointerEvent} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
-  this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
+  if (!this.dragging_ &&
+      event.originalEvent.target === this.element.firstElementChild) {
+    this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
+    this.previousX_ = event.clientX;
+    this.previousY_ = event.clientY;
+    this.dragging_ = true;
+
+    if (this.dragListenerKeys_.length === 0) {
+      var drag = this.handleDraggerDrag_;
+      var end = this.handleDraggerEnd_;
+      this.dragListenerKeys_.push(
+        ol.events.listen(document, ol.events.EventType.MOUSEMOVE, drag, this),
+        ol.events.listen(document, ol.events.EventType.TOUCHMOVE, drag, this),
+        ol.events.listen(document, ol.pointer.EventType.POINTERMOVE, drag, this),
+        ol.events.listen(document, ol.events.EventType.MOUSEUP, end, this),
+        ol.events.listen(document, ol.events.EventType.TOUCHEND, end, this),
+        ol.events.listen(document, ol.pointer.EventType.POINTERUP, end, this)
+      );
+    }
+  }
 };
 
 
 /**
  * Handle dragger drag events.
  *
- * @param {goog.fx.DragEvent} event The drag event.
+ * @param {ol.pointer.PointerEvent|Event} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
-  var relativePosition = this.getRelativePosition_(event.left, event.top);
-  this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
-  this.getMap().getView().setResolution(this.currentResolution_);
+  if (this.dragging_) {
+    var element = this.element.firstElementChild;
+    var deltaX = event.clientX - this.previousX_ + parseInt(element.style.left, 10);
+    var deltaY = event.clientY - this.previousY_ + parseInt(element.style.top, 10);
+    var relativePosition = this.getRelativePosition_(deltaX, deltaY);
+    this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
+    this.getMap().getView().setResolution(this.currentResolution_);
+    this.setThumbPosition_(this.currentResolution_);
+    this.previousX_ = event.clientX;
+    this.previousY_ = event.clientY;
+  }
 };
 
 
 /**
  * Handle dragger end events.
- * @param {goog.fx.DragEvent} event The drag event.
+ * @param {ol.pointer.PointerEvent|Event} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
-  var map = this.getMap();
-  var view = map.getView();
-  view.setHint(ol.ViewHint.INTERACTING, -1);
-  goog.asserts.assert(this.currentResolution_,
-      'this.currentResolution_ should be defined');
-  map.beforeRender(ol.animation.zoom({
-    resolution: this.currentResolution_,
-    duration: this.duration_,
-    easing: ol.easing.easeOut
-  }));
-  var resolution = view.constrainResolution(this.currentResolution_);
-  view.setResolution(resolution);
+  if (this.dragging_) {
+    var map = this.getMap();
+    var view = map.getView();
+    view.setHint(ol.ViewHint.INTERACTING, -1);
+    goog.asserts.assert(this.currentResolution_,
+        'this.currentResolution_ should be defined');
+    map.beforeRender(ol.animation.zoom({
+      resolution: this.currentResolution_,
+      duration: this.duration_,
+      easing: ol.easing.easeOut
+    }));
+    var resolution = view.constrainResolution(this.currentResolution_);
+    view.setResolution(resolution);
+    this.dragging_ = false;
+    this.previousX_ = undefined;
+    this.previousY_ = undefined;
+    this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
+    this.dragListenerKeys_.length = 0;
+  }
 };
 
 
@@ -270,15 +340,12 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
  */
 ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
   var position = this.getPositionForResolution_(res);
-  var dragger = this.dragger_;
-  var thumb = goog.dom.getFirstElementChild(this.element);
+  var thumb = this.element.firstElementChild;
 
   if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
-    var left = dragger.limits.left + dragger.limits.width * position;
-    goog.style.setPosition(thumb, left);
+    thumb.style.left = this.widthLimit_ * position + 'px';
   } else {
-    var top = dragger.limits.top + dragger.limits.height * position;
-    goog.style.setPosition(thumb, dragger.limits.left, top);
+    thumb.style.top = this.heightLimit_ * position + 'px';
   }
 };
 
@@ -294,12 +361,11 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
  * @private
  */
 ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
-  var draggerLimits = this.dragger_.limits;
   var amount;
   if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
-    amount = (x - draggerLimits.left) / draggerLimits.width;
+    amount = x / this.widthLimit_;
   } else {
-    amount = (y - draggerLimits.top) / draggerLimits.height;
+    amount = y / this.heightLimit_;
   }
   return ol.math.clamp(amount, 0, 1);
 };

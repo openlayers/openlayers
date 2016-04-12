@@ -9,6 +9,33 @@
 var oli;
 
 
+/**
+ * @interface
+ */
+oli.events.Event = function() {};
+
+
+/**
+ * @type {Object}
+ */
+oli.events.Event.prototype.target;
+
+
+/**
+ * @type {string}
+ */
+oli.events.Event.prototype.type;
+
+
+/**
+ */
+oli.events.Event.prototype.preventDefault = function() {};
+
+
+/**
+ */
+oli.events.Event.prototype.stopPropagation = function() {};
+
 
 /**
  * @interface
@@ -20,7 +47,6 @@ oli.CollectionEvent = function() {};
  * @type {*}
  */
 oli.CollectionEvent.prototype.element;
-
 
 
 /**
@@ -41,7 +67,6 @@ oli.DragBoxEvent.prototype.coordinate;
 oli.DragBoxEvent.prototype.mapBrowserEvent;
 
 
-
 /**
  * @interface
  */
@@ -52,7 +77,6 @@ oli.DrawEvent = function() {};
  * @type {ol.Feature}
  */
 oli.DrawEvent.prototype.feature;
-
 
 
 /**
@@ -73,7 +97,6 @@ oli.ModifyEvent.prototype.features;
 oli.ModifyEvent.prototype.mapBrowserPointerEvent;
 
 
-
 /**
  * @interface
  */
@@ -90,7 +113,6 @@ oli.ObjectEvent.prototype.key;
  * @type {*}
  */
 oli.ObjectEvent.prototype.oldValue;
-
 
 
 /**
@@ -121,7 +143,6 @@ oli.MapBrowserEvent.prototype.pixel;
  * @type {boolean}
  */
 oli.MapBrowserEvent.prototype.dragging;
-
 
 
 /**
@@ -166,7 +187,6 @@ oli.SelectEvent.prototype.selected;
 oli.SelectEvent.prototype.mapBrowserEvent;
 
 
-
 /**
  * @type {Object}
  */
@@ -184,7 +204,6 @@ oli.control.Control = function() {};
  * @return {undefined} Undefined.
  */
 oli.control.Control.prototype.setMap = function(map) {};
-
 
 
 /**
@@ -217,7 +236,6 @@ oli.interaction.DragAndDropEvent.prototype.projection;
 oli.interaction.DragAndDropEvent.prototype.file;
 
 
-
 /**
  * @interface
  */
@@ -240,7 +258,6 @@ oli.interaction.TranslateEvent.prototype.coordinate;
  * @type {Object}
  */
 oli.render;
-
 
 
 /**

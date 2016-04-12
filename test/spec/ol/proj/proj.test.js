@@ -209,6 +209,14 @@ describe('ol.proj', function() {
 
   describe('Proj4js integration', function() {
 
+    var proj4 = window.proj4;
+
+    afterEach(function() {
+      delete proj4.defs['EPSG:21781'];
+      window.proj4 = proj4;
+      ol.proj.setProj4(window.proj4);
+    });
+
     it('creates ol.proj.Projection instance from EPSG:21781', function() {
       proj4.defs('EPSG:21781',
           '+proj=somerc +lat_0=46.95240555555556 +lon_0=7.439583333333333 ' +
@@ -218,8 +226,6 @@ describe('ol.proj', function() {
       expect(proj.getCode()).to.eql('EPSG:21781');
       expect(proj.getUnits()).to.eql('m');
       expect(proj.getMetersPerUnit()).to.eql(1);
-
-      delete proj4.defs['EPSG:21781'];
     });
 
     it('can use an alternative namespace for proj4', function() {
@@ -235,10 +241,6 @@ describe('ol.proj', function() {
       expect(proj.getCode()).to.eql('EPSG:21781');
       expect(proj.getUnits()).to.eql('m');
       expect(proj.getMetersPerUnit()).to.eql(1);
-
-      delete proj4new.defs['EPSG:21781'];
-      window.proj4 = proj4;
-      ol.proj.setProj4(window.proj4);
     });
 
     it('creates ol.proj.Projection instance from EPSG:3739', function() {
@@ -270,7 +272,6 @@ describe('ol.proj', function() {
           'EPSG:4326', 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(600072.300, 1);
       expect(point[1]).to.roughlyEqual(200146.976, 1);
-      delete proj4.defs['EPSG:21781'];
     });
 
     it('works with ol.proj.fromLonLat and ol.proj.toLonLat', function() {
@@ -285,7 +286,6 @@ describe('ol.proj', function() {
       point = ol.proj.toLonLat(point, 'EPSG:21781');
       expect(point[0]).to.roughlyEqual(lonLat[0], 1);
       expect(point[1]).to.roughlyEqual(lonLat[1], 1);
-      delete proj4.defs['EPSG:21781'];
     });
 
     it('caches the new Proj4js projections given their srsCode', function() {
@@ -300,7 +300,6 @@ describe('ol.proj', function() {
       var proj2 = ol.proj.get(srsCode);
       expect(ol.proj.equivalent(proj2, proj)).to.be(true);
       delete proj4.defs[code];
-      delete proj4.defs[srsCode];
     });
 
     it('numerically estimates point scale at the equator', function() {

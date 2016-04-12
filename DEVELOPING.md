@@ -11,14 +11,6 @@ The Travis CI hook is enabled on the Github repository. This means every pull re
 is run through a full test suite to ensure it compiles and passes the tests. Failing
 pull requests will not be merged.
 
-Although not mandatory, it is also recommended to set up Travis CI for your ol3 fork.
-For that go to your ol3 fork's Service Hooks page and set up the Travis hook.
-Then every time you push to your fork, the test suite will be run. This means
-errors can be caught before creating a pull request. For those making
-small or occasional contributions, this may be enough to check that your contributions
-are ok; in this case, you do not need to install the build tools on your local environment
-as described below.
-
 ### Development dependencies
 
 The minimum requirements are:

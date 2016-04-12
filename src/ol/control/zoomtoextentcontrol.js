@@ -2,8 +2,8 @@ goog.provide('ol.control.ZoomToExtent');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
@@ -27,19 +27,19 @@ ol.control.ZoomToExtent = function(opt_options) {
    */
   this.extent_ = options.extent ? options.extent : null;
 
-  var className = options.className ? options.className :
+  var className = options.className !== undefined ? options.className :
       'ol-zoom-extent';
 
-  var label = options.label ? options.label : 'E';
-  var tipLabel = options.tipLabel ?
+  var label = options.label !== undefined ? options.label : 'E';
+  var tipLabel = options.tipLabel !== undefined ?
       options.tipLabel : 'Fit to extent';
   var button = goog.dom.createDom('BUTTON', {
     'type': 'button',
     'title': tipLabel
   }, label);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK,
+      this.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
@@ -54,7 +54,7 @@ goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
@@ -69,8 +69,7 @@ ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
 ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  var extent = !this.extent_ ?
-      view.getProjection().getExtent() : this.extent_;
+  var extent = !this.extent_ ? view.getProjection().getExtent() : this.extent_;
   var size = map.getSize();
   goog.asserts.assert(size, 'size should be defined');
   view.fit(extent, size);

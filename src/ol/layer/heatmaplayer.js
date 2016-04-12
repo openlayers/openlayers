@@ -1,13 +1,13 @@
 goog.provide('ol.layer.Heatmap');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.object');
+goog.require('ol.events');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.layer.Vector');
 goog.require('ol.math');
+goog.require('ol.object');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
@@ -39,7 +39,7 @@ ol.layer.HeatmapLayerProperty = {
 ol.layer.Heatmap = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var baseOptions = goog.object.clone(options);
+  var baseOptions = ol.object.assign({}, options);
 
   delete baseOptions.gradient;
   delete baseOptions.radius;
@@ -72,9 +72,9 @@ ol.layer.Heatmap = function(opt_options) {
    */
   this.styleCache_ = null;
 
-  goog.events.listen(this,
+  ol.events.listen(this,
       ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.GRADIENT),
-      this.handleGradientChanged_, false, this);
+      this.handleGradientChanged_, this);
 
   this.setGradient(options.gradient ?
       options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
@@ -83,16 +83,18 @@ ol.layer.Heatmap = function(opt_options) {
 
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-  goog.events.listen(this, [
-    ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
-    ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS)
-  ], this.handleStyleChanged_, false, this);
+  ol.events.listen(this,
+      ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.BLUR),
+      this.handleStyleChanged_, this);
+  ol.events.listen(this,
+      ol.Object.getChangeEventType(ol.layer.HeatmapLayerProperty.RADIUS),
+      this.handleStyleChanged_, this);
 
   this.handleStyleChanged_();
 
   var weight = options.weight ? options.weight : 'weight';
   var weightFunction;
-  if (goog.isString(weight)) {
+  if (typeof weight === 'string') {
     weightFunction = function(feature) {
       return feature.get(weight);
     };
@@ -129,8 +131,7 @@ ol.layer.Heatmap = function(opt_options) {
   // The render order is not relevant for a heatmap representation.
   this.setRenderOrder(null);
 
-  goog.events.listen(this, ol.render.EventType.RENDER,
-      this.handleRender_, false, this);
+  ol.events.listen(this, ol.render.EventType.RENDER, this.handleRender_, this);
 
 };
 goog.inherits(ol.layer.Heatmap, ol.layer.Vector);

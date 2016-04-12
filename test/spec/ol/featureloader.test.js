@@ -69,7 +69,7 @@ describe('ol.featureloader', function() {
       var url = 'spec/ol/data/point.json';
       var format = new ol.format.GeoJSON();
       loader = ol.featureloader.tile(url, format);
-      goog.events.listen(tile, 'change', function(e) {
+      ol.events.listen(tile, 'change', function(e) {
         expect(tile.getFeatures().length).to.be.greaterThan(0);
         done();
       });
@@ -81,7 +81,7 @@ describe('ol.featureloader', function() {
           var url = 'spec/ol/data/14-8938-5680.vector.pbf';
           var format = new ol.format.MVT();
           loader = ol.featureloader.tile(url, format);
-          goog.events.listen(tile, 'change', function(e) {
+          ol.events.listen(tile, 'change', function(e) {
             expect(tile.getFeatures().length).to.be.greaterThan(0);
             expect(tile.getProjection().getUnits()).to.be('tile-pixels');
             done();
@@ -93,7 +93,7 @@ describe('ol.featureloader', function() {
 
 });
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.VectorTile');
 goog.require('ol.featureloader');
 goog.require('ol.format.GeoJSON');

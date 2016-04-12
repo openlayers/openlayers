@@ -4,15 +4,14 @@ goog.provide('ol.control.Attribution');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol.object');
 goog.require('ol.source.Tile');
 
 
@@ -64,27 +63,27 @@ ol.control.Attribution = function(opt_options) {
     this.collapsed_ = false;
   }
 
-  var className = options.className ? options.className : 'ol-attribution';
+  var className = options.className !== undefined ? options.className : 'ol-attribution';
 
-  var tipLabel = options.tipLabel ? options.tipLabel : 'Attributions';
+  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
 
-  var collapseLabel = options.collapseLabel ? options.collapseLabel : '\u00BB';
+  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
 
   /**
    * @private
    * @type {Node}
    */
-  this.collapseLabel_ = goog.isString(collapseLabel) ?
+  this.collapseLabel_ = typeof collapseLabel === 'string' ?
       goog.dom.createDom('SPAN', {}, collapseLabel) :
       collapseLabel;
 
-  var label = options.label ? options.label : 'i';
+  var label = options.label !== undefined ? options.label : 'i';
 
   /**
    * @private
    * @type {Node}
    */
-  this.label_ = goog.isString(label) ?
+  this.label_ = typeof label === 'string' ?
       goog.dom.createDom('SPAN', {}, label) :
       label;
 
@@ -95,8 +94,7 @@ ol.control.Attribution = function(opt_options) {
     'title': tipLabel
   }, activeLabel);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL +
@@ -151,7 +149,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
-  var attributions = goog.object.clone(frameState.attributions);
+  var attributions = ol.object.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var projection = frameState.viewState.projection;
@@ -268,17 +266,17 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var renderVisible =
-      !goog.object.isEmpty(this.attributionElementRenderedVisible_) ||
-      !goog.object.isEmpty(frameState.logos);
+      !ol.object.isEmpty(this.attributionElementRenderedVisible_) ||
+      !ol.object.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
     goog.style.setElementShown(this.element, renderVisible);
     this.renderedVisible_ = renderVisible;
   }
   if (renderVisible &&
-      goog.object.isEmpty(this.attributionElementRenderedVisible_)) {
-    goog.dom.classlist.add(this.element, 'ol-logo-only');
+      ol.object.isEmpty(this.attributionElementRenderedVisible_)) {
+    this.element.classList.add('ol-logo-only');
   } else {
-    goog.dom.classlist.remove(this.element, 'ol-logo-only');
+    this.element.classList.remove('ol-logo-only');
   }
 
   this.insertLogos_(frameState);
@@ -322,13 +320,13 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     }
   }
 
-  goog.style.setElementShown(this.logoLi_, !goog.object.isEmpty(logos));
+  goog.style.setElementShown(this.logoLi_, !ol.object.isEmpty(logos));
 
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.Attribution.prototype.handleClick_ = function(event) {
@@ -341,7 +339,7 @@ ol.control.Attribution.prototype.handleClick_ = function(event) {
  * @private
  */
 ol.control.Attribution.prototype.handleToggle_ = function() {
-  goog.dom.classlist.toggle(this.element, 'ol-collapsed');
+  this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
     goog.dom.replaceNode(this.collapseLabel_, this.label_);
   } else {
@@ -371,7 +369,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
     return;
   }
   this.collapsible_ = collapsible;
-  goog.dom.classlist.toggle(this.element, 'ol-uncollapsible');
+  this.element.classList.toggle('ol-uncollapsible');
   if (!collapsible && this.collapsed_) {
     this.handleToggle_();
   }

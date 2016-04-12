@@ -57,7 +57,7 @@ describe('ol.source.Vector', function() {
 
       it('fires a change event', function() {
         var listener = sinon.spy();
-        goog.events.listen(vectorSource, 'change', listener);
+        ol.events.listen(vectorSource, 'change', listener);
         vectorSource.addFeature(pointFeature);
         expect(listener).to.be.called();
       });
@@ -98,11 +98,11 @@ describe('ol.source.Vector', function() {
 
       it('removes all features using fast path', function() {
         var changeSpy = sinon.spy();
-        goog.events.listen(vectorSource, 'change', changeSpy);
+        ol.events.listen(vectorSource, 'change', changeSpy);
         var removeFeatureSpy = sinon.spy();
-        goog.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
+        ol.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
         var clearSourceSpy = sinon.spy();
-        goog.events.listen(vectorSource, 'clear', clearSourceSpy);
+        ol.events.listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear(true);
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
@@ -116,11 +116,11 @@ describe('ol.source.Vector', function() {
 
       it('removes all features using slow path', function() {
         var changeSpy = sinon.spy();
-        goog.events.listen(vectorSource, 'change', changeSpy);
+        ol.events.listen(vectorSource, 'change', changeSpy);
         var removeFeatureSpy = sinon.spy();
-        goog.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
+        ol.events.listen(vectorSource, 'removefeature', removeFeatureSpy);
         var clearSourceSpy = sinon.spy();
-        goog.events.listen(vectorSource, 'clear', clearSourceSpy);
+        ol.events.listen(vectorSource, 'clear', clearSourceSpy);
         vectorSource.clear();
         expect(vectorSource.getFeatures()).to.eql([]);
         expect(vectorSource.isEmpty()).to.be(true);
@@ -184,7 +184,7 @@ describe('ol.source.Vector', function() {
 
       it('fires a change event', function() {
         var listener = sinon.spy();
-        goog.events.listen(vectorSource, 'change', listener);
+        ol.events.listen(vectorSource, 'change', listener);
         vectorSource.removeFeature(features[0]);
         expect(listener).to.be.called();
       });
@@ -270,7 +270,7 @@ describe('ol.source.Vector', function() {
       var feature = new ol.Feature(new ol.geom.Point([1, 1]));
       vectorSource.addFeature(feature);
       var listener = sinon.spy();
-      goog.events.listen(vectorSource, 'change', listener);
+      ol.events.listen(vectorSource, 'change', listener);
       feature.set('foo', 'bar');
       expect(listener).to.be.called();
     });
@@ -554,7 +554,7 @@ describe('ol.source.Vector', function() {
 });
 
 
-goog.require('goog.events');
+goog.require('ol.events');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');

@@ -31,8 +31,8 @@
 goog.provide('ol.pointer.PointerEvent');
 
 
-goog.require('goog.events');
-goog.require('goog.events.Event');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 
 
 /**
@@ -42,20 +42,20 @@ goog.require('goog.events.Event');
  * touch events and even native pointer events.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @param {string} type The type of the event to create.
- * @param {goog.events.BrowserEvent} browserEvent The event.
+ * @param {Event} originalEvent The event.
  * @param {Object.<string, ?>=} opt_eventDict An optional dictionary of
  *    initial event properties.
  */
-ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
+ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
   goog.base(this, type);
 
   /**
    * @const
-   * @type {goog.events.BrowserEvent}
+   * @type {Event}
    */
-  this.browserEvent = browserEvent;
+  this.originalEvent = originalEvent;
 
   var eventDict = opt_eventDict ? opt_eventDict : {};
 
@@ -186,13 +186,13 @@ ol.pointer.PointerEvent = function(type, browserEvent, opt_eventDict) {
   this.isPrimary = 'isPrimary' in eventDict ? eventDict['isPrimary'] : false;
 
   // keep the semantics of preventDefault
-  if (browserEvent.preventDefault) {
+  if (originalEvent.preventDefault) {
     this.preventDefault = function() {
-      browserEvent.preventDefault();
+      originalEvent.preventDefault();
     };
   }
 };
-goog.inherits(ol.pointer.PointerEvent, goog.events.Event);
+goog.inherits(ol.pointer.PointerEvent, ol.events.Event);
 
 
 /**

@@ -188,7 +188,6 @@ describe('ol.rendering.style.Circle', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.Map');

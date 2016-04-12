@@ -33,11 +33,13 @@ ol.source.XYZ = function(options) {
       ol.tilegrid.createXYZ({
         extent: ol.tilegrid.extentFromProjection(projection),
         maxZoom: options.maxZoom,
+        minZoom: options.minZoom,
         tileSize: options.tileSize
       });
 
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
     opaque: options.opaque,

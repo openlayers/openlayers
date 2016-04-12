@@ -2,7 +2,7 @@
 goog.provide('ol.DragBoxEvent');
 goog.provide('ol.interaction.DragBox');
 
-goog.require('goog.events.Event');
+goog.require('ol.events.Event');
 goog.require('ol');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
@@ -54,7 +54,7 @@ ol.DragBoxEventType = {
  * @param {string} type The event type.
  * @param {ol.Coordinate} coordinate The event coordinate.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @constructor
  * @implements {oli.DragBoxEvent}
  */
@@ -77,7 +77,7 @@ ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-goog.inherits(ol.DragBoxEvent, goog.events.Event);
+goog.inherits(ol.DragBoxEvent, ol.events.Event);
 
 
 /**
@@ -234,8 +234,8 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
+  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
+      this.condition_(mapBrowserEvent)) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);

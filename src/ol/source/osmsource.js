@@ -32,8 +32,9 @@ ol.source.OSM = function(opt_options) {
 
   goog.base(this, {
     attributions: attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: crossOrigin,
-    opaque: true,
+    opaque: options.opaque !== undefined ? options.opaque : true,
     maxZoom: options.maxZoom !== undefined ? options.maxZoom : 19,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileLoadFunction: options.tileLoadFunction,

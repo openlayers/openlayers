@@ -26,7 +26,7 @@ goog.inherits(ol.format.TextFeature, ol.format.Feature);
  * @return {string} Text.
  */
 ol.format.TextFeature.prototype.getText_ = function(source) {
-  if (goog.isString(source)) {
+  if (typeof source === 'string') {
     return source;
   } else {
     goog.asserts.fail();

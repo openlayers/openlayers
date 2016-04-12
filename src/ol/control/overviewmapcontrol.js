@@ -2,11 +2,8 @@ goog.provide('ol.control.OverviewMap');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.dom.classlist');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.math.Size');
-goog.require('goog.style');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
@@ -52,27 +49,27 @@ ol.control.OverviewMap = function(opt_options) {
     this.collapsed_ = false;
   }
 
-  var className = options.className ? options.className : 'ol-overviewmap';
+  var className = options.className !== undefined ? options.className : 'ol-overviewmap';
 
-  var tipLabel = options.tipLabel ? options.tipLabel : 'Overview map';
+  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
 
-  var collapseLabel = options.collapseLabel ? options.collapseLabel : '\u00AB';
+  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00AB';
 
   /**
    * @private
    * @type {Node}
    */
-  this.collapseLabel_ = goog.isString(collapseLabel) ?
+  this.collapseLabel_ = typeof collapseLabel === 'string' ?
       goog.dom.createDom('SPAN', {}, collapseLabel) :
       collapseLabel;
 
-  var label = options.label ? options.label : '\u00BB';
+  var label = options.label !== undefined ? options.label : '\u00BB';
 
   /**
    * @private
    * @type {Node}
    */
-  this.label_ = goog.isString(label) ?
+  this.label_ = typeof label === 'string' ?
       goog.dom.createDom('SPAN', {}, label) :
       label;
 
@@ -83,10 +80,11 @@ ol.control.OverviewMap = function(opt_options) {
     'title': tipLabel
   }, activeLabel);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      this.handleClick_, false, this);
+  ol.events.listen(button, ol.events.EventType.CLICK,
+      this.handleClick_, this);
 
-  var ovmapDiv = goog.dom.createDom('DIV', 'ol-overviewmap-map');
+  var ovmapDiv = document.createElement('DIV');
+  ovmapDiv.className = 'ol-overviewmap-map';
 
   /**
    * @type {ol.Map}
@@ -110,7 +108,9 @@ ol.control.OverviewMap = function(opt_options) {
         }, this);
   }
 
-  var box = goog.dom.createDom('DIV', 'ol-overviewmap-box');
+  var box = document.createElement('DIV');
+  box.className = 'ol-overviewmap-box';
+  box.style.boxSizing = 'border-box';
 
   /**
    * @type {ol.Overlay}
@@ -159,9 +159,9 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
 
   if (map) {
-    this.listenerKeys.push(goog.events.listen(
+    this.listenerKeys.push(ol.events.listen(
         map, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, false, this));
+        this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked
     if (this.ovmap_.getLayers().getLength() === 0) {
@@ -203,9 +203,9 @@ ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  * @private
  */
 ol.control.OverviewMap.prototype.bindView_ = function(view) {
-  goog.events.listen(view,
+  ol.events.listen(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, false, this);
+      this.handleRotationChanged_, this);
 };
 
 
@@ -215,9 +215,9 @@ ol.control.OverviewMap.prototype.bindView_ = function(view) {
  * @private
  */
 ol.control.OverviewMap.prototype.unbindView_ = function(view) {
-  goog.events.unlisten(view,
+  ol.events.unlisten(view,
       ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, false, this);
+      this.handleRotationChanged_, this);
 };
 
 
@@ -281,17 +281,17 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
       ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
   var bottomRightPixel =
       ovmap.getPixelFromCoordinate(ol.extent.getBottomRight(extent));
-  var boxSize = new goog.math.Size(
-      Math.abs(topLeftPixel[0] - bottomRightPixel[0]),
-      Math.abs(topLeftPixel[1] - bottomRightPixel[1]));
+
+  var boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
+  var boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
 
   var ovmapWidth = ovmapSize[0];
   var ovmapHeight = ovmapSize[1];
 
-  if (boxSize.width < ovmapWidth * ol.OVERVIEWMAP_MIN_RATIO ||
-      boxSize.height < ovmapHeight * ol.OVERVIEWMAP_MIN_RATIO ||
-      boxSize.width > ovmapWidth * ol.OVERVIEWMAP_MAX_RATIO ||
-      boxSize.height > ovmapHeight * ol.OVERVIEWMAP_MAX_RATIO) {
+  if (boxWidth < ovmapWidth * ol.OVERVIEWMAP_MIN_RATIO ||
+      boxHeight < ovmapHeight * ol.OVERVIEWMAP_MIN_RATIO ||
+      boxWidth > ovmapWidth * ol.OVERVIEWMAP_MAX_RATIO ||
+      boxHeight > ovmapHeight * ol.OVERVIEWMAP_MAX_RATIO) {
     this.resetExtent_();
   } else if (!ol.extent.containsExtent(ovextent, extent)) {
     this.recenter_();
@@ -395,10 +395,8 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
 
   // set box size calculated from map extent size and overview map resolution
   if (box) {
-    var boxWidth = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution);
-    var boxHeight = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution);
-    goog.style.setBorderBoxSize(box, new goog.math.Size(
-        boxWidth, boxHeight));
+    box.style.width = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution) + 'px';
+    box.style.height = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution) + 'px';
   }
 };
 
@@ -432,7 +430,7 @@ ol.control.OverviewMap.prototype.calculateCoordinateRotate_ = function(
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.OverviewMap.prototype.handleClick_ = function(event) {
@@ -445,7 +443,7 @@ ol.control.OverviewMap.prototype.handleClick_ = function(event) {
  * @private
  */
 ol.control.OverviewMap.prototype.handleToggle_ = function() {
-  goog.dom.classlist.toggle(this.element, 'ol-collapsed');
+  this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
     goog.dom.replaceNode(this.collapseLabel_, this.label_);
   } else {
@@ -459,11 +457,11 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    goog.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
+    ol.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
         },
-        false, this);
+        this);
   }
 };
 
@@ -488,7 +486,7 @@ ol.control.OverviewMap.prototype.setCollapsible = function(collapsible) {
     return;
   }
   this.collapsible_ = collapsible;
-  goog.dom.classlist.toggle(this.element, 'ol-uncollapsible');
+  this.element.classList.toggle('ol-uncollapsible');
   if (!collapsible && this.collapsed_) {
     this.handleToggle_();
   }

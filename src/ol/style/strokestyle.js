@@ -151,6 +151,12 @@ ol.style.Stroke.prototype.setLineCap = function(lineCap) {
 /**
  * Set the line dash.
  *
+ * Please note that Internet Explorer 10 and lower [do not support][mdn] the
+ * `setLineDash` method on the `CanvasRenderingContext2D` and therefore this
+ * property will have no visual effect in these browsers.
+ *
+ * [mdn]: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/setLineDash#Browser_compatibility
+ *
  * @param {Array.<number>} lineDash Line dash.
  * @api
  */

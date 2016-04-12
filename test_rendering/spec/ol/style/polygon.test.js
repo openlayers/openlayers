@@ -188,7 +188,6 @@ describe('ol.rendering.style.Polygon', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.Polygon');
 goog.require('ol.Map');

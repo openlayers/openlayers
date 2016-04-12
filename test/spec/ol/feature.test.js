@@ -81,7 +81,7 @@ describe('ol.Feature', function() {
     it('is empty by default', function() {
       var feature = new ol.Feature();
       var properties = feature.getProperties();
-      expect(goog.object.isEmpty(properties)).to.be(true);
+      expect(ol.object.isEmpty(properties)).to.be(true);
     });
 
   });
@@ -462,8 +462,7 @@ describe('ol.Feature.createStyleFunction()', function() {
 });
 
 
-goog.require('goog.events');
-goog.require('goog.object');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
+goog.require('ol.object');
 goog.require('ol.style.Style');

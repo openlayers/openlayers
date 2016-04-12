@@ -3,7 +3,7 @@ goog.provide('ol.geom.GeometryLayout');
 goog.provide('ol.geom.GeometryType');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
+goog.require('ol.functions');
 goog.require('ol.Object');
 goog.require('ol.extent');
 goog.require('ol.proj');
@@ -151,7 +151,7 @@ ol.geom.Geometry.prototype.computeExtent = goog.abstractMethod;
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.Geometry.prototype.containsXY = goog.functions.FALSE;
+ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
 
 
 /**
@@ -167,6 +167,17 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
   }
   return ol.extent.returnOrUpdate(this.extent_, opt_extent);
 };
+
+
+/**
+ * Rotate the geometry around a given coordinate. This modifies the geometry
+ * coordinates in place.
+ * @param {number} angle Rotation angle in radians.
+ * @param {ol.Coordinate} anchor The rotation center.
+ * @api
+ * @function
+ */
+ol.geom.Geometry.prototype.rotate = goog.abstractMethod;
 
 
 /**
@@ -208,7 +219,7 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
 /**
  * Apply a transform function to each coordinate of the geometry.
  * The geometry is modified in place.
- * If you do not want the geometry modified in place, first clone() it and
+ * If you do not want the geometry modified in place, first `clone()` it and
  * then use this function on the clone.
  * @function
  * @param {ol.TransformFunction} transformFn Transform.
@@ -239,7 +250,7 @@ ol.geom.Geometry.prototype.translate = goog.abstractMethod;
  * Transform each coordinate of the geometry from one coordinate reference
  * system to another. The geometry is modified in place.
  * For example, a line will be transformed to a line and a circle to a circle.
- * If you do not want the geometry modified in place, first clone() it and
+ * If you do not want the geometry modified in place, first `clone()` it and
  * then use this function on the clone.
  *
  * @param {ol.proj.ProjectionLike} source The current projection.  Can be a

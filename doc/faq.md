@@ -161,6 +161,22 @@ var swissCoord = ol.proj.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781');
 
 ## Why is the order of a coordinate [lon,lat], and not [lat,lon]?
 
+Because of two different and incompatible conventions. Latitude and longitude
+are normally given in that order. Maps are 2D representations/projections
+of the earth's surface, with coordinates expressed in the `x,y` grid of the
+[Cartesian system](https://en.wikipedia.org/wiki/Cartesian_coordinate_system).
+As they are by convention drawn with west on the left and north at the top,
+this means that `x` represents longitude, and `y` latitude. As stated above,
+OpenLayers is designed to handle all projections, but the default view is in
+projected Cartesian coordinates. It would make no sense to have duplicate
+functions to handle coordinates in both the Cartesian `x,y` and `lat,lon`
+systems, so the degrees of latitude and longitude should be entered as though
+they were Cartesian, in other words, they are `lon,lat`.
+
+If you have difficulty remembering which way round it is, use the language code
+for English, `en`, as a mnemonic: East before North.
+
+#### A practical example
 So you want to center your map on a certain place on the earth and obviously you
 need to have its coordinates for this. Let's assume you want your map centered
 on Schladming, a beautiful place in Austria. Head over to the wikipedia

@@ -2,7 +2,7 @@ goog.provide('ol.render.canvas');
 
 
 /**
- * @typedef {{fillStyle: string}}
+ * @typedef {{fillStyle: ol.ColorLike}}
  */
 ol.render.canvas.FillState;
 
@@ -94,3 +94,18 @@ ol.render.canvas.defaultTextBaseline = 'middle';
  * @type {number}
  */
 ol.render.canvas.defaultLineWidth = 1;
+
+
+/**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {number} rotation Rotation.
+ * @param {number} offsetX X offset.
+ * @param {number} offsetY Y offset.
+ */
+ol.render.canvas.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
+  if (rotation !== 0) {
+    context.translate(offsetX, offsetY);
+    context.rotate(rotation);
+    context.translate(-offsetX, -offsetY);
+  }
+};

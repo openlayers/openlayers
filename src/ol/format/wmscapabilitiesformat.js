@@ -2,7 +2,6 @@ goog.provide('ol.format.WMSCapabilities');
 
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
@@ -154,10 +153,10 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectSt
       eastBoundLongitude === undefined || northBoundLatitude === undefined) {
     return undefined;
   }
-  return /** @type {ol.Extent} */ ([
+  return [
     westBoundLongitude, southBoundLatitude,
     eastBoundLongitude, northBoundLatitude
-  ]);
+  ];
 };
 
 
@@ -288,8 +287,8 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var parentLayerObject = /**  @type {Object.<string,*>} */
       (objectStack[objectStack.length - 1]);
 
-  var layerObject = /**  @type {Object.<string,*>} */ (ol.xml.pushParseAndPop(
-      {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack));
+  var layerObject = ol.xml.pushParseAndPop(
+      {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 
   if (!layerObject) {
     return undefined;
@@ -339,9 +338,8 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
   addKeys.forEach(function(key) {
     if (key in parentLayerObject) {
-      var childValue = goog.object.setIfUndefined(layerObject, key, []);
-      childValue = childValue.concat(parentLayerObject[key]);
-      layerObject[key] = childValue;
+      var childValue = layerObject[key] || [];
+      layerObject[key] = childValue.concat(parentLayerObject[key]);
     }
   });
 

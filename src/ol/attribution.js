@@ -1,7 +1,14 @@
 goog.provide('ol.Attribution');
 
-goog.require('goog.math');
 goog.require('ol.TileRange');
+goog.require('ol.math');
+
+
+/**
+ * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
+ * @api
+ */
+ol.AttributionLike;
 
 
 /**
@@ -80,8 +87,8 @@ ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid,
       if (tileRange.minX < extentTileRange.minX ||
           tileRange.maxX > extentTileRange.maxX) {
         if (testTileRange.intersects(new ol.TileRange(
-            goog.math.modulo(tileRange.minX, width),
-            goog.math.modulo(tileRange.maxX, width),
+            ol.math.modulo(tileRange.minX, width),
+            ol.math.modulo(tileRange.maxX, width),
             tileRange.minY, tileRange.maxY))) {
           return true;
         }

@@ -720,11 +720,52 @@ describe('ol.format.GeoJSON', function() {
       });
       expect(point.getCoordinates()[0]).to.roughlyEqual(
           newPoint.getCoordinates()[0], 1e-8);
-      expect(
-          Math.abs(point.getCoordinates()[1] - newPoint.getCoordinates()[1]))
-          .to.be.lessThan(0.0000001);
+      expect(point.getCoordinates()[1]).to.roughlyEqual(
+          newPoint.getCoordinates()[1], 1e-8);
     });
 
+    it('transforms and encodes geometry collection', function() {
+      var collection = new ol.geom.GeometryCollection([
+        new ol.geom.Point([2, 3]),
+        new ol.geom.LineString([[3, 2], [2, 1]])
+      ]);
+      var geojson = format.writeGeometry(collection, {
+        featureProjection: 'EPSG:3857'
+      });
+      var got = format.readGeometry(geojson, {
+        featureProjection: 'EPSG:3857'
+      });
+      var gotGeometries = got.getGeometries();
+      var geometries = collection.getGeometries();
+      expect(geometries[0].getCoordinates()[0]).to.roughlyEqual(
+          gotGeometries[0].getCoordinates()[0], 1e-8);
+      expect(geometries[0].getCoordinates()[1]).to.roughlyEqual(
+          gotGeometries[0].getCoordinates()[1], 1e-8);
+      expect(geometries[1].getCoordinates()[0][0]).to.roughlyEqual(
+          gotGeometries[1].getCoordinates()[0][0], 1e-8);
+      expect(geometries[1].getCoordinates()[0][1]).to.roughlyEqual(
+          gotGeometries[1].getCoordinates()[0][1], 1e-8);
+    });
+
+    it('truncates transformed point with decimals option', function() {
+      var point = new ol.geom.Point([2, 3]).transform('EPSG:4326','EPSG:3857');
+      var geojson = format.writeGeometry(point, {
+        featureProjection: 'EPSG:3857',
+        decimals: 2
+      });
+      expect(format.readGeometry(geojson).getCoordinates()).to.eql(
+          [2, 3]);
+    });
+
+    it('truncates a linestring with decimals option', function() {
+      var linestring = new ol.geom.LineString([[42.123456789, 38.987654321],
+          [43, 39]]);
+      var geojson = format.writeGeometry(linestring, {
+        decimals: 6
+      });
+      expect(format.readGeometry(geojson).getCoordinates()).to.eql(
+          [[42.123457, 38.987654], [43, 39]]);
+    });
   });
 
 });

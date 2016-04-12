@@ -5,8 +5,8 @@ goog.provide('ol.interaction.DrawGeometryFunctionType');
 goog.provide('ol.interaction.DrawMode');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.Event');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 goog.require('ol.Collection');
 goog.require('ol.Coordinate');
 goog.require('ol.Feature');
@@ -14,6 +14,7 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
+goog.require('ol.functions');
 goog.require('ol.events.condition');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
@@ -55,7 +56,7 @@ ol.interaction.DrawEventType = {
  * this type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.DrawEvent}
  * @param {ol.interaction.DrawEventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
@@ -72,7 +73,7 @@ ol.interaction.DrawEvent = function(type, feature) {
   this.feature = feature;
 
 };
-goog.inherits(ol.interaction.DrawEvent, goog.events.Event);
+goog.inherits(ol.interaction.DrawEvent, ol.events.Event);
 
 
 /**
@@ -300,9 +301,9 @@ ol.interaction.Draw = function(options) {
   this.freehandCondition_ = options.freehandCondition ?
       options.freehandCondition : ol.events.condition.shiftKeyOnly;
 
-  goog.events.listen(this,
+  ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.InteractionProperty.ACTIVE),
-      this.updateState_, false, this);
+      this.updateState_, this);
 
 };
 goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
@@ -337,6 +338,11 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
+  if ((this.mode_ === ol.interaction.DrawMode.LINE_STRING ||
+    this.mode_ === ol.interaction.DrawMode.POLYGON) &&
+    this.freehandCondition_(mapBrowserEvent)) {
+    this.freehand_ = true;
+  }
   var pass = !this.freehand_;
   if (this.freehand_ &&
       mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG) {
@@ -362,11 +368,8 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
   if (this.condition_(event)) {
     this.downPx_ = event.pixel;
     return true;
-  } else if ((this.mode_ === ol.interaction.DrawMode.LINE_STRING ||
-      this.mode_ === ol.interaction.DrawMode.POLYGON) &&
-      this.freehandCondition_(event)) {
+  } else if (this.freehand_) {
     this.downPx_ = event.pixel;
-    this.freehand_ = true;
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
     }
@@ -739,7 +742,7 @@ ol.interaction.Draw.prototype.extend = function(feature) {
 /**
  * @inheritDoc
  */
-ol.interaction.Draw.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.Draw.prototype.shouldStopEvent = ol.functions.FALSE;
 
 
 /**

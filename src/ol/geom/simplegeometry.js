@@ -1,12 +1,12 @@
 goog.provide('ol.geom.SimpleGeometry');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
-goog.require('goog.object');
+goog.require('ol.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
+goog.require('ol.object');
 
 
 /**
@@ -84,7 +84,7 @@ ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
+ol.geom.SimpleGeometry.prototype.containsXY = ol.functions.FALSE;
 
 
 /**
@@ -146,7 +146,7 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
  */
 ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    goog.object.clear(this.simplifiedGeometryCache);
+    ol.object.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
@@ -240,7 +240,7 @@ ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesti
         coordinates = /** @type {Array} */ (coordinates[0]);
       }
     }
-    stride = (/** @type {Array} */ (coordinates)).length;
+    stride = coordinates.length;
     layout = ol.geom.SimpleGeometry.getLayoutForStride_(stride);
   }
   this.layout = layout;
@@ -255,6 +255,22 @@ ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesti
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (this.flatCoordinates) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+    this.changed();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.SimpleGeometry.prototype.rotate = function(angle, anchor) {
+  var flatCoordinates = this.getFlatCoordinates();
+  if (flatCoordinates) {
+    var stride = this.getStride();
+    ol.geom.flat.transform.rotate(
+        flatCoordinates, 0, flatCoordinates.length,
+        stride, angle, anchor, flatCoordinates);
     this.changed();
   }
 };

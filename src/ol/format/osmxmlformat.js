@@ -1,10 +1,9 @@
 // FIXME add typedef for stack state objects
 goog.provide('ol.format.OSMXML');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom.NodeType');
-goog.require('goog.object');
+goog.require('ol.array');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');
@@ -12,6 +11,7 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
@@ -64,16 +64,17 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var id = node.getAttribute('id');
-  var coordinates = /** @type {Array.<number>} */ ([
+  /** @type {ol.Coordinate} */
+  var coordinates = [
     parseFloat(node.getAttribute('lon')),
     parseFloat(node.getAttribute('lat'))
-  ]);
+  ];
   state.nodes[id] = coordinates;
 
   var values = ol.xml.pushParseAndPop({
     tags: {}
   }, ol.format.OSMXML.NODE_PARSERS_, node, objectStack);
-  if (!goog.object.isEmpty(values.tags)) {
+  if (!ol.object.isEmpty(values.tags)) {
     var geometry = new ol.geom.Point(coordinates);
     ol.format.Feature.transformWithOptions(geometry, false, options);
     var feature = new ol.Feature(geometry);
@@ -100,10 +101,11 @@ ol.format.OSMXML.readWay_ = function(node, objectStack) {
     tags: {}
   }, ol.format.OSMXML.WAY_PARSERS_, node, objectStack);
   var state = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  var flatCoordinates = /** @type {Array.<number>} */ ([]);
+  /** @type {Array.<number>} */
+  var flatCoordinates = [];
   for (var i = 0, ii = values.ndrefs.length; i < ii; i++) {
     var point = state.nodes[values.ndrefs[i]];
-    goog.array.extend(flatCoordinates, point);
+    ol.array.extend(flatCoordinates, point);
   }
   var geometry;
   if (values.ndrefs[0] == values.ndrefs[values.ndrefs.length - 1]) {

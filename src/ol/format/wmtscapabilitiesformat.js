@@ -66,13 +66,13 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Capabilities',
       'localName should be Capabilities');
-  this.version = node.getAttribute('version').trim();
-  goog.asserts.assertString(this.version, 'this.version should be a string');
+  var version = node.getAttribute('version').trim();
+  goog.asserts.assertString(version, 'version should be a string');
   var WMTSCapabilityObject = this.owsParser_.readFromNode(node);
   if (!WMTSCapabilityObject) {
     return null;
   }
-  WMTSCapabilityObject['version'] = this.version;
+  WMTSCapabilityObject['version'] = version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
       ol.format.WMTSCapabilities.PARSERS_, node, []);
   return WMTSCapabilityObject ? WMTSCapabilityObject : null;

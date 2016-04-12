@@ -2,20 +2,17 @@
 
 goog.provide('ol.renderer.webgl.Map');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.log');
-goog.require('goog.log.Logger');
-goog.require('goog.object');
 goog.require('goog.style');
 goog.require('goog.webgl');
 goog.require('ol');
 goog.require('ol.RendererType');
+goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
@@ -106,10 +103,10 @@ ol.renderer.webgl.Map = function(container, map) {
    */
   this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
-  goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
-      this.handleWebGLContextLost, false, this);
-  goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
-      this.handleWebGLContextRestored, false, this);
+  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
+      this.handleWebGLContextLost, this);
+  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
+      this.handleWebGLContextRestored, this);
 
   /**
    * @private
@@ -291,8 +288,6 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameStat
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         frameState, null, context);
     map.dispatchEvent(composeEvent);
-
-    vectorContext.flush();
   }
 };
 
@@ -314,7 +309,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
           }
         });
   }
-  goog.dispose(this.context_);
+  this.context_.dispose();
   goog.base(this, 'disposeInternal');
 };
 
@@ -377,24 +372,19 @@ ol.renderer.webgl.Map.prototype.getType = function() {
 
 
 /**
- * @param {goog.events.Event} event Event.
+ * @param {ol.events.Event} event Event.
  * @protected
  */
 ol.renderer.webgl.Map.prototype.handleWebGLContextLost = function(event) {
   event.preventDefault();
   this.textureCache_.clear();
   this.textureCacheFrameMarkerCount_ = 0;
-  goog.object.forEach(this.getLayerRenderers(),
-      /**
-       * @param {ol.renderer.Layer} layerRenderer Layer renderer.
-       * @param {string} key Key.
-       * @param {Object.<string, ol.renderer.Layer>} object Object.
-       */
-      function(layerRenderer, key, object) {
-        goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-            'renderer is an instance of ol.renderer.webgl.Layer');
-        layerRenderer.handleWebGLContextLost();
-      });
+
+  var renderers = this.getLayerRenderers();
+  for (var id in renderers) {
+    var renderer = /** @type {ol.renderer.webgl.Layer} */ (renderers[id]);
+    renderer.handleWebGLContextLost();
+  }
 };
 
 
@@ -433,14 +423,6 @@ ol.renderer.webgl.Map.prototype.isTileTextureLoaded = function(tile) {
 
 
 /**
- * @private
- * @type {goog.log.Logger}
- */
-ol.renderer.webgl.Map.prototype.logger_ =
-    goog.log.getLogger('ol.renderer.webgl.Map');
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
@@ -470,7 +452,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   /** @type {Array.<ol.layer.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
-  goog.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
+  ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
 
   var viewResolution = frameState.viewState.resolution;
   var i, ii, layerRenderer, layerState;
@@ -518,7 +500,9 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
       ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
-    frameState.postRenderFunctions.push(this.expireCache_.bind(this));
+    frameState.postRenderFunctions.push(
+      /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
+    );
   }
 
   if (!this.tileTextureQueue_.isEmpty()) {

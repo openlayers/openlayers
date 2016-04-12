@@ -447,7 +447,7 @@ ol.View.prototype.getZoom = function() {
  */
 ol.View.prototype.fit = function(geometry, size, opt_options) {
   if (!(geometry instanceof ol.geom.SimpleGeometry)) {
-    goog.asserts.assert(goog.isArray(geometry),
+    goog.asserts.assert(Array.isArray(geometry),
         'invalid extent or geometry');
     goog.asserts.assert(!ol.extent.isEmpty(geometry),
         'cannot fit empty extent');
