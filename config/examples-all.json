@@ -18,7 +18,6 @@
       "externs/esrijson.js",
       "externs/example.js",
       "externs/geojson.js",
-      "externs/jspdf.js",
       "externs/jquery-1.9.js",
       "externs/proj4js.js",
       "externs/tilejson.js",
