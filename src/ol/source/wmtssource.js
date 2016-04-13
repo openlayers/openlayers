@@ -361,7 +361,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
-  matrixLimits = /** @type {Array.<Object>} could be null */
+  matrixLimits = /** @type {Array.<Object>} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   goog.asserts.assert(matrixSet, 'TileMatrixSet must not be null');

@@ -95,12 +95,13 @@ describe('ol.tilegrid.WMTS', function() {
               expect(tileGrid.origins_).to.be.an('array');
               expect(tileGrid.origins_).to.have.length(22);
               expect(tileGrid.origins_).to.eql(
-                  goog.array.repeat([-20037508, 20037508], 22));
+                  Array.apply(null, Array(22)).map(Array.prototype.valueOf,
+                      [-20037508, 20037508]));
 
               expect(tileGrid.tileSizes_).to.be.an('array');
               expect(tileGrid.tileSizes_).to.have.length(22);
               expect(tileGrid.tileSizes_).to.eql(
-                  goog.array.repeat(256, 22));
+                  Array.apply(null, Array(22)).map(Number.prototype.valueOf, 256));
 
             });
 
@@ -132,12 +133,13 @@ describe('ol.tilegrid.WMTS', function() {
               expect(tileGrid.origins_).to.be.an('array');
               expect(tileGrid.origins_).to.have.length(20);
               expect(tileGrid.origins_).to.eql(
-                  goog.array.repeat([-20037508, 20037508], 20));
+                  Array.apply(null, Array(20)).map(Array.prototype.valueOf,
+                      [-20037508, 20037508]));
 
               expect(tileGrid.tileSizes_).to.be.an('array');
               expect(tileGrid.tileSizes_).to.have.length(20);
               expect(tileGrid.tileSizes_).to.eql(
-                  goog.array.repeat(256, 20));
+                  Array.apply(null, Array(20)).map(Number.prototype.valueOf, 256));
 
             });
       });
