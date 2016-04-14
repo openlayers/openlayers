@@ -45,6 +45,12 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
+   * @type {ol.TileCoord}
+   */
+  this.tmpTileCoord_ = [0, 0, 0];
+
+  /**
+   * @private
    * @type {!goog.vec.Mat4.Number}
    */
   this.imageTransform_ = goog.vec.Mat4.createNumber();
@@ -125,7 +131,7 @@ ol.renderer.canvas.TileLayer.prototype.composeFrame = function(
     // Calculate all insert points by tile widths from a common origin to avoid
     // gaps caused by rounding
     var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
-        tileGrid.getTileCoordForCoordAndZ(center, currentZ)));
+        tileGrid.getTileCoordForCoordAndZ(center, currentZ, this.tmpTileCoord_)));
     var w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
     var h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
     var left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
