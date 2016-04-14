@@ -2715,7 +2715,10 @@ olx.interaction.DrawOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{features: (ol.Collection.<ol.Feature>|undefined)}}
+ * @typedef {{
+ *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean)
+ * }}
  * @api
  */
 olx.interaction.TranslateOptions;
@@ -2728,6 +2731,18 @@ olx.interaction.TranslateOptions;
  * @api
  */
 olx.interaction.TranslateOptions.prototype.features;
+
+
+/**
+ * A list of layers from which features should be
+ * translated. Alternatively, a filter function can be provided. The
+ * function will be called for each layer in the map and should return
+ * `true` for layers that you want to be translatable. If the option is
+ * absent, all visible layers will be considered translatable.
+ * @type {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean}
+ * @api
+ */
+olx.interaction.TranslateOptions.prototype.layers;
 
 
 /**
