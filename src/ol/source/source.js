@@ -220,12 +220,3 @@ ol.source.Source.prototype.setState = function(state) {
   this.state_ = state;
   this.changed();
 };
-
-
-/**
- * Set the projection of the source.
- * @param {ol.proj.Projection} projection Projection.
- */
-ol.source.Source.prototype.setProjection = function(projection) {
-  this.projection_ = projection;
-};
