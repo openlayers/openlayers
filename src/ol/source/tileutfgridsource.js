@@ -272,7 +272,7 @@ ol.source.TileUTFGridTile_ = function(jsonp, tileCoord, state, src, extent, pree
 
   /**
    * @private
-   * @type {string}
+   * @type {boolean}
    */
   this.jsonp_ = jsonp;
 
@@ -405,21 +405,19 @@ ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
 
 
 /**
- * @param {!UTFGridJSON|Event} UTFGrid data (JSONP) or the load event (XHR).
+ * @param {!UTFGridJSON|Event} arg UTFGrid data (JSONP) or the load event (XHR).
  * @private
  */
-ol.source.TileUTFGridTile_.prototype.handleLoad_ = function() {
+ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(arg) {
   if (this.jsonp_) {
-    this.grid_ = arguments[0].grid;
-    this.keys_ = arguments[0].keys;
-    this.data_ = arguments[0].data;
-    //this.state = ol.TileState.EMPTY;
-    //this.changed();
+    this.grid_ = arg.grid;
+    this.keys_ = arg.keys;
+    this.data_ = arg.data;
   } else {
-    var client = /** @type {XMLHttpRequest} */ (arguments[0].target), json;
+    var client = /** @type {XMLHttpRequest} */ (arg.target), json;
     if (client.status >= 200 && client.status < 300) {
       try {
-        json = /** @type {TileJSON} */(JSON.parse(client.responseText));
+        json = /** @type {UTFGridJSON} */(JSON.parse(client.responseText));
       } catch (err) {
         this.handleError_();
         return;
