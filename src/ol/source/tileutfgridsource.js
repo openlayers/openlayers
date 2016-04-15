@@ -39,6 +39,13 @@ ol.source.TileUTFGrid = function(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.jsonp_ = options.jsonp !== undefined ?
+      options.jsonp : false;
+
+  /**
+   * @private
    * @type {!ol.TileUrlFunctionType}
    */
   this.tileUrlFunction_ = ol.TileUrlFunction.nullTileUrlFunction;
@@ -50,7 +57,15 @@ ol.source.TileUTFGrid = function(options) {
   this.template_ = undefined;
 
   if (options.url) {
-    ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this));
+    if (this.jsonp_) {
+      ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this));
+    } else {
+      var client = new XMLHttpRequest();
+      client.addEventListener('load', this.onXHRLoad_.bind(this));
+      client.addEventListener('error', this.onXHRError_.bind(this));
+      client.open('GET', options.url);
+      client.send();
+    }
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
@@ -59,6 +74,42 @@ ol.source.TileUTFGrid = function(options) {
 };
 goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
+
+/**
+ * @private
+ * @param {Event} event The load event.
+ */
+ol.source.TileUTFGrid.prototype.onXHRLoad_ = function(event) {
+  var client = /** @type {XMLHttpRequest} */ (event.target);
+  if (client.status >= 200 && client.status < 300) {
+    var response;
+    try {
+      response = /** @type {TileJSON} */(JSON.parse(client.responseText));
+    } catch (err) {
+      this.handleTileJSONError();
+      return;
+    }
+    this.handleTileJSONResponse(response);
+  } else {
+    this.handleTileJSONError();
+  }
+};
+
+
+/**
+ * @private
+ * @param {Event} event The error event.
+ */
+ol.source.TileUTFGrid.prototype.onXHRError_ = function(event) {
+  this.handleTileJSONError();
+};
+
+/**
+ * @protected
+ */
+ol.source.TileUTFGrid.prototype.handleTileJSONError = function() {
+  this.setState(ol.source.State.ERROR);
+};
 
 /**
  * Return the template from TileJSON.
@@ -181,11 +232,12 @@ ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projecti
         this.getTileCoordForTileUrlFunction(tileCoord, projection);
     var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGridTile_(
-        tileCoord,
-        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
-        tileUrl !== undefined ? tileUrl : '',
-        this.tileGrid.getTileCoordExtent(tileCoord),
-        this.preemptive_);
+      this.jsonp_,
+      tileCoord,
+      tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+      tileUrl !== undefined ? tileUrl : '',
+      this.tileGrid.getTileCoordExtent(tileCoord),
+      this.preemptive_);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
@@ -206,6 +258,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
 /**
  * @constructor
  * @extends {ol.Tile}
+ * @param {boolean} jsonp JSONP or XHR.
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
@@ -213,9 +266,15 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
  * @private
  */
-ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive) {
+ol.source.TileUTFGridTile_ = function(jsonp, tileCoord, state, src, extent, preemptive) {
 
   goog.base(this, tileCoord, state);
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.jsonp_ = jsonp;
 
   /**
    * @private
@@ -346,14 +405,32 @@ ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
 
 
 /**
- * @param {!UTFGridJSON} json UTFGrid data.
+ * @param {!UTFGridJSON|Event} UTFGrid data (JSONP) or the load event (XHR).
  * @private
  */
-ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
-  this.grid_ = json.grid;
-  this.keys_ = json.keys;
-  this.data_ = json.data;
-
+ol.source.TileUTFGridTile_.prototype.handleLoad_ = function() {
+  if (this.jsonp_) {
+    this.grid_ = arguments[0].grid;
+    this.keys_ = arguments[0].keys;
+    this.data_ = arguments[0].data;
+    //this.state = ol.TileState.EMPTY;
+    //this.changed();
+  } else {
+    var client = /** @type {XMLHttpRequest} */ (arguments[0].target), json;
+    if (client.status >= 200 && client.status < 300) {
+      try {
+        json = /** @type {TileJSON} */(JSON.parse(client.responseText));
+      } catch (err) {
+        this.handleError_();
+        return;
+      }
+      this.grid_ = json.grid;
+      this.keys_ = json.keys;
+      this.data_ = json.data;
+    } else {
+      this.handleError_();
+    }
+  }
   this.state = ol.TileState.EMPTY;
   this.changed();
 };
@@ -365,8 +442,17 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
 ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
   if (this.state == ol.TileState.IDLE) {
     this.state = ol.TileState.LOADING;
-    ol.net.jsonp(this.src_, this.handleLoad_.bind(this),
+
+    if (this.jsonp_) {
+      ol.net.jsonp(this.src_, this.handleLoad_.bind(this),
         this.handleError_.bind(this));
+    } else {
+      var client = new XMLHttpRequest();
+      client.addEventListener('load', this.handleLoad_.bind(this));
+      client.addEventListener('error', this.handleError_.bind(this));
+      client.open('GET', this.src_);
+      client.send();
+    }
   }
 };
 
