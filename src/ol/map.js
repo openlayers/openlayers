@@ -282,6 +282,7 @@ ol.Map = function(options) {
     ol.events.EventType.DBLCLICK,
     ol.events.EventType.MOUSEDOWN,
     ol.events.EventType.TOUCHSTART,
+    ol.events.EventType.TOUCHMOVE,
     ol.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
     ol.events.EventType.MOUSEWHEEL,
