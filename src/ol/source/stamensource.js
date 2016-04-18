@@ -70,11 +70,10 @@ ol.source.StamenProviderConfig = {
     maxZoom: 20
   },
   'watercolor': {
-    minZoom: 3,
+    minZoom: 1,
     maxZoom: 16
   }
 };
-
 
 
 /**
@@ -98,17 +97,18 @@ ol.source.Stamen = function(options) {
       'known layer configured');
   var layerConfig = ol.source.StamenLayerConfig[options.layer];
 
-  var url = goog.isDef(options.url) ? options.url :
+  var url = options.url !== undefined ? options.url :
       'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
       '/{z}/{x}/{y}.' + layerConfig.extension;
 
   goog.base(this, {
     attributions: ol.source.Stamen.ATTRIBUTIONS,
+    cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     maxZoom: providerConfig.maxZoom,
-    // FIXME uncomment the following when tilegrid supports minZoom
-    //minZoom: providerConfig.minZoom,
+    minZoom: providerConfig.minZoom,
     opaque: layerConfig.opaque,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });

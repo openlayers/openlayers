@@ -1,23 +1,19 @@
 ---
-template: example.html
-title: Device-Orientation example
+layout: example.html
+title: Device Orientation
 shortdesc: Listen to DeviceOrientation events.
 docs: >
   This example shows how to track changes in device orientation.
 tags: "orientation, openstreetmap"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <div class="span12">
-      <h4 id="title">Device orientation example</h4>
-      <label class="checkbox" for="track">
-        <input id="track" type="checkbox"/>track changes
-      </label>
-      <p>&alpha; : <code id="alpha"></code></p>
-      <p>&beta; : <code id="beta"></code></p>
-      <p>&gamma; : <code id="gamma"></code></p>
-      <p>heading : <code id="heading"></code></p>
-    </div>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<label>
+  track changes
+  <input id="track" type="checkbox"/>
+</label>
+<p>
+  α : <code id="alpha"></code>&nbsp;&nbsp;
+  β : <code id="beta"></code>&nbsp;&nbsp;
+  γ : <code id="gamma"></code>&nbsp;&nbsp;
+  heading : <code id="heading"></code>
+</p>

@@ -4,14 +4,12 @@ goog.provide('ol.style.StyleFunction');
 goog.provide('ol.style.defaultGeometryFunction');
 
 goog.require('goog.asserts');
-goog.require('goog.functions');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
-
 
 
 /**
@@ -21,12 +19,13 @@ goog.require('ol.style.Stroke');
  * feature or layer that uses the style is re-rendered.
  *
  * @constructor
+ * @struct
  * @param {olx.style.StyleOptions=} opt_options Style options.
  * @api
  */
 ol.style.Style = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -40,7 +39,7 @@ ol.style.Style = function(opt_options) {
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
 
-  if (goog.isDef(options.geometry)) {
+  if (options.geometry !== undefined) {
     this.setGeometry(options.geometry);
   }
 
@@ -48,25 +47,25 @@ ol.style.Style = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill : null;
 
   /**
    * @private
    * @type {ol.style.Image}
    */
-  this.image_ = goog.isDef(options.image) ? options.image : null;
+  this.image_ = options.image !== undefined ? options.image : null;
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
    * @type {ol.style.Text}
    */
-  this.text_ = goog.isDef(options.text) ? options.text : null;
+  this.text_ = options.text !== undefined ? options.text : null;
 
   /**
    * @private
@@ -161,18 +160,18 @@ ol.style.Style.prototype.getZIndex = function() {
 ol.style.Style.prototype.setGeometry = function(geometry) {
   if (goog.isFunction(geometry)) {
     this.geometryFunction_ = geometry;
-  } else if (goog.isString(geometry)) {
+  } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
       var result = feature.get(geometry);
-      if (goog.isDefAndNotNull(result)) {
+      if (result) {
         goog.asserts.assertInstanceof(result, ol.geom.Geometry,
             'feature geometry must be an ol.geom.Geometry instance');
       }
       return result;
     };
-  } else if (goog.isNull(geometry)) {
+  } else if (!geometry) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
-  } else if (goog.isDef(geometry)) {
+  } else if (geometry !== undefined) {
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
         'geometry must be an ol.geom.Geometry instance');
     this.geometryFunction_ = function() {
@@ -196,10 +195,11 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
 
 /**
  * A function that takes an {@link ol.Feature} and a `{number}` representing
- * the view's resolution. The function should return an array of
- * {@link ol.style.Style}. This way e.g. a vector layer can be styled.
+ * the view's resolution. The function should return a {@link ol.style.Style}
+ * or an array of them. This way e.g. a vector layer can be styled.
  *
- * @typedef {function(ol.Feature, number): Array.<ol.style.Style>}
+ * @typedef {function((ol.Feature|ol.render.Feature), number):
+ *     (ol.style.Style|Array.<ol.style.Style>)}
  * @api
  */
 ol.style.StyleFunction;
@@ -214,73 +214,69 @@ ol.style.StyleFunction;
  * @return {ol.style.StyleFunction} A style function.
  */
 ol.style.createStyleFunction = function(obj) {
-  /**
-   * @type {ol.style.StyleFunction}
-   */
   var styleFunction;
 
   if (goog.isFunction(obj)) {
-    styleFunction = /** @type {ol.style.StyleFunction} */ (obj);
+    styleFunction = obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}
      */
     var styles;
-    if (goog.isArray(obj)) {
+    if (Array.isArray(obj)) {
       styles = obj;
     } else {
       goog.asserts.assertInstanceof(obj, ol.style.Style,
           'obj geometry must be an ol.style.Style instance');
       styles = [obj];
     }
-    styleFunction = goog.functions.constant(styles);
+    styleFunction = function() {
+      return styles;
+    };
   }
   return styleFunction;
 };
 
 
 /**
- * @param {ol.Feature} feature Feature.
+ * @type {Array.<ol.style.Style>}
+ * @private
+ */
+ol.style.defaultStyle_ = null;
+
+
+/**
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {number} resolution Resolution.
  * @return {Array.<ol.style.Style>} Style.
  */
 ol.style.defaultStyleFunction = function(feature, resolution) {
-  var fill = new ol.style.Fill({
-    color: 'rgba(255,255,255,0.4)'
-  });
-  var stroke = new ol.style.Stroke({
-    color: '#3399CC',
-    width: 1.25
-  });
-  var styles = [
-    new ol.style.Style({
-      image: new ol.style.Circle({
-        fill: fill,
-        stroke: stroke,
-        radius: 5
-      }),
-      fill: fill,
-      stroke: stroke
-    })
-  ];
-
-  // Now that we've run it the first time, replace the function with
-  // a constant version. We don't use an immediately-invoked function
+  // We don't use an immediately-invoked function
   // and a closure so we don't get an error at script evaluation time in
   // browsers that do not support Canvas. (ol.style.Circle does
   // canvas.getContext('2d') at construction time, which will cause an.error
   // in such browsers.)
-
-  /**
-   * @param {ol.Feature} feature Feature.
-   * @param {number} resolution Resolution.
-   * @return {Array.<ol.style.Style>} Style.
-   */
-  ol.style.defaultStyleFunction = function(feature, resolution) {
-    return styles;
-  };
-
-  return styles;
+  if (!ol.style.defaultStyle_) {
+    var fill = new ol.style.Fill({
+      color: 'rgba(255,255,255,0.4)'
+    });
+    var stroke = new ol.style.Stroke({
+      color: '#3399CC',
+      width: 1.25
+    });
+    ol.style.defaultStyle_ = [
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          fill: fill,
+          stroke: stroke,
+          radius: 5
+        }),
+        fill: fill,
+        stroke: stroke
+      })
+    ];
+  }
+  return ol.style.defaultStyle_;
 };
 
 
@@ -347,6 +343,7 @@ ol.style.createDefaultEditingStyles = function() {
 
   styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
       styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.LINE_STRING],
           styles[ol.geom.GeometryType.POINT]
       );
 
@@ -358,7 +355,8 @@ ol.style.createDefaultEditingStyles = function() {
  * A function that takes an {@link ol.Feature} as argument and returns an
  * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
  *
- * @typedef {function(ol.Feature): (ol.geom.Geometry|undefined)}
+ * @typedef {function((ol.Feature|ol.render.Feature)):
+ *     (ol.geom.Geometry|ol.render.Feature|undefined)}
  * @api
  */
 ol.style.GeometryFunction;
@@ -366,11 +364,11 @@ ol.style.GeometryFunction;
 
 /**
  * Function that is called with a feature and returns its default geometry.
- * @param {ol.Feature} feature Feature to get the geometry for.
- * @return {ol.geom.Geometry|undefined} Geometry to render.
+ * @param {ol.Feature|ol.render.Feature} feature Feature to get the geometry
+ *     for.
+ * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.asserts.assert(!goog.isNull(feature),
-      'feature must not be null');
+  goog.asserts.assert(feature, 'feature must not be null');
   return feature.getGeometry();
 };

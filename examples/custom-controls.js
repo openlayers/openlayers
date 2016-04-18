@@ -19,7 +19,6 @@ var app = window.app;
 //
 
 
-
 /**
  * @constructor
  * @extends {ol.control.Control}
@@ -33,7 +32,7 @@ app.RotateNorthControl = function(opt_options) {
   button.innerHTML = 'N';
 
   var this_ = this;
-  var handleRotateNorth = function(e) {
+  var handleRotateNorth = function() {
     this_.getMap().getView().setRotation(0);
   };
 
@@ -75,7 +74,7 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     center: [0, 0],
-    zoom: 2,
+    zoom: 3,
     rotation: 1
   })
 });

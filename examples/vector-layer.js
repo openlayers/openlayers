@@ -30,7 +30,6 @@ var style = new ol.style.Style({
     })
   })
 });
-var styles = [style];
 
 var vectorLayer = new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -39,7 +38,7 @@ var vectorLayer = new ol.layer.Vector({
   }),
   style: function(feature, resolution) {
     style.getText().setText(resolution < 5000 ? feature.get('name') : '');
-    return styles;
+    return style;
   }
 });
 
@@ -65,7 +64,7 @@ var featureOverlay = new ol.layer.Vector({
   style: function(feature, resolution) {
     var text = resolution < 5000 ? feature.get('name') : '';
     if (!highlightStyleCache[text]) {
-      highlightStyleCache[text] = [new ol.style.Style({
+      highlightStyleCache[text] = new ol.style.Style({
         stroke: new ol.style.Stroke({
           color: '#f00',
           width: 1
@@ -84,7 +83,7 @@ var featureOverlay = new ol.layer.Vector({
             width: 3
           })
         })
-      })];
+      });
     }
     return highlightStyleCache[text];
   }
@@ -93,7 +92,7 @@ var featureOverlay = new ol.layer.Vector({
 var highlight;
 var displayFeatureInfo = function(pixel) {
 
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
 

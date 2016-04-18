@@ -1,8 +1,8 @@
 goog.provide('ol.geom.flat.interpolate');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
+goog.require('ol.array');
+goog.require('ol.math');
 
 
 /**
@@ -14,8 +14,8 @@ goog.require('goog.math');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Destination.
  */
-ol.geom.flat.interpolate.lineString =
-    function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
+ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
+  // FIXME does not work when vertices are repeated
   // FIXME interpolate extra dimensions
   goog.asserts.assert(0 <= fraction && fraction <= 1,
       'fraction should be in between 0 and 1');
@@ -47,21 +47,21 @@ ol.geom.flat.interpolate.lineString =
       y1 = y2;
     }
     var target = fraction * length;
-    var index = goog.array.binarySearch(cumulativeLengths, target);
+    var index = ol.array.binarySearch(cumulativeLengths, target);
     if (index < 0) {
       var t = (target - cumulativeLengths[-index - 2]) /
           (cumulativeLengths[-index - 1] - cumulativeLengths[-index - 2]);
       var o = offset + (-index - 2) * stride;
-      pointX = goog.math.lerp(
+      pointX = ol.math.lerp(
           flatCoordinates[o], flatCoordinates[o + stride], t);
-      pointY = goog.math.lerp(
+      pointY = ol.math.lerp(
           flatCoordinates[o + 1], flatCoordinates[o + stride + 1], t);
     } else {
       pointX = flatCoordinates[offset + index * stride];
       pointY = flatCoordinates[offset + index * stride + 1];
     }
   }
-  if (goog.isDefAndNotNull(opt_dest)) {
+  if (opt_dest) {
     opt_dest[0] = pointX;
     opt_dest[1] = pointY;
     return opt_dest;
@@ -80,8 +80,7 @@ ol.geom.flat.interpolate.lineString =
  * @param {boolean} extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
  */
-ol.geom.flat.lineStringCoordinateAtM =
-    function(flatCoordinates, offset, end, stride, m, extrapolate) {
+ol.geom.flat.lineStringCoordinateAtM = function(flatCoordinates, offset, end, stride, m, extrapolate) {
   if (end == offset) {
     return null;
   }
@@ -128,7 +127,7 @@ ol.geom.flat.lineStringCoordinateAtM =
   coordinate = [];
   var i;
   for (i = 0; i < stride - 1; ++i) {
-    coordinate.push(goog.math.lerp(flatCoordinates[(lo - 1) * stride + i],
+    coordinate.push(ol.math.lerp(flatCoordinates[(lo - 1) * stride + i],
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);

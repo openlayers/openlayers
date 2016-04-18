@@ -2,13 +2,12 @@ goog.provide('ol.Feature');
 goog.provide('ol.FeatureStyleFunction');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.functions');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
-
 
 
 /**
@@ -50,8 +49,6 @@ goog.require('ol.style.Style');
  *
  * @constructor
  * @extends {ol.Object}
- * @fires change Triggered when the id, the geometry or the style of the
- *     feature changes.
  * @param {ol.geom.Geometry|Object.<string, *>=} opt_geometryOrProperties
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
@@ -90,24 +87,24 @@ ol.Feature = function(opt_geometryOrProperties) {
 
   /**
    * @private
-   * @type {goog.events.Key}
+   * @type {?ol.events.Key}
    */
   this.geometryChangeKey_ = null;
 
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, false, this);
+      this.handleGeometryChanged_, this);
 
-  if (goog.isDef(opt_geometryOrProperties)) {
+  if (opt_geometryOrProperties !== undefined) {
     if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
-        goog.isNull(opt_geometryOrProperties)) {
-      var geometry = /** @type {ol.geom.Geometry} */ (opt_geometryOrProperties);
+        !opt_geometryOrProperties) {
+      var geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);
     } else {
       goog.asserts.assert(goog.isObject(opt_geometryOrProperties),
           'opt_geometryOrProperties should be an Object');
-      var properties = /** @type {Object.<string, *>} */
-          (opt_geometryOrProperties);
+      /** @type {Object.<string, *>} */
+      var properties = opt_geometryOrProperties;
       this.setProperties(properties);
     }
   }
@@ -125,11 +122,11 @@ ol.Feature.prototype.clone = function() {
   var clone = new ol.Feature(this.getProperties());
   clone.setGeometryName(this.getGeometryName());
   var geometry = this.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
+  if (geometry) {
     clone.setGeometry(geometry.clone());
   }
   var style = this.getStyle();
-  if (!goog.isNull(style)) {
+  if (style) {
     clone.setStyle(style);
   }
   return clone;
@@ -151,8 +148,12 @@ ol.Feature.prototype.getGeometry = function() {
 
 
 /**
+ * Get the feature identifier.  This is a stable identifier for the feature and
+ * is either set when reading data from a remote source or set explicitly by
+ * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -177,6 +178,7 @@ ol.Feature.prototype.getGeometryName = function() {
  * @return {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} The feature style.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.getStyle = function() {
   return this.style_;
@@ -206,14 +208,14 @@ ol.Feature.prototype.handleGeometryChange_ = function() {
  * @private
  */
 ol.Feature.prototype.handleGeometryChanged_ = function() {
-  if (!goog.isNull(this.geometryChangeKey_)) {
-    goog.events.unlistenByKey(this.geometryChangeKey_);
+  if (this.geometryChangeKey_) {
+    ol.events.unlistenByKey(this.geometryChangeKey_);
     this.geometryChangeKey_ = null;
   }
   var geometry = this.getGeometry();
-  if (goog.isDefAndNotNull(geometry)) {
-    this.geometryChangeKey_ = goog.events.listen(geometry,
-        goog.events.EventType.CHANGE, this.handleGeometryChange_, false, this);
+  if (geometry) {
+    this.geometryChangeKey_ = ol.events.listen(geometry,
+        ol.events.EventType.CHANGE, this.handleGeometryChange_, this);
   }
   this.changed();
 };
@@ -238,10 +240,11 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  * @param {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} style Style for this feature.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
-  this.styleFunction_ = goog.isNull(style) ?
+  this.styleFunction_ = !style ?
       undefined : ol.Feature.createStyleFunction(style);
   this.changed();
 };
@@ -254,6 +257,7 @@ ol.Feature.prototype.setStyle = function(style) {
  * method.
  * @param {number|string|undefined} id The feature id.
  * @api stable
+ * @observable
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
@@ -269,22 +273,24 @@ ol.Feature.prototype.setId = function(id) {
  * @api stable
  */
 ol.Feature.prototype.setGeometryName = function(name) {
-  goog.events.unlisten(
+  ol.events.unlisten(
       this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, false, this);
+      this.handleGeometryChanged_, this);
   this.geometryName_ = name;
-  goog.events.listen(
+  ol.events.listen(
       this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, false, this);
+      this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };
 
 
 /**
- * A function that returns a style given a resolution. The `this` keyword inside
- * the function references the {@link ol.Feature} to be styled.
+ * A function that returns an array of {@link ol.style.Style styles} given a
+ * resolution. The `this` keyword inside the function references the
+ * {@link ol.Feature} to be styled.
  *
- * @typedef {function(this: ol.Feature, number): Array.<ol.style.Style>}
+ * @typedef {function(this: ol.Feature, number):
+ *     (ol.style.Style|Array.<ol.style.Style>)}
  * @api stable
  */
 ol.FeatureStyleFunction;
@@ -299,26 +305,25 @@ ol.FeatureStyleFunction;
  * @return {ol.FeatureStyleFunction} A style function.
  */
 ol.Feature.createStyleFunction = function(obj) {
-  /**
-   * @type {ol.FeatureStyleFunction}
-   */
   var styleFunction;
 
   if (goog.isFunction(obj)) {
-    styleFunction = /** @type {ol.FeatureStyleFunction} */ (obj);
+    styleFunction = obj;
   } else {
     /**
      * @type {Array.<ol.style.Style>}
      */
     var styles;
-    if (goog.isArray(obj)) {
+    if (Array.isArray(obj)) {
       styles = obj;
     } else {
       goog.asserts.assertInstanceof(obj, ol.style.Style,
           'obj should be an ol.style.Style');
       styles = [obj];
     }
-    styleFunction = goog.functions.constant(styles);
+    styleFunction = function() {
+      return styles;
+    };
   }
   return styleFunction;
 };

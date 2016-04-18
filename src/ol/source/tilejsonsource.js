@@ -1,4 +1,3 @@
-// FIXME add some error checking
 // FIXME check order of async callbacks
 
 /**
@@ -9,15 +8,14 @@ goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
 goog.require('goog.asserts');
-goog.require('goog.net.Jsonp');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
+goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
-
 
 
 /**
@@ -31,20 +29,75 @@ goog.require('ol.source.TileImage');
  */
 ol.source.TileJSON = function(options) {
 
+  /**
+   * @type {TileJSON}
+   * @private
+   */
+  this.tileJSON_ = null;
+
   goog.base(this, {
     attributions: options.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     projection: ol.proj.get('EPSG:3857'),
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
-    wrapX: goog.isDef(options.wrapX) ? options.wrapX : true
+    wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
-  var request = new goog.net.Jsonp(options.url);
-  request.send(undefined, goog.bind(this.handleTileJSONResponse, this));
+  if (options.jsonp) {
+    ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
+        this.handleTileJSONError.bind(this));
+  } else {
+    var client = new XMLHttpRequest();
+    client.addEventListener('load', this.onXHRLoad_.bind(this));
+    client.addEventListener('error', this.onXHRError_.bind(this));
+    client.open('GET', options.url);
+    client.send();
+  }
 
 };
 goog.inherits(ol.source.TileJSON, ol.source.TileImage);
+
+
+/**
+ * @private
+ * @param {Event} event The load event.
+ */
+ol.source.TileJSON.prototype.onXHRLoad_ = function(event) {
+  var client = /** @type {XMLHttpRequest} */ (event.target);
+  if (client.status >= 200 && client.status < 300) {
+    var response;
+    try {
+      response = /** @type {TileJSON} */(JSON.parse(client.responseText));
+    } catch (err) {
+      this.handleTileJSONError();
+      return;
+    }
+    this.handleTileJSONResponse(response);
+  } else {
+    this.handleTileJSONError();
+  }
+};
+
+
+/**
+ * @private
+ * @param {Event} event The error event.
+ */
+ol.source.TileJSON.prototype.onXHRError_ = function(event) {
+  this.handleTileJSONError();
+};
+
+
+/**
+ * @return {TileJSON} The tilejson object.
+ * @api
+ */
+ol.source.TileJSON.prototype.getTileJSON = function() {
+  return this.tileJSON_;
+};
 
 
 /**
@@ -57,13 +110,13 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   var sourceProjection = this.getProjection();
   var extent;
-  if (goog.isDef(tileJSON.bounds)) {
+  if (tileJSON.bounds !== undefined) {
     var transform = ol.proj.getTransformFromProjections(
         epsg4326Projection, sourceProjection);
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (goog.isDef(tileJSON.scheme)) {
+  if (tileJSON.scheme !== undefined) {
     goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
   }
   var minZoom = tileJSON.minzoom || 0;
@@ -75,11 +128,11 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   });
   this.tileGrid = tileGrid;
 
-  this.tileUrlFunction = ol.TileUrlFunction.createFromTemplates(tileJSON.tiles);
+  this.tileUrlFunction =
+      ol.TileUrlFunction.createFromTemplates(tileJSON.tiles, tileGrid);
 
-  if (goog.isDef(tileJSON.attribution) &&
-      goog.isNull(this.getAttributions())) {
-    var attributionExtent = goog.isDef(extent) ?
+  if (tileJSON.attribution !== undefined && !this.getAttributions()) {
+    var attributionExtent = extent !== undefined ?
         extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};
@@ -96,7 +149,15 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
       })
     ]);
   }
-
+  this.tileJSON_ = tileJSON;
   this.setState(ol.source.State.READY);
 
+};
+
+
+/**
+ * @protected
+ */
+ol.source.TileJSON.prototype.handleTileJSONError = function() {
+  this.setState(ol.source.State.ERROR);
 };

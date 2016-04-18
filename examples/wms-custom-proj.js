@@ -9,7 +9,6 @@ goog.require('ol.proj.Projection');
 goog.require('ol.source.TileWMS');
 
 
-
 // By default OpenLayers does not know about the EPSG:21781 (Swiss) projection.
 // So we create a projection instance for EPSG:21781 and pass it to
 // ol.proj.addProjection to make it available to the library for lookup by its
@@ -49,12 +48,8 @@ var layers = [
     source: new ol.source.TileWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
-      attributions: [new ol.Attribution({
-        html: '&copy; ' +
-            '<a href="http://www.geo.admin.ch/internet/geoportal/' +
-            'en/home.html">' +
-            'Pixelmap 1:1000000 / geo.admin.ch</a>'
-      })],
+      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+          'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
       params: {
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
@@ -67,12 +62,8 @@ var layers = [
     source: new ol.source.TileWMS({
       url: 'http://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
-      attributions: [new ol.Attribution({
-        html: '&copy; ' +
-            '<a href="http://www.geo.admin.ch/internet/geoportal/' +
-            'en/home.html">' +
-            'National parks / geo.admin.ch</a>'
-      })],
+      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+          'en/home.html">National parks / geo.admin.ch</a>',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       serverType: 'mapserver'
     })
@@ -95,7 +86,6 @@ var map = new ol.Map({
     zoom: 2
   })
 });
-
 
 
 /*
@@ -201,19 +191,6 @@ function CHtoWGSlng(y, x) {
 
 }
 
-
-// Convert SEX DMS angle to DEC
-function SEXtoDEC(angle) {
-
-  // Extract DMS
-  var deg = parseInt(angle, 10);
-  var min = parseInt((angle - deg) * 100, 10);
-  var sec = (((angle - deg) * 100) - min) * 100;
-
-  // Result in degrees sex (dd.mmss)
-  return deg + (sec / 60 + min) / 60;
-
-}
 
 // Convert DEC angle to SEX DMS
 function DECtoSEX(angle) {

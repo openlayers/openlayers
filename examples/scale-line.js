@@ -30,8 +30,9 @@ var map = new ol.Map({
 });
 
 
-var unitsSelect = $('#units');
-unitsSelect.on('change', function() {
-  scaleLineControl.setUnits(this.value);
-});
-unitsSelect.val(scaleLineControl.getUnits());
+var unitsSelect = document.getElementById('units');
+function onChange() {
+  scaleLineControl.setUnits(unitsSelect.value);
+}
+unitsSelect.addEventListener('change', onChange);
+onChange();

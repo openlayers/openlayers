@@ -23,8 +23,10 @@ var map = new ol.Map({
   })
 });
 
-$.ajax(capabilitiesUrl).then(function(response) {
-  var result = new ol.format.WMTSCapabilities().read(response);
+fetch(capabilitiesUrl).then(function(response) {
+  return response.text();
+}).then(function(text) {
+  var result = new ol.format.WMTSCapabilities().read(text);
   var options = ol.source.WMTS.optionsFromCapabilities(result, {
     layer: layer,
     matrixSet: 'google3857',

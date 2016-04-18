@@ -1,6 +1,6 @@
 ---
-template: example.html
-title: Draw features example
+layout: example.html
+title: Draw Features
 shortdesc: Example of using the ol.interaction.Draw interaction.
 docs: >
   Example of using the Draw interaction. Select a geometry type from the
@@ -12,20 +12,16 @@ docs: >
   points and creates a rectangular box.
 tags: "draw, edit, freehand, vector"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <form class="form-inline">
-      <label>Geometry type &nbsp;</label>
-      <select id="type">
-        <option value="None">None</option>
-        <option value="Point">Point</option>
-        <option value="LineString">LineString</option>
-        <option value="Polygon">Polygon</option>
-        <option value="Circle">Circle</option>
-        <option value="Square">Square</option>
-        <option value="Box">Box</option>
-      </select>
-    </form>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label>Geometry type &nbsp;</label>
+  <select id="type">
+    <option value="Point">Point</option>
+    <option value="LineString">LineString</option>
+    <option value="Polygon">Polygon</option>
+    <option value="Circle">Circle</option>
+    <option value="Square">Square</option>
+    <option value="Box">Box</option>
+    <option value="None">None</option>
+  </select>
+</form>

@@ -26,7 +26,7 @@ describe('ol.source.Tile', function() {
       var zoom = 3;
       var range = grid.getTileRangeForExtentAndZ(extent, zoom);
 
-      source.forEachLoadedTile(zoom, range, callback);
+      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(callback.callCount).to.be(0);
     });
 
@@ -38,7 +38,7 @@ describe('ol.source.Tile', function() {
       var zoom = 3;
       var range = grid.getTileRangeForExtentAndZ(extent, zoom);
 
-      source.forEachLoadedTile(zoom, range, callback);
+      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(source.getTile.callCount).to.be(0);
       source.getTile.restore();
     });
@@ -55,7 +55,7 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      source.forEachLoadedTile(zoom, range, callback);
+      source.forEachLoadedTile(source.getProjection(), zoom, range, callback);
       expect(callback.callCount).to.be(3);
     });
 
@@ -71,9 +71,11 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(zoom, range, function() {
-        return true;
-      });
+      var covered = source.forEachLoadedTile(
+          source.getProjection(), zoom, range,
+          function() {
+            return true;
+          });
       expect(covered).to.be(true);
     });
 
@@ -89,9 +91,11 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(zoom, range, function() {
-        return true;
-      });
+      var covered = source.forEachLoadedTile(
+          source.getProjection(), zoom,
+          range, function() {
+            return true;
+          });
       expect(covered).to.be(false);
     });
 
@@ -107,9 +111,11 @@ describe('ol.source.Tile', function() {
       var zoom = 1;
       var range = new ol.TileRange(0, 1, 0, 1);
 
-      var covered = source.forEachLoadedTile(zoom, range, function() {
-        return false;
-      });
+      var covered = source.forEachLoadedTile(
+          source.getProjection(), zoom, range,
+          function() {
+            return false;
+          });
       expect(covered).to.be(false);
     });
 
@@ -148,10 +154,41 @@ describe('ol.source.Tile', function() {
       tileCoord = tileSource.getTileCoordForTileUrlFunction([6, 97, -23]);
       expect(tileCoord).to.eql(null);
     });
+
+    it('works with wrapX and custom projection without extent', function() {
+      var tileSource = new ol.source.Tile({
+        projection: new ol.proj.Projection({
+          code: 'foo',
+          global: true,
+          units: 'm'
+        }),
+        wrapX: true
+      });
+
+      var tileCoord = tileSource.getTileCoordForTileUrlFunction([6, -31, -23]);
+      expect(tileCoord).to.eql([6, 33, -23]);
+    });
+  });
+
+  describe('#refresh()', function() {
+    it('checks clearing of internal state', function() {
+      // create a source with one loaded tile
+      var source = new ol.test.source.TileMock({
+        '1/0/0': ol.TileState.LOADED
+      });
+      // check the loaded tile is there
+      var tile = source.getTile(1, 0, 0);
+      expect(tile).to.be.a(ol.Tile);
+      // check tile cache is filled
+      expect(source.tileCache.getCount()).to.eql(1);
+      // refresh the source
+      source.refresh();
+      // check tile cache after refresh (should be empty)
+      expect(source.tileCache.getCount()).to.eql(0);
+    });
   });
 
 });
-
 
 
 /**
@@ -236,11 +273,11 @@ describe('ol.test.source.TileMock', function() {
 
 });
 
-goog.require('goog.object');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.proj');
+goog.require('ol.proj.Projection');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');

@@ -1,11 +1,9 @@
 goog.provide('ol.structs.RBush');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.object');
 goog.require('ol.ext.rbush');
 goog.require('ol.extent');
-
+goog.require('ol.object');
 
 
 /**
@@ -60,8 +58,7 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   ];
   this.rbush_.insert(item);
   // remember the object that was added to the internal rbush
-  goog.asserts.assert(
-      !goog.object.containsKey(this.items_, goog.getUid(value)),
+  goog.asserts.assert(!(goog.getUid(value) in this.items_),
       'uid (%s) of value (%s) already exists', goog.getUid(value), value);
   this.items_[goog.getUid(value)] = item;
 };
@@ -93,8 +90,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
       value
     ];
     items[i] = item;
-    goog.asserts.assert(
-        !goog.object.containsKey(this.items_, goog.getUid(value)),
+    goog.asserts.assert(!(goog.getUid(value) in this.items_),
         'uid (%s) of value (%s) already exists', goog.getUid(value), value);
     this.items_[goog.getUid(value)] = item;
   }
@@ -112,13 +108,13 @@ ol.structs.RBush.prototype.remove = function(value) {
     throw new Error('Can not remove value while reading');
   }
   var uid = goog.getUid(value);
-  goog.asserts.assert(goog.object.containsKey(this.items_, uid),
+  goog.asserts.assert(uid in this.items_,
       'uid (%s) of value (%s) does not exist', uid, value);
 
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
   var item = this.items_[uid];
-  goog.object.remove(this.items_, uid);
+  delete this.items_[uid];
   return this.rbush_.remove(item) !== null;
 };
 
@@ -130,7 +126,7 @@ ol.structs.RBush.prototype.remove = function(value) {
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
   var uid = goog.getUid(value);
-  goog.asserts.assert(goog.object.containsKey(this.items_, uid),
+  goog.asserts.assert(uid in this.items_,
       'uid (%s) of value (%s) does not exist', uid, value);
 
   var item = this.items_[uid];
@@ -150,7 +146,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
  */
 ol.structs.RBush.prototype.getAll = function() {
   var items = this.rbush_.all();
-  return goog.array.map(items, function(item) {
+  return items.map(function(item) {
     return item[4];
   });
 };
@@ -163,7 +159,7 @@ ol.structs.RBush.prototype.getAll = function() {
  */
 ol.structs.RBush.prototype.getInExtent = function(extent) {
   var items = this.rbush_.search(extent);
-  return goog.array.map(items, function(item) {
+  return items.map(function(item) {
     return item[4];
   });
 };
@@ -200,8 +196,7 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEachInExtent =
-    function(extent, callback, opt_this) {
+ol.structs.RBush.prototype.forEachInExtent = function(extent, callback, opt_this) {
   if (goog.DEBUG) {
     ++this.readers_;
     try {
@@ -239,7 +234,7 @@ ol.structs.RBush.prototype.forEach_ = function(values, callback, opt_this) {
  * @return {boolean} Is empty.
  */
 ol.structs.RBush.prototype.isEmpty = function() {
-  return goog.object.isEmpty(this.items_);
+  return ol.object.isEmpty(this.items_);
 };
 
 
@@ -254,7 +249,7 @@ ol.structs.RBush.prototype.clear = function() {
 
 /**
  * @param {ol.Extent=} opt_extent Extent.
- * @return {ol.Extent} Extent.
+ * @return {!ol.Extent} Extent.
  */
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush

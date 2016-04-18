@@ -2,12 +2,8 @@ goog.provide('ol.style.Atlas');
 goog.provide('ol.style.AtlasManager');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.functions');
-goog.require('goog.object');
 goog.require('ol');
-
+goog.require('ol.dom');
 
 /**
  * Provides information for an image inside an atlas manager.
@@ -18,7 +14,6 @@ goog.require('ol');
  *    hitImage: HTMLCanvasElement}}
  */
 ol.style.AtlasManagerInfo;
-
 
 
 /**
@@ -40,14 +35,14 @@ ol.style.AtlasManagerInfo;
  */
 ol.style.AtlasManager = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * The size in pixels of the latest atlas image.
    * @private
    * @type {number}
    */
-  this.currentSize_ = goog.isDef(options.initialSize) ?
+  this.currentSize_ = options.initialSize !== undefined ?
       options.initialSize : ol.INITIAL_ATLAS_SIZE;
 
   /**
@@ -55,9 +50,9 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.maxSize_ = goog.isDef(options.maxSize) ?
+  this.maxSize_ = options.maxSize !== undefined ?
       options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
-          ol.MAX_ATLAS_SIZE : goog.isDef(ol.WEBGL_MAX_TEXTURE_SIZE) ?
+          ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
               ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
@@ -65,7 +60,7 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.space_ = goog.isDef(options.space) ? options.space : 1;
+  this.space_ = options.space !== undefined ? options.space : 1;
 
   /**
    * @private
@@ -97,13 +92,12 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
   /** @type {?ol.style.AtlasInfo} */
   var info = this.getInfo_(this.atlases_, id);
 
-  if (goog.isNull(info)) {
+  if (!info) {
     return null;
   }
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.getInfo_(this.hitAtlases_, id);
-  goog.asserts.assert(!goog.isNull(hitInfo),
-      'hitInfo must not be null');
+  goog.asserts.assert(hitInfo, 'hitInfo must not be null');
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -121,7 +115,7 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.get(id);
-    if (!goog.isNull(info)) {
+    if (info) {
       return info;
     }
   }
@@ -173,8 +167,7 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  * @return {?ol.style.AtlasManagerInfo}  The position and atlas image for the
  *    entry, or `null` if the image is too big.
  */
-ol.style.AtlasManager.prototype.add =
-    function(id, width, height,
+ol.style.AtlasManager.prototype.add = function(id, width, height,
         renderCallback, opt_renderHitCallback, opt_this) {
   if (width + this.space_ > this.maxSize_ ||
       height + this.space_ > this.maxSize_) {
@@ -184,21 +177,20 @@ ol.style.AtlasManager.prototype.add =
   /** @type {?ol.style.AtlasInfo} */
   var info = this.add_(false,
       id, width, height, renderCallback, opt_this);
-  if (goog.isNull(info)) {
+  if (!info) {
     return null;
   }
 
   // even if no hit-detection entry is requested, we insert a fake entry into
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
-  var renderHitCallback = goog.isDef(opt_renderHitCallback) ?
-      opt_renderHitCallback : goog.functions.NULL;
+  var renderHitCallback = opt_renderHitCallback !== undefined ?
+      opt_renderHitCallback : ol.nullFunction
 
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.add_(true,
       id, width, height, renderHitCallback, opt_this);
-  goog.asserts.assert(!goog.isNull(hitInfo),
-      'hitInfo must not be null');
+  goog.asserts.assert(hitInfo, 'hitInfo must not be null');
 
   return this.mergeInfos_(info, hitInfo);
 };
@@ -217,17 +209,16 @@ ol.style.AtlasManager.prototype.add =
  * @return {?ol.style.AtlasInfo}  The position and atlas image for the entry,
  *    or `null` if the image is too big.
  */
-ol.style.AtlasManager.prototype.add_ =
-    function(isHitAtlas, id, width, height,
+ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
         renderCallback, opt_this) {
   var atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
   var atlas, info, i, ii;
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];
     info = atlas.add(id, width, height, renderCallback, opt_this);
-    if (!goog.isNull(info)) {
+    if (info) {
       return info;
-    } else if (goog.isNull(info) && i === ii - 1) {
+    } else if (!info && i === ii - 1) {
       // the entry could not be added to one of the existing atlases,
       // create a new atlas that is twice as big and try to add to this one.
       var size;
@@ -255,7 +246,6 @@ ol.style.AtlasManager.prototype.add_ =
  * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
  */
 ol.style.AtlasInfo;
-
 
 
 /**
@@ -297,29 +287,24 @@ ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
+   * @type {CanvasRenderingContext2D}
    */
-  this.canvas_ = /** @type {HTMLCanvasElement} */
-      (goog.dom.createElement(goog.dom.TagName.CANVAS));
-  this.canvas_.width = size;
-  this.canvas_.height = size;
+  this.context_ = ol.dom.createCanvasContext2D(size, size);
 
   /**
    * @private
-   * @type {CanvasRenderingContext2D}
+   * @type {HTMLCanvasElement}
    */
-  this.context_ = /** @type {CanvasRenderingContext2D} */
-      (this.canvas_.getContext('2d'));
+  this.canvas_ = this.context_.canvas;
 };
 
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.style.AtlasInfo}
+ * @return {?ol.style.AtlasInfo} The atlas info.
  */
 ol.style.Atlas.prototype.get = function(id) {
-  return /** @type {?ol.style.AtlasInfo} */ (
-      goog.object.get(this.entries_, id, null));
+  return this.entries_[id] || null;
 };
 
 
@@ -333,8 +318,7 @@ ol.style.Atlas.prototype.get = function(id) {
  *    `renderCallback`.
  * @return {?ol.style.AtlasInfo} The position and atlas image for the entry.
  */
-ol.style.Atlas.prototype.add =
-    function(id, width, height, renderCallback, opt_this) {
+ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
   var block, i, ii;
   for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
     block = this.emptyBlocks_[i];
@@ -371,8 +355,7 @@ ol.style.Atlas.prototype.add =
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
-ol.style.Atlas.prototype.split_ =
-    function(index, block, width, height) {
+ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
@@ -430,8 +413,7 @@ ol.style.Atlas.prototype.split_ =
  * @param {ol.style.Atlas.Block} newBlock1 The 1st block to add.
  * @param {ol.style.Atlas.Block} newBlock2 The 2nd block to add.
  */
-ol.style.Atlas.prototype.updateBlocks_ =
-    function(index, newBlock1, newBlock2) {
+ol.style.Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   var args = [index, 1];
   if (newBlock1.width > 0 && newBlock1.height > 0) {
     args.push(newBlock1);

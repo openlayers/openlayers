@@ -1,8 +1,7 @@
 goog.provide('ol.style.Fill');
 
+goog.require('ol.ColorLike');
 goog.require('ol.color');
-goog.require('ol.structs.IHasChecksum');
-
 
 
 /**
@@ -11,18 +10,17 @@ goog.require('ol.structs.IHasChecksum');
  *
  * @constructor
  * @param {olx.style.FillOptions=} opt_options Options.
- * @implements {ol.structs.IHasChecksum}
  * @api
  */
 ol.style.Fill = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
-   * @type {ol.Color|string}
+   * @type {ol.Color|ol.ColorLike}
    */
-  this.color_ = goog.isDef(options.color) ? options.color : null;
+  this.color_ = options.color !== undefined ? options.color : null;
 
   /**
    * @private
@@ -34,7 +32,7 @@ ol.style.Fill = function(opt_options) {
 
 /**
  * Get the fill color.
- * @return {ol.Color|string} Color.
+ * @return {ol.Color|ol.ColorLike} Color.
  * @api
  */
 ol.style.Fill.prototype.getColor = function() {
@@ -45,7 +43,7 @@ ol.style.Fill.prototype.getColor = function() {
 /**
  * Set the color.
  *
- * @param {ol.Color|string} color Color.
+ * @param {ol.Color|ol.ColorLike} color Color.
  * @api
  */
 ol.style.Fill.prototype.setColor = function(color) {
@@ -55,12 +53,19 @@ ol.style.Fill.prototype.setColor = function(color) {
 
 
 /**
- * @inheritDoc
+ * @return {string} The checksum.
  */
 ol.style.Fill.prototype.getChecksum = function() {
-  if (!goog.isDef(this.checksum_)) {
-    this.checksum_ = 'f' + (!goog.isNull(this.color_) ?
-        ol.color.asString(this.color_) : '-');
+  if (this.checksum_ === undefined) {
+    if (
+        this.color_ instanceof CanvasPattern ||
+        this.color_ instanceof CanvasGradient
+    ) {
+      this.checksum_ = goog.getUid(this.color_).toString();
+    } else {
+      this.checksum_ = 'f' + (this.color_ ?
+          ol.color.asString(this.color_) : '-');
+    }
   }
 
   return this.checksum_;

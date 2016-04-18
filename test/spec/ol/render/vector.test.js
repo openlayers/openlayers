@@ -39,8 +39,8 @@ describe('ol.renderer.vector', function() {
             style, squaredTolerance, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
-        listeners = goog.events.getListeners(
-            iconStyle.iconImage_, goog.events.EventType.CHANGE, false);
+        listeners = ol.events.getListeners(
+            iconStyle.iconImage_, ol.events.EventType.CHANGE);
         expect(listeners.length).to.eql(1);
 
         // call #2
@@ -48,8 +48,8 @@ describe('ol.renderer.vector', function() {
             style, squaredTolerance, listener, listenerThis);
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
-        listeners = goog.events.getListeners(
-            iconStyle.iconImage_, goog.events.EventType.CHANGE, false);
+        listeners = ol.events.getListeners(
+            iconStyle.iconImage_, ol.events.EventType.CHANGE);
         expect(listeners.length).to.eql(1);
       });
 
@@ -62,13 +62,13 @@ describe('ol.renderer.vector', function() {
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), ol.render.ReplayType.IMAGE);
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
-        var drawPointGeometrySpy = sinon.stub(imageReplay,
-            'drawPointGeometry', goog.nullFunction);
+        var drawPointSpy = sinon.stub(imageReplay,
+            'drawPoint', ol.nullFunction);
         ol.renderer.vector.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setImageStyleSpy.called).to.be(false);
         setImageStyleSpy.restore();
-        drawPointGeometrySpy.restore();
+        drawPointSpy.restore();
       });
 
       it('does not render the multipoint', function() {
@@ -76,13 +76,13 @@ describe('ol.renderer.vector', function() {
         var imageReplay = replayGroup.getReplay(
             style.getZIndex(), ol.render.ReplayType.IMAGE);
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
-        var drawMultiPointGeometrySpy = sinon.stub(imageReplay,
-            'drawMultiPointGeometry', goog.nullFunction);
+        var drawMultiPointSpy = sinon.stub(imageReplay,
+            'drawMultiPoint', ol.nullFunction);
         ol.renderer.vector.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setImageStyleSpy.called).to.be(false);
         setImageStyleSpy.restore();
-        drawMultiPointGeometrySpy.restore();
+        drawMultiPointSpy.restore();
       });
 
       it('does render the linestring', function() {
@@ -91,14 +91,14 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), ol.render.ReplayType.LINE_STRING);
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
             'setFillStrokeStyle');
-        var drawLineStringGeometrySpy = sinon.stub(lineStringReplay,
-            'drawLineStringGeometry', goog.nullFunction);
+        var drawLineStringSpy = sinon.stub(lineStringReplay,
+            'drawLineString', ol.nullFunction);
         ol.renderer.vector.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawLineStringGeometrySpy.called).to.be(true);
+        expect(drawLineStringSpy.called).to.be(true);
         setFillStrokeStyleSpy.restore();
-        drawLineStringGeometrySpy.restore();
+        drawLineStringSpy.restore();
       });
 
       it('does render the multilinestring', function() {
@@ -107,14 +107,14 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), ol.render.ReplayType.LINE_STRING);
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
             'setFillStrokeStyle');
-        var drawMultiLineStringGeometrySpy = sinon.stub(lineStringReplay,
-            'drawMultiLineStringGeometry', goog.nullFunction);
+        var drawMultiLineStringSpy = sinon.stub(lineStringReplay,
+            'drawMultiLineString', ol.nullFunction);
         ol.renderer.vector.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawMultiLineStringGeometrySpy.called).to.be(true);
+        expect(drawMultiLineStringSpy.called).to.be(true);
         setFillStrokeStyleSpy.restore();
-        drawMultiLineStringGeometrySpy.restore();
+        drawMultiLineStringSpy.restore();
       });
 
       it('does render the polygon', function() {
@@ -124,14 +124,14 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), ol.render.ReplayType.POLYGON);
         var setFillStrokeStyleSpy = sinon.spy(polygonReplay,
             'setFillStrokeStyle');
-        var drawPolygonGeometrySpy = sinon.stub(polygonReplay,
-            'drawPolygonGeometry', goog.nullFunction);
+        var drawPolygonSpy = sinon.stub(polygonReplay,
+            'drawPolygon', ol.nullFunction);
         ol.renderer.vector.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawPolygonGeometrySpy.called).to.be(true);
+        expect(drawPolygonSpy.called).to.be(true);
         setFillStrokeStyleSpy.restore();
-        drawPolygonGeometrySpy.restore();
+        drawPolygonSpy.restore();
       });
 
       it('does render the multipolygon', function() {
@@ -141,22 +141,22 @@ describe('ol.renderer.vector', function() {
             style.getZIndex(), ol.render.ReplayType.POLYGON);
         var setFillStrokeStyleSpy = sinon.spy(polygonReplay,
             'setFillStrokeStyle');
-        var drawMultiPolygonGeometrySpy = sinon.stub(polygonReplay,
-            'drawMultiPolygonGeometry', goog.nullFunction);
+        var drawMultiPolygonSpy = sinon.stub(polygonReplay,
+            'drawMultiPolygon', ol.nullFunction);
         ol.renderer.vector.renderFeature(replayGroup, feature,
             style, squaredTolerance, listener, listenerThis);
         expect(setFillStrokeStyleSpy.called).to.be(true);
-        expect(drawMultiPolygonGeometrySpy.called).to.be(true);
+        expect(drawMultiPolygonSpy.called).to.be(true);
         setFillStrokeStyleSpy.restore();
-        drawMultiPolygonGeometrySpy.restore();
+        drawMultiPolygonSpy.restore();
       });
     });
 
   });
 });
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');

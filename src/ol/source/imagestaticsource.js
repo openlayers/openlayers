@@ -1,12 +1,14 @@
 goog.provide('ol.source.ImageStatic');
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
+goog.require('ol.ImageState');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
-
 
 
 /**
@@ -19,39 +21,36 @@ goog.require('ol.source.Image');
  * @api stable
  */
 ol.source.ImageStatic = function(options) {
-
-  var attributions = goog.isDef(options.attributions) ?
-      options.attributions : null;
-
   var imageExtent = options.imageExtent;
 
-  var resolution, resolutions;
-  if (goog.isDef(options.imageSize)) {
-    resolution = ol.extent.getHeight(imageExtent) / options.imageSize[1];
-    resolutions = [resolution];
-  }
-
-  var crossOrigin = goog.isDef(options.crossOrigin) ?
+  var crossOrigin = options.crossOrigin !== undefined ?
       options.crossOrigin : null;
 
-  var imageLoadFunction = goog.isDef(options.imageLoadFunction) ?
+  var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
+      options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   goog.base(this, {
-    attributions: attributions,
+    attributions: options.attributions,
     logo: options.logo,
-    projection: ol.proj.get(options.projection),
-    resolutions: resolutions
+    projection: ol.proj.get(options.projection)
   });
 
   /**
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, resolution, 1, attributions,
+  this.image_ = new ol.Image(imageExtent, undefined, 1, this.getAttributions(),
       options.url, crossOrigin, imageLoadFunction);
-  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
-      this.handleImageChange, false, this);
+
+  /**
+   * @private
+   * @type {ol.Size}
+   */
+  this.imageSize_ = options.imageSize ? options.imageSize : null;
+
+  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
+      this.handleImageChange, this);
 
 };
 goog.inherits(ol.source.ImageStatic, ol.source.Image);
@@ -60,10 +59,40 @@ goog.inherits(ol.source.ImageStatic, ol.source.Image);
 /**
  * @inheritDoc
  */
-ol.source.ImageStatic.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageStatic.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
   return null;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
+  if (this.image_.getState() == ol.ImageState.LOADED) {
+    var imageExtent = this.image_.getExtent();
+    var image = this.image_.getImage();
+    var imageWidth, imageHeight;
+    if (this.imageSize_) {
+      imageWidth = this.imageSize_[0];
+      imageHeight = this.imageSize_[1];
+    } else {
+      // TODO: remove the type cast when a closure-compiler > 20160315 is used.
+      // see: https://github.com/google/closure-compiler/pull/1664
+      imageWidth = /** @type {number} */ (image.width);
+      imageHeight = /** @type {number} */ (image.height);
+    }
+    var resolution = ol.extent.getHeight(imageExtent) / imageHeight;
+    var targetWidth = Math.ceil(ol.extent.getWidth(imageExtent) / resolution);
+    if (targetWidth != imageWidth) {
+      var context = ol.dom.createCanvasContext2D(targetWidth, imageHeight);
+      var canvas = context.canvas;
+      context.drawImage(image, 0, 0, imageWidth, imageHeight,
+          0, 0, canvas.width, canvas.height);
+      this.image_.setImage(canvas);
+    }
+  }
+  goog.base(this, 'handleImageChange', evt);
 };

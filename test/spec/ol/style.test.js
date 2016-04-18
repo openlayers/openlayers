@@ -49,7 +49,9 @@ describe('ol.style.Style', function() {
       var geom = new ol.geom.Point([1, 2]);
       style.setGeometry(geom);
       expect(style.getGeometry()).to.eql(geom);
-      var fn = function() { return geom; };
+      var fn = function() {
+        return geom;
+      };
       style.setGeometry(fn);
       expect(style.getGeometry()).to.eql(fn);
       style.setGeometry(null);

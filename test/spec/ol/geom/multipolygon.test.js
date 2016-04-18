@@ -5,8 +5,7 @@ describe('ol.geom.MultiPolygon', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var multiPolygon = new ol.geom.MultiPolygon(null);
-      multiPolygon = multiPolygon; // suppress gjslint warning
+      return new ol.geom.MultiPolygon(null);
     }).not.to.throwException();
   });
 
@@ -87,6 +86,15 @@ describe('ol.geom.MultiPolygon', function() {
       expect(polygons[1]).to.be.an(ol.geom.Polygon);
       expect(polygons[1].getCoordinates()).to.eql(
           [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
+    });
+
+    describe('#clone()', function() {
+
+      it('has the expected endss_', function() {
+        var clone = multiPolygon.clone();
+        expect(multiPolygon.endss_).to.eql(clone.endss_);
+      });
+
     });
 
     describe('#getCoordinates()', function() {

@@ -16,6 +16,7 @@
   <script type="text/javascript" src="../node_modules/proj4/dist/proj4.js"></script>
   <script type="text/javascript" src="../node_modules/resemblejs/resemble.js"></script>
   <script type="text/javascript" src="../test/test-extensions.js"></script>
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList"></script>
   <script>
     mocha.setup({
       ui: 'bdd',
@@ -27,22 +28,6 @@
   <script type="text/javascript" src="loader.js"></script>
 
   <script type="text/javascript">
-
-    /**
-     * The goog.dom.ViewportSizeMonitor (used in map.js) creates a global leak
-     * by setting goog.UID_PROPERTY_ on the monitored window.  In order to test
-     * that we don't have other global leaks, we preemptively set the property
-     * so Mocha can compare the global before and after our tests.
-     *
-     * In addition, calling goog.events.listen on the global object (as done
-     * in deviceorientation.js) creates a second leak by setting
-     * goog.events.LISTENER_MAP_PROP_ on the global object.
-     *
-     * We preemptively set both of these properties so Mocha can compare the
-     * global before and after tests.  The call to goog.events.listen also
-     * calls goog.getUid.
-     */
-    goog.events.listen(this, 'test', function() {});
 
     var errors = [];
     var runner = mocha.run(function(evt) {

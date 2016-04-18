@@ -1,3 +1,4 @@
+/*global createMapDiv, disposeMap*/
 goog.provide('ol.test.control.ZoomSlider');
 
 describe('ol.control.ZoomSlider', function() {
@@ -14,8 +15,8 @@ describe('ol.control.ZoomSlider', function() {
   });
 
   afterEach(function() {
-    goog.dispose(zoomslider);
-    goog.dispose(map);
+    zoomslider.dispose();
+    map.dispose();
     document.body.removeChild(target);
     zoomslider = null;
     map = null;
@@ -24,40 +25,33 @@ describe('ol.control.ZoomSlider', function() {
 
   describe('DOM creation', function() {
     it('creates the expected DOM elements', function() {
-      var zoomSliderContainers = goog.dom.getElementsByClass(
-          'ol-zoomslider', target),
-          zoomSliderContainer,
-          zoomSliderThumbs,
-          zoomSliderThumb,
-          hasUnselectableCls;
+      var zoomSliderContainers = target.querySelectorAll('.ol-zoomslider');
 
       expect(zoomSliderContainers.length).to.be(1);
 
-      zoomSliderContainer = zoomSliderContainers[0];
+      var zoomSliderContainer = zoomSliderContainers[0];
       expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
-      hasUnselectableCls = goog.dom.classlist.contains(zoomSliderContainer,
-          'ol-unselectable');
+      var hasUnselectableCls = zoomSliderContainer.classList.contains('ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
 
-      zoomSliderThumbs = goog.dom.getElementsByClass('ol-zoomslider-thumb',
-          zoomSliderContainer);
+      var zoomSliderThumbs = zoomSliderContainer.querySelectorAll('.ol-zoomslider-thumb');
       expect(zoomSliderThumbs.length).to.be(1);
 
-      zoomSliderThumb = zoomSliderThumbs[0];
-      expect(zoomSliderThumb instanceof HTMLDivElement).to.be(true);
+      var zoomSliderThumb = zoomSliderThumbs[0];
+      expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
 
-      hasUnselectableCls = goog.dom.classlist.contains(zoomSliderThumb,
-          'ol-unselectable');
+      hasUnselectableCls = zoomSliderThumb.classList.contains('ol-unselectable');
       expect(hasUnselectableCls).to.be(true);
     });
 
   });
 
-  describe('dragger setup', function() {
-    it('creates a goog.fx.Dragger', function() {
-      expect(zoomslider.dragger_ instanceof goog.fx.Dragger).to.be(true);
-      expect(zoomslider.dragger_.limits instanceof goog.math.Rect).to.be(true);
+  describe('#initSlider_', function() {
+    it('sets limits', function() {
+      zoomslider.initSlider_();
+      expect(zoomslider.widthLimit_).not.to.be(0);
+      expect(zoomslider.heightLimit_).to.be(0);
     });
   });
 
@@ -72,7 +66,7 @@ describe('ol.control.ZoomSlider', function() {
       var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
       expect(control.direction_).to.be(horizontal);
 
-      goog.dispose(control);
+      control.dispose();
     });
 
     it('is vertical for tall containers', function() {
@@ -85,16 +79,99 @@ describe('ol.control.ZoomSlider', function() {
       var vertical = ol.control.ZoomSlider.direction.VERTICAL;
       expect(control.direction_).to.be(vertical);
 
-      goog.dispose(control);
+      control.dispose();
+    });
+  });
+
+  describe('Pointer event handling', function() {
+    var map;
+
+    beforeEach(function() {
+      map = new ol.Map({
+        target: createMapDiv(500, 100),
+        view: new ol.View({
+          center: [0, 0],
+          resolutions: [16, 8, 4, 2, 1, 0.5, 0.25, 0.125, 0.0625]
+        })
+      });
+    });
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('[horizontal] handles a drag sequence', function() {
+      var control = new ol.control.ZoomSlider();
+      map.addControl(control);
+      map.getView().setZoom(0);
+      control.element.style.width = '500px';
+      control.element.style.height = '10px';
+      control.element.firstChild.style.width = '100px';
+      control.element.firstChild.style.height = '10px';
+      map.renderSync();
+      var dragger = control.dragger_;
+      var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
+        target: control.element.firstElementChild
+      });
+      event.clientX = control.widthLimit_;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(16);
+      expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_.length).to.be(6);
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 6 * control.widthLimit_ / 8;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(4);
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 4 * control.widthLimit_ / 8;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      event.type = ol.pointer.EventType.POINTERUP;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(1);
+      expect(control.dragListenerKeys_.length).to.be(0);
+      expect(control.dragging_).to.be(false);
+    });
+    it('[vertical] handles a drag sequence', function() {
+      var control = new ol.control.ZoomSlider();
+      control.element.style.width = '10px';
+      control.element.style.height = '100px';
+      control.element.firstChild.style.width = '10px';
+      control.element.firstChild.style.height = '20px';
+      map.addControl(control);
+      map.getView().setZoom(8);
+      map.renderSync();
+      var dragger = control.dragger_;
+      var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
+        target: control.element.firstElementChild
+      });
+      event.clientX = 0;
+      event.clientY = 0;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(0.0625);
+      expect(control.dragging_).to.be(true);
+      expect(control.dragListenerKeys_.length).to.be(6);
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 0;
+      event.clientY = 2 * control.heightLimit_ / 8;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(0.25);
+      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.clientX = 0;
+      event.clientY = 4 * control.heightLimit_ / 8;
+      dragger.dispatchEvent(event);
+      event.type = ol.pointer.EventType.POINTERUP;
+      dragger.dispatchEvent(event);
+      expect(control.currentResolution_).to.be(1);
+      expect(control.dragListenerKeys_.length).to.be(0);
+      expect(control.dragging_).to.be(false);
     });
   });
 
 });
 
-goog.require('goog.dispose');
-goog.require('goog.dom');
-goog.require('goog.dom.classlist');
-goog.require('goog.fx.Dragger');
-goog.require('goog.math.Rect');
 goog.require('ol.Map');
+goog.require('ol.View');
 goog.require('ol.control.ZoomSlider');
+goog.require('ol.pointer.PointerEvent');

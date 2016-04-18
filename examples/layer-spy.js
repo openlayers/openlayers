@@ -4,7 +4,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
 
-var key = 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3';
+var key = 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF';
 
 var roads = new ol.layer.Tile({
   source: new ol.source.BingMaps({key: key, imagerySet: 'Road'})
@@ -14,9 +14,11 @@ var imagery = new ol.layer.Tile({
   source: new ol.source.BingMaps({key: key, imagerySet: 'Aerial'})
 });
 
+var container = document.getElementById('map');
+
 var map = new ol.Map({
   layers: [roads, imagery],
-  target: 'map',
+  target: container,
   view: new ol.View({
     center: ol.proj.fromLonLat([-109, 46.5]),
     zoom: 6
@@ -24,22 +26,27 @@ var map = new ol.Map({
 });
 
 var radius = 75;
-$(document).keydown(function(evt) {
+document.addEventListener('keydown', function(evt) {
   if (evt.which === 38) {
     radius = Math.min(radius + 5, 150);
     map.render();
+    evt.preventDefault();
   } else if (evt.which === 40) {
     radius = Math.max(radius - 5, 25);
     map.render();
+    evt.preventDefault();
   }
 });
 
 // get the pixel position with every move
 var mousePosition = null;
-$(map.getViewport()).on('mousemove', function(evt) {
-  mousePosition = map.getEventPixel(evt.originalEvent);
+
+container.addEventListener('mousemove', function(event) {
+  mousePosition = map.getEventPixel(event);
   map.render();
-}).on('mouseout', function() {
+});
+
+container.addEventListener('mouseout', function() {
   mousePosition = null;
   map.render();
 });

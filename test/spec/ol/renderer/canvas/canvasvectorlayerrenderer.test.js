@@ -91,14 +91,88 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
   });
 
+  describe('#prepareFrame', function() {
+    var frameState, projExtent, renderer, worldWidth, buffer;
+
+    beforeEach(function() {
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({wrapX: true})
+      });
+      renderer = new ol.renderer.canvas.VectorLayer(layer);
+      var projection = ol.proj.get('EPSG:3857');
+      projExtent = projection.getExtent();
+      worldWidth = ol.extent.getWidth(projExtent);
+      buffer = layer.getRenderBuffer();
+      frameState = {
+        skippedFeatureUids: {},
+        viewHints: [],
+        viewState: {
+          projection: projection,
+          resolution: 1,
+          rotation: 0
+        }
+      };
+    });
+
+    it('sets correct extent for small viewport near dateline', function() {
+
+      frameState.extent =
+          [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+
+    });
+
+    it('sets correct extent for viewport less than 1 world wide', function() {
+
+      frameState.extent =
+          [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+    });
+
+    it('sets correct extent for viewport more than 1 world wide', function() {
+
+      frameState.extent =
+          [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - worldWidth + buffer,
+        -10000, projExtent[2] + worldWidth - buffer, 10000
+      ], buffer));
+    });
+
+    it('sets correct extent for viewport more than 2 worlds wide', function() {
+
+      frameState.extent = [
+        projExtent[0] - 2 * worldWidth - 10000,
+        -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
+      ];
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
+        projExtent[0] - 2 * worldWidth - 10000,
+        -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
+      ], buffer));
+    });
+
+  });
+
 });
 
 
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
+goog.require('ol.proj');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');

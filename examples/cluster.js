@@ -34,11 +34,11 @@ var clusterSource = new ol.source.Cluster({
 var styleCache = {};
 var clusters = new ol.layer.Vector({
   source: clusterSource,
-  style: function(feature, resolution) {
+  style: function(feature) {
     var size = feature.get('features').length;
     var style = styleCache[size];
     if (!style) {
-      style = [new ol.style.Style({
+      style = new ol.style.Style({
         image: new ol.style.Circle({
           radius: 10,
           stroke: new ol.style.Stroke({
@@ -54,7 +54,7 @@ var clusters = new ol.layer.Vector({
             color: '#fff'
           })
         })
-      })];
+      });
       styleCache[size] = style;
     }
     return style;
@@ -63,10 +63,6 @@ var clusters = new ol.layer.Vector({
 
 var raster = new ol.layer.Tile({
   source: new ol.source.MapQuest({layer: 'sat'})
-});
-
-var raw = new ol.layer.Vector({
-  source: source
 });
 
 var map = new ol.Map({

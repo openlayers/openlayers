@@ -8,7 +8,7 @@ describe('ol.rendering.style.RegularShape', function() {
     target = createMapDiv(50, 50);
 
     vectorSource = new ol.source.Vector();
-    vectorLayer = new ol.layer.Vector({
+    var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
@@ -103,7 +103,7 @@ describe('ol.rendering.style.RegularShape', function() {
       map = createMap('canvas');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/regularshape-canvas.png',
-          6.0, done);
+          9.4, done);
     });
 
     it('tests the WebGL renderer', function(done) {
@@ -111,12 +111,11 @@ describe('ol.rendering.style.RegularShape', function() {
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/regularshape-webgl.png',
-          IMAGE_TOLERANCE, done);
+          8.2, done);
     });
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.Map');

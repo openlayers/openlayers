@@ -1,11 +1,10 @@
 goog.provide('ol.interaction.KeyboardZoom');
 
 goog.require('goog.asserts');
-goog.require('goog.events.KeyHandler.EventType');
 goog.require('ol.events.ConditionType');
+goog.require('ol.events.EventType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
-
 
 
 /**
@@ -31,26 +30,26 @@ ol.interaction.KeyboardZoom = function(opt_options) {
     handleEvent: ol.interaction.KeyboardZoom.handleEvent
   });
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ? options.condition :
+  this.condition_ = options.condition ? options.condition :
           ol.events.condition.targetNotEditable;
 
   /**
    * @private
    * @type {number}
    */
-  this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
+  this.delta_ = options.delta ? options.delta : 1;
 
   /**
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 100;
+  this.duration_ = options.duration !== undefined ? options.duration : 100;
 
 };
 goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
@@ -67,9 +66,9 @@ goog.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
  */
 ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == goog.events.KeyHandler.EventType.KEY) {
-    var keyEvent = /** @type {goog.events.KeyEvent} */
-        (mapBrowserEvent.browserEvent);
+  if (mapBrowserEvent.type == ol.events.EventType.KEYDOWN ||
+      mapBrowserEvent.type == ol.events.EventType.KEYPRESS) {
+    var keyEvent = mapBrowserEvent.originalEvent;
     var charCode = keyEvent.charCode;
     if (this.condition_(mapBrowserEvent) &&
         (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
@@ -77,7 +76,7 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       map.render();
       var view = map.getView();
-      goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+      goog.asserts.assert(view, 'map must have view');
       ol.interaction.Interaction.zoomByDelta(
           map, view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();

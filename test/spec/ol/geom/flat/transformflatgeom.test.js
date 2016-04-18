@@ -79,6 +79,51 @@ describe('ol.geom.flat.transform', function() {
     });
   });
 
+  describe('ol.geom.flat.transform.rotate', function() {
+    it('rotates the coordinates array', function() {
+      var multiPolygon = new ol.geom.MultiPolygon([
+        [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
+        [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
+      var flatCoordinates = multiPolygon.getFlatCoordinates();
+      var angle = Math.PI / 2;
+      var anchor = [0, 1];
+      ol.geom.flat.transform.rotate(flatCoordinates, 0,
+          flatCoordinates.length, multiPolygon.getStride(),
+          angle, anchor, flatCoordinates);
+      expect(flatCoordinates[0]).to.roughlyEqual(1, 1e-9);
+      expect(flatCoordinates[1]).to.roughlyEqual(1, 1e-9);
+      expect(flatCoordinates[2]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[3]).to.roughlyEqual(0, 1e-9);
+      expect(flatCoordinates[4]).to.roughlyEqual(1, 1e-9);
+      expect(flatCoordinates[5]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[6]).to.roughlyEqual(Math.cos(angle), 1e-9);
+      expect(flatCoordinates[7]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[8]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[9]).to.roughlyEqual(1, 1e-9);
+      expect(flatCoordinates[10]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[11]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[12]).to.roughlyEqual(1, 1e-9);
+      expect(flatCoordinates[13]).to.roughlyEqual(1, 1e-9);
+      expect(flatCoordinates[14]).to.roughlyEqual(2, 1e-9);
+      expect(flatCoordinates[15]).to.roughlyEqual(-1, 1e-9);
+      expect(flatCoordinates[16]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[17]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[18]).to.roughlyEqual(-2, 1e-9);
+      expect(flatCoordinates[19]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[20]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[21]).to.roughlyEqual(-2, 1e-9);
+      expect(flatCoordinates[22]).to.roughlyEqual(4, 1e-9);
+      expect(flatCoordinates[23]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[24]).to.roughlyEqual(-1, 1e-9);
+      expect(flatCoordinates[25]).to.roughlyEqual(4, 1e-9);
+      expect(flatCoordinates[26]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[27]).to.roughlyEqual(-1, 1e-9);
+      expect(flatCoordinates[28]).to.roughlyEqual(3, 1e-9);
+      expect(flatCoordinates[29]).to.roughlyEqual(3, 1e-9);
+    });
+
+  });
+
 });
 
 goog.require('ol.geom.MultiPolygon');

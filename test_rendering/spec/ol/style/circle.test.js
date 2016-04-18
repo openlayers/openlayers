@@ -8,7 +8,7 @@ describe('ol.rendering.style.Circle', function() {
     target = createMapDiv(50, 50);
 
     vectorSource = new ol.source.Vector();
-    vectorLayer = new ol.layer.Vector({
+    var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
@@ -175,7 +175,7 @@ describe('ol.rendering.style.Circle', function() {
       map = createMap('canvas');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/circle-canvas.png',
-          6.0, done);
+          8.0, done);
     });
 
     it('tests the WebGL renderer', function(done) {
@@ -183,12 +183,11 @@ describe('ol.rendering.style.Circle', function() {
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/circle-webgl.png',
-          7.0, done);
+          8.0, done);
     });
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.Map');

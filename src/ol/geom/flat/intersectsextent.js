@@ -14,8 +14,7 @@ goog.require('ol.geom.flat.segments');
  * @param {ol.Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-ol.geom.flat.intersectsextent.lineString =
-    function(flatCoordinates, offset, end, stride, extent) {
+ol.geom.flat.intersectsextent.lineString = function(flatCoordinates, offset, end, stride, extent) {
   var coordinatesExtent = ol.extent.extendFlatCoordinates(
       ol.extent.createEmpty(), flatCoordinates, offset, end, stride);
   if (!ol.extent.intersects(extent, coordinatesExtent)) {
@@ -53,8 +52,7 @@ ol.geom.flat.intersectsextent.lineString =
  * @param {ol.Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-ol.geom.flat.intersectsextent.lineStrings =
-    function(flatCoordinates, offset, ends, stride, extent) {
+ol.geom.flat.intersectsextent.lineStrings = function(flatCoordinates, offset, ends, stride, extent) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     if (ol.geom.flat.intersectsextent.lineString(
@@ -75,8 +73,7 @@ ol.geom.flat.intersectsextent.lineStrings =
  * @param {ol.Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-ol.geom.flat.intersectsextent.linearRing =
-    function(flatCoordinates, offset, end, stride, extent) {
+ol.geom.flat.intersectsextent.linearRing = function(flatCoordinates, offset, end, stride, extent) {
   if (ol.geom.flat.intersectsextent.lineString(
       flatCoordinates, offset, end, stride, extent)) {
     return true;
@@ -109,8 +106,7 @@ ol.geom.flat.intersectsextent.linearRing =
  * @param {ol.Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-ol.geom.flat.intersectsextent.linearRings =
-    function(flatCoordinates, offset, ends, stride, extent) {
+ol.geom.flat.intersectsextent.linearRings = function(flatCoordinates, offset, ends, stride, extent) {
   goog.asserts.assert(ends.length > 0, 'ends should not be an empty array');
   if (!ol.geom.flat.intersectsextent.linearRing(
       flatCoordinates, offset, ends[0], stride, extent)) {
@@ -138,8 +134,7 @@ ol.geom.flat.intersectsextent.linearRings =
  * @param {ol.Extent} extent Extent.
  * @return {boolean} True if the geometry and the extent intersect.
  */
-ol.geom.flat.intersectsextent.linearRingss =
-    function(flatCoordinates, offset, endss, stride, extent) {
+ol.geom.flat.intersectsextent.linearRingss = function(flatCoordinates, offset, endss, stride, extent) {
   goog.asserts.assert(endss.length > 0, 'endss should not be an empty array');
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {

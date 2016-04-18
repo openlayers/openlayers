@@ -8,7 +8,7 @@ describe('ol.rendering.style.LineString', function() {
     target = createMapDiv(50, 50);
 
     vectorSource = new ol.source.Vector();
-    vectorLayer = new ol.layer.Vector({
+    var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
@@ -91,7 +91,6 @@ describe('ol.rendering.style.LineString', function() {
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.LineString');
 goog.require('ol.Map');

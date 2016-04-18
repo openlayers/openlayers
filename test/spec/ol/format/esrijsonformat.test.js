@@ -67,24 +67,22 @@ describe('ol.format.EsriJSON', function() {
 
   var multiPolygonEsriJSON = {
     geometry: {
-      rings: [
-        [
-          [0, 1],
-          [1, 4],
-          [4, 3],
-          [3, 0]
-        ], [
-          [2, 2],
-          [3, 2],
-          [3, 3],
-          [2, 3]
-        ], [
-          [10, 1],
-          [11, 5],
-          [14, 3],
-          [13, 0]
-        ]
-      ]
+      rings: [[
+        [0, 1],
+        [1, 4],
+        [4, 3],
+        [3, 0]
+      ], [
+        [2, 2],
+        [3, 2],
+        [3, 3],
+        [2, 3]
+      ], [
+        [10, 1],
+        [11, 5],
+        [14, 3],
+        [13, 0]
+      ]]
     }
   };
 
@@ -93,62 +91,60 @@ describe('ol.format.EsriJSON', function() {
   };
 
   var data = {
-    features: [
-      {
-        attributes: {
-          'LINK_ID': 573730499,
-          'RP_TYPE': 14,
-          'RP_FUNC': 0,
-          'DIRECTION': 2,
-          'LOGKOD': '',
-          'CHANGED': '',
-          'USERID': '',
-          'ST_NAME': '',
-          'L_REFADDR': '',
-          'L_NREFADDR': '',
-          'R_REFADDR': '',
-          'R_NREFADDR': '',
-          'SPEED_CAT': '7',
-          'ZIPCODE': '59330',
-          'SHAPE_LEN': 46.3826
-        },
-        geometry: {
-          paths: [[
-            [1549497.66985, 6403707.96],
-            [1549491.1, 6403710.1],
-            [1549488.03995, 6403716.7504],
-            [1549488.5401, 6403724.5504],
-            [1549494.37985, 6403733.54],
-            [1549499.6799, 6403738.0504],
-            [1549506.22, 6403739.2504]
-          ]]
-        }
-      }, {
-        attributes: {
-          'LINK_ID': 30760556,
-          'RP_TYPE': 12,
-          'RP_FUNC': 1,
-          'DIRECTION': 0,
-          'LOGKOD': '',
-          'CHANGED': '',
-          'USERID': '',
-          'ST_NAME': 'BRUNNSGATAN',
-          'L_REFADDR': '24',
-          'L_NREFADDR': '16',
-          'R_REFADDR': '',
-          'R_NREFADDR': '',
-          'SPEED_CAT': '7',
-          'ZIPCODE': '59330',
-          'SHAPE_LEN': 70.3106
-        },
-        geometry: {
-          paths: [[
-            [1549754.2769, 6403854.8024],
-            [1549728.45985, 6403920.2]
-          ]]
-        }
+    features: [{
+      attributes: {
+        'LINK_ID': 573730499,
+        'RP_TYPE': 14,
+        'RP_FUNC': 0,
+        'DIRECTION': 2,
+        'LOGKOD': '',
+        'CHANGED': '',
+        'USERID': '',
+        'ST_NAME': '',
+        'L_REFADDR': '',
+        'L_NREFADDR': '',
+        'R_REFADDR': '',
+        'R_NREFADDR': '',
+        'SPEED_CAT': '7',
+        'ZIPCODE': '59330',
+        'SHAPE_LEN': 46.3826
+      },
+      geometry: {
+        paths: [[
+          [1549497.66985, 6403707.96],
+          [1549491.1, 6403710.1],
+          [1549488.03995, 6403716.7504],
+          [1549488.5401, 6403724.5504],
+          [1549494.37985, 6403733.54],
+          [1549499.6799, 6403738.0504],
+          [1549506.22, 6403739.2504]
+        ]]
       }
-    ]
+    }, {
+      attributes: {
+        'LINK_ID': 30760556,
+        'RP_TYPE': 12,
+        'RP_FUNC': 1,
+        'DIRECTION': 0,
+        'LOGKOD': '',
+        'CHANGED': '',
+        'USERID': '',
+        'ST_NAME': 'BRUNNSGATAN',
+        'L_REFADDR': '24',
+        'L_NREFADDR': '16',
+        'R_REFADDR': '',
+        'R_NREFADDR': '',
+        'SPEED_CAT': '7',
+        'ZIPCODE': '59330',
+        'SHAPE_LEN': 70.3106
+      },
+      geometry: {
+        paths: [[
+          [1549754.2769, 6403854.8024],
+          [1549728.45985, 6403920.2]
+        ]]
+      }
+    }]
   };
 
   describe('#readFeature', function() {
@@ -270,8 +266,8 @@ describe('ol.format.EsriJSON', function() {
   describe('#readFeatures', function() {
 
     it('parses feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
 
       expect(array.length).to.be(2);
 
@@ -291,7 +287,7 @@ describe('ol.format.EsriJSON', function() {
     it('parses ksfields.geojson', function(done) {
       afterLoadText('spec/ol/format/esrijson/ksfields.json', function(text) {
         var result = format.readFeatures(text);
-        expect(result.length).to.be(306);
+        expect(result.length).to.be(9);
 
         var first = result[0];
         expect(first).to.be.a(ol.Feature);
@@ -304,15 +300,15 @@ describe('ol.format.EsriJSON', function() {
               -10579560.16462974, 4716567.373073828]))
             .to.be(true);
 
-        var last = result[305];
+        var last = result[8];
         expect(last).to.be.a(ol.Feature);
-        expect(last.get('field_name')).to.be('PAOLA-RANTOUL');
-        expect(last.getId()).to.be(223);
+        expect(last.get('field_name')).to.be('FEAGINS');
+        expect(last.getId()).to.be(6030);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
         expect(ol.extent.equals(lastGeom.getExtent(),
-            [-10596945.530910717, 4634530.860533288,
-              -10538217.991305258, 4691558.678837225]))
+            [-10555714.026858449, 4576511.565880965,
+              -10553671.199322715, 4578554.9934867555]))
             .to.be(true);
         done();
       });
@@ -545,12 +541,12 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses polygon', function() {
-      var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2]
-          });
+      var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2]
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XY);
@@ -563,13 +559,13 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses XYZ polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2],
-            hasZ: true
-          });
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2],
+        hasZ: true
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYZ);
@@ -582,13 +578,13 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses XYM polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2],
-            hasM: true
-          });
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2],
+        hasM: true
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYM);
@@ -601,17 +597,23 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('parses XYZM polygon', function() {
-      var outer = [[0, 0, 5, 1], [0, 10, 5, 1], [10, 10, 5, 1],
-            [10, 0, 5, 1], [0, 0, 5, 1]],
-          inner1 = [[1, 1, 3, 2], [2, 1, 3, 2], [2, 2, 3, 2],
-            [1, 2, 3, 2], [1, 1, 3, 2]],
-          inner2 = [[8, 8, 2, 1], [9, 8, 2, 1], [9, 9, 2, 1],
-            [8, 9, 2, 1], [8, 8, 2, 1]],
-          str = JSON.stringify({
-            rings: [outer, inner1, inner2],
-            hasZ: true,
-            hasM: true
-          });
+      var outer = [
+        [0, 0, 5, 1], [0, 10, 5, 1], [10, 10, 5, 1],
+        [10, 0, 5, 1], [0, 0, 5, 1]
+      ];
+      var inner1 = [
+        [1, 1, 3, 2], [2, 1, 3, 2], [2, 2, 3, 2],
+        [1, 2, 3, 2], [1, 1, 3, 2]
+      ];
+      var inner2 = [
+        [8, 8, 2, 1], [9, 8, 2, 1], [9, 9, 2, 1],
+        [8, 9, 2, 1], [8, 8, 2, 1]
+      ];
+      var str = JSON.stringify({
+        rings: [outer, inner1, inner2],
+        hasZ: true,
+        hasM: true
+      });
       var obj = format.readGeometry(str);
       expect(obj).to.be.a(ol.geom.Polygon);
       expect(obj.getLayout()).to.eql(ol.geom.GeometryLayout.XYZM);
@@ -811,9 +813,9 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes polygon', function() {
-      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]],
-          inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-          inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+      var outer = [[0, 0], [10, 0], [10, 10], [0, 10], [0, 0]];
+      var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+      var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2]);
       var esrijson = format.writeGeometry(polygon);
       expect(polygon.getCoordinates(false)).to.eql(
@@ -821,9 +823,9 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZ polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2],
           ol.geom.GeometryLayout.XYZ);
       var esrijson = format.writeGeometry(polygon);
@@ -832,9 +834,9 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYM polygon', function() {
-      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]],
-          inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]],
-          inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
+      var outer = [[0, 0, 5], [0, 10, 5], [10, 10, 5], [10, 0, 5], [0, 0, 5]];
+      var inner1 = [[1, 1, 3], [2, 1, 3], [2, 2, 3], [1, 2, 3], [1, 1, 3]];
+      var inner2 = [[8, 8, 2], [9, 8, 2], [9, 9, 2], [8, 9, 2], [8, 8, 2]];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2],
           ol.geom.GeometryLayout.XYM);
       var esrijson = format.writeGeometry(polygon);
@@ -843,12 +845,15 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes XYZM polygon', function() {
-      var outer = [[0, 0, 5, 1], [0, 10, 5, 2], [10, 10, 5, 1],
-            [10, 0, 5, 1], [0, 0, 5, 1]],
-          inner1 = [[1, 1, 3, 1], [2, 1, 3, 2], [2, 2, 3, 1], [1, 2, 3, 1],
-            [1, 1, 3, 1]],
-          inner2 = [[8, 8, 2, 1], [9, 8, 2, 2], [9, 9, 2, 1], [8, 9, 2, 1],
-            [8, 8, 2, 1]];
+      var outer = [
+        [0, 0, 5, 1], [0, 10, 5, 2], [10, 10, 5, 1], [10, 0, 5, 1], [0, 0, 5, 1]
+      ];
+      var inner1 = [
+        [1, 1, 3, 1], [2, 1, 3, 2], [2, 2, 3, 1], [1, 2, 3, 1], [1, 1, 3, 1]
+      ];
+      var inner2 = [
+        [8, 8, 2, 1], [9, 8, 2, 2], [9, 9, 2, 1], [8, 9, 2, 1], [8, 8, 2, 1]
+      ];
       var polygon = new ol.geom.Polygon([outer, inner1, inner2],
           ol.geom.GeometryLayout.XYZM);
       var esrijson = format.writeGeometry(polygon);
@@ -995,8 +1000,8 @@ describe('ol.format.EsriJSON', function() {
   describe('#writeFeatures', function() {
 
     it('encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var esrijson = format.writeFeaturesObject(array);
       var result = format.readFeatures(esrijson);
       expect(array.length).to.equal(result.length);
@@ -1015,8 +1020,8 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('transforms and encodes feature collection', function() {
-      var str = JSON.stringify(data),
-          array = format.readFeatures(str);
+      var str = JSON.stringify(data);
+      var array = format.readFeatures(str);
       var esrijson = format.writeFeatures(array, {
         featureProjection: 'EPSG:3857',
         dataProjection: 'EPSG:4326'

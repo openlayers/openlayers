@@ -1,11 +1,12 @@
 goog.provide('ol.interaction.DragRotate');
 
+goog.require('ol');
 goog.require('ol.ViewHint');
+goog.require('ol.functions');
 goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
-
 
 
 /**
@@ -23,7 +24,7 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.DragRotate = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this, {
     handleDownEvent: ol.interaction.DragRotate.handleDownEvent_,
@@ -35,7 +36,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.condition_ = goog.isDef(options.condition) ?
+  this.condition_ = options.condition ?
       options.condition : ol.events.condition.altShiftKeysOnly;
 
   /**
@@ -48,7 +49,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 };
 goog.inherits(ol.interaction.DragRotate, ol.interaction.Pointer);
 
@@ -68,7 +69,7 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   var offset = mapBrowserEvent.pixel;
   var theta =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
-  if (goog.isDef(this.lastAngle_)) {
+  if (this.lastAngle_ !== undefined) {
     var delta = theta - this.lastAngle_;
     var view = map.getView();
     var rotation = view.getRotation();
@@ -112,8 +113,8 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 
-  var browserEvent = mapBrowserEvent.browserEvent;
-  if (browserEvent.isMouseActionButton() && this.condition_(mapBrowserEvent)) {
+  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
+      this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     map.getView().setHint(ol.ViewHint.INTERACTING, 1);
     map.render();
@@ -128,4 +129,4 @@ ol.interaction.DragRotate.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragRotate.prototype.shouldStopEvent = goog.functions.FALSE;
+ol.interaction.DragRotate.prototype.shouldStopEvent = ol.functions.FALSE;

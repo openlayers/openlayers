@@ -1,18 +1,16 @@
 ---
-template: example.html
-title: Image Filter Example
+layout: example.html
+title: Image Filters
 shortdesc: Apply a filter to imagery
 docs: >
   <p>Layer rendering can be manipulated in <code>precompose</code> and <code>postcompose</code> event listeners.
   These listeners get an event with a reference to the Canvas rendering context.
   In this example, the <code>postcompose</code> listener applies a filter to the image data.</p>
 tags: "filter, image manipulation"
+cloak:
+  AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF: Your Bing Maps Key from http://www.bingmapsportal.com/ here
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-</div>
+<div id="map" class="map"></div>
 <select id="kernel" name="kernel">
   <option>none</option>
   <option selected>sharpen</option>

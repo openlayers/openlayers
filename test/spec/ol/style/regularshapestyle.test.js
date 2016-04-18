@@ -4,6 +4,14 @@ describe('ol.style.RegularShape', function() {
 
   describe('#constructor', function() {
 
+    it('can use rotateWithView', function() {
+      var style = new ol.style.RegularShape({
+        rotateWithView: true,
+        radius: 0
+      });
+      expect(style.getRotateWithView()).to.be(true);
+    });
+
     it('can use radius', function() {
       var style = new ol.style.RegularShape({
         radius: 5,

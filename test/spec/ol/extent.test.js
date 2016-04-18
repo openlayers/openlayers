@@ -836,8 +836,8 @@ describe('ol.extent', function() {
 
     it('takes arbitrary function', function() {
       var transformFn = function(input, output, opt_dimension) {
-        var dimension = goog.isDef(opt_dimension) ? opt_dimension : 2;
-        if (!goog.isDef(output)) {
+        var dimension = opt_dimension !== undefined ? opt_dimension : 2;
+        if (output === undefined) {
           output = new Array(input.length);
         }
         var n = input.length;
@@ -857,46 +857,6 @@ describe('ol.extent', function() {
       expect(destinationExtent[2]).to.be(15);
       expect(destinationExtent[1]).to.be(-60);
       expect(destinationExtent[3]).to.be(30);
-    });
-
-  });
-
-  describe('transform2D()', function() {
-
-    var extent;
-    beforeEach(function() {
-      extent = [-180, -90, 180, 90];
-    });
-
-    it('applies a translate transform', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeTranslate(mat, 10, 20, 0);
-      var transformed = ol.extent.transform2D(extent, mat);
-      expect(transformed).to.eql([-170, -70, 190, 110]);
-    });
-
-    it('applies a rotate transform', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeRotateZ(mat, Math.PI / 2);
-      var transformed = ol.extent.transform2D(extent, mat);
-      expect(transformed[0]).to.roughlyEqual(-90, 1e-5);
-      expect(transformed[1]).to.roughlyEqual(-180, 1e-5);
-      expect(transformed[2]).to.roughlyEqual(90, 1e-5);
-      expect(transformed[3]).to.roughlyEqual(180, 1e-5);
-    });
-
-    it('does not modify original', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeRotateZ(mat, Math.PI / 2);
-      ol.extent.transform2D(extent, mat);
-      expect(extent).to.eql([-180, -90, 180, 90]);
-    });
-
-    it('accepts an extent to modify', function() {
-      var mat = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.makeScale(mat, 2, 0.5);
-      ol.extent.transform2D(extent, mat, extent);
-      expect(extent).to.eql([-360, -45, 360, 45]);
     });
 
   });

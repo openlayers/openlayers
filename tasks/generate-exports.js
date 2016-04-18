@@ -1,8 +1,6 @@
-var fs = require('fs');
-var path = require('path');
+var fs = require('fs-extra');
 
 var async = require('async');
-var fse = require('fs-extra');
 var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
@@ -175,7 +173,7 @@ function generateExports(symbols, namespace) {
   blocks.unshift(
       '/**\n' +
       ' * @fileoverview Custom exports file.\n' +
-      ' * @suppress {checkVars}\n' +
+      ' * @suppress {checkVars,extraRequire}\n' +
       ' */\n');
   return blocks.join('\n');
 }
@@ -226,7 +224,7 @@ if (require.main === module) {
   async.waterfall([
     getConfig.bind(null, options.config),
     main,
-    fse.outputFile.bind(fse, options.output)
+    fs.outputFile.bind(fs, options.output)
   ], function(err) {
     if (err) {
       process.stderr.write(err.message + '\n');

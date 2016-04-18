@@ -3,8 +3,7 @@ goog.provide('ol.test.coordinate');
 describe('ol.coordinate', function() {
 
   describe('#add', function() {
-    var coordinate,
-        delta;
+    var coordinate, delta;
 
     beforeEach(function() {
       coordinate = [50.73, 7.1];
@@ -31,13 +30,13 @@ describe('ol.coordinate', function() {
   });
 
   describe('#equals', function() {
-    var cologne = [50.93333, 6.95],
-        bonn1 = [50.73, 7.1],
-        bonn2 = [50.73000, 7.10000];
+    var cologne = [50.93333, 6.95];
+    var bonn1 = [50.73, 7.1];
+    var bonn2 = [50.73000, 7.10000];
 
     it('compares correctly', function() {
-      var bonnEqualsBonn = ol.coordinate.equals(bonn1, bonn2),
-          bonnEqualsCologne = ol.coordinate.equals(bonn1, cologne);
+      var bonnEqualsBonn = ol.coordinate.equals(bonn1, bonn2);
+      var bonnEqualsCologne = ol.coordinate.equals(bonn1, cologne);
       expect(bonnEqualsBonn).to.be(true);
       expect(bonnEqualsCologne).to.be(false);
     });
@@ -61,9 +60,7 @@ describe('ol.coordinate', function() {
   });
 
   describe('#createStringXY', function() {
-    var coordinate,
-        created,
-        formatted;
+    var coordinate, created, formatted;
     beforeEach(function() {
       coordinate = [6.6123, 46.7919];
       created = null;
@@ -203,10 +200,16 @@ describe('ol.coordinate', function() {
       var expected = '';
       expect(got).to.be(expected);
     });
-    it('formats a coord as expected', function() {
+    it('formats with zero fractional digits as default', function() {
       var coord = [7.85, 47.983333];
       var got = ol.coordinate.toStringHDMS(coord);
-      var expected = '47° 59′ 0″ N 7° 51′ 0″ E';
+      var expected = '47° 58′ 60″ N 7° 50′ 60″ E';
+      expect(got).to.be(expected);
+    });
+    it('formats with given fractional digits, if passed', function() {
+      var coord = [7.85, 47.983333];
+      var got = ol.coordinate.toStringHDMS(coord, 3);
+      var expected = '47° 58′ 59.999″ N 7° 50′ 60.000″ E';
       expect(got).to.be(expected);
     });
   });

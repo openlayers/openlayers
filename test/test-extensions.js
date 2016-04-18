@@ -1,3 +1,5 @@
+/* global resemble:false */
+
 // FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
 
 // helper functions for async testing and other utility functions.
@@ -70,6 +72,7 @@
    * Assert value is within some tolerance of a number.
    * @param {Number} n Number.
    * @param {Number} tol Tolerance.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.roughlyEqual = function(n, tol) {
     this.assert(
@@ -88,6 +91,7 @@
 
   /**
    * Assert that a sinon spy was called.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.called = function() {
     this.assert(
@@ -105,7 +109,7 @@
   function getChildNodes(node, options) {
     // check whitespace
     if (options && options.includeWhiteSpace) {
-        return node.childNodes;
+      return node.childNodes;
     } else {
       var nodes = [];
       for (var i = 0, ii = node.childNodes.length; i < ii; i++) {
@@ -120,6 +124,11 @@
             nodes.push(child);
           }
         }
+      }
+      if (options && options.ignoreElementOrder) {
+        nodes.sort(function(a, b) {
+          return a.nodeName > b.nodeName ? 1 : a.nodeName < b.nodeName ? -1 : 0;
+        });
       }
       return nodes;
     }
@@ -154,9 +163,8 @@
         errors.push('nodeValue test failed | expected ' + nv1 + ' to equal ' +
             nv2);
       }
-    }
-    // for element type nodes compare namespace, attributes, and children
-    else if (node1.nodeType === 1) {
+    } else if (node1.nodeType === 1) {
+      // for element type nodes compare namespace, attributes, and children
       // test namespace alias and uri
       if (node1.prefix || node2.prefix) {
         if (testPrefix) {
@@ -208,11 +216,11 @@
         errors.push('Number of attributes test failed for: ' + node1.nodeName +
             ' | expected ' + node1AttrLen + ' to equal ' + node2AttrLen);
       }
-      var gv, ev;
       for (var name in node1Attr) {
         if (node2Attr[name] === undefined) {
           errors.push('Attribute name ' + node1Attr[name].name +
               ' expected for element ' + node1.nodeName);
+          break;
         }
         // test attribute namespace
         // we do not care about the difference between an empty string and
@@ -271,6 +279,10 @@
 
   /**
    * Checks if the XML document sort of equals another XML document.
+   * @param {Object} obj The other object.
+   * @param {{includeWhiteSpace: (boolean|undefined),
+   *     ignoreElementOrder: (boolean|undefined)}=} options The options.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.xmleql = function(obj, options) {
     if (obj && obj.nodeType == 9) {
@@ -300,10 +312,12 @@
 
   /**
    * Checks if the array sort of equals another array.
+   * @param {Object} obj The other object.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
-        goog.array.equals(this.obj, obj),
+        ol.array.equals(this.obj, obj),
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
@@ -318,14 +332,17 @@
 
   /**
    * Checks if the array sort of equals another array (allows NaNs to be equal).
+   * @param {Object} obj The other object.
+   * @return {expect.Assertion} The assertion.
    */
   expect.Assertion.prototype.arreqlNaN = function(obj) {
-    function compare(a, b) {
+    function compare(a, i) {
+      var b = obj[i];
       return a === b || (typeof a === 'number' && typeof b === 'number' &&
           isNaN(a) && isNaN(b));
     }
     this.assert(
-        goog.array.equals(this.obj, obj, compare),
+        this.obj.length === obj.length && this.obj.every(compare),
         function() {
           return 'expected ' + expect.stringify(this.obj) +
               ' to sort of equal ' + expect.stringify(obj);
@@ -353,12 +370,12 @@
   global.disposeMap = function(map) {
     var target = map.getTarget();
     map.setTarget(null);
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   };
 
   global.assertWebGL = function(map) {
-    if(!ol.has.WEBGL) {
+    if (!ol.has.WEBGL) {
       expect().fail('No WebGL support!');
     }
   };
@@ -372,7 +389,7 @@
       .compareTo(canvas.getContext('2d').getImageData(
           0, 0, canvas.width, canvas.height))
       .onComplete(function(data) {
-        if(!data.isSameDimensions) {
+        if (!data.isSameDimensions) {
           expect().fail(
             'The dimensions of the reference image and ' +
             'the test canvas are not the same.');
@@ -387,8 +404,9 @@
           expect(data.misMatchPercentage).to.be.below(tolerance);
         }
         done();
-    });
-  };
+      });
+  }
+  global.resembleCanvas = resembleCanvas;
 
   function expectResembleCanvas(map, referenceImage, tolerance, done) {
     map.render();
@@ -396,7 +414,7 @@
       var canvas = event.context.canvas;
       resembleCanvas(canvas, referenceImage, tolerance, done);
     });
-  };
+  }
 
   function expectResembleWebGL(map, referenceImage, tolerance, done) {
     map.render();
@@ -419,7 +437,7 @@
 
       resembleCanvas(canvas, referenceImage, tolerance, done);
     });
-  };
+  }
 
   /**
    * Assert that the given map resembles a reference image.
@@ -438,6 +456,28 @@
       expect().fail(
         'resemble only works with the canvas and WebGL renderer.');
     }
+  };
+
+  var features = {
+    ArrayBuffer: typeof ArrayBuffer === 'function',
+    Uint8ClampedArray: ('Uint8ClampedArray' in global)
+  };
+
+  /**
+   * Allow tests to be skipped where certain features are not available.  The
+   * provided key must be in the above `features` lookup.  Keys should
+   * correspond to the feature that is required, but can be any string.
+   * @param {string} key The required feature name.
+   * @return {Object} An object with a `describe` function that will run tests
+   *     if the required feature is available and skip them otherwise.
+   */
+  global.where = function(key) {
+    if (!(key in features)) {
+      throw new Error('where() called with unknown key: ' + key);
+    }
+    return {
+      describe: features[key] ? global.describe : global.xdescribe
+    };
   };
 
 })(this);

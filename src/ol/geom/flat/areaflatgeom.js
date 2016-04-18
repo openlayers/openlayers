@@ -30,8 +30,7 @@ ol.geom.flat.area.linearRing = function(flatCoordinates, offset, end, stride) {
  * @param {number} stride Stride.
  * @return {number} Area.
  */
-ol.geom.flat.area.linearRings =
-    function(flatCoordinates, offset, ends, stride) {
+ol.geom.flat.area.linearRings = function(flatCoordinates, offset, ends, stride) {
   var area = 0;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -50,8 +49,7 @@ ol.geom.flat.area.linearRings =
  * @param {number} stride Stride.
  * @return {number} Area.
  */
-ol.geom.flat.area.linearRingss =
-    function(flatCoordinates, offset, endss, stride) {
+ol.geom.flat.area.linearRingss = function(flatCoordinates, offset, endss, stride) {
   var area = 0;
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {

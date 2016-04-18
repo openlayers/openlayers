@@ -1,8 +1,8 @@
 goog.provide('ol.source.ImageVector');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('goog.vec.Mat4');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -12,7 +12,6 @@ goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 goog.require('ol.vec.Mat4');
-
 
 
 /**
@@ -66,7 +65,7 @@ ol.source.ImageVector = function(options) {
 
   goog.base(this, {
     attributions: options.attributions,
-    canvasFunction: goog.bind(this.canvasFunctionInternal_, this),
+    canvasFunction: this.canvasFunctionInternal_.bind(this),
     logo: options.logo,
     projection: options.projection,
     ratio: options.ratio,
@@ -90,8 +89,8 @@ ol.source.ImageVector = function(options) {
 
   this.setStyle(options.style);
 
-  goog.events.listen(this.source_, goog.events.EventType.CHANGE,
-      this.handleSourceChange_, undefined, this);
+  ol.events.listen(this.source_, ol.events.EventType.CHANGE,
+      this.handleSourceChange_, this);
 
 };
 goog.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
@@ -106,8 +105,7 @@ goog.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
  * @return {HTMLCanvasElement} Canvas element.
  * @private
  */
-ol.source.ImageVector.prototype.canvasFunctionInternal_ =
-    function(extent, resolution, pixelRatio, size, projection) {
+ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resolution, pixelRatio, size, projection) {
 
   var replayGroup = new ol.render.canvas.ReplayGroup(
       ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
@@ -116,7 +114,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
   this.source_.loadFeatures(extent, resolution, projection);
 
   var loading = false;
-  this.source_.forEachFeatureInExtentAtResolution(extent, resolution,
+  this.source_.forEachFeatureInExtent(extent,
       /**
        * @param {ol.Feature} feature Feature.
        */
@@ -154,7 +152,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ =
  */
 ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeatureUids, callback) {
-  if (goog.isNull(this.replayGroup_)) {
+  if (!this.replayGroup_) {
     return undefined;
   } else {
     /** @type {Object.<string, boolean>} */
@@ -162,11 +160,11 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
     return this.replayGroup_.forEachFeatureAtCoordinate(
         coordinate, resolution, 0, skippedFeatureUids,
         /**
-         * @param {ol.Feature} feature Feature.
+         * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(goog.isDef(feature), 'passed a feature');
+          goog.asserts.assert(feature !== undefined, 'passed a feature');
           var key = goog.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -217,8 +215,7 @@ ol.source.ImageVector.prototype.getStyleFunction = function() {
  * @return {!goog.vec.Mat4.Number} Transform.
  * @private
  */
-ol.source.ImageVector.prototype.getTransform_ =
-    function(center, resolution, pixelRatio, size) {
+ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {
   return ol.vec.Mat4.makeTransform2D(this.transform_,
       size[0] / 2, size[1] / 2,
       pixelRatio / resolution, -pixelRatio / resolution,
@@ -229,11 +226,10 @@ ol.source.ImageVector.prototype.getTransform_ =
 
 /**
  * Handle changes in image style state.
- * @param {goog.events.Event} event Image style change event.
+ * @param {ol.events.Event} event Image style change event.
  * @private
  */
-ol.source.ImageVector.prototype.handleImageChange_ =
-    function(event) {
+ol.source.ImageVector.prototype.handleImageChange_ = function(event) {
   this.changed();
 };
 
@@ -256,18 +252,21 @@ ol.source.ImageVector.prototype.handleSourceChange_ = function() {
  * @return {boolean} `true` if an image is loading.
  * @private
  */
-ol.source.ImageVector.prototype.renderFeature_ =
-    function(feature, resolution, pixelRatio, replayGroup) {
+ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, pixelRatio, replayGroup) {
   var styles;
-  if (goog.isDef(feature.getStyleFunction())) {
-    styles = feature.getStyleFunction().call(feature, resolution);
-  } else if (goog.isDef(this.styleFunction_)) {
+  var styleFunction = feature.getStyleFunction();
+  if (styleFunction) {
+    styles = styleFunction.call(feature, resolution);
+  } else if (this.styleFunction_) {
     styles = this.styleFunction_(feature, resolution);
   }
-  if (!goog.isDefAndNotNull(styles)) {
+  if (!styles) {
     return false;
   }
   var i, ii, loading = false;
+  if (!Array.isArray(styles)) {
+    styles = [styles];
+  }
   for (i = 0, ii = styles.length; i < ii; ++i) {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
@@ -290,8 +289,8 @@ ol.source.ImageVector.prototype.renderFeature_ =
  * @api stable
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
-  this.style_ = goog.isDef(style) ? style : ol.style.defaultStyleFunction;
-  this.styleFunction_ = goog.isNull(style) ?
+  this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
+  this.styleFunction_ = !style ?
       undefined : ol.style.createStyleFunction(this.style_);
   this.changed();
 };

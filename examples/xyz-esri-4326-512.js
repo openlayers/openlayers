@@ -6,7 +6,7 @@ goog.require('ol.proj');
 goog.require('ol.source.XYZ');
 
 var attribution = new ol.Attribution({
-  html: 'Copyright:&copy; 2013 ESRI, i-cubed, GeoEye'
+  html: 'Copyright:© 2013 ESRI, i-cubed, GeoEye'
 });
 
 var projection = ol.proj.get('EPSG:4326');

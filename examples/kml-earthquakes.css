@@ -9,7 +9,6 @@
 }
 .tooltip.in {
   opacity: 1;
-  filter: alpha(opacity=100);
 }
 .tooltip.top .tooltip-arrow {
   border-top-color: white;

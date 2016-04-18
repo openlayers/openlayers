@@ -1,5 +1,5 @@
 ---
-template: example.html
+layout: example.html
 title: Limited Layer Extent
 shortdesc: Restricting layer rendering to a limited extent.
 docs: >
@@ -8,15 +8,9 @@ docs: >
   to limit rendering based on an extent.
 tags: "extent, tilejson"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-</div>
-<div class="btn-group">
-  <button type="button" class="btn btn-default" id="northwest">northwest</button>
-  <button type="button" class="btn btn-default" id="northeast">northeast</button>
-  <button type="button" class="btn btn-default" id="southeast">southeast</button>
-  <button type="button" class="btn btn-default" id="southwest">southwest</button>
-  <button type="button" class="btn btn-default" id="world">world</button>
-</div>
+<div id="map" class="map"></div>
+<button type="button" class="btn btn-default" id="northwest">northwest</button>
+<button type="button" class="btn btn-default" id="northeast">northeast</button>
+<button type="button" class="btn btn-default" id="southeast">southeast</button>
+<button type="button" class="btn btn-default" id="southwest">southwest</button>
+<button type="button" class="btn btn-default" id="world">world</button>

@@ -5,8 +5,7 @@ var path = require('path');
 
 var async = require('async');
 var closure = require('closure-util');
-var fse = require('fs-extra');
-var fs = require('graceful-fs');
+var fs = require('fs-extra');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
 var exec = require('child_process').exec;
@@ -17,10 +16,10 @@ var log = closure.log;
 var root = path.join(__dirname, '..');
 
 var umdWrapper = '(function (root, factory) {\n' +
-    '  if (typeof define === "function" && define.amd) {\n' +
-    '    define([], factory);\n' +
-    '  } else if (typeof exports === "object") {\n' +
+    '  if (typeof exports === "object") {\n' +
     '    module.exports = factory();\n' +
+    '  } else if (typeof define === "function" && define.amd) {\n' +
+    '    define([], factory);\n' +
     '  } else {\n' +
     '    root.ol = factory();\n' +
     '  }\n' +
@@ -285,7 +284,7 @@ if (require.main === module) {
   async.waterfall([
     readConfig.bind(null, options.config),
     main,
-    fse.outputFile.bind(fse, options.output)
+    fs.outputFile.bind(fs, options.output)
   ], function(err) {
     if (err) {
       log.error(err.message);

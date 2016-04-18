@@ -4,7 +4,6 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.proj');
 
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -24,6 +23,7 @@ ol.format.Feature = function() {
    * @type {ol.proj.Projection}
    */
   this.defaultDataProjection = null;
+
 };
 
 
@@ -42,9 +42,9 @@ ol.format.Feature.prototype.getExtensions = goog.abstractMethod;
  */
 ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
   var options;
-  if (goog.isDef(opt_options)) {
+  if (opt_options) {
     options = {
-      dataProjection: goog.isDef(opt_options.dataProjection) ?
+      dataProjection: opt_options.dataProjection ?
           opt_options.dataProjection : this.readProjection(source),
       featureProjection: opt_options.featureProjection
     };
@@ -64,13 +64,16 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
  */
 ol.format.Feature.prototype.adaptOptions = function(options) {
   var updatedOptions;
-  if (goog.isDef(options)) {
+  if (options) {
     updatedOptions = {
       featureProjection: options.featureProjection,
-      dataProjection: goog.isDefAndNotNull(options.dataProjection) ?
+      dataProjection: options.dataProjection ?
           options.dataProjection : this.defaultDataProjection,
       rightHanded: options.rightHanded
     };
+    if (options.decimals) {
+      updatedOptions.decimals = options.decimals;
+    }
   }
   return updatedOptions;
 };
@@ -95,7 +98,7 @@ ol.format.Feature.prototype.readFeature = goog.abstractMethod;
 /**
  * Read all features from a source.
  *
- * @param {Document|Node|Object|string} source Source.
+ * @param {Document|Node|ArrayBuffer|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
@@ -161,25 +164,49 @@ ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
  */
 ol.format.Feature.transformWithOptions = function(
     geometry, write, opt_options) {
-  var featureProjection = goog.isDef(opt_options) ?
+  var featureProjection = opt_options ?
       ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = goog.isDef(opt_options) ?
+  var dataProjection = opt_options ?
       ol.proj.get(opt_options.dataProjection) : null;
-  if (!goog.isNull(featureProjection) && !goog.isNull(dataProjection) &&
+  /**
+   * @type {ol.geom.Geometry|ol.Extent}
+   */
+  var transformed;
+  if (featureProjection && dataProjection &&
       !ol.proj.equivalent(featureProjection, dataProjection)) {
     if (geometry instanceof ol.geom.Geometry) {
-      return (write ? geometry.clone() : geometry).transform(
+      transformed = (write ? geometry.clone() : geometry).transform(
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);
     } else {
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
-      return ol.proj.transformExtent(
+      transformed = ol.proj.transformExtent(
           write ? geometry.slice() : geometry,
           write ? featureProjection : dataProjection,
           write ? dataProjection : featureProjection);
     }
   } else {
-    return geometry;
+    transformed = geometry;
   }
+  if (write && opt_options && opt_options.decimals) {
+    var power = Math.pow(10, opt_options.decimals);
+    // if decimals option on write, round each coordinate appropriately
+    /**
+     * @param {Array.<number>} coordinates Coordinates.
+     * @return {Array.<number>} Transformed coordinates.
+     */
+    var transform = function(coordinates) {
+      for (var i = 0, ii = coordinates.length; i < ii; ++i) {
+        coordinates[i] = Math.round(coordinates[i] * power) / power;
+      }
+      return coordinates;
+    };
+    if (Array.isArray(transformed)) {
+      transform(transformed);
+    } else {
+      transformed.applyTransform(transform);
+    }
+  }
+  return transformed;
 };

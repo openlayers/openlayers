@@ -1,20 +1,18 @@
 ---
-template: example.html
-title: Bing Maps example
+layout: example.html
+title: Bing Maps
 shortdesc: Example of a Bing Maps layer.
 docs: >
   <p>When the Bing Maps tile service doesn't have tiles for a given resolution and region it returns "placeholder" tiles indicating that. Zoom the map beyond level 19 to see the "placeholder" tiles. If you want OpenLayers to display stretched tiles in place of "placeholder" tiles beyond zoom level 19 then set <code>maxZoom</code> to <code>19</code> in the options passed to <code>ol.source.BingMaps</code>.</p>
 tags: "bing, bing-maps"
+cloak:
+  AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF: Your Bing Maps Key from http://www.bingmapsportal.com/ here
 ---
- <div class="row-fluid">
-   <div class="span12">
-     <div id="map" class="map"></div>
-     <select id="layer-select">
-       <option value="Aerial">Aerial</option>
-       <option value="AerialWithLabels" selected>Aerial with labels</option>
-       <option value="Road">Road</option>
-       <option value="collinsBart">Collins Bart</option>
-       <option value="ordnanceSurvey">Ordnance Survey</option>
-     </select>
-   </div>
- </div>
+ <div id="map" class="map"></div>
+ <select id="layer-select">
+   <option value="Aerial">Aerial</option>
+   <option value="AerialWithLabels" selected>Aerial with labels</option>
+   <option value="Road">Road</option>
+   <option value="collinsBart">Collins Bart</option>
+   <option value="ordnanceSurvey">Ordnance Survey</option>
+ </select>

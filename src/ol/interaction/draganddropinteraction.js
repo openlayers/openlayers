@@ -4,15 +4,12 @@ goog.provide('ol.interaction.DragAndDrop');
 goog.provide('ol.interaction.DragAndDropEvent');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.Event');
-goog.require('goog.events.FileDropHandler');
-goog.require('goog.events.FileDropHandler.EventType');
-goog.require('goog.fs.FileReader');
-goog.require('goog.functions');
+goog.require('ol.functions');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.proj');
-
 
 
 /**
@@ -27,7 +24,7 @@ goog.require('ol.proj');
  */
 ol.interaction.DragAndDrop = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   goog.base(this, {
     handleEvent: ol.interaction.DragAndDrop.handleEvent
@@ -37,74 +34,76 @@ ol.interaction.DragAndDrop = function(opt_options) {
    * @private
    * @type {Array.<function(new: ol.format.Feature)>}
    */
-  this.formatConstructors_ = goog.isDef(options.formatConstructors) ?
+  this.formatConstructors_ = options.formatConstructors ?
       options.formatConstructors : [];
 
   /**
    * @private
    * @type {ol.proj.Projection}
    */
-  this.projection_ = goog.isDef(options.projection) ?
+  this.projection_ = options.projection ?
       ol.proj.get(options.projection) : null;
 
   /**
    * @private
-   * @type {goog.events.FileDropHandler}
+   * @type {Array.<ol.events.Key>}
    */
-  this.fileDropHandler_ = null;
+  this.dropListenKeys_ = null;
 
   /**
    * @private
-   * @type {goog.events.Key|undefined}
+   * @type {Element}
    */
-  this.dropListenKey_ = undefined;
+  this.target = options.target ? options.target : null;
 
 };
 goog.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
 
 
 /**
- * @inheritDoc
+ * @param {Event} event Event.
+ * @this {ol.interaction.DragAndDrop}
+ * @private
  */
-ol.interaction.DragAndDrop.prototype.disposeInternal = function() {
-  if (goog.isDef(this.dropListenKey_)) {
-    goog.events.unlistenByKey(this.dropListenKey_);
+ol.interaction.DragAndDrop.handleDrop_ = function(event) {
+  var files = event.dataTransfer.files;
+  var i, ii, file;
+  for (i = 0, ii = files.length; i < ii; ++i) {
+    file = files.item(i);
+    var reader = new FileReader();
+    reader.addEventListener(ol.events.EventType.LOAD,
+        goog.partial(this.handleResult_, file).bind(this));
+    reader.readAsText(file);
   }
-  goog.base(this, 'disposeInternal');
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} event Event.
+ * @param {Event} event Event.
  * @private
  */
-ol.interaction.DragAndDrop.prototype.handleDrop_ = function(event) {
-  var files = event.getBrowserEvent().dataTransfer.files;
-  var i, ii, file;
-  for (i = 0, ii = files.length; i < ii; ++i) {
-    file = files[i];
-    // The empty string param is a workaround for
-    // https://code.google.com/p/closure-library/issues/detail?id=524
-    var reader = goog.fs.FileReader.readAsText(file, '');
-    reader.addCallback(goog.partial(this.handleResult_, file), this);
-  }
+ol.interaction.DragAndDrop.handleStop_ = function(event) {
+  event.stopPropagation();
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'copy';
 };
 
 
 /**
  * @param {File} file File.
- * @param {string} result Result.
+ * @param {Event} event Load event.
  * @private
  */
-ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
+ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
+  var result = event.target.result;
   var map = this.getMap();
-  goog.asserts.assert(!goog.isNull(map), 'map should not be null');
+  goog.asserts.assert(map, 'map must be set');
   var projection = this.projection_;
-  if (goog.isNull(projection)) {
+  if (!projection) {
     var view = map.getView();
-    goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+    goog.asserts.assert(view, 'map must have view');
     projection = view.getProjection();
-    goog.asserts.assert(goog.isDef(projection),
+    goog.asserts.assert(projection !== undefined,
         'projection should be defined');
   }
   var formatConstructors = this.formatConstructors_;
@@ -113,19 +112,11 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
   for (i = 0, ii = formatConstructors.length; i < ii; ++i) {
     var formatConstructor = formatConstructors[i];
     var format = new formatConstructor();
-    var readFeatures = this.tryReadFeatures_(format, result);
-    if (!goog.isNull(readFeatures)) {
-      var featureProjection = format.readProjection(result);
-      var transform = ol.proj.getTransform(featureProjection, projection);
-      var j, jj;
-      for (j = 0, jj = readFeatures.length; j < jj; ++j) {
-        var feature = readFeatures[j];
-        var geometry = feature.getGeometry();
-        if (goog.isDefAndNotNull(geometry)) {
-          geometry.applyTransform(transform);
-        }
-        features.push(feature);
-      }
+    features = this.tryReadFeatures_(format, result, {
+      featureProjection: projection
+    });
+    if (features && features.length > 0) {
+      break;
     }
   }
   this.dispatchEvent(
@@ -143,29 +134,30 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, result) {
  * @this {ol.interaction.DragAndDrop}
  * @api
  */
-ol.interaction.DragAndDrop.handleEvent = goog.functions.TRUE;
+ol.interaction.DragAndDrop.handleEvent = ol.functions.TRUE;
 
 
 /**
  * @inheritDoc
  */
 ol.interaction.DragAndDrop.prototype.setMap = function(map) {
-  if (goog.isDef(this.dropListenKey_)) {
-    goog.events.unlistenByKey(this.dropListenKey_);
-    this.dropListenKey_ = undefined;
+  if (this.dropListenKeys_) {
+    this.dropListenKeys_.forEach(ol.events.unlistenByKey);
+    this.dropListenKeys_ = null;
   }
-  if (!goog.isNull(this.fileDropHandler_)) {
-    goog.dispose(this.fileDropHandler_);
-    this.fileDropHandler_ = null;
-  }
-  goog.asserts.assert(!goog.isDef(this.dropListenKey_),
-      'this.dropListenKey_ should be undefined');
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
-    this.fileDropHandler_ = new goog.events.FileDropHandler(map.getViewport());
-    this.dropListenKey_ = goog.events.listen(
-        this.fileDropHandler_, goog.events.FileDropHandler.EventType.DROP,
-        this.handleDrop_, false, this);
+  if (map) {
+    var dropArea = this.target ? this.target : map.getViewport();
+    this.dropListenKeys_ = [
+      ol.events.listen(dropArea, ol.events.EventType.DROP,
+          ol.interaction.DragAndDrop.handleDrop_, this),
+      ol.events.listen(dropArea, ol.events.EventType.DRAGENTER,
+          ol.interaction.DragAndDrop.handleStop_, this),
+      ol.events.listen(dropArea, ol.events.EventType.DRAGOVER,
+          ol.interaction.DragAndDrop.handleStop_, this),
+      ol.events.listen(dropArea, ol.events.EventType.DROP,
+          ol.interaction.DragAndDrop.handleStop_, this)
+    ]
   }
 };
 
@@ -173,12 +165,13 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
 /**
  * @param {ol.format.Feature} format Format.
  * @param {string} text Text.
+ * @param {olx.format.ReadOptions} options Read options.
  * @private
  * @return {Array.<ol.Feature>} Features.
  */
-ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text) {
+ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text, options) {
   try {
-    return format.readFeatures(text);
+    return format.readFeatures(text, options);
   } catch (e) {
     return null;
   }
@@ -198,14 +191,13 @@ ol.interaction.DragAndDropEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.DragAndDrop} instances are instances
  * of this type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
  * @param {Object} target Target.
@@ -213,28 +205,30 @@ ol.interaction.DragAndDropEventType = {
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
-ol.interaction.DragAndDropEvent =
-    function(type, target, file, opt_features, opt_projection) {
+ol.interaction.DragAndDropEvent = function(type, target, file, opt_features, opt_projection) {
 
   goog.base(this, type, target);
 
   /**
+   * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
    * @api stable
    */
   this.features = opt_features;
 
   /**
+   * The dropped file.
    * @type {File}
    * @api stable
    */
   this.file = file;
 
   /**
+   * The feature projection.
    * @type {ol.proj.Projection|undefined}
    * @api
    */
   this.projection = opt_projection;
 
 };
-goog.inherits(ol.interaction.DragAndDropEvent, goog.events.Event);
+goog.inherits(ol.interaction.DragAndDropEvent, ol.events.Event);

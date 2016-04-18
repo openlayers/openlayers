@@ -1,14 +1,12 @@
 goog.provide('ol.control.Zoom');
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-
 
 
 /**
@@ -24,55 +22,43 @@ goog.require('ol.easing');
  */
 ol.control.Zoom = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var className = goog.isDef(options.className) ? options.className : 'ol-zoom';
+  var className = options.className !== undefined ? options.className : 'ol-zoom';
 
-  var delta = goog.isDef(options.delta) ? options.delta : 1;
+  var delta = options.delta !== undefined ? options.delta : 1;
 
-  var zoomInLabel = goog.isDef(options.zoomInLabel) ?
-      options.zoomInLabel : '+';
-  var zoomOutLabel = goog.isDef(options.zoomOutLabel) ?
-      options.zoomOutLabel : '\u2212';
+  var zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
+  var zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
 
-  var zoomInTipLabel = goog.isDef(options.zoomInTipLabel) ?
+  var zoomInTipLabel = options.zoomInTipLabel !== undefined ?
       options.zoomInTipLabel : 'Zoom in';
-  var zoomOutTipLabel = goog.isDef(options.zoomOutTipLabel) ?
+  var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
       options.zoomOutTipLabel : 'Zoom out';
 
-  var inElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var inElement = goog.dom.createDom('BUTTON', {
     'class': className + '-in',
     'type' : 'button',
     'title': zoomInTipLabel
   }, zoomInLabel);
 
-  goog.events.listen(inElement,
-      goog.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, delta), false, this);
+  ol.events.listen(inElement,
+      ol.events.EventType.CLICK, goog.partial(
+          ol.control.Zoom.prototype.handleClick_, delta), this);
 
-  ol.control.Control.bindMouseOutFocusOutBlur(inElement);
-
-  var outElement = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var outElement = goog.dom.createDom('BUTTON', {
     'class': className + '-out',
     'type' : 'button',
     'title': zoomOutTipLabel
   }, zoomOutLabel);
 
-  goog.events.listen(outElement,
-      goog.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, -delta), false, this);
-
-  goog.events.listen(outElement, [
-    goog.events.EventType.MOUSEOUT,
-    goog.events.EventType.FOCUSOUT
-  ], function() {
-    this.blur();
-  }, false);
+  ol.events.listen(outElement,
+      ol.events.EventType.CLICK, goog.partial(
+          ol.control.Zoom.prototype.handleClick_, -delta), this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, inElement,
-      outElement);
+  var element = goog.dom.createDom('DIV', cssClasses, inElement, outElement);
 
   goog.base(this, {
     element: element,
@@ -83,7 +69,7 @@ ol.control.Zoom = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
 goog.inherits(ol.control.Zoom, ol.control.Control);
@@ -91,7 +77,7 @@ goog.inherits(ol.control.Zoom, ol.control.Control);
 
 /**
  * @param {number} delta Zoom delta.
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
@@ -107,13 +93,13 @@ ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
 ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   var map = this.getMap();
   var view = map.getView();
-  if (goog.isNull(view)) {
+  if (!view) {
     // the map does not have a view, so we can't act
     // upon it
     return;
   }
   var currentResolution = view.getResolution();
-  if (goog.isDef(currentResolution)) {
+  if (currentResolution) {
     if (this.duration_ > 0) {
       map.beforeRender(ol.animation.zoom({
         resolution: currentResolution,

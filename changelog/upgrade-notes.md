@@ -1,5 +1,211 @@
 ## Upgrade notes
 
+### v3.15.0
+
+#### Internet Explorer 9 support
+
+As of this release, OpenLayers requires a `classList` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features#Element_prototype_classList.
+
+#### Immediate rendering API
+
+Listeners for `precompose`, `render`, and `postcompose` receive an event with a `vectorContext` property with methods for immediate vector rendering.  The previous geometry drawing methods have been replaced with a single `vectorContext.drawGeometry(geometry)` method.  If you were using any of the following experimental methods on the vector context, replace them with `drawGeometry`:
+
+ * Removed experimental geometry drawing methods: `drawPointGeometry`, `drawLineStringGeometry`, `drawPolygonGeometry`, `drawMultiPointGeometry`, `drawMultiLineStringGeometry`, `drawMultiPolygonGeometry`, and `drawCircleGeometry` (all have been replaced with `drawGeometry`).
+
+In addition, the previous methods for setting style parts have been replaced with a single `vectorContext.setStyle(style)` method.  If you were using any of the following experimental methods on the vector context, replace them with `setStyle`:
+
+ * Removed experimental style setting methods: `setFillStrokeStyle`, `setImageStyle`, `setTextStyle` (all have been replaced with `setStyle`).
+
+Below is an example of how the vector context might have been used in the past:
+
+```js
+// OLD WAY, NO LONGER SUPPORTED
+map.on('postcompose', function(event) {
+  event.vectorContext.setFillStrokeStyle(style.getFill(), style.getStroke());
+  event.vectorContext.drawPointGeometry(geometry);
+});
+```
+
+Here is an example of how you could accomplish the same with the new methods:
+```js
+// NEW WAY, USE THIS INSTEAD OF THE CODE ABOVE
+map.on('postcompose', function(event) {
+  event.vectorContext.setStyle(style);
+  event.vectorContext.drawGeometry(geometry);
+});
+```
+
+A final change to the immediate rendering API is that `vectorContext.drawFeature()` calls are now "immediate" as well.  The drawing now occurs synchronously.  This means that any `zIndex` in a style passed to `drawFeature()` will be ignored.  To achieve `zIndex` ordering, order your calls to `drawFeature()` instead.
+
+#### Removal of `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK`
+
+The `ol.DEFAULT_TILE_CACHE_HIGH_WATER_MARK` define has been removed. The size of the cache can now be defined on every tile based `ol.source`:
+```js
+new ol.layer.Tile({
+  source: new ol.source.OSM({
+    cacheSize: 128
+  })
+})
+```
+The default cache size is `2048`.
+
+### v3.14.0
+
+#### Internet Explorer 9 support
+
+As of this release, OpenLayers requires a `requestAnimationFrame`/`cancelAnimationFrame` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features/#requestAnimationFrame.
+
+#### Layer pre-/postcompose event changes
+
+It is the responsibility of the application to undo any canvas transform changes at the end of a layer 'precompose' or 'postcompose' handler. Previously, it was ok to set a null transform. The API now guarantees a device pixel coordinate system on the canvas with its origin in the top left corner of the map. However, applications should not rely on the underlying canvas being the same size as the visible viewport.
+
+Old code:
+```js
+layer.on('precompose', function(e) {
+  // rely on canvas dimensions to move coordinate origin to center
+  e.context.translate(e.context.canvas.width / 2, e.context.canvas.height / 2);
+  e.context.scale(3, 3);
+  // draw an x in the center of the viewport
+  e.context.moveTo(-20, -20);
+  e.context.lineTo(20, 20);
+  e.context.moveTo(-20, 20);
+  e.context.lineTo(20, -20);
+  // rely on the canvas having a null transform
+  e.context.setTransform(1, 0, 0, 1, 0, 0);
+});
+```
+New code:
+```js
+layer.on('precompose', function(e) {
+  // use map size and pixel ratio to move coordinate origin to center
+  var size = map.getSize();
+  var pixelRatio = e.frameState.pixelRatio;
+  e.context.translate(size[0] / 2 * pixelRatio, size[1] / 2 * pixelRatio);
+  e.context.scale(3, 3);
+  // draw an x in the center of the viewport
+  e.context.moveTo(-20, -20);
+  e.context.lineTo(20, 20);
+  e.context.moveTo(-20, 20);
+  e.context.lineTo(20, -20);
+  // undo all transforms
+  e.context.scale(1 / 3, 1 / 3);
+  e.context.translate(-size[0] / 2 * pixelRatio, -size[1] / 2 * pixelRatio);
+});
+```
+
+### v3.13.0
+
+#### `proj4js` integration
+
+Before this release, OpenLayers depended on the global proj4 namespace. When using a module loader like Browserify, you might not want to depend on the global `proj4` namespace. You can use the `ol.proj.setProj4` function to set the proj4 function object. For example in a browserify ES6 environment:
+
+```js
+import ol from 'openlayers';
+import proj4 from 'proj4';
+ol.proj.setProj4(proj4);
+```
+
+#### `ol.source.TileJSON` changes
+
+The `ol.source.TileJSON` now uses `XMLHttpRequest` to load the TileJSON instead of JSONP with callback.
+When using server without proper CORS support, `jsonp: true` option can be passed to the constructor to get the same behavior as before:
+```js
+new ol.source.TileJSON({
+  url: 'http://serverwithoutcors.com/tilejson.json',
+  jsonp: true
+})
+```
+Also for Mapbox v3, make sure you use urls ending with `.json` (which are able to handle both `XMLHttpRequest` and JSONP) instead of `.jsonp`.
+
+### v3.12.0
+
+#### `ol.Map#forEachFeatureAtPixel` changes
+
+The optional `layerFilter` function is now also called for unmanaged layers. To get the same behaviour as before, wrap your layer filter code in an if block like this:
+```js
+function layerFilter(layer) {
+  if (map.getLayers().getArray().indexOf(layer) !== -1) {
+    // existing layer filter code
+  }
+}
+```
+
+### v3.11.0
+
+#### `ol.format.KML` changes
+
+KML icons are scaled 50% so that the rendering better matches Google Earth rendering.
+
+If a KML placemark has a name and is a point, an `ol.style.Text` is created with the name displayed to the right of the icon (if there is an icon).
+This can be controlled with the showPointNames option which defaults to true.
+
+To disable rendering of the point names for placemarks, use the option:
+new ol.format.KML({ showPointNames: false });
+
+
+#### `ol.interaction.DragBox` and `ol.interaction.DragZoom` changes
+
+Styling is no longer done with `ol.Style`, but with pure CSS. The `style` constructor option is no longer required, and no longer available. Instead, there is a `className` option for the CSS selector. The default for `ol.interaction.DragBox` is `ol-dragbox`, and `ol.interaction.DragZoom` uses `ol-dragzoom`. If you previously had
+```js
+new ol.interaction.DragZoom({
+  style: new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: 'red',
+      width: 3
+    }),
+    fill: new ol.style.Fill({
+      color: [255, 255, 255, 0.4]
+    })
+  })
+});
+```
+you'll now just need
+```js
+new ol.interaction.DragZoom();
+```
+but with additional css:
+```css
+.ol-dragzoom {
+  border-color: red;
+  border-width: 3px;
+  background-color: rgba(255,255,255,0.4);
+}
+```
+
+#### Removal of `ol.source.TileVector`
+
+With the introduction of true vector tile support, `ol.source.TileVector` becomes obsolete. Change your code to use `ol.layer.VectorTile` and `ol.source.VectorTile` instead of `ol.layer.Vector` and `ol.source.TileVector`.
+
+#### `ol.Map#forEachFeatureAtPixel` changes for unmanaged layers
+
+`ol.Map#forEachFeatureAtPixel` will still be called for unmanaged layers, but the 2nd argument to the callback function will be `null` instead of a reference to the unmanaged layer. This brings back the behavior of the abandoned `ol.FeatureOverlay` that was replaced by unmanaged layers.
+
+If you are affected by this change, please change your unmanaged layer to a regular layer by using e.g. `ol.Map#addLayer` instead of `ol.layer.Layer#setMap`.
+
+### v3.10.0
+
+#### `ol.layer.Layer` changes
+
+The experimental `setHue`, `setContrast`, `setBrightness`, `setSaturation`, and the corresponding getter methods have been removed.  These properties only worked with the WebGL renderer.  If are interested in applying color transforms, look for the `postcompose` event in the API docs.  In addition, the `ol.source.Raster` source provides a way to create new raster data based on arbitrary transforms run on any number of input sources.
+
+### v3.9.0
+
+#### `ol.style.Circle` changes
+
+The experimental `getAnchor`, `getOrigin`, and `getSize` methods have been removed.  The anchor and origin of a circle symbolizer are not modifiable, so these properties should not need to be accessed.  The radius and stroke width can be used to calculate the rendered size of a circle symbolizer if needed:
+
+```js
+// calculate rendered size of a circle symbolizer
+var width = 2 * circle.getRadius();
+if (circle.getStroke()) {
+  width += circle.getStroke().getWidth() + 1;
+}
+```
+
+### v3.8.0
+
+There should be nothing special required when upgrading from v3.7.0 to v3.8.0.
+
 ### v3.7.0
 
 #### Removal of `ol.FeatureOverlay`
@@ -92,6 +298,14 @@ var tileUrlFunction = function(tileCoord, pixelRatio, projection) {
 #### Removal of `ol.tilegrid.Zoomify`
 
 The replacement of `ol.tilegrid.Zoomify` is a plain `ol.tilegrid.TileGrid`, configured with `extent`, `origin` and `resolutions`. If the `size` passed to the `ol.source.Zoomify` source is `[width, height]`, then the extent for the tile grid will be `[0, -height, width, 0]`, and the origin will be `[0, 0]`.
+
+#### Replace `ol.View.fitExtent()` and `ol.View.fitGeometry()` with `ol.View.fit()`
+* This combines two previously distinct functions into one more flexible call which takes either a geometry or an extent.
+* Rename all calls to `fitExtent` and `fitGeometry` to `fit`.
+
+#### Change to `ol.interaction.Modify`
+
+When single clicking a line or boundary within the `pixelTolerance`, a vertex is now created.
 
 ### v3.6.0
 

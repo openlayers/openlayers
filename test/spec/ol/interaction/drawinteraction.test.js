@@ -26,13 +26,13 @@ describe('ol.interaction.Draw', function() {
         resolution: 1
       })
     });
-    map.on('postrender', function() {
+    map.once('postrender', function() {
       done();
     });
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
   });
 
@@ -47,16 +47,14 @@ describe('ol.interaction.Draw', function() {
   function simulateEvent(type, x, y, opt_shiftKey) {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
-    var position = goog.style.getClientPosition(viewport);
-    var shiftKey = goog.isDef(opt_shiftKey) ? opt_shiftKey : false;
-    var event = new ol.MapBrowserPointerEvent(type, map,
-        new ol.pointer.PointerEvent(type,
-            new goog.events.BrowserEvent({
-              clientX: position.x + x + width / 2,
-              clientY: position.y + y + height / 2,
-              shiftKey: shiftKey
-            })));
-    map.handleMapBrowserEvent(event);
+    var position = viewport.getBoundingClientRect();
+    var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
+    var event = new ol.pointer.PointerEvent(type, {
+      clientX: position.left + x + width / 2,
+      clientY: position.top + y + height / 2,
+      shiftKey: shiftKey
+    });
+    map.handleMapBrowserEvent(new ol.MapBrowserPointerEvent(type, map, event));
   }
 
   describe('constructor', function() {
@@ -163,14 +161,16 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
+      expect(ds).to.be.called();
+      expect(de).to.be.called();
       simulateEvent('pointermove', 20, 20);
-      expect(ds).to.be.called(2);
-      expect(de).to.be.called(1);
+      expect(ds.callCount).to.be(1);
+      expect(de.callCount).to.be(1);
     });
 
     it('triggers drawend event before inserting the feature', function() {
@@ -178,7 +178,7 @@ describe('ol.interaction.Draw', function() {
         end: 0,
         addfeature: 0
       };
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND,
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWEND,
           function() {
             expect(receivedEvents.end).to.be(0);
             expect(receivedEvents.addfeature).to.be(0);
@@ -307,8 +307,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -325,8 +325,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerup', 30, 20);
       simulateEvent('pointermove', 10, 20);
 
-      expect(ds).to.be.called(1);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(1);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
   });
@@ -463,8 +465,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -486,8 +488,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
 
-      expect(ds).to.be.called(1);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(1);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
   });
@@ -601,8 +605,8 @@ describe('ol.interaction.Draw', function() {
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
-      goog.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, ds);
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWEND, de);
 
       // first point
       simulateEvent('pointermove', 10, 20);
@@ -614,8 +618,10 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
 
-      expect(ds).to.be.called(1);
-      expect(de).to.be.called(1);
+      expect(ds).to.be.called();
+      expect(ds.callCount).to.be(1);
+      expect(de).to.be.called();
+      expect(de.callCount).to.be(1);
     });
 
   });
@@ -773,12 +779,40 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
     });
   });
+
+  describe('extend an existing feature', function() {
+    var draw;
+    var feature;
+
+    beforeEach(function() {
+      draw = new ol.interaction.Draw({
+        source: source,
+        type: ol.geom.GeometryType.LINE_STRING
+      });
+      map.addInteraction(draw);
+      feature = new ol.Feature(
+          new ol.geom.LineString([[0, 0], [1, 1], [2, 0]]));
+    });
+
+    it('sets the initial state', function() {
+      draw.extend(feature);
+      expect(draw.sketchCoords_).to.have.length(4);
+      expect(draw.sketchCoords_).to.eql([[0, 0], [1, 1], [2, 0], [2, 0]]);
+      expect(draw.finishCoordinate_).to.eql([2, 0]);
+    });
+
+    it('dispatches a drawstart event', function() {
+      var spy = sinon.spy();
+      ol.events.listen(draw, ol.interaction.DrawEventType.DRAWSTART, spy);
+      draw.extend(feature);
+      expect(spy.callCount).to.be(1);
+    });
+
+  });
 });
 
-goog.require('goog.dispose');
-goog.require('goog.events');
-goog.require('goog.events.BrowserEvent');
-goog.require('goog.style');
+goog.require('ol.events');
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');

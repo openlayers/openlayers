@@ -7,8 +7,7 @@ goog.provide('ol.Collection');
 goog.provide('ol.CollectionEvent');
 goog.provide('ol.CollectionEventType');
 
-goog.require('goog.array');
-goog.require('goog.events.Event');
+goog.require('ol.events.Event');
 goog.require('ol.Object');
 
 
@@ -31,14 +30,13 @@ ol.CollectionEventType = {
 };
 
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.Collection} instances are instances of this
  * type.
  *
  * @constructor
- * @extends {goog.events.Event}
+ * @extends {ol.events.Event}
  * @implements {oli.CollectionEvent}
  * @param {ol.CollectionEventType} type Type.
  * @param {*=} opt_element Element.
@@ -56,7 +54,7 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   this.element = opt_element;
 
 };
-goog.inherits(ol.CollectionEvent, goog.events.Event);
+goog.inherits(ol.CollectionEvent, ol.events.Event);
 
 
 /**
@@ -65,7 +63,6 @@ goog.inherits(ol.CollectionEvent, goog.events.Event);
 ol.CollectionProperty = {
   LENGTH: 'length'
 };
-
 
 
 /**
@@ -79,7 +76,7 @@ ol.CollectionProperty = {
  * @constructor
  * @extends {ol.Object}
  * @fires ol.CollectionEvent
- * @param {Array.<T>=} opt_array Array.
+ * @param {!Array.<T>=} opt_array Array.
  * @template T
  * @api stable
  */
@@ -89,9 +86,9 @@ ol.Collection = function(opt_array) {
 
   /**
    * @private
-   * @type {Array.<T>}
+   * @type {!Array.<T>}
    */
-  this.array_ = goog.isDef(opt_array) ? opt_array : [];
+  this.array_ = opt_array ? opt_array : [];
 
   this.updateLength_();
 
@@ -113,7 +110,7 @@ ol.Collection.prototype.clear = function() {
 /**
  * Add elements to the collection.  This pushes each item in the provided array
  * to the end of the collection.
- * @param {Array.<T>} arr Array.
+ * @param {!Array.<T>} arr Array.
  * @return {ol.Collection.<T>} This collection.
  * @api stable
  */
@@ -136,7 +133,7 @@ ol.Collection.prototype.extend = function(arr) {
  * @api stable
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
-  goog.array.forEach(this.array_, f, opt_this);
+  this.array_.forEach(f, opt_this);
 };
 
 
@@ -145,7 +142,7 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
  * is mutated, no events will be dispatched by the collection, and the
  * collection's "length" property won't be in sync with the actual length
  * of the array.
- * @return {Array.<T>} Array.
+ * @return {!Array.<T>} Array.
  * @api stable
  */
 ol.Collection.prototype.getArray = function() {
@@ -182,7 +179,7 @@ ol.Collection.prototype.getLength = function() {
  * @api stable
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
-  goog.array.insertAt(this.array_, elem, index);
+  this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
       new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
@@ -240,7 +237,7 @@ ol.Collection.prototype.remove = function(elem) {
  */
 ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
-  goog.array.removeAt(this.array_, index);
+  this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
       new ol.CollectionEvent(ol.CollectionEventType.REMOVE, prev, this));

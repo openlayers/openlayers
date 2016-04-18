@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.closest');
 
 goog.require('goog.asserts');
-goog.require('goog.math');
 goog.require('ol.math');
 
 
@@ -17,8 +16,7 @@ goog.require('ol.math');
  * @param {number} y Y.
  * @param {Array.<number>} closestPoint Closest point.
  */
-ol.geom.flat.closest.point =
-    function(flatCoordinates, offset1, offset2, stride, x, y, closestPoint) {
+ol.geom.flat.closest.point = function(flatCoordinates, offset1, offset2, stride, x, y, closestPoint) {
   var x1 = flatCoordinates[offset1];
   var y1 = flatCoordinates[offset1 + 1];
   var dx = flatCoordinates[offset2] - x1;
@@ -32,7 +30,7 @@ ol.geom.flat.closest.point =
       offset = offset2;
     } else if (t > 0) {
       for (i = 0; i < stride; ++i) {
-        closestPoint[i] = goog.math.lerp(flatCoordinates[offset1 + i],
+        closestPoint[i] = ol.math.lerp(flatCoordinates[offset1 + i],
             flatCoordinates[offset2 + i], t);
       }
       closestPoint.length = stride;
@@ -58,8 +56,7 @@ ol.geom.flat.closest.point =
  * @param {number} maxSquaredDelta Max squared delta.
  * @return {number} Max squared delta.
  */
-ol.geom.flat.closest.getMaxSquaredDelta =
-    function(flatCoordinates, offset, end, stride, maxSquaredDelta) {
+ol.geom.flat.closest.getMaxSquaredDelta = function(flatCoordinates, offset, end, stride, maxSquaredDelta) {
   var x1 = flatCoordinates[offset];
   var y1 = flatCoordinates[offset + 1];
   for (offset += stride; offset < end; offset += stride) {
@@ -84,8 +81,7 @@ ol.geom.flat.closest.getMaxSquaredDelta =
  * @param {number} maxSquaredDelta Max squared delta.
  * @return {number} Max squared delta.
  */
-ol.geom.flat.closest.getsMaxSquaredDelta =
-    function(flatCoordinates, offset, ends, stride, maxSquaredDelta) {
+ol.geom.flat.closest.getsMaxSquaredDelta = function(flatCoordinates, offset, ends, stride, maxSquaredDelta) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -105,8 +101,7 @@ ol.geom.flat.closest.getsMaxSquaredDelta =
  * @param {number} maxSquaredDelta Max squared delta.
  * @return {number} Max squared delta.
  */
-ol.geom.flat.closest.getssMaxSquaredDelta =
-    function(flatCoordinates, offset, endss, stride, maxSquaredDelta) {
+ol.geom.flat.closest.getssMaxSquaredDelta = function(flatCoordinates, offset, endss, stride, maxSquaredDelta) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
@@ -154,7 +149,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
     }
   }
   goog.asserts.assert(maxDelta > 0, 'maxDelta should be larger than 0');
-  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
+  var tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
   var index = offset + stride;
   while (index < end) {
     ol.geom.flat.closest.point(
@@ -217,7 +212,7 @@ ol.geom.flat.closest.getClosestPoint = function(flatCoordinates, offset, end,
 ol.geom.flat.closest.getsClosestPoint = function(flatCoordinates, offset, ends,
     stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
     opt_tmpPoint) {
-  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
+  var tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -247,7 +242,7 @@ ol.geom.flat.closest.getsClosestPoint = function(flatCoordinates, offset, ends,
 ol.geom.flat.closest.getssClosestPoint = function(flatCoordinates, offset,
     endss, stride, maxDelta, isRing, x, y, closestPoint, minSquaredDistance,
     opt_tmpPoint) {
-  var tmpPoint = goog.isDef(opt_tmpPoint) ? opt_tmpPoint : [NaN, NaN];
+  var tmpPoint = opt_tmpPoint ? opt_tmpPoint : [NaN, NaN];
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];

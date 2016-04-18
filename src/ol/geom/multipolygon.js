@@ -1,7 +1,8 @@
 goog.provide('ol.geom.MultiPolygon');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
+goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -18,7 +19,6 @@ goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
-
 
 
 /**
@@ -77,8 +77,7 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
@@ -94,13 +93,13 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
       'layout of polygon should match layout');
   /** @type {Array.<number>} */
   var ends;
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = polygon.getFlatCoordinates().slice();
     ends = polygon.getEnds().slice();
     this.endss_.push();
   } else {
     var offset = this.flatCoordinates.length;
-    goog.array.extend(this.flatCoordinates, polygon.getFlatCoordinates());
+    ol.array.extend(this.flatCoordinates, polygon.getFlatCoordinates());
     ends = polygon.getEnds().slice();
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
@@ -119,8 +118,15 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
  */
 ol.geom.MultiPolygon.prototype.clone = function() {
   var multiPolygon = new ol.geom.MultiPolygon(null);
+
+  var len = this.endss_.length;
+  var newEndss = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    newEndss[i] = this.endss_[i].slice();
+  }
+
   multiPolygon.setFlatCoordinates(
-      this.layout, this.flatCoordinates.slice(), this.endss_.slice());
+      this.layout, this.flatCoordinates.slice(), newEndss);
   return multiPolygon;
 };
 
@@ -128,8 +134,7 @@ ol.geom.MultiPolygon.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.MultiPolygon.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.MultiPolygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -180,7 +185,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
-  if (goog.isDef(opt_right)) {
+  if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     ol.geom.flat.orient.orientLinearRingss(
         flatCoordinates, 0, this.endss_, this.stride, opt_right);
@@ -254,8 +259,7 @@ ol.geom.MultiPolygon.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @inheritDoc
  */
-ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.MultiPolygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEndss = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizess(
@@ -358,13 +362,12 @@ ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
-ol.geom.MultiPolygon.prototype.setCoordinates =
-    function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+ol.geom.MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.endss_);
   } else {
     this.setLayout(opt_layout, coordinates, 3);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     var endss = ol.geom.flat.deflate.coordinatesss(
@@ -386,10 +389,9 @@ ol.geom.MultiPolygon.prototype.setCoordinates =
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<Array.<number>>} endss Endss.
  */
-ol.geom.MultiPolygon.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates, endss) {
-  goog.asserts.assert(!goog.isNull(endss), 'endss cannot be null');
-  if (goog.isNull(flatCoordinates) || flatCoordinates.length === 0) {
+ol.geom.MultiPolygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, endss) {
+  goog.asserts.assert(endss, 'endss must be truthy');
+  if (!flatCoordinates || flatCoordinates.length === 0) {
     goog.asserts.assert(endss.length === 0, 'the length of endss should be 0');
   } else {
     goog.asserts.assert(endss.length > 0, 'endss cannot be an empty array');
@@ -407,7 +409,7 @@ ol.geom.MultiPolygon.prototype.setFlatCoordinates =
  * @param {Array.<ol.geom.Polygon>} polygons Polygons.
  */
 ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
-  var layout = ol.geom.GeometryLayout.XY;
+  var layout = this.getLayout();
   var flatCoordinates = [];
   var endss = [];
   var i, ii, ends;
@@ -426,7 +428,7 @@ ol.geom.MultiPolygon.prototype.setPolygons = function(polygons) {
     for (j = 0, jj = ends.length; j < jj; ++j) {
       ends[j] += offset;
     }
-    goog.array.extend(flatCoordinates, polygon.getFlatCoordinates());
+    ol.array.extend(flatCoordinates, polygon.getFlatCoordinates());
     endss.push(ends);
   }
   this.setFlatCoordinates(layout, flatCoordinates, endss);

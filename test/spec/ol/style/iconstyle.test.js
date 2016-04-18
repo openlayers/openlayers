@@ -8,6 +8,35 @@ goog.require('ol.style.IconOrigin');
 
 describe('ol.style.Icon', function() {
   var size = [36, 48];
+  var src = 'data:image/gif;base64,' +
+      'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
+
+  describe('constructor', function() {
+
+    it('caches canvas images with a uid as src', function() {
+      var canvas = document.createElement('canvas');
+      new ol.style.Icon({
+        img: canvas,
+        imgSize: size
+      });
+      expect(ol.style.IconImage_.get(
+          canvas, goog.getUid(canvas), size, '').getImage()).to.eql(canvas);
+    });
+
+    it('imgSize overrides img.width and img.height', function(done) {
+      var style = new ol.style.Icon({
+        src: src,
+        imgSize: size
+      });
+      var iconImage = style.iconImage_;
+      iconImage.addEventListener('change', function() {
+        expect([iconImage.image_.width, iconImage.image_.height]).to.eql(size);
+        done();
+      });
+      style.load();
+    });
+
+  });
 
   describe('#getAnchor', function() {
     var fractionAnchor = [0.25, 0.25];
@@ -119,7 +148,7 @@ describe('ol.style.Icon', function() {
       var cache = ol.style.IconImageCache.getInstance();
       var src = 'test.png';
       var iconImage = new ol.style.IconImage_(null, 'test.png', imgSize);
-      cache.set(src, null, iconImage);
+      cache.set(src, null, null, iconImage);
 
       var iconStyle = new ol.style.Icon({
         src: 'test.png'
@@ -162,7 +191,7 @@ describe('ol.style.IconImageCache', function() {
       for (i = 0; i < 4; ++i) {
         src = i + '';
         iconImage = new ol.style.IconImage_(src, null);
-        cache.set(src, null, iconImage);
+        cache.set(src, null, null, iconImage);
       }
 
       expect(cache.cacheSize_).to.eql(4);
@@ -172,7 +201,7 @@ describe('ol.style.IconImageCache', function() {
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
-      cache.set(src, null, iconImage);
+      cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
       cache.expire(); // remove '0' and '4'
@@ -180,29 +209,29 @@ describe('ol.style.IconImageCache', function() {
 
       src = '0';
       iconImage = new ol.style.IconImage_(src, null);
-      goog.events.listen(iconImage, goog.events.EventType.CHANGE,
-          goog.nullFunction, false);
-      cache.set(src, null, iconImage);
+      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
+          ol.nullFunction, false);
+      cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
-      goog.events.listen(iconImage, goog.events.EventType.CHANGE,
-          goog.nullFunction, false);
-      cache.set(src, null, iconImage);
+      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
+          ol.nullFunction, false);
+      cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
       // check that '0' and '4' are not removed from the cache
       cache.expire();
-      key = ol.style.IconImageCache.getKey('0', null);
+      key = ol.style.IconImageCache.getKey('0', null, null);
       expect(key in cache.cache_).to.be.ok();
-      key = ol.style.IconImageCache.getKey('4', null);
+      key = ol.style.IconImageCache.getKey('4', null, null);
       expect(key in cache.cache_).to.be.ok();
 
     });
   });
 });
 
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.style.IconImageCache');

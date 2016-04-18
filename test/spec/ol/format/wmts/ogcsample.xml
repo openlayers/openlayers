@@ -94,6 +94,12 @@ access interface to some TileMatrixSets</ows:Abstract>
 			</TileMatrixSetLink>
 			<ResourceURL format="image/png" resourceType="tile" template="http://www.example.com/wmts/coastlines/{TileMatrix}/{TileRow}/{TileCol}.png"/>
 			<ResourceURL format="application/gml+xml; version=3.1" resourceType="FeatureInfo" template="http://www.example.com/wmts/coastlines/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}/{J}/{I}.xml"/>
+                        <Dimension>
+                                <ows:Identifier>Time</ows:Identifier>
+                                <Default>20110805</Default>
+                                <Value>20110805</Value>
+                                <Value>20081024</Value>
+                        </Dimension>
 		</Layer>
 		<TileMatrixSet>
 			<!-- -180 85.05112878 -->

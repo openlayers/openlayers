@@ -60,6 +60,8 @@ var modify = new ol.interaction.Modify({
 map.addInteraction(modify);
 
 var draw; // global so we can remove it later
+var typeSelect = document.getElementById('type');
+
 function addInteraction() {
   draw = new ol.interaction.Draw({
     features: features,
@@ -68,14 +70,11 @@ function addInteraction() {
   map.addInteraction(draw);
 }
 
-var typeSelect = document.getElementById('type');
-
 
 /**
- * Let user change the geometry type.
- * @param {Event} e Change event.
+ * Handle change event.
  */
-typeSelect.onchange = function(e) {
+typeSelect.onchange = function() {
   map.removeInteraction(draw);
   addInteraction();
 };

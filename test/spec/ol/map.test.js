@@ -18,6 +18,23 @@ describe('ol.Map', function() {
         expect(interactions.item(i).getMap()).to.be(map);
       }
     });
+
+    it('creates the viewport', function() {
+      var map = new ol.Map({});
+      var viewport = map.getViewport();
+      var className = 'ol-viewport' + (ol.has.TOUCH ? ' ol-touch' : '');
+      expect(viewport.className).to.be(className);
+    });
+
+    it('creates the overlay containers', function() {
+      var map = new ol.Map({});
+      var container = map.getOverlayContainer();
+      expect(container.className).to.be('ol-overlaycontainer');
+
+      var containerStop = map.getOverlayContainerStopEvent();
+      expect(containerStop.className).to.be('ol-overlaycontainer-stopevent');
+    });
+
   });
 
   describe('#addInteraction()', function() {
@@ -80,7 +97,7 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      goog.dispose(map);
+      map.dispose();
       document.body.removeChild(target);
     });
 
@@ -126,15 +143,18 @@ describe('ol.Map', function() {
     });
 
     afterEach(function() {
-      goog.dispose(map);
+      map.dispose();
       document.body.removeChild(target);
     });
 
-    it('results in an postrender event', function(done) {
+    it('calls renderFrame_ and results in an postrender event', function(done) {
 
+      var spy = sinon.spy(map, 'renderFrame_');
       map.render();
-      map.on('postrender', function(event) {
+      map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
+        expect(typeof spy.firstCall.args[0]).to.be('number');
+        spy.restore();
         var frameState = event.frameState;
         expect(frameState).not.to.be(null);
         done();
@@ -142,12 +162,36 @@ describe('ol.Map', function() {
 
     });
 
+    it('uses the same render frame for subsequent calls', function(done) {
+      var id1, id2;
+      map.render();
+      id1 = map.animationDelayKey_;
+      map.once('postrender', function() {
+        expect(id2).to.be(id1);
+        done();
+      });
+      map.render();
+      id2 = map.animationDelayKey_;
+    });
+
+    it('creates a new render frame after renderSync()', function(done) {
+      var id1, id2;
+      map.render();
+      id1 = map.animationDelayKey_;
+      map.once('postrender', function() {
+        expect(id2).to.not.be(id1);
+        done();
+      });
+      map.renderSync();
+      id2 = map.animationDelayKey_;
+    });
+
     it('results in an postrender event (for zero height map)', function(done) {
       target.style.height = '0px';
       map.updateSize();
 
       map.render();
-      map.on('postrender', function(event) {
+      map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
@@ -161,7 +205,7 @@ describe('ol.Map', function() {
       map.updateSize();
 
       map.render();
-      map.on('postrender', function(event) {
+      map.once('postrender', function(event) {
         expect(event).to.be.a(ol.MapEvent);
         var frameState = event.frameState;
         expect(frameState).to.be(null);
@@ -182,8 +226,13 @@ describe('ol.Map', function() {
     });
 
     it('removes the viewport from its parent', function() {
-      goog.dispose(map);
-      expect(goog.dom.getParentElement(map.getViewport())).to.be(null);
+      map.dispose();
+      expect(map.getViewport().parentNode).to.be(null);
+    });
+
+    it('removes window listeners', function() {
+      map.dispose();
+      expect(map.handleResize_).to.be(undefined);
     });
   });
 
@@ -194,17 +243,13 @@ describe('ol.Map', function() {
       map = new ol.Map({
         target: document.createElement('div')
       });
-      var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-          goog.events.EventType.RESIZE, false);
-      expect(viewportResizeListeners).to.have.length(1);
+      expect(map.handleResize_).to.be.ok();
     });
 
     describe('call setTarget with null', function() {
       it('unregisters the viewport resize listener', function() {
         map.setTarget(null);
-        var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-            goog.events.EventType.RESIZE, false);
-        expect(viewportResizeListeners).to.have.length(0);
+        expect(map.handleResize_).to.be(undefined);
       });
     });
 
@@ -212,9 +257,7 @@ describe('ol.Map', function() {
       it('registers a viewport resize listener', function() {
         map.setTarget(null);
         map.setTarget(document.createElement('div'));
-        var viewportResizeListeners = map.viewportSizeMonitor_.getListeners(
-            goog.events.EventType.RESIZE, false);
-        expect(viewportResizeListeners).to.have.length(1);
+        expect(map.handleResize_).to.be.ok();
       });
     });
 
@@ -243,6 +286,9 @@ describe('ol.Map', function() {
         var interactions = ol.interaction.defaults(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(0).useAnchor_).to.eql(true);
+        interactions.item(0).setMouseAnchor(false);
+        expect(interactions.item(0).useAnchor_).to.eql(false);
       });
     });
 
@@ -271,15 +317,117 @@ describe('ol.Map', function() {
         });
       });
     });
+
+    describe('#getEventPixel', function() {
+
+      var target;
+
+      beforeEach(function() {
+        target = document.createElement('div');
+        target.style.position = 'absolute';
+        target.style.top = '10px';
+        target.style.left = '20px';
+        target.style.width = '800px';
+        target.style.height = '400px';
+
+        document.body.appendChild(target);
+      });
+      afterEach(function() {
+        document.body.removeChild(target);
+      });
+
+      it('works with touchend events', function() {
+
+        var map = new ol.Map({
+          target: target
+        });
+
+        var browserEvent = {
+          type: 'touchend',
+          target: target,
+          changedTouches: [{
+            clientX: 100,
+            clientY: 200
+          }]
+        };
+        var position = map.getEventPixel(browserEvent);
+        // 80 = clientX - target.style.left
+        expect(position[0]).to.eql(80);
+        // 190 = clientY - target.style.top
+        expect(position[1]).to.eql(190);
+      });
+    });
+
+    describe('#getOverlayById()', function() {
+      var target, map, overlay, overlay_target;
+
+      beforeEach(function() {
+        target = document.createElement('div');
+        var style = target.style;
+        style.position = 'absolute';
+        style.left = '-1000px';
+        style.top = '-1000px';
+        style.width = '360px';
+        style.height = '180px';
+        document.body.appendChild(target);
+        map = new ol.Map({
+          target: target,
+          view: new ol.View({
+            projection: 'EPSG:4326',
+            center: [0, 0],
+            resolution: 1
+          })
+        });
+        overlay_target = document.createElement('div');
+      });
+
+      afterEach(function() {
+        map.removeOverlay(overlay);
+        map.dispose();
+        document.body.removeChild(target);
+      });
+
+      it('returns an overlay by id', function() {
+        overlay = new ol.Overlay({
+          id: 'foo',
+          element: overlay_target,
+          position: [0, 0]
+        });
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(overlay);
+      });
+
+      it('returns null when no overlay is found', function() {
+        overlay = new ol.Overlay({
+          id: 'foo',
+          element: overlay_target,
+          position: [0, 0]
+        });
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('bar')).to.be(null);
+      });
+
+      it('returns null after removing overlay', function() {
+        overlay = new ol.Overlay({
+          id: 'foo',
+          element: overlay_target,
+          position: [0, 0]
+        });
+        map.addOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(overlay);
+        map.removeOverlay(overlay);
+        expect(map.getOverlayById('foo')).to.be(null);
+      });
+
+    });
+
   });
 
 });
 
-goog.require('goog.dispose');
-goog.require('goog.dom');
-goog.require('goog.events.EventType');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
+goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.Interaction');

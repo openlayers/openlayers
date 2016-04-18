@@ -1,0 +1,22 @@
+---
+layout: example.html
+title: Layer Z-Index
+shortdesc: Example of ordering layers using Z-index.
+docs: >
+  There are are two managed layers (square and triangle) and one unmanaged layer (star).</br>
+  The Z-index determines the rendering order; with {square: 1, triangle: 0, star: unmanaged} indices, the rendering order is triangle, square and star on top.
+
+tags: "layer, ordering, z-index"
+---
+<div id="map" class="map"></div>
+<div>
+  <label for="idx1">
+    <input type="number" id="idx1"></input>
+    Square layer Z-index
+  </label></br>
+
+  <label for="idx2">
+    <input type="number" id="idx2"></input>
+    Triangle layer Z-index
+  </label>
+</div>

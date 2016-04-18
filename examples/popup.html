@@ -1,21 +1,15 @@
 ---
-template: example.html
-title: Popup example
+layout: example.html
+title: Popup
 shortdesc: Uses an overlay to create a popup.
 docs: >
   <p>
     Click on the map to get a popup.  The popup is composed of a few basic elements: a container, a close button, and a place for the content.  To anchor the popup to the map, an <code>ol.Overlay</code> is created with the popup container.  A listener is registered for the map's <code>click</code> event to display the popup, and another listener is set as the <code>click</code> handler for the close button to hide the popup.
   </p>
 tags: "overlay, popup, mapquest, openaerial"
-resources:
-  - popup.css
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <div id="popup" class="ol-popup">
-      <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-      <div id="popup-content"></div>
-    </div>
-  </div>
+<div id="map" class="map"></div>
+<div id="popup" class="ol-popup">
+  <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+  <div id="popup-content"></div>
 </div>

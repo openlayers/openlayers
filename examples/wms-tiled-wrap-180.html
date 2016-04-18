@@ -1,13 +1,9 @@
 ---
-template: example.html
-title: Tiled WMS wrap 180° meridian example
+layout: example.html
+title: Tiled WMS Wrapping
 shortdesc: Example of a tiled WMS layer that wraps across the 180° meridian.
 docs: >
-  The `wrapX` option is set to `true` here so tiles will be wrapped around the x-axis.
+  By default, WMS tiles are reused across the 180° meridian.  This behavior can be disabled by setting the `wrapX` option to `false`.
 tags: "wms, tile, dateline, wrap, 180"
 ---
-  <div class="row-fluid">
-    <div class="span12">
-      <div id="map" class="map"></div>
-    </div>
-  </div>
+<div id="map" class="map"></div>

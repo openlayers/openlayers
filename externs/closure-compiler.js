@@ -8,37 +8,10 @@
  * @externs
  */
 
-/** @type {number} */
-Touch.prototype.force;
-
-
-/** @type {number} */
-Touch.prototype.radiusX;
-
-
-/** @type {number} */
-Touch.prototype.radiusY;
-
-
-/** @type {number} */
-Touch.prototype.webkitForce;
-
-
-/** @type {number} */
-Touch.prototype.webkitRadiusX;
-
-
-/** @type {number} */
-Touch.prototype.webkitRadiusY;
-
-
+// see https://github.com/google/closure-compiler/pull/1206
 
 /**
- * @type {boolean}
+ * @type {string}
+ * @see http://www.w3.org/TR/pointerevents/#the-touch-action-css-property
  */
-WebGLContextAttributes.prototype.preferLowPowerToHighPerformance;
-
-/**
- * @type {boolean}
- */
-WebGLContextAttributes.prototype.failIfMajorPerformanceCaveat;
+CSSProperties.prototype.touchAction;

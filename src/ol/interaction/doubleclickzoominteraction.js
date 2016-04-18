@@ -6,7 +6,6 @@ goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Interaction');
 
 
-
 /**
  * @classdesc
  * Allows the user to zoom by double-clicking on the map.
@@ -18,13 +17,13 @@ goog.require('ol.interaction.Interaction');
  */
 ol.interaction.DoubleClickZoom = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
   /**
    * @private
    * @type {number}
    */
-  this.delta_ = goog.isDef(options.delta) ? options.delta : 1;
+  this.delta_ = options.delta ? options.delta : 1;
 
   goog.base(this, {
     handleEvent: ol.interaction.DoubleClickZoom.handleEvent
@@ -34,7 +33,7 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
 goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
@@ -50,13 +49,13 @@ goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
  */
 ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  var browserEvent = mapBrowserEvent.browserEvent;
+  var browserEvent = mapBrowserEvent.originalEvent;
   if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK) {
     var map = mapBrowserEvent.map;
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
-    goog.asserts.assert(!goog.isNull(view), 'view should not be null');
+    goog.asserts.assert(view, 'map must have a view');
     ol.interaction.Interaction.zoomByDelta(
         map, view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();

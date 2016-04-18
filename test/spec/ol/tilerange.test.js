@@ -59,9 +59,7 @@ describe('ol.TileRange', function() {
 
     describe('with mixed z', function() {
       expect(function() {
-        var tileRange = new ol.TileRange.boundingTileRange(
-            [3, 1, 3], [4, 2, 0]);
-        tileRange = tileRange; // suppress gjslint warning about unused variable
+        return new ol.TileRange.boundingTileRange([3, 1, 3], [4, 2, 0]);
       }).to.throwException();
     });
   });

@@ -5,7 +5,6 @@ goog.require('ol.Size');
 goog.require('ol.TileCoord');
 
 
-
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
  * by its min/max tile coordinates and is inclusive of coordinates.
@@ -79,7 +78,7 @@ ol.TileRange.boundingTileRange = function(var_args) {
  * @return {ol.TileRange} Tile range.
  */
 ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
-  if (goog.isDef(tileRange)) {
+  if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
     tileRange.minY = minY;

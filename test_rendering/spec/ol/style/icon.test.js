@@ -4,11 +4,20 @@ describe('ol.rendering.style.Icon', function() {
 
   var target, map, vectorSource;
 
-  function createMap(renderer) {
-    target = createMapDiv(50, 50);
+  var imgInfo = {
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+    opacity: 0.75,
+    scale: 0.5,
+    imgSize: [32, 48]
+  };
+
+  function createMap(renderer, width, height) {
+    target = createMapDiv(width ? width : 50, height ? height : 50);
 
     vectorSource = new ol.source.Vector();
-    vectorLayer = new ol.layer.Vector({
+    var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
@@ -30,7 +39,7 @@ describe('ol.rendering.style.Icon', function() {
       disposeMap(map);
     });
 
-    function createFeatures(callback) {
+    function createFeatures(src, imgInfo, callback) {
       var feature;
       feature = new ol.Feature({
         geometry: new ol.geom.Point([0, 0])
@@ -38,27 +47,55 @@ describe('ol.rendering.style.Icon', function() {
 
       var img = new Image();
       img.onload = function() {
+        imgInfo.img = img;
         feature.setStyle(new ol.style.Style({
-          image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-            anchor: [0.5, 46],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'pixels',
-            opacity: 0.75,
-            scale: 0.5,
-            img: img,
-            imgSize: [32, 48]
-          }))
+          image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ (imgInfo))
         }));
         vectorSource.addFeature(feature);
         callback();
       };
-      img.src = 'spec/ol/data/icon.png';
+      img.src = src;
     }
 
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
-      createFeatures(function() {
+      createFeatures('spec/ol/data/icon.png', imgInfo, function() {
         expectResemble(map, 'spec/ol/style/expected/icon-canvas.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: 96 / 512,
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('uses offset correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 256, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        offset: [0, 256],
+        size: [256, 256],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-offset.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('uses offset correctly if it is larger than size in the canvas renderer', function(done) {
+      map = createMap('canvas', 256, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        offset: [0, 374],
+        size: [256, 256],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-offset2.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -66,15 +103,14 @@ describe('ol.rendering.style.Icon', function() {
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
-      createFeatures(function() {
+      createFeatures('spec/ol/data/icon.png', imgInfo, function() {
         expectResemble(map, 'spec/ol/style/expected/icon-webgl.png',
-            IMAGE_TOLERANCE, done);
+            2.0, done);
       });
     });
   });
 });
 
-goog.require('goog.dispose');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.Map');

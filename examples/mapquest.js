@@ -41,11 +41,16 @@ var map = new ol.Map({
   })
 });
 
-$('#layer-select').change(function() {
-  var style = $(this).find(':selected').val();
+var select = document.getElementById('layer-select');
+
+function onChange() {
+  var style = select.value;
   var i, ii;
   for (i = 0, ii = layers.length; i < ii; ++i) {
     layers[i].set('visible', (layers[i].get('style') == style));
   }
-});
-$('#layer-select').trigger('change');
+}
+
+select.addEventListener('change', onChange);
+
+onChange();

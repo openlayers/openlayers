@@ -1,13 +1,13 @@
 ---
-template: example.html
+layout: example.html
 title: Earthquakes in KML
 shortdesc: Demonstrates the use of a Shape symbolizer to render earthquake locations.
 docs: >
   This example parses a KML file and renders the features as a vector layer.  The layer is given a <code>style</code> that renders earthquake locations with a size relative to their magnitude.
 tags: "KML, vector, style, tooltip"
+resources:
+  - https://code.jquery.com/jquery-2.2.3.min.js
+  - https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css
+  - https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"><div id="info"></div></div>
-  </div>
-</div>
+<div id="map" class="map"><div id="info"></div></div>

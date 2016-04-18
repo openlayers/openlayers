@@ -1,10 +1,8 @@
 goog.provide('ol.tilegrid.WMTS');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
-
 
 
 /**
@@ -75,8 +73,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
  * @api
  */
-ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
-    function(matrixSet, opt_extent) {
+ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent) {
 
   /** @type {!Array.<number>} */
   var resolutions = [];
@@ -104,29 +101,27 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet =
   // swap origin x and y coordinates if axis orientation is lat/long
   var switchOriginXY = projection.getAxisOrientation().substr(0, 2) == 'ne';
 
-  goog.array.sort(matrixSet[matrixIdsPropName], function(a, b) {
+  matrixSet[matrixIdsPropName].sort(function(a, b) {
     return b[scaleDenominatorPropName] - a[scaleDenominatorPropName];
   });
 
-  goog.array.forEach(matrixSet[matrixIdsPropName],
-      function(elt, index, array) {
-        matrixIds.push(elt[identifierPropName]);
-        var resolution = elt[scaleDenominatorPropName] * 0.28E-3 /
-            metersPerUnit;
-        var tileWidth = elt[tileWidthPropName];
-        var tileHeight = elt[tileHeightPropName];
-        if (switchOriginXY) {
-          origins.push([elt[topLeftCornerPropName][1],
-            elt[topLeftCornerPropName][0]]);
-        } else {
-          origins.push(elt[topLeftCornerPropName]);
-        }
-        resolutions.push(resolution);
-        tileSizes.push(tileWidth == tileHeight ?
-            tileWidth : [tileWidth, tileHeight]);
-        // top-left origin, so height is negative
-        sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
-      });
+  matrixSet[matrixIdsPropName].forEach(function(elt, index, array) {
+    matrixIds.push(elt[identifierPropName]);
+    var resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
+    var tileWidth = elt[tileWidthPropName];
+    var tileHeight = elt[tileHeightPropName];
+    if (switchOriginXY) {
+      origins.push([elt[topLeftCornerPropName][1],
+        elt[topLeftCornerPropName][0]]);
+    } else {
+      origins.push(elt[topLeftCornerPropName]);
+    }
+    resolutions.push(resolution);
+    tileSizes.push(tileWidth == tileHeight ?
+        tileWidth : [tileWidth, tileHeight]);
+    // top-left origin, so height is negative
+    sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
+  });
 
   return new ol.tilegrid.WMTS({
     extent: opt_extent,

@@ -6,7 +6,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.XYZ');
 
 
-
 /**
  * @classdesc
  * Layer source for the MapQuest tile server.
@@ -18,7 +17,7 @@ goog.require('ol.source.XYZ');
  */
 ol.source.MapQuest = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
   goog.asserts.assert(options.layer in ol.source.MapQuestConfig,
       'known layer configured');
 
@@ -31,16 +30,18 @@ ol.source.MapQuest = function(opt_options) {
    */
   this.layer_ = options.layer;
 
-  var url = goog.isDef(options.url) ? options.url :
+  var url = options.url !== undefined ? options.url :
       'https://otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
       this.layer_ + '/{z}/{x}/{y}.jpg';
 
   goog.base(this, {
     attributions: layerConfig.attributions,
+    cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     logo: 'https://developer.mapquest.com/content/osm/mq_logo.png',
     maxZoom: layerConfig.maxZoom,
-    opaque: true,
+    reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+    opaque: layerConfig.opaque,
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });
@@ -59,11 +60,12 @@ ol.source.MapQuest.TILE_ATTRIBUTION = new ol.Attribution({
 
 
 /**
- * @type {Object.<string, {maxZoom: number, attributions: (Array.<ol.Attribution>)}>}
+ * @type {Object.<string, {maxZoom: number, opaque: boolean, attributions: (Array.<ol.Attribution>)}>}
  */
 ol.source.MapQuestConfig = {
   'osm': {
     maxZoom: 19,
+    opaque: true,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
       ol.source.OSM.ATTRIBUTION
@@ -71,6 +73,7 @@ ol.source.MapQuestConfig = {
   },
   'sat': {
     maxZoom: 18,
+    opaque: true,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
       new ol.Attribution({
@@ -81,6 +84,7 @@ ol.source.MapQuestConfig = {
   },
   'hyb': {
     maxZoom: 18,
+    opaque: false,
     attributions: [
       ol.source.MapQuest.TILE_ATTRIBUTION,
       ol.source.OSM.ATTRIBUTION

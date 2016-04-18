@@ -20,7 +20,7 @@ describe('ol.source.WMTS', function() {
         function() {
           var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities,
-              { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857' });
+              {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857'});
 
           expect(options.urls).to.be.an('array');
           expect(options.urls).to.have.length(1);
@@ -42,7 +42,7 @@ describe('ol.source.WMTS', function() {
 
           expect(options.style).to.be.eql('DarkBlue');
 
-          expect(options.dimensions).to.eql({});
+          expect(options.dimensions).to.eql({Time: '20110805'});
 
         });
 
@@ -50,8 +50,8 @@ describe('ol.source.WMTS', function() {
         function() {
           var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities,
-              { layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857',
-                requestEncoding: 'REST' });
+              {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857',
+                requestEncoding: 'REST'});
 
           expect(options.urls).to.be.an('array');
           expect(options.urls).to.have.length(1);
@@ -73,9 +73,19 @@ describe('ol.source.WMTS', function() {
 
           expect(options.style).to.be.eql('DarkBlue');
 
-          expect(options.dimensions).to.eql({});
+          expect(options.dimensions).to.eql({Time: '20110805'});
 
         });
+
+    it('can find a MatrixSet by SRS identifier', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(
+          capabilities,
+          {layer: 'BlueMarbleNextGeneration', projection: 'EPSG:3857',
+            requestEncoding: 'REST'});
+
+      expect(options.matrixSet).to.be.eql('google3857');
+    });
+
   });
 
   describe('when creating tileUrlFunction', function() {

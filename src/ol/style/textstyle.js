@@ -1,6 +1,8 @@
 goog.provide('ol.style.Text');
 
 
+goog.require('ol.style.Fill');
+
 
 /**
  * @classdesc
@@ -12,7 +14,7 @@ goog.provide('ol.style.Text');
  */
 ol.style.Text = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
   /**
    * @private
@@ -54,26 +56,37 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = goog.isDef(options.fill) ? options.fill : null;
+  this.fill_ = options.fill !== undefined ? options.fill :
+      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
    * @type {ol.style.Stroke}
    */
-  this.stroke_ = goog.isDef(options.stroke) ? options.stroke : null;
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
 
   /**
    * @private
    * @type {number}
    */
-  this.offsetX_ = goog.isDef(options.offsetX) ? options.offsetX : 0;
+  this.offsetX_ = options.offsetX !== undefined ? options.offsetX : 0;
 
   /**
    * @private
    * @type {number}
    */
-  this.offsetY_ = goog.isDef(options.offsetY) ? options.offsetY : 0;
+  this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 };
+
+
+/**
+ * The default fill color to use if no fill was set at construction time; a
+ * blackish `#333`.
+ *
+ * @const {string}
+ * @private
+ */
+ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
@@ -191,6 +204,7 @@ ol.style.Text.prototype.setFont = function(font) {
  * Set the x offset.
  *
  * @param {number} offsetX Horizontal text offset.
+ * @api
  */
 ol.style.Text.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
@@ -201,6 +215,7 @@ ol.style.Text.prototype.setOffsetX = function(offsetX) {
  * Set the y offset.
  *
  * @param {number} offsetY Vertical text offset.
+ * @api
  */
 ol.style.Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;

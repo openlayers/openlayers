@@ -16,7 +16,7 @@ exports.defineTags = function(dictionary) {
         doclet.stability = level;
       } else {
         var errorText = util.format('Invalid stability level (%s) in %s line %s', tag.text, doclet.meta.filename, doclet.meta.lineno);
-        require('jsdoc/util/error').handle( new Error(errorText) );
+        require('jsdoc/lib/jsdoc/util/error').handle( new Error(errorText) );
       }
     }
   });

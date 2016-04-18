@@ -2,10 +2,8 @@
 
 goog.provide('ol.control.MousePosition');
 
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.CoordinateFormatType');
 goog.require('ol.Object');
 goog.require('ol.Pixel');
@@ -24,7 +22,6 @@ ol.control.MousePositionProperty = {
 };
 
 
-
 /**
  * @classdesc
  * A control to show the 2D coordinates of the mouse cursor. By default, these
@@ -40,14 +37,12 @@ ol.control.MousePositionProperty = {
  */
 ol.control.MousePosition = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-mouse-position';
+  var element = document.createElement('DIV');
+  element.className = options.className !== undefined ? options.className : 'ol-mouse-position'
 
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, className);
-
-  var render = goog.isDef(options.render) ?
+  var render = options.render ?
       options.render : ol.control.MousePosition.render;
 
   goog.base(this, {
@@ -56,14 +51,14 @@ ol.control.MousePosition = function(opt_options) {
     target: options.target
   });
 
-  goog.events.listen(this,
+  ol.events.listen(this,
       ol.Object.getChangeEventType(ol.control.MousePositionProperty.PROJECTION),
-      this.handleProjectionChanged_, false, this);
+      this.handleProjectionChanged_, this);
 
-  if (goog.isDef(options.coordinateFormat)) {
+  if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
   }
-  if (goog.isDef(options.projection)) {
+  if (options.projection) {
     this.setProjection(ol.proj.get(options.projection));
   }
 
@@ -71,8 +66,7 @@ ol.control.MousePosition = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = goog.isDef(options.undefinedHTML) ?
-      options.undefinedHTML : '';
+  this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '';
 
   /**
    * @private
@@ -110,7 +104,7 @@ goog.inherits(ol.control.MousePosition, ol.control.Control);
  */
 ol.control.MousePosition.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
-  if (goog.isNull(frameState)) {
+  if (!frameState) {
     this.mapProjection_ = null;
   } else {
     if (this.mapProjection_ != frameState.viewState.projection) {
@@ -158,21 +152,21 @@ ol.control.MousePosition.prototype.getProjection = function() {
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {Event} event Browser event.
  * @protected
  */
-ol.control.MousePosition.prototype.handleMouseMove = function(browserEvent) {
+ol.control.MousePosition.prototype.handleMouseMove = function(event) {
   var map = this.getMap();
-  this.lastMouseMovePixel_ = map.getEventPixel(browserEvent.getBrowserEvent());
+  this.lastMouseMovePixel_ = map.getEventPixel(event);
   this.updateHTML_(this.lastMouseMovePixel_);
 };
 
 
 /**
- * @param {goog.events.BrowserEvent} browserEvent Browser event.
+ * @param {Event} event Browser event.
  * @protected
  */
-ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
+ol.control.MousePosition.prototype.handleMouseOut = function(event) {
   this.updateHTML_(null);
   this.lastMouseMovePixel_ = null;
 };
@@ -184,13 +178,13 @@ ol.control.MousePosition.prototype.handleMouseOut = function(browserEvent) {
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
   goog.base(this, 'setMap', map);
-  if (!goog.isNull(map)) {
+  if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
-        goog.events.listen(viewport, goog.events.EventType.MOUSEMOVE,
-            this.handleMouseMove, false, this),
-        goog.events.listen(viewport, goog.events.EventType.MOUSEOUT,
-            this.handleMouseOut, false, this)
+        ol.events.listen(viewport, ol.events.EventType.MOUSEMOVE,
+            this.handleMouseMove, this),
+        ol.events.listen(viewport, ol.events.EventType.MOUSEOUT,
+            this.handleMouseOut, this)
     );
   }
 };
@@ -226,10 +220,10 @@ ol.control.MousePosition.prototype.setProjection = function(projection) {
  */
 ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
   var html = this.undefinedHTML_;
-  if (!goog.isNull(pixel) && !goog.isNull(this.mapProjection_)) {
-    if (goog.isNull(this.transform_)) {
+  if (pixel && this.mapProjection_) {
+    if (!this.transform_) {
       var projection = this.getProjection();
-      if (goog.isDef(projection)) {
+      if (projection) {
         this.transform_ = ol.proj.getTransformFromProjections(
             this.mapProjection_, projection);
       } else {
@@ -238,17 +232,17 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     }
     var map = this.getMap();
     var coordinate = map.getCoordinateFromPixel(pixel);
-    if (!goog.isNull(coordinate)) {
+    if (coordinate) {
       this.transform_(coordinate, coordinate);
       var coordinateFormat = this.getCoordinateFormat();
-      if (goog.isDef(coordinateFormat)) {
+      if (coordinateFormat) {
         html = coordinateFormat(coordinate);
       } else {
         html = coordinate.toString();
       }
     }
   }
-  if (!goog.isDef(this.renderedHTML_) || html != this.renderedHTML_) {
+  if (!this.renderedHTML_ || html != this.renderedHTML_) {
     this.element.innerHTML = html;
     this.renderedHTML_ = html;
   }

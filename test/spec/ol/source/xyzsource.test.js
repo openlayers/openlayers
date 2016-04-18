@@ -20,6 +20,13 @@ describe('ol.source.XYZ', function() {
       expect(tileSource.getTileGrid().getTileSize(0)).to.be(512);
     });
 
+    it('can be constructed with a custom min zoom', function() {
+      var tileSource = new ol.source.XYZ({
+        minZoom: 2
+      });
+      expect(tileSource.getTileGrid().getMinZoom()).to.be(2);
+    });
+
   });
 
   describe('tileUrlFunction', function() {
@@ -109,6 +116,61 @@ describe('ol.source.XYZ', function() {
             xyzTileSource.getTileCoordForTileUrlFunction(
                 [6, 33, -65], projection));
         expect(tileUrl).to.be(undefined);
+      });
+
+    });
+
+  });
+
+  describe('#getUrls', function() {
+
+    var sourceOptions;
+    var source;
+    var url = 'http://geo.nls.uk/maps/towns/glasgow1857/{z}/{x}/{-y}.png';
+
+    beforeEach(function() {
+      sourceOptions = {
+        projection: 'EPSG:4326'
+      };
+    });
+
+    describe('using a "url" option', function() {
+      beforeEach(function() {
+        sourceOptions.url = url;
+        source = new ol.source.XYZ(sourceOptions);
+      });
+
+      it('returns the XYZ URL', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be.eql([url]);
+      });
+
+    });
+
+    describe('using a "urls" option', function() {
+      beforeEach(function() {
+        sourceOptions.urls = ['some_xyz_url1', 'some_xyz_url2'];
+        source = new ol.source.XYZ(sourceOptions);
+      });
+
+      it('returns the XYZ URLs', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be.eql(['some_xyz_url1', 'some_xyz_url2']);
+      });
+
+    });
+
+    describe('using a "tileUrlFunction"', function() {
+      beforeEach(function() {
+        sourceOptions.tileUrlFunction = function() {
+          return 'some_xyz_url';
+        };
+        source = new ol.source.XYZ(sourceOptions);
+      });
+
+      it('returns null', function() {
+        var urls = source.getUrls();
+        expect(urls).to.be(null);
       });
 
     });

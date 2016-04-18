@@ -1,21 +1,15 @@
 ---
-template: example.html
-title: Earthquakes heatmap
+layout: example.html
+title: Earthquakes Heatmap
 shortdesc: Demonstrates the use of a heatmap layer.
 docs: >
   This example parses a KML file and renders the features as a <code>ol.layer.Heatmap</code> layer.
 tags: "heatmap, kml, vector, style"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-  <div class="span4">
-    <form>
-      <label>radius size</label>
-      <input id="radius" type="range" min="1" max="50" step="1" value="5"/>
-      <label>blur size</label>
-      <input id="blur" type="range" min="1" max="50" step="1" value="15"/>
-    </form>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<form>
+  <label>radius size</label>
+  <input id="radius" type="range" min="1" max="50" step="1" value="5"/>
+  <label>blur size</label>
+  <input id="blur" type="range" min="1" max="50" step="1" value="15"/>
+</form>

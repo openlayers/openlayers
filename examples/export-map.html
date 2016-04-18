@@ -1,18 +1,14 @@
 ---
-template: example.html
-title: Export map example
+layout: example.html
+title: Map Export
 shortdesc: Example of exporting a map as a PNG image.
 docs: >
   Example of exporting a map as a PNG image.
 tags: "export, png, openstreetmap"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <div id="no-download" class="alert alert-error" style="display: none">
-      This example requires a browser that supports the
-      <a href="http://caniuse.com/#feat=download">link download</a> attribute.
-    </div>
-    <a id="export-png" class="btn" download="map.png"><i class="icon-download"></i> Export PNG</a>
-  </div>
+<div id="map" class="map"></div>
+<div id="no-download" class="alert alert-danger" style="display: none">
+  This example requires a browser that supports the
+  <a href="http://caniuse.com/#feat=download">link download</a> attribute.
 </div>
+<a id="export-png" class="btn btn-default" download="map.png"><i class="fa fa-download"></i> Download PNG</a>

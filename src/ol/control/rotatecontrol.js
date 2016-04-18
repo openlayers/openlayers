@@ -1,16 +1,13 @@
 goog.provide('ol.control.Rotate');
 
 goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.dom.classlist');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.math');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
-
 
 
 /**
@@ -26,48 +23,44 @@ goog.require('ol.easing');
  */
 ol.control.Rotate = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options ? opt_options : {};
 
-  var className = goog.isDef(options.className) ?
-      options.className : 'ol-rotate';
+  var className = options.className !== undefined ? options.className : 'ol-rotate';
 
-  var label = goog.isDef(options.label) ?
-      options.label : '\u21E7';
+  var label = options.label !== undefined ? options.label : '\u21E7';
 
   /**
-   * @type {Node}
+   * @type {Element}
    * @private
    */
   this.label_ = null;
 
-  if (goog.isString(label)) {
-    this.label_ = goog.dom.createDom(goog.dom.TagName.SPAN,
+  if (typeof label === 'string') {
+    this.label_ = goog.dom.createDom('SPAN',
         'ol-compass', label);
   } else {
     this.label_ = label;
-    goog.dom.classlist.add(this.label_, 'ol-compass');
+    this.label_.classList.add('ol-compass');
   }
 
-  var tipLabel = goog.isDef(options.tipLabel) ?
-      options.tipLabel : 'Reset rotation';
+  var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
 
-  var button = goog.dom.createDom(goog.dom.TagName.BUTTON, {
+  var button = goog.dom.createDom('BUTTON', {
     'class': className + '-reset',
     'type' : 'button',
     'title': tipLabel
   }, this.label_);
 
-  goog.events.listen(button, goog.events.EventType.CLICK,
-      ol.control.Rotate.prototype.handleClick_, false, this);
-
-  ol.control.Control.bindMouseOutFocusOutBlur(button);
+  ol.events.listen(button, ol.events.EventType.CLICK,
+      ol.control.Rotate.prototype.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom(goog.dom.TagName.DIV, cssClasses, button);
+  var element = goog.dom.createDom('DIV', cssClasses, button);
 
-  var render = goog.isDef(options.render) ?
-      options.render : ol.control.Rotate.render;
+  var render = options.render ? options.render : ol.control.Rotate.render;
+
+  this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
   goog.base(this, {
     element: element,
@@ -79,13 +72,13 @@ ol.control.Rotate = function(opt_options) {
    * @type {number}
    * @private
    */
-  this.duration_ = goog.isDef(options.duration) ? options.duration : 250;
+  this.duration_ = options.duration !== undefined ? options.duration : 250;
 
   /**
    * @type {boolean}
    * @private
    */
-  this.autoHide_ = goog.isDef(options.autoHide) ? options.autoHide : true;
+  this.autoHide_ = options.autoHide !== undefined ? options.autoHide : true;
 
   /**
    * @private
@@ -94,7 +87,7 @@ ol.control.Rotate = function(opt_options) {
   this.rotation_ = undefined;
 
   if (this.autoHide_) {
-    goog.dom.classlist.add(this.element, ol.css.CLASS_HIDDEN);
+    this.element.classList.add(ol.css.CLASS_HIDDEN);
   }
 
 };
@@ -102,12 +95,16 @@ goog.inherits(ol.control.Rotate, ol.control.Control);
 
 
 /**
- * @param {goog.events.BrowserEvent} event The event to handle
+ * @param {Event} event The event to handle
  * @private
  */
 ol.control.Rotate.prototype.handleClick_ = function(event) {
   event.preventDefault();
-  this.resetNorth_();
+  if (this.callResetNorth_ !== undefined) {
+    this.callResetNorth_();
+  } else {
+    this.resetNorth_();
+  }
 };
 
 
@@ -117,20 +114,21 @@ ol.control.Rotate.prototype.handleClick_ = function(event) {
 ol.control.Rotate.prototype.resetNorth_ = function() {
   var map = this.getMap();
   var view = map.getView();
-  if (goog.isNull(view)) {
+  if (!view) {
     // the map does not have a view, so we can't act
     // upon it
     return;
   }
   var currentRotation = view.getRotation();
-  while (currentRotation < -Math.PI) {
-    currentRotation += 2 * Math.PI;
-  }
-  while (currentRotation > Math.PI) {
-    currentRotation -= 2 * Math.PI;
-  }
-  if (goog.isDef(currentRotation)) {
+  if (currentRotation !== undefined) {
     if (this.duration_ > 0) {
+      currentRotation = currentRotation % (2 * Math.PI);
+      if (currentRotation < -Math.PI) {
+        currentRotation += 2 * Math.PI;
+      }
+      if (currentRotation > Math.PI) {
+        currentRotation -= 2 * Math.PI;
+      }
       map.beforeRender(ol.animation.rotate({
         rotation: currentRotation,
         duration: this.duration_,
@@ -150,15 +148,19 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
  */
 ol.control.Rotate.render = function(mapEvent) {
   var frameState = mapEvent.frameState;
-  if (goog.isNull(frameState)) {
+  if (!frameState) {
     return;
   }
   var rotation = frameState.viewState.rotation;
   if (rotation != this.rotation_) {
-    var transform = 'rotate(' + goog.math.toDegrees(rotation) + 'deg)';
+    var transform = 'rotate(' + rotation + 'rad)';
     if (this.autoHide_) {
-      goog.dom.classlist.enable(
-          this.element, ol.css.CLASS_HIDDEN, rotation === 0);
+      var contains = this.element.classList.contains(ol.css.CLASS_HIDDEN);
+      if (!contains && rotation === 0) {
+        this.element.classList.add(ol.css.CLASS_HIDDEN);
+      } else if (contains && rotation !== 0) {
+        this.element.classList.remove(ol.css.CLASS_HIDDEN);
+      }
     }
     this.label_.style.msTransform = transform;
     this.label_.style.webkitTransform = transform;

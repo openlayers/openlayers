@@ -12,7 +12,7 @@ describe('ol.control.OverviewMap', function() {
   });
 
   afterEach(function() {
-    goog.dispose(map);
+    map.dispose();
     document.body.removeChild(target);
     map = null;
     target = null;

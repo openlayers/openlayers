@@ -25,11 +25,13 @@ var map = new ol.Map({
   })
 });
 
-var imageStyle = new ol.style.Circle({
-  radius: 5,
-  snapToPixel: false,
-  fill: new ol.style.Fill({color: 'yellow'}),
-  stroke: new ol.style.Stroke({color: 'red', width: 1})
+var imageStyle = new ol.style.Style({
+  image: new ol.style.Circle({
+    radius: 5,
+    snapToPixel: false,
+    fill: new ol.style.Fill({color: 'yellow'}),
+    stroke: new ol.style.Stroke({color: 'red', width: 1})
+  })
 });
 
 var headInnerImageStyle = new ol.style.Style({
@@ -40,10 +42,12 @@ var headInnerImageStyle = new ol.style.Style({
   })
 });
 
-var headOuterImageStyle = new ol.style.Circle({
-  radius: 5,
-  snapToPixel: false,
-  fill: new ol.style.Fill({color: 'black'})
+var headOuterImageStyle = new ol.style.Style({
+  image: new ol.style.Circle({
+    radius: 5,
+    snapToPixel: false,
+    fill: new ol.style.Fill({color: 'black'})
+  })
 });
 
 var n = 200;
@@ -63,16 +67,16 @@ map.on('postcompose', function(event) {
     var y = (R + r) * Math.sin(t) + p * Math.sin((R + r) * t / r);
     coordinates.push([x, y]);
   }
-  vectorContext.setImageStyle(imageStyle);
-  vectorContext.drawMultiPointGeometry(
-      new ol.geom.MultiPoint(coordinates), null);
+  vectorContext.setStyle(imageStyle);
+  vectorContext.drawGeometry(new ol.geom.MultiPoint(coordinates));
 
   var headPoint = new ol.geom.Point(coordinates[coordinates.length - 1]);
-  var headFeature = new ol.Feature(headPoint);
-  vectorContext.drawFeature(headFeature, headInnerImageStyle);
 
-  vectorContext.setImageStyle(headOuterImageStyle);
-  vectorContext.drawMultiPointGeometry(headPoint, null);
+  vectorContext.setStyle(headOuterImageStyle);
+  vectorContext.drawGeometry(headPoint);
+
+  vectorContext.setStyle(headInnerImageStyle);
+  vectorContext.drawGeometry(headPoint);
 
   map.render();
 });

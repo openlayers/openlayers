@@ -3,31 +3,78 @@ goog.provide('ol.test.source.TileJSON');
 
 describe('ol.source.TileJSON', function() {
 
+  describe('constructor', function() {
+
+    it('returns a tileJSON source', function() {
+      var source = new ol.source.TileJSON({
+        url: 'spec/ol/data/tilejson.json'
+      });
+      expect(source).to.be.a(ol.source.Source);
+      expect(source).to.be.a(ol.source.TileJSON);
+    });
+  });
+
+  describe('#getTileJSON', function() {
+
+    it('parses the tilejson file', function() {
+      var source = new ol.source.TileJSON({
+        url: 'spec/ol/data/tilejson.json'
+      });
+      source.on('change', function() {
+        if (source.getState() === 'ready') {
+          var tileJSON = source.getTileJSON();
+          expect(tileJSON.name).to.eql('Geography Class');
+          expect(tileJSON.version).to.eql('1.0.0');
+        }
+      });
+    });
+  });
+
+  describe('#getState', function() {
+
+    it('returns ol.source.State.ERROR on HTTP 404', function() {
+      var source = new ol.source.TileJSON({
+        url: 'invalid.jsonp'
+      });
+      source.on('change', function() {
+        expect(source.getState()).to.eql('error');
+        expect(source.getTileJSON()).to.eql(null);
+      });
+    });
+
+    it('returns ol.source.State.ERROR on CORS issues', function() {
+      var source = new ol.source.TileJSON({
+        url: 'http://example.com'
+      });
+      source.on('change', function() {
+        expect(source.getState()).to.eql('error');
+        expect(source.getTileJSON()).to.eql(null);
+      });
+    });
+
+    it('returns ol.source.State.ERROR on JSON parsing issues', function() {
+      var source = new ol.source.TileJSON({
+        url: '/'
+      });
+      source.on('change', function() {
+        expect(source.getState()).to.eql('error');
+        expect(source.getTileJSON()).to.eql(null);
+      });
+    });
+
+  });
+
   describe('tileUrlFunction', function() {
 
     var source, tileGrid;
 
     beforeEach(function(done) {
-      var googNetJsonp = goog.net.Jsonp;
-      // mock goog.net.Jsonp (used in the ol.source.TileJSON constructor)
-      goog.net.Jsonp = function() {
-        this.send = function() {
-          var callback = arguments[1];
-          var client = new XMLHttpRequest();
-          client.open('GET', 'spec/ol/data/tilejson.json', true);
-          client.onload = function() {
-            callback(JSON.parse(client.responseText));
-          };
-          client.send();
-        };
-      };
       source = new ol.source.TileJSON({
-        url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp'
+        url: 'spec/ol/data/tilejson.json'
       });
-      goog.net.Jsonp = googNetJsonp;
       var key = source.on('change', function() {
         if (source.getState() === 'ready') {
-          source.unByKey(key);
+          ol.Observable.unByKey(key);
           tileGrid = source.getTileGrid();
           done();
         }
@@ -74,5 +121,8 @@ describe('ol.source.TileJSON', function() {
 
 });
 
-goog.require('goog.net.Jsonp');
+goog.require('ol.events');
+goog.require('ol.source.State');
+goog.require('ol.source.Source');
 goog.require('ol.source.TileJSON');
+goog.require('ol.Observable');

@@ -49,10 +49,8 @@ var displayCountryInfo = function(coordinate) {
         //  info.innerHTML = Mustache.render(gridSource.getTemplate(), data);
         mapElement.style.cursor = data ? 'pointer' : '';
         if (data) {
-          /* jshint -W069 */
           flagElement.src = 'data:image/png;base64,' + data['flag_png'];
           nameElement.innerHTML = data['admin'];
-          /* jshint +W069 */
         }
         infoOverlay.setPosition(data ? coordinate : undefined);
       });

@@ -12,11 +12,11 @@ goog.require('ol.extent');
  * @param {ol.Extent} extent Extent.
  * @return {boolean} Contains extent.
  */
-ol.geom.flat.contains.linearRingContainsExtent =
-    function(flatCoordinates, offset, end, stride, extent) {
+ol.geom.flat.contains.linearRingContainsExtent = function(flatCoordinates, offset, end, stride, extent) {
   var outside = ol.extent.forEachCorner(extent,
       /**
        * @param {ol.Coordinate} coordinate Coordinate.
+       * @return {boolean} Contains (x, y).
        */
       function(coordinate) {
         return !ol.geom.flat.contains.linearRingContainsXY(flatCoordinates,
@@ -35,8 +35,7 @@ ol.geom.flat.contains.linearRingContainsExtent =
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.flat.contains.linearRingContainsXY =
-    function(flatCoordinates, offset, end, stride, x, y) {
+ol.geom.flat.contains.linearRingContainsXY = function(flatCoordinates, offset, end, stride, x, y) {
   // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
   var contains = false;
   var x1 = flatCoordinates[end - stride];
@@ -65,8 +64,7 @@ ol.geom.flat.contains.linearRingContainsXY =
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.flat.contains.linearRingsContainsXY =
-    function(flatCoordinates, offset, ends, stride, x, y) {
+ol.geom.flat.contains.linearRingsContainsXY = function(flatCoordinates, offset, ends, stride, x, y) {
   goog.asserts.assert(ends.length > 0, 'ends should not be an empty array');
   if (ends.length === 0) {
     return false;
@@ -95,8 +93,7 @@ ol.geom.flat.contains.linearRingsContainsXY =
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.flat.contains.linearRingssContainsXY =
-    function(flatCoordinates, offset, endss, stride, x, y) {
+ol.geom.flat.contains.linearRingssContainsXY = function(flatCoordinates, offset, endss, stride, x, y) {
   goog.asserts.assert(endss.length > 0, 'endss should not be an empty array');
   if (endss.length === 0) {
     return false;

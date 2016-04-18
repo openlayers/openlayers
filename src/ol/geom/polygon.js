@@ -1,8 +1,8 @@
 goog.provide('ol.geom.Polygon');
 
-goog.require('goog.array');
 goog.require('goog.asserts');
-goog.require('goog.math');
+goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -18,7 +18,7 @@ goog.require('ol.geom.flat.interiorpoint');
 goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.simplify');
-
+goog.require('ol.math');
 
 
 /**
@@ -77,8 +77,7 @@ ol.geom.Polygon = function(coordinates, opt_layout) {
    */
   this.orientedFlatCoordinates_ = null;
 
-  this.setCoordinates(coordinates,
-      /** @type {ol.geom.GeometryLayout|undefined} */ (opt_layout));
+  this.setCoordinates(coordinates, opt_layout);
 
 };
 goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
@@ -92,10 +91,10 @@ goog.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
   goog.asserts.assert(linearRing.getLayout() == this.layout,
       'layout of linearRing should match layout');
-  if (goog.isNull(this.flatCoordinates)) {
+  if (!this.flatCoordinates) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
   } else {
-    goog.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
+    ol.array.extend(this.flatCoordinates, linearRing.getFlatCoordinates());
   }
   this.ends_.push(this.flatCoordinates.length);
   this.changed();
@@ -118,8 +117,7 @@ ol.geom.Polygon.prototype.clone = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.closestPointXY =
-    function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.Polygon.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
   if (minSquaredDistance <
       ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
     return minSquaredDistance;
@@ -170,7 +168,7 @@ ol.geom.Polygon.prototype.getArea = function() {
  */
 ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
   var flatCoordinates;
-  if (goog.isDef(opt_right)) {
+  if (opt_right !== undefined) {
     flatCoordinates = this.getOrientedFlatCoordinates().slice();
     ol.geom.flat.orient.orientLinearRings(
         flatCoordinates, 0, this.ends_, this.stride, opt_right);
@@ -298,8 +296,7 @@ ol.geom.Polygon.prototype.getOrientedFlatCoordinates = function() {
 /**
  * @inheritDoc
  */
-ol.geom.Polygon.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.Polygon.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.quantizes(
@@ -339,11 +336,11 @@ ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
  * @api stable
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
-  if (goog.isNull(coordinates)) {
+  if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
   } else {
     this.setLayout(opt_layout, coordinates, 2);
-    if (goog.isNull(this.flatCoordinates)) {
+    if (!this.flatCoordinates) {
       this.flatCoordinates = [];
     }
     var ends = ol.geom.flat.deflate.coordinatess(
@@ -359,11 +356,10 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */
-ol.geom.Polygon.prototype.setFlatCoordinates =
-    function(layout, flatCoordinates, ends) {
-  if (goog.isNull(flatCoordinates)) {
-    goog.asserts.assert(!goog.isNull(ends) && ends.length === 0,
-        'ends cannot be null and should be an empty array');
+ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
+  if (!flatCoordinates) {
+    goog.asserts.assert(ends && ends.length === 0,
+        'ends must be an empty array');
   } else if (ends.length === 0) {
     goog.asserts.assert(flatCoordinates.length === 0,
         'flatCoordinates should be an empty array');
@@ -389,12 +385,12 @@ ol.geom.Polygon.prototype.setFlatCoordinates =
  * @api stable
  */
 ol.geom.Polygon.circular = function(sphere, center, radius, opt_n) {
-  var n = goog.isDef(opt_n) ? opt_n : 32;
+  var n = opt_n ? opt_n : 32;
   /** @type {Array.<number>} */
   var flatCoordinates = [];
   var i;
   for (i = 0; i < n; ++i) {
-    goog.array.extend(
+    ol.array.extend(
         flatCoordinates, sphere.offset(center, radius, 2 * Math.PI * i / n));
   }
   flatCoordinates.push(flatCoordinates[0], flatCoordinates[1]);
@@ -435,11 +431,15 @@ ol.geom.Polygon.fromExtent = function(extent) {
  * @api
  */
 ol.geom.Polygon.fromCircle = function(circle, opt_sides, opt_angle) {
-  var sides = goog.isDef(opt_sides) ? opt_sides : 32;
+  var sides = opt_sides ? opt_sides : 32;
   var stride = circle.getStride();
   var layout = circle.getLayout();
   var polygon = new ol.geom.Polygon(null, layout);
-  var flatCoordinates = goog.array.repeat(0, stride * (sides + 1));
+  var arrayLength = stride * (sides + 1);
+  var flatCoordinates = new Array(arrayLength);
+  for (var i = 0; i < arrayLength; i++) {
+    flatCoordinates[i] = 0;
+  }
   var ends = [flatCoordinates.length];
   polygon.setFlatCoordinates(layout, flatCoordinates, ends);
   ol.geom.Polygon.makeRegular(
@@ -463,11 +463,11 @@ ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   var ends = polygon.getEnds();
   goog.asserts.assert(ends.length === 1, 'only 1 ring is supported');
   var sides = flatCoordinates.length / stride - 1;
-  var startAngle = goog.isDef(opt_angle) ? opt_angle : 0;
-  var angle, coord, offset;
+  var startAngle = opt_angle ? opt_angle : 0;
+  var angle, offset;
   for (var i = 0; i <= sides; ++i) {
     offset = i * stride;
-    angle = startAngle + (goog.math.modulo(i, sides) * 2 * Math.PI / sides);
+    angle = startAngle + (ol.math.modulo(i, sides) * 2 * Math.PI / sides);
     flatCoordinates[offset] = center[0] + (radius * Math.cos(angle));
     flatCoordinates[offset + 1] = center[1] + (radius * Math.sin(angle));
   }
