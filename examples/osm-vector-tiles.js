@@ -92,6 +92,7 @@ var map = new ol.Map({
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
         format: format,
+        overlaps: false,
         tileGrid: tileGrid,
         url: 'http://{a-c}.tile.openstreetmap.us/' +
             'vectiles-land-usages/{z}/{x}/{y}.topojson'

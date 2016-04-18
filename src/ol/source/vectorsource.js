@@ -98,6 +98,12 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.overlaps_ = options.overlaps || true;
+
+  /**
+   * @private
    * @type {string|ol.FeatureUrlFunction|undefined}
    */
   this.url_ = options.url;
@@ -701,6 +707,14 @@ ol.source.Vector.prototype.getFeatureById = function(id) {
  */
 ol.source.Vector.prototype.getFormat = function() {
   return this.format_;
+};
+
+
+/**
+ * @return {boolean} The source can have overlapping geometries.
+ */
+ol.source.Vector.prototype.getOverlaps = function() {
+  return this.overlaps_;
 };
 
 

@@ -50,6 +50,7 @@ var map = new ol.Map({
           '© <a href="http://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
         format: new ol.format.MVT(),
+        overlaps: false,
         tileGrid: new ol.tilegrid.TileGrid({
           extent: ol.proj.get('EPSG:3857').getExtent(),
           resolutions: resolutions

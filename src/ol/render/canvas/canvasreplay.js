@@ -52,10 +52,11 @@ ol.render.canvas.Instruction = {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
   ol.render.VectorContext.call(this);
 
   /**
@@ -75,7 +76,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @protected
    * @type {boolean}
    */
-  this.transparency = false;
+  this.overlaps = overlaps;
 
   /**
    * @private
@@ -266,7 +267,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var pendingFill = 0;
   var pendingStroke = 0;
   var batchSize =
-      this.instructions != instructions || this.transparency ? 0 : 200;
+      this.instructions != instructions || this.overlaps ? 0 : 200;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -691,11 +692,12 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -957,12 +959,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -1191,12 +1194,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -1457,10 +1461,6 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
     var fillStyleColor = fillStyle.getColor();
     state.fillStyle = ol.colorlike.asColorLike(fillStyleColor ?
         fillStyleColor : ol.render.canvas.defaultFillStyle);
-    if (!this.transparency && ol.color.isRgba(state.fillStyle)) {
-      this.transparency = ol.color.asArray(
-          /** @type {ol.Color|string} */ (state.fillStyle))[0] != 1;
-    }
   } else {
     state.fillStyle = undefined;
   }
@@ -1468,9 +1468,6 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
     var strokeStyleColor = strokeStyle.getColor();
     state.strokeStyle = ol.color.asString(strokeStyleColor ?
         strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
-    if (!this.transparency && ol.color.isRgba(state.strokeStyle)) {
-      this.transparency = ol.color.asArray(state.strokeStyle)[3] != 1;
-    }
     var strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?
         strokeStyleLineCap : ol.render.canvas.defaultLineCap;
@@ -1553,12 +1550,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -1862,11 +1860,12 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay group can have overlapping geometries.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
  * @struct
  */
 ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, opt_renderBuffer) {
+    tolerance, maxExtent, resolution, overlaps, opt_renderBuffer) {
 
   /**
    * @private
@@ -1879,6 +1878,12 @@ ol.render.canvas.ReplayGroup = function(
    * @type {ol.Extent}
    */
   this.maxExtent_ = maxExtent;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.overlaps_ = overlaps;
 
   /**
    * @private
@@ -1998,7 +2003,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
         replayType +
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_);
+        this.resolution_, this.overlaps_);
     replays[replayType] = replay;
   }
   return replay;
@@ -2112,7 +2117,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @private
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number)>}
+ *                number, boolean)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,

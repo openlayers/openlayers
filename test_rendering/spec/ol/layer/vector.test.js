@@ -75,6 +75,9 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
+      source = new ol.source.Vector({
+        overlaps: false
+      });
       addPolygon(100);
       addCircle(200);
       addPolygon(250);

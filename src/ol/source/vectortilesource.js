@@ -52,6 +52,12 @@ ol.source.VectorTile = function(options) {
   this.format_ = options.format ? options.format : null;
 
   /**
+   * @private
+   * @type {boolean}
+   */
+  this.overlaps_ = options.overlaps || true;
+
+  /**
    * @protected
    * @type {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
    *        ol.format.Feature, ol.TileLoadFunctionType)}
@@ -60,6 +66,14 @@ ol.source.VectorTile = function(options) {
 
 };
 ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
+
+
+/**
+ * @return {boolean} The source can have overlapping geometries.
+ */
+ol.source.VectorTile.prototype.getOverlaps = function() {
+  return this.overlaps_;
+};
 
 
 /**

@@ -4356,6 +4356,7 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            cacheSize: (number|undefined),
  *            format: (ol.format.Feature|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
+ *            overlaps: (boolean|undefined),
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
@@ -4403,6 +4404,17 @@ olx.source.VectorTileOptions.prototype.format;
  * @api
  */
 olx.source.VectorTileOptions.prototype.logo;
+
+
+/**
+ * This source may have overlapping geometries. Default is `true`. Setting this
+ * to `false` (e.g. for sources with polygons that represent adminstrative
+ * boundaries or TopoJSON sources) allows the renderer to optimise fill and
+ * stroke operations.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorTileOptions.prototype.overlaps;
 
 
 /**
@@ -5775,6 +5787,7 @@ olx.source.TileWMSOptions.prototype.wrapX;
  *     format: (ol.format.Feature|undefined),
  *     loader: (ol.FeatureLoader|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     overlaps: (boolean|undefined),
  *     strategy: (ol.LoadingStrategy|undefined),
  *     url: (string|ol.FeatureUrlFunction|undefined),
  *     useSpatialIndex: (boolean|undefined),
@@ -5825,6 +5838,17 @@ olx.source.VectorOptions.prototype.loader;
  * @api stable
  */
 olx.source.VectorOptions.prototype.logo;
+
+
+/**
+ * This source may have overlapping geometries. Default is `true`. Setting this
+ * to `false` (e.g. for sources with polygons that represent adminstrative
+ * boundaries or TopoJSON sources) allows the renderer to optimise fill and
+ * stroke operations.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.VectorOptions.prototype.overlaps;
 
 
 /**

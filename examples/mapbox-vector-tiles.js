@@ -21,6 +21,7 @@ var map = new ol.Map({
           '© <a href="http://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
         format: new ol.format.MVT(),
+        overlaps: false,
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 22}),
         tilePixelRatio: 16,
         url: 'http://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
