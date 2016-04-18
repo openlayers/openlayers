@@ -113,7 +113,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
 
   var replayGroup = new ol.render.canvas.ReplayGroup(
       ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-      resolution, this.renderBuffer_);
+      resolution, this.source_.getOverlaps(), this.renderBuffer_);
 
   this.source_.loadFeatures(extent, resolution, projection);
 

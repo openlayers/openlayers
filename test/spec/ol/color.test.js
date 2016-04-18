@@ -103,20 +103,6 @@ describe('ol.color', function() {
 
   });
 
-  describe('ol.color.isRgba', function() {
-    it('identifies rgba arrays', function() {
-      expect(ol.color.isRgba([255, 255, 255, 1])).to.be(true);
-      expect(ol.color.isRgba([255, 255, 255])).to.be(false);
-    });
-    it('identifies rgba strings', function() {
-      expect(ol.color.isRgba('rgba(255,255,255,1)')).to.be(true);
-      expect(ol.color.isRgba('rgb(255,255,255)')).to.be(false);
-      expect(ol.color.isRgba('#FFF')).to.be(false);
-      expect(ol.color.isRgba('#FFFFFF')).to.be(false);
-      expect(ol.color.isRgba('red')).to.be(false);
-    });
-  });
-
   describe('ol.color.isValid', function() {
 
     it('identifies valid colors', function() {
