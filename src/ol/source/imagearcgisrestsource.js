@@ -42,55 +42,55 @@ ol.source.ImageArcGISRest = function(opt_options) {
   });
 
   /**
-         * @private
-         * @type {?string}
-         */
+   * @private
+   * @type {?string}
+   */
   this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
-         * @private
-         * @type {string|undefined}
-         */
+   * @private
+   * @type {string|undefined}
+   */
   this.url_ = options.url;
 
   /**
-         * @private
-         * @type {ol.ImageLoadFunctionType}
-         */
+   * @private
+   * @type {ol.ImageLoadFunctionType}
+   */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
 
   /**
-         * @private
-         * @type {Object}
-         */
+   * @private
+   * @type {!Object}
+   */
   this.params_ = params;
 
   /**
-         * @private
-         * @type {ol.Image}
-         */
+   * @private
+   * @type {ol.Image}
+   */
   this.image_ = null;
 
   /**
-         * @private
-         * @type {ol.Size}
-         */
+   * @private
+   * @type {ol.Size}
+   */
   this.imageSize_ = [0, 0];
 
 
   /**
-     * @private
-     * @type {number}
-     */
+   * @private
+   * @type {number}
+   */
   this.renderedRevision_ = 0;
 
   /**
-         * @private
-         * @type {number}
-         */
+   * @private
+   * @type {number}
+   */
   this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
 };
@@ -111,16 +111,16 @@ ol.source.ImageArcGISRest.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageArcGISRest.prototype.getImage = function(extent, resolution, pixelRatio, projection, params) {
+ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
 
   if (this.url_ === undefined) {
-    return undefined;
+    return null;
   }
 
   resolution = this.findNearestResolution(resolution);
 
   var image = this.image_;
-  if (image !== undefined &&
+  if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
@@ -128,12 +128,12 @@ ol.source.ImageArcGISRest.prototype.getImage = function(extent, resolution, pixe
     return image;
   }
 
-  var baseParams = {
+  var params = {
     'F': 'image',
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  ol.object.assign(baseParams, this.params_, params);
+  ol.object.assign(params, this.params_);
 
   extent = extent.slice();
   var centerX = (extent[0] + extent[2]) / 2;
@@ -199,7 +199,7 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  */
 ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(this.url_ === undefined, 'url is defined');
+  goog.asserts.assert(this.url_ !== undefined, 'url is defined');
 
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
@@ -237,8 +237,7 @@ ol.source.ImageArcGISRest.prototype.getUrl = function() {
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-ol.source.ImageArcGISRest.prototype.setImageLoadFunction = function(
-    imageLoadFunction) {
+ol.source.ImageArcGISRest.prototype.setImageLoadFunction = function(imageLoadFunction) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();
