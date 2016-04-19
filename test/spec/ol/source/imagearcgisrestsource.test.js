@@ -3,13 +3,12 @@ goog.provide('ol.test.source.ImageArcGISRest');
 
 describe('ol.source.ImageArcGISRest', function() {
 
-  var options;
+  var pixelRatio, options, projection, proj3857, resolution;
   beforeEach(function() {
-    extent = [10, 20, 30, 40];
     pixelRatio = 1;
     projection = ol.proj.get('EPSG:4326');
     proj3857 = ol.proj.get('EPSG:3857');
-    res = 0.1;
+    resolution = 0.1;
     options = {
       params: {},
       url: 'http://example.com/MapServer'
@@ -20,7 +19,7 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('returns a image with the expected URL', function() {
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -7, 1], res, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new goog.Uri(image.src_);
       expect(uri.getScheme()).to.be('http');
       expect(uri.getDomain()).to.be('example.com');
@@ -36,7 +35,7 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('returns a non floating point DPI value', function() {
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -7, 1.12], res, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1.12], resolution, pixelRatio, proj3857);
       var uri = new goog.Uri(image.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('DPI')).to.be('90');
@@ -45,7 +44,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('returns a image with the expected URL for ImageServer', function() {
       options.url = 'http://example.com/ImageServer';
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -7, 1], res, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new goog.Uri(image.src_);
       expect(uri.getScheme()).to.be('http');
       expect(uri.getDomain()).to.be('example.com');
@@ -62,7 +61,7 @@ describe('ol.source.ImageArcGISRest', function() {
       options.params.FORMAT = 'png';
       options.params.TRANSPARENT = false;
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -3, 1], res, pixelRatio, projection);
+      var image = source.getImage([3, 2, -3, 1], resolution, pixelRatio, projection);
       var uri = new goog.Uri(image.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('FORMAT')).to.be('png');
@@ -72,7 +71,7 @@ describe('ol.source.ImageArcGISRest', function() {
     it('allows adding rest option', function() {
       options.params.LAYERS = 'show:1,3,4';
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -3, 1], res, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -3, 1], resolution, pixelRatio, proj3857);
       var uri = new goog.Uri(image.src_);
       var queryData = uri.getQueryData();
       expect(queryData.get('LAYERS')).to.be('show:1,3,4');
@@ -83,9 +82,9 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('add a new param', function() {
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({ 'TEST': 'value' });
+      source.updateParams({'TEST': 'value'});
 
-      var image = source.getImage([3, 2, -7, 1], res, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new goog.Uri(image.src_);
       var queryData = uri.getQueryData();
 
@@ -96,9 +95,9 @@ describe('ol.source.ImageArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({ 'TEST': 'newValue' });
+      source.updateParams({'TEST':'newValue'});
 
-      var image = source.getImage([3, 2, -7, 1], res, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1], resolution, pixelRatio, proj3857);
       var uri = new goog.Uri(image.src_);
       var queryData = uri.getQueryData();
 
@@ -115,29 +114,29 @@ describe('ol.source.ImageArcGISRest', function() {
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({ TEST: 'value' });
+      expect(setParams).to.eql({TEST: 'value'});
     });
 
     it('verify on adding a param', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({ 'TEST2': 'newValue' });
+      source.updateParams({'TEST2':'newValue'});
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({ TEST: 'value', TEST2: 'newValue' });
+      expect(setParams).to.eql({TEST:'value', TEST2:'newValue'});
     });
 
     it('verify on update a param', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.ImageArcGISRest(options);
-      source.updateParams({ 'TEST': 'newValue' });
+      source.updateParams({'TEST':'newValue'});
 
       var setParams = source.getParams();
 
-      expect(setParams).to.eql({ TEST: 'newValue' });
+      expect(setParams).to.eql({TEST:'newValue'});
     });
 
   });

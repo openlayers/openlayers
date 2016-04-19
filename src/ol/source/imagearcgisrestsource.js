@@ -1,18 +1,16 @@
 goog.provide('ol.source.ImageArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
-goog.require('goog.string');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.ImageLoadFunctionType');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
+goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
-
 
 
 /**
@@ -32,9 +30,9 @@ goog.require('ol.source.Image');
  */
 ol.source.ImageArcGISRest = function(opt_options) {
 
-  var options = goog.isDef(opt_options) ? opt_options : {};
+  var options = opt_options || {};
 
-  var params = goog.isDef(options.params) ? options.params : {};
+  var params = options.params || {};
 
   goog.base(this, {
     attributions: options.attributions,
@@ -48,7 +46,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
          * @type {?string}
          */
   this.crossOrigin_ =
-      goog.isDef(options.crossOrigin) ? options.crossOrigin : null;
+      options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
          * @private
@@ -60,8 +58,9 @@ ol.source.ImageArcGISRest = function(opt_options) {
          * @private
          * @type {ol.ImageLoadFunctionType}
          */
-  this.imageLoadFunction_ = goog.isDef(options.imageLoadFunction) ?
+  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+
 
   /**
          * @private
@@ -92,7 +91,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
          * @private
          * @type {number}
          */
-  this.ratio_ = goog.isDef(options.ratio) ? options.ratio : 1.5;
+  this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
 };
 goog.inherits(ol.source.ImageArcGISRest, ol.source.Image);
@@ -112,17 +111,16 @@ ol.source.ImageArcGISRest.prototype.getParams = function() {
 /**
  * @inheritDoc
  */
-ol.source.ImageArcGISRest.prototype.getImage =
-    function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageArcGISRest.prototype.getImage = function(extent, resolution, pixelRatio, projection, params) {
 
-  if (!goog.isDef(this.url_)) {
-    return null;
+  if (this.url_ === undefined) {
+    return undefined;
   }
 
   resolution = this.findNearestResolution(resolution);
 
   var image = this.image_;
-  if (!goog.isNull(image) &&
+  if (image !== undefined &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
@@ -130,12 +128,12 @@ ol.source.ImageArcGISRest.prototype.getImage =
     return image;
   }
 
-  var params = {
+  var baseParams = {
     'F': 'image',
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  goog.object.extend(params, this.params_);
+  ol.object.assign(baseParams, this.params_, params);
 
   extent = extent.slice();
   var centerX = (extent[0] + extent[2]) / 2;
@@ -172,8 +170,8 @@ ol.source.ImageArcGISRest.prototype.getImage =
 
   this.renderedRevision_ = this.getRevision();
 
-  goog.events.listen(this.image_, goog.events.EventType.CHANGE,
-      this.handleImageChange, false, this);
+  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
+      this.handleImageChange, this);
 
   return this.image_;
 
@@ -199,10 +197,9 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  * @return {string} Request URL.
  * @private
  */
-ol.source.ImageArcGISRest.prototype.getRequestUrl_ =
-    function(extent, size, pixelRatio, projection, params) {
+ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(goog.isDef(this.url_), 'url is defined');
+  goog.asserts.assert(this.url_ === undefined, 'url is defined');
 
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
@@ -215,22 +212,13 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ =
 
   var url = this.url_;
 
-  if (!goog.string.endsWith(url, '/')) {
-    url = url + '/';
-  }
-
-  // If a MapServer, use export. If an ImageServer, use exportImage.
-  if (goog.string.endsWith(url, 'MapServer/')) {
-    url = url + 'export';
-  }
-  else if (goog.string.endsWith(url, 'ImageServer/')) {
-    url = url + 'exportImage';
-  }
-  else {
+  var modifiedUrl = url
+    .replace(/MapServer\/?$/, 'MapServer/export')
+    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+  if (modifiedUrl == url) {
     goog.asserts.fail('Unknown Rest Service', url);
   }
-
-  return goog.uri.utils.appendParamsFromMap(url, params);
+  return goog.uri.utils.appendParamsFromMap(modifiedUrl, params);
 };
 
 
@@ -277,7 +265,7 @@ ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
  * @api stable
  */
 ol.source.ImageArcGISRest.prototype.updateParams = function(params) {
-  goog.object.extend(this.params_, params);
+  ol.object.assign(this.params_, params);
   this.image_ = null;
   this.changed();
 };
