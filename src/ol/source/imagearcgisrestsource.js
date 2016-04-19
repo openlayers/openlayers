@@ -25,14 +25,12 @@ goog.require('ol.source.Image');
  * @constructor
  * @fires ol.source.ImageEvent
  * @extends {ol.source.Image}
- * @param {olx.source.ImageArcGISRestOptions=} opt_options Options.
+ * @param {olx.source.ImageArcGISRestOptions=} opt_options Image ArcGIS Rest Options.
  * @api
  */
 ol.source.ImageArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
-
-  var params = options.params || {};
 
   goog.base(this, {
     attributions: options.attributions,
@@ -66,7 +64,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
    * @private
    * @type {!Object}
    */
-  this.params_ = params;
+  this.params_ = options.params || {};
 
   /**
    * @private

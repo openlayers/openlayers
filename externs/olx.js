@@ -4824,7 +4824,7 @@ olx.source.ImageArcGISRestOptions;
 /**
  * Attributions.
  * @type {Array.<ol.Attribution>|undefined}
- * @api stable
+ * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.attributions;
 
@@ -4836,7 +4836,7 @@ olx.source.ImageArcGISRestOptions.prototype.attributions;
  * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
  * for more detail.
  * @type {null|string|undefined}
- * @api stable
+ * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.crossOrigin;
 
@@ -4844,14 +4844,14 @@ olx.source.ImageArcGISRestOptions.prototype.crossOrigin;
 /**
  * Logo.
  * @type {string|olx.LogoOptions|undefined}
- * @api stable
+ * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.logo;
 
 
 /**
  * Optional function to load an image given a URL.
- * @type {ol.TileLoadFunctionType|undefined}
+ * @type {ol.ImageLoadFunctionType|undefined}
  * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.imageLoadFunction;
@@ -4883,7 +4883,7 @@ olx.source.ImageArcGISRestOptions.prototype.projection;
  * Ratio. `1` means image requests are the size of the map viewport, `2` means
  * twice the size of the map viewport, and so on. Default is `1.5`.
  * @type {number|undefined}
- * @api stable
+ * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.ratio;
 
@@ -4891,15 +4891,16 @@ olx.source.ImageArcGISRestOptions.prototype.ratio;
 /**
  * Resolutions. If specified, requests will be made for these resolutions only.
  * @type {Array.<number>|undefined}
- * @api stable
+ * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.resolutions;
 
 
 /**
- * ArcGIS Rest service URL.
+ * ArcGIS Rest service URL for a Map Service or Image Service. The
+ * url should include /MapServer or /ImageServer.
  * @type {string|undefined}
- * @api stable
+ * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.url;
 
