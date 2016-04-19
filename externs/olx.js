@@ -3095,6 +3095,16 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
 olx.interaction.SelectOptions.prototype.multi;
 
 /**
+ * Collection where the interaction will place selected features. Optional. If
+ * not set the interaction will create a collection. In any case the collection
+ * used by the interaction is returned by
+ * {@link ol.interaction.Select#getFeatures}.
+ * @type {ol.Collection.<ol.Feature>|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.features;
+
+/**
  * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
  * returns `true` if the feature may be selected or `false` otherwise.
  * @type {ol.interaction.SelectFilterFunction|undefined}
