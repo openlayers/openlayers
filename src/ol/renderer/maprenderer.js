@@ -136,11 +136,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
    */
   function forEachFeatureAtCoordinate(feature, layer) {
     goog.asserts.assert(feature !== undefined, 'received a feature');
-    var key = goog.getUid(feature).toString();
-    var managed = frameState.layerStates[goog.getUid(layer)].managed;
-    if (!(key in frameState.skippedFeatureUids && !managed)) {
-      return callback.call(thisArg, feature, managed ? layer : null);
-    }
+    return callback.call(thisArg, feature, layer);
   }
 
   var projection = viewState.projection;
