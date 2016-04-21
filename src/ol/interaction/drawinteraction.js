@@ -160,6 +160,8 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
+  
+  this.finishFunction = options.finishFunction ? options.finishFunction : goog.functions.TRUE
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
@@ -401,7 +403,9 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
-      this.finishDrawing();
+      if (this.finishFunction()) {
+        this.finishDrawing();
+      }
     } else {
       this.addToDrawing_(event);
     }
