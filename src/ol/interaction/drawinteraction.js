@@ -163,7 +163,7 @@ ol.interaction.Draw = function(options) {
 
   /**
    * A function to decide if a potential finish coordinate can be a finish indeed
-   * @param {ol.interaction.DrawEvent} event
+   * @param {ol.MapBrowserPointerEvent} event
    * @return {boolean} can finish drawing
    * @private
    */
