@@ -160,7 +160,7 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
-  
+
   /**
    * A function to decide if a potential finish coordinate can be a finish indeed
    * @param {ol.interaction.DrawEvent} event
