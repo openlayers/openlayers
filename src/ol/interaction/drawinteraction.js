@@ -161,7 +161,12 @@ ol.interaction.Draw = function(options) {
    */
   this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
   
-  this.finishFunction = options.finishFunction ? options.finishFunction : goog.functions.TRUE
+  /**
+   * A function to decide if a potential finish coordinate can be a finish indeed
+   * @param {ol.interaction.DrawEvent} event
+   * @return {boolean} can finish drawing
+   */
+  this.finishFunction = options.finishFunction ? options.finishFunction : goog.functions.TRUE;
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
@@ -403,7 +408,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
-      if (this.finishFunction()) {
+      if (this.finishFunction(event)) {
         this.finishDrawing();
       }
     } else {
