@@ -147,6 +147,7 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
   goog.asserts.assertInstanceof(source, ArrayBuffer);
@@ -180,6 +181,7 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.format.MVT.prototype.readProjection = function(source) {
   return this.defaultDataProjection;
