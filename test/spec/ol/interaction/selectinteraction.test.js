@@ -181,6 +181,16 @@ describe('ol.interaction.Select', function() {
 
       var features = select.getFeatures();
       expect(features.getLength()).to.equal(4);
+      expect(select.getLayer(features.item(0))).to.equal(layer);
+
+      // Select again to make sure the internal layer isn't reported
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+
+      expect(listenerSpy.callCount).to.be(2);
+
+      features = select.getFeatures();
+      expect(features.getLength()).to.equal(4);
+      expect(select.getLayer(features.item(0))).to.equal(layer);
     });
   });
 
@@ -311,6 +321,8 @@ describe('ol.interaction.Select', function() {
       });
       interaction.on('select', listenerSpy);
 
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      // Select again to make sure that the internal layer doesn't get reported.
       simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
     });
   });
