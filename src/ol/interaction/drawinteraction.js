@@ -165,6 +165,7 @@ ol.interaction.Draw = function(options) {
    * A function to decide if a potential finish coordinate can be a finish indeed
    * @param {ol.interaction.DrawEvent} event
    * @return {boolean} can finish drawing
+   * @private
    */
   this.finishFunction = options.finishFunction ? options.finishFunction : goog.functions.TRUE;
 
