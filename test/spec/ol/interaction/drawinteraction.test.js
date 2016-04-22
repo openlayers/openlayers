@@ -332,6 +332,54 @@ describe('ol.interaction.Draw', function() {
     });
 
   });
+  
+  describe('drawing with a finishCondition', function() {
+    beforeEach(function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: ol.geom.GeometryType.LINE_STRING,
+        finishFunction: function(event){
+          if (ol.array.equals(event.pixel,[30,20])){
+            return true;
+          }
+          return false;
+        }
+      });
+      map.addInteraction(draw);
+    });
+
+    it('draws a linestring failing to finish it first, the finishes it', function() {
+      var features;
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      // cannot finish on this point
+      simulateEvent('pointerdown', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+
+      features = source.getFeatures();
+      expect(features).to.have.length(1);
+      
+      // second point
+      simulateEvent('pointermove', 40, 30);
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+
+      // finish on this point
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+      
+      features = source.getFeatures();
+      expect(features).to.have.length(1);
+    });
+  });
 
   describe('drawing multi-linestrings', function() {
 
