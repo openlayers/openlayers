@@ -166,7 +166,7 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.events.ConditionType}
    */
-  this.finishCondition_ = options.finishCondition ? options.finishFunction : goog.functions.TRUE;
+  this.finishCondition_ = options.finishCondition ? options.finishCondition : goog.functions.TRUE;
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
