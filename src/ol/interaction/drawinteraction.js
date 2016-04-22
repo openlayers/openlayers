@@ -163,11 +163,10 @@ ol.interaction.Draw = function(options) {
 
   /**
    * A function to decide if a potential finish coordinate can be a finish indeed
-   * @param {ol.MapBrowserPointerEvent} event
-   * @return {boolean} can finish drawing
    * @private
+   * @type {ol.events.ConditionType}
    */
-  this.finishFunction = options.finishFunction ? options.finishFunction : goog.functions.TRUE;
+  this.finishCondition_ = options.finishCondition ? options.finishFunction : goog.functions.TRUE;
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
@@ -409,7 +408,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
-      if (this.finishFunction(event)) {
+      if (this.finishCondition_(event)) {
         this.finishDrawing();
       }
     } else {
