@@ -2660,6 +2660,15 @@ olx.interaction.DrawOptions.prototype.minPoints;
 
 
 /**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether the drawing can be finished.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.finishCondition;
+
+
+/**
  * Style for sketch features.
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  * @api
