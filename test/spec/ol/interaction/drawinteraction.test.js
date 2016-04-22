@@ -332,14 +332,14 @@ describe('ol.interaction.Draw', function() {
     });
 
   });
-  
+
   describe('drawing with a finishCondition', function() {
     beforeEach(function() {
       var draw = new ol.interaction.Draw({
         source: source,
         type: ol.geom.GeometryType.LINE_STRING,
-        finishFunction: function(event){
-          if (ol.array.equals(event.pixel,[30,20])){
+        finishFunction: function(event) {
+          if (ol.array.equals(event.pixel,[30,20])) {
             return true;
           }
           return false;
@@ -366,7 +366,7 @@ describe('ol.interaction.Draw', function() {
 
       features = source.getFeatures();
       expect(features).to.have.length(1);
-      
+
       // second point
       simulateEvent('pointermove', 40, 30);
       simulateEvent('pointerdown', 40, 30);
@@ -375,7 +375,7 @@ describe('ol.interaction.Draw', function() {
       // finish on this point
       simulateEvent('pointerdown', 40, 30);
       simulateEvent('pointerup', 40, 30);
-      
+
       features = source.getFeatures();
       expect(features).to.have.length(1);
     });
@@ -859,6 +859,7 @@ describe('ol.interaction.Draw', function() {
   });
 });
 
+goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.Feature');
 goog.require('ol.Map');
