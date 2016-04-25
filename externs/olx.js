@@ -2585,6 +2585,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     type: ol.geom.GeometryType,
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
+ *     finishCondition: (ol.events.ConditionType|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     geometryFunction: (ol.interaction.DrawGeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
@@ -2657,6 +2658,15 @@ olx.interaction.DrawOptions.prototype.maxPoints;
  * @api
  */
 olx.interaction.DrawOptions.prototype.minPoints;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether the drawing can be finished.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.finishCondition;
 
 
 /**
