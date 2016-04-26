@@ -98,6 +98,15 @@ olx.LogoOptions.prototype.src;
 
 
 /**
+ * Link target for the logo. If undefined, none will be set and clicking on
+ * the logo will open the link in the current tab.
+ * @type {string|undefined}
+ * @api
+ */
+olx.LogoOptions.prototype.target;
+
+
+/**
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
@@ -7451,7 +7460,7 @@ olx.view.FitOptions.prototype.maxZoom;
  *     index: number,
  *     layerStates: Object.<number, ol.layer.LayerState>,
  *     layerStatesArray: Array.<ol.layer.LayerState>,
- *     logos: Object.<string, string>,
+ *     logos: Object.<string, Array.<string>>,
  *     pixelRatio: number,
  *     pixelToCoordinateMatrix: ol.vec.Mat4.Number,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,

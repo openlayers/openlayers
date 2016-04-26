@@ -306,13 +306,17 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     if (!(logoKey in logoElements)) {
       image = new Image();
       image.src = logoKey;
-      var logoValue = logos[logoKey];
+      var logoValue = logos[logoKey][0];
+      var logoTarget = logos[logoKey][1];
       if (logoValue === '') {
         logoElement = image;
       } else {
         logoElement = goog.dom.createDom('A', {
           'href': logoValue
         });
+        if (logoTarget !== undefined) {
+          logoElement.setAttribute('target', logoTarget);
+        }
         logoElement.appendChild(image);
       }
       this.logoLi_.appendChild(logoElement);
