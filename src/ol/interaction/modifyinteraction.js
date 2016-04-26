@@ -194,7 +194,7 @@ ol.interaction.Modify = function(options) {
    * @type {Array}
    * @private
    */
-  this.dragSegments_ = null;
+  this.dragSegments_ = [];
 
   /**
    * Draw overlay where sketch features are drawn.
@@ -547,7 +547,7 @@ ol.interaction.Modify.compareIndexes_ = function(a, b) {
  */
 ol.interaction.Modify.handleDownEvent_ = function(evt) {
   this.handlePointerAtPixel_(evt.pixel, evt.map);
-  this.dragSegments_ = [];
+  this.dragSegments_.length = 0;
   this.modified_ = false;
   var vertexFeature = this.vertexFeature_;
   if (vertexFeature) {
