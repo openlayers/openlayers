@@ -175,7 +175,7 @@ olx.interaction.InteractionOptions.prototype.handleEvent;
  *     layers: (Array.<ol.layer.Base>|ol.Collection.<ol.layer.Base>|undefined),
  *     loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined),
- *     logo: (boolean|string|olx.LogoOptions|undefined),
+ *     logo: (boolean|string|olx.LogoOptions|Element|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
  *     target: (Element|string|undefined),
@@ -261,9 +261,10 @@ olx.MapOptions.prototype.loadTilesWhileInteracting;
  * The map logo. A logo to be displayed on the map at all times. If a string is
  * provided, it will be set as the image source of the logo. If an object is
  * provided, the `src` property should be the URL for an image and the `href`
- * property should be a URL for creating a link. To disable the map logo, set
- * the option to `false`. By default, the OpenLayers 3 logo is shown.
- * @type {boolean|string|olx.LogoOptions|undefined}
+ * property should be a URL for creating a link. If an element is provided,
+ * the element will be used. To disable the map logo, set the option to
+ * `false`. By default, the OpenLayers 3 logo is shown.
+ * @type {boolean|string|olx.LogoOptions|Element|undefined}
  * @api stable
  */
 olx.MapOptions.prototype.logo;

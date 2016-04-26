@@ -309,6 +309,9 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
       var logoValue = logos[logoKey];
       if (logoValue === '') {
         logoElement = image;
+      } else if (goog.dom.isElement(logoValue)) {
+        goog.asserts.assertElement(logoValue);
+        logoElement = logoValue;
       } else {
         logoElement = goog.dom.createDom('A', {
           'href': logoValue
