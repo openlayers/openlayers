@@ -55,16 +55,16 @@ describe('ol.renderer.canvas.Map', function() {
       expect(cb.firstCall.args[1]).to.be(layer);
     });
 
-    it('calls callback with null for unmanaged layers', function() {
+    it('calls callback with layer for unmanaged layers', function() {
       layer.setMap(map);
       map.renderSync();
       var cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
       expect(cb).to.be.called();
-      expect(cb.firstCall.args[1]).to.be(null);
+      expect(cb.firstCall.args[1]).to.be(layer);
     });
 
-    it('calls callback with main layer when skipped feature on unmanaged layer', function() {
+    it('also calls callback with original layer when skipped feature on unmanaged layer', function() {
       var feature = layer.getSource().getFeatures()[0];
       var managedLayer = new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -77,8 +77,9 @@ describe('ol.renderer.canvas.Map', function() {
       map.renderSync();
       var cb = sinon.spy();
       map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb);
-      expect(cb.callCount).to.be(1);
-      expect(cb.firstCall.args[1]).to.be(managedLayer);
+      expect(cb.callCount).to.be(2);
+      expect(cb.firstCall.args[1]).to.be(layer);
+      expect(cb.lastCall.args[1]).to.be(managedLayer);
     });
 
     it('filters managed layers', function() {
