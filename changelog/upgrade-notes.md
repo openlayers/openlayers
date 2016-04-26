@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### Map forEachFeatureAtPixel callback changes
+
+Previously, unmanaged layers (i.e. layers that were not configured as `layers` array/collection on the map or added with `ol.Map#addLayer()`), were reported as `null` in the `ol.Map#forEachFeatureAtPixel()` callback. Now, they are reported like regular layers.
+
 ### v3.15.0
 
 #### Internet Explorer 9 support
