@@ -64,9 +64,9 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
  * @param {Node} node Node.
  * @param {boolean} normalizeWhitespace Normalize whitespace: remove all line
  * breaks.
- * @param {Array.<String|string>} accumulator Accumulator.
+ * @param {Array.<string>} accumulator Accumulator.
  * @private
- * @return {Array.<String|string>} Accumulator.
+ * @return {Array.<string>} Accumulator.
  */
 ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   if (node.nodeType == goog.dom.NodeType.CDATA_SECTION ||

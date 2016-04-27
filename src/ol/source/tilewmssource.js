@@ -234,7 +234,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
-    params['STYLES'] = new String('');
+    params['STYLES'] = '';
   }
 
   if (pixelRatio != 1) {
