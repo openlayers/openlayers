@@ -98,14 +98,6 @@ ol.VectorTile.prototype.getContext = function() {
 
 
 /**
- * @inheritDoc
- */
-ol.VectorTile.prototype.disposeInternal = function() {
-  goog.base(this, 'disposeInternal');
-};
-
-
-/**
  * Get the feature format assigned for reading this tile's features.
  * @return {ol.format.Feature} Feature format.
  * @api
