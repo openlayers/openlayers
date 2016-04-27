@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### Removal of `opaque` option for `ol.source.VectorTile`
+
+This option is no longer needed, so it was removed from the API.
+
 ### v3.15.0
 
 #### Internet Explorer 9 support
