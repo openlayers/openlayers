@@ -317,11 +317,8 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
       pixelExtents.push(pixelExtent);
     }
     var tilePixelSize = source.getTilePixelSize(currentZ, pixelRatio, projection);
-    var image = tile.getImage();
-    if (image) {
-      renderContext.drawImage(image, tileGutter, tileGutter,
-          tilePixelSize[0], tilePixelSize[1], left, top, w, h);
-    }
+    renderContext.drawImage(tile.getImage(), tileGutter, tileGutter,
+        tilePixelSize[0], tilePixelSize[1], left, top, w, h);
     if (!opaque) {
       renderContext.restore();
     }
