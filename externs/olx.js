@@ -3011,6 +3011,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     condition: (ol.events.ConditionType|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     dontStyle: (boolean|undefined)
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
  *     multi: (boolean|undefined),
