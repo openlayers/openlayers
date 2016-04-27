@@ -561,7 +561,7 @@ ol.format.WKT.Parser.prototype.consume_ = function() {
 
 /**
  * If the given type matches the current token, consume it.
- * @param {ol.format.WKT.TokenType.<number>} type Token type.
+ * @param {ol.format.WKT.TokenType} type Token type.
  * @return {boolean} Whether the token matches the given type.
  */
 ol.format.WKT.Parser.prototype.match = function(type) {
@@ -838,7 +838,7 @@ ol.format.WKT.Parser.prototype.formatErrorMessage_ = function() {
 
 
 /**
- * @enum {function (new:ol.geom.Geometry, Array, ol.geom.GeometryLayout.<string>=)}
+ * @enum {function (new:ol.geom.Geometry, Array, ol.geom.GeometryLayout)}
  * @private
  */
 ol.format.WKT.Parser.GeometryConstructor_ = {
