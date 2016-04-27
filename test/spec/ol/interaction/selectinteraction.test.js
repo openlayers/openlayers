@@ -325,8 +325,6 @@ describe('ol.interaction.Select', function() {
 
       map.addInteraction(interaction);
 
-      expect(interaction.featureOverlay_).not.to.be(null);
-
       simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
     });
 
@@ -354,41 +352,7 @@ describe('ol.interaction.Select', function() {
     });
 
   });
-
-  describe('#setMap()', function() {
-    var interaction;
-
-    beforeEach(function() {
-      interaction = new ol.interaction.Select();
-      expect(interaction.getActive()).to.be(true);
-    });
-
-    describe('#setMap(null)', function() {
-      beforeEach(function() {
-        map.addInteraction(interaction);
-      });
-      afterEach(function() {
-        map.removeInteraction(interaction);
-      });
-      describe('#setMap(null) when interaction is active', function() {
-        it('unsets the map from the feature overlay', function() {
-          var spy = sinon.spy(interaction.featureOverlay_, 'setMap');
-          interaction.setMap(null);
-          expect(spy.getCall(0).args[0]).to.be(null);
-        });
-      });
-    });
-
-    describe('#setMap(map)', function() {
-      describe('#setMap(map) when interaction is active', function() {
-        it('sets the map into the feature overlay', function() {
-          var spy = sinon.spy(interaction.featureOverlay_, 'setMap');
-          interaction.setMap(map);
-          expect(spy.getCall(0).args[0]).to.be(map);
-        });
-      });
-    });
-  });
+  
 });
 
 goog.require('ol.Collection');
