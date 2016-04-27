@@ -393,6 +393,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage = function(
   var layer = this.getLayer();
   var replays = ol.renderer.canvas.IMAGE_REPLAYS[layer.getRenderMode()];
   if (!replays) {
+    // do not create an image in 'vector' mode
     return;
   }
   var pixelRatio = frameState.pixelRatio;
