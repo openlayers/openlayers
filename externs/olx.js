@@ -2706,6 +2706,47 @@ olx.interaction.DrawOptions.prototype.wrapX;
 
 
 /**
+ * @typedef {{extent: (ol.Extent|undefined),
+ *     boxStyle: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
+ *     pointerStyle: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
+ *     wrapX: (boolean|undefined)}}
+ * @api
+ */
+olx.interaction.ExtentOptions;
+
+/**
+ * Initial extent. Defaults to no inital extent
+ * @type {ol.Extent|undefined}
+ * @api
+ */
+olx.interaction.ExtentOptions.prototype.extent;
+
+/**
+ * Style for the drawn extent box. 
+ * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POLYGON]
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
+ * @api
+ */
+olx.interaction.ExtentOptions.prototype.boxStyle;
+
+/**
+ * Style for the cursor used to draw the extent. 
+ * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POINT]
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
+ * @api
+ */
+olx.interaction.ExtentOptions.prototype.pointerStyle;
+
+/**
+ * Wrap the drawn extent across multiple maps in the X direction? 
+ * Only affects visuals, not functionality. Defaults to false.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.ExtentOptions.prototype.wrapX;
+
+
+/**
  * @typedef {{
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean)
