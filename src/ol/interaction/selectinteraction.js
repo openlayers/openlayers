@@ -114,28 +114,28 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.events.ConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.singleClick;
+    options.condition : ol.events.condition.singleClick;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
   this.addCondition_ = options.addCondition ?
-      options.addCondition : ol.events.condition.never;
+    options.addCondition : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
   this.removeCondition_ = options.removeCondition ?
-      options.removeCondition : ol.events.condition.never;
+    options.removeCondition : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
   this.toggleCondition_ = options.toggleCondition ?
-      options.toggleCondition : ol.events.condition.shiftKeyOnly;
+    options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -148,20 +148,28 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.interaction.SelectFilterFunction}
    */
   this.filter_ = options.filter ? options.filter :
-      ol.functions.TRUE;
+    ol.functions.TRUE;
 
   /**
    * @private
    * @type {ol.style.Style}
    */
   this.style_ = options.style ? options.style :
-        ol.interaction.Select.getDefaultStyleFunction();
+    ol.interaction.Select.getDefaultStyleFunction();
 
   /**
    * @type {boolean}
    * @private
    */
   this.dontStyle_ = options.dontStyle ? options.dontStyle : false;
+
+  /**
+   * An association between selected feature (key)
+   * and original style (value)
+   * @private
+   * @type {Object.<number, ol.style.Style>}
+   */
+  this.featureStyleAssociation_ = {};
 
   /**
    * @private
@@ -202,19 +210,44 @@ ol.interaction.Select = function(opt_options) {
 
   /**
    * An association between selected feature (key)
-   * and original style (value)
+   * and layer (value)
    * @private
-   * @type {Object.<number, ol.style.Style>}
+   * @type {Object.<number, ol.layer.Layer>}
    */
-  this.featureStyleAssociation_ = {};
+  this.featureLayerAssociation_ = {};
 
   ol.events.listen(this.features_, ol.CollectionEventType.ADD,
-      this.addFeature_, this);
+    this.addFeature_, this);
   ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-      this.removeFeature_, this);
+    this.removeFeature_, this);
 
 };
 goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
+
+
+/**
+ * @param {ol.CollectionEvent} evt Event.
+ * @private
+ */
+ol.interaction.Select.prototype.addFeature_ = function(evt) {
+  var feature = evt.element;
+  goog.asserts.assertInstanceof(feature, ol.Feature,
+    'feature should be an ol.Feature');
+  if (!this.dontStyle_) {
+    this.giveSelectedStyle_(feature);
+  }
+};
+
+
+/**
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {ol.layer.Layer} layer Layer.
+ * @private
+ */
+ol.interaction.Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
+  var key = goog.getUid(feature);
+  this.featureLayerAssociation_[key] = layer;
+};
 
 
 /**
@@ -224,6 +257,23 @@ goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
  */
 ol.interaction.Select.prototype.getFeatures = function() {
   return this.features_;
+};
+
+
+/**
+ * Returns the associated {@link ol.layer.Vector vectorlayer} of
+ * the (last) selected feature. Note that this will not work with any
+ * programmatic method like pushing features to
+ * {@link ol.interaction.Select#getFeatures collection}.
+ * @param {ol.Feature|ol.render.Feature} feature Feature
+ * @return {ol.layer.Vector} Layer.
+ * @api
+ */
+ol.interaction.Select.prototype.getLayer = function(feature) {
+  goog.asserts.assertInstanceof(feature, ol.Feature,
+    'feature should be an ol.Feature');
+  var key = goog.getUid(feature);
+  return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
 
 
@@ -267,19 +317,20 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // pixel, or clear the selected feature(s) if there is no feature at
     // the pixel.
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
-        function(feature, layer) {
-          if (this.filter_(feature, layer)) {
-            selected.push(feature);
-            return !this.multi_;
-          }
-        }, this, this.layerFilter_);
+      /**
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
+       * @param {ol.layer.Layer} layer Layer.
+       * @return {boolean|undefined} Continue to iterate over the features.
+       */
+      function(feature, layer) {
+        if (this.filter_(feature, layer)) {
+          selected.push(feature);
+          this.addFeatureLayerAssociation_(feature, layer);
+          return !this.multi_;
+        }
+      }, this, this.layerFilter_);
     if (selected.length > 0 && features.getLength() == 1 &&
-        features.item(0) == selected[0]) {
+      features.item(0) == selected[0]) {
       // No change
     } else {
       change = true;
@@ -288,27 +339,39 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
         features.clear();
       }
       features.extend(selected);
+      // Modify object this.featureLayerAssociation_
+      if (selected.length === 0) {
+        ol.object.clear(this.featureLayerAssociation_);
+      } else {
+        if (deselected.length > 0) {
+          deselected.forEach(function(feature) {
+            this.removeFeatureLayerAssociation_(feature);
+          }, this);
+        }
+      }
     }
   } else {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
-        function(feature, layer) {
-          if (this.filter_(feature, layer)) {
-            if ((add || toggle) &&
-                !ol.array.includes(features.getArray(), feature)) {
-              selected.push(feature);
-            } else if ((remove || toggle) &&
-                ol.array.includes(features.getArray(), feature)) {
-              deselected.push(feature);
-            }
-            return !this.multi_;
+      /**
+       * @param {ol.Feature|ol.render.Feature} feature Feature.
+       * @param {ol.layer.Layer} layer Layer.
+       * @return {boolean|undefined} Continue to iterate over the features.
+       */
+      function(feature, layer) {
+        if (this.filter_(feature, layer)) {
+          if ((add || toggle) &&
+            !ol.array.includes(features.getArray(), feature)) {
+            selected.push(feature);
+            this.addFeatureLayerAssociation_(feature, layer);
+          } else if ((remove || toggle) &&
+            ol.array.includes(features.getArray(), feature)) {
+            deselected.push(feature);
+            this.removeFeatureLayerAssociation_(feature);
           }
-        }, this, this.layerFilter_);
+          return !this.multi_;
+        }
+      }, this, this.layerFilter_);
     var i;
     for (i = deselected.length - 1; i >= 0; --i) {
       features.remove(deselected[i]);
@@ -320,8 +383,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (change) {
     this.dispatchEvent(
-        new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
-            selected, deselected, mapBrowserEvent));
+      new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
+        selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
 };
@@ -355,15 +418,16 @@ ol.interaction.Select.prototype.setMap = function(map) {
   }
 };
 
+
 /**
  * @return {ol.style.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
   var styles = ol.style.createDefaultEditingStyles();
   ol.array.extend(styles[ol.geom.GeometryType.POLYGON],
-      styles[ol.geom.GeometryType.LINE_STRING]);
+    styles[ol.geom.GeometryType.LINE_STRING]);
   ol.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
-      styles[ol.geom.GeometryType.LINE_STRING]);
+    styles[ol.geom.GeometryType.LINE_STRING]);
 
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
@@ -375,25 +439,21 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
  * @param {ol.CollectionEvent} evt Event.
  * @private
  */
-ol.interaction.Select.prototype.addFeature_ = function(evt) {
+ol.interaction.Select.prototype.removeFeature_ = function(evt) {
   var feature = evt.element;
   goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
+    'feature should be an ol.Feature');
   if (!this.dontStyle_) {
-    this.giveSelectedStyle_(feature);
+    this.removeSelectedStyle_(feature);
   }
 };
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.interaction.Select.prototype.removeFeature_ = function(evt) {
-  var feature = evt.element;
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
-  if (!this.dontStyle_) {
-    this.removeSelectedStyle_(feature);
-  }
+ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
+  var key = goog.getUid(feature);
+  delete this.featureLayerAssociation_[key];
 };
