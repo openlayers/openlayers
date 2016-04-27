@@ -172,25 +172,30 @@ goog.inherits(ol.interaction.Snap, ol.interaction.Pointer);
  */
 ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
   var listen = opt_listen !== undefined ? opt_listen : true;
+  var feature_uid = goog.getUid(feature);
   var geometry = feature.getGeometry();
-  var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
-  if (segmentWriter) {
-    var feature_uid = goog.getUid(feature);
-    this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
-        ol.extent.createEmpty());
-    segmentWriter.call(this, feature, geometry);
+  if (geometry) {
+    var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
+    if (segmentWriter) {
+      this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
+          ol.extent.createEmpty());
+      segmentWriter.call(this, feature, geometry);
 
-    if (listen) {
-      this.geometryModifyListenerKeys_[feature_uid] = ol.events.listen(
-          geometry,
-          ol.events.EventType.CHANGE,
-          this.handleGeometryModify_.bind(this, feature),
-          this);
-      this.geometryChangeListenerKeys_[feature_uid] = ol.events.listen(
-          feature,
-          ol.Object.getChangeEventType(feature.getGeometryName()),
-          this.handleGeometryChange_, this);
+      if (listen) {
+        this.geometryModifyListenerKeys_[feature_uid] = ol.events.listen(
+            geometry,
+            ol.events.EventType.CHANGE,
+            this.handleGeometryModify_.bind(this, feature),
+            this);
+      }
     }
+  }
+
+  if (listen) {
+    this.geometryChangeListenerKeys_[feature_uid] = ol.events.listen(
+        feature,
+        ol.Object.getChangeEventType(feature.getGeometryName()),
+        this.handleGeometryChange_, this);
   }
 };
 
@@ -317,10 +322,12 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
     if (unlisten) {
       ol.Observable.unByKey(this.geometryModifyListenerKeys_[feature_uid]);
       delete this.geometryModifyListenerKeys_[feature_uid];
-
-      ol.Observable.unByKey(this.geometryChangeListenerKeys_[feature_uid]);
-      delete this.geometryChangeListenerKeys_[feature_uid];
     }
+  }
+
+  if (unlisten) {
+    ol.Observable.unByKey(this.geometryChangeListenerKeys_[feature_uid]);
+    delete this.geometryChangeListenerKeys_[feature_uid];
   }
 };
 
