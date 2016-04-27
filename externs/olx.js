@@ -3010,8 +3010,7 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  * @typedef {{addCondition: (ol.events.ConditionType|undefined),
  *     condition: (ol.events.ConditionType|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     dontStyle: (boolean|undefined)
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null|undefined),
  *     removeCondition: (ol.events.ConditionType|undefined),
  *     toggleCondition: (ol.events.ConditionType|undefined),
  *     multi: (boolean|undefined),
@@ -3063,7 +3062,8 @@ olx.interaction.SelectOptions.prototype.layers;
 
 /**
  * Style for the selected features. By default the default edit style is used
- * (see {@link ol.style}).
+ * (see {@link ol.style}). If set to null the selected features won't be styled
+ * by the interaction.
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
  * @api
  */
