@@ -347,7 +347,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState,
       var tile = this.renderedTiles[i];
       goog.asserts.assertInstanceof(tile, ol.VectorTile, 'got an ol.VectorTile');
       this.createReplayGroup(tile, frameState);
-      this.renderTileImage(tile, frameState, layerState, skippedFeatures);
+      this.renderTileImage_(tile, frameState, layerState, skippedFeatures);
     }
   }
   return prepared;
@@ -387,8 +387,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.layer.LayerState} layerState Layer state.
  * @param {Array.<string>} skippedFeatures Skipped features.
+ * @private
  */
-ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage = function(
+ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
     tile, frameState, layerState, skippedFeatures) {
   var layer = this.getLayer();
   var replays = ol.renderer.canvas.IMAGE_REPLAYS[layer.getRenderMode()];
@@ -415,7 +416,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage = function(
     var height = tileSize[1] * pixelRatio * resolutionRatio;
     tileContext.canvas.width = width / resolutionRatio + 0.5;
     tileContext.canvas.height = height / resolutionRatio + 0.5;
-    tileContext.scale(1 / resolutionRatio, 1 / resolutionRatio)
+    tileContext.scale(1 / resolutionRatio, 1 / resolutionRatio);
     tileContext.translate(width / 2, height / 2);
     var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
     var pixelScale = pixelRatio / resolution;
