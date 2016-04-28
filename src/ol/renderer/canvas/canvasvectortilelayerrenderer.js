@@ -76,8 +76,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
     frameState, layerState, context) {
   var transform = this.getTransform(frameState, 0);
   this.dispatchPreComposeEvent(context, frameState, transform);
-  this.renderTileImages(context, frameState, layerState);
-  this.renderTileReplays_(context, frameState, layerState);
+  var renderMode = this.getLayer().getRenderMode();
+  if (renderMode !== ol.layer.VectorTileRenderType.VECTOR) {
+    this.renderTileImages(context, frameState, layerState);
+  }
+  if (renderMode !== ol.layer.VectorTileRenderType.IMAGE) {
+    this.renderTileReplays_(context, frameState, layerState);
+  }
   this.dispatchPostComposeEvent(context, frameState, transform);
 };
 
@@ -93,9 +98,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
 
   var layer = this.getLayer();
   var replays = ol.renderer.canvas.VECTOR_REPLAYS[layer.getRenderMode()];
-  if (!replays) {
-    return;
-  }
   var pixelRatio = frameState.pixelRatio;
   var skippedFeatureUids = layerState.managed ?
       frameState.skippedFeatureUids : {};
