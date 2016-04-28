@@ -3815,6 +3815,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     renderBuffer: (number|undefined),
+ *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
  *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
  *     source: (ol.source.VectorTile|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
@@ -3838,6 +3839,22 @@ olx.layer.VectorTileOptions;
  */
 olx.layer.VectorTileOptions.prototype.renderBuffer;
 
+
+/**
+ * Render mode for vector tiles:
+ *  * `'image'`: Vector tiles are rendered as images. Great performance, but
+ *    point symbols and texts are always rotated with the view and pixels are
+ *    scaled during zoom animations.
+ *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
+ *    are scaled during zoom animations. Point symbols and texts are accurately
+ *    rendered as vectors and can stay upright on rotated views.
+ *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
+ *    even during animations, but slower performance than the other options.
+ *  The default is `'hybrid'`.
+ * @type {ol.layer.VectorTileRenderType|string|undefined}
+ * @api
+ */
+olx.layer.VectorTileOptions.prototype.renderMode;
 
 /**
  * Render order. Function to be used when sorting features before rendering. By
@@ -4378,7 +4395,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            cacheSize: (number|undefined),
  *            format: (ol.format.Feature|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
  *            projection: ol.proj.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
@@ -4427,14 +4443,6 @@ olx.source.VectorTileOptions.prototype.format;
  * @api
  */
 olx.source.VectorTileOptions.prototype.logo;
-
-
-/**
- * Whether the layer is opaque.
- * @type {boolean|undefined}
- * @api
- */
-olx.source.VectorTileOptions.prototype.opaque;
 
 
 /**

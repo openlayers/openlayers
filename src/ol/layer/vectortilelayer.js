@@ -1,5 +1,6 @@
 goog.provide('ol.layer.VectorTile');
 
+goog.require('goog.asserts');
 goog.require('ol.layer.Vector');
 goog.require('ol.object');
 
@@ -10,6 +11,26 @@ goog.require('ol.object');
 ol.layer.VectorTileProperty = {
   PRELOAD: 'preload',
   USE_INTERIM_TILES_ON_ERROR: 'useInterimTilesOnError'
+};
+
+
+/**
+ * @enum {string}
+ * Render mode for vector tiles:
+ *  * `'image'`: Vector tiles are rendered as images. Great performance, but
+ *    point symbols and texts are always rotated with the view and pixels are
+ *    scaled during zoom animations.
+ *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
+ *    are scaled during zoom animations. Point symbols and texts are accurately
+ *    rendered as vectors and can stay upright on rotated views.
+ *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
+ *    even during animations, but slower performance than the other options.
+ * @api
+ */
+ol.layer.VectorTileRenderType = {
+  IMAGE: 'image',
+  HYBRID: 'hybrid',
+  VECTOR: 'vector'
 };
 
 
@@ -38,6 +59,18 @@ ol.layer.VectorTile = function(opt_options) {
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
       options.useInterimTilesOnError : true);
 
+  goog.asserts.assert(options.renderMode == undefined ||
+      options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
+      options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
+      options.renderMode == ol.layer.VectorTileRenderType.VECTOR,
+      'renderMode needs to be \'image\', \'hybrid\' or \'vector\'');
+
+  /**
+   * @private
+   * @type {ol.layer.VectorTileRenderType|string}
+   */
+  this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
+
 };
 goog.inherits(ol.layer.VectorTile, ol.layer.Vector);
 
@@ -50,6 +83,14 @@ goog.inherits(ol.layer.VectorTile, ol.layer.Vector);
  */
 ol.layer.VectorTile.prototype.getPreload = function() {
   return /** @type {number} */ (this.get(ol.layer.VectorTileProperty.PRELOAD));
+};
+
+
+/**
+ * @return {ol.layer.VectorTileRenderType|string} The render mode.
+ */
+ol.layer.VectorTile.prototype.getRenderMode = function() {
+  return this.renderMode_;
 };
 
 
