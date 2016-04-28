@@ -295,7 +295,7 @@ ol.Map = function(options) {
     ol.events.listen(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHMOVE,ol.events.Event.stopPropagation);
   }, this);
   ol.events.listen(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHEND, function(e) {
-    ol.events.unlisten(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHMOVE);
+    ol.events.unlisten(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHMOVE, ol.events.Event.stopPropagation, this);
   },this);
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
