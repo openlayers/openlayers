@@ -282,7 +282,6 @@ ol.Map = function(options) {
     ol.events.EventType.DBLCLICK,
     ol.events.EventType.MOUSEDOWN,
     ol.events.EventType.TOUCHSTART,
-    ol.events.EventType.TOUCHMOVE,
     ol.events.EventType.MSPOINTERDOWN,
     ol.MapBrowserEvent.EventType.POINTERDOWN,
     ol.events.EventType.MOUSEWHEEL,
@@ -292,6 +291,12 @@ ol.Map = function(options) {
     ol.events.listen(this.overlayContainerStopEvent_, overlayEvents[i],
         ol.events.Event.stopPropagation);
   }
+  ol.events.listen(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHSTART, function(e) {
+		ol.events.listen(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHMOVE,ol.events.Event.stopPropagation);
+  }, this);
+  ol.events.listen(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHEND, function(e) {
+		ol.events.unlisten(this.overlayContainerStopEvent_, ol.events.EventType.TOUCHMOVE);
+  },this);
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
   /**
