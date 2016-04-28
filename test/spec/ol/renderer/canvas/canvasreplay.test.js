@@ -46,9 +46,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
         closePath: function() {},
         setLineDash: function() {},
         restore: function() {}
-      }
+      };
 
-    })
+    });
 
     it('batches fill and stroke instructions for same style', function() {
       ol.renderer.vector.renderFeature(replay, feature1, style1, 1);
@@ -126,7 +126,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
-    })
+    });
   });
 
 });
