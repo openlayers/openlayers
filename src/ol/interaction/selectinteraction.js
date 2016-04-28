@@ -149,12 +149,23 @@ ol.interaction.Select = function(opt_options) {
   this.filter_ = options.filter ? options.filter :
       ol.functions.TRUE;
 
+  var style = options.style;
+
+  if (style !== undefined) {
+    if (goog.isFunction(style)) {
+      style = function(resolution) {
+        return /** @type {ol.style.StyleFunction} */ (style)(this, resolution);
+      };
+    }
+  } else {
+    style = ol.interaction.Select.getDefaultStyleFunction();
+  }
+
   /**
    * @private
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null}
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.FeatureStyleFunction|null}
    */
-  this.style_ = (options.style !== undefined) ? options.style :
-      ol.interaction.Select.getDefaultStyleFunction();
+  this.style_ = style;
 
   /**
    * An association between selected feature (key)
@@ -277,15 +288,7 @@ ol.interaction.Select.prototype.getLayer = function(feature) {
 ol.interaction.Select.prototype.giveSelectedStyle_ = function(feature) {
   var key = goog.getUid(feature);
   this.featureStyleAssociation_[key] = feature.getStyle();
-  if (goog.isFunction(this.style_)) {
-    /** @type {ol.style.StyleFunction} */
-    var style = this.style_;
-    feature.setStyle(function(resolution) {
-      return style(this, resolution);
-    });
-  } else {
-    feature.setStyle(this.style_);
-  }
+  feature.setStyle(this.style_);
 };
 
 
@@ -418,7 +421,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
 
 
 /**
- * @return {ol.style.StyleFunction} Styles.
+ * @return {ol.FeatureStyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
   var styles = ol.style.createDefaultEditingStyles();
@@ -427,8 +430,8 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
   ol.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
       styles[ol.geom.GeometryType.LINE_STRING]);
 
-  return function(feature, resolution) {
-    return styles[feature.getGeometry().getType()];
+  return function(resolution) {
+    return styles[this.getGeometry().getType()];
   };
 };
 
