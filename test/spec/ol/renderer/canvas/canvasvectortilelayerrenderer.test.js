@@ -66,8 +66,23 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('uses lower resolution for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
       var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
       expect(renderer.zDirection).to.be(1);
+    });
+
+    it('does not render images for pure vector rendering', function() {
+      layer.renderMode_ = 'vector';
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      var spy = sinon.spy(renderer, 'renderTileImages');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+    });
+
+    it('does not render replays for pure image rendering', function() {
+      layer.renderMode_ = 'image';
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      var spy = sinon.spy(renderer, 'renderTileReplays_');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
     });
 
     it('gives precedence to feature styles over layer styles', function() {
