@@ -1,5 +1,17 @@
 goog.provide('ol.test.renderer.canvas.Replay');
 
+goog.require('ol.transform');
+goog.require('ol.Feature');
+goog.require('ol.geom.Polygon');
+goog.require('ol.render.canvas.LineStringReplay');
+goog.require('ol.render.canvas.PolygonReplay');
+goog.require('ol.render.canvas.Replay');
+goog.require('ol.render.canvas.ReplayGroup');
+goog.require('ol.renderer.vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
+
 describe('ol.render.canvas.ReplayGroup', function() {
 
   describe('#replay', function() {
@@ -8,7 +20,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     var feature1, feature2, feature3, style1, style2, transform;
 
     beforeEach(function() {
-      transform = goog.vec.Mat4.createNumber();
+      transform = ol.transform.create();
       replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, false);
       feature1 = new ol.Feature(new ol.geom.Polygon(
           [[[-90, -45], [-90, 0], [0, 0], [0, -45], [-90, -45]]]));
@@ -46,9 +58,9 @@ describe('ol.render.canvas.ReplayGroup', function() {
         closePath: function() {},
         setLineDash: function() {},
         restore: function() {}
-      }
+      };
 
-    })
+    });
 
     it('batches fill and stroke instructions for same style', function() {
       ol.renderer.vector.renderFeature(replay, feature1, style1, 1);
@@ -85,7 +97,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       ol.renderer.vector.renderFeature(replay, feature2, style2, 1);
       ol.renderer.vector.renderFeature(replay, feature3, style2, 1);
       var skippedUids = {};
-      skippedUids[goog.getUid(feature1)] = true;
+      skippedUids[ol.getUid(feature1)] = true;
       replay.replay(context, 1, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
@@ -97,7 +109,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       ol.renderer.vector.renderFeature(replay, feature2, style1, 1);
       ol.renderer.vector.renderFeature(replay, feature3, style2, 1);
       var skippedUids = {};
-      skippedUids[goog.getUid(feature3)] = true;
+      skippedUids[ol.getUid(feature3)] = true;
       replay.replay(context, 1, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
@@ -109,8 +121,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
       ol.renderer.vector.renderFeature(replay, feature2, style1, 1);
       ol.renderer.vector.renderFeature(replay, feature3, style2, 1);
       var skippedUids = {};
-      skippedUids[goog.getUid(feature1)] = true;
-      skippedUids[goog.getUid(feature2)] = true;
+      skippedUids[ol.getUid(feature1)] = true;
+      skippedUids[ol.getUid(feature2)] = true;
       replay.replay(context, 1, transform, 0, skippedUids);
       expect(fillCount).to.be(1);
       expect(strokeCount).to.be(1);
@@ -126,7 +138,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
-    })
+    });
   });
 
 });
@@ -252,15 +264,3 @@ describe('ol.render.canvas.PolygonReplay', function() {
   });
 
 });
-
-goog.require('goog.vec.Mat4');
-goog.require('ol.Feature');
-goog.require('ol.geom.Polygon');
-goog.require('ol.render.canvas.LineStringReplay');
-goog.require('ol.render.canvas.PolygonReplay');
-goog.require('ol.render.canvas.Replay');
-goog.require('ol.render.canvas.ReplayGroup');
-goog.require('ol.renderer.vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
