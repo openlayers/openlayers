@@ -266,6 +266,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
+  // When the batch size gets too big, performance decreases. 200 is a good
+  // balance between batch size and number of fill/stroke instructions.
   var batchSize =
       this.instructions != instructions || this.overlaps ? 0 : 200;
   while (i < ii) {
@@ -1267,8 +1269,6 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
         closePathInstruction);
     offset = end;
   }
-  // FIXME is it quicker to fill and stroke each polygon individually,
-  // FIXME or all polygons together?
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (state.fillStyle !== undefined) {

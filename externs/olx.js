@@ -4418,7 +4418,7 @@ olx.source.VectorTileOptions.prototype.logo;
 
 /**
  * This source may have overlapping geometries. Default is `true`. Setting this
- * to `false` (e.g. for sources with polygons that represent adminstrative
+ * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
  * @type {boolean|undefined}
@@ -5864,7 +5864,7 @@ olx.source.VectorOptions.prototype.logo;
 
 /**
  * This source may have overlapping geometries. Default is `true`. Setting this
- * to `false` (e.g. for sources with polygons that represent adminstrative
+ * to `false` (e.g. for sources with polygons that represent administrative
  * boundaries or TopoJSON sources) allows the renderer to optimise fill and
  * stroke operations.
  * @type {boolean|undefined}

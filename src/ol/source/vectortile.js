@@ -56,7 +56,7 @@ ol.source.VectorTile = function(options) {
    * @private
    * @type {boolean}
    */
-  this.overlaps_ = options.overlaps || true;
+  this.overlaps_ = options.overlaps == undefined ? true : options.overlaps;
 
   /**
    * @protected
