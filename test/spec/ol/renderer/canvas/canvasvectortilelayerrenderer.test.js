@@ -71,18 +71,32 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not render images for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
-      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      var spy = sinon.spy(renderer, 'renderTileImages');
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileImages');
       map.renderSync();
       expect(spy.callCount).to.be(0);
+      spy.restore();
     });
 
     it('does not render replays for pure image rendering', function() {
       layer.renderMode_ = 'image';
-      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      var spy = sinon.spy(renderer, 'renderTileReplays_');
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileReplays_');
       map.renderSync();
       expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+    it('renders both replays and images for hybrid rendering', function() {
+      var spy1 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileReplays_');
+      var spy2 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileImages');
+      map.renderSync();
+      expect(spy1.callCount).to.be(1);
+      expect(spy2.callCount).to.be(1);
+      spy1.restore();
+      spy2.restore();
     });
 
     it('gives precedence to feature styles over layer styles', function() {
