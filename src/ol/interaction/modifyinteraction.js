@@ -889,7 +889,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
  */
 ol.interaction.Modify.prototype.removePoint = function() {
   var handled = false;
-  if (this.lastPointerEvent_) {
+  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != ol.MapBrowserEvent.EventType.POINTERDRAG) {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     handled = this.removeVertex_();
