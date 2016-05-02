@@ -1490,8 +1490,8 @@ ol.Map.createOptionsInternal = function(options) {
     var logo = options.logo;
     if (typeof logo === 'string') {
       logos[logo] = '';
-    } else if (goog.dom.isElement(logo)) {
-      logos['logo'] = logo;
+    } else if (logo instanceof HTMLElement) {
+      logos[goog.getUid(logo).toString()] = logo;
     } else if (goog.isObject(logo)) {
       goog.asserts.assertString(logo.href, 'logo.href should be a string');
       goog.asserts.assertString(logo.src, 'logo.src should be a string');

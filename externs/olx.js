@@ -7452,7 +7452,7 @@ olx.view.FitOptions.prototype.maxZoom;
  *     index: number,
  *     layerStates: Object.<number, ol.layer.LayerState>,
  *     layerStatesArray: Array.<ol.layer.LayerState>,
- *     logos: Object.<string, string>,
+ *     logos: Object.<string, (string|Element)>,
  *     pixelRatio: number,
  *     pixelToCoordinateMatrix: ol.vec.Mat4.Number,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,
