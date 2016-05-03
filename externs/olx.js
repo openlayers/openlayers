@@ -7404,7 +7404,8 @@ olx.view;
 
 
 /**
- * @typedef {{padding: !Array.<number>,
+ * @typedef {{
+ *     padding: (!Array.<number>|undefined),
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
  *     maxZoom: (number|undefined),
@@ -7417,7 +7418,7 @@ olx.view.FitOptions;
 /**
  * Padding (in pixels) to be cleared inside the view. Values in the array are
  * top, right, bottom and left padding. Default is `[0, 0, 0, 0]`.
- * @type {!Array.<number>}
+ * @type {!Array.<number>|undefined}
  * @api
  */
 olx.view.FitOptions.prototype.padding;
