@@ -65,7 +65,7 @@
     "phantomjs-prebuilt": "2.1.7",
     "proj4": "2.3.14",
     "resemblejs": "2.2.0",
-    "sinon": "1.17.3",
+    "sinon": "1.17.4",
     "slimerjs": "0.906.1"
   },
   "eslintConfig": {
