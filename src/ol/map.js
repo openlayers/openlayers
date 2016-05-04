@@ -20,7 +20,6 @@ goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEvent');
 goog.require('ol.ObjectEventType');
-goog.require('ol.Pixel');
 goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
@@ -1441,19 +1440,6 @@ ol.Map.prototype.unskipFeature = function(feature) {
   delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
-
-
-/**
- * @typedef {{controls: ol.Collection.<ol.control.Control>,
- *            interactions: ol.Collection.<ol.interaction.Interaction>,
- *            keyboardEventTarget: (Element|Document),
- *            logos: (Object.<string, (string|Element)>),
- *            overlays: ol.Collection.<ol.Overlay>,
- *            rendererConstructor:
- *                function(new: ol.renderer.Map, Element, ol.Map),
- *            values: Object.<string, *>}}
- */
-ol.MapOptionsInternal;
 
 
 /**

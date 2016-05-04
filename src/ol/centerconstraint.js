@@ -1,13 +1,6 @@
 goog.provide('ol.CenterConstraint');
-goog.provide('ol.CenterConstraintType');
 
 goog.require('ol.math');
-
-
-/**
- * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
- */
-ol.CenterConstraintType;
 
 
 /**

@@ -1,5 +1,4 @@
 goog.provide('ol.Feature');
-goog.provide('ol.FeatureStyleFunction');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
@@ -282,18 +281,6 @@ ol.Feature.prototype.setGeometryName = function(name) {
       this.handleGeometryChanged_, this);
   this.handleGeometryChanged_();
 };
-
-
-/**
- * A function that returns an array of {@link ol.style.Style styles} given a
- * resolution. The `this` keyword inside the function references the
- * {@link ol.Feature} to be styled.
- *
- * @typedef {function(this: ol.Feature, number):
- *     (ol.style.Style|Array.<ol.style.Style>)}
- * @api stable
- */
-ol.FeatureStyleFunction;
 
 
 /**

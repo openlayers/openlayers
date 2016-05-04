@@ -11,7 +11,6 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.Pixel');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.coordinate');

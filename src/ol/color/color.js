@@ -3,7 +3,6 @@
 // causes occasional loss of precision and rounding errors, especially in the
 // alpha channel.
 
-goog.provide('ol.Color');
 goog.provide('ol.color');
 
 goog.require('goog.asserts');
@@ -11,17 +10,6 @@ goog.require('goog.color');
 goog.require('goog.color.names');
 goog.require('ol');
 goog.require('ol.math');
-
-
-/**
- * A color represented as a short array [red, green, blue, alpha].
- * red, green, and blue should be integers in the range 0..255 inclusive.
- * alpha should be a float in the range 0..1 inclusive. If no alpha value is
- * given then `1` will be used.
- * @typedef {Array.<number>}
- * @api
- */
-ol.Color;
 
 
 /**

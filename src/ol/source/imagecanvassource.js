@@ -1,6 +1,5 @@
 goog.provide('ol.source.ImageCanvas');
 
-goog.require('ol.CanvasFunctionType');
 goog.require('ol.ImageCanvas');
 goog.require('ol.extent');
 goog.require('ol.source.Image');

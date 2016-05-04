@@ -91,14 +91,3 @@ ol.ImageCanvas.prototype.load = function() {
 ol.ImageCanvas.prototype.getImage = function(opt_context) {
   return this.canvas_;
 };
-
-
-/**
- * A function that is called to trigger asynchronous canvas drawing.  It is
- * called with a "done" callback that should be called when drawing is done.
- * If any error occurs during drawing, the "done" callback should be called with
- * that error.
- *
- * @typedef {function(function(Error))}
- */
-ol.ImageCanvasLoader;

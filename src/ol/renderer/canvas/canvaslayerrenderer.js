@@ -2,7 +2,6 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
-goog.require('ol.Pixel');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');

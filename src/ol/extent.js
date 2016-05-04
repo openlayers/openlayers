@@ -1,17 +1,8 @@
-goog.provide('ol.Extent');
 goog.provide('ol.extent');
 goog.provide('ol.extent.Corner');
 goog.provide('ol.extent.Relationship');
 
 goog.require('goog.asserts');
-
-
-/**
- * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array.<number>}
- * @api stable
- */
-ol.Extent;
 
 
 /**

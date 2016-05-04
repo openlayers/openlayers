@@ -9,7 +9,6 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');
-goog.require('ol.Pixel');
 goog.require('ol.coordinate');
 goog.require('ol.events');
 goog.require('ol.events.EventType');

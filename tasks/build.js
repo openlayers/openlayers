@@ -207,6 +207,9 @@ function build(config, paths, callback) {
   } else {
     log.info('ol', 'Compiling ' + paths.length + ' sources');
     options.compile.js = paths.concat(options.compile.js || []);
+    // typedefs file has no `goog.provide`s, so is ignored by closure-util
+    // when calculating dependencies. So it's added here as a compiler option.
+    options.compile.js.push('src/ol/typedefs.js');
     closure.compile(options, callback);
   }
 }

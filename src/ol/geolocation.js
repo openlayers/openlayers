@@ -6,7 +6,6 @@ goog.provide('ol.GeolocationProperty');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.Object');
-goog.require('ol.TransformFunction');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
 goog.require('ol.has');

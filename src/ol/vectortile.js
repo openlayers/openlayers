@@ -7,18 +7,6 @@ goog.require('ol.proj.Projection');
 
 
 /**
- * @typedef {{
- *     dirty: boolean,
- *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
- *     renderedTileRevision: number,
- *     renderedRevision: number,
- *     replayGroup: ol.render.IReplayGroup,
- *     skippedFeatures: Array.<string>}}
- */
-ol.TileReplayState;
-
-
-/**
  * @constructor
  * @extends {ol.Tile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
