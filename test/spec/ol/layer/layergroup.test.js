@@ -361,16 +361,22 @@ describe('ol.layer.Group', function() {
       var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray).to.be.a(Array);
       expect(layerStatesArray.length).to.be(2);
-      expect(layerStatesArray[0]).to.eql(layer1.getLayerState());
+      expect(layerStatesArray[0]).to.eql(ol.object.assign({
+        parent: layerGroup
+      }, layer1.getLayerState()));
 
-      // layer state should match except for layer reference
+      // layer state should match except for layer and parent reference
       var layerState = ol.object.assign({}, layerStatesArray[0]);
       delete layerState.layer;
+      expect(layerState.parent).to.equal(layerGroup);
+      delete layerState.parent;
       var groupState = ol.object.assign({}, layerGroup.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
 
-      expect(layerStatesArray[1]).to.eql(layer2.getLayerState());
+      expect(layerStatesArray[1]).to.eql(ol.object.assign({
+        parent: layerGroup
+      }, layer2.getLayerState()));
 
       layerGroup.dispose();
     });
@@ -412,9 +418,11 @@ describe('ol.layer.Group', function() {
       // compare layer state to group state
       var groupState, layerState;
 
-      // layer state should match except for layer reference
+      // layer state should match except for layer and parent reference
       layerState = ol.object.assign({}, layerStatesArray[0]);
       delete layerState.layer;
+      expect(layerState.parent).to.equal(layerGroup);
+      delete layerState.parent;
       groupState = ol.object.assign({}, layerGroup.getLayerState());
       delete groupState.layer;
       expect(layerState).to.eql(groupState);
@@ -423,6 +431,7 @@ describe('ol.layer.Group', function() {
       layerState = ol.object.assign({}, layerStatesArray[1]);
       delete layerState.layer;
       expect(layerState).to.eql({
+        parent: layerGroup,
         opacity: 0.25,
         visible: false,
         managed: true,
