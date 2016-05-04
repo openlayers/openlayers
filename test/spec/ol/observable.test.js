@@ -73,6 +73,21 @@ describe('ol.Observable', function() {
       expect(listener.callCount).to.be(1);
     });
 
+    it('is safe to dispatch events of same type in a once listener', function() {
+      var callCount = 0;
+      observable.once('change', function() {
+        observable.changed();
+        observable.changed();
+      });
+      observable.on('change', function() {
+        ++callCount;
+      });
+      expect(function() {
+        observable.changed();
+      }).to.not.throwException();
+      expect(callCount).to.be(3);
+    });
+
     it('accepts an array of event types (called once for each)', function() {
       observable.once(['foo', 'bar'], listener);
 
