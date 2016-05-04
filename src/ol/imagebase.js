@@ -5,7 +5,6 @@ goog.require('goog.asserts');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 goog.require('ol.Attribution');
-goog.require('ol.Extent');
 
 
 /**

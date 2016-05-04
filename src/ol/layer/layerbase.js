@@ -1,6 +1,5 @@
 goog.provide('ol.layer.Base');
 goog.provide('ol.layer.LayerProperty');
-goog.provide('ol.layer.LayerState');
 
 goog.require('ol');
 goog.require('ol.Object');

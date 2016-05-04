@@ -1,3 +1,4 @@
+// goog.provide can't be removed from files which only contain a typedef
 goog.provide('ol.raster.Pixel');
 
 

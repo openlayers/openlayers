@@ -3,7 +3,6 @@ goog.provide('ol.source.ImageStatic');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.Image');
-goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.ImageState');
 goog.require('ol.dom');
 goog.require('ol.extent');

@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('goog.style');
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');

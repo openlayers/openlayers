@@ -1,4 +1,3 @@
-goog.provide('ol.events.ConditionType');
 goog.provide('ol.events.condition');
 
 goog.require('goog.asserts');

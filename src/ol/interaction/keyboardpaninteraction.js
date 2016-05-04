@@ -3,7 +3,6 @@ goog.provide('ol.interaction.KeyboardPan');
 goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.coordinate');
-goog.require('ol.events.ConditionType');
 goog.require('ol.events.EventType');
 goog.require('ol.events.KeyCode');
 goog.require('ol.events.condition');

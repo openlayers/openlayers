@@ -1,14 +1,12 @@
 goog.provide('ol.interaction.Draw');
 goog.provide('ol.interaction.DrawEvent');
 goog.provide('ol.interaction.DrawEventType');
-goog.provide('ol.interaction.DrawGeometryFunctionType');
 goog.provide('ol.interaction.DrawMode');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.Collection');
-goog.require('ol.Coordinate');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');

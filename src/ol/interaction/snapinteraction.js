@@ -6,7 +6,6 @@ goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
-goog.require('ol.Extent');
 goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');

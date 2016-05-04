@@ -11,7 +11,6 @@ goog.require('goog.dom.NodeType');
 goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Feature');
-goog.require('ol.FeatureStyleFunction');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.format.Feature');

@@ -2,7 +2,6 @@ goog.provide('ol.TileUrlFunction');
 goog.provide('ol.TileUrlFunctionType');
 
 goog.require('goog.asserts');
-goog.require('ol.TileCoord');
 goog.require('ol.math');
 goog.require('ol.tilecoord');
 

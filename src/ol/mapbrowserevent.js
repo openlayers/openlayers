@@ -5,9 +5,7 @@ goog.provide('ol.MapBrowserPointerEvent');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.Coordinate');
 goog.require('ol.MapEvent');
-goog.require('ol.Pixel');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');

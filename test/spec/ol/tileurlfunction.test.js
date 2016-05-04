@@ -105,6 +105,5 @@ describe('ol.TileUrlFunction', function() {
 
 });
 
-goog.require('ol.TileCoord');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.tilegrid.TileGrid');

@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectEventType');
-goog.provide('ol.interaction.SelectFilterFunction');
 
 goog.require('goog.asserts');
 goog.require('ol.functions');

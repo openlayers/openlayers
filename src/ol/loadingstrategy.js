@@ -1,8 +1,6 @@
 goog.provide('ol.LoadingStrategy');
 goog.provide('ol.loadingstrategy');
 
-goog.require('ol.TileCoord');
-
 
 /**
  * One of `all`, `bbox`, `tile`.
