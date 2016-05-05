@@ -57,7 +57,6 @@ ol.source.TileImage = function(options) {
       options.tileClass : ol.ImageTile;
 
   /**
-   * @public
    * @type {Object.<string, ol.TileCache>}
    */
   this.tileCacheForProjection = {};
