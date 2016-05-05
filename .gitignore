@@ -3,3 +3,4 @@
 /dist/
 /coverage/
 ./idea
+./idea/*
