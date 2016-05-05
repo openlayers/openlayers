@@ -57,7 +57,7 @@ ol.source.TileImage = function(options) {
       options.tileClass : ol.ImageTile;
 
   /**
-   * @protected
+   * @public
    * @type {Object.<string, ol.TileCache>}
    */
   this.tileCacheForProjection = {};
@@ -182,6 +182,7 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
 
 /**
  * @inheritDoc
+ * @api
  */
 ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
