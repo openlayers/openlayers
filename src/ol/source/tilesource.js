@@ -73,6 +73,7 @@ ol.source.Tile = function(options) {
   this.tileGrid = options.tileGrid !== undefined ? options.tileGrid : null;
 
   /**
+   * @protected
    * @type {ol.TileCache}
    */
   this.tileCache = new ol.TileCache(options.cacheSize);
