@@ -367,12 +367,6 @@ ol.format.WKT.prototype.writeGeometryText = function(geometry, opt_options) {
 
 
 /**
- * @typedef {{type: number, value: (number|string|undefined), position: number}}
- */
-ol.format.WKT.Token;
-
-
-/**
  * @const
  * @enum {number}
  */
@@ -451,7 +445,7 @@ ol.format.WKT.Lexer.prototype.nextChar_ = function() {
 
 /**
  * Fetch and return the next token.
- * @return {!ol.format.WKT.Token} Next string token.
+ * @return {!ol.format.WKTToken} Next string token.
  */
 ol.format.WKT.Lexer.prototype.nextToken = function() {
   var c = this.nextChar_();
@@ -537,7 +531,7 @@ ol.format.WKT.Parser = function(lexer) {
   this.lexer_ = lexer;
 
   /**
-   * @type {ol.format.WKT.Token}
+   * @type {ol.format.WKTToken}
    * @private
    */
   this.token_;

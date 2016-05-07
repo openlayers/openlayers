@@ -91,7 +91,7 @@ ol.source.Raster = function(options) {
 
   /**
    * The most recently rendered state.
-   * @type {?ol.source.Raster.RenderedState}
+   * @type {?ol.source.RasterRenderedState}
    * @private
    */
   this.renderedState_ = null;
@@ -443,14 +443,6 @@ ol.source.Raster.createTileRenderer_ = function(source) {
   var layer = new ol.layer.Tile({source: source});
   return new ol.renderer.canvas.TileLayer(layer);
 };
-
-
-/**
- * @typedef {{revision: number,
- *            resolution: number,
- *            extent: ol.Extent}}
- */
-ol.source.Raster.RenderedState;
 
 
 /**

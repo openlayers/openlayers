@@ -370,6 +370,12 @@ ol.format.WFS.TransactionResponse;
 
 
 /**
+ * @typedef {{type: number, value: (number|string|undefined), position: number}}
+ */
+ol.format.WKTToken;
+
+
+/**
  * A function that takes a {@link ol.MapBrowserEvent} and two
  * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
@@ -420,7 +426,7 @@ ol.interaction.SelectFilterFunction;
  *     vertexPixel: (ol.Pixel|null)
  * }}
  */
-ol.interaction.Snap.ResultType;
+ol.interaction.SnapResultType;
 
 
 /**
@@ -429,7 +435,7 @@ ol.interaction.Snap.ResultType;
  *     segment: Array.<ol.Coordinate>
  * }}
  */
-ol.interaction.Snap.SegmentDataType;
+ol.interaction.SnapSegmentDataType;
 
 
 /**
@@ -485,7 +491,7 @@ ol.raster.Pixel;
 /**
  * @typedef {{fillStyle: ol.ColorLike}}
  */
-ol.render.canvas.FillState;
+ol.render.canvasFillState;
 
 
 /**
@@ -496,7 +502,7 @@ ol.render.canvas.FillState;
  *            miterLimit: number,
  *            strokeStyle: string}}
  */
-ol.render.canvas.StrokeState;
+ol.render.canvasStrokeState;
 
 
 /**
@@ -504,13 +510,13 @@ ol.render.canvas.StrokeState;
  *            textAlign: string,
  *            textBaseline: string}}
  */
-ol.render.canvas.TextState;
+ol.render.canvasTextState;
 
 
 /**
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
-ol.renderer.webgl.TextureCacheEntry;
+ol.renderer.webglTextureCacheEntry;
 
 
 /**
@@ -543,6 +549,14 @@ ol.reproj.Triangle;
  *            state: (ol.source.State|undefined)}}
  */
 ol.source.ImageOptions;
+
+
+/**
+ * @typedef {{revision: number,
+ *            resolution: number,
+ *            extent: ol.Extent}}
+ */
+ol.source.RasterRenderedState;
 
 
 /**
@@ -599,6 +613,39 @@ ol.structs.LRUCacheEntry;
 
 
 /**
+ * @typedef {{x: number, y: number, width: number, height: number}}
+ */
+ol.style.AtlasBlock;
+
+
+/**
+ * Provides information for an image inside an atlas.
+ * `offsetX` and `offsetY` are the position of the image inside
+ * the atlas image `image`.
+ * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
+ */
+ol.style.AtlasInfo;
+
+
+/**
+ * Provides information for an image inside an atlas manager.
+ * `offsetX` and `offsetY` is the position of the image inside
+ * the atlas image `image` and the position of the hit-detection image
+ * inside the hit-detection atlas image `hitImage`.
+ * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement,
+ *    hitImage: HTMLCanvasElement}}
+ */
+ol.style.AtlasManagerInfo;
+
+
+/**
+ * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
+ *   size: number, lineDash: Array.<number>}}
+ */
+ol.style.CircleRenderOptions;
+
+
+/**
  * @typedef {{opacity: number,
  *            rotateWithView: boolean,
  *            rotation: number,
@@ -617,6 +664,20 @@ ol.style.ImageOptions;
  * @api
  */
 ol.style.GeometryFunction;
+
+
+/**
+ * @typedef {{
+ *   strokeStyle: (string|undefined),
+ *   strokeWidth: number,
+ *   size: number,
+ *   lineCap: string,
+ *   lineDash: Array.<number>,
+ *   lineJoin: string,
+ *   miterLimit: number
+ * }}
+ */
+ol.style.RegularShapeRenderOptions;
 
 
 /**

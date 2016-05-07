@@ -1538,19 +1538,19 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {?ol.render.canvas.FillState}
+   * @type {?ol.render.canvasFillState}
    */
   this.replayFillState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvas.StrokeState}
+   * @type {?ol.render.canvasStrokeState}
    */
   this.replayStrokeState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvas.TextState}
+   * @type {?ol.render.canvasTextState}
    */
   this.replayTextState_ = null;
 
@@ -1586,19 +1586,19 @@ ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {?ol.render.canvas.FillState}
+   * @type {?ol.render.canvasFillState}
    */
   this.textFillState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvas.StrokeState}
+   * @type {?ol.render.canvasStrokeState}
    */
   this.textStrokeState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvas.TextState}
+   * @type {?ol.render.canvasTextState}
    */
   this.textState_ = null;
 
@@ -1638,7 +1638,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offse
 
 
 /**
- * @param {ol.render.canvas.FillState} fillState Fill state.
+ * @param {ol.render.canvasFillState} fillState Fill state.
  * @private
  */
 ol.render.canvas.TextReplay.prototype.setReplayFillState_ = function(fillState) {
@@ -1662,7 +1662,7 @@ ol.render.canvas.TextReplay.prototype.setReplayFillState_ = function(fillState) 
 
 
 /**
- * @param {ol.render.canvas.StrokeState} strokeState Stroke state.
+ * @param {ol.render.canvasStrokeState} strokeState Stroke state.
  * @private
  */
 ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ = function(strokeState) {
@@ -1704,7 +1704,7 @@ ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ = function(strokeSta
 
 
 /**
- * @param {ol.render.canvas.TextState} textState Text state.
+ * @param {ol.render.canvasTextState} textState Text state.
  * @private
  */
 ol.render.canvas.TextReplay.prototype.setReplayTextState_ = function(textState) {
