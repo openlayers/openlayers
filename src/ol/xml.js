@@ -6,27 +6,6 @@ goog.require('ol.array');
 
 
 /**
- * When using {@link ol.xml.makeChildAppender} or
- * {@link ol.xml.makeSimpleNodeFactory}, the top `objectStack` item needs to
- * have this structure.
- * @typedef {{node:Node}}
- */
-ol.xml.NodeStackItem;
-
-
-/**
- * @typedef {function(Node, Array.<*>)}
- */
-ol.xml.Parser;
-
-
-/**
- * @typedef {function(Node, *, Array.<*>)}
- */
-ol.xml.Serializer;
-
-
-/**
  * This document should be used when creating nodes for XML serializations. This
  * document is also used by {@link ol.xml.createElementNS} and
  * {@link ol.xml.setAttributeNS}

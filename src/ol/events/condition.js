@@ -7,16 +7,6 @@ goog.require('ol.MapBrowserPointerEvent');
 
 
 /**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a
- * `{boolean}`. If the condition is met, true should be returned.
- *
- * @typedef {function(ol.MapBrowserEvent): boolean}
- * @api stable
- */
-ol.events.ConditionType;
-
-
-/**
  * Return `true` if only the alt-key is pressed, `false` otherwise (e.g. when
  * additionally the shift-key is pressed).
  *

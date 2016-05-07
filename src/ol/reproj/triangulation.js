@@ -7,15 +7,6 @@ goog.require('ol.proj');
 
 
 /**
- * Single triangle; consists of 3 source points and 3 target points.
- *
- * @typedef {{source: Array.<ol.Coordinate>,
- *            target: Array.<ol.Coordinate>}}
- */
-ol.reproj.Triangle;
-
-
-/**
  * @classdesc
  * Class containing triangulation of the given target extent.
  * Used for determining source data and the reprojection itself.

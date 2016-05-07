@@ -12,12 +12,6 @@ goog.require('ol.reproj.Triangulation');
 
 
 /**
- * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
- */
-ol.reproj.ImageFunctionType;
-
-
-/**
  * @classdesc
  * Class encapsulating single reprojected image.
  * See {@link ol.source.Image}.

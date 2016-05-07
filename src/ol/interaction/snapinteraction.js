@@ -592,25 +592,6 @@ ol.interaction.Snap.prototype.writePolygonGeometry_ = function(feature, geometry
 
 
 /**
- * @typedef {{
- *     snapped: {boolean},
- *     vertex: (ol.Coordinate|null),
- *     vertexPixel: (ol.Pixel|null)
- * }}
- */
-ol.interaction.Snap.ResultType;
-
-
-/**
- * @typedef {{
- *     feature: ol.Feature,
- *     segment: Array.<ol.Coordinate>
- * }}
- */
-ol.interaction.Snap.SegmentDataType;
-
-
-/**
  * Handle all pointer events events.
  * @param {ol.MapBrowserEvent} evt A move event.
  * @return {boolean} Pass the event to other interactions.
