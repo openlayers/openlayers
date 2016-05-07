@@ -2,6 +2,7 @@
  * File for all top-level (in the `ol` namespace) typedefs used by the compiler,
  * and referenced by JSDoc.
  */
+goog.provide('ol.Extent');
 
 
 /**
