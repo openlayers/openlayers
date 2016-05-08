@@ -1,10 +1,28 @@
 /**
- * File for all top-level (in the `ol` namespace) typedefs used by the compiler,
- * and referenced by JSDoc.
+ * File for all typedefs used by the compiler, and referenced by JSDoc.
  *
- * goog.provides are needed for 2 cases:
- * - the 1st two are to prevent compiler errors
- * - the others are to prevent 'defined before its owner' warnings
+ * These look like vars (or var properties), but in fact are simply identifiers
+ * for the Closure compiler. Originally they were included in the appropriate
+ * namespace file, but with the move away from Closure namespaces and towards
+ * self-contained standard modules are now all in this file, with two exceptions.
+ * Unlike the other type definitions - enums and constructor functions - they
+ * are not code and so are not imported or exported. They are only referred to
+ * in type-defining comments used by the Closure compiler, and so should not
+ * appear in module code.
+ *
+ * The 2 exceptions are the WFS typedefs which are in a sub-sub-namespace and
+ * are API. These have been put in their own separate file.
+ *
+ * When the code is converted to ES6 modules, the namespace structure will
+ * disappear, and these typedefs will have to be renamed accordingly, but the
+ * namespace structure is maintained for the present for backwards compatibility.
+ *
+ * In principle, typedefs should not have a `goog.provide` nor should files which
+ * refer to a typedef in comments need a `goog.require`. However, goog.provides
+ * are needed for 2 cases, both to prevent compiler errors/warnings:
+ * - the 1st two for specific errors
+ * - each sub-namespace needs at least one so the namespace is created when not
+ *   used in the code, as when application code is compiled with the library.
  */
 goog.provide('ol.Extent');
 goog.provide('ol.events.EventTargetLike');
