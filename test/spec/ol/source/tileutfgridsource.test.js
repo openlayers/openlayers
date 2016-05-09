@@ -63,19 +63,6 @@ describe('ol.source.TileUTFGrid', function() {
       expect(source).to.be.an(ol.source.TileUTFGrid);
     });
 
-    it('immediately fetches the passed URL', function() {
-      // spy on the jsonp method
-      var jsonpSpy = sinon.spy(ol.net, 'jsonp');
-
-      getTileUTFGrid();
-      expect(jsonpSpy.calledOnce).to.be(true);
-      expect(jsonpSpy.lastCall.calledWith(url)).to.be(true);
-
-      // cleanup
-      ol.net.jsonp.restore();
-      jsonpSpy = null;
-    });
-
   });
 
   describe('#handleTileJSONResponse', function() {
