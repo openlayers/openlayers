@@ -336,7 +336,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
  * @return {Object} The data.
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
-  if (!this.grid_ || !this.keys_ || !this.data_) {
+  if (!this.grid_ || !this.keys_) {
     return null;
   }
   var xRelative = (coordinate[0] - this.extent_[0]) /
@@ -359,7 +359,16 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   }
   code -= 32;
 
-  return (code in this.keys_) ? this.data_[this.keys_[code]] : null;
+  var data = null;
+  if (code in this.keys_) {
+    var id = this.keys_[code];
+    if (this.data_ && id in this.data_) {
+      data = this.data_[id];
+    } else {
+      data = id;
+    }
+  }
+  return data;
 };
 
 
