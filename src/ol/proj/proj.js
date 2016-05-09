@@ -5,6 +5,7 @@ goog.provide('ol.proj.Units');
 
 goog.require('goog.asserts');
 goog.require('ol');
+goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.sphere.NORMAL');

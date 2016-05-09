@@ -4,6 +4,7 @@ goog.require('goog.asserts');
 goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
+goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');

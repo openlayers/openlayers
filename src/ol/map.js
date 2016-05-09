@@ -20,6 +20,7 @@ goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEvent');
 goog.require('ol.ObjectEventType');
+goog.require('ol.Pixel');
 goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');

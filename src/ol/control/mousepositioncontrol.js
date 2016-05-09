@@ -5,6 +5,7 @@ goog.provide('ol.control.MousePosition');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.Object');
+goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
