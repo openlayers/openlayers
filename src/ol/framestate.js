@@ -1,5 +1,3 @@
-// FIXME factor out common code between usedTiles and wantedTiles
-
 goog.provide('ol.PostRenderFunction');
 goog.provide('ol.PreRenderFunction');
 
