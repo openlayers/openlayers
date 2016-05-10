@@ -1,8 +1,6 @@
 goog.provide('ol.TileRange');
 
 goog.require('goog.asserts');
-goog.require('ol.Size');
-goog.require('ol.TileCoord');
 
 
 /**

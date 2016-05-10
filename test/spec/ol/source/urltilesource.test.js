@@ -168,6 +168,5 @@ describe('ol.source.UrlTile', function() {
 
 });
 
-goog.require('ol.TileCoord');
 goog.require('ol.proj');
 goog.require('ol.source.UrlTile');
