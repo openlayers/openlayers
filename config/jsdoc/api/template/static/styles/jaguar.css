@@ -132,6 +132,7 @@ li {
   display: block;
   font-size: 0.85em;
 }
+.navigation h4,
 .navigation li.item .title a {
   color: #e1e1e1;
 }
