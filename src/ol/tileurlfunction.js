@@ -25,13 +25,6 @@ ol.TileUrlFunctionType;
 
 
 /**
- * @typedef {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
- *     ol.TileCoord}
- */
-ol.TileCoordTransformType;
-
-
-/**
  * @param {string} template Template.
  * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
