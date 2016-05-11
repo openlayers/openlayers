@@ -368,26 +368,6 @@ ol.format.KMLGxTrackObject_;
 
 
 /**
- * Number of features; bounds/extent.
- * @typedef {{numberOfFeatures: number,
- *            bounds: ol.Extent}}
- * @api stable
- */
-ol.format.WFS.FeatureCollectionMetadata;
-
-
-/**
- * Total deleted; total inserted; total updated; array of insert ids.
- * @typedef {{totalDeleted: number,
- *            totalInserted: number,
- *            totalUpdated: number,
- *            insertIds: Array.<string>}}
- * @api stable
- */
-ol.format.WFS.TransactionResponse;
-
-
-/**
  * @typedef {{type: number, value: (number|string|undefined), position: number}}
  */
 ol.format.WKTToken;
