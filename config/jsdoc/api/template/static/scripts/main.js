@@ -55,18 +55,31 @@ $(function () {
 
     // create source code links to github
     var srcLinks = $('div.tag-source');
-    var masterSearch = window.location.href.match(/\/([^\/]*\/)apidoc\//);
-    if (masterSearch && masterSearch.length) {
-      var branch = masterSearch[1];
-      srcLinks.each(function(i, el) {
-        var textParts = el.innerHTML.trim().split(', ');
-        var link = 'https://github.com/openlayers/ol3/blob/' + branch +
-            textParts[0];
-        el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
-            '<a href="' + link + textParts[1].replace('line ', '#l') + '">' +
-            textParts[1] + '</a>';
-      });
+    var location = window.location.href;
+    var branchSearch = location.match(/\/([^\/]*)\/apidoc\//);
+    if (branchSearch && branchSearch.length) {
+      var branch = branchSearch[1];
+      if (branch !== 'latest') {
+        if (/^v[0-9\.]*$/.test(branch)) {
+          var ok = confirm('You are viewing outdated docs. Do you want to try the latest?');
+          if (ok) {
+            window.location.href = location.replace(branchSearch[0], '/latest/apidoc/');
+          }
+        } else {
+          $('.package-version').text(branch);
+        }
+      }
     }
+    var version = $('.package-version');
+    var branch = version.text();
+    srcLinks.each(function(i, el) {
+      var textParts = el.innerHTML.trim().split(', ');
+      var link = 'https://github.com/openlayers/ol3/blob/' + branch + '/' +
+          textParts[0];
+      el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
+          '<a href="' + link + textParts[1].replace('line ', '#l') + '">' +
+          textParts[1] + '</a>';
+    });
 
     // show/hide unstable items
     var links = $('a[href^="ol."]');
