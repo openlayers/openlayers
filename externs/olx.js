@@ -2837,7 +2837,8 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
 
 
 /**
- * @typedef {{deleteCondition: (ol.events.ConditionType|undefined),
+ * @typedef {{condition: (ol.events.ConditionType|undefined),
+ *     deleteCondition: (ol.events.ConditionType|undefined),
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
  *     features: ol.Collection.<ol.Feature>,
@@ -2845,6 +2846,17 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  * @api
  */
 olx.interaction.ModifyOptions;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event will be considered to add or move a vertex
+ * to the sketch.
+ * Default is {@link ol.events.condition.primaryAction}.
+ * @type {ol.events.ConditionType|undefined}
+ * @api
+ */
+olx.interaction.ModifyOptions.prototype.condition;
 
 
 /**
