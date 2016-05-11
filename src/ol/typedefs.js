@@ -1,9 +1,27 @@
 /**
  * File for all top-level (in the `ol` namespace) typedefs used by the compiler,
  * and referenced by JSDoc.
+ *
+ * goog.provides are needed for 2 cases:
+ * - the 1st two are to prevent compiler errors
+ * - the others are to prevent 'defined before its owner' warnings
  */
 goog.provide('ol.Extent');
 goog.provide('ol.events.EventTargetLike');
+
+goog.provide('ol.format.KMLVec2_');
+goog.provide('ol.interaction.DragBoxEndConditionType');
+goog.provide('ol.layer.LayerState');
+goog.provide('ol.proj.ProjectionLike');
+goog.provide('ol.raster.Operation');
+goog.provide('ol.render.canvas.FillState');
+goog.provide('ol.renderer.webgl.TextureCacheEntry');
+goog.provide('ol.reproj.ImageFunctionType');
+goog.provide('ol.source.ImageOptions');
+goog.provide('ol.structs.LRUCacheEntry');
+goog.provide('ol.style.AtlasBlock');
+goog.provide('ol.webgl.BufferCacheEntry');
+goog.provide('ol.xml.NodeStackItem');
 
 
 /**
