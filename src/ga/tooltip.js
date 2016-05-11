@@ -96,7 +96,6 @@ ga.Tooltip.prototype.createOverlay_ = function() {
   goog.events.listen(this.tooltipContentElement_ , 'mousewheel',
       this.handleWheel_, false, this);
   var closeAnchor = goog.dom.createDom(goog.dom.TagName.A, {
-    'href': '#',
     'class': className + '-closer'
   });
   goog.events.listen(closeAnchor, 'click',
