@@ -3,6 +3,7 @@
  * and referenced by JSDoc.
  */
 goog.provide('ol.Extent');
+goog.provide('ol.events.EventTargetLike');
 
 
 /**
