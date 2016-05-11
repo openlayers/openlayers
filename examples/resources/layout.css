@@ -122,3 +122,7 @@ pre {
 #api-links ul {
   display: inline;
 }
+#latest-check {
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
