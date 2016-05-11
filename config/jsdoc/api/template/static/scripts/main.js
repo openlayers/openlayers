@@ -53,7 +53,7 @@ $(function () {
     $(window).on('resize', _onResize);
     _onResize();
 
-    // create source code links to github
+    // warn about outdated version
     var srcLinks = $('div.tag-source');
     var location = window.location.href;
     var branchSearch = location.match(/\/([^\/]*)\/apidoc\//);
@@ -70,6 +70,8 @@ $(function () {
         }
       }
     }
+
+    // create source code links to github
     var version = $('.package-version');
     var branch = version.text();
     srcLinks.each(function(i, el) {
