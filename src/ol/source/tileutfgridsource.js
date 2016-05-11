@@ -121,7 +121,7 @@ ol.source.TileUTFGrid.prototype.getTemplate = function() {
  * in case of an error).
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
- * @param {function(this: T, Object)} callback Callback.
+ * @param {function(this: T, *)} callback Callback.
  * @param {T=} opt_this The object to use as `this` in the callback.
  * @param {boolean=} opt_request If `true` the callback is always async.
  *                               The tile data is requested if not yet loaded.
@@ -333,7 +333,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
 /**
  * Synchronously returns data at given coordinate (if available).
  * @param {ol.Coordinate} coordinate Coordinate.
- * @return {Object} The data.
+ * @return {*} The data.
  */
 ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
   if (!this.grid_ || !this.keys_) {
@@ -376,7 +376,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  * Calls the callback (synchronously by default) with the available data
  * for given coordinate (or `null` if not yet loaded).
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {function(this: T, Object)} callback Callback.
+ * @param {function(this: T, *)} callback Callback.
  * @param {T=} opt_this The object to use as `this` in the callback.
  * @param {boolean=} opt_request If `true` the callback is always async.
  *                               The tile data is requested if not yet loaded.
@@ -460,7 +460,7 @@ ol.source.TileUTFGridTile_.prototype.onXHRLoad_ = function(event) {
   if (client.status >= 200 && client.status < 300) {
     var response;
     try {
-      response = /** @type {TileJSON} */(JSON.parse(client.responseText));
+      response = /** @type {!UTFGridJSON} */(JSON.parse(client.responseText));
     } catch (err) {
       this.handleError_();
       return;
@@ -476,7 +476,7 @@ ol.source.TileUTFGridTile_.prototype.onXHRLoad_ = function(event) {
  * @private
  * @param {Event} event The error event.
  */
-ol.source.TileUTFGridTile_.prototype.onXHRError_ = function() {
+ol.source.TileUTFGridTile_.prototype.onXHRError_ = function(event) {
   this.handleError_();
 };
 
