@@ -132,7 +132,6 @@ li {
   display: block;
   font-size: 0.85em;
 }
-.navigation h4,
 .navigation li.item .title a {
   color: #e1e1e1;
 }
@@ -416,4 +415,8 @@ footer {
   top: 1em;
   left: 250px;
   font-weight: normal;
+}
+#latest-check {
+  margin-top: -10px;
+  margin-bottom: 10px;
 }
