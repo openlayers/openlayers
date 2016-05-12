@@ -179,5 +179,4 @@ describe('ol.source.XYZ', function() {
 
 });
 
-goog.require('ol.TileCoord');
 goog.require('ol.source.XYZ');

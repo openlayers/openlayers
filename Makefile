@@ -211,7 +211,7 @@ build/timestamps/jsdoc-$(BRANCH)-timestamp: config/jsdoc/api/index.md \
                                             build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@rm -rf $(BUILD_HOSTED)/apidoc
-	./node_modules/.bin/jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -d $(BUILD_HOSTED)/apidoc
+	./node_modules/.bin/jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json --package package.json -d $(BUILD_HOSTED)/apidoc
 	@touch $@
 
 $(BUILD_HOSTED_EXAMPLES_JS): $(BUILD_HOSTED)/examples/%.js: build/examples/%.js

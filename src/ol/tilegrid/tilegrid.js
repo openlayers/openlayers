@@ -2,8 +2,6 @@ goog.provide('ol.tilegrid.TileGrid');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.Coordinate');
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');

@@ -219,15 +219,16 @@ ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, p
     return null;
   }
 
-  if (!this.isDirty_(extent, resolution)) {
+  var currentExtent = extent.slice();
+  if (!this.isDirty_(currentExtent, resolution)) {
     return this.renderedImageCanvas_;
   }
 
   var context = this.canvasContext_;
   var canvas = context.canvas;
 
-  var width = Math.round(ol.extent.getWidth(extent) / resolution);
-  var height = Math.round(ol.extent.getHeight(extent) / resolution);
+  var width = Math.round(ol.extent.getWidth(currentExtent) / resolution);
+  var height = Math.round(ol.extent.getHeight(currentExtent) / resolution);
 
   if (width !== canvas.width ||
       height !== canvas.height) {
@@ -235,16 +236,16 @@ ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, p
     canvas.height = height;
   }
 
-  var frameState = this.updateFrameState_(extent, resolution, projection);
+  var frameState = this.updateFrameState_(currentExtent, resolution, projection);
 
   var imageCanvas = new ol.ImageCanvas(
-      extent, resolution, 1, this.getAttributions(), canvas,
+      currentExtent, resolution, 1, this.getAttributions(), canvas,
       this.composeFrame_.bind(this, frameState));
 
   this.renderedImageCanvas_ = imageCanvas;
 
   this.renderedState_ = {
-    extent: extent,
+    extent: currentExtent,
     resolution: resolution,
     revision: this.getRevision()
   };

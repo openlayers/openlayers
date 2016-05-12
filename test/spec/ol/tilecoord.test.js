@@ -113,6 +113,5 @@ describe('ol.TileCoord', function() {
 
 });
 
-goog.require('ol.TileCoord');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
