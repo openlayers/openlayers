@@ -120,7 +120,7 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var log = [];
 
       var source = new ol.source.Raster({
-        operationType: ol.raster.OperationType.IMAGE,
+        operationType: 'image',
         threads: 0,
         sources: [redSource, greenSource, blueSource],
         operation: function(inputs) {
@@ -298,7 +298,6 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Image');
 goog.require('ol.proj.Projection');
-goog.require('ol.raster.OperationType');
 goog.require('ol.source.Image');
 goog.require('ol.source.ImageStatic');
 goog.require('ol.source.Raster');
