@@ -4193,11 +4193,21 @@ olx.source.ClusterOptions.prototype.wrapX;
 
 /**
  * @typedef {{preemptive: (boolean|undefined),
+ *     jsonp: (boolean|undefined),
  *     tileJSON: (TileJSON|undefined),
  *     url: (string|undefined)}}
  * @api
  */
 olx.source.TileUTFGridOptions;
+
+
+/**
+ * Use JSONP with callback to load the TileJSON. Useful when the server
+ * does not support CORS. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.TileUTFGridOptions.prototype.jsonp;
 
 
 /**

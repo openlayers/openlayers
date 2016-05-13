@@ -4,6 +4,23 @@
 
 This option is no longer needed, so it was removed from the API.
 
+#### XHR loading for `ol.source.TileUTFGrid`
+
+The `ol.source.TileUTFGrid` now uses XMLHttpRequest to load UTFGrid tiles by default.  This works out of the box with the v4 Mapbox API.  To work with the v3 API, you must use the new `jsonp` option on the source.  See the examples below for detail.
+
+```js
+// To work with the v4 API
+var v4source = new ol.source.TileUTFGrid({
+  url: 'https://api.tiles.mapbox.com/v4/example.json?access_token=' + YOUR_KEY_HERE
+});
+
+// To work with the v3 API
+var v3source = new ol.source.TileUTFGrid({
+  jsonp: true, // <--- this is required for v3
+  url: 'http://api.tiles.mapbox.com/v3/example.json'
+});
+```
+
 ### v3.15.0
 
 #### Internet Explorer 9 support

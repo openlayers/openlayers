@@ -2,11 +2,10 @@ goog.provide('ol.test.source.TileUTFGrid');
 
 describe('ol.source.TileUTFGrid', function() {
 
+  var url = 'spec/ol/data/tileutfgrid.json';
   var tileJson = null;
-  // Called once for this describe section, this method loads a local
-  // tileutfgrid and stores it in a variable to compare it in the actual
-  // tests. This way we can test `handleTileJSONResponse` and also remove
-  // the dependency from the external service / URL.
+
+  // Load and parse the UTFGrid fixture
   before(function(done) {
     var client = new XMLHttpRequest();
     client.addEventListener('load', function() {
@@ -14,68 +13,77 @@ describe('ol.source.TileUTFGrid', function() {
       done();
     });
     client.addEventListener('error', function() {
-      done(new Error('Failed to fetch local tileutfgrid.json'))
+      done(new Error('Failed to fetch ' + url));
     });
-    client.open('GET', 'spec/ol/data/tileutfgrid.json');
+    client.open('GET', url);
     client.send();
   });
+
   after(function() {
     tileJson = null;
   });
 
-  var url = 'some-tileutfgrid-url';
   function getTileUTFGrid() {
-    var source = new ol.source.TileUTFGrid({
+    return new ol.source.TileUTFGrid({
       url: url
     });
-    return source;
   }
 
   describe('constructor', function() {
 
     it('needs to be constructed with url option', function() {
-      var source;
+
+      var source = new ol.source.TileUTFGrid({url: url});
+      expect(source).to.be.an(ol.source.TileUTFGrid);
+      expect(source).to.be.an(ol.source.Tile);
 
       expect(function() {
         // no options: will throw
-        source = new ol.source.TileUTFGrid();
+        return new ol.source.TileUTFGrid();
       }).to.throwException();
-      expect(source).to.be(undefined);
 
       expect(function() {
         // no url-option: will throw
-        source = new ol.source.TileUTFGrid({});
+        return new ol.source.TileUTFGrid({});
       }).to.throwException();
-      expect(source).to.be(undefined);
 
-      expect(function() {
-        // with a (bogus) url option all is fine
-        source = new ol.source.TileUTFGrid({
-          url: url
-        });
-      }).to.not.throwException();
-      expect(source).to.be.an(ol.source.TileUTFGrid);
-
-      expect(function() {
-        // also test our utility method
-        source = getTileUTFGrid();
-      }).to.not.throwException();
-      expect(source).to.be.an(ol.source.TileUTFGrid);
+      expect(getTileUTFGrid()).to.be.an(ol.source.TileUTFGrid);
     });
 
-    it('immediately fetches the passed URL', function() {
-      // spy on the jsonp method
-      var jsonpSpy = sinon.spy(ol.net, 'jsonp');
+  });
 
-      getTileUTFGrid();
-      expect(jsonpSpy.calledOnce).to.be(true);
-      expect(jsonpSpy.lastCall.calledWith(url)).to.be(true);
+  describe('change event (ready)', function() {
+    it('is fired when the source is ready', function(done) {
+      var source = new ol.source.TileUTFGrid({
+        url: url
+      });
+      expect(source.getState()).to.be(ol.source.State.LOADING);
+      expect(source.tileGrid).to.be(null);
 
-      // cleanup
-      ol.net.jsonp.restore();
-      jsonpSpy = null;
+      source.on('change', function(event) {
+        if (source.getState() === ol.source.State.READY) {
+          expect(source.tileGrid).to.be.an(ol.tilegrid.TileGrid);
+          done();
+        }
+      });
     });
+  });
 
+  describe('change event (error)', function(done) {
+    it('is fired when the source fails to initialize', function(done) {
+      var source = new ol.source.TileUTFGrid({
+        url: 'Bogus UTFGrid URL'
+      });
+      expect(source.getState()).to.be(ol.source.State.LOADING);
+      expect(source.tileGrid).to.be(null);
+
+      source.on('change', function(event) {
+        if (source.getState() === ol.source.State.ERROR) {
+          expect(source.tileGrid).to.be(null);
+          done();
+        }
+      });
+    });
   });
 
   describe('#handleTileJSONResponse', function() {
@@ -281,6 +289,7 @@ describe('ol.source.TileUTFGrid', function() {
 goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
+goog.require('ol.source.Tile');
 goog.require('ol.source.TileUTFGrid');
 goog.require('ol.tilegrid.TileGrid');
 goog.require('ol.TileState');
