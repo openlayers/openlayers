@@ -83,6 +83,7 @@ layer0.setMap(map);
 
 function bindInputs(id, layer) {
   var idxInput = document.getElementById('idx' + id);
+  /** @this {Element} */
   idxInput.onchange = function() {
     layer.setZIndex(parseInt(this.value, 10) || 0);
   };
