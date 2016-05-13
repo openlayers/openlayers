@@ -500,7 +500,7 @@ ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, object
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
@@ -515,7 +515,7 @@ ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
@@ -530,7 +530,7 @@ ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
@@ -545,7 +545,7 @@ ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
@@ -558,7 +558,7 @@ ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
@@ -571,7 +571,7 @@ ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
@@ -584,7 +584,7 @@ ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @protected
  */
 ol.format.GMLBase.prototype.RING_PARSERS = {

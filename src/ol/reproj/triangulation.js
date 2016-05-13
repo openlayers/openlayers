@@ -63,7 +63,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.errorThresholdSquared_ = errorThreshold * errorThreshold;
 
   /**
-   * @type {Array.<ol.reproj.Triangle>}
+   * @type {Array.<ol.reprojTriangle>}
    * @private
    */
   this.triangles_ = [];
@@ -324,7 +324,7 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 
 
 /**
- * @return {Array.<ol.reproj.Triangle>} Array of the calculated triangles.
+ * @return {Array.<ol.reprojTriangle>} Array of the calculated triangles.
  */
 ol.reproj.Triangulation.prototype.getTriangles = function() {
   return this.triangles_;

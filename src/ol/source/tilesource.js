@@ -22,7 +22,7 @@ goog.require('ol.tilegrid.TileGrid');
  *
  * @constructor
  * @extends {ol.source.Source}
- * @param {ol.source.TileOptions} options Tile source options.
+ * @param {ol.sourceTileOptions} options Tile source options.
  * @api
  */
 ol.source.Tile = function(options) {

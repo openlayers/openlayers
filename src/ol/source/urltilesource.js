@@ -14,7 +14,7 @@ goog.require('ol.source.TileEvent');
  * @constructor
  * @fires ol.source.TileEvent
  * @extends {ol.source.Tile}
- * @param {ol.source.UrlTileOptions} options Image tile options.
+ * @param {ol.sourceUrlTileOptions} options Image tile options.
  */
 ol.source.UrlTile = function(options) {
 

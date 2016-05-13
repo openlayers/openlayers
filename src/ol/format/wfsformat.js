@@ -193,7 +193,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
@@ -226,7 +226,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WFS.TRANSACTION_SUMMARY_PARSERS_ = {
@@ -255,7 +255,7 @@ ol.format.WFS.readTransactionSummary_ = function(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WFS.OGC_FID_PARSERS_ = {
@@ -279,7 +279,7 @@ ol.format.WFS.fidParser_ = function(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WFS.INSERT_RESULTS_PARSERS_ = {
@@ -303,7 +303,7 @@ ol.format.WFS.readInsertResults_ = function(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
@@ -348,7 +348,7 @@ ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.WFS.QUERY_SERIALIZERS_ = {
@@ -497,7 +497,7 @@ ol.format.WFS.writeNative_ = function(node, nativeElement, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.WFS.TRANSACTION_SERIALIZERS_ = {
@@ -722,7 +722,7 @@ ol.format.WFS.writeOgcLiteral_ = function(node, value) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.WFS.GETFEATURE_SERIALIZERS_ = {

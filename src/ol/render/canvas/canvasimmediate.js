@@ -71,31 +71,31 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {?ol.render.canvasFillState}
+   * @type {?ol.canvasFillState}
    */
   this.contextFillState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvasStrokeState}
+   * @type {?ol.canvasStrokeState}
    */
   this.contextStrokeState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvasTextState}
+   * @type {?ol.canvasTextState}
    */
   this.contextTextState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvasFillState}
+   * @type {?ol.canvasFillState}
    */
   this.fillState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvasStrokeState}
+   * @type {?ol.canvasStrokeState}
    */
   this.strokeState_ = null;
 
@@ -203,19 +203,19 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {?ol.render.canvasFillState}
+   * @type {?ol.canvasFillState}
    */
   this.textFillState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvasStrokeState}
+   * @type {?ol.canvasStrokeState}
    */
   this.textStrokeState_ = null;
 
   /**
    * @private
-   * @type {?ol.render.canvasTextState}
+   * @type {?ol.canvasTextState}
    */
   this.textState_ = null;
 
@@ -700,7 +700,7 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(geometry) {
 
 
 /**
- * @param {ol.render.canvasFillState} fillState Fill state.
+ * @param {ol.canvasFillState} fillState Fill state.
  * @private
  */
 ol.render.canvas.Immediate.prototype.setContextFillState_ = function(fillState) {
@@ -720,7 +720,7 @@ ol.render.canvas.Immediate.prototype.setContextFillState_ = function(fillState) 
 
 
 /**
- * @param {ol.render.canvasStrokeState} strokeState Stroke state.
+ * @param {ol.canvasStrokeState} strokeState Stroke state.
  * @private
  */
 ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeState) {
@@ -772,7 +772,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
 
 
 /**
- * @param {ol.render.canvasTextState} textState Text state.
+ * @param {ol.canvasTextState} textState Text state.
  * @private
  */
 ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) {

@@ -450,7 +450,7 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
@@ -463,7 +463,7 @@ ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
@@ -476,7 +476,7 @@ ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.GEOMETRY_PARSERS_ = {
@@ -506,7 +506,7 @@ ol.format.GML3.prototype.GEOMETRY_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.MULTICURVE_PARSERS_ = {
@@ -521,7 +521,7 @@ ol.format.GML3.prototype.MULTICURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = {
@@ -536,7 +536,7 @@ ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = {
@@ -550,7 +550,7 @@ ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = {
@@ -563,7 +563,7 @@ ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.SURFACE_PARSERS_ = {
@@ -575,7 +575,7 @@ ol.format.GML3.prototype.SURFACE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.CURVE_PARSERS_ = {
@@ -587,7 +587,7 @@ ol.format.GML3.prototype.CURVE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.ENVELOPE_PARSERS_ = {
@@ -602,7 +602,7 @@ ol.format.GML3.prototype.ENVELOPE_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.PATCHES_PARSERS_ = {
@@ -615,7 +615,7 @@ ol.format.GML3.prototype.PATCHES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.GML3.prototype.SEGMENTS_PARSERS_ = {
@@ -712,7 +712,7 @@ ol.format.GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.GML3.ENVELOPE_SERIALIZERS_ = {
@@ -738,7 +738,7 @@ ol.format.GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
   }
   var keys = ['lowerCorner', 'upperCorner'];
   var values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+  ol.xml.pushSerializeAndPop(/** @type {ol.xmlNodeStackItem} */
       ({node: node}), ol.format.GML3.ENVELOPE_SERIALIZERS_,
       ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
       values,
@@ -1019,7 +1019,7 @@ ol.format.GML3.prototype.writeGeometryElement = function(node, geometry, objectS
     value =
         ol.format.Feature.transformWithOptions(geometry, true, context);
   }
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+  ol.xml.pushSerializeAndPop(/** @type {ol.xmlNodeStackItem} */
       (item), ol.format.GML3.GEOMETRY_SERIALIZERS_,
       this.GEOMETRY_NODE_FACTORY_, [value],
       objectStack, undefined, this);
@@ -1066,7 +1066,7 @@ ol.format.GML3.prototype.writeFeatureElement = function(node, feature, objectSta
   }
   var item = ol.object.assign({}, context);
   item.node = node;
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+  ol.xml.pushSerializeAndPop(/** @type {ol.xmlNodeStackItem} */
       (item), context.serializers,
       ol.xml.makeSimpleNodeFactory(undefined, featureNS),
       values,
@@ -1091,7 +1091,7 @@ ol.format.GML3.prototype.writeFeatureMembers_ = function(node, features, objectS
       this.writeFeatureElement, this);
   var item = ol.object.assign({}, context);
   item.node = node;
-  ol.xml.pushSerializeAndPop(/** @type {ol.xml.NodeStackItem} */
+  ol.xml.pushSerializeAndPop(/** @type {ol.xmlNodeStackItem} */
       (item),
       serializers,
       ol.xml.makeSimpleNodeFactory(featureType, featureNS), features,
@@ -1100,7 +1100,7 @@ ol.format.GML3.prototype.writeFeatureMembers_ = function(node, features, objectS
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
@@ -1114,7 +1114,7 @@ ol.format.GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.GML3.POINTMEMBER_SERIALIZERS_ = {
@@ -1126,7 +1126,7 @@ ol.format.GML3.POINTMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
@@ -1140,7 +1140,7 @@ ol.format.GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.GML3.RING_SERIALIZERS_ = {
@@ -1152,7 +1152,7 @@ ol.format.GML3.RING_SERIALIZERS_ = {
 
 
 /**
- * @type {Object.<string, Object.<string, ol.xml.Serializer>>}
+ * @type {Object.<string, Object.<string, ol.xmlSerializer>>}
  * @private
  */
 ol.format.GML3.GEOMETRY_SERIALIZERS_ = {

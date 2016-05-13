@@ -75,7 +75,7 @@ goog.inherits(ol.layer.Layer, ol.layer.Base);
  * Return `true` if the layer is visible, and if the passed resolution is
  * between the layer's minResolution and maxResolution. The comparison is
  * inclusive for `minResolution` and exclusive for `maxResolution`.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {number} resolution Resolution.
  * @return {boolean} The layer is visible at the given resolution.
  */

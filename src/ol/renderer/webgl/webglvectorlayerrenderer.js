@@ -60,7 +60,7 @@ ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
   /**
    * The last layer state.
    * @private
-   * @type {?ol.layer.LayerState}
+   * @type {?ol.LayerState}
    */
   this.layerState_ = null;
 

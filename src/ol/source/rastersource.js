@@ -91,7 +91,7 @@ ol.source.Raster = function(options) {
 
   /**
    * The most recently rendered state.
-   * @type {?ol.source.RasterRenderedState}
+   * @type {?ol.sourceRasterRenderedState}
    * @private
    */
   this.renderedState_ = null;
@@ -340,7 +340,7 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
  * Get image data from a renderer.
  * @param {ol.renderer.canvas.Layer} renderer Layer renderer.
  * @param {olx.FrameState} frameState The frame state.
- * @param {ol.layer.LayerState} layerState The layer state.
+ * @param {ol.LayerState} layerState The layer state.
  * @return {ImageData} The image data.
  * @private
  */
@@ -376,7 +376,7 @@ ol.source.Raster.context_ = null;
 /**
  * Get a list of layer states from a list of renderers.
  * @param {Array.<ol.renderer.canvas.Layer>} renderers Layer renderers.
- * @return {Array.<ol.layer.LayerState>} The layer states.
+ * @return {Array.<ol.LayerState>} The layer states.
  * @private
  */
 ol.source.Raster.getLayerStatesArray_ = function(renderers) {

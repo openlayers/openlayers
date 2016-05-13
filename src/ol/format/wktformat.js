@@ -445,7 +445,7 @@ ol.format.WKT.Lexer.prototype.nextChar_ = function() {
 
 /**
  * Fetch and return the next token.
- * @return {!ol.format.WKTToken} Next string token.
+ * @return {!ol.WKTToken} Next string token.
  */
 ol.format.WKT.Lexer.prototype.nextToken = function() {
   var c = this.nextChar_();
@@ -531,7 +531,7 @@ ol.format.WKT.Parser = function(lexer) {
   this.lexer_ = lexer;
 
   /**
-   * @type {ol.format.WKTToken}
+   * @type {ol.WKTToken}
    * @private
    */
   this.token_;
