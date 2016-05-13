@@ -11,13 +11,13 @@ The `ol.source.TileUTFGrid` now uses XMLHttpRequest to load UTFGrid tiles by def
 ```js
 // To work with the v4 API
 var v4source = new ol.source.TileUTFGrid({
-  url: 'http://api.tiles.mapbox.com/v4/example.json?access_token=' + YOUR_KEY_HERE
+  url: 'https://api.tiles.mapbox.com/v4/example.json?access_token=' + YOUR_KEY_HERE
 });
 
 // To work with the v3 API
 var v3source = new ol.source.TileUTFGrid({
   jsonp: true, // <--- this is required for v3
-  url: 'http://api.tiles.mapbox.com/v3/example.json?access_token=' + YOUR_KEY_HERE
+  url: 'http://api.tiles.mapbox.com/v3/example.json'
 });
 ```
 
