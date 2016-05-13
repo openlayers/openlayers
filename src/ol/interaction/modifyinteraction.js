@@ -11,7 +11,6 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.Pixel');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.coordinate');
@@ -81,16 +80,6 @@ ol.interaction.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
   this.mapBrowserPointerEvent = mapBrowserPointerEvent;
 };
 goog.inherits(ol.interaction.ModifyEvent, ol.events.Event);
-
-
-/**
- * @typedef {{depth: (Array.<number>|undefined),
- *            feature: ol.Feature,
- *            geometry: ol.geom.SimpleGeometry,
- *            index: (number|undefined),
- *            segment: Array.<ol.Extent>}}
- */
-ol.interaction.SegmentDataType;
 
 
 /**

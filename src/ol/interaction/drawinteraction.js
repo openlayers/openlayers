@@ -851,19 +851,6 @@ ol.interaction.Draw.getMode_ = function(type) {
 
 
 /**
- * Function that takes coordinates and an optional existing geometry as
- * arguments, and returns a geometry. The optional existing geometry is the
- * geometry that is returned when the function is called without a second
- * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
- *     ol.geom.SimpleGeometry}
- * @api
- */
-ol.interaction.DrawGeometryFunctionType;
-
-
-/**
  * Draw mode.  This collapses multi-part geometry types with their single-part
  * cousins.
  * @enum {string}

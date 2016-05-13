@@ -42,20 +42,6 @@ goog.require('ol.xml');
 
 
 /**
- * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
- */
-ol.format.KMLVec2_;
-
-
-/**
- * @typedef {{flatCoordinates: Array.<number>,
- *            whens: Array.<number>}}
- */
-ol.format.KMLGxTrackObject_;
-
-
-/**
  * @classdesc
  * Feature format for reading and writing data in the KML format.
  *

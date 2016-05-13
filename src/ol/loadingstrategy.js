@@ -1,14 +1,4 @@
-goog.provide('ol.LoadingStrategy');
 goog.provide('ol.loadingstrategy');
-
-
-/**
- * One of `all`, `bbox`, `tile`.
- *
- * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
- * @api
- */
-ol.LoadingStrategy;
 
 
 /**

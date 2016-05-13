@@ -1,16 +1,7 @@
-goog.provide('ol.Size');
 goog.provide('ol.size');
 
 
 goog.require('goog.asserts');
-
-
-/**
- * An array of numbers representing a size: `[width, height]`.
- * @typedef {Array.<number>}
- * @api stable
- */
-ol.Size;
 
 
 /**

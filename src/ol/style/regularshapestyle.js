@@ -290,20 +290,6 @@ ol.style.RegularShape.prototype.unlistenImageChange = ol.nullFunction;
 
 
 /**
- * @typedef {{
- *   strokeStyle: (string|undefined),
- *   strokeWidth: number,
- *   size: number,
- *   lineCap: string,
- *   lineDash: Array.<number>,
- *   lineJoin: string,
- *   miterLimit: number
- * }}
- */
-ol.style.RegularShape.RenderOptions;
-
-
-/**
  * @private
  * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
@@ -342,7 +328,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
   var size = 2 * (this.radius_ + strokeWidth) + 1;
 
-  /** @type {ol.style.RegularShape.RenderOptions} */
+  /** @type {ol.style.RegularShapeRenderOptions} */
   var renderOptions = {
     strokeStyle: strokeStyle,
     strokeWidth: strokeWidth,
@@ -405,7 +391,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
+ * @param {ol.style.RegularShapeRenderOptions} renderOptions Render options.
  * @param {CanvasRenderingContext2D} context The rendering context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).
@@ -450,7 +436,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
+ * @param {ol.style.RegularShapeRenderOptions} renderOptions Render options.
  */
 ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptions) {
   this.hitDetectionImageSize_ = [renderOptions.size, renderOptions.size];
@@ -470,7 +456,7 @@ ol.style.RegularShape.prototype.createHitDetectionCanvas_ = function(renderOptio
 
 /**
  * @private
- * @param {ol.style.RegularShape.RenderOptions} renderOptions Render options.
+ * @param {ol.style.RegularShapeRenderOptions} renderOptions Render options.
  * @param {CanvasRenderingContext2D} context The context.
  * @param {number} x The origin for the symbol (x).
  * @param {number} y The origin for the symbol (y).

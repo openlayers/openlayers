@@ -259,12 +259,3 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
   this.entries_[key] = entry;
   ++this.count_;
 };
-
-
-/**
- * @typedef {{key_: string,
- *            newer: ol.structs.LRUCacheEntry,
- *            older: ol.structs.LRUCacheEntry,
- *            value_: *}}
- */
-ol.structs.LRUCacheEntry;

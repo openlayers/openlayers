@@ -3,7 +3,6 @@ goog.provide('ol.interaction.Pointer');
 goog.require('ol');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.Pixel');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.object');
 

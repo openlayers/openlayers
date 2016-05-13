@@ -3,7 +3,6 @@ goog.provide('ol.source.TileImage');
 goog.require('goog.asserts');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
-goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.events');
 goog.require('ol.events.EventType');

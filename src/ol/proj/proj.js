@@ -5,19 +5,9 @@ goog.provide('ol.proj.Units');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.sphere.NORMAL');
-
-
-/**
- * A projection as {@link ol.proj.Projection}, SRS identifier string or
- * undefined.
- * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
- * @api stable
- */
-ol.proj.ProjectionLike;
 
 
 /**

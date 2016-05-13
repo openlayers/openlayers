@@ -31,17 +31,6 @@ ol.interaction.SelectEventType = {
 
 
 /**
- * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
- * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
- * or `false` otherwise.
- * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
- *     boolean}
- * @api
- */
-ol.interaction.SelectFilterFunction;
-
-
-/**
  * @classdesc
  * Events emitted by {@link ol.interaction.Select} instances are instances of
  * this type.

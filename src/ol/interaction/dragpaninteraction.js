@@ -2,7 +2,7 @@ goog.provide('ol.interaction.DragPan');
 
 goog.require('goog.asserts');
 goog.require('ol.Kinetic');
-goog.require('ol.Pixel');
+
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.functions');

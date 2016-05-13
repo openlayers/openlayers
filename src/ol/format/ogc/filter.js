@@ -18,6 +18,7 @@ goog.provide('ol.format.ogc.filter.IsNull');
 goog.provide('ol.format.ogc.filter.IsBetween');
 goog.provide('ol.format.ogc.filter.IsLike');
 
+goog.require('ol.Extent');
 goog.require('ol.Object');
 
 

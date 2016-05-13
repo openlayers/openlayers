@@ -8,7 +8,6 @@ goog.require('ol.events');
 goog.require('goog.style');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
-goog.require('ol.Pixel');
 goog.require('ol.Object');
 goog.require('ol.animation');
 goog.require('ol.dom');

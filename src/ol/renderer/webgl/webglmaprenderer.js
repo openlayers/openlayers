@@ -34,12 +34,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 
 
 /**
- * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
- */
-ol.renderer.webgl.TextureCacheEntry;
-
-
-/**
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
@@ -110,7 +104,7 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.LRUCache.<ol.renderer.webgl.TextureCacheEntry|null>}
+   * @type {ol.structs.LRUCache.<ol.renderer.webglTextureCacheEntry|null>}
    */
   this.textureCache_ = new ol.structs.LRUCache();
 
@@ -300,7 +294,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
   if (!gl.isContextLost()) {
     this.textureCache_.forEach(
         /**
-         * @param {?ol.renderer.webgl.TextureCacheEntry} textureCacheEntry
+         * @param {?ol.renderer.webglTextureCacheEntry} textureCacheEntry
          *     Texture cache entry.
          */
         function(textureCacheEntry) {

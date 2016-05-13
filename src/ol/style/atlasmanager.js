@@ -5,16 +5,6 @@ goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.dom');
 
-/**
- * Provides information for an image inside an atlas manager.
- * `offsetX` and `offsetY` is the position of the image inside
- * the atlas image `image` and the position of the hit-detection image
- * inside the hit-detection atlas image `hitImage`.
- * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement,
- *    hitImage: HTMLCanvasElement}}
- */
-ol.style.AtlasManagerInfo;
-
 
 /**
  * Manages the creation of image atlases.
@@ -240,15 +230,6 @@ ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
 
 
 /**
- * Provides information for an image inside an atlas.
- * `offsetX` and `offsetY` are the position of the image inside
- * the atlas image `image`.
- * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
- */
-ol.style.AtlasInfo;
-
-
-/**
  * This class facilitates the creation of image atlases.
  *
  * Images added to an atlas will be rendered onto a single
@@ -275,7 +256,7 @@ ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {Array.<ol.style.Atlas.Block>}
+   * @type {Array.<ol.style.AtlasBlock>}
    */
   this.emptyBlocks_ = [{x: 0, y: 0, width: size, height: size}];
 
@@ -351,7 +332,7 @@ ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_t
 /**
  * @private
  * @param {number} index The index of the block.
- * @param {ol.style.Atlas.Block} block The block to split.
+ * @param {ol.style.AtlasBlock} block The block to split.
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
@@ -359,9 +340,9 @@ ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
-  /** @type {ol.style.Atlas.Block} */
+  /** @type {ol.style.AtlasBlock} */
   var newBlock1;
-  /** @type {ol.style.Atlas.Block} */
+  /** @type {ol.style.AtlasBlock} */
   var newBlock2;
 
   if (deltaWidth > deltaHeight) {
@@ -410,8 +391,8 @@ ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
  * blocks (that are potentially smaller) are filled first.
  * @private
  * @param {number} index The index of the block to remove.
- * @param {ol.style.Atlas.Block} newBlock1 The 1st block to add.
- * @param {ol.style.Atlas.Block} newBlock2 The 2nd block to add.
+ * @param {ol.style.AtlasBlock} newBlock1 The 1st block to add.
+ * @param {ol.style.AtlasBlock} newBlock2 The 2nd block to add.
  */
 ol.style.Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   var args = [index, 1];
@@ -423,9 +404,3 @@ ol.style.Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   }
   this.emptyBlocks_.splice.apply(this.emptyBlocks_, args);
 };
-
-
-/**
- * @typedef {{x: number, y: number, width: number, height: number}}
- */
-ol.style.Atlas.Block;
