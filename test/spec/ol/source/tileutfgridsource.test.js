@@ -26,6 +26,7 @@ describe('ol.source.TileUTFGrid', function() {
   var url = 'some-tileutfgrid-url';
   function getTileUTFGrid() {
     var source = new ol.source.TileUTFGrid({
+      jsonp: true,
       url: url
     });
     return source;
@@ -223,6 +224,7 @@ describe('ol.source.TileUTFGrid', function() {
             this.getTileCoordForTileUrlFunction(tileCoord, projection);
         var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
         var tile = new ol.source.TileUTFGridTile_(
+            true,
             tileCoord,
             tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
             tileUrl !== undefined ? tileUrl : '',
