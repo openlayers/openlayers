@@ -1000,7 +1000,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawLineStringGeometry =
+ol.render.webgl.LineStringReplay.prototype.drawLineString =
     function(geometry, feature) {
   this.drawCoordinates_(geometry.getCoordinates());
 };
@@ -1009,7 +1009,7 @@ ol.render.webgl.LineStringReplay.prototype.drawLineStringGeometry =
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawMultiLineStringGeometry =
+ol.render.webgl.LineStringReplay.prototype.drawMultiLineString =
     function(geometry, feature) {
   var coordinatess = geometry.getCoordinates();
   var i, ii;
@@ -1187,9 +1187,9 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.Color}
+   * @type {ol.Color|undefined}
    */
-  this.fillColor_ = null;
+  this.fillColor_ = undefined;
 
 
   /**
@@ -1251,7 +1251,7 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
 
   /**
    * Start index per feature (the feature).
-   * @type {Array.<ol.Feature>}
+   * @type {Array.<ol.Feature>|Array.<ol.render.Feature>}
    * @private
    */
   this.startIndicesFeature_ = [];
@@ -1294,7 +1294,7 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ =
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawMultiPolygonGeometry =
+ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon =
     function(geometry, feature) {
   if (goog.isNull(this.fillColor_)) {
     return;
@@ -1312,7 +1312,7 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiPolygonGeometry =
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.drawPolygonGeometry =
+ol.render.webgl.PolygonReplay.prototype.drawPolygon =
     function(polygonGeometry, feature) {
   if (goog.isNull(this.fillColor_)) {
     return;
@@ -1504,14 +1504,14 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay_ =
 ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
   // TODO implement
-  if (!goog.isNull(fillStyle)) {
+  if (fillStyle) {
     var fillStyleColor = fillStyle.getColor();
-    this.fillColor_ = !goog.isNull(fillStyleColor) ?
+    this.fillColor_ = !goog.isNull(fillStyleColor) && Array.isArray(fillStyleColor) ?
         ol.color.asArray(fillStyleColor).map(function(c, i) {
           return i != 3 ? c / 255.0 : c;
         }) : [0.0, 0.0, 0.0, 1.0];
   } else {
-    this.fillColor_ = null;
+    this.fillColor_ = undefined;
   }
   this.lineStringReplay_.setFillStrokeStyle(fillStyle, strokeStyle);
 };

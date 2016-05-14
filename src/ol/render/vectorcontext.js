@@ -85,7 +85,7 @@ ol.render.VectorContext.prototype.drawMultiPoint = function(multiPointGeometry, 
 /**
  * @abstract
  * @param {ol.geom.MultiPolygon} multiPolygonGeometry MultiPolygon geometry.
- * @param {ol.Feature} feature Feature.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {};
 
