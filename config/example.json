@@ -42,6 +42,6 @@
     "warning_level": "VERBOSE",
     "output_wrapper": "(function(){%output%})();",
     "use_types_for_optimization": true,
-    "manage_closure_dependencies": true
+    "manage_closure_dependencies": false
   }
 }
