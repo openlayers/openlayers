@@ -106,13 +106,13 @@ ol.format.GMLBase.ONLY_WHITESPACE_RE_ = /^[\s\xa0]*$/;
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
- * @return {Array.<ol.Feature>} Features.
+ * @return {Array.<ol.Feature> | undefined} Features.
  */
 ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
       'node.nodeType should be ELEMENT');
   var localName = node.localName;
-  var features;
+  var features = null;
   if (localName == 'FeatureCollection') {
     if (node.namespaceURI === 'http://www.opengis.net/wfs') {
       features = ol.xml.pushParseAndPop([],
@@ -154,8 +154,11 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
           }
         }
       }
-      context['featureType'] = featureType;
-      context['featureNS'] = featureNS;
+      if (localName != 'featureMember') {
+        // recheck featureType for each featureMember
+        context['featureType'] = featureType;
+        context['featureNS'] = featureNS;
+      }
     }
     if (typeof featureNS === 'string') {
       var ns = featureNS;
@@ -178,9 +181,13 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
       }
       parsersNS[featureNS[p]] = parsers;
     }
-    features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
+    if (localName == 'featureMember') {
+      features = ol.xml.pushParseAndPop(undefined, parsersNS, node, objectStack);
+    } else {
+      features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
+    }
   }
-  if (!features) {
+  if (features === null) {
     features = [];
   }
   return features;
@@ -628,7 +635,8 @@ ol.format.GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
   if (opt_options) {
     ol.object.assign(options, this.getReadOptions(node, opt_options));
   }
-  return this.readFeaturesInternal(node, [options]);
+  var features = this.readFeaturesInternal(node, [options]);
+  return features || [];
 };
 
 
