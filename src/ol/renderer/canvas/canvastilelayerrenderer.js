@@ -216,7 +216,7 @@ ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel = function(
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @protected
  */
 ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, frameState, layerState) {

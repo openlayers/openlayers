@@ -28,7 +28,7 @@ goog.require('ol.reproj.Triangulation');
  * @param {ol.TileCoord} wrappedTileCoord Coordinate of the tile wrapped in X.
  * @param {number} pixelRatio Pixel ratio.
  * @param {number} gutter Gutter of the source tiles.
- * @param {ol.reproj.TileFunctionType} getTileFunction
+ * @param {ol.reprojTileFunctionType} getTileFunction
  *     Function returning source tiles (z, x, y, pixelRatio).
  * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
  * @param {boolean=} opt_renderEdges Render reprojection edges.

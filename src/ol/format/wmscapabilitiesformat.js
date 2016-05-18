@@ -568,7 +568,7 @@ ol.format.WMSCapabilities.NAMESPACE_URIS_ = [
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
@@ -582,7 +582,7 @@ ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
@@ -598,7 +598,7 @@ ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
@@ -626,7 +626,7 @@ ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
@@ -648,7 +648,7 @@ ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
@@ -662,7 +662,7 @@ ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
@@ -679,7 +679,7 @@ ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
@@ -690,7 +690,7 @@ ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
@@ -731,7 +731,7 @@ ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
@@ -746,7 +746,7 @@ ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
@@ -764,7 +764,7 @@ ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
@@ -780,7 +780,7 @@ ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
@@ -793,7 +793,7 @@ ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
@@ -805,7 +805,7 @@ ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
@@ -819,7 +819,7 @@ ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
@@ -838,7 +838,7 @@ ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
@@ -851,7 +851,7 @@ ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.xmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeStructureNS(

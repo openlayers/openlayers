@@ -23,7 +23,7 @@ goog.require('ol.reproj.Triangulation');
  * @param {ol.Extent} targetExtent Target extent.
  * @param {number} targetResolution Target resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.reproj.ImageFunctionType} getImageFunction
+ * @param {ol.reprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
 ol.reproj.Image = function(sourceProj, targetProj,

@@ -27,19 +27,10 @@
 goog.provide('ol.Extent');
 goog.provide('ol.events.EventTargetLike');
 
-goog.provide('ol.format.KMLVec2_');
 goog.provide('ol.interaction.DragBoxEndConditionType');
-goog.provide('ol.layer.LayerState');
 goog.provide('ol.proj.ProjectionLike');
 goog.provide('ol.raster.Operation');
-goog.provide('ol.render.canvas.FillState');
-goog.provide('ol.renderer.webgl.TextureCacheEntry');
-goog.provide('ol.reproj.ImageFunctionType');
-goog.provide('ol.source.ImageOptions');
-goog.provide('ol.structs.LRUCacheEntry');
 goog.provide('ol.style.AtlasBlock');
-goog.provide('ol.webgl.BufferCacheEntry');
-goog.provide('ol.xml.NodeStackItem');
 
 
 /**
@@ -194,12 +185,49 @@ ol.ImageLoadFunctionType;
 
 
 /**
+ * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
+ *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
+ */
+ol.KMLVec2_;
+
+
+/**
+ * @typedef {{flatCoordinates: Array.<number>,
+ *            whens: Array.<number>}}
+ */
+ol.KMLGxTrackObject_;
+
+
+/**
+ * @typedef {{layer: ol.layer.Layer,
+ *            opacity: number,
+ *            sourceState: ol.source.State,
+ *            visible: boolean,
+ *            managed: boolean,
+ *            extent: (ol.Extent|undefined),
+ *            zIndex: number,
+ *            maxResolution: number,
+ *            minResolution: number}}
+ */
+ol.LayerState;
+
+
+/**
  * One of `all`, `bbox`, `tile`.
  *
  * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
  * @api
  */
 ol.LoadingStrategy;
+
+
+/**
+ * @typedef {{key_: string,
+ *            newer: ol.LRUCacheEntry,
+ *            older: ol.LRUCacheEntry,
+ *            value_: *}}
+ */
+ol.LRUCacheEntry;
 
 
 /**
@@ -328,6 +356,37 @@ ol.TransformFunction;
 
 
 /**
+ * @typedef {{type: number, value: (number|string|undefined), position: number}}
+ */
+ol.WKTToken;
+
+
+/**
+ * @typedef {{fillStyle: ol.ColorLike}}
+ */
+ol.canvasFillState;
+
+
+/**
+ * @typedef {{lineCap: string,
+ *            lineDash: Array.<number>,
+ *            lineJoin: string,
+ *            lineWidth: number,
+ *            miterLimit: number,
+ *            strokeStyle: string}}
+ */
+ol.canvasStrokeState;
+
+
+/**
+ * @typedef {{font: string,
+ *            textAlign: string,
+ *            textBaseline: string}}
+ */
+ol.canvasTextState;
+
+
+/**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
@@ -369,26 +428,6 @@ ol.events.Key;
  * @api
  */
 ol.events.ListenerFunctionType;
-
-
-/**
- * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
- */
-ol.format.KMLVec2_;
-
-
-/**
- * @typedef {{flatCoordinates: Array.<number>,
- *            whens: Array.<number>}}
- */
-ol.format.KMLGxTrackObject_;
-
-
-/**
- * @typedef {{type: number, value: (number|string|undefined), position: number}}
- */
-ol.format.WKTToken;
 
 
 /**
@@ -455,20 +494,6 @@ ol.interaction.SnapSegmentDataType;
 
 
 /**
- * @typedef {{layer: ol.layer.Layer,
- *            opacity: number,
- *            sourceState: ol.source.State,
- *            visible: boolean,
- *            managed: boolean,
- *            extent: (ol.Extent|undefined),
- *            zIndex: number,
- *            maxResolution: number,
- *            minResolution: number}}
- */
-ol.layer.LayerState;
-
-
-/**
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
@@ -505,46 +530,15 @@ ol.raster.Pixel;
 
 
 /**
- * @typedef {{fillStyle: ol.ColorLike}}
- */
-ol.render.canvasFillState;
-
-
-/**
- * @typedef {{lineCap: string,
- *            lineDash: Array.<number>,
- *            lineJoin: string,
- *            lineWidth: number,
- *            miterLimit: number,
- *            strokeStyle: string}}
- */
-ol.render.canvasStrokeState;
-
-
-/**
- * @typedef {{font: string,
- *            textAlign: string,
- *            textBaseline: string}}
- */
-ol.render.canvasTextState;
-
-
-/**
- * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
- */
-ol.renderer.webglTextureCacheEntry;
-
-
-/**
  * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
  */
-ol.reproj.ImageFunctionType;
+ol.reprojImageFunctionType;
 
 
 /**
  * @typedef {function(number, number, number, number) : ol.Tile}
  */
-ol.reproj.TileFunctionType;
+ol.reprojTileFunctionType;
 
 
 /**
@@ -553,7 +547,7 @@ ol.reproj.TileFunctionType;
  * @typedef {{source: Array.<ol.Coordinate>,
  *            target: Array.<ol.Coordinate>}}
  */
-ol.reproj.Triangle;
+ol.reprojTriangle;
 
 
 /**
@@ -564,7 +558,7 @@ ol.reproj.Triangle;
  *            resolutions: (Array.<number>|undefined),
  *            state: (ol.source.State|undefined)}}
  */
-ol.source.ImageOptions;
+ol.sourceImageOptions;
 
 
 /**
@@ -572,7 +566,7 @@ ol.source.ImageOptions;
  *            resolution: number,
  *            extent: ol.Extent}}
  */
-ol.source.RasterRenderedState;
+ol.sourceRasterRenderedState;
 
 
 /**
@@ -582,7 +576,7 @@ ol.source.RasterRenderedState;
  *            state: (ol.source.State|undefined),
  *            wrapX: (boolean|undefined)}}
  */
-ol.source.SourceOptions;
+ol.sourceSourceOptions;
 
 
 /**
@@ -597,7 +591,7 @@ ol.source.SourceOptions;
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            wrapX: (boolean|undefined)}}
  */
-ol.source.TileOptions;
+ol.sourceTileOptions;
 
 
 /**
@@ -616,16 +610,7 @@ ol.source.TileOptions;
  *            urls: (Array.<string>|undefined),
  *            wrapX: (boolean|undefined)}}
  */
-ol.source.UrlTileOptions;
-
-
-/**
- * @typedef {{key_: string,
- *            newer: ol.structs.LRUCacheEntry,
- *            older: ol.structs.LRUCacheEntry,
- *            value_: *}}
- */
-ol.structs.LRUCacheEntry;
+ol.sourceUrlTileOptions;
 
 
 /**
@@ -712,7 +697,13 @@ ol.style.StyleFunction;
  * @typedef {{buf: ol.webgl.Buffer,
  *            buffer: WebGLBuffer}}
  */
-ol.webgl.BufferCacheEntry;
+ol.webglBufferCacheEntry;
+
+
+/**
+ * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
+ */
+ol.webglTextureCacheEntry;
 
 
 /**
@@ -721,16 +712,16 @@ ol.webgl.BufferCacheEntry;
  * have this structure.
  * @typedef {{node:Node}}
  */
-ol.xml.NodeStackItem;
+ol.xmlNodeStackItem;
 
 
 /**
  * @typedef {function(Node, Array.<*>)}
  */
-ol.xml.Parser;
+ol.xmlParser;
 
 
 /**
  * @typedef {function(Node, *, Array.<*>)}
  */
-ol.xml.Serializer;
+ol.xmlSerializer;

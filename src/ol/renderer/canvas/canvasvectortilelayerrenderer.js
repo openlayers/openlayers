@@ -90,7 +90,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @private
  */
 ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
@@ -387,7 +387,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
 /**
  * @param {ol.VectorTile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {Array.<string>} skippedFeatures Skipped features.
  * @private
  */

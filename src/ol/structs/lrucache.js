@@ -22,19 +22,19 @@ ol.structs.LRUCache = function() {
 
   /**
    * @private
-   * @type {!Object.<string, ol.structs.LRUCacheEntry>}
+   * @type {!Object.<string, ol.LRUCacheEntry>}
    */
   this.entries_ = {};
 
   /**
    * @private
-   * @type {?ol.structs.LRUCacheEntry}
+   * @type {?ol.LRUCacheEntry}
    */
   this.oldest_ = null;
 
   /**
    * @private
-   * @type {?ol.structs.LRUCacheEntry}
+   * @type {?ol.LRUCacheEntry}
    */
   this.newest_ = null;
 
