@@ -41,6 +41,12 @@ ol.AttributionLike;
 
 
 /**
+ * @typedef {{fillStyle: ol.ColorLike}}
+ */
+ol.CanvasFillState;
+
+
+/**
  * A function returning the canvas element (`{HTMLCanvasElement}`)
  * used by the source as an image. The arguments passed to the function are:
  * {@link ol.Extent} the image extent, `{number}` the image resolution,
@@ -54,6 +60,25 @@ ol.AttributionLike;
  * @api
  */
 ol.CanvasFunctionType;
+
+
+/**
+ * @typedef {{lineCap: string,
+ *            lineDash: Array.<number>,
+ *            lineJoin: string,
+ *            lineWidth: number,
+ *            miterLimit: number,
+ *            strokeStyle: string}}
+ */
+ol.CanvasStrokeState;
+
+
+/**
+ * @typedef {{font: string,
+ *            textAlign: string,
+ *            textBaseline: string}}
+ */
+ol.CanvasTextState;
 
 
 /**
@@ -270,6 +295,27 @@ ol.PreRenderFunction;
 
 
 /**
+ * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
+ */
+ol.ReprojImageFunctionType;
+
+
+/**
+ * @typedef {function(number, number, number, number) : ol.Tile}
+ */
+ol.ReprojTileFunctionType;
+
+
+/**
+ * Single triangle; consists of 3 source points and 3 target points.
+ *
+ * @typedef {{source: Array.<ol.Coordinate>,
+ *            target: Array.<ol.Coordinate>}}
+ */
+ol.ReprojTriangle;
+
+
+/**
  * @typedef {function((number|undefined), number, number): (number|undefined)}
  */
 ol.ResolutionConstraintType;
@@ -287,6 +333,69 @@ ol.RotationConstraintType;
  * @api stable
  */
 ol.Size;
+
+
+/**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            extent: (null|ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            resolutions: (Array.<number>|undefined),
+ *            state: (ol.source.State|undefined)}}
+ */
+ol.SourceImageOptions;
+
+
+/**
+ * @typedef {{revision: number,
+ *            resolution: number,
+ *            extent: ol.Extent}}
+ */
+ol.SourceRasterRenderedState;
+
+
+/**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+ol.SourceSourceOptions;
+
+
+/**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            cacheSize: (number|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            opaque: (boolean|undefined),
+ *            tilePixelRatio: (number|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined),
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+ol.SourceTileOptions;
+
+
+/**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *            cacheSize: (number|undefined),
+ *            extent: (ol.Extent|undefined),
+ *            logo: (string|olx.LogoOptions|undefined),
+ *            opaque: (boolean|undefined),
+ *            projection: ol.proj.ProjectionLike,
+ *            state: (ol.source.State|undefined),
+ *            tileGrid: (ol.tilegrid.TileGrid|undefined),
+ *            tileLoadFunction: ol.TileLoadFunctionType,
+ *            tilePixelRatio: (number|undefined),
+ *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
+ *            url: (string|undefined),
+ *            urls: (Array.<string>|undefined),
+ *            wrapX: (boolean|undefined)}}
+ */
+ol.SourceUrlTileOptions;
 
 
 /**
@@ -356,34 +465,43 @@ ol.TransformFunction;
 
 
 /**
+ * @typedef {{buf: ol.webgl.Buffer,
+ *            buffer: WebGLBuffer}}
+ */
+ol.WebglBufferCacheEntry;
+
+
+/**
+ * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
+ */
+ol.WebglTextureCacheEntry;
+
+
+/**
  * @typedef {{type: number, value: (number|string|undefined), position: number}}
  */
 ol.WKTToken;
 
 
 /**
- * @typedef {{fillStyle: ol.ColorLike}}
+ * When using {@link ol.xml.makeChildAppender} or
+ * {@link ol.xml.makeSimpleNodeFactory}, the top `objectStack` item needs to
+ * have this structure.
+ * @typedef {{node:Node}}
  */
-ol.canvasFillState;
+ol.XmlNodeStackItem;
 
 
 /**
- * @typedef {{lineCap: string,
- *            lineDash: Array.<number>,
- *            lineJoin: string,
- *            lineWidth: number,
- *            miterLimit: number,
- *            strokeStyle: string}}
+ * @typedef {function(Node, Array.<*>)}
  */
-ol.canvasStrokeState;
+ol.XmlParser;
 
 
 /**
- * @typedef {{font: string,
- *            textAlign: string,
- *            textBaseline: string}}
+ * @typedef {function(Node, *, Array.<*>)}
  */
-ol.canvasTextState;
+ol.XmlSerializer;
 
 
 /**
@@ -530,90 +648,6 @@ ol.raster.Pixel;
 
 
 /**
- * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
- */
-ol.reprojImageFunctionType;
-
-
-/**
- * @typedef {function(number, number, number, number) : ol.Tile}
- */
-ol.reprojTileFunctionType;
-
-
-/**
- * Single triangle; consists of 3 source points and 3 target points.
- *
- * @typedef {{source: Array.<ol.Coordinate>,
- *            target: Array.<ol.Coordinate>}}
- */
-ol.reprojTriangle;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            extent: (null|ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            resolutions: (Array.<number>|undefined),
- *            state: (ol.source.State|undefined)}}
- */
-ol.sourceImageOptions;
-
-
-/**
- * @typedef {{revision: number,
- *            resolution: number,
- *            extent: ol.Extent}}
- */
-ol.sourceRasterRenderedState;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            wrapX: (boolean|undefined)}}
- */
-ol.sourceSourceOptions;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            cacheSize: (number|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            tilePixelRatio: (number|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            wrapX: (boolean|undefined)}}
- */
-ol.sourceTileOptions;
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            cacheSize: (number|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: ol.TileLoadFunctionType,
- *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined)}}
- */
-ol.sourceUrlTileOptions;
-
-
-/**
  * @typedef {{x: number, y: number, width: number, height: number}}
  */
 ol.style.AtlasBlock;
@@ -691,37 +725,3 @@ ol.style.RegularShapeRenderOptions;
  * @api
  */
 ol.style.StyleFunction;
-
-
-/**
- * @typedef {{buf: ol.webgl.Buffer,
- *            buffer: WebGLBuffer}}
- */
-ol.webglBufferCacheEntry;
-
-
-/**
- * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
- */
-ol.webglTextureCacheEntry;
-
-
-/**
- * When using {@link ol.xml.makeChildAppender} or
- * {@link ol.xml.makeSimpleNodeFactory}, the top `objectStack` item needs to
- * have this structure.
- * @typedef {{node:Node}}
- */
-ol.xmlNodeStackItem;
-
-
-/**
- * @typedef {function(Node, Array.<*>)}
- */
-ol.xmlParser;
-
-
-/**
- * @typedef {function(Node, *, Array.<*>)}
- */
-ol.xmlSerializer;

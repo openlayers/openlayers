@@ -35,7 +35,7 @@ ol.webgl.Context = function(canvas, gl) {
 
   /**
    * @private
-   * @type {Object.<string, ol.webglBufferCacheEntry>}
+   * @type {Object.<string, ol.WebglBufferCacheEntry>}
    */
   this.bufferCache_ = {};
 

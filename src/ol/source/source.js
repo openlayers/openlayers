@@ -30,7 +30,7 @@ ol.source.State = {
  *
  * @constructor
  * @extends {ol.Object}
- * @param {ol.sourceSourceOptions} options Source options.
+ * @param {ol.SourceSourceOptions} options Source options.
  * @api stable
  */
 ol.source.Source = function(options) {
