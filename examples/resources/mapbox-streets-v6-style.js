@@ -15,8 +15,8 @@ function createMapboxStreetsV6Style() {
     var icon = iconCache[iconName];
     if (!icon) {
       icon = new ol.style.Style({image: new ol.style.Icon({
-        src: '//raw.githubusercontent.com/mapbox/maki/mb-pages/renders/' +
-            iconName + '-12.png'
+        src: 'https://cdn.rawgit.com/mapbox/maki/master/icons/' + iconName + '-15.svg',
+        imgSize: [15, 15]
       })});
       iconCache[iconName] = icon;
     }
