@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### Move of typedefs out of code and into separate file
+
+This change should not affect the great majority of application developers, but it's possible there are edge cases when compiling application code together with the library which cause compiler errors or warnings. In this case, please raise a GitHub issue. `goog.require`s for typedefs should not be necessary.
+
 #### Removal of `opaque` option for `ol.source.VectorTile`
 
 This option is no longer needed, so it was removed from the API.
