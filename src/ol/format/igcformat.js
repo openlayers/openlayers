@@ -172,7 +172,6 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
         m = ol.format.IGC.H_RECORD_RE_.exec(line);
         if (m) {
           properties[m[1]] = m[2].trim();
-          m = ol.format.IGC.HFDTE_RECORD_RE_.exec(line);
         }
       }
     }
