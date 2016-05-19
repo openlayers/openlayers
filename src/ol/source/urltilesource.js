@@ -143,15 +143,16 @@ ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
 /**
  * Set the tile URL function of the source.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @param {string=} opt_key Optional new tile key for the source.
  * @api
  */
-ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction) {
-  // FIXME It should be possible to be more intelligent and avoid clearing the
-  // FIXME cache.  The tile URL function would need to be incorporated into the
-  // FIXME cache key somehow.
-  this.tileCache.clear();
+ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
   this.tileUrlFunction = tileUrlFunction;
-  this.changed();
+  if (typeof opt_key !== 'undefined') {
+    this.setKey(opt_key);
+  } else {
+    this.changed();
+  }
 };
 
 
@@ -164,7 +165,7 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
   var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
+      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), url);
 };
 
 
@@ -175,9 +176,10 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
  */
 ol.source.UrlTile.prototype.setUrls = function(urls) {
   this.urls = urls;
+  var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
+      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), key);
 };
 
 

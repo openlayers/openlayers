@@ -12,6 +12,47 @@ describe('ol.source.Tile', function() {
     });
   });
 
+  describe('#setKey()', function() {
+    it('sets the source key', function() {
+      var source = new ol.source.Tile({});
+      expect(source.getKey()).to.equal('');
+
+      var key = 'foo';
+      source.setKey(key);
+      expect(source.getKey()).to.equal(key);
+    });
+  });
+
+  describe('#setKey()', function() {
+    it('dispatches a change event', function(done) {
+      var source = new ol.source.Tile({});
+
+      var key = 'foo';
+      source.once('change', function() {
+        done();
+      });
+      source.setKey(key);
+    });
+
+    it('does not dispatch change if key does not change', function(done) {
+      var source = new ol.source.Tile({});
+
+      var key = 'foo';
+      source.once('change', function() {
+        source.once('change', function() {
+          done(new Error('Unexpected change event after source.setKey()'));
+        });
+        setTimeout(function() {
+          done();
+        }, 10);
+        source.setKey(key); // this should not result in a change event
+      });
+
+      source.setKey(key); // this should result in a change event
+    });
+
+  });
+
   describe('#forEachLoadedTile()', function() {
 
     var callback;
