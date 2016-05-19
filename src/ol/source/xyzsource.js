@@ -26,6 +26,7 @@ goog.require('ol.source.TileImage');
  * @api stable
  */
 ol.source.XYZ = function(options) {
+  options = options || {};
   var projection = options.projection !== undefined ?
       options.projection : 'EPSG:3857';
 
