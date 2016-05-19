@@ -4,14 +4,11 @@
  * These look like vars (or var properties), but in fact are simply identifiers
  * for the Closure compiler. Originally they were included in the appropriate
  * namespace file, but with the move away from Closure namespaces and towards
- * self-contained standard modules are now all in this file, with two exceptions.
+ * self-contained standard modules are now all in this file.
  * Unlike the other type definitions - enums and constructor functions - they
  * are not code and so are not imported or exported. They are only referred to
  * in type-defining comments used by the Closure compiler, and so should not
  * appear in module code.
- *
- * The 2 exceptions are the WFS typedefs which are in a sub-sub-namespace and
- * are API. These have been put in their own separate file.
  *
  * When the code is converted to ES6 modules, the namespace structure will
  * disappear, and these typedefs will have to be renamed accordingly, but the
@@ -475,6 +472,26 @@ ol.WebglBufferCacheEntry;
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
 ol.WebglTextureCacheEntry;
+
+
+/**
+ * Number of features; bounds/extent.
+ * @typedef {{numberOfFeatures: number,
+ *            bounds: ol.Extent}}
+ * @api stable
+ */
+ol.WFSFeatureCollectionMetadata;
+
+
+/**
+ * Total deleted; total inserted; total updated; array of insert ids.
+ * @typedef {{totalDeleted: number,
+ *            totalInserted: number,
+ *            totalUpdated: number,
+ *            insertIds: Array.<string>}}
+ * @api stable
+ */
+ol.WFSTransactionResponse;
 
 
 /**

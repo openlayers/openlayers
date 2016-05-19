@@ -130,7 +130,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
  * Read transaction response of the source.
  *
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
+ * @return {ol.WFSTransactionResponse|undefined} Transaction response.
  * @api stable
  */
 ol.format.WFS.prototype.readTransactionResponse = function(source) {
@@ -153,7 +153,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
  * Read feature collection metadata of the source.
  *
  * @param {Document|Node|Object|string} source Source.
- * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
+ * @return {ol.WFSFeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  * @api stable
  */
@@ -176,7 +176,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
 
 /**
  * @param {Document} doc Document.
- * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
+ * @return {ol.WFSFeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadataFromDocument = function(doc) {
@@ -206,7 +206,7 @@ ol.format.WFS.FEATURE_COLLECTION_PARSERS_ = {
 
 /**
  * @param {Node} node Node.
- * @return {ol.format.WFS.FeatureCollectionMetadata|undefined}
+ * @return {ol.WFSFeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
@@ -219,7 +219,7 @@ ol.format.WFS.prototype.readFeatureCollectionMetadataFromNode = function(node) {
       node.getAttribute('numberOfFeatures'));
   result['numberOfFeatures'] = value;
   return ol.xml.pushParseAndPop(
-      /** @type {ol.format.WFS.FeatureCollectionMetadata} */ (result),
+      /** @type {ol.WFSFeatureCollectionMetadata} */ (result),
       ol.format.WFS.FEATURE_COLLECTION_PARSERS_, node, [], this.gmlFormat_);
 };
 
@@ -318,7 +318,7 @@ ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_ = {
 
 /**
  * @param {Document} doc Document.
- * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
+ * @return {ol.WFSTransactionResponse|undefined} Transaction response.
  */
 ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
   goog.asserts.assert(doc.nodeType == goog.dom.NodeType.DOCUMENT,
@@ -334,7 +334,7 @@ ol.format.WFS.prototype.readTransactionResponseFromDocument = function(doc) {
 
 /**
  * @param {Node} node Node.
- * @return {ol.format.WFS.TransactionResponse|undefined} Transaction response.
+ * @return {ol.WFSTransactionResponse|undefined} Transaction response.
  */
 ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
   goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
@@ -342,7 +342,7 @@ ol.format.WFS.prototype.readTransactionResponseFromNode = function(node) {
   goog.asserts.assert(node.localName == 'TransactionResponse',
       'localName should be TransactionResponse');
   return ol.xml.pushParseAndPop(
-      /** @type {ol.format.WFS.TransactionResponse} */({}),
+      /** @type {ol.WFSTransactionResponse} */({}),
       ol.format.WFS.TRANSACTION_RESPONSE_PARSERS_, node, []);
 };
 
