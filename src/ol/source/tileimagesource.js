@@ -279,7 +279,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
 ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var /** @type {ol.Tile} */ tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  var paramsKey = this.getKeyParams();
+  var paramsKey = this.getKey();
   if (!this.tileCache.containsKey(tileCoordKey)) {
     goog.asserts.assert(projection, 'argument projection is truthy');
     tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
