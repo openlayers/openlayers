@@ -144,12 +144,11 @@ ol.source.Tile.prototype.getGutter = function(projection) {
 
 
 /**
- * Return the "parameters" key, a string composed of the source's
- * parameters/dimensions.
- * @return {string} The parameters key.
+ * Return the key to be used for all tiles in the source.
+ * @return {string} The key for all tiles.
  * @protected
  */
-ol.source.Tile.prototype.getKeyParams = function() {
+ol.source.Tile.prototype.getKey = function() {
   return this.key_;
 };
 

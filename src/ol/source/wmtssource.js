@@ -216,7 +216,7 @@ ol.source.WMTS.prototype.getFormat = function() {
 /**
  * @inheritDoc
  */
-ol.source.WMTS.prototype.getKeyParams = function() {
+ol.source.WMTS.prototype.getKey = function() {
   return this.dimensionsKey_;
 };
 

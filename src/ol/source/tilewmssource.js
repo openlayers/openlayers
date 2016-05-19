@@ -185,7 +185,7 @@ ol.source.TileWMS.prototype.getGutterInternal = function() {
 /**
  * @inheritDoc
  */
-ol.source.TileWMS.prototype.getKeyParams = function() {
+ol.source.TileWMS.prototype.getKey = function() {
   return this.paramsKey_;
 };
 
