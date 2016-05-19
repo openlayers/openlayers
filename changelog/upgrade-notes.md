@@ -3,6 +3,9 @@
 #### Move of typedefs out of code and into separate file
 
 This change should not affect the great majority of application developers, but it's possible there are edge cases when compiling application code together with the library which cause compiler errors or warnings. In this case, please raise a GitHub issue. `goog.require`s for typedefs should not be necessary.
+Users compiling their code with the library should note that the following API `@typedef`s have been renamed; your code may need changing if you use these:
+* `ol.format.WFS.FeatureCollectionMetadata` to `ol.WFSFeatureCollectionMetadata`
+* `ol.format.WFS.TransactionResponse` to `ol.WFSTransactionResponse`
 
 #### Removal of `opaque` option for `ol.source.VectorTile`
 
