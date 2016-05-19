@@ -279,19 +279,19 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
 ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var /** @type {ol.Tile} */ tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  var paramsKey = this.getKey();
+  var key = this.getKey();
   if (!this.tileCache.containsKey(tileCoordKey)) {
     goog.asserts.assert(projection, 'argument projection is truthy');
-    tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
+    tile = this.createTile_(z, x, y, pixelRatio, projection, key);
     this.tileCache.set(tileCoordKey, tile);
   } else {
     tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
-    if (tile.key != paramsKey) {
+    if (tile.key != key) {
       // The source's params changed. If the tile has an interim tile and if we
       // can use it then we use it. Otherwise we create a new tile.  In both
       // cases we attempt to assign an interim tile to the new tile.
       var /** @type {ol.Tile} */ interimTile = tile;
-      if (tile.interimTile && tile.interimTile.key == paramsKey) {
+      if (tile.interimTile && tile.interimTile.key == key) {
         goog.asserts.assert(tile.interimTile.getState() == ol.TileState.LOADED);
         goog.asserts.assert(tile.interimTile.interimTile === null);
         tile = tile.interimTile;
@@ -299,7 +299,7 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
           tile.interimTile = interimTile;
         }
       } else {
-        tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
+        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
         if (interimTile.getState() == ol.TileState.LOADED) {
           tile.interimTile = interimTile;
         } else if (interimTile.interimTile &&
