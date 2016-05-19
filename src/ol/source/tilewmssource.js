@@ -65,13 +65,6 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
-   */
-  this.paramsKey_ = '';
-  this.resetParamsKey_();
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.v13_ = true;
@@ -103,6 +96,7 @@ ol.source.TileWMS = function(opt_options) {
   this.tmpExtent_ = ol.extent.createEmpty();
 
   this.updateV13_();
+  this.setKey(this.getKeyForParams_());
 
 };
 goog.inherits(ol.source.TileWMS, ol.source.TileImage);
@@ -179,14 +173,6 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
  */
 ol.source.TileWMS.prototype.getGutterInternal = function() {
   return this.gutter_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.TileWMS.prototype.getKey = function() {
-  return this.paramsKey_;
 };
 
 
@@ -311,14 +297,15 @@ ol.source.TileWMS.prototype.resetCoordKeyPrefix_ = function() {
 
 /**
  * @private
+ * @return {string} The key for the current params.
  */
-ol.source.TileWMS.prototype.resetParamsKey_ = function() {
+ol.source.TileWMS.prototype.getKeyForParams_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.params_) {
     res[i++] = key + '-' + this.params_[key];
   }
-  this.paramsKey_ = res.join('/');
+  return res.join('/');
 };
 
 
@@ -378,9 +365,8 @@ ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRati
 ol.source.TileWMS.prototype.updateParams = function(params) {
   ol.object.assign(this.params_, params);
   this.resetCoordKeyPrefix_();
-  this.resetParamsKey_();
   this.updateV13_();
-  this.changed();
+  this.setKey(this.getKeyForParams_());
 };
 
 
