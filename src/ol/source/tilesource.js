@@ -67,6 +67,12 @@ ol.source.Tile = function(options) {
    */
   this.tmpSize = [0, 0];
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.key_ = '';
+
 };
 goog.inherits(ol.source.Tile, ol.source.Source);
 
@@ -144,7 +150,20 @@ ol.source.Tile.prototype.getGutter = function(projection) {
  * @protected
  */
 ol.source.Tile.prototype.getKeyParams = function() {
-  return '';
+  return this.key_;
+};
+
+
+/**
+ * Set the value to be used as the key for all tiles in the source.
+ * @param {string} key The key for tiles.
+ * @protected
+ */
+ol.source.Tile.prototype.setKey = function(key) {
+  if (this.key_ !== key) {
+    this.key_ = key;
+    this.changed();
+  }
 };
 
 
