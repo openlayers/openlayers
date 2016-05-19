@@ -58,13 +58,6 @@ ol.source.WMTS = function(options) {
    * @private
    * @type {string}
    */
-  this.dimensionsKey_ = '';
-  this.resetDimensionsKey_();
-
-  /**
-   * @private
-   * @type {string}
-   */
   this.layer_ = options.layer;
 
   /**
@@ -187,6 +180,8 @@ ol.source.WMTS = function(options) {
     wrapX: options.wrapX !== undefined ? options.wrapX : false
   });
 
+  this.setKey(this.getKeyForDimensions_());
+
 };
 goog.inherits(ol.source.WMTS, ol.source.TileImage);
 
@@ -210,14 +205,6 @@ ol.source.WMTS.prototype.getDimensions = function() {
  */
 ol.source.WMTS.prototype.getFormat = function() {
   return this.format_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.WMTS.prototype.getKey = function() {
-  return this.dimensionsKey_;
 };
 
 
@@ -273,14 +260,15 @@ ol.source.WMTS.prototype.getVersion = function() {
 
 /**
  * @private
+ * @return {string} The key for the current dimensions.
  */
-ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
+ol.source.WMTS.prototype.getKeyForDimensions_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
     res[i++] = key + '-' + this.dimensions_[key];
   }
-  this.dimensionsKey_ = res.join('/');
+  return res.join('/');
 };
 
 
@@ -291,8 +279,7 @@ ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   ol.object.assign(this.dimensions_, dimensions);
-  this.resetDimensionsKey_();
-  this.changed();
+  this.setKey(this.getKeyForDimensions_());
 };
 
 
