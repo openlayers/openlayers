@@ -238,7 +238,12 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
   var strokeWidth = 0;
 
   if (this.stroke_) {
-    strokeStyle = ol.color.asString(this.stroke_.getColor());
+    strokeStyle = this.stroke_.getColor();
+    if (strokeStyle === null) {
+      strokeStyle = ol.render.canvas.defaultStrokeStyle;
+    }
+    strokeStyle = ol.color.asString(strokeStyle);
+
     strokeWidth = this.stroke_.getWidth();
     if (strokeWidth === undefined) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
@@ -331,7 +336,11 @@ ol.style.Circle.prototype.draw_ = function(renderOptions, context, x, y) {
       this.radius_, 0, 2 * Math.PI, true);
 
   if (this.fill_) {
-    context.fillStyle = ol.colorlike.asColorLike(this.fill_.getColor());
+    var fillStyle = this.fill_.getColor();
+    if (fillStyle === null) {
+      fillStyle = ol.render.canvas.defaultFillStyle;
+    }
+    context.fillStyle = ol.colorlike.asColorLike(fillStyle);
     context.fill();
   }
   if (this.stroke_) {
