@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.16.0
+
 #### Rendering change for tile sources
 
 Previously, if you called `source.setUrl()` on a tile source, all currently rendered tiles would be cleared before new tiles were loaded and rendered.  This clearing of the map is undesirable if you are trying to smoothly update the tiles used by a source.  This behavior has now changed, and calling `source.setUrl()` (or `source.setUrls()`) will *not* clear currently rendered tiles before loading and rendering new tiles.  Instead, previously rendered tiles remain rendered until new tiles have loaded and can replace them.  If you want to achieve the old behavior (render a blank map before loading new tiles), you can call `source.refresh()` or you can replace the old source with a new one (using `layer.setSource()`).
