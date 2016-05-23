@@ -128,6 +128,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
   var year = 2000;
   var month = 0;
   var day = 1;
+  var lastDateTime = -1;
   var i, ii;
   for (i = 0, ii = lines.length; i < ii; ++i) {
     var line = lines[i];
@@ -160,7 +161,12 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
           flatCoordinates.push(z);
         }
         var dateTime = Date.UTC(year, month, day, hour, minute, second);
+        // Detect UTC midnight wrap around.
+        if (dateTime < lastDateTime) {
+          dateTime = Date.UTC(year, month, day + 1, hour, minute, second);
+        }
         flatCoordinates.push(dateTime / 1000);
+        lastDateTime = dateTime;
       }
     } else if (line.charAt(0) == 'H') {
       m = ol.format.IGC.HFDTE_RECORD_RE_.exec(line);
