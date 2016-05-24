@@ -162,6 +162,7 @@ describe('ol.source.WMTS', function() {
           var options = ol.source.WMTS.optionsFromCapabilities(
               capabilities, {
                 layer: 'Demographics_USA_Population_Density',
+                requestEncoding: 'KVP',
                 matrixSet: 'default028mm'
               });
 
@@ -170,6 +171,23 @@ describe('ol.source.WMTS', function() {
           expect(options.urls[0]).to.be.eql(
              'http://services.arcgisonline.com/arcgis/rest/services/' +
              'Demographics/USA_Population_Density/MapServer/WMTS?');
+        });
+
+    it('can create REST options from spec/ol/format/wmts/arcgis.xml',
+        function() {
+          var options = ol.source.WMTS.optionsFromCapabilities(
+              capabilities, {
+                layer: 'Demographics_USA_Population_Density',
+                matrixSet: 'default028mm'
+              });
+
+          expect(options.urls).to.be.an('array');
+          expect(options.urls).to.have.length(1);
+          expect(options.urls[0]).to.be.eql(
+             'http://services.arcgisonline.com/arcgis/rest/services/' +
+             'Demographics/USA_Population_Density/MapServer/WMTS/' +
+             'tile/1.0.0/Demographics_USA_Population_Density/' +
+             '{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png');
         });
   });
 
