@@ -428,31 +428,38 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
       requestEncoding);
 
-  if (!wmtsCap.hasOwnProperty('OperationsMetadata') ||
-      !wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
-      requestEncoding.indexOf('REST') === 0) {
-    // Add REST tile resource url
-    requestEncoding = ol.source.WMTSRequestEncoding.REST;
-    l['ResourceURL'].forEach(function(elt, index, array) {
-      if (elt['resourceType'] == 'tile') {
-        format = elt['format'];
-        urls.push(/** @type {string} */ (elt['template']));
-      }
-    });
-  } else {
+  if ('OperationsMetadata' in wmtsCap && 'GetTile' in wmtsCap['OperationsMetadata']) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
+    goog.asserts.assert(gets.length >= 1);
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
-      var constraint = ol.array.find(gets[i]['Constraint'],
-          function(elt, index, array) {
-            return elt['name'] == 'GetEncoding';
-          });
+      var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
+        return element['name'] == 'GetEncoding';
+      });
       var encodings = constraint['AllowedValues']['Value'];
-      if (encodings.length > 0 && ol.array.includes(encodings, 'KVP')) {
-        requestEncoding = ol.source.WMTSRequestEncoding.KVP;
-        urls.push(/** @type {string} */ (gets[i]['href']));
+      goog.asserts.assert(encodings.length >= 1);
+
+      if (requestEncoding === '') {
+        // requestEncoding not provided, use the first encoding from the list
+        requestEncoding = encodings[0];
+      }
+      if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
+        if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
+          urls.push(/** @type {string} */ (gets[i]['href']));
+        }
+      } else {
+        break;
       }
     }
+  }
+  if (urls.length === 0) {
+    requestEncoding = ol.source.WMTSRequestEncoding.REST;
+    l['ResourceURL'].forEach(function(element) {
+      if (element['resourceType'] === 'tile') {
+        format = element['format'];
+        urls.push(/** @type {string} */ (element['template']));
+      }
+    });
   }
   goog.asserts.assert(urls.length > 0, 'At least one URL found');
 

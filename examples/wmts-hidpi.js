@@ -30,7 +30,6 @@ fetch(capabilitiesUrl).then(function(response) {
   var options = ol.source.WMTS.optionsFromCapabilities(result, {
     layer: layer,
     matrixSet: 'google3857',
-    requestEncoding: 'REST',
     style: 'normal'
   });
   options.tilePixelRatio = tilePixelRatio;
