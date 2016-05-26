@@ -26,7 +26,6 @@ goog.provide('ol.events.EventTargetLike');
 
 goog.provide('ol.interaction.DragBoxEndConditionType');
 goog.provide('ol.proj.ProjectionLike');
-goog.provide('ol.raster.Operation');
 goog.provide('ol.style.AtlasBlock');
 
 
@@ -275,6 +274,26 @@ ol.PostRenderFunction;
  * @typedef {function(ol.Map, ?olx.FrameState): boolean}
  */
 ol.PreRenderFunction;
+
+
+/**
+ * A function that takes an array of input data, performs some operation, and
+ * returns an array of ouput data.
+ * For `pixel` type operations, the function will be called with an array of
+ * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
+ * range of 0 - 255. It should return a single pixel array.
+ * For `'image'` type operations, functions will be called with an array of
+ * {@link ImageData https://developer.mozilla.org/en-US/docs/Web/API/ImageData}
+ * and should return a single {@link ImageData
+ * https://developer.mozilla.org/en-US/docs/Web/API/ImageData}.  The operations
+ * are called with a second "data" argument, which can be used for storage.  The
+ * data object is accessible from raster events, where it can be initialized in
+ * "beforeoperations" and accessed again in "afteroperations".
+ *
+ * @typedef {function((Array.<Array.<number>>|Array.<ImageData>), Object):
+ *     (Array.<number>|ImageData)}
+ */
+ol.RasterOperation;
 
 
 /**
@@ -607,26 +626,6 @@ ol.interaction.SnapSegmentDataType;
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
  */
 ol.proj.ProjectionLike;
-
-
-/**
- * A function that takes an array of input data, performs some operation, and
- * returns an array of ouput data.
- * For `pixel` type operations, the function will be called with an array of
- * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
- * range of 0 - 255. It should return a single pixel array.
- * For `'image'` type operations, functions will be called with an array of
- * {@link ImageData https://developer.mozilla.org/en-US/docs/Web/API/ImageData}
- * and should return a single {@link ImageData
- * https://developer.mozilla.org/en-US/docs/Web/API/ImageData}.  The operations
- * are called with a second "data" argument, which can be used for storage.  The
- * data object is accessible from raster events, where it can be initialized in
- * "beforeoperations" and accessed again in "afteroperations".
- *
- * @typedef {function((Array.<Array.<number>>|Array.<ImageData>), Object):
- *     (Array.<number>|ImageData)}
- */
-ol.raster.Operation;
 
 
 /**
