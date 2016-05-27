@@ -857,7 +857,8 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
       'xsi:schemaLocation', this.schemaLocation_);
   if (inserts) {
     obj = {node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix};
+      featureType: options.featureType, featurePrefix: options.featurePrefix,
+      srsName: options.srsName};
     ol.object.assign(obj, baseObj);
     ol.xml.pushSerializeAndPop(obj,
         ol.format.WFS.TRANSACTION_SERIALIZERS_,
@@ -866,7 +867,8 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
   }
   if (updates) {
     obj = {node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix};
+      featureType: options.featureType, featurePrefix: options.featurePrefix,
+      srsName: options.srsName};
     ol.object.assign(obj, baseObj);
     ol.xml.pushSerializeAndPop(obj,
         ol.format.WFS.TRANSACTION_SERIALIZERS_,
@@ -875,14 +877,16 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
   }
   if (deletes) {
     ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix},
+      featureType: options.featureType, featurePrefix: options.featurePrefix,
+      srsName: options.srsName},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Delete'), deletes,
     objectStack);
   }
   if (options.nativeElements) {
     ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix},
+      featureType: options.featureType, featurePrefix: options.featurePrefix,
+      srsName: options.srsName},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Native'), options.nativeElements,
     objectStack);
