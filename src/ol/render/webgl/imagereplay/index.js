@@ -21,6 +21,7 @@ goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
+goog.require('ol.render.webgl');
 
 
 /**
@@ -926,9 +927,9 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.Color}
+   * @type {ol.Color|undefined}
    */
-  this.strokeColor_ = null;
+  this.strokeColor_ = undefined;
 
 
   /**
@@ -1161,14 +1162,14 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ =
  */
 ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle =
     function(fillStyle, strokeStyle) {
-  if (!goog.isNull(strokeStyle)) {
+  if (strokeStyle) {
     var strokeStyleColor = strokeStyle.getColor();
     this.strokeColor_ = !goog.isNull(strokeStyleColor) ?
         ol.color.asArray(strokeStyleColor).map(function(c, i) {
           return i != 3 ? c / 255 : c;
-        }) : [0.0, 0.0, 0.0, 1.0];
+        }) : ol.render.webgl.defaultStrokeStyle;
   } else {
-    this.strokeColor_ = null;
+    this.strokeColor_ = undefined;
   }
 };
 
@@ -1509,7 +1510,7 @@ ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle =
     this.fillColor_ = !goog.isNull(fillStyleColor) && Array.isArray(fillStyleColor) ?
         ol.color.asArray(fillStyleColor).map(function(c, i) {
           return i != 3 ? c / 255.0 : c;
-        }) : [0.0, 0.0, 0.0, 1.0];
+        }) : ol.render.webgl.defaultFillStyle;
   } else {
     this.fillColor_ = undefined;
   }
