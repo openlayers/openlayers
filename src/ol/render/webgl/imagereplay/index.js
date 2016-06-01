@@ -155,7 +155,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    */
   this.indicesBuffer_ = null;
 
-  /**
+/**
    * @private
    * @type {ol.render.webgl.imagereplay.defaultshader.Locations}
    */
@@ -975,7 +975,7 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
    */
   this.strokeColor_ = undefined;
 
-  /**
+/**
    * @private
    * @type {ol.render.webgl.polygonreplay.shader.Default.Locations}
    */
@@ -992,6 +992,25 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.verticesBuffer_ = null;
+
+  /**
+   * @private
+   * @type {{strokeColor: (Array.<number>|undefined),
+   *         lineCap: (string|undefined),
+   *         lineDash: Array.<number>,
+   *         lineJoin: (string|undefined),
+   *         lineWidth: (number|undefined),
+   *         miterLimit: (number|undefined)}|null}
+   */
+  this.state_ = {
+    strokeColor: undefined,
+    lineCap: undefined,
+    lineDash: null,
+    lineJoin: undefined,
+    lineWidth: undefined,
+    miterLimit: undefined
+  };
+
 };
 goog.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
 
@@ -1009,18 +1028,18 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(coordinat
     var point1 = coordinates[i];
     this.vertices_.push(point1[0]);
     this.vertices_.push(point1[1]);
-    this.vertices_.push(this.strokeColor_[0]);
-    this.vertices_.push(this.strokeColor_[1]);
-    this.vertices_.push(this.strokeColor_[2]);
-    this.vertices_.push(this.strokeColor_[3]);
+    this.vertices_.push(this.state_.strokeColor[0]);
+    this.vertices_.push(this.state_.strokeColor[1]);
+    this.vertices_.push(this.state_.strokeColor[2]);
+    this.vertices_.push(this.state_.strokeColor[3]);
 
     var point2 = coordinates[i + 1];
     this.vertices_.push(point2[0]);
     this.vertices_.push(point2[1]);
-    this.vertices_.push(this.strokeColor_[0]);
-    this.vertices_.push(this.strokeColor_[1]);
-    this.vertices_.push(this.strokeColor_[2]);
-    this.vertices_.push(this.strokeColor_[3]);
+    this.vertices_.push(this.state_.strokeColor[0]);
+    this.vertices_.push(this.state_.strokeColor[1]);
+    this.vertices_.push(this.state_.strokeColor[2]);
+    this.vertices_.push(this.state_.strokeColor[3]);
   }
 };
 
@@ -1173,7 +1192,9 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
   } else {
     var numItems = this.vertices_.length / 6;
     // FIXME: not compatible with batching, hardcoding some arbitrary value
-    gl.lineWidth(3);
+    if (this.state_.lineWidth) {
+      gl.lineWidth(this.state_.lineWidth);
+    }
     gl.drawArrays(goog.webgl.LINES, 0, numItems);
     gl.lineWidth(1);
   }
@@ -1184,15 +1205,17 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
  * @inheritDoc
  */
 ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  if (strokeStyle) {
-    var strokeStyleColor = strokeStyle.getColor();
-    this.strokeColor_ = !goog.isNull(strokeStyleColor) ?
-        ol.color.asArray(strokeStyleColor).map(function(c, i) {
-          return i != 3 ? c / 255 : c;
-        }) : ol.render.webgl.defaultStrokeStyle;
-  } else {
-    this.strokeColor_ = undefined;
-  }
+  goog.asserts.assert(this.state_, 'this.state_ should not be null');
+  goog.asserts.assert(!fillStyle, 'fillStyle should be null');
+  goog.asserts.assert(strokeStyle, 'strokeStyle should not be null');
+  var strokeStyleColor = strokeStyle.getColor();
+  this.state_.strokeColor = !goog.isNull(strokeStyleColor) ?
+      ol.color.asArray(strokeStyleColor).map(function(c, i) {
+        return i != 3 ? c / 255 : c;
+      }) : ol.render.webgl.defaultStrokeStyle;
+  var strokeStyleWidth = strokeStyle.getWidth();
+  this.state_.lineWidth = strokeStyleWidth !== undefined ?
+      strokeStyleWidth : ol.render.webgl.defaultLineWidth;
 };
 
 
