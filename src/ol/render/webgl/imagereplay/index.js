@@ -68,7 +68,50 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @type {!goog.vec.Mat4.Number}
    * @private
    */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix_ = ol.transform.create();
+
+  /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.offsetRotateMatrix_ = ol.transform.create();
+
+  /**
+   * @type {!goog.vec.Mat4.Number}
+   * @private
+   */
+  this.offsetScaleMatrix_ = ol.transform.create();
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.tmpMat4_ = ol.vec.Mat4.create();
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.indices_ = [];
+
+  /**
+   * @type {ol.webgl.Buffer}
+   * @private
+   */
+  this.indicesBuffer_ = null;
+
+  /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.vertices_ = [];
+
+  /**
+   * @type {ol.webgl.Buffer}
+   * @private
+   */
+  this.verticesBuffer_ = null;
+
 };
 goog.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
 
@@ -76,7 +119,89 @@ ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = goog.abstractMetho
 
 ol.render.webgl.Replay.prototype.finish = goog.abstractMethod;
 
-ol.render.webgl.Replay.prototype.replay = goog.abstractMethod;
+ol.render.webgl.Replay.prototype.setUpProgram_ = goog.abstractMethod;
+
+ol.render.webgl.Replay.prototype.drawReplay_ = goog.abstractMethod;
+
+ol.render.webgl.Replay.prototype.drawHitDetectionReplay_ = goog.abstractMethod;
+
+/**
+ * @param {ol.webgl.Context} context Context.
+ * @param {ol.Coordinate} center Center.
+ * @param {number} resolution Resolution.
+ * @param {number} rotation Rotation.
+ * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {number} opacity Global opacity.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.Replay.prototype.replay = function(context,
+    center, resolution, rotation, size, pixelRatio,
+    opacity, skippedFeaturesHash,
+    featureCallback, oneByOne, opt_hitExtent) {
+  var gl = context.getGL();
+
+  // bind the vertices buffer
+  goog.asserts.assert(this.verticesBuffer_,
+      'verticesBuffer must not be null');
+  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  // bind the indices buffer
+  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+      'indicesBuffer must not be null');
+  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+  var locations = this.setUpProgram_(gl, context);
+
+  // set the "uniform" values
+  var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
+  ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+  ol.transform.rotate(projectionMatrix, -rotation);
+  ol.transform.translate(projectionMatrix, -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
+
+  var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
+  ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+
+  var offsetRotateMatrix = ol.transform.reset(this.offsetRotateMatrix_);
+  if (rotation !== 0) {
+    ol.transform.rotate(offsetRotateMatrix, -rotation);
+  }
+
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+  gl.uniform1f(locations.u_opacity, opacity);
+
+  // draw!
+  var result;
+  if (featureCallback === undefined) {
+    this.drawReplay_(gl, context, skippedFeaturesHash);
+  } else {
+    // draw feature by feature for the hit-detection
+    result = this.drawHitDetectionReplay_(gl, context, skippedFeaturesHash,
+        featureCallback, oneByOne, opt_hitExtent);
+  }
+
+  // disable the vertex attrib arrays
+  for (var i in locations) {
+    if (i.startsWith('a_')) {
+      gl.disableVertexAttribArray(locations[i]);
+    }
+  }
+
+
+  return result;
+};
 
 /**
  * @constructor
@@ -144,18 +269,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.imageWidth_ = undefined;
 
   /**
-   * @type {Array.<number>}
-   * @private
-   */
-  this.indices_ = [];
-
-  /**
-   * @type {ol.webgl.Buffer}
-   * @private
-   */
-  this.indicesBuffer_ = null;
-
-/**
    * @private
    * @type {ol.render.webgl.imagereplay.defaultshader.Locations}
    */
@@ -168,18 +281,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.opacity_ = undefined;
 
   /**
-   * @type {ol.Transform}
-   * @private
-   */
-  this.offsetRotateMatrix_ = ol.transform.create();
-
-  /**
-   * @type {ol.Transform}
-   * @private
-   */
-  this.offsetScaleMatrix_ = ol.transform.create();
-
-  /**
    * @type {number|undefined}
    * @private
    */
@@ -190,18 +291,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.originY_ = undefined;
-
-  /**
-   * @type {ol.Transform}
-   * @private
-   */
-  this.projectionMatrix_ = ol.transform.create();
-
-  /**
-   * @type {Array.<number>}
-   * @private
-   */
-  this.tmpMat4_ = ol.vec.Mat4.create();
 
   /**
    * @private
@@ -232,18 +321,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.hitDetectionTextures_ = [];
-
-  /**
-   * @type {Array.<number>}
-   * @private
-   */
-  this.vertices_ = [];
-
-  /**
-   * @type {ol.webgl.Buffer}
-   * @private
-   */
-  this.verticesBuffer_ = null;
 
   /**
    * Start index per feature (the index).
@@ -536,38 +613,12 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, image
 
 
 /**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
- * @param {number} pixelRatio Pixel ratio.
- * @param {number} opacity Global opacity.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
- * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
- *  this extent are checked.
- * @return {T|undefined} Callback result.
- * @template T
+ * @return {ol.render.webgl.imagereplay.shader.Default.Locations} Locations.
  */
-ol.render.webgl.ImageReplay.prototype.replay = function(context,
-    center, resolution, rotation, size, pixelRatio,
-    opacity, skippedFeaturesHash,
-    featureCallback, oneByOne, opt_hitExtent) {
-  var gl = context.getGL();
-
-  // bind the vertices buffer
-  ol.DEBUG && console.assert(this.verticesBuffer_,
-      'verticesBuffer must not be null');
-  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
-
-  // bind the indices buffer
-  ol.DEBUG && console.assert(this.indicesBuffer_,
-      'indecesBuffer must not be null');
-  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
-
+ol.render.webgl.ImageReplay.prototype.setUpProgram_ = function(gl, context) {
   // get the program
   var fragmentShader = ol.render.webgl.imagereplay.defaultshader.fragment;
   var vertexShader = ol.render.webgl.imagereplay.defaultshader.vertex;
@@ -607,49 +658,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   gl.vertexAttribPointer(locations.a_rotateWithView, 1, ol.webgl.FLOAT,
       false, 32, 28);
 
-  // set the "uniform" values
-  var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
-  ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
-  ol.transform.rotate(projectionMatrix, -rotation);
-  ol.transform.translate(projectionMatrix, -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
-
-  var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
-  ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
-
-  var offsetRotateMatrix = ol.transform.reset(this.offsetRotateMatrix_);
-  if (rotation !== 0) {
-    ol.transform.rotate(offsetRotateMatrix, -rotation);
-  }
-
-  gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
-  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
-  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
-  gl.uniform1f(locations.u_opacity, opacity);
-
-  // draw!
-  var result;
-  if (featureCallback === undefined) {
-    this.drawReplay_(gl, context, skippedFeaturesHash,
-        this.textures_, this.groupIndices_);
-  } else {
-    // draw feature by feature for the hit-detection
-    result = this.drawHitDetectionReplay_(gl, context, skippedFeaturesHash,
-        featureCallback, oneByOne, opt_hitExtent);
-  }
-
-  // disable the vertex attrib arrays
-  gl.disableVertexAttribArray(locations.a_position);
-  gl.disableVertexAttribArray(locations.a_offsets);
-  gl.disableVertexAttribArray(locations.a_texCoord);
-  gl.disableVertexAttribArray(locations.a_opacity);
-  gl.disableVertexAttribArray(locations.a_rotateWithView);
-
-  return result;
+  return locations;
 };
-
 
 /**
  * @private
@@ -657,10 +667,10 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
- * @param {Array.<WebGLTexture>} textures Textures.
- * @param {Array.<number>} groupIndices Texture group indices.
  */
-ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, textures, groupIndices) {
+ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
+  var textures = this.textures_;
+  var groupIndices = this.groupIndices_;
   ol.DEBUG && console.assert(textures.length === groupIndices.length,
       'number of textures and groupIndeces match');
   var elementType = context.hasOESElementIndexUint ?
@@ -969,29 +979,11 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
   goog.base(this, tolerance, maxExtent);
 
-  /**
-   * @private
-   * @type {ol.Color|undefined}
-   */
-  this.strokeColor_ = undefined;
-
 /**
    * @private
    * @type {ol.render.webgl.polygonreplay.shader.Default.Locations}
    */
   this.defaultLocations_ = null;
-
-  /**
-   * @type {Array.<number>}
-   * @private
-   */
-  this.vertices_ = [];
-
-  /**
-   * @type {ol.webgl.Buffer}
-   * @private
-   */
-  this.verticesBuffer_ = null;
 
   /**
    * @private
@@ -1022,24 +1014,25 @@ goog.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
  */
 ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(coordinates) {
   var i, ii;
+  var numVertices = this.vertices_.length;
 
   // Shift the indices to take into account previously handled lines
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     var point1 = coordinates[i];
-    this.vertices_.push(point1[0]);
-    this.vertices_.push(point1[1]);
-    this.vertices_.push(this.state_.strokeColor[0]);
-    this.vertices_.push(this.state_.strokeColor[1]);
-    this.vertices_.push(this.state_.strokeColor[2]);
-    this.vertices_.push(this.state_.strokeColor[3]);
+    this.vertices_[numVertices++] = point1[0] - this.origin_[0];
+    this.vertices_[numVertices++] = point1[1] - this.origin_[1];
+    this.vertices_[numVertices++] = this.state_.strokeColor[0];
+    this.vertices_[numVertices++] = this.state_.strokeColor[1];
+    this.vertices_[numVertices++] = this.state_.strokeColor[2];
+    this.vertices_[numVertices++] = this.state_.strokeColor[3];
 
     var point2 = coordinates[i + 1];
-    this.vertices_.push(point2[0]);
-    this.vertices_.push(point2[1]);
-    this.vertices_.push(this.state_.strokeColor[0]);
-    this.vertices_.push(this.state_.strokeColor[1]);
-    this.vertices_.push(this.state_.strokeColor[2]);
-    this.vertices_.push(this.state_.strokeColor[3]);
+    this.vertices_[numVertices++] = point2[0] - this.origin_[0];
+    this.vertices_[numVertices++] = point2[1] - this.origin_[1];
+    this.vertices_[numVertices++] = this.state_.strokeColor[0];
+    this.vertices_[numVertices++] = this.state_.strokeColor[1];
+    this.vertices_[numVertices++] = this.state_.strokeColor[2];
+    this.vertices_[numVertices++] = this.state_.strokeColor[3];
   }
 };
 
@@ -1071,6 +1064,10 @@ ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+
+  // create, bind, and populate the indices buffer
+  this.indicesBuffer_ = new ol.webgl.Buffer(this.indices_);
+  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 };
 
 
@@ -1086,43 +1083,21 @@ ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function
   goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
       'verticesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer_;
+  var indicesBuffer = this.indicesBuffer_;
   return function() {
     context.deleteBuffer(verticesBuffer);
+    context.deleteBuffer(indicesBuffer);
   };
 };
 
 
 /**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @param {ol.Coordinate} center Center.
- * @param {number} resolution Resolution.
- * @param {number} rotation Rotation.
- * @param {ol.Size} size Size.
- * @param {number} pixelRatio Pixel ratio.
- * @param {number} opacity Global opacity.
- * @param {number} brightness Global brightness.
- * @param {number} contrast Global contrast.
- * @param {number} hue Global hue.
- * @param {number} saturation Global saturation.
- * @param {Object} skippedFeaturesHash Ids of features to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
- * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
- *  this extent are checked.
- * @return {T|undefined} Callback result.
- * @template T
+ * @return {ol.render.webgl.polygonreplay.shader.Default.Locations} Locations.
  */
-ol.render.webgl.LineStringReplay.prototype.replay = function(context,
-    center, resolution, rotation, size, pixelRatio,
-    opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
-    featureCallback, oneByOne, opt_hitExtent) {
-  var gl = context.getGL();
-
-  // bind the vertices buffer
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
-      'verticesBuffer must not be null');
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
-
+ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context) {
   // get the program
   var fragmentShader, vertexShader;
   fragmentShader =
@@ -1152,31 +1127,7 @@ ol.render.webgl.LineStringReplay.prototype.replay = function(context,
   gl.vertexAttribPointer(locations.a_color, 4, goog.webgl.FLOAT,
       false, 24, 8);
 
-  // set the "uniform" values
-  // TODO: use RTE to avoid jitter
-  var projectionMatrix = this.projectionMatrix_;
-  ol.vec.Mat4.makeTransform2D(projectionMatrix,
-      0.0, 0.0,
-      pixelRatio * 2 / (resolution * size[0]),
-      pixelRatio * 2 / (resolution * size[1]),
-      -rotation,
-      -center[0], -center[1]);
-
-  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
-
-  // draw!
-  var result;
-  if (!goog.isDef(featureCallback)) {
-    this.drawReplay_(gl, context, skippedFeaturesHash);
-  } else {
-    // TODO: draw feature by feature for the hit-detection
-  }
-
-  // disable the vertex attrib arrays
-  gl.disableVertexAttribArray(locations.a_position);
-  gl.disableVertexAttribArray(locations.a_color);
-
-  return result;
+  return locations;
 };
 
 
@@ -1198,6 +1149,33 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
     gl.drawArrays(goog.webgl.LINES, 0, numItems);
     gl.lineWidth(1);
   }
+};
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplay_ = function(gl, context, skippedFeaturesHash, featureCallback, oneByOne,
+    opt_hitExtent) {
+  //if (!oneByOne) {
+    // draw all hit-detection features in "once" (by texture group)
+    //return this.drawHitDetectionReplayAll_(gl, context,
+    //    skippedFeaturesHash, featureCallback);
+  //} else {
+    // draw hit-detection features one by one
+    //return this.drawHitDetectionReplayOneByOne_(gl, context,
+    //    skippedFeaturesHash, featureCallback, opt_hitExtent);
+  //}
+  return 0;
 };
 
 
@@ -1369,7 +1347,7 @@ ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, 
   this.startIndicesFeature_.push(feature);
   this.drawCoordinates_(coordinates);
 
-  if (!goog.isNull(this.lineStringReplay_.strokeColor_)) {
+  if (!goog.isNull(this.lineStringReplay_.state_.strokeColor)) {
     var linearRings = polygonGeometry.getLinearRings();
     var i, ii;
     for (i = 0, ii = linearRings.length; i < ii; i++) {
@@ -1437,7 +1415,7 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(co
  * @param {number} hue Global hue.
  * @param {number} saturation Global saturation.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
- * @param {function(ol.Feature): T|undefined} featureCallback Feature callback.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
  * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
@@ -1515,7 +1493,7 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
 
   this.lineStringReplay_.replay(context,
       center, resolution, rotation, size, pixelRatio,
-      opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
+      opacity, skippedFeaturesHash,
       featureCallback, oneByOne, opt_hitExtent);
   // FIXME get result
   return result;
