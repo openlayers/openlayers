@@ -32,7 +32,7 @@ goog.provide('ol.style.AtlasBlock');
 
 /**
  * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
- * @api
+ * @doc
  */
 ol.AttributionLike;
 
@@ -54,7 +54,7 @@ ol.CanvasFillState;
  *
  * @typedef {function(this:ol.source.ImageCanvas, ol.Extent, number,
  *     number, ol.Size, ol.proj.Projection): HTMLCanvasElement}
- * @api
+ * @doc
  */
 ol.CanvasFunctionType;
 
@@ -90,7 +90,7 @@ ol.CenterConstraintType;
  * alpha should be a float in the range 0..1 inclusive. If no alpha value is
  * given then `1` will be used.
  * @typedef {Array.<number>}
- * @api
+ * @doc
  */
 ol.Color;
 
@@ -100,7 +100,7 @@ ol.Color;
  * Represents a color, pattern, or gradient.
  *
  * @typedef {string|CanvasPattern|CanvasGradient}
- * @api
+ * @doc
  */
 ol.ColorLike;
 
@@ -108,7 +108,7 @@ ol.ColorLike;
 /**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
  * @typedef {Array.<number>} ol.Coordinate
- * @api stable
+ * @doc stable
  */
 ol.Coordinate;
 
@@ -118,7 +118,7 @@ ol.Coordinate;
  * `{string}`.
  *
  * @typedef {function((ol.Coordinate|undefined)): string}
- * @api stable
+ * @doc stable
  */
 ol.CoordinateFormatType;
 
@@ -126,7 +126,7 @@ ol.CoordinateFormatType;
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
  * @typedef {Array.<number>}
- * @api stable
+ * @doc stable
  */
 ol.Extent;
 
@@ -142,7 +142,7 @@ ol.Extent;
  *
  * The function is responsible for loading the features and adding them to the
  * source.
- * @api
+ * @doc
  * @typedef {function(this:ol.source.Vector, ol.Extent, number,
  *                    ol.proj.Projection)}
  */
@@ -156,7 +156,7 @@ ol.FeatureLoader;
  *
  * @typedef {function(this: ol.Feature, number):
  *     (ol.style.Style|Array.<ol.style.Style>)}
- * @api stable
+ * @doc stable
  */
 ol.FeatureStyleFunction;
 
@@ -169,7 +169,7 @@ ol.FeatureStyleFunction;
  * a `{number}` representing the resolution (map units per pixel) and an
  * {@link ol.proj.Projection} for the projection  as arguments and returns a
  * `{string}` representing the URL.
- * @api
+ * @doc
  * @typedef {function(ol.Extent, number, ol.proj.Projection) : string}
  */
 ol.FeatureUrlFunction;
@@ -201,7 +201,7 @@ ol.ImageCanvasLoader;
  * image element would be set to a data URI when the content is loaded.
  *
  * @typedef {function(ol.Image, string)}
- * @api
+ * @doc
  */
 ol.ImageLoadFunctionType;
 
@@ -238,7 +238,7 @@ ol.LayerState;
  * One of `all`, `bbox`, `tile`.
  *
  * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
- * @api
+ * @doc
  */
 ol.LoadingStrategy;
 
@@ -269,7 +269,7 @@ ol.MapOptionsInternal;
  * An array with two elements, representing a pixel. The first element is the
  * x-coordinate, the second the y-coordinate of the pixel.
  * @typedef {Array.<number>}
- * @api stable
+ * @doc stable
  */
 ol.Pixel;
 
@@ -286,7 +286,7 @@ ol.PostRenderFunction;
  * second argument. Return `true` to keep this function for the next frame,
  * `false` to remove it.
  * @typedef {function(ol.Map, ?olx.FrameState): boolean}
- * @api
+ * @doc
  */
 ol.PreRenderFunction;
 
@@ -327,7 +327,7 @@ ol.RotationConstraintType;
 /**
  * An array of numbers representing a size: `[width, height]`.
  * @typedef {Array.<number>}
- * @api stable
+ * @doc stable
  */
 ol.Size;
 
@@ -399,7 +399,7 @@ ol.SourceUrlTileOptions;
  * An array of three numbers representing the location of a tile in a tile
  * grid. The order is `z`, `x`, and `y`. `z` is the zoom level.
  * @typedef {Array.<number>} ol.TileCoord
- * @api
+ * @doc
  */
 ol.TileCoord;
 
@@ -409,7 +409,7 @@ ol.TileCoord;
  * the url as arguments.
  *
  * @typedef {function(ol.Tile, string)}
- * @api
+ * @doc
  */
 ol.TileLoadFunctionType;
 
@@ -444,7 +444,7 @@ ol.TileReplayState;
  *
  * @typedef {function(ol.TileCoord, number,
  *           ol.proj.Projection): (string|undefined)}
- * @api
+ * @doc
  */
 ol.TileUrlFunctionType;
 
@@ -456,7 +456,7 @@ ol.TileUrlFunctionType;
  * returns the output array.
  *
  * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
- * @api stable
+ * @doc stable
  */
 ol.TransformFunction;
 
@@ -478,7 +478,7 @@ ol.WebglTextureCacheEntry;
  * Number of features; bounds/extent.
  * @typedef {{numberOfFeatures: number,
  *            bounds: ol.Extent}}
- * @api stable
+ * @doc stable
  */
 ol.WFSFeatureCollectionMetadata;
 
@@ -489,7 +489,7 @@ ol.WFSFeatureCollectionMetadata;
  *            totalInserted: number,
  *            totalUpdated: number,
  *            insertIds: Array.<string>}}
- * @api stable
+ * @doc stable
  */
 ol.WFSTransactionResponse;
 
@@ -526,7 +526,7 @@ ol.XmlSerializer;
  * `{boolean}`. If the condition is met, true should be returned.
  *
  * @typedef {function(ol.MapBrowserEvent): boolean}
- * @api stable
+ * @doc stable
  */
 ol.events.ConditionType;
 
@@ -550,7 +550,7 @@ ol.events.EventTargetLike;
  *     listener: ol.events.ListenerFunctionType,
  *     target: (EventTarget|ol.events.EventTarget),
  *     type: string}}
- * @api
+ * @doc
  */
 ol.events.Key;
 
@@ -560,7 +560,7 @@ ol.events.Key;
  * When the function returns `false`, event propagation will stop.
  *
  * @typedef {function(ol.events.Event)|function(ol.events.Event): boolean}
- * @api
+ * @doc
  */
 ol.events.ListenerFunctionType;
 
@@ -570,7 +570,7 @@ ol.events.ListenerFunctionType;
  * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
  * true should be returned.
  * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
- * @api
+ * @doc
  */
 ol.interaction.DragBoxEndConditionType;
 
@@ -583,7 +583,7 @@ ol.interaction.DragBoxEndConditionType;
  * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
  *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
  *     ol.geom.SimpleGeometry}
- * @api
+ * @doc
  */
 ol.interaction.DrawGeometryFunctionType;
 
@@ -604,7 +604,7 @@ ol.interaction.SegmentDataType;
  * or `false` otherwise.
  * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
  *     boolean}
- * @api
+ * @doc
  */
 ol.interaction.SelectFilterFunction;
 
@@ -632,7 +632,7 @@ ol.interaction.SnapSegmentDataType;
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
- * @api stable
+ * @doc stable
  */
 ol.proj.ProjectionLike;
 
@@ -651,7 +651,7 @@ ol.proj.ProjectionLike;
  *
  * @typedef {function((Array.<ol.raster.Pixel>|Array.<ImageData>), Object):
  *     (Array.<ol.raster.Pixel>|Array.<ImageData>)}
- * @api
+ * @doc
  */
 ol.raster.Operation;
 
@@ -659,7 +659,7 @@ ol.raster.Operation;
 /**
  * An array of numbers representing pixel values.
  * @typedef {Array.<number>} ol.raster.Pixel
- * @api
+ * @doc
  */
 ol.raster.Pixel;
 
@@ -713,7 +713,7 @@ ol.style.ImageOptions;
  *
  * @typedef {function((ol.Feature|ol.render.Feature)):
  *     (ol.geom.Geometry|ol.render.Feature|undefined)}
- * @api
+ * @doc
  */
 ol.style.GeometryFunction;
 
@@ -739,6 +739,6 @@ ol.style.RegularShapeRenderOptions;
  *
  * @typedef {function((ol.Feature|ol.render.Feature), number):
  *     (ol.style.Style|Array.<ol.style.Style>)}
- * @api
+ * @doc
  */
 ol.style.StyleFunction;
