@@ -281,9 +281,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             return !this.multi_;
           }
         }, this, this.layerFilter_);
-    if (selected.length > 0 && features.getLength() == 1 &&
-        features.item(0) == selected[0]) {
+    if (selected.length > 0 && features.getLength() == 1 && features.item(0) == selected[0]) {
       // No change; an already selected feature is selected again
+      selected.length = 0;
     } else {
       if (features.getLength() !== 0) {
         deselected = Array.prototype.concat(features.getArray());

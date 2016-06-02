@@ -144,6 +144,20 @@ describe('ol.interaction.Select', function() {
       expect(features.getLength()).to.equal(0);
     });
 
+    it('select twice with single-click', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        expect(e.selected).to.have.length(1);
+      });
+      select.on('select', listenerSpy);
+
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 9, -21);
+
+      expect(listenerSpy.callCount).to.be(1);
+
+      var features = select.getFeatures();
+      expect(features.getLength()).to.equal(1);
+    });
 
     it('select with shift single-click', function() {
       var listenerSpy = sinon.spy(function(e) {
