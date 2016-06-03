@@ -2,8 +2,6 @@ goog.provide('ol.test.style.Icon');
 goog.provide('ol.test.style.IconImageCache');
 
 goog.require('ol.style.Icon');
-goog.require('ol.style.IconAnchorUnits');
-goog.require('ol.style.IconOrigin');
 
 
 describe('ol.style.Icon', function() {
@@ -55,8 +53,8 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         anchor: [2, 18],
-        anchorXUnits: ol.style.IconAnchorUnits.PIXELS,
-        anchorYUnits: ol.style.IconAnchorUnits.PIXELS
+        anchorXUnits: 'pixels',
+        anchorYUnits: 'pixels'
       });
       expect(iconStyle.getAnchor()).to.eql([2, 18]);
     });
@@ -66,7 +64,7 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
-        anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT
+        anchorOrigin: 'bottom-left'
       });
       expect(iconStyle.getAnchor()).to.eql([9, 36]);
     });
@@ -76,7 +74,7 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
-        anchorOrigin: ol.style.IconOrigin.BOTTOM_RIGHT
+        anchorOrigin: 'bottom-right'
       });
       expect(iconStyle.getAnchor()).to.eql([27, 36]);
     });
@@ -86,7 +84,7 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         anchor: fractionAnchor,
-        anchorOrigin: ol.style.IconOrigin.TOP_RIGHT
+        anchorOrigin: 'top-right'
       });
       expect(iconStyle.getAnchor()).to.eql([27, 12]);
     });
@@ -110,7 +108,7 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         offset: offset,
-        offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT
+        offsetOrigin: 'bottom-left'
       });
       iconStyle.iconImage_.size_ = imageSize;
       expect(iconStyle.getOrigin()).to.eql([16, 124]);
@@ -121,7 +119,7 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         offset: offset,
-        offsetOrigin: ol.style.IconOrigin.BOTTOM_RIGHT
+        offsetOrigin: 'bottom-right'
       });
       iconStyle.iconImage_.size_ = imageSize;
       expect(iconStyle.getOrigin()).to.eql([92, 124]);
@@ -132,7 +130,7 @@ describe('ol.style.Icon', function() {
         src: 'test.png',
         size: size,
         offset: offset,
-        offsetOrigin: ol.style.IconOrigin.TOP_RIGHT
+        offsetOrigin: 'top-right'
       });
       iconStyle.iconImage_.size_ = imageSize;
       expect(iconStyle.getOrigin()).to.eql([92, 20]);
@@ -209,14 +207,14 @@ describe('ol.style.IconImageCache', function() {
 
       src = '0';
       iconImage = new ol.style.IconImage_(src, null);
-      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
+      ol.events.listen(iconImage, 'change',
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new ol.style.IconImage_(src, null);
-      ol.events.listen(iconImage, ol.events.EventType.CHANGE,
+      ol.events.listen(iconImage, 'change',
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
@@ -233,5 +231,4 @@ describe('ol.style.IconImageCache', function() {
 });
 
 goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol.style.IconImageCache');

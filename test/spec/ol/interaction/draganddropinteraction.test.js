@@ -35,13 +35,13 @@ describe('ol.interaction.DragAndDrop', function() {
   describe('#setMap()', function() {
     it('registers and unregisters listeners', function() {
       interaction.setMap(map);
-      expect(viewport.hasListener(ol.events.EventType.DRAGENTER)).to.be(true);
-      expect(viewport.hasListener(ol.events.EventType.DRAGOVER)).to.be(true);
-      expect(viewport.hasListener(ol.events.EventType.DROP)).to.be(true);
+      expect(viewport.hasListener('dragenter')).to.be(true);
+      expect(viewport.hasListener('dragover')).to.be(true);
+      expect(viewport.hasListener('drop')).to.be(true);
       interaction.setMap(null);
-      expect(viewport.hasListener(ol.events.EventType.DRAGENTER)).to.be(false);
-      expect(viewport.hasListener(ol.events.EventType.DRAGOVER)).to.be(false);
-      expect(viewport.hasListener(ol.events.EventType.DROP)).to.be(false);
+      expect(viewport.hasListener('dragenter')).to.be(false);
+      expect(viewport.hasListener('dragover')).to.be(false);
+      expect(viewport.hasListener('drop')).to.be(false);
     });
 
     it('registers and unregisters listeners on a custom target', function() {
@@ -51,13 +51,13 @@ describe('ol.interaction.DragAndDrop', function() {
         target: customTarget
       });
       interaction.setMap(map);
-      expect(customTarget.hasListener(ol.events.EventType.DRAGENTER)).to.be(true);
-      expect(customTarget.hasListener(ol.events.EventType.DRAGOVER)).to.be(true);
-      expect(customTarget.hasListener(ol.events.EventType.DROP)).to.be(true);
+      expect(customTarget.hasListener('dragenter')).to.be(true);
+      expect(customTarget.hasListener('dragover')).to.be(true);
+      expect(customTarget.hasListener('drop')).to.be(true);
       interaction.setMap(null);
-      expect(customTarget.hasListener(ol.events.EventType.DRAGENTER)).to.be(false);
-      expect(customTarget.hasListener(ol.events.EventType.DRAGOVER)).to.be(false);
-      expect(customTarget.hasListener(ol.events.EventType.DROP)).to.be(false);
+      expect(customTarget.hasListener('dragenter')).to.be(false);
+      expect(customTarget.hasListener('dragover')).to.be(false);
+      expect(customTarget.hasListener('drop')).to.be(false);
     });
   });
 
@@ -87,11 +87,11 @@ describe('ol.interaction.DragAndDrop', function() {
       interaction.setMap(map);
       var event = new ol.events.Event();
       event.dataTransfer = {};
-      event.type = ol.events.EventType.DRAGENTER;
+      event.type = 'dragenter';
       viewport.dispatchEvent(event);
-      event.type = ol.events.EventType.DRAGOVER;
+      event.type = 'dragover';
       viewport.dispatchEvent(event);
-      event.type = ol.events.EventType.DROP;
+      event.type = 'drop';
       event.dataTransfer.files = {
         length: 1,
         item: function() {
@@ -113,5 +113,4 @@ goog.require('ol.interaction.DragAndDrop');
 goog.require('ol.View');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
-goog.require('ol.events.EventType');
 goog.require('ol.format.GeoJSON');

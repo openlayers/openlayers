@@ -336,7 +336,7 @@ describe('ol.tilegrid.TileGrid', function() {
       var grid = ol.tilegrid.createForProjection(projection);
       var resolutions = grid.getResolutions();
       expect(resolutions[5]).to.be(
-          360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+          360 * ol.proj.METERS_PER_UNIT['degrees'] /
           ol.DEFAULT_TILE_SIZE / Math.pow(2, 5));
     });
 
@@ -351,7 +351,7 @@ describe('ol.tilegrid.TileGrid', function() {
     it('accepts bottom-left as corner', function() {
       var projection = ol.proj.get('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(
-          projection, undefined, undefined, ol.extent.Corner.BOTTOM_LEFT);
+          projection, undefined, undefined, 'bottom-left');
       var origin = grid.getOrigin();
       var half = ol.proj.EPSG3857.HALF_SIZE;
       expect(origin).to.eql([-half, -half]);
@@ -360,7 +360,7 @@ describe('ol.tilegrid.TileGrid', function() {
     it('accepts bottom-right as corner', function() {
       var projection = ol.proj.get('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(
-          projection, undefined, undefined, ol.extent.Corner.BOTTOM_RIGHT);
+          projection, undefined, undefined, 'bottom-right');
       var origin = grid.getOrigin();
       var half = ol.proj.EPSG3857.HALF_SIZE;
       expect(origin).to.eql([half, -half]);
@@ -369,7 +369,7 @@ describe('ol.tilegrid.TileGrid', function() {
     it('accepts top-left as corner', function() {
       var projection = ol.proj.get('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(
-          projection, undefined, undefined, ol.extent.Corner.TOP_LEFT);
+          projection, undefined, undefined, 'top-left');
       var origin = grid.getOrigin();
       var half = ol.proj.EPSG3857.HALF_SIZE;
       expect(origin).to.eql([-half, half]);
@@ -378,7 +378,7 @@ describe('ol.tilegrid.TileGrid', function() {
     it('accepts top-right as corner', function() {
       var projection = ol.proj.get('EPSG:3857');
       var grid = ol.tilegrid.createForProjection(
-          projection, undefined, undefined, ol.extent.Corner.TOP_RIGHT);
+          projection, undefined, undefined, 'top-right');
       var origin = grid.getOrigin();
       var half = ol.proj.EPSG3857.HALF_SIZE;
       expect(origin).to.eql([half, half]);
@@ -1078,12 +1078,10 @@ describe('ol.tilegrid.TileGrid', function() {
 });
 
 goog.require('ol.extent');
-goog.require('ol.extent.Corner');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
 goog.require('ol.TileRange');
 goog.require('ol.tilegrid.TileGrid');

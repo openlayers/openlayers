@@ -17,7 +17,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('defaults to layout XY', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(lineString.getLayout()).to.be('XY');
     });
 
     it('has empty coordinates', function() {
@@ -53,7 +53,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(lineString.getLayout()).to.be('XY');
     });
 
     it('has the expected coordinates', function() {
@@ -114,7 +114,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+      expect(lineString.getLayout()).to.be('XYZ');
     });
 
     it('has the expected coordinates', function() {
@@ -156,11 +156,11 @@ describe('ol.geom.LineString', function() {
     var lineString;
     beforeEach(function() {
       lineString = new ol.geom.LineString(
-          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+          [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(lineString.getLayout()).to.be('XYM');
     });
 
     it('has the expected coordinates', function() {
@@ -205,7 +205,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+      expect(lineString.getLayout()).to.be('XYZM');
     });
 
     it('has the expected coordinates', function() {
@@ -359,7 +359,7 @@ describe('ol.geom.LineString', function() {
     var lineString;
     beforeEach(function() {
       lineString = new ol.geom.LineString(
-          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+          [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     describe('#getCoordinateAtM', function() {
@@ -405,7 +405,7 @@ describe('ol.geom.LineString', function() {
     describe('#getCoordinateAtM', function() {
 
       it('returns the expected value', function() {
-        expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        expect(lineString.getLayout()).to.be('XYZM');
         var m;
         for (m = 0; m <= 22; m += 0.5) {
           expect(lineString.getCoordinateAtM(m, true)).to.eql(
@@ -421,5 +421,4 @@ describe('ol.geom.LineString', function() {
 
 
 goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');

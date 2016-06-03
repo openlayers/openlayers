@@ -2,7 +2,7 @@ goog.provide('ol.test.renderer.Layer');
 
 describe('ol.renderer.Layer', function() {
   var renderer;
-  var eventType = ol.events.EventType.CHANGE;
+  var eventType = 'change';
 
   beforeEach(function() {
     var layer = new ol.layer.Layer({});
@@ -43,13 +43,13 @@ describe('ol.renderer.Layer', function() {
     describe('load LOADED image', function() {
 
       it('returns true', function() {
-        image.state = ol.ImageState.LOADED;
+        image.state = 2; // LOADED
         var loaded = renderer.loadImage(image);
         expect(loaded).to.be(true);
       });
 
       it('does not register a listener', function() {
-        image.state = ol.ImageState.LOADED;
+        image.state = 2; // LOADED
         var loaded = renderer.loadImage(image);
         expect(loaded).to.be(true);
       });
@@ -60,7 +60,7 @@ describe('ol.renderer.Layer', function() {
 
       beforeEach(function() {
         renderer.loadImage(image);
-        expect(image.getState()).to.be(ol.ImageState.LOADING);
+        expect(image.getState()).to.be(1); // LOADING
       });
 
       it('returns false', function() {
@@ -79,8 +79,6 @@ describe('ol.renderer.Layer', function() {
   });
 });
 
-goog.require('ol.events.EventType');
 goog.require('ol.Image');
-goog.require('ol.ImageState');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');

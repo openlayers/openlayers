@@ -59,7 +59,7 @@ describe('ol.source.TileImage', function() {
           source.getKey = function() {
             return 'key0';
           };
-          tile.state = ol.TileState.LOADED;
+          tile.state = 2; // LOADED
           var returnedTile = source.getTileInternal(
               0, 0, -1, 1, ol.proj.get('EPSG:3857'));
           expect(returnedTile).not.to.be(tile);
@@ -75,7 +75,7 @@ describe('ol.source.TileImage', function() {
             return dynamicParamsKey;
           };
           dynamicParamsKey = 'key0';
-          tile.state = ol.TileState.LOADED;
+          tile.state = 2; // LOADED
           returnedTile = source.getTileInternal(
               0, 0, -1, 1, ol.proj.get('EPSG:3857'));
           dynamicParamsKey = 'key1';
@@ -125,7 +125,7 @@ describe('ol.source.TileImage', function() {
       expect(tile).to.be.a(ol.reproj.Tile);
 
       ol.events.listen(tile, 'change', function() {
-        if (tile.getState() == ol.TileState.LOADED) {
+        if (tile.getState() == 2) { // LOADED
           done();
         }
       });
@@ -144,7 +144,7 @@ describe('ol.source.TileImage', function() {
       expect(tile).to.be.a(ol.reproj.Tile);
 
       ol.events.listen(tile, 'change', function() {
-        if (tile.getState() == ol.TileState.LOADED) {
+        if (tile.getState() == 2) { // LOADED
           done();
         }
       });
@@ -155,7 +155,6 @@ describe('ol.source.TileImage', function() {
 
 goog.require('ol.ImageTile');
 goog.require('ol.Tile');
-goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.proj');

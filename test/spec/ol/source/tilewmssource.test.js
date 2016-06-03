@@ -118,7 +118,7 @@ describe('ol.source.TileWMS', function() {
     });
 
     it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
-      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      options.serverType = 'geoserver';
       var source = new ol.source.TileWMS(options);
       var tile = source.getTile(3, 2, -3, 2, ol.proj.get('CRS:84'));
       var uri = new goog.Uri(tile.src_);
@@ -127,7 +127,7 @@ describe('ol.source.TileWMS', function() {
     });
 
     it('extends FORMAT_OPTIONS if it is already present', function() {
-      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      options.serverType = 'geoserver';
       var source = new ol.source.TileWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
       var tile = source.getTile(3, 2, -3, 2, ol.proj.get('CRS:84'));
@@ -138,7 +138,7 @@ describe('ol.source.TileWMS', function() {
 
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
        function() {
-         options.serverType = ol.source.wms.ServerType.GEOSERVER;
+         options.serverType = 'geoserver';
          var source = new ol.source.TileWMS(options);
          var tile = source.getTile(3, 2, -3, 1.325, ol.proj.get('CRS:84'));
          var uri = new goog.Uri(tile.src_);
@@ -272,6 +272,5 @@ describe('ol.source.TileWMS', function() {
 goog.require('goog.Uri');
 goog.require('ol.ImageTile');
 goog.require('ol.source.TileWMS');
-goog.require('ol.source.wms.ServerType');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');

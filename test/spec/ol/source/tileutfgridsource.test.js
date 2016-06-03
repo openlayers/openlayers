@@ -57,11 +57,11 @@ describe('ol.source.TileUTFGrid', function() {
       var source = new ol.source.TileUTFGrid({
         url: url
       });
-      expect(source.getState()).to.be(ol.source.State.LOADING);
+      expect(source.getState()).to.be('loading');
       expect(source.tileGrid).to.be(null);
 
       source.on('change', function(event) {
-        if (source.getState() === ol.source.State.READY) {
+        if (source.getState() === 'ready') {
           expect(source.tileGrid).to.be.an(ol.tilegrid.TileGrid);
           done();
         }
@@ -74,11 +74,11 @@ describe('ol.source.TileUTFGrid', function() {
       var source = new ol.source.TileUTFGrid({
         url: 'Bogus UTFGrid URL'
       });
-      expect(source.getState()).to.be(ol.source.State.LOADING);
+      expect(source.getState()).to.be('loading');
       expect(source.tileGrid).to.be(null);
 
       source.on('change', function(event) {
-        if (source.getState() === ol.source.State.ERROR) {
+        if (source.getState() === 'error') {
           expect(source.tileGrid).to.be(null);
           done();
         }
@@ -178,13 +178,13 @@ describe('ol.source.TileUTFGrid', function() {
 
     it('sets correct state', function() {
       var source = getTileUTFGrid();
-      expect(source.getState()).to.be(ol.source.State.LOADING);
+      expect(source.getState()).to.be('loading');
 
       // call the handleTileJSONResponse method with our
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
-      expect(source.getState()).to.be(ol.source.State.READY);
+      expect(source.getState()).to.be('ready');
     });
 
   });
@@ -232,7 +232,7 @@ describe('ol.source.TileUTFGrid', function() {
         var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
         var tile = new ol.source.TileUTFGridTile_(
             tileCoord,
-            tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+            tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
             tileUrl !== undefined ? tileUrl : '',
             this.tileGrid.getTileCoordExtent(tileCoord),
             true); // always preemptive, so loading doesn't happen automatically
@@ -288,8 +288,6 @@ describe('ol.source.TileUTFGrid', function() {
 
 goog.require('ol.net');
 goog.require('ol.proj');
-goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileUTFGrid');
 goog.require('ol.tilegrid.TileGrid');
-goog.require('ol.TileState');

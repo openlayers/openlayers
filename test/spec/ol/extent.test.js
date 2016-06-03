@@ -352,11 +352,11 @@ describe('ol.extent', function() {
   describe('coordinateRelationship()', function() {
 
     var extent = [-180, -90, 180, 90];
-    var INTERSECTING = ol.extent.Relationship.INTERSECTING;
-    var ABOVE = ol.extent.Relationship.ABOVE;
-    var RIGHT = ol.extent.Relationship.RIGHT;
-    var BELOW = ol.extent.Relationship.BELOW;
-    var LEFT = ol.extent.Relationship.LEFT;
+    var INTERSECTING = 1;
+    var ABOVE = 2;
+    var RIGHT = 4;
+    var BELOW = 8;
+    var LEFT = 16;
 
     it('returns intersecting for within', function() {
       var rel = ol.extent.coordinateRelationship(extent, [0, 0]);
@@ -448,22 +448,22 @@ describe('ol.extent', function() {
     var extent = [1, 2, 3, 4];
 
     it('gets the bottom left', function() {
-      var corner = ol.extent.Corner.BOTTOM_LEFT;
+      var corner = 'bottom-left';
       expect(ol.extent.getCorner(extent, corner)).to.eql([1, 2]);
     });
 
     it('gets the bottom right', function() {
-      var corner = ol.extent.Corner.BOTTOM_RIGHT;
+      var corner = 'bottom-right';
       expect(ol.extent.getCorner(extent, corner)).to.eql([3, 2]);
     });
 
     it('gets the top left', function() {
-      var corner = ol.extent.Corner.TOP_LEFT;
+      var corner = 'top-left';
       expect(ol.extent.getCorner(extent, corner)).to.eql([1, 4]);
     });
 
     it('gets the top right', function() {
-      var corner = ol.extent.Corner.TOP_RIGHT;
+      var corner = 'top-right';
       expect(ol.extent.getCorner(extent, corner)).to.eql([3, 4]);
     });
 
@@ -866,6 +866,4 @@ describe('ol.extent', function() {
 
 goog.require('goog.vec.Mat4');
 goog.require('ol.extent');
-goog.require('ol.extent.Corner');
-goog.require('ol.extent.Relationship');
 goog.require('ol.proj');

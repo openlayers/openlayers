@@ -448,7 +448,7 @@ describe('ol.proj', function() {
   describe('ol.proj.removeTransform()', function() {
 
     var extent = [180, -90, 180, 90];
-    var units = ol.proj.Units.DEGREES;
+    var units = 'degrees';
 
     it('removes functions cached by addTransform', function() {
       var foo = new ol.proj.Projection({
@@ -587,5 +587,4 @@ describe('ol.proj', function() {
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.Units');
 goog.require('ol.proj.common');

@@ -23,8 +23,8 @@ describe('ol.interaction.KeyboardZoom', function() {
   describe('handleEvent()', function() {
     it('zooms on + and - keys', function() {
       var spy = sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
-      var event = new ol.MapBrowserEvent(ol.events.EventType.KEYDOWN, map, {
-        type: ol.events.EventType.KEYDOWN,
+      var event = new ol.MapBrowserEvent('keydown', map, {
+        type: 'keydown',
         target: map.getTargetElement(),
         preventDefault: ol.events.Event.prototype.preventDefault
       });
@@ -45,6 +45,5 @@ goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.View');
 goog.require('ol.events.Event');
-goog.require('ol.events.EventType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.KeyboardZoom');

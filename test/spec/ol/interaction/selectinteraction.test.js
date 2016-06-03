@@ -122,7 +122,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent('singleclick', 10, -20);
 
       expect(listenerSpy.callCount).to.be(1);
 
@@ -136,7 +136,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20, true);
+      simulateEvent('singleclick', 10, -20, true);
 
       expect(listenerSpy.callCount).to.be(1);
 
@@ -161,7 +161,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent('singleclick', 10, -20);
 
       expect(listenerSpy.callCount).to.be(1);
 
@@ -175,7 +175,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20, true);
+      simulateEvent('singleclick', 10, -20, true);
 
       expect(listenerSpy.callCount).to.be(1);
 
@@ -184,7 +184,7 @@ describe('ol.interaction.Select', function() {
       expect(select.getLayer(features.item(0))).to.equal(layer);
 
       // Select again to make sure the internal layer isn't reported
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent('singleclick', 10, -20);
 
       expect(listenerSpy.callCount).to.be(2);
 
@@ -208,7 +208,7 @@ describe('ol.interaction.Select', function() {
       var listenerSpy = sinon.spy();
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20, true);
+      simulateEvent('singleclick', 10, -20, true);
 
       expect(listenerSpy.callCount).to.be(1);
 
@@ -217,7 +217,7 @@ describe('ol.interaction.Select', function() {
 
       map.renderSync();
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20, true);
+      simulateEvent('singleclick', 10, -20, true);
 
       expect(listenerSpy.callCount).to.be(2);
 
@@ -239,7 +239,7 @@ describe('ol.interaction.Select', function() {
         });
         map.addInteraction(select);
 
-        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+        simulateEvent('singleclick', 10, -20);
         var features = select.getFeatures();
         expect(features.getLength()).to.equal(2);
         expect(features.item(0).get('type')).to.be('bar');
@@ -256,7 +256,7 @@ describe('ol.interaction.Select', function() {
         });
         map.addInteraction(select);
 
-        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20,
+        simulateEvent('singleclick', 10, -20,
             true);
         var features = select.getFeatures();
         expect(features.getLength()).to.equal(2);
@@ -275,7 +275,7 @@ describe('ol.interaction.Select', function() {
           }
         });
         map.addInteraction(select);
-        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+        simulateEvent('singleclick', 10, -20);
         var features = select.getFeatures();
         expect(features.getLength()).to.equal(1);
         expect(features.item(0).get('type')).to.be('bar');
@@ -290,7 +290,7 @@ describe('ol.interaction.Select', function() {
           }
         });
         map.addInteraction(select);
-        simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20,
+        simulateEvent('singleclick', 10, -20,
             true);
         var features = select.getFeatures();
         expect(features.getLength()).to.equal(1);
@@ -321,9 +321,9 @@ describe('ol.interaction.Select', function() {
       });
       interaction.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent('singleclick', 10, -20);
       // Select again to make sure that the internal layer doesn't get reported.
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent('singleclick', 10, -20);
     });
   });
 
@@ -339,7 +339,7 @@ describe('ol.interaction.Select', function() {
 
       expect(interaction.featureOverlay_).not.to.be(null);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
+      simulateEvent('singleclick', 10, -20);
     });
 
     afterEach(function() {
@@ -406,7 +406,6 @@ describe('ol.interaction.Select', function() {
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
 goog.require('ol.geom.Polygon');

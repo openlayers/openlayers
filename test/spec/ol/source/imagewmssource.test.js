@@ -93,7 +93,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('sets MAP_RESOLUTION when the server is MapServer', function() {
-      options.serverType = ol.source.wms.ServerType.MAPSERVER;
+      options.serverType = 'mapserver';
       var source = new ol.source.ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
@@ -103,7 +103,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('sets FORMAT_OPTIONS when the server is GeoServer', function() {
-      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      options.serverType = 'geoserver';
       var source = new ol.source.ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
@@ -113,7 +113,7 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('extends FORMAT_OPTIONS if it is already present', function() {
-      options.serverType = ol.source.wms.ServerType.GEOSERVER;
+      options.serverType = 'geoserver';
       var source = new ol.source.ImageWMS(options);
       options.params.FORMAT_OPTIONS = 'param1:value1';
       pixelRatio = 2;
@@ -125,7 +125,7 @@ describe('ol.source.ImageWMS', function() {
 
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
        function() {
-         options.serverType = ol.source.wms.ServerType.GEOSERVER;
+         options.serverType = 'geoserver';
          var source = new ol.source.ImageWMS(options);
          pixelRatio = 1.325;
          var image =
@@ -136,7 +136,7 @@ describe('ol.source.ImageWMS', function() {
        });
 
     it('sets DPI when the server is QGIS', function() {
-      options.serverType = ol.source.wms.ServerType.QGIS;
+      options.serverType = 'qgis';
       var source = new ol.source.ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
@@ -248,4 +248,3 @@ describe('ol.source.ImageWMS', function() {
 goog.require('goog.Uri');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.proj');
-goog.require('ol.source.wms.ServerType');

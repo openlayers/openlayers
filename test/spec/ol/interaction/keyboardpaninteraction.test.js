@@ -23,18 +23,18 @@ describe('ol.interaction.KeyboardPan', function() {
   describe('handleEvent()', function() {
     it('pans on arrow keys', function() {
       var spy = sinon.spy(ol.interaction.Interaction, 'pan');
-      var event = new ol.MapBrowserEvent(ol.events.EventType.KEYDOWN, map, {
-        type: ol.events.EventType.KEYDOWN,
+      var event = new ol.MapBrowserEvent('keydown', map, {
+        type: 'keydown',
         target: map.getTargetElement(),
         preventDefault: ol.events.Event.prototype.preventDefault
       });
-      event.originalEvent.keyCode = ol.events.KeyCode.DOWN;
+      event.originalEvent.keyCode = 40; // DOWN
       map.handleMapBrowserEvent(event);
-      event.originalEvent.keyCode = ol.events.KeyCode.UP;
+      event.originalEvent.keyCode = 38; // UP
       map.handleMapBrowserEvent(event);
-      event.originalEvent.keyCode = ol.events.KeyCode.LEFT;
+      event.originalEvent.keyCode = 37; // LEFT
       map.handleMapBrowserEvent(event);
-      event.originalEvent.keyCode = ol.events.KeyCode.RIGHT;
+      event.originalEvent.keyCode = 39; // RIGHT
       map.handleMapBrowserEvent(event);
       expect(spy.getCall(0).args[2]).to.eql([0, -128]);
       expect(spy.getCall(1).args[2]).to.eql([0, 128]);
@@ -51,7 +51,5 @@ goog.require('ol.Map');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.View');
 goog.require('ol.events.Event');
-goog.require('ol.events.EventType');
-goog.require('ol.events.KeyCode');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.KeyboardPan');

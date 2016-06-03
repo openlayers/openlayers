@@ -17,7 +17,7 @@ describe('ol.geom.Point', function() {
     });
 
     it('has the expected layout', function() {
-      expect(point.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(point.getLayout()).to.be('XY');
     });
 
     it('has the expected coordinates', function() {
@@ -50,11 +50,11 @@ describe('ol.geom.Point', function() {
 
     var point;
     beforeEach(function() {
-      point = new ol.geom.Point([1, 2, 3], ol.geom.GeometryLayout.XYM);
+      point = new ol.geom.Point([1, 2, 3], 'XYM');
     });
 
     it('has the expected layout', function() {
-      expect(point.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(point.getLayout()).to.be('XYM');
     });
 
     it('has the expected coordinates', function() {
@@ -91,7 +91,7 @@ describe('ol.geom.Point', function() {
     });
 
     it('has the expected layout', function() {
-      expect(point.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+      expect(point.getLayout()).to.be('XYZM');
     });
 
     it('has the expected coordinates', function() {
@@ -194,5 +194,4 @@ describe('ol.geom.Point', function() {
 
 
 goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.Point');

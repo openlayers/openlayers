@@ -32,7 +32,7 @@ describe('ol.source.TileJSON', function() {
 
   describe('#getState', function() {
 
-    it('returns ol.source.State.ERROR on HTTP 404', function() {
+    it('returns error on HTTP 404', function() {
       var source = new ol.source.TileJSON({
         url: 'invalid.jsonp'
       });
@@ -42,7 +42,7 @@ describe('ol.source.TileJSON', function() {
       });
     });
 
-    it('returns ol.source.State.ERROR on CORS issues', function() {
+    it('returns error on CORS issues', function() {
       var source = new ol.source.TileJSON({
         url: 'http://example.com'
       });
@@ -52,7 +52,7 @@ describe('ol.source.TileJSON', function() {
       });
     });
 
-    it('returns ol.source.State.ERROR on JSON parsing issues', function() {
+    it('returns error on JSON parsing issues', function() {
       var source = new ol.source.TileJSON({
         url: '/'
       });
@@ -122,7 +122,6 @@ describe('ol.source.TileJSON', function() {
 });
 
 goog.require('ol.events');
-goog.require('ol.source.State');
 goog.require('ol.source.Source');
 goog.require('ol.source.TileJSON');
 goog.require('ol.Observable');
