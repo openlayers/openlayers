@@ -78,8 +78,10 @@ function includeAugments(doclet) {
 
 function extractTypes(item) {
   item.type.names.forEach(function(type) {
-    types[type] = true;
-    //TODO handle Array.<type> etc.
+    var match = type.match(/^(.*<)?([^>]*)>?$/);
+    if (match) {
+      types[match[2]] = true;
+    }
   });
 }
 
