@@ -105,6 +105,9 @@ exports.handlers = {
     var doclet = e.doclet;
     // Keep track of api items - needed in parseComplete to determine classes
     // with api members.
+    if (doclet.meta.filename == 'olx.js' && doclet.kind == 'typedef') {
+      doclet.undocumented = false;
+    }
     if (doclet.stability) {
       api.push(doclet);
     }
@@ -145,7 +148,7 @@ exports.handlers = {
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
-      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
+      } else if (doclet.undocumented !== false && !doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }
