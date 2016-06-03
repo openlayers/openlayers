@@ -31,7 +31,6 @@ ol.OverlayProperty = {
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
  * @enum {string}
- * @api stable
  */
 ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',

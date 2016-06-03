@@ -25,7 +25,6 @@ ol.control.ScaleLineProperty = {
  * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
  * `'nautical'`, `'metric'`, `'us'`.
  * @enum {string}
- * @api stable
  */
 ol.control.ScaleLineUnits = {
   DEGREES: 'degrees',

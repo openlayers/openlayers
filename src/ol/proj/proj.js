@@ -14,7 +14,6 @@ goog.require('ol.sphere.NORMAL');
  * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
  * `'us-ft'`.
  * @enum {string}
- * @api stable
  */
 ol.proj.Units = {
   DEGREES: 'degrees',

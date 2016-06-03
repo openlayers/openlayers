@@ -13,7 +13,6 @@ goog.require('ol.proj');
 /**
  * IGC altitude/z. One of 'barometric', 'gps', 'none'.
  * @enum {string}
- * @api
  */
 ol.format.IGCZ = {
   BAROMETRIC: 'barometric',

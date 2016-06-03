@@ -15,7 +15,6 @@ goog.require('ol.proj.Units');
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
- * @api stable
  */
 ol.geom.GeometryType = {
   POINT: 'Point',
@@ -35,7 +34,6 @@ ol.geom.GeometryType = {
  * or measure ('M') coordinate is available. Supported values are `'XY'`,
  * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
- * @api stable
  */
 ol.geom.GeometryLayout = {
   XY: 'XY',

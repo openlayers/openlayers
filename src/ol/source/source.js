@@ -10,7 +10,6 @@ goog.require('ol.proj');
 /**
  * State of the source, one of 'undefined', 'loading', 'ready' or 'error'.
  * @enum {string}
- * @api
  */
 ol.source.State = {
   UNDEFINED: 'undefined',
