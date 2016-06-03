@@ -38,7 +38,7 @@
       "unknownDefines"
     ],
     "extra_annotation_name": [
-      "api", "observable"
+      "api", "observable", "doc"
     ],
     "compilation_level": "ADVANCED",
     "warning_level": "VERBOSE",

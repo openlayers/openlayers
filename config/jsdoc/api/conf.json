@@ -21,7 +21,8 @@
         "config/jsdoc/api/plugins/typedefs",
         "config/jsdoc/api/plugins/events",
         "config/jsdoc/api/plugins/observable",
-        "config/jsdoc/api/plugins/api"
+        "config/jsdoc/api/plugins/api",
+        "config/jsdoc/api/plugins/doc"
     ],
     "markdown": {
         "parser": "gfm"
