@@ -3,7 +3,6 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.events');
@@ -15,6 +14,7 @@ goog.require('ol.source.Image');
 goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
 goog.require('ol.string');
+goog.require('ol.uri');
 
 
 /**
@@ -312,7 +312,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
   }
   params['BBOX'] = bbox.join(',');
 
-  return goog.uri.utils.appendParamsFromMap(this.url_, params);
+  return ol.uri.appendParams(this.url_, params);
 };
 
 

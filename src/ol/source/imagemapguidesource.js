@@ -2,11 +2,11 @@ goog.provide('ol.source.ImageMapGuide');
 
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.uri.utils');
 goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.source.Image');
+goog.require('ol.uri');
 
 
 /**
@@ -222,7 +222,7 @@ ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, siz
     'SETVIEWCENTERY': center[1]
   };
   ol.object.assign(baseParams, params);
-  return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+  return ol.uri.appendParams(baseUrl, baseParams);
 };
 
 

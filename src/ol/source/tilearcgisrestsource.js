@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.object');
@@ -10,6 +9,7 @@ goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
+goog.require('ol.uri');
 
 
 /**
@@ -114,7 +114,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   if (modifiedUrl == url) {
     goog.asserts.fail('Unknown Rest Service', url);
   }
-  return goog.uri.utils.appendParamsFromMap(modifiedUrl, params);
+  return ol.uri.appendParams(modifiedUrl, params);
 };
 
 
