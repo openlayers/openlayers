@@ -11,6 +11,7 @@ exports.defineTags = function(dictionary) {
     canHaveType: false,
     canHaveName: false,
     onTagged: function(doclet, tag) {
+      includeTypes(doclet);
       var level = tag.text || "experimental";
       if (levels.indexOf(level) >= 0) {
         doclet.stability = level;
@@ -25,10 +26,14 @@ exports.defineTags = function(dictionary) {
 
 
 /*
- * Based on @stability annotations, and assuming that items with no @stability
- * annotation should not be documented, this plugin removes undocumented symbols
+ * Based on @api annotations, and assuming that items with no @api annotation
+ * should not be documented, this plugin removes undocumented symbols
  * from the documentation.
  */
+
+var api = [];
+var classes = {};
+var types = {};
 
 function hasApiMembers(doclet) {
   return doclet.longname.split('#')[0] == this.longname;
@@ -71,8 +76,28 @@ function includeAugments(doclet) {
   }
 }
 
-var api = [];
-var classes = {};
+function extractTypes(item) {
+  item.type.names.forEach(function(type) {
+    types[type] = true;
+    //TODO handle Array.<type> etc.
+  });
+}
+
+function includeTypes(doclet) {
+  if (doclet.params && doclet.kind != 'class') {
+    doclet.params.forEach(extractTypes);
+  }
+  if (doclet.returns) {
+    doclet.returns.forEach(extractTypes);
+  }
+  if (doclet.isEnum) {
+    types[doclet.meta.code.name] = true;
+  }
+  if (doclet.type && doclet.meta.code.type == 'MemberExpression') {
+    // types in olx.js
+    extractTypes(doclet);
+  }
+}
 
 exports.handlers = {
 
@@ -120,7 +145,7 @@ exports.handlers = {
         // constructor from the docs.
         doclet._hideConstructor = true;
         includeAugments(doclet);
-      } else if (!doclet._hideConstructor) {
+      } else if (!doclet._hideConstructor && !(doclet.kind == 'typedef' && doclet.longname in types)) {
         // Remove all other undocumented symbols
         doclet.undocumented = true;
       }

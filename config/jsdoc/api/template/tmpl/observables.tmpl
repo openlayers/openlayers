@@ -21,7 +21,7 @@
         var setter = prop.readonly ? 'no' : 'yes';
   ?>
 
-    <tr class="<?js= prop.stability !== 'stable' ? 'unstable' : '' ?>">
+    <tr class="<?js= (prop.stability && prop.stability !== 'stable') ? 'unstable' : '' ?>">
       <td class="name"><code><?js= prop.name ?></code></td>
       <td class="type">
       <?js if (prop.type && prop.type.names) {?>
