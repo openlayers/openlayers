@@ -19,7 +19,6 @@ goog.provide('ol.format.ogc.filter.IsBetween');
 goog.provide('ol.format.ogc.filter.IsLike');
 
 goog.require('ol.Extent');
-goog.require('ol.Object');
 
 
 /**
@@ -214,12 +213,10 @@ ol.format.ogc.filter.like = function(propertyName, pattern,
  *
  * @constructor
  * @param {!string} tagName The XML tag name for this filter.
- * @extends {ol.Object}
+ * @struct
  * @api
  */
 ol.format.ogc.filter.Filter = function(tagName) {
-
-  goog.base(this);
 
   /**
    * @private
@@ -227,7 +224,6 @@ ol.format.ogc.filter.Filter = function(tagName) {
    */
   this.tagName_ = tagName;
 };
-goog.inherits(ol.format.ogc.filter.Filter, ol.Object);
 
 /**
  * The XML tag name for a filter.
