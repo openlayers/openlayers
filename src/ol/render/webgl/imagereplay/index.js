@@ -15,6 +15,10 @@ goog.require('ol.render.replay');
 goog.require('ol.render.webgl.imagereplay.defaultshader');
 goog.require('ol.transform');
 goog.require('ol.render.webgl');
+goog.require('ol.render.webgl.linestringreplay.shader.Default');
+goog.require('ol.render.webgl.linestringreplay.shader.Default.Locations');
+goog.require('ol.render.webgl.linestringreplay.shader.DefaultFragment');
+goog.require('ol.render.webgl.linestringreplay.shader.DefaultVertex');
 goog.require('ol.render.webgl.polygonreplay.shader.Default');
 goog.require('ol.render.webgl.polygonreplay.shader.Default.Locations');
 goog.require('ol.render.webgl.polygonreplay.shader.DefaultFragment');
@@ -1009,30 +1013,33 @@ goog.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
 
 /**
  * Draw one line.
- * @param {Array.<ol.Coordinate>} coordinates Coordinates.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
  * @private
  */
-ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(coordinates) {
+ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   var i, ii;
   var numVertices = this.vertices_.length;
+  var numIndices = this.indices_.length;
+  var n = this.indices_.length > 0 ? this.indices_[numIndices - 1] + 1 : 0;
 
   // Shift the indices to take into account previously handled lines
-  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
-    var point1 = coordinates[i];
-    this.vertices_[numVertices++] = point1[0] - this.origin_[0];
-    this.vertices_[numVertices++] = point1[1] - this.origin_[1];
-    this.vertices_[numVertices++] = this.state_.strokeColor[0];
-    this.vertices_[numVertices++] = this.state_.strokeColor[1];
-    this.vertices_[numVertices++] = this.state_.strokeColor[2];
-    this.vertices_[numVertices++] = this.state_.strokeColor[3];
+  for (i = offset, ii = end - stride; i < ii; i += stride) {
 
-    var point2 = coordinates[i + 1];
-    this.vertices_[numVertices++] = point2[0] - this.origin_[0];
-    this.vertices_[numVertices++] = point2[1] - this.origin_[1];
-    this.vertices_[numVertices++] = this.state_.strokeColor[0];
-    this.vertices_[numVertices++] = this.state_.strokeColor[1];
-    this.vertices_[numVertices++] = this.state_.strokeColor[2];
-    this.vertices_[numVertices++] = this.state_.strokeColor[3];
+    if (i == offset) {
+      this.vertices_[numVertices++] = flatCoordinates[i] - this.origin_[0];
+      this.vertices_[numVertices++] = flatCoordinates[i + 1] - this.origin_[1];
+
+      i += stride;
+    }
+
+    this.vertices_[numVertices++] = flatCoordinates[i] - this.origin_[0];
+    this.vertices_[numVertices++] = flatCoordinates[i + 1] - this.origin_[1];
+
+    this.indices_[numIndices++] = n++;
+    this.indices_[numIndices++] = n;
   }
 };
 
@@ -1040,19 +1047,25 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(coordinat
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawLineString = function(geometry, feature) {
-  this.drawCoordinates_(geometry.getCoordinates());
+ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
+  var flatCoordinates = lineStringGeometry.getFlatCoordinates();
+  var stride = lineStringGeometry.getStride();
+  this.drawCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(geometry, feature) {
-  var coordinatess = geometry.getCoordinates();
+ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
+  var lineStringGeometries = multiLineStringGeometry.getLineStrings();
   var i, ii;
-  for (i = 0, ii = coordinatess.length; i < ii; ++i) {
-    this.drawCoordinates_(coordinatess[i]);
+  for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
+    var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
+    var stride = lineStringGeometries[i].getStride();
+    this.drawCoordinates_(
+      flatCoordinates, 0, flatCoordinates.length, stride);
   }
 };
 
@@ -1095,21 +1108,21 @@ ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
- * @return {ol.render.webgl.polygonreplay.shader.Default.Locations} Locations.
+ * @return {ol.render.webgl.linestringreplay.shader.Default.Locations} Locations.
  */
 ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context) {
   // get the program
   var fragmentShader, vertexShader;
   fragmentShader =
-      ol.render.webgl.polygonreplay.shader.DefaultFragment.getInstance();
+      ol.render.webgl.linestringreplay.shader.DefaultFragment.getInstance();
   vertexShader =
-      ol.render.webgl.polygonreplay.shader.DefaultVertex.getInstance();
+      ol.render.webgl.linestringreplay.shader.DefaultVertex.getInstance();
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   var locations;
   if (goog.isNull(this.defaultLocations_)) {
-    locations = new ol.render.webgl.polygonreplay.shader.Default
+    locations = new ol.render.webgl.linestringreplay.shader.Default
       .Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
@@ -1121,11 +1134,10 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context)
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
-      false, 24, 0);
+      false, 8, 0);
 
-  gl.enableVertexAttribArray(locations.a_color);
-  gl.vertexAttribPointer(locations.a_color, 4, goog.webgl.FLOAT,
-      false, 24, 8);
+  // enable renderer specific uniforms
+  gl.uniform4fv(locations.u_color, this.state_.strokeColor);
 
   return locations;
 };
@@ -1141,12 +1153,12 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
-    var numItems = this.vertices_.length / 6;
+    var numItems = this.indices_.length;
     // FIXME: not compatible with batching, hardcoding some arbitrary value
     if (this.state_.lineWidth) {
       gl.lineWidth(this.state_.lineWidth);
     }
-    gl.drawArrays(goog.webgl.LINES, 0, numItems);
+    gl.drawElements(goog.webgl.LINES, numItems, goog.webgl.UNSIGNED_SHORT, 0);
     gl.lineWidth(1);
   }
 };
