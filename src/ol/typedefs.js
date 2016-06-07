@@ -614,16 +614,17 @@ ol.proj.ProjectionLike;
  * returns an array of ouput data.
  * For `pixel` type operations, the function will be called with an array of
  * pixels, where each pixel is an array of four numbers (`[r, g, b, a]`) in the
- * range of 0 - 255. It should return an array of the same.
+ * range of 0 - 255. It should return a single pixel array.
  * For `'image'` type operations, functions will be called with an array of
  * {@link ImageData https://developer.mozilla.org/en-US/docs/Web/API/ImageData}
- * and should return an array of the same.  The operations are called with a
- * second "data" argument, which can be used for storage.  The data object is
- * accessible from raster events, where it can be initialized in
+ * and should return a single {@link ImageData
+ * https://developer.mozilla.org/en-US/docs/Web/API/ImageData}.  The operations
+ * are called with a second "data" argument, which can be used for storage.  The
+ * data object is accessible from raster events, where it can be initialized in
  * "beforeoperations" and accessed again in "afteroperations".
  *
  * @typedef {function((Array.<Array.<number>>|Array.<ImageData>), Object):
- *     (Array.<Array.<number>>|Array.<ImageData>)}
+ *     (Array.<number>|ImageData)}
  */
 ol.raster.Operation;
 
