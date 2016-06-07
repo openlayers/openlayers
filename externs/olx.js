@@ -5903,7 +5903,6 @@ olx.source.VectorOptions.prototype.wrapX;
  *     matrixSet: string,
  *     dimensions: (!Object|undefined),
  *     url: (string|undefined),
- *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
@@ -6062,14 +6061,6 @@ olx.source.WMTSOptions.prototype.dimensions;
  * @api stable
  */
 olx.source.WMTSOptions.prototype.url;
-
-
-/**
- * Maximum zoom.
- * @type {number|undefined}
- * @api
- */
-olx.source.WMTSOptions.prototype.maxZoom;
 
 
 /**
