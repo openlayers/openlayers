@@ -281,20 +281,22 @@ ol.renderer.dom.VectorLayer.prototype.prepareFrame = function(frameState, layerS
    * @this {ol.renderer.dom.VectorLayer}
    */
   var renderFeature = function(feature) {
-    var styles;
-    var styleFunction = feature.getStyleFunction();
-    if (styleFunction) {
-      styles = styleFunction.call(feature, resolution);
-    } else {
-      styleFunction = vectorLayer.getStyleFunction();
+    if (feature.getGeometry()) {
+      var styles;
+      var styleFunction = feature.getStyleFunction();
       if (styleFunction) {
-        styles = styleFunction(feature, resolution);
+        styles = styleFunction.call(feature, resolution);
+      } else {
+        styleFunction = vectorLayer.getStyleFunction();
+        if (styleFunction) {
+          styles = styleFunction(feature, resolution);
+        }
       }
-    }
-    if (styles) {
-      var dirty = this.renderFeature(
-          feature, resolution, pixelRatio, styles, replayGroup);
-      this.dirty_ = this.dirty_ || dirty;
+      if (styles) {
+        var dirty = this.renderFeature(
+            feature, resolution, pixelRatio, styles, replayGroup);
+        this.dirty_ = this.dirty_ || dirty;
+      }
     }
   };
   if (vectorLayerRenderOrder) {
