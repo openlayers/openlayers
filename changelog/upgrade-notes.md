@@ -1,5 +1,11 @@
 ## Upgrade notes
 
+#### Removal of ol.raster namespace
+
+Users compiling their code with the library and using types in the `ol.raster` namespace should note that this has now been removed. `ol.raster.Pixel` has been deleted, and the other types have been renamed as follows, and your code may need changing if you use these:
+* `ol.raster.Operation` to `ol.RasterOperation`
+* `ol.raster.OperationType` to `ol.RasterOperationType`
+
 ### v3.16.0
 
 #### Rendering change for tile sources
