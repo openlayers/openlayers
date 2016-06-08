@@ -22,7 +22,7 @@ ol.renderer.dom.ImageLayer = function(imageLayer) {
   var target = document.createElement('DIV');
   target.style.position = 'absolute';
 
-  goog.base(this, imageLayer, target);
+  ol.renderer.dom.Layer.call(this, imageLayer, target);
 
   /**
    * The last rendered image.
@@ -38,7 +38,7 @@ ol.renderer.dom.ImageLayer = function(imageLayer) {
   this.transform_ = goog.vec.Mat4.createNumberIdentity();
 
 };
-goog.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
+ol.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
 
 
 /**

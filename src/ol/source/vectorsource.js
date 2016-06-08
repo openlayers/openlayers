@@ -76,7 +76,7 @@ ol.source.Vector = function(opt_options) {
 
   var options = opt_options || {};
 
-  goog.base(this, {
+  ol.source.Source.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: undefined,
@@ -183,7 +183,7 @@ ol.source.Vector = function(opt_options) {
   }
 
 };
-goog.inherits(ol.source.Vector, ol.source.Source);
+ol.inherits(ol.source.Vector, ol.source.Source);
 
 
 /**
@@ -888,7 +888,7 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
  */
 ol.source.VectorEvent = function(type, opt_feature) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The feature being added or removed.
@@ -898,4 +898,4 @@ ol.source.VectorEvent = function(type, opt_feature) {
   this.feature = opt_feature;
 
 };
-goog.inherits(ol.source.VectorEvent, ol.events.Event);
+ol.inherits(ol.source.VectorEvent, ol.events.Event);

@@ -35,7 +35,7 @@ ol.RendererType = {
  */
 ol.renderer.Map = function(container, map) {
 
-  goog.base(this);
+  ol.Disposable.call(this);
 
 
   /**
@@ -57,7 +57,7 @@ ol.renderer.Map = function(container, map) {
   this.layerRendererListeners_ = {};
 
 };
-goog.inherits(ol.renderer.Map, ol.Disposable);
+ol.inherits(ol.renderer.Map, ol.Disposable);
 
 
 /**

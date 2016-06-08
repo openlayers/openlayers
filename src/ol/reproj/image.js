@@ -108,10 +108,10 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.sourceImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, targetResolution, this.sourcePixelRatio_,
+  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
             state, attributions);
 };
-goog.inherits(ol.reproj.Image, ol.ImageBase);
+ol.inherits(ol.reproj.Image, ol.ImageBase);
 
 
 /**
@@ -121,7 +121,7 @@ ol.reproj.Image.prototype.disposeInternal = function() {
   if (this.state == ol.ImageState.LOADING) {
     this.unlistenSource_();
   }
-  goog.base(this, 'disposeInternal');
+  ol.ImageBase.prototype.disposeInternal.call(this);
 };
 
 

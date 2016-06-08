@@ -47,7 +47,7 @@ ol.renderer.canvas.VECTOR_REPLAYS = {
  */
 ol.renderer.canvas.VectorTileLayer = function(layer) {
 
-  goog.base(this, layer);
+  ol.renderer.canvas.TileLayer.call(this, layer);
 
   /**
    * @private
@@ -66,7 +66,7 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
       layer.getRenderMode() == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
 
 };
-goog.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
+ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
 
 
 /**
@@ -342,7 +342,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(
  * @inheritDoc
  */
 ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
-  var prepared = goog.base(this, 'prepareFrame', frameState, layerState);
+  var prepared = ol.renderer.canvas.TileLayer.prototype.prepareFrame.call(this, frameState, layerState);
   if (prepared) {
     var skippedFeatures = Object.keys(frameState.skippedFeatureUids_ || {});
     for (var i = 0, ii = this.renderedTiles.length; i < ii; ++i) {

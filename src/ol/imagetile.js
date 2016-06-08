@@ -19,7 +19,7 @@ goog.require('ol.object');
  */
 ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
-  goog.base(this, tileCoord, state);
+  ol.Tile.call(this, tileCoord, state);
 
   /**
    * Image URI
@@ -57,7 +57,7 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
   this.tileLoadFunction_ = tileLoadFunction;
 
 };
-goog.inherits(ol.ImageTile, ol.Tile);
+ol.inherits(ol.ImageTile, ol.Tile);
 
 
 /**
@@ -72,7 +72,7 @@ ol.ImageTile.prototype.disposeInternal = function() {
   }
   this.state = ol.TileState.ABORT;
   this.changed();
-  goog.base(this, 'disposeInternal');
+  ol.Tile.prototype.disposeInternal.call(this);
 };
 
 

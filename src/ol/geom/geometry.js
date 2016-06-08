@@ -58,7 +58,7 @@ ol.geom.GeometryLayout = {
  */
 ol.geom.Geometry = function() {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @private
@@ -91,7 +91,7 @@ ol.geom.Geometry = function() {
   this.simplifiedGeometryRevision = 0;
 
 };
-goog.inherits(ol.geom.Geometry, ol.Object);
+ol.inherits(ol.geom.Geometry, ol.Object);
 
 
 /**

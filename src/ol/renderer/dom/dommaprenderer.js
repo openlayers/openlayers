@@ -36,7 +36,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.dom.Map = function(container, map) {
 
-  goog.base(this, container, map);
+  ol.renderer.Map.call(this, container, map);
 
   /**
    * @private
@@ -80,7 +80,7 @@ ol.renderer.dom.Map = function(container, map) {
   this.renderedVisible_ = true;
 
 };
-goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
+ol.inherits(ol.renderer.dom.Map, ol.renderer.Map);
 
 
 /**
@@ -88,7 +88,7 @@ goog.inherits(ol.renderer.dom.Map, ol.renderer.Map);
  */
 ol.renderer.dom.Map.prototype.disposeInternal = function() {
   goog.dom.removeNode(this.layersPane_);
-  goog.base(this, 'disposeInternal');
+  ol.renderer.Map.prototype.disposeInternal.call(this);
 };
 
 

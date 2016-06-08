@@ -63,7 +63,7 @@ ol.source.ImageVector = function(options) {
    */
   this.replayGroup_ = null;
 
-  goog.base(this, {
+  ol.source.ImageCanvas.call(this, {
     attributions: options.attributions,
     canvasFunction: this.canvasFunctionInternal_.bind(this),
     logo: options.logo,
@@ -93,7 +93,7 @@ ol.source.ImageVector = function(options) {
       this.handleSourceChange_, this);
 
 };
-goog.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
+ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
 
 
 /**

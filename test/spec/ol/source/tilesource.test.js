@@ -248,7 +248,7 @@ ol.test.source.TileMock = function(tileStates) {
     tileSize: 256
   });
 
-  goog.base(this, {
+  ol.source.Tile.call(this, {
     projection: ol.proj.get('EPSG:4326'),
     tileGrid: tileGrid
   });
@@ -258,7 +258,7 @@ ol.test.source.TileMock = function(tileStates) {
   }
 
 };
-goog.inherits(ol.test.source.TileMock, ol.source.Tile);
+ol.inherits(ol.test.source.TileMock, ol.source.Tile);
 
 
 /**

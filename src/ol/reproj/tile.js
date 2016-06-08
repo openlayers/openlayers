@@ -38,7 +38,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     pixelRatio, gutter, getTileFunction,
     opt_errorThreshold,
     opt_renderEdges) {
-  goog.base(this, tileCoord, ol.TileState.IDLE);
+  ol.Tile.call(this, tileCoord, ol.TileState.IDLE);
 
   /**
    * @private
@@ -202,7 +202,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     }
   }
 };
-goog.inherits(ol.reproj.Tile, ol.Tile);
+ol.inherits(ol.reproj.Tile, ol.Tile);
 
 
 /**
@@ -212,7 +212,7 @@ ol.reproj.Tile.prototype.disposeInternal = function() {
   if (this.state == ol.TileState.LOADING) {
     this.unlistenSources_();
   }
-  goog.base(this, 'disposeInternal');
+  ol.Tile.prototype.disposeInternal.call(this);
 };
 
 

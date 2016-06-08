@@ -23,7 +23,7 @@ ol.format.GML2 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (opt_options ? opt_options : {});
 
-  goog.base(this, options);
+  ol.format.GMLBase.call(this, options);
 
   this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
       'featureMember'] =
@@ -36,7 +36,7 @@ ol.format.GML2 = function(opt_options) {
       options.schemaLocation : ol.format.GML2.schemaLocation_;
 
 };
-goog.inherits(ol.format.GML2, ol.format.GMLBase);
+ol.inherits(ol.format.GML2, ol.format.GMLBase);
 
 
 /**

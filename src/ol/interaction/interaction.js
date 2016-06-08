@@ -37,7 +37,7 @@ ol.interaction.InteractionProperty = {
  */
 ol.interaction.Interaction = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @private
@@ -53,7 +53,7 @@ ol.interaction.Interaction = function(options) {
   this.handleEvent = options.handleEvent;
 
 };
-goog.inherits(ol.interaction.Interaction, ol.Object);
+ol.inherits(ol.interaction.Interaction, ol.Object);
 
 
 /**

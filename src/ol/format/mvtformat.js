@@ -33,7 +33,7 @@ goog.require('ol.render.Feature');
  */
 ol.format.MVT = function(opt_options) {
 
-  goog.base(this);
+  ol.format.Feature.call(this);
 
   var options = opt_options ? opt_options : {};
 
@@ -74,7 +74,7 @@ ol.format.MVT = function(opt_options) {
   this.layers_ = options.layers ? options.layers : null;
 
 };
-goog.inherits(ol.format.MVT, ol.format.Feature);
+ol.inherits(ol.format.MVT, ol.format.Feature);
 
 
 /**

@@ -30,7 +30,7 @@ ol.TileState = {
  */
 ol.Tile = function(tileCoord, state) {
 
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * @type {ol.TileCoord}
@@ -60,7 +60,7 @@ ol.Tile = function(tileCoord, state) {
   this.key = '';
 
 };
-goog.inherits(ol.Tile, ol.events.EventTarget);
+ol.inherits(ol.Tile, ol.events.EventTarget);
 
 
 /**

@@ -47,7 +47,7 @@ ol.interaction.TranslateEventType = {
  */
 ol.interaction.TranslateEvent = function(type, features, coordinate) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The features being translated.
@@ -64,7 +64,7 @@ ol.interaction.TranslateEvent = function(type, features, coordinate) {
    */
   this.coordinate = coordinate;
 };
-goog.inherits(ol.interaction.TranslateEvent, ol.events.Event);
+ol.inherits(ol.interaction.TranslateEvent, ol.events.Event);
 
 
 /**
@@ -78,7 +78,7 @@ goog.inherits(ol.interaction.TranslateEvent, ol.events.Event);
  * @api
  */
 ol.interaction.Translate = function(options) {
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Translate.handleDownEvent_,
     handleDragEvent: ol.interaction.Translate.handleDragEvent_,
     handleMoveEvent: ol.interaction.Translate.handleMoveEvent_,
@@ -144,7 +144,7 @@ ol.interaction.Translate = function(options) {
    */
   this.lastFeature_ = null;
 };
-goog.inherits(ol.interaction.Translate, ol.interaction.Pointer);
+ol.inherits(ol.interaction.Translate, ol.interaction.Pointer);
 
 
 /**

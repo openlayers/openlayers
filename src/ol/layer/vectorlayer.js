@@ -44,7 +44,7 @@ ol.layer.Vector = function(opt_options) {
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
   delete baseOptions.updateWhileInteracting;
-  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  ol.layer.Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
    * @type {number}
@@ -84,7 +84,7 @@ ol.layer.Vector = function(opt_options) {
       options.updateWhileInteracting : false;
 
 };
-goog.inherits(ol.layer.Vector, ol.layer.Layer);
+ol.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**

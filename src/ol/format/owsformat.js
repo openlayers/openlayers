@@ -13,9 +13,9 @@ goog.require('ol.xml');
  * @extends {ol.format.XML}
  */
 ol.format.OWS = function() {
-  goog.base(this);
+  ol.format.XML.call(this);
 };
-goog.inherits(ol.format.OWS, ol.format.XML);
+ol.inherits(ol.format.OWS, ol.format.XML);
 
 
 /**

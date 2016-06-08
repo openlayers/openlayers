@@ -38,7 +38,7 @@ goog.require('ol.Object');
  */
 ol.control.Control = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @protected
@@ -74,7 +74,7 @@ ol.control.Control = function(options) {
   }
 
 };
-goog.inherits(ol.control.Control, ol.Object);
+ol.inherits(ol.control.Control, ol.Object);
 
 
 /**
@@ -82,7 +82,7 @@ goog.inherits(ol.control.Control, ol.Object);
  */
 ol.control.Control.prototype.disposeInternal = function() {
   goog.dom.removeNode(this.element);
-  goog.base(this, 'disposeInternal');
+  ol.Object.prototype.disposeInternal.call(this);
 };
 
 

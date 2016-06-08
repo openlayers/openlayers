@@ -100,7 +100,7 @@ ol.style.Circle = function(opt_options) {
   var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
-  goog.base(this, {
+  ol.style.Image.call(this, {
     opacity: 1,
     rotateWithView: false,
     rotation: 0,
@@ -109,7 +109,7 @@ ol.style.Circle = function(opt_options) {
   });
 
 };
-goog.inherits(ol.style.Circle, ol.style.Image);
+ol.inherits(ol.style.Circle, ol.style.Image);
 
 
 /**

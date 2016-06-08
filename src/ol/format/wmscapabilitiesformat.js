@@ -19,14 +19,14 @@ goog.require('ol.xml');
  */
 ol.format.WMSCapabilities = function() {
 
-  goog.base(this);
+  ol.format.XML.call(this);
 
   /**
    * @type {string|undefined}
    */
   this.version = undefined;
 };
-goog.inherits(ol.format.WMSCapabilities, ol.format.XML);
+ol.inherits(ol.format.WMSCapabilities, ol.format.XML);
 
 
 /**

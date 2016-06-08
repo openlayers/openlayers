@@ -21,7 +21,7 @@ goog.require('ol.events.EventType');
  */
 ol.Observable = function() {
 
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * @private
@@ -30,7 +30,7 @@ ol.Observable = function() {
   this.revision_ = 0;
 
 };
-goog.inherits(ol.Observable, ol.events.EventTarget);
+ol.inherits(ol.Observable, ol.events.EventTarget);
 
 
 /**

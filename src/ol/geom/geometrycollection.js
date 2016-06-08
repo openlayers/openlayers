@@ -19,7 +19,7 @@ goog.require('ol.object');
  */
 ol.geom.GeometryCollection = function(opt_geometries) {
 
-  goog.base(this);
+  ol.geom.Geometry.call(this);
 
   /**
    * @private
@@ -29,7 +29,7 @@ ol.geom.GeometryCollection = function(opt_geometries) {
 
   this.listenGeometriesChange_();
 };
-goog.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
+ol.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
 
 
 /**
@@ -301,5 +301,5 @@ ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {
  */
 ol.geom.GeometryCollection.prototype.disposeInternal = function() {
   this.unlistenGeometriesChange_();
-  goog.base(this, 'disposeInternal');
+  ol.geom.Geometry.prototype.disposeInternal.call(this);
 };

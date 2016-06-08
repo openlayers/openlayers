@@ -37,7 +37,7 @@ ol.layer.Layer = function(options) {
   var baseOptions = ol.object.assign({}, options);
   delete baseOptions.source;
 
-  goog.base(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
+  ol.layer.Base.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
 
   /**
    * @private
@@ -68,7 +68,7 @@ ol.layer.Layer = function(options) {
   var source = options.source ? options.source : null;
   this.setSource(source);
 };
-goog.inherits(ol.layer.Layer, ol.layer.Base);
+ol.inherits(ol.layer.Layer, ol.layer.Base);
 
 
 /**

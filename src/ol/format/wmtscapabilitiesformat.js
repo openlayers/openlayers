@@ -19,7 +19,7 @@ goog.require('ol.xml');
  * @api
  */
 ol.format.WMTSCapabilities = function() {
-  goog.base(this);
+  ol.format.XML.call(this);
 
   /**
    * @type {ol.format.OWS}
@@ -27,7 +27,7 @@ ol.format.WMTSCapabilities = function() {
    */
   this.owsParser_ = new ol.format.OWS();
 };
-goog.inherits(ol.format.WMTSCapabilities, ol.format.XML);
+ol.inherits(ol.format.WMTSCapabilities, ol.format.XML);
 
 
 /**

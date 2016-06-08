@@ -17,7 +17,7 @@ goog.require('ol.source.Tile');
  */
 ol.DebugTile_ = function(tileCoord, tileSize, text) {
 
-  goog.base(this, tileCoord, ol.TileState.LOADED);
+  ol.Tile.call(this, tileCoord, ol.TileState.LOADED);
 
   /**
    * @private
@@ -38,7 +38,7 @@ ol.DebugTile_ = function(tileCoord, tileSize, text) {
   this.canvasByContext_ = {};
 
 };
-goog.inherits(ol.DebugTile_, ol.Tile);
+ol.inherits(ol.DebugTile_, ol.Tile);
 
 
 /**
@@ -87,7 +87,7 @@ ol.DebugTile_.prototype.getImage = function(opt_context) {
  */
 ol.source.TileDebug = function(options) {
 
-  goog.base(this, {
+  ol.source.Tile.call(this, {
     opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid,
@@ -95,7 +95,7 @@ ol.source.TileDebug = function(options) {
   });
 
 };
-goog.inherits(ol.source.TileDebug, ol.source.Tile);
+ol.inherits(ol.source.TileDebug, ol.source.Tile);
 
 
 /**

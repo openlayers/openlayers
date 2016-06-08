@@ -25,7 +25,7 @@ goog.require('ol.source.Tile');
  * @api
  */
 ol.source.TileUTFGrid = function(options) {
-  goog.base(this, {
+  ol.source.Tile.call(this, {
     projection: ol.proj.get('EPSG:3857'),
     state: ol.source.State.LOADING
   });
@@ -72,7 +72,7 @@ ol.source.TileUTFGrid = function(options) {
     goog.asserts.fail('Either url or tileJSON options must be provided');
   }
 };
-goog.inherits(ol.source.TileUTFGrid, ol.source.Tile);
+ol.inherits(ol.source.TileUTFGrid, ol.source.Tile);
 
 
 /**
@@ -270,7 +270,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  */
 ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
 
-  goog.base(this, tileCoord, state);
+  ol.Tile.call(this, tileCoord, state);
 
   /**
    * @private
@@ -316,7 +316,7 @@ ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive,
   this.jsonp_ = jsonp;
 
 };
-goog.inherits(ol.source.TileUTFGridTile_, ol.Tile);
+ol.inherits(ol.source.TileUTFGridTile_, ol.Tile);
 
 
 /**

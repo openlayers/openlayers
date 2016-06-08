@@ -17,7 +17,7 @@ goog.require('ol.proj.Projection');
  */
 ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
 
-  goog.base(this, tileCoord, state);
+  ol.Tile.call(this, tileCoord, state);
 
   /**
    * @private
@@ -76,7 +76,7 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
   this.url_ = src;
 
 };
-goog.inherits(ol.VectorTile, ol.Tile);
+ol.inherits(ol.VectorTile, ol.Tile);
 
 
 /**

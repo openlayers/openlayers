@@ -21,11 +21,11 @@ goog.require('ol.proj');
  * @api
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
   var radius = opt_radius ? opt_radius : 0;
   this.setCenterAndRadius(center, radius, opt_layout);
 };
-goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
 
 /**

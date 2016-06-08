@@ -18,7 +18,7 @@ goog.require('ol.math');
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.MouseWheelZoom.handleEvent
   });
 
@@ -61,7 +61,7 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
   this.timeoutId_ = undefined;
 
 };
-goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
+ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
 
 /**

@@ -29,7 +29,7 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   var state = opt_loader !== undefined ?
       ol.ImageState.IDLE : ol.ImageState.LOADED;
 
-  goog.base(this, extent, resolution, pixelRatio, state, attributions);
+  ol.ImageBase.call(this, extent, resolution, pixelRatio, state, attributions);
 
   /**
    * @private
@@ -44,7 +44,7 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
   this.error_ = null;
 
 };
-goog.inherits(ol.ImageCanvas, ol.ImageBase);
+ol.inherits(ol.ImageCanvas, ol.ImageBase);
 
 
 /**

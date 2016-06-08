@@ -24,7 +24,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.Layer = function(layer) {
 
-  goog.base(this);
+  ol.Observable.call(this);
 
   /**
    * @private
@@ -34,7 +34,7 @@ ol.renderer.Layer = function(layer) {
 
 
 };
-goog.inherits(ol.renderer.Layer, ol.Observable);
+ol.inherits(ol.renderer.Layer, ol.Observable);
 
 
 /**

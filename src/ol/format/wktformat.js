@@ -30,7 +30,7 @@ ol.format.WKT = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.TextFeature.call(this);
 
   /**
    * Split GeometryCollection into multiple features.
@@ -41,7 +41,7 @@ ol.format.WKT = function(opt_options) {
       options.splitCollection : false;
 
 };
-goog.inherits(ol.format.WKT, ol.format.TextFeature);
+ol.inherits(ol.format.WKT, ol.format.TextFeature);
 
 
 /**

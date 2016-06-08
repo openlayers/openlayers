@@ -28,7 +28,7 @@ ol.format.GPX = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.XMLFeature.call(this);
 
   /**
    * @inheritDoc
@@ -41,7 +41,7 @@ ol.format.GPX = function(opt_options) {
    */
   this.readExtensions_ = options.readExtensions;
 };
-goog.inherits(ol.format.GPX, ol.format.XMLFeature);
+ol.inherits(ol.format.GPX, ol.format.XMLFeature);
 
 
 /**

@@ -19,9 +19,9 @@ goog.require('ol.layer.Layer');
  */
 ol.layer.Image = function(opt_options) {
   var options = opt_options ? opt_options : {};
-  goog.base(this,  /** @type {olx.layer.LayerOptions} */ (options));
+  ol.layer.Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
 };
-goog.inherits(ol.layer.Image, ol.layer.Layer);
+ol.inherits(ol.layer.Image, ol.layer.Layer);
 
 
 /**

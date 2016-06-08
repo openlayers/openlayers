@@ -42,7 +42,7 @@ ol.control.MousePosition = function(opt_options) {
   var render = options.render ?
       options.render : ol.control.MousePosition.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -90,7 +90,7 @@ ol.control.MousePosition = function(opt_options) {
   this.lastMouseMovePixel_ = null;
 
 };
-goog.inherits(ol.control.MousePosition, ol.control.Control);
+ol.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
@@ -174,7 +174,7 @@ ol.control.MousePosition.prototype.handleMouseOut = function(event) {
  * @api stable
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
+  ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(

@@ -38,7 +38,7 @@ ol.source.XYZ = function(opt_options) {
         tileSize: options.tileSize
       });
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -56,4 +56,4 @@ ol.source.XYZ = function(opt_options) {
   });
 
 };
-goog.inherits(ol.source.XYZ, ol.source.TileImage);
+ol.inherits(ol.source.XYZ, ol.source.TileImage);

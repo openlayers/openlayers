@@ -31,7 +31,6 @@
       "*"
     ],
     "jscomp_off": [
-      "useOfGoogBase",
       "lintChecks",
       "analyzerChecks"
     ],

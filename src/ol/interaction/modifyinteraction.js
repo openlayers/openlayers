@@ -63,7 +63,7 @@ ol.ModifyEventType = {
  */
 ol.interaction.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The features being modified.
@@ -79,7 +79,7 @@ ol.interaction.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
    */
   this.mapBrowserPointerEvent = mapBrowserPointerEvent;
 };
-goog.inherits(ol.interaction.ModifyEvent, ol.events.Event);
+ol.inherits(ol.interaction.ModifyEvent, ol.events.Event);
 
 
 /**
@@ -94,7 +94,7 @@ goog.inherits(ol.interaction.ModifyEvent, ol.events.Event);
  */
 ol.interaction.Modify = function(options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Modify.handleDownEvent_,
     handleDragEvent: ol.interaction.Modify.handleDragEvent_,
     handleEvent: ol.interaction.Modify.handleEvent,
@@ -245,7 +245,7 @@ ol.interaction.Modify = function(options) {
   this.lastPointerEvent_ = null;
 
 };
-goog.inherits(ol.interaction.Modify, ol.interaction.Pointer);
+ol.inherits(ol.interaction.Modify, ol.interaction.Pointer);
 
 
 /**
@@ -323,7 +323,7 @@ ol.interaction.Modify.prototype.removeFeatureSegmentData_ = function(feature) {
  */
 ol.interaction.Modify.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
-  goog.base(this, 'setMap', map);
+  ol.interaction.Pointer.prototype.setMap.call(this, map);
 };
 
 

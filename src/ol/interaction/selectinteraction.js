@@ -45,7 +45,7 @@ ol.interaction.SelectEventType = {
  * @constructor
  */
 ol.interaction.SelectEvent = function(type, selected, deselected, mapBrowserEvent) {
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * Selected features array.
@@ -68,7 +68,7 @@ ol.interaction.SelectEvent = function(type, selected, deselected, mapBrowserEven
    */
   this.mapBrowserEvent = mapBrowserEvent;
 };
-goog.inherits(ol.interaction.SelectEvent, ol.events.Event);
+ol.inherits(ol.interaction.SelectEvent, ol.events.Event);
 
 
 /**
@@ -91,7 +91,7 @@ goog.inherits(ol.interaction.SelectEvent, ol.events.Event);
  */
 ol.interaction.Select = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.Select.handleEvent
   });
 
@@ -202,7 +202,7 @@ ol.interaction.Select = function(opt_options) {
       this.removeFeature_, this);
 
 };
-goog.inherits(ol.interaction.Select, ol.interaction.Interaction);
+ol.inherits(ol.interaction.Select, ol.interaction.Interaction);
 
 
 /**
@@ -346,7 +346,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
   if (currentMap) {
     selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
   }
-  goog.base(this, 'setMap', map);
+  ol.interaction.Interaction.prototype.setMap.call(this, map);
   this.featureOverlay_.setMap(map);
   if (map) {
     selectedFeatures.forEach(map.skipFeature, map);

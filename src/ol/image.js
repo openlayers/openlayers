@@ -23,7 +23,7 @@ goog.require('ol.object');
 ol.Image = function(extent, resolution, pixelRatio, attributions, src,
     crossOrigin, imageLoadFunction) {
 
-  goog.base(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
+  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
       attributions);
 
   /**
@@ -66,7 +66,7 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
   this.imageLoadFunction_ = imageLoadFunction;
 
 };
-goog.inherits(ol.Image, ol.ImageBase);
+ol.inherits(ol.Image, ol.ImageBase);
 
 
 /**

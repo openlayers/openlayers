@@ -19,7 +19,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
 
-  goog.base(this, mapRenderer, vectorLayer);
+  ol.renderer.webgl.Layer.call(this, mapRenderer, vectorLayer);
 
   /**
    * @private
@@ -65,7 +65,7 @@ ol.renderer.webgl.VectorLayer = function(mapRenderer, vectorLayer) {
   this.layerState_ = null;
 
 };
-goog.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
+ol.inherits(ol.renderer.webgl.VectorLayer, ol.renderer.webgl.Layer);
 
 
 /**
@@ -95,7 +95,7 @@ ol.renderer.webgl.VectorLayer.prototype.disposeInternal = function() {
     replayGroup.getDeleteResourcesFunction(context)();
     this.replayGroup_ = null;
   }
-  goog.base(this, 'disposeInternal');
+  ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
 };
 
 

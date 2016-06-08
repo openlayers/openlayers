@@ -38,7 +38,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.canvas.Map = function(container, map) {
 
-  goog.base(this, container, map);
+  ol.renderer.Map.call(this, container, map);
 
   /**
    * @private
@@ -70,7 +70,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.transform_ = goog.vec.Mat4.createNumber();
 
 };
-goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
+ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 
 
 /**

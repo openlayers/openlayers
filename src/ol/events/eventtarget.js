@@ -25,7 +25,7 @@ goog.require('ol.events.Event');
  */
 ol.events.EventTarget = function() {
 
-  goog.base(this);
+  ol.Disposable.call(this);
 
   /**
    * @private
@@ -46,7 +46,7 @@ ol.events.EventTarget = function() {
   this.listeners_ = {};
 
 };
-goog.inherits(ol.events.EventTarget, ol.Disposable);
+ol.inherits(ol.events.EventTarget, ol.Disposable);
 
 
 /**

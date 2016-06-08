@@ -29,7 +29,7 @@ ol.source.ImageStatic = function(options) {
       options.imageLoadFunction !== undefined ?
       options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: ol.proj.get(options.projection)
@@ -52,7 +52,7 @@ ol.source.ImageStatic = function(options) {
       this.handleImageChange, this);
 
 };
-goog.inherits(ol.source.ImageStatic, ol.source.Image);
+ol.inherits(ol.source.ImageStatic, ol.source.Image);
 
 
 /**
@@ -93,5 +93,5 @@ ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
       this.image_.setImage(canvas);
     }
   }
-  goog.base(this, 'handleImageChange', evt);
+  ol.source.Image.prototype.handleImageChange.call(this, evt);
 };

@@ -235,7 +235,6 @@ Here is a version of `config.json` with more compilation checks enabled:
     ],
     "jscomp_off": [
       "unknownDefines",
-      "useOfGoogBase",
       "lintChecks",
       "analyzerChecks"
     ],
