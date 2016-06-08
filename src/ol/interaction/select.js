@@ -301,6 +301,9 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
       styles[ol.geom.GeometryType.LINE_STRING]);
 
   return function(feature, resolution) {
+    if (!feature.getGeometry()) {
+      return null;
+    }
     return styles[feature.getGeometry().getType()];
   };
 };
