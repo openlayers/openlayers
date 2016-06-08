@@ -137,10 +137,13 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
 
 
 /**
- * Load not yet loaded URI.
+ * Load the image or retry if loading previously failed.
+ * Loading is taken care of by the tile queue, and calling this method is
+ * only needed for preloading or for reloading in case of an error.
+ * @api
  */
 ol.ImageTile.prototype.load = function() {
-  if (this.state == ol.TileState.IDLE) {
+  if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
     this.state = ol.TileState.LOADING;
     this.changed();
     goog.asserts.assert(!this.imageListenerKeys_,

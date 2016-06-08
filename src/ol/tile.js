@@ -107,6 +107,9 @@ ol.Tile.prototype.getState = function() {
 
 
 /**
- * FIXME empty description for jsdoc
+ * Load the image or retry if loading previously failed.
+ * Loading is taken care of by the tile queue, and calling this method is
+ * only needed for preloading or for reloading in case of an error.
+ * @api
  */
 ol.Tile.prototype.load = goog.abstractMethod;
