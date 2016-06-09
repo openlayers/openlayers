@@ -82,7 +82,9 @@ function augmentExamples(files, metalsmith, done) {
       if (!(jsFilename in files)) {
         throw new Error('No .js file found for ' + filename);
       }
-      var jsSource = files[jsFilename].contents.toString();
+      var jsSource = files[jsFilename].contents.toString()
+          // Change data paths to absolute urls
+          .replace(/'data\//g, '\'http://openlayers.org/en/v' + pkg.version + '/examples/data/');
       if (file.cloak) {
         for (var key in file.cloak) {
           jsSource = jsSource.replace(new RegExp(key, 'g'), file.cloak[key]);
