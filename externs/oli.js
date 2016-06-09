@@ -92,9 +92,9 @@ oli.ModifyEvent.prototype.features;
 
 
 /**
- * @type {ol.MapBrowserPointerEvent}
+ * @type {ol.MapBrowserEvent}
  */
-oli.ModifyEvent.prototype.mapBrowserPointerEvent;
+oli.ModifyEvent.prototype.mapBrowserEvent;
 
 
 /**
