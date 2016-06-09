@@ -14,8 +14,8 @@ ol.uri.appendParams = function(uri, params) {
     return k + '=' + encodeURIComponent(params[k]);
   }).join('&');
   // remove any trailing ? or &
-  uri = uri.replace(/[?&]$/, '')
+  uri = uri.replace(/[?&]$/, '');
   // append ? or & depending on whether uri has existing parameters
-  uri = uri.indexOf('?') === -1 ? uri + '?' : uri + '&'
+  uri = uri.indexOf('?') === -1 ? uri + '?' : uri + '&';
   return uri + qs;
 };

@@ -36,7 +36,7 @@ ol.array.binarySearch = function(haystack, needle, opt_comparator) {
 
   /* Key not found. */
   return found ? low : ~low;
-}
+};
 
 /**
  * @param {Array.<number>} arr Array.
@@ -188,11 +188,11 @@ ol.array.flatten = function(arr) {
 ol.array.extend = function(arr, data) {
   var i;
   var extension = goog.isArrayLike(data) ? data : [data];
-  var length = extension.length
+  var length = extension.length;
   for (i = 0; i < length; i++) {
     arr[arr.length] = extension[i];
   }
-}
+};
 
 
 /**
@@ -208,7 +208,7 @@ ol.array.remove = function(arr, obj) {
     arr.splice(i, 1);
   }
   return found;
-}
+};
 
 
 /**
@@ -228,7 +228,7 @@ ol.array.find = function(arr, func) {
     }
   }
   return null;
-}
+};
 
 
 /**
@@ -247,7 +247,7 @@ ol.array.equals = function(arr1, arr2) {
     }
   }
   return true;
-}
+};
 
 
 /**
@@ -267,7 +267,7 @@ ol.array.stableSort = function(arr, compareFnc) {
   for (i = 0; i < arr.length; i++) {
     arr[i] = tmp[i].value;
   }
-}
+};
 
 
 /**
@@ -282,7 +282,7 @@ ol.array.findIndex = function(arr, func) {
     return !func(el, idx, arr);
   });
   return found ? index : -1;
-}
+};
 
 
 /**
@@ -300,4 +300,4 @@ ol.array.isSorted = function(arr, opt_func, opt_strict) {
     var res = compare(arr[index - 1], currentVal);
     return !(res > 0 || opt_strict && res === 0);
   });
-}
+};

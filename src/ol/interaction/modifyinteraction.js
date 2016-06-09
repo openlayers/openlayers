@@ -117,7 +117,7 @@ ol.interaction.Modify = function(options) {
   this.defaultDeleteCondition_ = function(mapBrowserEvent) {
     return ol.events.condition.noModifierKeys(mapBrowserEvent) &&
       ol.events.condition.singleClick(mapBrowserEvent);
-  }
+  };
 
   /**
    * @type {ol.events.ConditionType}

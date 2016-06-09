@@ -37,7 +37,7 @@ ol.control.MousePosition = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var element = document.createElement('DIV');
-  element.className = options.className !== undefined ? options.className : 'ol-mouse-position'
+  element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
   var render = options.render ?
       options.render : ol.control.MousePosition.render;
