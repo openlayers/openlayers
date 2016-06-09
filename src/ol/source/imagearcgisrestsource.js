@@ -1,7 +1,6 @@
 goog.provide('ol.source.ImageArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.events');
@@ -10,6 +9,7 @@ goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
+goog.require('ol.uri');
 
 
 /**
@@ -215,7 +215,7 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
   if (modifiedUrl == url) {
     goog.asserts.fail('Unknown Rest Service', url);
   }
-  return goog.uri.utils.appendParamsFromMap(modifiedUrl, params);
+  return ol.uri.appendParams(modifiedUrl, params);
 };
 
 

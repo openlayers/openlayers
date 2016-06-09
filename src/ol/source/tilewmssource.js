@@ -5,7 +5,6 @@
 goog.provide('ol.source.TileWMS');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.object');
@@ -17,7 +16,7 @@ goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
 goog.require('ol.tilecoord');
 goog.require('ol.string');
-
+goog.require('ol.uri');
 
 /**
  * @classdesc
@@ -265,7 +264,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
     var index = ol.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
     url = urls[index];
   }
-  return goog.uri.utils.appendParamsFromMap(url, params);
+  return ol.uri.appendParams(url, params);
 };
 
 
