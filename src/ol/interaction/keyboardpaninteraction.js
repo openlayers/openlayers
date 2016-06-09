@@ -46,7 +46,7 @@ ol.interaction.KeyboardPan = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition !== undefined ?
       options.condition : this.defaultCondition_

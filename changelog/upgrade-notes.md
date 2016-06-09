@@ -6,6 +6,29 @@ Users compiling their code with the library and using types in the `ol.raster` n
 * `ol.raster.Operation` to `ol.RasterOperation`
 * `ol.raster.OperationType` to `ol.RasterOperationType`
 
+#### All typedefs now in ol namespace
+
+Users compiling their code with the library should note that the following typedefs have been renamed; your code may need changing if you use these:
+* ol.events.ConditionType to ol.EventsConditionType
+* ol.events.EventTargetLike to ol.EventTargetLike
+* ol.events.Key to ol.EventsKey
+* ol.events.ListenerFunctionType to ol.EventsListenerFunctionType
+* ol.interaction.DragBoxEndConditionType to ol.DragBoxEndConditionType
+* ol.interaction.DrawGeometryFunctionType to ol.DrawGeometryFunctionType
+* ol.interaction.SegmentDataType to ol.ModifySegmentDataType
+* ol.interaction.SelectFilterFunction to ol.SelectFilterFunction
+* ol.interaction.SnapResultType to ol.SnapResultType
+* ol.interaction.SnapSegmentDataType to ol.SnapSegmentDataType
+* ol.proj.ProjectionLike to ol.ProjectionLike
+* ol.style.AtlasBlock to ol.AtlasBlock
+* ol.style.AtlasInfo to ol.AtlasInfo
+* ol.style.AtlasManagerInfo to ol.AtlasManagerInfo
+* ol.style.CircleRenderOptions to ol.CircleRenderOptions
+* ol.style.ImageOptions to ol.StyleImageOptions
+* ol.style.GeometryFunction to ol.StyleGeometryFunction
+* ol.style.RegularShapeRenderOptions to ol.RegularShapeRenderOptions
+* ol.style.StyleFunction to ol.StyleFunction
+
 ### v3.16.0
 
 #### Rendering change for tile sources

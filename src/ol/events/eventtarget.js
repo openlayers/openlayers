@@ -41,7 +41,7 @@ ol.events.EventTarget = function() {
 
   /**
    * @private
-   * @type {!Object.<string, Array.<ol.events.ListenerFunctionType>>}
+   * @type {!Object.<string, Array.<ol.EventsListenerFunctionType>>}
    */
   this.listeners_ = {};
 
@@ -51,7 +51,7 @@ ol.inherits(ol.events.EventTarget, ol.Disposable);
 
 /**
  * @param {string} type Type.
- * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {ol.EventsListenerFunctionType} listener Listener.
  */
 ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
@@ -116,7 +116,7 @@ ol.events.EventTarget.prototype.disposeInternal = function() {
  * order that they will be called in.
  *
  * @param {string} type Type.
- * @return {Array.<ol.events.ListenerFunctionType>} Listeners.
+ * @return {Array.<ol.EventsListenerFunctionType>} Listeners.
  */
 ol.events.EventTarget.prototype.getListeners = function(type) {
   return this.listeners_[type];
@@ -137,7 +137,7 @@ ol.events.EventTarget.prototype.hasListener = function(opt_type) {
 
 /**
  * @param {string} type Type.
- * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {ol.EventsListenerFunctionType} listener Listener.
  */
 ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
