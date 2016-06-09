@@ -157,7 +157,7 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
           ol.interaction.DragAndDrop.handleStop_, this),
       ol.events.listen(dropArea, ol.events.EventType.DROP,
           ol.interaction.DragAndDrop.handleStop_, this)
-    ]
+    ];
   }
 };
 

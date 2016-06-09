@@ -95,7 +95,7 @@ describe('ol.source.TileUTFGrid', function() {
       // locally available tileJson (from `before`)
       source.handleTileJSONResponse(tileJson);
 
-      var tileGrid = source.getTileGrid()
+      var tileGrid = source.getTileGrid();
       expect(tileGrid).to.not.be(null);
       expect(tileGrid).to.be.an(ol.tilegrid.TileGrid);
     });
@@ -142,7 +142,7 @@ describe('ol.source.TileUTFGrid', function() {
       var tileGrid = source.getTileGrid();
       var maxZoom = tileGrid.getMaxZoom();
       expect(maxZoom).to.eql(tileJson.maxzoom);
-    })
+    });
 
     it('sets up a template', function() {
       var source = getTileUTFGrid();
@@ -169,9 +169,9 @@ describe('ol.source.TileUTFGrid', function() {
       expect(attributions).to.not.be(null);
       expect(attributions).to.have.length(1);
       expect(attributions[0].getHTML()).to.be(tileJson.attribution);
-      var tileRanges = attributions[0].tileRanges_
+      var tileRanges = attributions[0].tileRanges_;
       for (var z = tileJson.minzoom; z <= tileJson.maxzoom; z++) {
-        var key = z.toString()
+        var key = z.toString();
         expect(key in tileRanges).to.be(true);
       }
     });
@@ -207,7 +207,7 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       });
       client.addEventListener('error', function() {
-        done(new Error('Failed to fetch local grid.json'))
+        done(new Error('Failed to fetch local grid.json'));
       });
       client.open('GET', 'spec/ol/data/mapbox-geography-class-1-1-0.grid.json');
       client.send();

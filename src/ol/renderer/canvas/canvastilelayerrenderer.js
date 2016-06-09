@@ -259,7 +259,7 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
     drawOffsetX = (drawSize - width) / 2 / drawScale;
     drawOffsetY = (drawSize - height) / 2 / drawScale;
     pixelScale *= drawScale;
-    offsetX = Math.round(drawScale * (offsetX + drawOffsetX))
+    offsetX = Math.round(drawScale * (offsetX + drawOffsetX));
     offsetY = Math.round(drawScale * (offsetY + drawOffsetY));
   }
   // for performance reasons, context.save / context.restore is not used

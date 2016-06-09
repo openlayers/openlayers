@@ -175,7 +175,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
   var renderHitCallback = opt_renderHitCallback !== undefined ?
-      opt_renderHitCallback : ol.nullFunction
+      opt_renderHitCallback : ol.nullFunction;
 
   /** @type {?ol.style.AtlasInfo} */
   var hitInfo = this.add_(true,

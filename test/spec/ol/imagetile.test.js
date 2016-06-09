@@ -11,7 +11,7 @@ describe('ol.ImageTile', function() {
       var tileLoadFunction = ol.source.Image.defaultImageLoadFunction;
       var tile = new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      var previousState = tile.getState()
+      var previousState = tile.getState();
 
       ol.events.listen(tile, ol.events.EventType.CHANGE, function(event) {
         var state = tile.getState();
@@ -36,7 +36,7 @@ describe('ol.ImageTile', function() {
       var tileLoadFunction = ol.source.Image.defaultImageLoadFunction;
       var tile = new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
 
-      var previousState = tile.getState()
+      var previousState = tile.getState();
 
       ol.events.listen(tile, ol.events.EventType.CHANGE, function(event) {
         var state = tile.getState();

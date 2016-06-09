@@ -42,14 +42,14 @@ ol.interaction.KeyboardPan = function(opt_options) {
   this.defaultCondition_ = function(mapBrowserEvent) {
     return ol.events.condition.noModifierKeys(mapBrowserEvent) &&
       ol.events.condition.targetNotEditable(mapBrowserEvent);
-  }
+  };
 
   /**
    * @private
    * @type {ol.events.ConditionType}
    */
   this.condition_ = options.condition !== undefined ?
-      options.condition : this.defaultCondition_
+      options.condition : this.defaultCondition_;
 
   /**
    * @private

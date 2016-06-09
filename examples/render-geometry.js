@@ -21,7 +21,7 @@ var style = new ol.style.Style({
     fill: fill,
     stroke: stroke
   })
-})
+});
 vectorContext.setStyle(style);
 
 vectorContext.drawGeometry(new ol.geom.LineString([[10, 10], [90, 90]]));

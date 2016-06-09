@@ -165,7 +165,7 @@ describe('ol.render.canvas.Immediate', function() {
         if (instruction.args) {
           parts.push('args: [' + instruction.args.map(function(arg) {
             if (typeof arg === 'number') {
-              return arg.toFixed(9)
+              return arg.toFixed(9);
             } else {
               return arg;
             }

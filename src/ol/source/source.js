@@ -99,7 +99,7 @@ ol.source.Source.toAttributionsArray_ = function(attributionLike) {
   } else {
     return null;
   }
-}
+};
 
 
 /**

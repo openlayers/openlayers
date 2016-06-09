@@ -5,7 +5,7 @@ describe('ol.structs.PriorityQueue', function() {
 
   var identity = function(a) {
     return a;
-  }
+  };
 
   describe('when empty', function() {
 

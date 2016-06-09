@@ -445,4 +445,4 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
     replayState.replayGroup.replay(tileContext, pixelRatio,
         tileTransform, 0, frameState.skippedFeatureUids || {}, replays);
   }
-}
+};

@@ -74,7 +74,7 @@ ol.events.bindListener_ = function(listenerObj) {
       ol.events.unlistenByKey(listenerObj);
     }
     return listener.call(bindTo, evt);
-  }
+  };
   listenerObj.boundListener = boundListener;
   return boundListener;
 };
@@ -150,7 +150,7 @@ ol.events.removeListeners_ = function(target, type) {
   if (listeners) {
     for (var i = 0, ii = listeners.length; i < ii; ++i) {
       target.removeEventListener(type, listeners[i].boundListener);
-      ol.object.clear(listeners[i])
+      ol.object.clear(listeners[i]);
     }
     listeners.length = 0;
     var listenerMap = target[ol.events.LISTENER_MAP_PROP_];

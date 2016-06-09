@@ -148,7 +148,7 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
  */
 ol.source.CartoDB.prototype.handleInitError_ = function(event) {
   this.setState(ol.source.State.ERROR);
-}
+};
 
 
 /**

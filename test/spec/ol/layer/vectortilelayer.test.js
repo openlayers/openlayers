@@ -30,7 +30,7 @@ describe('ol.layer.VectorTile', function() {
 
     it('provides default renderMode', function() {
       expect(layer.getRenderMode()).to.be('hybrid');
-    })
+    });
 
   });
 
