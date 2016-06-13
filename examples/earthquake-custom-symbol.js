@@ -13,6 +13,12 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
+var symbol = [[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]];
+var scale;
+var scaleFunction = function(coordinate) {
+  return [coordinate[0] * scale, coordinate[1] * scale];
+};
+
 var styleCache = {};
 var styleFunction = function(feature) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
@@ -21,23 +27,23 @@ var styleFunction = function(feature) {
   var name = feature.get('name');
   var magnitude = parseFloat(name.substr(2));
   var size = parseInt(10 + 40 * (magnitude - 5), 10);
+  scale = size / 10;
   var style = styleCache[size];
   if (!style) {
     var canvas =
         /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
     var vectorContext = ol.render.toContext(
         /** @type {CanvasRenderingContext2D} */ (canvas.getContext('2d')),
-        {size: [size + 2, size + 2], pixelRatio: size / 10});
+        {size: [size, size], pixelRatio: 1});
     vectorContext.setStyle(new ol.style.Style({
       fill: new ol.style.Fill({color: 'rgba(255, 153, 0, 0.4)'}),
-      stroke: new ol.style.Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 1})
+      stroke: new ol.style.Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 2})
     }));
-    vectorContext.drawGeometry(new ol.geom.Polygon(
-        [[[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]]]));
+    vectorContext.drawGeometry(new ol.geom.Polygon([symbol.map(scaleFunction)]));
     style = new ol.style.Style({
       image: new ol.style.Icon({
         img: canvas,
-        imgSize: [canvas.width, canvas.height],
+        imgSize: [size, size],
         rotation: 1.2
       })
     });
