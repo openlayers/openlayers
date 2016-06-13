@@ -36,7 +36,7 @@ goog.require('ol.webgl.Context');
  * @protected
  * @struct
  */
-ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
+ol.render.webgl.Replay = function(tolerance, maxExtent) {
   ol.render.VectorContext.call(this);
 
   /**
@@ -262,7 +262,7 @@ ol.render.webgl.Replay.prototype.drawElements_ = function(
  * @struct
  */
 ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
-  goog.base(this, tolerance, maxExtent);
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
   /**
    * @type {number|undefined}
@@ -378,7 +378,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    */
   this.width_ = undefined;
 };
-ol.inherits(ol.render.webgl.ImageReplay, ol.render.VectorContext);
+ol.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.Replay);
 
 
 /**
@@ -998,7 +998,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @struct
  */
 ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
-  goog.base(this, tolerance, maxExtent);
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
 /**
    * @private
@@ -1025,7 +1025,7 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
   };
 
 };
-goog.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
+ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
 
 
 /**
@@ -1437,7 +1437,7 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
  * @struct
  */
 ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
-  goog.base(this);
+  ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
   /**
    * @private
@@ -1515,7 +1515,7 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
    */
   this.startIndicesFeature_ = [];
 };
-goog.inherits(ol.render.webgl.PolygonReplay, ol.render.VectorContext);
+ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
 
 
 /**
