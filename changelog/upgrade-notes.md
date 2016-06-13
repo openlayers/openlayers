@@ -10,6 +10,24 @@ Users compiling their code with the library and using types in the `ol.raster` n
 * `ol.raster.Operation` to `ol.RasterOperation`
 * `ol.raster.OperationType` to `ol.RasterOperationType`
 
+#### Removal of goog.inherits
+
+goog.inherits is not used anymore in the library. Users extending OpenLayers classes and compiling their code with the library must now
+use ol.inherits instead. This also means that goog.base is no longer available; the base class must now be called. If you previously had:
+```js
+ol.ImageTile.prototype.disposeInternal = function() {
+  goog.base(this, 'disposeInternal');
+  ...
+};
+```
+You'll need to have:
+```js
+ol.ImageTile.prototype.disposeInternal = function() {
+  ol.Tile.prototype.disposeInternal.call(this);
+  ...
+};
+```
+
 ### v3.16.0
 
 #### Rendering change for tile sources
