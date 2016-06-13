@@ -5,7 +5,6 @@ goog.provide('ol.GeolocationProperty');
 
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.Coordinate');
 goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.Polygon');
@@ -60,7 +59,7 @@ ol.GeolocationProperty = {
  */
 ol.Geolocation = function(opt_options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   var options = opt_options || {};
 
@@ -100,7 +99,7 @@ ol.Geolocation = function(opt_options) {
   this.setTracking(options.tracking !== undefined ? options.tracking : false);
 
 };
-goog.inherits(ol.Geolocation, ol.Object);
+ol.inherits(ol.Geolocation, ol.Object);
 
 
 /**
@@ -108,7 +107,7 @@ goog.inherits(ol.Geolocation, ol.Object);
  */
 ol.Geolocation.prototype.disposeInternal = function() {
   this.setTracking(false);
-  goog.base(this, 'disposeInternal');
+  ol.Object.prototype.disposeInternal.call(this);
 };
 
 

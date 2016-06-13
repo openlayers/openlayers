@@ -45,12 +45,12 @@ ol.control.ZoomToExtent = function(opt_options) {
       ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom('DIV', cssClasses, button);
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     target: options.target
   });
 };
-goog.inherits(ol.control.ZoomToExtent, ol.control.Control);
+ol.inherits(ol.control.ZoomToExtent, ol.control.Control);
 
 
 /**

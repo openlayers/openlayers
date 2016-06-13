@@ -3,7 +3,6 @@ goog.provide('ol.interaction.Pointer');
 goog.require('ol');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.Pixel');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.object');
 
@@ -30,7 +29,7 @@ ol.interaction.Pointer = function(opt_options) {
   var handleEvent = options.handleEvent ?
       options.handleEvent : ol.interaction.Pointer.handleEvent;
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: handleEvent
   });
 
@@ -81,7 +80,7 @@ ol.interaction.Pointer = function(opt_options) {
   this.targetPointers = [];
 
 };
-goog.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
+ol.inherits(ol.interaction.Pointer, ol.interaction.Interaction);
 
 
 /**

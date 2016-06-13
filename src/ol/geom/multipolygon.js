@@ -33,7 +33,7 @@ goog.require('ol.geom.flat.simplify');
  */
 ol.geom.MultiPolygon = function(coordinates, opt_layout) {
 
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
 
   /**
    * @type {Array.<Array.<number>>}
@@ -80,7 +80,7 @@ ol.geom.MultiPolygon = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.MultiPolygon, ol.geom.SimpleGeometry);
 
 
 /**

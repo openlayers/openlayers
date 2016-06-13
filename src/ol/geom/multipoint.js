@@ -23,10 +23,10 @@ goog.require('ol.math');
  * @api stable
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
   this.setCoordinates(coordinates, opt_layout);
 };
-goog.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 
 
 /**

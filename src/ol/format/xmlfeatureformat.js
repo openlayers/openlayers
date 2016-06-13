@@ -26,9 +26,9 @@ ol.format.XMLFeature = function() {
    */
   this.xmlSerializer_ = new XMLSerializer();
 
-  goog.base(this);
+  ol.format.Feature.call(this);
 };
-goog.inherits(ol.format.XMLFeature, ol.format.Feature);
+ol.inherits(ol.format.XMLFeature, ol.format.Feature);
 
 
 /**

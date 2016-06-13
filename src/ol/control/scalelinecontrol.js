@@ -25,7 +25,6 @@ ol.control.ScaleLineProperty = {
  * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
  * `'nautical'`, `'metric'`, `'us'`.
  * @enum {string}
- * @api stable
  */
 ol.control.ScaleLineUnits = {
   DEGREES: 'degrees',
@@ -103,7 +102,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.ScaleLine.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: this.element_,
     render: render,
     target: options.target
@@ -117,7 +116,7 @@ ol.control.ScaleLine = function(opt_options) {
       ol.control.ScaleLineUnits.METRIC);
 
 };
-goog.inherits(ol.control.ScaleLine, ol.control.Control);
+ol.inherits(ol.control.ScaleLine, ol.control.Control);
 
 
 /**

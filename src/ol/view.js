@@ -9,8 +9,6 @@ goog.require('ol.Constraints');
 goog.require('ol.Object');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
-goog.require('ol.RotationConstraintType');
-goog.require('ol.Size');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.geom.Polygon');
@@ -98,7 +96,7 @@ ol.ViewHint = {
  * @api stable
  */
 ol.View = function(opt_options) {
-  goog.base(this);
+  ol.Object.call(this);
   var options = opt_options || {};
 
   /**
@@ -138,6 +136,12 @@ ol.View = function(opt_options) {
 
   /**
    * @private
+   * @type {Array.<number>|undefined}
+   */
+  this.resolutions_ = options.resolutions;
+
+  /**
+   * @private
    * @type {number}
    */
   this.minZoom_ = resolutionConstraintInfo.minZoom;
@@ -163,7 +167,7 @@ ol.View = function(opt_options) {
       options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
 };
-goog.inherits(ol.View, ol.Object);
+ol.inherits(ol.View, ol.Object);
 
 
 /**
@@ -256,10 +260,17 @@ ol.View.prototype.getCenter = function() {
 
 
 /**
+ * @param {Array.<number>=} opt_hints Destination array.
  * @return {Array.<number>} Hint.
  */
-ol.View.prototype.getHints = function() {
-  return this.hints_.slice();
+ol.View.prototype.getHints = function(opt_hints) {
+  if (opt_hints !== undefined) {
+    opt_hints[0] = this.hints_[0];
+    opt_hints[1] = this.hints_[1];
+    return opt_hints;
+  } else {
+    return this.hints_.slice();
+  }
 };
 
 
@@ -305,6 +316,17 @@ ol.View.prototype.getProjection = function() {
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
       this.get(ol.ViewProperty.RESOLUTION));
+};
+
+
+/**
+ * Get the resolutions for the view. This returns the array of resolutions
+ * passed to the constructor of the {ol.View}, or undefined if none were given.
+ * @return {Array.<number>|undefined} The resolutions of the view.
+ * @api stable
+ */
+ol.View.prototype.getResolutions = function() {
+  return this.resolutions_;
 };
 
 

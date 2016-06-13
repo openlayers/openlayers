@@ -52,14 +52,51 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       map.addLayer(layer);
     });
 
-    it('creates a new instance', function() {
-      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
-    });
-
     afterEach(function() {
       document.body.removeChild(target);
       map.dispose();
+    });
+
+    it('creates a new instance', function() {
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      expect(renderer).to.be.a(ol.renderer.canvas.VectorTileLayer);
+      expect(renderer.zDirection).to.be(0);
+    });
+
+    it('uses lower resolution for pure vector rendering', function() {
+      layer.renderMode_ = 'vector';
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      expect(renderer.zDirection).to.be(1);
+    });
+
+    it('does not render images for pure vector rendering', function() {
+      layer.renderMode_ = 'vector';
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileImages');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+    it('does not render replays for pure image rendering', function() {
+      layer.renderMode_ = 'image';
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileReplays_');
+      map.renderSync();
+      expect(spy.callCount).to.be(0);
+      spy.restore();
+    });
+
+    it('renders both replays and images for hybrid rendering', function() {
+      var spy1 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileReplays_');
+      var spy2 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'renderTileImages');
+      map.renderSync();
+      expect(spy1.callCount).to.be(1);
+      expect(spy2.callCount).to.be(1);
+      spy1.restore();
+      spy2.restore();
     });
 
     it('gives precedence to feature styles over layer styles', function() {
@@ -74,7 +111,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var tile;
       tileCallback = function(t) {
         tile = t;
-      }
+      };
       map.renderSync();
       expect(tile.getProjection()).to.equal(ol.proj.get('EPSG:3857'));
       expect(feature1.getGeometry().getCoordinates()).to.eql(
@@ -87,7 +124,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       tileCallback = function(t) {
         t.setProjection(proj);
         tile = t;
-      }
+      };
       map.renderSync();
       expect(tile.getProjection()).to.equal(proj);
       expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);
@@ -134,7 +171,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         }
       };
       frameState.layerStates[goog.getUid(layer)] = {};
-      renderer.renderedTiles_ = [new TileClass([0, 0, -1])];
+      renderer.renderedTiles = [new TileClass([0, 0, -1])];
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);

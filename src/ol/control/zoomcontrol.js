@@ -42,9 +42,8 @@ ol.control.Zoom = function(opt_options) {
     'title': zoomInTipLabel
   }, zoomInLabel);
 
-  ol.events.listen(inElement,
-      ol.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, delta), this);
+  ol.events.listen(inElement, ol.events.EventType.CLICK,
+      ol.control.Zoom.prototype.handleClick_.bind(this, delta));
 
   var outElement = goog.dom.createDom('BUTTON', {
     'class': className + '-out',
@@ -52,15 +51,14 @@ ol.control.Zoom = function(opt_options) {
     'title': zoomOutTipLabel
   }, zoomOutLabel);
 
-  ol.events.listen(outElement,
-      ol.events.EventType.CLICK, goog.partial(
-          ol.control.Zoom.prototype.handleClick_, -delta), this);
+  ol.events.listen(outElement, ol.events.EventType.CLICK,
+      ol.control.Zoom.prototype.handleClick_.bind(this, -delta));
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
   var element = goog.dom.createDom('DIV', cssClasses, inElement, outElement);
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     target: options.target
   });
@@ -72,7 +70,7 @@ ol.control.Zoom = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
-goog.inherits(ol.control.Zoom, ol.control.Control);
+ol.inherits(ol.control.Zoom, ol.control.Control);
 
 
 /**

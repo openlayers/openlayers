@@ -7,15 +7,6 @@ goog.require('ol.proj');
 
 
 /**
- * Single triangle; consists of 3 source points and 3 target points.
- *
- * @typedef {{source: Array.<ol.Coordinate>,
- *            target: Array.<ol.Coordinate>}}
- */
-ol.reproj.Triangle;
-
-
-/**
  * @classdesc
  * Class containing triangulation of the given target extent.
  * Used for determining source data and the reprojection itself.
@@ -72,7 +63,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
   this.errorThresholdSquared_ = errorThreshold * errorThreshold;
 
   /**
-   * @type {Array.<ol.reproj.Triangle>}
+   * @type {Array.<ol.ReprojTriangle>}
    * @private
    */
   this.triangles_ = [];
@@ -333,7 +324,7 @@ ol.reproj.Triangulation.prototype.calculateSourceExtent = function() {
 
 
 /**
- * @return {Array.<ol.reproj.Triangle>} Array of the calculated triangles.
+ * @return {Array.<ol.ReprojTriangle>} Array of the calculated triangles.
  */
 ol.reproj.Triangulation.prototype.getTriangles = function() {
   return this.triangles_;

@@ -55,7 +55,7 @@ describe('ol.source.Cluster', function() {
       expect(source.getFeatures().length).to.be(1);
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
-  })
+  });
 });
 
 goog.require('ol.Feature');

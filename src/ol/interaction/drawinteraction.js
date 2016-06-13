@@ -1,14 +1,12 @@
 goog.provide('ol.interaction.Draw');
 goog.provide('ol.interaction.DrawEvent');
 goog.provide('ol.interaction.DrawEventType');
-goog.provide('ol.interaction.DrawGeometryFunctionType');
 goog.provide('ol.interaction.DrawMode');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.Collection');
-goog.require('ol.Coordinate');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
@@ -63,7 +61,7 @@ ol.interaction.DrawEventType = {
  */
 ol.interaction.DrawEvent = function(type, feature) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The feature being drawn.
@@ -73,7 +71,7 @@ ol.interaction.DrawEvent = function(type, feature) {
   this.feature = feature;
 
 };
-goog.inherits(ol.interaction.DrawEvent, ol.events.Event);
+ol.inherits(ol.interaction.DrawEvent, ol.events.Event);
 
 
 /**
@@ -88,7 +86,7 @@ goog.inherits(ol.interaction.DrawEvent, ol.events.Event);
  */
 ol.interaction.Draw = function(options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Draw.handleDownEvent_,
     handleEvent: ol.interaction.Draw.handleEvent,
     handleUpEvent: ol.interaction.Draw.handleUpEvent_
@@ -159,6 +157,13 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
+
+  /**
+   * A function to decide if a potential finish coordinate is permissable
+   * @private
+   * @type {ol.events.ConditionType}
+   */
+  this.finishCondition_ = options.finishCondition ? options.finishCondition : ol.functions.TRUE;
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
@@ -306,7 +311,7 @@ ol.interaction.Draw = function(options) {
       this.updateState_, this);
 
 };
-goog.inherits(ol.interaction.Draw, ol.interaction.Pointer);
+ol.inherits(ol.interaction.Draw, ol.interaction.Pointer);
 
 
 /**
@@ -324,7 +329,7 @@ ol.interaction.Draw.getDefaultStyleFunction = function() {
  * @inheritDoc
  */
 ol.interaction.Draw.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
+  ol.interaction.Pointer.prototype.setMap.call(this, map);
   this.updateState_();
 };
 
@@ -404,7 +409,9 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
     } else if (this.mode_ === ol.interaction.DrawMode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
-      this.finishDrawing();
+      if (this.finishCondition_(event)) {
+        this.finishDrawing();
+      }
     } else {
       this.addToDrawing_(event);
     }
@@ -841,19 +848,6 @@ ol.interaction.Draw.getMode_ = function(type) {
   goog.asserts.assert(mode !== undefined, 'mode should be defined');
   return mode;
 };
-
-
-/**
- * Function that takes coordinates and an optional existing geometry as
- * arguments, and returns a geometry. The optional existing geometry is the
- * geometry that is returned when the function is called without a second
- * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
- *     ol.geom.SimpleGeometry}
- * @api
- */
-ol.interaction.DrawGeometryFunctionType;
 
 
 /**

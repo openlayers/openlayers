@@ -100,6 +100,26 @@ describe('ol.interaction.Snap', function() {
       expect(event.coordinate).to.eql([10, 0]);
     });
 
+    it('handle feature without geometry', function() {
+      var feature = new ol.Feature();
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([feature]),
+        pixelTolerance: 5,
+        edge: false
+      });
+      snapInteraction.setMap(map);
+
+      feature.setGeometry(new ol.geom.LineString([[-10, 0], [10, 0]]));
+
+      var event = {
+        pixel: [7 + width / 2, height / 2 - 4],
+        coorinate: [7, 4],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+      expect(event.coordinate).to.eql([10, 0]);
+    });
+
   });
 
 });

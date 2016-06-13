@@ -1,32 +1,10 @@
 goog.provide('ol.source.UrlTile');
 
 goog.require('ol.events');
-goog.require('ol.TileLoadFunctionType');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
-goog.require('ol.proj');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileEvent');
-
-
-/**
- * @typedef {{attributions: (ol.AttributionLike|undefined),
- *            cacheSize: (number|undefined),
- *            extent: (ol.Extent|undefined),
- *            logo: (string|olx.LogoOptions|undefined),
- *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
- *            state: (ol.source.State|undefined),
- *            tileGrid: (ol.tilegrid.TileGrid|undefined),
- *            tileLoadFunction: ol.TileLoadFunctionType,
- *            tilePixelRatio: (number|undefined),
- *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
- *            url: (string|undefined),
- *            urls: (Array.<string>|undefined),
- *            wrapX: (boolean|undefined)}}
- */
-ol.source.UrlTileOptions;
 
 
 /**
@@ -36,11 +14,11 @@ ol.source.UrlTileOptions;
  * @constructor
  * @fires ol.source.TileEvent
  * @extends {ol.source.Tile}
- * @param {ol.source.UrlTileOptions} options Image tile options.
+ * @param {ol.SourceUrlTileOptions} options Image tile options.
  */
 ol.source.UrlTile = function(options) {
 
-  goog.base(this, {
+  ol.source.Tile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
@@ -83,7 +61,7 @@ ol.source.UrlTile = function(options) {
   }
 
 };
-goog.inherits(ol.source.UrlTile, ol.source.Tile);
+ol.inherits(ol.source.UrlTile, ol.source.Tile);
 
 
 /**
@@ -165,15 +143,16 @@ ol.source.UrlTile.prototype.setTileLoadFunction = function(tileLoadFunction) {
 /**
  * Set the tile URL function of the source.
  * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
+ * @param {string=} opt_key Optional new tile key for the source.
  * @api
  */
-ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction) {
-  // FIXME It should be possible to be more intelligent and avoid clearing the
-  // FIXME cache.  The tile URL function would need to be incorporated into the
-  // FIXME cache key somehow.
-  this.tileCache.clear();
+ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_key) {
   this.tileUrlFunction = tileUrlFunction;
-  this.changed();
+  if (typeof opt_key !== 'undefined') {
+    this.setKey(opt_key);
+  } else {
+    this.changed();
+  }
 };
 
 
@@ -186,7 +165,7 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
   var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
+      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), url);
 };
 
 
@@ -197,9 +176,10 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
  */
 ol.source.UrlTile.prototype.setUrls = function(urls) {
   this.urls = urls;
+  var key = urls.join('\n');
   this.setTileUrlFunction(this.fixedTileUrlFunction ?
       this.fixedTileUrlFunction.bind(this) :
-      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid));
+      ol.TileUrlFunction.createFromTemplates(urls, this.tileGrid), key);
 };
 
 

@@ -15,9 +15,9 @@ goog.require('ol.format.FormatType');
  * @extends {ol.format.Feature}
  */
 ol.format.JSONFeature = function() {
-  goog.base(this);
+  ol.format.Feature.call(this);
 };
-goog.inherits(ol.format.JSONFeature, ol.format.Feature);
+ol.inherits(ol.format.JSONFeature, ol.format.Feature);
 
 
 /**

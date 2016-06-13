@@ -1,21 +1,8 @@
-goog.provide('ol.Extent');
 goog.provide('ol.extent');
 goog.provide('ol.extent.Corner');
 goog.provide('ol.extent.Relationship');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
-goog.require('ol.Coordinate');
-goog.require('ol.Size');
-goog.require('ol.TransformFunction');
-
-
-/**
- * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
- * @typedef {Array.<number>}
- * @api stable
- */
-ol.Extent;
 
 
 /**
@@ -877,38 +864,4 @@ ol.extent.applyTransform = function(extent, transformFn, opt_extent) {
   var xs = [coordinates[0], coordinates[2], coordinates[4], coordinates[6]];
   var ys = [coordinates[1], coordinates[3], coordinates[5], coordinates[7]];
   return ol.extent.boundingExtentXYs_(xs, ys, opt_extent);
-};
-
-
-/**
- * Apply a 2d transform to an extent.
- * @param {ol.Extent} extent Input extent.
- * @param {goog.vec.Mat4.Number} transform The transform matrix.
- * @param {ol.Extent=} opt_extent Optional extent for return values.
- * @return {ol.Extent} The transformed extent.
- */
-ol.extent.transform2D = function(extent, transform, opt_extent) {
-  var dest = opt_extent ? opt_extent : [];
-  var m00 = goog.vec.Mat4.getElement(transform, 0, 0);
-  var m10 = goog.vec.Mat4.getElement(transform, 1, 0);
-  var m01 = goog.vec.Mat4.getElement(transform, 0, 1);
-  var m11 = goog.vec.Mat4.getElement(transform, 1, 1);
-  var m03 = goog.vec.Mat4.getElement(transform, 0, 3);
-  var m13 = goog.vec.Mat4.getElement(transform, 1, 3);
-  var xi = [0, 2, 0, 2];
-  var yi = [1, 1, 3, 3];
-  var xs = [];
-  var ys = [];
-  var i, x, y;
-  for (i = 0; i < 4; ++i) {
-    x = extent[xi[i]];
-    y = extent[yi[i]];
-    xs[i] = m00 * x + m01 * y + m03;
-    ys[i] = m10 * x + m11 * y + m13;
-  }
-  dest[0] = Math.min.apply(null, xs);
-  dest[1] = Math.min.apply(null, ys);
-  dest[2] = Math.max.apply(null, xs);
-  dest[3] = Math.max.apply(null, ys);
-  return dest;
 };

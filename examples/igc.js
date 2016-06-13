@@ -155,7 +155,7 @@ map.on('click', function(evt) {
 var stroke = new ol.style.Stroke({
   color: 'rgba(255,0,0,0.9)',
   width: 1
-})
+});
 var style = new ol.style.Style({
   stroke: stroke,
   image: new ol.style.Circle({

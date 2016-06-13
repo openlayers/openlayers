@@ -119,8 +119,7 @@ examples: $(BUILD_EXAMPLES)
 install: build/timestamps/node-modules-timestamp
 
 .PHONY: lint
-lint: build/timestamps/eslint-timestamp \
-      build/timestamps/check-requires-timestamp
+lint: build/timestamps/eslint-timestamp
 
 .PHONY: npm-install
 npm-install: build/timestamps/node-modules-timestamp
@@ -184,13 +183,6 @@ build/timestamps/check-%-timestamp: $(BUILD_HOSTED)/examples/%.html \
 	./node_modules/.bin/phantomjs --local-to-remote-url-access=true --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js $<
 	@touch $@
 
-build/timestamps/check-requires-timestamp: $(SRC_JS) $(EXAMPLES_JS) \
-                                           $(SRC_SHADER_JS) $(SPEC_JS) \
-                                           $(SPEC_RENDERING_JS)
-	@mkdir -p $(@D)
-	@python bin/check-requires.py $(CLOSURE_LIB) $^
-	@touch $@
-
 build/compiled-examples/all.js: $(EXAMPLES_JS)
 	@mkdir -p $(@D)
 	@python bin/combine-examples.py $^ > $@
@@ -219,7 +211,7 @@ build/timestamps/jsdoc-$(BRANCH)-timestamp: config/jsdoc/api/index.md \
                                             build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@rm -rf $(BUILD_HOSTED)/apidoc
-	./node_modules/.bin/jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json -d $(BUILD_HOSTED)/apidoc
+	./node_modules/.bin/jsdoc config/jsdoc/api/index.md -c config/jsdoc/api/conf.json --package package.json -d $(BUILD_HOSTED)/apidoc
 	@touch $@
 
 $(BUILD_HOSTED_EXAMPLES_JS): $(BUILD_HOSTED)/examples/%.js: build/examples/%.js

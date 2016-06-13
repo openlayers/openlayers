@@ -5,7 +5,7 @@
 * `readFeature` returning an `ol.Feature`
 * `readGeometry` returning an `ol.geom.Geometry`
 
-Having different functions for multiple return types allows both the user to specify what type of data he wants and for the Compiler to properly type check the code. Depending on the format, it is entirely reasonable to leave one or more of these methods unimplemented, or provide sensible default implementations.
+Having different functions for multiple return types allows both the user to specify what type of data they want and for the compiler to properly type check the code. Depending on the format, it is entirely reasonable to leave one or more of these methods unimplemented, or provide sensible default implementations.
 
 For example, `ol.format.GPX` only supports reading multiple features.  Therefore `readFeature` and `readGeometry` are unimplemented and will raise an exception if called.
 
@@ -19,7 +19,7 @@ If a file cannot be parsed, then the return value should be `null` for all three
 # Implementing XML formats
 
 This is an introduction for people looking to contribute an XML format reader to OpenLayers 3. After having read this document, you should read the code of and make sure that you understand the simpler XML format readers like `ol.format.GPX` before embarking on writing your own format reader.
-The document ends with guildelines for implementing a new format.
+The document ends with guidelines for implementing a new format.
 
 The `ol.xml` namespace contains a number of useful functions for parsing XML documents. All code in OpenLayers 3 that reads data from XML documents should use it. It has several features:
 

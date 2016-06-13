@@ -19,7 +19,7 @@ goog.require('ol.xml');
  * @api
  */
 ol.format.WMTSCapabilities = function() {
-  goog.base(this);
+  ol.format.XML.call(this);
 
   /**
    * @type {ol.format.OWS}
@@ -27,7 +27,7 @@ ol.format.WMTSCapabilities = function() {
    */
   this.owsParser_ = new ol.format.OWS();
 };
-goog.inherits(ol.format.WMTSCapabilities, ol.format.XML);
+ol.inherits(ol.format.WMTSCapabilities, ol.format.XML);
 
 
 /**
@@ -303,7 +303,7 @@ ol.format.WMTSCapabilities.OWS_NAMESPACE_URIS_ = [
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
@@ -315,7 +315,7 @@ ol.format.WMTSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeStructureNS(
@@ -329,7 +329,7 @@ ol.format.WMTSCapabilities.CONTENTS_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
@@ -358,7 +358,7 @@ ol.format.WMTSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
@@ -375,7 +375,7 @@ ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
@@ -421,7 +421,7 @@ ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.DIMENSION_PARSERS_ = ol.xml.makeStructureNS(
@@ -438,7 +438,7 @@ ol.format.WMTSCapabilities.DIMENSION_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeStructureNS(
@@ -452,7 +452,7 @@ ol.format.WMTSCapabilities.WGS84_BBOX_READERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeStructureNS(
@@ -471,7 +471,7 @@ ol.format.WMTSCapabilities.TMS_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMTSCapabilities.TM_PARSERS_ = ol.xml.makeStructureNS(

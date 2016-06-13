@@ -77,7 +77,7 @@ ol.DeviceOrientationProperty = {
  */
 ol.DeviceOrientation = function(opt_options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   var options = opt_options ? opt_options : {};
 
@@ -102,7 +102,7 @@ goog.inherits(ol.DeviceOrientation, ol.Object);
  */
 ol.DeviceOrientation.prototype.disposeInternal = function() {
   this.setTracking(false);
-  goog.base(this, 'disposeInternal');
+  ol.Object.prototype.disposeInternal.call(this);
 };
 
 

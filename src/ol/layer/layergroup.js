@@ -42,7 +42,7 @@ ol.layer.Group = function(opt_options) {
 
   var layers = options.layers;
 
-  goog.base(this, baseOptions);
+  ol.layer.Base.call(this, baseOptions);
 
   /**
    * @private
@@ -75,7 +75,7 @@ ol.layer.Group = function(opt_options) {
   this.setLayers(layers);
 
 };
-goog.inherits(ol.layer.Group, ol.layer.Base);
+ol.inherits(ol.layer.Group, ol.layer.Base);
 
 
 /**

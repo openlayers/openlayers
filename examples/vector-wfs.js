@@ -18,9 +18,7 @@ var vectorSource = new ol.source.Vector({
         'outputFormat=application/json&srsname=EPSG:3857&' +
         'bbox=' + extent.join(',') + ',EPSG:3857';
   },
-  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-    maxZoom: 19
-  }))
+  strategy: ol.loadingstrategy.bbox
 });
 
 

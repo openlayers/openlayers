@@ -1028,9 +1028,55 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
+  describe('getZForResolution (lower)', function() {
+    it('returns the expected z value', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        origin: origin,
+        tileSize: tileSize
+      });
+
+      expect(tileGrid.getZForResolution(2000, 1)).to.eql(0);
+      expect(tileGrid.getZForResolution(1000, 1)).to.eql(0);
+      expect(tileGrid.getZForResolution(900, 1)).to.eql(0);
+      expect(tileGrid.getZForResolution(750, 1)).to.eql(0);
+      expect(tileGrid.getZForResolution(625, 1)).to.eql(0);
+      expect(tileGrid.getZForResolution(500, 1)).to.eql(1);
+      expect(tileGrid.getZForResolution(475, 1)).to.eql(1);
+      expect(tileGrid.getZForResolution(375, 1)).to.eql(1);
+      expect(tileGrid.getZForResolution(250, 1)).to.eql(2);
+      expect(tileGrid.getZForResolution(200, 1)).to.eql(2);
+      expect(tileGrid.getZForResolution(125, 1)).to.eql(2);
+      expect(tileGrid.getZForResolution(100, 1)).to.eql(3);
+      expect(tileGrid.getZForResolution(50, 1)).to.eql(3);
+    });
+  });
+
+  describe('getZForResolution (higher)', function() {
+    it('returns the expected z value', function() {
+      var tileGrid = new ol.tilegrid.TileGrid({
+        resolutions: resolutions,
+        origin: origin,
+        tileSize: tileSize
+      });
+
+      expect(tileGrid.getZForResolution(2000, -1)).to.eql(0);
+      expect(tileGrid.getZForResolution(1000, -1)).to.eql(0);
+      expect(tileGrid.getZForResolution(900, -1)).to.eql(1);
+      expect(tileGrid.getZForResolution(750, -1)).to.eql(1);
+      expect(tileGrid.getZForResolution(625, -1)).to.eql(1);
+      expect(tileGrid.getZForResolution(500, -1)).to.eql(1);
+      expect(tileGrid.getZForResolution(475, -1)).to.eql(2);
+      expect(tileGrid.getZForResolution(375, -1)).to.eql(2);
+      expect(tileGrid.getZForResolution(250, -1)).to.eql(2);
+      expect(tileGrid.getZForResolution(200, -1)).to.eql(3);
+      expect(tileGrid.getZForResolution(125, -1)).to.eql(3);
+      expect(tileGrid.getZForResolution(100, -1)).to.eql(3);
+      expect(tileGrid.getZForResolution(50, -1)).to.eql(3);
+    });
+  });
 });
 
-goog.require('ol.Coordinate');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.proj');

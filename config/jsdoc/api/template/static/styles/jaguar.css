@@ -416,3 +416,7 @@ footer {
   left: 250px;
   font-weight: normal;
 }
+#latest-check {
+  margin-top: -10px;
+  margin-bottom: 10px;
+}

@@ -190,7 +190,7 @@ describe('ol.source.Zoomify', function() {
 
     it('returns expected tileClass instances via "getTile"', function() {
       var source = getZoomifySource();
-      var tile = source.getTile(0, 0, -1, 1, proj)
+      var tile = source.getTile(0, 0, -1, 1, proj);
       expect(tile).to.be.an(ol.source.ZoomifyTile_);
     });
 

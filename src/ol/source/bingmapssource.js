@@ -23,7 +23,7 @@ goog.require('ol.tilecoord');
  */
 ol.source.BingMaps = function(options) {
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
     opaque: true,
@@ -54,7 +54,7 @@ ol.source.BingMaps = function(options) {
       'jsonp');
 
 };
-goog.inherits(ol.source.BingMaps, ol.source.TileImage);
+ol.inherits(ol.source.BingMaps, ol.source.TileImage);
 
 
 /**

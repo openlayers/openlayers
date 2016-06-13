@@ -34,12 +34,6 @@ goog.require('ol.webgl.WebGLContextEventType');
 
 
 /**
- * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
- */
-ol.renderer.webgl.TextureCacheEntry;
-
-
-/**
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
@@ -47,7 +41,7 @@ ol.renderer.webgl.TextureCacheEntry;
  */
 ol.renderer.webgl.Map = function(container, map) {
 
-  goog.base(this, container, map);
+  ol.renderer.Map.call(this, container, map);
 
   /**
    * @private
@@ -110,7 +104,7 @@ ol.renderer.webgl.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.structs.LRUCache.<ol.renderer.webgl.TextureCacheEntry|null>}
+   * @type {ol.structs.LRUCache.<ol.WebglTextureCacheEntry|null>}
    */
   this.textureCache_ = new ol.structs.LRUCache();
 
@@ -177,7 +171,7 @@ ol.renderer.webgl.Map = function(container, map) {
   this.initializeGL_();
 
 };
-goog.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 
 
 /**
@@ -300,7 +294,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
   if (!gl.isContextLost()) {
     this.textureCache_.forEach(
         /**
-         * @param {?ol.renderer.webgl.TextureCacheEntry} textureCacheEntry
+         * @param {?ol.WebglTextureCacheEntry} textureCacheEntry
          *     Texture cache entry.
          */
         function(textureCacheEntry) {
@@ -310,7 +304,7 @@ ol.renderer.webgl.Map.prototype.disposeInternal = function() {
         });
   }
   this.context_.dispose();
-  goog.base(this, 'disposeInternal');
+  ol.renderer.Map.prototype.disposeInternal.call(this);
 };
 
 
@@ -449,7 +443,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
-  /** @type {Array.<ol.layer.LayerState>} */
+  /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
   var layerStatesArray = frameState.layerStatesArray;
   ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);

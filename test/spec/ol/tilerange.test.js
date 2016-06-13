@@ -127,5 +127,4 @@ describe('ol.TileRange', function() {
 
 });
 
-goog.require('ol.TileCoord');
 goog.require('ol.TileRange');

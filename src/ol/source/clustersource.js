@@ -24,7 +24,7 @@ goog.require('ol.source.Vector');
  * @api
  */
 ol.source.Cluster = function(options) {
-  goog.base(this, {
+  ol.source.Vector.call(this, {
     attributions: options.attributions,
     extent: options.extent,
     logo: options.logo,
@@ -70,7 +70,7 @@ ol.source.Cluster = function(options) {
   this.source_.on(ol.events.EventType.CHANGE,
       ol.source.Cluster.prototype.onSourceChange_, this);
 };
-goog.inherits(ol.source.Cluster, ol.source.Vector);
+ol.inherits(ol.source.Cluster, ol.source.Vector);
 
 
 /**

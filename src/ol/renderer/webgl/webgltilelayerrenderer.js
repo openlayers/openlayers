@@ -30,7 +30,7 @@ goog.require('ol.webgl.Buffer');
  */
 ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
-  goog.base(this, mapRenderer, tileLayer);
+  ol.renderer.webgl.Layer.call(this, mapRenderer, tileLayer);
 
   /**
    * @private
@@ -87,7 +87,7 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
   this.tmpSize_ = [0, 0];
 
 };
-goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
+ol.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 
 
 /**
@@ -96,7 +96,7 @@ goog.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
 ol.renderer.webgl.TileLayer.prototype.disposeInternal = function() {
   var context = this.mapRenderer.getContext();
   context.deleteBuffer(this.renderArrayBuffer_);
-  goog.base(this, 'disposeInternal');
+  ol.renderer.webgl.Layer.prototype.disposeInternal.call(this);
 };
 
 
@@ -140,7 +140,7 @@ ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, 
  * @inheritDoc
  */
 ol.renderer.webgl.TileLayer.prototype.handleWebGLContextLost = function() {
-  goog.base(this, 'handleWebGLContextLost');
+  ol.renderer.webgl.Layer.prototype.handleWebGLContextLost.call(this);
   this.locations_ = null;
 };
 

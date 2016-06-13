@@ -3,10 +3,8 @@
 goog.provide('ol.source.ImageWMS');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol');
 goog.require('ol.Image');
-goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
@@ -16,6 +14,7 @@ goog.require('ol.source.Image');
 goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
 goog.require('ol.string');
+goog.require('ol.uri');
 
 
 /**
@@ -32,7 +31,7 @@ ol.source.ImageWMS = function(opt_options) {
 
   var options = opt_options || {};
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
@@ -110,7 +109,7 @@ ol.source.ImageWMS = function(opt_options) {
   this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
 };
-goog.inherits(ol.source.ImageWMS, ol.source.Image);
+ol.inherits(ol.source.ImageWMS, ol.source.Image);
 
 
 /**
@@ -275,7 +274,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
   if (!('STYLES' in this.params_)) {
-    params['STYLES'] = new String('');
+    params['STYLES'] = '';
   }
 
   if (pixelRatio != 1) {
@@ -313,7 +312,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
   }
   params['BBOX'] = bbox.join(',');
 
-  return goog.uri.utils.appendParamsFromMap(this.url_, params);
+  return ol.uri.appendParams(this.url_, params);
 };
 
 

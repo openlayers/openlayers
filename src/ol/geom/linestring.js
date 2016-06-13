@@ -29,7 +29,7 @@ goog.require('ol.geom.flat.simplify');
  */
 ol.geom.LineString = function(coordinates, opt_layout) {
 
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
 
   /**
    * @private
@@ -58,7 +58,7 @@ ol.geom.LineString = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
 
 
 /**

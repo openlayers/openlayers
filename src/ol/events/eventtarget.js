@@ -25,7 +25,7 @@ goog.require('ol.events.Event');
  */
 ol.events.EventTarget = function() {
 
-  goog.base(this);
+  ol.Disposable.call(this);
 
   /**
    * @private
@@ -35,12 +35,18 @@ ol.events.EventTarget = function() {
 
   /**
    * @private
+   * @type {!Object.<string, number>}
+   */
+  this.dispatching_ = {};
+
+  /**
+   * @private
    * @type {!Object.<string, Array.<ol.events.ListenerFunctionType>>}
    */
   this.listeners_ = {};
 
 };
-goog.inherits(ol.events.EventTarget, ol.Disposable);
+ol.inherits(ol.events.EventTarget, ol.Disposable);
 
 
 /**
@@ -72,19 +78,25 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   var listeners = this.listeners_[type];
   var propagate;
   if (listeners) {
-    if (!(type in this.pendingRemovals_)) {
+    if (!(type in this.dispatching_)) {
+      this.dispatching_[type] = 0;
       this.pendingRemovals_[type] = 0;
     }
+    ++this.dispatching_[type];
     for (var i = 0, ii = listeners.length; i < ii; ++i) {
       if (listeners[i].call(this, evt) === false || evt.propagationStopped) {
         propagate = false;
         break;
       }
     }
-    var pendingRemovals = this.pendingRemovals_[type];
-    delete this.pendingRemovals_[type];
-    while (pendingRemovals--) {
-      this.removeEventListener(type, ol.nullFunction);
+    --this.dispatching_[type];
+    if (this.dispatching_[type] === 0) {
+      var pendingRemovals = this.pendingRemovals_[type];
+      delete this.pendingRemovals_[type];
+      while (pendingRemovals--) {
+        this.removeEventListener(type, ol.nullFunction);
+      }
+      delete this.dispatching_[type];
     }
     return propagate;
   }

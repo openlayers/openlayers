@@ -160,7 +160,9 @@ The minimum config file looks like this:
     "closure_entry_point": "app",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
+      "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
+      "node_modules/openlayers/externs/esrijson.js",
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
@@ -210,7 +212,9 @@ Here is a version of `config.json` with more compilation checks enabled:
     "closure_entry_point": "app",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
+      "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
+      "node_modules/openlayers/externs/esrijson.js",
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
@@ -230,8 +234,7 @@ Here is a version of `config.json` with more compilation checks enabled:
       "*"
     ],
     "jscomp_off": [
-      "unknownDefines"
-      "useOfGoogBase",
+      "unknownDefines",
       "lintChecks",
       "analyzerChecks"
     ],

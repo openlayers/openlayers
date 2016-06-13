@@ -6,7 +6,6 @@ goog.require('goog.asserts');
 goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('goog.style');
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
@@ -32,7 +31,6 @@ ol.OverlayProperty = {
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
  * @enum {string}
- * @api stable
  */
 ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
@@ -70,7 +68,7 @@ ol.OverlayPositioning = {
  */
 ol.Overlay = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @private
@@ -176,7 +174,7 @@ ol.Overlay = function(options) {
   }
 
 };
-goog.inherits(ol.Overlay, ol.Object);
+ol.inherits(ol.Overlay, ol.Object);
 
 
 /**

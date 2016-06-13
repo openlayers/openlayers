@@ -1022,6 +1022,41 @@ describe('ol.format.KML', function() {
         expect(gs[0]).to.be.an(ol.geom.GeometryCollection);
       });
 
+      it('can write GeometryCollection geometries', function() {
+        var collection = new ol.geom.GeometryCollection([
+          new ol.geom.Point([1,2]),
+          new ol.geom.LineString([[1,2],[3,4]]),
+          new ol.geom.Polygon([[[1,2],[3,4],[3,2],[1,2]]])
+        ]);
+        var features = [new ol.Feature(collection)];
+        var node = format.writeFeaturesNode(features);
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+            ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+            ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+            ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+            ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+            '  <Placemark>' +
+            '    <MultiGeometry>' +
+            '      <Point>' +
+            '        <coordinates>1,2</coordinates>' +
+            '      </Point>' +
+            '      <LineString>' +
+            '        <coordinates>1,2 3,4</coordinates>' +
+            '      </LineString>' +
+            '      <Polygon>' +
+            '        <outerBoundaryIs>' +
+            '          <LinearRing>' +
+            '            <coordinates>1,2 3,4 3,2 1,2</coordinates>' +
+            '          </LinearRing>' +
+            '        </outerBoundaryIs>' +
+            '      </Polygon>' +
+            '    </MultiGeometry>' +
+            '  </Placemark>' +
+            '</kml>';
+        expect(node).to.xmleql(ol.xml.parse(text));
+      });
+
       it('can read gx:Track', function() {
         var text =
             '<kml xmlns="http://earth.google.com/kml/2.2"' +

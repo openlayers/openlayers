@@ -13,9 +13,9 @@ goog.require('ol.webgl.shader');
  * @struct
  */
 {{className}}Fragment = function() {
-  goog.base(this, {{className}}Fragment.SOURCE);
+  ol.webgl.shader.Fragment.call(this, {{className}}Fragment.SOURCE);
 };
-goog.inherits({{className}}Fragment, ol.webgl.shader.Fragment);
+ol.inherits({{className}}Fragment, ol.webgl.shader.Fragment);
 goog.addSingletonGetter({{className}}Fragment);
 
 
@@ -48,9 +48,9 @@ goog.addSingletonGetter({{className}}Fragment);
  * @struct
  */
 {{className}}Vertex = function() {
-  goog.base(this, {{className}}Vertex.SOURCE);
+  ol.webgl.shader.Vertex.call(this, {{className}}Vertex.SOURCE);
 };
-goog.inherits({{className}}Vertex, ol.webgl.shader.Vertex);
+ol.inherits({{className}}Vertex, ol.webgl.shader.Vertex);
 goog.addSingletonGetter({{className}}Vertex);
 
 

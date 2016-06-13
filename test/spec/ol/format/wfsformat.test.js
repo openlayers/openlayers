@@ -1,4 +1,5 @@
 goog.provide('ol.test.format.WFS');
+goog.require('ol.format.ogc.filter');
 
 describe('ol.format.WFS', function() {
 
@@ -245,6 +246,260 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         geometryName: 'the_geom',
         bbox: [1, 2, 3, 4]
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates a property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:PropertyIsEqualTo matchCase="false">' +
+          '      <ogc:PropertyName>name</ogc:PropertyName>' +
+          '      <ogc:Literal>New York</ogc:Literal>' +
+          '    </ogc:PropertyIsEqualTo>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: ol.format.ogc.filter.equalTo('name', 'New York', false)
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates two property filters', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:Or>' +
+          '      <ogc:PropertyIsEqualTo>' +
+          '        <ogc:PropertyName>name</ogc:PropertyName>' +
+          '        <ogc:Literal>New York</ogc:Literal>' +
+          '      </ogc:PropertyIsEqualTo>' +
+          '      <ogc:PropertyIsEqualTo>' +
+          '        <ogc:PropertyName>area</ogc:PropertyName>' +
+          '        <ogc:Literal>1234</ogc:Literal>' +
+          '      </ogc:PropertyIsEqualTo>' +
+          '    </ogc:Or>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.or(f.equalTo('name', 'New York'), f.equalTo('area', 1234))
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates greater/less than property filters', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:Or>' +
+          '      <ogc:And>' +
+          '        <ogc:PropertyIsGreaterThan>' +
+          '          <ogc:PropertyName>area</ogc:PropertyName>' +
+          '          <ogc:Literal>100</ogc:Literal>' +
+          '        </ogc:PropertyIsGreaterThan>' +
+          '        <ogc:PropertyIsGreaterThanOrEqualTo>' +
+          '          <ogc:PropertyName>pop</ogc:PropertyName>' +
+          '          <ogc:Literal>20000</ogc:Literal>' +
+          '        </ogc:PropertyIsGreaterThanOrEqualTo>' +
+          '      </ogc:And>' +
+          '      <ogc:And>' +
+          '        <ogc:PropertyIsLessThan>' +
+          '          <ogc:PropertyName>area</ogc:PropertyName>' +
+          '          <ogc:Literal>100</ogc:Literal>' +
+          '        </ogc:PropertyIsLessThan>' +
+          '        <ogc:PropertyIsLessThanOrEqualTo>' +
+          '          <ogc:PropertyName>pop</ogc:PropertyName>' +
+          '          <ogc:Literal>20000</ogc:Literal>' +
+          '        </ogc:PropertyIsLessThanOrEqualTo>' +
+          '      </ogc:And>' +
+          '    </ogc:Or>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.or(
+          f.and(
+            f.greaterThan('area', 100),
+            f.greaterThanOrEqualTo('pop', 20000)
+          ),
+          f.and(
+            f.lessThan('area', 100),
+            f.lessThanOrEqualTo('pop', 20000)
+          )
+        )
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates isBetween property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:PropertyIsBetween>' +
+          '      <ogc:PropertyName>area</ogc:PropertyName>' +
+          '      <ogc:LowerBoundary>100</ogc:LowerBoundary>' +
+          '      <ogc:UpperBoundary>1000</ogc:UpperBoundary>' +
+          '    </ogc:PropertyIsBetween>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.between('area', 100, 1000)
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates isNull property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:PropertyIsNull>' +
+          '      <ogc:PropertyName>area</ogc:PropertyName>' +
+          '    </ogc:PropertyIsNull>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.isNull('area')
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates isLike property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+          '      <ogc:PropertyName>name</ogc:PropertyName>' +
+          '      <ogc:Literal>New*</ogc:Literal>' +
+          '    </ogc:PropertyIsLike>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.like('name', 'New*')
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates isLike property filter with arguments', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!" matchCase="false">' +
+          '      <ogc:PropertyName>name</ogc:PropertyName>' +
+          '      <ogc:Literal>New*</ogc:Literal>' +
+          '    </ogc:PropertyIsLike>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.like('name', 'New*', '*', '.', '!', false)
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates a Not filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:Not>' +
+          '      <ogc:PropertyIsEqualTo>' +
+          '        <ogc:PropertyName>name</ogc:PropertyName>' +
+          '        <ogc:Literal>New York</ogc:Literal>' +
+          '      </ogc:PropertyIsEqualTo>' +
+          '    </ogc:Not>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.not(f.equalTo('name', 'New York'))
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates an AND filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="topp:states" srsName="urn:ogc:def:crs:EPSG::4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:And>' +
+          '      <ogc:PropertyIsEqualTo>' +
+          '        <ogc:PropertyName>name</ogc:PropertyName>' +
+          '        <ogc:Literal>New York</ogc:Literal>' +
+          '      </ogc:PropertyIsEqualTo>' +
+          '      <ogc:BBOX>' +
+          '        <ogc:PropertyName>the_geom</ogc:PropertyName>' +
+          '        <gml:Envelope xmlns:gml="http://www.opengis.net/gml" ' +
+          '            srsName="urn:ogc:def:crs:EPSG::4326">' +
+          '          <gml:lowerCorner>1 2</gml:lowerCorner>' +
+          '          <gml:upperCorner>3 4</gml:upperCorner>' +
+          '        </gml:Envelope>' +
+          '      </ogc:BBOX>' +
+          '    </ogc:And>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'urn:ogc:def:crs:EPSG::4326',
+        featureNS: 'http://www.openplans.org/topp',
+        featurePrefix: 'topp',
+        featureTypes: ['states'],
+        filter: f.and(
+          f.equalTo('name', 'New York'),
+          f.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326')
+        )
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -536,6 +791,34 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when parsing multiple feature types separately', function() {
+
+    var lineFeatures, polygonFeatures;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
+        try {
+          lineFeatures = new ol.format.WFS({
+            featureNS: 'http://localhost:8080/official',
+            featureType: ['planet_osm_line']
+          }).readFeatures(xml);
+          polygonFeatures = new ol.format.WFS({
+            featureNS: 'http://localhost:8080/official',
+            featureType: ['planet_osm_polygon']
+          }).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(lineFeatures.length).to.be(3);
+      expect(polygonFeatures.length).to.be(9);
+    });
+
+  });
+
   describe('when parsing multiple feature types', function() {
 
     var features;
@@ -552,6 +835,57 @@ describe('ol.format.WFS', function() {
 
     it('reads all features with autoconfigure', function() {
       expect(features.length).to.be(12);
+    });
+
+  });
+
+  describe('when parsing multiple feature types (MapServer)', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
+        try {
+          features = new ol.format.WFS().readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(features.length).to.be(5);
+      features.forEach(function(feature) {
+        expect(feature instanceof ol.Feature).to.be(true);
+      });
+    });
+
+  });
+
+  describe('when parsing multiple feature types separately (MapServer)', function() {
+
+    var busFeatures, infoFeatures;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
+        try {
+          busFeatures = new ol.format.WFS({
+            featureNS: 'http://mapserver.gis.umn.edu/mapserver',
+            featureType: ['bus_stop']
+          }).readFeatures(xml);
+          infoFeatures = new ol.format.WFS({
+            featureNS: 'http://mapserver.gis.umn.edu/mapserver',
+            featureType: ['information']
+          }).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(busFeatures.length).to.be(3);
+      expect(infoFeatures.length).to.be(2);
     });
 
   });

@@ -3,6 +3,54 @@ goog.provide('ol.test.source.UrlTile');
 
 describe('ol.source.UrlTile', function() {
 
+  describe('#setUrl()', function() {
+    it('sets the URL for the source', function() {
+      var source = new ol.source.UrlTile({});
+
+      var url = 'https://example.com/';
+      source.setUrl(url);
+
+      expect(source.getUrls()).to.eql([url]);
+    });
+
+    it('updates the key for the source', function() {
+      var source = new ol.source.UrlTile({});
+
+      var url = 'https://example.com/';
+      source.setUrl(url);
+
+      expect(source.getKey()).to.eql(url);
+    });
+  });
+
+  describe('#setUrls()', function() {
+    it('sets the URL for the source', function() {
+      var source = new ol.source.UrlTile({});
+
+      var urls = [
+        'https://a.example.com/',
+        'https://b.example.com/',
+        'https://c.example.com/'
+      ];
+      source.setUrls(urls);
+
+      expect(source.getUrls()).to.eql(urls);
+    });
+
+    it('updates the key for the source', function() {
+      var source = new ol.source.UrlTile({});
+
+      var urls = [
+        'https://a.example.com/',
+        'https://b.example.com/',
+        'https://c.example.com/'
+      ];
+      source.setUrls(urls);
+
+      expect(source.getKey()).to.eql(urls.join('\n'));
+    });
+  });
+
   describe('url option', function() {
     it('expands url template', function() {
       var tileSource = new ol.source.UrlTile({
@@ -168,6 +216,5 @@ describe('ol.source.UrlTile', function() {
 
 });
 
-goog.require('ol.TileCoord');
 goog.require('ol.proj');
 goog.require('ol.source.UrlTile');

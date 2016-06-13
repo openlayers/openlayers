@@ -62,7 +62,7 @@ ol.control.Rotate = function(opt_options) {
 
   this.callResetNorth_ = options.resetNorth ? options.resetNorth : undefined;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -91,7 +91,7 @@ ol.control.Rotate = function(opt_options) {
   }
 
 };
-goog.inherits(ol.control.Rotate, ol.control.Control);
+ol.inherits(ol.control.Rotate, ol.control.Control);
 
 
 /**

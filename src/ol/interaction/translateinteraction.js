@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.Translate');
 goog.provide('ol.interaction.TranslateEvent');
 
+goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.array');
@@ -46,7 +47,7 @@ ol.interaction.TranslateEventType = {
  */
 ol.interaction.TranslateEvent = function(type, features, coordinate) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The features being translated.
@@ -63,7 +64,7 @@ ol.interaction.TranslateEvent = function(type, features, coordinate) {
    */
   this.coordinate = coordinate;
 };
-goog.inherits(ol.interaction.TranslateEvent, ol.events.Event);
+ol.inherits(ol.interaction.TranslateEvent, ol.events.Event);
 
 
 /**
@@ -77,7 +78,7 @@ goog.inherits(ol.interaction.TranslateEvent, ol.events.Event);
  * @api
  */
 ol.interaction.Translate = function(options) {
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Translate.handleDownEvent_,
     handleDragEvent: ol.interaction.Translate.handleDragEvent_,
     handleMoveEvent: ol.interaction.Translate.handleMoveEvent_,
@@ -106,13 +107,44 @@ ol.interaction.Translate = function(options) {
    */
   this.features_ = options.features !== undefined ? options.features : null;
 
+  var layerFilter;
+  if (options.layers) {
+    if (goog.isFunction(options.layers)) {
+      /**
+       * @param {ol.layer.Layer} layer Layer.
+       * @return {boolean} Include.
+       */
+      layerFilter = function(layer) {
+        goog.asserts.assertFunction(options.layers);
+        return options.layers(layer);
+      };
+    } else {
+      var layers = options.layers;
+      /**
+       * @param {ol.layer.Layer} layer Layer.
+       * @return {boolean} Include.
+       */
+      layerFilter = function(layer) {
+        return ol.array.includes(layers, layer);
+      };
+    }
+  } else {
+    layerFilter = ol.functions.TRUE;
+  }
+
+  /**
+   * @private
+   * @type {function(ol.layer.Layer): boolean}
+   */
+  this.layerFilter_ = layerFilter;
+
   /**
    * @type {ol.Feature}
    * @private
    */
   this.lastFeature_ = null;
 };
-goog.inherits(ol.interaction.Translate, ol.interaction.Pointer);
+ol.inherits(ol.interaction.Translate, ol.interaction.Pointer);
 
 
 /**
@@ -242,7 +274,7 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
   var intersectingFeature = map.forEachFeatureAtPixel(pixel,
       function(feature) {
         return feature;
-      });
+      }, this, this.layerFilter_);
 
   if (this.features_ &&
       ol.array.includes(this.features_.getArray(), intersectingFeature)) {

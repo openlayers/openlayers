@@ -4,7 +4,6 @@ goog.provide('ol.interaction.DragBox');
 
 goog.require('ol.events.Event');
 goog.require('ol');
-goog.require('ol.events.ConditionType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.render.Box');
@@ -59,7 +58,7 @@ ol.DragBoxEventType = {
  * @implements {oli.DragBoxEvent}
  */
 ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The coordinate of the drag event.
@@ -77,17 +76,7 @@ ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
   this.mapBrowserEvent = mapBrowserEvent;
 
 };
-goog.inherits(ol.DragBoxEvent, ol.events.Event);
-
-
-/**
- * A function that takes a {@link ol.MapBrowserEvent} and two
- * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
- * true should be returned.
- * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
- * @api
- */
-ol.interaction.DragBoxEndConditionType;
+ol.inherits(ol.DragBoxEvent, ol.events.Event);
 
 
 /**
@@ -109,7 +98,7 @@ ol.interaction.DragBoxEndConditionType;
  */
 ol.interaction.DragBox = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.DragBox.handleDownEvent_,
     handleDragEvent: ol.interaction.DragBox.handleDragEvent_,
     handleUpEvent: ol.interaction.DragBox.handleUpEvent_
@@ -143,7 +132,7 @@ ol.interaction.DragBox = function(opt_options) {
   this.boxEndCondition_ = options.boxEndCondition ?
       options.boxEndCondition : ol.interaction.DragBox.defaultBoxEndCondition;
 };
-goog.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
+ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
 
 
 /**

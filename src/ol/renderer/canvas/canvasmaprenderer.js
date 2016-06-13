@@ -11,7 +11,6 @@ goog.require('ol.RendererType');
 goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
-goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
@@ -39,19 +38,13 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.canvas.Map = function(container, map) {
 
-  goog.base(this, container, map);
+  ol.renderer.Map.call(this, container, map);
 
   /**
    * @private
    * @type {CanvasRenderingContext2D}
    */
   this.context_ = ol.dom.createCanvasContext2D();
-
-  /**
-   * @private
-   * @type {CanvasRenderingContext2D}
-   */
-  this.renderContext_ = ol.dom.createCanvasContext2D();
 
   /**
    * @private
@@ -66,24 +59,6 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {HTMLCanvasElement}
-   */
-  this.renderCanvas_ = this.renderContext_.canvas;
-
-  /**
-   * @private
-   * @type {ol.Coordinate}
-   */
-  this.pixelCenter_ = [0, 0];
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.pixelExtent_ = ol.extent.createEmpty();
-
-  /**
-   * @private
    * @type {boolean}
    */
   this.renderedVisible_ = true;
@@ -95,7 +70,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.transform_ = goog.vec.Mat4.createNumber();
 
 };
-goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
+ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 
 
 /**

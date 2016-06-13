@@ -25,7 +25,7 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
    */
   this.delta_ = options.delta ? options.delta : 1;
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.DoubleClickZoom.handleEvent
   });
 
@@ -36,7 +36,7 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 250;
 
 };
-goog.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
+ol.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
 
 
 /**

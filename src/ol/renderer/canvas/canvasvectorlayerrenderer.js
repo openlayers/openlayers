@@ -21,7 +21,7 @@ goog.require('ol.source.Vector');
  */
 ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
-  goog.base(this, vectorLayer);
+  ol.renderer.canvas.Layer.call(this, vectorLayer);
 
   /**
    * @private
@@ -66,7 +66,7 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
   this.context_ = ol.dom.createCanvasContext2D();
 
 };
-goog.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
+ol.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
 
 
 /**

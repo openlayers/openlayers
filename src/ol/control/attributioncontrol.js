@@ -105,7 +105,7 @@ ol.control.Attribution = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.Attribution.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -136,7 +136,7 @@ ol.control.Attribution = function(opt_options) {
   this.logoElements_ = {};
 
 };
-goog.inherits(ol.control.Attribution, ol.control.Control);
+ol.inherits(ol.control.Attribution, ol.control.Control);
 
 
 /**
@@ -303,10 +303,14 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
 
   var image, logoElement, logoKey;
   for (logoKey in logos) {
+    var logoValue = logos[logoKey];
+    if (logoValue instanceof HTMLElement) {
+      this.logoLi_.appendChild(logoValue);
+      logoElements[logoKey] = logoValue;
+    }
     if (!(logoKey in logoElements)) {
       image = new Image();
       image.src = logoKey;
-      var logoValue = logos[logoKey];
       if (logoValue === '') {
         logoElement = image;
       } else {

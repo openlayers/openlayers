@@ -14,16 +14,6 @@ ol.style.ImageState = {
 
 
 /**
- * @typedef {{opacity: number,
- *            rotateWithView: boolean,
- *            rotation: number,
- *            scale: number,
- *            snapToPixel: boolean}}
- */
-ol.style.ImageOptions;
-
-
-/**
  * @classdesc
  * A base class used for creating subclasses and not instantiated in
  * apps. Base class for {@link ol.style.Icon}, {@link ol.style.Circle} and

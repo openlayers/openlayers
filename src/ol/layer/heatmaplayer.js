@@ -46,7 +46,7 @@ ol.layer.Heatmap = function(opt_options) {
   delete baseOptions.blur;
   delete baseOptions.shadow;
   delete baseOptions.weight;
-  goog.base(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  ol.layer.Vector.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   /**
    * @private
@@ -134,7 +134,7 @@ ol.layer.Heatmap = function(opt_options) {
   ol.events.listen(this, ol.render.EventType.RENDER, this.handleRender_, this);
 
 };
-goog.inherits(ol.layer.Heatmap, ol.layer.Vector);
+ol.inherits(ol.layer.Heatmap, ol.layer.Vector);
 
 
 /**
