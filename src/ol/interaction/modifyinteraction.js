@@ -73,11 +73,11 @@ ol.interaction.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
   this.features = features;
 
   /**
-   * Associated {@link ol.MapBrowserPointerEvent}.
-   * @type {ol.MapBrowserPointerEvent}
+   * Associated {@link ol.MapBrowserEvent}.
+   * @type {ol.MapBrowserEvent}
    * @api
    */
-  this.mapBrowserPointerEvent = mapBrowserPointerEvent;
+  this.mapBrowserEvent = mapBrowserPointerEvent;
 };
 ol.inherits(ol.interaction.ModifyEvent, ol.events.Event);
 
