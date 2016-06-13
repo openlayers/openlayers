@@ -23,14 +23,14 @@ goog.addSingletonGetter(ol.render.webgl.linestringreplay.shader.DefaultFragment)
  * @const
  * @type {string}
  */
-ol.render.webgl.linestringreplay.shader.DefaultFragment.DEBUG_SOURCE = 'precision mediump float;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_color;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
+ol.render.webgl.linestringreplay.shader.DefaultFragment.DEBUG_SOURCE = 'precision mediump float;\nvarying float v_round;\nvarying vec4 v_roundVertex;\nvarying float v_halfWidth;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_color;\nuniform vec2 u_size;\n\nvoid main(void) {\n  if (v_round > 0.0) {\n    vec2 windowCoords = vec2((v_roundVertex.x + 1.0) / 2.0 * u_size.x, (v_roundVertex.y + 1.0) / 2.0 * u_size.y);\n    if (length(windowCoords - gl_FragCoord.xy) > v_halfWidth) {\n      discard;\n    }\n  }\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.linestringreplay.shader.DefaultFragment.OPTIMIZED_SOURCE = 'precision mediump float;uniform float e;uniform vec4 f;void main(void){gl_FragColor=f;float alpha=f.a*e;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
+ol.render.webgl.linestringreplay.shader.DefaultFragment.OPTIMIZED_SOURCE = 'precision mediump float;varying float a;varying vec4 b;varying float c;uniform float n;uniform vec4 o;uniform vec2 p;void main(void){if(a>0.0){vec2 windowCoords=vec2((b.x+1.0)/2.0*p.x,(b.y+1.0)/2.0*p.y);if(length(windowCoords-gl_FragCoord.xy)>c){discard;}} gl_FragColor=o;float alpha=o.a*n;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
 
 
 /**
@@ -58,14 +58,14 @@ goog.addSingletonGetter(ol.render.webgl.linestringreplay.shader.DefaultVertex);
  * @const
  * @type {string}
  */
-ol.render.webgl.linestringreplay.shader.DefaultVertex.DEBUG_SOURCE = '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix;\n  vec4 offsets = offsetMatrix * vec4(0., 0., 0., 0.);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + offsets;\n}\n\n\n';
+ol.render.webgl.linestringreplay.shader.DefaultVertex.DEBUG_SOURCE = 'varying float v_round;\nvarying vec4 v_roundVertex;\nvarying float v_halfWidth;\n\n\nattribute vec2 a_lastPos;\nattribute vec2 a_position;\nattribute vec2 a_nextPos;\nattribute float a_direction;\nattribute float a_instruction;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform float u_lineWidth;\nuniform float u_miterLimit;\nuniform float u_round;\n\nvoid main(void) {\n  v_halfWidth = u_lineWidth / 2.0;\n  vec2 offset;\n  v_round = 0.0;\n  vec4 projPos = u_projectionMatrix * vec4(a_position, 0., 1.);\n  if (a_instruction == 0. || a_instruction == 4.) {\n    vec2 dirVect = a_nextPos - a_position;\n    vec2 normal = normalize(vec2(-dirVect.y, dirVect.x));\n    offset = v_halfWidth * normal * a_direction;\n    if (a_instruction == 4. && (u_round == 7. || u_round == 9.)) {\n      v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);\n    }\n  } else if (a_instruction == 1. || a_instruction == 3.) {\n    vec2 dirVect = a_lastPos - a_position;\n    vec2 normal = normalize(vec2(dirVect.y, -dirVect.x));\n    offset = v_halfWidth * normal * a_direction;\n    if (a_instruction == 3. && (u_round == 7. || u_round == 9.)) {\n      v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);\n    }\n  } else if (a_instruction == 5. || a_instruction == 6.) {\n    vec2 dirVect = a_nextPos - a_position;\n    vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));\n    vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));\n    vec2 normal = vec2(tangent.y, -tangent.x);\n    float miterLength = v_halfWidth / dot(normal, tmpNormal);\n    if (a_instruction == 6.) {\n      if (u_round == 7. || u_round == 9.) {\n        offset = normal * a_direction * miterLength;\n        v_round = 1.0;\n        v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);\n      } else if (miterLength > u_miterLimit) {\n        offset = tmpNormal * a_direction * v_halfWidth;\n      } else {\n        offset = normal * a_direction * miterLength;\n      }\n    } else if (a_instruction == 5.) {\n      offset = normal * a_direction * miterLength;\n      vec4 defaultOffset = u_offsetScaleMatrix * vec4(0., 0., 0., 0.);\n      vec4 firstProjPos = u_projectionMatrix * vec4(a_lastPos, 0., 1.) + defaultOffset;\n      vec4 secondProjPos = projPos + defaultOffset;\n      vec4 thirdProjPos = u_projectionMatrix * vec4(a_nextPos, 0., 1.) + defaultOffset;\n      float firstSegLength = distance(secondProjPos.xy, firstProjPos.xy);\n      float secondSegLength = distance(thirdProjPos.xy, secondProjPos.xy);\n      float miterSegLength = distance(secondProjPos.xy, vec4(projPos + u_offsetScaleMatrix * vec4(offset, 0., 0.)).xy);\n      //TODO: Write a more accurate method for identifying sharp angles.\n      if (miterSegLength > min(firstSegLength, secondSegLength)) {\n        if (firstSegLength < secondSegLength) {\n          dirVect = a_lastPos - a_position;\n          tmpNormal = normalize(vec2(dirVect.y, -dirVect.x));\n          projPos = firstProjPos - defaultOffset;\n        } else {\n          projPos = thirdProjPos - defaultOffset;\n        }\n        offset = tmpNormal * a_direction * v_halfWidth;\n      }\n    }\n  }\n  vec4 offsets = u_offsetScaleMatrix * vec4(offset, 0., 0.);\n  gl_Position = projPos + offsets;\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.linestringreplay.shader.DefaultVertex.OPTIMIZED_SOURCE = 'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){mat4 offsetMatrix=c;vec4 offsets=offsetMatrix*vec4(0.,0.,0.,0.);gl_Position=b*vec4(a,0.,1.)+offsets;}';
+ol.render.webgl.linestringreplay.shader.DefaultVertex.OPTIMIZED_SOURCE = 'varying float a;varying vec4 b;varying float c;attribute vec2 d;attribute vec2 e;attribute vec2 f;attribute float g;attribute float h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;uniform float m;void main(void){c=k/2.0;vec2 offset;a=0.0;vec4 projPos=i*vec4(e,0.,1.);if(h==0.||h==4.){vec2 dirVect=f-e;vec2 normal=normalize(vec2(-dirVect.y,dirVect.x));offset=c*normal*g;if(h==4.&&(m==7.||m==9.)){b=projPos+j*vec4(0.,0.,0.,0.);}} else if(h==1.||h==3.){vec2 dirVect=d-e;vec2 normal=normalize(vec2(dirVect.y,-dirVect.x));offset=c*normal*g;if(h==3.&&(m==7.||m==9.)){b=projPos+j*vec4(0.,0.,0.,0.);}} else if(h==5.||h==6.){vec2 dirVect=f-e;vec2 tmpNormal=normalize(vec2(-dirVect.y,dirVect.x));vec2 tangent=normalize(normalize(f-e)+normalize(e-d));vec2 normal=vec2(tangent.y,-tangent.x);float miterLength=c/dot(normal,tmpNormal);if(h==6.){if(m==7.||m==9.){offset=normal*g*miterLength;a=1.0;b=projPos+j*vec4(0.,0.,0.,0.);}else if(miterLength>l){offset=tmpNormal*g*c;}else{offset=normal*g*miterLength;}} else if(h==5.){offset=normal*g*miterLength;vec4 defaultOffset=j*vec4(0.,0.,0.,0.);vec4 firstProjPos=i*vec4(d,0.,1.)+defaultOffset;vec4 secondProjPos=projPos+defaultOffset;vec4 thirdProjPos=i*vec4(f,0.,1.)+defaultOffset;float firstSegLength=distance(secondProjPos.xy,firstProjPos.xy);float secondSegLength=distance(thirdProjPos.xy,secondProjPos.xy);float miterSegLength=distance(secondProjPos.xy,vec4(projPos+j*vec4(offset,0.,0.)).xy);if(miterSegLength>min(firstSegLength,secondSegLength)){if(firstSegLength<secondSegLength){dirVect=d-e;tmpNormal=normalize(vec2(dirVect.y,-dirVect.x));projPos=firstProjPos-defaultOffset;}else{projPos=thirdProjPos-defaultOffset;}offset=tmpNormal*g*c;}}}vec4 offsets=j*vec4(offset,0.,0.);gl_Position=projPos+offsets;}';
 
 
 /**
@@ -89,35 +89,77 @@ ol.render.webgl.linestringreplay.shader.Default.Locations = function(gl, program
    * @type {WebGLUniformLocation}
    */
   this.u_color = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_color' : 'f');
+      program, goog.DEBUG ? 'u_color' : 'o');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_offsetRotateMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_offsetRotateMatrix' : 'd');
+  this.u_lineWidth = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_lineWidth' : 'k');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_miterLimit = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_miterLimit' : 'l');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetScaleMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_offsetScaleMatrix' : 'c');
+      program, goog.DEBUG ? 'u_offsetScaleMatrix' : 'j');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_opacity = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_opacity' : 'e');
+      program, goog.DEBUG ? 'u_opacity' : 'n');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'b');
+      program, goog.DEBUG ? 'u_projectionMatrix' : 'i');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_round = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_round' : 'm');
+
+  /**
+   * @type {WebGLUniformLocation}
+   */
+  this.u_size = gl.getUniformLocation(
+      program, goog.DEBUG ? 'u_size' : 'p');
+
+  /**
+   * @type {number}
+   */
+  this.a_direction = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_direction' : 'g');
+
+  /**
+   * @type {number}
+   */
+  this.a_instruction = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_instruction' : 'h');
+
+  /**
+   * @type {number}
+   */
+  this.a_lastPos = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_lastPos' : 'd');
+
+  /**
+   * @type {number}
+   */
+  this.a_nextPos = gl.getAttribLocation(
+      program, goog.DEBUG ? 'a_nextPos' : 'f');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_position' : 'a');
+      program, goog.DEBUG ? 'a_position' : 'e');
 };

@@ -105,6 +105,20 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.indicesBuffer_ = null;
 
   /**
+   * Start index per feature (the index).
+   * @type {Array.<number>}
+   * @private
+   */
+  this.startIndices_ = [];
+
+  /**
+   * Start index per feature (the feature).
+   * @type {Array.<ol.Feature|ol.render.Feature>}
+   * @private
+   */
+  this.startIndicesFeature_ = [];
+
+  /**
    * @type {Array.<number>}
    * @private
    */
@@ -118,6 +132,23 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
 };
 goog.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
+
+
+/**
+ * @enum {number}
+ */
+ol.render.webgl.LineStringInstruction = {
+  BEGIN_LINE: 0,
+  END_LINE: 1,
+  SQUARE_CAP: 2,
+  BEVEL_FIRST: 3,
+  BEVEL_SECOND: 4,
+  MITER_BOTTOM: 5,
+  MITER_TOP: 6,
+  ROUND_JOIN: 7,
+  ROUND_CAP: 8,
+  ROUND_BOTH: 9
+};
 
 ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = goog.abstractMethod;
 
@@ -162,7 +193,7 @@ ol.render.webgl.Replay.prototype.replay = function(context,
       'indicesBuffer must not be null');
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
-  var locations = this.setUpProgram_(gl, context);
+  var locations = this.setUpProgram_(gl, context, size);
 
   // set the "uniform" values
   var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
@@ -205,6 +236,21 @@ ol.render.webgl.Replay.prototype.replay = function(context,
 
 
   return result;
+};
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {number} start Start index.
+ * @param {number} end End index.
+ * @param {number} elementType Element type.
+ * @param {number} elementSize Element Size.
+ */
+ol.render.webgl.Replay.prototype.drawElements_ = function(
+    gl, start, end, elementType, elementSize) {
+  var numItems = end - start;
+  var offsetInBytes = start * elementSize;
+  gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
 };
 
 /**
@@ -325,20 +371,6 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
    * @private
    */
   this.hitDetectionTextures_ = [];
-
-  /**
-   * Start index per feature (the index).
-   * @type {Array.<number>}
-   * @private
-   */
-  this.startIndices_ = [];
-
-  /**
-   * Start index per feature (the feature).
-   * @type {Array.<ol.Feature|ol.render.Feature>}
-   * @private
-   */
-  this.startIndicesFeature_ = [];
 
   /**
    * @type {number|undefined}
@@ -620,9 +652,10 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, image
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
+ * @param {ol.Size} size Size.
  * @return {ol.render.webgl.imagereplay.shader.Default.Locations} Locations.
  */
-ol.render.webgl.ImageReplay.prototype.setUpProgram_ = function(gl, context) {
+ol.render.webgl.ImageReplay.prototype.setUpProgram_ = function(gl, context, size) {
   // get the program
   var fragmentShader = ol.render.webgl.imagereplay.defaultshader.fragment;
   var vertexShader = ol.render.webgl.imagereplay.defaultshader.vertex;
@@ -765,22 +798,6 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, skipped
       this.drawElements_(gl, start, end, elementType, elementSize);
     }
   }
-};
-
-
-/**
- * @private
- * @param {WebGLRenderingContext} gl gl.
- * @param {number} start Start index.
- * @param {number} end End index.
- * @param {number} elementType Element type.
- * @param {number} elementSize Element Size.
- */
-ol.render.webgl.ImageReplay.prototype.drawElements_ = function(
-    gl, start, end, elementType, elementSize) {
-  var numItems = end - start;
-  var offsetInBytes = start * elementSize;
-  gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
 };
 
 
@@ -1020,27 +1037,180 @@ goog.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
  * @private
  */
 ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
+
   var i, ii;
   var numVertices = this.vertices_.length;
   var numIndices = this.indices_.length;
-  var n = this.indices_.length > 0 ? this.indices_[numIndices - 1] + 1 : 0;
+  var lineJoin = this.state_.lineJoin;
+  var verticesPerPoint = lineJoin === 'bevel' ? 3 : 4;
+  //var lineCap = this.state_.lineCap;
+  var closed = this.isClosed_(flatCoordinates, offset, end, stride);
+  var lastIndex;
+  var lastSign = 1;
+  //We need the adjacent vertices to define normals in joins. p0 = last, p1 = current, p2 = next.
+  //We rotate those points, thus every point is RTE corrected only once.
+  var p0, p1, p2, tempP;
 
-  // Shift the indices to take into account previously handled lines
-  for (i = offset, ii = end - stride; i < ii; i += stride) {
+  for (i = offset, ii = end; i < ii; i += stride) {
 
-    if (i == offset) {
-      this.vertices_[numVertices++] = flatCoordinates[i] - this.origin_[0];
-      this.vertices_[numVertices++] = flatCoordinates[i + 1] - this.origin_[1];
+    var n = numVertices / 8;
 
-      i += stride;
+    tempP = tempP || p1;
+    p1 = p2 || [flatCoordinates[i] - this.origin_[0], flatCoordinates[i + 1] - this.origin_[1]];
+    //First vertex.
+    if (i === offset) {
+      p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
+      if (closed) {
+        //A closed line! Complete the circle.
+        tempP = [flatCoordinates[end - stride] - this.origin_[0], flatCoordinates[end - stride + 1] - this.origin_[1]];
+      } else {
+        //Add the first two vertices.
+        p0 = undefined;
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = p1[0];
+        this.vertices_[numVertices++] = p1[1];
+        this.vertices_[numVertices++] = p2[0];
+        this.vertices_[numVertices++] = p2[1];
+        this.vertices_[numVertices++] = 1;
+        this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEGIN_LINE;
+
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = p1[0];
+        this.vertices_[numVertices++] = p1[1];
+        this.vertices_[numVertices++] = p2[0];
+        this.vertices_[numVertices++] = p2[1];
+        this.vertices_[numVertices++] = -1;
+        this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEGIN_LINE;
+
+        lastIndex = n + 1;
+
+        continue;
+      }
+    } else if (i === end - stride) {
+      //Last vertex.
+      if (closed) {
+        p2 = [flatCoordinates[offset] - this.origin_[0], flatCoordinates[offset + 1] - this.origin_[1]];
+      } else {
+        p2 = undefined;
+        p0 = tempP || p0;
+
+        this.vertices_[numVertices++] = p0[0];
+        this.vertices_[numVertices++] = p0[1];
+        this.vertices_[numVertices++] = p1[0];
+        this.vertices_[numVertices++] = p1[1];
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = lastSign;
+        this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.END_LINE;
+
+        this.vertices_[numVertices++] = p0[0];
+        this.vertices_[numVertices++] = p0[1];
+        this.vertices_[numVertices++] = p1[0];
+        this.vertices_[numVertices++] = p1[1];
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = 0;
+        this.vertices_[numVertices++] = -lastSign;
+        this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.END_LINE;
+
+        this.indices_[numIndices++] = n;
+        this.indices_[numIndices++] = lastIndex - 1;
+        this.indices_[numIndices++] = lastIndex;
+
+        this.indices_[numIndices++] = lastIndex;
+        this.indices_[numIndices++] = n + 1;
+        this.indices_[numIndices++] = n;
+
+        break;
+      }
+    } else {
+      p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
     }
+    //Sort out duplicate points.
+    if (ol.array.equals(p1, p2)) continue;
+    p0 = tempP || p0;
+    tempP = undefined;
+    //The sign of the area determines the line segment's orientation.
+    var sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
+        ? 1 : -1;
 
-    this.vertices_[numVertices++] = flatCoordinates[i] - this.origin_[0];
-    this.vertices_[numVertices++] = flatCoordinates[i + 1] - this.origin_[1];
+    this.vertices_[numVertices++] = p0[0];
+    this.vertices_[numVertices++] = p0[1];
+    this.vertices_[numVertices++] = p1[0];
+    this.vertices_[numVertices++] = p1[1];
+    this.vertices_[numVertices++] = p2[0];
+    this.vertices_[numVertices++] = p2[1];
+    this.vertices_[numVertices++] = sign;
+    this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEVEL_FIRST;
 
-    this.indices_[numIndices++] = n++;
+    this.vertices_[numVertices++] = p0[0];
+    this.vertices_[numVertices++] = p0[1];
+    this.vertices_[numVertices++] = p1[0];
+    this.vertices_[numVertices++] = p1[1];
+    this.vertices_[numVertices++] = p2[0];
+    this.vertices_[numVertices++] = p2[1];
+    this.vertices_[numVertices++] = sign;
+    this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEVEL_SECOND;
+
+    this.vertices_[numVertices++] = p0[0];
+    this.vertices_[numVertices++] = p0[1];
+    this.vertices_[numVertices++] = p1[0];
+    this.vertices_[numVertices++] = p1[1];
+    this.vertices_[numVertices++] = p2[0];
+    this.vertices_[numVertices++] = p2[1];
+    this.vertices_[numVertices++] = -sign;
+    this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.MITER_BOTTOM;
+
     this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = lastIndex - 1;
+    this.indices_[numIndices++] = lastIndex;
+
+    this.indices_[numIndices++] = n + 2;
+    this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
+
+    this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = n + 2;
+    this.indices_[numIndices++] = n + 1;
+
+    lastIndex = n + 2;
+    lastSign = sign;
+
+    //Add miter
+    if (verticesPerPoint === 4) {
+      this.vertices_[numVertices++] = p0[0];
+      this.vertices_[numVertices++] = p0[1];
+      this.vertices_[numVertices++] = p1[0];
+      this.vertices_[numVertices++] = p1[1];
+      this.vertices_[numVertices++] = p2[0];
+      this.vertices_[numVertices++] = p2[1];
+      this.vertices_[numVertices++] = sign;
+      this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.MITER_TOP;
+
+      this.indices_[numIndices++] = n + 1;
+      this.indices_[numIndices++] = n + 3;
+      this.indices_[numIndices++] = n;
+    }
   }
+};
+
+/**
+ * Check if the linestring is a boundary.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @return {boolean} The linestring is a boundary.
+ * @private
+ */
+ol.render.webgl.LineStringReplay.prototype.isClosed_ = function(flatCoordinates, offset, end, stride) {
+  var lastCoord = end - stride;
+  if (flatCoordinates[offset] === flatCoordinates[lastCoord] &&
+      flatCoordinates[offset + 1] === flatCoordinates[lastCoord + 1]) {
+    return true;
+  }
+  return false;
 };
 
 
@@ -1050,8 +1220,12 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
-  this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+  if (flatCoordinates.length > stride) {
+    this.startIndices_.push(this.indices_.length);
+    this.startIndicesFeature_.push(feature);
+    this.drawCoordinates_(
+        flatCoordinates, 0, flatCoordinates.length, stride);
+  }
 };
 
 
@@ -1059,13 +1233,12 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
  * @inheritDoc
  */
 ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
+  this.startIndices_.push(this.indices_.length);
+  this.startIndicesFeature_.push(feature);
   var lineStringGeometries = multiLineStringGeometry.getLineStrings();
   var i, ii;
   for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
-    var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
-    var stride = lineStringGeometries[i].getStride();
-    this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+    this.drawLineString(lineStringGeometries[i], feature);
   }
 };
 
@@ -1074,6 +1247,8 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
  * @param {ol.webgl.Context} context Context.
  **/
 ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
+  this.startIndices_.push(this.indices_.length);
+
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
@@ -1081,6 +1256,9 @@ ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
   // create, bind, and populate the indices buffer
   this.indicesBuffer_ = new ol.webgl.Buffer(this.indices_);
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+  this.vertices_ = null;
+  this.indices_ = null;
 };
 
 
@@ -1108,9 +1286,10 @@ ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function
  * @private
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
+ * @param {ol.Size} size Size.
  * @return {ol.render.webgl.linestringreplay.shader.Default.Locations} Locations.
  */
-ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context) {
+ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context, size) {
   // get the program
   var fragmentShader, vertexShader;
   fragmentShader =
@@ -1132,12 +1311,37 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context)
   context.useProgram(program);
 
   // enable the vertex attrib arrays
+  gl.enableVertexAttribArray(locations.a_lastPos);
+  gl.vertexAttribPointer(locations.a_lastPos, 2, goog.webgl.FLOAT,
+      false, 32, 0);
+
   gl.enableVertexAttribArray(locations.a_position);
   gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
-      false, 8, 0);
+      false, 32, 8);
+
+  gl.enableVertexAttribArray(locations.a_nextPos);
+  gl.vertexAttribPointer(locations.a_nextPos, 2, goog.webgl.FLOAT,
+      false, 32, 16);
+
+  gl.enableVertexAttribArray(locations.a_direction);
+  gl.vertexAttribPointer(locations.a_direction, 1, goog.webgl.FLOAT,
+      false, 32, 24);
+
+  gl.enableVertexAttribArray(locations.a_instruction);
+  gl.vertexAttribPointer(locations.a_instruction, 1, goog.webgl.FLOAT,
+      false, 32, 28);
+
+  var round = this.state_.lineJoin === 'round' && this.state_.lineCap === 'round' ?
+      ol.render.webgl.LineStringInstruction.ROUND_BOTH : this.state_.lineJoin === 'round' ?
+      ol.render.webgl.LineStringInstruction.ROUND_JOIN : this.state_.lineCap === 'round' ?
+      ol.render.webgl.LineStringInstruction.ROUND_CAP : 0;
 
   // enable renderer specific uniforms
   gl.uniform4fv(locations.u_color, this.state_.strokeColor);
+  gl.uniform1f(locations.u_lineWidth, this.state_.lineWidth);
+  gl.uniform1f(locations.u_miterLimit, this.state_.miterLimit);
+  gl.uniform2fv(locations.u_size, size);
+  gl.uniform1f(locations.u_round, round);
 
   return locations;
 };
@@ -1150,16 +1354,19 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context)
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
+  var elementType = context.hasOESElementIndexUint ?
+      goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
+  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
+
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
-    var numItems = this.indices_.length;
-    // FIXME: not compatible with batching, hardcoding some arbitrary value
-    if (this.state_.lineWidth) {
-      gl.lineWidth(this.state_.lineWidth);
+    var i, ii;
+    for (i = 0, ii = this.startIndices_.length - 1; i < ii; ++i) {
+      var start = this.startIndices_[i];
+      var end = this.startIndices_[i + 1];
+      this.drawElements_(gl, start, end, elementType, elementSize);
     }
-    gl.drawElements(goog.webgl.LINES, numItems, goog.webgl.UNSIGNED_SHORT, 0);
-    gl.lineWidth(1);
   }
 };
 
@@ -1203,9 +1410,21 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
       ol.color.asArray(strokeStyleColor).map(function(c, i) {
         return i != 3 ? c / 255 : c;
       }) : ol.render.webgl.defaultStrokeStyle;
+  var strokeStyleLineCap = strokeStyle.getLineCap();
+  this.state_.lineCap = strokeStyleLineCap !== undefined ?
+      strokeStyleLineCap : ol.render.webgl.defaultLineCap;
+  var strokeStyleLineDash = strokeStyle.getLineDash();
+  this.state_.lineDash = strokeStyleLineDash ?
+      strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+  var strokeStyleLineJoin = strokeStyle.getLineJoin();
+  this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
+      strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
   var strokeStyleWidth = strokeStyle.getWidth();
   this.state_.lineWidth = strokeStyleWidth !== undefined ?
       strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+  var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+  this.state_.miterLimit = strokeStyleMiterLimit !== undefined ?
+      strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
 };
 
 
