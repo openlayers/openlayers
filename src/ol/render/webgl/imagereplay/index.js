@@ -21,8 +21,8 @@ goog.require('ol.render.webgl.linestringreplay.shader.DefaultFragment');
 goog.require('ol.render.webgl.linestringreplay.shader.DefaultVertex');
 goog.require('ol.render.webgl.polygonreplay.shader.Default');
 goog.require('ol.render.webgl.polygonreplay.shader.Default.Locations');
-goog.require('ol.render.webgl.polygonreplay.shader.DefaultFragment');
-goog.require('ol.render.webgl.polygonreplay.shader.DefaultVertex');
+//goog.require('ol.render.webgl.polygonreplay.shader.DefaultFragment');
+//goog.require('ol.render.webgl.polygonreplay.shader.DefaultVertex');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -705,10 +705,11 @@ ol.render.webgl.ImageReplay.prototype.setUpProgram_ = function(gl, context, size
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
+ * @param {boolean} hitDetection Hit detection mode.
  */
-ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
-  var textures = this.textures_;
-  var groupIndices = this.groupIndices_;
+ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
+  var textures = hitDetection ? this.hitDetectionTextures_ : this.textures_;
+  var groupIndices = hitDetection ? this.hitDetectionGroupIndices_ : this.groupIndices_;
   ol.DEBUG && console.assert(textures.length === groupIndices.length,
       'number of textures and groupIndeces match');
   var elementType = context.hasOESElementIndexUint ?
@@ -841,8 +842,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplay_ = function(gl, con
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ = function(gl, context, skippedFeaturesHash, featureCallback) {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  this.drawReplay_(gl, context, skippedFeaturesHash,
-      this.hitDetectionTextures_, this.hitDetectionGroupIndices_);
+  this.drawReplay_(gl, context, skippedFeaturesHash, true);
 
   var result = featureCallback(null);
   if (result) {
@@ -1003,13 +1003,13 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
 
 /**
    * @private
-   * @type {ol.render.webgl.polygonreplay.shader.Default.Locations}
+   * @type {ol.render.webgl.linestringreplay.shader.Default.Locations}
    */
   this.defaultLocations_ = null;
 
   /**
    * @private
-   * @type {{strokeColor: (Array.<number>|undefined),
+   * @type {{strokeColor: (Array.<number>|null),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
@@ -1017,7 +1017,7 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
    *         miterLimit: (number|undefined)}|null}
    */
   this.state_ = {
-    strokeColor: undefined,
+    strokeColor: null,
     lineCap: undefined,
     lineDash: null,
     lineJoin: undefined,
@@ -1045,7 +1045,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var lineJoin = this.state_.lineJoin === 'bevel' ? false : true;
   var lineCap = this.state_.lineCap === 'butt' ? false : true;
   var closed = this.isClosed_(flatCoordinates, offset, end, stride);
-  var lastIndex;
+  var lastIndex = numIndices;
   var lastSign = 1;
   //We need the adjacent vertices to define normals in joins. p0 = last, p1 = current, p2 = next.
   //We rotate those points, thus every point is RTE corrected only once.
@@ -1060,6 +1060,9 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     //First vertex.
     if (i === offset) {
       p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
+      if (flatCoordinates.length === stride * 2 && ol.array.equals(p1, p2)) {
+        break;
+      }
       if (closed) {
         //A closed line! Complete the circle.
         tempP = [flatCoordinates[end - stride] - this.origin_[0], flatCoordinates[end - stride + 1] - this.origin_[1]];
@@ -1298,7 +1301,14 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
   var lineStringGeometries = multiLineStringGeometry.getLineStrings();
   var i, ii;
   for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
-    this.drawLineString(lineStringGeometries[i], feature);
+    var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
+    var stride = lineStringGeometries[i].getStride();
+    if (flatCoordinates.length > stride) {
+      this.startIndices_.push(this.indices_.length);
+      this.startIndicesFeature_.push(feature);
+      this.drawCoordinates_(
+          flatCoordinates, 0, flatCoordinates.length, stride);
+    }
   }
 };
 
@@ -1396,10 +1406,14 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
       ol.render.webgl.LineStringInstruction.ROUND_JOIN : this.state_.lineCap === 'round' ?
       ol.render.webgl.LineStringInstruction.ROUND_CAP : 0;
 
-  // enable renderer specific uniforms
+  // Enable renderer specific uniforms. If clauses needed, as otherwise the compiler complains.
   gl.uniform4fv(locations.u_color, this.state_.strokeColor);
-  gl.uniform1f(locations.u_lineWidth, this.state_.lineWidth);
-  gl.uniform1f(locations.u_miterLimit, this.state_.miterLimit);
+  if (this.state_.lineWidth) {
+    gl.uniform1f(locations.u_lineWidth, this.state_.lineWidth);
+  }
+  if (this.state_.miterLimit) {
+    gl.uniform1f(locations.u_miterLimit, this.state_.miterLimit);
+  }
   gl.uniform2fv(locations.u_size, size);
   gl.uniform1f(locations.u_round, round);
 
@@ -1412,8 +1426,9 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {boolean} hitDetection Hit detection mode.
  */
-ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
+ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
   var elementType = context.hasOESElementIndexUint ?
       goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
   var elementSize = context.hasOESElementIndexUint ? 4 : 2;
@@ -1421,12 +1436,8 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
-    var i, ii;
-    for (i = 0, ii = this.startIndices_.length - 1; i < ii; ++i) {
-      var start = this.startIndices_[i];
-      var end = this.startIndices_[i + 1];
-      this.drawElements_(gl, start, end, elementType, elementSize);
-    }
+    var end = this.startIndices_[this.startIndices_.length - 1];
+    this.drawElements_(gl, 0, end, elementType, elementSize);
   }
 };
 
@@ -1466,10 +1477,9 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
   goog.asserts.assert(!fillStyle, 'fillStyle should be null');
   goog.asserts.assert(strokeStyle, 'strokeStyle should not be null');
   var strokeStyleColor = strokeStyle.getColor();
-  this.state_.strokeColor = !goog.isNull(strokeStyleColor) ?
-      ol.color.asArray(strokeStyleColor).map(function(c, i) {
-        return i != 3 ? c / 255 : c;
-      }) : ol.render.webgl.defaultStrokeStyle;
+  this.state_.strokeColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
+    return i != 3 ? c / 255 : c;
+  }) || ol.render.webgl.defaultStrokeStyle;
   var strokeStyleLineCap = strokeStyle.getLineCap();
   this.state_.lineCap = strokeStyleLineCap !== undefined ?
       strokeStyleLineCap : ol.render.webgl.defaultLineCap;
@@ -1490,7 +1500,7 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
 
 /**
  * @constructor
- * @extends {ol.render.VectorContext}
+ * @extends {ol.render.webgl.Replay}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @protected
@@ -1642,7 +1652,8 @@ ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, 
     var linearRings = polygonGeometry.getLinearRings();
     var i, ii;
     for (i = 0, ii = linearRings.length; i < ii; i++) {
-      this.lineStringReplay_.drawCoordinates_(linearRings[i].getCoordinates());
+      //FIXME: Substitute zeros with appropriate values when implementing.
+      this.lineStringReplay_.drawCoordinates_(linearRings[i].getFlatCoordinates(), 0, 0, 0);
     }
   }
 };
@@ -1713,7 +1724,7 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(co
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.PolygonReplay.prototype.replay = function(context,
+/*ol.render.webgl.PolygonReplay.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, brightness, contrast, hue, saturation, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent) {
@@ -1788,7 +1799,7 @@ ol.render.webgl.PolygonReplay.prototype.replay = function(context,
       featureCallback, oneByOne, opt_hitExtent);
   // FIXME get result
   return result;
-};
+};*/
 
 
 /**
