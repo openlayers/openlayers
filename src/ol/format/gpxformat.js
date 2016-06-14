@@ -57,6 +57,15 @@ ol.format.GPX.NAMESPACE_URIS_ = [
 
 
 /**
+ * @const
+ * @type {string}
+ * @private
+ */
+ol.format.GPX.SCHEMA_LOCATION_ = 'http://www.topografix.com/GPX/1/1 ' +
+    'http://www.topografix.com/GPX/1/1/gpx.xsd';
+
+
+/**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Node} node Node.
  * @param {Object} values Values.
@@ -911,6 +920,13 @@ ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   opt_options = this.adaptOptions(opt_options);
   //FIXME Serialize metadata
   var gpx = ol.xml.createElementNS('http://www.topografix.com/GPX/1/1', 'gpx');
+  var xmlnsUri = 'http://www.w3.org/2000/xmlns/';
+  var xmlSchemaInstanceUri = 'http://www.w3.org/2001/XMLSchema-instance';
+  ol.xml.setAttributeNS(gpx, xmlnsUri, 'xmlns:xsi', xmlSchemaInstanceUri);
+  ol.xml.setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation',
+      ol.format.GPX.SCHEMA_LOCATION_);
+  gpx.setAttribute('version', '1.1');
+  gpx.setAttribute('creator', 'OpenLayers 3');
 
   ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       ({node: gpx}), ol.format.GPX.GPX_SERIALIZERS_,
