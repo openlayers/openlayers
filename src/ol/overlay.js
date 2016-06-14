@@ -135,7 +135,7 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    */
   this.mapPostrenderListenerKey_ = null;
 

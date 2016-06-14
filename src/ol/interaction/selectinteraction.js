@@ -99,28 +99,28 @@ ol.interaction.Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
       options.condition : ol.events.condition.singleClick;
 
   /**
    * @private
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    */
   this.addCondition_ = options.addCondition ?
       options.addCondition : ol.events.condition.never;
 
   /**
    * @private
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    */
   this.removeCondition_ = options.removeCondition ?
       options.removeCondition : ol.events.condition.never;
 
   /**
    * @private
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    */
   this.toggleCondition_ = options.toggleCondition ?
       options.toggleCondition : ol.events.condition.shiftKeyOnly;
@@ -133,7 +133,7 @@ ol.interaction.Select = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.SelectFilterFunction}
+   * @type {ol.SelectFilterFunction}
    */
   this.filter_ = options.filter ? options.filter :
       ol.functions.TRUE;
@@ -355,7 +355,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
 
 
 /**
- * @return {ol.style.StyleFunction} Styles.
+ * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
   var styles = ol.style.createDefaultEditingStyles();

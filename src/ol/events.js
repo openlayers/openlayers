@@ -3,7 +3,6 @@ goog.provide('ol.events.EventType');
 goog.provide('ol.events.KeyCode');
 
 goog.require('ol.object');
-goog.require('ol.events.EventTargetLike');
 
 
 /**
@@ -63,8 +62,8 @@ ol.events.LISTENER_MAP_PROP_ = 'olm_' + ((Math.random() * 1e4) | 0);
 
 
 /**
- * @param {ol.events.Key} listenerObj Listener object.
- * @return {ol.events.ListenerFunctionType} Bound listener.
+ * @param {ol.EventsKey} listenerObj Listener object.
+ * @return {ol.EventsListenerFunctionType} Bound listener.
  */
 ol.events.bindListener_ = function(listenerObj) {
   var boundListener = function(evt) {
@@ -81,15 +80,15 @@ ol.events.bindListener_ = function(listenerObj) {
 
 
 /**
- * Finds the matching {@link ol.events.Key} in the given listener
+ * Finds the matching {@link ol.EventsKey} in the given listener
  * array.
  *
- * @param {!Array<!ol.events.Key>} listeners Array of listeners.
+ * @param {!Array<!ol.EventsKey>} listeners Array of listeners.
  * @param {!Function} listener The listener function.
  * @param {Object=} opt_this The `this` value inside the listener.
  * @param {boolean=} opt_setDeleteIndex Set the deleteIndex on the matching
  *     listener, for {@link ol.events.unlistenByKey}.
- * @return {ol.events.Key|undefined} The matching listener object.
+ * @return {ol.EventsKey|undefined} The matching listener object.
  * @private
  */
 ol.events.findListener_ = function(listeners, listener, opt_this,
@@ -110,9 +109,9 @@ ol.events.findListener_ = function(listeners, listener, opt_this,
 
 
 /**
- * @param {ol.events.EventTargetLike} target Target.
+ * @param {ol.EventTargetLike} target Target.
  * @param {string} type Type.
- * @return {Array.<ol.events.Key>|undefined} Listeners.
+ * @return {Array.<ol.EventsKey>|undefined} Listeners.
  */
 ol.events.getListeners = function(target, type) {
   var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
@@ -123,8 +122,8 @@ ol.events.getListeners = function(target, type) {
 /**
  * Get the lookup of listeners.  If one does not exist on the target, it is
  * created.
- * @param {ol.events.EventTargetLike} target Target.
- * @return {!Object.<string, Array.<ol.events.Key>>} Map of
+ * @param {ol.EventTargetLike} target Target.
+ * @return {!Object.<string, Array.<ol.EventsKey>>} Map of
  *     listeners by event type.
  * @private
  */
@@ -141,7 +140,7 @@ ol.events.getListenerMap_ = function(target) {
  * Clean up all listener objects of the given type.  All properties on the
  * listener objects will be removed, and if no listeners remain in the listener
  * map, it will be removed from the target.
- * @param {ol.events.EventTargetLike} target Target.
+ * @param {ol.EventTargetLike} target Target.
  * @param {string} type Type.
  * @private
  */
@@ -171,13 +170,13 @@ ol.events.removeListeners_ = function(target, type) {
  * This function efficiently binds a `listener` to a `this` object, and returns
  * a key for use with {@link ol.events.unlistenByKey}.
  *
- * @param {ol.events.EventTargetLike} target Event target.
+ * @param {ol.EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {ol.EventsListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  * @param {boolean=} opt_once If true, add the listener as one-off listener.
- * @return {ol.events.Key} Unique key for the listener.
+ * @return {ol.EventsKey} Unique key for the listener.
  */
 ol.events.listen = function(target, type, listener, opt_this, opt_once) {
   var listenerMap = ol.events.getListenerMap_(target);
@@ -193,7 +192,7 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
       listenerObj.callOnce = false;
     }
   } else {
-    listenerObj = /** @type {ol.events.Key} */ ({
+    listenerObj = /** @type {ol.EventsKey} */ ({
       bindTo: opt_this,
       callOnce: !!opt_once,
       listener: listener,
@@ -221,12 +220,12 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
  * function, the self-unregistering listener will be turned into a permanent
  * listener.
  *
- * @param {ol.events.EventTargetLike} target Event target.
+ * @param {ol.EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {ol.EventsListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
- * @return {ol.events.Key} Key for unlistenByKey.
+ * @return {ol.EventsKey} Key for unlistenByKey.
  */
 ol.events.listenOnce = function(target, type, listener, opt_this) {
   return ol.events.listen(target, type, listener, opt_this, true);
@@ -240,9 +239,9 @@ ol.events.listenOnce = function(target, type, listener, opt_this) {
  * To return a listener, this function needs to be called with the exact same
  * arguments that were used for a previous {@link ol.events.listen} call.
  *
- * @param {ol.events.EventTargetLike} target Event target.
+ * @param {ol.EventTargetLike} target Event target.
  * @param {string} type Event type.
- * @param {ol.events.ListenerFunctionType} listener Listener.
+ * @param {ol.EventsListenerFunctionType} listener Listener.
  * @param {Object=} opt_this Object referenced by the `this` keyword in the
  *     listener. Default is the `target`.
  */
@@ -265,7 +264,7 @@ ol.events.unlisten = function(target, type, listener, opt_this) {
  * The argument passed to this function is the key returned from
  * {@link ol.events.listen} or {@link ol.events.listenOnce}.
  *
- * @param {ol.events.Key} key The key.
+ * @param {ol.EventsKey} key The key.
  */
 ol.events.unlistenByKey = function(key) {
   if (key && key.target) {
@@ -289,7 +288,7 @@ ol.events.unlistenByKey = function(key) {
  * Unregisters all event listeners on an event target. Inspired by
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
  *
- * @param {ol.events.EventTargetLike} target Target.
+ * @param {ol.EventTargetLike} target Target.
  */
 ol.events.unlistenAll = function(target) {
   var listenerMap = ol.events.getListenerMap_(target);

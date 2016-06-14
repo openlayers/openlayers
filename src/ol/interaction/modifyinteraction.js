@@ -103,7 +103,7 @@ ol.interaction.Modify = function(options) {
 
   /**
    * @private
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
       options.condition : ol.events.condition.primaryAction;
@@ -120,7 +120,7 @@ ol.interaction.Modify = function(options) {
   };
 
   /**
-   * @type {ol.events.ConditionType}
+   * @type {ol.EventsConditionType}
    * @private
    */
   this.deleteCondition_ = options.deleteCondition ?
@@ -162,7 +162,7 @@ ol.interaction.Modify = function(options) {
 
   /**
    * Segment RTree for each layer
-   * @type {ol.structs.RBush.<ol.interaction.SegmentDataType>}
+   * @type {ol.structs.RBush.<ol.ModifySegmentDataType>}
    * @private
    */
   this.rBush_ = new ol.structs.RBush();
@@ -302,10 +302,10 @@ ol.interaction.Modify.prototype.removeFeature_ = function(feature) {
  */
 ol.interaction.Modify.prototype.removeFeatureSegmentData_ = function(feature) {
   var rBush = this.rBush_;
-  var /** @type {Array.<ol.interaction.SegmentDataType>} */ nodesToRemove = [];
+  var /** @type {Array.<ol.ModifySegmentDataType>} */ nodesToRemove = [];
   rBush.forEach(
       /**
-       * @param {ol.interaction.SegmentDataType} node RTree node.
+       * @param {ol.ModifySegmentDataType} node RTree node.
        */
       function(node) {
         if (feature === node.feature) {
@@ -369,7 +369,7 @@ ol.interaction.Modify.prototype.handleFeatureRemove_ = function(evt) {
  */
 ol.interaction.Modify.prototype.writePointGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCoordinates();
-  var segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+  var segmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
     segment: [coordinates, coordinates]
@@ -388,7 +388,7 @@ ol.interaction.Modify.prototype.writeMultiPointGeometry_ = function(feature, geo
   var coordinates, i, ii, segmentData;
   for (i = 0, ii = points.length; i < ii; ++i) {
     coordinates = points[i];
-    segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+    segmentData = /** @type {ol.ModifySegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
       depth: [i],
@@ -410,7 +410,7 @@ ol.interaction.Modify.prototype.writeLineStringGeometry_ = function(feature, geo
   var i, ii, segment, segmentData;
   for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
     segment = coordinates.slice(i, i + 2);
-    segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+    segmentData = /** @type {ol.ModifySegmentDataType} */ ({
       feature: feature,
       geometry: geometry,
       index: i,
@@ -433,7 +433,7 @@ ol.interaction.Modify.prototype.writeMultiLineStringGeometry_ = function(feature
     coordinates = lines[j];
     for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+      segmentData = /** @type {ol.ModifySegmentDataType} */ ({
         feature: feature,
         geometry: geometry,
         depth: [j],
@@ -458,7 +458,7 @@ ol.interaction.Modify.prototype.writePolygonGeometry_ = function(feature, geomet
     coordinates = rings[j];
     for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
       segment = coordinates.slice(i, i + 2);
-      segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+      segmentData = /** @type {ol.ModifySegmentDataType} */ ({
         feature: feature,
         geometry: geometry,
         depth: [j],
@@ -485,7 +485,7 @@ ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ = function(feature, g
       coordinates = rings[j];
       for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
         segment = coordinates.slice(i, i + 2);
-        segmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+        segmentData = /** @type {ol.ModifySegmentDataType} */ ({
           feature: feature,
           geometry: geometry,
           depth: [j, k],
@@ -533,8 +533,8 @@ ol.interaction.Modify.prototype.createOrUpdateVertexFeature_ = function(coordina
 
 
 /**
- * @param {ol.interaction.SegmentDataType} a The first segment data.
- * @param {ol.interaction.SegmentDataType} b The second segment data.
+ * @param {ol.ModifySegmentDataType} a The first segment data.
+ * @param {ol.ModifySegmentDataType} b The second segment data.
  * @return {number} The difference in indexes.
  * @private
  */
@@ -808,7 +808,7 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
 
 
 /**
- * @param {ol.interaction.SegmentDataType} segmentData Segment data.
+ * @param {ol.ModifySegmentDataType} segmentData Segment data.
  * @param {ol.Coordinate} vertex Vertex.
  * @private
  */
@@ -859,7 +859,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   rTree.remove(segmentData);
   goog.asserts.assert(index !== undefined, 'index should be defined');
   this.updateSegmentIndices_(geometry, index, depth, 1);
-  var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+  var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     segment: [segment[0], vertex],
     feature: feature,
     geometry: geometry,
@@ -870,7 +870,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
       newSegmentData);
   this.dragSegments_.push([newSegmentData, 1]);
 
-  var newSegmentData2 = /** @type {ol.interaction.SegmentDataType} */ ({
+  var newSegmentData2 = /** @type {ol.ModifySegmentDataType} */ ({
     segment: [vertex, segment[1]],
     feature: feature,
     geometry: geometry,
@@ -998,7 +998,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
       if (left !== undefined && right !== undefined) {
         goog.asserts.assert(newIndex >= 0, 'newIndex should be larger than 0');
 
-        var newSegmentData = /** @type {ol.interaction.SegmentDataType} */ ({
+        var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
           depth: segmentData.depth,
           feature: segmentData.feature,
           geometry: segmentData.geometry,
@@ -1053,7 +1053,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
 
 
 /**
- * @return {ol.style.StyleFunction} Styles.
+ * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Modify.getDefaultStyleFunction = function() {
   var style = ol.style.createDefaultEditingStyles();

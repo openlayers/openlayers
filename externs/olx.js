@@ -40,7 +40,7 @@ olx.DeviceOrientationOptions.prototype.tracking;
 /**
  * @typedef {{tracking: (boolean|undefined),
  *     trackingOptions: (GeolocationPositionOptions|undefined),
- *     projection: ol.proj.ProjectionLike}}
+ *     projection: ol.ProjectionLike}}
  */
 olx.GeolocationOptions;
 
@@ -64,7 +64,7 @@ olx.GeolocationOptions.prototype.trackingOptions;
 
 /**
  * The projection the position is reported in.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.GeolocationOptions.prototype.projection;
@@ -507,7 +507,7 @@ olx.ProjectionOptions.prototype.getPointResolution;
  *     maxResolution: (number|undefined),
  *     minZoom: (number|undefined),
  *     maxZoom: (number|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     resolution: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     rotation: (number|undefined),
@@ -607,7 +607,7 @@ olx.ViewOptions.prototype.minZoom;
 
 /**
  * The projection. Default is `EPSG:3857` (Spherical Mercator).
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.ViewOptions.prototype.projection;
@@ -1105,7 +1105,7 @@ olx.control.FullScreenOptions.prototype.source;
 /**
  * @typedef {{className: (string|undefined),
  *     coordinateFormat: (ol.CoordinateFormatType|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
  *     undefinedHTML: (string|undefined)}}
@@ -1131,7 +1131,7 @@ olx.control.MousePositionOptions.prototype.coordinateFormat;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.control.MousePositionOptions.prototype.projection;
@@ -1576,8 +1576,8 @@ olx.format;
 
 
 /**
- * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike,
+ * @typedef {{dataProjection: ol.ProjectionLike,
+ *     featureProjection: ol.ProjectionLike,
  *     rightHanded: (boolean|undefined)}}
  */
 olx.format.ReadOptions;
@@ -1589,7 +1589,7 @@ olx.format.ReadOptions;
  * the format is assigned (where set). If the projection can not be derived from
  * the data and if no `defaultDataProjection` is set for a format, the features
  * will not be reprojected.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.format.ReadOptions.prototype.dataProjection;
@@ -1598,15 +1598,15 @@ olx.format.ReadOptions.prototype.dataProjection;
 /**
  * Projection of the feature geometries created by the format reader. If not
  * provided, features will be returned in the `dataProjection`.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.format.ReadOptions.prototype.featureProjection;
 
 
 /**
- * @typedef {{dataProjection: ol.proj.ProjectionLike,
- *     featureProjection: ol.proj.ProjectionLike,
+ * @typedef {{dataProjection: ol.ProjectionLike,
+ *     featureProjection: ol.ProjectionLike,
  *     rightHanded: (boolean|undefined),
  *     decimals: (number|undefined)}}
  */
@@ -1618,7 +1618,7 @@ olx.format.WriteOptions;
  * `defaultDataProjection` of the format is assigned (where set). If no
  * `defaultDataProjection` is set for a format, the features will be returned
  * in the `featureProjection`.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.format.WriteOptions.prototype.dataProjection;
@@ -1628,7 +1628,7 @@ olx.format.WriteOptions.prototype.dataProjection;
  * Projection of the feature geometries that will be serialized by the format
  * writer. If not provided, geometries are assumed to be in the
  * `dataProjection` if that is set; in other words, they are not transformed.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.format.WriteOptions.prototype.featureProjection;
@@ -1665,7 +1665,7 @@ olx.format.WriteOptions.prototype.decimals;
 
 
 /**
- * @typedef {{defaultDataProjection: ol.proj.ProjectionLike,
+ * @typedef {{defaultDataProjection: ol.ProjectionLike,
  *     geometryName: (string|undefined)}}
  */
 olx.format.GeoJSONOptions;
@@ -1673,7 +1673,7 @@ olx.format.GeoJSONOptions;
 
 /**
  * Default data projection. Default is `EPSG:4326`.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.format.GeoJSONOptions.prototype.defaultDataProjection;
@@ -1777,14 +1777,14 @@ olx.format.PolylineOptions.prototype.geometryLayout;
 
 
 /**
- * @typedef {{defaultDataProjection: ol.proj.ProjectionLike}}
+ * @typedef {{defaultDataProjection: ol.ProjectionLike}}
  */
 olx.format.TopoJSONOptions;
 
 
 /**
  * Default data projection. Default is `EPSG:4326`.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api stable
  */
 olx.format.TopoJSONOptions.prototype.defaultDataProjection;
@@ -2356,7 +2356,7 @@ olx.interaction.DoubleClickZoomOptions.prototype.delta;
 
 /**
  * @typedef {{formatConstructors: (Array.<function(new: ol.format.Feature)>|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     target: (Element|undefined)}}
  */
 olx.interaction.DragAndDropOptions;
@@ -2372,7 +2372,7 @@ olx.interaction.DragAndDropOptions.prototype.formatConstructors;
 
 /**
  * Target projection. By default, the map's view's projection is used.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.interaction.DragAndDropOptions.prototype.projection;
@@ -2388,8 +2388,8 @@ olx.interaction.DragAndDropOptions.prototype.target;
 
 /**
  * @typedef {{className: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     boxEndCondition: (ol.interaction.DragBoxEndConditionType|undefined)}}
+ *     condition: (ol.EventsConditionType|undefined),
+ *     boxEndCondition: (ol.DragBoxEndConditionType|undefined)}}
  */
 olx.interaction.DragBoxOptions;
 
@@ -2406,7 +2406,7 @@ olx.interaction.DragBoxOptions.prototype.className;
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.always}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DragBoxOptions.prototype.condition;
@@ -2425,7 +2425,7 @@ olx.interaction.DragBoxOptions.prototype.condition;
  *     ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED;
  * }
  * ```
- * @type {ol.interaction.DragBoxEndConditionType|undefined}
+ * @type {ol.DragBoxEndConditionType|undefined}
  * @api
  */
 olx.interaction.DragBoxOptions.prototype.boxEndCondition;
@@ -2446,7 +2446,7 @@ olx.interaction.DragPanOptions.prototype.kinetic;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
  *     duration: (number|undefined)}}
  */
 olx.interaction.DragRotateAndZoomOptions;
@@ -2456,7 +2456,7 @@ olx.interaction.DragRotateAndZoomOptions;
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DragRotateAndZoomOptions.prototype.condition;
@@ -2471,7 +2471,7 @@ olx.interaction.DragRotateAndZoomOptions.prototype.duration;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
  *     duration: (number|undefined)}}
  */
 olx.interaction.DragRotateOptions;
@@ -2481,7 +2481,7 @@ olx.interaction.DragRotateOptions;
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.altShiftKeysOnly}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DragRotateOptions.prototype.condition;
@@ -2497,7 +2497,7 @@ olx.interaction.DragRotateOptions.prototype.duration;
 
 /**
  * @typedef {{className: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined),
+ *     condition: (ol.EventsConditionType|undefined),
  *     duration: (number|undefined),
  *     out: (boolean|undefined)}}
  */
@@ -2516,7 +2516,7 @@ olx.interaction.DragZoomOptions.prototype.className;
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.shiftKeyOnly}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DragZoomOptions.prototype.condition;
@@ -2546,12 +2546,12 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     type: ol.geom.GeometryType,
  *     maxPoints: (number|undefined),
  *     minPoints: (number|undefined),
- *     finishCondition: (ol.events.ConditionType|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     geometryFunction: (ol.interaction.DrawGeometryFunctionType|undefined),
+ *     finishCondition: (ol.EventsConditionType|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
+ *     geometryFunction: (ol.DrawGeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
- *     condition: (ol.events.ConditionType|undefined),
- *     freehandCondition: (ol.events.ConditionType|undefined),
+ *     condition: (ol.EventsConditionType|undefined),
+ *     freehandCondition: (ol.EventsConditionType|undefined),
  *     wrapX: (boolean|undefined)}}
  */
 olx.interaction.DrawOptions;
@@ -2623,7 +2623,7 @@ olx.interaction.DrawOptions.prototype.minPoints;
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether the drawing can be finished.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.finishCondition;
@@ -2631,7 +2631,7 @@ olx.interaction.DrawOptions.prototype.finishCondition;
 
 /**
  * Style for sketch features.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.style;
@@ -2639,7 +2639,7 @@ olx.interaction.DrawOptions.prototype.style;
 
 /**
  * Function that is called when a geometry's coordinates are updated.
- * @type {ol.interaction.DrawGeometryFunctionType|undefined}
+ * @type {ol.DrawGeometryFunctionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.geometryFunction;
@@ -2658,7 +2658,7 @@ olx.interaction.DrawOptions.prototype.geometryName;
  * to indicate whether that event should be handled.
  * By default {@link ol.events.condition.noModifierKeys}, i.e. a click, adds a
  * vertex or deactivates freehand drawing.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.condition;
@@ -2670,7 +2670,7 @@ olx.interaction.DrawOptions.prototype.condition;
  * indicate whether that event should be handled. The default is
  * {@link ol.events.condition.shiftKeyOnly}, meaning that the Shift key
  * activates freehand drawing.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.DrawOptions.prototype.freehandCondition;
@@ -2715,7 +2715,7 @@ olx.interaction.TranslateOptions.prototype.layers;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
  *     duration: (number|undefined),
  *     pixelDelta: (number|undefined)}}
  */
@@ -2727,7 +2727,7 @@ olx.interaction.KeyboardPanOptions;
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.noModifierKeys} and
  * {@link ol.events.condition.targetNotEditable}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.KeyboardPanOptions.prototype.condition;
@@ -2751,7 +2751,7 @@ olx.interaction.KeyboardPanOptions.prototype.pixelDelta;
 
 /**
  * @typedef {{duration: (number|undefined),
- *     condition: (ol.events.ConditionType|undefined),
+ *     condition: (ol.EventsConditionType|undefined),
  *     delta: (number|undefined)}}
  */
 olx.interaction.KeyboardZoomOptions;
@@ -2769,7 +2769,7 @@ olx.interaction.KeyboardZoomOptions.prototype.duration;
  * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
  * to indicate whether that event should be handled.
  * Default is {@link ol.events.condition.targetNotEditable}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.KeyboardZoomOptions.prototype.condition;
@@ -2784,10 +2784,10 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
 
 
 /**
- * @typedef {{condition: (ol.events.ConditionType|undefined),
- *     deleteCondition: (ol.events.ConditionType|undefined),
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
+ *     deleteCondition: (ol.EventsConditionType|undefined),
  *     pixelTolerance: (number|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     features: ol.Collection.<ol.Feature>,
  *     wrapX: (boolean|undefined)}}
  */
@@ -2799,7 +2799,7 @@ olx.interaction.ModifyOptions;
  * to indicate whether that event will be considered to add or move a vertex
  * to the sketch.
  * Default is {@link ol.events.condition.primaryAction}.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.ModifyOptions.prototype.condition;
@@ -2810,7 +2810,7 @@ olx.interaction.ModifyOptions.prototype.condition;
  * to indicate whether that event should be handled.
  * By default, {@link ol.events.condition.singleClick} with
  * {@link ol.events.condition.noModifierKeys} results in a vertex deletion.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.ModifyOptions.prototype.deleteCondition;
@@ -2828,7 +2828,7 @@ olx.interaction.ModifyOptions.prototype.pixelTolerance;
 /**
  * Style used for the features being modified. By default the default edit
  * style is used (see {@link ol.style}).
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
 olx.interaction.ModifyOptions.prototype.style;
@@ -2971,15 +2971,15 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
 
 
 /**
- * @typedef {{addCondition: (ol.events.ConditionType|undefined),
- *     condition: (ol.events.ConditionType|undefined),
+ * @typedef {{addCondition: (ol.EventsConditionType|undefined),
+ *     condition: (ol.EventsConditionType|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
- *     removeCondition: (ol.events.ConditionType|undefined),
- *     toggleCondition: (ol.events.ConditionType|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
+ *     removeCondition: (ol.EventsConditionType|undefined),
+ *     toggleCondition: (ol.EventsConditionType|undefined),
  *     multi: (boolean|undefined),
  *     features: (ol.Collection.<ol.Feature>|undefined),
- *     filter: (ol.interaction.SelectFilterFunction|undefined),
+ *     filter: (ol.SelectFilterFunction|undefined),
  *     wrapX: (boolean|undefined)}}
  */
 olx.interaction.SelectOptions;
@@ -2990,7 +2990,7 @@ olx.interaction.SelectOptions;
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.addCondition;
@@ -3005,7 +3005,7 @@ olx.interaction.SelectOptions.prototype.addCondition;
  * feature removes all from the selection.
  * See `toggle`, `add`, `remove` options for adding/removing extra features to/
  * from the selection.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.condition;
@@ -3026,7 +3026,7 @@ olx.interaction.SelectOptions.prototype.layers;
 /**
  * Style for the selected features. By default the default edit style is used
  * (see {@link ol.style}).
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.style;
@@ -3037,7 +3037,7 @@ olx.interaction.SelectOptions.prototype.style;
  * to indicate whether that event should be handled.
  * By default, this is {@link ol.events.condition.never}. Use this if you want
  * to use different events for add and remove instead of `toggle`.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.removeCondition;
@@ -3052,7 +3052,7 @@ olx.interaction.SelectOptions.prototype.removeCondition;
  * not currently selected, and removes it if it is.
  * See `add` and `remove` if you want to use different events instead of a
  * toggle.
- * @type {ol.events.ConditionType|undefined}
+ * @type {ol.EventsConditionType|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.toggleCondition;
@@ -3080,7 +3080,7 @@ olx.interaction.SelectOptions.prototype.features;
 /**
  * A function that takes an {@link ol.Feature} and an {@link ol.layer.Layer} and
  * returns `true` if the feature may be selected or `false` otherwise.
- * @type {ol.interaction.SelectFilterFunction|undefined}
+ * @type {ol.SelectFilterFunction|undefined}
  * @api
  */
 olx.interaction.SelectOptions.prototype.filter;
@@ -3636,7 +3636,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     renderBuffer: (number|undefined),
  *     source: (ol.source.Vector|undefined),
  *     map: (ol.Map|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
  *     visible: (boolean|undefined)}}
@@ -3720,7 +3720,7 @@ olx.layer.VectorOptions.prototype.source;
 /**
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api stable
  */
 olx.layer.VectorOptions.prototype.style;
@@ -3764,7 +3764,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
  *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
  *     source: (ol.source.VectorTile|undefined),
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined),
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
  *     visible: (boolean|undefined)}}
@@ -3865,7 +3865,7 @@ olx.layer.VectorTileOptions.prototype.source;
 /**
  * Layer style. See {@link ol.style} for default style which will be used if
  * this is not defined.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api stable
  */
 olx.layer.VectorTileOptions.prototype.style;
@@ -4030,7 +4030,7 @@ olx.source.BingMapsOptions.prototype.wrapX;
  *     format: (ol.format.Feature|undefined),
  *     geometryFunction: (undefined|function(ol.Feature):ol.geom.Point),
  *     logo: (string|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     source: ol.source.Vector,
  *     wrapX: (boolean|undefined)}}
  */
@@ -4098,7 +4098,7 @@ olx.source.ClusterOptions.prototype.logo;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ClusterOptions.prototype.projection;
@@ -4175,7 +4175,7 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            crossOrigin: (null|string|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
+ *            projection: ol.ProjectionLike,
  *            reprojectionErrorThreshold: (number|undefined),
  *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
@@ -4238,7 +4238,7 @@ olx.source.TileImageOptions.prototype.opaque;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.TileImageOptions.prototype.projection;
@@ -4345,7 +4345,7 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            cacheSize: (number|undefined),
  *            format: (ol.format.Feature|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.proj.ProjectionLike,
+ *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ol.format.Feature,
@@ -4396,7 +4396,7 @@ olx.source.VectorTileOptions.prototype.logo;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.VectorTileOptions.prototype.projection;
@@ -4499,7 +4499,7 @@ olx.source.VectorTileOptions.prototype.wrapX;
  *     metersPerUnit: (number|undefined),
  *     hidpi: (boolean|undefined),
  *     useOverlay: (boolean|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
@@ -4551,7 +4551,7 @@ olx.source.ImageMapGuideOptions.prototype.useOverlay;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ImageMapGuideOptions.prototype.projection;
@@ -4648,7 +4648,7 @@ olx.source.MapQuestOptions.prototype.url;
 
 
 /**
- * @typedef {{projection: ol.proj.ProjectionLike,
+ * @typedef {{projection: ol.ProjectionLike,
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     wrapX: (boolean|undefined)}}
  */
@@ -4657,7 +4657,7 @@ olx.source.TileDebugOptions;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.TileDebugOptions.prototype.projection;
@@ -4784,7 +4784,7 @@ olx.source.OSMOptions.prototype.wrapX;
  *     logo: (string|olx.LogoOptions|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     url: (string|undefined)}}
@@ -4844,7 +4844,7 @@ olx.source.ImageArcGISRestOptions.prototype.params;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.projection;
@@ -4880,7 +4880,7 @@ olx.source.ImageArcGISRestOptions.prototype.url;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     canvasFunction: ol.CanvasFunctionType,
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     state: (ol.source.State|undefined)}}
@@ -4921,7 +4921,7 @@ olx.source.ImageCanvasOptions.prototype.logo;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ImageCanvasOptions.prototype.projection;
@@ -4957,11 +4957,11 @@ olx.source.ImageCanvasOptions.prototype.state;
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     source: ol.source.Vector,
- *     style: (ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined)}}
+ *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined)}}
  */
 olx.source.ImageVectorOptions;
 
@@ -4984,7 +4984,7 @@ olx.source.ImageVectorOptions.prototype.logo;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ImageVectorOptions.prototype.projection;
@@ -5020,7 +5020,7 @@ olx.source.ImageVectorOptions.prototype.source;
 
 /**
  * Style to use when rendering features to the canvas.
- * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
  */
 olx.source.ImageVectorOptions.prototype.style;
@@ -5093,7 +5093,7 @@ olx.source.RasterOptions.prototype.operationType;
  *     logo: (string|olx.LogoOptions|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     url: (string|undefined)}}
@@ -5167,7 +5167,7 @@ olx.source.ImageWMSOptions.prototype.params;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ImageWMSOptions.prototype.projection;
@@ -5288,7 +5288,7 @@ olx.source.StamenOptions.prototype.url;
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     imageSize: (ol.Size|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     url: string}}
  */
 olx.source.ImageStaticOptions;
@@ -5341,7 +5341,7 @@ olx.source.ImageStaticOptions.prototype.logo;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.ImageStaticOptions.prototype.projection;
@@ -5371,7 +5371,7 @@ olx.source.ImageStaticOptions.prototype.url;
  *     params: (Object.<string, *>|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
@@ -5445,7 +5445,7 @@ olx.source.TileArcGISRestOptions.prototype.tileGrid;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.TileArcGISRestOptions.prototype.projection;
@@ -5599,7 +5599,7 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     maxZoom: (number|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
@@ -5702,7 +5702,7 @@ olx.source.TileWMSOptions.prototype.maxZoom;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.TileWMSOptions.prototype.projection;
@@ -5892,7 +5892,7 @@ olx.source.VectorOptions.prototype.wrapX;
  *     crossOrigin: (string|null|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: ol.tilegrid.WMTS,
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
  *     layer: string,
@@ -5960,7 +5960,7 @@ olx.source.WMTSOptions.prototype.tileGrid;
 
 /**
  * Projection.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.WMTSOptions.prototype.projection;
@@ -6107,7 +6107,7 @@ olx.source.WMTSOptions.prototype.wrapX;
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     opaque: (boolean|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
@@ -6169,7 +6169,7 @@ olx.source.XYZOptions.prototype.opaque;
 
 /**
  * Projection. Default is `EPSG:3857`.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.XYZOptions.prototype.projection;
@@ -6279,7 +6279,7 @@ olx.source.XYZOptions.prototype.wrapX;
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
- *     projection: ol.proj.ProjectionLike,
+ *     projection: ol.ProjectionLike,
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
  *     wrapX: (boolean|undefined),
@@ -6328,7 +6328,7 @@ olx.source.CartoDBOptions.prototype.logo;
 
 /**
  * Projection. Default is `EPSG:3857`.
- * @type {ol.proj.ProjectionLike}
+ * @type {ol.ProjectionLike}
  * @api
  */
 olx.source.CartoDBOptions.prototype.projection;
@@ -7017,7 +7017,7 @@ olx.style.TextOptions.prototype.stroke;
 
 
 /**
- * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.style.GeometryFunction),
+ * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction),
  *     fill: (ol.style.Fill|undefined),
  *     image: (ol.style.Image|undefined),
  *     stroke: (ol.style.Stroke|undefined),
@@ -7030,7 +7030,7 @@ olx.style.StyleOptions;
 /**
  * Feature property or geometry or function returning a geometry to render for
  * this style.
- * @type {undefined|string|ol.geom.Geometry|ol.style.GeometryFunction}
+ * @type {undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction}
  * @api
  */
 olx.style.StyleOptions.prototype.geometry;

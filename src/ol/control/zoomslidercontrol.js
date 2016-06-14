@@ -58,7 +58,7 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragging_;
 
   /**
-   * @type {!Array.<ol.events.Key>}
+   * @type {!Array.<ol.EventsKey>}
    * @private
    */
   this.dragListenerKeys_ = [];

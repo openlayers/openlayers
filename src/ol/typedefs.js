@@ -10,23 +10,34 @@
  * in type-defining comments used by the Closure compiler, and so should not
  * appear in module code.
  *
- * When the code is converted to ES6 modules, the namespace structure will
- * disappear, and these typedefs will have to be renamed accordingly, but the
- * namespace structure is maintained for the present for backwards compatibility.
- *
- * In principle, typedefs should not have a `goog.provide` nor should files which
- * refer to a typedef in comments need a `goog.require`. However, goog.provides
- * are needed for 2 cases, both to prevent compiler errors/warnings:
- * - the 1st two for specific errors
- * - each sub-namespace needs at least one so the namespace is created when not
- *   used in the code, as when application code is compiled with the library.
+ * They are now all in the `ol` namespace.
  */
-goog.provide('ol.Extent');
-goog.provide('ol.events.EventTargetLike');
 
-goog.provide('ol.interaction.DragBoxEndConditionType');
-goog.provide('ol.proj.ProjectionLike');
-goog.provide('ol.style.AtlasBlock');
+
+/**
+ * @typedef {{x: number, y: number, width: number, height: number}}
+ */
+ol.AtlasBlock;
+
+
+/**
+ * Provides information for an image inside an atlas.
+ * `offsetX` and `offsetY` are the position of the image inside
+ * the atlas image `image`.
+ * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
+ */
+ol.AtlasInfo;
+
+
+/**
+ * Provides information for an image inside an atlas manager.
+ * `offsetX` and `offsetY` is the position of the image inside
+ * the atlas image `image` and the position of the hit-detection image
+ * inside the hit-detection atlas image `hitImage`.
+ * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement,
+ *    hitImage: HTMLCanvasElement}}
+ */
+ol.AtlasManagerInfo;
 
 
 /**
@@ -82,6 +93,13 @@ ol.CenterConstraintType;
 
 
 /**
+ * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
+ *   size: number, lineDash: Array.<number>}}
+ */
+ol.CircleRenderOptions;
+
+
+/**
  * A color represented as a short array [red, green, blue, alpha].
  * red, green, and blue should be integers in the range 0..255 inclusive.
  * alpha should be a float in the range 0..1 inclusive. If no alpha value is
@@ -102,7 +120,7 @@ ol.ColorLike;
 
 /**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>} ol.Coordinate
+ * @typedef {Array.<number>}
  */
 ol.Coordinate;
 
@@ -114,6 +132,65 @@ ol.Coordinate;
  * @typedef {function((ol.Coordinate|undefined)): string}
  */
 ol.CoordinateFormatType;
+
+
+/**
+ * A function that takes a {@link ol.MapBrowserEvent} and two
+ * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
+ * true should be returned.
+ * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
+ */
+ol.DragBoxEndConditionType;
+
+
+/**
+ * Function that takes coordinates and an optional existing geometry as
+ * arguments, and returns a geometry. The optional existing geometry is the
+ * geometry that is returned when the function is called without a second
+ * argument.
+ * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
+ *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
+ *     ol.geom.SimpleGeometry}
+ */
+ol.DrawGeometryFunctionType;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a
+ * `{boolean}`. If the condition is met, true should be returned.
+ *
+ * @typedef {function(ol.MapBrowserEvent): boolean}
+ */
+ol.EventsConditionType;
+
+
+/**
+ * Key to use with {@link ol.Observable#unByKey}.
+ *
+ * @typedef {{bindTo: (Object|undefined),
+ *     boundListener: (ol.EventsListenerFunctionType|undefined),
+ *     callOnce: boolean,
+ *     deleteIndex: (number|undefined),
+ *     listener: ol.EventsListenerFunctionType,
+ *     target: (EventTarget|ol.events.EventTarget),
+ *     type: string}}
+ */
+ol.EventsKey;
+
+
+/**
+ * Listener function. This function is called with an event object as argument.
+ * When the function returns `false`, event propagation will stop.
+ *
+ * @typedef {function(ol.events.Event)|function(ol.events.Event): boolean}
+ */
+ol.EventsListenerFunctionType;
+
+
+/**
+ * @typedef {EventTarget|ol.events.EventTarget}
+ */
+ol.EventTargetLike;
 
 
 /**
@@ -232,8 +309,8 @@ ol.LoadingStrategy;
 
 /**
  * @typedef {{key_: string,
- *            newer: ol.LRUCacheEntry,
- *            older: ol.LRUCacheEntry,
+ *            newer: Object,
+ *            older: Object,
  *            value_: *}}
  */
 ol.LRUCacheEntry;
@@ -250,6 +327,16 @@ ol.LRUCacheEntry;
  *            values: Object.<string, *>}}
  */
 ol.MapOptionsInternal;
+
+
+/**
+ * @typedef {{depth: (Array.<number>|undefined),
+ *            feature: ol.Feature,
+ *            geometry: ol.geom.SimpleGeometry,
+ *            index: (number|undefined),
+ *            segment: Array.<ol.Extent>}}
+ */
+ol.ModifySegmentDataType;
 
 
 /**
@@ -277,6 +364,14 @@ ol.PreRenderFunction;
 
 
 /**
+ * A projection as {@link ol.proj.Projection}, SRS identifier string or
+ * undefined.
+ * @typedef {ol.proj.Projection|string|undefined} ol.ProjectionLike
+ */
+ol.ProjectionLike;
+
+
+/**
  * A function that takes an array of input data, performs some operation, and
  * returns an array of ouput data.
  * For `pixel` type operations, the function will be called with an array of
@@ -294,6 +389,20 @@ ol.PreRenderFunction;
  *     (Array.<number>|ImageData)}
  */
 ol.RasterOperation;
+
+
+/**
+ * @typedef {{
+ *   strokeStyle: (string|undefined),
+ *   strokeWidth: number,
+ *   size: number,
+ *   lineCap: string,
+ *   lineDash: Array.<number>,
+ *   lineJoin: string,
+ *   miterLimit: number
+ * }}
+ */
+ol.RegularShapeRenderOptions;
 
 
 /**
@@ -330,6 +439,16 @@ ol.RotationConstraintType;
 
 
 /**
+ * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
+ * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
+ * or `false` otherwise.
+ * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
+ *     boolean}
+ */
+ol.SelectFilterFunction;
+
+
+/**
  * An array of numbers representing a size: `[width, height]`.
  * @typedef {Array.<number>}
  */
@@ -337,10 +456,29 @@ ol.Size;
 
 
 /**
+ * @typedef {{
+ *     snapped: {boolean},
+ *     vertex: (ol.Coordinate|null),
+ *     vertexPixel: (ol.Pixel|null)
+ * }}
+ */
+ol.SnapResultType;
+
+
+/**
+ * @typedef {{
+ *     feature: ol.Feature,
+ *     segment: Array.<ol.Coordinate>
+ * }}
+ */
+ol.SnapSegmentDataType;
+
+
+/**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            extent: (null|ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.proj.ProjectionLike,
+ *            projection: ol.ProjectionLike,
  *            resolutions: (Array.<number>|undefined),
  *            state: (ol.source.State|undefined)}}
  */
@@ -358,7 +496,7 @@ ol.SourceRasterRenderedState;
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
- *            projection: ol.proj.ProjectionLike,
+ *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            wrapX: (boolean|undefined)}}
  */
@@ -372,7 +510,7 @@ ol.SourceSourceOptions;
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
  *            tilePixelRatio: (number|undefined),
- *            projection: ol.proj.ProjectionLike,
+ *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            wrapX: (boolean|undefined)}}
@@ -386,7 +524,7 @@ ol.SourceTileOptions;
  *            extent: (ol.Extent|undefined),
  *            logo: (string|olx.LogoOptions|undefined),
  *            opaque: (boolean|undefined),
- *            projection: ol.proj.ProjectionLike,
+ *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: ol.TileLoadFunctionType,
@@ -397,6 +535,37 @@ ol.SourceTileOptions;
  *            wrapX: (boolean|undefined)}}
  */
 ol.SourceUrlTileOptions;
+
+
+/**
+ * A function that takes an {@link ol.Feature} and a `{number}` representing
+ * the view's resolution. The function should return a {@link ol.style.Style}
+ * or an array of them. This way e.g. a vector layer can be styled.
+ *
+ * @typedef {function((ol.Feature|ol.render.Feature), number):
+ *     (ol.style.Style|Array.<ol.style.Style>)}
+ */
+ol.StyleFunction;
+
+
+/**
+ * A function that takes an {@link ol.Feature} as argument and returns an
+ * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
+ *
+ * @typedef {function((ol.Feature|ol.render.Feature)):
+ *     (ol.geom.Geometry|ol.render.Feature|undefined)}
+ */
+ol.StyleGeometryFunction;
+
+
+/**
+ * @typedef {{opacity: number,
+ *            rotateWithView: boolean,
+ *            rotation: number,
+ *            scale: number,
+ *            snapToPixel: boolean}}
+ */
+ol.StyleImageOptions;
 
 
 /**
@@ -517,190 +686,3 @@ ol.XmlParser;
  * @typedef {function(Node, *, Array.<*>)}
  */
 ol.XmlSerializer;
-
-
-/**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a
- * `{boolean}`. If the condition is met, true should be returned.
- *
- * @typedef {function(ol.MapBrowserEvent): boolean}
- */
-ol.events.ConditionType;
-
-
-/**
- * @typedef {EventTarget|ol.events.EventTarget|
- *     {addEventListener: function(string, Function, boolean=),
- *     removeEventListener: function(string, Function, boolean=),
- *     dispatchEvent: function(string)}}
- */
-ol.events.EventTargetLike;
-
-
-/**
- * Key to use with {@link ol.Observable#unByKey}.
- *
- * @typedef {{bindTo: (Object|undefined),
- *     boundListener: (ol.events.ListenerFunctionType|undefined),
- *     callOnce: boolean,
- *     deleteIndex: (number|undefined),
- *     listener: ol.events.ListenerFunctionType,
- *     target: (EventTarget|ol.events.EventTarget),
- *     type: string}}
- */
-ol.events.Key;
-
-
-/**
- * Listener function. This function is called with an event object as argument.
- * When the function returns `false`, event propagation will stop.
- *
- * @typedef {function(ol.events.Event)|function(ol.events.Event): boolean}
- */
-ol.events.ListenerFunctionType;
-
-
-/**
- * A function that takes a {@link ol.MapBrowserEvent} and two
- * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
- * true should be returned.
- * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
- */
-ol.interaction.DragBoxEndConditionType;
-
-
-/**
- * Function that takes coordinates and an optional existing geometry as
- * arguments, and returns a geometry. The optional existing geometry is the
- * geometry that is returned when the function is called without a second
- * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
- *     ol.geom.SimpleGeometry}
- */
-ol.interaction.DrawGeometryFunctionType;
-
-
-/**
- * @typedef {{depth: (Array.<number>|undefined),
- *            feature: ol.Feature,
- *            geometry: ol.geom.SimpleGeometry,
- *            index: (number|undefined),
- *            segment: Array.<ol.Extent>}}
- */
-ol.interaction.SegmentDataType;
-
-
-/**
- * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
- * an {@link ol.layer.Layer} and returns `true` if the feature may be selected
- * or `false` otherwise.
- * @typedef {function((ol.Feature|ol.render.Feature), ol.layer.Layer):
- *     boolean}
- */
-ol.interaction.SelectFilterFunction;
-
-
-/**
- * @typedef {{
- *     snapped: {boolean},
- *     vertex: (ol.Coordinate|null),
- *     vertexPixel: (ol.Pixel|null)
- * }}
- */
-ol.interaction.SnapResultType;
-
-
-/**
- * @typedef {{
- *     feature: ol.Feature,
- *     segment: Array.<ol.Coordinate>
- * }}
- */
-ol.interaction.SnapSegmentDataType;
-
-
-/**
- * A projection as {@link ol.proj.Projection}, SRS identifier string or
- * undefined.
- * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
- */
-ol.proj.ProjectionLike;
-
-
-/**
- * @typedef {{x: number, y: number, width: number, height: number}}
- */
-ol.style.AtlasBlock;
-
-
-/**
- * Provides information for an image inside an atlas.
- * `offsetX` and `offsetY` are the position of the image inside
- * the atlas image `image`.
- * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
- */
-ol.style.AtlasInfo;
-
-
-/**
- * Provides information for an image inside an atlas manager.
- * `offsetX` and `offsetY` is the position of the image inside
- * the atlas image `image` and the position of the hit-detection image
- * inside the hit-detection atlas image `hitImage`.
- * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement,
- *    hitImage: HTMLCanvasElement}}
- */
-ol.style.AtlasManagerInfo;
-
-
-/**
- * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
- *   size: number, lineDash: Array.<number>}}
- */
-ol.style.CircleRenderOptions;
-
-
-/**
- * @typedef {{opacity: number,
- *            rotateWithView: boolean,
- *            rotation: number,
- *            scale: number,
- *            snapToPixel: boolean}}
- */
-ol.style.ImageOptions;
-
-
-/**
- * A function that takes an {@link ol.Feature} as argument and returns an
- * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
- *
- * @typedef {function((ol.Feature|ol.render.Feature)):
- *     (ol.geom.Geometry|ol.render.Feature|undefined)}
- */
-ol.style.GeometryFunction;
-
-
-/**
- * @typedef {{
- *   strokeStyle: (string|undefined),
- *   strokeWidth: number,
- *   size: number,
- *   lineCap: string,
- *   lineDash: Array.<number>,
- *   lineJoin: string,
- *   miterLimit: number
- * }}
- */
-ol.style.RegularShapeRenderOptions;
-
-
-/**
- * A function that takes an {@link ol.Feature} and a `{number}` representing
- * the view's resolution. The function should return a {@link ol.style.Style}
- * or an array of them. This way e.g. a vector layer can be styled.
- *
- * @typedef {function((ol.Feature|ol.render.Feature), number):
- *     (ol.style.Style|Array.<ol.style.Style>)}
- */
-ol.style.StyleFunction;

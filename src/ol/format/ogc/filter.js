@@ -18,8 +18,6 @@ goog.provide('ol.format.ogc.filter.IsNull');
 goog.provide('ol.format.ogc.filter.IsBetween');
 goog.provide('ol.format.ogc.filter.IsLike');
 
-goog.require('ol.Extent');
-
 
 /**
  * Create a logical `<And>` operator between two filter conditions.
@@ -365,7 +363,7 @@ ol.format.ogc.filter.Bbox = function(geometryName, extent, opt_srsName) {
 
   /**
    * @public
-   * @type {!ol.Extent}
+   * @type {ol.Extent}
    */
   this.extent = extent;
 

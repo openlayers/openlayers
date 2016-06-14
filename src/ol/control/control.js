@@ -60,7 +60,7 @@ ol.control.Control = function(options) {
 
   /**
    * @protected
-   * @type {!Array.<ol.events.Key>}
+   * @type {!Array.<ol.EventsKey>}
    */
   this.listenerKeys = [];
 

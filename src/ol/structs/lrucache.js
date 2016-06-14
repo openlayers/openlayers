@@ -133,7 +133,7 @@ ol.structs.LRUCache.prototype.get = function(key) {
   if (entry === this.newest_) {
     return entry.value_;
   } else if (entry === this.oldest_) {
-    this.oldest_ = this.oldest_.newer;
+    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (this.oldest_.newer);
     this.oldest_.older = null;
   } else {
     entry.newer.older = entry.older;
@@ -216,7 +216,7 @@ ol.structs.LRUCache.prototype.pop = function() {
   if (entry.newer) {
     entry.newer.older = null;
   }
-  this.oldest_ = entry.newer;
+  this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
   if (!this.oldest_) {
     this.newest_ = null;
   }
@@ -244,12 +244,12 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
       'key is not a standard property of objects (e.g. "__proto__")');
   goog.asserts.assert(!(key in this.entries_),
       'key is not used already');
-  var entry = {
+  var entry = /** @type {ol.LRUCacheEntry} */ ({
     key_: key,
     newer: null,
     older: this.newest_,
     value_: value
-  };
+  });
   if (!this.newest_) {
     this.oldest_ = entry;
   } else {
