@@ -11,13 +11,7 @@
  * appear in module code.
  *
  * They are now all in the `ol` namespace.
- *
- * In principle, typedefs should not have a `goog.provide` nor should files which
- * refer to a typedef in comments need a `goog.require`. However, goog.provides
- * are needed for 2 cases, both to prevent compiler errors/warnings.
  */
-goog.provide('ol.Extent');
-goog.provide('ol.EventTargetLike');
 
 
 /**
@@ -126,7 +120,7 @@ ol.ColorLike;
 
 /**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>} ol.Coordinate
+ * @typedef {Array.<number>}
  */
 ol.Coordinate;
 
@@ -162,15 +156,6 @@ ol.DrawGeometryFunctionType;
 
 
 /**
- * @typedef {EventTarget|ol.events.EventTarget|
- *     {addEventListener: function(string, Function, boolean=),
- *     removeEventListener: function(string, Function, boolean=),
- *     dispatchEvent: function(string)}}
- */
-ol.EventTargetLike;
-
-
-/**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
  *
@@ -200,6 +185,12 @@ ol.EventsKey;
  * @typedef {function(ol.events.Event)|function(ol.events.Event): boolean}
  */
 ol.EventsListenerFunctionType;
+
+
+/**
+ * @typedef {EventTarget|ol.events.EventTarget}
+ */
+ol.EventTargetLike;
 
 
 /**
@@ -318,8 +309,8 @@ ol.LoadingStrategy;
 
 /**
  * @typedef {{key_: string,
- *            newer: ol.LRUCacheEntry,
- *            older: ol.LRUCacheEntry,
+ *            newer: Object,
+ *            older: Object,
  *            value_: *}}
  */
 ol.LRUCacheEntry;

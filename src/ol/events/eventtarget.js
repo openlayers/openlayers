@@ -5,6 +5,7 @@ goog.require('ol.Disposable');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 
+
 /**
  * @classdesc
  * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
