@@ -196,7 +196,7 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
     }
     if (textureCacheEntry.minFilter != minFilter) {
       gl.texParameteri(
-          goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, minFilter);
+          goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER, minFilter);
       textureCacheEntry.minFilter = minFilter;
     }
   } else {
