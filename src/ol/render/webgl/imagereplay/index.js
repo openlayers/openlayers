@@ -140,14 +140,15 @@ goog.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
 ol.render.webgl.LineStringInstruction = {
   BEGIN_LINE: 0,
   END_LINE: 1,
-  SQUARE_CAP: 2,
+  BEGIN_LINE_CAP: 2,
   BEVEL_FIRST: 3,
   BEVEL_SECOND: 4,
   MITER_BOTTOM: 5,
   MITER_TOP: 6,
   ROUND_JOIN: 7,
   ROUND_CAP: 8,
-  ROUND_BOTH: 9
+  ROUND_BOTH: 9,
+  END_LINE_CAP : 10
 };
 
 ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = goog.abstractMethod;
@@ -1041,9 +1042,8 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var i, ii;
   var numVertices = this.vertices_.length;
   var numIndices = this.indices_.length;
-  var lineJoin = this.state_.lineJoin;
-  var verticesPerPoint = lineJoin === 'bevel' ? 3 : 4;
-  //var lineCap = this.state_.lineCap;
+  var lineJoin = this.state_.lineJoin === 'bevel' ? false : true;
+  var lineCap = this.state_.lineCap === 'butt' ? false : true;
   var closed = this.isClosed_(flatCoordinates, offset, end, stride);
   var lastIndex;
   var lastSign = 1;
@@ -1064,15 +1064,46 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         //A closed line! Complete the circle.
         tempP = [flatCoordinates[end - stride] - this.origin_[0], flatCoordinates[end - stride + 1] - this.origin_[1]];
       } else {
-        //Add the first two vertices.
+        //Add the first two/four vertices.
         p0 = undefined;
+
+        if (lineCap) {
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = p1[0];
+          this.vertices_[numVertices++] = p1[1];
+          this.vertices_[numVertices++] = p2[0];
+          this.vertices_[numVertices++] = p2[1];
+          this.vertices_[numVertices++] = lastSign;
+          this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP;
+
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = p1[0];
+          this.vertices_[numVertices++] = p1[1];
+          this.vertices_[numVertices++] = p2[0];
+          this.vertices_[numVertices++] = p2[1];
+          this.vertices_[numVertices++] = -lastSign;
+          this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP;
+
+          this.indices_[numIndices++] = n + 2;
+          this.indices_[numIndices++] = n;
+          this.indices_[numIndices++] = n + 1;
+
+          this.indices_[numIndices++] = n + 1;
+          this.indices_[numIndices++] = n + 3;
+          this.indices_[numIndices++] = n + 2;
+
+          n = n + 2;
+        }
+
         this.vertices_[numVertices++] = 0;
         this.vertices_[numVertices++] = 0;
         this.vertices_[numVertices++] = p1[0];
         this.vertices_[numVertices++] = p1[1];
         this.vertices_[numVertices++] = p2[0];
         this.vertices_[numVertices++] = p2[1];
-        this.vertices_[numVertices++] = 1;
+        this.vertices_[numVertices++] = lastSign;
         this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEGIN_LINE;
 
         this.vertices_[numVertices++] = 0;
@@ -1081,7 +1112,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         this.vertices_[numVertices++] = p1[1];
         this.vertices_[numVertices++] = p2[0];
         this.vertices_[numVertices++] = p2[1];
-        this.vertices_[numVertices++] = -1;
+        this.vertices_[numVertices++] = -lastSign;
         this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.BEGIN_LINE;
 
         lastIndex = n + 1;
@@ -1121,6 +1152,35 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         this.indices_[numIndices++] = lastIndex;
         this.indices_[numIndices++] = n + 1;
         this.indices_[numIndices++] = n;
+
+        if (lineCap) {
+          this.vertices_[numVertices++] = p0[0];
+          this.vertices_[numVertices++] = p0[1];
+          this.vertices_[numVertices++] = p1[0];
+          this.vertices_[numVertices++] = p1[1];
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = lastSign;
+          this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.END_LINE_CAP;
+
+          this.vertices_[numVertices++] = p0[0];
+          this.vertices_[numVertices++] = p0[1];
+          this.vertices_[numVertices++] = p1[0];
+          this.vertices_[numVertices++] = p1[1];
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = 0;
+          this.vertices_[numVertices++] = -lastSign;
+          this.vertices_[numVertices++] = ol.render.webgl.LineStringInstruction.END_LINE_CAP;
+
+          this.indices_[numIndices++] = n + 2;
+          this.indices_[numIndices++] = n;
+          this.indices_[numIndices++] = n + 1;
+
+          this.indices_[numIndices++] = n + 1;
+          this.indices_[numIndices++] = n + 3;
+          this.indices_[numIndices++] = n + 2;
+
+        }
 
         break;
       }
@@ -1178,7 +1238,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     lastSign = sign;
 
     //Add miter
-    if (verticesPerPoint === 4) {
+    if (lineJoin) {
       this.vertices_[numVertices++] = p0[0];
       this.vertices_[numVertices++] = p0[1];
       this.vertices_[numVertices++] = p1[0];

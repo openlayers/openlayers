@@ -13,9 +13,9 @@ goog.require('ol.webgl.shader');
  * @struct
  */
 ol.render.webgl.polygonreplay.shader.DefaultFragment = function() {
-  goog.base(this, ol.render.webgl.polygonreplay.shader.DefaultFragment.SOURCE);
+  ol.webgl.shader.Fragment.call(this, ol.render.webgl.polygonreplay.shader.DefaultFragment.SOURCE);
 };
-goog.inherits(ol.render.webgl.polygonreplay.shader.DefaultFragment, ol.webgl.shader.Fragment);
+ol.inherits(ol.render.webgl.polygonreplay.shader.DefaultFragment, ol.webgl.shader.Fragment);
 goog.addSingletonGetter(ol.render.webgl.polygonreplay.shader.DefaultFragment);
 
 
@@ -48,9 +48,9 @@ ol.render.webgl.polygonreplay.shader.DefaultFragment.SOURCE = goog.DEBUG ?
  * @struct
  */
 ol.render.webgl.polygonreplay.shader.DefaultVertex = function() {
-  goog.base(this, ol.render.webgl.polygonreplay.shader.DefaultVertex.SOURCE);
+  ol.webgl.shader.Vertex.call(this, ol.render.webgl.polygonreplay.shader.DefaultVertex.SOURCE);
 };
-goog.inherits(ol.render.webgl.polygonreplay.shader.DefaultVertex, ol.webgl.shader.Vertex);
+ol.inherits(ol.render.webgl.polygonreplay.shader.DefaultVertex, ol.webgl.shader.Vertex);
 goog.addSingletonGetter(ol.render.webgl.polygonreplay.shader.DefaultVertex);
 
 

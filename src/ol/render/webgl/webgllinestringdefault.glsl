@@ -30,14 +30,16 @@ void main(void) {
     vec2 dirVect = a_nextPos - a_position;
     vec2 normal = normalize(vec2(-dirVect.y, dirVect.x));
     offset = v_halfWidth * normal * a_direction;
-    if (a_instruction == 4. && (u_round == 7. || u_round == 9.)) {
+    if ((a_instruction == 4. && (u_round == 7. || u_round == 9.)) ||
+        (a_instruction == 0. && (u_round == 8. || u_round == 9.))) {
       v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
   } else if (a_instruction == 1. || a_instruction == 3.) {
     vec2 dirVect = a_lastPos - a_position;
     vec2 normal = normalize(vec2(dirVect.y, -dirVect.x));
     offset = v_halfWidth * normal * a_direction;
-    if (a_instruction == 3. && (u_round == 7. || u_round == 9.)) {
+    if ((a_instruction == 3. && (u_round == 7. || u_round == 9.)) ||
+        (a_instruction == 1. && (u_round == 8. || u_round == 9.))) {
       v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
   } else if (a_instruction == 5. || a_instruction == 6.) {
@@ -76,6 +78,30 @@ void main(void) {
         }
         offset = tmpNormal * a_direction * v_halfWidth;
       }
+    }
+  } else if (a_instruction == 2.) {
+    vec2 dirVect = a_position - a_nextPos;
+    vec2 firstNormal = normalize(dirVect);
+    vec2 secondNormal = vec2(firstNormal.y * a_direction, -firstNormal.x * a_direction);
+    vec2 hypotenuse = normalize(firstNormal - secondNormal);
+    vec2 normal = vec2(hypotenuse.y * a_direction, -hypotenuse.x * a_direction);
+    float length = sqrt(v_halfWidth * v_halfWidth * 2.0);
+    offset = normal * length;
+    if (u_round == 8. || u_round == 9.) {
+      v_round = 1.0;
+      v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
+    }
+  } else if (a_instruction == 10.) {
+    vec2 dirVect = a_position - a_lastPos;
+    vec2 firstNormal = normalize(dirVect);
+    vec2 secondNormal = vec2(-firstNormal.y * a_direction, firstNormal.x * a_direction);
+    vec2 hypotenuse = normalize(firstNormal - secondNormal);
+    vec2 normal = vec2(-hypotenuse.y * a_direction, hypotenuse.x * a_direction);
+    float length = sqrt(v_halfWidth * v_halfWidth * 2.0);
+    offset = normal * length;
+    if (u_round == 8. || u_round == 9.) {
+      v_round = 1.0;
+      v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
   }
   vec4 offsets = u_offsetScaleMatrix * vec4(offset, 0., 0.);
