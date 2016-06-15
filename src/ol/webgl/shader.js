@@ -51,9 +51,9 @@ ol.webgl.Shader.prototype.isAnimated = ol.functions.FALSE;
  * @struct
  */
 ol.webgl.shader.Fragment = function(source) {
-  goog.base(this, source);
+  ol.webgl.Shader.call(this, source);
 };
-goog.inherits(ol.webgl.shader.Fragment, ol.webgl.Shader);
+ol.inherits(ol.webgl.shader.Fragment, ol.webgl.Shader);
 
 
 /**
@@ -71,9 +71,9 @@ ol.webgl.shader.Fragment.prototype.getType = function() {
  * @struct
  */
 ol.webgl.shader.Vertex = function(source) {
-  goog.base(this, source);
+  ol.webgl.Shader.call(this, source);
 };
-goog.inherits(ol.webgl.shader.Vertex, ol.webgl.Shader);
+ol.inherits(ol.webgl.shader.Vertex, ol.webgl.Shader);
 
 
 /**

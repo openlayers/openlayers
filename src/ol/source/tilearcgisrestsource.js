@@ -1,9 +1,7 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol');
-goog.require('ol.TileCoord');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.math');
@@ -11,6 +9,7 @@ goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
+goog.require('ol.uri');
 
 
 /**
@@ -31,7 +30,7 @@ ol.source.TileArcGISRest = function(opt_options) {
 
   var options = opt_options || {};
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -58,7 +57,7 @@ ol.source.TileArcGISRest = function(opt_options) {
   this.tmpExtent_ = ol.extent.createEmpty();
 
 };
-goog.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
+ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
 
 
 /**
@@ -115,7 +114,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   if (modifiedUrl == url) {
     goog.asserts.fail('Unknown Rest Service', url);
   }
-  return goog.uri.utils.appendParamsFromMap(modifiedUrl, params);
+  return ol.uri.appendParams(modifiedUrl, params);
 };
 
 

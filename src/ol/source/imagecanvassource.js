@@ -1,6 +1,5 @@
 goog.provide('ol.source.ImageCanvas');
 
-goog.require('ol.CanvasFunctionType');
 goog.require('ol.ImageCanvas');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
@@ -17,7 +16,7 @@ goog.require('ol.source.Image');
  */
 ol.source.ImageCanvas = function(options) {
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     attributions: options.attributions,
     logo: options.logo,
     projection: options.projection,
@@ -51,7 +50,7 @@ ol.source.ImageCanvas = function(options) {
       options.ratio : 1.5;
 
 };
-goog.inherits(ol.source.ImageCanvas, ol.source.Image);
+ol.inherits(ol.source.ImageCanvas, ol.source.Image);
 
 
 /**

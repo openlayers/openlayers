@@ -2,12 +2,11 @@ goog.provide('ol.source.ImageMapGuide');
 
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.uri.utils');
 goog.require('ol.Image');
-goog.require('ol.ImageLoadFunctionType');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.source.Image');
+goog.require('ol.uri');
 
 
 /**
@@ -22,7 +21,7 @@ goog.require('ol.source.Image');
  */
 ol.source.ImageMapGuide = function(options) {
 
-  goog.base(this, {
+  ol.source.Image.call(this, {
     projection: options.projection,
     resolutions: options.resolutions
   });
@@ -99,7 +98,7 @@ ol.source.ImageMapGuide = function(options) {
   this.renderedRevision_ = 0;
 
 };
-goog.inherits(ol.source.ImageMapGuide, ol.source.Image);
+ol.inherits(ol.source.ImageMapGuide, ol.source.Image);
 
 
 /**
@@ -223,7 +222,7 @@ ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, siz
     'SETVIEWCENTERY': center[1]
   };
   ol.object.assign(baseParams, params);
-  return goog.uri.utils.appendParamsFromMap(baseUrl, baseParams);
+  return ol.uri.appendParams(baseUrl, baseParams);
 };
 
 

@@ -113,7 +113,8 @@ function generate(title, docs, filename, resolveLinks) {
     var docData = {
         filename: filename,
         title: title,
-        docs: docs
+        docs: docs,
+        packageInfo: ( find({kind: 'package'}) || [] ) [0]
     };
 
     var outpath = path.join(outdir, filename),
@@ -327,11 +328,6 @@ exports.publish = function(taffyData, opts, tutorials) {
         }
     });
 
-    // update outdir if necessary, then create outdir
-    var packageInfo = ( find({kind: 'package'}) || [] ) [0];
-    if (packageInfo && packageInfo.name) {
-        outdir = path.join(outdir, packageInfo.name, packageInfo.version);
-    }
     fs.mkPath(outdir);
 
     // copy the template's static files to outdir
@@ -439,13 +435,10 @@ exports.publish = function(taffyData, opts, tutorials) {
     if (members.globals.length) { generate('Global', [{kind: 'globalobj'}], globalUrl); }
 
     // index page displays information from package.json and lists files
-    var files = find({kind: 'file'}),
-        packages = find({kind: 'package'});
+    var files = find({kind: 'file'});
 
     generate('Index',
-        packages.concat(
-            [{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}]
-        ).concat(files),
+        [{kind: 'mainpage', readme: opts.readme, longname: (opts.mainpagetitle) ? opts.mainpagetitle : 'Main Page'}].concat(files),
     indexUrl);
 
     // set up the lists that we'll use to generate pages

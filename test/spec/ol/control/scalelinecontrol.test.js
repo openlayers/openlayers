@@ -1,7 +1,7 @@
 goog.provide('ol.test.control.ScaleLine');
 
 describe('ol.control.ScaleLine', function() {
-  var mapDiv
+  var mapDiv;
   var map;
   beforeEach(function() {
     mapDiv = document.createElement('div');

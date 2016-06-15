@@ -68,10 +68,12 @@ describe('ol.interaction.Modify', function() {
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
     var pointerEvent = new ol.pointer.PointerEvent(type, {
       type: type,
-      button: button,
       clientX: position.left + x + width / 2,
       clientY: position.top + y + height / 2,
       shiftKey: shiftKey
+    }, {
+      button: button,
+      isPrimary: true
     });
     var event = new ol.MapBrowserPointerEvent(type, map, pointerEvent);
     event.pointerEvent.pointerId = 1;
@@ -376,6 +378,23 @@ describe('ol.interaction.Modify', function() {
 
       validateEvents(events, [feature]);
     });
+
+    it('clicking with right button should not add a vertex', function() {
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      simulateEvent('pointermove', 40, -20, false, 0);
+      // right click
+      simulateEvent('pointerdown', 40, -20, false, 1);
+      simulateEvent('pointermove', 30, -20, false, 1);
+      simulateEvent('pointerdrag', 30, -20, false, 1);
+      simulateEvent('pointerup', 30, -20, false, 1);
+
+      expect(feature.getGeometry().getRevision()).to.equal(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+      expect(events).to.have.length(0);
+    });
+
   });
 
   describe('double click deleteCondition', function() {

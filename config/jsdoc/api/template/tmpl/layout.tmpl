@@ -1,8 +1,12 @@
+<?js
+var version = obj.packageInfo.version;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>OpenLayers 3 API Reference - <?js= title ?></title>
+    <title>OpenLayers v<?js= version ?> API - <?js= title ?></title>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch"></script>
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
     <script src="scripts/jquery.min.js"> </script>
@@ -36,6 +40,10 @@
     <?js= this.partial('navigation.tmpl', this) ?>
     <div class="main">
         <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
+        <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+          <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+        </div>
         <?js= content ?>
     </div>
 </div>

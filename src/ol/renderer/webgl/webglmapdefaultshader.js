@@ -13,9 +13,9 @@ goog.require('ol.webgl.shader');
  * @struct
  */
 ol.renderer.webgl.map.shader.DefaultFragment = function() {
-  goog.base(this, ol.renderer.webgl.map.shader.DefaultFragment.SOURCE);
+  ol.webgl.shader.Fragment.call(this, ol.renderer.webgl.map.shader.DefaultFragment.SOURCE);
 };
-goog.inherits(ol.renderer.webgl.map.shader.DefaultFragment, ol.webgl.shader.Fragment);
+ol.inherits(ol.renderer.webgl.map.shader.DefaultFragment, ol.webgl.shader.Fragment);
 goog.addSingletonGetter(ol.renderer.webgl.map.shader.DefaultFragment);
 
 
@@ -48,9 +48,9 @@ ol.renderer.webgl.map.shader.DefaultFragment.SOURCE = goog.DEBUG ?
  * @struct
  */
 ol.renderer.webgl.map.shader.DefaultVertex = function() {
-  goog.base(this, ol.renderer.webgl.map.shader.DefaultVertex.SOURCE);
+  ol.webgl.shader.Vertex.call(this, ol.renderer.webgl.map.shader.DefaultVertex.SOURCE);
 };
-goog.inherits(ol.renderer.webgl.map.shader.DefaultVertex, ol.webgl.shader.Vertex);
+ol.inherits(ol.renderer.webgl.map.shader.DefaultVertex, ol.webgl.shader.Vertex);
 goog.addSingletonGetter(ol.renderer.webgl.map.shader.DefaultVertex);
 
 

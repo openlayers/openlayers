@@ -132,13 +132,13 @@ ol.control.OverviewMap = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.OverviewMap.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     render: render,
     target: options.target
   });
 };
-goog.inherits(ol.control.OverviewMap, ol.control.Control);
+ol.inherits(ol.control.OverviewMap, ol.control.Control);
 
 
 /**
@@ -156,7 +156,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
       this.unbindView_(oldView);
     }
   }
-  goog.base(this, 'setMap', map);
+  ol.control.Control.prototype.setMap.call(this, map);
 
   if (map) {
     this.listenerKeys.push(ol.events.listen(

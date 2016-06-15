@@ -72,7 +72,7 @@ ol.control.FullScreen = function(opt_options) {
       (!goog.dom.fullscreen.isSupported() ? ol.css.CLASS_UNSUPPORTED : '');
   var element = goog.dom.createDom('DIV', cssClasses, button);
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     target: options.target
   });
@@ -90,7 +90,7 @@ ol.control.FullScreen = function(opt_options) {
   this.source_ = options.source;
 
 };
-goog.inherits(ol.control.FullScreen, ol.control.Control);
+ol.inherits(ol.control.FullScreen, ol.control.Control);
 
 
 /**
@@ -153,7 +153,7 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
  * @api stable
  */
 ol.control.FullScreen.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
+  ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
     this.listenerKeys.push(
         ol.events.listen(ol.global.document, goog.dom.fullscreen.EventType.CHANGE,

@@ -1,9 +1,5 @@
 goog.provide('ol.Constraints');
 
-goog.require('ol.CenterConstraintType');
-goog.require('ol.ResolutionConstraintType');
-goog.require('ol.RotationConstraintType');
-
 
 /**
  * @constructor

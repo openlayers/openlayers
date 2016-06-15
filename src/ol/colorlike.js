@@ -1,17 +1,6 @@
-goog.provide('ol.ColorLike');
 goog.provide('ol.colorlike');
 
 goog.require('ol.color');
-
-
-/**
- * A type accepted by CanvasRenderingContext2D.fillStyle.
- * Represents a color, pattern, or gradient.
- *
- * @typedef {string|CanvasPattern|CanvasGradient}
- * @api
- */
-ol.ColorLike;
 
 
 /**

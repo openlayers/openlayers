@@ -13,9 +13,9 @@ goog.require('ol.xml');
  * @extends {ol.format.XML}
  */
 ol.format.OWS = function() {
-  goog.base(this);
+  ol.format.XML.call(this);
 };
-goog.inherits(ol.format.OWS, ol.format.XML);
+ol.inherits(ol.format.OWS, ol.format.XML);
 
 
 /**
@@ -302,7 +302,7 @@ ol.format.OWS.NAMESPACE_URIS_ = [
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.PARSERS_ = ol.xml.makeStructureNS(
@@ -318,7 +318,7 @@ ol.format.OWS.PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
@@ -337,7 +337,7 @@ ol.format.OWS.ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeStructureNS(
@@ -348,7 +348,7 @@ ol.format.OWS.ALLOWED_VALUES_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeStructureNS(
@@ -360,7 +360,7 @@ ol.format.OWS.CONSTRAINT_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeStructureNS(
@@ -372,7 +372,7 @@ ol.format.OWS.CONTACT_INFO_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.DCP_PARSERS_ = ol.xml.makeStructureNS(
@@ -383,7 +383,7 @@ ol.format.OWS.DCP_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeStructureNS(
@@ -395,7 +395,7 @@ ol.format.OWS.HTTP_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeStructureNS(
@@ -406,7 +406,7 @@ ol.format.OWS.OPERATION_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeStructureNS(
@@ -417,7 +417,7 @@ ol.format.OWS.OPERATIONS_METADATA_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeStructureNS(
@@ -429,7 +429,7 @@ ol.format.OWS.PHONE_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
@@ -441,7 +441,7 @@ ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
@@ -457,7 +457,7 @@ ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
@@ -472,7 +472,7 @@ ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =

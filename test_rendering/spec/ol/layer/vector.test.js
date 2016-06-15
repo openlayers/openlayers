@@ -34,7 +34,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0] - r, center[1] + r],
         [center[0] - r, center[1] - r]
       ]
-    ])))
+    ])));
   }
 
   describe('vector layer', function() {
@@ -61,7 +61,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.once('postrender', function() {
         expectResemble(map, 'spec/ol/layer/expected/vector-canvas.png',
             17, done);
-      })
+      });
     });
 
   });

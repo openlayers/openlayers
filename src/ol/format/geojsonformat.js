@@ -31,7 +31,7 @@ ol.format.GeoJSON = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.JSONFeature.call(this);
 
   /**
    * @inheritDoc
@@ -49,7 +49,7 @@ ol.format.GeoJSON = function(opt_options) {
   this.geometryName_ = options.geometryName;
 
 };
-goog.inherits(ol.format.GeoJSON, ol.format.JSONFeature);
+ol.inherits(ol.format.GeoJSON, ol.format.JSONFeature);
 
 
 /**

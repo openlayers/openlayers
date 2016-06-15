@@ -117,6 +117,20 @@ describe('ol.format.GPX', function() {
       expect(serialized).to.xmleql(ol.xml.parse(text));
     });
 
+    it('does not write rte attributes in rtepts', function() {
+      var text =
+          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+          '  <rte>' +
+          '    <name>Name</name>' +
+          '    <rtept lat="1" lon="2"/>' +
+          '    <rtept lat="3" lon="4"/>' +
+          '  </rte>' +
+          '</gpx>';
+      var fs = format.readFeatures(text);
+      var serialized = format.writeFeaturesNode(fs);
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+
   });
 
   describe('trk', function() {
@@ -291,6 +305,38 @@ describe('ol.format.GPX', function() {
         [[9, 8, 10, 1263115872], [12, 11, 13, 1263115932]]
       ]);
       expect(g.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+      var serialized = format.writeFeaturesNode(fs);
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('does not write trk attributes in trkpts', function() {
+      var text =
+          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+          '  <trk>' +
+          '    <name>Name</name>' +
+          '    <trkseg>' +
+          '      <trkpt lat="1" lon="2">' +
+          '        <ele>3</ele>' +
+          '        <time>2010-01-10T09:29:12Z</time>' +
+          '      </trkpt>' +
+          '      <trkpt lat="5" lon="6">' +
+          '        <ele>7</ele>' +
+          '        <time>2010-01-10T09:30:12Z</time>' +
+          '      </trkpt>' +
+          '    </trkseg>' +
+          '    <trkseg>' +
+          '      <trkpt lat="8" lon="9">' +
+          '        <ele>10</ele>' +
+          '        <time>2010-01-10T09:31:12Z</time>' +
+          '      </trkpt>' +
+          '      <trkpt lat="11" lon="12">' +
+          '        <ele>13</ele>' +
+          '        <time>2010-01-10T09:32:12Z</time>' +
+          '      </trkpt>' +
+          '    </trkseg>' +
+          '  </trk>' +
+          '</gpx>';
+      var fs = format.readFeatures(text);
       var serialized = format.writeFeaturesNode(fs);
       expect(serialized).to.xmleql(ol.xml.parse(text));
     });

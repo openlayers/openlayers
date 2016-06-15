@@ -63,7 +63,7 @@ ol.source.ImageVector = function(options) {
    */
   this.replayGroup_ = null;
 
-  goog.base(this, {
+  ol.source.ImageCanvas.call(this, {
     attributions: options.attributions,
     canvasFunction: this.canvasFunctionInternal_.bind(this),
     logo: options.logo,
@@ -75,14 +75,14 @@ ol.source.ImageVector = function(options) {
 
   /**
    * User provided style.
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
    * @private
    */
   this.style_ = null;
 
   /**
    * Style function for use within the library.
-   * @type {ol.style.StyleFunction|undefined}
+   * @type {ol.StyleFunction|undefined}
    * @private
    */
   this.styleFunction_ = undefined;
@@ -93,7 +93,7 @@ ol.source.ImageVector = function(options) {
       this.handleSourceChange_, this);
 
 };
-goog.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
+ol.inherits(ol.source.ImageVector, ol.source.ImageCanvas);
 
 
 /**
@@ -188,7 +188,7 @@ ol.source.ImageVector.prototype.getSource = function() {
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
  *     Layer style.
  * @api stable
  */
@@ -199,7 +199,7 @@ ol.source.ImageVector.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {ol.style.StyleFunction|undefined} Layer style function.
+ * @return {ol.StyleFunction|undefined} Layer style function.
  * @api stable
  */
 ol.source.ImageVector.prototype.getStyleFunction = function() {
@@ -284,7 +284,7 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  *     style Layer style.
  * @api stable
  */

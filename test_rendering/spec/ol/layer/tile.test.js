@@ -206,7 +206,7 @@ describe('ol.rendering.layer.Tile', function() {
           e.vectorContext.drawPoint(new ol.geom.Point(
               ol.proj.transform([-123, 38], 'EPSG:4326', 'EPSG:3857')));
         });
-      }
+      };
     });
 
     afterEach(function() {

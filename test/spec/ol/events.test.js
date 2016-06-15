@@ -46,7 +46,7 @@ describe('ol.events', function() {
       listenerObj.listener = function() {
         expect(this).to.equal(bindTo);
         expect(unlistenSpy.firstCall.args[0]).to.eql(listenerObj);
-      }
+      };
       var boundListener = ol.events.bindListener_(listenerObj);
       expect(listenerObj.boundListener).to.equal(boundListener);
       boundListener();

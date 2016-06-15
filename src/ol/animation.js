@@ -1,7 +1,6 @@
 goog.provide('ol.animation');
 
 goog.require('ol');
-goog.require('ol.PreRenderFunction');
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.easing');

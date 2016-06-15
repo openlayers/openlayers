@@ -1,27 +1,7 @@
-goog.provide('ol.Coordinate');
-goog.provide('ol.CoordinateFormatType');
 goog.provide('ol.coordinate');
 
 goog.require('ol.math');
 goog.require('ol.string');
-
-
-/**
- * A function that takes a {@link ol.Coordinate} and transforms it into a
- * `{string}`.
- *
- * @typedef {function((ol.Coordinate|undefined)): string}
- * @api stable
- */
-ol.CoordinateFormatType;
-
-
-/**
- * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
- * @typedef {Array.<number>} ol.Coordinate
- * @api stable
- */
-ol.Coordinate;
 
 
 /**

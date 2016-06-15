@@ -9,7 +9,6 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('ol.pointer.PointerEventHandler');
-goog.require('ol.Size');
 goog.require('ol.ViewHint');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
@@ -59,7 +58,7 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragging_;
 
   /**
-   * @type {!Array.<ol.events.Key>}
+   * @type {!Array.<ol.EventsKey>}
    * @private
    */
   this.dragListenerKeys_ = [];
@@ -138,12 +137,12 @@ ol.control.ZoomSlider = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.ZoomSlider.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: containerElement,
     render: render
   });
 };
-goog.inherits(ol.control.ZoomSlider, ol.control.Control);
+ol.inherits(ol.control.ZoomSlider, ol.control.Control);
 
 
 /**
@@ -151,7 +150,7 @@ goog.inherits(ol.control.ZoomSlider, ol.control.Control);
  */
 ol.control.ZoomSlider.prototype.disposeInternal = function() {
   this.dragger_.dispose();
-  goog.base(this, 'disposeInternal');
+  ol.control.Control.prototype.disposeInternal.call(this);
 };
 
 
@@ -170,7 +169,7 @@ ol.control.ZoomSlider.direction = {
  * @inheritDoc
  */
 ol.control.ZoomSlider.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
+  ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
     map.render();
   }

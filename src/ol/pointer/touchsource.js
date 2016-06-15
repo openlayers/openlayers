@@ -49,7 +49,7 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
     'touchend': this.touchend,
     'touchcancel': this.touchcancel
   };
-  goog.base(this, dispatcher, mapping);
+  ol.pointer.EventSource.call(this, dispatcher, mapping);
 
   /**
    * @const
@@ -81,7 +81,7 @@ ol.pointer.TouchSource = function(dispatcher, mouseSource) {
    */
   this.resetId_ = undefined;
 };
-goog.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
+ol.inherits(ol.pointer.TouchSource, ol.pointer.EventSource);
 
 
 /**

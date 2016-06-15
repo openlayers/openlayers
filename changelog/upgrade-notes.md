@@ -1,8 +1,71 @@
 ## Upgrade notes
 
+#### `ol.interaction.ModifyEvent` changes
+
+The event object previously had a `mapBrowserPointerEvent` property, which has been renamed to `mapBrowserEvent`.
+
+#### Removal of ol.raster namespace
+
+Users compiling their code with the library and using types in the `ol.raster` namespace should note that this has now been removed. `ol.raster.Pixel` has been deleted, and the other types have been renamed as follows, and your code may need changing if you use these:
+* `ol.raster.Operation` to `ol.RasterOperation`
+* `ol.raster.OperationType` to `ol.RasterOperationType`
+
+#### All typedefs now in ol namespace
+
+Users compiling their code with the library should note that the following typedefs have been renamed; your code may need changing if you use these:
+* ol.events.ConditionType to ol.EventsConditionType
+* ol.events.EventTargetLike to ol.EventTargetLike
+* ol.events.Key to ol.EventsKey
+* ol.events.ListenerFunctionType to ol.EventsListenerFunctionType
+* ol.interaction.DragBoxEndConditionType to ol.DragBoxEndConditionType
+* ol.interaction.DrawGeometryFunctionType to ol.DrawGeometryFunctionType
+* ol.interaction.SegmentDataType to ol.ModifySegmentDataType
+* ol.interaction.SelectFilterFunction to ol.SelectFilterFunction
+* ol.interaction.SnapResultType to ol.SnapResultType
+* ol.interaction.SnapSegmentDataType to ol.SnapSegmentDataType
+* ol.proj.ProjectionLike to ol.ProjectionLike
+* ol.style.AtlasBlock to ol.AtlasBlock
+* ol.style.AtlasInfo to ol.AtlasInfo
+* ol.style.AtlasManagerInfo to ol.AtlasManagerInfo
+* ol.style.CircleRenderOptions to ol.CircleRenderOptions
+* ol.style.ImageOptions to ol.StyleImageOptions
+* ol.style.GeometryFunction to ol.StyleGeometryFunction
+* ol.style.RegularShapeRenderOptions to ol.RegularShapeRenderOptions
+* ol.style.StyleFunction to ol.StyleFunction
+
+### v3.16.0
+
+#### Rendering change for tile sources
+
+Previously, if you called `source.setUrl()` on a tile source, all currently rendered tiles would be cleared before new tiles were loaded and rendered.  This clearing of the map is undesirable if you are trying to smoothly update the tiles used by a source.  This behavior has now changed, and calling `source.setUrl()` (or `source.setUrls()`) will *not* clear currently rendered tiles before loading and rendering new tiles.  Instead, previously rendered tiles remain rendered until new tiles have loaded and can replace them.  If you want to achieve the old behavior (render a blank map before loading new tiles), you can call `source.refresh()` or you can replace the old source with a new one (using `layer.setSource()`).
+
+#### Move of typedefs out of code and into separate file
+
+This change should not affect the great majority of application developers, but it's possible there are edge cases when compiling application code together with the library which cause compiler errors or warnings. In this case, please raise a GitHub issue. `goog.require`s for typedefs should not be necessary.
+Users compiling their code with the library should note that the following API `@typedef`s have been renamed; your code may need changing if you use these:
+* `ol.format.WFS.FeatureCollectionMetadata` to `ol.WFSFeatureCollectionMetadata`
+* `ol.format.WFS.TransactionResponse` to `ol.WFSTransactionResponse`
+
 #### Removal of `opaque` option for `ol.source.VectorTile`
 
 This option is no longer needed, so it was removed from the API.
+
+#### XHR loading for `ol.source.TileUTFGrid`
+
+The `ol.source.TileUTFGrid` now uses XMLHttpRequest to load UTFGrid tiles by default.  This works out of the box with the v4 Mapbox API.  To work with the v3 API, you must use the new `jsonp` option on the source.  See the examples below for detail.
+
+```js
+// To work with the v4 API
+var v4source = new ol.source.TileUTFGrid({
+  url: 'https://api.tiles.mapbox.com/v4/example.json?access_token=' + YOUR_KEY_HERE
+});
+
+// To work with the v3 API
+var v3source = new ol.source.TileUTFGrid({
+  jsonp: true, // <--- this is required for v3
+  url: 'http://api.tiles.mapbox.com/v3/example.json'
+});
+```
 
 ### v3.15.0
 

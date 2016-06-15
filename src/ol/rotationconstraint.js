@@ -1,13 +1,6 @@
 goog.provide('ol.RotationConstraint');
-goog.provide('ol.RotationConstraintType');
 
 goog.require('ol.math');
-
-
-/**
- * @typedef {function((number|undefined), number): (number|undefined)}
- */
-ol.RotationConstraintType;
 
 
 /**
