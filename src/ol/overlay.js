@@ -1,6 +1,5 @@
 goog.provide('ol.Overlay');
 goog.provide('ol.OverlayPositioning');
-goog.provide('ol.OverlayProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
