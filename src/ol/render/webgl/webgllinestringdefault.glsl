@@ -13,53 +13,50 @@ attribute vec2 a_lastPos;
 attribute vec2 a_position;
 attribute vec2 a_nextPos;
 attribute float a_direction;
-attribute float a_instruction;
 
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform float u_lineWidth;
 uniform float u_miterLimit;
-uniform float u_round;
 
 void main(void) {
   v_halfWidth = u_lineWidth / 2.0;
   vec2 offset;
   v_round = 0.0;
+  float direction = a_direction / abs(a_direction);
   vec4 projPos = u_projectionMatrix * vec4(a_position, 0., 1.);
-  if (a_instruction == 0. || a_instruction == 4.) {
+  if (mod(a_direction, 3.0) == 0.0 || mod(a_direction, 17.0) == 0.0) {
     vec2 dirVect = a_nextPos - a_position;
     vec2 normal = normalize(vec2(-dirVect.y, dirVect.x));
-    offset = v_halfWidth * normal * a_direction;
-    if ((a_instruction == 4. && (u_round == 7. || u_round == 9.)) ||
-        (a_instruction == 0. && (u_round == 8. || u_round == 9.))) {
+    offset = v_halfWidth * normal * direction;
+    if (mod(a_direction, 2.0) == 0.0) {
       v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
-  } else if (a_instruction == 1. || a_instruction == 3.) {
+  } else if (mod(a_direction, 5.0) == 0.0 || mod(a_direction, 13.0) == 0.0) {
     vec2 dirVect = a_lastPos - a_position;
     vec2 normal = normalize(vec2(dirVect.y, -dirVect.x));
-    offset = v_halfWidth * normal * a_direction;
-    if ((a_instruction == 3. && (u_round == 7. || u_round == 9.)) ||
-        (a_instruction == 1. && (u_round == 8. || u_round == 9.))) {
+    offset = v_halfWidth * normal * direction;
+    if (mod(a_direction, 2.0) == 0.0) {
       v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
-  } else if (a_instruction == 5. || a_instruction == 6.) {
+  } else if (mod(a_direction, 19.0) == 0.0 || mod(a_direction, 23.0) == 0.0) {
     vec2 dirVect = a_nextPos - a_position;
     vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));
     vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));
     vec2 normal = vec2(tangent.y, -tangent.x);
     float miterLength = v_halfWidth / dot(normal, tmpNormal);
-    if (a_instruction == 6.) {
-      if (u_round == 7. || u_round == 9.) {
-        offset = normal * a_direction * miterLength;
+    if (mod(a_direction, 23.0) == 0.0) {
+      if (mod(a_direction, 2.0) == 0.0) {
+        offset = normal * direction * miterLength;
         v_round = 1.0;
         v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
       } else if (miterLength > u_miterLimit) {
-        offset = tmpNormal * a_direction * v_halfWidth;
+        offset = tmpNormal * direction * v_halfWidth;
       } else {
-        offset = normal * a_direction * miterLength;
+        offset = normal * direction * miterLength;
       }
-    } else if (a_instruction == 5.) {
-      offset = normal * a_direction * miterLength;
+    } else {
+      offset = normal * direction * miterLength;
       vec4 defaultOffset = u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
       vec4 firstProjPos = u_projectionMatrix * vec4(a_lastPos, 0., 1.) + defaultOffset;
       vec4 secondProjPos = projPos + defaultOffset;
@@ -76,30 +73,27 @@ void main(void) {
         } else {
           projPos = thirdProjPos - defaultOffset;
         }
-        offset = tmpNormal * a_direction * v_halfWidth;
+        offset = tmpNormal * direction * v_halfWidth;
       }
     }
-  } else if (a_instruction == 2.) {
-    vec2 dirVect = a_position - a_nextPos;
-    vec2 firstNormal = normalize(dirVect);
-    vec2 secondNormal = vec2(firstNormal.y * a_direction, -firstNormal.x * a_direction);
-    vec2 hypotenuse = normalize(firstNormal - secondNormal);
-    vec2 normal = vec2(hypotenuse.y * a_direction, -hypotenuse.x * a_direction);
-    float length = sqrt(v_halfWidth * v_halfWidth * 2.0);
-    offset = normal * length;
-    if (u_round == 8. || u_round == 9.) {
-      v_round = 1.0;
-      v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
+  } else if (mod(a_direction, 7.0) == 0.0 || mod(a_direction, 11.0) == 0.0) {
+    vec2 normal;
+    if (mod(a_direction, 7.0) == 0.0) {
+      vec2 dirVect = a_position - a_nextPos;
+      vec2 firstNormal = normalize(dirVect);
+      vec2 secondNormal = vec2(firstNormal.y * direction, -firstNormal.x * direction);
+      vec2 hypotenuse = normalize(firstNormal - secondNormal);
+      normal = vec2(hypotenuse.y * direction, -hypotenuse.x * direction);
+    } else {
+      vec2 dirVect = a_position - a_lastPos;
+      vec2 firstNormal = normalize(dirVect);
+      vec2 secondNormal = vec2(-firstNormal.y * direction, firstNormal.x * direction);
+      vec2 hypotenuse = normalize(firstNormal - secondNormal);
+      normal = vec2(-hypotenuse.y * direction, hypotenuse.x * direction);
     }
-  } else if (a_instruction == 10.) {
-    vec2 dirVect = a_position - a_lastPos;
-    vec2 firstNormal = normalize(dirVect);
-    vec2 secondNormal = vec2(-firstNormal.y * a_direction, firstNormal.x * a_direction);
-    vec2 hypotenuse = normalize(firstNormal - secondNormal);
-    vec2 normal = vec2(-hypotenuse.y * a_direction, hypotenuse.x * a_direction);
     float length = sqrt(v_halfWidth * v_halfWidth * 2.0);
     offset = normal * length;
-    if (u_round == 8. || u_round == 9.) {
+    if (mod(a_direction, 2.0) == 0.0) {
       v_round = 1.0;
       v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
