@@ -1048,6 +1048,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var lineCap = this.state_.lineCap === 'butt' ? 0 :
       this.state_.lineCap === 'square' ? 1 : 2;
   var closed = this.isClosed_(flatCoordinates, offset, end, stride);
+  var startIndex = numIndices;
   var lastIndex = numIndices;
   var lastSign = 1;
   //We need the adjacent vertices to define normals in joins. p0 = last, p1 = current, p2 = next.
@@ -1063,12 +1064,20 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     //First vertex.
     if (i === offset) {
       p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
-      if (flatCoordinates.length === stride * 2 && ol.array.equals(p1, p2)) {
+      if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
         break;
       }
       if (closed) {
         //A closed line! Complete the circle.
-        tempP = [flatCoordinates[end - stride] - this.origin_[0], flatCoordinates[end - stride + 1] - this.origin_[1]];
+        var j = end - stride * 2;
+        var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+        tempP = [flatCoordinates[j], flatCoordinates[j + 1]];
+        while (ol.array.equals(tempP, startCoord)) {
+          j -= stride;
+          tempP = [flatCoordinates[j], flatCoordinates[j + 1]];
+        }
+        tempP[0] -= this.origin_[0];
+        tempP[1] -= this.origin_[1];
       } else {
         //Add the first two/four vertices.
 
@@ -1103,7 +1112,8 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     } else if (i === end - stride) {
       //Last vertex.
       if (closed) {
-        p2 = [flatCoordinates[offset] - this.origin_[0], flatCoordinates[offset + 1] - this.origin_[1]];
+        //Same as the first vertex.
+        break;
       } else {
         p2 = undefined;
         //Note, that the third case will never happen, we just have to assure the compiler,
@@ -1150,7 +1160,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     if (ol.array.equals(p1, p2)) continue;
     p0 = tempP || p0;
     tempP = undefined;
-    //The sign of the area determines the line segment's orientation.
+
     var sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
         ? 1 : -1;
 
@@ -1163,13 +1173,15 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     numVertices = this.addVertices_(p0, p1, p2,
         -sign * ol.render.webgl.LineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
-    this.indices_[numIndices++] = n;
-    this.indices_[numIndices++] = lastIndex - 1;
-    this.indices_[numIndices++] = lastIndex;
+    if (i > offset) {
+      this.indices_[numIndices++] = n;
+      this.indices_[numIndices++] = lastIndex - 1;
+      this.indices_[numIndices++] = lastIndex;
 
-    this.indices_[numIndices++] = n + 2;
-    this.indices_[numIndices++] = n;
-    this.indices_[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
+      this.indices_[numIndices++] = n + 2;
+      this.indices_[numIndices++] = n;
+      this.indices_[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
+    }
 
     this.indices_[numIndices++] = n;
     this.indices_[numIndices++] = n + 2;
@@ -1187,6 +1199,17 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
       this.indices_[numIndices++] = n + 3;
       this.indices_[numIndices++] = n;
     }
+  }
+
+  if (closed) {
+    //Link the last triangle/rhombus to the first one.
+    this.indices_[numIndices++] = lastIndex;
+    this.indices_[numIndices++] = startIndex + 2;
+    this.indices_[numIndices++] = startIndex;
+
+    this.indices_[numIndices++] = startIndex;
+    this.indices_[numIndices++] = lastIndex - 1;
+    this.indices_[numIndices++] = lastIndex;
   }
 };
 
@@ -1223,7 +1246,7 @@ ol.render.webgl.LineStringReplay.prototype.addVertices_ = function(p0, p1, p2, p
 ol.render.webgl.LineStringReplay.prototype.isClosed_ = function(flatCoordinates, offset, end, stride) {
   var lastCoord = end - stride;
   if (flatCoordinates[offset] === flatCoordinates[lastCoord] &&
-      flatCoordinates[offset + 1] === flatCoordinates[lastCoord + 1]) {
+      flatCoordinates[offset + 1] === flatCoordinates[lastCoord + 1] && (end - offset) / stride > 3) {
     return true;
   }
   return false;
