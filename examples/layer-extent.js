@@ -3,7 +3,6 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.TileJSON');
-goog.require('ol.interaction.Draw');
 goog.require('ol.interaction.DragRotateAndZoom');
 
 function transform(extent) {
@@ -11,11 +10,10 @@ function transform(extent) {
 }
 
 var extents = {
-  northwest: transform([-180, 0, 0, 85]),
-  northeast: transform([0, 0, 180, 85]),
-  southeast: transform([0, -85, 180, 0]),
-  southwest: transform([-180, -85, 0, 0]),
-  world: transform([-180, -85, 180, 85])
+  India: transform([68.17665, 7.96553, 97.40256, 35.49401]),
+  Argentina: transform([-73.41544, -55.25, -53.62835, -21.83231]),
+  Nigeria: transform([2.6917, 4.24059, 14.57718, 13.86592]),
+  Sweden: transform([11.02737, 55.36174, 23.90338, 69.10625])
 };
 
 var base = new ol.layer.Tile({
@@ -27,7 +25,7 @@ var base = new ol.layer.Tile({
 });
 
 var overlay = new ol.layer.Tile({
-  extent: extents.northwest,
+  extent: extents.India,
   source: new ol.source.TileJSON({
     url: 'http://api.tiles.mapbox.com/v3/' +
         'mapbox.world-glass.json',
@@ -45,36 +43,7 @@ var map = new ol.Map({
   })
 });
 
-function box(coordinates, geometry) {
-  if (!geometry) {
-    geometry = new ol.geom.Polygon(null);
-  }
-  var start = coordinates[0];
-  var end = coordinates[1];
-
-  geometry.setCoordinates([
-    [start, [start[0], end[1]], end, [end[0], start[1]], start]
-  ]);
-  return geometry;
-}
-
-
-var draw = new ol.interaction.Draw({
-  type: /** @type {ol.geom.GeometryType} */ ('LineString'),
-  geometryFunction: box,
-  maxPoints: 2
-});
-
-draw.on('drawend', function(ev) {
-  var extent = ev.feature.getGeometry().getExtent();
-  overlay.setExtent(extent);
-});
-
 map.addInteraction(new ol.interaction.DragRotateAndZoom());
-
-document.getElementById('draw').onclick = function() {
-  map.addInteraction(draw);
-};
 
 for (var key in extents) {
   document.getElementById(key).onclick = function(event) {
