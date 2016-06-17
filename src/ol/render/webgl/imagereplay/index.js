@@ -188,7 +188,7 @@ ol.render.webgl.Replay.prototype.replay = function(context,
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // bind the indices buffer
-  goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
+  goog.asserts.assert(this.indicesBuffer_,
       'indicesBuffer must not be null');
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
@@ -240,16 +240,19 @@ ol.render.webgl.Replay.prototype.replay = function(context,
 /**
  * @private
  * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
  * @param {number} start Start index.
  * @param {number} end End index.
- * @param {number} elementType Element type.
- * @param {number} elementSize Element Size.
  */
 ol.render.webgl.Replay.prototype.drawElements_ = function(
-    gl, start, end, elementType, elementSize) {
+    gl, context, start, end) {
+  var elementType = context.hasOESElementIndexUint ?
+      ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
+  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
+
   var numItems = end - start;
   var offsetInBytes = start * elementSize;
-  gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
+  gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
 };
 
 /**
@@ -710,20 +713,16 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippe
   var groupIndices = hitDetection ? this.hitDetectionGroupIndices_ : this.groupIndices_;
   ol.DEBUG && console.assert(textures.length === groupIndices.length,
       'number of textures and groupIndeces match');
-  var elementType = context.hasOESElementIndexUint ?
-      ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
-  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(
-        gl, skippedFeaturesHash, textures, groupIndices,
-        elementType, elementSize);
+        gl, context, skippedFeaturesHash, textures, groupIndices);
   } else {
     var i, ii, start;
     for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
       gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
       var end = groupIndices[i];
-      this.drawElements_(gl, start, end, elementType, elementSize);
+      this.drawElements_(gl, context, start, end);
       start = end;
     }
   }
@@ -750,15 +749,14 @@ ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippe
  *
  * @private
  * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {Array.<WebGLTexture>} textures Textures.
  * @param {Array.<number>} groupIndices Texture group indices.
- * @param {number} elementType Element type.
- * @param {number} elementSize Element Size.
  */
-ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, skippedFeaturesHash, textures, groupIndices,
-    elementType, elementSize) {
+ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash, textures,
+    groupIndices) {
   var featureIndex = 0;
 
   var i, ii;
@@ -778,7 +776,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, skipped
         // feature should be skipped
         if (start !== end) {
           // draw the features so far
-          this.drawElements_(gl, start, end, elementType, elementSize);
+          this.drawElements_(gl, context, start, end);
         }
         // continue with the next feature
         start = (featureIndex === this.startIndices_.length - 1) ?
@@ -795,7 +793,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, skipped
     if (start !== end) {
       // draw the remaining features (in case there was no skipped feature
       // in this texture group, all features of a group are drawn together)
-      this.drawElements_(gl, start, end, elementType, elementSize);
+      this.drawElements_(gl, context, start, end);
     }
   }
 };
@@ -868,9 +866,6 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function
   ol.DEBUG && console.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length,
       'number of hitDetectionTextures and hitDetectionGroupIndices match');
-  var elementType = context.hasOESElementIndexUint ?
-      ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
-  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
   var i, groupStart, start, end, feature, featureUid;
   var featureIndex = this.startIndices_.length - 1;
@@ -892,7 +887,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function
               /** @type {Array<number>} */ (opt_hitExtent),
               feature.getGeometry().getExtent()))) {
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        this.drawElements_(gl, start, end, elementType, elementSize);
+        this.drawElements_(gl, context, start, end);
 
         var result = featureCallback(feature);
         if (result) {
@@ -1022,6 +1017,8 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
     lineWidth: undefined,
     miterLimit: undefined
   };
+
+  this.startIndices_ = [0];
 
 };
 ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
@@ -1260,10 +1257,10 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   if (flatCoordinates.length > stride) {
-    this.startIndices_.push(this.indices_.length);
-    this.startIndicesFeature_.push(feature);
     this.drawCoordinates_(
         flatCoordinates, 0, flatCoordinates.length, stride);
+    this.startIndices_.push(this.indices_.length);
+    this.startIndicesFeature_.push(feature);
   }
 };
 
@@ -1272,19 +1269,20 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
  * @inheritDoc
  */
 ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
-  this.startIndices_.push(this.indices_.length);
-  this.startIndicesFeature_.push(feature);
+  var indexCount = this.indices_.length;
   var lineStringGeometries = multiLineStringGeometry.getLineStrings();
   var i, ii;
   for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
     var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
     var stride = lineStringGeometries[i].getStride();
     if (flatCoordinates.length > stride) {
-      this.startIndices_.push(this.indices_.length);
-      this.startIndicesFeature_.push(feature);
       this.drawCoordinates_(
           flatCoordinates, 0, flatCoordinates.length, stride);
     }
+  }
+  if (this.indices_.length > indexCount) {
+    this.startIndices_.push(this.indices_.length);
+    this.startIndicesFeature_.push(feature);
   }
 };
 
@@ -1293,8 +1291,6 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
  * @param {ol.webgl.Context} context Context.
  **/
 ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
-  this.startIndices_.push(this.indices_.length);
-
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
   context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
@@ -1395,15 +1391,11 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
  * @param {boolean} hitDetection Hit detection mode.
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
-  var elementType = context.hasOESElementIndexUint ?
-      goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
-  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
-
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
     var end = this.startIndices_[this.startIndices_.length - 1];
-    this.drawElements_(gl, 0, end, elementType, elementSize);
+    this.drawElements_(gl, context, 0, end);
   }
 };
 
