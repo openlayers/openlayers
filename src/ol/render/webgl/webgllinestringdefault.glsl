@@ -43,17 +43,15 @@ void main(void) {
     vec2 dirVect = a_nextPos - a_position;
     vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));
     vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));
-    vec2 normal = vec2(tangent.y, -tangent.x);
+    vec2 normal = vec2(-tangent.y, tangent.x);
     float miterLength = v_halfWidth / dot(normal, tmpNormal);
     if (mod(a_direction, 23.0) == 0.0) {
+      offset = normal * direction * miterLength;
       if (mod(a_direction, 2.0) == 0.0) {
-        offset = normal * direction * miterLength;
         v_round = 1.0;
         v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
       } else if (miterLength > u_miterLimit) {
         offset = tmpNormal * direction * v_halfWidth;
-      } else {
-        offset = normal * direction * miterLength;
       }
     } else {
       offset = normal * direction * miterLength;
