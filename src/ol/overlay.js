@@ -440,8 +440,8 @@ ol.Overlay.prototype.getRect_ = function(element, size) {
   goog.asserts.assert(size !== undefined, 'size should be defined');
 
   var box = element.getBoundingClientRect();
-  var offsetX = box.left + window.pageXOffset;
-  var offsetY = box.top + window.pageYOffset;
+  var offsetX = box.left + ol.global.pageXOffset;
+  var offsetY = box.top + ol.global.pageYOffset;
   return [
     offsetX,
     offsetY,

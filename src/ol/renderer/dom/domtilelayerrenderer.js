@@ -76,7 +76,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
 
   if (!layerState.visible) {
     if (this.renderedVisible_) {
-      this.target.style.display = 'none'; //Hide the element
+      this.target.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return true;
@@ -245,7 +245,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   }
 
   if (layerState.visible && !this.renderedVisible_) {
-    this.target.style.display = ''; //Show the element
+    this.target.style.display = '';
     this.renderedVisible_ = true;
   }
 

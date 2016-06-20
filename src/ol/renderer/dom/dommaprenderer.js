@@ -156,7 +156,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      this.layersPane_.style.display = 'none'; //Hide the element
+      this.layersPane_.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -208,7 +208,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   }
 
   if (!this.renderedVisible_) {
-    this.layersPane_.style.display = ''; //Show the element
+    this.layersPane_.style.display = '';
     this.renderedVisible_ = true;
   }
 

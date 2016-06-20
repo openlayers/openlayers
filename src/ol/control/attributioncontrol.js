@@ -43,7 +43,7 @@ ol.control.Attribution = function(opt_options) {
   this.logoLi_ = document.createElement('LI');
 
   this.ulElement_.appendChild(this.logoLi_);
-  this.logoLi_.style.display = 'none'; // Hide the logo
+  this.logoLi_.style.display = 'none';
 
   /**
    * @private
@@ -213,7 +213,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      this.element.style.display = 'none'; //Hide the element
+      this.element.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -229,13 +229,13 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   for (attributionKey in this.attributionElements_) {
     if (attributionKey in visibleAttributions) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
-        this.attributionElements_[attributionKey].style.display = ''; // Show the element
+        this.attributionElements_[attributionKey].style.display = '';
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
       delete visibleAttributions[attributionKey];
     } else if (attributionKey in hiddenAttributions) {
       if (this.attributionElementRenderedVisible_[attributionKey]) {
-        this.attributionElements_[attributionKey].style.display = 'none'; //Hide the element
+        this.attributionElements_[attributionKey].style.display = 'none';
         delete this.attributionElementRenderedVisible_[attributionKey];
       }
       delete hiddenAttributions[attributionKey];
@@ -257,7 +257,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         hiddenAttributions[attributionKey].getHTML();
-    attributionElement.style.display = 'none'; //Hide the element
+    attributionElement.style.display = 'none';
     this.ulElement_.appendChild(attributionElement);
     this.attributionElements_[attributionKey] = attributionElement;
   }
@@ -266,7 +266,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
       !ol.object.isEmpty(this.attributionElementRenderedVisible_) ||
       !ol.object.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
-    this.element.style.display = renderVisible ? '' : 'none'; //Conditionally hide
+    this.element.style.display = renderVisible ? '' : 'none';
     this.renderedVisible_ = renderVisible;
   }
   if (renderVisible &&

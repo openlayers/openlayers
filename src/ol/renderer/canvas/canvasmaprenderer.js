@@ -148,7 +148,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      this.canvas_.style.display = 'none'; //Hide the element
+      this.canvas_.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -199,7 +199,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
-    this.canvas_.style.display = ''; //Show the element
+    this.canvas_.style.display = '';
     this.renderedVisible_ = true;
   }
 

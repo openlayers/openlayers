@@ -257,7 +257,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
-      this.element_.style.display = 'none'; // Hide the element
+      this.element_.style.display = 'none';
       this.renderedVisible_ = false;
       return;
     } else if (width >= this.minWidth_) {
@@ -278,7 +278,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   }
 
   if (!this.renderedVisible_) {
-    this.element_.style.display = ''; //Show the element
+    this.element_.style.display = '';
     this.renderedVisible_ = true;
   }
 

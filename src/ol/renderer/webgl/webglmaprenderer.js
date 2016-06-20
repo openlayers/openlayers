@@ -429,7 +429,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      this.canvas_.style.display = 'none'; //Hide the element
+      this.canvas_.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return false;
@@ -485,7 +485,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   }
 
   if (!this.renderedVisible_) {
-    this.canvas_.style.display = ''; //Show the element
+    this.canvas_.style.display = '';
     this.renderedVisible_ = true;
   }
 
