@@ -4,7 +4,6 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
 goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -185,15 +184,18 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
  */
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
-  var containerSize = goog.style.getSize(container);
+  var containerSize = {
+    width: container.offsetWidth, height: container.offsetHeight
+  };
 
   var thumb = container.firstElementChild;
-  var thumbMargins = goog.style.getMarginBox(thumb);
-  var thumbBorderBoxSize = goog.style.getBorderBoxSize(thumb);
-  var thumbWidth = thumbBorderBoxSize.width +
-      thumbMargins.right + thumbMargins.left;
-  var thumbHeight = thumbBorderBoxSize.height +
-      thumbMargins.top + thumbMargins.bottom;
+  var computedStyle = ol.global.getComputedStyle(thumb);
+  var thumbWidth = thumb.offsetWidth +
+      parseFloat(computedStyle['marginRight']) +
+      parseFloat(computedStyle['marginLeft']);
+  var thumbHeight = thumb.offsetHeight +
+      parseFloat(computedStyle['marginTop']) +
+      parseFloat(computedStyle['marginBottom']);
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
