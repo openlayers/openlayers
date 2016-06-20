@@ -156,7 +156,7 @@ ol.style.Style.prototype.getZIndex = function() {
  * @api
  */
 ol.style.Style.prototype.setGeometry = function(geometry) {
-  if (goog.isFunction(geometry)) {
+  if (typeof geometry === 'function') {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
@@ -202,7 +202,7 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
 ol.style.createStyleFunction = function(obj) {
   var styleFunction;
 
-  if (goog.isFunction(obj)) {
+  if (typeof obj === 'function') {
     styleFunction = obj;
   } else {
     /**
