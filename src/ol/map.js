@@ -1425,31 +1425,19 @@ ol.Map.prototype.updateSize = function() {
   if (!targetElement) {
     this.setSize(undefined);
   } else {
-    var targetElementComputedStyle = window.getComputedStyle(targetElement);
-    var borderBoxSize = {
-      width: targetElement.offsetWidth, height: targetElement.offsetHeight
-    };
-    var paddingBox = {
-      left: parseFloat(targetElementComputedStyle['paddingLeft']),
-      right: parseFloat(targetElementComputedStyle['paddingRight']),
-      top: parseFloat(targetElementComputedStyle['paddingTop']),
-      bottom: parseFloat(targetElementComputedStyle['paddingBottom'])
-    };
-    var borderBox = {
-      left: parseFloat(targetElementComputedStyle['borderLeftWidth']),
-      right: parseFloat(targetElementComputedStyle['borderRightWidth']),
-      top: parseFloat(targetElementComputedStyle['borderTopWidth']),
-      bottom: parseFloat(targetElementComputedStyle['borderBottomWidth'])
-    };
-    var size = {
-      width: borderBoxSize.width -
-      borderBox.left - paddingBox.left -
-      paddingBox.right - borderBox.right,
-      height: borderBoxSize.height -
-      borderBox.top - paddingBox.top -
-      paddingBox.bottom - borderBox.bottom
-    };
-    this.setSize([size.width, size.height]);
+    var computedStyle = ol.global.getComputedStyle(targetElement);
+    this.setSize([
+      targetElement.offsetWidth -
+          parseFloat(computedStyle['borderLeftWidth']) -
+          parseFloat(computedStyle['paddingLeft']) -
+          parseFloat(computedStyle['paddingRight']) -
+          parseFloat(computedStyle['borderRightWidth']),
+      targetElement.offsetHeight -
+          parseFloat(computedStyle['borderTopWidth']) -
+          parseFloat(computedStyle['paddingTop']) -
+          parseFloat(computedStyle['paddingBottom']) -
+          parseFloat(computedStyle['borderBottomWidth'])
+    ]);
   }
 };
 

@@ -189,20 +189,13 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   };
 
   var thumb = container.firstElementChild;
-  var thumbComputedStyles = window.getComputedStyle(thumb);
-  var thumbMargins = {
-    left: parseFloat(thumbComputedStyles['marginLeft']),
-    right: parseFloat(thumbComputedStyles['marginRight']),
-    top: parseFloat(thumbComputedStyles['marginTop']),
-    bottom: parseFloat(thumbComputedStyles['marginBottom'])
-  };
-  var thumbBorderBoxSize = {
-    width:thumb.offsetWidth, height: thumb.offsetHeight
-  };
-  var thumbWidth = thumbBorderBoxSize.width +
-      thumbMargins.right + thumbMargins.left;
-  var thumbHeight = thumbBorderBoxSize.height +
-      thumbMargins.top + thumbMargins.bottom;
+  var computedStyle = ol.global.getComputedStyle(thumb);
+  var thumbWidth = thumb.offsetWidth +
+      parseFloat(computedStyle['marginRight']) +
+      parseFloat(computedStyle['marginLeft']);
+  var thumbHeight = thumb.offsetHeight +
+      parseFloat(computedStyle['marginTop']) +
+      parseFloat(computedStyle['marginBottom']);
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
