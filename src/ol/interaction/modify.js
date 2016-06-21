@@ -243,6 +243,19 @@ ol.inherits(ol.interaction.Modify, ol.interaction.Pointer);
 
 
 /**
+ * @define {number} The segment index assigned to a circle's center when
+ * breaking up a cicrle into ModifySegmentDataType segments.
+ */
+ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX = 0;
+
+/**
+ * @define {number} The segment index assigned to a circle's circumference when
+ * breaking up a circle into ModifySegmentDataType segments.
+ */
+ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX = 1;
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @private
  */
@@ -491,9 +504,11 @@ ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ = function(feature, g
 
 
 /**
- * We convert a circle into two segments.  The segment at index {@link ol.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX}
- * is the circle's center (a point).  The segment at index {@link ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX}
- * is the circumference, and is not a line segment.
+ * We convert a circle into two segments.  The segment at index
+ * {@link ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX} is the
+ * circle's center (a point).  The segment at index
+ * {@link ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX} is
+ * the circumference, and is not a line segment.
  *
  * @param {ol.Feature} feature Feature.
  * @param {ol.geom.Circle} geometry Geometry.
@@ -501,22 +516,21 @@ ol.interaction.Modify.prototype.writeMultiPolygonGeometry_ = function(feature, g
  */
 ol.interaction.Modify.prototype.writeCircleGeometry_ = function(feature, geometry) {
   var coordinates = geometry.getCenter();
-  var centerGeometry = new ol.geom.Point(coordinates, geometry.getLayout());
   var centerSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    index: ol.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX,
+    index: ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX,
     segment: [coordinates, coordinates]
   });
   var circumferenceSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     feature: feature,
     geometry: geometry,
-    index: ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX,
+    index: ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX,
     segment: [coordinates, coordinates]
   });
   var featureSegments = [centerSegmentData, circumferenceSegmentData];
   centerSegmentData.featureSegments = circumferenceSegmentData.featureSegments = featureSegments;
-  this.rBush_.insert(centerGeometry.getExtent(), centerSegmentData);
+  this.rBush_.insert(ol.extent.createOrUpdateFromCoordinate(coordinates), centerSegmentData);
   this.rBush_.insert(geometry.getExtent(), circumferenceSegmentData);
 };
 
@@ -599,7 +613,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
         componentSegments[uid] = new Array(2);
       }
       if (segmentDataMatch.geometry.getType() === ol.geom.GeometryType.CIRCLE &&
-        segmentDataMatch.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      segmentDataMatch.index === ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
         var closestVertex = ol.interaction.Modify.closestOnSegmentData_(vertex, segmentDataMatch);
         if (ol.coordinate.equals(closestVertex, vertex) && !componentSegments[uid][0]) {
@@ -696,7 +710,7 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
         break;
       case ol.geom.GeometryType.CIRCLE:
         segment[0] = segment[1] = vertex;
-        if (segmentData.index === ol.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX) {
+        if (segmentData.index === ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX) {
           this.changingFeature_ = true;
           geometry.setCenter(vertex);
           this.changingFeature_ = false;
@@ -734,11 +748,10 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
       // Update a circle object in the R* bush:
       var coordinates = geometry.getCenter();
       var centerSegmentData = segmentData.featureSegments[0];
-      var centerGeometry = new ol.geom.Point(coordinates, geometry.getLayout());
       var circumferenceSegmentData = segmentData.featureSegments[1];
       centerSegmentData.segment[0] = centerSegmentData.segment[1] = coordinates;
       circumferenceSegmentData.segment[0] = circumferenceSegmentData.segment[1] = coordinates;
-      this.rBush_.update(centerGeometry.getExtent(), centerSegmentData);
+      this.rBush_.update(ol.extent.createOrUpdateFromCoordinate(coordinates), centerSegmentData);
       this.rBush_.update(geometry.getExtent(), circumferenceSegmentData);
     } else {
       this.rBush_.update(ol.extent.boundingExtent(segmentData.segment),
@@ -833,7 +846,7 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       var vertexSegments = {};
 
       if (node.geometry.getType() === ol.geom.GeometryType.CIRCLE &&
-        node.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      node.index === ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
         this.snappedToVertex_ = true;
         this.createOrUpdateVertexFeature_(vertex);
@@ -890,9 +903,11 @@ ol.interaction.Modify.pointDistanceToSegmentDataSquared_ = function(pointCoordin
   if (geometry.getType() === ol.geom.GeometryType.CIRCLE) {
     var circleGeometry = /** @type {ol.geom.Circle} */ (geometry);
 
-    if (segmentData.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
-      var distanceToCenterSquared = ol.coordinate.squaredDistance(circleGeometry.getCenter(), pointCoordinates);
-      var distanceToCircumference = Math.sqrt(distanceToCenterSquared) - circleGeometry.getRadius();
+    if (segmentData.index === ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      var distanceToCenterSquared =
+            ol.coordinate.squaredDistance(circleGeometry.getCenter(), pointCoordinates);
+      var distanceToCircumference =
+            Math.sqrt(distanceToCenterSquared) - circleGeometry.getRadius();
       return distanceToCircumference * distanceToCircumference;
     }
   }
@@ -912,7 +927,7 @@ ol.interaction.Modify.closestOnSegmentData_ = function(pointCoordinates, segment
   var geometry = segmentData.geometry;
 
   if (geometry.getType() === ol.geom.GeometryType.CIRCLE &&
-  segmentData.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+  segmentData.index === ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
     return geometry.getClosestPoint(pointCoordinates);
   }
   return ol.coordinate.closestOnSegment(pointCoordinates, segmentData.segment);
