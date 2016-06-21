@@ -294,7 +294,7 @@ ol.Feature.prototype.setGeometryName = function(name) {
 ol.Feature.createStyleFunction = function(obj) {
   var styleFunction;
 
-  if (goog.isFunction(obj)) {
+  if (typeof obj === 'function') {
     styleFunction = obj;
   } else {
     /**

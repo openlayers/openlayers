@@ -158,7 +158,7 @@ ol.interaction.Select = function(opt_options) {
 
   var layerFilter;
   if (options.layers) {
-    if (goog.isFunction(options.layers)) {
+    if (typeof options.layers === 'function') {
       /**
        * @param {ol.layer.Layer} layer Layer.
        * @return {boolean} Include.

@@ -109,7 +109,7 @@ ol.interaction.Translate = function(options) {
 
   var layerFilter;
   if (options.layers) {
-    if (goog.isFunction(options.layers)) {
+    if (typeof options.layers === 'function') {
       /**
        * @param {ol.layer.Layer} layer Layer.
        * @return {boolean} Include.
