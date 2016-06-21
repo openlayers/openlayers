@@ -1202,7 +1202,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
     if (closed) {
       //Link the last triangle/rhombus to the first one.
-      this.indices_[numIndices++] = lastIndex;
+      this.indices_[numIndices++] = lastSign > 0 ? lastIndex : lastIndex - 1;
       this.indices_[numIndices++] = startIndex + 2;
       this.indices_[numIndices++] = startIndex;
 
