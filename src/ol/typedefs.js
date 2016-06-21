@@ -370,7 +370,8 @@ ol.Transform;
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,
  *            index: (number),
- *            segment: Array.<ol.Extent>}}
+ *            segment: Array.<ol.Extent>,
+ *            featureSegments: (Array.<ol.ModifySegmentDataType>|undefined)}}
  */
 ol.ModifySegmentDataType;
 
