@@ -234,6 +234,18 @@ ol.WEBGL_MAX_TEXTURE_SIZE; // value is set in `ol.has`
  */
 ol.WEBGL_EXTENSIONS; // value is set in `ol.has`
 
+/**
+ * @define {number} The segment index assigned to a circle's center when
+ * breaking up a cicrle into ModifySegmentDataType segments.
+ */
+ol.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX = 0;
+
+/**
+ * @define {number} The segment index assigned to a circle's circumference when
+ * breaking up a circle into ModifySegmentDataType segments.
+ */
+ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX = 1;
+
 
 /**
  * Inherit the prototype methods from one constructor into another.
