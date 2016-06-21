@@ -35,7 +35,7 @@
     "closure-util": "1.14.0",
     "derequire": "2.0.3",
     "fs-extra": "0.30.0",
-    "glob": "7.0.4",
+    "glob": "7.0.5",
     "handlebars": "4.0.5",
     "jsdoc": "3.4.0",
     "marked": "0.3.5",
