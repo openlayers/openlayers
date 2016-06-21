@@ -1050,166 +1050,149 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var lastSign = 1;
   //We need the adjacent vertices to define normals in joins. p0 = last, p1 = current, p2 = next.
   //We rotate those points, thus every point is RTE corrected only once.
-  var p0, p1, p2, tempP;
+  var p0, p1, p2;
 
-  if (this.isValid_(flatCoordinates, offset, end, stride, closed)) {
+  for (i = offset, ii = end; i < ii; i += stride) {
 
-    for (i = offset, ii = end; i < ii; i += stride) {
+    var n = numVertices / 7;
 
-      var n = numVertices / 7;
-
-      tempP = tempP || p1;
-      p1 = p2 || [flatCoordinates[i] - this.origin_[0], flatCoordinates[i + 1] - this.origin_[1]];
-      //First vertex.
-      if (i === offset) {
-        p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
-        if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
-          break;
-        }
-        if (closed) {
-          //A closed line! Complete the circle.
-          var j = end - stride * 2;
-          var startCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
-          tempP = [flatCoordinates[j], flatCoordinates[j + 1]];
-          while (ol.array.equals(tempP, startCoord)) {
-            j -= stride;
-            tempP = [flatCoordinates[j], flatCoordinates[j + 1]];
-          }
-          tempP[0] -= this.origin_[0];
-          tempP[1] -= this.origin_[1];
-        } else {
-          //Add the first two/four vertices.
-
-          if (lineCap) {
-            numVertices = this.addVertices_([0, 0], p1, p2,
-                lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
-
-            numVertices = this.addVertices_([0, 0], p1, p2,
-                -lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
-
-            this.indices_[numIndices++] = n + 2;
-            this.indices_[numIndices++] = n;
-            this.indices_[numIndices++] = n + 1;
-
-            this.indices_[numIndices++] = n + 1;
-            this.indices_[numIndices++] = n + 3;
-            this.indices_[numIndices++] = n + 2;
-
-            n = n + 2;
-          }
-
-          numVertices = this.addVertices_([0, 0], p1, p2,
-              lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
-
-          numVertices = this.addVertices_([0, 0], p1, p2,
-              -lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
-
-          lastIndex = n + 1;
-
-          continue;
-        }
-      } else if (i === end - stride) {
-        //Last vertex.
-        if (closed) {
-          //Same as the first vertex.
-          break;
-        } else {
-          p2 = undefined;
-          //Note, that the third case will never happen, we just have to assure the compiler,
-          //p0 is always an array of nums.
-          p0 = tempP || p0 || [0, 0];
-
-          numVertices = this.addVertices_(p0, p1, [0, 0],
-              lastSign * ol.render.webgl.LineStringInstruction.END_LINE * (lineCap || 1), numVertices);
-
-          numVertices = this.addVertices_(p0, p1, [0, 0],
-              -lastSign * ol.render.webgl.LineStringInstruction.END_LINE * (lineCap || 1), numVertices);
-
-          this.indices_[numIndices++] = n;
-          this.indices_[numIndices++] = lastIndex - 1;
-          this.indices_[numIndices++] = lastIndex;
-
-          this.indices_[numIndices++] = lastIndex;
-          this.indices_[numIndices++] = n + 1;
-          this.indices_[numIndices++] = n;
-
-          if (lineCap) {
-            numVertices = this.addVertices_(p0, p1, [0, 0],
-                lastSign * ol.render.webgl.LineStringInstruction.END_LINE_CAP * lineCap, numVertices);
-
-            numVertices = this.addVertices_(p0, p1, [0, 0],
-                -lastSign * ol.render.webgl.LineStringInstruction.END_LINE_CAP * lineCap, numVertices);
-
-            this.indices_[numIndices++] = n + 2;
-            this.indices_[numIndices++] = n;
-            this.indices_[numIndices++] = n + 1;
-
-            this.indices_[numIndices++] = n + 1;
-            this.indices_[numIndices++] = n + 3;
-            this.indices_[numIndices++] = n + 2;
-
-          }
-
-          break;
-        }
-      } else {
-        p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
+    p0 = p1;
+    p1 = p2 || [flatCoordinates[i] - this.origin_[0], flatCoordinates[i + 1] - this.origin_[1]];
+    //First vertex.
+    if (i === offset) {
+      p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
+      if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
+        break;
       }
-      //Sort out duplicate points.
-      if (ol.array.equals(p1, p2)) continue;
-      p0 = tempP || p0;
-      tempP = undefined;
+      if (closed) {
+        //A closed line! Complete the circle.
+        p0 = [flatCoordinates[end - stride * 2] - this.origin_[0],
+            flatCoordinates[end - stride * 2 + 1] - this.origin_[1]];
+      } else {
+        //Add the first two/four vertices.
 
-      var sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
-          ? 1 : -1;
+        if (lineCap) {
+          numVertices = this.addVertices_([0, 0], p1, p2,
+              lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
 
-      numVertices = this.addVertices_(p0, p1, p2,
-          sign * ol.render.webgl.LineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+          numVertices = this.addVertices_([0, 0], p1, p2,
+              -lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
 
-      numVertices = this.addVertices_(p0, p1, p2,
-          sign * ol.render.webgl.LineStringInstruction.BEVEL_SECOND * (lineJoin || 1), numVertices);
+          this.indices_[numIndices++] = n + 2;
+          this.indices_[numIndices++] = n;
+          this.indices_[numIndices++] = n + 1;
 
-      numVertices = this.addVertices_(p0, p1, p2,
-          -sign * ol.render.webgl.LineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+          this.indices_[numIndices++] = n + 1;
+          this.indices_[numIndices++] = n + 3;
+          this.indices_[numIndices++] = n + 2;
 
-      if (i > offset) {
+        }
+
+        numVertices = this.addVertices_([0, 0], p1, p2,
+            lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
+
+        numVertices = this.addVertices_([0, 0], p1, p2,
+            -lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
+
+        lastIndex = n + 3;
+
+        continue;
+      }
+    } else if (i === end - stride) {
+      //Last vertex.
+      if (closed) {
+        //Same as the first vertex.
+        break;
+      } else {
+        //For the compiler not to complain. This will be never [0, 0].
+        p0 = p0 || [0, 0];
+
+        numVertices = this.addVertices_(p0, p1, [0, 0],
+            lastSign * ol.render.webgl.LineStringInstruction.END_LINE * (lineCap || 1), numVertices);
+
+        numVertices = this.addVertices_(p0, p1, [0, 0],
+            -lastSign * ol.render.webgl.LineStringInstruction.END_LINE * (lineCap || 1), numVertices);
+
         this.indices_[numIndices++] = n;
         this.indices_[numIndices++] = lastIndex - 1;
         this.indices_[numIndices++] = lastIndex;
 
-        this.indices_[numIndices++] = n + 2;
-        this.indices_[numIndices++] = n;
-        this.indices_[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
-      }
-
-      this.indices_[numIndices++] = n;
-      this.indices_[numIndices++] = n + 2;
-      this.indices_[numIndices++] = n + 1;
-
-      lastIndex = n + 2;
-      lastSign = sign;
-
-      //Add miter
-      if (lineJoin) {
-        numVertices = this.addVertices_(p0, p1, p2,
-            sign * ol.render.webgl.LineStringInstruction.MITER_TOP * lineJoin, numVertices);
-
+        this.indices_[numIndices++] = lastIndex;
         this.indices_[numIndices++] = n + 1;
-        this.indices_[numIndices++] = n + 3;
         this.indices_[numIndices++] = n;
+
+        if (lineCap) {
+          numVertices = this.addVertices_(p0, p1, [0, 0],
+              lastSign * ol.render.webgl.LineStringInstruction.END_LINE_CAP * lineCap, numVertices);
+
+          numVertices = this.addVertices_(p0, p1, [0, 0],
+              -lastSign * ol.render.webgl.LineStringInstruction.END_LINE_CAP * lineCap, numVertices);
+
+          this.indices_[numIndices++] = n + 2;
+          this.indices_[numIndices++] = n;
+          this.indices_[numIndices++] = n + 1;
+
+          this.indices_[numIndices++] = n + 1;
+          this.indices_[numIndices++] = n + 3;
+          this.indices_[numIndices++] = n + 2;
+
+        }
+
+        break;
       }
+    } else {
+      p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
     }
 
-    if (closed) {
-      //Link the last triangle/rhombus to the first one.
-      this.indices_[numIndices++] = lastSign > 0 ? lastIndex : lastIndex - 1;
-      this.indices_[numIndices++] = startIndex + 2;
-      this.indices_[numIndices++] = startIndex;
+    var sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
+        ? 1 : -1;
 
-      this.indices_[numIndices++] = startIndex;
+    numVertices = this.addVertices_(p0, p1, p2,
+        sign * ol.render.webgl.LineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+
+    numVertices = this.addVertices_(p0, p1, p2,
+        sign * ol.render.webgl.LineStringInstruction.BEVEL_SECOND * (lineJoin || 1), numVertices);
+
+    numVertices = this.addVertices_(p0, p1, p2,
+        -sign * ol.render.webgl.LineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+
+    if (i > offset) {
+      this.indices_[numIndices++] = n;
       this.indices_[numIndices++] = lastIndex - 1;
       this.indices_[numIndices++] = lastIndex;
+
+      this.indices_[numIndices++] = n + 2;
+      this.indices_[numIndices++] = n;
+      this.indices_[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
     }
+
+    this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = n + 2;
+    this.indices_[numIndices++] = n + 1;
+
+    lastIndex = n + 2;
+    lastSign = sign;
+
+    //Add miter
+    if (lineJoin) {
+      numVertices = this.addVertices_(p0, p1, p2,
+          sign * ol.render.webgl.LineStringInstruction.MITER_TOP * lineJoin, numVertices);
+
+      this.indices_[numIndices++] = n + 1;
+      this.indices_[numIndices++] = n + 3;
+      this.indices_[numIndices++] = n;
+    }
+  }
+
+  if (closed) {
+    //Link the last triangle/rhombus to the first one.
+    this.indices_[numIndices++] = lastSign > 0 ? lastIndex : lastIndex - 1;
+    this.indices_[numIndices++] = startIndex + 2;
+    this.indices_[numIndices++] = startIndex;
+
+    this.indices_[numIndices++] = startIndex;
+    this.indices_[numIndices++] = lastIndex - 1;
+    this.indices_[numIndices++] = lastIndex;
   }
 };
 
@@ -1258,31 +1241,20 @@ ol.render.webgl.LineStringReplay.prototype.isClosed_ = function(flatCoordinates,
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {boolean} closed The linestring is a boundary.
  * @return {boolean} The linestring can be drawn.
  * @private
  */
-ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, offset, end, stride,
-    closed) {
-  var uniqueCoords = [[flatCoordinates[offset], flatCoordinates[offset + 1]]];
-  var minUnique = closed ? 3 : 2;
-  var i, ii, j;
-  for (i = offset + stride, ii = end; i < ii; i += stride) {
-    var currentCoords = [flatCoordinates[i], flatCoordinates[i + 1]];
-    for (j = 0; j < uniqueCoords.length; ++j) {
-      if (ol.array.equals(currentCoords, uniqueCoords[j])) {
-        j = -1;
-        break;
-      }
-    }
-    if (j > -1) {
-      uniqueCoords.push(currentCoords);
-    }
-    if (uniqueCoords.length >= minUnique) {
-      return true;
-    }
+ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, offset, end, stride) {
+  var range = end - offset;
+  if (range < stride * 2) {
+    return false;
+  } else if (range === stride * 2) {
+    var firstP = [flatCoordinates[offset], flatCoordinates[offset + 1]];
+    var lastP = [flatCoordinates[offset + stride], flatCoordinates[offset + stride + 1]];
+    return !ol.array.equals(firstP, lastP);
   }
-  return false;
+
+  return true;
 };
 
 
@@ -1292,7 +1264,7 @@ ol.render.webgl.LineStringReplay.prototype.isValid_ = function(flatCoordinates, 
 ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
-  if (flatCoordinates.length > stride) {
+  if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
     this.drawCoordinates_(
         flatCoordinates, 0, flatCoordinates.length, stride);
     this.startIndices_.push(this.indices_.length);
@@ -1311,7 +1283,7 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
   for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
     var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
     var stride = lineStringGeometries[i].getStride();
-    if (flatCoordinates.length > stride) {
+    if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
       this.drawCoordinates_(
           flatCoordinates, 0, flatCoordinates.length, stride);
     }
