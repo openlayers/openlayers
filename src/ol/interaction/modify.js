@@ -659,7 +659,7 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
           this.changingFeature_ = true;
           geometry.setCenter(vertex);
           this.changingFeature_ = false;
-        } else { // W're dragging the circle's circumference:
+        } else { // We're dragging the circle's circumference:
           this.changingFeature_ = true;
           geometry.setRadius(ol.coordinate.distance(geometry.getCenter(), vertex));
           this.changingFeature_ = false;
@@ -789,7 +789,9 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
     if (dist <= this.pixelTolerance_) {
       var vertexSegments = {};
 
-      if (node.geometry.getType() === ol.geom.GeometryType.CIRCLE && node.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+      if (node.geometry.getType() === ol.geom.GeometryType.CIRCLE &&
+        node.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+
         this.snappedToVertex_ = true;
         this.createOrUpdateVertexFeature_(vertex);
       } else {
