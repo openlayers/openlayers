@@ -2,7 +2,7 @@ goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol.Feature');
 goog.require('ol.VectorTile');
 goog.require('ol.array');
@@ -17,7 +17,6 @@ goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.vector');
 goog.require('ol.size');
 goog.require('ol.source.VectorTile');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -57,9 +56,9 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.tmpTransform_ = goog.vec.Mat4.createNumber();
+  this.tmpTransform_ = ol.matrix.create();
 
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
   this.zDirection =
@@ -148,7 +147,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
 
     if (pixelSpace) {
       origin = ol.extent.getTopLeft(tileExtent);
-      tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+      tileTransform = ol.matrix.makeTransform(this.tmpTransform_,
           offsetX, offsetY,
           pixelScale * tilePixelResolution,
           pixelScale * tilePixelResolution,
@@ -428,14 +427,14 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
         tile.getTileCoord(), this.tmpExtent);
     var tileTransform;
     if (pixelSpace) {
-      tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+      tileTransform = ol.matrix.makeTransform(this.tmpTransform_,
           0, 0,
           pixelScale * tilePixelResolution, pixelScale * tilePixelResolution,
           0,
           -tileSize[0] * tilePixelRatio / 2, -tileSize[1] * tilePixelRatio / 2);
     } else {
       var tileCenter = ol.extent.getCenter(tileExtent);
-      tileTransform = ol.vec.Mat4.makeTransform2D(this.tmpTransform_,
+      tileTransform = ol.matrix.makeTransform(this.tmpTransform_,
           0, 0,
           pixelScale, -pixelScale,
           0,

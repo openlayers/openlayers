@@ -330,6 +330,14 @@ ol.MapOptionsInternal;
 
 
 /**
+ * An array representing a matrix for use in {@link ol.matrix}. The array has
+ * 6 elements, and the element order is `[a, b, c, d, e, f]`.
+ * @typedef {Array.<number>}
+ */
+ol.Matrix;
+
+
+/**
  * @typedef {{depth: (Array.<number>|undefined),
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,

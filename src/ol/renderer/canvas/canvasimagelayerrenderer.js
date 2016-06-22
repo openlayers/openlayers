@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol.functions');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -11,7 +11,6 @@ goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.ImageVector');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -31,13 +30,13 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.imageTransform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = ol.matrix.create();
 
   /**
    * @private
-   * @type {?goog.vec.Mat4.Number}
+   * @type {?ol.Matrix}
    */
   this.imageTransformInv_ = null;
 
@@ -84,7 +83,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
     var coordinate = pixel.slice();
-    ol.vec.Mat4.multVec2(
+    ol.matrix.multVec2(
         frameState.pixelToCoordinateMatrix, coordinate, coordinate);
     var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, ol.functions.TRUE, this);
@@ -97,8 +96,8 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   } else {
     // for all other image sources directly check the image
     if (!this.imageTransformInv_) {
-      this.imageTransformInv_ = goog.vec.Mat4.createNumber();
-      goog.vec.Mat4.invert(this.imageTransform_, this.imageTransformInv_);
+      this.imageTransformInv_ = ol.matrix.create();
+      ol.matrix.invert(this.imageTransform_, this.imageTransformInv_);
     }
 
     var pixelOnCanvas =
@@ -190,7 +189,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     var imagePixelRatio = image.getPixelRatio();
     var scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
-    ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+    ol.matrix.makeTransform(this.imageTransform_,
         pixelRatio * frameState.size[0] / 2,
         pixelRatio * frameState.size[1] / 2,
         scale, scale,

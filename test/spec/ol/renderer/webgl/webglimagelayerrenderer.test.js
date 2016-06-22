@@ -49,39 +49,32 @@ describe('ol.renderer.webgl.ImageLayer', function() {
           pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
       var matrix = renderer.getProjectionMatrix();
 
-      var input;
-      var output = goog.vec.Vec4.createNumber();
+      var output = ol.matrix.create();
 
-      input = goog.vec.Vec4.createFromValues(-1, -1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.matrix.multVec2(matrix, [-1, -1], output);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(-6);
 
-      input = goog.vec.Vec4.createFromValues(1, -1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.matrix.multVec2(matrix, [1, -1], output);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(-6);
 
-      input = goog.vec.Vec4.createFromValues(-1, 1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.matrix.multVec2(matrix, [-1, 1], output);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(6);
 
-      input = goog.vec.Vec4.createFromValues(1, 1, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.matrix.multVec2(matrix, [1, 1], output);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(6);
 
-      input = goog.vec.Vec4.createFromValues(0, 0, 0, 1);
-      goog.vec.Mat4.multVec4(matrix, input, output);
+      ol.matrix.multVec2(matrix, [0, 0], output);
       expect(output[0]).to.eql(-2);
       expect(output[1]).to.eql(0);
     });
   });
 });
 
-goog.require('goog.vec.Mat4');
-goog.require('goog.vec.Vec4');
+goog.require('ol.matrix');
 goog.require('ol.Map');
 goog.require('ol.proj.common');
 goog.require('ol.layer.Image');

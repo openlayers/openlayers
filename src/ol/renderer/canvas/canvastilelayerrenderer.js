@@ -3,7 +3,7 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.array');
@@ -13,7 +13,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.size');
 goog.require('ol.source.Tile');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -51,9 +50,9 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.imageTransform_ = goog.vec.Mat4.createNumber();
+  this.imageTransform_ = ol.matrix.create();
 
   /**
    * @protected
@@ -327,7 +326,7 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   if (hasRenderListeners) {
     var dX = drawOffsetX - offsetX / drawScale + offsetX;
     var dY = drawOffsetY - offsetY / drawScale + offsetY;
-    var imageTransform = ol.vec.Mat4.makeTransform2D(this.imageTransform_,
+    var imageTransform = ol.matrix.makeTransform(this.imageTransform_,
         drawSize / 2 - dX, drawSize / 2 - dY, pixelScale, -pixelScale,
         -rotation, -center[0] + dX / pixelScale, -center[1] - dY / pixelScale);
     this.dispatchRenderEvent(renderContext, frameState, imageTransform);

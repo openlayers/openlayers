@@ -2,7 +2,7 @@ goog.provide('ol.renderer.dom.VectorLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -13,7 +13,6 @@ goog.require('ol.render.canvas.Immediate');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.vector');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -76,15 +75,15 @@ ol.renderer.dom.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.matrix.create();
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.elementTransform_ = goog.vec.Mat4.createNumber();
+  this.elementTransform_ = ol.matrix.create();
 
 };
 ol.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
@@ -120,7 +119,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
   var imageWidth = viewWidth * pixelRatio;
   var imageHeight = viewHeight * pixelRatio;
 
-  var transform = ol.vec.Mat4.makeTransform2D(this.transform_,
+  var transform = ol.matrix.makeTransform(this.transform_,
       pixelRatio * viewWidth / 2,
       pixelRatio * viewHeight / 2,
       pixelRatio / viewResolution,
@@ -134,7 +133,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
   context.canvas.width = imageWidth;
   context.canvas.height = imageHeight;
 
-  var elementTransform = ol.vec.Mat4.makeTransform2D(this.elementTransform_,
+  var elementTransform = ol.matrix.makeTransform(this.elementTransform_,
       0, 0,
       1 / pixelRatio, 1 / pixelRatio,
       0,
@@ -162,7 +161,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Matrix} transform Transform.
  * @private
  */
 ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ = function(type, frameState, transform) {

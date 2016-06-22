@@ -4,7 +4,7 @@ goog.provide('ol.source.RasterEvent');
 goog.provide('ol.source.RasterEventType');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol.ImageCanvas');
 goog.require('ol.TileQueue');
 goog.require('ol.dom');
@@ -120,7 +120,7 @@ ol.source.Raster = function(options) {
   this.frameState_ = {
     animate: false,
     attributions: {},
-    coordinateToPixelMatrix: goog.vec.Mat4.createNumber(),
+    coordinateToPixelMatrix: ol.matrix.create(),
     extent: null,
     focus: null,
     index: 0,
@@ -128,7 +128,7 @@ ol.source.Raster = function(options) {
     layerStatesArray: layerStatesArray,
     logos: {},
     pixelRatio: 1,
-    pixelToCoordinateMatrix: goog.vec.Mat4.createNumber(),
+    pixelToCoordinateMatrix: ol.matrix.create(),
     postRenderFunctions: [],
     size: [0, 0],
     skippedFeatureUids: {},

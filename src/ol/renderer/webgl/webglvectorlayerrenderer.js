@@ -5,10 +5,10 @@ goog.require('ol.events');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.layer.Vector');
+goog.require('ol.matrix');
 goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -155,7 +155,7 @@ ol.renderer.webgl.VectorLayer.prototype.hasFeatureAtCoordinate = function(coordi
  */
 ol.renderer.webgl.VectorLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
   var coordinate = pixel.slice();
-  ol.vec.Mat4.multVec2(
+  ol.matrix.multVec2(
       frameState.pixelToCoordinateMatrix, coordinate, coordinate);
   var hasFeature = this.hasFeatureAtCoordinate(coordinate, frameState);
 

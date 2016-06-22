@@ -4,7 +4,7 @@ goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -23,7 +23,6 @@ goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.dom.TileLayer');
 goog.require('ol.renderer.dom.VectorLayer');
 goog.require('ol.source.State');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -50,9 +49,9 @@ ol.renderer.dom.Map = function(container, map) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.matrix.create();
 
   /**
    * @type {!Element}
@@ -124,7 +123,7 @@ ol.renderer.dom.Map.prototype.dispatchComposeEvent_ = function(type, frameState)
     var context = this.context_;
     var canvas = context.canvas;
 
-    ol.vec.Mat4.makeTransform2D(this.transform_,
+    ol.matrix.makeTransform(this.transform_,
         canvas.width / 2,
         canvas.height / 2,
         pixelRatio / viewState.resolution,

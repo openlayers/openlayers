@@ -7,7 +7,6 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
-goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
@@ -34,6 +33,7 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
+goog.require('ol.matrix');
 goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
@@ -43,7 +43,6 @@ goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -203,15 +202,15 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
+  this.coordinateToPixelMatrix_ = ol.matrix.create();
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    */
-  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+  this.pixelToCoordinateMatrix_ = ol.matrix.create();
 
   /**
    * @private
@@ -765,7 +764,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
     return null;
   } else {
     var vec2 = pixel.slice();
-    return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
+    return ol.matrix.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
   }
 };
 
@@ -854,7 +853,7 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
     return null;
   } else {
     var vec2 = coordinate.slice(0, 2);
-    return ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
+    return ol.matrix.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
   }
 };
 

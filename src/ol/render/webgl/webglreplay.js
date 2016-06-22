@@ -2,7 +2,7 @@ goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.matrix');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
@@ -116,16 +116,16 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.opacity_ = undefined;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    * @private
    */
-  this.offsetRotateMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.offsetRotateMatrix_ = ol.matrix.create();
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    * @private
    */
-  this.offsetScaleMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.offsetScaleMatrix_ = ol.matrix.create();
 
   /**
    * @type {number|undefined}
@@ -140,10 +140,10 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.originY_ = undefined;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Matrix}
    * @private
    */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix_ = ol.matrix.create();
 
   /**
    * @private
@@ -553,7 +553,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   // set the "uniform" values
   var projectionMatrix = this.projectionMatrix_;
-  ol.vec.Mat4.makeTransform2D(projectionMatrix,
+  ol.matrix.makeTransform(projectionMatrix,
       0.0, 0.0,
       2 / (resolution * size[0]),
       2 / (resolution * size[1]),
@@ -561,18 +561,18 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
       -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
 
   var offsetScaleMatrix = this.offsetScaleMatrix_;
-  goog.vec.Mat4.makeScale(offsetScaleMatrix, 2 / size[0], 2 / size[1], 1);
+  ol.matrix.makeIdentity(offsetScaleMatrix);
+  ol.matrix.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
 
   var offsetRotateMatrix = this.offsetRotateMatrix_;
-  goog.vec.Mat4.makeIdentity(offsetRotateMatrix);
+  ol.matrix.makeIdentity(offsetRotateMatrix);
   if (rotation !== 0) {
-    goog.vec.Mat4.rotateZ(offsetRotateMatrix, -rotation);
+    ol.matrix.rotate(offsetRotateMatrix, -rotation);
   }
 
-  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, projectionMatrix);
-  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, offsetScaleMatrix);
-  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      offsetRotateMatrix);
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromMatrix(projectionMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, ol.vec.Mat4.fromMatrix(offsetScaleMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false, ol.vec.Mat4.fromMatrix(offsetRotateMatrix));
   gl.uniform1f(locations.u_opacity, opacity);
 
   // draw!
