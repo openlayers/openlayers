@@ -10,6 +10,8 @@ goog.require('ol.ext.earcut');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.render.ReplayGroup');
+goog.require('ol.geom.flat.orient');
+goog.require('ol.geom.flat.topology');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.replay');
 goog.require('ol.render.webgl.imagereplay.defaultshader');
@@ -1044,7 +1046,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
       this.state_.lineJoin === 'miter' ? 1 : 2;
   var lineCap = this.state_.lineCap === 'butt' ? 0 :
       this.state_.lineCap === 'square' ? 1 : 2;
-  var closed = this.isClosed_(flatCoordinates, offset, end, stride);
+  var closed = ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, offset, end, stride);
   var startCoords, sign, n;
   var lastIndex = numIndices;
   var lastSign = 1;
@@ -1229,24 +1231,6 @@ ol.render.webgl.LineStringReplay.prototype.addVertices_ = function(p0, p1, p2, p
   this.vertices_[numVertices++] = product;
 
   return numVertices;
-};
-
-/**
- * Check if the linestring is a boundary.
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {number} end End.
- * @param {number} stride Stride.
- * @return {boolean} The linestring is a boundary.
- * @private
- */
-ol.render.webgl.LineStringReplay.prototype.isClosed_ = function(flatCoordinates, offset, end, stride) {
-  var lastCoord = end - stride;
-  if (flatCoordinates[offset] === flatCoordinates[lastCoord] &&
-      flatCoordinates[offset + 1] === flatCoordinates[lastCoord + 1] && (end - offset) / stride > 3) {
-    return true;
-  }
-  return false;
 };
 
 /**
