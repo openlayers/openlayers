@@ -305,6 +305,7 @@ ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndResolution = function(ext
  * @param {number} z Z.
  * @param {ol.TileRange=} opt_tileRange Temporary tile range object.
  * @return {ol.TileRange} Tile range.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileRangeForExtentAndZ = function(extent, z, opt_tileRange) {
   var resolution = this.getResolution(z);
