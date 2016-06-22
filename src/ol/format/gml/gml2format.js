@@ -56,7 +56,7 @@ ol.format.GML2.schemaLocation_ = ol.format.GMLBase.GMLNS +
  */
 ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
-  var context = objectStack[0];
+  var context = /** @type {ol.XmlNodeStackItem} */ (objectStack[0]);
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   var containerSrs = context['srsName'];
   var containerDimension = node.parentNode.getAttribute('srsDimension');
