@@ -1045,7 +1045,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var lineCap = this.state_.lineCap === 'butt' ? 0 :
       this.state_.lineCap === 'square' ? 1 : 2;
   var closed = this.isClosed_(flatCoordinates, offset, end, stride);
-  var startIndex = numIndices;
+  var startCoords, sign, n;
   var lastIndex = numIndices;
   var lastSign = 1;
   //We need the adjacent vertices to define normals in joins. p0 = last, p1 = current, p2 = next.
@@ -1054,7 +1054,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
   for (i = offset, ii = end; i < ii; i += stride) {
 
-    var n = numVertices / 7;
+    n = numVertices / 7;
 
     p0 = p1;
     p1 = p2 || [flatCoordinates[i] - this.origin_[0], flatCoordinates[i + 1] - this.origin_[1]];
@@ -1068,6 +1068,8 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         //A closed line! Complete the circle.
         p0 = [flatCoordinates[end - stride * 2] - this.origin_[0],
             flatCoordinates[end - stride * 2 + 1] - this.origin_[1]];
+
+        startCoords = p2;
       } else {
         //Add the first two/four vertices.
 
@@ -1102,9 +1104,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
       //Last vertex.
       if (closed) {
         //Same as the first vertex.
+        p2 = startCoords;
         break;
       } else {
-        //For the compiler not to complain. This will be never [0, 0].
+        //For the compiler not to complain. This will never be [0, 0].
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
@@ -1144,7 +1147,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
       p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
     }
 
-    var sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
+    sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
         ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
@@ -1186,13 +1189,24 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
   if (closed) {
     //Link the last triangle/rhombus to the first one.
-    this.indices_[numIndices++] = lastSign > 0 ? lastIndex : lastIndex - 1;
-    this.indices_[numIndices++] = startIndex + 2;
-    this.indices_[numIndices++] = startIndex;
+    //n will never be numVertices / 7 here. However, the compiler complains otherwise.
+    n = n || numVertices / 7;
+    sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
+        ? 1 : -1;
 
-    this.indices_[numIndices++] = startIndex;
+    numVertices = this.addVertices_(p0, p1, p2,
+        sign * ol.render.webgl.LineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+
+    numVertices = this.addVertices_(p0, p1, p2,
+        -sign * ol.render.webgl.LineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+
+    this.indices_[numIndices++] = n;
     this.indices_[numIndices++] = lastIndex - 1;
     this.indices_[numIndices++] = lastIndex;
+
+    this.indices_[numIndices++] = n + 1;
+    this.indices_[numIndices++] = n;
+    this.indices_[numIndices++] = lastSign * sign > 0 ? lastIndex : lastIndex - 1;
   }
 };
 
