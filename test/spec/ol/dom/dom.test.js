@@ -147,8 +147,8 @@ describe('ol.dom', function() {
 
   describe('ol.dom.transformElement2D', function() {
     var element = null;
-    var transform = ol.matrix.create();
-    var transformFloat = ol.matrix.create();
+    var transform = ol.transform.create();
+    var transformFloat = ol.transform.create();
     transformFloat[0] = 0.12345;
     beforeEach(function() {
       element = document.createElement('div');
@@ -564,5 +564,5 @@ describe('ol.dom', function() {
 });
 
 goog.require('goog.userAgent');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.dom');

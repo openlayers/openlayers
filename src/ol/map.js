@@ -33,7 +33,7 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
@@ -202,15 +202,15 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.coordinateToPixelMatrix_ = ol.matrix.create();
+  this.coordinateToPixelTransform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.pixelToCoordinateMatrix_ = ol.matrix.create();
+  this.pixelToCoordinateTransform_ = ol.transform.create();
 
   /**
    * @private
@@ -763,8 +763,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (!frameState) {
     return null;
   } else {
-    var vec2 = pixel.slice();
-    return ol.matrix.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
+    return ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
   }
 };
 
@@ -852,8 +851,8 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (!frameState) {
     return null;
   } else {
-    var vec2 = coordinate.slice(0, 2);
-    return ol.matrix.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
+    return ol.transform.apply(frameState.coordinateToPixelTransform,
+        coordinate.slice(0, 2));
   }
 };
 
@@ -1297,7 +1296,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},
-      coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
+      coordinateToPixelTransform: this.coordinateToPixelTransform_,
       extent: extent,
       focus: !this.focus_ ? viewState.center : this.focus_,
       index: this.frameIndex_++,
@@ -1305,7 +1304,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layerStatesArray: layerStatesArray,
       logos: ol.object.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
-      pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
+      pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],
       size: size,
       skippedFeatureUids: this.skippedFeatureUids_,

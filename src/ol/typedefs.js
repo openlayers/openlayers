@@ -330,11 +330,11 @@ ol.MapOptionsInternal;
 
 
 /**
- * An array representing a matrix for use in {@link ol.matrix}. The array has
- * 6 elements, and the element order is `[a, b, c, d, e, f]`.
+ * An array representing an affine 2d transformation for use with
+ * {@link ol.transform} functions. The array has 6 elements.
  * @typedef {Array.<number>}
  */
-ol.Matrix;
+ol.Transform;
 
 
 /**

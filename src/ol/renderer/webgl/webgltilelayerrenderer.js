@@ -4,7 +4,7 @@
 goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('goog.webgl');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -351,21 +351,21 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   this.updateLogos(frameState, tileSource);
 
   var texCoordMatrix = this.texCoordMatrix;
-  ol.matrix.makeIdentity(texCoordMatrix);
-  ol.matrix.translate(texCoordMatrix,
+  ol.transform.reset(texCoordMatrix);
+  ol.transform.translate(texCoordMatrix,
       (center[0] - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
       (center[1] - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]));
   if (viewState.rotation !== 0) {
-    ol.matrix.rotate(texCoordMatrix, viewState.rotation);
+    ol.transform.rotate(texCoordMatrix, viewState.rotation);
   }
-  ol.matrix.scale(texCoordMatrix,
+  ol.transform.scale(texCoordMatrix,
       frameState.size[0] * viewState.resolution /
           (framebufferExtent[2] - framebufferExtent[0]),
       frameState.size[1] * viewState.resolution /
           (framebufferExtent[3] - framebufferExtent[1]));
-  ol.matrix.translate(texCoordMatrix, -0.5, -0.5);
+  ol.transform.translate(texCoordMatrix, -0.5, -0.5);
 
   return true;
 };
@@ -383,9 +383,8 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, fram
     pixel[0] / frameState.size[0],
     (frameState.size[1] - pixel[1]) / frameState.size[1]];
 
-  var pixelOnFrameBufferScaled = [0, 0];
-  ol.matrix.multVec2(
-      this.texCoordMatrix, pixelOnMapScaled, pixelOnFrameBufferScaled);
+  var pixelOnFrameBufferScaled = ol.transform.apply(
+      this.texCoordMatrix, pixelOnMapScaled.slice());
   var pixelOnFrameBuffer = [
     pixelOnFrameBufferScaled[0] * this.framebufferDimension,
     pixelOnFrameBufferScaled[1] * this.framebufferDimension];

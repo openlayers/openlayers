@@ -49,32 +49,30 @@ describe('ol.renderer.webgl.ImageLayer', function() {
           pixelRatio, viewCenter, viewResolution, viewRotation, imageExtent);
       var matrix = renderer.getProjectionMatrix();
 
-      var output = ol.matrix.create();
-
-      ol.matrix.multVec2(matrix, [-1, -1], output);
+      var output = ol.transform.apply(matrix, [-1, -1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(-6);
 
-      ol.matrix.multVec2(matrix, [1, -1], output);
+      output = ol.transform.apply(matrix, [1, -1]);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(-6);
 
-      ol.matrix.multVec2(matrix, [-1, 1], output);
+      output = ol.transform.apply(matrix, [-1, 1]);
       expect(output[0]).to.eql(-6);
       expect(output[1]).to.eql(6);
 
-      ol.matrix.multVec2(matrix, [1, 1], output);
+      output = ol.transform.apply(matrix, [1, 1]);
       expect(output[0]).to.eql(2);
       expect(output[1]).to.eql(6);
 
-      ol.matrix.multVec2(matrix, [0, 0], output);
+      output = ol.transform.apply(matrix, [0, 0]);
       expect(output[0]).to.eql(-2);
       expect(output[1]).to.eql(0);
     });
   });
 });
 
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.Map');
 goog.require('ol.proj.common');
 goog.require('ol.layer.Image');

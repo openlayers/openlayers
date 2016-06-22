@@ -8,7 +8,7 @@ ol.vec.Mat4.tmpMatrix_ = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 
 
 /**
- * @param {ol.Matrix} mat Transformation matrix.
+ * @param {ol.Transform} mat Transformation matrix.
  * @return {Array.<number>} 2D transformation matrix as flattened 4x4 matrix.
  */
 ol.vec.Mat4.fromMatrix = function(mat) {

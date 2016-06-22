@@ -3,7 +3,7 @@ goog.provide('ol.source.ImageVector');
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -40,9 +40,9 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
   /**
    * @private
@@ -211,15 +211,14 @@ ol.source.ImageVector.prototype.getStyleFunction = function() {
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Size} size Size.
- * @return {!ol.Matrix} Transform.
+ * @return {!ol.Transform} Transform.
  * @private
  */
 ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {
-  return ol.matrix.makeTransform(this.transform_,
-      size[0] / 2, size[1] / 2,
-      pixelRatio / resolution, -pixelRatio / resolution,
-      0,
-      -center[0], -center[1]);
+  var transform = ol.transform.reset(this.transform_);
+  ol.transform.translate(transform, size[0] / 2, size[1] / 2);
+  ol.transform.scale(transform, pixelRatio / resolution, -pixelRatio / resolution);
+  return ol.transform.translate(transform, -center[0], -center[1]);
 };
 
 

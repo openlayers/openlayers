@@ -6,7 +6,7 @@ goog.provide('ol.geom.flat.transform');
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed coordinates.
  */

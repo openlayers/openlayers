@@ -3,7 +3,7 @@
 goog.provide('ol.renderer.canvas.Map');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -62,9 +62,9 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
 };
 ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
@@ -117,16 +117,19 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameSta
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @protected
- * @return {!ol.Matrix} Transform.
+ * @return {!ol.Transform} Transform.
  */
 ol.renderer.canvas.Map.prototype.getTransform = function(frameState) {
   var pixelRatio = frameState.pixelRatio;
   var viewState = frameState.viewState;
   var resolution = viewState.resolution;
-  return ol.matrix.makeTransform(this.transform_,
-      this.canvas_.width / 2, this.canvas_.height / 2,
-      pixelRatio / resolution, -pixelRatio / resolution,
-      -viewState.rotation,
+  var transform = ol.transform.reset(this.transform_);
+  ol.transform.translate(transform,
+      this.canvas_.width / 2, this.canvas_.height / 2);
+  ol.transform.scale(transform,
+      pixelRatio / resolution, -pixelRatio / resolution);
+  ol.transform.rotate(transform, -viewState.rotation);
+  return ol.transform.translate(transform,
       -viewState.center[0], -viewState.center[1]);
 };
 

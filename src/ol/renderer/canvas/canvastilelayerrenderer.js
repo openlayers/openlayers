@@ -3,7 +3,7 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.array');
@@ -50,9 +50,9 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.imageTransform_ = ol.matrix.create();
+  this.imageTransform_ = ol.transform.create();
 
   /**
    * @protected
@@ -326,9 +326,11 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   if (hasRenderListeners) {
     var dX = drawOffsetX - offsetX / drawScale + offsetX;
     var dY = drawOffsetY - offsetY / drawScale + offsetY;
-    var imageTransform = ol.matrix.makeTransform(this.imageTransform_,
-        drawSize / 2 - dX, drawSize / 2 - dY, pixelScale, -pixelScale,
-        -rotation, -center[0] + dX / pixelScale, -center[1] - dY / pixelScale);
+    var imageTransform = ol.transform.reset(this.imageTransform_);
+    ol.transform.translate(imageTransform, drawSize / 2 - dX, drawSize / 2 - dY);
+    ol.transform.scale(imageTransform, pixelScale, -pixelScale);
+    ol.transform.rotate(imageTransform, -rotation);
+    ol.transform.translate(imageTransform, -center[0] + dX / pixelScale, -center[1] - dY / pixelScale);
     this.dispatchRenderEvent(renderContext, frameState, imageTransform);
   }
   if (rotation || hasRenderListeners) {

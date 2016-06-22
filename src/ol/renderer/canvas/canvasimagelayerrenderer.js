@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.functions');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -30,13 +30,13 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.imageTransform_ = ol.matrix.create();
+  this.imageTransform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {?ol.Matrix}
+   * @type {?ol.Transform}
    */
   this.imageTransformInv_ = null;
 
@@ -82,9 +82,8 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    var coordinate = pixel.slice();
-    ol.matrix.multVec2(
-        frameState.pixelToCoordinateMatrix, coordinate, coordinate);
+    var coordinate = ol.transform.apply(
+        frameState.pixelToCoordinateTransform, pixel.slice());
     var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, ol.functions.TRUE, this);
 
@@ -96,8 +95,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   } else {
     // for all other image sources directly check the image
     if (!this.imageTransformInv_) {
-      this.imageTransformInv_ = ol.matrix.create();
-      ol.matrix.invert(this.imageTransform_, this.imageTransformInv_);
+      this.imageTransformInv_ = ol.transform.invert(this.imageTransform_.slice());
     }
 
     var pixelOnCanvas =
@@ -189,11 +187,12 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     var imagePixelRatio = image.getPixelRatio();
     var scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
-    ol.matrix.makeTransform(this.imageTransform_,
+    var transform = ol.transform.reset(this.imageTransform_);
+    ol.transform.translate(transform,
         pixelRatio * frameState.size[0] / 2,
-        pixelRatio * frameState.size[1] / 2,
-        scale, scale,
-        0,
+        pixelRatio * frameState.size[1] / 2);
+    ol.transform.scale(transform, scale, scale);
+    ol.transform.translate(transform,
         imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
         imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
     this.imageTransformInv_ = null;

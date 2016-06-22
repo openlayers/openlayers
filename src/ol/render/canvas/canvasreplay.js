@@ -9,7 +9,7 @@ goog.provide('ol.render.canvas.ReplayGroup');
 goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.color');
@@ -116,9 +116,9 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.renderedTransform_ = ol.matrix.create();
+  this.renderedTransform_ = ol.transform.create();
 
   /**
    * @protected
@@ -134,15 +134,15 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.tmpLocalTransform_ = ol.matrix.create();
+  this.tmpLocalTransform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.tmpLocalTransformInv_ = ol.matrix.create();
+  this.tmpLocalTransformInv_ = ol.transform.create();
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
@@ -222,7 +222,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @private
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -239,13 +239,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
-  if (ol.matrix.equals(transform, this.renderedTransform_)) {
+  if (ol.array.equals(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     pixelCoordinates = ol.geom.flat.transform.transform2D(
         this.coordinates, 0, this.coordinates.length, 2,
         transform, this.pixelCoordinates_);
-    ol.matrix.setFromArray(this.renderedTransform_, transform);
+    ol.transform.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
@@ -331,9 +331,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
-            ol.matrix.makeTransform(
-                localTransform, centerX, centerY, scale, scale,
-                rotation, -centerX, -centerY);
+            ol.transform.translate(ol.transform.reset(localTransform), centerX, centerY);
+            ol.transform.scale(localTransform, scale, scale);
+            ol.transform.rotate(localTransform, rotation);
+            ol.transform.translate(localTransform, -centerX, -centerY);
             context.transform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
@@ -351,7 +352,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha;
           }
           if (scale != 1 || rotation !== 0) {
-            ol.matrix.invert(localTransform, localTransformInv);
+            ol.transform.invert(ol.transform.setFromArray(localTransformInv, localTransform));
             context.transform.apply(context, localTransformInv);
           }
         }
@@ -389,8 +390,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           x = pixelCoordinates[d] + offsetX;
           y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
-            ol.matrix.makeTransform(
-                localTransform, x, y, scale, scale, rotation, -x, -y);
+            ol.transform.translate(ol.transform.reset(localTransform), x, y);
+            ol.transform.scale(localTransform, scale, scale);
+            ol.transform.rotate(localTransform, rotation);
+            ol.transform.translate(localTransform, -x, -y);
             context.transform.apply(context, localTransform);
           }
 
@@ -422,7 +425,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           if (scale != 1 || rotation !== 0) {
-            ol.matrix.invert(localTransform, localTransformInv);
+            ol.transform.invert(ol.transform.setFromArray(localTransformInv, localTransform));
             context.transform.apply(context, localTransformInv);
           }
         }
@@ -540,7 +543,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -555,7 +558,7 @@ ol.render.canvas.Replay.prototype.replay = function(
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -1858,9 +1861,9 @@ ol.render.canvas.ReplayGroup = function(
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.hitDetectionTransform_ = ol.matrix.create();
+  this.hitDetectionTransform_ = ol.transform.create();
 
 };
 
@@ -1894,10 +1897,11 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeaturesHash, callback) {
 
-  var transform = this.hitDetectionTransform_;
-  ol.matrix.makeTransform(transform, 0.5, 0.5,
-      1 / resolution, -1 / resolution, -rotation,
-      -coordinate[0], -coordinate[1]);
+  var transform = ol.transform.reset(this.hitDetectionTransform_);
+  ol.transform.translate(transform, 0.5, 0.5);
+  ol.transform.scale(transform, 1 / resolution, -1 / resolution);
+  ol.transform.rotate(transform, -rotation);
+  ol.transform.translate(transform, -coordinate[0], -coordinate[1]);
 
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);
@@ -1966,7 +1970,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -2019,7 +2023,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.

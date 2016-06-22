@@ -4,7 +4,7 @@ goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -49,9 +49,9 @@ ol.renderer.dom.Map = function(container, map) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
   /**
    * @type {!Element}
@@ -123,12 +123,12 @@ ol.renderer.dom.Map.prototype.dispatchComposeEvent_ = function(type, frameState)
     var context = this.context_;
     var canvas = context.canvas;
 
-    ol.matrix.makeTransform(this.transform_,
-        canvas.width / 2,
-        canvas.height / 2,
-        pixelRatio / viewState.resolution,
-        -pixelRatio / viewState.resolution,
-        -viewState.rotation,
+    var transform = ol.transform.reset(this.transform_);
+    ol.transform.translate(transform, canvas.width / 2, canvas.height / 2);
+    ol.transform.scale(transform,
+        pixelRatio / viewState.resolution, -pixelRatio / viewState.resolution);
+    ol.transform.rotate(transform, -viewState.rotation);
+    ol.transform.translate(transform,
         -viewState.center[0], -viewState.center[1]);
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
         extent, this.transform_, rotation);

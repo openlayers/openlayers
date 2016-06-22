@@ -2,7 +2,7 @@ goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
@@ -116,16 +116,16 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.opacity_ = undefined;
 
   /**
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    * @private
    */
-  this.offsetRotateMatrix_ = ol.matrix.create();
+  this.offsetRotateMatrix_ = ol.transform.create();
 
   /**
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    * @private
    */
-  this.offsetScaleMatrix_ = ol.matrix.create();
+  this.offsetScaleMatrix_ = ol.transform.create();
 
   /**
    * @type {number|undefined}
@@ -140,10 +140,10 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.originY_ = undefined;
 
   /**
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    * @private
    */
-  this.projectionMatrix_ = ol.matrix.create();
+  this.projectionMatrix_ = ol.transform.create();
 
   /**
    * @private
@@ -552,22 +552,17 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
       false, 32, 28);
 
   // set the "uniform" values
-  var projectionMatrix = this.projectionMatrix_;
-  ol.matrix.makeTransform(projectionMatrix,
-      0.0, 0.0,
-      2 / (resolution * size[0]),
-      2 / (resolution * size[1]),
-      -rotation,
-      -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
+  var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
+  ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+  ol.transform.rotate(projectionMatrix, -rotation);
+  ol.transform.translate(projectionMatrix, -(center[0] - this.origin_[0]), -(center[1] - this.origin_[1]));
 
-  var offsetScaleMatrix = this.offsetScaleMatrix_;
-  ol.matrix.makeIdentity(offsetScaleMatrix);
-  ol.matrix.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
+  var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
+  ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
 
-  var offsetRotateMatrix = this.offsetRotateMatrix_;
-  ol.matrix.makeIdentity(offsetRotateMatrix);
+  var offsetRotateMatrix = ol.transform.reset(this.offsetRotateMatrix_);
   if (rotation !== 0) {
-    ol.matrix.rotate(offsetRotateMatrix, -rotation);
+    ol.transform.rotate(offsetRotateMatrix, -rotation);
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromMatrix(projectionMatrix));

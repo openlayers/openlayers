@@ -10,7 +10,7 @@ goog.require('ol.Observable');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.layer.Layer');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 
@@ -57,9 +57,8 @@ ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
  * @template S,T
  */
 ol.renderer.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-  var coordinate = pixel.slice();
-  ol.matrix.multVec2(
-      frameState.pixelToCoordinateMatrix, coordinate, coordinate);
+  var coordinate = ol.transform.apply(
+      frameState.pixelToCoordinateTransform, pixel.slice());
 
   var hasFeature = this.forEachFeatureAtCoordinate(
       coordinate, frameState, ol.functions.TRUE, this);

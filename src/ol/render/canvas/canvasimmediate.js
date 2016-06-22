@@ -5,7 +5,7 @@
 goog.provide('ol.render.canvas.Immediate');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.colorlike');
@@ -31,7 +31,7 @@ goog.require('ol.render.canvas');
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Extent} extent Extent.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @struct
  */
@@ -58,7 +58,7 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
   this.transform_ = transform;
 
@@ -226,9 +226,9 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.tmpLocalTransform_ = ol.matrix.create();
+  this.tmpLocalTransform_ = ol.transform.create();
 
 };
 ol.inherits(ol.render.canvas.Immediate, ol.render.VectorContext);
@@ -272,9 +272,10 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
     if (rotation !== 0 || this.imageScale_ != 1) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
-      ol.matrix.makeTransform(localTransform,
-          centerX, centerY, this.imageScale_, this.imageScale_,
-          rotation, -centerX, -centerY);
+      ol.transform.translate(ol.transform.reset(localTransform), centerX, centerY);
+      ol.transform.scale(localTransform, this.imageScale_, this.imageScale_);
+      ol.transform.rotate(localTransform, rotation);
+      ol.transform.translate(localTransform, -centerX, -centerY);
       context.setTransform.apply(context, localTransform);
     }
     context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
@@ -319,8 +320,11 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
     var x = pixelCoordinates[offset] + this.textOffsetX_;
     var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
     if (this.textRotation_ !== 0 || this.textScale_ != 1) {
-      var localTransform = ol.matrix.makeTransform(this.tmpLocalTransform_,
-          x, y, this.textScale_, this.textScale_, this.textRotation_, -x, -y);
+      var localTransform = ol.transform.reset(this.tmpLocalTransform_);
+      ol.transform.translate(localTransform, x, y);
+      ol.transform.scale(localTransform, this.textScale_, this.textScale_);
+      ol.transform.rotate(localTransform, this.textRotation_);
+      ol.transform.translate(localTransform, -x, -y);
       context.setTransform.apply(context, localTransform);
     }
     if (this.textStrokeState_) {

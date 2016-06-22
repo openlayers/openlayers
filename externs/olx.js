@@ -7383,7 +7383,7 @@ olx.view.FitOptions.prototype.maxZoom;
 /**
  * @typedef {{animate: boolean,
  *     attributions: Object.<string, ol.Attribution>,
- *     coordinateToPixelMatrix: ol.Matrix,
+ *     coordinateToPixelTransform: ol.Transform,
  *     extent: (null|ol.Extent),
  *     focus: ol.Coordinate,
  *     index: number,
@@ -7391,7 +7391,7 @@ olx.view.FitOptions.prototype.maxZoom;
  *     layerStatesArray: Array.<ol.LayerState>,
  *     logos: Object.<string, (string|Element)>,
  *     pixelRatio: number,
- *     pixelToCoordinateMatrix: ol.Matrix,
+ *     pixelToCoordinateTransform: ol.Transform,
  *     postRenderFunctions: Array.<ol.PostRenderFunction>,
  *     size: ol.Size,
  *     skippedFeatureUids: Object.<string, boolean>,

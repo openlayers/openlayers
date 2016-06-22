@@ -2,7 +2,7 @@ goog.provide('ol.renderer.dom.VectorLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -75,15 +75,15 @@ ol.renderer.dom.VectorLayer = function(vectorLayer) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.elementTransform_ = ol.matrix.create();
+  this.elementTransform_ = ol.transform.create();
 
 };
 ol.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
@@ -119,13 +119,13 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
   var imageWidth = viewWidth * pixelRatio;
   var imageHeight = viewHeight * pixelRatio;
 
-  var transform = ol.matrix.makeTransform(this.transform_,
-      pixelRatio * viewWidth / 2,
-      pixelRatio * viewHeight / 2,
-      pixelRatio / viewResolution,
-      -pixelRatio / viewResolution,
-      -viewRotation,
-      -viewCenter[0], -viewCenter[1]);
+  var transform = ol.transform.reset(this.transform_);
+  ol.transform.translate(transform,
+      pixelRatio * viewWidth / 2, pixelRatio * viewHeight / 2);
+  ol.transform.scale(transform,
+      pixelRatio / viewResolution, -pixelRatio / viewResolution);
+  ol.transform.rotate(transform, -viewRotation);
+  ol.transform.translate(transform, -viewCenter[0], -viewCenter[1]);
 
   var context = this.context_;
 
@@ -133,10 +133,9 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
   context.canvas.width = imageWidth;
   context.canvas.height = imageHeight;
 
-  var elementTransform = ol.matrix.makeTransform(this.elementTransform_,
-      0, 0,
-      1 / pixelRatio, 1 / pixelRatio,
-      0,
+  var elementTransform = ol.transform.reset(this.elementTransform_);
+  ol.transform.scale(elementTransform, 1 / pixelRatio, 1 / pixelRatio);
+  ol.transform.translate(elementTransform,
       -(imageWidth - viewWidth) / 2 * pixelRatio,
       -(imageHeight - viewHeight) / 2 * pixelRatio);
   ol.dom.transformElement2D(context.canvas, elementTransform, 6);
@@ -161,7 +160,7 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @private
  */
 ol.renderer.dom.VectorLayer.prototype.dispatchEvent_ = function(type, frameState, transform) {

@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -31,9 +31,9 @@ ol.renderer.dom.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
 };
 ol.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
@@ -117,11 +117,13 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
   if (image) {
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
-    var transform = ol.matrix.create();
-    ol.matrix.makeTransform(transform,
-        frameState.size[0] / 2, frameState.size[1] / 2,
-        imageResolution / viewResolution, imageResolution / viewResolution,
-        viewRotation,
+    var transform = ol.transform.create();
+    ol.transform.translate(transform,
+        frameState.size[0] / 2, frameState.size[1] / 2);
+    ol.transform.scale(transform,
+        imageResolution / viewResolution, imageResolution / viewResolution);
+    ol.transform.rotate(transform, viewRotation);
+    ol.transform.translate(transform,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
         (viewCenter[1] - imageExtent[3]) / imageResolution);
     if (image != this.image_) {
@@ -145,12 +147,12 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
 
 
 /**
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @private
  */
 ol.renderer.dom.ImageLayer.prototype.setTransform_ = function(transform) {
-  if (!ol.matrix.equals(transform, this.transform_)) {
+  if (!ol.array.equals(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
-    ol.matrix.setFromArray(this.transform_, transform);
+    ol.transform.setFromArray(this.transform_, transform);
   }
 };

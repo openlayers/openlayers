@@ -22,16 +22,16 @@ describe('ol.render', function() {
           [0, 0, size[0] * pixelRatio, size[1] * pixelRatio]);
       expect(canvas.style.width).to.be(size[0] + 'px');
       expect(canvas.style.height).to.be(size[1] + 'px');
-      var transform = ol.matrix.makeTransform(ol.matrix.create(),
-          0, 0, pixelRatio, pixelRatio, 0, 0, 0);
-      expect(ol.matrix.equals(render.transform_, transform)).to.be.ok();
+      var transform = ol.transform.scale(ol.transform.create(),
+          pixelRatio, pixelRatio);
+      expect(ol.array.equals(render.transform_, transform)).to.be.ok();
     });
   });
 
 });
 
 
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.render');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.vec.Mat4');

@@ -4,7 +4,7 @@
 goog.provide('ol.renderer.dom.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -199,7 +199,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   tileLayerZKeys.sort(ol.array.numberSafeCompareFunction);
 
   var i, ii, j, origin, resolution;
-  var transform = ol.matrix.create();
+  var transform = ol.transform.create();
   for (i = 0, ii = tileLayerZKeys.length; i < ii; ++i) {
     tileLayerZKey = tileLayerZKeys[i];
     tileLayerZ = this.tileLayerZs_[tileLayerZKey];
@@ -210,13 +210,13 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
     }
     resolution = tileLayerZ.getResolution();
     origin = tileLayerZ.getOrigin();
-    ol.matrix.makeTransform(transform,
-        frameState.size[0] / 2, frameState.size[1] / 2,
-        resolution / viewState.resolution,
-        resolution / viewState.resolution,
-        viewState.rotation,
-        (origin[0] - center[0]) / resolution,
-        (center[1] - origin[1]) / resolution);
+    ol.transform.translate(ol.transform.reset(transform),
+        frameState.size[0] / 2, frameState.size[1] / 2);
+    ol.transform.scale(transform,
+        resolution / viewState.resolution, resolution / viewState.resolution);
+    ol.transform.rotate(transform,  viewState.rotation);
+    ol.transform.translate(transform,
+        (origin[0] - center[0]) / resolution, (center[1] - origin[1]) / resolution);
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
       for (j = tileLayerZKey - 1; j >= 0; --j) {
@@ -313,9 +313,9 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
   /**
    * @private
@@ -436,11 +436,11 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent
 
 
 /**
- * @param {ol.Matrix} transform Transform.
+ * @param {ol.Transform} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
-  if (!ol.matrix.equals(transform, this.transform_)) {
+  if (!ol.array.equals(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
-    ol.matrix.setFromArray(this.transform_, transform);
+    ol.transform.setFromArray(this.transform_, transform);
   }
 };

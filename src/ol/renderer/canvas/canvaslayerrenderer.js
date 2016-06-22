@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('goog.asserts');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
@@ -22,9 +22,9 @@ ol.renderer.canvas.Layer = function(layer) {
 
   /**
    * @private
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.transform_ = ol.matrix.create();
+  this.transform_ = ol.transform.create();
 
 };
 ol.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
@@ -57,14 +57,10 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
       var bottomRight = ol.extent.getBottomRight(extent);
       var bottomLeft = ol.extent.getBottomLeft(extent);
 
-      ol.matrix.multVec2(frameState.coordinateToPixelMatrix,
-          topLeft, topLeft);
-      ol.matrix.multVec2(frameState.coordinateToPixelMatrix,
-          topRight, topRight);
-      ol.matrix.multVec2(frameState.coordinateToPixelMatrix,
-          bottomRight, bottomRight);
-      ol.matrix.multVec2(frameState.coordinateToPixelMatrix,
-          bottomLeft, bottomLeft);
+      ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
+      ol.transform.apply(frameState.coordinateToPixelTransform, topRight);
+      ol.transform.apply(frameState.coordinateToPixelTransform, bottomRight);
+      ol.transform.apply(frameState.coordinateToPixelTransform, bottomLeft);
 
       context.save();
       ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
@@ -108,7 +104,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Matrix=} opt_transform Transform.
+ * @param {ol.Transform=} opt_transform Transform.
  * @private
  */
 ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
@@ -134,7 +130,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Matrix=} opt_transform Transform.
+ * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, frameState, opt_transform) {
@@ -146,7 +142,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, 
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Matrix=} opt_transform Transform.
+ * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, frameState, opt_transform) {
@@ -158,7 +154,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, f
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.Matrix=} opt_transform Transform.
+ * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
@@ -174,7 +170,7 @@ ol.renderer.canvas.Layer.prototype.getImage = goog.abstractMethod;
 
 
 /**
- * @return {!ol.Matrix} Image transform.
+ * @return {!ol.Transform} Image transform.
  */
 ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 
@@ -183,19 +179,19 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
- * @return {!ol.Matrix} Transform.
+ * @return {!ol.Transform} Transform.
  */
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) {
   var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
-  return ol.matrix.makeTransform(this.transform_,
-      pixelRatio * frameState.size[0] / 2,
-      pixelRatio * frameState.size[1] / 2,
-      pixelRatio / viewState.resolution,
-      -pixelRatio / viewState.resolution,
-      -viewState.rotation,
-      -viewState.center[0] + offsetX,
-      -viewState.center[1]);
+  var transform = ol.transform.reset(this.transform_);
+  ol.transform.translate(transform,
+      pixelRatio * frameState.size[0] / 2, pixelRatio * frameState.size[1] / 2);
+  ol.transform.scale(transform,
+      pixelRatio / viewState.resolution, -pixelRatio / viewState.resolution);
+  ol.transform.rotate(transform, -viewState.rotation);
+  return ol.transform.translate(transform,
+      -viewState.center[0] + offsetX, -viewState.center[1]);
 };
 
 
@@ -209,13 +205,11 @@ ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
 
 /**
  * @param {ol.Pixel} pixelOnMap Pixel.
- * @param {ol.Matrix} imageTransformInv The transformation matrix
+ * @param {ol.Transform} imageTransformInv The transformation matrix
  *        to convert from a map pixel to a canvas pixel.
  * @return {ol.Pixel} The pixel.
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.getPixelOnCanvas = function(pixelOnMap, imageTransformInv) {
-  var pixelOnCanvas = [0, 0];
-  ol.matrix.multVec2(imageTransformInv, pixelOnMap, pixelOnCanvas);
-  return pixelOnCanvas;
+  return ol.transform.apply(imageTransformInv, pixelOnMap.slice());
 };

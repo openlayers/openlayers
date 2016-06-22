@@ -2,7 +2,7 @@ goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('goog.webgl');
 goog.require('ol.layer.Layer');
-goog.require('ol.matrix');
+goog.require('ol.transform');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
@@ -63,15 +63,15 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @protected
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.texCoordMatrix = ol.matrix.create();
+  this.texCoordMatrix = ol.transform.create();
 
   /**
    * @protected
-   * @type {ol.Matrix}
+   * @type {ol.Transform}
    */
-  this.projectionMatrix = ol.matrix.create();
+  this.projectionMatrix = ol.transform.create();
 
   /**
    * @private
@@ -209,7 +209,7 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ = function(type, context
 
 
 /**
- * @return {!ol.Matrix} Matrix.
+ * @return {!ol.Transform} Matrix.
  */
 ol.renderer.webgl.Layer.prototype.getTexCoordMatrix = function() {
   return this.texCoordMatrix;
@@ -225,7 +225,7 @@ ol.renderer.webgl.Layer.prototype.getTexture = function() {
 
 
 /**
- * @return {!ol.Matrix} Matrix.
+ * @return {!ol.Transform} Matrix.
  */
 ol.renderer.webgl.Layer.prototype.getProjectionMatrix = function() {
   return this.projectionMatrix;
