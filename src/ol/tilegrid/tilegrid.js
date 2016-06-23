@@ -151,6 +151,24 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
 
 
 /**
+ * Call a function with each tile coordinate for a given extent and zoom level.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {number} zoom Zoom level.
+ * @param {function(ol.TileCoord)} callback Function called with each tile coordinate.
+ * @api
+ */
+ol.tilegrid.TileGrid.prototype.forEachTileCoordInExtentAndZ = function(extent, zoom, callback) {
+  var tileRange = this.getTileRangeForExtentAndZ(extent, zoom);
+  for (var i = tileRange.minX, ii = tileRange.maxX; i <= ii; ++i) {
+    for (var j = tileRange.minY, jj = tileRange.maxY; j <= jj; ++j) {
+      callback([zoom, i, j]);
+    }
+  }
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_this The object to use as `this` in `callback`.
@@ -474,6 +492,7 @@ ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
  *     If 1, the nearest lower resolution will be used. If -1, the nearest
  *     higher resolution will be used. Default is 0.
  * @return {number} Z.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(
     resolution, opt_direction) {
