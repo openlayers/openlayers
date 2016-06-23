@@ -489,7 +489,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           y = pixelCoordinates[d + 1];
           roundX = (x + 0.5) | 0;
           roundY = (y + 0.5) | 0;
-          if (roundX !== prevX || roundY !== prevY) {
+          if (d == dd - 2 || roundX !== prevX || roundY !== prevY) {
             context.lineTo(x, y);
             prevX = roundX;
             prevY = roundY;
