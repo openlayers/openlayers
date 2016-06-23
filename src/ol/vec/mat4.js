@@ -2,22 +2,24 @@ goog.provide('ol.vec.Mat4');
 
 
 /**
- * @type {Array.<number>}
+ * @return {Array.<number>} 4x4 matrix representing a 3D identity transform.
  */
-ol.vec.Mat4.tmpMatrix_ = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+ol.vec.Mat4.create = function() {
+  return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+};
 
 
 /**
- * @param {ol.Transform} mat Transformation matrix.
+ * @param {Array.<number>} mat4 Flattened 4x4 matrix receiving the result.
+ * @param {ol.Transform} transform Transformation matrix.
  * @return {Array.<number>} 2D transformation matrix as flattened 4x4 matrix.
  */
-ol.vec.Mat4.fromMatrix = function(mat) {
-  var mat4 = ol.vec.Mat4.tmpMatrix_;
-  mat4[0] = mat[0];
-  mat4[1] = mat[1];
-  mat4[4] = mat[2];
-  mat4[5] = mat[3];
-  mat4[12] = mat[4];
-  mat4[13] = mat[5];
+ol.vec.Mat4.fromTransform = function(mat4, transform) {
+  mat4[0] = transform[0];
+  mat4[1] = transform[1];
+  mat4[4] = transform[2];
+  mat4[5] = transform[3];
+  mat4[12] = transform[4];
+  mat4[13] = transform[5];
   return mat4;
 };

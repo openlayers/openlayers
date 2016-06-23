@@ -146,6 +146,12 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
   this.projectionMatrix_ = ol.transform.create();
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.tmpMat4_ = ol.vec.Mat4.create();
+
+  /**
    * @private
    * @type {boolean|undefined}
    */
@@ -565,9 +571,12 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
     ol.transform.rotate(offsetRotateMatrix, -rotation);
   }
 
-  gl.uniformMatrix4fv(locations.u_projectionMatrix, false, ol.vec.Mat4.fromMatrix(projectionMatrix));
-  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false, ol.vec.Mat4.fromMatrix(offsetScaleMatrix));
-  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false, ol.vec.Mat4.fromMatrix(offsetRotateMatrix));
+  gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+  gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
   gl.uniform1f(locations.u_opacity, opacity);
 
   // draw!

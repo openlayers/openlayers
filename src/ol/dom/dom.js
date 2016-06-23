@@ -7,6 +7,13 @@ goog.require('ol.vec.Mat4');
 
 
 /**
+ * @type {Array.<number>}
+ * @private
+ */
+ol.dom.tmpMat4_ = ol.vec.Mat4.create();
+
+
+/**
  * Create an html canvas element and returns its 2d context.
  * @param {number=} opt_width Canvas width.
  * @param {number=} opt_height Canvas height.
@@ -136,7 +143,7 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
   var i;
   if (ol.dom.canUseCssTransform3D()) {
     var value3D;
-    var transform3D = ol.vec.Mat4.fromMatrix(transform);
+    var transform3D = ol.vec.Mat4.fromTransform(ol.dom.tmpMat4_, transform);
     if (opt_precision !== undefined) {
       /** @type {Array.<string>} */
       var strings3D = new Array(16);

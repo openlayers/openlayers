@@ -74,6 +74,12 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
   this.projectionMatrix = ol.transform.create();
 
   /**
+   * @type {Array.<number>}
+   * @private
+   */
+  this.tmpMat4_ = ol.vec.Mat4.create();
+
+  /**
    * @private
    * @type {ol.renderer.webgl.map.shader.Default.Locations}
    */
@@ -169,9 +175,9 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
   }
 
   gl.uniformMatrix4fv(locations.u_texCoordMatrix, false,
-      ol.vec.Mat4.fromMatrix(this.getTexCoordMatrix()));
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getTexCoordMatrix()));
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-      ol.vec.Mat4.fromMatrix(this.getProjectionMatrix()));
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getProjectionMatrix()));
   gl.uniform1f(locations.u_opacity, layerState.opacity);
   gl.bindTexture(goog.webgl.TEXTURE_2D, this.getTexture());
   gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
