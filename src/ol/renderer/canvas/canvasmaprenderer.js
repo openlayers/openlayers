@@ -3,7 +3,6 @@
 goog.provide('ol.renderer.canvas.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.RendererType');
@@ -54,7 +53,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
-  goog.dom.insertChildAt(container, this.canvas_, 0);
+  container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
   /**
    * @private

@@ -1,6 +1,5 @@
 goog.provide('ol.control.Rotate');
 
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
@@ -36,8 +35,9 @@ ol.control.Rotate = function(opt_options) {
   this.label_ = null;
 
   if (typeof label === 'string') {
-    this.label_ = goog.dom.createDom('SPAN',
-        'ol-compass', label);
+    this.label_ = document.createElement('span');
+    this.label_.className = 'ol-compass';
+    this.label_.textContent = label;
   } else {
     this.label_ = label;
     this.label_.classList.add('ol-compass');
@@ -45,18 +45,20 @@ ol.control.Rotate = function(opt_options) {
 
   var tipLabel = options.tipLabel ? options.tipLabel : 'Reset rotation';
 
-  var button = goog.dom.createDom('BUTTON', {
-    'class': className + '-reset',
-    'type' : 'button',
-    'title': tipLabel
-  }, this.label_);
+  var button = document.createElement('button');
+  button.className = className + '-reset';
+  button.setAttribute('type', 'button');
+  button.title = tipLabel;
+  button.appendChild(this.label_);
 
   ol.events.listen(button, ol.events.EventType.CLICK,
       ol.control.Rotate.prototype.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom('DIV', cssClasses, button);
+  var element = document.createElement('div');
+  element.className = cssClasses;
+  element.appendChild(button);
 
   var render = options.render ? options.render : ol.control.Rotate.render;
 

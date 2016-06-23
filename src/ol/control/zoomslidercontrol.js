@@ -3,7 +3,6 @@
 goog.provide('ol.control.ZoomSlider');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -108,14 +107,12 @@ ol.control.ZoomSlider = function(opt_options) {
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
   var className = options.className !== undefined ? options.className : 'ol-zoomslider';
-  var thumbElement = goog.dom.createDom('BUTTON', {
-    'type': 'button',
-    'class': className + '-thumb ' + ol.css.CLASS_UNSELECTABLE
-  });
-  var containerElement = goog.dom.createDom('DIV',
-      [className, ol.css.CLASS_UNSELECTABLE, ol.css.CLASS_CONTROL],
-      thumbElement);
-
+  var thumbElement = document.createElement('button');
+  thumbElement.setAttribute('type', 'button');
+  thumbElement.className = className + '-thumb ' + ol.css.CLASS_UNSELECTABLE;
+  var containerElement = document.createElement('div');
+  containerElement.className = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
+  containerElement.appendChild(thumbElement);
   /**
    * @type {ol.pointer.PointerEventHandler}
    * @private

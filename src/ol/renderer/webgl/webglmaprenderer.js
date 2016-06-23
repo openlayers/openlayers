@@ -3,7 +3,6 @@
 goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.webgl');
 goog.require('ol');
 goog.require('ol.RendererType');
@@ -51,7 +50,7 @@ ol.renderer.webgl.Map = function(container, map) {
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
-  goog.dom.insertChildAt(container, this.canvas_, 0);
+  container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
   /**
    * @private

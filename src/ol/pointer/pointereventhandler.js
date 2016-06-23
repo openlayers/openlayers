@@ -30,7 +30,6 @@
 
 goog.provide('ol.pointer.PointerEventHandler');
 
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 
@@ -334,10 +333,10 @@ ol.pointer.PointerEventHandler.prototype.enterOver = function(data, event) {
  *   contains the other element.
  */
 ol.pointer.PointerEventHandler.prototype.contains_ = function(container, contained) {
-  if (!contained) {
+  if (!container || !contained) {
     return false;
   }
-  return goog.dom.contains(container, contained);
+  return container.contains(contained);
 };
 
 

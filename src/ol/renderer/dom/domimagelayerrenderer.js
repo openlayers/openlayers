@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('goog.vec.Mat4');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -66,7 +65,7 @@ ol.renderer.dom.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coord
  * @inheritDoc
  */
 ol.renderer.dom.ImageLayer.prototype.clearFrame = function() {
-  goog.dom.removeChildren(this.target);
+  ol.dom.removeChildren(this.target);
   this.image_ = null;
 };
 
@@ -133,7 +132,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
       // overriding the max-width style.
       imageElement.style.maxWidth = 'none';
       imageElement.style.position = 'absolute';
-      goog.dom.removeChildren(this.target);
+      ol.dom.removeChildren(this.target);
       this.target.appendChild(imageElement);
       this.image_ = image;
     }
