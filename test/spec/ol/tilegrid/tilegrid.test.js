@@ -949,11 +949,11 @@ describe('ol.tilegrid.TileGrid', function() {
 
   });
 
-  describe('forEachTileCoordInExtentAndZ', function() {
+  describe('forEachTileCoord', function() {
     it('calls the provided function with each tile coordinate', function() {
       var tileGrid = ol.tilegrid.createXYZ({extent: [-180, -90, 180, 90]});
       var tileCoords = [];
-      tileGrid.forEachTileCoordInExtentAndZ([15, 47, 16, 48], 8, function(tileCoord) {
+      tileGrid.forEachTileCoord([15, 47, 16, 48], 8, function(tileCoord) {
         tileCoords.push(tileCoord);
       });
       expect(tileCoords).to.eql([
