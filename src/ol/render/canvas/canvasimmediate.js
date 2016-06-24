@@ -272,10 +272,11 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
     if (rotation !== 0 || this.imageScale_ != 1) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
-      ol.transform.translate(ol.transform.reset(localTransform), centerX, centerY);
-      ol.transform.scale(localTransform, this.imageScale_, this.imageScale_);
-      ol.transform.rotate(localTransform, rotation);
-      ol.transform.translate(localTransform, -centerX, -centerY);
+      ol.transform.compose(localTransform,
+          centerX, centerY,
+          this.imageScale_, this.imageScale_,
+          rotation,
+          -centerX, -centerY);
       context.setTransform.apply(context, localTransform);
     }
     context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
@@ -320,11 +321,11 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
     var x = pixelCoordinates[offset] + this.textOffsetX_;
     var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
     if (this.textRotation_ !== 0 || this.textScale_ != 1) {
-      var localTransform = ol.transform.reset(this.tmpLocalTransform_);
-      ol.transform.translate(localTransform, x, y);
-      ol.transform.scale(localTransform, this.textScale_, this.textScale_);
-      ol.transform.rotate(localTransform, this.textRotation_);
-      ol.transform.translate(localTransform, -x, -y);
+      var localTransform = ol.transform.compose(this.tmpLocalTransform_,
+          x, y,
+          this.textScale_, this.textScale_,
+          this.textRotation_,
+          -x, -y);
       context.setTransform.apply(context, localTransform);
     }
     if (this.textStrokeState_) {

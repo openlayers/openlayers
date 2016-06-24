@@ -326,11 +326,11 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   if (hasRenderListeners) {
     var dX = drawOffsetX - offsetX / drawScale + offsetX;
     var dY = drawOffsetY - offsetY / drawScale + offsetY;
-    var imageTransform = ol.transform.reset(this.imageTransform_);
-    ol.transform.translate(imageTransform, drawSize / 2 - dX, drawSize / 2 - dY);
-    ol.transform.scale(imageTransform, pixelScale, -pixelScale);
-    ol.transform.rotate(imageTransform, -rotation);
-    ol.transform.translate(imageTransform, -center[0] + dX / pixelScale, -center[1] - dY / pixelScale);
+    var imageTransform = ol.transform.compose(this.imageTransform_,
+        drawSize / 2 - dX, drawSize / 2 - dY,
+        pixelScale, -pixelScale,
+        -rotation,
+        -center[0] + dX / pixelScale, -center[1] - dY / pixelScale);
     this.dispatchRenderEvent(renderContext, frameState, imageTransform);
   }
   if (rotation || hasRenderListeners) {

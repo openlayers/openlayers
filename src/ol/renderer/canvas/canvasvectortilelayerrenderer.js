@@ -148,13 +148,11 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
     if (pixelSpace) {
       origin = ol.extent.getTopLeft(tileExtent);
       tileTransform = ol.transform.reset(this.tmpTransform_);
-      ol.transform.translate(tileTransform, offsetX, offsetY);
-      ol.transform.scale(tileTransform,
-          pixelScale * tilePixelResolution, pixelScale * tilePixelResolution);
-      ol.transform.rotate(tileTransform, rotation);
-      ol.transform.translate(tileTransform,
-          (origin[0] - center[0]) / tilePixelResolution,
-          (center[1] - origin[1]) / tilePixelResolution);
+      tileTransform = ol.transform.compose(this.tmpTransform_,
+          offsetX, offsetY,
+          pixelScale * tilePixelResolution, pixelScale * tilePixelResolution,
+          rotation,
+          (origin[0] - center[0]) / tilePixelResolution, (center[1] - origin[1]) / tilePixelResolution);
     } else {
       tileTransform = transform;
     }

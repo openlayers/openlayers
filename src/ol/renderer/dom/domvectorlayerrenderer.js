@@ -119,13 +119,11 @@ ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerS
   var imageWidth = viewWidth * pixelRatio;
   var imageHeight = viewHeight * pixelRatio;
 
-  var transform = ol.transform.reset(this.transform_);
-  ol.transform.translate(transform,
-      pixelRatio * viewWidth / 2, pixelRatio * viewHeight / 2);
-  ol.transform.scale(transform,
-      pixelRatio / viewResolution, -pixelRatio / viewResolution);
-  ol.transform.rotate(transform, -viewRotation);
-  ol.transform.translate(transform, -viewCenter[0], -viewCenter[1]);
+  var transform = ol.transform.compose(this.transform_,
+      pixelRatio * viewWidth / 2, pixelRatio * viewHeight / 2,
+      pixelRatio / viewResolution, -pixelRatio / viewResolution,
+      -viewRotation,
+      -viewCenter[0], -viewCenter[1]);
 
   var context = this.context_;
 

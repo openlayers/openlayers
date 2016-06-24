@@ -184,14 +184,14 @@ ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
 ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) {
   var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
-  var transform = ol.transform.reset(this.transform_);
-  ol.transform.translate(transform,
-      pixelRatio * frameState.size[0] / 2, pixelRatio * frameState.size[1] / 2);
-  ol.transform.scale(transform,
-      pixelRatio / viewState.resolution, -pixelRatio / viewState.resolution);
-  ol.transform.rotate(transform, -viewState.rotation);
-  return ol.transform.translate(transform,
-      -viewState.center[0] + offsetX, -viewState.center[1]);
+  var dx1 = pixelRatio * frameState.size[0] / 2;
+  var dy1 = pixelRatio * frameState.size[1] / 2;
+  var sx = pixelRatio / viewState.resolution;
+  var sy = -sx;
+  var angle = -viewState.rotation;
+  var dx2 = -viewState.center[0] + offsetX;
+  var dy2 = -viewState.center[1];
+  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 
 

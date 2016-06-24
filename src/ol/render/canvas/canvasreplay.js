@@ -331,10 +331,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
-            ol.transform.translate(ol.transform.reset(localTransform), centerX, centerY);
-            ol.transform.scale(localTransform, scale, scale);
-            ol.transform.rotate(localTransform, rotation);
-            ol.transform.translate(localTransform, -centerX, -centerY);
+            ol.transform.compose(localTransform,
+                centerX, centerY, scale, scale, rotation, -centerX, -centerY);
             context.transform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
@@ -390,10 +388,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           x = pixelCoordinates[d] + offsetX;
           y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
-            ol.transform.translate(ol.transform.reset(localTransform), x, y);
-            ol.transform.scale(localTransform, scale, scale);
-            ol.transform.rotate(localTransform, rotation);
-            ol.transform.translate(localTransform, -x, -y);
+            ol.transform.compose(localTransform, x, y, scale, scale, rotation, -x, -y);
             context.transform.apply(context, localTransform);
           }
 
@@ -1897,11 +1892,11 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeaturesHash, callback) {
 
-  var transform = ol.transform.reset(this.hitDetectionTransform_);
-  ol.transform.translate(transform, 0.5, 0.5);
-  ol.transform.scale(transform, 1 / resolution, -1 / resolution);
-  ol.transform.rotate(transform, -rotation);
-  ol.transform.translate(transform, -coordinate[0], -coordinate[1]);
+  var transform = ol.transform.compose(this.hitDetectionTransform_,
+      0.5, 0.5,
+      1 / resolution, -1 / resolution,
+      -rotation,
+      -coordinate[0], -coordinate[1]);
 
   var context = this.hitDetectionContext_;
   context.clearRect(0, 0, 1, 1);

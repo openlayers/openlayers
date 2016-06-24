@@ -69,13 +69,13 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
   goog.asserts.assert(coordinateToPixelTransform,
       'frameState has a coordinateToPixelTransform');
-  ol.transform.translate(ol.transform.reset(coordinateToPixelTransform),
-      frameState.size[0] / 2, frameState.size[1] / 2);
-  ol.transform.scale(coordinateToPixelTransform,
-      1 / viewState.resolution, -1 / viewState.resolution);
-  ol.transform.rotate(coordinateToPixelTransform, -viewState.rotation);
-  ol.transform.translate(coordinateToPixelTransform,
+
+  ol.transform.compose(coordinateToPixelTransform,
+      frameState.size[0] / 2, frameState.size[1] / 2,
+      1 / viewState.resolution, -1 / viewState.resolution,
+      -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
+
   ol.transform.invert(
       ol.transform.setFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
 };

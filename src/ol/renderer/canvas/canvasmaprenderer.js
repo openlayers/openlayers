@@ -120,17 +120,15 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameSta
  * @return {!ol.Transform} Transform.
  */
 ol.renderer.canvas.Map.prototype.getTransform = function(frameState) {
-  var pixelRatio = frameState.pixelRatio;
   var viewState = frameState.viewState;
-  var resolution = viewState.resolution;
-  var transform = ol.transform.reset(this.transform_);
-  ol.transform.translate(transform,
-      this.canvas_.width / 2, this.canvas_.height / 2);
-  ol.transform.scale(transform,
-      pixelRatio / resolution, -pixelRatio / resolution);
-  ol.transform.rotate(transform, -viewState.rotation);
-  return ol.transform.translate(transform,
-      -viewState.center[0], -viewState.center[1]);
+  var dx1 = this.canvas_.width / 2;
+  var dy1 = this.canvas_.height / 2;
+  var sx = frameState.pixelRatio / viewState.resolution;
+  var sy = -sx;
+  var angle = -viewState.rotation;
+  var dx2 = -viewState.center[0];
+  var dy2 = -viewState.center[1];
+  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 
 

@@ -210,13 +210,13 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
     }
     resolution = tileLayerZ.getResolution();
     origin = tileLayerZ.getOrigin();
-    ol.transform.translate(ol.transform.reset(transform),
-        frameState.size[0] / 2, frameState.size[1] / 2);
-    ol.transform.scale(transform,
-        resolution / viewState.resolution, resolution / viewState.resolution);
-    ol.transform.rotate(transform,  viewState.rotation);
-    ol.transform.translate(transform,
+
+    ol.transform.compose(transform,
+        frameState.size[0] / 2, frameState.size[1] / 2,
+        resolution / viewState.resolution, resolution / viewState.resolution,
+        viewState.rotation,
         (origin[0] - center[0]) / resolution, (center[1] - origin[1]) / resolution);
+
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
       for (j = tileLayerZKey - 1; j >= 0; --j) {

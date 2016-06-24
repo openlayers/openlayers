@@ -215,10 +215,14 @@ ol.source.ImageVector.prototype.getStyleFunction = function() {
  * @private
  */
 ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {
-  var transform = ol.transform.reset(this.transform_);
-  ol.transform.translate(transform, size[0] / 2, size[1] / 2);
-  ol.transform.scale(transform, pixelRatio / resolution, -pixelRatio / resolution);
-  return ol.transform.translate(transform, -center[0], -center[1]);
+  var dx1 = size[0] / 2;
+  var dy1 = size[1] / 2;
+  var sx = pixelRatio / resolution;
+  var sy = -sx;
+  var dx2 = -center[0];
+  var dy2 = -center[1];
+
+  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
 };
 
 

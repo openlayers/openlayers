@@ -123,15 +123,14 @@ ol.renderer.dom.Map.prototype.dispatchComposeEvent_ = function(type, frameState)
     var context = this.context_;
     var canvas = context.canvas;
 
-    var transform = ol.transform.reset(this.transform_);
-    ol.transform.translate(transform, canvas.width / 2, canvas.height / 2);
-    ol.transform.scale(transform,
-        pixelRatio / viewState.resolution, -pixelRatio / viewState.resolution);
-    ol.transform.rotate(transform, -viewState.rotation);
-    ol.transform.translate(transform,
+    var transform = ol.transform.compose(this.transform_,
+        canvas.width / 2, canvas.height / 2,
+        pixelRatio / viewState.resolution, -pixelRatio / viewState.resolution,
+        -rotation,
         -viewState.center[0], -viewState.center[1]);
+
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
-        extent, this.transform_, rotation);
+        extent, transform, rotation);
     var composeEvent = new ol.render.Event(type, map, vectorContext,
         frameState, context, null);
     map.dispatchEvent(composeEvent);
