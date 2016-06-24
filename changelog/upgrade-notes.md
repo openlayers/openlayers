@@ -4,6 +4,10 @@
 
 This option was previously needed to use named colors with the WebGL renderer but is no longer needed.
 
+#### KML format now uses URL()
+
+The URL constructor is supported by all modern browsers, but not by older ones, such as IE. To use the KML format in such older browsers, a URL polyfill will have to be loaded before use.
+
 ### v3.17.0
 
 #### `ol.source.MapQuest` removal
