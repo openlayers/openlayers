@@ -21,7 +21,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
-  goog.base(this, imageLayer);
+  ol.renderer.canvas.Layer.call(this, imageLayer);
 
   /**
    * @private
@@ -48,7 +48,7 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
   this.hitCanvasContext_ = null;
 
 };
-goog.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
+ol.inherits(ol.renderer.canvas.ImageLayer, ol.renderer.canvas.Layer);
 
 
 /**

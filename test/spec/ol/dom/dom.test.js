@@ -127,7 +127,7 @@ describe('ol.dom', function() {
 
       // revert mock-ups
       goog.userAgent.IE = originalIsIE;
-      goog.userAgent.isVersionOrHigher = originalIsVersionOrHigher
+      goog.userAgent.isVersionOrHigher = originalIsVersionOrHigher;
     });
 
     it('sets transform origin *only* for IE 9', function() {
@@ -201,7 +201,7 @@ describe('ol.dom', function() {
       };
       ol.dom.canUseCssTransform = function() {
         return true;
-      }
+      };
 
       // test
       ol.dom.transformElement2D(element, transform);
@@ -224,7 +224,7 @@ describe('ol.dom', function() {
       };
       ol.dom.canUseCssTransform = function() {
         return true;
-      }
+      };
 
       // test
       ol.dom.transformElement2D(element, transformFloat, 2);
@@ -245,7 +245,7 @@ describe('ol.dom', function() {
       };
       ol.dom.canUseCssTransform = function() {
         return false;
-      }
+      };
 
       // test
       ol.dom.transformElement2D(element, transform);

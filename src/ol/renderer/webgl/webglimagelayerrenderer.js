@@ -3,8 +3,6 @@ goog.provide('ol.renderer.webgl.ImageLayer');
 goog.require('goog.asserts');
 goog.require('goog.vec.Mat4');
 goog.require('goog.webgl');
-goog.require('ol.Coordinate');
-goog.require('ol.Extent');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -26,7 +24,7 @@ goog.require('ol.webgl.Context');
  */
 ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
 
-  goog.base(this, mapRenderer, imageLayer);
+  ol.renderer.webgl.Layer.call(this, mapRenderer, imageLayer);
 
   /**
    * The last rendered image.
@@ -48,7 +46,7 @@ ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
   this.hitTransformationMatrix_ = null;
 
 };
-goog.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
+ol.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
 
 
 /**

@@ -35,7 +35,7 @@ ol.source.TileJSON = function(options) {
    */
   this.tileJSON_ = null;
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -58,7 +58,7 @@ ol.source.TileJSON = function(options) {
   }
 
 };
-goog.inherits(ol.source.TileJSON, ol.source.TileImage);
+ol.inherits(ol.source.TileJSON, ol.source.TileImage);
 
 
 /**

@@ -4,10 +4,7 @@ goog.provide('ol.control.MousePosition');
 
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.CoordinateFormatType');
 goog.require('ol.Object');
-goog.require('ol.Pixel');
-goog.require('ol.TransformFunction');
 goog.require('ol.control.Control');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
@@ -40,12 +37,12 @@ ol.control.MousePosition = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var element = document.createElement('DIV');
-  element.className = options.className !== undefined ? options.className : 'ol-mouse-position'
+  element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
   var render = options.render ?
       options.render : ol.control.MousePosition.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: element,
     render: render,
     target: options.target
@@ -93,7 +90,7 @@ ol.control.MousePosition = function(opt_options) {
   this.lastMouseMovePixel_ = null;
 
 };
-goog.inherits(ol.control.MousePosition, ol.control.Control);
+ol.inherits(ol.control.MousePosition, ol.control.Control);
 
 
 /**
@@ -177,7 +174,7 @@ ol.control.MousePosition.prototype.handleMouseOut = function(event) {
  * @api stable
  */
 ol.control.MousePosition.prototype.setMap = function(map) {
-  goog.base(this, 'setMap', map);
+  ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(

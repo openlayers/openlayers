@@ -3,8 +3,6 @@
 goog.provide('ol.renderer.canvas.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol');
 goog.require('ol.RendererType');
@@ -38,7 +36,7 @@ goog.require('ol.vec.Mat4');
  */
 ol.renderer.canvas.Map = function(container, map) {
 
-  goog.base(this, container, map);
+  ol.renderer.Map.call(this, container, map);
 
   /**
    * @private
@@ -55,7 +53,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
-  goog.dom.insertChildAt(container, this.canvas_, 0);
+  container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
   /**
    * @private
@@ -70,7 +68,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.transform_ = goog.vec.Mat4.createNumber();
 
 };
-goog.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
+ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
 
 
 /**
@@ -149,7 +147,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.canvas_, false);
+      this.canvas_.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -200,7 +198,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
-    goog.style.setElementShown(this.canvas_, true);
+    this.canvas_.style.display = '';
     this.renderedVisible_ = true;
   }
 

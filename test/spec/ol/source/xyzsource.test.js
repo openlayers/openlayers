@@ -5,6 +5,14 @@ describe('ol.source.XYZ', function() {
 
   describe('constructor', function() {
 
+    it('can be constructed without options', function() {
+      var source = new ol.source.XYZ();
+      expect(source).to.be.an(ol.source.XYZ);
+      expect(source).to.be.an(ol.source.TileImage);
+      expect(source).to.be.an(ol.source.UrlTile);
+      expect(source).to.be.an(ol.source.Tile);
+    });
+
     it('can be constructed with a custom tile grid', function() {
       var tileGrid = ol.tilegrid.createXYZ();
       var tileSource = new ol.source.XYZ({
@@ -179,5 +187,7 @@ describe('ol.source.XYZ', function() {
 
 });
 
-goog.require('ol.TileCoord');
+goog.require('ol.source.Tile');
+goog.require('ol.source.TileImage');
+goog.require('ol.source.UrlTile');
 goog.require('ol.source.XYZ');

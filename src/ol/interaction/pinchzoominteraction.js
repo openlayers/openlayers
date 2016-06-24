@@ -2,7 +2,6 @@ goog.provide('ol.interaction.PinchZoom');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.Coordinate');
 goog.require('ol.functions');
 goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
@@ -21,7 +20,7 @@ goog.require('ol.interaction.Pointer');
  */
 ol.interaction.PinchZoom = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.PinchZoom.handleDownEvent_,
     handleDragEvent: ol.interaction.PinchZoom.handleDragEvent_,
     handleUpEvent: ol.interaction.PinchZoom.handleUpEvent_
@@ -54,7 +53,7 @@ ol.interaction.PinchZoom = function(opt_options) {
   this.lastScaleDelta_ = 1;
 
 };
-goog.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
+ol.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
 
 
 /**

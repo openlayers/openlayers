@@ -36,7 +36,7 @@ ol.renderer.dom.VectorLayer = function(vectorLayer) {
   target.style.maxWidth = 'none';
   target.style.position = 'absolute';
 
-  goog.base(this, vectorLayer, target);
+  ol.renderer.dom.Layer.call(this, vectorLayer, target);
 
   /**
    * @private
@@ -87,7 +87,7 @@ ol.renderer.dom.VectorLayer = function(vectorLayer) {
   this.elementTransform_ = goog.vec.Mat4.createNumber();
 
 };
-goog.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
+ol.inherits(ol.renderer.dom.VectorLayer, ol.renderer.dom.Layer);
 
 
 /**

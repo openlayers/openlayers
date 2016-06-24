@@ -111,7 +111,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var tile;
       tileCallback = function(t) {
         tile = t;
-      }
+      };
       map.renderSync();
       expect(tile.getProjection()).to.equal(ol.proj.get('EPSG:3857'));
       expect(feature1.getGeometry().getCoordinates()).to.eql(
@@ -124,7 +124,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       tileCallback = function(t) {
         t.setProjection(proj);
         tile = t;
-      }
+      };
       map.renderSync();
       expect(tile.getProjection()).to.equal(proj);
       expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);

@@ -1,17 +1,7 @@
-goog.provide('ol.TileCoord');
 goog.provide('ol.tilecoord');
 
 goog.require('goog.asserts');
 goog.require('ol.extent');
-
-
-/**
- * An array of three numbers representing the location of a tile in a tile
- * grid. The order is `z`, `x`, and `y`. `z` is the zoom level.
- * @typedef {Array.<number>} ol.TileCoord
- * @api
- */
-ol.TileCoord;
 
 
 /**

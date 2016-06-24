@@ -32,7 +32,7 @@ describe('ol.render.Box', function() {
       expect(obj).to.be.a(ol.render.Box);
       expect(obj).to.be.a(ol.Disposable);
       obj.dispose();
-    })
+    });
     it('creates an absolutely positioned DIV with a className', function() {
       expect(box.element_).to.be.a(HTMLDivElement);
       expect(box.element_.style.position).to.be('absolute');

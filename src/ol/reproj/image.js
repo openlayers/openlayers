@@ -1,5 +1,4 @@
 goog.provide('ol.reproj.Image');
-goog.provide('ol.reproj.ImageFunctionType');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
@@ -10,12 +9,6 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
-
-
-/**
- * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
- */
-ol.reproj.ImageFunctionType;
 
 
 /**
@@ -30,7 +23,7 @@ ol.reproj.ImageFunctionType;
  * @param {ol.Extent} targetExtent Target extent.
  * @param {number} targetResolution Target resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.reproj.ImageFunctionType} getImageFunction
+ * @param {ol.ReprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
 ol.reproj.Image = function(sourceProj, targetProj,
@@ -102,7 +95,7 @@ ol.reproj.Image = function(sourceProj, targetProj,
 
   /**
    * @private
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    */
   this.sourceListenerKey_ = null;
 
@@ -115,10 +108,10 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.sourceImage_.getAttributions();
   }
 
-  goog.base(this, targetExtent, targetResolution, this.sourcePixelRatio_,
+  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
             state, attributions);
 };
-goog.inherits(ol.reproj.Image, ol.ImageBase);
+ol.inherits(ol.reproj.Image, ol.ImageBase);
 
 
 /**
@@ -128,7 +121,7 @@ ol.reproj.Image.prototype.disposeInternal = function() {
   if (this.state == ol.ImageState.LOADING) {
     this.unlistenSource_();
   }
-  goog.base(this, 'disposeInternal');
+  ol.ImageBase.prototype.disposeInternal.call(this);
 };
 
 

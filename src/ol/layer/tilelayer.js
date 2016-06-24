@@ -35,13 +35,13 @@ ol.layer.Tile = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  goog.base(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  ol.layer.Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   this.setPreload(options.preload !== undefined ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
       options.useInterimTilesOnError : true);
 };
-goog.inherits(ol.layer.Tile, ol.layer.Layer);
+ol.inherits(ol.layer.Tile, ol.layer.Layer);
 
 
 /**

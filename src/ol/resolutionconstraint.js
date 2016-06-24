@@ -1,14 +1,7 @@
 goog.provide('ol.ResolutionConstraint');
-goog.provide('ol.ResolutionConstraintType');
 
 goog.require('ol.array');
 goog.require('ol.math');
-
-
-/**
- * @typedef {function((number|undefined), number, number): (number|undefined)}
- */
-ol.ResolutionConstraintType;
 
 
 /**

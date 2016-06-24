@@ -2,31 +2,6 @@ goog.provide('ol.render.canvas');
 
 
 /**
- * @typedef {{fillStyle: ol.ColorLike}}
- */
-ol.render.canvas.FillState;
-
-
-/**
- * @typedef {{lineCap: string,
- *            lineDash: Array.<number>,
- *            lineJoin: string,
- *            lineWidth: number,
- *            miterLimit: number,
- *            strokeStyle: string}}
- */
-ol.render.canvas.StrokeState;
-
-
-/**
- * @typedef {{font: string,
- *            textAlign: string,
- *            textBaseline: string}}
- */
-ol.render.canvas.TextState;
-
-
-/**
  * @const
  * @type {string}
  */

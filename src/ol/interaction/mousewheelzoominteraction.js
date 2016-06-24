@@ -2,7 +2,6 @@ goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.Coordinate');
 goog.require('ol.events.EventType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.math');
@@ -19,7 +18,7 @@ goog.require('ol.math');
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 
-  goog.base(this, {
+  ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.MouseWheelZoom.handleEvent
   });
 
@@ -62,7 +61,7 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
   this.timeoutId_ = undefined;
 
 };
-goog.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
+ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
 
 /**

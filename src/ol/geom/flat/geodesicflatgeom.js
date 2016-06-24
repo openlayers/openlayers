@@ -1,7 +1,6 @@
 goog.provide('ol.geom.flat.geodesic');
 
 goog.require('goog.asserts');
-goog.require('ol.TransformFunction');
 goog.require('ol.math');
 goog.require('ol.proj');
 

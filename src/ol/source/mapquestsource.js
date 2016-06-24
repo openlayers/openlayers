@@ -34,7 +34,7 @@ ol.source.MapQuest = function(opt_options) {
       'https://otile{1-4}-s.mqcdn.com/tiles/1.0.0/' +
       this.layer_ + '/{z}/{x}/{y}.jpg';
 
-  goog.base(this, {
+  ol.source.XYZ.call(this, {
     attributions: layerConfig.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
@@ -47,7 +47,7 @@ ol.source.MapQuest = function(opt_options) {
   });
 
 };
-goog.inherits(ol.source.MapQuest, ol.source.XYZ);
+ol.inherits(ol.source.MapQuest, ol.source.XYZ);
 
 
 /**

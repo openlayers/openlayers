@@ -20,6 +20,7 @@ describe('ol.format.IGC', function() {
       'B0848484556256N00651095EA0205102039000\n' +
       'B0855534556037N00651011EA0259302513000\n' +
       'B0903354554964N00648049EA0272402758000\n' +
+      'B0848484556256N00651095EA0205102039000\n' +
       'GAB890A77AFE5CE63979AF6B1BED7F07D\n' +
       'G62BB282E44D63A1149EF2F5E8AF6F2F1\n' +
       'GEC14381987B15F81003EDE1E01A47843\n' +
@@ -49,7 +50,8 @@ describe('ol.format.IGC', function() {
       expect(geom.getCoordinates()).to.eql([
         [6.851583333333333, 45.9376, 1303202928],
         [6.850183333333334, 45.93395, 1303203353],
-        [6.800816666666667, 45.916066666666666, 1303203815]]);
+        [6.800816666666667, 45.916066666666666, 1303203815],
+        [6.851583333333333, 45.9376, 1303289328]]);
     });
 
     it('does transform and read a feature', function() {
@@ -69,9 +71,12 @@ describe('ol.format.IGC', function() {
       var expectedPoint3 = ol.proj.transform(
           [6.800816666666667, 45.916066666666666], 'EPSG:4326', 'EPSG:3857');
       expectedPoint3.push(1303203815);
+      var expectedPoint4 = ol.proj.transform(
+          [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
+      expectedPoint4.push(1303289328);
 
       expect(geom.getCoordinates()).to.eql(
-          [expectedPoint1, expectedPoint2, expectedPoint3]);
+          [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
     });
 
   });
@@ -92,7 +97,8 @@ describe('ol.format.IGC', function() {
       expect(geom.getCoordinates()).to.eql([
         [6.851583333333333, 45.9376, 1303202928],
         [6.850183333333334, 45.93395, 1303203353],
-        [6.800816666666667, 45.916066666666666, 1303203815]]);
+        [6.800816666666667, 45.916066666666666, 1303203815],
+        [6.851583333333333, 45.9376, 1303289328]]);
     });
 
     it('does transform and read features', function() {
@@ -114,9 +120,12 @@ describe('ol.format.IGC', function() {
       var expectedPoint3 = ol.proj.transform(
           [6.800816666666667, 45.916066666666666], 'EPSG:4326', 'EPSG:3857');
       expectedPoint3.push(1303203815);
+      var expectedPoint4 = ol.proj.transform(
+          [6.851583333333333, 45.9376], 'EPSG:4326', 'EPSG:3857');
+      expectedPoint4.push(1303289328);
 
       expect(geom.getCoordinates()).to.eql(
-          [expectedPoint1, expectedPoint2, expectedPoint3]);
+          [expectedPoint1, expectedPoint2, expectedPoint3, expectedPoint4]);
     });
   });
 

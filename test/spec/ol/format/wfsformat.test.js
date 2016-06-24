@@ -791,6 +791,34 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when parsing multiple feature types separately', function() {
+
+    var lineFeatures, polygonFeatures;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames.xml', function(xml) {
+        try {
+          lineFeatures = new ol.format.WFS({
+            featureNS: 'http://localhost:8080/official',
+            featureType: ['planet_osm_line']
+          }).readFeatures(xml);
+          polygonFeatures = new ol.format.WFS({
+            featureNS: 'http://localhost:8080/official',
+            featureType: ['planet_osm_polygon']
+          }).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(lineFeatures.length).to.be(3);
+      expect(polygonFeatures.length).to.be(9);
+    });
+
+  });
+
   describe('when parsing multiple feature types', function() {
 
     var features;
@@ -807,6 +835,57 @@ describe('ol.format.WFS', function() {
 
     it('reads all features with autoconfigure', function() {
       expect(features.length).to.be(12);
+    });
+
+  });
+
+  describe('when parsing multiple feature types (MapServer)', function() {
+
+    var features;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
+        try {
+          features = new ol.format.WFS().readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(features.length).to.be(5);
+      features.forEach(function(feature) {
+        expect(feature instanceof ol.Feature).to.be(true);
+      });
+    });
+
+  });
+
+  describe('when parsing multiple feature types separately (MapServer)', function() {
+
+    var busFeatures, infoFeatures;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/multiple-typenames-mapserver.xml', function(xml) {
+        try {
+          busFeatures = new ol.format.WFS({
+            featureNS: 'http://mapserver.gis.umn.edu/mapserver',
+            featureType: ['bus_stop']
+          }).readFeatures(xml);
+          infoFeatures = new ol.format.WFS({
+            featureNS: 'http://mapserver.gis.umn.edu/mapserver',
+            featureType: ['information']
+          }).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('reads all features', function() {
+      expect(busFeatures.length).to.be(3);
+      expect(infoFeatures.length).to.be(2);
     });
 
   });

@@ -149,7 +149,7 @@ describe('ol.source.Source', function() {
     });
     it('accepts an array with a string and an ol.Attribution', function() {
       var attribution = new ol.Attribution({html: 'Dumpty'});
-      source.setAttributions(['Humpty', attribution])
+      source.setAttributions(['Humpty', attribution]);
       var attributions = source.getAttributions();
       expect(attributions).to.not.be(null);
       expect(attributions).to.have.length(2);

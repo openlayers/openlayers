@@ -1,18 +1,10 @@
-goog.provide('ol.TilePriorityFunction');
 goog.provide('ol.TileQueue');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.Coordinate');
 goog.require('ol.TileState');
 goog.require('ol.structs.PriorityQueue');
-
-
-/**
- * @typedef {function(ol.Tile, string, ol.Coordinate, number): number}
- */
-ol.TilePriorityFunction;
 
 
 /**
@@ -26,7 +18,7 @@ ol.TilePriorityFunction;
  */
 ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
 
-  goog.base(
+  ol.structs.PriorityQueue.call(
       this,
       /**
        * @param {Array} element Element.
@@ -62,14 +54,14 @@ ol.TileQueue = function(tilePriorityFunction, tileChangeCallback) {
   this.tilesLoadingKeys_ = {};
 
 };
-goog.inherits(ol.TileQueue, ol.structs.PriorityQueue);
+ol.inherits(ol.TileQueue, ol.structs.PriorityQueue);
 
 
 /**
  * @inheritDoc
  */
 ol.TileQueue.prototype.enqueue = function(element) {
-  var added = goog.base(this, 'enqueue', element);
+  var added = ol.structs.PriorityQueue.prototype.enqueue.call(this, element);
   if (added) {
     var tile = element[0];
     ol.events.listen(tile, ol.events.EventType.CHANGE,

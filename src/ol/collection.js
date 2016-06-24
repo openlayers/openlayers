@@ -44,7 +44,7 @@ ol.CollectionEventType = {
  */
 ol.CollectionEvent = function(type, opt_element, opt_target) {
 
-  goog.base(this, type, opt_target);
+  ol.events.Event.call(this, type, opt_target);
 
   /**
    * The element that is added to or removed from the collection.
@@ -54,7 +54,7 @@ ol.CollectionEvent = function(type, opt_element, opt_target) {
   this.element = opt_element;
 
 };
-goog.inherits(ol.CollectionEvent, ol.events.Event);
+ol.inherits(ol.CollectionEvent, ol.events.Event);
 
 
 /**
@@ -82,7 +82,7 @@ ol.CollectionProperty = {
  */
 ol.Collection = function(opt_array) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @private
@@ -93,7 +93,7 @@ ol.Collection = function(opt_array) {
   this.updateLength_();
 
 };
-goog.inherits(ol.Collection, ol.Object);
+ol.inherits(ol.Collection, ol.Object);
 
 
 /**

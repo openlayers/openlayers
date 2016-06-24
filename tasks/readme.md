@@ -56,7 +56,6 @@ Below is a complete `build.json` configuration file that would generate a 'full'
       "externs/topojson.js"
     ],
     "define": [
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
       "goog.DEBUG=false"
     ],
     "compilation_level": "ADVANCED",

@@ -28,7 +28,7 @@ goog.require('ol.geom.flat.simplify');
  */
 ol.geom.MultiLineString = function(coordinates, opt_layout) {
 
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
 
   /**
    * @type {Array.<number>}
@@ -51,7 +51,7 @@ ol.geom.MultiLineString = function(coordinates, opt_layout) {
   this.setCoordinates(coordinates, opt_layout);
 
 };
-goog.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
 
 
 /**

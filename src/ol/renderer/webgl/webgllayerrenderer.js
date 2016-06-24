@@ -23,7 +23,7 @@ goog.require('ol.webgl.Context');
  */
 ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
-  goog.base(this, layer);
+  ol.renderer.Layer.call(this, layer);
 
   /**
    * @protected
@@ -79,7 +79,7 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
   this.defaultLocations_ = null;
 
 };
-goog.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
+ol.inherits(ol.renderer.webgl.Layer, ol.renderer.Layer);
 
 
 /**
@@ -130,7 +130,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebu
 
 /**
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  */
 ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState, context) {
@@ -243,7 +243,7 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
 
 /**
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {ol.webgl.Context} context Context.
  * @return {boolean} whether composeFrame should be called.
  */

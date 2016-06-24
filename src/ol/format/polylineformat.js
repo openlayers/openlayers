@@ -27,7 +27,7 @@ ol.format.Polyline = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.TextFeature.call(this);
 
   /**
    * @inheritDoc
@@ -47,7 +47,7 @@ ol.format.Polyline = function(opt_options) {
   this.geometryLayout_ = options.geometryLayout ?
       options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
-goog.inherits(ol.format.Polyline, ol.format.TextFeature);
+ol.inherits(ol.format.Polyline, ol.format.TextFeature);
 
 
 /**

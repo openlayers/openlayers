@@ -5,14 +5,17 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
 goog.require('ol.source.TileUTFGrid');
 
+var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+
 var mapLayer = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'
+    url: 'http://api.tiles.mapbox.com/v4/mapbox.geography-class.json?access_token=' + key
   })
 });
 
+
 var gridSource = new ol.source.TileUTFGrid({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'
+  url: 'http://api.tiles.mapbox.com/v4/mapbox.geography-class.json?access_token=' + key
 });
 
 var gridLayer = new ol.layer.Tile({source: gridSource});

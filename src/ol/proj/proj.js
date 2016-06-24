@@ -1,32 +1,19 @@
 goog.provide('ol.proj');
 goog.provide('ol.proj.METERS_PER_UNIT');
 goog.provide('ol.proj.Projection');
-goog.provide('ol.proj.ProjectionLike');
 goog.provide('ol.proj.Units');
 
 goog.require('goog.asserts');
 goog.require('ol');
-goog.require('ol.Extent');
-goog.require('ol.TransformFunction');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.sphere.NORMAL');
 
 
 /**
- * A projection as {@link ol.proj.Projection}, SRS identifier string or
- * undefined.
- * @typedef {ol.proj.Projection|string|undefined} ol.proj.ProjectionLike
- * @api stable
- */
-ol.proj.ProjectionLike;
-
-
-/**
  * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
  * `'us-ft'`.
  * @enum {string}
- * @api stable
  */
 ol.proj.Units = {
   DEGREES: 'degrees',
@@ -57,7 +44,7 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
  * Projection definition class. One of these is created for each projection
  * supported in the application and stored in the {@link ol.proj} namespace.
  * You can use these in applications, but this is not required, as API params
- * and options use {@link ol.proj.ProjectionLike} which means the simple string
+ * and options use {@link ol.ProjectionLike} which means the simple string
  * code will suffice.
  *
  * You can use {@link ol.proj.get} to retrieve the object for a particular
@@ -556,8 +543,8 @@ ol.proj.addTransform = function(source, destination, transformFn) {
  * converts these into the functions used internally which also handle
  * extents and coordinate arrays.
  *
- * @param {ol.proj.ProjectionLike} source Source projection.
- * @param {ol.proj.ProjectionLike} destination Destination projection.
+ * @param {ol.ProjectionLike} source Source projection.
+ * @param {ol.ProjectionLike} destination Destination projection.
  * @param {function(ol.Coordinate): ol.Coordinate} forward The forward transform
  *     function (that is, from the source projection to the destination
  *     projection) that takes a {@link ol.Coordinate} as argument and returns
@@ -641,7 +628,7 @@ ol.proj.removeTransform = function(source, destination) {
  * Transforms a coordinate from longitude/latitude to a different projection.
  * @param {ol.Coordinate} coordinate Coordinate as longitude and latitude, i.e.
  *     an array with longitude as 1st and latitude as 2nd element.
- * @param {ol.proj.ProjectionLike=} opt_projection Target projection. The
+ * @param {ol.ProjectionLike=} opt_projection Target projection. The
  *     default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {ol.Coordinate} Coordinate projected to the target projection.
  * @api stable
@@ -655,7 +642,7 @@ ol.proj.fromLonLat = function(coordinate, opt_projection) {
 /**
  * Transforms a coordinate to longitude/latitude.
  * @param {ol.Coordinate} coordinate Projected coordinate.
- * @param {ol.proj.ProjectionLike=} opt_projection Projection of the coordinate.
+ * @param {ol.ProjectionLike=} opt_projection Projection of the coordinate.
  *     The default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {ol.Coordinate} Coordinate as longitude and latitude, i.e. an array
  *     with longitude as 1st and latitude as 2nd element.
@@ -670,7 +657,7 @@ ol.proj.toLonLat = function(coordinate, opt_projection) {
 /**
  * Fetches a Projection object for the code specified.
  *
- * @param {ol.proj.ProjectionLike} projectionLike Either a code string which is
+ * @param {ol.ProjectionLike} projectionLike Either a code string which is
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
  * @return {ol.proj.Projection} Projection object, or null if not in list.
@@ -728,8 +715,8 @@ ol.proj.equivalent = function(projection1, projection2) {
  * function to convert a coordinates array from the source projection to the
  * destination projection.
  *
- * @param {ol.proj.ProjectionLike} source Source.
- * @param {ol.proj.ProjectionLike} destination Destination.
+ * @param {ol.ProjectionLike} source Source.
+ * @param {ol.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform function.
  * @api stable
  */
@@ -815,8 +802,8 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  * geometry transforms.
  *
  * @param {ol.Coordinate} coordinate Coordinate.
- * @param {ol.proj.ProjectionLike} source Source projection-like.
- * @param {ol.proj.ProjectionLike} destination Destination projection-like.
+ * @param {ol.ProjectionLike} source Source projection-like.
+ * @param {ol.ProjectionLike} destination Destination projection-like.
  * @return {ol.Coordinate} Coordinate.
  * @api stable
  */
@@ -831,8 +818,8 @@ ol.proj.transform = function(coordinate, source, destination) {
  * returns a new extent (and does not modify the original).
  *
  * @param {ol.Extent} extent The extent to transform.
- * @param {ol.proj.ProjectionLike} source Source projection-like.
- * @param {ol.proj.ProjectionLike} destination Destination projection-like.
+ * @param {ol.ProjectionLike} source Source projection-like.
+ * @param {ol.ProjectionLike} destination Destination projection-like.
  * @return {ol.Extent} The transformed extent.
  * @api stable
  */
