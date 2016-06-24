@@ -23,11 +23,11 @@ describe('ol.source.ImageWMS', function() {
     it('returns the expected image URL', function() {
       var source = new ol.source.ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      expect(uri.getScheme()).to.be('http');
-      expect(uri.getDomain()).to.be('example.com');
-      expect(uri.getPath()).to.be('/wms');
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      expect(uri.protocol).to.be('http:');
+      expect(uri.hostname).to.be('example.com');
+      expect(uri.pathname).to.be('/wms');
+      var queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('20,10,40,30');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
@@ -35,21 +35,21 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('LAYERS')).to.be('layer');
       expect(queryData.get('REQUEST')).to.be('GetMap');
       expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(undefined);
+      expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
       expect(queryData.get('TRANSPARENT')).to.be('true');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('200');
-      expect(uri.getFragment()).to.be.empty();
+      expect(uri.hash.replace('#', '')).to.be.empty();
     });
 
     it('sets the SRS query value instead of CRS if version < 1.3', function() {
       options.params.VERSION = '1.2';
       var source = new ol.source.ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
-      expect(queryData.get('CRS')).to.be(undefined);
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
+      expect(queryData.get('CRS')).to.be(null);
       expect(queryData.get('SRS')).to.be('EPSG:4326');
     });
 
@@ -58,8 +58,8 @@ describe('ol.source.ImageWMS', function() {
       options.params.TRANSPARENT = false;
       var source = new ol.source.ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('FORMAT')).to.be('image/jpeg');
       expect(queryData.get('TRANSPARENT')).to.be('false');
     });
@@ -68,8 +68,8 @@ describe('ol.source.ImageWMS', function() {
       options.params.STYLES = 'foo';
       var source = new ol.source.ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('STYLES')).to.be('foo');
     });
 
@@ -77,8 +77,8 @@ describe('ol.source.ImageWMS', function() {
       var source = new ol.source.ImageWMS(options);
       projection = ol.proj.get('CRS:84');
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('10,20,30,40');
     });
 
@@ -87,8 +87,8 @@ describe('ol.source.ImageWMS', function() {
       var source = new ol.source.ImageWMS(options);
       var image =
           source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('10,20,30,40');
     });
 
@@ -97,8 +97,8 @@ describe('ol.source.ImageWMS', function() {
       var source = new ol.source.ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('MAP_RESOLUTION')).to.be('180');
     });
 
@@ -107,8 +107,8 @@ describe('ol.source.ImageWMS', function() {
       var source = new ol.source.ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:180');
     });
 
@@ -118,8 +118,8 @@ describe('ol.source.ImageWMS', function() {
       options.params.FORMAT_OPTIONS = 'param1:value1';
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
     });
 
@@ -130,8 +130,8 @@ describe('ol.source.ImageWMS', function() {
          pixelRatio = 1.325;
          var image =
              source.getImage(extent, resolution, pixelRatio, projection);
-         var uri = new goog.Uri(image.src_);
-         var queryData = uri.getQueryData();
+         var uri = new URL(image.src_);
+         var queryData = uri.searchParams;
          expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
        });
 
@@ -140,8 +140,8 @@ describe('ol.source.ImageWMS', function() {
       var source = new ol.source.ImageWMS(options);
       pixelRatio = 2;
       var image = source.getImage(extent, resolution, pixelRatio, projection);
-      var uri = new goog.Uri(image.src_);
-      var queryData = uri.getQueryData();
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
       expect(queryData.get('DPI')).to.be('180');
     });
 
@@ -190,11 +190,11 @@ describe('ol.source.ImageWMS', function() {
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain'});
-      var uri = new goog.Uri(url);
-      expect(uri.getScheme()).to.be('http');
-      expect(uri.getDomain()).to.be('example.com');
-      expect(uri.getPath()).to.be('/wms');
-      var queryData = uri.getQueryData();
+      var uri = new URL(url);
+      expect(uri.protocol).to.be('http:');
+      expect(uri.hostname).to.be('example.com');
+      expect(uri.pathname).to.be('/wms');
+      var queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
@@ -205,12 +205,12 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('QUERY_LAYERS')).to.be('layer');
       expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
       expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(undefined);
+      expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
       expect(queryData.get('TRANSPARENT')).to.be('true');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.getFragment()).to.be.empty();
+      expect(uri.hash.replace('#', '')).to.be.empty();
     });
 
     it('sets the QUERY_LAYERS param as expected', function() {
@@ -218,11 +218,11 @@ describe('ol.source.ImageWMS', function() {
       var url = source.getGetFeatureInfoUrl(
           [20, 30], resolution, projection,
           {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'});
-      var uri = new goog.Uri(url);
-      expect(uri.getScheme()).to.be('http');
-      expect(uri.getDomain()).to.be('example.com');
-      expect(uri.getPath()).to.be('/wms');
-      var queryData = uri.getQueryData();
+      var uri = new URL(url);
+      expect(uri.protocol).to.be('http:');
+      expect(uri.hostname).to.be('example.com');
+      expect(uri.pathname).to.be('/wms');
+      var queryData = uri.searchParams;
       expect(queryData.get('BBOX')).to.be('24.95,14.95,35.05,25.05');
       expect(queryData.get('CRS')).to.be('EPSG:4326');
       expect(queryData.get('FORMAT')).to.be('image/png');
@@ -233,19 +233,18 @@ describe('ol.source.ImageWMS', function() {
       expect(queryData.get('QUERY_LAYERS')).to.be('foo,bar');
       expect(queryData.get('REQUEST')).to.be('GetFeatureInfo');
       expect(queryData.get('SERVICE')).to.be('WMS');
-      expect(queryData.get('SRS')).to.be(undefined);
+      expect(queryData.get('SRS')).to.be(null);
       expect(queryData.get('STYLES')).to.be('');
       expect(queryData.get('TRANSPARENT')).to.be('true');
       expect(queryData.get('VERSION')).to.be('1.3.0');
       expect(queryData.get('WIDTH')).to.be('101');
-      expect(uri.getFragment()).to.be.empty();
+      expect(uri.hash.replace('#', '')).to.be.empty();
     });
   });
 
 });
 
 
-goog.require('goog.Uri');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.proj');
 goog.require('ol.source.wms.ServerType');
