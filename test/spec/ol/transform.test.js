@@ -72,6 +72,29 @@ describe('ol.transform', function() {
     });
   });
 
+  describe('ol.transform.compose()', function() {
+    it('composes a translate, scale, rotate, translate transform', function() {
+      var dx1 = 3;
+      var dy1 = 4;
+      var sx = 1.5;
+      var sy = -1.5;
+      var angle = Math.PI / 3;
+      var dx2 = -dx1 / 2;
+      var dy2 = -dy1 / 2;
+
+      var expected = ol.transform.create();
+      ol.transform.translate(expected, dx1, dy1);
+      ol.transform.scale(expected, sx, sy);
+      ol.transform.rotate(expected, angle);
+      ol.transform.translate(expected, dx2, dy2);
+
+      var composed = ol.transform.create();
+      var composedReturn = ol.transform.compose(composed, dx1, dy1, sx, sy, angle, dx2, dy2);
+      expect(composed).to.equal(composedReturn);
+      expect(composed).to.eql(expected);
+    });
+  });
+
   describe('ol.transform.invert()', function() {
     it('inverts a transform', function() {
       var transform = [1, 0, 1, 0, 1, 0];

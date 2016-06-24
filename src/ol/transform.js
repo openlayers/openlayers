@@ -167,6 +167,32 @@ ol.transform.translate = function(transform, dx, dy) {
 
 
 /**
+ * Creates a composite transform given an initial translation, scale, rotation, and
+ * final translation (in that order only, not commutative).
+ * @param {!ol.Transform} transform The transform (will be modified in place).
+ * @param {number} dx1 Initial translation x.
+ * @param {number} dy1 Initial translation y.
+ * @param {number} sx Scale factor x.
+ * @param {number} sy Scale factor y.
+ * @param {number} angle Rotation (in counter-clockwise radians).
+ * @param {number} dx2 Final translation x.
+ * @param {number} dy2 Final translation y.
+ * @return {!ol.Transform} The composite transform.
+ */
+ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
+  var sin = Math.sin(angle);
+  var cos = Math.cos(angle);
+  transform[0] = sx * cos;
+  transform[1] = sy * sin;
+  transform[2] = -sx * sin;
+  transform[3] = sy * cos;
+  transform[4] = dx2 * sx * cos - dy2 * sx * sin + dx1;
+  transform[5] = dx2 * sy * sin + dy2 * sy * cos + dy1;
+  return transform;
+};
+
+
+/**
  * Invert the given transform.
  * @param {!ol.Transform} transform Transform.
  * @return {!ol.Transform} Inverse of the transform.
