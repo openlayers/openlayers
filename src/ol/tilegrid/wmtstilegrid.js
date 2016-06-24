@@ -29,7 +29,7 @@ ol.tilegrid.WMTS = function(options) {
   this.matrixIds_ = options.matrixIds;
   // FIXME: should the matrixIds become optionnal?
 
-  goog.base(this, {
+  ol.tilegrid.TileGrid.call(this, {
     extent: options.extent,
     origin: options.origin,
     origins: options.origins,
@@ -40,7 +40,7 @@ ol.tilegrid.WMTS = function(options) {
   });
 
 };
-goog.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
+ol.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
 
 
 /**

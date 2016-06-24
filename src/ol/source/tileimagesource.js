@@ -23,7 +23,7 @@ goog.require('ol.source.UrlTile');
  */
 ol.source.TileImage = function(options) {
 
-  goog.base(this, {
+  ol.source.UrlTile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     extent: options.extent,
@@ -80,7 +80,7 @@ ol.source.TileImage = function(options) {
    */
   this.renderReprojectionEdges_ = false;
 };
-goog.inherits(ol.source.TileImage, ol.source.UrlTile);
+ol.inherits(ol.source.TileImage, ol.source.UrlTile);
 
 
 /**
@@ -88,7 +88,7 @@ goog.inherits(ol.source.TileImage, ol.source.UrlTile);
  */
 ol.source.TileImage.prototype.canExpireCache = function() {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return goog.base(this, 'canExpireCache');
+    return ol.source.UrlTile.prototype.canExpireCache.call(this);
   }
   if (this.tileCache.canExpireCache()) {
     return true;
@@ -108,7 +108,7 @@ ol.source.TileImage.prototype.canExpireCache = function() {
  */
 ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
-    goog.base(this, 'expireCache', projection, usedTiles);
+    ol.source.UrlTile.prototype.expireCache.call(this, projection, usedTiles);
     return;
   }
   var usedTileCache = this.getTileCacheForProjection(projection);
@@ -153,7 +153,7 @@ ol.source.TileImage.prototype.getOpaque = function(projection) {
       !ol.proj.equivalent(this.getProjection(), projection)) {
     return false;
   } else {
-    return goog.base(this, 'getOpaque', projection);
+    return ol.source.UrlTile.prototype.getOpaque.call(this, projection);
   }
 };
 
@@ -163,7 +163,7 @@ ol.source.TileImage.prototype.getOpaque = function(projection) {
  */
 ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return goog.base(this, 'getTileGridForProjection', projection);
+    return ol.source.UrlTile.prototype.getTileGridForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
   if (this.tileGrid &&
@@ -186,7 +186,7 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
  */
 ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return goog.base(this, 'getTileCacheForProjection', projection);
+    return ol.source.UrlTile.prototype.getTileCacheForProjection.call(this, projection);
   }
   var thisProj = this.getProjection();
   if (!thisProj || ol.proj.equivalent(thisProj, projection)) {
@@ -280,19 +280,19 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
 ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
   var /** @type {ol.Tile} */ tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
-  var paramsKey = this.getKeyParams();
+  var key = this.getKey();
   if (!this.tileCache.containsKey(tileCoordKey)) {
     goog.asserts.assert(projection, 'argument projection is truthy');
-    tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
+    tile = this.createTile_(z, x, y, pixelRatio, projection, key);
     this.tileCache.set(tileCoordKey, tile);
   } else {
     tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
-    if (tile.key != paramsKey) {
+    if (tile.key != key) {
       // The source's params changed. If the tile has an interim tile and if we
       // can use it then we use it. Otherwise we create a new tile.  In both
       // cases we attempt to assign an interim tile to the new tile.
       var /** @type {ol.Tile} */ interimTile = tile;
-      if (tile.interimTile && tile.interimTile.key == paramsKey) {
+      if (tile.interimTile && tile.interimTile.key == key) {
         goog.asserts.assert(tile.interimTile.getState() == ol.TileState.LOADED);
         goog.asserts.assert(tile.interimTile.interimTile === null);
         tile = tile.interimTile;
@@ -300,7 +300,7 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
           tile.interimTile = interimTile;
         }
       } else {
-        tile = this.createTile_(z, x, y, pixelRatio, projection, paramsKey);
+        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
         if (interimTile.getState() == ol.TileState.LOADED) {
           tile.interimTile = interimTile;
         } else if (interimTile.interimTile &&
@@ -346,7 +346,7 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * (e.g. projection has no extent defined) or
  * for optimization reasons (custom tile size, resolutions, ...).
  *
- * @param {ol.proj.ProjectionLike} projection Projection.
+ * @param {ol.ProjectionLike} projection Projection.
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */

@@ -27,7 +27,7 @@ ol.format.TopoJSON = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.JSONFeature.call(this);
 
   /**
    * @inheritDoc
@@ -37,7 +37,7 @@ ol.format.TopoJSON = function(opt_options) {
           options.defaultDataProjection : 'EPSG:4326');
 
 };
-goog.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
+ol.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
 
 
 /**

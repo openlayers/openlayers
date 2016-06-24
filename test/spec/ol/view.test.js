@@ -268,6 +268,23 @@ describe('ol.View', function() {
 
   });
 
+  describe('#getResolutions', function() {
+    var view;
+    var resolutions = [512, 256, 128, 64, 32, 16];
+
+    it('returns correct resolutions', function() {
+      view = new ol.View({
+        resolutions: resolutions
+      });
+      expect(view.getResolutions()).to.be(resolutions);
+    });
+
+    it('returns resolutions as undefined', function() {
+      view = new ol.View();
+      expect(view.getResolutions()).to.be(undefined);
+    });
+  });
+
   describe('#getZoom', function() {
     var view;
     beforeEach(function() {

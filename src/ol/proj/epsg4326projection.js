@@ -21,7 +21,7 @@ goog.require('ol.sphere.WGS84');
  * @private
  */
 ol.proj.EPSG4326_ = function(code, opt_axisOrientation) {
-  goog.base(this, {
+  ol.proj.Projection.call(this, {
     code: code,
     units: ol.proj.Units.DEGREES,
     extent: ol.proj.EPSG4326.EXTENT,
@@ -31,7 +31,7 @@ ol.proj.EPSG4326_ = function(code, opt_axisOrientation) {
     worldExtent: ol.proj.EPSG4326.EXTENT
   });
 };
-goog.inherits(ol.proj.EPSG4326_, ol.proj.Projection);
+ol.inherits(ol.proj.EPSG4326_, ol.proj.Projection);
 
 
 /**

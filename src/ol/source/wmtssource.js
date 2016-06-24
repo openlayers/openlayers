@@ -2,21 +2,19 @@ goog.provide('ol.source.WMTS');
 goog.provide('ol.source.WMTSRequestEncoding');
 
 goog.require('goog.asserts');
-goog.require('goog.uri.utils');
 goog.require('ol.TileUrlFunction');
-goog.require('ol.TileUrlFunctionType');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.WMTS');
+goog.require('ol.uri');
 
 
 /**
  * Request encoding. One of 'KVP', 'REST'.
  * @enum {string}
- * @api
  */
 ol.source.WMTSRequestEncoding = {
   KVP: 'KVP',  // see spec §8
@@ -54,13 +52,6 @@ ol.source.WMTS = function(options) {
    * @type {!Object}
    */
   this.dimensions_ = options.dimensions !== undefined ? options.dimensions : {};
-
-  /**
-   * @private
-   * @type {string}
-   */
-  this.dimensionsKey_ = '';
-  this.resetDimensionsKey_();
 
   /**
    * @private
@@ -132,7 +123,7 @@ ol.source.WMTS = function(options) {
     // special template params
 
     template = (requestEncoding == ol.source.WMTSRequestEncoding.KVP) ?
-        goog.uri.utils.appendParamsFromMap(template, context) :
+        ol.uri.appendParams(template, context) :
         template.replace(/\{(\w+?)\}/g, function(m, p) {
           return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
         });
@@ -156,7 +147,7 @@ ol.source.WMTS = function(options) {
             ol.object.assign(localContext, dimensions);
             var url = template;
             if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
-              url = goog.uri.utils.appendParamsFromMap(url, localContext);
+              url = ol.uri.appendParams(url, localContext);
             } else {
               url = url.replace(/\{(\w+?)\}/g, function(m, p) {
                 return localContext[p];
@@ -172,7 +163,7 @@ ol.source.WMTS = function(options) {
           urls.map(createFromWMTSTemplate)) :
       ol.TileUrlFunction.nullTileUrlFunction;
 
-  goog.base(this, {
+  ol.source.TileImage.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
@@ -188,8 +179,10 @@ ol.source.WMTS = function(options) {
     wrapX: options.wrapX !== undefined ? options.wrapX : false
   });
 
+  this.setKey(this.getKeyForDimensions_());
+
 };
-goog.inherits(ol.source.WMTS, ol.source.TileImage);
+ol.inherits(ol.source.WMTS, ol.source.TileImage);
 
 
 /**
@@ -211,14 +204,6 @@ ol.source.WMTS.prototype.getDimensions = function() {
  */
 ol.source.WMTS.prototype.getFormat = function() {
   return this.format_;
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.WMTS.prototype.getKeyParams = function() {
-  return this.dimensionsKey_;
 };
 
 
@@ -274,14 +259,15 @@ ol.source.WMTS.prototype.getVersion = function() {
 
 /**
  * @private
+ * @return {string} The key for the current dimensions.
  */
-ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
+ol.source.WMTS.prototype.getKeyForDimensions_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.dimensions_) {
     res[i++] = key + '-' + this.dimensions_[key];
   }
-  this.dimensionsKey_ = res.join('/');
+  return res.join('/');
 };
 
 
@@ -292,8 +278,7 @@ ol.source.WMTS.prototype.resetDimensionsKey_ = function() {
  */
 ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
   ol.object.assign(this.dimensions_, dimensions);
-  this.resetDimensionsKey_();
-  this.changed();
+  this.setKey(this.getKeyForDimensions_());
 };
 
 
@@ -442,31 +427,38 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
       requestEncoding);
 
-  if (!wmtsCap.hasOwnProperty('OperationsMetadata') ||
-      !wmtsCap['OperationsMetadata'].hasOwnProperty('GetTile') ||
-      requestEncoding.indexOf('REST') === 0) {
-    // Add REST tile resource url
-    requestEncoding = ol.source.WMTSRequestEncoding.REST;
-    l['ResourceURL'].forEach(function(elt, index, array) {
-      if (elt['resourceType'] == 'tile') {
-        format = elt['format'];
-        urls.push(/** @type {string} */ (elt['template']));
-      }
-    });
-  } else {
+  if ('OperationsMetadata' in wmtsCap && 'GetTile' in wmtsCap['OperationsMetadata']) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
+    goog.asserts.assert(gets.length >= 1);
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
-      var constraint = ol.array.find(gets[i]['Constraint'],
-          function(elt, index, array) {
-            return elt['name'] == 'GetEncoding';
-          });
+      var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
+        return element['name'] == 'GetEncoding';
+      });
       var encodings = constraint['AllowedValues']['Value'];
-      if (encodings.length > 0 && ol.array.includes(encodings, 'KVP')) {
-        requestEncoding = ol.source.WMTSRequestEncoding.KVP;
-        urls.push(/** @type {string} */ (gets[i]['href']));
+      goog.asserts.assert(encodings.length >= 1);
+
+      if (requestEncoding === '') {
+        // requestEncoding not provided, use the first encoding from the list
+        requestEncoding = encodings[0];
+      }
+      if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
+        if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
+          urls.push(/** @type {string} */ (gets[i]['href']));
+        }
+      } else {
+        break;
       }
     }
+  }
+  if (urls.length === 0) {
+    requestEncoding = ol.source.WMTSRequestEncoding.REST;
+    l['ResourceURL'].forEach(function(element) {
+      if (element['resourceType'] === 'tile') {
+        format = element['format'];
+        urls.push(/** @type {string} */ (element['template']));
+      }
+    });
   }
   goog.asserts.assert(urls.length > 0, 'At least one URL found');
 

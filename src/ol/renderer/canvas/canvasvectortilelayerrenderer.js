@@ -47,7 +47,7 @@ ol.renderer.canvas.VECTOR_REPLAYS = {
  */
 ol.renderer.canvas.VectorTileLayer = function(layer) {
 
-  goog.base(this, layer);
+  ol.renderer.canvas.TileLayer.call(this, layer);
 
   /**
    * @private
@@ -66,7 +66,7 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
       layer.getRenderMode() == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
 
 };
-goog.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
+ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
 
 
 /**
@@ -90,7 +90,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @private
  */
 ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
@@ -342,7 +342,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(
  * @inheritDoc
  */
 ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
-  var prepared = goog.base(this, 'prepareFrame', frameState, layerState);
+  var prepared = ol.renderer.canvas.TileLayer.prototype.prepareFrame.call(this, frameState, layerState);
   if (prepared) {
     var skippedFeatures = Object.keys(frameState.skippedFeatureUids_ || {});
     for (var i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
@@ -387,7 +387,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
 /**
  * @param {ol.VectorTile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
- * @param {ol.layer.LayerState} layerState Layer state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {Array.<string>} skippedFeatures Skipped features.
  * @private
  */
@@ -445,4 +445,4 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
     replayState.replayGroup.replay(tileContext, pixelRatio,
         tileTransform, 0, frameState.skippedFeatureUids || {}, replays);
   }
-}
+};

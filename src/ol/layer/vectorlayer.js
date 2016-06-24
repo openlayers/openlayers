@@ -35,7 +35,7 @@ ol.layer.Vector = function(opt_options) {
 
   goog.asserts.assert(
       options.renderOrder === undefined || !options.renderOrder ||
-      goog.isFunction(options.renderOrder),
+      typeof options.renderOrder === 'function',
       'renderOrder must be a comparator function');
 
   var baseOptions = ol.object.assign({}, options);
@@ -44,7 +44,7 @@ ol.layer.Vector = function(opt_options) {
   delete baseOptions.renderBuffer;
   delete baseOptions.updateWhileAnimating;
   delete baseOptions.updateWhileInteracting;
-  goog.base(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  ol.layer.Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
   /**
    * @type {number}
@@ -55,14 +55,14 @@ ol.layer.Vector = function(opt_options) {
 
   /**
    * User provided style.
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
    * @private
    */
   this.style_ = null;
 
   /**
    * Style function for use within the library.
-   * @type {ol.style.StyleFunction|undefined}
+   * @type {ol.StyleFunction|undefined}
    * @private
    */
   this.styleFunction_ = undefined;
@@ -84,7 +84,7 @@ ol.layer.Vector = function(opt_options) {
       options.updateWhileInteracting : false;
 
 };
-goog.inherits(ol.layer.Vector, ol.layer.Layer);
+ol.inherits(ol.layer.Vector, ol.layer.Layer);
 
 
 /**
@@ -117,7 +117,7 @@ ol.layer.Vector.prototype.getSource;
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
  *     Layer style.
  * @api stable
  */
@@ -128,7 +128,7 @@ ol.layer.Vector.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {ol.style.StyleFunction|undefined} Layer style function.
+ * @return {ol.StyleFunction|undefined} Layer style function.
  * @api stable
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
@@ -161,7 +161,7 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
   goog.asserts.assert(
       renderOrder === undefined || !renderOrder ||
-      goog.isFunction(renderOrder),
+      typeof renderOrder === 'function',
       'renderOrder must be a comparator function');
   this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
 };
@@ -174,7 +174,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|null|undefined}
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|null|undefined}
  *     style Layer style.
  * @api stable
  */

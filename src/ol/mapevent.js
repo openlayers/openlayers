@@ -40,7 +40,7 @@ ol.MapEventType = {
  */
 ol.MapEvent = function(type, map, opt_frameState) {
 
-  goog.base(this, type);
+  ol.events.Event.call(this, type);
 
   /**
    * The map where the event occurred.
@@ -57,4 +57,4 @@ ol.MapEvent = function(type, map, opt_frameState) {
   this.frameState = opt_frameState !== undefined ? opt_frameState : null;
 
 };
-goog.inherits(ol.MapEvent, ol.events.Event);
+ol.inherits(ol.MapEvent, ol.events.Event);

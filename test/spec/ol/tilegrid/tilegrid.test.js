@@ -949,6 +949,22 @@ describe('ol.tilegrid.TileGrid', function() {
 
   });
 
+  describe('forEachTileCoordInExtentAndZ', function() {
+    it('calls the provided function with each tile coordinate', function() {
+      var tileGrid = ol.tilegrid.createXYZ({extent: [-180, -90, 180, 90]});
+      var tileCoords = [];
+      tileGrid.forEachTileCoordInExtentAndZ([15, 47, 16, 48], 8, function(tileCoord) {
+        tileCoords.push(tileCoord);
+      });
+      expect(tileCoords).to.eql([
+        [8, 138, -31],
+        [8, 138, -30],
+        [8, 139, -31],
+        [8, 139, -30]
+      ]);
+    });
+  });
+
   describe('forEachTileCoordParentTileRange', function() {
     it('iterates as expected', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
@@ -1077,7 +1093,6 @@ describe('ol.tilegrid.TileGrid', function() {
   });
 });
 
-goog.require('ol.Coordinate');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.proj');

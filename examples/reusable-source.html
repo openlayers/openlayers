@@ -1,0 +1,12 @@
+---
+layout: example.html
+title: Reusable Source
+shortdesc: Updating a tile source by changing the URL.
+docs: >
+  You can call <code>source.setUrl()</code> to update the URL for a tile source.  Note that when you change the URL for a tile source, existing tiles will not be replaced until new tiles are loaded.  If you are interested instead in clearing currently rendered tiles, you can call the <code>source.refresh()</code> method.  Alternatively, you can use two separate sources if you want to remove rendered tiles and start over loading new tiles.
+---
+<div id="map" class="map"></div>
+<button class="switcher" value="0">January</button>
+<button class="switcher" value="1">January (with bathymetry)</button>
+<button class="switcher" value="2">July</button>
+<button class="switcher" value="3">July (with bathymetry)</button>

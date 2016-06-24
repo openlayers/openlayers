@@ -53,7 +53,7 @@ ol.layer.VectorTile = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  goog.base(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  ol.layer.Vector.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
 
   this.setPreload(options.preload ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
@@ -72,7 +72,7 @@ ol.layer.VectorTile = function(opt_options) {
   this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
 
 };
-goog.inherits(ol.layer.VectorTile, ol.layer.Vector);
+ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
 
 
 /**

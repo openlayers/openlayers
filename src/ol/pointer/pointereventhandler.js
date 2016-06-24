@@ -30,7 +30,6 @@
 
 goog.provide('ol.pointer.PointerEventHandler');
 
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 
@@ -48,7 +47,7 @@ goog.require('ol.pointer.TouchSource');
  * @param {Element|HTMLDocument} element Viewport element.
  */
 ol.pointer.PointerEventHandler = function(element) {
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * @const
@@ -77,7 +76,7 @@ ol.pointer.PointerEventHandler = function(element) {
 
   this.registerSources();
 };
-goog.inherits(ol.pointer.PointerEventHandler, ol.events.EventTarget);
+ol.inherits(ol.pointer.PointerEventHandler, ol.events.EventTarget);
 
 
 /**
@@ -334,10 +333,10 @@ ol.pointer.PointerEventHandler.prototype.enterOver = function(data, event) {
  *   contains the other element.
  */
 ol.pointer.PointerEventHandler.prototype.contains_ = function(container, contained) {
-  if (!contained) {
+  if (!container || !contained) {
     return false;
   }
-  return goog.dom.contains(container, contained);
+  return container.contains(contained);
 };
 
 
@@ -398,7 +397,7 @@ ol.pointer.PointerEventHandler.prototype.wrapMouseEvent = function(eventType, ev
  */
 ol.pointer.PointerEventHandler.prototype.disposeInternal = function() {
   this.unregister_();
-  goog.base(this, 'disposeInternal');
+  ol.events.EventTarget.prototype.disposeInternal.call(this);
 };
 
 

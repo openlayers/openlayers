@@ -34,7 +34,7 @@ describe('ol.rendering.layer.Vector', function() {
         [center[0] - r, center[1] + r],
         [center[0] - r, center[1] - r]
       ]
-    ])))
+    ])));
   }
 
   describe('vector layer', function() {
@@ -49,6 +49,15 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
+      var smallLine = new ol.Feature(new ol.geom.LineString([
+        [center[0], center[1] - 1],
+        [center[0], center[1] + 1]
+      ]));
+      smallLine.setStyle(new ol.style.Style({
+        zIndex: -99,
+        stroke: new ol.style.Stroke({width: 75, color: 'red'})
+      }));
+      source.addFeature(smallLine);
       addPolygon(100);
       addCircle(200);
       addPolygon(250);
@@ -61,7 +70,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.once('postrender', function() {
         expectResemble(map, 'spec/ol/layer/expected/vector-canvas.png',
             17, done);
-      })
+      });
     });
 
   });

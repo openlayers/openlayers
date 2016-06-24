@@ -7,8 +7,6 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
-goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
@@ -20,16 +18,13 @@ goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEvent');
 goog.require('ol.ObjectEventType');
-goog.require('ol.Pixel');
-goog.require('ol.PostRenderFunction');
-goog.require('ol.PreRenderFunction');
 goog.require('ol.RendererType');
-goog.require('ol.Size');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.control');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -159,7 +154,7 @@ ol.MapProperty = {
  */
 ol.Map = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   var optionsInternal = ol.Map.createOptionsInternal(options);
 
@@ -239,13 +234,13 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    */
   this.viewPropertyListenerKey_ = null;
 
   /**
    * @private
-   * @type {Array.<ol.events.Key>}
+   * @type {Array.<ol.EventsKey>}
    */
   this.layerGroupPropertyListenerKeys_ = null;
 
@@ -311,7 +306,7 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Array.<ol.events.Key>}
+   * @type {Array.<ol.EventsKey>}
    */
   this.keyHandlerKeys_ = null;
 
@@ -477,7 +472,7 @@ ol.Map = function(options) {
       }, this);
 
 };
-goog.inherits(ol.Map, ol.Object);
+ol.inherits(ol.Map, ol.Object);
 
 
 /**
@@ -587,7 +582,7 @@ ol.Map.prototype.disposeInternal = function() {
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
-  goog.base(this, 'disposeInternal');
+  ol.Object.prototype.disposeInternal.call(this);
 };
 
 
@@ -747,7 +742,13 @@ ol.Map.prototype.getTarget = function() {
  */
 ol.Map.prototype.getTargetElement = function() {
   var target = this.getTarget();
-  return target !== undefined ? goog.dom.getElement(target) : null;
+  if (target !== undefined) {
+    return typeof target === 'string' ?
+      document.getElementById(target) :
+      target;
+  } else {
+    return null;
+  }
 };
 
 
@@ -1075,7 +1076,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   }
 
   if (!targetElement) {
-    goog.dom.removeNode(this.viewport_);
+    ol.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
       ol.global.removeEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
@@ -1283,6 +1284,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
   var size = this.getSize();
   var view = this.getView();
+  var extent = ol.extent.createEmpty();
   /** @type {?olx.FrameState} */
   var frameState = null;
   if (size !== undefined && ol.size.hasArea(size) && view && view.isDef()) {
@@ -1297,7 +1299,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       animate: false,
       attributions: {},
       coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
-      extent: null,
+      extent: extent,
       focus: !this.focus_ ? viewState.center : this.focus_,
       index: this.frameIndex_++,
       layerStates: layerStates,
@@ -1329,7 +1331,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     preRenderFunctions.length = n;
 
     frameState.extent = ol.extent.getForViewAndSize(viewState.center,
-        viewState.resolution, viewState.rotation, frameState.size);
+        viewState.resolution, viewState.rotation, frameState.size, extent);
   }
 
   this.frameState_ = frameState;
@@ -1429,8 +1431,19 @@ ol.Map.prototype.updateSize = function() {
   if (!targetElement) {
     this.setSize(undefined);
   } else {
-    var size = goog.style.getContentBoxSize(targetElement);
-    this.setSize([size.width, size.height]);
+    var computedStyle = ol.global.getComputedStyle(targetElement);
+    this.setSize([
+      targetElement.offsetWidth -
+          parseFloat(computedStyle['borderLeftWidth']) -
+          parseFloat(computedStyle['paddingLeft']) -
+          parseFloat(computedStyle['paddingRight']) -
+          parseFloat(computedStyle['borderRightWidth']),
+      targetElement.offsetHeight -
+          parseFloat(computedStyle['borderTopWidth']) -
+          parseFloat(computedStyle['paddingTop']) -
+          parseFloat(computedStyle['paddingBottom']) -
+          parseFloat(computedStyle['borderBottomWidth'])
+    ]);
   }
 };
 
@@ -1443,19 +1456,6 @@ ol.Map.prototype.unskipFeature = function(feature) {
   delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
-
-
-/**
- * @typedef {{controls: ol.Collection.<ol.control.Control>,
- *            interactions: ol.Collection.<ol.interaction.Interaction>,
- *            keyboardEventTarget: (Element|Document),
- *            logos: Object.<string, string>,
- *            overlays: ol.Collection.<ol.Overlay>,
- *            rendererConstructor:
- *                function(new: ol.renderer.Map, Element, ol.Map),
- *            values: Object.<string, *>}}
- */
-ol.MapOptionsInternal;
 
 
 /**
@@ -1489,6 +1489,8 @@ ol.Map.createOptionsInternal = function(options) {
     var logo = options.logo;
     if (typeof logo === 'string') {
       logos[logo] = '';
+    } else if (logo instanceof HTMLElement) {
+      logos[goog.getUid(logo).toString()] = logo;
     } else if (goog.isObject(logo)) {
       goog.asserts.assertString(logo.href, 'logo.href should be a string');
       goog.asserts.assertString(logo.src, 'logo.src should be a string');

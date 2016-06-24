@@ -15,7 +15,6 @@ goog.require('ol.proj.Units');
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
  * `'GeometryCollection'`, `'Circle'`.
  * @enum {string}
- * @api stable
  */
 ol.geom.GeometryType = {
   POINT: 'Point',
@@ -35,7 +34,6 @@ ol.geom.GeometryType = {
  * or measure ('M') coordinate is available. Supported values are `'XY'`,
  * `'XYZ'`, `'XYM'`, `'XYZM'`.
  * @enum {string}
- * @api stable
  */
 ol.geom.GeometryLayout = {
   XY: 'XY',
@@ -60,7 +58,7 @@ ol.geom.GeometryLayout = {
  */
 ol.geom.Geometry = function() {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @private
@@ -93,7 +91,7 @@ ol.geom.Geometry = function() {
   this.simplifiedGeometryRevision = 0;
 
 };
-goog.inherits(ol.geom.Geometry, ol.Object);
+ol.inherits(ol.geom.Geometry, ol.Object);
 
 
 /**
@@ -253,9 +251,9 @@ ol.geom.Geometry.prototype.translate = goog.abstractMethod;
  * If you do not want the geometry modified in place, first `clone()` it and
  * then use this function on the clone.
  *
- * @param {ol.proj.ProjectionLike} source The current projection.  Can be a
+ * @param {ol.ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
- * @param {ol.proj.ProjectionLike} destination The desired projection.  Can be a
+ * @param {ol.ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
  *     modified in place.

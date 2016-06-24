@@ -27,7 +27,7 @@ goog.require('ol.source.UrlTile');
  */
 ol.source.VectorTile = function(options) {
 
-  goog.base(this, {
+  ol.source.UrlTile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
     extent: options.extent,
@@ -59,7 +59,7 @@ ol.source.VectorTile = function(options) {
   this.tileClass = options.tileClass ? options.tileClass : ol.VectorTile;
 
 };
-goog.inherits(ol.source.VectorTile, ol.source.UrlTile);
+ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
 
 
 /**

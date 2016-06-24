@@ -33,7 +33,7 @@ ol.format.EsriJSON = function(opt_options) {
 
   var options = opt_options ? opt_options : {};
 
-  goog.base(this);
+  ol.format.JSONFeature.call(this);
 
   /**
    * Name of the geometry attribute for features.
@@ -43,7 +43,7 @@ ol.format.EsriJSON = function(opt_options) {
   this.geometryName_ = options.geometryName;
 
 };
-goog.inherits(ol.format.EsriJSON, ol.format.JSONFeature);
+ol.inherits(ol.format.EsriJSON, ol.format.JSONFeature);
 
 
 /**

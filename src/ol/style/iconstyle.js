@@ -16,7 +16,6 @@ goog.require('ol.style.ImageState');
 /**
  * Icon anchor units. One of 'fraction', 'pixels'.
  * @enum {string}
- * @api
  */
 ol.style.IconAnchorUnits = {
   FRACTION: 'fraction',
@@ -27,7 +26,6 @@ ol.style.IconAnchorUnits = {
 /**
  * Icon origin. One of 'bottom-left', 'bottom-right', 'top-left', 'top-right'.
  * @enum {string}
- * @api
  */
 ol.style.IconOrigin = {
   BOTTOM_LEFT: 'bottom-left',
@@ -187,7 +185,7 @@ ol.style.Icon = function(opt_options) {
   var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
-  goog.base(this, {
+  ol.style.Image.call(this, {
     opacity: opacity,
     rotation: rotation,
     scale: scale,
@@ -196,7 +194,7 @@ ol.style.Icon = function(opt_options) {
   });
 
 };
-goog.inherits(ol.style.Icon, ol.style.Image);
+ol.inherits(ol.style.Icon, ol.style.Image);
 
 
 /**
@@ -382,7 +380,7 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
                                color) {
 
-  goog.base(this);
+  ol.events.EventTarget.call(this);
 
   /**
    * @private
@@ -416,7 +414,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
 
   /**
    * @private
-   * @type {Array.<ol.events.Key>}
+   * @type {Array.<ol.EventsKey>}
    */
   this.imageListenerKeys_ = null;
 
@@ -448,7 +446,7 @@ ol.style.IconImage_ = function(image, src, size, crossOrigin, imageState,
   }
 
 };
-goog.inherits(ol.style.IconImage_, ol.events.EventTarget);
+ol.inherits(ol.style.IconImage_, ol.events.EventTarget);
 
 
 /**

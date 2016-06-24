@@ -3,10 +3,7 @@ goog.provide('ol.OverlayPositioning');
 goog.provide('ol.OverlayProperty');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('ol.events');
-goog.require('goog.style');
-goog.require('ol.Coordinate');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
@@ -32,7 +29,6 @@ ol.OverlayProperty = {
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
  * @enum {string}
- * @api stable
  */
 ol.OverlayPositioning = {
   BOTTOM_LEFT: 'bottom-left',
@@ -70,7 +66,7 @@ ol.OverlayPositioning = {
  */
 ol.Overlay = function(options) {
 
-  goog.base(this);
+  ol.Object.call(this);
 
   /**
    * @private
@@ -137,7 +133,7 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    */
   this.mapPostrenderListenerKey_ = null;
 
@@ -176,7 +172,7 @@ ol.Overlay = function(options) {
   }
 
 };
-goog.inherits(ol.Overlay, ol.Object);
+ol.inherits(ol.Overlay, ol.Object);
 
 
 /**
@@ -255,7 +251,7 @@ ol.Overlay.prototype.getPositioning = function() {
  * @protected
  */
 ol.Overlay.prototype.handleElementChanged = function() {
-  goog.dom.removeChildren(this.element_);
+  ol.dom.removeChildren(this.element_);
   var element = this.getElement();
   if (element) {
     this.element_.appendChild(element);
@@ -268,7 +264,7 @@ ol.Overlay.prototype.handleElementChanged = function() {
  */
 ol.Overlay.prototype.handleMapChanged = function() {
   if (this.mapPostrenderListenerKey_) {
-    goog.dom.removeNode(this.element_);
+    ol.dom.removeNode(this.element_);
     ol.events.unlistenByKey(this.mapPostrenderListenerKey_);
     this.mapPostrenderListenerKey_ = null;
   }
@@ -280,7 +276,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
-      goog.dom.insertChildAt(container, this.element_, 0);
+      container.insertBefore(this.element_, container.childNodes[0] || null);
     } else {
       container.appendChild(this.element_);
     }
@@ -442,12 +438,14 @@ ol.Overlay.prototype.getRect_ = function(element, size) {
   goog.asserts.assert(element, 'element should be defined');
   goog.asserts.assert(size !== undefined, 'size should be defined');
 
-  var offset = goog.style.getPageOffset(element);
+  var box = element.getBoundingClientRect();
+  var offsetX = box.left + ol.global.pageXOffset;
+  var offsetY = box.top + ol.global.pageYOffset;
   return [
-    offset.x,
-    offset.y,
-    offset.x + size[0],
-    offset.y + size[1]
+    offsetX,
+    offsetY,
+    offsetX + size[0],
+    offsetY + size[1]
   ];
 };
 
@@ -471,7 +469,7 @@ ol.Overlay.prototype.setPositioning = function(positioning) {
  */
 ol.Overlay.prototype.setVisible = function(visible) {
   if (this.rendered_.visible !== visible) {
-    goog.style.setElementShown(this.element_, visible);
+    this.element_.style.display = visible ? '' : 'none';
     this.rendered_.visible = visible;
   }
 };
@@ -530,7 +528,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (positioning == ol.OverlayPositioning.BOTTOM_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.TOP_CENTER) {
-      offsetX -= goog.style.getSize(this.element_).width / 2;
+      offsetX -= this.element_.offsetWidth / 2;
     }
     var left = Math.round(pixel[0] + offsetX) + 'px';
     if (this.rendered_.left_ != left) {
@@ -554,7 +552,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (positioning == ol.OverlayPositioning.CENTER_LEFT ||
         positioning == ol.OverlayPositioning.CENTER_CENTER ||
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
-      offsetY -= goog.style.getSize(this.element_).height / 2;
+      offsetY -= this.element_.offsetHeight / 2;
     }
     var top = Math.round(pixel[1] + offsetY) + 'px';
     if (this.rendered_.top_ != top) {

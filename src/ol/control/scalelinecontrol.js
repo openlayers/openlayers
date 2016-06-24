@@ -4,7 +4,6 @@ goog.provide('ol.control.ScaleLineUnits');
 
 goog.require('goog.asserts');
 goog.require('ol.events');
-goog.require('goog.style');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.control.Control');
@@ -25,7 +24,6 @@ ol.control.ScaleLineProperty = {
  * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
  * `'nautical'`, `'metric'`, `'us'`.
  * @enum {string}
- * @api stable
  */
 ol.control.ScaleLineUnits = {
   DEGREES: 'degrees',
@@ -103,7 +101,7 @@ ol.control.ScaleLine = function(opt_options) {
 
   var render = options.render ? options.render : ol.control.ScaleLine.render;
 
-  goog.base(this, {
+  ol.control.Control.call(this, {
     element: this.element_,
     render: render,
     target: options.target
@@ -117,7 +115,7 @@ ol.control.ScaleLine = function(opt_options) {
       ol.control.ScaleLineUnits.METRIC);
 
 };
-goog.inherits(ol.control.ScaleLine, ol.control.Control);
+ol.inherits(ol.control.ScaleLine, ol.control.Control);
 
 
 /**
@@ -184,7 +182,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
   if (!viewState) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.element_, false);
+      this.element_.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -259,7 +257,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
         Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
-      goog.style.setElementShown(this.element_, false);
+      this.element_.style.display = 'none';
       this.renderedVisible_ = false;
       return;
     } else if (width >= this.minWidth_) {
@@ -280,7 +278,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   }
 
   if (!this.renderedVisible_) {
-    goog.style.setElementShown(this.element_, true);
+    this.element_.style.display = '';
     this.renderedVisible_ = true;
   }
 

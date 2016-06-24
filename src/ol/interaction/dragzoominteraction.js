@@ -40,13 +40,13 @@ ol.interaction.DragZoom = function(opt_options) {
    */
   this.out_ = options.out !== undefined ? options.out : false;
 
-  goog.base(this, {
+  ol.interaction.DragBox.call(this, {
     condition: condition,
     className: options.className || 'ol-dragzoom'
   });
 
 };
-goog.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
+ol.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
 
 
 /**

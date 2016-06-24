@@ -14,23 +14,13 @@ ol.style.ImageState = {
 
 
 /**
- * @typedef {{opacity: number,
- *            rotateWithView: boolean,
- *            rotation: number,
- *            scale: number,
- *            snapToPixel: boolean}}
- */
-ol.style.ImageOptions;
-
-
-/**
  * @classdesc
  * A base class used for creating subclasses and not instantiated in
  * apps. Base class for {@link ol.style.Icon}, {@link ol.style.Circle} and
  * {@link ol.style.RegularShape}.
  *
  * @constructor
- * @param {ol.style.ImageOptions} options Options.
+ * @param {ol.StyleImageOptions} options Options.
  * @api
  */
 ol.style.Image = function(options) {
@@ -233,7 +223,7 @@ ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
 /**
  * @param {function(this: T, ol.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
- * @return {ol.events.Key|undefined} Listener key.
+ * @return {ol.EventsKey|undefined} Listener key.
  * @template T
  */
 ol.style.Image.prototype.listenImageChange = goog.abstractMethod;

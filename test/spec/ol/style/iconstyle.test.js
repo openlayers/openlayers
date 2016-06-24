@@ -9,7 +9,7 @@ goog.require('ol.style.IconOrigin');
 describe('ol.style.Icon', function() {
   var size = [36, 48];
   var src = 'data:image/gif;base64,' +
-      'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
+      'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
 
   describe('constructor', function() {
 

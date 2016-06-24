@@ -20,7 +20,7 @@ goog.require('ol.render.webgl.ReplayGroup');
  * @struct
  */
 ol.render.webgl.Immediate = function(context, center, resolution, rotation, size, extent, pixelRatio) {
-  goog.base(this);
+  ol.render.VectorContext.call(this);
 
   /**
    * @private
@@ -64,7 +64,7 @@ ol.render.webgl.Immediate = function(context, center, resolution, rotation, size
   this.imageStyle_ = null;
 
 };
-goog.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
+ol.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
 
 
 /**

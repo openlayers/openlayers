@@ -1,7 +1,6 @@
 goog.provide('ol.format.GML2');
 
 goog.require('goog.asserts');
-goog.require('goog.dom.NodeType');
 goog.require('ol.extent');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');
@@ -23,7 +22,7 @@ ol.format.GML2 = function(opt_options) {
   var options = /** @type {olx.format.GMLOptions} */
       (opt_options ? opt_options : {});
 
-  goog.base(this, options);
+  ol.format.GMLBase.call(this, options);
 
   this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
       'featureMember'] =
@@ -36,7 +35,7 @@ ol.format.GML2 = function(opt_options) {
       options.schemaLocation : ol.format.GML2.schemaLocation_;
 
 };
-goog.inherits(ol.format.GML2, ol.format.GMLBase);
+ol.inherits(ol.format.GML2, ol.format.GMLBase);
 
 
 /**
@@ -102,7 +101,7 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
  * @return {ol.Extent|undefined} Envelope.
  */
 ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'Box', 'localName should be Box');
   /** @type {Array.<number>} */
@@ -120,7 +119,7 @@ ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'innerBoundaryIs',
       'localName should be innerBoundaryIs');
@@ -145,7 +144,7 @@ ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == goog.dom.NodeType.ELEMENT,
+  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   goog.asserts.assert(node.localName == 'outerBoundaryIs',
       'localName should be outerBoundaryIs');
@@ -166,7 +165,7 @@ ol.format.GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
@@ -179,7 +178,7 @@ ol.format.GML2.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
@@ -192,7 +191,7 @@ ol.format.GML2.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.GML2.prototype.BOX_PARSERS_ = {
@@ -205,7 +204,7 @@ ol.format.GML2.prototype.BOX_PARSERS_ = {
 
 /**
  * @const
- * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.GML2.prototype.GEOMETRY_PARSERS_ = {

@@ -6,7 +6,6 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.deflate');
-goog.require('ol.proj');
 
 
 /**
@@ -21,11 +20,11 @@ goog.require('ol.proj');
  * @api
  */
 ol.geom.Circle = function(center, opt_radius, opt_layout) {
-  goog.base(this);
+  ol.geom.SimpleGeometry.call(this);
   var radius = opt_radius ? opt_radius : 0;
   this.setCenterAndRadius(center, radius, opt_layout);
 };
-goog.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
+ol.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 
 
 /**
@@ -244,9 +243,9 @@ ol.geom.Circle.prototype.setRadius = function(radius) {
  * correspond to the shape that would be obtained by transforming every point
  * of the original circle.
  *
- * @param {ol.proj.ProjectionLike} source The current projection.  Can be a
+ * @param {ol.ProjectionLike} source The current projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
- * @param {ol.proj.ProjectionLike} destination The desired projection.  Can be a
+ * @param {ol.ProjectionLike} destination The desired projection.  Can be a
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Circle} This geometry.  Note that original geometry is
  *     modified in place.

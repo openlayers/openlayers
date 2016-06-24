@@ -10,7 +10,7 @@ describe('ol.interaction.DragAndDrop', function() {
         return viewport;
       },
       getView: function() {
-        return new ol.View()
+        return new ol.View();
       }
     };
     interaction = new ol.interaction.DragAndDrop({
@@ -100,7 +100,7 @@ describe('ol.interaction.DragAndDrop', function() {
             features: [{type: 'Feature', id: '1'}]
           });
         }
-      }
+      };
       viewport.dispatchEvent(event);
       expect(event.dataTransfer.dropEffect).to.be('copy');
       expect(event.propagationStopped).to.be(true);

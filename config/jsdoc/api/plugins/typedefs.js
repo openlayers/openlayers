@@ -89,10 +89,6 @@ exports.handlers = {
   newDoclet: function(e) {
     var doclet = e.doclet;
     if (doclet.meta.filename == 'olx.js') {
-      // do nothing if not marked @api
-      if (!doclet.stability) {
-        return;
-      }
       if (doclet.kind == 'typedef') {
         lastOlxTypedef = doclet;
         olxTypeNames.push(doclet.longname);
