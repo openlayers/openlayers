@@ -158,7 +158,7 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
  * @param {function(ol.TileCoord)} callback Function called with each tile coordinate.
  * @api
  */
-ol.tilegrid.TileGrid.prototype.forEachTileCoordInExtentAndZ = function(extent, zoom, callback) {
+ol.tilegrid.TileGrid.prototype.forEachTileCoord = function(extent, zoom, callback) {
   var tileRange = this.getTileRangeForExtentAndZ(extent, zoom);
   for (var i = tileRange.minX, ii = tileRange.maxX; i <= ii; ++i) {
     for (var j = tileRange.minY, jj = tileRange.maxY; j <= jj; ++j) {
