@@ -1397,12 +1397,24 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
  * @param {boolean} hitDetection Hit detection mode.
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
+  //Save GL parameters.
+  var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
+  var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
+
+  gl.enable(gl.DEPTH_TEST);
+  gl.depthMask(true);
+  gl.depthFunc(gl.NOTEQUAL);
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
     var end = this.startIndices_[this.startIndices_.length - 1];
     this.drawElements_(gl, context, 0, end);
   }
+  gl.clear(gl.DEPTH_BUFFER_BIT);
+  gl.disable(gl.DEPTH_TEST);
+  //Restore GL parameters.
+  gl.depthMask(tmpDepthMask);
+  gl.depthFunc(tmpDepthFunc);
 };
 
 /**
