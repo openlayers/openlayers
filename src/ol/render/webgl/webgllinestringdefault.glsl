@@ -20,6 +20,7 @@ uniform float u_lineWidth;
 uniform float u_miterLimit;
 
 void main(void) {
+  bool degenerate = false;
   v_halfWidth = u_lineWidth / 2.0;
   vec2 offset;
   v_round = 0.0;
@@ -44,7 +45,7 @@ void main(void) {
     vec2 tmpNormal = normalize(vec2(-dirVect.y, dirVect.x));
     vec2 tangent = normalize(normalize(a_nextPos - a_position) + normalize(a_position - a_lastPos));
     vec2 normal = vec2(-tangent.y, tangent.x);
-    float miterLength = v_halfWidth / dot(normal, tmpNormal);
+    float miterLength = abs(v_halfWidth / dot(normal, tmpNormal));
     if (mod(a_direction, 23.0) == 0.0) {
       offset = normal * direction * miterLength;
       if (mod(a_direction, 2.0) == 0.0) {
@@ -54,24 +55,36 @@ void main(void) {
         offset = tmpNormal * direction * v_halfWidth;
       }
     } else {
-      offset = normal * direction * miterLength;
-      vec4 defaultOffset = u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
-      vec4 firstProjPos = u_projectionMatrix * vec4(a_lastPos, 0., 1.) + defaultOffset;
-      vec4 secondProjPos = projPos + defaultOffset;
-      vec4 thirdProjPos = u_projectionMatrix * vec4(a_nextPos, 0., 1.) + defaultOffset;
-      float firstSegLength = distance(secondProjPos.xy, firstProjPos.xy);
-      float secondSegLength = distance(thirdProjPos.xy, secondProjPos.xy);
-      float miterSegLength = distance(secondProjPos.xy, vec4(projPos + u_offsetScaleMatrix * vec4(offset, 0., 0.)).xy);
-      //TODO: Write a more accurate method for identifying sharp angles.
-      if (miterSegLength > min(firstSegLength, secondSegLength)) {
-        if (firstSegLength < secondSegLength) {
-          dirVect = a_lastPos - a_position;
-          tmpNormal = normalize(vec2(dirVect.y, -dirVect.x));
-          projPos = firstProjPos - defaultOffset;
-        } else {
-          projPos = thirdProjPos - defaultOffset;
-        }
-        offset = tmpNormal * direction * v_halfWidth;
+      dirVect = a_lastPos - a_position;
+      vec2 longOffset, shortOffset, longVertex;
+      vec4 shortProjVertex;
+      if (length(a_nextPos - a_position) > length(a_lastPos - a_position)) {
+        longOffset = tmpNormal * direction * v_halfWidth;
+        shortOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * v_halfWidth;
+        longVertex = a_nextPos;
+        shortProjVertex = u_projectionMatrix * vec4(a_lastPos, 0., 1.);
+      } else {
+        shortOffset = tmpNormal * direction * v_halfWidth;
+        longOffset = normalize(vec2(dirVect.y, -dirVect.x)) * direction * v_halfWidth;
+        longVertex = a_lastPos;
+        shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0., 1.);
+      }
+      //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).
+      vec4 p1 = u_projectionMatrix * vec4(longVertex, 0., 1.) + u_offsetScaleMatrix * vec4(longOffset, 0., 0.);
+      vec4 p2 = projPos + u_offsetScaleMatrix * vec4(longOffset, 0., 0.);
+      vec4 p3 = shortProjVertex + u_offsetScaleMatrix * vec4(-shortOffset, 0., 0.);
+      vec4 p4 = shortProjVertex + u_offsetScaleMatrix * vec4(shortOffset, 0., 0.);
+      float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
+      float epsilon = 0.000000000001;
+      float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;
+      float secondU = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) / denom;
+      if (firstU > epsilon && firstU < 1.0 - epsilon && secondU > epsilon && secondU < 1.0 - epsilon) {
+        gl_Position = shortProjVertex;
+        gl_Position.x = p1.x + firstU * (p2.x - p1.x);
+        gl_Position.y = p1.y + firstU * (p2.y - p1.y);
+        degenerate = true;
+      } else {
+        offset = normal * direction * miterLength;
       }
     }
   } else if (mod(a_direction, 7.0) == 0.0 || mod(a_direction, 11.0) == 0.0) {
@@ -96,8 +109,10 @@ void main(void) {
       v_roundVertex = projPos + u_offsetScaleMatrix * vec4(0., 0., 0., 0.);
     }
   }
-  vec4 offsets = u_offsetScaleMatrix * vec4(offset, 0., 0.);
-  gl_Position = projPos + offsets;
+  if (!degenerate) {
+    vec4 offsets = u_offsetScaleMatrix * vec4(offset, 0., 0.);
+    gl_Position = projPos + offsets;
+  }
 }
 
 
