@@ -105,10 +105,10 @@ ol.format.WFS.prototype.readFeatures;
  * @inheritDoc
  */
 ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
-  var context = {
+  var context = /** @type {ol.XmlNodeStackItem} */ ({
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
-  };
+  });
   ol.object.assign(context, this.getReadOptions(node,
       opt_options ? opt_options : {}));
   var objectStack = [context];
@@ -442,11 +442,11 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
         values.push({name: keys[i], value: value});
       }
     }
-    ol.xml.pushSerializeAndPop({node: node, srsName:
-          context['srsName']},
-    ol.format.WFS.TRANSACTION_SERIALIZERS_,
-    ol.xml.makeSimpleNodeFactory('Property'), values,
-    objectStack);
+    ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ (
+        {node: node, 'srsName': context['srsName']}),
+        ol.format.WFS.TRANSACTION_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory('Property'), values,
+        objectStack);
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
@@ -532,7 +532,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
         featureNS);
   }
-  var item = ol.object.assign({}, context);
+  var item = /** @type {ol.XmlNodeStackItem} */ (ol.object.assign({}, context));
   item.node = node;
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.QUERY_SERIALIZERS_,
@@ -554,6 +554,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
  * @private
  */
 ol.format.WFS.writeFilterCondition_ = function(node, filter, objectStack) {
+  /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.GETFEATURE_SERIALIZERS_,
@@ -574,7 +575,7 @@ ol.format.WFS.writeBboxFilter_ = function(node, filter, objectStack) {
 
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
-  context.srsName = filter.srsName;
+  context['srsName'] = filter.srsName;
 
   ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
   ol.format.GML3.prototype.writeGeometryElement(node, filter.extent, objectStack);
@@ -590,6 +591,7 @@ ol.format.WFS.writeBboxFilter_ = function(node, filter, objectStack) {
 ol.format.WFS.writeLogicalFilter_ = function(node, filter, objectStack) {
   goog.asserts.assertInstanceof(filter, ol.format.ogc.filter.LogicalBinary,
     'must be logical filter');
+  /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
   var conditionA = filter.conditionA;
   ol.xml.pushSerializeAndPop(item,
@@ -613,6 +615,7 @@ ol.format.WFS.writeLogicalFilter_ = function(node, filter, objectStack) {
 ol.format.WFS.writeNotFilter_ = function(node, filter, objectStack) {
   goog.asserts.assertInstanceof(filter, ol.format.ogc.filter.Not,
     'must be Not filter');
+  /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
   var condition = filter.condition;
   ol.xml.pushSerializeAndPop(item,
@@ -755,7 +758,7 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
 ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
   var context = objectStack[objectStack.length - 1];
   goog.asserts.assert(goog.isObject(context), 'context should be an Object');
-  var item = ol.object.assign({}, context);
+  var item = /** @type {ol.XmlNodeStackItem} */ (ol.object.assign({}, context));
   item.node = node;
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.GETFEATURE_SERIALIZERS_,
@@ -812,14 +815,15 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
   }
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation_);
+  /** @type {ol.XmlNodeStackItem} */
   var context = {
     node: node,
-    srsName: options.srsName,
-    featureNS: options.featureNS ? options.featureNS : this.featureNS_,
-    featurePrefix: options.featurePrefix,
-    geometryName: options.geometryName,
-    filter: filter,
-    propertyNames: options.propertyNames ? options.propertyNames : []
+    'srsName': options.srsName,
+    'featureNS': options.featureNS ? options.featureNS : this.featureNS_,
+    'featurePrefix': options.featurePrefix,
+    'geometryName': options.geometryName,
+    'filter': filter,
+    'propertyNames': options.propertyNames ? options.propertyNames : []
   };
   goog.asserts.assert(Array.isArray(options.featureTypes),
       'options.featureTypes should be an array');
@@ -845,7 +849,9 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
       'Transaction');
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', '1.1.0');
-  var baseObj, obj;
+  var baseObj;
+  /** @type {ol.XmlNodeStackItem} */
+  var obj;
   if (options) {
     baseObj = options.gmlOptions ? options.gmlOptions : {};
     if (options.handle) {
@@ -855,9 +861,9 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
   ol.xml.setAttributeNS(node, 'http://www.w3.org/2001/XMLSchema-instance',
       'xsi:schemaLocation', this.schemaLocation_);
   if (inserts) {
-    obj = {node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix,
-      srsName: options.srsName};
+    obj = {node: node, 'featureNS': options.featureNS,
+      'featureType': options.featureType, 'featurePrefix': options.featurePrefix,
+      'srsName': options.srsName};
     ol.object.assign(obj, baseObj);
     ol.xml.pushSerializeAndPop(obj,
         ol.format.WFS.TRANSACTION_SERIALIZERS_,
@@ -865,9 +871,9 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
         objectStack);
   }
   if (updates) {
-    obj = {node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix,
-      srsName: options.srsName};
+    obj = {node: node, 'featureNS': options.featureNS,
+      'featureType': options.featureType, 'featurePrefix': options.featurePrefix,
+      'srsName': options.srsName};
     ol.object.assign(obj, baseObj);
     ol.xml.pushSerializeAndPop(obj,
         ol.format.WFS.TRANSACTION_SERIALIZERS_,
@@ -875,17 +881,17 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
         objectStack);
   }
   if (deletes) {
-    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix,
-      srsName: options.srsName},
+    ol.xml.pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
+      'featureType': options.featureType, 'featurePrefix': options.featurePrefix,
+      'srsName': options.srsName},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Delete'), deletes,
     objectStack);
   }
   if (options.nativeElements) {
-    ol.xml.pushSerializeAndPop({node: node, featureNS: options.featureNS,
-      featureType: options.featureType, featurePrefix: options.featurePrefix,
-      srsName: options.srsName},
+    ol.xml.pushSerializeAndPop({node: node, 'featureNS': options.featureNS,
+      'featureType': options.featureType, 'featurePrefix': options.featurePrefix,
+      'srsName': options.srsName},
     ol.format.WFS.TRANSACTION_SERIALIZERS_,
     ol.xml.makeSimpleNodeFactory('Native'), options.nativeElements,
     objectStack);
