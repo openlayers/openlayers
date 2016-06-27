@@ -194,7 +194,7 @@ ol.render.webgl.Replay.prototype.replay = function(context,
       'indicesBuffer must not be null');
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
-  var locations = this.setUpProgram_(gl, context, size);
+  var locations = this.setUpProgram_(gl, context, size, pixelRatio);
 
   // set the "uniform" values
   var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
@@ -657,9 +657,10 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, image
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
  * @return {ol.render.webgl.imagereplay.shader.Default.Locations} Locations.
  */
-ol.render.webgl.ImageReplay.prototype.setUpProgram_ = function(gl, context, size) {
+ol.render.webgl.ImageReplay.prototype.setUpProgram_ = function(gl, context, size, pixelRatio) {
   // get the program
   var fragmentShader = ol.render.webgl.imagereplay.defaultshader.fragment;
   var vertexShader = ol.render.webgl.imagereplay.defaultshader.vertex;
@@ -1335,9 +1336,10 @@ ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Size} size Size.
+ * @param {number} pixelRatio Pixel ratio.
  * @return {ol.render.webgl.linestringreplay.shader.Default.Locations} Locations.
  */
-ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context, size) {
+ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context, size, pixelRatio) {
   // get the program
   var fragmentShader, vertexShader;
   fragmentShader =
@@ -1384,6 +1386,7 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
     gl.uniform1f(locations.u_miterLimit, this.state_.miterLimit);
   }
   gl.uniform2fv(locations.u_size, size);
+  gl.uniform1f(locations.u_pixelRatio, pixelRatio);
 
   return locations;
 };
@@ -1398,7 +1401,9 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
+  /** @type {number} */
   var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
+  /** @type {boolean} */
   var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
 
   gl.enable(gl.DEPTH_TEST);
