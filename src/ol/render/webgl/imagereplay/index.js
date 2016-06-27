@@ -230,7 +230,7 @@ ol.render.webgl.Replay.prototype.replay = function(context,
 
   // disable the vertex attrib arrays
   for (var i in locations) {
-    if (i.startsWith('a_')) {
+    if (typeof locations[i] === 'number') {
       gl.disableVertexAttribArray(locations[i]);
     }
   }
@@ -1401,9 +1401,7 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
-  /** @type {number} */
   var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
-  /** @type {boolean} */
   var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
 
   gl.enable(gl.DEPTH_TEST);
@@ -1418,8 +1416,12 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
   gl.clear(gl.DEPTH_BUFFER_BIT);
   gl.disable(gl.DEPTH_TEST);
   //Restore GL parameters.
-  gl.depthMask(tmpDepthMask);
-  gl.depthFunc(tmpDepthFunc);
+  if (typeof tmpDepthMask === 'boolean') {
+    gl.depthMask(tmpDepthMask);
+  }
+  if (typeof tmpDepthFunc === 'number') {
+    gl.depthFunc(tmpDepthFunc);
+  }
 };
 
 /**
