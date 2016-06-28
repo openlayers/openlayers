@@ -997,11 +997,23 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
   ol.render.webgl.Replay.call(this, tolerance, maxExtent);
 
-/**
+  /**
    * @private
    * @type {ol.render.webgl.linestringreplay.shader.Default.Locations}
    */
   this.defaultLocations_ = null;
+
+  /**
+   * @private
+   * @type {Array.<Array.<?>>}
+   */
+  this.styles_ = [];
+
+  /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.styleIndices_ = [];
 
   /**
    * @private
@@ -1010,7 +1022,8 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
+   *         miterLimit: (number|undefined),
+   *         changed: boolean}|null}
    */
   this.state_ = {
     strokeColor: null,
@@ -1018,7 +1031,8 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
     lineDash: null,
     lineJoin: undefined,
     lineWidth: undefined,
-    miterLimit: undefined
+    miterLimit: undefined,
+    changed: false
   };
 
   this.startIndices_ = [0];
@@ -1264,6 +1278,10 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+    if (this.state_.changed) {
+      this.styleIndices_.push(this.indices_.length - 1);
+      this.state_.changed = false;
+    }
     this.drawCoordinates_(
         flatCoordinates, 0, flatCoordinates.length, stride);
     this.startIndices_.push(this.indices_.length);
@@ -1290,6 +1308,10 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
   if (this.indices_.length > indexCount) {
     this.startIndices_.push(this.indices_.length);
     this.startIndicesFeature_.push(feature);
+    if (this.state_.changed) {
+      this.styleIndices_.push(indexCount - 1);
+      this.state_.changed = false;
+    }
   }
 };
 
@@ -1378,13 +1400,6 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
       false, 28, 24);
 
   // Enable renderer specific uniforms. If clauses needed, as otherwise the compiler complains.
-  gl.uniform4fv(locations.u_color, this.state_.strokeColor);
-  if (this.state_.lineWidth) {
-    gl.uniform1f(locations.u_lineWidth, this.state_.lineWidth);
-  }
-  if (this.state_.miterLimit) {
-    gl.uniform1f(locations.u_miterLimit, this.state_.miterLimit);
-  }
   gl.uniform2fv(locations.u_size, size);
   gl.uniform1f(locations.u_pixelRatio, pixelRatio);
 
@@ -1410,12 +1425,28 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
-    var end = this.startIndices_[this.startIndices_.length - 1];
+    goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
+        'number of styles and style indices match');
+
+    //Draw by style groups to minimize drawElements() calls.
+    var i, ii, end, nextStyle;
+    //Initial styling
+    nextStyle = this.styles_[0];
+    this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    for (i = 1, ii = this.styleIndices_.length; i < ii; ++i) {
+      end = this.styleIndices_[i];
+      this.drawElements_(gl, context, 0, end);
+      nextStyle = this.styles_[i];
+      this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    }
+    end = this.startIndices_[this.startIndices_.length - 1];
     this.drawElements_(gl, context, 0, end);
   }
   gl.clear(gl.DEPTH_BUFFER_BIT);
   gl.disable(gl.DEPTH_TEST);
   //Restore GL parameters.
+  //NOTE: Type checks will be obsolete when Closure Compiler recognizes the return type of specific
+  //gl.getParameter() calls.
   if (typeof tmpDepthMask === 'boolean') {
     gl.depthMask(tmpDepthMask);
   }
@@ -1453,16 +1484,26 @@ ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplay_ = function(gl
 
 
 /**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {Array.<number>} color Color.
+ * @param {number} lineWidth Line width.
+ * @param {number} miterLimit Miter limit.
+ */
+ol.render.webgl.LineStringReplay.prototype.setStrokeStyle_ = function(gl, color, lineWidth, miterLimit) {
+  gl.uniform4fv(this.defaultLocations_.u_color, color);
+  gl.uniform1f(this.defaultLocations_.u_lineWidth, lineWidth);
+  gl.uniform1f(this.defaultLocations_.u_miterLimit, miterLimit);
+};
+
+
+/**
  * @inheritDoc
  */
 ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   goog.asserts.assert(this.state_, 'this.state_ should not be null');
   goog.asserts.assert(!fillStyle, 'fillStyle should be null');
   goog.asserts.assert(strokeStyle, 'strokeStyle should not be null');
-  var strokeStyleColor = strokeStyle.getColor();
-  this.state_.strokeColor = ol.color.asArray(strokeStyleColor).map(function(c, i) {
-    return i != 3 ? c / 255 : c;
-  }) || ol.render.webgl.defaultStrokeStyle;
   var strokeStyleLineCap = strokeStyle.getLineCap();
   this.state_.lineCap = strokeStyleLineCap !== undefined ?
       strokeStyleLineCap : ol.render.webgl.defaultLineCap;
@@ -1472,12 +1513,19 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
   var strokeStyleLineJoin = strokeStyle.getLineJoin();
   this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
       strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
-  var strokeStyleWidth = strokeStyle.getWidth();
-  this.state_.lineWidth = strokeStyleWidth !== undefined ?
-      strokeStyleWidth : ol.render.webgl.defaultLineWidth;
-  var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
-  this.state_.miterLimit = strokeStyleMiterLimit !== undefined ?
-      strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
+  var strokeStyleColor = ol.color.asArray(strokeStyle.getColor()).map(function(c, i) {
+    return i != 3 ? c / 255 : c;
+  }) || ol.render.webgl.defaultStrokeStyle;
+  var strokeStyleWidth = strokeStyle.getWidth() || ol.render.webgl.defaultLineWidth;
+  var strokeStyleMiterLimit = strokeStyle.getMiterLimit() || ol.render.webgl.defaultMiterLimit;
+  if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
+      this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
+    this.state_.changed = true;
+    this.state_.strokeColor = strokeStyleColor;
+    this.state_.lineWidth = strokeStyleWidth;
+    this.state_.miterLimit = strokeStyleMiterLimit;
+    this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
+  }
 };
 
 
