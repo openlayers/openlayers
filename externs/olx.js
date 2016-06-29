@@ -5598,7 +5598,6 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     hidpi: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
- *     maxZoom: (number|undefined),
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
  *     serverType: (ol.source.wms.ServerType|string|undefined),
@@ -5690,14 +5689,6 @@ olx.source.TileWMSOptions.prototype.logo;
  * @api stable
  */
 olx.source.TileWMSOptions.prototype.tileGrid;
-
-
-/**
- * Maximum zoom.
- * @type {number|undefined}
- * @api
- */
-olx.source.TileWMSOptions.prototype.maxZoom;
 
 
 /**
@@ -5903,7 +5894,6 @@ olx.source.VectorOptions.prototype.wrapX;
  *     matrixSet: string,
  *     dimensions: (!Object|undefined),
  *     url: (string|undefined),
- *     maxZoom: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
@@ -6062,14 +6052,6 @@ olx.source.WMTSOptions.prototype.dimensions;
  * @api stable
  */
 olx.source.WMTSOptions.prototype.url;
-
-
-/**
- * Maximum zoom.
- * @type {number|undefined}
- * @api
- */
-olx.source.WMTSOptions.prototype.maxZoom;
 
 
 /**
