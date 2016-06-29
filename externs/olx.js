@@ -2432,9 +2432,20 @@ olx.interaction.DragBoxOptions.prototype.boxEndCondition;
 
 
 /**
- * @typedef {{kinetic: (ol.Kinetic|undefined)}}
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
+ *     kinetic: (ol.Kinetic|undefined)}}
  */
 olx.interaction.DragPanOptions;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.noModifierKeys}.
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.DragPanOptions.prototype.condition;
 
 
 /**
