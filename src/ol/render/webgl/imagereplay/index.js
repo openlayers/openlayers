@@ -136,21 +136,6 @@ ol.render.webgl.Replay = function(tolerance, maxExtent) {
 goog.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
 
 
-/**
- * @enum {number}
- */
-ol.render.webgl.LineStringInstruction = {
-  ROUND: 2,
-  BEGIN_LINE: 3,
-  END_LINE: 5,
-  BEGIN_LINE_CAP: 7,
-  END_LINE_CAP : 11,
-  BEVEL_FIRST: 13,
-  BEVEL_SECOND: 17,
-  MITER_BOTTOM: 19,
-  MITER_TOP: 23
-};
-
 ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = goog.abstractMethod;
 
 ol.render.webgl.Replay.prototype.finish = goog.abstractMethod;
@@ -159,7 +144,60 @@ ol.render.webgl.Replay.prototype.setUpProgram_ = goog.abstractMethod;
 
 ol.render.webgl.Replay.prototype.drawReplay_ = goog.abstractMethod;
 
-ol.render.webgl.Replay.prototype.drawHitDetectionReplay_ = goog.abstractMethod;
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.Replay.prototype.drawHitDetectionReplay_ = function(gl, context, skippedFeaturesHash,
+    featureCallback, oneByOne, opt_hitExtent) {
+  if (!oneByOne) {
+    // draw all hit-detection features in "once" (by texture group)
+    return this.drawHitDetectionReplayAll_(gl, context,
+        skippedFeaturesHash, featureCallback);
+  } else {
+    // draw hit-detection features one by one
+    return this.drawHitDetectionReplayOneByOne_(gl, context,
+        skippedFeaturesHash, featureCallback, opt_hitExtent);
+  }
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll_ = function(gl, context, skippedFeaturesHash,
+    featureCallback) {
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  this.drawReplay_(gl, context, skippedFeaturesHash, true);
+
+  var result = featureCallback(null);
+  if (result) {
+    return result;
+  } else {
+    return undefined;
+  }
+};
+
+
+ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne_ = goog.abstractMethod;
+
 
 /**
  * @param {ol.webgl.Context} context Context.
@@ -809,7 +847,6 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, context
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
- * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
  * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
  *  this extent are checked.
  * @return {T|undefined} Callback result.
@@ -864,8 +901,8 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ = function(gl, 
  * @return {T|undefined} Callback result.
  * @template T
  */
-ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function(gl, context, skippedFeaturesHash, featureCallback,
-    opt_hitExtent) {
+ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function(gl, context, skippedFeaturesHash,
+    featureCallback, opt_hitExtent) {
   ol.DEBUG && console.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length,
       'number of hitDetectionTextures and hitDetectionGroupIndices match');
@@ -1055,7 +1092,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var numVertices = this.vertices_.length;
   var numIndices = this.indices_.length;
   //To save a vertex, the direction of a point is a product of the sign (1 or -1), a prime from
-  //ol.render.webgl.LineStringInstruction, and a rounding factor (1 or 2). If the product is even,
+  //ol.render.webgl.lineStringInstruction, and a rounding factor (1 or 2). If the product is even,
   //we round it. If it is odd, we don't.
   var lineJoin = this.state_.lineJoin === 'bevel' ? 0 :
       this.state_.lineJoin === 'miter' ? 1 : 2;
@@ -1092,10 +1129,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
         if (lineCap) {
           numVertices = this.addVertices_([0, 0], p1, p2,
-              lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
+              lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_([0, 0], p1, p2,
-              -lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
+              -lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
 
           this.indices_[numIndices++] = n + 2;
           this.indices_[numIndices++] = n;
@@ -1108,10 +1145,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         }
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-            lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
+            lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-            -lastSign * ol.render.webgl.LineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
+            -lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
 
         lastIndex = n + 3;
 
@@ -1128,10 +1165,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-            lastSign * ol.render.webgl.LineStringInstruction.END_LINE * (lineCap || 1), numVertices);
+            lastSign * ol.render.webgl.lineStringInstruction.END_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-            -lastSign * ol.render.webgl.LineStringInstruction.END_LINE * (lineCap || 1), numVertices);
+            -lastSign * ol.render.webgl.lineStringInstruction.END_LINE * (lineCap || 1), numVertices);
 
         this.indices_[numIndices++] = n;
         this.indices_[numIndices++] = lastIndex - 1;
@@ -1143,10 +1180,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
         if (lineCap) {
           numVertices = this.addVertices_(p0, p1, [0, 0],
-              lastSign * ol.render.webgl.LineStringInstruction.END_LINE_CAP * lineCap, numVertices);
+              lastSign * ol.render.webgl.lineStringInstruction.END_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_(p0, p1, [0, 0],
-              -lastSign * ol.render.webgl.LineStringInstruction.END_LINE_CAP * lineCap, numVertices);
+              -lastSign * ol.render.webgl.lineStringInstruction.END_LINE_CAP * lineCap, numVertices);
 
           this.indices_[numIndices++] = n + 2;
           this.indices_[numIndices++] = n;
@@ -1168,13 +1205,13 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.LineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+        sign * ol.render.webgl.lineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.LineStringInstruction.BEVEL_SECOND * (lineJoin || 1), numVertices);
+        sign * ol.render.webgl.lineStringInstruction.BEVEL_SECOND * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        -sign * ol.render.webgl.LineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+        -sign * ol.render.webgl.lineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     if (i > offset) {
       this.indices_[numIndices++] = n;
@@ -1196,7 +1233,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     //Add miter
     if (lineJoin) {
       numVertices = this.addVertices_(p0, p1, p2,
-          sign * ol.render.webgl.LineStringInstruction.MITER_TOP * lineJoin, numVertices);
+          sign * ol.render.webgl.lineStringInstruction.MITER_TOP * lineJoin, numVertices);
 
       this.indices_[numIndices++] = n + 1;
       this.indices_[numIndices++] = n + 3;
@@ -1212,10 +1249,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.LineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+        sign * ol.render.webgl.lineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        -sign * ol.render.webgl.LineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+        -sign * ol.render.webgl.lineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     this.indices_[numIndices++] = n;
     this.indices_[numIndices++] = lastIndex - 1;
@@ -1416,12 +1453,20 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
-  var tmpDepthFunc = gl.getParameter(gl.DEPTH_FUNC);
-  var tmpDepthMask = gl.getParameter(gl.DEPTH_WRITEMASK);
+  var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+  var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
 
-  gl.enable(gl.DEPTH_TEST);
-  gl.depthMask(true);
-  gl.depthFunc(gl.NOTEQUAL);
+  if (!hitDetection) {
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    gl.depthFunc(gl.NOTEQUAL);
+  }
+
+  var nextStyle;
+  //Initial styling
+  nextStyle = this.styles_[0];
+  this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
@@ -1429,10 +1474,8 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
         'number of styles and style indices match');
 
     //Draw by style groups to minimize drawElements() calls.
-    var i, ii, end, nextStyle;
-    //Initial styling
-    nextStyle = this.styles_[0];
-    this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    var i, ii, end;
+
     for (i = 1, ii = this.styleIndices_.length; i < ii; ++i) {
       end = this.styleIndices_[i];
       this.drawElements_(gl, context, 0, end);
@@ -1442,44 +1485,13 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
     end = this.startIndices_[this.startIndices_.length - 1];
     this.drawElements_(gl, context, 0, end);
   }
-  gl.clear(gl.DEPTH_BUFFER_BIT);
-  gl.disable(gl.DEPTH_TEST);
-  //Restore GL parameters.
-  //NOTE: Type checks will be obsolete when Closure Compiler recognizes the return type of specific
-  //gl.getParameter() calls.
-  if (typeof tmpDepthMask === 'boolean') {
+  if (!hitDetection) {
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    gl.disable(gl.DEPTH_TEST);
+    //Restore GL parameters.
     gl.depthMask(tmpDepthMask);
-  }
-  if (typeof tmpDepthFunc === 'number') {
     gl.depthFunc(tmpDepthFunc);
   }
-};
-
-/**
- * @private
- * @param {WebGLRenderingContext} gl gl.
- * @param {ol.webgl.Context} context Context.
- * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
- *  to skip.
- * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
- * @param {boolean} oneByOne Draw features one-by-one for the hit-detecion.
- * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
- *  this extent are checked.
- * @return {T|undefined} Callback result.
- * @template T
- */
-ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplay_ = function(gl, context, skippedFeaturesHash, featureCallback, oneByOne,
-    opt_hitExtent) {
-  //if (!oneByOne) {
-    // draw all hit-detection features in "once" (by texture group)
-    //return this.drawHitDetectionReplayAll_(gl, context,
-    //    skippedFeaturesHash, featureCallback);
-  //} else {
-    // draw hit-detection features one by one
-    //return this.drawHitDetectionReplayOneByOne_(gl, context,
-    //    skippedFeaturesHash, featureCallback, opt_hitExtent);
-  //}
-  return 0;
 };
 
 
