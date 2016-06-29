@@ -263,7 +263,6 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
   var deselected = [];
   var selected = [];
-  var change = false;
   if (set) {
     // Replace the currently selected feature(s) with the feature(s) at the
     // pixel, or clear the selected feature(s) if there is no feature at
@@ -282,11 +281,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             return !this.multi_;
           }
         }, this, this.layerFilter_);
-    if (selected.length > 0 && features.getLength() == 1 &&
-        features.item(0) == selected[0]) {
-      // No change
+    if (selected.length > 0 && features.getLength() == 1 && features.item(0) == selected[0]) {
+      // No change; an already selected feature is selected again
+      selected.length = 0;
     } else {
-      change = true;
       if (features.getLength() !== 0) {
         deselected = Array.prototype.concat(features.getArray());
         features.clear();
@@ -320,11 +318,8 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
       features.remove(deselected[i]);
     }
     features.extend(selected);
-    if (selected.length > 0 || deselected.length > 0) {
-      change = true;
-    }
   }
-  if (change) {
+  if (selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
         new ol.interaction.SelectEvent(ol.interaction.SelectEventType.SELECT,
             selected, deselected, mapBrowserEvent));
