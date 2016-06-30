@@ -3,7 +3,6 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.TileJSON');
-goog.require('ol.interaction.DragRotateAndZoom');
 
 function transform(extent) {
   return ol.proj.transformExtent(extent, 'EPSG:4326', 'EPSG:3857');
@@ -42,8 +41,6 @@ var map = new ol.Map({
     zoom: 1
   })
 });
-
-map.addInteraction(new ol.interaction.DragRotateAndZoom());
 
 for (var key in extents) {
   document.getElementById(key).onclick = function(event) {
