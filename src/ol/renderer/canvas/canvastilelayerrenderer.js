@@ -276,6 +276,41 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
     tilesToDraw.reverse();
     pixelExtents = [];
   }
+
+  var extent = layerState.extent;
+  var clipped = extent !== undefined;
+  if (clipped) {
+    goog.asserts.assert(extent !== undefined,
+        'layerState extent is defined');
+    var topLeft = ol.extent.getTopLeft(extent);
+    var topRight = ol.extent.getTopRight(extent);
+    var bottomRight = ol.extent.getBottomRight(extent);
+    var bottomLeft = ol.extent.getBottomLeft(extent);
+
+    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+        topLeft, topLeft);
+    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+        topRight, topRight);
+    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+        bottomRight, bottomRight);
+    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
+        bottomLeft, bottomLeft);
+
+    var ox = drawOffsetX || 0;
+    var oy = drawOffsetY || 0;
+    renderContext.save();
+    var cx = (renderContext.canvas.width * pixelRatio) / 2;
+    var cy = (renderContext.canvas.height * pixelRatio) / 2;
+    ol.render.canvas.rotateAtOffset(renderContext, -rotation, cx, cy);
+    renderContext.beginPath();
+    renderContext.moveTo(topLeft[0] * pixelRatio + ox, topLeft[1] * pixelRatio + oy);
+    renderContext.lineTo(topRight[0] * pixelRatio + ox, topRight[1] * pixelRatio + oy);
+    renderContext.lineTo(bottomRight[0] * pixelRatio + ox, bottomRight[1] * pixelRatio + oy);
+    renderContext.lineTo(bottomLeft[0] * pixelRatio + ox, bottomLeft[1] * pixelRatio + oy);
+    renderContext.clip();
+    ol.render.canvas.rotateAtOffset(renderContext, rotation, cx, cy);
+  }
+
   for (var i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     var tile = tilesToDraw[i];
     var tileCoord = tile.getTileCoord();
@@ -322,6 +357,10 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
     if (!opaque) {
       renderContext.restore();
     }
+  }
+
+  if (clipped) {
+    renderContext.restore();
   }
 
   if (hasRenderListeners) {
