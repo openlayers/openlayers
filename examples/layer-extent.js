@@ -18,7 +18,7 @@ var extents = {
 var base = new ol.layer.Tile({
   source: new ol.source.TileJSON({
     url: 'http://api.tiles.mapbox.com/v3/' +
-        'mapbox.world-black.json',
+        'mapbox.world-light.json',
     crossOrigin: 'anonymous'
   })
 });
@@ -27,7 +27,7 @@ var overlay = new ol.layer.Tile({
   extent: extents.India,
   source: new ol.source.TileJSON({
     url: 'http://api.tiles.mapbox.com/v3/' +
-        'mapbox.world-glass.json',
+        'mapbox.world-black.json',
     crossOrigin: 'anonymous'
   })
 });
