@@ -36,10 +36,11 @@ ol.control.ScaleLineUnits = {
 
 /**
  * @classdesc
- * A control displaying rough x-axis distances, calculated for the center of the
- * viewport.
- * No scale line will be shown when the x-axis distance cannot be calculated in
- * the view projection (e.g. at or beyond the poles in EPSG:4326).
+ * A control displaying rough y-axis distances, calculated for the center of the
+ * viewport. For conformal projections (e.g. EPSG:3857, the default view
+ * projection in OpenLayers), the scale is valid for all directions.
+ * No scale line will be shown when the y-axis distance of a pixel at the
+ * viewport center cannot be calculated in the view projection.
  * By default the scale line will show in the bottom left portion of the map,
  * but this can be changed by using the css selector `.ol-scale-line`.
  *
