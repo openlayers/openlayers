@@ -117,7 +117,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(originalEvent) {
     // event.absolute is undefined in iOS.
     if (typeof event.absolute === 'boolean' && event.absolute) {
       this.set(ol.DeviceOrientationProperty.HEADING, alpha);
-    } else if (goog.isNumber(event.webkitCompassHeading) &&
+    } else if (typeof event.webkitCompassHeading === 'number' &&
                event.webkitCompassAccuracy != -1) {
       var heading = ol.math.toRadians(event.webkitCompassHeading);
       this.set(ol.DeviceOrientationProperty.HEADING, heading);

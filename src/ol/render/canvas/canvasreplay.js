@@ -281,7 +281,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
-        goog.asserts.assert(goog.isNumber(instruction[1]),
+        goog.asserts.assert(typeof instruction[1] === 'number',
             'second instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
@@ -299,10 +299,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:
-        goog.asserts.assert(goog.isNumber(instruction[1]),
+        goog.asserts.assert(typeof instruction[1] === 'number',
             'second instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        goog.asserts.assert(goog.isNumber(instruction[2]),
+        goog.asserts.assert(typeof instruction[2] === 'number',
             'third instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
@@ -371,25 +371,25 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_TEXT:
-        goog.asserts.assert(goog.isNumber(instruction[1]),
+        goog.asserts.assert(typeof instruction[1] === 'number',
             '2nd instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        goog.asserts.assert(goog.isNumber(instruction[2]),
+        goog.asserts.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         goog.asserts.assert(typeof instruction[3] === 'string',
             '4th instruction should be a string');
         text = /** @type {string} */ (instruction[3]);
-        goog.asserts.assert(goog.isNumber(instruction[4]),
+        goog.asserts.assert(typeof instruction[4] === 'number',
             '5th instruction should be a number');
         var offsetX = /** @type {number} */ (instruction[4]) * pixelRatio;
-        goog.asserts.assert(goog.isNumber(instruction[5]),
+        goog.asserts.assert(typeof instruction[5] === 'number',
             '6th instruction should be a number');
         var offsetY = /** @type {number} */ (instruction[5]) * pixelRatio;
-        goog.asserts.assert(goog.isNumber(instruction[6]),
+        goog.asserts.assert(typeof instruction[6] === 'number',
             '7th instruction should be a number');
         rotation = /** @type {number} */ (instruction[6]);
-        goog.asserts.assert(goog.isNumber(instruction[7]),
+        goog.asserts.assert(typeof instruction[7] === 'number',
             '8th instruction should be a number');
         scale = /** @type {number} */ (instruction[7]) * pixelRatio;
         goog.asserts.assert(typeof instruction[8] === 'boolean',
@@ -469,10 +469,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
-        goog.asserts.assert(goog.isNumber(instruction[1]),
+        goog.asserts.assert(typeof instruction[1] === 'number',
             '2nd instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        goog.asserts.assert(goog.isNumber(instruction[2]),
+        goog.asserts.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         x = pixelCoordinates[d];
@@ -508,13 +508,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
         goog.asserts.assert(typeof instruction[1] === 'string',
             '2nd instruction should be a string');
-        goog.asserts.assert(goog.isNumber(instruction[2]),
+        goog.asserts.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
         goog.asserts.assert(typeof instruction[3] === 'string',
             '4rd instruction should be a string');
         goog.asserts.assert(typeof instruction[4] === 'string',
             '5th instruction should be a string');
-        goog.asserts.assert(goog.isNumber(instruction[5]),
+        goog.asserts.assert(typeof instruction[5] === 'number',
             '6th instruction should be a number');
         goog.asserts.assert(instruction[6],
             '7th instruction should not be null');
