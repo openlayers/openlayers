@@ -91,21 +91,9 @@ ol.control.FullScreen = function(opt_options) {
 
   /**
    * @private
-   * @type {string}
+   * @type {string|undefined}
    */
-  this.changeType_ = (function() {
-    var body = document.body;
-    if (body.webkitRequestFullscreen) {
-      return 'webkitfullscreenchange';
-    } else if (body.mozRequestFullScreen) {
-      return 'mozfullscreenchange';
-    } else if (body.msRequestFullscreen) {
-      return 'MSFullscreenChange';
-    } else if (body.requestFullscreen) {
-      return 'fullscreenchange';
-    }
-    return undefined;
-  })();
+  this.changeType_ = undefined;
 
 };
 ol.inherits(ol.control.FullScreen, ol.control.Control);
@@ -180,6 +168,21 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
 ol.control.FullScreen.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
+    if (!this.changeType_) {
+      this.changeType_ = (function() {
+        var body = document.body;
+        if (body.webkitRequestFullscreen) {
+          return 'webkitfullscreenchange';
+        } else if (body.mozRequestFullScreen) {
+          return 'mozfullscreenchange';
+        } else if (body.msRequestFullscreen) {
+          return 'MSFullscreenChange';
+        } else if (body.requestFullscreen) {
+          return 'fullscreenchange';
+        }
+        return undefined;
+      })();
+    }
     this.listenerKeys.push(
         ol.events.listen(ol.global.document, this.changeType_,
           this.handleFullScreenChange_, this)
