@@ -106,6 +106,14 @@ describe('ol.events.EventTarget', function() {
       expect(events[0].type).to.be('foo');
       expect(events[0].target).to.equal(eventTarget);
     });
+    it('passes a ol.events.Event object but with defined target', function() {
+      eventTarget.addEventListener('foo', spy1);
+      var evt = new ol.events.Event('foo', {'myvalue': 'mytarget'});
+      eventTarget.dispatchEvent(evt);
+      expect(events[0]).to.be.a(ol.events.Event);
+      expect(events[0].target).not.to.equal(eventTarget);
+      expect(events[0].target['myvalue']).to.equal('mytarget');
+    });
     it('passes a custom event object with target to listeners', function() {
       eventTarget.addEventListener('foo', spy1);
       var event = {
