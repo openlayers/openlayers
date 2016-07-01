@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.transform');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -9,7 +9,6 @@ goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.renderer.dom.Layer');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -32,9 +31,9 @@ ol.renderer.dom.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.transform_ = goog.vec.Mat4.createNumberIdentity();
+  this.transform_ = ol.transform.create();
 
 };
 ol.inherits(ol.renderer.dom.ImageLayer, ol.renderer.dom.Layer);
@@ -118,13 +117,14 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
   if (image) {
     var imageExtent = image.getExtent();
     var imageResolution = image.getResolution();
-    var transform = goog.vec.Mat4.createNumber();
-    ol.vec.Mat4.makeTransform2D(transform,
+    var transform = ol.transform.create();
+    ol.transform.compose(transform,
         frameState.size[0] / 2, frameState.size[1] / 2,
         imageResolution / viewResolution, imageResolution / viewResolution,
         viewRotation,
         (imageExtent[0] - viewCenter[0]) / imageResolution,
         (viewCenter[1] - imageExtent[3]) / imageResolution);
+
     if (image != this.image_) {
       var imageElement = image.getImage(this);
       // Bootstrap sets the style max-width: 100% for all images, which breaks
@@ -146,12 +146,12 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
 
 
 /**
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @private
  */
 ol.renderer.dom.ImageLayer.prototype.setTransform_ = function(transform) {
-  if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {
+  if (!ol.array.equals(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
-    goog.vec.Mat4.setFromArray(this.transform_, transform);
+    ol.transform.setFromArray(this.transform_, transform);
   }
 };

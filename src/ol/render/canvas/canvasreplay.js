@@ -9,7 +9,7 @@ goog.provide('ol.render.canvas.ReplayGroup');
 goog.provide('ol.render.canvas.TextReplay');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.color');
@@ -24,7 +24,6 @@ goog.require('ol.object');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -117,9 +116,9 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.renderedTransform_ = goog.vec.Mat4.createNumber();
+  this.renderedTransform_ = ol.transform.create();
 
   /**
    * @protected
@@ -135,15 +134,15 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.tmpLocalTransform_ = goog.vec.Mat4.createNumber();
+  this.tmpLocalTransform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.tmpLocalTransformInv_ = goog.vec.Mat4.createNumber();
+  this.tmpLocalTransformInv_ = ol.transform.create();
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
@@ -223,7 +222,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  * @private
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -240,13 +239,13 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
-  if (ol.vec.Mat4.equals2D(transform, this.renderedTransform_)) {
+  if (ol.array.equals(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     pixelCoordinates = ol.geom.flat.transform.transform2D(
         this.coordinates, 0, this.coordinates.length, 2,
         transform, this.pixelCoordinates_);
-    goog.vec.Mat4.setFromArray(this.renderedTransform_, transform);
+    ol.transform.setFromArray(this.renderedTransform_, transform);
     goog.asserts.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
@@ -332,16 +331,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
-            ol.vec.Mat4.makeTransform2D(
-                localTransform, centerX, centerY, scale, scale,
-                rotation, -centerX, -centerY);
-            context.transform(
-                goog.vec.Mat4.getElement(localTransform, 0, 0),
-                goog.vec.Mat4.getElement(localTransform, 1, 0),
-                goog.vec.Mat4.getElement(localTransform, 0, 1),
-                goog.vec.Mat4.getElement(localTransform, 1, 1),
-                goog.vec.Mat4.getElement(localTransform, 0, 3),
-                goog.vec.Mat4.getElement(localTransform, 1, 3));
+            ol.transform.compose(localTransform,
+                centerX, centerY, scale, scale, rotation, -centerX, -centerY);
+            context.transform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
           if (opacity != 1) {
@@ -358,14 +350,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha;
           }
           if (scale != 1 || rotation !== 0) {
-            goog.vec.Mat4.invert(localTransform, localTransformInv);
-            context.transform(
-                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
+            ol.transform.invert(ol.transform.setFromArray(localTransformInv, localTransform));
+            context.transform.apply(context, localTransformInv);
           }
         }
         ++i;
@@ -402,15 +388,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           x = pixelCoordinates[d] + offsetX;
           y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
-            ol.vec.Mat4.makeTransform2D(
-                localTransform, x, y, scale, scale, rotation, -x, -y);
-            context.transform(
-                goog.vec.Mat4.getElement(localTransform, 0, 0),
-                goog.vec.Mat4.getElement(localTransform, 1, 0),
-                goog.vec.Mat4.getElement(localTransform, 0, 1),
-                goog.vec.Mat4.getElement(localTransform, 1, 1),
-                goog.vec.Mat4.getElement(localTransform, 0, 3),
-                goog.vec.Mat4.getElement(localTransform, 1, 3));
+            ol.transform.compose(localTransform, x, y, scale, scale, rotation, -x, -y);
+            context.transform.apply(context, localTransform);
           }
 
           // Support multiple lines separated by \n
@@ -441,14 +420,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           if (scale != 1 || rotation !== 0) {
-            goog.vec.Mat4.invert(localTransform, localTransformInv);
-            context.transform(
-                goog.vec.Mat4.getElement(localTransformInv, 0, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 0),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 1),
-                goog.vec.Mat4.getElement(localTransformInv, 0, 3),
-                goog.vec.Mat4.getElement(localTransformInv, 1, 3));
+            ol.transform.invert(ol.transform.setFromArray(localTransformInv, localTransform));
+            context.transform.apply(context, localTransformInv);
           }
         }
         ++i;
@@ -565,7 +538,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -580,7 +553,7 @@ ol.render.canvas.Replay.prototype.replay = function(
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -1883,9 +1856,9 @@ ol.render.canvas.ReplayGroup = function(
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.hitDetectionTransform_ = goog.vec.Mat4.createNumber();
+  this.hitDetectionTransform_ = ol.transform.create();
 
 };
 
@@ -1919,9 +1892,10 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeaturesHash, callback) {
 
-  var transform = this.hitDetectionTransform_;
-  ol.vec.Mat4.makeTransform2D(transform, 0.5, 0.5,
-      1 / resolution, -1 / resolution, -rotation,
+  var transform = ol.transform.compose(this.hitDetectionTransform_,
+      0.5, 0.5,
+      1 / resolution, -1 / resolution,
+      -rotation,
       -coordinate[0], -coordinate[1]);
 
   var context = this.hitDetectionContext_;
@@ -1991,7 +1965,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
@@ -2044,7 +2018,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {number} viewRotation View rotation.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.

@@ -330,6 +330,14 @@ ol.MapOptionsInternal;
 
 
 /**
+ * An array representing an affine 2d transformation for use with
+ * {@link ol.transform} functions. The array has 6 elements.
+ * @typedef {Array.<number>}
+ */
+ol.Transform;
+
+
+/**
  * @typedef {{depth: (Array.<number>|undefined),
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,

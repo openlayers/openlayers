@@ -7,7 +7,6 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
-goog.require('goog.vec.Mat4');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
@@ -34,6 +33,7 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
+goog.require('ol.transform');
 goog.require('ol.object');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
@@ -43,7 +43,6 @@ goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -203,15 +202,15 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.coordinateToPixelMatrix_ = goog.vec.Mat4.createNumber();
+  this.coordinateToPixelTransform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.pixelToCoordinateMatrix_ = goog.vec.Mat4.createNumber();
+  this.pixelToCoordinateTransform_ = ol.transform.create();
 
   /**
    * @private
@@ -764,8 +763,7 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (!frameState) {
     return null;
   } else {
-    var vec2 = pixel.slice();
-    return ol.vec.Mat4.multVec2(frameState.pixelToCoordinateMatrix, vec2, vec2);
+    return ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
   }
 };
 
@@ -853,8 +851,8 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (!frameState) {
     return null;
   } else {
-    var vec2 = coordinate.slice(0, 2);
-    return ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix, vec2, vec2);
+    return ol.transform.apply(frameState.coordinateToPixelTransform,
+        coordinate.slice(0, 2));
   }
 };
 
@@ -1298,7 +1296,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     frameState = /** @type {olx.FrameState} */ ({
       animate: false,
       attributions: {},
-      coordinateToPixelMatrix: this.coordinateToPixelMatrix_,
+      coordinateToPixelTransform: this.coordinateToPixelTransform_,
       extent: extent,
       focus: !this.focus_ ? viewState.center : this.focus_,
       index: this.frameIndex_++,
@@ -1306,7 +1304,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       layerStatesArray: layerStatesArray,
       logos: ol.object.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
-      pixelToCoordinateMatrix: this.pixelToCoordinateMatrix_,
+      pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],
       size: size,
       skippedFeatureUids: this.skippedFeatureUids_,

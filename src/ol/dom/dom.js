@@ -2,8 +2,15 @@ goog.provide('ol.dom');
 
 goog.require('goog.asserts');
 goog.require('goog.userAgent');
-goog.require('goog.vec.Mat4');
 goog.require('ol');
+goog.require('ol.vec.Mat4');
+
+
+/**
+ * @type {Array.<number>}
+ * @private
+ */
+ol.dom.tmpMat4_ = ol.vec.Mat4.create();
 
 
 /**
@@ -127,7 +134,7 @@ ol.dom.setTransform = function(element, value) {
 
 /**
  * @param {!Element} element Element.
- * @param {goog.vec.Mat4.Number} transform Matrix.
+ * @param {ol.Transform} transform Matrix.
  * @param {number=} opt_precision Precision.
  */
 ol.dom.transformElement2D = function(element, transform, opt_precision) {
@@ -136,45 +143,35 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
   var i;
   if (ol.dom.canUseCssTransform3D()) {
     var value3D;
-
+    var transform3D = ol.vec.Mat4.fromTransform(ol.dom.tmpMat4_, transform);
     if (opt_precision !== undefined) {
       /** @type {Array.<string>} */
       var strings3D = new Array(16);
       for (i = 0; i < 16; ++i) {
-        strings3D[i] = transform[i].toFixed(opt_precision);
+        strings3D[i] = transform3D[i].toFixed(opt_precision);
       }
       value3D = strings3D.join(',');
     } else {
-      value3D = transform.join(',');
+      value3D = transform3D.join(',');
     }
     ol.dom.setTransform(element, 'matrix3d(' + value3D + ')');
   } else if (ol.dom.canUseCssTransform()) {
-    /** @type {Array.<number>} */
-    var transform2D = [
-      goog.vec.Mat4.getElement(transform, 0, 0),
-      goog.vec.Mat4.getElement(transform, 1, 0),
-      goog.vec.Mat4.getElement(transform, 0, 1),
-      goog.vec.Mat4.getElement(transform, 1, 1),
-      goog.vec.Mat4.getElement(transform, 0, 3),
-      goog.vec.Mat4.getElement(transform, 1, 3)
-    ];
+    /** @type {string} */
     var value2D;
     if (opt_precision !== undefined) {
       /** @type {Array.<string>} */
       var strings2D = new Array(6);
       for (i = 0; i < 6; ++i) {
-        strings2D[i] = transform2D[i].toFixed(opt_precision);
+        strings2D[i] = transform[i].toFixed(opt_precision);
       }
       value2D = strings2D.join(',');
     } else {
-      value2D = transform2D.join(',');
+      value2D = transform.join(',');
     }
     ol.dom.setTransform(element, 'matrix(' + value2D + ')');
   } else {
-    element.style.left =
-        Math.round(goog.vec.Mat4.getElement(transform, 0, 3)) + 'px';
-    element.style.top =
-        Math.round(goog.vec.Mat4.getElement(transform, 1, 3)) + 'px';
+    element.style.left = Math.round(transform[4]) + 'px';
+    element.style.top = Math.round(transform[5]) + 'px';
 
     // TODO: Add scaling here. This isn't quite as simple as multiplying
     // width/height, because that only changes the container size, not the
