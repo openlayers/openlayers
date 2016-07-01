@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.TileWMS');
 
 var startDate = new Date(Date.parse('2012-01-01T19:00:00Z'));
@@ -10,7 +10,7 @@ var animationId = null;
 
 var layers = [
   new ol.layer.Tile({
-    source: new ol.source.MapQuest({layer: 'sat'})
+    source: new ol.source.OSM()
   }),
   new ol.layer.Tile({
     extent: [-13884991, 2870341, -7455066, 6338219],

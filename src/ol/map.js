@@ -115,14 +115,14 @@ ol.MapProperty = {
  *       }),
  *       layers: [
  *         new ol.layer.Tile({
- *           source: new ol.source.MapQuest({layer: 'osm'})
+ *           source: new ol.source.OSM()
  *         })
  *       ],
  *       target: 'map'
  *     });
  *
  * The above snippet creates a map using a {@link ol.layer.Tile} to display
- * {@link ol.source.MapQuest} OSM data and render it to a DOM element with the
+ * {@link ol.source.OSM} OSM data and render it to a DOM element with the
  * id `map`.
  *
  * The constructor places a viewport container (with CSS class name

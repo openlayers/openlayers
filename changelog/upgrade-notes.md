@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### `ol.source.MapQuest` removal
+
+Because of changes at MapQuest (see: https://lists.openstreetmap.org/pipermail/talk/2016-June/076106.html) we had to remove the MapQuest source for now (see https://github.com/openlayers/ol3/issues/5484 for details).
+
 #### `ol.interaction.ModifyEvent` changes
 
 The event object previously had a `mapBrowserPointerEvent` property, which has been renamed to `mapBrowserEvent`.

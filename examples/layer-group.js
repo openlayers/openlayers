@@ -3,13 +3,13 @@ goog.require('ol.View');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.TileJSON');
 
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuest({layer: 'sat'})
+      source: new ol.source.OSM()
     }), new ol.layer.Group({
       layers: [
         new ol.layer.Tile({
