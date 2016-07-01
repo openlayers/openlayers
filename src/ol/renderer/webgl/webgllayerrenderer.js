@@ -208,7 +208,7 @@ ol.renderer.webgl.Layer.prototype.dispatchComposeEvent_ = function(type, context
     var render = new ol.render.webgl.Immediate(
         context, center, resolution, rotation, size, extent, pixelRatio);
     var composeEvent = new ol.render.Event(
-        type, layer, render, frameState, null, context);
+        type, render, frameState, null, context);
     layer.dispatchEvent(composeEvent);
   }
 };

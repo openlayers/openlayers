@@ -121,7 +121,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
   }
   this.dispatchEvent(
       new ol.interaction.DragAndDropEvent(
-          ol.interaction.DragAndDropEventType.ADD_FEATURES, this, file,
+          ol.interaction.DragAndDropEventType.ADD_FEATURES, file,
           features, projection));
 };
 
@@ -200,14 +200,13 @@ ol.interaction.DragAndDropEventType = {
  * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
  * @param {ol.interaction.DragAndDropEventType} type Type.
- * @param {Object} target Target.
  * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
-ol.interaction.DragAndDropEvent = function(type, target, file, opt_features, opt_projection) {
+ol.interaction.DragAndDropEvent = function(type, file, opt_features, opt_projection) {
 
-  ol.events.Event.call(this, type, target);
+  ol.events.Event.call(this, type);
 
   /**
    * The features parsed from dropped data.
