@@ -26,7 +26,7 @@ ol.structs.RBush = function(opt_maxEntries) {
    * A mapping between the objects added to this rbush wrapper
    * and the objects that are actually added to the internal rbush.
    * @private
-   * @type {Object.<number, ol.RBushEntry>}
+   * @type {Object.<number, Object>}
    */
   this.items_ = {};
 
@@ -49,15 +49,13 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('Can not insert value while reading');
   }
-  /** @type {ol.RBushEntry} */
-  var item = {
-    minX: extent[0],
-    minY: extent[1],
-    maxX: extent[2],
-    maxY: extent[3],
-    value: value
-  };
-
+  var item = [
+    extent[0],
+    extent[1],
+    extent[2],
+    extent[3],
+    value
+  ];
   this.rbush_.insert(item);
   // remember the object that was added to the internal rbush
   goog.asserts.assert(!(goog.getUid(value) in this.items_),
@@ -84,14 +82,13 @@ ol.structs.RBush.prototype.load = function(extents, values) {
     var extent = extents[i];
     var value = values[i];
 
-    /** @type {ol.RBushEntry} */
-    var item = {
-      minX: extent[0],
-      minY: extent[1],
-      maxX: extent[2],
-      maxY: extent[3],
-      value: value
-    };
+    var item = [
+      extent[0],
+      extent[1],
+      extent[2],
+      extent[3],
+      value
+    ];
     items[i] = item;
     goog.asserts.assert(!(goog.getUid(value) in this.items_),
         'uid (%s) of value (%s) already exists', goog.getUid(value), value);
@@ -133,8 +130,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
       'uid (%s) of value (%s) does not exist', uid, value);
 
   var item = this.items_[uid];
-  var bbox = [item.minX, item.minY, item.maxX, item.maxY];
-  if (!ol.extent.equals(bbox, extent)) {
+  if (!ol.extent.equals(item.slice(0, 4), extent)) {
     if (goog.DEBUG && this.readers_) {
       throw new Error('Can not update extent while reading');
     }
@@ -151,7 +147,7 @@ ol.structs.RBush.prototype.update = function(extent, value) {
 ol.structs.RBush.prototype.getAll = function() {
   var items = this.rbush_.all();
   return items.map(function(item) {
-    return item.value;
+    return item[4];
   });
 };
 
@@ -162,16 +158,9 @@ ol.structs.RBush.prototype.getAll = function() {
  * @return {Array.<T>} All in extent.
  */
 ol.structs.RBush.prototype.getInExtent = function(extent) {
-  /** @type {ol.RBushEntry} */
-  var bbox = {
-    minX: extent[0],
-    minY: extent[1],
-    maxX: extent[2],
-    maxY: extent[3]
-  };
-  var items = this.rbush_.search(bbox);
+  var items = this.rbush_.search(extent);
   return items.map(function(item) {
-    return item.value;
+    return item[4];
   });
 };
 
@@ -264,6 +253,5 @@ ol.structs.RBush.prototype.clear = function() {
  */
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
-  var data = this.rbush_.data;
-  return [data.minX, data.minY, data.maxX, data.maxY];
+  return this.rbush_.data.bbox;
 };
