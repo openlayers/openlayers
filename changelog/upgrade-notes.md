@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.17.0
+
 #### `ol.source.MapQuest` removal
 
 Because of changes at MapQuest (see: https://lists.openstreetmap.org/pipermail/talk/2016-June/076106.html) we had to remove the MapQuest source for now (see https://github.com/openlayers/ol3/issues/5484 for details).
