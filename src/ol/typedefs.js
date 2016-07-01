@@ -686,3 +686,10 @@ ol.XmlParser;
  * @typedef {function(Node, *, Array.<*>)}
  */
 ol.XmlSerializer;
+
+
+/**
+ * @typedef {{minX: number, minY: number, maxX: number, maxY: number,
+ *            value: (Object|undefined)}}
+ */
+ol.RBushEntry;

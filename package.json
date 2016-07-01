@@ -44,7 +44,7 @@
     "nomnom": "1.8.1",
     "pbf": "2.0.1",
     "pixelworks": "1.1.0",
-    "rbush": "1.4.3",
+    "rbush": "2.0.1",
     "temp": "0.8.3",
     "vector-tile": "1.2.1",
     "walk": "2.3.9"
@@ -86,7 +86,10 @@
     }
   },
   "ext": [
-    "rbush",
+    {
+      "module": "rbush",
+      "browserify": true
+    },
     {
       "module": "pbf",
       "browserify": true
