@@ -89,6 +89,24 @@ ol.control.FullScreen = function(opt_options) {
    */
   this.source_ = options.source;
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.changeType_ = (function() {
+    var body = document.body;
+    if (body.webkitRequestFullscreen) {
+      return 'webkitfullscreenchange';
+    } else if (body.mozRequestFullScreen) {
+      return 'mozfullscreenchange';
+    } else if (body.msRequestFullscreen) {
+      return 'MSFullscreenChange';
+    } else if (body.requestFullscreen) {
+      return 'fullscreenchange';
+    }
+    return undefined;
+  })();
+
 };
 ol.inherits(ol.control.FullScreen, ol.control.Control);
 
@@ -163,7 +181,7 @@ ol.control.FullScreen.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
     this.listenerKeys.push(
-        ol.events.listen(ol.global.document, ol.control.FullScreen.CHANGETYPE,
+        ol.events.listen(ol.global.document, this.changeType_,
           this.handleFullScreenChange_, this)
     );
   }
@@ -236,20 +254,3 @@ ol.control.FullScreen.exitFullScreen = function() {
     document.webkitExitFullscreen();
   }
 };
-
-/**
- * @type {string}
- */
-ol.control.FullScreen.CHANGETYPE = (function() {
-  var body = document.body;
-  if (body.webkitRequestFullscreen) {
-    return 'webkitfullscreenchange';
-  } else if (body.mozRequestFullScreen) {
-    return 'mozfullscreenchange';
-  } else if (body.msRequestFullscreen) {
-    return 'MSFullscreenChange';
-  } else if (body.requestFullscreen) {
-    return 'fullscreenchange';
-  }
-  return undefined;
-})();
