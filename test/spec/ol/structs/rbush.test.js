@@ -362,16 +362,6 @@ describe('ol.structs.RBush', function() {
 
   });
 
-  describe('#getExtent', function() {
-
-    it('gets the extent', function() {
-      var obj = {};
-      rBush.insert([0, 0, 1, 1], obj);
-      expect(rBush.getExtent()).to.eql([0, 0, 1, 1]);
-    });
-
-  });
-
 });
 
 goog.require('ol.structs.RBush');
