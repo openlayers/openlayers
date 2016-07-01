@@ -50,7 +50,6 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   if (node.nodeType == Node.CDATA_SECTION_NODE ||
       node.nodeType == Node.TEXT_NODE) {
     if (normalizeWhitespace) {
-      // FIXME understand why goog.dom.getTextContent_ uses String here
       accumulator.push(String(node.nodeValue).replace(/(\r\n|\r|\n)/g, ''));
     } else {
       accumulator.push(node.nodeValue);
