@@ -1072,7 +1072,7 @@ ol.render.webgl.LineStringReplay = function(tolerance, maxExtent) {
     changed: false
   };
 
-  this.startIndices_ = [0];
+  this.startIndices_ = [];
 
 };
 ol.inherits(ol.render.webgl.LineStringReplay, ol.render.webgl.Replay);
@@ -1316,13 +1316,13 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
   var stride = lineStringGeometry.getStride();
   if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
     if (this.state_.changed) {
-      this.styleIndices_.push(this.indices_.length - 1);
+      this.styleIndices_.push(this.indices_.length);
       this.state_.changed = false;
     }
-    this.drawCoordinates_(
-        flatCoordinates, 0, flatCoordinates.length, stride);
     this.startIndices_.push(this.indices_.length);
     this.startIndicesFeature_.push(feature);
+    this.drawCoordinates_(
+        flatCoordinates, 0, flatCoordinates.length, stride);
   }
 };
 
@@ -1343,10 +1343,10 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
     }
   }
   if (this.indices_.length > indexCount) {
-    this.startIndices_.push(this.indices_.length);
+    this.startIndices_.push(indexCount);
     this.startIndicesFeature_.push(feature);
     if (this.state_.changed) {
-      this.styleIndices_.push(indexCount - 1);
+      this.styleIndices_.push(indexCount);
       this.state_.changed = false;
     }
   }
@@ -1364,6 +1364,13 @@ ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
   // create, bind, and populate the indices buffer
   this.indicesBuffer_ = new ol.webgl.Buffer(this.indices_);
   context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+  this.startIndices_.push(this.indices_.length);
+
+  //Clean up, if there is nothing to draw
+  if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
+    this.styles_.pop();
+  }
 
   this.vertices_ = null;
   this.indices_ = null;
@@ -1462,28 +1469,22 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
     gl.depthFunc(gl.NOTEQUAL);
   }
 
-  var nextStyle;
-  //Initial styling
-  nextStyle = this.styles_[0];
-  this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
-
   if (!goog.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
     goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
-        'number of styles and style indices match');
+        'number of styles and styleIndices match');
 
     //Draw by style groups to minimize drawElements() calls.
-    var i, ii, end;
-
-    for (i = 1, ii = this.styleIndices_.length; i < ii; ++i) {
-      end = this.styleIndices_[i];
-      this.drawElements_(gl, context, 0, end);
+    var i, start, end, nextStyle;
+    end = this.startIndices_[this.startIndices_.length - 1];
+    for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+      start = this.styleIndices_[i];
       nextStyle = this.styles_[i];
       this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+      this.drawElements_(gl, context, start, end);
+      end = start;
     }
-    end = this.startIndices_[this.startIndices_.length - 1];
-    this.drawElements_(gl, context, 0, end);
   }
   if (!hitDetection) {
     gl.clear(gl.DEPTH_BUFFER_BIT);
@@ -1492,6 +1493,62 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
     gl.depthMask(tmpDepthMask);
     gl.depthFunc(tmpDepthFunc);
   }
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne_ = function(gl, context, skippedFeaturesHash,
+    featureCallback, opt_hitExtent) {
+  goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
+      'number of styles and styleIndices match');
+  goog.asserts.assert(this.startIndices_.length - 1 === this.startIndicesFeature_.length,
+      'number of startIndices and startIndicesFeature match');
+
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+  featureIndex = this.startIndices_.length - 2;
+  end = this.startIndices_[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    groupStart = this.styleIndices_[i];
+
+    while (featureIndex >= 0 &&
+        this.startIndices_[featureIndex] >= groupStart) {
+      start = this.startIndices_[featureIndex];
+      feature = this.startIndicesFeature_[featureIndex];
+      featureUid = goog.getUid(feature).toString();
+
+      if (skippedFeaturesHash[featureUid] === undefined &&
+          feature.getGeometry() &&
+          (opt_hitExtent === undefined || ol.extent.intersects(
+              /** @type {Array<number>} */ (opt_hitExtent),
+              feature.getGeometry().getExtent()))) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.drawElements_(gl, context, start, end);
+
+        var result = featureCallback(feature);
+
+        if (result) {
+          return result;
+        }
+
+      }
+      featureIndex--;
+      end = start;
+    }
+  }
+  return undefined;
 };
 
 
