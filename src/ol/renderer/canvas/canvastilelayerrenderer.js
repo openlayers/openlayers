@@ -286,14 +286,10 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
     var bottomRight = ol.extent.getBottomRight(extent);
     var bottomLeft = ol.extent.getBottomLeft(extent);
 
-    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
-        topLeft, topLeft);
-    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
-        topRight, topRight);
-    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
-        bottomRight, bottomRight);
-    ol.vec.Mat4.multVec2(frameState.coordinateToPixelMatrix,
-        bottomLeft, bottomLeft);
+    ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
+    ol.transform.apply(frameState.coordinateToPixelTransform, topRight);
+    ol.transform.apply(frameState.coordinateToPixelTransform, bottomRight);
+    ol.transform.apply(frameState.coordinateToPixelTransform, bottomLeft);
 
     var ox = drawOffsetX || 0;
     var oy = drawOffsetY || 0;
