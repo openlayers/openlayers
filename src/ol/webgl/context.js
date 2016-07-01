@@ -94,7 +94,7 @@ ol.webgl.Context = function(canvas, gl) {
       this.handleWebGLContextRestored, this);
 
 };
-goog.inherits(ol.webgl.Context, ol.Disposable);
+ol.inherits(ol.webgl.Context, ol.Disposable);
 
 
 /**
