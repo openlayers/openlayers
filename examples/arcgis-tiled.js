@@ -1,7 +1,7 @@
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.TileArcGISRest');
 
 var url = 'http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
@@ -9,7 +9,7 @@ var url = 'http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
 
 var layers = [
   new ol.layer.Tile({
-    source: new ol.source.MapQuest({layer: 'sat'})
+    source: new ol.source.OSM()
   }),
   new ol.layer.Tile({
     extent: [-13884991, 2870341, -7455066, 6338219],

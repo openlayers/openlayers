@@ -5,7 +5,7 @@ goog.require('ol.extent');
 goog.require('ol.format.WMTSCapabilities');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.WMTS');
@@ -64,8 +64,8 @@ layers['bng'] = new ol.layer.Tile({
   })
 });
 
-layers['mapquest'] = new ol.layer.Tile({
-  source: new ol.source.MapQuest({layer: 'osm'})
+layers['osm'] = new ol.layer.Tile({
+  source: new ol.source.OSM()
 });
 
 layers['wms4326'] = new ol.layer.Tile({
@@ -146,7 +146,7 @@ layers['states'] = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [
-    layers['mapquest'],
+    layers['osm'],
     layers['bng']
   ],
   renderer: common.getRendererFromQueryString(),
