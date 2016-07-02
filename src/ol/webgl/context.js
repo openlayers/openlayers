@@ -6,6 +6,7 @@ goog.require('ol.Disposable');
 goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.object');
+goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
 
@@ -114,13 +115,13 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    goog.asserts.assert(target == goog.webgl.ARRAY_BUFFER ||
-        target == goog.webgl.ELEMENT_ARRAY_BUFFER,
+    goog.asserts.assert(target == ol.webgl.ARRAY_BUFFER ||
+        target == ol.webgl.ELEMENT_ARRAY_BUFFER,
         'target is supposed to be an ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER');
     var /** @type {ArrayBufferView} */ arrayBuffer;
-    if (target == goog.webgl.ARRAY_BUFFER) {
+    if (target == ol.webgl.ARRAY_BUFFER) {
       arrayBuffer = new Float32Array(arr);
-    } else if (target == goog.webgl.ELEMENT_ARRAY_BUFFER) {
+    } else if (target == ol.webgl.ELEMENT_ARRAY_BUFFER) {
       arrayBuffer = this.hasOESElementIndexUint ?
           new Uint32Array(arr) : new Uint16Array(arr);
     } else {
@@ -222,7 +223,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
     goog.asserts.assert(
-        gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) ||
+        gl.getShaderParameter(shader, ol.webgl.COMPILE_STATUS) ||
         gl.isContextLost(),
         gl.getShaderInfoLog(shader) || 'illegal state, shader not compiled or context lost');
     this.shaderCache_[shaderKey] = shader;
@@ -252,7 +253,7 @@ ol.webgl.Context.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
     goog.asserts.assert(
-        gl.getProgramParameter(program, goog.webgl.LINK_STATUS) ||
+        gl.getProgramParameter(program, ol.webgl.LINK_STATUS) ||
         gl.isContextLost(),
         gl.getProgramInfoLog(program) || 'illegal state, shader not linked or context lost');
     this.programCache_[programKey] = program;
@@ -343,11 +344,11 @@ ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
 
   if (opt_wrapS !== undefined) {
     gl.texParameteri(
-        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S, opt_wrapS);
+        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
   }
   if (opt_wrapT !== undefined) {
     gl.texParameteri(
-        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T, opt_wrapT);
+        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, opt_wrapT);
   }
 
   return texture;

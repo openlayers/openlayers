@@ -1,16 +1,16 @@
 goog.provide('ol.webgl.Buffer');
 
-goog.require('goog.webgl');
 goog.require('ol');
+goog.require('ol.webgl');
 
 
 /**
  * @enum {number}
  */
 ol.webgl.BufferUsage = {
-  STATIC_DRAW: goog.webgl.STATIC_DRAW,
-  STREAM_DRAW: goog.webgl.STREAM_DRAW,
-  DYNAMIC_DRAW: goog.webgl.DYNAMIC_DRAW
+  STATIC_DRAW: ol.webgl.STATIC_DRAW,
+  STREAM_DRAW: ol.webgl.STREAM_DRAW,
+  DYNAMIC_DRAW: ol.webgl.DYNAMIC_DRAW
 };
 
 
