@@ -781,7 +781,7 @@ ol.View.createRotationConstraint_ = function(options) {
       return ol.RotationConstraint.createSnapToZero();
     } else if (constrainRotation === false) {
       return ol.RotationConstraint.none;
-    } else if (goog.isNumber(constrainRotation)) {
+    } else if (typeof constrainRotation === 'number') {
       return ol.RotationConstraint.createSnapToN(constrainRotation);
     } else {
       goog.asserts.fail(

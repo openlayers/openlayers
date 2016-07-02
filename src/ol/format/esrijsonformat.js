@@ -57,7 +57,7 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
     return null;
   }
   var type;
-  if (goog.isNumber(object.x) && goog.isNumber(object.y)) {
+  if (typeof object.x === 'number' && typeof object.y === 'number') {
     type = ol.geom.GeometryType.POINT;
   } else if (object.points) {
     type = ol.geom.GeometryType.MULTI_POINT;
@@ -145,8 +145,8 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
  * @return {ol.geom.Geometry} Point.
  */
 ol.format.EsriJSON.readPointGeometry_ = function(object) {
-  goog.asserts.assert(goog.isNumber(object.x), 'object.x should be number');
-  goog.asserts.assert(goog.isNumber(object.y), 'object.y should be number');
+  goog.asserts.assert(typeof object.x === 'number', 'object.x should be number');
+  goog.asserts.assert(typeof object.y === 'number', 'object.y should be number');
   var point;
   if (object.m !== undefined && object.z !== undefined) {
     point = new ol.geom.Point([object.x, object.y, object.z, object.m],
@@ -493,7 +493,7 @@ ol.format.EsriJSON.prototype.readFeatureFromObject = function(
   if (opt_options && opt_options.idField &&
       esriJSONFeature.attributes[opt_options.idField]) {
     goog.asserts.assert(
-        goog.isNumber(esriJSONFeature.attributes[opt_options.idField]),
+        typeof esriJSONFeature.attributes[opt_options.idField] === 'number',
         'objectIdFieldName value should be a number');
     feature.setId(/** @type {number} */(
         esriJSONFeature.attributes[opt_options.idField]));
