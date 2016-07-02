@@ -3,7 +3,6 @@
 goog.provide('ol.renderer.webgl.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.webgl');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -154,7 +153,7 @@ ol.renderer.webgl.Map = function(container, map) {
           var tileSize = /** @type {ol.Size} */ (element[3]);
           var tileGutter = /** @type {number} */ (element[4]);
           this.bindTileTexture(
-              tile, tileSize, tileGutter, goog.webgl.LINEAR, goog.webgl.LINEAR);
+              tile, tileSize, tileGutter, ol.webgl.LINEAR, ol.webgl.LINEAR);
         }
         return false;
       }.bind(this);
@@ -186,20 +185,20 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
     var textureCacheEntry = this.textureCache_.get(tileKey);
     goog.asserts.assert(textureCacheEntry,
         'a texture cache entry exists for key %s', tileKey);
-    gl.bindTexture(goog.webgl.TEXTURE_2D, textureCacheEntry.texture);
+    gl.bindTexture(ol.webgl.TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(
-          goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, magFilter);
+          ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
       textureCacheEntry.magFilter = magFilter;
     }
     if (textureCacheEntry.minFilter != minFilter) {
       gl.texParameteri(
-          goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER, minFilter);
+          ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
       textureCacheEntry.minFilter = minFilter;
     }
   } else {
     var texture = gl.createTexture();
-    gl.bindTexture(goog.webgl.TEXTURE_2D, texture);
+    gl.bindTexture(ol.webgl.TEXTURE_2D, texture);
     if (tileGutter > 0) {
       var clipTileCanvas = this.clipTileContext_.canvas;
       var clipTileContext = this.clipTileContext_;
@@ -214,22 +213,22 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
       }
       clipTileContext.drawImage(tile.getImage(), tileGutter, tileGutter,
           tileSize[0], tileSize[1], 0, 0, tileSize[0], tileSize[1]);
-      gl.texImage2D(goog.webgl.TEXTURE_2D, 0,
-          goog.webgl.RGBA, goog.webgl.RGBA,
-          goog.webgl.UNSIGNED_BYTE, clipTileCanvas);
+      gl.texImage2D(ol.webgl.TEXTURE_2D, 0,
+          ol.webgl.RGBA, ol.webgl.RGBA,
+          ol.webgl.UNSIGNED_BYTE, clipTileCanvas);
     } else {
-      gl.texImage2D(goog.webgl.TEXTURE_2D, 0,
-          goog.webgl.RGBA, goog.webgl.RGBA,
-          goog.webgl.UNSIGNED_BYTE, tile.getImage());
+      gl.texImage2D(ol.webgl.TEXTURE_2D, 0,
+          ol.webgl.RGBA, ol.webgl.RGBA,
+          ol.webgl.UNSIGNED_BYTE, tile.getImage());
     }
     gl.texParameteri(
-        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MAG_FILTER, magFilter);
+        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MAG_FILTER, magFilter);
     gl.texParameteri(
-        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_MIN_FILTER, minFilter);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S,
-        goog.webgl.CLAMP_TO_EDGE);
-    gl.texParameteri(goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T,
-        goog.webgl.CLAMP_TO_EDGE);
+        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_MIN_FILTER, minFilter);
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S,
+        ol.webgl.CLAMP_TO_EDGE);
+    gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T,
+        ol.webgl.CLAMP_TO_EDGE);
     this.textureCache_.set(tileKey, {
       texture: texture,
       magFilter: magFilter,
@@ -394,14 +393,14 @@ ol.renderer.webgl.Map.prototype.handleWebGLContextRestored = function() {
  */
 ol.renderer.webgl.Map.prototype.initializeGL_ = function() {
   var gl = this.gl_;
-  gl.activeTexture(goog.webgl.TEXTURE0);
+  gl.activeTexture(ol.webgl.TEXTURE0);
   gl.blendFuncSeparate(
-      goog.webgl.SRC_ALPHA, goog.webgl.ONE_MINUS_SRC_ALPHA,
-      goog.webgl.ONE, goog.webgl.ONE_MINUS_SRC_ALPHA);
-  gl.disable(goog.webgl.CULL_FACE);
-  gl.disable(goog.webgl.DEPTH_TEST);
-  gl.disable(goog.webgl.SCISSOR_TEST);
-  gl.disable(goog.webgl.STENCIL_TEST);
+      ol.webgl.SRC_ALPHA, ol.webgl.ONE_MINUS_SRC_ALPHA,
+      ol.webgl.ONE, ol.webgl.ONE_MINUS_SRC_ALPHA);
+  gl.disable(ol.webgl.CULL_FACE);
+  gl.disable(ol.webgl.DEPTH_TEST);
+  gl.disable(ol.webgl.SCISSOR_TEST);
+  gl.disable(ol.webgl.STENCIL_TEST);
 };
 
 
@@ -468,11 +467,11 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     this.canvas_.height = height;
   }
 
-  gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, null);
+  gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, null);
 
   gl.clearColor(0, 0, 0, 0);
-  gl.clear(goog.webgl.COLOR_BUFFER_BIT);
-  gl.enable(goog.webgl.BLEND);
+  gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+  gl.enable(ol.webgl.BLEND);
   gl.viewport(0, 0, this.canvas_.width, this.canvas_.height);
 
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {

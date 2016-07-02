@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.webgl.Layer');
 
-goog.require('goog.webgl');
 goog.require('ol.layer.Layer');
 goog.require('ol.transform');
 goog.require('ol.render.Event');
@@ -12,6 +11,7 @@ goog.require('ol.renderer.webgl.map.shader.Default.Locations');
 goog.require('ol.renderer.webgl.map.shader.DefaultFragment');
 goog.require('ol.renderer.webgl.map.shader.DefaultVertex');
 goog.require('ol.vec.Mat4');
+goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
@@ -120,16 +120,16 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebu
         gl, framebufferDimension, framebufferDimension);
 
     var framebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, framebuffer);
-    gl.framebufferTexture2D(goog.webgl.FRAMEBUFFER,
-        goog.webgl.COLOR_ATTACHMENT0, goog.webgl.TEXTURE_2D, texture, 0);
+    gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, framebuffer);
+    gl.framebufferTexture2D(ol.webgl.FRAMEBUFFER,
+        ol.webgl.COLOR_ATTACHMENT0, ol.webgl.TEXTURE_2D, texture, 0);
 
     this.texture = texture;
     this.framebuffer = framebuffer;
     this.framebufferDimension = framebufferDimension;
 
   } else {
-    gl.bindFramebuffer(goog.webgl.FRAMEBUFFER, this.framebuffer);
+    gl.bindFramebuffer(ol.webgl.FRAMEBUFFER, this.framebuffer);
   }
 
 };
@@ -145,7 +145,7 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
   this.dispatchComposeEvent_(
       ol.render.EventType.PRECOMPOSE, context, frameState);
 
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.arrayBuffer_);
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
   var gl = context.getGL();
 
@@ -167,10 +167,10 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
   if (context.useProgram(program)) {
     gl.enableVertexAttribArray(locations.a_position);
     gl.vertexAttribPointer(
-        locations.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
+        locations.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(locations.a_texCoord);
     gl.vertexAttribPointer(
-        locations.a_texCoord, 2, goog.webgl.FLOAT, false, 16, 8);
+        locations.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
     gl.uniform1i(locations.u_texture, 0);
   }
 
@@ -179,8 +179,8 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
       ol.vec.Mat4.fromTransform(this.tmpMat4_, this.getProjectionMatrix()));
   gl.uniform1f(locations.u_opacity, layerState.opacity);
-  gl.bindTexture(goog.webgl.TEXTURE_2D, this.getTexture());
-  gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
+  gl.bindTexture(ol.webgl.TEXTURE_2D, this.getTexture());
+  gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
 
   this.dispatchComposeEvent_(
       ol.render.EventType.POSTCOMPOSE, context, frameState);

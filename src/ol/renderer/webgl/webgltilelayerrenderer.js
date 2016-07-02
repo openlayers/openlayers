@@ -5,7 +5,6 @@ goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.transform');
-goog.require('goog.webgl');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.array');
@@ -17,6 +16,7 @@ goog.require('ol.renderer.webgl.tilelayer.shader.Fragment');
 goog.require('ol.renderer.webgl.tilelayer.shader.Locations');
 goog.require('ol.renderer.webgl.tilelayer.shader.Vertex');
 goog.require('ol.size');
+goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 
 
@@ -209,8 +209,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
     gl.viewport(0, 0, framebufferDimension, framebufferDimension);
 
     gl.clearColor(0, 0, 0, 0);
-    gl.clear(goog.webgl.COLOR_BUFFER_BIT);
-    gl.disable(goog.webgl.BLEND);
+    gl.clear(ol.webgl.COLOR_BUFFER_BIT);
+    gl.disable(ol.webgl.BLEND);
 
     var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
     context.useProgram(program);
@@ -219,13 +219,13 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
           new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
     }
 
-    context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
+    context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
     gl.enableVertexAttribArray(this.locations_.a_position);
     gl.vertexAttribPointer(
-        this.locations_.a_position, 2, goog.webgl.FLOAT, false, 16, 0);
+        this.locations_.a_position, 2, ol.webgl.FLOAT, false, 16, 0);
     gl.enableVertexAttribArray(this.locations_.a_texCoord);
     gl.vertexAttribPointer(
-        this.locations_.a_texCoord, 2, goog.webgl.FLOAT, false, 16, 8);
+        this.locations_.a_texCoord, 2, ol.webgl.FLOAT, false, 16, 8);
     gl.uniform1i(this.locations_.u_texture, 0);
 
     /**
@@ -309,8 +309,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
             framebufferExtentDimension - 1;
         gl.uniform4fv(this.locations_.u_tileOffset, u_tileOffset);
         mapRenderer.bindTileTexture(tile, tilePixelSize,
-            tileGutter * pixelRatio, goog.webgl.LINEAR, goog.webgl.LINEAR);
-        gl.drawArrays(goog.webgl.TRIANGLE_STRIP, 0, 4);
+            tileGutter * pixelRatio, ol.webgl.LINEAR, ol.webgl.LINEAR);
+        gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
       }
     }
 

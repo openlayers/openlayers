@@ -2,7 +2,6 @@ goog.provide('ol.renderer.webgl.ImageLayer');
 
 goog.require('goog.asserts');
 goog.require('ol.transform');
-goog.require('goog.webgl');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -12,6 +11,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.proj');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.source.ImageVector');
+goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
 
 
@@ -63,7 +63,7 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
   var gl = this.mapRenderer.getGL();
 
   return ol.webgl.Context.createTexture(
-      gl, imageElement, goog.webgl.CLAMP_TO_EDGE, goog.webgl.CLAMP_TO_EDGE);
+      gl, imageElement, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
 };
 
 
