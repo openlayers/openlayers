@@ -71,19 +71,19 @@ ol.render.webgl.Replay = function(tolerance, maxExtent) {
   this.origin_ = ol.extent.getCenter(maxExtent);
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    * @private
    */
   this.projectionMatrix_ = ol.transform.create();
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    * @private
    */
   this.offsetRotateMatrix_ = ol.transform.create();
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    * @private
    */
   this.offsetScaleMatrix_ = ol.transform.create();
@@ -133,7 +133,7 @@ ol.render.webgl.Replay = function(tolerance, maxExtent) {
   this.verticesBuffer_ = null;
 
 };
-goog.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
+ol.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
 
 
 ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = goog.abstractMethod;
@@ -225,12 +225,12 @@ ol.render.webgl.Replay.prototype.replay = function(context,
   // bind the vertices buffer
   goog.asserts.assert(this.verticesBuffer_,
       'verticesBuffer must not be null');
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // bind the indices buffer
   goog.asserts.assert(this.indicesBuffer_,
       'indicesBuffer must not be null');
-  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   var locations = this.setUpProgram_(gl, context, size, pixelRatio);
 
@@ -1359,11 +1359,11 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
 ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // create, bind, and populate the indices buffer
   this.indicesBuffer_ = new ol.webgl.Buffer(this.indices_);
-  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   this.startIndices_.push(this.indices_.length);
 
@@ -1386,8 +1386,7 @@ ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function
   // be used by other LineStringReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
   // object.
-  goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
-      'verticesBuffer must not be null');
+  goog.asserts.assert(this.verticesBuffer_, 'verticesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer_;
   var indicesBuffer = this.indicesBuffer_;
   return function() {
@@ -1416,7 +1415,7 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
 
   // get the locations
   var locations;
-  if (goog.isNull(this.defaultLocations_)) {
+  if (!this.defaultLocations_) {
     locations = new ol.render.webgl.linestringreplay.shader.Default
       .Locations(gl, program);
     this.defaultLocations_ = locations;
@@ -1428,19 +1427,19 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram_ = function(gl, context,
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_lastPos);
-  gl.vertexAttribPointer(locations.a_lastPos, 2, goog.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_lastPos, 2, ol.webgl.FLOAT,
       false, 28, 0);
 
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT,
       false, 28, 8);
 
   gl.enableVertexAttribArray(locations.a_nextPos);
-  gl.vertexAttribPointer(locations.a_nextPos, 2, goog.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_nextPos, 2, ol.webgl.FLOAT,
       false, 28, 16);
 
   gl.enableVertexAttribArray(locations.a_direction);
-  gl.vertexAttribPointer(locations.a_direction, 1, goog.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_direction, 1, ol.webgl.FLOAT,
       false, 28, 24);
 
   // Enable renderer specific uniforms. If clauses needed, as otherwise the compiler complains.
@@ -1469,7 +1468,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
     gl.depthFunc(gl.NOTEQUAL);
   }
 
-  if (!goog.object.isEmpty(skippedFeaturesHash)) {
+  if (!ol.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
     goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
@@ -1654,10 +1653,10 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
   this.defaultLocations_ = null;
 
   /**
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    * @private
    */
-  this.projectionMatrix_ = goog.vec.Mat4.createNumberIdentity();
+  this.projectionMatrix_ = ol.transform.create();
 
   /**
    * @type {Array.<number>}
@@ -1765,7 +1764,7 @@ ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, 
 ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
   // create, bind, and populate the vertices buffer
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   var indices = this.indices_;
   var bits = context.hasOESElementIndexUint ? 32 : 16;
@@ -1775,7 +1774,7 @@ ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
 
   // create, bind, and populate the indices buffer
   this.indicesBuffer_ = new ol.webgl.Buffer(indices);
-  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
   this.lineStringReplay_.finish(context);
 };
 
@@ -1833,12 +1832,12 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(co
   // bind the vertices buffer
   goog.asserts.assert(!goog.isNull(this.verticesBuffer_),
       'verticesBuffer must not be null');
-  context.bindBuffer(goog.webgl.ARRAY_BUFFER, this.verticesBuffer_);
+  context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // bind the indices buffer
   goog.asserts.assert(!goog.isNull(this.indicesBuffer_),
       'indicesBuffer must not be null');
-  context.bindBuffer(goog.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+  context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   // get the program
   var fragmentShader, vertexShader;
@@ -1862,11 +1861,11 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(co
 
   // enable the vertex attrib arrays
   gl.enableVertexAttribArray(locations.a_position);
-  gl.vertexAttribPointer(locations.a_position, 2, goog.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT,
       false, 24, 0);
 
   gl.enableVertexAttribArray(locations.a_color);
-  gl.vertexAttribPointer(locations.a_color, 4, goog.webgl.FLOAT,
+  gl.vertexAttribPointer(locations.a_color, 4, ol.webgl.FLOAT,
       false, 24, 8);
 
   // set the "uniform" values
@@ -1910,14 +1909,14 @@ ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(co
  */
 ol.render.webgl.PolygonReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
   var elementType = context.hasOESElementIndexUint ?
-      goog.webgl.UNSIGNED_INT : goog.webgl.UNSIGNED_SHORT;
+      ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
   //  var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
-  if (!goog.object.isEmpty(skippedFeaturesHash)) {
+  if (!ol.object.isEmpty(skippedFeaturesHash)) {
     // TODO: draw by blocks to skip features
   } else {
     var numItems = this.indices_.length;
-    gl.drawElements(goog.webgl.TRIANGLES, numItems, elementType, 0);
+    gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, 0);
   }
 };
 
