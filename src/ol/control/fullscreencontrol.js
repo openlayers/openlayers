@@ -89,12 +89,6 @@ ol.control.FullScreen = function(opt_options) {
    */
   this.source_ = options.source;
 
-  /**
-   * @private
-   * @type {string|undefined}
-   */
-  this.changeType_ = undefined;
-
 };
 ol.inherits(ol.control.FullScreen, ol.control.Control);
 
@@ -168,24 +162,9 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
 ol.control.FullScreen.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
-    if (!this.changeType_) {
-      this.changeType_ = (function() {
-        var body = document.body;
-        if (body.webkitRequestFullscreen) {
-          return 'webkitfullscreenchange';
-        } else if (body.mozRequestFullScreen) {
-          return 'mozfullscreenchange';
-        } else if (body.msRequestFullscreen) {
-          return 'MSFullscreenChange';
-        } else if (body.requestFullscreen) {
-          return 'fullscreenchange';
-        }
-        return undefined;
-      })();
-    }
-    this.listenerKeys.push(
-        ol.events.listen(ol.global.document, this.changeType_,
-          this.handleFullScreenChange_, this)
+    this.listenerKeys.push(ol.events.listen(ol.global.document,
+        ol.control.FullScreen.getChangeType_(),
+        this.handleFullScreenChange_, this)
     );
   }
 };
@@ -257,3 +236,26 @@ ol.control.FullScreen.exitFullScreen = function() {
     document.webkitExitFullscreen();
   }
 };
+
+/**
+ * @return {string} Change type.
+ * @private
+ */
+ol.control.FullScreen.getChangeType_ = (function() {
+  var changeType;
+  return function() {
+    if (!changeType) {
+      var body = document.body;
+      if (body.webkitRequestFullscreen) {
+        changeType = 'webkitfullscreenchange';
+      } else if (body.mozRequestFullScreen) {
+        changeType = 'mozfullscreenchange';
+      } else if (body.msRequestFullscreen) {
+        changeType = 'MSFullscreenChange';
+      } else if (body.requestFullscreen) {
+        changeType = 'fullscreenchange';
+      }
+    }
+    return changeType;
+  };
+})();
