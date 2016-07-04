@@ -1624,8 +1624,12 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
   var strokeStyleColor = ol.color.asArray(strokeStyle.getColor()).map(function(c, i) {
     return i != 3 ? c / 255 : c;
   }) || ol.render.webgl.defaultStrokeStyle;
-  var strokeStyleWidth = strokeStyle.getWidth() || ol.render.webgl.defaultLineWidth;
-  var strokeStyleMiterLimit = strokeStyle.getMiterLimit() || ol.render.webgl.defaultMiterLimit;
+  var strokeStyleWidth = strokeStyle.getWidth();
+  strokeStyleWidth = strokeStyleWidth !== undefined ?
+      strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+  var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
+  strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
+      strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
   if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
       this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
     this.state_.changed = true;
