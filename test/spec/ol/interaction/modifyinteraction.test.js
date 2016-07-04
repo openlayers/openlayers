@@ -280,8 +280,9 @@ describe('ol.interaction.Modify', function() {
       simulateEvent('pointerdown', 40, 0, false, 0);
       simulateEvent('pointerup', 40, 0, false, 0);
 
-      modify.removePoint();
+      var removed = modify.removePoint();
 
+      expect(removed).to.be(true);
       expect(first.getGeometry().getRevision()).to.equal(firstRevision + 1);
       expect(first.getGeometry().getCoordinates()).to.have.length(4);
       expect(first.getGeometry().getCoordinates()[3][0]).to.equal(40);
