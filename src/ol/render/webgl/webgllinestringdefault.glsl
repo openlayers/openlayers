@@ -22,6 +22,7 @@ uniform float u_miterLimit;
 void main(void) {
   bool degenerate = false;
   v_halfWidth = u_lineWidth / 2.0;
+  float miterLimit = u_miterLimit + u_lineWidth;
   vec2 offset;
   v_round = 0.0;
   float direction = a_direction / abs(a_direction);
@@ -45,7 +46,7 @@ void main(void) {
       offset = normal * direction * miterLength;
       if (mod(a_direction, 2.0) == 0.0) {
         v_round = 1.0;
-      } else if (miterLength > u_miterLimit) {
+      } else if (miterLength > miterLimit) {
         offset = tmpNormal * direction * v_halfWidth;
       }
     } else {
