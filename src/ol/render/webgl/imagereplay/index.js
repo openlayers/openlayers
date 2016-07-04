@@ -1469,7 +1469,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
   }
 
   if (!ol.object.isEmpty(skippedFeaturesHash)) {
-    // TODO: draw by blocks to skip features
+    this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
         'number of styles and styleIndices match');
@@ -1491,6 +1491,46 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay_ = function(gl, context, s
     //Restore GL parameters.
     gl.depthMask(tmpDepthMask);
     gl.depthFunc(tmpDepthFunc);
+  }
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ */
+ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+  goog.asserts.assert(this.startIndices_.length - 1 === this.startIndicesFeature_.length,
+      'number of startIndices and startIndicesFeature match');
+
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+  featureIndex = this.startIndices_.length - 2;
+  end = start = this.startIndices_[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
+    groupStart = this.styleIndices_[i];
+
+    while (featureIndex >= 0 &&
+        this.startIndices_[featureIndex] >= groupStart) {
+      featureStart = this.startIndices_[featureIndex];
+      feature = this.startIndicesFeature_[featureIndex];
+      featureUid = goog.getUid(feature).toString();
+
+      if (skippedFeaturesHash[featureUid]) {
+        if (start !== end) {
+          this.drawElements_(gl, context, start, end);
+        }
+        end = featureStart;
+      }
+      featureIndex--;
+      start = featureStart;
+    }
+    if (start !== end) {
+      this.drawElements_(gl, context, start, end);
+    }
   }
 };
 
