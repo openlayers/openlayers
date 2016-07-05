@@ -909,8 +909,9 @@ ol.interaction.Modify.prototype.removePoint = function() {
 ol.interaction.Modify.prototype.removeVertex_ = function() {
   var dragSegments = this.dragSegments_;
   var segmentsByFeature = {};
+  var deleted = false;
   var component, coordinates, dragSegment, geometry, i, index, left;
-  var newIndex, right, segmentData, uid, deleted;
+  var newIndex, right, segmentData, uid;
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
@@ -1016,7 +1017,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
     }
 
   }
-  return true;
+  return deleted;
 };
 
 
