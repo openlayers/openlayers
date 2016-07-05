@@ -1150,7 +1150,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         numVertices = this.addVertices_([0, 0], p1, p2,
             -lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
 
-        lastIndex = n + 3;
+        lastIndex = numVertices / 7 - 1;
 
         continue;
       }
