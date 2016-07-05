@@ -276,7 +276,7 @@ ol.renderer.webgl.Map.prototype.dispatchComposeEvent_ = function(type, frameStat
 
     var vectorContext = new ol.render.webgl.Immediate(context,
         center, resolution, rotation, size, extent, pixelRatio);
-    var composeEvent = new ol.render.Event(type, map, vectorContext,
+    var composeEvent = new ol.render.Event(type, vectorContext,
         frameState, null, context);
     map.dispatchEvent(composeEvent);
   }

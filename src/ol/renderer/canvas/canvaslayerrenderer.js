@@ -119,7 +119,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);
-    var composeEvent = new ol.render.Event(type, layer, render, frameState,
+    var composeEvent = new ol.render.Event(type, render, frameState,
         context, null);
     layer.dispatchEvent(composeEvent);
     ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);

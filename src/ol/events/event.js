@@ -14,9 +14,8 @@ goog.provide('ol.events.Event');
  * @constructor
  * @implements {oli.events.Event}
  * @param {string} type Type.
- * @param {Object=} opt_target Target.
  */
-ol.events.Event = function(type, opt_target) {
+ol.events.Event = function(type) {
 
   /**
    * @type {boolean}
@@ -35,7 +34,7 @@ ol.events.Event = function(type, opt_target) {
    * @type {Object}
    * @api stable
    */
-  this.target = opt_target || null;
+  this.target = null;
 
 };
 
