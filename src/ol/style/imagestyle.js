@@ -109,8 +109,8 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
- * Get the anchor point.  The anchor determines the center point for the
- * symbolizer.  Its units are determined by `anchorXUnits` and `anchorYUnits`.
+ * Get the anchor point in pixels. The anchor determines the center point for the
+ * symbolizer.
  * @function
  * @return {Array.<number>} Anchor.
  */
