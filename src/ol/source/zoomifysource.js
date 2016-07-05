@@ -93,6 +93,8 @@ ol.source.Zoomify = function(opt_options) {
   });
 
   var url = options.url;
+  var extension = options.imageExtension !== undefined ?
+      options.imageExtension : 'jpg';
 
   /**
    * @this {ol.source.TileImage}
@@ -114,7 +116,7 @@ ol.source.Zoomify = function(opt_options) {
           tileCountUpToTier[tileCoordZ];
       var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
       return url + 'TileGroup' + tileGroup + '/' +
-          tileCoordZ + '-' + tileCoordX + '-' + tileCoordY + '.jpg';
+          tileCoordZ + '-' + tileCoordX + '-' + tileCoordY + '.' + extension;
     }
   }
 

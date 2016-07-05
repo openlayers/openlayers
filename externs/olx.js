@@ -6389,6 +6389,7 @@ olx.source.CartoDBOptions.prototype.account;
  *     logo: (string|olx.LogoOptions|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     url: !string,
+ *     imageExtension: (string|undefined),
  *     tierSizeCalculation: (string|undefined),
  *     size: ol.Size}}
  */
@@ -6446,6 +6447,13 @@ olx.source.ZoomifyOptions.prototype.reprojectionErrorThreshold;
  * @api stable
  */
 olx.source.ZoomifyOptions.prototype.url;
+
+/**
+ * Image filename extension. Default is `jpg`.
+ * @type {!string}
+ * @api stable
+ */
+olx.source.ZoomifyOptions.prototype.imageExtension;
 
 
 /**
