@@ -103,7 +103,7 @@ describe('ol.rendering.style.LineString', function() {
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/linestring-strokes-webgl.png',
-          3.0, done);
+          14.6, done);
     });
   });
 });
