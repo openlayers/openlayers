@@ -484,23 +484,6 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
 /**
  * @param {Node} node Node.
  * @private
- * @return {string|undefined} Style URL.
- */
-ol.format.KML.readStyleUrl_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false).trim();
-  if (node.baseURI) {
-    var url = new URL(s, node.baseURI);
-    return url.href;
-  } else {
-    return s;
-  }
-
-};
-
-
-/**
- * @param {Node} node Node.
- * @private
  * @return {string} URI.
  */
 ol.format.KML.readURI_ = function(node) {
@@ -1626,7 +1609,7 @@ ol.format.KML.PAIR_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
       'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyleUrl_)
+      'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
     });
 
 
