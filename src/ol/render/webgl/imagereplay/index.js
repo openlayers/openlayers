@@ -1936,9 +1936,10 @@ ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
 ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   goog.asserts.assert(this.state_, 'this.state_ should not be null');
   goog.asserts.assert(fillStyle, 'fillStyle should not be null');
-  var fillStyleColor = ol.color.asArray(fillStyle.getColor());
-  if (Array.isArray(fillStyleColor)) {
-    fillStyleColor = fillStyleColor.map(function(c, i) {
+  var fillStyleColor = fillStyle.getColor();
+  if (!(fillStyleColor instanceof CanvasGradient) &&
+      !(fillStyleColor instanceof CanvasPattern)) {
+    fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
       return i != 3 ? c / 255 : c;
     }) || ol.render.webgl.defaultFillStyle;
   } else {
