@@ -4774,7 +4774,7 @@ olx.source.OSMOptions.prototype.tileLoadFunction;
 
 /**
  * URL template. Must include `{x}`, `{y}` or `{-y}`, and `{z}` placeholders.
- * Default is `//{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
+ * Default is `https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png`.
  * @type {string|undefined}
  * @api stable
  */
