@@ -12,6 +12,10 @@
 - Install with npm: `npm install openlayers`
 - Clone the repo: `git clone git@github.com:openlayers/ol3.git`
 
+## Supported Browsers
+
+OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](http://polyfill.io) for `requestAnimationFrame` and `Element.prototype.classList` are required.
+
 ## Documentation
 
 Check out the [hosted examples](http://openlayers.org/en/master/examples/), the [workshop](http://openlayers.org/workshop/) or [API docs](http://openlayers.org/en/master/apidoc/).
