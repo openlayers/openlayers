@@ -18,7 +18,7 @@ OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.wh
 
 ## Documentation
 
-Check out the [hosted examples](http://openlayers.org/en/latest/examples/), the [workshop](http://openlayers.org/workshop/) or [API docs](http://openlayers.org/en/latest/apidoc/).
+Check out the [hosted examples](http://openlayers.org/en/latest/examples/), the [workshop](http://openlayers.org/workshop/) or the [API documentation](http://openlayers.org/en/latest/apidoc/).
 
 ## Bugs
 
