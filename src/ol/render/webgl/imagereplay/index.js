@@ -11,6 +11,7 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.render.ReplayGroup');
 goog.require('ol.geom.flat.orient');
+goog.require('ol.geom.flat.transform');
 goog.require('ol.geom.flat.topology');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.replay');
@@ -1122,17 +1123,17 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     n = numVertices / 7;
 
     p0 = p1;
-    p1 = p2 || [flatCoordinates[i] - this.origin_[0], flatCoordinates[i + 1] - this.origin_[1]];
+    p1 = p2 || [flatCoordinates[i], flatCoordinates[i + 1]];
     //First vertex.
     if (i === offset) {
-      p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
+      p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
       if (end - offset === stride * 2 && ol.array.equals(p1, p2)) {
         break;
       }
       if (closed) {
         //A closed line! Complete the circle.
-        p0 = [flatCoordinates[end - stride * 2] - this.origin_[0],
-            flatCoordinates[end - stride * 2 + 1] - this.origin_[1]];
+        p0 = [flatCoordinates[end - stride * 2],
+            flatCoordinates[end - stride * 2 + 1]];
 
         startCoords = p2;
       } else {
@@ -1209,7 +1210,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         break;
       }
     } else {
-      p2 = [flatCoordinates[i + stride] - this.origin_[0], flatCoordinates[i + stride + 1] - this.origin_[1]];
+      p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
     }
 
     sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
@@ -1326,6 +1327,8 @@ ol.render.webgl.LineStringReplay.prototype.drawLineString = function(lineStringG
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
   if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+    flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+        stride, -this.origin_[0], -this.origin_[1]);
     if (this.state_.changed) {
       this.styleIndices_.push(this.indices_.length);
       this.state_.changed = false;
@@ -1349,6 +1352,8 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
     var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
     var stride = lineStringGeometries[i].getStride();
     if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
+      flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+          stride, -this.origin_[0], -this.origin_[1]);
       this.drawCoordinates_(
           flatCoordinates, 0, flatCoordinates.length, stride);
     }
@@ -1707,14 +1712,7 @@ ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
  */
 ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(flatCoordinates, holeIndices, stride) {
   // Triangulate the polygon
-  var nextIndex = this.vertices_.length / 2 + 1;
-  flatCoordinates = flatCoordinates.map(function(curr, index) {
-    if (index % 2 === 0) {
-      return curr - this.origin_[0];
-    } else {
-      return curr - this.origin_[1];
-    }
-  }, this);
+  var nextIndex = this.vertices_.length / 2;
   var triangulation = ol.ext.earcut(flatCoordinates, holeIndices, stride).map(function(curr) {
     return curr + nextIndex;
   });
@@ -1739,12 +1737,16 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygon
     var linearRings = polygons[i].getLinearRings();
     if (linearRings.length > 0) {
       var flatCoordinates = linearRings[0].getFlatCoordinates();
+      flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+          stride, -this.origin_[0], -this.origin_[1]);
       this.lineStringReplay_.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
       var holeIndices = [];
       var holeFlatCoords;
       for (j = 1, jj = linearRings.length; j < jj; ++j) {
         holeIndices.push(flatCoordinates.length / 2);
         holeFlatCoords = linearRings[i].getFlatCoordinates();
+        holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
+            stride, -this.origin_[0], -this.origin_[1]);
         ol.array.extend(flatCoordinates, holeFlatCoords);
         this.lineStringReplay_.drawCoordinates_(holeFlatCoords, 0, holeFlatCoords.length, stride);
       }
@@ -1793,12 +1795,16 @@ ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, 
     }
 
     var flatCoordinates = linearRings[0].getFlatCoordinates();
+    flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+        stride, -this.origin_[0], -this.origin_[1]);
     this.lineStringReplay_.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
     var holeIndices = [];
     var i, ii, holeFlatCoords;
     for (i = 1, ii = linearRings.length; i < ii; ++i) {
       holeIndices.push(flatCoordinates.length / 2);
       holeFlatCoords = linearRings[i].getFlatCoordinates();
+      holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
+          stride, -this.origin_[0], -this.origin_[1]);
       ol.array.extend(flatCoordinates, holeFlatCoords);
       this.lineStringReplay_.drawCoordinates_(holeFlatCoords, 0, holeFlatCoords.length, stride);
     }
