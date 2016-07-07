@@ -6848,7 +6848,8 @@ olx.style.RegularShapeOptions.prototype.atlasManager;
  *     lineJoin: (string|undefined),
  *     lineDash: (Array.<number>|undefined),
  *     miterLimit: (number|undefined),
- *     width: (number|undefined)}}
+ *     width: (number|undefined),
+ *     cornerRadius: (number|undefined)}}
  */
 olx.style.StrokeOptions;
 

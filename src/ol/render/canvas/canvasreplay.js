@@ -42,7 +42,8 @@ ol.render.canvas.Instruction = {
   SET_FILL_STYLE: 9,
   SET_STROKE_STYLE: 10,
   SET_TEXT_STYLE: 11,
-  STROKE: 12
+  STROKE: 12,
+  MOVE_TO_LINE_TO_QUADRATIC_CURVE_TO:13
 };
 
 
@@ -468,6 +469,65 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             prevY = roundY;
           }
         }
+        ++i;
+        break;
+      case ol.render.canvas.Instruction.MOVE_TO_LINE_TO_QUADRATIC_CURVE_TO:
+        goog.asserts.assert(typeof instruction[1] === 'number',
+          '2nd instruction should be a number');
+        d = /** @type {number} */ (instruction[1]);
+        goog.asserts.assert(typeof instruction[1] === 'number',
+          '3rd instruction should be a number');
+        dd = /** @type {number} */ (instruction[2]);
+        goog.asserts.assert(typeof instruction[1] === 'number',
+          '4rd instruction should be a number');
+
+        var rx = transform[0];
+        var ry = transform[1];
+
+        var radius = instruction[3] * Math.sqrt(rx * rx + ry * ry);
+
+        var roundedCornerCoords = [];
+        var p1,p2,p3;
+        var dPrev,dNext;
+        var nextPt, prevPt;
+        for (; d < dd; d += 2) {
+          dPrev = d - 2;
+          dNext = d + 2;
+          if (dPrev < 0) {
+            dPrev = dd - 2;
+          }
+          if (dNext == dd) {
+            dNext = 0;
+          }
+          p1 = [pixelCoordinates[dPrev],pixelCoordinates[dPrev + 1]];
+          p2 = [pixelCoordinates[d],pixelCoordinates[d + 1]];
+          p3 = [pixelCoordinates[dNext],pixelCoordinates[dNext + 1]];
+
+          var distPrev = Math.sqrt(Math.pow(p2[0] - p1[0], 2) + Math.pow(p2[1] - p1[1], 2));
+          var ratioPrev =   Math.max(0.5, (distPrev - radius) / distPrev);
+          prevPt = [p1[0] + (ratioPrev * (p2[0] - p1[0])), p1[1] + (ratioPrev * (p2[1] - p1[1]))];
+
+          var distNext = Math.sqrt(Math.pow(p3[0] - p2[0], 2) + Math.pow(p3[1] - p2[1], 2));
+          var ratioNext = Math.min(0.5, radius / distNext);
+          nextPt = [p2[0] + (ratioNext * (p3[0] - p2[0])), p2[1] + (ratioNext * (p3[1] - p2[1]))];
+
+
+          roundedCornerCoords.push([prevPt[0], prevPt[1], p2[0], p2[1], nextPt[0], nextPt[1]]);
+        }
+
+        var pt, len = roundedCornerCoords.length;
+        for (var j = 0; j < len; j++) {
+          pt = roundedCornerCoords[j];
+          if (j == 0) {
+            context.moveTo(pt[0], pt[1]);
+          } else {
+            context.lineTo(pt[0], pt[1]);
+          }
+          if (radius > 0 && j < len - 1 && j > 0) {
+            context.quadraticCurveTo(pt[2], pt[3], pt[4], pt[5]);
+          }
+        }
+
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_FILL_STYLE:
@@ -934,7 +994,8 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
-   *         miterLimit: (number|undefined)}|null}
+   *         miterLimit: (number|undefined),
+   *         cornerRadius: (number|undefined)}|null}
    */
   this.state_ = {
     currentStrokeStyle: undefined,
@@ -1054,8 +1115,14 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
       [ol.render.canvas.Instruction.BEGIN_PATH]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
-  this.drawFlatCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+  var radius = state.cornerRadius;
+  if (radius > 0) {
+    this.drawCurve_(
+      flatCoordinates, 0, flatCoordinates.length, stride,radius);
+  } else {
+    this.drawFlatCoordinates_(
+        flatCoordinates, 0, flatCoordinates.length, stride);
+  }
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, feature);
 };
@@ -1090,6 +1157,28 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   }
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(multiLineStringGeometry, feature);
+};
+
+
+/**
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ * @param {number} offset Offset.
+ * @param {number} end End.
+ * @param {number} stride Stride.
+ * @param {number} radius Radius.
+ * @private
+ * @return {number} end.
+ */
+ol.render.canvas.LineStringReplay.prototype.drawCurve_ = function(flatCoordinates, offset, end, stride,radius) {
+  var myBegin = this.coordinates.length;
+  var myEnd = this.appendFlatCoordinates(
+    flatCoordinates, offset, end, stride, false);
+
+  var moveToLineToInstruction =
+    [ol.render.canvas.Instruction.MOVE_TO_LINE_TO_QUADRATIC_CURVE_TO, myBegin, myEnd,radius];
+  this.instructions.push(moveToLineToInstruction);
+  this.hitDetectionInstructions.push(moveToLineToInstruction);
+  return end;
 };
 
 
@@ -1132,6 +1221,9 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
   var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
   this.state_.miterLimit = strokeStyleMiterLimit !== undefined ?
       strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
+  var strokeStyleCornerRadius = strokeStyle.getCornerRadius();
+  this.state_.cornerRadius = strokeStyleCornerRadius !== undefined ?
+    strokeStyleCornerRadius : ol.render.canvas.defaultCornerRadius;
 
   if (this.state_.lineWidth > this.maxLineWidth) {
     this.maxLineWidth = this.state_.lineWidth;
