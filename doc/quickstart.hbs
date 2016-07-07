@@ -60,6 +60,12 @@ To include a map a web page you will need 3 things:
 
 The first part is to include the JavaScript library. For the purpose of this tutorial, here we simply point to the openlayers.org website to get the whole library. In a production environment, we would build a custom version of the library including only the module needed for our application.
 
+**Optional:** If the application is intended to run on old platforms like Internet Explorer or Android 4.x, another script needs to be included before OpenLayers:
+
+```xml
+  <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList"></script>
+```
+
 
 ### `<div>` to contain the map
 
