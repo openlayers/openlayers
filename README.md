@@ -4,7 +4,7 @@
 [![Coverage Status](https://coveralls.io/repos/openlayers/ol3/badge.svg?branch=master)](https://coveralls.io/r/openlayers/ol3?branch=master)
 [![OSGeo Project](https://img.shields.io/badge/OSGeo-Project-brightgreen.svg)](http://osgeo.org/)
 
-[OpenLayers 3](http://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web.
+[OpenLayers 3](http://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web. It can display map tiles, vector data and markers loaded from any source on any web page. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the 2-clause BSD License (also known as the FreeBSD).
 
 ## Getting Started
 
@@ -18,7 +18,7 @@ OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.wh
 
 ## Documentation
 
-Check out the [hosted examples](http://openlayers.org/en/master/examples/), the [workshop](http://openlayers.org/workshop/) or [API docs](http://openlayers.org/en/master/apidoc/).
+Check out the [hosted examples](http://openlayers.org/en/latest/examples/), the [workshop](http://openlayers.org/workshop/) or [API docs](http://openlayers.org/en/latest/apidoc/).
 
 ## Bugs
 
