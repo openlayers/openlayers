@@ -1745,7 +1745,7 @@ ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygon
       var holeFlatCoords;
       for (j = 1, jj = linearRings.length; j < jj; ++j) {
         holeIndices.push(flatCoordinates.length / 2);
-        holeFlatCoords = linearRings[i].getFlatCoordinates();
+        holeFlatCoords = linearRings[j].getFlatCoordinates();
         holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
             stride, -this.origin_[0], -this.origin_[1]);
         ol.array.extend(flatCoordinates, holeFlatCoords);
