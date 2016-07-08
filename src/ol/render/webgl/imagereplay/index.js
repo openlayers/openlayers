@@ -2043,8 +2043,8 @@ ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
 
 ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
   goog.asserts.assert(this.state_, 'this.state_ should not be null');
-  goog.asserts.assert(fillStyle, 'fillStyle should not be null');
-  var fillStyleColor = fillStyle.getColor();
+  goog.asserts.assert(fillStyle || strokeStyle, 'one of the styles should not be null');
+  var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
   if (!(fillStyleColor instanceof CanvasGradient) &&
       !(fillStyleColor instanceof CanvasPattern)) {
     fillStyleColor = ol.color.asArray(fillStyleColor).map(function(c, i) {
