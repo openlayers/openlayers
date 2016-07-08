@@ -26,6 +26,7 @@ goog.require('ol.render.webgl.polygonreplay.shader.Default');
 goog.require('ol.render.webgl.polygonreplay.shader.Default.Locations');
 goog.require('ol.render.webgl.polygonreplay.shader.DefaultFragment');
 goog.require('ol.render.webgl.polygonreplay.shader.DefaultVertex');
+goog.require('ol.style.Stroke');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -1385,7 +1386,7 @@ ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
 
   //Clean up, if there is nothing to draw
   if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
-    this.styles_.pop();
+    this.styles_ = [];
   }
 
   this.vertices_ = null;
@@ -1822,16 +1823,21 @@ ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
   this.verticesBuffer_ = new ol.webgl.Buffer(this.vertices_);
   context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
-  var indices = this.indices_;
-  var bits = context.hasOESElementIndexUint ? 32 : 16;
-  goog.asserts.assert(indices[indices.length - 1] < Math.pow(2, bits),
-      'Too large element index detected [%s] (OES_element_index_uint "%s")',
-      indices[indices.length - 1], context.hasOESElementIndexUint);
-
   // create, bind, and populate the indices buffer
-  this.indicesBuffer_ = new ol.webgl.Buffer(indices);
+  this.indicesBuffer_ = new ol.webgl.Buffer(this.indices_);
   context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
+
+  this.startIndices_.push(this.indices_.length);
+
   this.lineStringReplay_.finish(context);
+
+  //Clean up, if there is nothing to draw
+  if (this.styleIndices_.length === 0 && this.styles_.length > 0) {
+    this.styles_ = [];
+  }
+
+  this.vertices_ = null;
+  this.indices_ = null;
 };
 
 
@@ -1906,7 +1912,7 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram_ = function(gl, context, si
 ol.render.webgl.PolygonReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
 
   if (!ol.object.isEmpty(skippedFeaturesHash)) {
-    // TODO: draw by blocks to skip features
+    this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
     goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
         'number of styles and styleIndices match');
@@ -1920,6 +1926,102 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay_ = function(gl, context, skip
       this.setFillStyle_(gl, nextStyle);
       this.drawElements_(gl, context, start, end);
       end = start;
+    }
+  }
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
+ *  to skip.
+ * @param {function((ol.Feature|ol.render.Feature)): T|undefined} featureCallback Feature callback.
+ * @param {ol.Extent=} opt_hitExtent Hit extent: Only features intersecting
+ *  this extent are checked.
+ * @return {T|undefined} Callback result.
+ * @template T
+ */
+ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne_ = function(gl, context, skippedFeaturesHash,
+    featureCallback, opt_hitExtent) {
+  goog.asserts.assert(this.styles_.length === this.styleIndices_.length,
+      'number of styles and styleIndices match');
+  goog.asserts.assert(this.startIndices_.length - 1 === this.startIndicesFeature_.length,
+      'number of startIndices and startIndicesFeature match');
+
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
+  featureIndex = this.startIndices_.length - 2;
+  end = this.startIndices_[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setFillStyle_(gl, nextStyle);
+    groupStart = this.styleIndices_[i];
+
+    while (featureIndex >= 0 &&
+        this.startIndices_[featureIndex] >= groupStart) {
+      start = this.startIndices_[featureIndex];
+      feature = this.startIndicesFeature_[featureIndex];
+      featureUid = goog.getUid(feature).toString();
+
+      if (skippedFeaturesHash[featureUid] === undefined &&
+          feature.getGeometry() &&
+          (opt_hitExtent === undefined || ol.extent.intersects(
+              /** @type {Array<number>} */ (opt_hitExtent),
+              feature.getGeometry().getExtent()))) {
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        this.drawElements_(gl, context, start, end);
+
+        var result = featureCallback(feature);
+
+        if (result) {
+          return result;
+        }
+
+      }
+      featureIndex--;
+      end = start;
+    }
+  }
+  return undefined;
+};
+
+
+/**
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.webgl.Context} context Context.
+ * @param {Object} skippedFeaturesHash Ids of features to skip.
+ */
+ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
+  goog.asserts.assert(this.startIndices_.length - 1 === this.startIndicesFeature_.length,
+      'number of startIndices and startIndicesFeature match');
+
+  var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
+  featureIndex = this.startIndices_.length - 2;
+  end = start = this.startIndices_[featureIndex + 1];
+  for (i = this.styleIndices_.length - 1; i >= 0; --i) {
+    nextStyle = this.styles_[i];
+    this.setFillStyle_(gl, nextStyle);
+    groupStart = this.styleIndices_[i];
+
+    while (featureIndex >= 0 &&
+        this.startIndices_[featureIndex] >= groupStart) {
+      featureStart = this.startIndices_[featureIndex];
+      feature = this.startIndicesFeature_[featureIndex];
+      featureUid = goog.getUid(feature).toString();
+
+      if (skippedFeaturesHash[featureUid]) {
+        if (start !== end) {
+          this.drawElements_(gl, context, start, end);
+        }
+        end = featureStart;
+      }
+      featureIndex--;
+      start = featureStart;
+    }
+    if (start !== end) {
+      this.drawElements_(gl, context, start, end);
     }
   }
 };
@@ -1956,7 +2058,16 @@ ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle,
     this.state_.changed = true;
     this.styles_.push(fillStyleColor);
   }
-  this.lineStringReplay_.setFillStrokeStyle(null, strokeStyle);
+  //Provide a null stroke style, if no strokeStyle is provided. Required for the draw interaction to work.
+  if (strokeStyle) {
+    this.lineStringReplay_.setFillStrokeStyle(null, strokeStyle);
+  } else {
+    var nullStrokeStyle = new ol.style.Stroke({
+      color: [0, 0, 0, 0],
+      lineWidth: 0
+    });
+    this.lineStringReplay_.setFillStrokeStyle(null, nullStrokeStyle);
+  }
 };
 
 
