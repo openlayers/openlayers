@@ -275,4 +275,13 @@ ol.inherits = function(childCtor, parentCtor) {
 ol.nullFunction = function() {};
 
 
-ol.global = Function('return this')();
+/**
+ * @see https://github.com/tc39/proposal-global
+ */
+if (typeof window !== 'undefined') {
+  ol.global = window;
+} else if (typeof global !== 'undefined') {
+  ol.global = global;
+} else if (typeof self !== 'undefined') {
+  ol.global = self;
+}
