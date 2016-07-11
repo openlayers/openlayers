@@ -11,7 +11,7 @@ goog.require('ol.object');
  */
 ol.events.EventType = {
   /**
-   * Generic change event.
+   * Generic change event. Triggered when the revision counter is increased.
    * @event ol.events.Event#change
    * @api
    */

@@ -15,7 +15,7 @@ goog.require('ol.events.EventType');
  *
  * @constructor
  * @extends {ol.events.EventTarget}
- * @fires change
+ * @fires ol.events.Event
  * @struct
  * @api stable
  */
@@ -58,13 +58,6 @@ ol.Observable.prototype.changed = function() {
   ++this.revision_;
   this.dispatchEvent(ol.events.EventType.CHANGE);
 };
-
-
-/**
- * Triggered when the revision counter is increased.
- * @event change
- * @api
- */
 
 
 /**
