@@ -372,18 +372,6 @@ describe('ol.array', function() {
       ol.array.extend(a, 2);
       expect(a).to.eql([0, 1, 2]);
     });
-    it('extends an array in place with an arraylike object', function() {
-      var a = [0, 1];
-      var arrayLikeObject = {0: 2, 1: 3, length: 2};
-      ol.array.extend(a, arrayLikeObject);
-      expect(a).to.eql([0, 1, 2, 3]);
-    });
-    it('extends an array in place with an empty arraylike object', function() {
-      var a = [0, 1];
-      var arrayLikeObject = {length: 0};
-      ol.array.extend(a, arrayLikeObject);
-      expect(a).to.eql([0, 1]);
-    });
     it('extends an array in place with a big array', function() {
       var a = [];
       var i = 250000; // original test has 1.000.000, but that was too slow
@@ -393,20 +381,6 @@ describe('ol.array', function() {
       }
       ol.array.extend(a, bigArray);
       expect(a).to.eql(bigArray);
-    });
-    it('extends an array in place with arguments', function() {
-      var f = function() {
-        return arguments;
-      };
-      var a = [0];
-      ol.array.extend(a, f(1, 2, 3));
-      expect(a).to.eql([0, 1, 2, 3]);
-    });
-    it('extends an array with a NodeList (from querySelectorAll)', function() {
-      var a = [];
-      ol.array.extend(a, document.querySelectorAll('head'));
-      expect(a.length).to.be(1);
-      expect(a[0]).to.be(document.head);
     });
   });
 

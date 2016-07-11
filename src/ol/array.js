@@ -187,7 +187,7 @@ ol.array.flatten = function(arr) {
  */
 ol.array.extend = function(arr, data) {
   var i;
-  var extension = goog.isArrayLike(data) ? data : [data];
+  var extension = Array.isArray(data) ? data : [data];
   var length = extension.length;
   for (i = 0; i < length; i++) {
     arr[arr.length] = extension[i];
