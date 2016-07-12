@@ -151,6 +151,24 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
 
 
 /**
+ * Call a function with each tile coordinate for a given extent and zoom level.
+ *
+ * @param {ol.Extent} extent Extent.
+ * @param {number} zoom Zoom level.
+ * @param {function(ol.TileCoord)} callback Function called with each tile coordinate.
+ * @api
+ */
+ol.tilegrid.TileGrid.prototype.forEachTileCoord = function(extent, zoom, callback) {
+  var tileRange = this.getTileRangeForExtentAndZ(extent, zoom);
+  for (var i = tileRange.minX, ii = tileRange.maxX; i <= ii; ++i) {
+    for (var j = tileRange.minY, jj = tileRange.maxY; j <= jj; ++j) {
+      callback([zoom, i, j]);
+    }
+  }
+};
+
+
+/**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {function(this: T, number, ol.TileRange): boolean} callback Callback.
  * @param {T=} opt_this The object to use as `this` in `callback`.
@@ -474,6 +492,7 @@ ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
  *     If 1, the nearest lower resolution will be used. If -1, the nearest
  *     higher resolution will be used. Default is 0.
  * @return {number} Z.
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getZForResolution = function(
     resolution, opt_direction) {
@@ -589,7 +608,7 @@ ol.tilegrid.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize) 
 
 
 /**
- * @param {ol.proj.ProjectionLike} projection Projection.
+ * @param {ol.ProjectionLike} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     ol.DEFAULT_MAX_ZOOM).
  * @param {ol.Size=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
@@ -607,7 +626,7 @@ ol.tilegrid.createForProjection = function(projection, opt_maxZoom, opt_tileSize
 /**
  * Generate a tile grid extent from a projection.  If the projection has an
  * extent, it is used.  If not, a global extent is assumed.
- * @param {ol.proj.ProjectionLike} projection Projection.
+ * @param {ol.ProjectionLike} projection Projection.
  * @return {ol.Extent} Extent.
  */
 ol.tilegrid.extentFromProjection = function(projection) {

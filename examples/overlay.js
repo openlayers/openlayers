@@ -4,11 +4,11 @@ goog.require('ol.View');
 goog.require('ol.coordinate');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 
 
 var layer = new ol.layer.Tile({
-  source: new ol.source.MapQuest({layer: 'sat'})
+  source: new ol.source.OSM()
 });
 
 var map = new ol.Map({

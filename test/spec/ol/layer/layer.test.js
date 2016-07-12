@@ -393,7 +393,7 @@ describe('ol.layer.Layer', function() {
           layerStatesArray: [],
           layerStates: {}
         };
-        map.dispatchEvent(new ol.render.Event('precompose', map, null,
+        map.dispatchEvent(new ol.render.Event('precompose', null,
             frameState, null, null));
         expect(frameState.layerStatesArray.length).to.be(1);
         var layerState = frameState.layerStatesArray[0];

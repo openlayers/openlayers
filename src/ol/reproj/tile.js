@@ -96,7 +96,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 
   /**
    * @private
-   * @type {Array.<ol.events.Key>}
+   * @type {Array.<ol.EventsKey>}
    */
   this.sourcesListenerKeys_ = null;
 
@@ -258,8 +258,8 @@ ol.reproj.Tile.prototype.reproject_ = function() {
   } else {
     var z = this.wrappedTileCoord_[0];
     var size = this.targetTileGrid_.getTileSize(z);
-    var width = goog.isNumber(size) ? size : size[0];
-    var height = goog.isNumber(size) ? size : size[1];
+    var width = typeof size === 'number' ? size : size[0];
+    var height = typeof size === 'number' ? size : size[1];
     var targetResolution = this.targetTileGrid_.getResolution(z);
     var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 

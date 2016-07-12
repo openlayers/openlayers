@@ -31,7 +31,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
       function(extent, resolution, projection) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET',
-            goog.isFunction(url) ? url(extent, resolution, projection) : url,
+            typeof url === 'function' ? url(extent, resolution, projection) : url,
             true);
         if (format.getType() == ol.format.FormatType.ARRAY_BUFFER) {
           xhr.responseType = 'arraybuffer';

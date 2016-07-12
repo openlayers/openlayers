@@ -145,7 +145,7 @@ ol.MapBrowserEventHandler = function(map) {
   this.dragging_ = false;
 
   /**
-   * @type {!Array.<ol.events.Key>}
+   * @type {!Array.<ol.EventsKey>}
    * @private
    */
   this.dragListenerKeys_ = [];
@@ -191,7 +191,7 @@ ol.MapBrowserEventHandler = function(map) {
   this.documentPointerEventHandler_ = null;
 
   /**
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    * @private
    */
   this.pointerdownListenerKey_ = ol.events.listen(this.pointerEventHandler_,
@@ -199,7 +199,7 @@ ol.MapBrowserEventHandler = function(map) {
       this.handlePointerDown_, this);
 
   /**
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    * @private
    */
   this.relayedListenerKey_ = ol.events.listen(this.pointerEventHandler_,

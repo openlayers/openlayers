@@ -2,7 +2,7 @@ goog.provide('ol.RendererType');
 goog.provide('ol.renderer.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.vec.Mat4');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.events');
@@ -12,7 +12,6 @@ goog.require('ol.functions');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 goog.require('ol.style.IconImageCache');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -52,7 +51,7 @@ ol.renderer.Map = function(container, map) {
 
   /**
    * @private
-   * @type {Object.<string, ol.events.Key>}
+   * @type {Object.<string, ol.EventsKey>}
    */
   this.layerRendererListeners_ = {};
 
@@ -66,17 +65,19 @@ ol.inherits(ol.renderer.Map, ol.Disposable);
  */
 ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var viewState = frameState.viewState;
-  var coordinateToPixelMatrix = frameState.coordinateToPixelMatrix;
-  goog.asserts.assert(coordinateToPixelMatrix,
-      'frameState has a coordinateToPixelMatrix');
-  ol.vec.Mat4.makeTransform2D(coordinateToPixelMatrix,
+  var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
+  var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
+  goog.asserts.assert(coordinateToPixelTransform,
+      'frameState has a coordinateToPixelTransform');
+
+  ol.transform.compose(coordinateToPixelTransform,
       frameState.size[0] / 2, frameState.size[1] / 2,
       1 / viewState.resolution, -1 / viewState.resolution,
       -viewState.rotation,
       -viewState.center[0], -viewState.center[1]);
-  var inverted = goog.vec.Mat4.invert(
-      coordinateToPixelMatrix, frameState.pixelToCoordinateMatrix);
-  goog.asserts.assert(inverted, 'matrix could be inverted');
+
+  ol.transform.invert(
+      ol.transform.setFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
 };
 
 

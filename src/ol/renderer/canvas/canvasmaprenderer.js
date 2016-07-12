@@ -3,9 +3,7 @@
 goog.provide('ol.renderer.canvas.Map');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.style');
-goog.require('goog.vec.Mat4');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -27,7 +25,6 @@ goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.State');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -55,7 +52,7 @@ ol.renderer.canvas.Map = function(container, map) {
   this.canvas_.style.width = '100%';
   this.canvas_.style.height = '100%';
   this.canvas_.className = ol.css.CLASS_UNSELECTABLE;
-  goog.dom.insertChildAt(container, this.canvas_, 0);
+  container.insertBefore(this.canvas_, container.childNodes[0] || null);
 
   /**
    * @private
@@ -65,9 +62,9 @@ ol.renderer.canvas.Map = function(container, map) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.transform.create();
 
 };
 ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
@@ -110,7 +107,7 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameSta
 
     var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
         extent, transform, rotation);
-    var composeEvent = new ol.render.Event(type, map, vectorContext,
+    var composeEvent = new ol.render.Event(type, vectorContext,
         frameState, context, null);
     map.dispatchEvent(composeEvent);
   }
@@ -120,17 +117,18 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameSta
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @protected
- * @return {!goog.vec.Mat4.Number} Transform.
+ * @return {!ol.Transform} Transform.
  */
 ol.renderer.canvas.Map.prototype.getTransform = function(frameState) {
-  var pixelRatio = frameState.pixelRatio;
   var viewState = frameState.viewState;
-  var resolution = viewState.resolution;
-  return ol.vec.Mat4.makeTransform2D(this.transform_,
-      this.canvas_.width / 2, this.canvas_.height / 2,
-      pixelRatio / resolution, -pixelRatio / resolution,
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+  var dx1 = this.canvas_.width / 2;
+  var dy1 = this.canvas_.height / 2;
+  var sx = frameState.pixelRatio / viewState.resolution;
+  var sy = -sx;
+  var angle = -viewState.rotation;
+  var dx2 = -viewState.center[0];
+  var dy2 = -viewState.center[1];
+  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
 };
 
 
@@ -149,7 +147,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.canvas_, false);
+      this.canvas_.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -200,7 +198,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
       ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
-    goog.style.setElementShown(this.canvas_, true);
+    this.canvas_.style.display = '';
     this.renderedVisible_ = true;
   }
 

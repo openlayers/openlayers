@@ -4,9 +4,7 @@
 goog.provide('ol.renderer.dom.TileLayer');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.style');
-goog.require('goog.vec.Mat4');
+goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -18,7 +16,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
 goog.require('ol.tilegrid.TileGrid');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -65,7 +62,7 @@ ol.inherits(ol.renderer.dom.TileLayer, ol.renderer.dom.Layer);
  * @inheritDoc
  */
 ol.renderer.dom.TileLayer.prototype.clearFrame = function() {
-  goog.dom.removeChildren(this.target);
+  ol.dom.removeChildren(this.target);
   this.renderedRevision_ = 0;
 };
 
@@ -77,7 +74,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
 
   if (!layerState.visible) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.target, false);
+      this.target.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return true;
@@ -165,7 +162,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   if (this.renderedRevision_ != tileSource.getRevision()) {
     for (tileLayerZKey in this.tileLayerZs_) {
       tileLayerZ = this.tileLayerZs_[+tileLayerZKey];
-      goog.dom.removeNode(tileLayerZ.target);
+      ol.dom.removeNode(tileLayerZ.target);
     }
     this.tileLayerZs_ = {};
     this.renderedRevision_ = tileSource.getRevision();
@@ -202,35 +199,36 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   tileLayerZKeys.sort(ol.array.numberSafeCompareFunction);
 
   var i, ii, j, origin, resolution;
-  var transform = goog.vec.Mat4.createNumber();
+  var transform = ol.transform.create();
   for (i = 0, ii = tileLayerZKeys.length; i < ii; ++i) {
     tileLayerZKey = tileLayerZKeys[i];
     tileLayerZ = this.tileLayerZs_[tileLayerZKey];
     if (!(tileLayerZKey in tilesToDrawByZ)) {
-      goog.dom.removeNode(tileLayerZ.target);
+      ol.dom.removeNode(tileLayerZ.target);
       delete this.tileLayerZs_[tileLayerZKey];
       continue;
     }
     resolution = tileLayerZ.getResolution();
     origin = tileLayerZ.getOrigin();
-    ol.vec.Mat4.makeTransform2D(transform,
+
+    ol.transform.compose(transform,
         frameState.size[0] / 2, frameState.size[1] / 2,
-        resolution / viewState.resolution,
-        resolution / viewState.resolution,
+        resolution / viewState.resolution, resolution / viewState.resolution,
         viewState.rotation,
-        (origin[0] - center[0]) / resolution,
-        (center[1] - origin[1]) / resolution);
+        (origin[0] - center[0]) / resolution, (center[1] - origin[1]) / resolution);
+
     tileLayerZ.setTransform(transform);
     if (tileLayerZKey in newTileLayerZKeys) {
       for (j = tileLayerZKey - 1; j >= 0; --j) {
         if (j in this.tileLayerZs_) {
-          goog.dom.insertSiblingAfter(
-              tileLayerZ.target, this.tileLayerZs_[j].target);
+          if (this.tileLayerZs_[j].target.parentNode) {
+            this.tileLayerZs_[j].target.parentNode.insertBefore(tileLayerZ.target, this.tileLayerZs_[j].target.nextSibling);
+          }
           break;
         }
       }
       if (j < 0) {
-        goog.dom.insertChildAt(this.target, tileLayerZ.target, 0);
+        this.target.insertBefore(tileLayerZ.target, this.target.childNodes[0] || null);
       }
     } else {
       if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
@@ -246,7 +244,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   }
 
   if (layerState.visible && !this.renderedVisible_) {
-    goog.style.setElementShown(this.target, true);
+    this.target.style.display = '';
     this.renderedVisible_ = true;
   }
 
@@ -315,9 +313,9 @@ ol.renderer.dom.TileLayerZ_ = function(tileGrid, tileCoordOrigin) {
 
   /**
    * @private
-   * @type {goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.transform_ = goog.vec.Mat4.createNumberIdentity();
+  this.transform_ = ol.transform.create();
 
   /**
    * @private
@@ -431,18 +429,18 @@ ol.renderer.dom.TileLayerZ_.prototype.removeTilesOutsideExtent = function(extent
   for (i = 0, ii = tilesToRemove.length; i < ii; ++i) {
     tile = tilesToRemove[i];
     tileCoordKey = tile.tileCoord.toString();
-    goog.dom.removeNode(tile.getImage(this));
+    ol.dom.removeNode(tile.getImage(this));
     delete this.tiles_[tileCoordKey];
   }
 };
 
 
 /**
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  */
 ol.renderer.dom.TileLayerZ_.prototype.setTransform = function(transform) {
-  if (!ol.vec.Mat4.equals2D(transform, this.transform_)) {
+  if (!ol.array.equals(transform, this.transform_)) {
     ol.dom.transformElement2D(this.target, transform, 6);
-    goog.vec.Mat4.setFromArray(this.transform_, transform);
+    ol.transform.setFromArray(this.transform_, transform);
   }
 };

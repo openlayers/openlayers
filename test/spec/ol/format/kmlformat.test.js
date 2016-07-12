@@ -2593,7 +2593,7 @@ describe('ol.format.KML', function() {
     describe('error handling', function() {
 
       it('should ignore invalid coordinates', function() {
-        var doc = goog.dom.xml.loadXml('<coordinates>INVALID</coordinates>');
+        var doc = new DOMParser().parseFromString('<coordinates>INVALID</coordinates>', 'application/xml');
         var node = doc.firstChild;
         expect(ol.format.KML.readFlatCoordinates_(node)).to.be(undefined);
       });
@@ -2970,7 +2970,6 @@ describe('ol.format.KML', function() {
 
 
 goog.require('ol.array');
-goog.require('goog.dom.xml');
 goog.require('ol.Feature');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');

@@ -1,5 +1,15 @@
 ## Upgrade notes
 
+#### Removal of `ol.ENABLE_NAMED_COLORS`
+
+This option was previously needed to use named colors with the WebGL renderer but is no longer needed.
+
+### v3.17.0
+
+#### `ol.source.MapQuest` removal
+
+Because of changes at MapQuest (see: https://lists.openstreetmap.org/pipermail/talk/2016-June/076106.html) we had to remove the MapQuest source for now (see https://github.com/openlayers/ol3/issues/5484 for details).
+
 #### `ol.interaction.ModifyEvent` changes
 
 The event object previously had a `mapBrowserPointerEvent` property, which has been renamed to `mapBrowserEvent`.
@@ -9,6 +19,29 @@ The event object previously had a `mapBrowserPointerEvent` property, which has b
 Users compiling their code with the library and using types in the `ol.raster` namespace should note that this has now been removed. `ol.raster.Pixel` has been deleted, and the other types have been renamed as follows, and your code may need changing if you use these:
 * `ol.raster.Operation` to `ol.RasterOperation`
 * `ol.raster.OperationType` to `ol.RasterOperationType`
+
+#### All typedefs now in ol namespace
+
+Users compiling their code with the library should note that the following typedefs have been renamed; your code may need changing if you use these:
+* ol.events.ConditionType to ol.EventsConditionType
+* ol.events.EventTargetLike to ol.EventTargetLike
+* ol.events.Key to ol.EventsKey
+* ol.events.ListenerFunctionType to ol.EventsListenerFunctionType
+* ol.interaction.DragBoxEndConditionType to ol.DragBoxEndConditionType
+* ol.interaction.DrawGeometryFunctionType to ol.DrawGeometryFunctionType
+* ol.interaction.SegmentDataType to ol.ModifySegmentDataType
+* ol.interaction.SelectFilterFunction to ol.SelectFilterFunction
+* ol.interaction.SnapResultType to ol.SnapResultType
+* ol.interaction.SnapSegmentDataType to ol.SnapSegmentDataType
+* ol.proj.ProjectionLike to ol.ProjectionLike
+* ol.style.AtlasBlock to ol.AtlasBlock
+* ol.style.AtlasInfo to ol.AtlasInfo
+* ol.style.AtlasManagerInfo to ol.AtlasManagerInfo
+* ol.style.CircleRenderOptions to ol.CircleRenderOptions
+* ol.style.ImageOptions to ol.StyleImageOptions
+* ol.style.GeometryFunction to ol.StyleGeometryFunction
+* ol.style.RegularShapeRenderOptions to ol.RegularShapeRenderOptions
+* ol.style.StyleFunction to ol.StyleFunction
 
 ### v3.16.0
 

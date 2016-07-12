@@ -5,7 +5,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.ImageStatic');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 
 
 proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
@@ -17,7 +17,7 @@ var imageExtent = [0, 0, 700000, 1300000];
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuest({layer: 'osm'})
+      source: new ol.source.OSM()
     }),
     new ol.layer.Image({
       source: new ol.source.ImageStatic({

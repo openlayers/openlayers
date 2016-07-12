@@ -46,13 +46,13 @@ ol.layer.Group = function(opt_options) {
 
   /**
    * @private
-   * @type {Array.<ol.events.Key>}
+   * @type {Array.<ol.EventsKey>}
    */
   this.layersListenerKeys_ = [];
 
   /**
    * @private
-   * @type {Object.<string, Array.<ol.events.Key>>}
+   * @type {Object.<string, Array.<ol.EventsKey>>}
    */
   this.listenerKeys_ = {};
 

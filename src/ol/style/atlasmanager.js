@@ -75,17 +75,17 @@ ol.style.AtlasManager = function(opt_options) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.style.AtlasManagerInfo} The position and atlas image for the
+ * @return {?ol.AtlasManagerInfo} The position and atlas image for the
  *    entry, or `null` if the entry is not part of the atlas manager.
  */
 ol.style.AtlasManager.prototype.getInfo = function(id) {
-  /** @type {?ol.style.AtlasInfo} */
+  /** @type {?ol.AtlasInfo} */
   var info = this.getInfo_(this.atlases_, id);
 
   if (!info) {
     return null;
   }
-  /** @type {?ol.style.AtlasInfo} */
+  /** @type {?ol.AtlasInfo} */
   var hitInfo = this.getInfo_(this.hitAtlases_, id);
   goog.asserts.assert(hitInfo, 'hitInfo must not be null');
 
@@ -97,7 +97,7 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
  * @private
  * @param {Array.<ol.style.Atlas>} atlases The atlases to search.
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.style.AtlasInfo} The position and atlas image for the entry,
+ * @return {?ol.AtlasInfo} The position and atlas image for the entry,
  *    or `null` if the entry is not part of the atlases.
  */
 ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
@@ -115,10 +115,10 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
 
 /**
  * @private
- * @param {ol.style.AtlasInfo} info The info for the real image.
- * @param {ol.style.AtlasInfo} hitInfo The info for the hit-detection
+ * @param {ol.AtlasInfo} info The info for the real image.
+ * @param {ol.AtlasInfo} hitInfo The info for the hit-detection
  *    image.
- * @return {?ol.style.AtlasManagerInfo} The position and atlas image for the
+ * @return {?ol.AtlasManagerInfo} The position and atlas image for the
  *    entry, or `null` if the entry is not part of the atlases.
  */
 ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
@@ -126,7 +126,7 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
       'in order to merge, offsetX of info and hitInfo must be equal');
   goog.asserts.assert(info.offsetY === hitInfo.offsetY,
       'in order to merge, offsetY of info and hitInfo must be equal');
-  return /** @type {ol.style.AtlasManagerInfo} */ ({
+  return /** @type {ol.AtlasManagerInfo} */ ({
     offsetX: info.offsetX,
     offsetY: info.offsetY,
     image: info.image,
@@ -154,7 +154,7 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  *    detection atlas image.
  * @param {Object=} opt_this Value to use as `this` when executing
  *    `renderCallback` and `renderHitCallback`.
- * @return {?ol.style.AtlasManagerInfo}  The position and atlas image for the
+ * @return {?ol.AtlasManagerInfo}  The position and atlas image for the
  *    entry, or `null` if the image is too big.
  */
 ol.style.AtlasManager.prototype.add = function(id, width, height,
@@ -164,7 +164,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
     return null;
   }
 
-  /** @type {?ol.style.AtlasInfo} */
+  /** @type {?ol.AtlasInfo} */
   var info = this.add_(false,
       id, width, height, renderCallback, opt_this);
   if (!info) {
@@ -177,7 +177,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
   var renderHitCallback = opt_renderHitCallback !== undefined ?
       opt_renderHitCallback : ol.nullFunction;
 
-  /** @type {?ol.style.AtlasInfo} */
+  /** @type {?ol.AtlasInfo} */
   var hitInfo = this.add_(true,
       id, width, height, renderHitCallback, opt_this);
   goog.asserts.assert(hitInfo, 'hitInfo must not be null');
@@ -196,7 +196,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
  *    Called to render the new image onto an atlas image.
  * @param {Object=} opt_this Value to use as `this` when executing
  *    `renderCallback` and `renderHitCallback`.
- * @return {?ol.style.AtlasInfo}  The position and atlas image for the entry,
+ * @return {?ol.AtlasInfo}  The position and atlas image for the entry,
  *    or `null` if the image is too big.
  */
 ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
@@ -256,13 +256,13 @@ ol.style.Atlas = function(size, space) {
 
   /**
    * @private
-   * @type {Array.<ol.style.AtlasBlock>}
+   * @type {Array.<ol.AtlasBlock>}
    */
   this.emptyBlocks_ = [{x: 0, y: 0, width: size, height: size}];
 
   /**
    * @private
-   * @type {Object.<string, ol.style.AtlasInfo>}
+   * @type {Object.<string, ol.AtlasInfo>}
    */
   this.entries_ = {};
 
@@ -282,7 +282,7 @@ ol.style.Atlas = function(size, space) {
 
 /**
  * @param {string} id The identifier of the entry to check.
- * @return {?ol.style.AtlasInfo} The atlas info.
+ * @return {?ol.AtlasInfo} The atlas info.
  */
 ol.style.Atlas.prototype.get = function(id) {
   return this.entries_[id] || null;
@@ -297,7 +297,7 @@ ol.style.Atlas.prototype.get = function(id) {
  *    Called to render the new image onto an atlas image.
  * @param {Object=} opt_this Value to use as `this` when executing
  *    `renderCallback`.
- * @return {?ol.style.AtlasInfo} The position and atlas image for the entry.
+ * @return {?ol.AtlasInfo} The position and atlas image for the entry.
  */
 ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
   var block, i, ii;
@@ -332,7 +332,7 @@ ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_t
 /**
  * @private
  * @param {number} index The index of the block.
- * @param {ol.style.AtlasBlock} block The block to split.
+ * @param {ol.AtlasBlock} block The block to split.
  * @param {number} width The width of the entry to insert.
  * @param {number} height The height of the entry to insert.
  */
@@ -340,9 +340,9 @@ ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
   var deltaWidth = block.width - width;
   var deltaHeight = block.height - height;
 
-  /** @type {ol.style.AtlasBlock} */
+  /** @type {ol.AtlasBlock} */
   var newBlock1;
-  /** @type {ol.style.AtlasBlock} */
+  /** @type {ol.AtlasBlock} */
   var newBlock2;
 
   if (deltaWidth > deltaHeight) {
@@ -391,8 +391,8 @@ ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
  * blocks (that are potentially smaller) are filled first.
  * @private
  * @param {number} index The index of the block to remove.
- * @param {ol.style.AtlasBlock} newBlock1 The 1st block to add.
- * @param {ol.style.AtlasBlock} newBlock2 The 2nd block to add.
+ * @param {ol.AtlasBlock} newBlock1 The 1st block to add.
+ * @param {ol.AtlasBlock} newBlock2 The 2nd block to add.
  */
 ol.style.Atlas.prototype.updateBlocks_ = function(index, newBlock1, newBlock2) {
   var args = [index, 1];

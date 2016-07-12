@@ -155,7 +155,7 @@ ol.source.Vector = function(opt_options) {
 
   /**
    * @private
-   * @type {Object.<string, Array.<ol.events.Key>>}
+   * @type {Object.<string, Array.<ol.EventsKey>>}
    */
   this.featureChangeKeys_ = {};
 

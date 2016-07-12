@@ -3,7 +3,7 @@ goog.provide('ol.source.ImageVector');
 goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('goog.vec.Mat4');
+goog.require('ol.transform');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -11,7 +11,6 @@ goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
-goog.require('ol.vec.Mat4');
 
 
 /**
@@ -41,9 +40,9 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
-   * @type {!goog.vec.Mat4.Number}
+   * @type {ol.Transform}
    */
-  this.transform_ = goog.vec.Mat4.createNumber();
+  this.transform_ = ol.transform.create();
 
   /**
    * @private
@@ -75,14 +74,14 @@ ol.source.ImageVector = function(options) {
 
   /**
    * User provided style.
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
    * @private
    */
   this.style_ = null;
 
   /**
    * Style function for use within the library.
-   * @type {ol.style.StyleFunction|undefined}
+   * @type {ol.StyleFunction|undefined}
    * @private
    */
   this.styleFunction_ = undefined;
@@ -188,7 +187,7 @@ ol.source.ImageVector.prototype.getSource = function() {
 /**
  * Get the style for features.  This returns whatever was passed to the `style`
  * option at construction or to the `setStyle` method.
- * @return {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction}
+ * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
  *     Layer style.
  * @api stable
  */
@@ -199,7 +198,7 @@ ol.source.ImageVector.prototype.getStyle = function() {
 
 /**
  * Get the style function.
- * @return {ol.style.StyleFunction|undefined} Layer style function.
+ * @return {ol.StyleFunction|undefined} Layer style function.
  * @api stable
  */
 ol.source.ImageVector.prototype.getStyleFunction = function() {
@@ -212,15 +211,18 @@ ol.source.ImageVector.prototype.getStyleFunction = function() {
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.Size} size Size.
- * @return {!goog.vec.Mat4.Number} Transform.
+ * @return {!ol.Transform} Transform.
  * @private
  */
 ol.source.ImageVector.prototype.getTransform_ = function(center, resolution, pixelRatio, size) {
-  return ol.vec.Mat4.makeTransform2D(this.transform_,
-      size[0] / 2, size[1] / 2,
-      pixelRatio / resolution, -pixelRatio / resolution,
-      0,
-      -center[0], -center[1]);
+  var dx1 = size[0] / 2;
+  var dy1 = size[1] / 2;
+  var sx = pixelRatio / resolution;
+  var sy = -sx;
+  var dx2 = -center[0];
+  var dy2 = -center[1];
+
+  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, 0, dx2, dy2);
 };
 
 
@@ -284,7 +286,7 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
  * it is `null` the layer has no style (a `null` style), so only features
  * that have their own styles will be rendered in the layer. See
  * {@link ol.style} for information on the default style.
- * @param {ol.style.Style|Array.<ol.style.Style>|ol.style.StyleFunction|undefined}
+ * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  *     style Layer style.
  * @api stable
  */

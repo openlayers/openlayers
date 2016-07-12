@@ -29,7 +29,7 @@ describe('ol.rendering.layer.Tile', function() {
       }
     };
 
-    sources.forEach(function(source) {
+    sources.forEach(function(source, i) {
       source.on('tileloadstart', function(event) {
         tilesLoading++;
       });
@@ -44,7 +44,7 @@ describe('ol.rendering.layer.Tile', function() {
       var options = {
         source: source
       };
-      ol.object.assign(options, layerOptions);
+      ol.object.assign(options, layerOptions[i] || layerOptions);
       map.addLayer(new ol.layer.Tile(options));
     });
   }
@@ -109,6 +109,30 @@ describe('ol.rendering.layer.Tile', function() {
       map = createMap('webgl');
       waitForTiles([source1, source2], {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/2-layers-webgl.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    function centerExtent(map) {
+      var c = map.getView().calculateExtent(map.getSize());
+      var qw = ol.extent.getSize(c)[0] / 4;
+      var qh = ol.extent.getSize(c)[1] / 4;
+      return [c[0] + qw, c[1] + qh, c[2] - qw, c[3] - qh];
+    }
+
+    it('tests canvas layer extent clipping', function(done) {
+      map = createMap('canvas');
+      waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
+        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas-extent.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('tests canvas layer extent clipping with rotation', function(done) {
+      map = createMap('canvas');
+      map.getView().setRotation(Math.PI / 2);
+      waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
+        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas-extent-rotate.png',
             IMAGE_TOLERANCE, done);
       });
     });

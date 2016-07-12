@@ -1,7 +1,6 @@
 goog.provide('ol.control.ZoomToExtent');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.control.Control');
@@ -33,17 +32,21 @@ ol.control.ZoomToExtent = function(opt_options) {
   var label = options.label !== undefined ? options.label : 'E';
   var tipLabel = options.tipLabel !== undefined ?
       options.tipLabel : 'Fit to extent';
-  var button = goog.dom.createDom('BUTTON', {
-    'type': 'button',
-    'title': tipLabel
-  }, label);
+  var button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.title = tipLabel;
+  button.appendChild(
+    typeof label === 'string' ? document.createTextNode(label) : label
+  );
 
   ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, this);
 
   var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
       ol.css.CLASS_CONTROL;
-  var element = goog.dom.createDom('DIV', cssClasses, button);
+  var element = document.createElement('div');
+  element.className = cssClasses;
+  element.appendChild(button);
 
   ol.control.Control.call(this, {
     element: element,

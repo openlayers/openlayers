@@ -27,13 +27,13 @@ ol.style.Style = function(opt_options) {
 
   /**
    * @private
-   * @type {string|ol.geom.Geometry|ol.style.GeometryFunction}
+   * @type {string|ol.geom.Geometry|ol.StyleGeometryFunction}
    */
   this.geometry_ = null;
 
   /**
    * @private
-   * @type {!ol.style.GeometryFunction}
+   * @type {!ol.StyleGeometryFunction}
    */
   this.geometryFunction_ = ol.style.defaultGeometryFunction;
 
@@ -76,7 +76,7 @@ ol.style.Style = function(opt_options) {
 
 /**
  * Get the geometry to be rendered.
- * @return {string|ol.geom.Geometry|ol.style.GeometryFunction}
+ * @return {string|ol.geom.Geometry|ol.StyleGeometryFunction}
  * Feature property or geometry or function that returns the geometry that will
  * be rendered with this style.
  * @api
@@ -88,7 +88,7 @@ ol.style.Style.prototype.getGeometry = function() {
 
 /**
  * Get the function used to generate a geometry for rendering.
- * @return {!ol.style.GeometryFunction} Function that is called with a feature
+ * @return {!ol.StyleGeometryFunction} Function that is called with a feature
  * and returns the geometry to render instead of the feature's geometry.
  * @api
  */
@@ -150,13 +150,13 @@ ol.style.Style.prototype.getZIndex = function() {
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
  *
- * @param {string|ol.geom.Geometry|ol.style.GeometryFunction} geometry
+ * @param {string|ol.geom.Geometry|ol.StyleGeometryFunction} geometry
  *     Feature property or geometry or function returning a geometry to render
  *     for this style.
  * @api
  */
 ol.style.Style.prototype.setGeometry = function(geometry) {
-  if (goog.isFunction(geometry)) {
+  if (typeof geometry === 'function') {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
@@ -195,14 +195,14 @@ ol.style.Style.prototype.setZIndex = function(zIndex) {
  * Convert the provided object into a style function.  Functions passed through
  * unchanged.  Arrays of ol.style.Style or single style objects wrapped in a
  * new style function.
- * @param {ol.style.StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
+ * @param {ol.StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
  *     A style function, a single style, or an array of styles.
- * @return {ol.style.StyleFunction} A style function.
+ * @return {ol.StyleFunction} A style function.
  */
 ol.style.createStyleFunction = function(obj) {
   var styleFunction;
 
-  if (goog.isFunction(obj)) {
+  if (typeof obj === 'function') {
     styleFunction = obj;
   } else {
     /**

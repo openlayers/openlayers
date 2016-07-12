@@ -8,11 +8,6 @@ describe('ol.events.Event', function() {
       var event = new ol.events.Event('foo');
       expect(event.type).to.be('foo');
     });
-    it('can be constructed with an optional 2nd target arg', function() {
-      var target = {id: 1};
-      var event = new ol.events.Event('foo', target);
-      expect(event.target).to.equal(target);
-    });
     it('does not set the propagationStopped flag', function() {
       var event = new ol.events.Event('foo');
       expect(event.propagationStopped).to.be(undefined);

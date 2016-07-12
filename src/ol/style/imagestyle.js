@@ -20,7 +20,7 @@ ol.style.ImageState = {
  * {@link ol.style.RegularShape}.
  *
  * @constructor
- * @param {ol.style.ImageOptions} options Options.
+ * @param {ol.StyleImageOptions} options Options.
  * @api
  */
 ol.style.Image = function(options) {
@@ -109,8 +109,8 @@ ol.style.Image.prototype.getSnapToPixel = function() {
 
 
 /**
- * Get the anchor point.  The anchor determines the center point for the
- * symbolizer.  Its units are determined by `anchorXUnits` and `anchorYUnits`.
+ * Get the anchor point in pixels. The anchor determines the center point for the
+ * symbolizer.
  * @function
  * @return {Array.<number>} Anchor.
  */
@@ -223,7 +223,7 @@ ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
 /**
  * @param {function(this: T, ol.events.Event)} listener Listener function.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
- * @return {ol.events.Key|undefined} Listener key.
+ * @return {ol.EventsKey|undefined} Listener key.
  * @template T
  */
 ol.style.Image.prototype.listenImageChange = goog.abstractMethod;

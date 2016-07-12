@@ -86,7 +86,7 @@ ol.Feature = function(opt_geometryOrProperties) {
 
   /**
    * @private
-   * @type {?ol.events.Key}
+   * @type {?ol.EventsKey}
    */
   this.geometryChangeKey_ = null;
 
@@ -294,7 +294,7 @@ ol.Feature.prototype.setGeometryName = function(name) {
 ol.Feature.createStyleFunction = function(obj) {
   var styleFunction;
 
-  if (goog.isFunction(obj)) {
+  if (typeof obj === 'function') {
     styleFunction = obj;
   } else {
     /**

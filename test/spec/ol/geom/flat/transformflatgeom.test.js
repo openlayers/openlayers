@@ -23,9 +23,11 @@ describe('ol.geom.flat.transform', function() {
           [-82.128838, 26.693342, 0],
           [-82.102127, 26.585724, 0]]]
       ]).transform('EPSG:4326', 'EPSG:3857');
-      var transform = [0.0004088332670837288, 0, 0, 0, 0,
-        -0.0004088332670837288, 0, 0, 0, 0, 1, 0, 4480.991370439071,
-        1529.5752568707105, 0, 1];
+      var transform = [
+        0.0004088332670837288, 0,
+        0, -0.0004088332670837288,
+        4480.991370439071, 1529.5752568707105
+      ];
       var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
           multiPolygonGeometry, transform, []);
       expect(pixelCoordinates[0]).to.roughlyEqual(806.6035275946265, 1e-9);

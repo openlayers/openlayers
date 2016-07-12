@@ -3,9 +3,8 @@
 goog.provide('ol.control.Attribution');
 
 goog.require('goog.asserts');
-goog.require('goog.dom');
-goog.require('goog.style');
 goog.require('ol');
+goog.require('ol.dom');
 goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
@@ -44,7 +43,7 @@ ol.control.Attribution = function(opt_options) {
   this.logoLi_ = document.createElement('LI');
 
   this.ulElement_.appendChild(this.logoLi_);
-  goog.style.setElementShown(this.logoLi_, false);
+  this.logoLi_.style.display = 'none';
 
   /**
    * @private
@@ -69,30 +68,37 @@ ol.control.Attribution = function(opt_options) {
 
   var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
 
-  /**
-   * @private
-   * @type {Node}
-   */
-  this.collapseLabel_ = typeof collapseLabel === 'string' ?
-      goog.dom.createDom('SPAN', {}, collapseLabel) :
-      collapseLabel;
+  if (typeof collapseLabel === 'string') {
+    /**
+     * @private
+     * @type {Node}
+     */
+    this.collapseLabel_ = document.createElement('span');
+    this.collapseLabel_.textContent = collapseLabel;
+  } else {
+    this.collapseLabel_ = collapseLabel;
+  }
 
   var label = options.label !== undefined ? options.label : 'i';
 
-  /**
-   * @private
-   * @type {Node}
-   */
-  this.label_ = typeof label === 'string' ?
-      goog.dom.createDom('SPAN', {}, label) :
-      label;
+  if (typeof label === 'string') {
+    /**
+     * @private
+     * @type {Node}
+     */
+    this.label_ = document.createElement('span');
+    this.label_.textContent = label;
+  } else {
+    this.label_ = label;
+  }
+
 
   var activeLabel = (this.collapsible_ && !this.collapsed_) ?
       this.collapseLabel_ : this.label_;
-  var button = goog.dom.createDom('BUTTON', {
-    'type': 'button',
-    'title': tipLabel
-  }, activeLabel);
+  var button = document.createElement('button');
+  button.setAttribute('type', 'button');
+  button.title = tipLabel;
+  button.appendChild(activeLabel);
 
   ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
 
@@ -100,8 +106,10 @@ ol.control.Attribution = function(opt_options) {
       ol.css.CLASS_CONTROL +
       (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
       (this.collapsible_ ? '' : ' ol-uncollapsible');
-  var element = goog.dom.createDom('DIV',
-      cssClasses, this.ulElement_, button);
+  var element = document.createElement('div');
+  element.className = cssClasses;
+  element.appendChild(this.ulElement_);
+  element.appendChild(button);
 
   var render = options.render ? options.render : ol.control.Attribution.render;
 
@@ -214,7 +222,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
 
   if (!frameState) {
     if (this.renderedVisible_) {
-      goog.style.setElementShown(this.element, false);
+      this.element.style.display = 'none';
       this.renderedVisible_ = false;
     }
     return;
@@ -230,20 +238,18 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   for (attributionKey in this.attributionElements_) {
     if (attributionKey in visibleAttributions) {
       if (!this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.setElementShown(
-            this.attributionElements_[attributionKey], true);
+        this.attributionElements_[attributionKey].style.display = '';
         this.attributionElementRenderedVisible_[attributionKey] = true;
       }
       delete visibleAttributions[attributionKey];
     } else if (attributionKey in hiddenAttributions) {
       if (this.attributionElementRenderedVisible_[attributionKey]) {
-        goog.style.setElementShown(
-            this.attributionElements_[attributionKey], false);
+        this.attributionElements_[attributionKey].style.display = 'none';
         delete this.attributionElementRenderedVisible_[attributionKey];
       }
       delete hiddenAttributions[attributionKey];
     } else {
-      goog.dom.removeNode(this.attributionElements_[attributionKey]);
+      ol.dom.removeNode(this.attributionElements_[attributionKey]);
       delete this.attributionElements_[attributionKey];
       delete this.attributionElementRenderedVisible_[attributionKey];
     }
@@ -260,7 +266,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
     attributionElement = document.createElement('LI');
     attributionElement.innerHTML =
         hiddenAttributions[attributionKey].getHTML();
-    goog.style.setElementShown(attributionElement, false);
+    attributionElement.style.display = 'none';
     this.ulElement_.appendChild(attributionElement);
     this.attributionElements_[attributionKey] = attributionElement;
   }
@@ -269,7 +275,7 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
       !ol.object.isEmpty(this.attributionElementRenderedVisible_) ||
       !ol.object.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
-    goog.style.setElementShown(this.element, renderVisible);
+    this.element.style.display = renderVisible ? '' : 'none';
     this.renderedVisible_ = renderVisible;
   }
   if (renderVisible &&
@@ -296,7 +302,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
 
   for (logo in logoElements) {
     if (!(logo in logos)) {
-      goog.dom.removeNode(logoElements[logo]);
+      ol.dom.removeNode(logoElements[logo]);
       delete logoElements[logo];
     }
   }
@@ -314,9 +320,8 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
       if (logoValue === '') {
         logoElement = image;
       } else {
-        logoElement = goog.dom.createDom('A', {
-          'href': logoValue
-        });
+        logoElement = document.createElement('a');
+        logoElement.href = logoValue;
         logoElement.appendChild(image);
       }
       this.logoLi_.appendChild(logoElement);
@@ -324,7 +329,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     }
   }
 
-  goog.style.setElementShown(this.logoLi_, !ol.object.isEmpty(logos));
+  this.logoLi_.style.display = !ol.object.isEmpty(logos) ? '' : 'none';
 
 };
 
@@ -345,9 +350,9 @@ ol.control.Attribution.prototype.handleClick_ = function(event) {
 ol.control.Attribution.prototype.handleToggle_ = function() {
   this.element.classList.toggle('ol-collapsed');
   if (this.collapsed_) {
-    goog.dom.replaceNode(this.collapseLabel_, this.label_);
+    ol.dom.replaceNode(this.collapseLabel_, this.label_);
   } else {
-    goog.dom.replaceNode(this.label_, this.collapseLabel_);
+    ol.dom.replaceNode(this.label_, this.collapseLabel_);
   }
   this.collapsed_ = !this.collapsed_;
 };
