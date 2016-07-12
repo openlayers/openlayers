@@ -1,13 +1,6 @@
-// We can't use goog.color or goog.color.alpha because they interally use a hex
-// string representation that encodes each channel in a single byte.  This
-// causes occasional loss of precision and rounding errors, especially in the
-// alpha channel.
-
 goog.provide('ol.color');
 
 goog.require('goog.asserts');
-goog.require('goog.color');
-goog.require('goog.color.names');
 goog.require('ol');
 goog.require('ol.math');
 
@@ -22,7 +15,7 @@ ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 
 /**
- * @see goog.color.rgbColorRe_
+ * Regular expression for matching and capturing RGB style strings.
  * @const
  * @type {RegExp}
  * @private
@@ -32,13 +25,23 @@ ol.color.rgbColorRe_ =
 
 
 /**
- * @see goog.color.alpha.rgbaColorRe_
+ * Regular expression for matching and capturing RGBA style strings.
  * @const
  * @type {RegExp}
  * @private
  */
 ol.color.rgbaColorRe_ =
     /^(?:rgba)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|1|0\.\d{0,10})\)$/i;
+
+
+/**
+ * Regular expression for matching potential named color style strings.
+ * @const
+ * @type {RegExp}
+ * @private
+ */
+ol.color.namedColorRe_ =
+    /^([a-z]*)$/i;
 
 
 /**
@@ -71,6 +74,20 @@ ol.color.asString = function(color) {
     goog.asserts.assert(Array.isArray(color), 'Color should be an array');
     return ol.color.toString(color);
   }
+};
+
+/**
+ * Return named color as an rgba string.
+ * @param {string} color Named color.
+ * @return {string} Rgb string.
+ */
+ol.color.fromNamed = function(color) {
+  var el = document.createElement('div');
+  el.style.color = color;
+  document.body.appendChild(el);
+  var rgb = window.getComputedStyle(el).color;
+  document.body.removeChild(el);
+  return rgb;
 };
 
 
@@ -137,15 +154,13 @@ ol.color.fromString = (
  * @return {ol.Color} Color.
  */
 ol.color.fromStringInternal_ = function(s) {
+  var r, g, b, a, color, match;
 
-  var isHex = false;
-  if (ol.ENABLE_NAMED_COLORS && goog.color.names.hasOwnProperty(s)) {
-    s = goog.color.names[s];
-    isHex = true;
+  if (ol.color.namedColorRe_.exec(s)) {
+    s = ol.color.fromNamed(s);
   }
 
-  var r, g, b, a, color, match;
-  if (isHex || (match = ol.color.hexColorRe_.exec(s))) { // hex
+  if (ol.color.hexColorRe_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
     goog.asserts.assert(n == 3 || n == 6,
         'Color string length should be 3 or 6');

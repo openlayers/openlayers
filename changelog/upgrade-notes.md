@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### Removal of `ol.ENABLE_NAMED_COLORS`
+
+This option was previously needed to use named colors with the WebGL renderer but is no longer needed.
+
 ### v3.17.0
 
 #### `ol.source.MapQuest` removal

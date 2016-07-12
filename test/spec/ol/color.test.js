@@ -81,15 +81,13 @@ describe('ol.color', function() {
           [255, 255, 0, 0.1]);
     });
 
-    if (ol.ENABLE_NAMED_COLORS) {
-      it('caches parsed values', function() {
-        var count = ol.color.fromStringInternal_.callCount;
-        ol.color.fromString('aquamarine');
-        expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
-        ol.color.fromString('aquamarine');
-        expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
-      });
-    }
+    it('caches parsed values', function() {
+      var count = ol.color.fromStringInternal_.callCount;
+      ol.color.fromString('aquamarine');
+      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+      ol.color.fromString('aquamarine');
+      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+    });
 
     it('throws an error on invalid colors', function() {
       var invalidColors = ['tuesday', '#1234567', 'rgb(255.0,0,0)'];
