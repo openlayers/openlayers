@@ -253,6 +253,32 @@ ol.format.WMTSCapabilities.readTileMatrix_ = function(node, objectStack) {
 
 
 /**
+ * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} TileMatrixSetLimits Object.
+ */
+ol.format.WMTSCapabilities.readTileMatrixLimitsList_ = function(node,
+    objectStack) {
+  return ol.xml.pushParseAndPop([],
+      ol.format.WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_, node,
+      objectStack);
+};
+
+
+/**
+ * @private
+ * @param {Node} node Node.
+ * @param {Array.<*>} objectStack Object stack.
+ * @return {Object|undefined} TileMatrixLimits Array.
+ */
+ol.format.WMTSCapabilities.readTileMatrixLimits_ = function(node, objectStack) {
+  return ol.xml.pushParseAndPop({},
+      ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_, node, objectStack);
+};
+
+
+/**
  * @const
  * @private
  * @type {Array.<string>}
@@ -354,7 +380,41 @@ ol.format.WMTSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
 ol.format.WMTSCapabilities.TMS_LINKS_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
       'TileMatrixSet': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString)
+          ol.format.XSD.readString),
+      'TileMatrixSetLimits': ol.xml.makeObjectPropertySetter(
+          ol.format.WMTSCapabilities.readTileMatrixLimitsList_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WMTSCapabilities.TMS_LIMITS_LIST_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
+      'TileMatrixLimits': ol.xml.makeArrayPusher(
+          ol.format.WMTSCapabilities.readTileMatrixLimits_)
+    });
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.xml.Parser>>}
+ * @private
+ */
+ol.format.WMTSCapabilities.TMS_LIMITS_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.WMTSCapabilities.NAMESPACE_URIS_, {
+      'TileMatrix': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readString),
+      'MinTileRow': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger),
+      'MaxTileRow': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger),
+      'MinTileCol': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger),
+      'MaxTileCol': ol.xml.makeObjectPropertySetter(
+          ol.format.XSD.readNonNegativeInteger)
     });
 
 

@@ -1309,7 +1309,79 @@ describe('ol.format.KML', function() {
         expect(f.get('capital')).to.be('London');
         expect(f.get('population')).to.be('60000000');
       });
+
+      it('can read ExtendedData with displayName instead of name', function() {
+        var text =
+            '<kml xmlns="http://earth.google.com/kml/2.2">' +
+            '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
+            '    <ExtendedData>' +
+            '      <Data>' +
+            '        <displayName>capital</displayName>' +
+            '        <value>London</value>' +
+            '      /Data>' +
+            '    </ExtendedData>' +
+            '  </Placemark>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.get('capital')).to.be('London');
+      });
+
     });
+
+    describe('region ', function() {
+      it('can read LatLonAltBox', function() {
+        var text =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '  <Placemark>' +
+          '    <Region>' +
+          '      <LatLonAltBox>' +
+          '        <north>43.507038</north>' +
+          '        <south>43.488125</south>' +
+          '        <east>1.326859</east>' +
+          '        <west>1.302759</west>' +
+          '      </LatLonAltBox>' +
+          '    </Region>' +
+          '  </Placemark>' +
+          '  </Document>' +
+          '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.get('north')).to.be(43.507038);
+      });
+
+      it('can read Lod', function() {
+        var text =
+            '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+            '  <Document>' +
+            '  <Placemark>' +
+            '    <Region>' +
+            '      <Lod>' +
+            '        <minLodPixels>256</minLodPixels>' +
+            '        <maxLodPixels>-1</maxLodPixels>' +
+            '        <minFadeExtent>0</minFadeExtent>' +
+            '        <maxFadeExtent>0</maxFadeExtent>' +
+            '      </Lod>' +
+            '    </Region>' +
+            '    </NetworkLink>' +
+            '  </Placemark>' +
+            '  </Document>' +
+            '</kml>';
+        var fs = format.readFeatures(text);
+        expect(fs).to.have.length(1);
+        var f = fs[0];
+        expect(f).to.be.an(ol.Feature);
+        expect(f.get('minLodPixels')).to.be(256);
+      });
+
+    }
+
+    );
 
     describe('styles', function() {
 
@@ -2811,6 +2883,14 @@ describe('ol.format.KML', function() {
           '      <Link>' +
           '        <href>bar/bar.kml</href>' +
           '      </Link>' +
+          '      <Region>' +
+          '        <LatLonAltBox>' +
+          '          <north>43.507038</north>' +
+          '          <south>43.488125</south>' +
+          '          <east>1.326859</east>' +
+          '          <west>1.302759</west>' +
+          '        </LatLonAltBox>' +
+          '      </Region>' +
           '    </NetworkLink>' +
           '  </Document>' +
           '  <Folder>' +
@@ -2824,8 +2904,64 @@ describe('ol.format.KML', function() {
       var nl = format.readNetworkLinks(text);
       expect(nl).to.have.length(2);
       expect(nl[0].name).to.be('bar');
+      expect(nl[0].north).to.be(43.507038);
       expect(nl[0].href.replace(window.location.href, '')).to.be('bar/bar.kml');
       expect(nl[1].href).to.be('http://foo.com/foo.kml');
+    });
+
+  });
+
+  describe('#readRegion', function() {
+    it('returns empty if no region found', function() {
+      var text =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '  </Document>' +
+          '</kml>';
+      var nl = format.readRegion(text);
+      expect(nl).to.have.length(0);
+    });
+
+    it('returns a region', function() {
+      var text =
+          '<kml xmlns="http://www.opengis.net/kml/2.2">' +
+          '  <Document>' +
+          '    <Region>' +
+          '      <LatLonAltBox>' +
+          '        <north>43.507038</north>' +
+          '        <south>43.488125</south>' +
+          '        <east>1.326859</east>' +
+          '        <west>1.302759</west>' +
+          '      </LatLonAltBox>' +
+          '      <Lod>' +
+          '        <minLodPixels>256</minLodPixels>' +
+          '        <maxLodPixels>-1</maxLodPixels>' +
+          '        <minFadeExtent>0</minFadeExtent>' +
+          '        <maxFadeExtent>0</maxFadeExtent>' +
+          '      </Lod>' +
+          '    </Region>' +
+          '  </Document>' +
+          '  <Folder>' +
+          '    <Region>' +
+          '      <LatLonAltBox>' +
+          '        <north>43.507038</north>' +
+          '        <south>43.488125</south>' +
+          '        <east>1.326859</east>' +
+          '        <west>1.302759</west>' +
+          '      </LatLonAltBox>' +
+          '      <Lod>' +
+          '        <minLodPixels>256</minLodPixels>' +
+          '        <maxLodPixels>-1</maxLodPixels>' +
+          '        <minFadeExtent>0</minFadeExtent>' +
+          '        <maxFadeExtent>0</maxFadeExtent>' +
+          '      </Lod>' +
+          '    </Region>' +
+          '  </Folder>' +
+          '</kml>';
+      var re = format.readRegion(text);
+      expect(re).to.have.length(2);
+      expect(re[0].north).to.be(43.507038);
+      expect(re[0].minLodPixels).to.be(256);
     });
 
   });

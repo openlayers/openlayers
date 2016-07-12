@@ -320,7 +320,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   goog.asserts.assert(l['TileMatrixSetLink'].length > 0,
       'layer has TileMatrixSetLink');
   var tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  var idx, matrixSet;
+  var idx, matrixSet, matrixLimits;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
       idx = ol.array.findIndex(l['TileMatrixSetLink'],
@@ -346,6 +346,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
+  matrixLimits = /** @type {Array.<Object>} */
+      (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   goog.asserts.assert(matrixSet, 'TileMatrixSet must not be null');
 
@@ -415,7 +417,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
 
   var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
-      matrixSetObj, extent);
+      matrixSetObj, extent, matrixLimits);
 
   /** @type {!Array.<string>} */
   var urls = [];

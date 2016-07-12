@@ -191,6 +191,34 @@ describe('ol.source.WMTS', function() {
         });
   });
 
+  describe('when creating options from IGN capabilities', function() {
+    var parser = new ol.format.WMTSCapabilities();
+    var capabilities;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wmts/ign.xml', function(xml) {
+        try {
+          capabilities = parser.read(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('can create a tileGrid limited by layer TileMatrixSetLimits' +
+        'of capabilities', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(
+        capabilities, {
+          layer: 'ORTHOIMAGERY.ORTHOPHOTOS',
+          matrixSet: 'PM'
+        }
+      );
+
+      expect(options.tileGrid.getMatrixIds().length).to.be.eql(
+        capabilities.Contents.Layer[0].TileMatrixSetLink[0].TileMatrixSetLimits.length);
+    });
+  });
+
   describe('#getUrls', function() {
 
     var sourceOptions;

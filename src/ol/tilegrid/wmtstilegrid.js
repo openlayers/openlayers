@@ -1,5 +1,6 @@
 goog.provide('ol.tilegrid.WMTS');
 
+goog.require('goog.array');
 goog.require('goog.asserts');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
@@ -65,15 +66,20 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
 
 
 /**
- * Create a tile grid from a WMTS capabilities matrix set.
+ * Create a tile grid from a WMTS capabilities matrix set and an
+ * optional TileMatrixSetLimits.
  * @param {Object} matrixSet An object representing a matrixSet in the
  *     capabilities document.
  * @param {ol.Extent=} opt_extent An optional extent to restrict the tile
  *     ranges the server provides.
+ * @param {Array.<Object>=} opt_matrixLimits An optional object representing
+ *     the available matrices for tileGrid.
  * @return {ol.tilegrid.WMTS} WMTS tileGrid instance.
  * @api
  */
-ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent) {
+ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent, opt_matrixLimits) {
+
+  var matrixLimits = goog.isDef(opt_matrixLimits) ? opt_matrixLimits : [];
 
   /** @type {!Array.<number>} */
   var resolutions = [];
@@ -106,21 +112,36 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
   });
 
   matrixSet[matrixIdsPropName].forEach(function(elt, index, array) {
-    matrixIds.push(elt[identifierPropName]);
-    var resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
-    var tileWidth = elt[tileWidthPropName];
-    var tileHeight = elt[tileHeightPropName];
-    if (switchOriginXY) {
-      origins.push([elt[topLeftCornerPropName][1],
-        elt[topLeftCornerPropName][0]]);
+
+    var matrixAvailable;
+    // use of matrixLimits to filter TileMatrices from GetCapabilities
+    // TileMatrixSet from unavailable matrix levels.
+    if (matrixLimits.length > 0) {
+      matrixAvailable = goog.array.find(matrixLimits,
+          function(elt_ml, index_ml, array_ml) {
+            return elt[identifierPropName] == elt_ml[matrixIdsPropName];
+          });
     } else {
-      origins.push(elt[topLeftCornerPropName]);
+      matrixAvailable = true;
     }
-    resolutions.push(resolution);
-    tileSizes.push(tileWidth == tileHeight ?
-        tileWidth : [tileWidth, tileHeight]);
-    // top-left origin, so height is negative
-    sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
+
+    if (matrixAvailable) {
+      matrixIds.push(elt[identifierPropName]);
+      var resolution = elt[scaleDenominatorPropName] * 0.28E-3 / metersPerUnit;
+      var tileWidth = elt[tileWidthPropName];
+      var tileHeight = elt[tileHeightPropName];
+      if (switchOriginXY) {
+        origins.push([elt[topLeftCornerPropName][1],
+          elt[topLeftCornerPropName][0]]);
+      } else {
+        origins.push(elt[topLeftCornerPropName]);
+      }
+      resolutions.push(resolution);
+      tileSizes.push(tileWidth == tileHeight ?
+          tileWidth : [tileWidth, tileHeight]);
+      // top-left origin, so height is negative
+      sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
+    }
   });
 
   return new ol.tilegrid.WMTS({
