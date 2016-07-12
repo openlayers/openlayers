@@ -65,7 +65,8 @@ ol.format.KML = function(opt_options) {
    * @type {Array.<ol.style.Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
-      options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
+      options.defaultStyle :
+      (ol.format.KML.DEFAULT_STYLE_ARRAY_ || ol.format.KML.createStyleDefaults_());
 
   /**
    * @private
@@ -140,147 +141,142 @@ ol.format.KML.SCHEMA_LOCATION_ = 'http://www.opengis.net/kml/2.2 ' +
 
 
 /**
- * @const
- * @type {ol.Color}
+ * @return {Array.<ol.style.Style>} Default style.
  * @private
  */
-ol.format.KML.DEFAULT_COLOR_ = [255, 255, 255, 1];
+ol.format.KML.createStyleDefaults_ = function() {
+  /**
+   * @const
+   * @type {ol.Color}
+   * @private
+   */
+  ol.format.KML.DEFAULT_COLOR_ = [255, 255, 255, 1];
 
+  /**
+   * @const
+   * @type {ol.style.Fill}
+   * @private
+   */
+  ol.format.KML.DEFAULT_FILL_STYLE_ = new ol.style.Fill({
+    color: ol.format.KML.DEFAULT_COLOR_
+  });
 
-/**
- * @const
- * @type {ol.style.Fill}
- * @private
- */
-ol.format.KML.DEFAULT_FILL_STYLE_ = new ol.style.Fill({
-  color: ol.format.KML.DEFAULT_COLOR_
-});
+  /**
+   * @const
+   * @type {ol.Size}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [20, 2]; // FIXME maybe [8, 32] ?
 
+  /**
+   * @const
+   * @type {ol.style.IconAnchorUnits}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
+      ol.style.IconAnchorUnits.PIXELS;
 
-/**
- * @const
- * @type {ol.Size}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_ = [20, 2]; // FIXME maybe [8, 32] ?
+  /**
+   * @const
+   * @type {ol.style.IconAnchorUnits}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
+      ol.style.IconAnchorUnits.PIXELS;
 
+  /**
+   * @const
+   * @type {ol.Size}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [64, 64];
 
-/**
- * @const
- * @type {ol.style.IconAnchorUnits}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
-    ol.style.IconAnchorUnits.PIXELS;
+  /**
+   * @const
+   * @type {string}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
+      'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
 
+  /**
+   * @const
+   * @type {number}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ = 0.5;
 
-/**
- * @const
- * @type {ol.style.IconAnchorUnits}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
-    ol.style.IconAnchorUnits.PIXELS;
+  /**
+   * @const
+   * @type {ol.style.Image}
+   * @private
+   */
+  ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
+    anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
+    anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
+    anchorXUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
+    anchorYUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
+    crossOrigin: 'anonymous',
+    rotation: 0,
+    scale: ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_,
+    size: ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_,
+    src: ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_
+  });
 
+  /**
+   * @const
+   * @type {ol.style.Stroke}
+   * @private
+   */
+  ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
+    color: ol.format.KML.DEFAULT_COLOR_,
+    width: 1
+  });
 
-/**
- * @const
- * @type {ol.Size}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_ = [64, 64];
+  /**
+   * @const
+   * @type {ol.style.Stroke}
+   * @private
+   */
+  ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_ = new ol.style.Stroke({
+    color: [51, 51, 51, 1],
+    width: 2
+  });
 
+  /**
+   * @const
+   * @type {ol.style.Text}
+   * @private
+   */
+  ol.format.KML.DEFAULT_TEXT_STYLE_ = new ol.style.Text({
+    font: 'bold 16px Helvetica',
+    fill: ol.format.KML.DEFAULT_FILL_STYLE_,
+    stroke: ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_,
+    scale: 0.8
+  });
 
-/**
- * @const
- * @type {string}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_ =
-    'https://maps.google.com/mapfiles/kml/pushpin/ylw-pushpin.png';
+  /**
+   * @const
+   * @type {ol.style.Style}
+   * @private
+   */
+  ol.format.KML.DEFAULT_STYLE_ = new ol.style.Style({
+    fill: ol.format.KML.DEFAULT_FILL_STYLE_,
+    image: ol.format.KML.DEFAULT_IMAGE_STYLE_,
+    text: ol.format.KML.DEFAULT_TEXT_STYLE_,
+    stroke: ol.format.KML.DEFAULT_STROKE_STYLE_,
+    zIndex: 0
+  });
 
+  /**
+   * @const
+   * @type {Array.<ol.style.Style>}
+   * @private
+   */
+  ol.format.KML.DEFAULT_STYLE_ARRAY_ = [ol.format.KML.DEFAULT_STYLE_];
 
-/**
- * @const
- * @type {number}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ = 0.5;
-
-
-/**
- * @const
- * @type {ol.style.Image}
- * @private
- */
-ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
-  anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
-  anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
-  anchorXUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
-  anchorYUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
-  crossOrigin: 'anonymous',
-  rotation: 0,
-  scale: ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_,
-  size: ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_,
-  src: ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_
-});
-
-
-/**
- * @const
- * @type {ol.style.Stroke}
- * @private
- */
-ol.format.KML.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
-  color: ol.format.KML.DEFAULT_COLOR_,
-  width: 1
-});
-
-
-/**
- * @const
- * @type {ol.style.Stroke}
- * @private
- */
-ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_ = new ol.style.Stroke({
-  color: [51, 51, 51, 1],
-  width: 2
-});
-
-
-/**
- * @const
- * @type {ol.style.Text}
- * @private
- */
-ol.format.KML.DEFAULT_TEXT_STYLE_ = new ol.style.Text({
-  font: 'bold 16px Helvetica',
-  fill: ol.format.KML.DEFAULT_FILL_STYLE_,
-  stroke: ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_,
-  scale: 0.8
-});
-
-
-/**
- * @const
- * @type {ol.style.Style}
- * @private
- */
-ol.format.KML.DEFAULT_STYLE_ = new ol.style.Style({
-  fill: ol.format.KML.DEFAULT_FILL_STYLE_,
-  image: ol.format.KML.DEFAULT_IMAGE_STYLE_,
-  text: ol.format.KML.DEFAULT_TEXT_STYLE_,
-  stroke: ol.format.KML.DEFAULT_STROKE_STYLE_,
-  zIndex: 0
-});
-
-
-/**
- * @const
- * @type {Array.<ol.style.Style>}
- * @private
- */
-ol.format.KML.DEFAULT_STYLE_ARRAY_ = [ol.format.KML.DEFAULT_STYLE_];
+  return ol.format.KML.DEFAULT_STYLE_ARRAY_;
+};
 
 
 /**
