@@ -58,6 +58,12 @@ ol.source.ImageVector = function(options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.renderBuffer_ = options.renderBuffer == undefined ? 100 : options.renderBuffer;
+
+  /**
+   * @private
    * @type {ol.render.canvas.ReplayGroup}
    */
   this.replayGroup_ = null;
@@ -108,7 +114,7 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
 
   var replayGroup = new ol.render.canvas.ReplayGroup(
       ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-      resolution);
+      resolution, this.renderBuffer_);
 
   this.source_.loadFeatures(extent, resolution, projection);
 

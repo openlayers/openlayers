@@ -4970,6 +4970,7 @@ olx.source.ImageCanvasOptions.prototype.state;
  *     logo: (string|olx.LogoOptions|undefined),
  *     projection: ol.ProjectionLike,
  *     ratio: (number|undefined),
+ *     renderBuffer: (number|undefined),
  *     resolutions: (Array.<number>|undefined),
  *     source: ol.source.Vector,
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined)}}
@@ -5009,6 +5010,17 @@ olx.source.ImageVectorOptions.prototype.projection;
  * @api
  */
 olx.source.ImageVectorOptions.prototype.ratio;
+
+
+/**
+ * The buffer around the viewport extent used by the renderer when getting
+ * features from the vector source for the rendering or hit-detection.
+ * Recommended value: the size of the largest symbol, line width or label.
+ * Default is 100 pixels.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.ImageVectorOptions.prototype.renderBuffer;
 
 
 /**
