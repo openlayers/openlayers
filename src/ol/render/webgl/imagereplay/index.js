@@ -1908,8 +1908,18 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram_ = function(gl, context, si
  * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {Object} skippedFeaturesHash Ids of features to skip.
+ * @param {boolean} hitDetection Hit detection mode.
  */
-ol.render.webgl.PolygonReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash) {
+ol.render.webgl.PolygonReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, hitDetection) {
+  //Save GL parameters.
+  var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+  var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+
+  if (!hitDetection) {
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    gl.depthFunc(gl.NOTEQUAL);
+  }
 
   if (!ol.object.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
@@ -1927,6 +1937,13 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay_ = function(gl, context, skip
       this.drawElements_(gl, context, start, end);
       end = start;
     }
+  }
+  if (!hitDetection) {
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    gl.disable(gl.DEPTH_TEST);
+    //Restore GL parameters.
+    gl.depthMask(tmpDepthMask);
+    gl.depthFunc(tmpDepthFunc);
   }
 };
 
