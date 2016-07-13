@@ -937,8 +937,7 @@ ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, til
   if (!frameState || !(tileSourceKey in frameState.wantedTiles)) {
     return ol.structs.PriorityQueue.DROP;
   }
-  var coordKey = tile.tileCoord.toString();
-  if (!frameState.wantedTiles[tileSourceKey][coordKey]) {
+  if (!frameState.wantedTiles[tileSourceKey][tile.getKey()]) {
     return ol.structs.PriorityQueue.DROP;
   }
   // Prioritize the highest zoom level tiles closest to the focus.

@@ -84,7 +84,7 @@ ol.Tile.prototype.getImage = goog.abstractMethod;
  * @return {string} Key.
  */
 ol.Tile.prototype.getKey = function() {
-  return goog.getUid(this).toString();
+  return this.key + '/' + this.tileCoord;
 };
 
 
