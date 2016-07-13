@@ -2705,6 +2705,19 @@ describe('ol.format.KML', function() {
       expect(components[1]).to.be.an(ol.geom.MultiPolygon);
     });
 
+    it('reads style and icon', function() {
+      var f = features[0];
+      var styleFunction = f.getStyleFunction();
+      expect(styleFunction).not.to.be(undefined);
+      var styleArray = styleFunction.call(f, 0);
+      expect(styleArray).to.be.an(Array);
+      var style = styleArray[0];
+      expect(style).to.be.an(ol.style.Style);
+      var imageStyle = style.getImage();
+      expect(imageStyle).to.be.an(ol.style.Icon);
+      expect(imageStyle.getSrc()).to.eql('http://maps.google.com/mapfiles/kml/shapes/star.png');
+    });
+
   });
 
   describe('#JSONExport', function() {
@@ -2825,6 +2838,29 @@ describe('ol.format.KML', function() {
       expect(nl).to.have.length(2);
       expect(nl[0].name).to.be('bar');
       expect(nl[0].href.replace(window.location.href, '')).to.be('bar/bar.kml');
+      expect(nl[1].href).to.be('http://foo.com/foo.kml');
+    });
+
+  });
+
+  describe('#readNetworkLinksFile', function() {
+
+    var nl;
+    before(function(done) {
+      afterLoadText('spec/ol/format/kml/networklinks.kml', function(xml) {
+        try {
+          nl = format.readNetworkLinks(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('returns an array of network links', function() {
+      expect(nl).to.have.length(2);
+      expect(nl[0].name).to.be('bar');
+      expect(nl[0].href.replace(window.location.href, '')).to.be('/bar/bar.kml');
       expect(nl[1].href).to.be('http://foo.com/foo.kml');
     });
 
