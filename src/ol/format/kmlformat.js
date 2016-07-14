@@ -5,7 +5,6 @@
 
 goog.provide('ol.format.KML');
 
-goog.require('goog.Uri');
 goog.require('goog.asserts');
 goog.require('goog.object');
 goog.require('ol');
@@ -43,6 +42,9 @@ goog.require('ol.xml');
 /**
  * @classdesc
  * Feature format for reading and writing data in the KML format.
+ *
+ * Note that the KML format uses the URL() constructor. Older browsers such as IE
+ * which do not support this will need a URL polyfill to be loaded before use.
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
@@ -482,30 +484,15 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
 /**
  * @param {Node} node Node.
  * @private
- * @return {string|undefined} Style URL.
- */
-ol.format.KML.readStyleUrl_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false).trim();
-  if (node.baseURI) {
-    return goog.Uri.resolve(node.baseURI, s).toString();
-  } else {
-    return s;
-  }
-
-};
-
-
-/**
- * @param {Node} node Node.
- * @private
  * @return {string} URI.
  */
 ol.format.KML.readURI_ = function(node) {
-  var s = ol.xml.getAllTextContent(node, false);
+  var s = ol.xml.getAllTextContent(node, false).trim();
   if (node.baseURI) {
-    return goog.Uri.resolve(node.baseURI, s.trim()).toString();
+    var url = new URL(s, node.baseURI);
+    return url.href;
   } else {
-    return s.trim();
+    return s;
   }
 };
 
@@ -1622,7 +1609,7 @@ ol.format.KML.PAIR_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Style': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyle_),
       'key': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readStyleUrl_)
+      'styleUrl': ol.xml.makeObjectPropertySetter(ol.format.KML.readURI_)
     });
 
 
@@ -1814,7 +1801,8 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
     if (style) {
       var styleUri;
       if (node.baseURI) {
-        styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
+        var url = new URL('#' + id, node.baseURI);
+        styleUri = url.href;
       } else {
         styleUri = '#' + id;
       }
@@ -1844,7 +1832,8 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
   }
   var styleUri;
   if (node.baseURI) {
-    styleUri = goog.Uri.resolve(node.baseURI, '#' + id).toString();
+    var url = new URL('#' + id, node.baseURI);
+    styleUri = url.href;
   } else {
     styleUri = '#' + id;
   }
