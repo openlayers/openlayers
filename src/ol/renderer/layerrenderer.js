@@ -311,7 +311,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
         if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, pixelRatio, projection);
           if (tile.getState() == ol.TileState.IDLE) {
-            wantedTiles[tile.tileCoord.toString()] = true;
+            wantedTiles[tile.getKey()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {
               tileQueue.enqueue([tile, tileSourceKey,
                 tileGrid.getTileCoordCenter(tile.tileCoord), tileResolution]);
