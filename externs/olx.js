@@ -5849,8 +5849,8 @@ olx.source.VectorOptions.prototype.strategy;
 
 
 /**
- * Setting this option instructs the source to use an XHR loader (see
- * {@link ol.featureloader.xhr}). Use a `string` and an
+ * Setting this option instructs the source to load features using an XHR loader
+ * (see {@link ol.featureloader.xhr}). Use a `string` and an
  * {@link ol.loadingstrategy.all} for a one-off download of all features from
  * the given URL. Use a {@link ol.FeatureUrlFunction} to generate the url with
  * other loading strategies.
@@ -5861,6 +5861,8 @@ olx.source.VectorOptions.prototype.strategy;
  * properly, this transformation will be incorrect. For some formats, the
  * default projection (usually EPSG:4326) can be overridden by setting the
  * defaultDataProjection constructor option on the format.
+ * Note that if a source contains non-feature data, such as a GeoJSON geometry
+ * or a KML NetworkLink, these will be ignored. Use a custom loader to load these.
  * @type {string|ol.FeatureUrlFunction|undefined}
  * @api
  */
