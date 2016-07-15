@@ -270,7 +270,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           i = /** @type {number} */ (instruction[2]);
         } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
             opt_hitExtent, feature.getGeometry().getExtent())) {
-          i = /** @type {number} */ (instruction[2]);
+          i = /** @type {number} */ (instruction[2]) + 1;
         } else {
           ++i;
         }
