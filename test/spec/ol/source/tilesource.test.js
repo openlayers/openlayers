@@ -87,10 +87,10 @@ describe('ol.source.Tile', function() {
 
     it('calls callback for each loaded tile', function() {
       var source = new ol.test.source.TileMock({
-        '1/0/0': ol.TileState.LOADED,
-        '1/0/1': ol.TileState.LOADED,
-        '1/1/0': ol.TileState.LOADING,
-        '1/1/1': ol.TileState.LOADED
+        '1/0/0': 2, // LOADED
+        '1/0/1': 2, // LOADED
+        '1/1/0': 1, // LOADING,
+        '1/1/1': 2 // LOADED
       });
 
       var zoom = 1;
@@ -103,10 +103,10 @@ describe('ol.source.Tile', function() {
     it('returns true if range is fully loaded', function() {
       // a source with no loaded tiles
       var source = new ol.test.source.TileMock({
-        '1/0/0': ol.TileState.LOADED,
-        '1/0/1': ol.TileState.LOADED,
-        '1/1/0': ol.TileState.LOADED,
-        '1/1/1': ol.TileState.LOADED
+        '1/0/0': 2, // LOADED,
+        '1/0/1': 2, // LOADED,
+        '1/1/0': 2, // LOADED,
+        '1/1/1': 2 // LOADED
       });
 
       var zoom = 1;
@@ -123,10 +123,10 @@ describe('ol.source.Tile', function() {
     it('returns false if range is not fully loaded', function() {
       // a source with no loaded tiles
       var source = new ol.test.source.TileMock({
-        '1/0/0': ol.TileState.LOADED,
-        '1/0/1': ol.TileState.LOADED,
-        '1/1/0': ol.TileState.LOADING,
-        '1/1/1': ol.TileState.LOADED
+        '1/0/0': 2, // LOADED,
+        '1/0/1': 2, // LOADED,
+        '1/1/0': 1, // LOADING,
+        '1/1/1': 2 // LOADED
       });
 
       var zoom = 1;
@@ -143,10 +143,10 @@ describe('ol.source.Tile', function() {
     it('allows callback to override loaded check', function() {
       // a source with no loaded tiles
       var source = new ol.test.source.TileMock({
-        '1/0/0': ol.TileState.LOADED,
-        '1/0/1': ol.TileState.LOADED,
-        '1/1/0': ol.TileState.LOADED,
-        '1/1/1': ol.TileState.LOADED
+        '1/0/0': 2, // LOADED,
+        '1/0/1': 2, // LOADED,
+        '1/1/0': 2, // LOADED,
+        '1/1/1': 2 // LOADED
       });
 
       var zoom = 1;
@@ -215,7 +215,7 @@ describe('ol.source.Tile', function() {
     it('checks clearing of internal state', function() {
       // create a source with one loaded tile
       var source = new ol.test.source.TileMock({
-        '1/0/0': ol.TileState.LOADED
+        '1/0/0': 2 // LOADED
       });
       // check the loaded tile is there
       var tile = source.getTile(1, 0, 0);
@@ -269,7 +269,7 @@ ol.test.source.TileMock.prototype.getTile = function(z, x, y) {
   if (this.tileCache.containsKey(key)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(key));
   } else {
-    var tile = new ol.Tile(key, ol.TileState.IDLE);
+    var tile = new ol.Tile(key, 0); // IDLE
     this.tileCache.set(key, tile);
     return tile;
   }
@@ -289,25 +289,25 @@ describe('ol.test.source.TileMock', function() {
   describe('#getTile()', function() {
     it('returns a tile with state based on constructor arg', function() {
       var source = new ol.test.source.TileMock({
-        '0/0/0': ol.TileState.LOADED,
-        '1/0/0': ol.TileState.LOADED
+        '0/0/0': 2, // LOADED,
+        '1/0/0': 2 // LOADED
       });
       var tile;
 
       // check a loaded tile
       tile = source.getTile(0, 0, 0);
       expect(tile).to.be.a(ol.Tile);
-      expect(tile.state).to.be(ol.TileState.LOADED);
+      expect(tile.state).to.be(2); // LOADED
 
       // check a tile that is not loaded
       tile = source.getTile(1, 0, -1);
       expect(tile).to.be.a(ol.Tile);
-      expect(tile.state).to.be(ol.TileState.IDLE);
+      expect(tile.state).to.be(0); // IDLE
 
       // check another loaded tile
       tile = source.getTile(1, 0, 0);
       expect(tile).to.be.a(ol.Tile);
-      expect(tile.state).to.be(ol.TileState.LOADED);
+      expect(tile.state).to.be(2); // LOADED
 
     });
   });
@@ -316,7 +316,6 @@ describe('ol.test.source.TileMock', function() {
 
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
-goog.require('ol.TileState');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.source.Source');

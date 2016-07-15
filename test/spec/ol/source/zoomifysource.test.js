@@ -217,12 +217,12 @@ describe('ol.source.Zoomify', function() {
       var tile = source.getTile(0, 0, -1, 1, proj);
 
       ol.events.listen(tile, 'change', function() {
-        if (tile.getState() == ol.TileState.LOADED) {
+        if (tile.getState() == 2) { // LOADED
           var img = tile.getImage(context);
           expect(img).to.be.a(HTMLCanvasElement);
 
           var tile2 = source.getTile(0, 0, -1, 1, proj);
-          expect(tile2.getState()).to.be(ol.TileState.LOADED);
+          expect(tile2.getState()).to.be(2); // LOADED
           var img2 = tile2.getImage(context);
           expect(img).to.be(img2);
           done();
@@ -262,5 +262,4 @@ goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.proj.Projection');
 goog.require('ol.source.Zoomify');
-goog.require('ol.TileState');
 goog.require('ol.tilegrid.TileGrid');

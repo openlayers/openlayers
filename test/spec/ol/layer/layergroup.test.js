@@ -32,7 +32,7 @@ describe('ol.layer.Group', function() {
         opacity: 1,
         visible: true,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: undefined,
         zIndex: 0,
         maxResolution: Infinity,
@@ -68,14 +68,14 @@ describe('ol.layer.Group', function() {
     });
 
     it('is dispatched by the group when layer opacity changes', function() {
-      group.on(ol.events.EventType.CHANGE, listener);
+      group.on('change', listener);
 
       layer.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
     it('is dispatched by the group when layer visibility changes', function() {
-      group.on(ol.events.EventType.CHANGE, listener);
+      group.on('change', listener);
 
       layer.setVisible(false);
       expect(listener.callCount).to.be(1);
@@ -107,14 +107,14 @@ describe('ol.layer.Group', function() {
     });
 
     it('is dispatched by the group when group opacity changes', function() {
-      group.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
+      group.on('propertychange', listener);
 
       group.setOpacity(0.5);
       expect(listener.calledOnce).to.be(true);
     });
 
     it('is dispatched by the group when group visibility changes', function() {
-      group.on(ol.ObjectEventType.PROPERTYCHANGE, listener);
+      group.on('propertychange', listener);
 
       group.setVisible(false);
       expect(listener.callCount).to.be(1);
@@ -151,7 +151,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.5,
         visible: false,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: undefined,
         zIndex: 10,
         maxResolution: 500,
@@ -192,7 +192,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.5,
         visible: false,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: groupExtent,
         zIndex: 0,
         maxResolution: 500,
@@ -232,7 +232,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.3,
         visible: false,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: groupExtent,
         zIndex: 10,
         maxResolution: 500,
@@ -248,7 +248,7 @@ describe('ol.layer.Group', function() {
         opacity: 0,
         visible: false,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: undefined,
         zIndex: 0,
         maxResolution: Infinity,
@@ -262,7 +262,7 @@ describe('ol.layer.Group', function() {
         opacity: 1,
         visible: true,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: undefined,
         zIndex: 0,
         maxResolution: Infinity,
@@ -426,7 +426,7 @@ describe('ol.layer.Group', function() {
         opacity: 0.25,
         visible: false,
         managed: true,
-        sourceState: ol.source.State.READY,
+        sourceState: 'ready',
         extent: undefined,
         zIndex: 0,
         maxResolution: 150,
@@ -491,13 +491,10 @@ describe('ol.layer.Group', function() {
 
 goog.require('ol.array');
 goog.require('ol.Collection');
-goog.require('ol.ObjectEventType');
 goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Group');
 goog.require('ol.layer.Layer');
 goog.require('ol.object');
 goog.require('ol.renderer.Map');
 goog.require('ol.source.Source');
-goog.require('ol.source.State');

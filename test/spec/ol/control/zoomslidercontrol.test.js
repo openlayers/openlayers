@@ -63,7 +63,7 @@ describe('ol.control.ZoomSlider', function() {
       control.setMap(map);
       control.initSlider_();
 
-      var horizontal = ol.control.ZoomSlider.direction.HORIZONTAL;
+      var horizontal = 1;
       expect(control.direction_).to.be(horizontal);
 
       control.dispose();
@@ -76,7 +76,7 @@ describe('ol.control.ZoomSlider', function() {
 
       control.setMap(map);
 
-      var vertical = ol.control.ZoomSlider.direction.VERTICAL;
+      var vertical = 0;
       expect(control.direction_).to.be(vertical);
 
       control.dispose();
@@ -109,7 +109,7 @@ describe('ol.control.ZoomSlider', function() {
       control.element.firstChild.style.height = '10px';
       map.renderSync();
       var dragger = control.dragger_;
-      var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
+      var event = new ol.pointer.PointerEvent('pointerdown', {
         target: control.element.firstElementChild
       });
       event.clientX = control.widthLimit_;
@@ -118,16 +118,16 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.currentResolution_).to.be(16);
       expect(control.dragging_).to.be(true);
       expect(control.dragListenerKeys_.length).to.be(6);
-      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.type = 'pointermove';
       event.clientX = 6 * control.widthLimit_ / 8;
       event.clientY = 0;
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(4);
-      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.type = 'pointermove';
       event.clientX = 4 * control.widthLimit_ / 8;
       event.clientY = 0;
       dragger.dispatchEvent(event);
-      event.type = ol.pointer.EventType.POINTERUP;
+      event.type = 'pointerup';
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
       expect(control.dragListenerKeys_.length).to.be(0);
@@ -143,7 +143,7 @@ describe('ol.control.ZoomSlider', function() {
       map.getView().setZoom(8);
       map.renderSync();
       var dragger = control.dragger_;
-      var event = new ol.pointer.PointerEvent(ol.pointer.EventType.POINTERDOWN, {
+      var event = new ol.pointer.PointerEvent('pointerdown', {
         target: control.element.firstElementChild
       });
       event.clientX = 0;
@@ -152,16 +152,16 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.currentResolution_).to.be(0.0625);
       expect(control.dragging_).to.be(true);
       expect(control.dragListenerKeys_.length).to.be(6);
-      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 2 * control.heightLimit_ / 8;
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(0.25);
-      event.type = ol.pointer.EventType.POINTERMOVE;
+      event.type = 'pointermove';
       event.clientX = 0;
       event.clientY = 4 * control.heightLimit_ / 8;
       dragger.dispatchEvent(event);
-      event.type = ol.pointer.EventType.POINTERUP;
+      event.type = 'pointerup';
       dragger.dispatchEvent(event);
       expect(control.currentResolution_).to.be(1);
       expect(control.dragListenerKeys_.length).to.be(0);

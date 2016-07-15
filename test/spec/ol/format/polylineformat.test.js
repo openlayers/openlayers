@@ -316,11 +316,11 @@ describe('ol.format.Polyline', function() {
         43.252, -126.453, 20
       ], 3);
       var format = new ol.format.Polyline({
-        geometryLayout: ol.geom.GeometryLayout.XYZ
+        geometryLayout: 'XYZ'
       });
 
       var geometry = format.readGeometry(xyz);
-      expect(geometry.getLayout()).to.eql(ol.geom.GeometryLayout.XYZ);
+      expect(geometry.getLayout()).to.eql('XYZ');
       expect(geometry.getCoordinates()).to.eql([
         [-120.200, 38.500, 100],
         [-120.950, 40.700, 200],
@@ -399,6 +399,5 @@ describe('ol.format.Polyline', function() {
 
 goog.require('ol.Feature');
 goog.require('ol.format.Polyline');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');

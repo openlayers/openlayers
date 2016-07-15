@@ -21,7 +21,7 @@ describe('ol.renderer.vector', function() {
       listener = function() {};
       listenerThis = {};
       iconStyleLoadSpy = sinon.stub(iconStyle, 'load', function() {
-        iconStyle.iconImage_.imageState_ = ol.style.ImageState.LOADING;
+        iconStyle.iconImage_.imageState_ = 1; // LOADING
       });
     });
 
@@ -40,7 +40,7 @@ describe('ol.renderer.vector', function() {
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
         listeners = ol.events.getListeners(
-            iconStyle.iconImage_, ol.events.EventType.CHANGE);
+            iconStyle.iconImage_, 'change');
         expect(listeners.length).to.eql(1);
 
         // call #2
@@ -49,7 +49,7 @@ describe('ol.renderer.vector', function() {
 
         expect(iconStyleLoadSpy.calledOnce).to.be.ok();
         listeners = ol.events.getListeners(
-            iconStyle.iconImage_, ol.events.EventType.CHANGE);
+            iconStyle.iconImage_, 'change');
         expect(listeners.length).to.eql(1);
       });
 
@@ -60,7 +60,7 @@ describe('ol.renderer.vector', function() {
       it('does not render the point', function() {
         feature.setGeometry(new ol.geom.Point([0, 0]));
         var imageReplay = replayGroup.getReplay(
-            style.getZIndex(), ol.render.ReplayType.IMAGE);
+            style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
         var drawPointSpy = sinon.stub(imageReplay,
             'drawPoint', ol.nullFunction);
@@ -74,7 +74,7 @@ describe('ol.renderer.vector', function() {
       it('does not render the multipoint', function() {
         feature.setGeometry(new ol.geom.MultiPoint([[0, 0], [1, 1]]));
         var imageReplay = replayGroup.getReplay(
-            style.getZIndex(), ol.render.ReplayType.IMAGE);
+            style.getZIndex(), 'Image');
         var setImageStyleSpy = sinon.spy(imageReplay, 'setImageStyle');
         var drawMultiPointSpy = sinon.stub(imageReplay,
             'drawMultiPoint', ol.nullFunction);
@@ -88,7 +88,7 @@ describe('ol.renderer.vector', function() {
       it('does render the linestring', function() {
         feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
         var lineStringReplay = replayGroup.getReplay(
-            style.getZIndex(), ol.render.ReplayType.LINE_STRING);
+            style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
             'setFillStrokeStyle');
         var drawLineStringSpy = sinon.stub(lineStringReplay,
@@ -104,7 +104,7 @@ describe('ol.renderer.vector', function() {
       it('does render the multilinestring', function() {
         feature.setGeometry(new ol.geom.MultiLineString([[[0, 0], [1, 1]]]));
         var lineStringReplay = replayGroup.getReplay(
-            style.getZIndex(), ol.render.ReplayType.LINE_STRING);
+            style.getZIndex(), 'LineString');
         var setFillStrokeStyleSpy = sinon.spy(lineStringReplay,
             'setFillStrokeStyle');
         var drawMultiLineStringSpy = sinon.stub(lineStringReplay,
@@ -121,7 +121,7 @@ describe('ol.renderer.vector', function() {
         feature.setGeometry(new ol.geom.Polygon(
             [[[0, 0], [1, 1], [1, 0], [0, 0]]]));
         var polygonReplay = replayGroup.getReplay(
-            style.getZIndex(), ol.render.ReplayType.POLYGON);
+            style.getZIndex(), 'Polygon');
         var setFillStrokeStyleSpy = sinon.spy(polygonReplay,
             'setFillStrokeStyle');
         var drawPolygonSpy = sinon.stub(polygonReplay,
@@ -138,7 +138,7 @@ describe('ol.renderer.vector', function() {
         feature.setGeometry(new ol.geom.MultiPolygon(
             [[[[0, 0], [1, 1], [1, 0], [0, 0]]]]));
         var polygonReplay = replayGroup.getReplay(
-            style.getZIndex(), ol.render.ReplayType.POLYGON);
+            style.getZIndex(), 'Polygon');
         var setFillStrokeStyleSpy = sinon.spy(polygonReplay,
             'setFillStrokeStyle');
         var drawMultiPolygonSpy = sinon.stub(polygonReplay,
@@ -156,7 +156,6 @@ describe('ol.renderer.vector', function() {
 });
 
 goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
@@ -167,7 +166,6 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
-goog.require('ol.style.ImageState');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.Feature');

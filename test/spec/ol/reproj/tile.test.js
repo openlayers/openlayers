@@ -22,7 +22,7 @@ describe('ol.reproj.Tile', function() {
         proj3857, ol.tilegrid.createForProjection(proj3857), proj4326,
         ol.tilegrid.createForProjection(proj4326, 3, opt_tileSize),
         [3, 2, -2], null, pixelRatio, 0, function(z, x, y, pixelRatio) {
-          return new ol.ImageTile([z, x, y], ol.TileState.IDLE,
+          return new ol.ImageTile([z, x, y], 0, // IDLE
               'data:image/gif;base64,' +
               'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=', null,
               function(tile, src) {
@@ -33,9 +33,9 @@ describe('ol.reproj.Tile', function() {
 
   it('changes state as expected', function(done) {
     var tile = createTile(1);
-    expect(tile.getState()).to.be(ol.TileState.IDLE);
+    expect(tile.getState()).to.be(0); // IDLE
     ol.events.listen(tile, 'change', function() {
-      if (tile.getState() == ol.TileState.LOADED) {
+      if (tile.getState() == 2) { // LOADED
         done();
       }
     });
@@ -51,7 +51,7 @@ describe('ol.reproj.Tile', function() {
         [0, -1, 0], null, 1, 0, function() {
           expect().fail('No tiles should be required');
         });
-    expect(tile.getState()).to.be(ol.TileState.EMPTY);
+    expect(tile.getState()).to.be(4); // EMPTY
   });
 
   it('is empty when outside source tile grid', function() {
@@ -63,13 +63,13 @@ describe('ol.reproj.Tile', function() {
         [3, 2, -2], null, 1, 0, function() {
           expect().fail('No tiles should be required');
         });
-    expect(tile.getState()).to.be(ol.TileState.EMPTY);
+    expect(tile.getState()).to.be(4); // EMPTY
   });
 
   it('respects tile size of target tile grid', function(done) {
     var tile = createTile(1, [100, 40]);
     ol.events.listen(tile, 'change', function() {
-      if (tile.getState() == ol.TileState.LOADED) {
+      if (tile.getState() == 2) { // LOADED
         var canvas = tile.getImage();
         expect(canvas.width).to.be(100);
         expect(canvas.height).to.be(40);
@@ -82,7 +82,7 @@ describe('ol.reproj.Tile', function() {
   it('respects pixelRatio', function(done) {
     var tile = createTile(3, [60, 20]);
     ol.events.listen(tile, 'change', function() {
-      if (tile.getState() == ol.TileState.LOADED) {
+      if (tile.getState() == 2) { // LOADED
         var canvas = tile.getImage();
         expect(canvas.width).to.be(180);
         expect(canvas.height).to.be(60);
@@ -95,7 +95,6 @@ describe('ol.reproj.Tile', function() {
 
 
 goog.require('ol.ImageTile');
-goog.require('ol.TileState');
 goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.reproj.Tile');

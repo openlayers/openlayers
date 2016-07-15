@@ -17,7 +17,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('defaults to layout XY', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(multiPoint.getLayout()).to.be('XY');
     });
 
     it('has empty coordinates', function() {
@@ -53,7 +53,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(multiPoint.getLayout()).to.be('XY');
     });
 
     it('has the expected coordinates', function() {
@@ -94,7 +94,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+      expect(multiPoint.getLayout()).to.be('XYZ');
     });
 
     it('has the expected coordinates', function() {
@@ -120,11 +120,11 @@ describe('ol.geom.MultiPoint', function() {
     var multiPoint;
     beforeEach(function() {
       multiPoint = new ol.geom.MultiPoint(
-          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+          [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(multiPoint.getLayout()).to.be('XYM');
     });
 
     it('has the expected coordinates', function() {
@@ -145,10 +145,10 @@ describe('ol.geom.MultiPoint', function() {
 
     it('can return individual points', function() {
       var point0 = multiPoint.getPoint(0);
-      expect(point0.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(point0.getLayout()).to.be('XYM');
       expect(point0.getCoordinates()).to.eql([1, 2, 3]);
       var point1 = multiPoint.getPoint(1);
-      expect(point1.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(point1.getLayout()).to.be('XYM');
       expect(point1.getCoordinates()).to.eql([4, 5, 6]);
     });
 
@@ -156,10 +156,10 @@ describe('ol.geom.MultiPoint', function() {
       var points = multiPoint.getPoints();
       expect(points).to.have.length(2);
       expect(points[0]).to.be.an(ol.geom.Point);
-      expect(points[0].getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(points[0].getLayout()).to.be('XYM');
       expect(points[0].getCoordinates()).to.eql([1, 2, 3]);
       expect(points[1]).to.be.an(ol.geom.Point);
-      expect(points[1].getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(points[1].getLayout()).to.be('XYM');
       expect(points[1].getCoordinates()).to.eql([4, 5, 6]);
     });
 
@@ -173,7 +173,7 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     it('has the expected layout', function() {
-      expect(multiPoint.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+      expect(multiPoint.getLayout()).to.be('XYZM');
     });
 
     it('has the expected coordinates', function() {
@@ -264,6 +264,5 @@ describe('ol.geom.MultiPoint', function() {
 
 
 goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
