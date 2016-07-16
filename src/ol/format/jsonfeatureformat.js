@@ -26,11 +26,11 @@ ol.inherits(ol.format.JSONFeature, ol.format.Feature);
  * @return {Object} Object.
  */
 ol.format.JSONFeature.prototype.getObject_ = function(source) {
-  if (goog.isObject(source)) {
-    return source;
-  } else if (typeof source === 'string') {
+  if (typeof source === 'string') {
     var object = JSON.parse(source);
     return object ? /** @type {Object} */ (object) : null;
+  } else if (source !== null) {
+    return source;
   } else {
     goog.asserts.fail();
     return null;
