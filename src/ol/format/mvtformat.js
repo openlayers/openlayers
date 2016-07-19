@@ -95,6 +95,7 @@ ol.format.MVT.prototype.getType = function() {
 ol.format.MVT.prototype.readFeature_ = function(
     rawFeature, layer, opt_options) {
   var feature = new this.featureClass_();
+  var id = rawFeature.id;
   var values = rawFeature.properties;
   values[this.layerName_] = layer;
   var geometry = ol.format.Feature.transformWithOptions(
@@ -104,6 +105,7 @@ ol.format.MVT.prototype.readFeature_ = function(
     goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
     values[this.geometryName_] = geometry;
   }
+  feature.setId(id);
   feature.setProperties(values);
   feature.setGeometryName(this.geometryName_);
   return feature;

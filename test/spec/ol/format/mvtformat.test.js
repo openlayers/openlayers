@@ -65,6 +65,15 @@ where('ArrayBuffer').describe('ol.format.MVT', function() {
           .to.eql([rawGeometry[1][0].x, rawGeometry[1][0].y]);
     });
 
+    it('parses id property', function() {
+      var format = new ol.format.MVT({
+        featureClass: ol.Feature,
+        layers: ['building']
+      });
+      var features = format.readFeatures(data);
+      expect(features[0].getId()).to.be(2);
+    });
+
   });
 
 });
