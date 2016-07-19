@@ -129,6 +129,7 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
 
 
 /**
+ * @abstract
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
@@ -136,7 +137,7 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
  * @return {ol.ImageBase} Single image.
  * @protected
  */
-ol.source.Image.prototype.getImageInternal = goog.abstractMethod;
+ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
 
 
 /**

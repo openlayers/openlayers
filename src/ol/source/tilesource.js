@@ -194,6 +194,7 @@ ol.source.Tile.prototype.getResolutions = function() {
 
 
 /**
+ * @abstract
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
@@ -201,7 +202,7 @@ ol.source.Tile.prototype.getResolutions = function() {
  * @param {ol.proj.Projection} projection Projection.
  * @return {!ol.Tile} Tile.
  */
-ol.source.Tile.prototype.getTile = goog.abstractMethod;
+ol.source.Tile.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
 
 
 /**

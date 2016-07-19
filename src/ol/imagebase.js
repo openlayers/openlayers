@@ -90,10 +90,11 @@ ol.ImageBase.prototype.getExtent = function() {
 
 
 /**
+ * @abstract
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
  */
-ol.ImageBase.prototype.getImage = goog.abstractMethod;
+ol.ImageBase.prototype.getImage = function(opt_context) {};
 
 
 /**
@@ -123,5 +124,6 @@ ol.ImageBase.prototype.getState = function() {
 
 /**
  * Load not yet loaded URI.
+ * @abstract
  */
-ol.ImageBase.prototype.load = goog.abstractMethod;
+ol.ImageBase.prototype.load = function() {};

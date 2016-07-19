@@ -24,9 +24,10 @@ ol.webgl.Shader = function(source) {
 
 
 /**
+ * @abstract
  * @return {number} Type.
  */
-ol.webgl.Shader.prototype.getType = goog.abstractMethod;
+ol.webgl.Shader.prototype.getType = function() {};
 
 
 /**

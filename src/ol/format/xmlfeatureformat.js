@@ -74,11 +74,12 @@ ol.format.XMLFeature.prototype.readFeatureFromDocument = function(
 
 
 /**
+ * @abstract
  * @param {Node} node Node.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
-ol.format.XMLFeature.prototype.readFeatureFromNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {};
 
 
 /**
@@ -121,12 +122,13 @@ ol.format.XMLFeature.prototype.readFeaturesFromDocument = function(
 
 
 /**
+ * @abstract
  * @param {Node} node Node.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-ol.format.XMLFeature.prototype.readFeaturesFromNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.readFeaturesFromNode = function(node, opt_options) {};
 
 
 /**
@@ -149,21 +151,23 @@ ol.format.XMLFeature.prototype.readGeometry = function(source, opt_options) {
 
 
 /**
+ * @abstract
  * @param {Document} doc Document.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.XMLFeature.prototype.readGeometryFromDocument = goog.abstractMethod;
+ol.format.XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {};
 
 
 /**
+ * @abstract
  * @param {Node} node Node.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.XMLFeature.prototype.readGeometryFromNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {};
 
 
 /**
@@ -216,12 +220,13 @@ ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
 
 
 /**
+ * @abstract
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @protected
  * @return {Node} Node.
  */
-ol.format.XMLFeature.prototype.writeFeatureNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.writeFeatureNode = function(feature, opt_options) {};
 
 
 /**
@@ -236,11 +241,12 @@ ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
 
 
 /**
+ * @abstract
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
-ol.format.XMLFeature.prototype.writeFeaturesNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.writeFeaturesNode = function(features, opt_options) {};
 
 
 /**
@@ -255,8 +261,9 @@ ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 
 /**
+ * @abstract
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
-ol.format.XMLFeature.prototype.writeGeometryNode = goog.abstractMethod;
+ol.format.XMLFeature.prototype.writeGeometryNode = function(geometry, opt_options) {};

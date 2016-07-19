@@ -73,11 +73,11 @@ ol.Tile.prototype.changed = function() {
 
 /**
  * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
- * @function
+ * @abstract
  * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  */
-ol.Tile.prototype.getImage = goog.abstractMethod;
+ol.Tile.prototype.getImage = function(opt_context) {};
 
 
 /**
@@ -110,6 +110,7 @@ ol.Tile.prototype.getState = function() {
  * Load the image or retry if loading previously failed.
  * Loading is taken care of by the tile queue, and calling this method is
  * only needed for preloading or for reloading in case of an error.
+ * @abstract
  * @api
  */
-ol.Tile.prototype.load = goog.abstractMethod;
+ol.Tile.prototype.load = function() {};

@@ -65,21 +65,23 @@ ol.format.JSONFeature.prototype.readFeatures = function(source, opt_options) {
 
 
 /**
+ * @abstract
  * @param {Object} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.Feature} Feature.
  */
-ol.format.JSONFeature.prototype.readFeatureFromObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.readFeatureFromObject = function(object, opt_options) {};
 
 
 /**
+ * @abstract
  * @param {Object} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {Array.<ol.Feature>} Features.
  */
-ol.format.JSONFeature.prototype.readFeaturesFromObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.readFeaturesFromObject = function(object, opt_options) {};
 
 
 /**
@@ -92,12 +94,13 @@ ol.format.JSONFeature.prototype.readGeometry = function(source, opt_options) {
 
 
 /**
+ * @abstract
  * @param {Object} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.JSONFeature.prototype.readGeometryFromObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.readGeometryFromObject = function(object, opt_options) {};
 
 
 /**
@@ -109,11 +112,12 @@ ol.format.JSONFeature.prototype.readProjection = function(source) {
 
 
 /**
+ * @abstract
  * @param {Object} object Object.
  * @protected
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.JSONFeature.prototype.readProjectionFromObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.readProjectionFromObject = function(object) {};
 
 
 /**
@@ -125,11 +129,12 @@ ol.format.JSONFeature.prototype.writeFeature = function(feature, opt_options) {
 
 
 /**
+ * @abstract
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
-ol.format.JSONFeature.prototype.writeFeatureObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.writeFeatureObject = function(feature, opt_options) {};
 
 
 /**
@@ -141,11 +146,12 @@ ol.format.JSONFeature.prototype.writeFeatures = function(features, opt_options) 
 
 
 /**
+ * @abstract
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
-ol.format.JSONFeature.prototype.writeFeaturesObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.writeFeaturesObject = function(features, opt_options) {};
 
 
 /**
@@ -157,8 +163,9 @@ ol.format.JSONFeature.prototype.writeGeometry = function(geometry, opt_options) 
 
 
 /**
+ * @abstract
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
  */
-ol.format.JSONFeature.prototype.writeGeometryObject = goog.abstractMethod;
+ol.format.JSONFeature.prototype.writeGeometryObject = function(geometry, opt_options) {};

@@ -164,15 +164,17 @@ ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frame
 
 
 /**
+ * @abstract
  * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
  */
-ol.renderer.canvas.Layer.prototype.getImage = goog.abstractMethod;
+ol.renderer.canvas.Layer.prototype.getImage = function() {};
 
 
 /**
+ * @abstract
  * @return {!ol.Transform} Image transform.
  */
-ol.renderer.canvas.Layer.prototype.getImageTransform = goog.abstractMethod;
+ol.renderer.canvas.Layer.prototype.getImageTransform = function() {};
 
 
 /**
@@ -196,11 +198,12 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) 
 
 
 /**
+ * @abstract
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.LayerState} layerState Layer state.
  * @return {boolean} whether composeFrame should be called.
  */
-ol.renderer.canvas.Layer.prototype.prepareFrame = goog.abstractMethod;
+ol.renderer.canvas.Layer.prototype.prepareFrame = function(frameState, layerState) {};
 
 
 /**
