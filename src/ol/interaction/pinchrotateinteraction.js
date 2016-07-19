@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.PinchRotate');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.functions');
 goog.require('ol.ViewHint');
@@ -74,7 +73,7 @@ ol.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetPointers.length >= 2,
+  ol.DEBUG && console.assert(this.targetPointers.length >= 2,
       'length of this.targetPointers should be greater than or equal to 2');
   var rotationDelta = 0.0;
 

@@ -1,6 +1,5 @@
 goog.provide('ol.reproj.Triangulation');
 
-goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');
@@ -118,7 +117,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
     // Fix coordinates (ol.proj returns wrapped coordinates, "unwrap" here).
     // This significantly simplifies the rest of the reprojection process.
 
-    goog.asserts.assert(this.sourceWorldWidth_ !== null);
+    ol.DEBUG && console.assert(this.sourceWorldWidth_ !== null);
     var leftBound = Infinity;
     this.triangles_.forEach(function(triangle, i, arr) {
       leftBound = Math.min(leftBound,
@@ -202,6 +201,7 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
   var sourceQuadExtent = ol.extent.boundingExtent([aSrc, bSrc, cSrc, dSrc]);
   var sourceCoverageX = this.sourceWorldWidth_ ?
       ol.extent.getWidth(sourceQuadExtent) / this.sourceWorldWidth_ : null;
+  var sourceWorldWidth = /** @type {number} */ (this.sourceWorldWidth_);
 
   // when the quad is wrapped in the source projection
   // it covers most of the projection extent, but not fully
@@ -251,12 +251,11 @@ ol.reproj.Triangulation.prototype.addQuad_ = function(a, b, c, d,
 
       var dx;
       if (wrapsX) {
-        goog.asserts.assert(this.sourceWorldWidth_);
         var centerSrcEstimX =
-            (ol.math.modulo(aSrc[0], this.sourceWorldWidth_) +
-             ol.math.modulo(cSrc[0], this.sourceWorldWidth_)) / 2;
+            (ol.math.modulo(aSrc[0], sourceWorldWidth) +
+             ol.math.modulo(cSrc[0], sourceWorldWidth)) / 2;
         dx = centerSrcEstimX -
-            ol.math.modulo(centerSrc[0], this.sourceWorldWidth_);
+            ol.math.modulo(centerSrc[0], sourceWorldWidth);
       } else {
         dx = (aSrc[0] + cSrc[0]) / 2 - centerSrc[0];
       }

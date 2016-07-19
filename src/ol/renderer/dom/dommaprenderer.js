@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.dom.Map');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -101,7 +100,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     layerRenderer = new ol.renderer.dom.VectorLayer(layer);
   } else {
-    goog.asserts.fail('unexpected layer configuration');
+    ol.DEBUG && console.assert(false, 'unexpected layer configuration');
     return null;
   }
   return layerRenderer;
@@ -180,8 +179,6 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
     layer = layerState.layer;
     layerRenderer = /** @type {ol.renderer.dom.Layer} */ (
         this.getLayerRenderer(layer));
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
-        'renderer is an instance of ol.renderer.dom.Layer');
     this.layersPane_.insertBefore(layerRenderer.getTarget(), this.layersPane_.childNodes[i] || null);
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == ol.source.State.READY) {
@@ -197,9 +194,7 @@ ol.renderer.dom.Map.prototype.renderFrame = function(frameState) {
   var layerKey;
   for (layerKey in this.getLayerRenderers()) {
     if (!(layerKey in layerStates)) {
-      layerRenderer = this.getLayerRendererByKey(layerKey);
-      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.dom.Layer,
-          'renderer is an instance of ol.renderer.dom.Layer');
+      layerRenderer = /** @type {ol.renderer.dom.Layer} */ (this.getLayerRendererByKey(layerKey));
       ol.dom.removeNode(layerRenderer.getTarget());
     }
   }

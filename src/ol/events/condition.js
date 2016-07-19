@@ -1,6 +1,5 @@
 goog.provide('ol.events.condition');
 
-goog.require('goog.asserts');
 goog.require('ol.functions');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
@@ -189,8 +188,6 @@ ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
  */
 ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
   var target = mapBrowserEvent.originalEvent.target;
-  goog.asserts.assertInstanceof(target, Element,
-      'target should be an Element');
   var tagName = target.tagName;
   return (
       tagName !== 'INPUT' &&

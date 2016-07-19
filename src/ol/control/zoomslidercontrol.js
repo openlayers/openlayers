@@ -2,7 +2,6 @@
 
 goog.provide('ol.control.ZoomSlider');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -216,8 +215,6 @@ ol.control.ZoomSlider.render = function(mapEvent) {
   if (!mapEvent.frameState) {
     return;
   }
-  goog.asserts.assert(mapEvent.frameState.viewState,
-      'viewState should be defined');
   if (!this.sliderInitialized_) {
     this.initSlider_();
   }
@@ -237,10 +234,8 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
   var map = this.getMap();
   var view = map.getView();
   var currentResolution = view.getResolution();
-  goog.asserts.assert(currentResolution,
-      'currentResolution should be defined');
   map.beforeRender(ol.animation.zoom({
-    resolution: currentResolution,
+    resolution: /** @type {number} */ (currentResolution),
     duration: this.duration_,
     easing: ol.easing.easeOut
   }));
@@ -312,10 +307,8 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
     var map = this.getMap();
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
-    goog.asserts.assert(this.currentResolution_,
-        'this.currentResolution_ should be defined');
     map.beforeRender(ol.animation.zoom({
-      resolution: this.currentResolution_,
+      resolution: /** @type {number} */ (this.currentResolution_),
       duration: this.duration_,
       easing: ol.easing.easeOut
     }));

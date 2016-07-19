@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.KeyboardZoom');
 
-goog.require('goog.asserts');
 goog.require('ol.events.EventType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
@@ -75,7 +74,7 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       map.render();
       var view = map.getView();
-      goog.asserts.assert(view, 'map must have view');
+      ol.DEBUG && console.assert(view, 'map must have view');
       ol.interaction.Interaction.zoomByDelta(
           map, view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();

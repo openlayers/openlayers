@@ -1,7 +1,5 @@
 goog.provide('ol.array');
 
-goog.require('goog.asserts');
-
 
 /**
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
@@ -135,9 +133,6 @@ ol.array.linearFindNearest = function(arr, target, direction) {
         }
       }
     }
-    // We should never get here, but the compiler complains
-    // if it finds a path for which no number is returned.
-    goog.asserts.fail();
     return n - 1;
   }
 };
@@ -149,9 +144,9 @@ ol.array.linearFindNearest = function(arr, target, direction) {
  * @param {number} end End index.
  */
 ol.array.reverseSubArray = function(arr, begin, end) {
-  goog.asserts.assert(begin >= 0,
+  ol.DEBUG && console.assert(begin >= 0,
       'Array begin index should be equal to or greater than 0');
-  goog.asserts.assert(end < arr.length,
+  ol.DEBUG && console.assert(end < arr.length,
       'Array end index should be less than the array length');
   while (begin < end) {
     var tmp = arr[begin];

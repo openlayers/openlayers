@@ -1,6 +1,5 @@
 goog.provide('ol.structs.RBush');
 
-goog.require('goog.asserts');
 goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 goog.require('ol.object');
@@ -60,7 +59,7 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
 
   this.rbush_.insert(item);
   // remember the object that was added to the internal rbush
-  goog.asserts.assert(!(ol.getUid(value) in this.items_),
+  ol.DEBUG && console.assert(!(ol.getUid(value) in this.items_),
       'uid (%s) of value (%s) already exists', ol.getUid(value), value);
   this.items_[ol.getUid(value)] = item;
 };
@@ -75,7 +74,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('Can not insert values while reading');
   }
-  goog.asserts.assert(extents.length === values.length,
+  ol.DEBUG && console.assert(extents.length === values.length,
       'extens and values must have same length (%s === %s)',
       extents.length, values.length);
 
@@ -93,7 +92,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
       value: value
     };
     items[i] = item;
-    goog.asserts.assert(!(ol.getUid(value) in this.items_),
+    ol.DEBUG && console.assert(!(ol.getUid(value) in this.items_),
         'uid (%s) of value (%s) already exists', ol.getUid(value), value);
     this.items_[ol.getUid(value)] = item;
   }
@@ -111,7 +110,7 @@ ol.structs.RBush.prototype.remove = function(value) {
     throw new Error('Can not remove value while reading');
   }
   var uid = ol.getUid(value);
-  goog.asserts.assert(uid in this.items_,
+  ol.DEBUG && console.assert(uid in this.items_,
       'uid (%s) of value (%s) does not exist', uid, value);
 
   // get the object in which the value was wrapped when adding to the
@@ -128,11 +127,10 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  var uid = ol.getUid(value);
-  goog.asserts.assert(uid in this.items_,
-      'uid (%s) of value (%s) does not exist', uid, value);
+  ol.DEBUG && console.assert(ol.getUid(value) in this.items_,
+      'uid (%s) of value (%s) does not exist', ol.getUid(value), value);
 
-  var item = this.items_[uid];
+  var item = this.items_[ol.getUid(value)];
   var bbox = [item.minX, item.minY, item.maxX, item.maxY];
   if (!ol.extent.equals(bbox, extent)) {
     if (goog.DEBUG && this.readers_) {

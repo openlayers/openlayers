@@ -2,7 +2,6 @@
 
 goog.provide('ol.control.Attribution');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.dom');
 goog.require('ol.Attribution');
@@ -11,7 +10,6 @@ goog.require('ol.css');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.object');
-goog.require('ol.source.Tile');
 
 
 /**
@@ -160,8 +158,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var attributions = ol.object.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
-  var projection = frameState.viewState.projection;
-  goog.asserts.assert(projection, 'projection of viewState required');
+  var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
     if (!source) {
@@ -180,10 +177,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
       }
       tileRanges = frameState.usedTiles[sourceKey];
       if (tileRanges) {
-        goog.asserts.assertInstanceof(source, ol.source.Tile,
-            'source should be an ol.source.Tile');
-        var tileGrid = source.getTileGridForProjection(projection);
-        goog.asserts.assert(tileGrid, 'tileGrid required for projection');
+        var tileGrid = /** @type {ol.source.Tile} */ (source).getTileGridForProjection(projection);
         intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
             tileRanges, tileGrid, projection);
       } else {

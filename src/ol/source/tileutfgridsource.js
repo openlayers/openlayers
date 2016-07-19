@@ -1,6 +1,5 @@
 goog.provide('ol.source.TileUTFGrid');
 
-goog.require('goog.asserts');
 goog.require('goog.async.nextTick');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
@@ -69,7 +68,7 @@ ol.source.TileUTFGrid = function(options) {
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
-    goog.asserts.fail('Either url or tileJSON options must be provided');
+    ol.assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 };
 ol.inherits(ol.source.TileUTFGrid, ol.source.Tile);
@@ -175,7 +174,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
   }
 
   if (tileJSON.scheme !== undefined) {
-    goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
+    ol.DEBUG && console.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
   }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
@@ -229,7 +228,7 @@ ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projecti
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    goog.asserts.assert(projection, 'argument projection is truthy');
+    ol.DEBUG && console.assert(projection, 'argument projection is truthy');
     var tileCoord = [z, x, y];
     var urlTileCoord =
         this.getTileCoordForTileUrlFunction(tileCoord, projection);

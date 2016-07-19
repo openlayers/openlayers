@@ -2,7 +2,6 @@
 
 goog.provide('ol.source.ImageWMS');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.events');
@@ -136,7 +135,7 @@ ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
  */
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
 
-  goog.asserts.assert(!('VERSION' in params),
+  ol.DEBUG && console.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
 
   if (this.url_ === undefined) {
@@ -269,7 +268,7 @@ ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
  */
 ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(this.url_ !== undefined, 'url is defined');
+  ol.assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -295,7 +294,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        goog.asserts.fail('unknown serverType configured');
+        ol.assert(false, 8); // Unknown `serverType` configured
         break;
     }
   }
@@ -312,7 +311,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
   }
   params['BBOX'] = bbox.join(',');
 
-  return ol.uri.appendParams(this.url_, params);
+  return ol.uri.appendParams(/** @type {string} */ (this.url_), params);
 };
 
 

@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.geodesic');
 
-goog.require('goog.asserts');
 goog.require('ol.math');
 goog.require('ol.proj');
 
@@ -65,7 +64,7 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
       // segment.
       flatCoordinates.push(b[0], b[1]);
       key = fracB.toString();
-      goog.asserts.assert(!(key in fractions),
+      ol.DEBUG && console.assert(!(key in fractions),
           'fractions object should contain key : ' + key);
       fractions[key] = true;
     } else {
@@ -76,7 +75,7 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
       geoStack.push(geoB, geoM, geoM, geoA);
     }
   }
-  goog.asserts.assert(maxIterations > 0,
+  ol.DEBUG && console.assert(maxIterations > 0,
       'maxIterations should be more than 0');
 
   return flatCoordinates;

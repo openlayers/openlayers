@@ -1,7 +1,6 @@
 goog.provide('ol.control.ScaleLine');
 goog.provide('ol.control.ScaleLineUnits');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol');
 goog.require('ol.Object');
@@ -246,7 +245,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    goog.asserts.fail('Scale line element cannot be updated');
+    ol.assert(false, 33); // Invalid units
   }
 
   var i = 3 * Math.floor(

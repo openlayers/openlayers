@@ -3,7 +3,6 @@
 
 goog.provide('ol.renderer.webgl.TileLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -154,9 +153,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   var viewState = frameState.viewState;
   var projection = viewState.projection;
 
-  var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
-      'layer is an instance of ol.layer.Tile');
+  var tileLayer = /** @type {ol.layer.Tile} */ (this.getLayer());
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewState.resolution);
@@ -261,7 +258,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
         if (!drawable && tile.interimTile) {
           tile = tile.interimTile;
         }
-        goog.asserts.assert(tile);
+        ol.DEBUG && console.assert(tile);
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {

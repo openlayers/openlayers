@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.interpolate');
 
-goog.require('goog.asserts');
 goog.require('ol.array');
 goog.require('ol.math');
 
@@ -17,13 +16,13 @@ goog.require('ol.math');
 ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
   // FIXME does not work when vertices are repeated
   // FIXME interpolate extra dimensions
-  goog.asserts.assert(0 <= fraction && fraction <= 1,
+  ol.DEBUG && console.assert(0 <= fraction && fraction <= 1,
       'fraction should be in between 0 and 1');
   var pointX = NaN;
   var pointY = NaN;
   var n = (end - offset) / stride;
   if (n === 0) {
-    goog.asserts.fail('n cannot be 0');
+    ol.DEBUG && console.assert(false, 'n cannot be 0');
   } else if (n == 1) {
     pointX = flatCoordinates[offset];
     pointY = flatCoordinates[offset + 1];
@@ -121,8 +120,8 @@ ol.geom.flat.lineStringCoordinateAtM = function(flatCoordinates, offset, end, st
     return flatCoordinates.slice((lo - 1) * stride, (lo - 1) * stride + stride);
   }
   var m1 = flatCoordinates[(lo + 1) * stride - 1];
-  goog.asserts.assert(m0 < m, 'm0 should be less than m');
-  goog.asserts.assert(m <= m1, 'm should be less than or equal to m1');
+  ol.DEBUG && console.assert(m0 < m, 'm0 should be less than m');
+  ol.DEBUG && console.assert(m <= m1, 'm should be less than or equal to m1');
   var t = (m - m0) / (m1 - m0);
   coordinate = [];
   var i;
@@ -131,7 +130,7 @@ ol.geom.flat.lineStringCoordinateAtM = function(flatCoordinates, offset, end, st
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);
-  goog.asserts.assert(coordinate.length == stride,
+  ol.DEBUG && console.assert(coordinate.length == stride,
       'length of coordinate array should match stride');
   return coordinate;
 };
@@ -186,7 +185,7 @@ ol.geom.flat.lineStringsCoordinateAtM = function(
     }
     offset = end;
   }
-  goog.asserts.fail(
+  ol.DEBUG && console.assert(false,
       'ol.geom.flat.lineStringsCoordinateAtM should have returned');
   return null;
 };

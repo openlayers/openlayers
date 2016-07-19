@@ -1,6 +1,5 @@
 goog.provide('ol.format.Polyline');
 
-goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');
@@ -356,7 +355,7 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   if (geometry) {
     return this.writeGeometryText(geometry, opt_options);
   } else {
-    goog.asserts.fail('geometry needs to be defined');
+    ol.assert(false, 40); // Expected `feature` to have a geometry
     return '';
   }
 };
@@ -366,7 +365,7 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
  * @inheritDoc
  */
 ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options) {
-  goog.asserts.assert(features.length == 1,
+  ol.DEBUG && console.assert(features.length == 1,
       'features array should have 1 item');
   return this.writeFeatureText(features[0], opt_options);
 };
@@ -388,8 +387,6 @@ ol.format.Polyline.prototype.writeGeometry;
  * @inheritDoc
  */
 ol.format.Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
-      'geometry should be an ol.geom.LineString');
   geometry = /** @type {ol.geom.LineString} */
       (ol.format.Feature.transformWithOptions(
           geometry, true, this.adaptOptions(opt_options)));

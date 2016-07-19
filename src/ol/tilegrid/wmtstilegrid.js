@@ -1,6 +1,5 @@
 goog.provide('ol.tilegrid.WMTS');
 
-goog.require('goog.asserts');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
 
@@ -17,7 +16,7 @@ goog.require('ol.tilegrid.TileGrid');
  */
 ol.tilegrid.WMTS = function(options) {
 
-  goog.asserts.assert(
+  ol.DEBUG && console.assert(
       options.resolutions.length == options.matrixIds.length,
       'options resolutions and matrixIds must have equal length (%s == %s)',
       options.resolutions.length, options.matrixIds.length);
@@ -48,7 +47,7 @@ ol.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
  * @return {string} MatrixId..
  */
 ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
-  goog.asserts.assert(0 <= z && z < this.matrixIds_.length,
+  ol.DEBUG && console.assert(0 <= z && z < this.matrixIds_.length,
       'attempted to retrive matrixId for illegal z (%s)', z);
   return this.matrixIds_[z];
 };

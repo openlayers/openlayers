@@ -1,6 +1,5 @@
 goog.provide('ol.format.OWS');
 
-goog.require('goog.asserts');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
 goog.require('ol.format.XSD');
@@ -22,7 +21,7 @@ ol.inherits(ol.format.OWS, ol.format.XML);
  * @return {Object} OWS object.
  */
 ol.format.OWS.prototype.readFromDocument = function(doc) {
-  goog.asserts.assert(doc.nodeType == Node.DOCUMENT_NODE,
+  ol.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
       'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
@@ -38,7 +37,7 @@ ol.format.OWS.prototype.readFromDocument = function(doc) {
  * @return {Object} OWS object.
  */
 ol.format.OWS.prototype.readFromNode = function(node) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   var owsObject = ol.xml.pushParseAndPop({},
       ol.format.OWS.PARSERS_, node, []);
@@ -53,9 +52,9 @@ ol.format.OWS.prototype.readFromNode = function(node) {
  * @return {Object|undefined} The address.
  */
 ol.format.OWS.readAddress_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'Address',
+  ol.DEBUG && console.assert(node.localName == 'Address',
       'localName should be Address');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.ADDRESS_PARSERS_, node, objectStack);
@@ -69,9 +68,9 @@ ol.format.OWS.readAddress_ = function(node, objectStack) {
  * @return {Object|undefined} The values.
  */
 ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'AllowedValues',
+  ol.DEBUG && console.assert(node.localName == 'AllowedValues',
       'localName should be AllowedValues');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.ALLOWED_VALUES_PARSERS_, node, objectStack);
@@ -85,9 +84,9 @@ ol.format.OWS.readAllowedValues_ = function(node, objectStack) {
  * @return {Object|undefined} The constraint.
  */
 ol.format.OWS.readConstraint_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'Constraint',
+  ol.DEBUG && console.assert(node.localName == 'Constraint',
       'localName should be Constraint');
   var name = node.getAttribute('name');
   if (!name) {
@@ -106,9 +105,9 @@ ol.format.OWS.readConstraint_ = function(node, objectStack) {
  * @return {Object|undefined} The contact info.
  */
 ol.format.OWS.readContactInfo_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'ContactInfo',
+  ol.DEBUG && console.assert(node.localName == 'ContactInfo',
       'localName should be ContactInfo');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.CONTACT_INFO_PARSERS_, node, objectStack);
@@ -122,9 +121,9 @@ ol.format.OWS.readContactInfo_ = function(node, objectStack) {
  * @return {Object|undefined} The DCP.
  */
 ol.format.OWS.readDcp_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'DCP', 'localName should be DCP');
+  ol.DEBUG && console.assert(node.localName == 'DCP', 'localName should be DCP');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.DCP_PARSERS_, node, objectStack);
 };
@@ -137,9 +136,9 @@ ol.format.OWS.readDcp_ = function(node, objectStack) {
  * @return {Object|undefined} The GET object.
  */
 ol.format.OWS.readGet_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'Get', 'localName should be Get');
+  ol.DEBUG && console.assert(node.localName == 'Get', 'localName should be Get');
   var href = ol.format.XLink.readHref(node);
   if (!href) {
     return undefined;
@@ -156,9 +155,9 @@ ol.format.OWS.readGet_ = function(node, objectStack) {
  * @return {Object|undefined} The HTTP object.
  */
 ol.format.OWS.readHttp_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'HTTP', 'localName should be HTTP');
+  ol.DEBUG && console.assert(node.localName == 'HTTP', 'localName should be HTTP');
   return ol.xml.pushParseAndPop({}, ol.format.OWS.HTTP_PARSERS_,
       node, objectStack);
 };
@@ -171,9 +170,9 @@ ol.format.OWS.readHttp_ = function(node, objectStack) {
  * @return {Object|undefined} The operation.
  */
 ol.format.OWS.readOperation_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'Operation',
+  ol.DEBUG && console.assert(node.localName == 'Operation',
       'localName should be Operation');
   var name = node.getAttribute('name');
   var value = ol.xml.pushParseAndPop({},
@@ -183,7 +182,6 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
   }
   var object = /** @type {Object} */
       (objectStack[objectStack.length - 1]);
-  goog.asserts.assert(goog.isObject(object), 'object should be an Object');
   object[name] = value;
 
 };
@@ -197,9 +195,9 @@ ol.format.OWS.readOperation_ = function(node, objectStack) {
  */
 ol.format.OWS.readOperationsMetadata_ = function(node,
     objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'OperationsMetadata',
+  ol.DEBUG && console.assert(node.localName == 'OperationsMetadata',
       'localName should be OperationsMetadata');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.OPERATIONS_METADATA_PARSERS_, node,
@@ -214,9 +212,9 @@ ol.format.OWS.readOperationsMetadata_ = function(node,
  * @return {Object|undefined} The phone.
  */
 ol.format.OWS.readPhone_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'Phone', 'localName should be Phone');
+  ol.DEBUG && console.assert(node.localName == 'Phone', 'localName should be Phone');
   return ol.xml.pushParseAndPop({},
       ol.format.OWS.PHONE_PARSERS_, node, objectStack);
 };
@@ -230,9 +228,9 @@ ol.format.OWS.readPhone_ = function(node, objectStack) {
  */
 ol.format.OWS.readServiceIdentification_ = function(node,
     objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'ServiceIdentification',
+  ol.DEBUG && console.assert(node.localName == 'ServiceIdentification',
       'localName should be ServiceIdentification');
   return ol.xml.pushParseAndPop(
       {}, ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_, node,
@@ -247,9 +245,9 @@ ol.format.OWS.readServiceIdentification_ = function(node,
  * @return {Object|undefined} The service contact.
  */
 ol.format.OWS.readServiceContact_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'ServiceContact',
+  ol.DEBUG && console.assert(node.localName == 'ServiceContact',
       'localName should be ServiceContact');
   return ol.xml.pushParseAndPop(
       {}, ol.format.OWS.SERVICE_CONTACT_PARSERS_, node,
@@ -264,9 +262,9 @@ ol.format.OWS.readServiceContact_ = function(node, objectStack) {
  * @return {Object|undefined} The service provider.
  */
 ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'ServiceProvider',
+  ol.DEBUG && console.assert(node.localName == 'ServiceProvider',
       'localName should be ServiceProvider');
   return ol.xml.pushParseAndPop(
       {}, ol.format.OWS.SERVICE_PROVIDER_PARSERS_, node,
@@ -281,9 +279,9 @@ ol.format.OWS.readServiceProvider_ = function(node, objectStack) {
  * @return {string|undefined} The value.
  */
 ol.format.OWS.readValue_ = function(node, objectStack) {
-  goog.asserts.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  goog.asserts.assert(node.localName == 'Value', 'localName should be Value');
+  ol.DEBUG && console.assert(node.localName == 'Value', 'localName should be Value');
   return ol.format.XSD.readString(node);
 };
 

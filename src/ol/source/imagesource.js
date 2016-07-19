@@ -1,7 +1,6 @@
 goog.provide('ol.source.Image');
 goog.provide('ol.source.ImageEvent');
 
-goog.require('goog.asserts');
 goog.require('ol.events.Event');
 goog.require('ol.ImageState');
 goog.require('ol.array');
@@ -38,7 +37,7 @@ ol.source.Image = function(options) {
    */
   this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
-  goog.asserts.assert(!this.resolutions_ ||
+  ol.DEBUG && console.assert(!this.resolutions_ ||
       ol.array.isSorted(this.resolutions_,
           function(a, b) {
             return b - a;

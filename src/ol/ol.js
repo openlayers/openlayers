@@ -15,6 +15,14 @@ ol.ASSUME_TOUCH = false;
 
 
 /**
+ * @define {boolean} Debug mode.  When set to `false` (recommended for
+ * production), debug assertion checks will be stripped out of the build.
+ * Default is `true`.
+ */
+ol.DEBUG = true;
+
+
+/**
  * TODO: rename this to something having to do with tile grids
  * see https://github.com/openlayers/ol3/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
@@ -213,6 +221,12 @@ ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK = 1024;
 
 
 /**
+ * @define {string} OpenLayers version.
+ */
+ol.VERSION = '';
+
+
+/**
  * The maximum supported WebGL texture size in pixels. If WebGL is not
  * supported, the value is set to `undefined`.
  * @const
@@ -297,3 +311,48 @@ if (typeof window !== 'undefined') {
 } else if (typeof self !== 'undefined') {
   ol.global = self;
 }
+
+
+/**
+ * Error object thrown when an assertion failed. This is an ECMA-262 Error,
+ * extended with a `code` property.
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error}
+ * @constructor
+ * @extends {Error}
+ * @implements {oli.AssertionError}
+ * @param {number} code Error code.
+ */
+ol.AssertionError = function(code) {
+
+  /**
+   * @type {string}
+   */
+  this.message = 'Assertion failed. See ' +
+      (ol.VERSION ? 'http://openlayers.org/en/' + ol.VERSION.split('-')[0] : '') +
+      '/doc/errors.html#' + code + ' for details.';
+
+  /**
+   * Error code. The meaning of the code can be found on
+   * {@link http://openlayers.org/en/latest/errors.html} (replace `latest` with
+   * the version found in the OpenLayers script's header comment if a version
+   * other than the latest is used).
+   * @type {number}
+   * @api
+   */
+  this.code = code;
+
+  this.name = 'AssertionError';
+
+};
+ol.inherits(ol.AssertionError, Error);
+
+
+/**
+ * @param {*} assertion Assertion we expected to be truthy.
+ * @param {number} errorCode Error code.
+ */
+ol.assert = function(assertion, errorCode) {
+  if (!assertion) {
+    throw new ol.AssertionError(errorCode);
+  }
+};

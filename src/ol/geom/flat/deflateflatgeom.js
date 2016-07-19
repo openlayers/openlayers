@@ -1,7 +1,5 @@
 goog.provide('ol.geom.flat.deflate');
 
-goog.require('goog.asserts');
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -11,7 +9,7 @@ goog.require('goog.asserts');
  * @return {number} offset Offset.
  */
 ol.geom.flat.deflate.coordinate = function(flatCoordinates, offset, coordinate, stride) {
-  goog.asserts.assert(coordinate.length == stride,
+  ol.DEBUG && console.assert(coordinate.length == stride,
       'length of the coordinate array should match stride');
   var i, ii;
   for (i = 0, ii = coordinate.length; i < ii; ++i) {
@@ -32,7 +30,7 @@ ol.geom.flat.deflate.coordinates = function(flatCoordinates, offset, coordinates
   var i, ii;
   for (i = 0, ii = coordinates.length; i < ii; ++i) {
     var coordinate = coordinates[i];
-    goog.asserts.assert(coordinate.length == stride,
+    ol.DEBUG && console.assert(coordinate.length == stride,
         'length of coordinate array should match stride');
     var j;
     for (j = 0; j < stride; ++j) {

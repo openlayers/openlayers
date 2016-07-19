@@ -343,7 +343,7 @@ ol.Transform;
  * @typedef {{depth: (Array.<number>|undefined),
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,
- *            index: (number|undefined),
+ *            index: (number),
  *            segment: Array.<ol.Extent>}}
  */
 ol.ModifySegmentDataType;

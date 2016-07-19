@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DoubleClickZoom');
 
-goog.require('goog.asserts');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Interaction');
@@ -55,7 +54,7 @@ ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
-    goog.asserts.assert(view, 'map must have a view');
+    ol.DEBUG && console.assert(view, 'map must have a view');
     ol.interaction.Interaction.zoomByDelta(
         map, view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();

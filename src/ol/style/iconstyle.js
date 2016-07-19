@@ -3,7 +3,6 @@ goog.provide('ol.style.IconAnchorUnits');
 goog.provide('ol.style.IconImageCache');
 goog.provide('ol.style.IconOrigin');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
@@ -102,17 +101,16 @@ ol.style.Icon = function(opt_options) {
    */
   var src = options.src;
 
-  goog.asserts.assert(!(src !== undefined && image),
-      'image and src can not provided at the same time');
-  goog.asserts.assert(
-      !image || (image && imgSize),
-      'imgSize must be set when image is provided');
+  ol.assert(!(src !== undefined && image),
+      4); // `image` and `src` cannot be provided at the same time
+  ol.assert(!image || (image && imgSize),
+      5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
     src = image.src || ol.getUid(image).toString();
   }
-  goog.asserts.assert(src !== undefined && src.length > 0,
-      'must provide a defined and non-empty src or image');
+  ol.assert(src !== undefined && src.length > 0,
+      6); // A defined and non-empty `src` or `image` must be provided
 
   /**
    * @type {ol.style.ImageState}
@@ -131,7 +129,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconImage_}
    */
   this.iconImage_ = ol.style.IconImage_.get(
-      image, src, imgSize, crossOrigin, imageState, color);
+      image, /** @type {string} */ (src), imgSize, crossOrigin, imageState, color);
 
   /**
    * @private
@@ -578,9 +576,9 @@ ol.style.IconImage_.prototype.getSrc = function() {
  */
 ol.style.IconImage_.prototype.load = function() {
   if (this.imageState_ == ol.style.ImageState.IDLE) {
-    goog.asserts.assert(this.src_ !== undefined,
+    ol.DEBUG && console.assert(this.src_ !== undefined,
         'this.src_ must not be undefined');
-    goog.asserts.assert(!this.imageListenerKeys_,
+    ol.DEBUG && console.assert(!this.imageListenerKeys_,
         'no listener keys existing');
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
@@ -606,7 +604,7 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
     return;
   }
 
-  goog.asserts.assert(this.canvas_ !== null,
+  ol.DEBUG && console.assert(this.canvas_ !== null,
       'this.canvas_ must not be null');
 
   this.canvas_.width = this.image_.width;
@@ -636,7 +634,7 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
  * @private
  */
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(this.imageListenerKeys_,
+  ol.DEBUG && console.assert(this.imageListenerKeys_,
       'we must have listeners registered');
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
@@ -677,7 +675,7 @@ goog.addSingletonGetter(ol.style.IconImageCache);
  * @return {string} Cache key.
  */
 ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
-  goog.asserts.assert(crossOrigin !== undefined,
+  ol.DEBUG && console.assert(crossOrigin !== undefined,
       'argument crossOrigin must be defined');
   var colorString = color ? ol.color.asString(color) : 'null';
   return crossOrigin + ':' + src + ':' + colorString;

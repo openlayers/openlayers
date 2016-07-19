@@ -2,7 +2,6 @@
 
 goog.provide('ol.format.MVT');
 
-goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
@@ -102,7 +101,6 @@ ol.format.MVT.prototype.readFeature_ = function(
       ol.format.MVT.readGeometry_(rawFeature), false,
       this.adaptOptions(opt_options));
   if (geometry) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry);
     values[this.geometryName_] = geometry;
   }
   feature.setId(id);
@@ -152,11 +150,9 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
  * @api
  */
 ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
-  goog.asserts.assertInstanceof(source, ArrayBuffer);
-
   var layers = this.layers_;
 
-  var pbf = new ol.ext.pbf(source);
+  var pbf = new ol.ext.pbf(/** @type {ArrayBuffer} */ (source));
   var tile = new ol.ext.vectortile.VectorTile(pbf);
   var features = [];
   var featureClass = this.featureClass_;

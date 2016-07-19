@@ -1,6 +1,5 @@
 goog.provide('ol.geom.SimpleGeometry');
 
-goog.require('goog.asserts');
 goog.require('ol.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
@@ -50,15 +49,16 @@ ol.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
  * @return {ol.geom.GeometryLayout} layout Layout.
  */
 ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
+  var layout;
   if (stride == 2) {
-    return ol.geom.GeometryLayout.XY;
+    layout = ol.geom.GeometryLayout.XY;
   } else if (stride == 3) {
-    return ol.geom.GeometryLayout.XYZ;
+    layout = ol.geom.GeometryLayout.XYZ;
   } else if (stride == 4) {
-    return ol.geom.GeometryLayout.XYZM;
-  } else {
-    goog.asserts.fail('unsupported stride: ' + stride);
+    layout = ol.geom.GeometryLayout.XYZM;
   }
+  ol.DEBUG && console.assert(layout, 'unsupported stride: ' + stride);
+  return /** @type {ol.geom.GeometryLayout} */ (layout);
 };
 
 
@@ -67,17 +67,16 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
  * @return {number} Stride.
  */
 ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
+  var stride;
   if (layout == ol.geom.GeometryLayout.XY) {
-    return 2;
-  } else if (layout == ol.geom.GeometryLayout.XYZ) {
-    return 3;
-  } else if (layout == ol.geom.GeometryLayout.XYM) {
-    return 3;
+    stride = 2;
+  } else if (layout == ol.geom.GeometryLayout.XYZ || layout == ol.geom.GeometryLayout.XYM) {
+    stride = 3;
   } else if (layout == ol.geom.GeometryLayout.XYZM) {
-    return 4;
-  } else {
-    goog.asserts.fail('unsupported layout: ' + layout);
+    stride = 4;
   }
+  ol.DEBUG && console.assert(stride, 'unsupported layout: ' + layout);
+  return /** @type {number} */ (stride);
 };
 
 

@@ -3,7 +3,6 @@
 goog.provide('ol.interaction.DragAndDrop');
 goog.provide('ol.interaction.DragAndDropEvent');
 
-goog.require('goog.asserts');
 goog.require('ol.functions');
 goog.require('ol.events');
 goog.require('ol.events.Event');
@@ -97,13 +96,13 @@ ol.interaction.DragAndDrop.handleStop_ = function(event) {
 ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
   var result = event.target.result;
   var map = this.getMap();
-  goog.asserts.assert(map, 'map must be set');
+  ol.DEBUG && console.assert(map, 'map must be set');
   var projection = this.projection_;
   if (!projection) {
     var view = map.getView();
-    goog.asserts.assert(view, 'map must have view');
+    ol.DEBUG && console.assert(view, 'map must have view');
     projection = view.getProjection();
-    goog.asserts.assert(projection !== undefined,
+    ol.DEBUG && console.assert(projection !== undefined,
         'projection should be defined');
   }
   var formatConstructors = this.formatConstructors_;

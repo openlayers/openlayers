@@ -1,6 +1,5 @@
 goog.provide('ol.style.Style');
 
-goog.require('goog.asserts');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Circle');
@@ -159,20 +158,13 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
-      var result = feature.get(geometry);
-      if (result) {
-        goog.asserts.assertInstanceof(result, ol.geom.Geometry,
-            'feature geometry must be an ol.geom.Geometry instance');
-      }
-      return result;
+      return /** @type {ol.geom.Geometry} */ (feature.get(geometry));
     };
   } else if (!geometry) {
     this.geometryFunction_ = ol.style.defaultGeometryFunction;
   } else if (geometry !== undefined) {
-    goog.asserts.assertInstanceof(geometry, ol.geom.Geometry,
-        'geometry must be an ol.geom.Geometry instance');
     this.geometryFunction_ = function() {
-      return geometry;
+      return /** @type {ol.geom.Geometry} */ (geometry);
     };
   }
   this.geometry_ = geometry;
@@ -211,8 +203,8 @@ ol.style.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      goog.asserts.assertInstanceof(obj, ol.style.Style,
-          'obj geometry must be an ol.style.Style instance');
+      ol.assert(obj instanceof ol.style.Style,
+          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
     styleFunction = function() {
@@ -343,6 +335,6 @@ ol.style.createDefaultEditingStyles = function() {
  * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.asserts.assert(feature, 'feature must not be null');
+  ol.DEBUG && console.assert(feature, 'feature must not be null');
   return feature.getGeometry();
 };

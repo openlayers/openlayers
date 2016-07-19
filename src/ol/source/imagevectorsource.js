@@ -1,6 +1,5 @@
 goog.provide('ol.source.ImageVector');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.transform');
@@ -169,7 +168,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(feature !== undefined, 'passed a feature');
+          ol.DEBUG && console.assert(feature !== undefined, 'passed a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;

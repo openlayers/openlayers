@@ -1,6 +1,5 @@
 goog.provide('ol.TileQueue');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.TileState');
@@ -97,7 +96,7 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
     }
     this.tileChangeCallback_();
   }
-  goog.asserts.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
+  ol.DEBUG && console.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
 };
 
 
@@ -118,6 +117,6 @@ ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
       ++newLoads;
       tile.load();
     }
-    goog.asserts.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
+    ol.DEBUG && console.assert(Object.keys(this.tilesLoadingKeys_).length === this.tilesLoading_);
   }
 };

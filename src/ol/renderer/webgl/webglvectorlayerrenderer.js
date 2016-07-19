@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
@@ -121,7 +120,7 @@ ol.renderer.webgl.VectorLayer.prototype.forEachFeatureAtCoordinate = function(co
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(feature !== undefined, 'received a feature');
+          ol.DEBUG && console.assert(feature !== undefined, 'received a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -182,8 +181,6 @@ ol.renderer.webgl.VectorLayer.prototype.handleStyleImageChange_ = function(event
 ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, layerState, context) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
-  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector,
-      'layer is an instance of ol.layer.Vector');
   var vectorSource = vectorLayer.getSource();
 
   this.updateAttributions(

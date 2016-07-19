@@ -1,6 +1,5 @@
 goog.provide('ol.format.XML');
 
-goog.require('goog.asserts');
 goog.require('ol.xml');
 
 
@@ -28,7 +27,6 @@ ol.format.XML.prototype.read = function(source) {
     var doc = ol.xml.parse(source);
     return this.readFromDocument(doc);
   } else {
-    goog.asserts.fail();
     return null;
   }
 };

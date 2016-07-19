@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.webgl.ImageLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -104,9 +103,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layer
 
   var image = this.image_;
   var texture = this.texture;
-  var imageLayer = this.getLayer();
-  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image,
-      'layer is an instance of ol.layer.Image');
+  var imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
   var imageSource = imageLayer.getSource();
 
   var hints = frameState.viewHints;
@@ -122,7 +119,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layer
     if (!ol.ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
-        goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
+        ol.DEBUG && console.assert(ol.proj.equivalent(projection, sourceProjection),
             'projection and sourceProjection are equivalent');
         projection = sourceProjection;
       }
@@ -153,7 +150,7 @@ ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layer
   }
 
   if (image) {
-    goog.asserts.assert(texture, 'texture is truthy');
+    ol.DEBUG && console.assert(texture, 'texture is truthy');
 
     var canvas = this.mapRenderer.getContext().getCanvas();
 

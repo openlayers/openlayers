@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.KeyboardPan');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.events.EventType');
@@ -88,7 +87,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
         keyCode == ol.events.KeyCode.UP)) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
-      goog.asserts.assert(view, 'map must have view');
+      ol.DEBUG && console.assert(view, 'map must have view');
       var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
       var deltaX = 0, deltaY = 0;
       if (keyCode == ol.events.KeyCode.DOWN) {

@@ -1,6 +1,5 @@
 goog.provide('ol.Graticule');
 
-goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
@@ -93,7 +92,7 @@ ol.Graticule = function(opt_options) {
    * @private
    */
   this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
-  goog.asserts.assert(this.maxLines_ > 0,
+  ol.DEBUG && console.assert(this.maxLines_ > 0,
       'this.maxLines_ should be more than 0');
 
   /**
@@ -334,13 +333,13 @@ ol.Graticule.prototype.getMap = function() {
  */
 ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
                                                squaredTolerance, index) {
-  goog.asserts.assert(lon >= this.minLon_,
+  ol.DEBUG && console.assert(lon >= this.minLon_,
       'lon should be larger than or equal to this.minLon_');
-  goog.asserts.assert(lon <= this.maxLon_,
+  ol.DEBUG && console.assert(lon <= this.maxLon_,
       'lon should be smaller than or equal to this.maxLon_');
   var flatCoordinates = ol.geom.flat.geodesic.meridian(lon,
       minLat, maxLat, this.projection_, squaredTolerance);
-  goog.asserts.assert(flatCoordinates.length > 0,
+  ol.DEBUG && console.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
   var lineString = this.meridians_[index] !== undefined ?
       this.meridians_[index] : new ol.geom.LineString(null);
@@ -370,13 +369,13 @@ ol.Graticule.prototype.getMeridians = function() {
  */
 ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
                                                squaredTolerance, index) {
-  goog.asserts.assert(lat >= this.minLat_,
+  ol.DEBUG && console.assert(lat >= this.minLat_,
       'lat should be larger than or equal to this.minLat_');
-  goog.asserts.assert(lat <= this.maxLat_,
+  ol.DEBUG && console.assert(lat <= this.maxLat_,
       'lat should be smaller than or equal to this.maxLat_');
   var flatCoordinates = ol.geom.flat.geodesic.parallel(lat,
       this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
-  goog.asserts.assert(flatCoordinates.length > 0,
+  ol.DEBUG && console.assert(flatCoordinates.length > 0,
       'flatCoordinates cannot be empty');
   var lineString = this.parallels_[index] !== undefined ?
       this.parallels_[index] : new ol.geom.LineString(null);
@@ -456,7 +455,7 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
  * @private
  */
 ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
-  goog.asserts.assert(projection, 'projection cannot be null');
+  ol.DEBUG && console.assert(projection, 'projection cannot be null');
 
   var epsg4326Projection = ol.proj.get('EPSG:4326');
 
@@ -475,19 +474,19 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var minLatP = worldExtentP[1];
   var minLonP = worldExtentP[0];
 
-  goog.asserts.assert(extent, 'extent cannot be null');
-  goog.asserts.assert(maxLat !== undefined, 'maxLat should be defined');
-  goog.asserts.assert(maxLon !== undefined, 'maxLon should be defined');
-  goog.asserts.assert(minLat !== undefined, 'minLat should be defined');
-  goog.asserts.assert(minLon !== undefined, 'minLon should be defined');
+  ol.DEBUG && console.assert(extent, 'extent cannot be null');
+  ol.DEBUG && console.assert(maxLat !== undefined, 'maxLat should be defined');
+  ol.DEBUG && console.assert(maxLon !== undefined, 'maxLon should be defined');
+  ol.DEBUG && console.assert(minLat !== undefined, 'minLat should be defined');
+  ol.DEBUG && console.assert(minLon !== undefined, 'minLon should be defined');
 
-  goog.asserts.assert(maxLatP !== undefined,
+  ol.DEBUG && console.assert(maxLatP !== undefined,
       'projected maxLat should be defined');
-  goog.asserts.assert(maxLonP !== undefined,
+  ol.DEBUG && console.assert(maxLonP !== undefined,
       'projected maxLon should be defined');
-  goog.asserts.assert(minLatP !== undefined,
+  ol.DEBUG && console.assert(minLatP !== undefined,
       'projected minLat should be defined');
-  goog.asserts.assert(minLonP !== undefined,
+  ol.DEBUG && console.assert(minLonP !== undefined,
       'projected minLon should be defined');
 
   this.maxLat_ = maxLat;

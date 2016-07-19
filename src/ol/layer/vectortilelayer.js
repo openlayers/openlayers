@@ -1,6 +1,5 @@
 goog.provide('ol.layer.VectorTile');
 
-goog.require('goog.asserts');
 goog.require('ol.layer.Vector');
 goog.require('ol.object');
 
@@ -59,11 +58,11 @@ ol.layer.VectorTile = function(opt_options) {
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
       options.useInterimTilesOnError : true);
 
-  goog.asserts.assert(options.renderMode == undefined ||
+  ol.assert(options.renderMode == undefined ||
       options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
       options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
       options.renderMode == ol.layer.VectorTileRenderType.VECTOR,
-      'renderMode needs to be \'image\', \'hybrid\' or \'vector\'');
+      28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
 
   /**
    * @private

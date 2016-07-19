@@ -199,7 +199,7 @@ ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
  */
 ol.transform.invert = function(transform) {
   var det = ol.transform.determinant(transform);
-  goog.asserts.assert(det !== 0, 'Transformation matrix cannot be inverted.');
+  ol.assert(det !== 0, 32); // Transformation matrix cannot be inverted
 
   var a = transform[0];
   var b = transform[1];

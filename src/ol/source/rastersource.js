@@ -3,7 +3,6 @@ goog.provide('ol.source.Raster');
 goog.provide('ol.source.RasterEvent');
 goog.provide('ol.source.RasterEventType');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.ImageCanvas');
 goog.require('ol.TileQueue');
@@ -425,7 +424,7 @@ ol.source.Raster.createRenderer_ = function(source) {
   } else if (source instanceof ol.source.Image) {
     renderer = ol.source.Raster.createImageRenderer_(source);
   } else {
-    goog.asserts.fail('Unsupported source type: ' + source);
+    ol.DEBUG && console.assert(false, 'Unsupported source type: ' + source);
   }
   return renderer;
 };

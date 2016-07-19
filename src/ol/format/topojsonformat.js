@@ -1,6 +1,5 @@
 goog.provide('ol.format.TopoJSON');
 
-goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');
@@ -250,7 +249,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   var geometry;
   var type = object.type;
   var geometryReader = ol.format.TopoJSON.GEOMETRY_READERS_[type];
-  goog.asserts.assert(geometryReader, 'geometryReader should be defined');
+  ol.DEBUG && console.assert(geometryReader, 'geometryReader should be defined');
   if ((type === 'Point') || (type === 'MultiPoint')) {
     geometry = geometryReader(object, scale, translate);
   } else {

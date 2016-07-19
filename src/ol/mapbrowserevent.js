@@ -3,7 +3,6 @@ goog.provide('ol.MapBrowserEvent.EventType');
 goog.provide('ol.MapBrowserEventHandler');
 goog.provide('ol.MapBrowserPointerEvent');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.MapEvent');
 goog.require('ol.events');
@@ -272,11 +271,11 @@ ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   // to 0).
   // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
-    goog.asserts.assert(this.down_, 'this.down_ must be truthy');
+    ol.DEBUG && console.assert(this.down_, 'this.down_ must be truthy');
     this.emulateClick_(this.down_);
   }
 
-  goog.asserts.assert(this.activePointers_ >= 0,
+  ol.DEBUG && console.assert(this.activePointers_ >= 0,
       'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
     this.dragListenerKeys_.forEach(ol.events.unlistenByKey);

@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.canvas.Layer');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.extent');
 goog.require('ol.layer.Layer');
@@ -46,16 +45,14 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
     var extent = layerState.extent;
     var clipped = extent !== undefined;
     if (clipped) {
-      goog.asserts.assert(extent !== undefined,
-          'layerState extent is defined');
       var pixelRatio = frameState.pixelRatio;
       var width = frameState.size[0] * pixelRatio;
       var height = frameState.size[1] * pixelRatio;
       var rotation = frameState.viewState.rotation;
-      var topLeft = ol.extent.getTopLeft(extent);
-      var topRight = ol.extent.getTopRight(extent);
-      var bottomRight = ol.extent.getBottomRight(extent);
-      var bottomLeft = ol.extent.getBottomLeft(extent);
+      var topLeft = ol.extent.getTopLeft(/** @type {ol.Extent} */ (extent));
+      var topRight = ol.extent.getTopRight(/** @type {ol.Extent} */ (extent));
+      var bottomRight = ol.extent.getBottomRight(/** @type {ol.Extent} */ (extent));
+      var bottomLeft = ol.extent.getBottomLeft(/** @type {ol.Extent} */ (extent));
 
       ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
       ol.transform.apply(frameState.coordinateToPixelTransform, topRight);

@@ -1,6 +1,5 @@
 goog.provide('ol.format.JSONFeature');
 
-goog.require('goog.asserts');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
@@ -32,7 +31,6 @@ ol.format.JSONFeature.prototype.getObject_ = function(source) {
   } else if (source !== null) {
     return source;
   } else {
-    goog.asserts.fail();
     return null;
   }
 };

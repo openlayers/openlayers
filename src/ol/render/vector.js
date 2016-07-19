@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.vector');
 
-goog.require('goog.asserts');
 goog.require('ol.render.Feature');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.ImageState');
@@ -89,7 +88,7 @@ ol.renderer.vector.renderFeature = function(
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      goog.asserts.assert(imageState == ol.style.ImageState.LOADING,
+      ol.DEBUG && console.assert(imageState == ol.style.ImageState.LOADING,
           'imageState should be LOADING');
       imageStyle.listenImageChange(listener, thisArg);
       loading = true;
@@ -117,7 +116,7 @@ ol.renderer.vector.renderFeature_ = function(
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-  goog.asserts.assert(geometryRenderer !== undefined,
+  ol.DEBUG && console.assert(geometryRenderer !== undefined,
       'geometryRenderer should be defined');
   geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
 };
@@ -136,7 +135,7 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ = function(replayGroup, geo
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometryRenderer =
         ol.renderer.vector.GEOMETRY_RENDERERS_[geometries[i].getType()];
-    goog.asserts.assert(geometryRenderer !== undefined,
+    ol.DEBUG && console.assert(geometryRenderer !== undefined,
         'geometryRenderer should be defined');
     geometryRenderer(replayGroup, geometries[i], style, feature);
   }

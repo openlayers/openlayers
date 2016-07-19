@@ -4,7 +4,6 @@
 
 goog.provide('ol.render.canvas.Immediate');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.array');
 goog.require('ol.color');
@@ -245,8 +244,8 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
   if (!this.image_) {
     return;
   }
-  goog.asserts.assert(offset === 0, 'offset should be 0');
-  goog.asserts.assert(end == flatCoordinates.length,
+  ol.DEBUG && console.assert(offset === 0, 'offset should be 0');
+  ol.DEBUG && console.assert(end == flatCoordinates.length,
       'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, 2, this.transform_,
@@ -310,8 +309,8 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
-  goog.asserts.assert(offset === 0, 'offset should be 0');
-  goog.asserts.assert(end == flatCoordinates.length,
+  ol.DEBUG && console.assert(offset === 0, 'offset should be 0');
+  ol.DEBUG && console.assert(end == flatCoordinates.length,
       'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, stride, this.transform_,
@@ -477,7 +476,7 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
       this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
       break;
     default:
-      goog.asserts.fail('Unsupported geometry type: ' + type);
+      ol.DEBUG && console.assert(false, 'Unsupported geometry type: ' + type);
   }
 };
 
@@ -499,7 +498,7 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     return;
   }
   this.setStyle(style);
-  goog.asserts.assert(geometry, 'geometry must be truthy');
+  ol.DEBUG && console.assert(geometry, 'geometry must be truthy');
   this.drawGeometry(geometry);
 };
 
@@ -853,10 +852,10 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
-    goog.asserts.assert(imageAnchor, 'imageAnchor must be truthy');
-    goog.asserts.assert(imageImage, 'imageImage must be truthy');
-    goog.asserts.assert(imageOrigin, 'imageOrigin must be truthy');
-    goog.asserts.assert(imageSize, 'imageSize must be truthy');
+    ol.DEBUG && console.assert(imageAnchor, 'imageAnchor must be truthy');
+    ol.DEBUG && console.assert(imageImage, 'imageImage must be truthy');
+    ol.DEBUG && console.assert(imageOrigin, 'imageOrigin must be truthy');
+    ol.DEBUG && console.assert(imageSize, 'imageSize must be truthy');
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];

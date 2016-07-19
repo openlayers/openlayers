@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Modify');
 goog.provide('ol.interaction.ModifyEvent');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
@@ -332,10 +331,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
  * @private
  */
 ol.interaction.Modify.prototype.handleFeatureAdd_ = function(evt) {
-  var feature = evt.element;
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
-  this.addFeature_(feature);
+  this.addFeature_(/** @type {ol.Feature} */ (evt.element));
 };
 
 
@@ -714,9 +710,7 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
     if (mapBrowserEvent.type != ol.MapBrowserEvent.EventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_) {
-      var geometry = this.vertexFeature_.getGeometry();
-      goog.asserts.assertInstanceof(geometry, ol.geom.Point,
-          'geometry should be an ol.geom.Point');
+      var geometry = /** @type {ol.geom.Point} */ (this.vertexFeature_.getGeometry());
       handled = this.removePoint();
     } else {
       handled = true;
@@ -817,7 +811,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
   var feature = segmentData.feature;
   var geometry = segmentData.geometry;
   var depth = segmentData.depth;
-  var index = segmentData.index;
+  var index = /** @type {number} */ (segmentData.index);
   var coordinates;
 
   while (vertex.length < geometry.getStride()) {
@@ -826,26 +820,18 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   switch (geometry.getType()) {
     case ol.geom.GeometryType.MULTI_LINE_STRING:
-      goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
-          'geometry should be an ol.geom.MultiLineString');
       coordinates = geometry.getCoordinates();
       coordinates[depth[0]].splice(index + 1, 0, vertex);
       break;
     case ol.geom.GeometryType.POLYGON:
-      goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
-          'geometry should be an ol.geom.Polygon');
       coordinates = geometry.getCoordinates();
       coordinates[depth[0]].splice(index + 1, 0, vertex);
       break;
     case ol.geom.GeometryType.MULTI_POLYGON:
-      goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon,
-          'geometry should be an ol.geom.MultiPolygon');
       coordinates = geometry.getCoordinates();
       coordinates[depth[1]][depth[0]].splice(index + 1, 0, vertex);
       break;
     case ol.geom.GeometryType.LINE_STRING:
-      goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
-          'geometry should be an ol.geom.LineString');
       coordinates = geometry.getCoordinates();
       coordinates.splice(index + 1, 0, vertex);
       break;
@@ -855,9 +841,8 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   this.setGeometryCoordinates_(geometry, coordinates);
   var rTree = this.rBush_;
-  goog.asserts.assert(segment !== undefined, 'segment should be defined');
+  ol.DEBUG && console.assert(segment !== undefined, 'segment should be defined');
   rTree.remove(segmentData);
-  goog.asserts.assert(index !== undefined, 'index should be defined');
   this.updateSegmentIndices_(geometry, index, depth, 1);
   var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
     segment: [segment[0], vertex],
@@ -997,7 +982,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
         segments.push(right.segment[1]);
       }
       if (left !== undefined && right !== undefined) {
-        goog.asserts.assert(newIndex >= 0, 'newIndex should be larger than 0');
+        ol.DEBUG && console.assert(newIndex >= 0, 'newIndex should be larger than 0');
 
         var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
           depth: segmentData.depth,

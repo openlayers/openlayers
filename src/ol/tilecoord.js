@@ -1,6 +1,5 @@
 goog.provide('ol.tilecoord');
 
-goog.require('goog.asserts');
 goog.require('ol.extent');
 
 
@@ -22,7 +21,7 @@ ol.QuadKeyCharCode = {
  */
 ol.tilecoord.createFromString = function(str) {
   var v = str.split('/');
-  goog.asserts.assert(v.length === 3,
+  ol.DEBUG && console.assert(v.length === 3,
       'must provide a string in "z/x/y" format, got "%s"', str);
   return v.map(function(e) {
     return parseInt(e, 10);

@@ -1,6 +1,5 @@
 goog.provide('ol.source.ImageArcGISRest');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.Image');
 goog.require('ol.events');
@@ -196,7 +195,7 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  */
 ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  goog.asserts.assert(this.url_ !== undefined, 'url is defined');
+  ol.DEBUG && console.assert(this.url_ !== undefined, 'url is defined');
 
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
@@ -213,7 +212,7 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
     .replace(/MapServer\/?$/, 'MapServer/export')
     .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
-    goog.asserts.fail('Unknown Rest Service', url);
+    ol.assert(false, 50); // `options.featureTypes` should be an Array
   }
   return ol.uri.appendParams(modifiedUrl, params);
 };

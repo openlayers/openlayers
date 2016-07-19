@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Snap');
 goog.provide('ol.interaction.SnapProperty');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
@@ -228,8 +227,7 @@ ol.interaction.Snap.prototype.getFeatures_ = function() {
   } else if (this.source_) {
     features = this.source_.getFeatures();
   }
-  goog.asserts.assert(features !== undefined, 'features should be defined');
-  return features;
+  return /** @type {!Array.<ol.Feature>|!ol.Collection.<ol.Feature>} */ (features);
 };
 
 
@@ -244,9 +242,7 @@ ol.interaction.Snap.prototype.handleFeatureAdd_ = function(evt) {
   } else if (evt instanceof ol.CollectionEvent) {
     feature = evt.element;
   }
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
-  this.addFeature(feature);
+  this.addFeature(/** @type {ol.Feature} */ (feature));
 };
 
 
@@ -261,9 +257,7 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
   } else if (evt instanceof ol.CollectionEvent) {
     feature = evt.element;
   }
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
-  this.removeFeature(feature);
+  this.removeFeature(/** @type {ol.Feature} */ (feature));
 };
 
 
@@ -272,8 +266,7 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
  * @private
  */
 ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
-  var feature = evt.target;
-  goog.asserts.assertInstanceof(feature, ol.Feature);
+  var feature = /** @type {ol.Feature} */ (evt.target);
   this.removeFeature(feature, true);
   this.addFeature(feature, true);
 };

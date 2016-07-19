@@ -1,6 +1,5 @@
 goog.provide('ol.style.Circle');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.color');
 goog.require('ol.colorlike');
@@ -289,7 +288,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     var info = atlasManager.add(
         id, size, size, this.draw_.bind(this, renderOptions),
         renderHitDetectionCallback);
-    goog.asserts.assert(info, 'circle radius is too large');
+    ol.DEBUG && console.assert(info, 'circle radius is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];

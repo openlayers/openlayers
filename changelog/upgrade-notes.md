@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### Changes in the way assertions are handled
+
+Previously, minified builds of the library did not have any assertions. This caused applications to fail silently or with cryptic stack traces. Starting with this release, developers get notified of many runtime errors through the new `ol.AssertionError`. This error has a `code` property. The meaning of the code can be found on http://openlayers.org/en/latest/doc/errors.html. There are additional console assertion checks when in debug mode when the new `ol.DEBUG` compiler flag (previously `goog.DEBUG`) is `true`. As this is `true` by default, it is recommended that those creating custom builds set this to `false` so these assertions are stripped.'
+
 #### Removal of `ol.ENABLE_NAMED_COLORS`
 
 This option was previously needed to use named colors with the WebGL renderer but is no longer needed.

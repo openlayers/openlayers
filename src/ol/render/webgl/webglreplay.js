@@ -1,7 +1,6 @@
 goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.extent');
 goog.require('ol.object');
@@ -226,9 +225,9 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(cont
   // be used by other ImageReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
   // object.
-  goog.asserts.assert(this.verticesBuffer_,
+  ol.DEBUG && console.assert(this.verticesBuffer_,
       'verticesBuffer must not be null');
-  goog.asserts.assert(this.indicesBuffer_,
+  ol.DEBUG && console.assert(this.indicesBuffer_,
       'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer_;
   var indicesBuffer = this.indicesBuffer_;
@@ -260,32 +259,32 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(cont
  * @private
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-  goog.asserts.assert(this.anchorX_ !== undefined, 'anchorX is defined');
-  goog.asserts.assert(this.anchorY_ !== undefined, 'anchorY is defined');
-  goog.asserts.assert(this.height_ !== undefined, 'height is defined');
-  goog.asserts.assert(this.imageHeight_ !== undefined,
+  ol.DEBUG && console.assert(this.anchorX_ !== undefined, 'anchorX is defined');
+  ol.DEBUG && console.assert(this.anchorY_ !== undefined, 'anchorY is defined');
+  ol.DEBUG && console.assert(this.height_ !== undefined, 'height is defined');
+  ol.DEBUG && console.assert(this.imageHeight_ !== undefined,
       'imageHeight is defined');
-  goog.asserts.assert(this.imageWidth_ !== undefined, 'imageWidth is defined');
-  goog.asserts.assert(this.opacity_ !== undefined, 'opacity is defined');
-  goog.asserts.assert(this.originX_ !== undefined, 'originX is defined');
-  goog.asserts.assert(this.originY_ !== undefined, 'originY is defined');
-  goog.asserts.assert(this.rotateWithView_ !== undefined,
+  ol.DEBUG && console.assert(this.imageWidth_ !== undefined, 'imageWidth is defined');
+  ol.DEBUG && console.assert(this.opacity_ !== undefined, 'opacity is defined');
+  ol.DEBUG && console.assert(this.originX_ !== undefined, 'originX is defined');
+  ol.DEBUG && console.assert(this.originY_ !== undefined, 'originY is defined');
+  ol.DEBUG && console.assert(this.rotateWithView_ !== undefined,
       'rotateWithView is defined');
-  goog.asserts.assert(this.rotation_ !== undefined, 'rotation is defined');
-  goog.asserts.assert(this.scale_ !== undefined, 'scale is defined');
-  goog.asserts.assert(this.width_ !== undefined, 'width is defined');
-  var anchorX = this.anchorX_;
-  var anchorY = this.anchorY_;
-  var height = this.height_;
-  var imageHeight = this.imageHeight_;
-  var imageWidth = this.imageWidth_;
-  var opacity = this.opacity_;
-  var originX = this.originX_;
-  var originY = this.originY_;
+  ol.DEBUG && console.assert(this.rotation_ !== undefined, 'rotation is defined');
+  ol.DEBUG && console.assert(this.scale_ !== undefined, 'scale is defined');
+  ol.DEBUG && console.assert(this.width_ !== undefined, 'width is defined');
+  var anchorX = /** @type {number} */ (this.anchorX_);
+  var anchorY = /** @type {number} */ (this.anchorY_);
+  var height = /** @type {number} */ (this.height_);
+  var imageHeight = /** @type {number} */ (this.imageHeight_);
+  var imageWidth = /** @type {number} */ (this.imageWidth_);
+  var opacity = /** @type {number} */ (this.opacity_);
+  var originX = /** @type {number} */ (this.originX_);
+  var originY = /** @type {number} */ (this.originY_);
   var rotateWithView = this.rotateWithView_ ? 1.0 : 0.0;
-  var rotation = this.rotation_;
-  var scale = this.scale_;
-  var width = this.width_;
+  var rotation = /** @type {number} */ (this.rotation_);
+  var scale = /** @type {number} */ (this.scale_);
+  var width = /** @type {number} */ (this.width_);
   var cos = Math.cos(rotation);
   var sin = Math.sin(rotation);
   var numIndices = this.indices_.length;
@@ -400,10 +399,10 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
 
   this.groupIndices_.push(this.indices_.length);
-  goog.asserts.assert(this.images_.length === this.groupIndices_.length,
+  ol.DEBUG && console.assert(this.images_.length === this.groupIndices_.length,
       'number of images and groupIndices match');
   this.hitDetectionGroupIndices_.push(this.indices_.length);
-  goog.asserts.assert(this.hitDetectionImages_.length ===
+  ol.DEBUG && console.assert(this.hitDetectionImages_.length ===
       this.hitDetectionGroupIndices_.length,
       'number of hitDetectionImages and hitDetectionGroupIndices match');
 
@@ -413,7 +412,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
 
   var indices = this.indices_;
   var bits = context.hasOESElementIndexUint ? 32 : 16;
-  goog.asserts.assert(indices[indices.length - 1] < Math.pow(2, bits),
+  ol.DEBUG && console.assert(indices[indices.length - 1] < Math.pow(2, bits),
       'Too large element index detected [%s] (OES_element_index_uint "%s")',
       indices[indices.length - 1], context.hasOESElementIndexUint);
 
@@ -426,12 +425,12 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var texturePerImage = {};
 
   this.createTextures_(this.textures_, this.images_, texturePerImage, gl);
-  goog.asserts.assert(this.textures_.length === this.groupIndices_.length,
+  ol.DEBUG && console.assert(this.textures_.length === this.groupIndices_.length,
       'number of textures and groupIndices match');
 
   this.createTextures_(this.hitDetectionTextures_, this.hitDetectionImages_,
       texturePerImage, gl);
-  goog.asserts.assert(this.hitDetectionTextures_.length ===
+  ol.DEBUG && console.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length,
       'number of hitDetectionTextures and hitDetectionGroupIndices match');
 
@@ -463,7 +462,7 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
  * @param {WebGLRenderingContext} gl Gl.
  */
 ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, images, texturePerImage, gl) {
-  goog.asserts.assert(textures.length === 0,
+  ol.DEBUG && console.assert(textures.length === 0,
       'upon creation, textures is empty');
 
   var texture, image, uid, i;
@@ -508,12 +507,12 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   var gl = context.getGL();
 
   // bind the vertices buffer
-  goog.asserts.assert(this.verticesBuffer_,
+  ol.DEBUG && console.assert(this.verticesBuffer_,
       'verticesBuffer must not be null');
   context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer_);
 
   // bind the indices buffer
-  goog.asserts.assert(this.indicesBuffer_,
+  ol.DEBUG && console.assert(this.indicesBuffer_,
       'indecesBuffer must not be null');
   context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
@@ -612,7 +611,7 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
  * @param {Array.<number>} groupIndices Texture group indices.
  */
 ol.render.webgl.ImageReplay.prototype.drawReplay_ = function(gl, context, skippedFeaturesHash, textures, groupIndices) {
-  goog.asserts.assert(textures.length === groupIndices.length,
+  ol.DEBUG && console.assert(textures.length === groupIndices.length,
       'number of textures and groupIndeces match');
   var elementType = context.hasOESElementIndexUint ?
       ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
@@ -786,7 +785,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayAll_ = function(gl, 
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function(gl, context, skippedFeaturesHash, featureCallback,
     opt_hitExtent) {
-  goog.asserts.assert(this.hitDetectionTextures_.length ===
+  ol.DEBUG && console.assert(this.hitDetectionTextures_.length ===
       this.hitDetectionGroupIndices_.length,
       'number of hitDetectionTextures and hitDetectionGroupIndices match');
   var elementType = context.hasOESElementIndexUint ?
@@ -851,21 +850,21 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var rotation = imageStyle.getRotation();
   var size = imageStyle.getSize();
   var scale = imageStyle.getScale();
-  goog.asserts.assert(anchor, 'imageStyle anchor is not null');
-  goog.asserts.assert(image, 'imageStyle image is not null');
-  goog.asserts.assert(imageSize,
+  ol.DEBUG && console.assert(anchor, 'imageStyle anchor is not null');
+  ol.DEBUG && console.assert(image, 'imageStyle image is not null');
+  ol.DEBUG && console.assert(imageSize,
       'imageStyle imageSize is not null');
-  goog.asserts.assert(hitDetectionImage,
+  ol.DEBUG && console.assert(hitDetectionImage,
       'imageStyle hitDetectionImage is not null');
-  goog.asserts.assert(hitDetectionImageSize,
+  ol.DEBUG && console.assert(hitDetectionImageSize,
       'imageStyle hitDetectionImageSize is not null');
-  goog.asserts.assert(opacity !== undefined, 'imageStyle opacity is defined');
-  goog.asserts.assert(origin, 'imageStyle origin is not null');
-  goog.asserts.assert(rotateWithView !== undefined,
+  ol.DEBUG && console.assert(opacity !== undefined, 'imageStyle opacity is defined');
+  ol.DEBUG && console.assert(origin, 'imageStyle origin is not null');
+  ol.DEBUG && console.assert(rotateWithView !== undefined,
       'imageStyle rotateWithView is defined');
-  goog.asserts.assert(rotation !== undefined, 'imageStyle rotation is defined');
-  goog.asserts.assert(size, 'imageStyle size is not null');
-  goog.asserts.assert(scale !== undefined, 'imageStyle scale is defined');
+  ol.DEBUG && console.assert(rotation !== undefined, 'imageStyle rotation is defined');
+  ol.DEBUG && console.assert(size, 'imageStyle size is not null');
+  ol.DEBUG && console.assert(scale !== undefined, 'imageStyle scale is defined');
 
   var currentImage;
   if (this.images_.length === 0) {
@@ -874,7 +873,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     currentImage = this.images_[this.images_.length - 1];
     if (ol.getUid(currentImage) != ol.getUid(image)) {
       this.groupIndices_.push(this.indices_.length);
-      goog.asserts.assert(this.groupIndices_.length === this.images_.length,
+      ol.DEBUG && console.assert(this.groupIndices_.length === this.images_.length,
           'number of groupIndices and images match');
       this.images_.push(image);
     }
@@ -887,7 +886,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
       this.hitDetectionGroupIndices_.push(this.indices_.length);
-      goog.asserts.assert(this.hitDetectionGroupIndices_.length ===
+      ol.DEBUG && console.assert(this.hitDetectionGroupIndices_.length ===
           this.hitDetectionImages_.length,
           'number of hitDetectionGroupIndices and hitDetectionImages match');
       this.hitDetectionImages_.push(hitDetectionImage);
@@ -988,7 +987,7 @@ ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
   var replay = this.replays_[replayType];
   if (replay === undefined) {
     var constructor = ol.render.webgl.BATCH_CONSTRUCTORS_[replayType];
-    goog.asserts.assert(constructor !== undefined,
+    ol.DEBUG && console.assert(constructor !== undefined,
         replayType +
         ' constructor missing from ol.render.webgl.BATCH_CONSTRUCTORS_');
     replay = new constructor(this.tolerance_, this.maxExtent_);

@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragPan');
 
-goog.require('goog.asserts');
 goog.require('ol.Kinetic');
 
 goog.require('ol.ViewHint');
@@ -69,7 +68,7 @@ ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
-  goog.asserts.assert(this.targetPointers.length >= 1,
+  ol.DEBUG && console.assert(this.targetPointers.length >= 1,
       'the length of this.targetPointers should be more than 1');
   var centroid =
       ol.interaction.Pointer.centroid(this.targetPointers);
@@ -107,8 +106,7 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
-      var center = view.getCenter();
-      goog.asserts.assert(center !== undefined, 'center should be defined');
+      var center = /** @type {!ol.Coordinate} */ (view.getCenter());
       this.kineticPreRenderFn_ = this.kinetic_.pan(center);
       map.beforeRender(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);

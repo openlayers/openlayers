@@ -1,6 +1,5 @@
 goog.provide('ol.control.FullScreen');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
@@ -125,7 +124,6 @@ ol.control.FullScreen.prototype.handleFullScreen_ = function() {
     } else {
       element = map.getTargetElement();
     }
-    goog.asserts.assert(element, 'element should be defined');
     if (this.keys_) {
       ol.control.FullScreen.requestFullScreenWithKeys(element);
 

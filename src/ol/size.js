@@ -1,9 +1,6 @@
 goog.provide('ol.size');
 
 
-goog.require('goog.asserts');
-
-
 /**
  * Returns a buffered size.
  * @param {ol.Size} size Size.
@@ -72,12 +69,10 @@ ol.size.toSize = function(size, opt_size) {
   if (Array.isArray(size)) {
     return size;
   } else {
-    goog.asserts.assert(typeof size === 'number');
     if (opt_size === undefined) {
       opt_size = [size, size];
     } else {
-      opt_size[0] = size;
-      opt_size[1] = size;
+      opt_size[0] = opt_size[1] = /** @type {number} */ (size);
     }
     return opt_size;
   }

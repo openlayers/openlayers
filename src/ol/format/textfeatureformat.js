@@ -1,6 +1,5 @@
 goog.provide('ol.format.TextFeature');
 
-goog.require('goog.asserts');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 
@@ -29,7 +28,6 @@ ol.format.TextFeature.prototype.getText_ = function(source) {
   if (typeof source === 'string') {
     return source;
   } else {
-    goog.asserts.fail();
     return '';
   }
 };
