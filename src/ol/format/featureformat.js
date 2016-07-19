@@ -28,9 +28,10 @@ ol.format.Feature = function() {
 
 
 /**
+ * @abstract
  * @return {Array.<string>} Extensions.
  */
-ol.format.Feature.prototype.getExtensions = goog.abstractMethod;
+ol.format.Feature.prototype.getExtensions = function() {};
 
 
 /**
@@ -80,78 +81,86 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
 
 
 /**
+ * @abstract
  * @return {ol.format.FormatType} Format.
  */
-ol.format.Feature.prototype.getType = goog.abstractMethod;
+ol.format.Feature.prototype.getType = function() {};
 
 
 /**
  * Read a single feature from a source.
  *
+ * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
  */
-ol.format.Feature.prototype.readFeature = goog.abstractMethod;
+ol.format.Feature.prototype.readFeature = function(source, opt_options) {};
 
 
 /**
  * Read all features from a source.
  *
+ * @abstract
  * @param {Document|Node|ArrayBuffer|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
  */
-ol.format.Feature.prototype.readFeatures = goog.abstractMethod;
+ol.format.Feature.prototype.readFeatures = function(source, opt_options) {};
 
 
 /**
  * Read a single geometry from a source.
  *
+ * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.Feature.prototype.readGeometry = goog.abstractMethod;
+ol.format.Feature.prototype.readGeometry = function(source, opt_options) {};
 
 
 /**
  * Read the projection from a source.
  *
+ * @abstract
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
  */
-ol.format.Feature.prototype.readProjection = goog.abstractMethod;
+ol.format.Feature.prototype.readProjection = function(source) {};
 
 
 /**
  * Encode a feature in this format.
  *
+ * @abstract
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-ol.format.Feature.prototype.writeFeature = goog.abstractMethod;
+ol.format.Feature.prototype.writeFeature = function(feature, opt_options) {};
 
 
 /**
  * Encode an array of features in this format.
  *
+ * @abstract
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-ol.format.Feature.prototype.writeFeatures = goog.abstractMethod;
+ol.format.Feature.prototype.writeFeatures = function(features, opt_options) {};
 
 
 /**
  * Write a single geometry in this format.
  *
+ * @abstract
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} Result.
  */
-ol.format.Feature.prototype.writeGeometry = goog.abstractMethod;
+ol.format.Feature.prototype.writeGeometry = function(geometry, opt_options) {};
 
 
 /**

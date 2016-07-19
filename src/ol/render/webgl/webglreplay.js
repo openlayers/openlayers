@@ -831,8 +831,9 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function
 
 /**
  * @inheritDoc
+ * @abstract
  */
-ol.render.webgl.ImageReplay.prototype.setFillStrokeStyle = goog.abstractMethod;
+ol.render.webgl.ImageReplay.prototype.setFillStrokeStyle = function() {};
 
 
 /**

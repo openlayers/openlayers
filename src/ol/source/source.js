@@ -146,9 +146,10 @@ ol.source.Source.prototype.getProjection = function() {
 
 
 /**
+ * @abstract
  * @return {Array.<number>|undefined} Resolutions.
  */
-ol.source.Source.prototype.getResolutions = goog.abstractMethod;
+ol.source.Source.prototype.getResolutions = function() {};
 
 
 /**

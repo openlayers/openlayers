@@ -98,9 +98,10 @@ ol.geom.SimpleGeometry.prototype.computeExtent = function(extent) {
 
 
 /**
+ * @abstract
  * @return {Array} Coordinates.
  */
-ol.geom.SimpleGeometry.prototype.getCoordinates = goog.abstractMethod;
+ol.geom.SimpleGeometry.prototype.getCoordinates = function() {};
 
 
 /**
@@ -212,10 +213,11 @@ ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, f
 
 
 /**
+ * @abstract
  * @param {Array} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.SimpleGeometry.prototype.setCoordinates = goog.abstractMethod;
+ol.geom.SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layout) {};
 
 
 /**

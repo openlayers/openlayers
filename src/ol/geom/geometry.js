@@ -96,20 +96,21 @@ ol.inherits(ol.geom.Geometry, ol.Object);
 
 /**
  * Make a complete copy of the geometry.
- * @function
+ * @abstract
  * @return {!ol.geom.Geometry} Clone.
  */
-ol.geom.Geometry.prototype.clone = goog.abstractMethod;
+ol.geom.Geometry.prototype.clone = function() {};
 
 
 /**
+ * @abstract
  * @param {number} x X.
  * @param {number} y Y.
  * @param {ol.Coordinate} closestPoint Closest point.
  * @param {number} minSquaredDistance Minimum squared distance.
  * @return {number} Minimum squared distance.
  */
-ol.geom.Geometry.prototype.closestPointXY = goog.abstractMethod;
+ol.geom.Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {};
 
 
 /**
@@ -137,11 +138,12 @@ ol.geom.Geometry.prototype.containsCoordinate = function(coordinate) {
 
 
 /**
+ * @abstract
  * @param {ol.Extent} extent Extent.
  * @protected
  * @return {ol.Extent} extent Extent.
  */
-ol.geom.Geometry.prototype.computeExtent = goog.abstractMethod;
+ol.geom.Geometry.prototype.computeExtent = function(extent) {};
 
 
 /**
@@ -170,12 +172,12 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
 /**
  * Rotate the geometry around a given coordinate. This modifies the geometry
  * coordinates in place.
+ * @abstract
  * @param {number} angle Rotation angle in radians.
  * @param {ol.Coordinate} anchor The rotation center.
  * @api
- * @function
  */
-ol.geom.Geometry.prototype.rotate = goog.abstractMethod;
+ol.geom.Geometry.prototype.rotate = function(angle, anchor) {};
 
 
 /**
@@ -199,19 +201,19 @@ ol.geom.Geometry.prototype.simplify = function(tolerance) {
  * Create a simplified version of this geometry using the Douglas Peucker
  * algorithm.
  * @see https://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
- * @function
+ * @abstract
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
  */
-ol.geom.Geometry.prototype.getSimplifiedGeometry = goog.abstractMethod;
+ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
 
 
 /**
  * Get the type of this geometry.
- * @function
+ * @abstract
  * @return {ol.geom.GeometryType} Geometry type.
  */
-ol.geom.Geometry.prototype.getType = goog.abstractMethod;
+ol.geom.Geometry.prototype.getType = function() {};
 
 
 /**
@@ -219,29 +221,29 @@ ol.geom.Geometry.prototype.getType = goog.abstractMethod;
  * The geometry is modified in place.
  * If you do not want the geometry modified in place, first `clone()` it and
  * then use this function on the clone.
- * @function
+ * @abstract
  * @param {ol.TransformFunction} transformFn Transform.
  */
-ol.geom.Geometry.prototype.applyTransform = goog.abstractMethod;
+ol.geom.Geometry.prototype.applyTransform = function(transformFn) {};
 
 
 /**
  * Test if the geometry and the passed extent intersect.
+ * @abstract
  * @param {ol.Extent} extent Extent.
  * @return {boolean} `true` if the geometry and the extent intersect.
- * @function
  */
-ol.geom.Geometry.prototype.intersectsExtent = goog.abstractMethod;
+ol.geom.Geometry.prototype.intersectsExtent = function(extent) {};
 
 
 /**
  * Translate the geometry.  This modifies the geometry coordinates in place.  If
  * instead you want a new geometry, first `clone()` this geometry.
+ * @abstract
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
- * @function
  */
-ol.geom.Geometry.prototype.translate = goog.abstractMethod;
+ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
 
 
 /**

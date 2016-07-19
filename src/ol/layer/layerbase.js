@@ -85,19 +85,21 @@ ol.layer.Base.prototype.getLayerState = function() {
 
 
 /**
+ * @abstract
  * @param {Array.<ol.layer.Layer>=} opt_array Array of layers (to be
  *     modified in place).
  * @return {Array.<ol.layer.Layer>} Array of layers.
  */
-ol.layer.Base.prototype.getLayersArray = goog.abstractMethod;
+ol.layer.Base.prototype.getLayersArray = function(opt_array) {};
 
 
 /**
+ * @abstract
  * @param {Array.<ol.LayerState>=} opt_states Optional list of layer
  *     states (to be modified in place).
  * @return {Array.<ol.LayerState>} List of layer states.
  */
-ol.layer.Base.prototype.getLayerStatesArray = goog.abstractMethod;
+ol.layer.Base.prototype.getLayerStatesArray = function(opt_states) {};
 
 
 /**
@@ -149,9 +151,10 @@ ol.layer.Base.prototype.getOpacity = function() {
 
 
 /**
+ * @abstract
  * @return {ol.source.State} Source state.
  */
-ol.layer.Base.prototype.getSourceState = goog.abstractMethod;
+ol.layer.Base.prototype.getSourceState = function() {};
 
 
 /**

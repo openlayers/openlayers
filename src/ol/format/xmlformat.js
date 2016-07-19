@@ -35,14 +35,16 @@ ol.format.XML.prototype.read = function(source) {
 
 
 /**
+ * @abstract
  * @param {Document} doc Document.
- * @return {Object}
+ * @return {Object} Object
  */
-ol.format.XML.prototype.readFromDocument = goog.abstractMethod;
+ol.format.XML.prototype.readFromDocument = function(doc) {};
 
 
 /**
+ * @abstract
  * @param {Node} node Node.
- * @return {Object}
+ * @return {Object} Object
  */
-ol.format.XML.prototype.readFromNode = goog.abstractMethod;
+ol.format.XML.prototype.readFromNode = function(node) {};
