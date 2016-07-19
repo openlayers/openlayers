@@ -41,6 +41,7 @@ goog.require('ol.events.Event');
  * touch events and even native pointer events.
  *
  * @constructor
+ * @implements {oli.pointer.PointerEvent}
  * @extends {ol.events.Event}
  * @param {string} type The type of the event to create.
  * @param {Event} originalEvent The event.
@@ -51,8 +52,10 @@ ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
   ol.events.Event.call(this, type);
 
   /**
+   * The original browser event.
    * @const
    * @type {Event}
+   * @api
    */
   this.originalEvent = originalEvent;
 
