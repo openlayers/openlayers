@@ -170,7 +170,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          */
         function(feature) {
           goog.asserts.assert(feature !== undefined, 'passed a feature');
-          var key = goog.getUid(feature).toString();
+          var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback(feature);

@@ -83,7 +83,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
           rotation: 0
         }
       };
-      frameState.layerStates[goog.getUid(layer)] = {};
+      frameState.layerStates[ol.getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);
       expect(spy.callCount).to.be(1);

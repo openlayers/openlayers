@@ -121,7 +121,7 @@ describe('ol.renderer.canvas.Map', function() {
       layerRenderer.getImage = function() {
         return null;
       };
-      renderer.layerRenderers_[goog.getUid(layer)] = layerRenderer;
+      renderer.layerRenderers_[ol.getUid(layer)] = layerRenderer;
     });
 
   });

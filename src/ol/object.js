@@ -102,11 +102,11 @@ ol.inherits(ol.ObjectEvent, ol.events.Event);
 ol.Object = function(opt_values) {
   ol.Observable.call(this);
 
-  // Call goog.getUid to ensure that the order of objects' ids is the same as
+  // Call ol.getUid to ensure that the order of objects' ids is the same as
   // the order in which they were created.  This also helps to ensure that
   // object properties are always added in the same order, which helps many
   // JavaScript engines generate faster code.
-  goog.getUid(this);
+  ol.getUid(this);
 
   /**
    * @private

@@ -568,7 +568,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
     for (var i = 0, ii = segmentDataMatches.length; i < ii; ++i) {
       var segmentDataMatch = segmentDataMatches[i];
       var segment = segmentDataMatch.segment;
-      var uid = goog.getUid(segmentDataMatch.feature);
+      var uid = ol.getUid(segmentDataMatch.feature);
       var depth = segmentDataMatch.depth;
       if (depth) {
         uid += '-' + depth.join('-'); // separate feature components
@@ -595,7 +595,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
 
         this.dragSegments_.push([segmentDataMatch, 1]);
         componentSegments[uid][1] = segmentDataMatch;
-      } else if (goog.getUid(segment) in this.vertexSegments_ &&
+      } else if (ol.getUid(segment) in this.vertexSegments_ &&
           (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
@@ -783,7 +783,7 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
       }
       this.createOrUpdateVertexFeature_(vertex);
       var vertexSegments = {};
-      vertexSegments[goog.getUid(closestSegment)] = true;
+      vertexSegments[ol.getUid(closestSegment)] = true;
       var segment;
       for (var i = 1, ii = nodes.length; i < ii; ++i) {
         segment = nodes[i].segment;
@@ -791,7 +791,7 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
             ol.coordinate.equals(closestSegment[1], segment[1]) ||
             (ol.coordinate.equals(closestSegment[0], segment[1]) &&
             ol.coordinate.equals(closestSegment[1], segment[0])))) {
-          vertexSegments[goog.getUid(segment)] = true;
+          vertexSegments[ol.getUid(segment)] = true;
         } else {
           break;
         }
@@ -915,7 +915,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
   for (i = dragSegments.length - 1; i >= 0; --i) {
     dragSegment = dragSegments[i];
     segmentData = dragSegment[0];
-    uid = goog.getUid(segmentData.feature);
+    uid = ol.getUid(segmentData.feature);
     if (segmentData.depth) {
       // separate feature components
       uid += '-' + segmentData.depth.join('-');

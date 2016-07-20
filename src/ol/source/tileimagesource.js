@@ -170,7 +170,7 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
       (!thisProj || ol.proj.equivalent(thisProj, projection))) {
     return this.tileGrid;
   } else {
-    var projKey = goog.getUid(projection).toString();
+    var projKey = ol.getUid(projection).toString();
     if (!(projKey in this.tileGridForProjection)) {
       this.tileGridForProjection[projKey] =
           ol.tilegrid.getForProjection(projection);
@@ -191,7 +191,7 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (!thisProj || ol.proj.equivalent(thisProj, projection)) {
     return this.tileCache;
   } else {
-    var projKey = goog.getUid(projection).toString();
+    var projKey = ol.getUid(projection).toString();
     if (!(projKey in this.tileCacheForProjection)) {
       this.tileCacheForProjection[projKey] = new ol.TileCache();
     }
@@ -364,7 +364,7 @@ ol.source.TileImage.prototype.setTileGridForProjection = function(projection, ti
   if (ol.ENABLE_RASTER_REPROJECTION) {
     var proj = ol.proj.get(projection);
     if (proj) {
-      var projKey = goog.getUid(proj).toString();
+      var projKey = ol.getUid(proj).toString();
       if (!(projKey in this.tileGridForProjection)) {
         this.tileGridForProjection[projKey] = tilegrid;
       }

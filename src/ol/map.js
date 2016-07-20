@@ -1289,7 +1289,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-      layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
+      layerStates[ol.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
     frameState = /** @type {olx.FrameState} */ ({
@@ -1411,7 +1411,7 @@ ol.Map.prototype.setView = function(view) {
  * @param {ol.Feature} feature Feature.
  */
 ol.Map.prototype.skipFeature = function(feature) {
-  var featureUid = goog.getUid(feature).toString();
+  var featureUid = ol.getUid(feature).toString();
   this.skippedFeatureUids_[featureUid] = true;
   this.render();
 };
@@ -1449,7 +1449,7 @@ ol.Map.prototype.updateSize = function() {
  * @param {ol.Feature} feature Feature.
  */
 ol.Map.prototype.unskipFeature = function(feature) {
-  var featureUid = goog.getUid(feature).toString();
+  var featureUid = ol.getUid(feature).toString();
   delete this.skippedFeatureUids_[featureUid];
   this.render();
 };
@@ -1485,7 +1485,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (typeof logo === 'string') {
       logos[logo] = '';
     } else if (logo instanceof HTMLElement) {
-      logos[goog.getUid(logo).toString()] = logo;
+      logos[ol.getUid(logo).toString()] = logo;
     } else if (logo !== null) {
       goog.asserts.assertString(logo.href, 'logo.href should be a string');
       goog.asserts.assertString(logo.src, 'logo.src should be a string');

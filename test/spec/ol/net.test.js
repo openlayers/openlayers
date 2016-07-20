@@ -17,7 +17,7 @@ describe('ol.net', function() {
         expect(removeChild.called).to.be(true);
         done();
       };
-      key = 'olc_' + goog.getUid(callback);
+      key = 'olc_' + ol.getUid(callback);
       return callback;
     }
 
