@@ -137,8 +137,8 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
    */
   function forEachFeatureAtCoordinate(feature, layer) {
     goog.asserts.assert(feature !== undefined, 'received a feature');
-    var key = goog.getUid(feature).toString();
-    var managed = frameState.layerStates[goog.getUid(layer)].managed;
+    var key = ol.getUid(feature).toString();
+    var managed = frameState.layerStates[ol.getUid(layer)].managed;
     if (!(key in frameState.skippedFeatureUids && !managed)) {
       return callback.call(thisArg, feature, managed ? layer : null);
     }
@@ -245,7 +245,7 @@ ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameSta
  * @return {ol.renderer.Layer} Layer renderer.
  */
 ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
-  var layerKey = goog.getUid(layer).toString();
+  var layerKey = ol.getUid(layer).toString();
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {

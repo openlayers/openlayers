@@ -147,7 +147,7 @@ ol.source.Vector = function(opt_options) {
   this.idIndex_ = {};
 
   /**
-   * A lookup of features without id (keyed by goog.getUid(feature)).
+   * A lookup of features without id (keyed by ol.getUid(feature)).
    * @private
    * @type {Object.<string, ol.Feature>}
    */
@@ -205,7 +205,7 @@ ol.source.Vector.prototype.addFeature = function(feature) {
  * @protected
  */
 ol.source.Vector.prototype.addFeatureInternal = function(feature) {
-  var featureKey = goog.getUid(feature).toString();
+  var featureKey = ol.getUid(feature).toString();
 
   if (!this.addToIndex_(featureKey, feature)) {
     return;
@@ -295,7 +295,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = features.length; i < length; i++) {
     feature = features[i];
-    featureKey = goog.getUid(feature).toString();
+    featureKey = ol.getUid(feature).toString();
     if (this.addToIndex_(featureKey, feature)) {
       newFeatures.push(feature);
     }
@@ -303,7 +303,7 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
     feature = newFeatures[i];
-    featureKey = goog.getUid(feature).toString();
+    featureKey = ol.getUid(feature).toString();
     this.setupChangeEvents_(featureKey, feature);
 
     var geometry = feature.getGeometry();
@@ -721,7 +721,7 @@ ol.source.Vector.prototype.getUrl = function() {
  */
 ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
   var feature = /** @type {ol.Feature} */ (event.target);
-  var featureKey = goog.getUid(feature).toString();
+  var featureKey = ol.getUid(feature).toString();
   var geometry = feature.getGeometry();
   if (!geometry) {
     if (!(featureKey in this.nullGeometryFeatures_)) {
@@ -820,7 +820,7 @@ ol.source.Vector.prototype.loadFeatures = function(
  * @api stable
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
-  var featureKey = goog.getUid(feature).toString();
+  var featureKey = ol.getUid(feature).toString();
   if (featureKey in this.nullGeometryFeatures_) {
     delete this.nullGeometryFeatures_[featureKey];
   } else {
@@ -839,7 +839,7 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
  * @protected
  */
 ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
-  var featureKey = goog.getUid(feature).toString();
+  var featureKey = ol.getUid(feature).toString();
   goog.asserts.assert(featureKey in this.featureChangeKeys_,
       'featureKey exists in featureChangeKeys');
   this.featureChangeKeys_[featureKey].forEach(ol.events.unlistenByKey);

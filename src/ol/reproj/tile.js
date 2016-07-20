@@ -222,7 +222,7 @@ ol.reproj.Tile.prototype.disposeInternal = function() {
 ol.reproj.Tile.prototype.getImage = function(opt_context) {
   if (opt_context !== undefined) {
     var image;
-    var key = goog.getUid(opt_context);
+    var key = ol.getUid(opt_context);
     if (key in this.canvasByContext_) {
       return this.canvasByContext_[key];
     } else if (ol.object.isEmpty(this.canvasByContext_)) {

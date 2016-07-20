@@ -165,7 +165,7 @@ ol.inherits(ol.source.ZoomifyTile_, ol.ImageTile);
 ol.source.ZoomifyTile_.prototype.getImage = function(opt_context) {
   var tileSize = ol.DEFAULT_TILE_SIZE;
   var key = opt_context !== undefined ?
-      goog.getUid(opt_context).toString() : '';
+      ol.getUid(opt_context).toString() : '';
   if (key in this.zoomifyImageByContext_) {
     return this.zoomifyImageByContext_[key];
   } else {

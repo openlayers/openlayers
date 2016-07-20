@@ -112,7 +112,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   var i, ii, layer;
   for (i = 0, ii = layersArray.length; i < ii; i++) {
     layer = layersArray[i];
-    this.listenerKeys_[goog.getUid(layer).toString()] = [
+    this.listenerKeys_[ol.getUid(layer).toString()] = [
       ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
           this.handleLayerChange_, this),
       ol.events.listen(layer, ol.events.EventType.CHANGE,
@@ -130,7 +130,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
  */
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
-  var key = goog.getUid(layer).toString();
+  var key = ol.getUid(layer).toString();
   goog.asserts.assert(!(key in this.listenerKeys_),
       'listeners already registered');
   this.listenerKeys_[key] = [
@@ -149,7 +149,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
  */
 ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
-  var key = goog.getUid(layer).toString();
+  var key = ol.getUid(layer).toString();
   goog.asserts.assert(key in this.listenerKeys_, 'no listeners to unregister');
   this.listenerKeys_[key].forEach(ol.events.unlistenByKey);
   delete this.listenerKeys_[key];

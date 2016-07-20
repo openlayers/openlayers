@@ -96,7 +96,7 @@ ol.source.Raster = function(options) {
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
   var layerStates = {};
   for (var i = 0, ii = layerStatesArray.length; i < ii; ++i) {
-    layerStates[goog.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
+    layerStates[ol.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
   }
 
   /**

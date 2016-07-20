@@ -171,7 +171,7 @@ ol.inherits(ol.interaction.Snap, ol.interaction.Pointer);
  */
 ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
   var listen = opt_listen !== undefined ? opt_listen : true;
-  var feature_uid = goog.getUid(feature);
+  var feature_uid = ol.getUid(feature);
   var geometry = feature.getGeometry();
   if (geometry) {
     var segmentWriter = this.SEGMENT_WRITERS_[geometry.getType()];
@@ -286,7 +286,7 @@ ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
  */
 ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
   if (this.handlingDownUpSequence) {
-    var uid = goog.getUid(feature);
+    var uid = ol.getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
       this.pendingFeatures_[uid] = feature;
     }
@@ -305,7 +305,7 @@ ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
  */
 ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
   var unlisten = opt_unlisten !== undefined ? opt_unlisten : true;
-  var feature_uid = goog.getUid(feature);
+  var feature_uid = ol.getUid(feature);
   var extent = this.indexedFeaturesExtents_[feature_uid];
   if (extent) {
     var rBush = this.rBush_;

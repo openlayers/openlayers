@@ -167,14 +167,14 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
     if (!source) {
       continue;
     }
-    sourceKey = goog.getUid(source).toString();
+    sourceKey = ol.getUid(source).toString();
     sourceAttributions = source.getAttributions();
     if (!sourceAttributions) {
       continue;
     }
     for (j = 0, jj = sourceAttributions.length; j < jj; j++) {
       sourceAttribution = sourceAttributions[j];
-      sourceAttributionKey = goog.getUid(sourceAttribution).toString();
+      sourceAttributionKey = ol.getUid(sourceAttribution).toString();
       if (sourceAttributionKey in attributions) {
         continue;
       }

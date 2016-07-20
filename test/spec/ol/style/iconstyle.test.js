@@ -18,7 +18,7 @@ describe('ol.style.Icon', function() {
         imgSize: size
       });
       expect(ol.style.IconImage_.get(
-          canvas, goog.getUid(canvas), size, '').getImage()).to.eql(canvas);
+          canvas, ol.getUid(canvas), size, '').getImage()).to.eql(canvas);
     });
 
     it('imgSize overrides img.width and img.height', function(done) {

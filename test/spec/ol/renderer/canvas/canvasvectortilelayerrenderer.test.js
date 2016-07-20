@@ -170,7 +170,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           rotation: 0
         }
       };
-      frameState.layerStates[goog.getUid(layer)] = {};
+      frameState.layerStates[ol.getUid(layer)] = {};
       renderer.renderedTiles = [new TileClass([0, 0, -1])];
       renderer.forEachFeatureAtCoordinate(
           coordinate, frameState, spy, undefined);

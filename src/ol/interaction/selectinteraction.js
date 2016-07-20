@@ -211,7 +211,7 @@ ol.inherits(ol.interaction.Select, ol.interaction.Interaction);
  * @private
  */
 ol.interaction.Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
-  var key = goog.getUid(feature);
+  var key = ol.getUid(feature);
   this.featureLayerAssociation_[key] = layer;
 };
 
@@ -238,7 +238,7 @@ ol.interaction.Select.prototype.getFeatures = function() {
 ol.interaction.Select.prototype.getLayer = function(feature) {
   goog.asserts.assertInstanceof(feature, ol.Feature,
       'feature should be an ol.Feature');
-  var key = goog.getUid(feature);
+  var key = ol.getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
 
@@ -400,6 +400,6 @@ ol.interaction.Select.prototype.removeFeature_ = function(evt) {
  * @private
  */
 ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
-  var key = goog.getUid(feature);
+  var key = ol.getUid(feature);
   delete this.featureLayerAssociation_[key];
 };

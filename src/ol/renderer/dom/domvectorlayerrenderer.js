@@ -194,7 +194,7 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
          */
         function(feature) {
           goog.asserts.assert(feature !== undefined, 'received a feature');
-          var key = goog.getUid(feature).toString();
+          var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
             return callback.call(thisArg, feature, layer);

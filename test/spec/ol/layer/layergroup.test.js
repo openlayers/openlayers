@@ -284,7 +284,7 @@ describe('ol.layer.Group', function() {
       layers.push(layer);
       expect(Object.keys(layerGroup.listenerKeys_).length).to.eql(1);
 
-      var listeners = layerGroup.listenerKeys_[goog.getUid(layer)];
+      var listeners = layerGroup.listenerKeys_[ol.getUid(layer)];
       expect(listeners.length).to.eql(2);
       expect(typeof listeners[0]).to.be('object');
       expect(typeof listeners[1]).to.be('object');

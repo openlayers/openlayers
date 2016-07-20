@@ -182,7 +182,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
           layerState.managed = false;
           layerState.zIndex = Infinity;
           evt.frameState.layerStatesArray.push(layerState);
-          evt.frameState.layerStates[goog.getUid(this)] = layerState;
+          evt.frameState.layerStates[ol.getUid(this)] = layerState;
         }, this);
     this.mapRenderKey_ = ol.events.listen(
         this, ol.events.EventType.CHANGE, map.render, map);

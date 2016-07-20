@@ -13,7 +13,7 @@ goog.require('ol.style.Style');
  * @return {number} Order.
  */
 ol.renderer.vector.defaultOrder = function(feature1, feature2) {
-  return goog.getUid(feature1) - goog.getUid(feature2);
+  return ol.getUid(feature1) - ol.getUid(feature2);
 };
 
 

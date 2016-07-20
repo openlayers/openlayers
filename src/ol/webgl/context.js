@@ -108,7 +108,7 @@ ol.inherits(ol.webgl.Context, ol.Disposable);
 ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   var gl = this.getGL();
   var arr = buf.getArray();
-  var bufferKey = String(goog.getUid(buf));
+  var bufferKey = String(ol.getUid(buf));
   if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
@@ -141,7 +141,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
  */
 ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
-  var bufferKey = String(goog.getUid(buf));
+  var bufferKey = String(ol.getUid(buf));
   goog.asserts.assert(bufferKey in this.bufferCache_,
       'attempted to delete uncached buffer');
   var bufferCacheEntry = this.bufferCache_[bufferKey];
@@ -214,7 +214,7 @@ ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
  * @return {WebGLShader} Shader.
  */
 ol.webgl.Context.prototype.getShader = function(shaderObject) {
-  var shaderKey = String(goog.getUid(shaderObject));
+  var shaderKey = String(ol.getUid(shaderObject));
   if (shaderKey in this.shaderCache_) {
     return this.shaderCache_[shaderKey];
   } else {
@@ -243,7 +243,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
 ol.webgl.Context.prototype.getProgram = function(
     fragmentShaderObject, vertexShaderObject) {
   var programKey =
-      goog.getUid(fragmentShaderObject) + '/' + goog.getUid(vertexShaderObject);
+      ol.getUid(fragmentShaderObject) + '/' + ol.getUid(vertexShaderObject);
   if (programKey in this.programCache_) {
     return this.programCache_[programKey];
   } else {

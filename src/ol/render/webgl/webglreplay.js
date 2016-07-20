@@ -471,7 +471,7 @@ ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, image
   for (i = 0; i < ii; ++i) {
     image = images[i];
 
-    uid = goog.getUid(image).toString();
+    uid = ol.getUid(image).toString();
     if (uid in texturePerImage) {
       texture = texturePerImage[uid];
     } else {
@@ -677,7 +677,7 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, skipped
         this.startIndices_[featureIndex] <= groupEnd) {
       var feature = this.startIndicesFeature_[featureIndex];
 
-      var featureUid = goog.getUid(feature).toString();
+      var featureUid = ol.getUid(feature).toString();
       if (skippedFeaturesHash[featureUid] !== undefined) {
         // feature should be skipped
         if (start !== end) {
@@ -805,7 +805,7 @@ ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne_ = function
         this.startIndices_[featureIndex] >= groupStart) {
       start = this.startIndices_[featureIndex];
       feature = this.startIndicesFeature_[featureIndex];
-      featureUid = goog.getUid(feature).toString();
+      featureUid = ol.getUid(feature).toString();
 
       if (skippedFeaturesHash[featureUid] === undefined &&
           feature.getGeometry() &&
@@ -872,7 +872,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     this.images_.push(image);
   } else {
     currentImage = this.images_[this.images_.length - 1];
-    if (goog.getUid(currentImage) != goog.getUid(image)) {
+    if (ol.getUid(currentImage) != ol.getUid(image)) {
       this.groupIndices_.push(this.indices_.length);
       goog.asserts.assert(this.groupIndices_.length === this.images_.length,
           'number of groupIndices and images match');
@@ -885,7 +885,7 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   } else {
     currentImage =
         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
-    if (goog.getUid(currentImage) != goog.getUid(hitDetectionImage)) {
+    if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
       this.hitDetectionGroupIndices_.push(this.indices_.length);
       goog.asserts.assert(this.hitDetectionGroupIndices_.length ===
           this.hitDetectionImages_.length,

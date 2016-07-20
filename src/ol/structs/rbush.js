@@ -60,9 +60,9 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
 
   this.rbush_.insert(item);
   // remember the object that was added to the internal rbush
-  goog.asserts.assert(!(goog.getUid(value) in this.items_),
-      'uid (%s) of value (%s) already exists', goog.getUid(value), value);
-  this.items_[goog.getUid(value)] = item;
+  goog.asserts.assert(!(ol.getUid(value) in this.items_),
+      'uid (%s) of value (%s) already exists', ol.getUid(value), value);
+  this.items_[ol.getUid(value)] = item;
 };
 
 
@@ -93,9 +93,9 @@ ol.structs.RBush.prototype.load = function(extents, values) {
       value: value
     };
     items[i] = item;
-    goog.asserts.assert(!(goog.getUid(value) in this.items_),
-        'uid (%s) of value (%s) already exists', goog.getUid(value), value);
-    this.items_[goog.getUid(value)] = item;
+    goog.asserts.assert(!(ol.getUid(value) in this.items_),
+        'uid (%s) of value (%s) already exists', ol.getUid(value), value);
+    this.items_[ol.getUid(value)] = item;
   }
   this.rbush_.load(items);
 };
@@ -110,7 +110,7 @@ ol.structs.RBush.prototype.remove = function(value) {
   if (goog.DEBUG && this.readers_) {
     throw new Error('Can not remove value while reading');
   }
-  var uid = goog.getUid(value);
+  var uid = ol.getUid(value);
   goog.asserts.assert(uid in this.items_,
       'uid (%s) of value (%s) does not exist', uid, value);
 
@@ -128,7 +128,7 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  var uid = goog.getUid(value);
+  var uid = ol.getUid(value);
   goog.asserts.assert(uid in this.items_,
       'uid (%s) of value (%s) does not exist', uid, value);
 

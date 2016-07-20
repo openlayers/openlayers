@@ -185,7 +185,7 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
      * @param {olx.FrameState} frameState Frame state.
      */
     var postRenderFunction = function(tileSource, map, frameState) {
-      var tileSourceKey = goog.getUid(tileSource).toString();
+      var tileSourceKey = ol.getUid(tileSource).toString();
       tileSource.expireCache(frameState.viewState.projection,
                              frameState.usedTiles[tileSourceKey]);
     }.bind(null, tileSource);
@@ -208,7 +208,7 @@ ol.renderer.Layer.prototype.updateAttributions = function(attributionsSet, attri
     var attribution, i, ii;
     for (i = 0, ii = attributions.length; i < ii; ++i) {
       attribution = attributions[i];
-      attributionsSet[goog.getUid(attribution).toString()] = attribution;
+      attributionsSet[ol.getUid(attribution).toString()] = attribution;
     }
   }
 };
@@ -242,7 +242,7 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
  */
 ol.renderer.Layer.prototype.updateUsedTiles = function(usedTiles, tileSource, z, tileRange) {
   // FIXME should we use tilesToDrawByZ instead?
-  var tileSourceKey = goog.getUid(tileSource).toString();
+  var tileSourceKey = ol.getUid(tileSource).toString();
   var zKey = z.toString();
   if (tileSourceKey in usedTiles) {
     if (zKey in usedTiles[tileSourceKey]) {
@@ -295,7 +295,7 @@ ol.renderer.Layer.prototype.snapCenterToPixel = function(center, resolution, siz
 ol.renderer.Layer.prototype.manageTilePyramid = function(
     frameState, tileSource, tileGrid, pixelRatio, projection, extent,
     currentZ, preload, opt_tileCallback, opt_this) {
-  var tileSourceKey = goog.getUid(tileSource).toString();
+  var tileSourceKey = ol.getUid(tileSource).toString();
   if (!(tileSourceKey in frameState.wantedTiles)) {
     frameState.wantedTiles[tileSourceKey] = {};
   }
