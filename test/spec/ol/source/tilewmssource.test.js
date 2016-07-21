@@ -265,6 +265,19 @@ describe('ol.source.TileWMS', function() {
     var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
     expect(tileUrl.indexOf(url)).to.be(0);
   });
+
+  describe('#setUrls()', function() {
+    it ('resets coordKeyPrefix_', function() {
+      var urls = ['u1', 'u2'];
+      var source1 = new ol.source.TileWMS({
+        urls: urls
+      });
+      var source2 = new ol.source.TileWMS({});
+      expect(source2.coordKeyPrefix_).to.be.empty();
+      source2.setUrls(urls);
+      expect(source2.coordKeyPrefix_).to.equal(source1.coordKeyPrefix_);
+    });
+  });
 });
 
 

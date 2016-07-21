@@ -355,6 +355,14 @@ ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRati
       pixelRatio, projection, baseParams);
 };
 
+/**
+ * @inheritDoc
+ */
+ol.source.TileWMS.prototype.setUrls = function(urls) {
+  ol.source.TileImage.prototype.setUrls.call(this, urls);
+  this.resetCoordKeyPrefix_();
+};
+
 
 /**
  * Update the user-provided params.
