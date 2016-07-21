@@ -148,6 +148,18 @@ oli.MapBrowserEvent.prototype.dragging;
 /**
  * @interface
  */
+oli.MapBrowserPointerEvent = function() {};
+
+
+/**
+ * @type {ol.pointer.PointerEvent}
+ */
+oli.MapBrowserPointerEvent.prototype.pointerEvent;
+
+
+/**
+ * @interface
+ */
 oli.MapEvent = function() {};
 
 
