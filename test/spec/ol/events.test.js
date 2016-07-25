@@ -192,7 +192,7 @@ describe('ol.events', function() {
       ol.events.unlistenAll(target);
       expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
       expect(ol.events.getListeners(target, 'bar')).to.be(undefined);
-      expect(ol.events.LISTENER_MAP_PROP_ in target).to.be(false);
+      expect('ol_lm' in target).to.be(false);
       expect(keys).to.eql([{}, {}]);
     });
   });
