@@ -43,28 +43,8 @@ ol.format.XSD.readBooleanString = function(string) {
  */
 ol.format.XSD.readDateTime = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
-  var re =
-      /^\s*(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?))\s*$/;
-  var m = re.exec(s);
-  if (m) {
-    var year = parseInt(m[1], 10);
-    var month = parseInt(m[2], 10) - 1;
-    var day = parseInt(m[3], 10);
-    var hour = parseInt(m[4], 10);
-    var minute = parseInt(m[5], 10);
-    var second = parseInt(m[6], 10);
-    var dateTime = Date.UTC(year, month, day, hour, minute, second) / 1000;
-    if (m[7] != 'Z') {
-      var sign = m[8] == '-' ? 1 : -1;
-      dateTime += sign * 60 * 60 * parseInt(m[9], 10);
-      if (m[10] !== undefined) {
-        dateTime += sign * 60 * parseInt(m[10], 10);
-      }
-    }
-    return dateTime;
-  } else {
-    return undefined;
-  }
+  var dateTime = Date.parse(s);
+  return isNaN(dateTime) ? undefined : dateTime / 1000;
 };
 
 
