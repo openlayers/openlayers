@@ -1138,7 +1138,7 @@ describe('ol.format.KML', function() {
         expect(flatCoordinates[11]).to.be.eql(Date.UTC(2014, 1, 6, 0, 0, 0));
         expect(flatCoordinates[15]).to.be.eql(Date.UTC(2014, 1, 6, 19, 39, 3));
         expect(flatCoordinates[19]).to.be.eql(
-            Date.UTC(2014, 1, 6, 19, 39, 10) + 3 * 60
+            Date.UTC(2014, 1, 6, 16, 39, 10)
         );
       });
 

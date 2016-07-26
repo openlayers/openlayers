@@ -1360,28 +1360,8 @@ ol.format.KML.whenParser_ = function(node, objectStack) {
       'gxTrackObject should be an Object');
   var whens = gxTrackObject.whens;
   var s = ol.xml.getAllTextContent(node, false);
-  var re =
-      /^\s*(\d{4})($|-(\d{2})($|-(\d{2})($|T(\d{2}):(\d{2}):(\d{2})(Z|(?:([+\-])(\d{2})(?::(\d{2}))?)))))\s*$/;
-  var m = re.exec(s);
-  if (m) {
-    var year = parseInt(m[1], 10);
-    var month = m[3] ? parseInt(m[3], 10) - 1 : 0;
-    var day = m[5] ? parseInt(m[5], 10) : 1;
-    var hour = m[7] ? parseInt(m[7], 10) : 0;
-    var minute = m[8] ? parseInt(m[8], 10) : 0;
-    var second = m[9] ? parseInt(m[9], 10) : 0;
-    var when = Date.UTC(year, month, day, hour, minute, second);
-    if (m[10] && m[10] != 'Z') {
-      var sign = m[11] == '-' ? -1 : 1;
-      when += sign * 60 * parseInt(m[12], 10);
-      if (m[13]) {
-        when += sign * 60 * 60 * parseInt(m[13], 10);
-      }
-    }
-    whens.push(when);
-  } else {
-    whens.push(0);
-  }
+  var when = Date.parse(s);
+  whens.push(isNaN(when) ? 0 : when);
 };
 
 
