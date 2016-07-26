@@ -55,10 +55,10 @@ ol.format.XSD.readDateTime = function(node) {
     var second = parseInt(m[6], 10);
     var dateTime = Date.UTC(year, month, day, hour, minute, second) / 1000;
     if (m[7] != 'Z') {
-      var sign = m[8] == '-' ? -1 : 1;
-      dateTime += sign * 60 * parseInt(m[9], 10);
+      var sign = m[8] == '-' ? 1 : -1;
+      dateTime += sign * 60 * 60 * parseInt(m[9], 10);
       if (m[10] !== undefined) {
-        dateTime += sign * 60 * 60 * parseInt(m[10], 10);
+        dateTime += sign * 60 * parseInt(m[10], 10);
       }
     }
     return dateTime;
