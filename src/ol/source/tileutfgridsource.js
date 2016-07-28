@@ -81,7 +81,8 @@ ol.inherits(ol.source.TileUTFGrid, ol.source.Tile);
  */
 ol.source.TileUTFGrid.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
-  if (client.status >= 200 && client.status < 300) {
+  // status will be 0 for file:// urls
+  if (!client.status || client.status >= 200 && client.status < 300) {
     var response;
     try {
       response = /** @type {TileJSON} */(JSON.parse(client.responseText));
@@ -457,7 +458,8 @@ ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
  */
 ol.source.TileUTFGridTile_.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
-  if (client.status >= 200 && client.status < 300) {
+  // status will be 0 for file:// urls
+  if (!client.status || client.status >= 200 && client.status < 300) {
     var response;
     try {
       response = /** @type {!UTFGridJSON} */(JSON.parse(client.responseText));
