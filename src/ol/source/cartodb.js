@@ -125,7 +125,8 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
  */
 ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
-  if (client.status >= 200 && client.status < 300) {
+  // status will be 0 for file:// urls
+  if (!client.status || client.status >= 200 && client.status < 300) {
     var response;
     try {
       response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));

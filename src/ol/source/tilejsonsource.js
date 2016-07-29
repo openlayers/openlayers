@@ -67,7 +67,8 @@ ol.inherits(ol.source.TileJSON, ol.source.TileImage);
  */
 ol.source.TileJSON.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
-  if (client.status >= 200 && client.status < 300) {
+  // status will be 0 for file:// urls
+  if (!client.status || client.status >= 200 && client.status < 300) {
     var response;
     try {
       response = /** @type {TileJSON} */(JSON.parse(client.responseText));

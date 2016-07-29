@@ -41,7 +41,8 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
          * @private
          */
         xhr.onload = function(event) {
-          if (xhr.status >= 200 && xhr.status < 300) {
+          // status will be 0 for file:// urls
+          if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
             var type = format.getType();
             /** @type {Document|Node|Object|string|undefined} */
             var source;
