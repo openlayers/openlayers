@@ -38,7 +38,7 @@
     "glob": "7.0.5",
     "handlebars": "4.0.5",
     "jsdoc": "3.4.0",
-    "marked": "0.3.5",
+    "marked": "0.3.6",
     "metalsmith": "2.1.0",
     "metalsmith-layouts": "1.6.5",
     "nomnom": "1.8.1",
