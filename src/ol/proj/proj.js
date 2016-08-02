@@ -678,10 +678,8 @@ ol.proj.get = function(projectionLike) {
         ol.proj.addProjection(projection);
       }
     }
-  } else {
-    projection = null;
   }
-  return projection;
+  return projection || null;
 };
 
 
