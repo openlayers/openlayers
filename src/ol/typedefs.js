@@ -300,7 +300,9 @@ ol.LayerState;
 
 
 /**
- * One of `all`, `bbox`, `tile`.
+ * A function that takes an {@link ol.Extent} and a resolution as arguments, and
+ * returns an array of {@link ol.Extent} with the extents to load. Usually this
+ * is one of the standard {@link ol.loadingstrategy} strategies.
  *
  * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
  */
