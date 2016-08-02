@@ -88,7 +88,7 @@ $(function () {
       var link = 'https://github.com/openlayers/ol3/blob/v' + currentVersion + '/' +
           textParts[0];
       el.innerHTML = '<a href="' + link + '">' + textParts[0] + '</a>, ' +
-          '<a href="' + link + textParts[1].replace('line ', '#l') + '">' +
+          '<a href="' + link + textParts[1].replace('line ', '#L') + '">' +
           textParts[1] + '</a>';
     });
 
