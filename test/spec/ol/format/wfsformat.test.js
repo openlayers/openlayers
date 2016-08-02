@@ -504,6 +504,82 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
+    it('creates an AND intersects filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="area" srsName="EPSG:4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:Intersects>' +
+          '      <ogc:PropertyName>the_geom</ogc:PropertyName>' +
+          '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml">' +
+          '        <gml:exterior>' +
+          '          <gml:LinearRing>' +
+          '            <gml:posList>' +
+          '              10 20 10 25 15 25 15 20 10 20' +
+          '            </gml:posList>' +
+          '          </gml:LinearRing>' +
+          '        </gml:exterior>' +
+          '      </gml:Polygon>' +
+          '    </ogc:Intersects>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: f.intersects(
+            'the_geom',
+            new ol.geom.Polygon([[
+                [10, 20],
+                [10, 25],
+                [15, 25],
+                [15, 20],
+                [10, 20]
+            ]])
+        )
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates an AND within filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="area" srsName="EPSG:4326" ' +
+          '    xmlns:topp="http://www.openplans.org/topp">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:Within>' +
+          '      <ogc:PropertyName>the_geom</ogc:PropertyName>' +
+          '      <gml:Polygon xmlns:gml="http://www.opengis.net/gml">' +
+          '        <gml:exterior>' +
+          '          <gml:LinearRing>' +
+          '            <gml:posList>' +
+          '              10 20 10 25 15 25 15 20 10 20' +
+          '            </gml:posList>' +
+          '          </gml:LinearRing>' +
+          '        </gml:exterior>' +
+          '      </gml:Polygon>' +
+          '    </ogc:Within>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+      var f = ol.format.ogc.filter;
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['area'],
+        filter: f.within(
+            'the_geom',
+            new ol.geom.Polygon([[
+                [10, 20],
+                [10, 25],
+                [15, 25],
+                [15, 20],
+                [10, 20]
+            ]])
+        )
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
   });
 
   describe('when writing out a Transaction request', function() {
