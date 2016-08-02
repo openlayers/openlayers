@@ -53,15 +53,6 @@ ol.events.KeyCode = {
 
 
 /**
- * Property name on an event target for the listener map associated with the
- * event target.
- * @const {string}
- * @private
- */
-ol.events.LISTENER_MAP_PROP_ = 'olm_' + ((Math.random() * 1e4) | 0);
-
-
-/**
  * @param {ol.EventsKey} listenerObj Listener object.
  * @return {ol.EventsListenerFunctionType} Bound listener.
  */
@@ -114,7 +105,7 @@ ol.events.findListener_ = function(listeners, listener, opt_this,
  * @return {Array.<ol.EventsKey>|undefined} Listeners.
  */
 ol.events.getListeners = function(target, type) {
-  var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
+  var listenerMap = target.ol_lm;
   return listenerMap ? listenerMap[type] : undefined;
 };
 
@@ -128,9 +119,9 @@ ol.events.getListeners = function(target, type) {
  * @private
  */
 ol.events.getListenerMap_ = function(target) {
-  var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
+  var listenerMap = target.ol_lm;
   if (!listenerMap) {
-    listenerMap = target[ol.events.LISTENER_MAP_PROP_] = {};
+    listenerMap = target.ol_lm = {};
   }
   return listenerMap;
 };
@@ -152,11 +143,11 @@ ol.events.removeListeners_ = function(target, type) {
       ol.object.clear(listeners[i]);
     }
     listeners.length = 0;
-    var listenerMap = target[ol.events.LISTENER_MAP_PROP_];
+    var listenerMap = target.ol_lm;
     if (listenerMap) {
       delete listenerMap[type];
       if (Object.keys(listenerMap).length === 0) {
-        delete target[ol.events.LISTENER_MAP_PROP_];
+        delete target.ol_lm;
       }
     }
   }
