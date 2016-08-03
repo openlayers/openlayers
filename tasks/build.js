@@ -15,7 +15,7 @@ var generateExports = require('./generate-exports');
 var log = closure.log;
 var root = path.join(__dirname, '..');
 
-var umdWrapper = '(function (root, factory) {\n' +
+var umdWrapper = ';(function (root, factory) {\n' +
     '  if (typeof exports === "object") {\n' +
     '    module.exports = factory();\n' +
     '  } else if (typeof define === "function" && define.amd) {\n' +
