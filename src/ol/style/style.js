@@ -1,5 +1,4 @@
 goog.provide('ol.style.Style');
-goog.provide('ol.style.defaultGeometryFunction');
 
 goog.require('goog.asserts');
 goog.require('ol.geom.Geometry');
