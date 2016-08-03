@@ -329,7 +329,7 @@ ol.AssertionError = function(code) {
    */
   this.message = 'Assertion failed. See ' +
       (ol.VERSION ? 'http://openlayers.org/en/' + ol.VERSION.split('-')[0] : '') +
-      '/doc/errors.html#' + code + ' for details.';
+      '/doc/errors/#' + code + ' for details.';
 
   /**
    * Error code. The meaning of the code can be found on

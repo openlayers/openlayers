@@ -13,13 +13,13 @@ describe('ol', function() {
   describe('ol.AssertionError', function() {
     it('generates a message', function() {
       var error = new ol.AssertionError(42);
-      expect(error.message).to.be('Assertion failed. See /doc/errors.html#42 for details.');
+      expect(error.message).to.be('Assertion failed. See /doc/errors/#42 for details.');
     });
     it('generates a message with a versioned url', function() {
       var origVersion = ol.VERSION;
       ol.VERSION = 'foo';
       var error = new ol.AssertionError(42);
-      expect(error.message).to.be('Assertion failed. See http://openlayers.org/en/foo/doc/errors.html#42 for details.');
+      expect(error.message).to.be('Assertion failed. See http://openlayers.org/en/foo/doc/errors/#42 for details.');
       ol.VERSION = origVersion;
     });
     it('has an error code', function() {
