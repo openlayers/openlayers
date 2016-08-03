@@ -76,7 +76,7 @@ ol.format.ogc.filter.bbox = function(geometryName, extent, opt_srsName) {
 
 /**
  * Create a `<Intersects>` operator to test whether a geometry-valued property
- * intersects a fixed bounding geometry
+ * intersects a given geometry.
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!ol.geom.Geometry} geometry Geometry.
@@ -91,7 +91,7 @@ ol.format.ogc.filter.intersects = function(geometryName, geometry, opt_srsName) 
 
 /**
  * Create a `<Within>` operator to test whether a geometry-valued property
- * intersects a fixed bounding geometry
+ * is within a given geometry.
  *
  * @param {!string} geometryName Geometry name to use.
  * @param {!ol.geom.Geometry} geometry Geometry.
@@ -410,10 +410,11 @@ ol.inherits(ol.format.ogc.filter.Bbox, ol.format.ogc.filter.Filter);
 
 /**
  * @classdesc
- * Represents a `<Intersects>` operator to test whether a geometry-valued property
- * intersects a fixed bounding geometry
+ * Represents a spatial operator to test whether a geometry-valued property
+ * relates to a given geometry.
  *
  * @constructor
+ * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} geometryName Geometry name to use.
  * @param {!ol.geom.Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
@@ -421,9 +422,9 @@ ol.inherits(ol.format.ogc.filter.Bbox, ol.format.ogc.filter.Filter);
  * @extends {ol.format.ogc.filter.Filter}
  * @api
  */
-ol.format.ogc.filter.Intersects = function(geometryName, geometry, opt_srsName) {
+ol.format.ogc.filter.Spatial = function(tagName, geometryName, geometry, opt_srsName) {
 
-  ol.format.ogc.filter.Filter.call(this, 'Intersects');
+  ol.format.ogc.filter.Filter.call(this, tagName);
 
   /**
    * @public
@@ -443,45 +444,49 @@ ol.format.ogc.filter.Intersects = function(geometryName, geometry, opt_srsName) 
    */
   this.srsName = opt_srsName;
 };
-ol.inherits(ol.format.ogc.filter.Intersects, ol.format.ogc.filter.Filter);
+ol.inherits(ol.format.ogc.filter.Spatial, ol.format.ogc.filter.Filter);
+
+
+/**
+ * @classdesc
+ * Represents a `<Intersects>` operator to test whether a geometry-valued property
+ * intersects a given geometry.
+ *
+ * @constructor
+ * @param {!string} geometryName Geometry name to use.
+ * @param {!ol.geom.Geometry} geometry Geometry.
+ * @param {string=} opt_srsName SRS name. No srsName attribute will be
+ *    set on geometries when this is not provided.
+ * @extends {ol.format.ogc.filter.Spatial}
+ * @api
+ */
+ol.format.ogc.filter.Intersects = function(geometryName, geometry, opt_srsName) {
+
+  ol.format.ogc.filter.Spatial.call(this, 'Intersects', geometryName, geometry, opt_srsName);
+
+};
+ol.inherits(ol.format.ogc.filter.Intersects, ol.format.ogc.filter.Spatial);
 
 
 /**
  * @classdesc
  * Represents a `<Within>` operator to test whether a geometry-valued property
- * within a fixed bounding geometry
+ * is within a given geometry.
  *
  * @constructor
  * @param {!string} geometryName Geometry name to use.
  * @param {!ol.geom.Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @extends {ol.format.ogc.filter.Filter}
+ * @extends {ol.format.ogc.filter.Spatial}
  * @api
  */
 ol.format.ogc.filter.Within = function(geometryName, geometry, opt_srsName) {
 
-  ol.format.ogc.filter.Filter.call(this, 'Within');
+  ol.format.ogc.filter.Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
 
-  /**
-   * @public
-   * @type {!string}
-   */
-  this.geometryName = geometryName || 'the_geom';
-
-  /**
-   * @public
-   * @type {ol.geom.Geometry}
-   */
-  this.geometry = geometry;
-
-  /**
-   * @public
-   * @type {string|undefined}
-   */
-  this.srsName = opt_srsName;
 };
-ol.inherits(ol.format.ogc.filter.Within, ol.format.ogc.filter.Filter);
+ol.inherits(ol.format.ogc.filter.Within, ol.format.ogc.filter.Spatial);
 
 
 // Property comparison filters

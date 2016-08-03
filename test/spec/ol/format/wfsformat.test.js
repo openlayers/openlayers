@@ -504,7 +504,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
-    it('creates an AND intersects filter', function() {
+    it('creates a intersects filter', function() {
       var text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
@@ -542,7 +542,7 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
-    it('creates an AND within filter', function() {
+    it('creates a within filter', function() {
       var text =
           '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
           '    typeName="area" srsName="EPSG:4326" ' +
