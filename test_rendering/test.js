@@ -23,7 +23,7 @@ page.open(url).then(function(status) {
       }
       page.close();
       phantom.exit(failedTests.length === 0 ? 0 : 1);
-    }
+    };
   } else {
     console.error('The tests could not be started. Is the server running?');
     page.close();
