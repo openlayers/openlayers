@@ -6,6 +6,7 @@ goog.require('ol.format.GMLBase');
 goog.require('ol.format.ogc.filter');
 goog.require('ol.format.ogc.filter.Bbox');
 goog.require('ol.format.ogc.filter.ComparisonBinary');
+goog.require('ol.format.ogc.filter.Intersects');
 goog.require('ol.format.ogc.filter.LogicalBinary');
 goog.require('ol.format.ogc.filter.Not');
 goog.require('ol.format.ogc.filter.IsBetween');
@@ -573,16 +574,12 @@ ol.format.WFS.writeBboxFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.LogicalBinary} filter Filter.
+ * @param {ol.format.ogc.filter.Intersects} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
 ol.format.WFS.writeIntersectsFilter_ = function(node, filter, objectStack) {
-  goog.asserts.assertInstanceof(filter, ol.format.ogc.filter.Intersects,
-    'must be intersects filter');
-
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   context['srsName'] = filter.srsName;
 
   ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
@@ -592,16 +589,12 @@ ol.format.WFS.writeIntersectsFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Filter} filter Filter.
+ * @param {ol.format.ogc.filter.Within} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
 ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
-  goog.asserts.assertInstanceof(filter, ol.format.ogc.filter.Within,
-    'must be within filter');
-
   var context = objectStack[objectStack.length - 1];
-  goog.asserts.assert(goog.isObject(context), 'context should be an Object');
   context['srsName'] = filter.srsName;
 
   ol.format.WFS.writeOgcPropertyName_(node, filter.geometryName);
@@ -611,7 +604,7 @@ ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Filter} filter Filter.
+ * @param {ol.format.ogc.filter.LogicalBinary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
