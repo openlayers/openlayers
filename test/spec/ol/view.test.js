@@ -323,23 +323,48 @@ describe('ol.View', function() {
       view.setResolution(undefined);
       expect(view.getZoom()).to.be(undefined);
 
-      view.setResolution(511);
+      view.setResolution(513);
       expect(view.getZoom()).to.be(undefined);
 
       view.setResolution(512);
       expect(view.getZoom()).to.be(0);
 
-      view.setResolution(64);
-      expect(view.getZoom()).to.be(3);
+      view.setResolution(100);
+      expect(view.getZoom()).to.roughlyEqual(2.35614, 1e-5);
 
       view.setResolution(65);
-      expect(view.getZoom()).to.be(undefined);
+      expect(view.getZoom()).to.roughlyEqual(2.97763, 1e-5);
+
+      view.setResolution(64);
+      expect(view.getZoom()).to.be(3);
 
       view.setResolution(16);
       expect(view.getZoom()).to.be(5);
 
       view.setResolution(15);
       expect(view.getZoom()).to.be(undefined);
+    });
+
+    it('works for resolution arrays with variable zoom factors', function() {
+      var view = new ol.View({
+        resolutions: [10, 5, 2, 1]
+      });
+
+      view.setZoom(1);
+      expect(view.getZoom()).to.be(1);
+
+      view.setZoom(1.3);
+      expect(view.getZoom()).to.be(1.3);
+
+      view.setZoom(2);
+      expect(view.getZoom()).to.be(2);
+
+      view.setZoom(2.7);
+      expect(view.getZoom()).to.be(2.7);
+
+      view.setZoom(3);
+      expect(view.getZoom()).to.be(3);
+
     });
   });
 
@@ -358,6 +383,9 @@ describe('ol.View', function() {
 
       view.setZoom(15);
       expect(view.getZoom()).to.be(15);
+
+      view.setZoom(15.3);
+      expect(view.getZoom()).to.be(15.3);
 
       view.setZoom(20);
       expect(view.getZoom()).to.be(20);

@@ -136,6 +136,12 @@ ol.View = function(opt_options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.zoomFactor_ = resolutionConstraintInfo.zoomFactor;
+
+  /**
+   * @private
    * @type {Array.<number>|undefined}
    */
   this.resolutions_ = options.resolutions;
@@ -449,27 +455,32 @@ ol.View.prototype.getState = function() {
 
 /**
  * Get the current zoom level. Return undefined if the current
- * resolution is undefined or not a "constrained resolution".
+ * resolution is undefined or not within the "resolution constraints".
  * @return {number|undefined} Zoom.
  * @api stable
  */
 ol.View.prototype.getZoom = function() {
-  var offset;
+  var zoom;
   var resolution = this.getResolution();
-
-  if (resolution !== undefined) {
-    var res, z = 0;
-    do {
-      res = this.constrainResolution(this.maxResolution_, z);
-      if (res == resolution) {
-        offset = z;
-        break;
+  if (resolution !== undefined &&
+      resolution >= this.minResolution_ && resolution <= this.maxResolution_) {
+    var offset = this.minZoom_ || 0;
+    var max, zoomFactor;
+    if (this.resolutions_) {
+      var nearest = ol.array.linearFindNearest(this.resolutions_, resolution, 1);
+      offset += nearest;
+      if (nearest == this.resolutions_.length - 1) {
+        return offset;
       }
-      ++z;
-    } while (res > this.minResolution_);
+      max = this.resolutions_[nearest];
+      zoomFactor = max / this.resolutions_[nearest + 1];
+    } else {
+      max = this.maxResolution_;
+      zoomFactor = this.zoomFactor_;
+    }
+    zoom = offset + Math.log(max / resolution) / Math.log(zoomFactor);
   }
-
-  return offset !== undefined ? this.minZoom_ + offset : offset;
+  return zoom;
 };
 
 
@@ -685,7 +696,7 @@ ol.View.createCenterConstraint_ = function(options) {
  * @private
  * @param {olx.ViewOptions} options View options.
  * @return {{constraint: ol.ResolutionConstraintType, maxResolution: number,
- *     minResolution: number}} The constraint.
+ *     minResolution: number, zoomFactor: number}} The constraint.
  */
 ol.View.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
@@ -759,7 +770,7 @@ ol.View.createResolutionConstraint_ = function(options) {
         zoomFactor, maxResolution, maxZoom - minZoom);
   }
   return {constraint: resolutionConstraint, maxResolution: maxResolution,
-    minResolution: minResolution, minZoom: minZoom};
+    minResolution: minResolution, minZoom: minZoom, zoomFactor: zoomFactor};
 };
 
 
