@@ -7,7 +7,6 @@
 goog.provide('ol.source.TileJSON');
 goog.provide('ol.tilejson');
 
-goog.require('goog.asserts');
 goog.require('ol.Attribution');
 goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
@@ -118,7 +117,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
   }
 
   if (tileJSON.scheme !== undefined) {
-    goog.asserts.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
+    goog.DEBUG && console.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
   }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;

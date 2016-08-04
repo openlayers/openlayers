@@ -1,6 +1,5 @@
 goog.provide('ol.Feature');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
@@ -100,8 +99,6 @@ ol.Feature = function(opt_geometryOrProperties) {
       var geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);
     } else {
-      goog.asserts.assert(goog.isObject(opt_geometryOrProperties),
-          'opt_geometryOrProperties should be an Object');
       /** @type {Object.<string, *>} */
       var properties = opt_geometryOrProperties;
       this.setProperties(properties);
@@ -304,8 +301,8 @@ ol.Feature.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      goog.asserts.assertInstanceof(obj, ol.style.Style,
-          'obj should be an ol.style.Style');
+      ol.assert(obj instanceof ol.style.Style,
+          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
     styleFunction = function() {

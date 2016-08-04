@@ -2,7 +2,6 @@
 
 goog.provide('ol.renderer.canvas.TileLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
@@ -87,9 +86,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
   var projection = viewState.projection;
 
   var tileLayer = this.getLayer();
-  var tileSource = tileLayer.getSource();
-  goog.asserts.assertInstanceof(tileSource, ol.source.Tile,
-      'source is an ol.source.Tile');
+  var tileSource = /** @type {ol.source.Tile} */ (tileLayer.getSource());
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewState.resolution, this.zDirection);
   var tileResolution = tileGrid.getResolution(z);
@@ -145,7 +142,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
       if (!drawableTile(tile) && tile.interimTile) {
         tile = tile.interimTile;
       }
-      goog.asserts.assert(tile);
       if (drawableTile(tile)) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
@@ -230,9 +226,7 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var offsetY = Math.round(pixelRatio * size[1] / 2);
   var pixelScale = pixelRatio / resolution;
   var layer = this.getLayer();
-  var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.Tile,
-      'source is an ol.source.Tile');
+  var source = /** @type {ol.source.Tile} */ (layer.getSource());
   var tileGutter = source.getGutter(projection);
   var tileGrid = source.getTileGridForProjection(projection);
 
@@ -279,12 +273,10 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var extent = layerState.extent;
   var clipped = extent !== undefined;
   if (clipped) {
-    goog.asserts.assert(extent !== undefined,
-        'layerState extent is defined');
-    var topLeft = ol.extent.getTopLeft(extent);
-    var topRight = ol.extent.getTopRight(extent);
-    var bottomRight = ol.extent.getBottomRight(extent);
-    var bottomLeft = ol.extent.getBottomLeft(extent);
+    var topLeft = ol.extent.getTopLeft(/** @type {ol.Extent} */ (extent));
+    var topRight = ol.extent.getTopRight(/** @type {ol.Extent} */ (extent));
+    var bottomRight = ol.extent.getBottomRight(/** @type {ol.Extent} */ (extent));
+    var bottomLeft = ol.extent.getBottomLeft(/** @type {ol.Extent} */ (extent));
 
     ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
     ol.transform.apply(frameState.coordinateToPixelTransform, topRight);

@@ -2,7 +2,6 @@
 
 goog.provide('ol.render.Box');
 
-goog.require('goog.asserts');
 goog.require('ol.Disposable');
 goog.require('ol.geom.Polygon');
 
@@ -64,8 +63,6 @@ ol.render.Box.prototype.disposeInternal = function() {
 ol.render.Box.prototype.render_ = function() {
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
-  goog.asserts.assert(startPixel, 'this.startPixel_ must be truthy');
-  goog.asserts.assert(endPixel, 'this.endPixel_ must be truthy');
   var px = 'px';
   var style = this.element_.style;
   style.left = Math.min(startPixel[0], endPixel[0]) + px;
@@ -107,11 +104,6 @@ ol.render.Box.prototype.setPixels = function(startPixel, endPixel) {
  * Creates or updates the cached geometry.
  */
 ol.render.Box.prototype.createOrUpdateGeometry = function() {
-  goog.asserts.assert(this.startPixel_,
-      'this.startPixel_ must be truthy');
-  goog.asserts.assert(this.endPixel_,
-      'this.endPixel_ must be truthy');
-  goog.asserts.assert(this.map_, 'this.map_ must be truthy');
   var startPixel = this.startPixel_;
   var endPixel = this.endPixel_;
   var pixels = [

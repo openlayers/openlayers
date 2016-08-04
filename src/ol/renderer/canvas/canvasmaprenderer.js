@@ -2,7 +2,6 @@
 
 goog.provide('ol.renderer.canvas.Map');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.RendererType');
@@ -83,7 +82,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.canvas.VectorLayer(layer);
   } else {
-    goog.asserts.fail('unexpected layer configuration');
+    goog.DEBUG && console.assert(false, 'unexpected layer configuration');
     return null;
   }
 };
@@ -180,9 +179,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
-    layerRenderer = this.getLayerRenderer(layer);
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.canvas.Layer,
-        'layerRenderer is an instance of ol.renderer.canvas.Layer');
+    layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
     if (!ol.layer.Layer.visibleAtResolution(layerState, viewResolution) ||
         layerState.sourceState != ol.source.State.READY) {
       continue;

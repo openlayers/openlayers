@@ -58,9 +58,11 @@ describe('ol.TileRange', function() {
     });
 
     describe('with mixed z', function() {
-      expect(function() {
-        return new ol.TileRange.boundingTileRange([3, 1, 3], [4, 2, 0]);
-      }).to.throwException();
+      it('returns the expected TileRange', function() {
+        expect(function() {
+          return new ol.TileRange.boundingTileRange([3, 1, 3], [4, 2, 0]);
+        }).to.throwException();
+      });
     });
   });
 

@@ -1,6 +1,6 @@
 goog.provide('ol.xml');
 
-goog.require('goog.asserts');
+goog.require('ol');
 goog.require('ol.array');
 
 
@@ -133,11 +133,11 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
       function(node, objectStack) {
         var value = valueReader.call(opt_this, node, objectStack);
         if (value !== undefined) {
-          goog.asserts.assert(Array.isArray(value),
+          goog.DEBUG && console.assert(Array.isArray(value),
               'valueReader function is expected to return an array of values');
           var array = /** @type {Array.<*>} */
               (objectStack[objectStack.length - 1]);
-          goog.asserts.assert(Array.isArray(array),
+          goog.DEBUG && console.assert(Array.isArray(array),
               'objectStack is supposed to be an array of arrays');
           ol.array.extend(array, value);
         }
@@ -164,7 +164,7 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
             node, objectStack);
         if (value !== undefined) {
           var array = objectStack[objectStack.length - 1];
-          goog.asserts.assert(Array.isArray(array),
+          goog.DEBUG && console.assert(Array.isArray(array),
               'objectStack is supposed to be an array of arrays');
           array.push(value);
         }
@@ -206,7 +206,7 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  * @template T
  */
 ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
-  goog.asserts.assert(valueReader !== undefined,
+  goog.DEBUG && console.assert(valueReader !== undefined,
       'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
@@ -221,8 +221,6 @@ ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) 
               (objectStack[objectStack.length - 1]);
           var property = opt_property !== undefined ?
               opt_property : node.localName;
-          goog.asserts.assert(goog.isObject(object),
-              'entity from stack was not an object');
           var array;
           if (property in object) {
             array = object[property];
@@ -244,7 +242,7 @@ ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) 
  * @template T
  */
 ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
-  goog.asserts.assert(valueReader !== undefined,
+  goog.DEBUG && console.assert(valueReader !== undefined,
       'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
@@ -259,8 +257,6 @@ ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) 
               (objectStack[objectStack.length - 1]);
           var property = opt_property !== undefined ?
               opt_property : node.localName;
-          goog.asserts.assert(goog.isObject(object),
-              'entity from stack was not an object');
           object[property] = value;
         }
       });
@@ -282,10 +278,8 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
     nodeWriter.call(opt_this !== undefined ? opt_this : this,
         node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
-    goog.asserts.assert(goog.isObject(parent),
-        'entity from stack was not an object');
     var parentNode = parent.node;
-    goog.asserts.assert(ol.xml.isNode(parentNode) ||
+    goog.DEBUG && console.assert(ol.xml.isNode(parentNode) ||
         ol.xml.isDocument(parentNode),
         'expected parentNode %s to be a Node or a Document', parentNode);
     parentNode.appendChild(node);
@@ -346,7 +340,7 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
       function(value, objectStack, opt_nodeName) {
         var context = objectStack[objectStack.length - 1];
         var node = context.node;
-        goog.asserts.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
+        goog.DEBUG && console.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
             'expected node %s to be a Node or a Document', node);
         var nodeName = fixedNodeName;
         if (nodeName === undefined) {
@@ -356,8 +350,8 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
         if (opt_namespaceURI === undefined) {
           namespaceURI = node.namespaceURI;
         }
-        goog.asserts.assert(nodeName !== undefined, 'nodeName was undefined');
-        return ol.xml.createElementNS(namespaceURI, nodeName);
+        goog.DEBUG && console.assert(nodeName !== undefined, 'nodeName was undefined');
+        return ol.xml.createElementNS(namespaceURI, /** @type {string} */ (nodeName));
       }
   );
 };

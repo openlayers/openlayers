@@ -2,7 +2,6 @@
 
 goog.provide('ol.renderer.webgl.Map');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.RendererType');
 goog.require('ol.array');
@@ -86,7 +85,7 @@ ol.renderer.webgl.Map = function(container, map) {
     preserveDrawingBuffer: false,
     stencil: true
   });
-  goog.asserts.assert(this.gl_, 'got a WebGLRenderingContext');
+  goog.DEBUG && console.assert(this.gl_, 'got a WebGLRenderingContext');
 
   /**
    * @private
@@ -183,8 +182,6 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
   var tileKey = tile.getKey();
   if (this.textureCache_.containsKey(tileKey)) {
     var textureCacheEntry = this.textureCache_.get(tileKey);
-    goog.asserts.assert(textureCacheEntry,
-        'a texture cache entry exists for key %s', tileKey);
     gl.bindTexture(ol.webgl.TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(
@@ -249,7 +246,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.webgl.VectorLayer(this, layer);
   } else {
-    goog.asserts.fail('unexpected layer configuration');
+    goog.DEBUG && console.assert(false, 'unexpected layer configuration');
     return null;
   }
 };
@@ -451,9 +448,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     layerState = layerStatesArray[i];
     if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
         layerState.sourceState == ol.source.State.READY) {
-      layerRenderer = this.getLayerRenderer(layerState.layer);
-      goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-          'renderer is an instance of ol.renderer.webgl.Layer');
+      layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
       if (layerRenderer.prepareFrame(frameState, layerState, context)) {
         layerStatesToDraw.push(layerState);
       }
@@ -476,9 +471,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 
   for (i = 0, ii = layerStatesToDraw.length; i < ii; ++i) {
     layerState = layerStatesToDraw[i];
-    layerRenderer = this.getLayerRenderer(layerState.layer);
-    goog.asserts.assertInstanceof(layerRenderer, ol.renderer.webgl.Layer,
-        'renderer is an instance of ol.renderer.webgl.Layer');
+    layerRenderer = /** @type {ol.renderer.webgl.Layer} */ (this.getLayerRenderer(layerState.layer));
     layerRenderer.composeFrame(frameState, layerState, context);
   }
 

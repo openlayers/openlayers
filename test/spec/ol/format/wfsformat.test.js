@@ -673,17 +673,14 @@ describe('ol.format.WFS', function() {
         [-12416429, 6604910]
       ]]));
       var error = false;
-      try {
+      expect(function() {
         format.writeTransaction(null, [updateFeature], null, {
           featureNS: 'http://foo',
           featureType: 'FAULTS',
           featurePrefix: 'foo',
           gmlOptions: {srsName: 'EPSG:900913'}
         });
-      } catch (e) {
-        error = true;
-      }
-      expect(error).to.be(true);
+      }).to.throwException();
     });
   });
 

@@ -4,7 +4,6 @@
 
 goog.provide('ol.source.TileWMS');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.object');
@@ -117,7 +116,7 @@ ol.inherits(ol.source.TileWMS, ol.source.TileImage);
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
 
-  goog.asserts.assert(!('VERSION' in params),
+  goog.DEBUG && console.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
 
   var projectionObj = ol.proj.get(projection);
@@ -239,7 +238,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        goog.asserts.fail('unknown serverType configured');
+        ol.assert(false, 52); // Unknown `serverType` configured
         break;
     }
   }

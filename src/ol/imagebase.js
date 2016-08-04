@@ -1,7 +1,6 @@
 goog.provide('ol.ImageBase');
 goog.provide('ol.ImageState');
 
-goog.require('goog.asserts');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 goog.require('ol.Attribution');
@@ -109,8 +108,8 @@ ol.ImageBase.prototype.getPixelRatio = function() {
  * @return {number} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
-  goog.asserts.assert(this.resolution !== undefined, 'resolution not yet set');
-  return this.resolution;
+  goog.DEBUG && console.assert(this.resolution !== undefined, 'resolution not yet set');
+  return /** @type {number} */ (this.resolution);
 };
 
 

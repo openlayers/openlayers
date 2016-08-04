@@ -1,7 +1,6 @@
 goog.provide('ol.Overlay');
 goog.provide('ol.OverlayPositioning');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
@@ -370,7 +369,6 @@ ol.Overlay.prototype.setPosition = function(position) {
  * @private
  */
 ol.Overlay.prototype.panIntoView_ = function() {
-  goog.asserts.assert(this.autoPan, 'this.autoPan should be true');
   var map = this.getMap();
 
   if (map === undefined || !map.getTargetElement()) {
@@ -378,8 +376,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
   }
 
   var mapRect = this.getRect_(map.getTargetElement(), map.getSize());
-  var element = this.getElement();
-  goog.asserts.assert(element, 'element should be defined');
+  var element = /** @type {!Element} */ (this.getElement());
   var overlayRect = this.getRect_(element,
       [ol.dom.outerWidth(element), ol.dom.outerHeight(element)]);
 
@@ -408,8 +405,7 @@ ol.Overlay.prototype.panIntoView_ = function() {
     }
 
     if (delta[0] !== 0 || delta[1] !== 0) {
-      var center = map.getView().getCenter();
-      goog.asserts.assert(center !== undefined, 'center should be defined');
+      var center = /** @type {ol.Coordinate} */ (map.getView().getCenter());
       var centerPx = map.getPixelFromCoordinate(center);
       var newCenterPx = [
         centerPx[0] + delta[0],
@@ -434,9 +430,6 @@ ol.Overlay.prototype.panIntoView_ = function() {
  * @private
  */
 ol.Overlay.prototype.getRect_ = function(element, size) {
-  goog.asserts.assert(element, 'element should be defined');
-  goog.asserts.assert(size !== undefined, 'size should be defined');
-
   var box = element.getBoundingClientRect();
   var offsetX = box.left + ol.global.pageXOffset;
   var offsetY = box.top + ol.global.pageYOffset;
@@ -498,14 +491,11 @@ ol.Overlay.prototype.updatePixelPosition = function() {
  * @protected
  */
 ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
-  goog.asserts.assert(pixel, 'pixel should not be null');
-  goog.asserts.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
-  goog.asserts.assert(Array.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
-  goog.asserts.assert(positioning !== undefined,
+  goog.DEBUG && console.assert(positioning !== undefined,
       'positioning should be defined');
 
   var offsetX = offset[0];

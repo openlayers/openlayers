@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol.ImageBase');
 goog.require('ol.ViewHint');
@@ -80,9 +79,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
   var viewRotation = viewState.rotation;
 
   var image = this.image_;
-  var imageLayer = this.getLayer();
-  goog.asserts.assertInstanceof(imageLayer, ol.layer.Image,
-      'layer is an instance of ol.layer.Image');
+  var imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
   var imageSource = imageLayer.getSource();
 
   var hints = frameState.viewHints;
@@ -99,7 +96,7 @@ ol.renderer.dom.ImageLayer.prototype.prepareFrame = function(frameState, layerSt
     if (!ol.ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
-        goog.asserts.assert(ol.proj.equivalent(projection, sourceProjection),
+        goog.DEBUG && console.assert(ol.proj.equivalent(projection, sourceProjection),
             'projection and sourceProjection are equivalent');
         projection = sourceProjection;
       }

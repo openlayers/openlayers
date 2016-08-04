@@ -1,6 +1,5 @@
 goog.provide('ol.source.TileImage');
 
-goog.require('goog.asserts');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
 goog.require('ol.TileState');
@@ -175,7 +174,7 @@ ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
       this.tileGridForProjection[projKey] =
           ol.tilegrid.getForProjection(projection);
     }
-    return this.tileGridForProjection[projKey];
+    return /** @type {!ol.tilegrid.TileGrid} */ (this.tileGridForProjection[projKey]);
   }
 };
 
@@ -207,7 +206,7 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @param {string} key The key set on the tile.
- * @return {ol.Tile} Tile.
+ * @return {!ol.Tile} Tile.
  * @private
  */
 ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
@@ -237,7 +236,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
       !this.getProjection() ||
       !projection ||
       ol.proj.equivalent(this.getProjection(), projection)) {
-    return this.getTileInternal(z, x, y, pixelRatio, projection);
+    return this.getTileInternal(z, x, y, pixelRatio, /** @type {!ol.proj.Projection} */ (projection));
   } else {
     var cache = this.getTileCacheForProjection(projection);
     var tileCoord = [z, x, y];
@@ -250,7 +249,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
     if (tile && tile.key == key) {
       return tile;
     } else {
-      var sourceProjection = this.getProjection();
+      var sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
       var targetTileGrid = this.getTileGridForProjection(projection);
       var wrappedTileCoord =
@@ -283,16 +282,15 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
  * @param {number} x Tile coordinate x.
  * @param {number} y Tile coordinate y.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.proj.Projection} projection Projection.
+ * @param {!ol.proj.Projection} projection Projection.
  * @return {!ol.Tile} Tile.
  * @protected
  */
 ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
-  var /** @type {ol.Tile} */ tile = null;
+  var tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
   var key = this.getKey();
   if (!this.tileCache.containsKey(tileCoordKey)) {
-    goog.asserts.assert(projection, 'argument projection is truthy');
     tile = this.createTile_(z, x, y, pixelRatio, projection, key);
     this.tileCache.set(tileCoordKey, tile);
   } else {
@@ -303,8 +301,8 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
       // cases we attempt to assign an interim tile to the new tile.
       var /** @type {ol.Tile} */ interimTile = tile;
       if (tile.interimTile && tile.interimTile.key == key) {
-        goog.asserts.assert(tile.interimTile.getState() == ol.TileState.LOADED);
-        goog.asserts.assert(tile.interimTile.interimTile === null);
+        goog.DEBUG && console.assert(tile.interimTile.getState() == ol.TileState.LOADED);
+        goog.DEBUG && console.assert(tile.interimTile.interimTile === null);
         tile = tile.interimTile;
         if (interimTile.getState() == ol.TileState.LOADED) {
           tile.interimTile = interimTile;
@@ -325,7 +323,6 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
       this.tileCache.replace(tileCoordKey, tile);
     }
   }
-  goog.asserts.assert(tile);
   return tile;
 };
 

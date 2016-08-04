@@ -3,7 +3,6 @@
 
 goog.provide('ol.renderer.dom.TileLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.TileRange');
@@ -84,9 +83,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
   var viewState = frameState.viewState;
   var projection = viewState.projection;
 
-  var tileLayer = this.getLayer();
-  goog.asserts.assertInstanceof(tileLayer, ol.layer.Tile,
-      'layer is an instance of ol.layer.Tile');
+  var tileLayer = /** @type {ol.layer.Tile} */ (this.getLayer());
   var tileSource = tileLayer.getSource();
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var tileGutter = tileSource.getGutter(projection);
@@ -131,7 +128,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
       if (!drawable && tile.interimTile) {
         tile = tile.interimTile;
       }
-      goog.asserts.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
@@ -335,7 +331,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordZ = tileCoord[0];
   var tileCoordX = tileCoord[1];
   var tileCoordY = tileCoord[2];
-  goog.asserts.assert(tileCoordZ == this.tileCoordOrigin_[0],
+  goog.DEBUG && console.assert(tileCoordZ == this.tileCoordOrigin_[0],
       'tileCoordZ matches z of tileCoordOrigin');
   var tileCoordKey = tileCoord.toString();
   if (tileCoordKey in this.tiles_) {

@@ -1,6 +1,5 @@
 goog.provide('ol.reproj.Image');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.ImageBase');
@@ -195,8 +194,8 @@ ol.reproj.Image.prototype.load = function() {
  * @private
  */
 ol.reproj.Image.prototype.unlistenSource_ = function() {
-  goog.asserts.assert(this.sourceListenerKey_,
+  goog.DEBUG && console.assert(this.sourceListenerKey_,
       'this.sourceListenerKey_ should not be null');
-  ol.events.unlistenByKey(this.sourceListenerKey_);
+  ol.events.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;
 };

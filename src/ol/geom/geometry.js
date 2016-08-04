@@ -2,7 +2,6 @@ goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryLayout');
 goog.provide('ol.geom.GeometryType');
 
-goog.require('goog.asserts');
 goog.require('ol.functions');
 goog.require('ol.Object');
 goog.require('ol.extent');
@@ -276,7 +275,7 @@ ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
  * @api stable
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
-  goog.asserts.assert(
+  goog.DEBUG && console.assert(
       ol.proj.get(source).getUnits() !== ol.proj.Units.TILE_PIXELS &&
       ol.proj.get(destination).getUnits() !== ol.proj.Units.TILE_PIXELS,
       'cannot transform geometries with TILE_PIXELS units');

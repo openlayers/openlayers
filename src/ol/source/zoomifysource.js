@@ -1,6 +1,5 @@
 goog.provide('ol.source.Zoomify');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.ImageTile');
 goog.require('ol.TileState');
@@ -66,7 +65,7 @@ ol.source.Zoomify = function(opt_options) {
       }
       break;
     default:
-      goog.asserts.fail();
+      ol.assert(false, 53); // Unknown `tierSizeCalculation` configured
       break;
   }
 

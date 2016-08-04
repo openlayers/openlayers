@@ -3,7 +3,6 @@
 
 goog.provide('ol.source.Cluster');
 
-goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.coordinate');
 goog.require('ol.events.EventType');
@@ -55,9 +54,9 @@ ol.source.Cluster = function(options) {
    * @return {ol.geom.Point} Cluster calculation point.
    */
   this.geometryFunction_ = options.geometryFunction || function(feature) {
-    var geometry = feature.getGeometry();
-    goog.asserts.assert(geometry instanceof ol.geom.Point,
-        'feature geometry is a ol.geom.Point instance');
+    var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
+    ol.assert(geometry instanceof ol.geom.Point,
+        10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
     return geometry;
   };
 
@@ -137,7 +136,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
         ol.extent.buffer(extent, mapDistance, extent);
 
         var neighbors = this.source_.getFeaturesInExtent(extent);
-        goog.asserts.assert(neighbors.length >= 1, 'at least one neighbor found');
+        goog.DEBUG && console.assert(neighbors.length >= 1, 'at least one neighbor found');
         neighbors = neighbors.filter(function(neighbor) {
           var uid = ol.getUid(neighbor).toString();
           if (!(uid in clustered)) {
@@ -151,7 +150,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
       }
     }
   }
-  goog.asserts.assert(
+  goog.DEBUG && console.assert(
       Object.keys(clustered).length == this.source_.getFeatures().length,
       'number of clustered equals number of features in the source');
 };

@@ -35,22 +35,24 @@ describe('ol.layer.VectorTile', function() {
   });
 
   describe('constructor (options)', function() {
-    var layer = new ol.layer.VectorTile({
-      renderMode: 'vector',
-      source: new ol.source.VectorTile({})
-    });
-    expect(layer.getRenderMode()).to.be('vector');
-    layer = new ol.layer.VectorTile({
-      renderMode: 'image',
-      source: new ol.source.VectorTile({})
-    });
-    expect(layer.getRenderMode()).to.be('image');
-    expect(function() {
-      layer = new ol.layer.VectorTile({
-        renderMode: 'foo',
+    it('works with options', function() {
+      var layer = new ol.layer.VectorTile({
+        renderMode: 'vector',
         source: new ol.source.VectorTile({})
       });
-    }).to.throwException();
+      expect(layer.getRenderMode()).to.be('vector');
+      layer = new ol.layer.VectorTile({
+        renderMode: 'image',
+        source: new ol.source.VectorTile({})
+      });
+      expect(layer.getRenderMode()).to.be('image');
+      expect(function() {
+        layer = new ol.layer.VectorTile({
+          renderMode: 'foo',
+          source: new ol.source.VectorTile({})
+        });
+      }).to.throwException();
+    });
   });
 
 });

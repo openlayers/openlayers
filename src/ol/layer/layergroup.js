@@ -1,6 +1,5 @@
 goog.provide('ol.layer.Group');
 
-goog.require('goog.asserts');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEvent');
 goog.require('ol.CollectionEventType');
@@ -64,8 +63,8 @@ ol.layer.Group = function(opt_options) {
     if (Array.isArray(layers)) {
       layers = new ol.Collection(layers.slice());
     } else {
-      goog.asserts.assertInstanceof(layers, ol.Collection,
-          'layers should be an ol.Collection');
+      ol.assert(layers instanceof ol.Collection,
+          43); // Expected `layers` to be an array or an `ol.Collection`
       layers = layers;
     }
   } else {
@@ -131,7 +130,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = ol.getUid(layer).toString();
-  goog.asserts.assert(!(key in this.listenerKeys_),
+  goog.DEBUG && console.assert(!(key in this.listenerKeys_),
       'listeners already registered');
   this.listenerKeys_[key] = [
     ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
@@ -150,7 +149,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
 ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = ol.getUid(layer).toString();
-  goog.asserts.assert(key in this.listenerKeys_, 'no listeners to unregister');
+  goog.DEBUG && console.assert(key in this.listenerKeys_, 'no listeners to unregister');
   this.listenerKeys_[key].forEach(ol.events.unlistenByKey);
   delete this.listenerKeys_[key];
   this.changed();

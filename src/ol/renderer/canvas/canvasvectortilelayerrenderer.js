@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.transform');
 goog.require('ol.Feature');
@@ -106,9 +105,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
   var rotation = viewState.rotation;
   var size = frameState.size;
   var pixelScale = pixelRatio / resolution;
-  var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.VectorTile,
-      'Source is an ol.source.VectorTile');
+  var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tilePixelRatio = source.getTilePixelRatio(pixelRatio);
 
   var transform = this.getTransform(frameState, 0);
@@ -191,9 +188,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   replayState.replayGroup = null;
   replayState.dirty = false;
 
-  var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.VectorTile,
-      'Source is an ol.source.VectorTile');
+  var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tileGrid = source.getTileGrid();
   var tileCoord = tile.getTileCoord();
   var tileProjection = tile.getProjection();
@@ -226,8 +221,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
     var styles;
     var styleFunction = feature.getStyleFunction();
     if (styleFunction) {
-      goog.asserts.assertInstanceof(feature, ol.Feature, 'Got an ol.Feature');
-      styles = styleFunction.call(feature, resolution);
+      styles = styleFunction.call(/** @type {ol.Feature} */ (feature), resolution);
     } else {
       styleFunction = layer.getStyleFunction();
       if (styleFunction) {
@@ -279,9 +273,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var features = {};
 
   var replayables = this.renderedTiles;
-  var source = layer.getSource();
-  goog.asserts.assertInstanceof(source, ol.source.VectorTile,
-      'Source is an ol.source.VectorTile');
+  var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
@@ -314,7 +306,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(feature, 'received a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -344,8 +335,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState,
   if (prepared) {
     var skippedFeatures = Object.keys(frameState.skippedFeatureUids_ || {});
     for (var i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
-      var tile = this.renderedTiles[i];
-      goog.asserts.assertInstanceof(tile, ol.VectorTile, 'got an ol.VectorTile');
+      var tile = /** @type {ol.VectorTile} */ (this.renderedTiles[i]);
       this.createReplayGroup(tile, frameState);
       this.renderTileImage_(tile, frameState, layerState, skippedFeatures);
     }

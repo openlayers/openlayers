@@ -111,6 +111,12 @@ describe('ol.math.solveLinearSystem', function() {
     expect(result).to.be(null);
   });
   it('raises an exception when the matrix is malformed', function() {
+    var origAssert = console.assert;
+    console.assert = function(assertion, message) {
+      if (!assertion) {
+        throw new Error(message);
+      }
+    };
     expect(function() {
       ol.math.solveLinearSystem([
         [2, 1, 3, 1],
@@ -126,6 +132,7 @@ describe('ol.math.solveLinearSystem', function() {
         [6, 8, 18, 5, 0]
       ]);
     }).to.throwException();
+    console.assert = origAssert;
   });
 });
 

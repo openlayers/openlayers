@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.Layer');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
@@ -144,7 +143,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
       imageState != ol.ImageState.ERROR) {
     // the image is either "idle" or "loading", register the change
     // listener (a noop if the listener was already registered)
-    goog.asserts.assert(imageState == ol.ImageState.IDLE ||
+    goog.DEBUG && console.assert(imageState == ol.ImageState.IDLE ||
         imageState == ol.ImageState.LOADING,
         'imageState is "idle" or "loading"');
     ol.events.listen(image, ol.events.EventType.CHANGE,
@@ -153,7 +152,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
   if (imageState == ol.ImageState.IDLE) {
     image.load();
     imageState = image.getState();
-    goog.asserts.assert(imageState == ol.ImageState.LOADING ||
+    goog.DEBUG && console.assert(imageState == ol.ImageState.LOADING ||
         imageState == ol.ImageState.LOADED,
         'imageState is "loading" or "loaded"');
   }
@@ -224,9 +223,9 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
   if (logo !== undefined) {
     if (typeof logo === 'string') {
       frameState.logos[logo] = '';
-    } else if (logo !== null) {
-      goog.asserts.assertString(logo.href, 'logo.href is a string');
-      goog.asserts.assertString(logo.src, 'logo.src is a string');
+    } else if (logo) {
+      ol.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      ol.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       frameState.logos[logo.src] = logo.href;
     }
   }

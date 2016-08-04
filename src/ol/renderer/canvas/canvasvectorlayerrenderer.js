@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
@@ -82,8 +81,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   var projection = viewState.projection;
   var rotation = viewState.rotation;
   var projectionExtent = projection.getExtent();
-  var vectorSource = this.getLayer().getSource();
-  goog.asserts.assertInstanceof(vectorSource, ol.source.Vector);
+  var vectorSource = /** @type {ol.source.Vector} */ (this.getLayer().getSource());
 
   var transform = this.getTransform(frameState, 0);
 
@@ -174,7 +172,6 @@ ol.renderer.canvas.VectorLayer.prototype.forEachFeatureAtCoordinate = function(c
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.asserts.assert(feature !== undefined, 'received a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;
@@ -201,8 +198,6 @@ ol.renderer.canvas.VectorLayer.prototype.handleStyleImageChange_ = function(even
 ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
-  goog.asserts.assertInstanceof(vectorLayer, ol.layer.Vector,
-      'layer is an instance of ol.layer.Vector');
   var vectorSource = vectorLayer.getSource();
 
   this.updateAttributions(

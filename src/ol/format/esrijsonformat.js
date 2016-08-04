@@ -1,6 +1,5 @@
 goog.provide('ol.format.EsriJSON');
 
-goog.require('goog.asserts');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.extent');
@@ -56,6 +55,7 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
   if (!object) {
     return null;
   }
+  /** @type {ol.geom.GeometryType} */
   var type;
   if (typeof object.x === 'number' && typeof object.y === 'number') {
     type = ol.geom.GeometryType.POINT;
@@ -79,10 +79,7 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
       object.rings = rings;
     }
   }
-  goog.asserts.assert(type, 'geometry type should be defined');
   var geometryReader = ol.format.EsriJSON.GEOMETRY_READERS_[type];
-  goog.asserts.assert(geometryReader,
-      'geometryReader should be defined');
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
           geometryReader(object), false, opt_options));
@@ -145,8 +142,8 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
  * @return {ol.geom.Geometry} Point.
  */
 ol.format.EsriJSON.readPointGeometry_ = function(object) {
-  goog.asserts.assert(typeof object.x === 'number', 'object.x should be number');
-  goog.asserts.assert(typeof object.y === 'number', 'object.y should be number');
+  goog.DEBUG && console.assert(typeof object.x === 'number', 'object.x should be number');
+  goog.DEBUG && console.assert(typeof object.y === 'number', 'object.y should be number');
   var point;
   if (object.m !== undefined && object.z !== undefined) {
     point = new ol.geom.Point([object.x, object.y, object.z, object.m],
@@ -170,9 +167,9 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} LineString.
  */
 ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
-  goog.asserts.assert(Array.isArray(object.paths),
+  goog.DEBUG && console.assert(Array.isArray(object.paths),
       'object.paths should be an array');
-  goog.asserts.assert(object.paths.length === 1,
+  goog.DEBUG && console.assert(object.paths.length === 1,
       'object.paths array length should be 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.LineString(object.paths[0], layout);
@@ -185,9 +182,9 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiLineString.
  */
 ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
-  goog.asserts.assert(Array.isArray(object.paths),
+  goog.DEBUG && console.assert(Array.isArray(object.paths),
       'object.paths should be an array');
-  goog.asserts.assert(object.paths.length > 1,
+  goog.DEBUG && console.assert(object.paths.length > 1,
       'object.paths array length should be more than 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiLineString(object.paths, layout);
@@ -218,7 +215,6 @@ ol.format.EsriJSON.getGeometryLayout_ = function(object) {
  * @return {ol.geom.Geometry} MultiPoint.
  */
 ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
-  goog.asserts.assert(object.points, 'object.points should be defined');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiPoint(object.points, layout);
 };
@@ -230,8 +226,7 @@ ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiPolygon.
  */
 ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
-  goog.asserts.assert(object.rings);
-  goog.asserts.assert(object.rings.length > 1,
+  goog.DEBUG && console.assert(object.rings.length > 1,
       'object.rings should have length larger than 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiPolygon(
@@ -246,7 +241,7 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Geometry} Polygon.
  */
 ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
-  goog.asserts.assert(object.rings);
+  goog.DEBUG && console.assert(object.rings);
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.Polygon(object.rings, layout);
 };
@@ -259,37 +254,37 @@ ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Point,
-      'geometry should be an ol.geom.Point');
-  var coordinates = geometry.getCoordinates();
-  var layout = geometry.getLayout();
+  var coordinates = /** @type ol.geom.Point */ (geometry).getCoordinates();
+  var esriJSON;
+  var layout = /** @type ol.geom.Point */ (geometry).getLayout();
   if (layout === ol.geom.GeometryLayout.XYZ) {
-    return /** @type {EsriJSONPoint} */ ({
+    esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2]
     });
   } else if (layout === ol.geom.GeometryLayout.XYM) {
-    return /** @type {EsriJSONPoint} */ ({
+    esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       m: coordinates[2]
     });
   } else if (layout === ol.geom.GeometryLayout.XYZM) {
-    return /** @type {EsriJSONPoint} */ ({
+    esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1],
       z: coordinates[2],
       m: coordinates[3]
     });
   } else if (layout === ol.geom.GeometryLayout.XY) {
-    return /** @type {EsriJSONPoint} */ ({
+    esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
       y: coordinates[1]
     });
   } else {
-    goog.asserts.fail('Unknown geometry layout');
+    ol.assert(false, 34); // Invalid geometry layout
   }
+  return /** @type {EsriJSONGeometry} */ (esriJSON);
 };
 
 
@@ -316,13 +311,11 @@ ol.format.EsriJSON.getHasZM_ = function(geometry) {
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.LineString,
-      'geometry should be an ol.geom.LineString');
-  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
+  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.LineString} */ (geometry));
   return /** @type {EsriJSONPolyline} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    paths: [geometry.getCoordinates()]
+    paths: [/** @type {ol.geom.LineString} */ (geometry).getCoordinates()]
   });
 };
 
@@ -334,14 +327,12 @@ ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
  * @return {EsriJSONPolygon} EsriJSON geometry.
  */
 ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.Polygon,
-      'geometry should be an ol.geom.Polygon');
   // Esri geometries use the left-hand rule
-  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
+  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.Polygon} */ (geometry));
   return /** @type {EsriJSONPolygon} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    rings: geometry.getCoordinates(false)
+    rings: /** @type {ol.geom.Polygon} */ (geometry).getCoordinates(false)
   });
 };
 
@@ -353,13 +344,11 @@ ol.format.EsriJSON.writePolygonGeometry_ = function(geometry, opt_options) {
  * @return {EsriJSONPolyline} EsriJSON geometry.
  */
 ol.format.EsriJSON.writeMultiLineStringGeometry_ = function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiLineString,
-      'geometry should be an ol.geom.MultiLineString');
-  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
+  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.MultiLineString} */ (geometry));
   return /** @type {EsriJSONPolyline} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    paths: geometry.getCoordinates()
+    paths: /** @type {ol.geom.MultiLineString} */ (geometry).getCoordinates()
   });
 };
 
@@ -371,13 +360,11 @@ ol.format.EsriJSON.writeMultiLineStringGeometry_ = function(geometry, opt_option
  * @return {EsriJSONMultipoint} EsriJSON geometry.
  */
 ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPoint,
-      'geometry should be an ol.geom.MultiPoint');
-  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
+  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.MultiPoint} */ (geometry));
   return /** @type {EsriJSONMultipoint} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    points: geometry.getCoordinates()
+    points: /** @type {ol.geom.MultiPoint} */ (geometry).getCoordinates()
   });
 };
 
@@ -390,10 +377,8 @@ ol.format.EsriJSON.writeMultiPointGeometry_ = function(geometry, opt_options) {
  */
 ol.format.EsriJSON.writeMultiPolygonGeometry_ = function(geometry,
     opt_options) {
-  goog.asserts.assertInstanceof(geometry, ol.geom.MultiPolygon,
-      'geometry should be an ol.geom.MultiPolygon');
-  var hasZM = ol.format.EsriJSON.getHasZM_(geometry);
-  var coordinates = geometry.getCoordinates(false);
+  var hasZM = ol.format.EsriJSON.getHasZM_(/** @type {ol.geom.MultiPolygon} */ (geometry));
+  var coordinates = /** @type {ol.geom.MultiPolygon} */ (geometry).getCoordinates(false);
   var output = [];
   for (var i = 0; i < coordinates.length; i++) {
     for (var x = coordinates[i].length - 1; x >= 0; x--) {
@@ -480,7 +465,7 @@ ol.format.EsriJSON.prototype.readFeatures;
 ol.format.EsriJSON.prototype.readFeatureFromObject = function(
     object, opt_options) {
   var esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-  goog.asserts.assert(esriJSONFeature.geometry ||
+  goog.DEBUG && console.assert(esriJSONFeature.geometry ||
       esriJSONFeature.attributes,
       'geometry or attributes should be defined');
   var geometry = ol.format.EsriJSON.readGeometry_(esriJSONFeature.geometry,
@@ -492,7 +477,7 @@ ol.format.EsriJSON.prototype.readFeatureFromObject = function(
   feature.setGeometry(geometry);
   if (opt_options && opt_options.idField &&
       esriJSONFeature.attributes[opt_options.idField]) {
-    goog.asserts.assert(
+    goog.DEBUG && console.assert(
         typeof esriJSONFeature.attributes[opt_options.idField] === 'number',
         'objectIdFieldName value should be a number');
     feature.setId(/** @type {number} */(
@@ -586,7 +571,6 @@ ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
  */
 ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
-  goog.asserts.assert(geometryWriter, 'geometryWriter should be defined');
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
       opt_options);

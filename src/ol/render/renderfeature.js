@@ -1,7 +1,6 @@
 goog.provide('ol.render.Feature');
 
 
-goog.require('goog.asserts');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 
@@ -26,7 +25,7 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties) {
    */
   this.extent_;
 
-  goog.asserts.assert(type === ol.geom.GeometryType.POINT ||
+  goog.DEBUG && console.assert(type === ol.geom.GeometryType.POINT ||
       type === ol.geom.GeometryType.MULTI_POINT ||
       type === ol.geom.GeometryType.LINE_STRING ||
       type === ol.geom.GeometryType.MULTI_LINE_STRING ||

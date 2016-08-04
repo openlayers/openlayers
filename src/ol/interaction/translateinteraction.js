@@ -1,7 +1,6 @@
 goog.provide('ol.interaction.Translate');
 goog.provide('ol.interaction.TranslateEvent');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.array');
@@ -107,23 +106,13 @@ ol.interaction.Translate = function(options) {
    */
   this.features_ = options.features !== undefined ? options.features : null;
 
+  /** @type {function(ol.layer.Layer): boolean} */
   var layerFilter;
   if (options.layers) {
     if (typeof options.layers === 'function') {
-      /**
-       * @param {ol.layer.Layer} layer Layer.
-       * @return {boolean} Include.
-       */
-      layerFilter = function(layer) {
-        goog.asserts.assertFunction(options.layers);
-        return options.layers(layer);
-      };
+      layerFilter = options.layers;
     } else {
       var layers = options.layers;
-      /**
-       * @param {ol.layer.Layer} layer Layer.
-       * @return {boolean} Include.
-       */
       layerFilter = function(layer) {
         return ol.array.includes(layers, layer);
       };

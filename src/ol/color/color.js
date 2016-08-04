@@ -1,6 +1,5 @@
 goog.provide('ol.color');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.math');
 
@@ -55,8 +54,7 @@ ol.color.asArray = function(color) {
   if (Array.isArray(color)) {
     return color;
   } else {
-    goog.asserts.assert(typeof color === 'string', 'Color should be a string');
-    return ol.color.fromString(color);
+    return ol.color.fromString(/** @type {string} */ (color));
   }
 };
 
@@ -71,7 +69,6 @@ ol.color.asString = function(color) {
   if (typeof color === 'string') {
     return color;
   } else {
-    goog.asserts.assert(Array.isArray(color), 'Color should be an array');
     return ol.color.toString(color);
   }
 };
@@ -162,8 +159,7 @@ ol.color.fromStringInternal_ = function(s) {
 
   if (ol.color.hexColorRe_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
-    goog.asserts.assert(n == 3 || n == 6,
-        'Color string length should be 3 or 6');
+    ol.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
     var d = n == 3 ? 1 : 2; // number of digits per channel
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
@@ -175,26 +171,21 @@ ol.color.fromStringInternal_ = function(s) {
     }
     a = 1;
     color = [r, g, b, a];
-    goog.asserts.assert(ol.color.isValid(color),
-        'Color should be a valid color');
-    return color;
   } else if ((match = ol.color.rgbaColorRe_.exec(s))) { // rgba()
     r = Number(match[1]);
     g = Number(match[2]);
     b = Number(match[3]);
     a = Number(match[4]);
-    color = [r, g, b, a];
-    return ol.color.normalize(color, color);
+    color = ol.color.normalize([r, g, b, a]);
   } else if ((match = ol.color.rgbColorRe_.exec(s))) { // rgb()
     r = Number(match[1]);
     g = Number(match[2]);
     b = Number(match[3]);
-    color = [r, g, b, 1];
-    return ol.color.normalize(color, color);
+    color = ol.color.normalize([r, g, b, 1]);
   } else {
-    goog.asserts.fail(s + ' is not a valid color');
+    ol.assert(false, 14); // Invalid color
   }
-
+  return /** @type {ol.Color} */ (color);
 };
 
 

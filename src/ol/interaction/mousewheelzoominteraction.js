@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.MouseWheelZoom');
 
-goog.require('goog.asserts');
 goog.require('ol');
 goog.require('ol.events.EventType');
 goog.require('ol.interaction.Interaction');
@@ -132,7 +131,6 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
 
   var view = map.getView();
-  goog.asserts.assert(view, 'map must have view');
 
   map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,

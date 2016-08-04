@@ -2,7 +2,6 @@ goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectEventType');
 
-goog.require('goog.asserts');
 goog.require('ol.functions');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
@@ -156,23 +155,13 @@ ol.interaction.Select = function(opt_options) {
    */
   this.featureOverlay_ = featureOverlay;
 
+  /** @type {function(ol.layer.Layer): boolean} */
   var layerFilter;
   if (options.layers) {
     if (typeof options.layers === 'function') {
-      /**
-       * @param {ol.layer.Layer} layer Layer.
-       * @return {boolean} Include.
-       */
-      layerFilter = function(layer) {
-        goog.asserts.assertFunction(options.layers);
-        return options.layers(layer);
-      };
+      layerFilter = options.layers;
     } else {
       var layers = options.layers;
-      /**
-       * @param {ol.layer.Layer} layer Layer.
-       * @return {boolean} Include.
-       */
       layerFilter = function(layer) {
         return ol.array.includes(layers, layer);
       };
@@ -236,8 +225,8 @@ ol.interaction.Select.prototype.getFeatures = function() {
  * @api
  */
 ol.interaction.Select.prototype.getLayer = function(feature) {
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
+  ol.assert(feature instanceof ol.Feature,
+      42); // Expected an `ol.Feature`, but got an `ol.RenderFeature`
   var key = ol.getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
@@ -370,12 +359,9 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
  * @private
  */
 ol.interaction.Select.prototype.addFeature_ = function(evt) {
-  var feature = evt.element;
   var map = this.getMap();
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
   if (map) {
-    map.skipFeature(feature);
+    map.skipFeature(/** @type {ol.Feature} */ (evt.element));
   }
 };
 
@@ -385,12 +371,9 @@ ol.interaction.Select.prototype.addFeature_ = function(evt) {
  * @private
  */
 ol.interaction.Select.prototype.removeFeature_ = function(evt) {
-  var feature = evt.element;
   var map = this.getMap();
-  goog.asserts.assertInstanceof(feature, ol.Feature,
-      'feature should be an ol.Feature');
   if (map) {
-    map.unskipFeature(feature);
+    map.unskipFeature(/** @type {ol.Feature} */ (evt.element));
   }
 };
 

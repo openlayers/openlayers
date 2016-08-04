@@ -1,6 +1,5 @@
 goog.provide('ol.dom');
 
-goog.require('goog.asserts');
 goog.require('goog.userAgent');
 goog.require('ol');
 goog.require('ol.vec.Mat4');
@@ -41,11 +40,6 @@ ol.dom.canUseCssTransform = (function() {
   var canUseCssTransform;
   return function() {
     if (canUseCssTransform === undefined) {
-      goog.asserts.assert(document.body,
-          'document.body should not be null');
-      goog.asserts.assert(ol.global.getComputedStyle,
-          'getComputedStyle is required (unsupported browser?)');
-
       var el = document.createElement('P'),
           has2d,
           transforms = {
@@ -82,11 +76,6 @@ ol.dom.canUseCssTransform3D = (function() {
   var canUseCssTransform3D;
   return function() {
     if (canUseCssTransform3D === undefined) {
-      goog.asserts.assert(document.body,
-          'document.body should not be null');
-      goog.asserts.assert(ol.global.getComputedStyle,
-          'getComputedStyle is required (unsupported browser?)');
-
       var el = document.createElement('P'),
           has3d,
           transforms = {

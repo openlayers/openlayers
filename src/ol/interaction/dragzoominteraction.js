@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DragZoom');
 
-goog.require('goog.asserts');
 goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events.condition');
@@ -55,11 +54,9 @@ ol.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
 
-  var view = map.getView();
-  goog.asserts.assert(view, 'map must have view');
+  var view = /** @type {!ol.View} */ (map.getView());
 
-  var size = map.getSize();
-  goog.asserts.assert(size !== undefined, 'size should be defined');
+  var size = /** @type {!ol.Size} */ (map.getSize());
 
   var extent = this.getGeometry().getExtent();
 
@@ -77,11 +74,9 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));
 
-  var currentResolution = view.getResolution();
-  goog.asserts.assert(currentResolution !== undefined, 'res should be defined');
+  var currentResolution = /** @type {number} */ (view.getResolution());
 
-  var currentCenter = view.getCenter();
-  goog.asserts.assert(currentCenter !== undefined, 'center should be defined');
+  var currentCenter = /** @type {!ol.Coordinate} */ (view.getCenter());
 
   map.beforeRender(ol.animation.zoom({
     resolution: currentResolution,

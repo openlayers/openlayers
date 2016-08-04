@@ -1,6 +1,5 @@
 goog.provide('ol.structs.PriorityQueue');
 
-goog.require('goog.asserts');
 goog.require('ol.object');
 
 
@@ -61,25 +60,27 @@ ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
 ol.structs.PriorityQueue.DROP = Infinity;
 
 
-/**
- * FIXME empty description for jsdoc
- */
-ol.structs.PriorityQueue.prototype.assertValid = function() {
-  var elements = this.elements_;
-  var priorities = this.priorities_;
-  var n = elements.length;
-  goog.asserts.assert(priorities.length == n);
-  var i, priority;
-  for (i = 0; i < (n >> 1) - 1; ++i) {
-    priority = priorities[i];
-    goog.asserts.assert(priority <= priorities[this.getLeftChildIndex_(i)],
-        'priority smaller than or equal to priority of left child (%s <= %s)',
-        priority, priorities[this.getLeftChildIndex_(i)]);
-    goog.asserts.assert(priority <= priorities[this.getRightChildIndex_(i)],
-        'priority smaller than or equal to priority of right child (%s <= %s)',
-        priority, priorities[this.getRightChildIndex_(i)]);
-  }
-};
+if (goog.DEBUG) {
+  /**
+   * FIXME empty description for jsdoc
+   */
+  ol.structs.PriorityQueue.prototype.assertValid = function() {
+    var elements = this.elements_;
+    var priorities = this.priorities_;
+    var n = elements.length;
+    console.assert(priorities.length == n);
+    var i, priority;
+    for (i = 0; i < (n >> 1) - 1; ++i) {
+      priority = priorities[i];
+      console.assert(priority <= priorities[this.getLeftChildIndex_(i)],
+          'priority smaller than or equal to priority of left child (%s <= %s)',
+          priority, priorities[this.getLeftChildIndex_(i)]);
+      console.assert(priority <= priorities[this.getRightChildIndex_(i)],
+          'priority smaller than or equal to priority of right child (%s <= %s)',
+          priority, priorities[this.getRightChildIndex_(i)]);
+    }
+  };
+}
 
 
 /**
@@ -98,7 +99,7 @@ ol.structs.PriorityQueue.prototype.clear = function() {
  */
 ol.structs.PriorityQueue.prototype.dequeue = function() {
   var elements = this.elements_;
-  goog.asserts.assert(elements.length > 0,
+  goog.DEBUG && console.assert(elements.length > 0,
       'must have elements in order to be able to dequeue');
   var priorities = this.priorities_;
   var element = elements[0];
@@ -111,7 +112,7 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
     this.siftUp_(0);
   }
   var elementKey = this.keyFunction_(element);
-  goog.asserts.assert(elementKey in this.queuedElements_,
+  goog.DEBUG && console.assert(elementKey in this.queuedElements_,
       'key %s is not listed as queued', elementKey);
   delete this.queuedElements_[elementKey];
   return element;
@@ -124,8 +125,8 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
  * @return {boolean} The element was added to the queue.
  */
 ol.structs.PriorityQueue.prototype.enqueue = function(element) {
-  goog.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_),
-      'key %s is already listed as queued', this.keyFunction_(element));
+  ol.assert(!(this.keyFunction_(element) in this.queuedElements_),
+      31); // Tried to enqueue an `element` that was already added to the queue
   var priority = this.priorityFunction_(element);
   if (priority != ol.structs.PriorityQueue.DROP) {
     this.elements_.push(element);

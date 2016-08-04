@@ -1,6 +1,5 @@
 goog.provide('ol.control.ZoomToExtent');
 
-goog.require('goog.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.control.Control');
@@ -73,7 +72,6 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
   var extent = !this.extent_ ? view.getProjection().getExtent() : this.extent_;
-  var size = map.getSize();
-  goog.asserts.assert(size, 'size should be defined');
+  var size = /** @type {ol.Size} */ (map.getSize());
   view.fit(extent, size);
 };
