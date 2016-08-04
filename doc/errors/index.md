@@ -220,3 +220,7 @@ Unknown `tierSizeCalculation` configured.
 ### 54
 
 Hex color should have 3 or 6 digits.
+
+### 55
+
+The `{-y}` placeholder requires a tile grid with extent.

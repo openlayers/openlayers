@@ -182,8 +182,6 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
   var tileKey = tile.getKey();
   if (this.textureCache_.containsKey(tileKey)) {
     var textureCacheEntry = this.textureCache_.get(tileKey);
-    goog.DEBUG && console.assert(textureCacheEntry,
-        'a texture cache entry exists for key %s', tileKey);
     gl.bindTexture(ol.webgl.TEXTURE_2D, textureCacheEntry.texture);
     if (textureCacheEntry.magFilter != magFilter) {
       gl.texParameteri(

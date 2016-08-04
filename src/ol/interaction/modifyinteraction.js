@@ -841,7 +841,6 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   this.setGeometryCoordinates_(geometry, coordinates);
   var rTree = this.rBush_;
-  goog.DEBUG && console.assert(segment !== undefined, 'segment should be defined');
   rTree.remove(segmentData);
   this.updateSegmentIndices_(geometry, index, depth, 1);
   var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({

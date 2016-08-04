@@ -478,9 +478,7 @@ ol.inherits(ol.Map, ol.Object);
  * @api stable
  */
 ol.Map.prototype.addControl = function(control) {
-  var controls = this.getControls();
-  goog.DEBUG && console.assert(controls !== undefined, 'controls should be defined');
-  controls.push(control);
+  this.getControls().push(control);
 };
 
 
@@ -490,10 +488,7 @@ ol.Map.prototype.addControl = function(control) {
  * @api stable
  */
 ol.Map.prototype.addInteraction = function(interaction) {
-  var interactions = this.getInteractions();
-  goog.DEBUG && console.assert(interactions !== undefined,
-      'interactions should be defined');
-  interactions.push(interaction);
+  this.getInteractions().push(interaction);
 };
 
 
@@ -516,9 +511,7 @@ ol.Map.prototype.addLayer = function(layer) {
  * @api stable
  */
 ol.Map.prototype.addOverlay = function(overlay) {
-  var overlays = this.getOverlays();
-  goog.DEBUG && console.assert(overlays !== undefined, 'overlays should be defined');
-  overlays.push(overlay);
+  this.getOverlays().push(overlay);
 };
 
 
@@ -973,10 +966,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   }
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
-  var interactions = this.getInteractions();
-  goog.DEBUG && console.assert(interactions !== undefined,
-      'interactions should be defined');
-  var interactionsArray = interactions.getArray();
+  var interactionsArray = this.getInteractions().getArray();
   var i;
   if (this.dispatchEvent(mapBrowserEvent) !== false) {
     for (i = interactionsArray.length - 1; i >= 0; i--) {
@@ -1199,9 +1189,7 @@ ol.Map.prototype.render = function() {
  * @api stable
  */
 ol.Map.prototype.removeControl = function(control) {
-  var controls = this.getControls();
-  goog.DEBUG && console.assert(controls !== undefined, 'controls should be defined');
-  return controls.remove(control);
+  return this.getControls().remove(control);
 };
 
 
@@ -1213,10 +1201,7 @@ ol.Map.prototype.removeControl = function(control) {
  * @api stable
  */
 ol.Map.prototype.removeInteraction = function(interaction) {
-  var interactions = this.getInteractions();
-  goog.DEBUG && console.assert(interactions !== undefined,
-      'interactions should be defined');
-  return interactions.remove(interaction);
+  return this.getInteractions().remove(interaction);
 };
 
 
@@ -1241,9 +1226,7 @@ ol.Map.prototype.removeLayer = function(layer) {
  * @api stable
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
-  var overlays = this.getOverlays();
-  goog.DEBUG && console.assert(overlays !== undefined, 'overlays should be defined');
-  return overlays.remove(overlay);
+  return this.getOverlays().remove(overlay);
 };
 
 

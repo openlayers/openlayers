@@ -335,6 +335,5 @@ ol.style.createDefaultEditingStyles = function() {
  * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
 ol.style.defaultGeometryFunction = function(feature) {
-  goog.DEBUG && console.assert(feature, 'feature must not be null');
   return feature.getGeometry();
 };

@@ -258,7 +258,6 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
         if (!drawable && tile.interimTile) {
           tile = tile.interimTile;
         }
-        goog.DEBUG && console.assert(tile);
         tileState = tile.getState();
         if (tileState == ol.TileState.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {

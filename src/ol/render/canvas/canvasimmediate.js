@@ -498,7 +498,6 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
     return;
   }
   this.setStyle(style);
-  goog.DEBUG && console.assert(geometry, 'geometry must be truthy');
   this.drawGeometry(geometry);
 };
 
@@ -852,10 +851,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
-    goog.DEBUG && console.assert(imageAnchor, 'imageAnchor must be truthy');
     goog.DEBUG && console.assert(imageImage, 'imageImage must be truthy');
-    goog.DEBUG && console.assert(imageOrigin, 'imageOrigin must be truthy');
-    goog.DEBUG && console.assert(imageSize, 'imageSize must be truthy');
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];

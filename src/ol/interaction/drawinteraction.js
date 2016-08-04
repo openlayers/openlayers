@@ -644,7 +644,6 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
  */
 ol.interaction.Draw.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
-  goog.DEBUG && console.assert(sketchFeature, 'sketchFeature expected to be truthy');
   var coordinates = this.sketchCoords_;
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
   if (this.mode_ === ol.interaction.DrawMode.LINE_STRING) {
@@ -712,7 +711,6 @@ ol.interaction.Draw.prototype.extend = function(feature) {
   var geometry = feature.getGeometry();
   goog.DEBUG && console.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
       'interaction mode must be "line"');
-  goog.DEBUG && console.assert(geometry, 'feature must have a geometry');
   goog.DEBUG && console.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
       'feature geometry must be a line string');
   var lineString = /** @type {ol.geom.LineString} */ (geometry);

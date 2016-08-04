@@ -128,7 +128,6 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
       if (!drawable && tile.interimTile) {
         tile = tile.interimTile;
       }
-      goog.DEBUG && console.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;

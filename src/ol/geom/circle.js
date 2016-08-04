@@ -222,8 +222,6 @@ ol.geom.Circle.prototype.setFlatCoordinates = function(layout, flatCoordinates) 
  * @api
  */
 ol.geom.Circle.prototype.setRadius = function(radius) {
-  goog.DEBUG && console.assert(this.flatCoordinates,
-      'truthy this.flatCoordinates expected');
   this.flatCoordinates[this.stride] = this.flatCoordinates[0] + radius;
   this.changed();
 };

@@ -332,8 +332,6 @@ ol.reproj.Tile.prototype.load = function() {
  * @private
  */
 ol.reproj.Tile.prototype.unlistenSources_ = function() {
-  goog.DEBUG && console.assert(this.sourcesListenerKeys_,
-      'this.sourcesListenerKeys_ should not be null');
   this.sourcesListenerKeys_.forEach(ol.events.unlistenByKey);
   this.sourcesListenerKeys_ = null;
 };

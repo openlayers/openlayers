@@ -228,8 +228,6 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
   if (this.origin_) {
     return this.origin_;
   } else {
-    goog.DEBUG && console.assert(this.origins_,
-        'origins cannot be null if origin is null');
     goog.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
         'given z is not in allowed range (%s <= %s <= %s)',
         this.minZoom, z, this.maxZoom);
@@ -458,8 +456,6 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
   if (this.tileSize_) {
     return this.tileSize_;
   } else {
-    goog.DEBUG && console.assert(this.tileSizes_,
-        'tileSizes cannot be null if tileSize is null');
     goog.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
         'z is not in allowed range (%s <= %s <= %s',
         this.minZoom, z, this.maxZoom);

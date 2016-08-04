@@ -80,8 +80,6 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
     }
   }
   var geometryReader = ol.format.EsriJSON.GEOMETRY_READERS_[type];
-  goog.DEBUG && console.assert(geometryReader,
-      'geometryReader should be defined');
   return /** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(
           geometryReader(object), false, opt_options));
@@ -217,7 +215,6 @@ ol.format.EsriJSON.getGeometryLayout_ = function(object) {
  * @return {ol.geom.Geometry} MultiPoint.
  */
 ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.points, 'object.points should be defined');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiPoint(object.points, layout);
 };
@@ -229,7 +226,6 @@ ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiPolygon.
  */
 ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.rings);
   goog.DEBUG && console.assert(object.rings.length > 1,
       'object.rings should have length larger than 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
@@ -575,7 +571,6 @@ ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
  */
 ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
-  goog.DEBUG && console.assert(geometryWriter, 'geometryWriter should be defined');
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
       ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
       opt_options);

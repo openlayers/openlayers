@@ -142,7 +142,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
       if (!drawableTile(tile) && tile.interimTile) {
         tile = tile.interimTile;
       }
-      goog.DEBUG && console.assert(tile);
       if (drawableTile(tile)) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;

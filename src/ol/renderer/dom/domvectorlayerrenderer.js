@@ -190,7 +190,6 @@ ol.renderer.dom.VectorLayer.prototype.forEachFeatureAtCoordinate = function(coor
          * @return {?} Callback result.
          */
         function(feature) {
-          goog.DEBUG && console.assert(feature !== undefined, 'received a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;

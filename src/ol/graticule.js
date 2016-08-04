@@ -455,8 +455,6 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
  * @private
  */
 ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
-  goog.DEBUG && console.assert(projection, 'projection cannot be null');
-
   var epsg4326Projection = ol.proj.get('EPSG:4326');
 
   var extent = projection.getExtent();
@@ -474,7 +472,6 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var minLatP = worldExtentP[1];
   var minLonP = worldExtentP[0];
 
-  goog.DEBUG && console.assert(extent, 'extent cannot be null');
   goog.DEBUG && console.assert(maxLat !== undefined, 'maxLat should be defined');
   goog.DEBUG && console.assert(maxLon !== undefined, 'maxLon should be defined');
   goog.DEBUG && console.assert(minLat !== undefined, 'minLat should be defined');

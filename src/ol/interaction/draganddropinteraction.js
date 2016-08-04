@@ -96,11 +96,9 @@ ol.interaction.DragAndDrop.handleStop_ = function(event) {
 ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
   var result = event.target.result;
   var map = this.getMap();
-  goog.DEBUG && console.assert(map, 'map must be set');
   var projection = this.projection_;
   if (!projection) {
     var view = map.getView();
-    goog.DEBUG && console.assert(view, 'map must have view');
     projection = view.getProjection();
     goog.DEBUG && console.assert(projection !== undefined,
         'projection should be defined');

@@ -430,9 +430,6 @@ ol.Overlay.prototype.panIntoView_ = function() {
  * @private
  */
 ol.Overlay.prototype.getRect_ = function(element, size) {
-  goog.DEBUG && console.assert(element, 'element should be defined');
-  goog.DEBUG && console.assert(size !== undefined, 'size should be defined');
-
   var box = element.getBoundingClientRect();
   var offsetX = box.left + ol.global.pageXOffset;
   var offsetY = box.top + ol.global.pageYOffset;
@@ -494,11 +491,8 @@ ol.Overlay.prototype.updatePixelPosition = function() {
  * @protected
  */
 ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
-  goog.DEBUG && console.assert(pixel, 'pixel should not be null');
-  goog.DEBUG && console.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
-  goog.DEBUG && console.assert(Array.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
   goog.DEBUG && console.assert(positioning !== undefined,

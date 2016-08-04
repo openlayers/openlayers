@@ -604,9 +604,6 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
     return;
   }
 
-  goog.DEBUG && console.assert(this.canvas_ !== null,
-      'this.canvas_ must not be null');
-
   this.canvas_.width = this.image_.width;
   this.canvas_.height = this.image_.height;
 
@@ -634,8 +631,6 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
  * @private
  */
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
-  goog.DEBUG && console.assert(this.imageListenerKeys_,
-      'we must have listeners registered');
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };

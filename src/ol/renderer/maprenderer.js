@@ -135,7 +135,6 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
    * @return {?} Callback result.
    */
   function forEachFeatureAtCoordinate(feature, layer) {
-    goog.DEBUG && console.assert(feature !== undefined, 'received a feature');
     var key = ol.getUid(feature).toString();
     var managed = frameState.layerStates[ol.getUid(layer)].managed;
     if (!(key in frameState.skippedFeatureUids && !managed)) {
