@@ -245,6 +245,19 @@ ol.geom.GeometryCollection.prototype.rotate = function(angle, anchor) {
 
 
 /**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
+  var geometries = this.geometries_;
+  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+    geometries[i].scale(sx, opt_sy, opt_anchor);
+  }
+  this.changed();
+};
+
+
+/**
  * Set the geometries that make up this geometry collection.
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
  * @api stable

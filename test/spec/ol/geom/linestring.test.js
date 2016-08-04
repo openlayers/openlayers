@@ -242,6 +242,31 @@ describe('ol.geom.LineString', function() {
 
   });
 
+  describe('#scale()', function() {
+
+    it('scales a linestring', function() {
+      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      geom.scale(10);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-100, -200], [100, 200]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      geom.scale(2, 3);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-20, -60], [20, 60]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      geom.scale(3, 2, [10, 20]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-50, -60], [10, 20]]);
+    });
+
+  });
+
   describe('with a simple line string', function() {
 
     var lineString;
