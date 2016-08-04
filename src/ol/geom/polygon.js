@@ -88,7 +88,7 @@ ol.inherits(ol.geom.Polygon, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
-  ol.DEBUG && console.assert(linearRing.getLayout() == this.layout,
+  goog.DEBUG && console.assert(linearRing.getLayout() == this.layout,
       'layout of linearRing should match layout');
   if (!this.flatCoordinates) {
     this.flatCoordinates = linearRing.getFlatCoordinates().slice();
@@ -236,7 +236,7 @@ ol.geom.Polygon.prototype.getLinearRingCount = function() {
  * @api stable
  */
 ol.geom.Polygon.prototype.getLinearRing = function(index) {
-  ol.DEBUG && console.assert(0 <= index && index < this.ends_.length,
+  goog.DEBUG && console.assert(0 <= index && index < this.ends_.length,
       'index should be in between 0 and and length of this.ends_');
   if (index < 0 || this.ends_.length <= index) {
     return null;
@@ -357,13 +357,13 @@ ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {
  */
 ol.geom.Polygon.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
   if (!flatCoordinates) {
-    ol.DEBUG && console.assert(ends && ends.length === 0,
+    goog.DEBUG && console.assert(ends && ends.length === 0,
         'ends must be an empty array');
   } else if (ends.length === 0) {
-    ol.DEBUG && console.assert(flatCoordinates.length === 0,
+    goog.DEBUG && console.assert(flatCoordinates.length === 0,
         'flatCoordinates should be an empty array');
   } else {
-    ol.DEBUG && console.assert(flatCoordinates.length == ends[ends.length - 1],
+    goog.DEBUG && console.assert(flatCoordinates.length == ends[ends.length - 1],
         'the length of flatCoordinates should be the last entry of ends');
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
@@ -460,7 +460,7 @@ ol.geom.Polygon.makeRegular = function(polygon, center, radius, opt_angle) {
   var layout = polygon.getLayout();
   var stride = polygon.getStride();
   var ends = polygon.getEnds();
-  ol.DEBUG && console.assert(ends.length === 1, 'only 1 ring is supported');
+  goog.DEBUG && console.assert(ends.length === 1, 'only 1 ring is supported');
   var sides = flatCoordinates.length / stride - 1;
   var startAngle = opt_angle ? opt_angle : 0;
   var angle, offset;

@@ -306,7 +306,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
          * @return {?} Callback result.
          */
         function(feature) {
-          ol.DEBUG && console.assert(feature, 'received a feature');
+          goog.DEBUG && console.assert(feature, 'received a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;

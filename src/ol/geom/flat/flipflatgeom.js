@@ -16,7 +16,7 @@ ol.geom.flat.flip.flipXY = function(flatCoordinates, offset, end, stride, opt_de
     dest = opt_dest;
     destOffset = opt_destOffset !== undefined ? opt_destOffset : 0;
   } else {
-    ol.DEBUG && console.assert(opt_destOffset === undefined,
+    goog.DEBUG && console.assert(opt_destOffset === undefined,
         'opt_destOffSet should be defined');
     dest = [];
     destOffset = 0;

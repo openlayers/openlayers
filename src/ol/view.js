@@ -385,7 +385,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
        */
       function(value) {
         var resolution = maxResolution / Math.pow(power, value * max);
-        ol.DEBUG && console.assert(resolution >= minResolution &&
+        goog.DEBUG && console.assert(resolution >= minResolution &&
             resolution <= maxResolution,
             'calculated resolution outside allowed bounds (%s <= %s <= %s)',
             minResolution, resolution, maxResolution);
@@ -424,7 +424,7 @@ ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
       function(resolution) {
         var value =
             (Math.log(maxResolution / resolution) / Math.log(power)) / max;
-        ol.DEBUG && console.assert(value >= 0 && value <= 1,
+        goog.DEBUG && console.assert(value >= 0 && value <= 1,
             'calculated value (%s) ouside allowed range (0-1)', value);
         return value;
       });
@@ -435,7 +435,7 @@ ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
  * @return {olx.ViewState} View state.
  */
 ol.View.prototype.getState = function() {
-  ol.DEBUG && console.assert(this.isDef(),
+  goog.DEBUG && console.assert(this.isDef(),
       'the view was not defined (had no center and/or resolution)');
   var center = /** @type {ol.Coordinate} */ (this.getCenter());
   var projection = this.getProjection();
@@ -519,7 +519,7 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
 
   // calculate rotated extent
   var rotation = this.getRotation();
-  ol.DEBUG && console.assert(rotation !== undefined, 'rotation was not defined');
+  goog.DEBUG && console.assert(rotation !== undefined, 'rotation was not defined');
   var cosAngle = Math.cos(-rotation);
   var sinAngle = Math.sin(-rotation);
   var minRotX = +Infinity;
@@ -632,10 +632,10 @@ ol.View.prototype.setCenter = function(center) {
  * @return {number} New value.
  */
 ol.View.prototype.setHint = function(hint, delta) {
-  ol.DEBUG && console.assert(0 <= hint && hint < this.hints_.length,
+  goog.DEBUG && console.assert(0 <= hint && hint < this.hints_.length,
       'illegal hint (%s), must be between 0 and %s', hint, this.hints_.length);
   this.hints_[hint] += delta;
-  ol.DEBUG && console.assert(this.hints_[hint] >= 0,
+  goog.DEBUG && console.assert(this.hints_[hint] >= 0,
       'Hint at %s must be positive, was %s', hint, this.hints_[hint]);
   return this.hints_[hint];
 };
@@ -788,7 +788,7 @@ ol.View.createRotationConstraint_ = function(options) {
     } else if (typeof constrainRotation === 'number') {
       return ol.RotationConstraint.createSnapToN(constrainRotation);
     } else {
-      ol.DEBUG && console.assert(false,
+      goog.DEBUG && console.assert(false,
           'illegal option for constrainRotation (%s)', constrainRotation);
       return ol.RotationConstraint.none;
     }

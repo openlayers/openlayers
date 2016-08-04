@@ -34,7 +34,7 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
               .replace(dashYRegEx, function() {
                 var z = tileCoord[0];
                 var range = tileGrid.getFullTileRange(z);
-                ol.DEBUG && console.assert(range,
+                goog.DEBUG && console.assert(range,
                     'The {-y} template requires a tile grid with extent');
                 var y = range.getHeight() + tileCoord[2];
                 return y.toString();
@@ -65,7 +65,7 @@ ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
-  ol.DEBUG && console.assert(tileUrlFunctions.length > 0,
+  goog.DEBUG && console.assert(tileUrlFunctions.length > 0,
       'Length of tile url functions should be greater than 0');
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];

@@ -194,7 +194,7 @@ ol.reproj.Image.prototype.load = function() {
  * @private
  */
 ol.reproj.Image.prototype.unlistenSource_ = function() {
-  ol.DEBUG && console.assert(this.sourceListenerKey_,
+  goog.DEBUG && console.assert(this.sourceListenerKey_,
       'this.sourceListenerKey_ should not be null');
   ol.events.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
   this.sourceListenerKey_ = null;

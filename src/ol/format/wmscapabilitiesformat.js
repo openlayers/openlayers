@@ -43,7 +43,7 @@ ol.format.WMSCapabilities.prototype.read;
  * @return {Object} WMS Capability object.
  */
 ol.format.WMSCapabilities.prototype.readFromDocument = function(doc) {
-  ol.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
+  goog.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
       'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
@@ -59,9 +59,9 @@ ol.format.WMSCapabilities.prototype.readFromDocument = function(doc) {
  * @return {Object} WMS Capability object.
  */
 ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'WMS_Capabilities' ||
+  goog.DEBUG && console.assert(node.localName == 'WMS_Capabilities' ||
       node.localName == 'WMT_MS_Capabilities',
       'localName should be WMS_Capabilities or WMT_MS_Capabilities');
   this.version = node.getAttribute('version').trim();
@@ -79,9 +79,9 @@ ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
  * @return {Object|undefined} Attribution object.
  */
 ol.format.WMSCapabilities.readAttribution_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Attribution',
+  goog.DEBUG && console.assert(node.localName == 'Attribution',
       'localName should be Attribution');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
@@ -95,9 +95,9 @@ ol.format.WMSCapabilities.readAttribution_ = function(node, objectStack) {
  * @return {Object} Bounding box object.
  */
 ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'BoundingBox',
+  goog.DEBUG && console.assert(node.localName == 'BoundingBox',
       'localName should be BoundingBox');
 
   var extent = [
@@ -127,9 +127,9 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
  * @return {ol.Extent|undefined} Bounding box object.
  */
 ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'EX_GeographicBoundingBox',
+  goog.DEBUG && console.assert(node.localName == 'EX_GeographicBoundingBox',
       'localName should be EX_GeographicBoundingBox');
   var geographicBoundingBox = ol.xml.pushParseAndPop(
       {},
@@ -164,9 +164,9 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectSt
  * @return {Object|undefined} Capability object.
  */
 ol.format.WMSCapabilities.readCapability_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Capability',
+  goog.DEBUG && console.assert(node.localName == 'Capability',
       'localName should be Capability');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
@@ -180,9 +180,9 @@ ol.format.WMSCapabilities.readCapability_ = function(node, objectStack) {
  * @return {Object|undefined} Service object.
  */
 ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Service',
+  goog.DEBUG && console.assert(node.localName == 'Service',
       'localName should be Service');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
@@ -196,9 +196,9 @@ ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
  * @return {Object|undefined} Contact information object.
  */
 ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType shpuld be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'ContactInformation',
+  goog.DEBUG && console.assert(node.localName == 'ContactInformation',
       'localName should be ContactInformation');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
@@ -213,9 +213,9 @@ ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) 
  * @return {Object|undefined} Contact person object.
  */
 ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'ContactPersonPrimary',
+  goog.DEBUG && console.assert(node.localName == 'ContactPersonPrimary',
       'localName should be ContactPersonPrimary');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_,
@@ -230,9 +230,9 @@ ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack
  * @return {Object|undefined} Contact address object.
  */
 ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'ContactAddress',
+  goog.DEBUG && console.assert(node.localName == 'ContactAddress',
       'localName should be ContactAddress');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
@@ -247,9 +247,9 @@ ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
  * @return {Array.<string>|undefined} Format array.
  */
 ol.format.WMSCapabilities.readException_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Exception',
+  goog.DEBUG && console.assert(node.localName == 'Exception',
       'localName should be Exception');
   return ol.xml.pushParseAndPop(
       [], ol.format.WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
@@ -263,9 +263,9 @@ ol.format.WMSCapabilities.readException_ = function(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 ol.format.WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
+  goog.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 };
@@ -278,9 +278,9 @@ ol.format.WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
+  goog.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
   var parentLayerObject = /**  @type {Object.<string,*>} */
       (objectStack[objectStack.length - 1]);
 
@@ -360,9 +360,9 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
  * @return {Object} Dimension object.
  */
 ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Dimension',
+  goog.DEBUG && console.assert(node.localName == 'Dimension',
       'localName should be Dimension');
   var dimensionObject = {
     'name': node.getAttribute('name'),
@@ -387,7 +387,7 @@ ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
@@ -402,9 +402,9 @@ ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack
  * @return {Object|undefined} Request object.
  */
 ol.format.WMSCapabilities.readRequest_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Request',
+  goog.DEBUG && console.assert(node.localName == 'Request',
       'localName should be Request');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
@@ -418,9 +418,9 @@ ol.format.WMSCapabilities.readRequest_ = function(node, objectStack) {
  * @return {Object|undefined} DCP type object.
  */
 ol.format.WMSCapabilities.readDCPType_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'DCPType',
+  goog.DEBUG && console.assert(node.localName == 'DCPType',
       'localName should be DCPType');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
@@ -434,9 +434,9 @@ ol.format.WMSCapabilities.readDCPType_ = function(node, objectStack) {
  * @return {Object|undefined} HTTP object.
  */
 ol.format.WMSCapabilities.readHTTP_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'HTTP', 'localName should be HTTP');
+  goog.DEBUG && console.assert(node.localName == 'HTTP', 'localName should be HTTP');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.HTTP_PARSERS_, node, objectStack);
 };
@@ -449,7 +449,7 @@ ol.format.WMSCapabilities.readHTTP_ = function(node, objectStack) {
  * @return {Object|undefined} Operation type object.
  */
 ol.format.WMSCapabilities.readOperationType_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
@@ -463,7 +463,7 @@ ol.format.WMSCapabilities.readOperationType_ = function(node, objectStack) {
  * @return {Object|undefined} Online resource object.
  */
 ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   var formatOnlineresource =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
@@ -486,9 +486,9 @@ ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(node, object
  * @return {Object|undefined} Authority URL object.
  */
 ol.format.WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'AuthorityURL',
+  goog.DEBUG && console.assert(node.localName == 'AuthorityURL',
       'localName should be AuthorityURL');
   var authorityObject =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
@@ -507,9 +507,9 @@ ol.format.WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
  * @return {Object|undefined} Metadata URL object.
  */
 ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'MetadataURL',
+  goog.DEBUG && console.assert(node.localName == 'MetadataURL',
       'localName should be MetadataURL');
   var metadataObject =
       ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
@@ -528,9 +528,9 @@ ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
  * @return {Object|undefined} Style object.
  */
 ol.format.WMSCapabilities.readStyle_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Style', 'localName should be Style');
+  goog.DEBUG && console.assert(node.localName == 'Style', 'localName should be Style');
   return ol.xml.pushParseAndPop(
       {}, ol.format.WMSCapabilities.STYLE_PARSERS_, node, objectStack);
 };
@@ -543,9 +543,9 @@ ol.format.WMSCapabilities.readStyle_ = function(node, objectStack) {
  * @return {Array.<string>|undefined} Keyword list.
  */
 ol.format.WMSCapabilities.readKeywordList_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'KeywordList',
+  goog.DEBUG && console.assert(node.localName == 'KeywordList',
       'localName should be KeywordList');
   return ol.xml.pushParseAndPop(
       [], ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);

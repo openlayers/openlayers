@@ -107,7 +107,7 @@ ol.format.GMLBase.ONLY_WHITESPACE_RE_ = /^[\s\xa0]*$/;
  * @return {Array.<ol.Feature> | undefined} Features.
  */
 ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   var localName = node.localName;
   var features = null;
@@ -259,14 +259,14 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
  * @return {ol.geom.Point|undefined} Point.
  */
 ol.format.GMLBase.prototype.readPoint = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Point', 'localName should be Point');
+  goog.DEBUG && console.assert(node.localName == 'Point', 'localName should be Point');
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var point = new ol.geom.Point(null);
-    ol.DEBUG && console.assert(flatCoordinates.length == 3,
+    goog.DEBUG && console.assert(flatCoordinates.length == 3,
         'flatCoordinates should have a length of 3');
     point.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
     return point;
@@ -280,9 +280,9 @@ ol.format.GMLBase.prototype.readPoint = function(node, objectStack) {
  * @return {ol.geom.MultiPoint|undefined} MultiPoint.
  */
 ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'MultiPoint',
+  goog.DEBUG && console.assert(node.localName == 'MultiPoint',
       'localName should be MultiPoint');
   /** @type {Array.<Array.<number>>} */
   var coordinates = ol.xml.pushParseAndPop([],
@@ -301,9 +301,9 @@ ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
  * @return {ol.geom.MultiLineString|undefined} MultiLineString.
  */
 ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'MultiLineString',
+  goog.DEBUG && console.assert(node.localName == 'MultiLineString',
       'localName should be MultiLineString');
   /** @type {Array.<ol.geom.LineString>} */
   var lineStrings = ol.xml.pushParseAndPop([],
@@ -324,9 +324,9 @@ ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
  * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
  */
 ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'MultiPolygon',
+  goog.DEBUG && console.assert(node.localName == 'MultiPolygon',
       'localName should be MultiPolygon');
   /** @type {Array.<ol.geom.Polygon>} */
   var polygons = ol.xml.pushParseAndPop([],
@@ -347,9 +347,9 @@ ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
  * @private
  */
 ol.format.GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'pointMember' ||
+  goog.DEBUG && console.assert(node.localName == 'pointMember' ||
       node.localName == 'pointMembers',
       'localName should be pointMember or pointMembers');
   ol.xml.parseNode(this.POINTMEMBER_PARSERS_,
@@ -363,9 +363,9 @@ ol.format.GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
  * @private
  */
 ol.format.GMLBase.prototype.lineStringMemberParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'lineStringMember' ||
+  goog.DEBUG && console.assert(node.localName == 'lineStringMember' ||
       node.localName == 'lineStringMembers',
       'localName should be LineStringMember or LineStringMembers');
   ol.xml.parseNode(this.LINESTRINGMEMBER_PARSERS_,
@@ -379,9 +379,9 @@ ol.format.GMLBase.prototype.lineStringMemberParser_ = function(node, objectStack
  * @private
  */
 ol.format.GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'polygonMember' ||
+  goog.DEBUG && console.assert(node.localName == 'polygonMember' ||
       node.localName == 'polygonMembers',
       'localName should be polygonMember or polygonMembers');
   ol.xml.parseNode(this.POLYGONMEMBER_PARSERS_, node,
@@ -395,9 +395,9 @@ ol.format.GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
  * @return {ol.geom.LineString|undefined} LineString.
  */
 ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'LineString',
+  goog.DEBUG && console.assert(node.localName == 'LineString',
       'localName should be LineString');
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -418,9 +418,9 @@ ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
  * @return {Array.<number>|undefined} LinearRing flat coordinates.
  */
 ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'LinearRing',
+  goog.DEBUG && console.assert(node.localName == 'LinearRing',
       'localName should be LinearRing');
   var ring = ol.xml.pushParseAndPop(null,
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
@@ -439,9 +439,9 @@ ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
  * @return {ol.geom.LinearRing|undefined} LinearRing.
  */
 ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'LinearRing',
+  goog.DEBUG && console.assert(node.localName == 'LinearRing',
       'localName should be LinearRing');
   var flatCoordinates =
       this.readFlatCoordinatesFromNode_(node, objectStack);
@@ -461,9 +461,9 @@ ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
 ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Polygon',
+  goog.DEBUG && console.assert(node.localName == 'Polygon',
       'localName should be Polygon');
   /** @type {Array.<Array.<number>>} */
   var flatLinearRings = ol.xml.pushParseAndPop([null],
@@ -493,7 +493,7 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
  * @return {Array.<number>} Flat coordinates.
  */
 ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return ol.xml.pushParseAndPop(null,
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,

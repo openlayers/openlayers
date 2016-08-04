@@ -99,9 +99,9 @@ ol.format.GML2.prototype.readFlatCoordinates_ = function(node, objectStack) {
  * @return {ol.Extent|undefined} Envelope.
  */
 ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Box', 'localName should be Box');
+  goog.DEBUG && console.assert(node.localName == 'Box', 'localName should be Box');
   /** @type {Array.<number>} */
   var flatCoordinates = ol.xml.pushParseAndPop([null],
       this.BOX_PARSERS_, node, objectStack, this);
@@ -117,9 +117,9 @@ ol.format.GML2.prototype.readBox_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'innerBoundaryIs',
+  goog.DEBUG && console.assert(node.localName == 'innerBoundaryIs',
       'localName should be innerBoundaryIs');
   /** @type {Array.<number>|undefined} */
   var flatLinearRing = ol.xml.pushParseAndPop(undefined,
@@ -127,9 +127,9 @@ ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
-    ol.DEBUG && console.assert(Array.isArray(flatLinearRings),
+    goog.DEBUG && console.assert(Array.isArray(flatLinearRings),
         'flatLinearRings should be an array');
-    ol.DEBUG && console.assert(flatLinearRings.length > 0,
+    goog.DEBUG && console.assert(flatLinearRings.length > 0,
         'flatLinearRings should have an array length larger than 0');
     flatLinearRings.push(flatLinearRing);
   }
@@ -142,9 +142,9 @@ ol.format.GML2.prototype.innerBoundaryIsParser_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'outerBoundaryIs',
+  goog.DEBUG && console.assert(node.localName == 'outerBoundaryIs',
       'localName should be outerBoundaryIs');
   /** @type {Array.<number>|undefined} */
   var flatLinearRing = ol.xml.pushParseAndPop(undefined,
@@ -152,9 +152,9 @@ ol.format.GML2.prototype.outerBoundaryIsParser_ = function(node, objectStack) {
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
-    ol.DEBUG && console.assert(Array.isArray(flatLinearRings),
+    goog.DEBUG && console.assert(Array.isArray(flatLinearRings),
         'flatLinearRings should be an array');
-    ol.DEBUG && console.assert(flatLinearRings.length > 0,
+    goog.DEBUG && console.assert(flatLinearRings.length > 0,
         'flatLinearRings should have an array length larger than 0');
     flatLinearRings[0] = flatLinearRing;
   }

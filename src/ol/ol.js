@@ -15,14 +15,6 @@ ol.ASSUME_TOUCH = false;
 
 
 /**
- * @define {boolean} Debug mode.  When set to `false` (recommended for
- * production), debug assertion checks will be stripped out of the build.
- * Default is `true`.
- */
-ol.DEBUG = true;
-
-
-/**
  * TODO: rename this to something having to do with tile grids
  * see https://github.com/openlayers/ol3/issues/2076
  * @define {number} Default maximum zoom for default tile grids.

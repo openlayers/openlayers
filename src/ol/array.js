@@ -144,9 +144,9 @@ ol.array.linearFindNearest = function(arr, target, direction) {
  * @param {number} end End index.
  */
 ol.array.reverseSubArray = function(arr, begin, end) {
-  ol.DEBUG && console.assert(begin >= 0,
+  goog.DEBUG && console.assert(begin >= 0,
       'Array begin index should be equal to or greater than 0');
-  ol.DEBUG && console.assert(end < arr.length,
+  goog.DEBUG && console.assert(end < arr.length,
       'Array end index should be less than the array length');
   while (begin < end) {
     var tmp = arr[begin];

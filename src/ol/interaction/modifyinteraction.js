@@ -841,7 +841,7 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
 
   this.setGeometryCoordinates_(geometry, coordinates);
   var rTree = this.rBush_;
-  ol.DEBUG && console.assert(segment !== undefined, 'segment should be defined');
+  goog.DEBUG && console.assert(segment !== undefined, 'segment should be defined');
   rTree.remove(segmentData);
   this.updateSegmentIndices_(geometry, index, depth, 1);
   var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
@@ -982,7 +982,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
         segments.push(right.segment[1]);
       }
       if (left !== undefined && right !== undefined) {
-        ol.DEBUG && console.assert(newIndex >= 0, 'newIndex should be larger than 0');
+        goog.DEBUG && console.assert(newIndex >= 0, 'newIndex should be larger than 0');
 
         var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
           depth: segmentData.depth,

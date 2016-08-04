@@ -288,7 +288,7 @@ ol.style.Circle.prototype.render_ = function(atlasManager) {
     var info = atlasManager.add(
         id, size, size, this.draw_.bind(this, renderOptions),
         renderHitDetectionCallback);
-    ol.DEBUG && console.assert(info, 'circle radius is too large');
+    goog.DEBUG && console.assert(info, 'circle radius is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];

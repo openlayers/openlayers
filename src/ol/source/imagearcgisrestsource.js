@@ -195,7 +195,7 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  */
 ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  ol.DEBUG && console.assert(this.url_ !== undefined, 'url is defined');
+  goog.DEBUG && console.assert(this.url_ !== undefined, 'url is defined');
 
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();

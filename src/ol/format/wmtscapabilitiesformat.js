@@ -44,7 +44,7 @@ ol.format.WMTSCapabilities.prototype.read;
  * @return {Object} WMTS Capability object.
  */
 ol.format.WMTSCapabilities.prototype.readFromDocument = function(doc) {
-  ol.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
+  goog.DEBUG && console.assert(doc.nodeType == Node.DOCUMENT_NODE,
       'doc.nodeType should be DOCUMENT');
   for (var n = doc.firstChild; n; n = n.nextSibling) {
     if (n.nodeType == Node.ELEMENT_NODE) {
@@ -60,9 +60,9 @@ ol.format.WMTSCapabilities.prototype.readFromDocument = function(doc) {
  * @return {Object} WMTS Capability object.
  */
 ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Capabilities',
+  goog.DEBUG && console.assert(node.localName == 'Capabilities',
       'localName should be Capabilities');
   var version = node.getAttribute('version').trim();
   var WMTSCapabilityObject = this.owsParser_.readFromNode(node);
@@ -83,9 +83,9 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
  * @return {Object|undefined} Attribution object.
  */
 ol.format.WMTSCapabilities.readContents_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Contents',
+  goog.DEBUG && console.assert(node.localName == 'Contents',
       'localName should be Contents');
 
   return ol.xml.pushParseAndPop({},
@@ -100,9 +100,9 @@ ol.format.WMTSCapabilities.readContents_ = function(node, objectStack) {
  * @return {Object|undefined} Layers object.
  */
 ol.format.WMTSCapabilities.readLayer_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
+  goog.DEBUG && console.assert(node.localName == 'Layer', 'localName should be Layer');
   return ol.xml.pushParseAndPop({},
       ol.format.WMTSCapabilities.LAYER_PARSERS_, node, objectStack);
 };

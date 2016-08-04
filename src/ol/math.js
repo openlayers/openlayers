@@ -105,7 +105,7 @@ ol.math.squaredDistance = function(x1, y1, x2, y2) {
 ol.math.solveLinearSystem = function(mat) {
   var n = mat.length;
 
-  if (ol.DEBUG) {
+  if (goog.DEBUG) {
     for (var row = 0; row < n; row++) {
       console.assert(mat[row].length == n + 1,
                           'every row should have correct number of columns');

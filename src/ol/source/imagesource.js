@@ -37,7 +37,7 @@ ol.source.Image = function(options) {
    */
   this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
-  ol.DEBUG && console.assert(!this.resolutions_ ||
+  goog.DEBUG && console.assert(!this.resolutions_ ||
       ol.array.isSorted(this.resolutions_,
           function(a, b) {
             return b - a;

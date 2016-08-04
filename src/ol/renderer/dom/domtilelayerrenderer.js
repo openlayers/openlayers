@@ -128,7 +128,7 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
       if (!drawable && tile.interimTile) {
         tile = tile.interimTile;
       }
-      ol.DEBUG && console.assert(tile);
+      goog.DEBUG && console.assert(tile);
       tileState = tile.getState();
       if (tileState == ol.TileState.LOADED) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
@@ -332,7 +332,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordZ = tileCoord[0];
   var tileCoordX = tileCoord[1];
   var tileCoordY = tileCoord[2];
-  ol.DEBUG && console.assert(tileCoordZ == this.tileCoordOrigin_[0],
+  goog.DEBUG && console.assert(tileCoordZ == this.tileCoordOrigin_[0],
       'tileCoordZ matches z of tileCoordOrigin');
   var tileCoordKey = tileCoord.toString();
   if (tileCoordKey in this.tiles_) {

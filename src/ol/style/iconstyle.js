@@ -576,9 +576,9 @@ ol.style.IconImage_.prototype.getSrc = function() {
  */
 ol.style.IconImage_.prototype.load = function() {
   if (this.imageState_ == ol.style.ImageState.IDLE) {
-    ol.DEBUG && console.assert(this.src_ !== undefined,
+    goog.DEBUG && console.assert(this.src_ !== undefined,
         'this.src_ must not be undefined');
-    ol.DEBUG && console.assert(!this.imageListenerKeys_,
+    goog.DEBUG && console.assert(!this.imageListenerKeys_,
         'no listener keys existing');
     this.imageState_ = ol.style.ImageState.LOADING;
     this.imageListenerKeys_ = [
@@ -604,7 +604,7 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
     return;
   }
 
-  ol.DEBUG && console.assert(this.canvas_ !== null,
+  goog.DEBUG && console.assert(this.canvas_ !== null,
       'this.canvas_ must not be null');
 
   this.canvas_.width = this.image_.width;
@@ -634,7 +634,7 @@ ol.style.IconImage_.prototype.replaceColor_ = function() {
  * @private
  */
 ol.style.IconImage_.prototype.unlistenImage_ = function() {
-  ol.DEBUG && console.assert(this.imageListenerKeys_,
+  goog.DEBUG && console.assert(this.imageListenerKeys_,
       'we must have listeners registered');
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
@@ -675,7 +675,7 @@ goog.addSingletonGetter(ol.style.IconImageCache);
  * @return {string} Cache key.
  */
 ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
-  ol.DEBUG && console.assert(crossOrigin !== undefined,
+  goog.DEBUG && console.assert(crossOrigin !== undefined,
       'argument crossOrigin must be defined');
   var colorString = color ? ol.color.asString(color) : 'null';
   return crossOrigin + ':' + src + ':' + colorString;

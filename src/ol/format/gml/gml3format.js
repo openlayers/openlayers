@@ -92,9 +92,9 @@ ol.format.GML3.schemaLocation_ = ol.format.GMLBase.GMLNS +
  * @return {ol.geom.MultiLineString|undefined} MultiLineString.
  */
 ol.format.GML3.prototype.readMultiCurve_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'MultiCurve',
+  goog.DEBUG && console.assert(node.localName == 'MultiCurve',
       'localName should be MultiCurve');
   /** @type {Array.<ol.geom.LineString>} */
   var lineStrings = ol.xml.pushParseAndPop([],
@@ -116,9 +116,9 @@ ol.format.GML3.prototype.readMultiCurve_ = function(node, objectStack) {
  * @return {ol.geom.MultiPolygon|undefined} MultiPolygon.
  */
 ol.format.GML3.prototype.readMultiSurface_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'MultiSurface',
+  goog.DEBUG && console.assert(node.localName == 'MultiSurface',
       'localName should be MultiSurface');
   /** @type {Array.<ol.geom.Polygon>} */
   var polygons = ol.xml.pushParseAndPop([],
@@ -139,9 +139,9 @@ ol.format.GML3.prototype.readMultiSurface_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML3.prototype.curveMemberParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'curveMember' ||
+  goog.DEBUG && console.assert(node.localName == 'curveMember' ||
       node.localName == 'curveMembers',
       'localName should be curveMember or curveMembers');
   ol.xml.parseNode(this.CURVEMEMBER_PARSERS_, node, objectStack, this);
@@ -154,9 +154,9 @@ ol.format.GML3.prototype.curveMemberParser_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'surfaceMember' ||
+  goog.DEBUG && console.assert(node.localName == 'surfaceMember' ||
       node.localName == 'surfaceMembers',
       'localName should be surfaceMember or surfaceMembers');
   ol.xml.parseNode(this.SURFACEMEMBER_PARSERS_,
@@ -171,9 +171,9 @@ ol.format.GML3.prototype.surfaceMemberParser_ = function(node, objectStack) {
  * @return {Array.<(Array.<number>)>|undefined} flat coordinates.
  */
 ol.format.GML3.prototype.readPatch_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'patches',
+  goog.DEBUG && console.assert(node.localName == 'patches',
       'localName should be patches');
   return ol.xml.pushParseAndPop([null],
       this.PATCHES_PARSERS_, node, objectStack, this);
@@ -187,9 +187,9 @@ ol.format.GML3.prototype.readPatch_ = function(node, objectStack) {
  * @return {Array.<number>|undefined} flat coordinates.
  */
 ol.format.GML3.prototype.readSegment_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'segments',
+  goog.DEBUG && console.assert(node.localName == 'segments',
       'localName should be segments');
   return ol.xml.pushParseAndPop([null],
       this.SEGMENTS_PARSERS_, node, objectStack, this);
@@ -203,9 +203,9 @@ ol.format.GML3.prototype.readSegment_ = function(node, objectStack) {
  * @return {Array.<(Array.<number>)>|undefined} flat coordinates.
  */
 ol.format.GML3.prototype.readPolygonPatch_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'npde.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'PolygonPatch',
+  goog.DEBUG && console.assert(node.localName == 'PolygonPatch',
       'localName should be PolygonPatch');
   return ol.xml.pushParseAndPop([null],
       this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
@@ -219,9 +219,9 @@ ol.format.GML3.prototype.readPolygonPatch_ = function(node, objectStack) {
  * @return {Array.<number>|undefined} flat coordinates.
  */
 ol.format.GML3.prototype.readLineStringSegment_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'LineStringSegment',
+  goog.DEBUG && console.assert(node.localName == 'LineStringSegment',
       'localName should be LineStringSegment');
   return ol.xml.pushParseAndPop([null],
       this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
@@ -235,9 +235,9 @@ ol.format.GML3.prototype.readLineStringSegment_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML3.prototype.interiorParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'interior',
+  goog.DEBUG && console.assert(node.localName == 'interior',
       'localName should be interior');
   /** @type {Array.<number>|undefined} */
   var flatLinearRing = ol.xml.pushParseAndPop(undefined,
@@ -245,9 +245,9 @@ ol.format.GML3.prototype.interiorParser_ = function(node, objectStack) {
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
-    ol.DEBUG && console.assert(Array.isArray(flatLinearRings),
+    goog.DEBUG && console.assert(Array.isArray(flatLinearRings),
         'flatLinearRings should be an array');
-    ol.DEBUG && console.assert(flatLinearRings.length > 0,
+    goog.DEBUG && console.assert(flatLinearRings.length > 0,
         'flatLinearRings should have an array length of 1 or more');
     flatLinearRings.push(flatLinearRing);
   }
@@ -260,9 +260,9 @@ ol.format.GML3.prototype.interiorParser_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML3.prototype.exteriorParser_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'exterior',
+  goog.DEBUG && console.assert(node.localName == 'exterior',
       'localName should be exterior');
    /** @type {Array.<number>|undefined} */
   var flatLinearRing = ol.xml.pushParseAndPop(undefined,
@@ -270,9 +270,9 @@ ol.format.GML3.prototype.exteriorParser_ = function(node, objectStack) {
   if (flatLinearRing) {
     var flatLinearRings = /** @type {Array.<Array.<number>>} */
         (objectStack[objectStack.length - 1]);
-    ol.DEBUG && console.assert(Array.isArray(flatLinearRings),
+    goog.DEBUG && console.assert(Array.isArray(flatLinearRings),
         'flatLinearRings should be an array');
-    ol.DEBUG && console.assert(flatLinearRings.length > 0,
+    goog.DEBUG && console.assert(flatLinearRings.length > 0,
         'flatLinearRings should have an array length of 1 or more');
     flatLinearRings[0] = flatLinearRing;
   }
@@ -286,9 +286,9 @@ ol.format.GML3.prototype.exteriorParser_ = function(node, objectStack) {
  * @return {ol.geom.Polygon|undefined} Polygon.
  */
 ol.format.GML3.prototype.readSurface_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Surface',
+  goog.DEBUG && console.assert(node.localName == 'Surface',
       'localName should be Surface');
   /** @type {Array.<Array.<number>>} */
   var flatLinearRings = ol.xml.pushParseAndPop([null],
@@ -318,9 +318,9 @@ ol.format.GML3.prototype.readSurface_ = function(node, objectStack) {
  * @return {ol.geom.LineString|undefined} LineString.
  */
 ol.format.GML3.prototype.readCurve_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Curve', 'localName should be Curve');
+  goog.DEBUG && console.assert(node.localName == 'Curve', 'localName should be Curve');
   /** @type {Array.<number>} */
   var flatCoordinates = ol.xml.pushParseAndPop([null],
       this.CURVE_PARSERS_, node, objectStack, this);
@@ -341,9 +341,9 @@ ol.format.GML3.prototype.readCurve_ = function(node, objectStack) {
  * @return {ol.Extent|undefined} Envelope.
  */
 ol.format.GML3.prototype.readEnvelope_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'Envelope',
+  goog.DEBUG && console.assert(node.localName == 'Envelope',
       'localName should be Envelope');
   /** @type {Array.<number>} */
   var flatCoordinates = ol.xml.pushParseAndPop([null],
@@ -722,7 +722,7 @@ ol.format.GML3.ENVELOPE_SERIALIZERS_ = {
  * @param {Array.<*>} objectStack Node stack.
  */
 ol.format.GML3.prototype.writeEnvelope = function(node, extent, objectStack) {
-  ol.DEBUG && console.assert(extent.length == 4, 'extent should have 4 items');
+  goog.DEBUG && console.assert(extent.length == 4, 'extent should have 4 items');
   var context = objectStack[objectStack.length - 1];
   var srsName = context['srsName'];
   if (srsName) {
@@ -1185,7 +1185,7 @@ ol.format.GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
  */
 ol.format.GML3.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
   var parentNode = objectStack[objectStack.length - 1].node;
-  ol.DEBUG && console.assert(ol.xml.isNode(parentNode),
+  goog.DEBUG && console.assert(ol.xml.isNode(parentNode),
       'parentNode should be a node');
   return ol.xml.createElementNS('http://www.opengis.net/gml',
       ol.format.GML3.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
@@ -1207,7 +1207,7 @@ ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, o
   var curve = context['curve'];
   var multiCurve = context['multiCurve'];
   var parentNode = objectStack[objectStack.length - 1].node;
-  ol.DEBUG && console.assert(ol.xml.isNode(parentNode),
+  goog.DEBUG && console.assert(ol.xml.isNode(parentNode),
       'parentNode should be a node');
   var nodeName;
   if (!Array.isArray(value)) {

@@ -208,7 +208,7 @@ ol.format.XMLFeature.prototype.readProjectionFromNode = function(node) {
  */
 ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
   var node = this.writeFeatureNode(feature, opt_options);
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -229,7 +229,7 @@ ol.format.XMLFeature.prototype.writeFeatureNode = function(feature, opt_options)
  */
 ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
   var node = this.writeFeaturesNode(features, opt_options);
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return this.xmlSerializer_.serializeToString(node);
 };
@@ -249,7 +249,7 @@ ol.format.XMLFeature.prototype.writeFeaturesNode = function(features, opt_option
  */
 ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
   var node = this.writeGeometryNode(geometry, opt_options);
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   return this.xmlSerializer_.serializeToString(node);
 };

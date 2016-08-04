@@ -168,7 +168,7 @@ ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
          * @return {?} Callback result.
          */
         function(feature) {
-          ol.DEBUG && console.assert(feature !== undefined, 'passed a feature');
+          goog.DEBUG && console.assert(feature !== undefined, 'passed a feature');
           var key = ol.getUid(feature).toString();
           if (!(key in features)) {
             features[key] = true;

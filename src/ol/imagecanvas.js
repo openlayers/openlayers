@@ -76,7 +76,7 @@ ol.ImageCanvas.prototype.handleLoad_ = function(err) {
  */
 ol.ImageCanvas.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE) {
-    ol.DEBUG && console.assert(this.loader_, 'this.loader_ must be set');
+    goog.DEBUG && console.assert(this.loader_, 'this.loader_ must be set');
     this.state = ol.ImageState.LOADING;
     this.changed();
     this.loader_(this.handleLoad_.bind(this));

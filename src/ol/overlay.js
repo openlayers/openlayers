@@ -430,8 +430,8 @@ ol.Overlay.prototype.panIntoView_ = function() {
  * @private
  */
 ol.Overlay.prototype.getRect_ = function(element, size) {
-  ol.DEBUG && console.assert(element, 'element should be defined');
-  ol.DEBUG && console.assert(size !== undefined, 'size should be defined');
+  goog.DEBUG && console.assert(element, 'element should be defined');
+  goog.DEBUG && console.assert(size !== undefined, 'size should be defined');
 
   var box = element.getBoundingClientRect();
   var offsetX = box.left + ol.global.pageXOffset;
@@ -494,14 +494,14 @@ ol.Overlay.prototype.updatePixelPosition = function() {
  * @protected
  */
 ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
-  ol.DEBUG && console.assert(pixel, 'pixel should not be null');
-  ol.DEBUG && console.assert(mapSize !== undefined, 'mapSize should be defined');
+  goog.DEBUG && console.assert(pixel, 'pixel should not be null');
+  goog.DEBUG && console.assert(mapSize !== undefined, 'mapSize should be defined');
   var style = this.element_.style;
   var offset = this.getOffset();
-  ol.DEBUG && console.assert(Array.isArray(offset), 'offset should be an array');
+  goog.DEBUG && console.assert(Array.isArray(offset), 'offset should be an array');
 
   var positioning = this.getPositioning();
-  ol.DEBUG && console.assert(positioning !== undefined,
+  goog.DEBUG && console.assert(positioning !== undefined,
       'positioning should be defined');
 
   var offsetX = offset[0];

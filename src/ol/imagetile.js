@@ -145,7 +145,7 @@ ol.ImageTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
     this.state = ol.TileState.LOADING;
     this.changed();
-    ol.DEBUG && console.assert(!this.imageListenerKeys_,
+    goog.DEBUG && console.assert(!this.imageListenerKeys_,
         'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
@@ -164,7 +164,7 @@ ol.ImageTile.prototype.load = function() {
  * @private
  */
 ol.ImageTile.prototype.unlistenImage_ = function() {
-  ol.DEBUG && console.assert(this.imageListenerKeys_,
+  goog.DEBUG && console.assert(this.imageListenerKeys_,
       'this.imageListenerKeys_ should not be null');
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;

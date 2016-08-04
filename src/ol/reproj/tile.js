@@ -181,7 +181,7 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
         sourceExtent, this.sourceZ_);
 
     var tilesRequired = sourceRange.getWidth() * sourceRange.getHeight();
-    if (ol.DEBUG && !(tilesRequired < ol.RASTER_REPROJECTION_MAX_SOURCE_TILES)) {
+    if (goog.DEBUG && !(tilesRequired < ol.RASTER_REPROJECTION_MAX_SOURCE_TILES)) {
       console.assert(false, 'reasonable number of tiles is required');
       this.state = ol.TileState.ERROR;
       return;
@@ -284,7 +284,7 @@ ol.reproj.Tile.prototype.load = function() {
 
     var leftToLoad = 0;
 
-    ol.DEBUG && console.assert(!this.sourcesListenerKeys_,
+    goog.DEBUG && console.assert(!this.sourcesListenerKeys_,
         'this.sourcesListenerKeys_ should be null');
 
     this.sourcesListenerKeys_ = [];
@@ -302,7 +302,7 @@ ol.reproj.Tile.prototype.load = function() {
                   state == ol.TileState.EMPTY) {
                 ol.events.unlistenByKey(sourceListenKey);
                 leftToLoad--;
-                ol.DEBUG && console.assert(leftToLoad >= 0,
+                goog.DEBUG && console.assert(leftToLoad >= 0,
                     'leftToLoad should not be negative');
                 if (leftToLoad === 0) {
                   this.unlistenSources_();
@@ -332,7 +332,7 @@ ol.reproj.Tile.prototype.load = function() {
  * @private
  */
 ol.reproj.Tile.prototype.unlistenSources_ = function() {
-  ol.DEBUG && console.assert(this.sourcesListenerKeys_,
+  goog.DEBUG && console.assert(this.sourcesListenerKeys_,
       'this.sourcesListenerKeys_ should not be null');
   this.sourcesListenerKeys_.forEach(ol.events.unlistenByKey);
   this.sourcesListenerKeys_ = null;

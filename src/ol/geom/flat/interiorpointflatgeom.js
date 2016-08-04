@@ -78,7 +78,7 @@ ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
  * @return {Array.<number>} Interior points.
  */
 ol.geom.flat.interiorpoint.linearRingss = function(flatCoordinates, offset, endss, stride, flatCenters) {
-  ol.DEBUG && console.assert(2 * endss.length == flatCenters.length,
+  goog.DEBUG && console.assert(2 * endss.length == flatCenters.length,
       'endss.length times 2 should be flatCenters.length');
   var interiorPoints = [];
   var i, ii;

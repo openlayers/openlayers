@@ -282,7 +282,7 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, op
   var projection = opt_projection !== undefined ?
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
-  ol.DEBUG && console.assert(tileGrid, 'tile grid needed');
+  goog.DEBUG && console.assert(tileGrid, 'tile grid needed');
   if (this.getWrapX() && projection.isGlobal()) {
     tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
   }

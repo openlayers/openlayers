@@ -26,7 +26,7 @@ goog.require('ol.style.Stroke');
  */
 ol.style.RegularShape = function(options) {
 
-  ol.DEBUG && console.assert(
+  goog.DEBUG && console.assert(
       options.radius !== undefined || options.radius1 !== undefined,
       'must provide either "radius" or "radius1"');
 
@@ -366,7 +366,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     var info = atlasManager.add(
         id, size, size, this.draw_.bind(this, renderOptions),
         renderHitDetectionCallback);
-    ol.DEBUG && console.assert(info, 'shape size is too large');
+    goog.DEBUG && console.assert(info, 'shape size is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];

@@ -162,7 +162,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     if (!ol.ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
-        ol.DEBUG && console.assert(ol.proj.equivalent(projection, sourceProjection),
+        goog.DEBUG && console.assert(ol.proj.equivalent(projection, sourceProjection),
             'projection and sourceProjection are equivalent');
         projection = sourceProjection;
       }

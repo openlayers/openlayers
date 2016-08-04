@@ -84,7 +84,7 @@ ol.webgl.Context = function(canvas, gl) {
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {
     var ext = gl.getExtension('OES_element_index_uint');
-    ol.DEBUG && console.assert(ext,
+    goog.DEBUG && console.assert(ext,
         'Failed to get extension "OES_element_index_uint"');
   }
 
@@ -114,7 +114,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    ol.DEBUG && console.assert(target == ol.webgl.ARRAY_BUFFER ||
+    goog.DEBUG && console.assert(target == ol.webgl.ARRAY_BUFFER ||
         target == ol.webgl.ELEMENT_ARRAY_BUFFER,
         'target is supposed to be an ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER');
     var /** @type {ArrayBufferView} */ arrayBuffer;
@@ -139,7 +139,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
 ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
   var bufferKey = String(ol.getUid(buf));
-  ol.DEBUG && console.assert(bufferKey in this.bufferCache_,
+  goog.DEBUG && console.assert(bufferKey in this.bufferCache_,
       'attempted to delete uncached buffer');
   var bufferCacheEntry = this.bufferCache_[bufferKey];
   if (!gl.isContextLost()) {
@@ -219,7 +219,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     var shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
-    ol.DEBUG && console.assert(
+    goog.DEBUG && console.assert(
         gl.getShaderParameter(shader, ol.webgl.COMPILE_STATUS) ||
         gl.isContextLost(),
         gl.getShaderInfoLog(shader) || 'illegal state, shader not compiled or context lost');
@@ -249,7 +249,7 @@ ol.webgl.Context.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
-    ol.DEBUG && console.assert(
+    goog.DEBUG && console.assert(
         gl.getProgramParameter(program, ol.webgl.LINK_STATUS) ||
         gl.isContextLost(),
         gl.getProgramInfoLog(program) || 'illegal state, shader not linked or context lost');

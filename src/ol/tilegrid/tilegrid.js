@@ -119,11 +119,11 @@ ol.tilegrid.TileGrid = function(options) {
   this.tmpSize_ = [0, 0];
 
   if (options.sizes !== undefined) {
-    ol.DEBUG && console.assert(options.sizes.length == this.resolutions_.length,
+    goog.DEBUG && console.assert(options.sizes.length == this.resolutions_.length,
         'number of sizes and resolutions must be equal');
     this.fullTileRanges_ = options.sizes.map(function(size, z) {
-      ol.DEBUG && console.assert(size[0] !== 0, 'width must not be 0');
-      ol.DEBUG && console.assert(size[1] !== 0, 'height must not be 0');
+      goog.DEBUG && console.assert(size[0] !== 0, 'width must not be 0');
+      goog.DEBUG && console.assert(size[1] !== 0, 'height must not be 0');
       var tileRange = new ol.TileRange(
           Math.min(0, size[0]), Math.max(size[0] - 1, -1),
           Math.min(0, size[1]), Math.max(size[1] - 1, -1));
@@ -228,9 +228,9 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
   if (this.origin_) {
     return this.origin_;
   } else {
-    ol.DEBUG && console.assert(this.origins_,
+    goog.DEBUG && console.assert(this.origins_,
         'origins cannot be null if origin is null');
-    ol.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
+    goog.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
         'given z is not in allowed range (%s <= %s <= %s)',
         this.minZoom, z, this.maxZoom);
     return this.origins_[z];
@@ -245,7 +245,7 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
  * @api stable
  */
 ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
-  ol.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
+  goog.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
       'given z is not in allowed range (%s <= %s <= %s)',
       this.minZoom, z, this.maxZoom);
   return this.resolutions_[z];
@@ -438,7 +438,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordForCoordAndZ = function(coordinate, z
  * @return {number} Tile resolution.
  */
 ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
-  ol.DEBUG && console.assert(
+  goog.DEBUG && console.assert(
       this.minZoom <= tileCoord[0] && tileCoord[0] <= this.maxZoom,
       'z of given tilecoord is not in allowed range (%s <= %s <= %s',
       this.minZoom, tileCoord[0], this.maxZoom);
@@ -458,9 +458,9 @@ ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
   if (this.tileSize_) {
     return this.tileSize_;
   } else {
-    ol.DEBUG && console.assert(this.tileSizes_,
+    goog.DEBUG && console.assert(this.tileSizes_,
         'tileSizes cannot be null if tileSize is null');
-    ol.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
+    goog.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
         'z is not in allowed range (%s <= %s <= %s',
         this.minZoom, z, this.maxZoom);
     return this.tileSizes_[z];
@@ -476,7 +476,7 @@ ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
   if (!this.fullTileRanges_) {
     return null;
   } else {
-    ol.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
+    goog.DEBUG && console.assert(this.minZoom <= z && z <= this.maxZoom,
         'z is not in allowed range (%s <= %s <= %s',
         this.minZoom, z, this.maxZoom);
     return this.fullTileRanges_[z];

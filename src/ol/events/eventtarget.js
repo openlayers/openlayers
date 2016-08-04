@@ -143,7 +143,7 @@ ol.events.EventTarget.prototype.removeEventListener = function(type, listener) {
   var listeners = this.listeners_[type];
   if (listeners) {
     var index = listeners.indexOf(listener);
-    ol.DEBUG && console.assert(index != -1, 'listener not found');
+    goog.DEBUG && console.assert(index != -1, 'listener not found');
     if (type in this.pendingRemovals_) {
       // make listener a no-op, and remove later in #dispatchEvent()
       listeners[index] = ol.nullFunction;

@@ -15,8 +15,7 @@
       "externs/topojson.js"
     ],
     "define": [
-      "goog.DEBUG=false",
-      "ol.DEBUG=false"
+      "goog.DEBUG=false"
     ],
     "jscomp_error": [
       "*"

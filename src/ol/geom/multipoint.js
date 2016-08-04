@@ -34,7 +34,7 @@ ol.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.MultiPoint.prototype.appendPoint = function(point) {
-  ol.DEBUG && console.assert(point.getLayout() == this.layout,
+  goog.DEBUG && console.assert(point.getLayout() == this.layout,
       'the layout of point should match layout');
   if (!this.flatCoordinates) {
     this.flatCoordinates = point.getFlatCoordinates().slice();
@@ -103,7 +103,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
 ol.geom.MultiPoint.prototype.getPoint = function(index) {
   var n = !this.flatCoordinates ?
       0 : this.flatCoordinates.length / this.stride;
-  ol.DEBUG && console.assert(0 <= index && index < n,
+  goog.DEBUG && console.assert(0 <= index && index < n,
       'index should be in between 0 and n');
   if (index < 0 || n <= index) {
     return null;

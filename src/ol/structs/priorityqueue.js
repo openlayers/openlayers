@@ -60,7 +60,7 @@ ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
 ol.structs.PriorityQueue.DROP = Infinity;
 
 
-if (ol.DEBUG) {
+if (goog.DEBUG) {
   /**
    * FIXME empty description for jsdoc
    */
@@ -99,7 +99,7 @@ ol.structs.PriorityQueue.prototype.clear = function() {
  */
 ol.structs.PriorityQueue.prototype.dequeue = function() {
   var elements = this.elements_;
-  ol.DEBUG && console.assert(elements.length > 0,
+  goog.DEBUG && console.assert(elements.length > 0,
       'must have elements in order to be able to dequeue');
   var priorities = this.priorities_;
   var element = elements[0];
@@ -112,7 +112,7 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
     this.siftUp_(0);
   }
   var elementKey = this.keyFunction_(element);
-  ol.DEBUG && console.assert(elementKey in this.queuedElements_,
+  goog.DEBUG && console.assert(elementKey in this.queuedElements_,
       'key %s is not listed as queued', elementKey);
   delete this.queuedElements_[elementKey];
   return element;

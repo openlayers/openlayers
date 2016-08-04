@@ -479,7 +479,7 @@ ol.inherits(ol.Map, ol.Object);
  */
 ol.Map.prototype.addControl = function(control) {
   var controls = this.getControls();
-  ol.DEBUG && console.assert(controls !== undefined, 'controls should be defined');
+  goog.DEBUG && console.assert(controls !== undefined, 'controls should be defined');
   controls.push(control);
 };
 
@@ -491,7 +491,7 @@ ol.Map.prototype.addControl = function(control) {
  */
 ol.Map.prototype.addInteraction = function(interaction) {
   var interactions = this.getInteractions();
-  ol.DEBUG && console.assert(interactions !== undefined,
+  goog.DEBUG && console.assert(interactions !== undefined,
       'interactions should be defined');
   interactions.push(interaction);
 };
@@ -517,7 +517,7 @@ ol.Map.prototype.addLayer = function(layer) {
  */
 ol.Map.prototype.addOverlay = function(overlay) {
   var overlays = this.getOverlays();
-  ol.DEBUG && console.assert(overlays !== undefined, 'overlays should be defined');
+  goog.DEBUG && console.assert(overlays !== undefined, 'overlays should be defined');
   overlays.push(overlay);
 };
 
@@ -974,7 +974,7 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   this.focus_ = mapBrowserEvent.coordinate;
   mapBrowserEvent.frameState = this.frameState_;
   var interactions = this.getInteractions();
-  ol.DEBUG && console.assert(interactions !== undefined,
+  goog.DEBUG && console.assert(interactions !== undefined,
       'interactions should be defined');
   var interactionsArray = interactions.getArray();
   var i;
@@ -1059,7 +1059,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   var targetElement;
   if (this.getTarget()) {
     targetElement = this.getTargetElement();
-    ol.DEBUG && console.assert(targetElement !== null,
+    goog.DEBUG && console.assert(targetElement !== null,
         'expects a non-null value for targetElement');
   }
 
@@ -1200,7 +1200,7 @@ ol.Map.prototype.render = function() {
  */
 ol.Map.prototype.removeControl = function(control) {
   var controls = this.getControls();
-  ol.DEBUG && console.assert(controls !== undefined, 'controls should be defined');
+  goog.DEBUG && console.assert(controls !== undefined, 'controls should be defined');
   return controls.remove(control);
 };
 
@@ -1214,7 +1214,7 @@ ol.Map.prototype.removeControl = function(control) {
  */
 ol.Map.prototype.removeInteraction = function(interaction) {
   var interactions = this.getInteractions();
-  ol.DEBUG && console.assert(interactions !== undefined,
+  goog.DEBUG && console.assert(interactions !== undefined,
       'interactions should be defined');
   return interactions.remove(interaction);
 };
@@ -1242,7 +1242,7 @@ ol.Map.prototype.removeLayer = function(layer) {
  */
 ol.Map.prototype.removeOverlay = function(overlay) {
   var overlays = this.getOverlays();
-  ol.DEBUG && console.assert(overlays !== undefined, 'overlays should be defined');
+  goog.DEBUG && console.assert(overlays !== undefined, 'overlays should be defined');
   return overlays.remove(overlay);
 };
 

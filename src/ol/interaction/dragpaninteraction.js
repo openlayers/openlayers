@@ -68,7 +68,7 @@ ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
-  ol.DEBUG && console.assert(this.targetPointers.length >= 1,
+  goog.DEBUG && console.assert(this.targetPointers.length >= 1,
       'the length of this.targetPointers should be more than 1');
   var centroid =
       ol.interaction.Pointer.centroid(this.targetPointers);

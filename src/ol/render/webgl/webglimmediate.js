@@ -98,7 +98,7 @@ ol.render.webgl.Immediate.prototype.drawGeometry = function(geometry) {
       this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
       break;
     default:
-      ol.DEBUG && console.assert(false, 'Unsupported geometry type: ' + type);
+      goog.DEBUG && console.assert(false, 'Unsupported geometry type: ' + type);
   }
 };
 
@@ -114,7 +114,7 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
     return;
   }
   this.setStyle(style);
-  ol.DEBUG && console.assert(geometry, 'geometry must be truthy');
+  goog.DEBUG && console.assert(geometry, 'geometry must be truthy');
   this.drawGeometry(geometry);
 };
 
