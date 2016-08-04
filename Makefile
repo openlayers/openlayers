@@ -135,6 +135,10 @@ serve: build/test_requires.js build/test_rendering_requires.js
 test: build/timestamps/node-modules-timestamp build/test_requires.js
 	node tasks/test.js
 
+.PHONY: test-node
+test-node: build/timestamps/node-modules-timestamp
+	./node_modules/.bin/mocha test/node
+
 .PHONY: test-coverage
 test-coverage: build/timestamps/node-modules-timestamp
 	node tasks/test-coverage.js
