@@ -129,6 +129,31 @@ describe('ol.geom.Point', function() {
 
   });
 
+  describe('#scale()', function() {
+
+    it('scales a point', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(10e6);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([1, 2]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(1e6, -42);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([1, 2]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(10, 15, [0, 0]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([10, 30]);
+    });
+
+  });
+
   describe('#applyTransform()', function() {
 
     var point, transform;

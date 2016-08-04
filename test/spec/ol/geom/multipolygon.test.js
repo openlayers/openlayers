@@ -55,6 +55,37 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
+  describe('#scale()', function() {
+
+    it('scales a multi-polygon', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(10);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-10, -20], [10, -20], [10, 20], [-10, 20], [-10, -20]]]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(2, 3);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-2, -6], [2, -6], [2, 6], [-2, 6], [-2, -6]]]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(3, 2, [-1, -2]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-1, -2], [5, -2], [5, 6], [-1, 6], [-1, -2]]]]);
+    });
+
+  });
+
   describe('with a simple MultiPolygon', function() {
 
     var multiPolygon;

@@ -280,6 +280,30 @@ ol.geom.SimpleGeometry.prototype.rotate = function(angle, anchor) {
 
 /**
  * @inheritDoc
+ * @api
+ */
+ol.geom.SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
+  var sy = opt_sy;
+  if (sy === undefined) {
+    sy = sx;
+  }
+  var anchor = opt_anchor;
+  if (!anchor) {
+    anchor = ol.extent.getCenter(this.getExtent());
+  }
+  var flatCoordinates = this.getFlatCoordinates();
+  if (flatCoordinates) {
+    var stride = this.getStride();
+    ol.geom.flat.transform.scale(
+        flatCoordinates, 0, flatCoordinates.length,
+        stride, sx, sy, anchor, flatCoordinates);
+    this.changed();
+  }
+};
+
+
+/**
+ * @inheritDoc
  * @api stable
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {

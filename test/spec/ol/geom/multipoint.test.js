@@ -203,6 +203,31 @@ describe('ol.geom.MultiPoint', function() {
 
   });
 
+  describe('#scale()', function() {
+
+    it('scales a multi-point', function() {
+      var geom = new ol.geom.MultiPoint([[-10, -20], [10, 20]]);
+      geom.scale(10);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-100, -200], [100, 200]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.MultiPoint([[-10, -20], [10, 20]]);
+      geom.scale(2, 3);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-20, -60], [20, 60]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.MultiPoint([[-10, -20], [10, 20]]);
+      geom.scale(3, 2, [-10, -20]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-10, -20], [50, 60]]);
+    });
+
+  });
+
   describe('#applyTransform()', function() {
 
     var multi, transform;
