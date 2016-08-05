@@ -851,6 +851,8 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
 /**
  * Get the map renderer.
  * @return {ol.renderer.Map} Renderer
+ * @observable
+ * @api stable
  */
 ol.Map.prototype.getRenderer = function() {
   return this.renderer_;
