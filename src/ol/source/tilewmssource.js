@@ -301,6 +301,9 @@ ol.source.TileWMS.prototype.getKeyForParams_ = function() {
   var i = 0;
   var res = [];
   for (var key in this.params_) {
+    if (key == 'env') {
+      continue;
+    }
     res[i++] = key + '-' + this.params_[key];
   }
   return res.join('/');
