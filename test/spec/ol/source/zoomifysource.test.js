@@ -20,6 +20,16 @@ describe('ol.source.Zoomify', function() {
 
   describe('constructor', function() {
 
+    it('handles the optional imageExtension param', function() {
+      var source = new ol.source.Zoomify({
+        url: 'zoomify-url/',
+        imageExtension: 'png',
+        size: [1024, 512]
+      });
+      var tileUrlFunction = source.getTileUrlFunction();
+      expect(tileUrlFunction([1, 0, -2])).to.eql('zoomify-url/TileGroup0/1-0-1.png');
+    });
+
     it('requires config "size"', function() {
       var source;
 
