@@ -1,4 +1,4 @@
-goog.provide('ol.test.layer.LayerGroup');
+goog.provide('ol.test.layer.Group');
 
 describe('ol.layer.Group', function() {
 
