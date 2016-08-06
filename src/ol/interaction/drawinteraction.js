@@ -43,7 +43,13 @@ ol.interaction.DrawEventType = {
    * @event ol.interaction.DrawEvent#drawend
    * @api stable
    */
-  DRAWEND: 'drawend'
+  DRAWEND: 'drawend',
+  /**
+   * Triggered upon change of the preview
+   * @event ol.DrawEvent#drawchange
+   * @todo stability experimental
+   */
+  DRAWCHANGE: 'drawchange'
 };
 
 
@@ -430,6 +436,8 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
   } else {
     this.createOrUpdateSketchPoint_(event);
   }
+  this.dispatchEvent(new ol.DrawEvent(ol.DrawEventType.DRAWCHANGE,
+      this.sketchFeature_));
   return true;
 };
 
