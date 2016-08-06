@@ -33,6 +33,12 @@ goog.require('ol.source.Vector');
  */
 ol.interaction.DrawEventType = {
   /**
+   * Triggered before feature draw start
+   * @event ol.interaction.DrawEvent#beforedrawstart
+   * @api stable
+   */
+  BEFOREDRAWSTART: 'beforedrawstart',
+  /**
    * Triggered upon feature draw start
    * @event ol.interaction.DrawEvent#drawstart
    * @api stable
@@ -367,6 +373,11 @@ ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.Draw.handleDownEvent_ = function(event) {
+  var continueDrawing = this.dispatchEvent(new ol.interaction.DrawEvent(
+      ol.interaction.DrawEventType.BEFOREDRAWSTART, event));
+  if (continueDrawing === false) {
+    return false;
+  }
   if (this.condition_(event)) {
     this.downPx_ = event.pixel;
     return true;
