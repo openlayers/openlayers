@@ -18,9 +18,9 @@ A number of internal types have been renamed.  This will not affect those who us
 
  * rename `ol.CollectionEventType` to `ol.Collection.EventType`
  * rename `ol.CollectionEvent` to `ol.Collection.Event`
- * rename `ol.render.webgl.imagereplay.shader.Default.Locations` to `ol.renderer.webgl.imagereplay.defaultshader.Locations`
- * rename `ol.render.webgl.imagereplay.shader.DefaultFragment` to `ol.renderer.webgl.imagereplay.defaultshader.Fragment`
- * rename `ol.render.webgl.imagereplay.shader.DefaultVertex` to `ol.renderer.webgl.imagereplay.defaultshader.Vertex`
+ * rename `ol.render.webgl.imagereplay.shader.Default.Locations` to `ol.render.webgl.imagereplay.defaultshader.Locations`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultFragment` to `ol.render.webgl.imagereplay.defaultshader.Fragment`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultVertex` to `ol.render.webgl.imagereplay.defaultshader.Vertex`
  * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
  * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
  * rename `ol.renderer.webgl.map.shader.DefaultFragment` to `ol.renderer.webgl.defaultmapshader.Fragment`
