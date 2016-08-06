@@ -145,6 +145,12 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
         tileResolution * gutter, tileExtent);
   }
 
+  if (!goog.isNull(this.getProjection()) &&
+      this.getProjection() !== projection) {
+    tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
+    projectionObj = ol.proj.get(this.getProjection());
+  }
+
   var baseParams = {
     'SERVICE': 'WMS',
     'VERSION': ol.DEFAULT_WMS_VERSION,
@@ -337,6 +343,11 @@ ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRati
         tileResolution * gutter, tileExtent);
   }
 
+  if (!goog.isNull(this.getProjection()) &&
+      this.getProjection() !== projection) {
+    tileExtent = ol.proj.transformExtent(tileExtent, projection, this.getProjection());
+    projection = ol.proj.get(this.getProjection());
+  }
   if (pixelRatio != 1) {
     tileSize = ol.size.scale(tileSize, pixelRatio, this.tmpSize);
   }
