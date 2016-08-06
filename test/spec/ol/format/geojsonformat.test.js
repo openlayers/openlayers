@@ -701,12 +701,13 @@ describe('ol.format.GeoJSON', function() {
 
     });
 
-    it('encodes a circle as an empty geometry collection', function() {
+    it('encodes a circle as a circle geometry', function() {
       var circle = new ol.geom.Circle([0, 0], 1);
       var geojson = format.writeGeometryObject(circle);
       expect(geojson).to.eql({
-        'type': 'GeometryCollection',
-        'geometries': []
+        'type': 'Circle',
+        'center': [0, 0],
+        'radius': 1
       });
     });
 
