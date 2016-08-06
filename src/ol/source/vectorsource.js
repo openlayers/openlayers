@@ -805,6 +805,27 @@ ol.source.Vector.prototype.loadFeatures = function(
 
 
 /**
+ * Remove the current extent from the list of loaded extent.
+ * @param {ol.Extent} extent Extent.
+ * @api
+ */
+ol.source.Vector.prototype.removeFromLoadedExtent = function(
+    extent) {
+  var loadedExtentsRtree = this.loadedExtentsRtree_;
+  var obj;
+  loadedExtentsRtree.forEachInExtent(extent, function(object) {
+    if (ol.extent.equals(object.extent, extent)) {
+      obj = object;
+      return true;
+    }
+  });
+  if (obj) {
+    loadedExtentsRtree.remove(obj);
+  }
+};
+
+
+/**
  * Remove a single feature from the source.  If you want to remove all features
  * at once, use the {@link ol.source.Vector#clear source.clear()} method
  * instead.
