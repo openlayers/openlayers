@@ -52,13 +52,13 @@ oli.events.Event.prototype.stopPropagation = function() {};
 /**
  * @interface
  */
-oli.CollectionEvent = function() {};
+oli.Collection.Event = function() {};
 
 
 /**
  * @type {*}
  */
-oli.CollectionEvent.prototype.element;
+oli.Collection.Event.prototype.element;
 
 
 /**

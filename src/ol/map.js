@@ -7,7 +7,6 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.async.nextTick');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserEventHandler');
@@ -404,17 +403,17 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.controls_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.controls_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(null);
@@ -429,17 +428,17 @@ ol.Map = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.interactions_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.interactions_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(null);
@@ -447,17 +446,17 @@ ol.Map = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.overlays_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.overlays_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         var id = event.element.getId();

@@ -1,8 +1,6 @@
 goog.provide('ol.layer.Group');
 
 goog.require('ol.Collection');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.events');
@@ -97,9 +95,9 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 
   var layers = this.getLayers();
   this.layersListenerKeys_.push(
-      ol.events.listen(layers, ol.CollectionEventType.ADD,
+      ol.events.listen(layers, ol.Collection.EventType.ADD,
           this.handleLayersAdd_, this),
-      ol.events.listen(layers, ol.CollectionEventType.REMOVE,
+      ol.events.listen(layers, ol.Collection.EventType.REMOVE,
           this.handleLayersRemove_, this));
 
   for (var id in this.listenerKeys_) {
@@ -124,7 +122,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 
 
 /**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @param {ol.Collection.Event} collectionEvent Collection event.
  * @private
  */
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
@@ -143,7 +141,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
 
 
 /**
- * @param {ol.CollectionEvent} collectionEvent Collection event.
+ * @param {ol.Collection.Event} collectionEvent Collection event.
  * @private
  */
 ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {

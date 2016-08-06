@@ -7,7 +7,6 @@ goog.provide('ol.source.VectorEventType');
 
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.ObjectEventType');
 goog.require('ol.array');
@@ -348,7 +347,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           modifyingCollection = false;
         }
       });
-  ol.events.listen(collection, ol.CollectionEventType.ADD,
+  ol.events.listen(collection, ol.Collection.EventType.ADD,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -356,7 +355,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           modifyingCollection = false;
         }
       }, this);
-  ol.events.listen(collection, ol.CollectionEventType.REMOVE,
+  ol.events.listen(collection, ol.Collection.EventType.REMOVE,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;

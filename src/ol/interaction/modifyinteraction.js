@@ -6,7 +6,6 @@ goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
@@ -232,9 +231,9 @@ ol.interaction.Modify = function(options) {
   this.features_ = options.features;
 
   this.features_.forEach(this.addFeature_, this);
-  ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.features_, ol.Collection.EventType.ADD,
       this.handleFeatureAdd_, this);
-  ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.features_, ol.Collection.EventType.REMOVE,
       this.handleFeatureRemove_, this);
 
   /**
@@ -327,7 +326,7 @@ ol.interaction.Modify.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Modify.prototype.handleFeatureAdd_ = function(evt) {
@@ -349,7 +348,7 @@ ol.interaction.Modify.prototype.handleFeatureChange_ = function(evt) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Modify.prototype.handleFeatureRemove_ = function(evt) {

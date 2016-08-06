@@ -3,8 +3,6 @@ goog.provide('ol.interaction.SnapProperty');
 
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEvent');
-goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');
@@ -232,14 +230,14 @@ ol.interaction.Snap.prototype.getFeatures_ = function() {
 
 
 /**
- * @param {ol.source.VectorEvent|ol.CollectionEvent} evt Event.
+ * @param {ol.source.VectorEvent|ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleFeatureAdd_ = function(evt) {
   var feature;
   if (evt instanceof ol.source.VectorEvent) {
     feature = evt.feature;
-  } else if (evt instanceof ol.CollectionEvent) {
+  } else if (evt instanceof ol.Collection.Event) {
     feature = evt.element;
   }
   this.addFeature(/** @type {ol.Feature} */ (feature));
@@ -247,14 +245,14 @@ ol.interaction.Snap.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {ol.source.VectorEvent|ol.CollectionEvent} evt Event.
+ * @param {ol.source.VectorEvent|ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
   var feature;
   if (evt instanceof ol.source.VectorEvent) {
     feature = evt.feature;
-  } else if (evt instanceof ol.CollectionEvent) {
+  } else if (evt instanceof ol.Collection.Event) {
     feature = evt.element;
   }
   this.removeFeature(/** @type {ol.Feature} */ (feature));
@@ -342,9 +340,9 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   if (map) {
     if (this.features_) {
       keys.push(
-        ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+        ol.events.listen(this.features_, ol.Collection.EventType.ADD,
             this.handleFeatureAdd_, this),
-        ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+        ol.events.listen(this.features_, ol.Collection.EventType.REMOVE,
             this.handleFeatureRemove_, this)
       );
     } else if (this.source_) {

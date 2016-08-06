@@ -3,7 +3,7 @@ goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectEventType');
 
 goog.require('ol.functions');
-goog.require('ol.CollectionEventType');
+goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.events');
@@ -185,9 +185,9 @@ ol.interaction.Select = function(opt_options) {
   this.featureLayerAssociation_ = {};
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
-  ol.events.listen(features, ol.CollectionEventType.ADD,
+  ol.events.listen(features, ol.Collection.EventType.ADD,
       this.addFeature_, this);
-  ol.events.listen(features, ol.CollectionEventType.REMOVE,
+  ol.events.listen(features, ol.Collection.EventType.REMOVE,
       this.removeFeature_, this);
 
 };
@@ -355,7 +355,7 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Select.prototype.addFeature_ = function(evt) {
@@ -367,7 +367,7 @@ ol.interaction.Select.prototype.addFeature_ = function(evt) {
 
 
 /**
- * @param {ol.CollectionEvent} evt Event.
+ * @param {ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Select.prototype.removeFeature_ = function(evt) {

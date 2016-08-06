@@ -12,6 +12,13 @@ This option was previously needed to use named colors with the WebGL renderer bu
 
 The URL constructor is supported by all modern browsers, but not by older ones, such as IE. To use the KML format in such older browsers, a URL polyfill will have to be loaded before use.
 
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.CollectionEvent` to `ol.Collection.Event`
+ * rename `ol.CollectionEventType` to `ol.Collection.EventType`
+
 ### v3.17.0
 
 #### `ol.source.MapQuest` removal
