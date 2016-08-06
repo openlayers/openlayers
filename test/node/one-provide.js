@@ -57,7 +57,7 @@ describe('each file', () => {
         ext = '.js';
       }
       const mapped = provide.split('.').map(part => part.toLowerCase()).join(path.sep) + ext;
-      assert.equal(mapped, file, 'expected provide to be like the path: ' + file);
+      assert.equal(file, mapped, 'expected path to be like the provide: ' + file);
     }
   });
 
