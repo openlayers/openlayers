@@ -3,7 +3,7 @@ goog.provide('ol.format.WMSGetFeatureInfo');
 goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.xml');
 
 
@@ -147,7 +147,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures;
 ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
   var options = {};
   if (opt_options) {
-    ol.object.assign(options, this.getReadOptions(node, opt_options));
+    ol.obj.assign(options, this.getReadOptions(node, opt_options));
   }
   return this.readFeatures_(node, [options]);
 };

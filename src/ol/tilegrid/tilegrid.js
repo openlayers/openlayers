@@ -6,7 +6,7 @@ goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.math');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Projection');
@@ -558,7 +558,7 @@ ol.tilegrid.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_co
  */
 ol.tilegrid.createXYZ = function(opt_options) {
   var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
-  ol.object.assign(options, opt_options !== undefined ?
+  ol.obj.assign(options, opt_options !== undefined ?
       opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
   if (options.extent === undefined) {
     options.extent = ol.proj.get('EPSG:3857').getExtent();

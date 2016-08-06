@@ -5,7 +5,7 @@ goog.provide('ol.proj.Units');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.sphere.NORMAL');
 
 
@@ -614,7 +614,7 @@ ol.proj.removeTransform = function(source, destination) {
       'destinationCode should be in transforms of sourceCode');
   var transform = transforms[sourceCode][destinationCode];
   delete transforms[sourceCode][destinationCode];
-  if (ol.object.isEmpty(transforms[sourceCode])) {
+  if (ol.obj.isEmpty(transforms[sourceCode])) {
     delete transforms[sourceCode];
   }
   return transform;

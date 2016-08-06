@@ -6,7 +6,7 @@ goog.provide('ol.source.TileWMS');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.size');
@@ -153,7 +153,7 @@ ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resoluti
     'TRANSPARENT': true,
     'QUERY_LAYERS': this.params_['LAYERS']
   };
-  ol.object.assign(baseParams, this.params_, params);
+  ol.obj.assign(baseParams, this.params_, params);
 
   var x = Math.floor((coordinate[0] - tileExtent[0]) / tileResolution);
   var y = Math.floor((tileExtent[3] - coordinate[1]) / tileResolution);
@@ -348,7 +348,7 @@ ol.source.TileWMS.prototype.fixedTileUrlFunction = function(tileCoord, pixelRati
     'FORMAT': 'image/png',
     'TRANSPARENT': true
   };
-  ol.object.assign(baseParams, this.params_);
+  ol.obj.assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       pixelRatio, projection, baseParams);
@@ -369,7 +369,7 @@ ol.source.TileWMS.prototype.setUrls = function(urls) {
  * @api stable
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
-  ol.object.assign(this.params_, params);
+  ol.obj.assign(this.params_, params);
   this.resetCoordKeyPrefix_();
   this.updateV13_();
   this.setKey(this.getKeyForParams_());

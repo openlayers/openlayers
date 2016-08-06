@@ -2,7 +2,7 @@ goog.provide('ol.source.TileArcGISRest');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.size');
@@ -154,7 +154,7 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  ol.object.assign(baseParams, this.params_);
+  ol.obj.assign(baseParams, this.params_);
 
   return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
       pixelRatio, projection, baseParams);
@@ -167,6 +167,6 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
  * @api stable
  */
 ol.source.TileArcGISRest.prototype.updateParams = function(params) {
-  ol.object.assign(this.params_, params);
+  ol.obj.assign(this.params_, params);
   this.changed();
 };

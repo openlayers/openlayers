@@ -7,7 +7,7 @@ goog.require('ol.Image');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
 goog.require('ol.source.wms');
@@ -154,7 +154,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolut
     'TRANSPARENT': true,
     'QUERY_LAYERS': this.params_['LAYERS']
   };
-  ol.object.assign(baseParams, this.params_, params);
+  ol.obj.assign(baseParams, this.params_, params);
 
   var x = Math.floor((coordinate[0] - extent[0]) / resolution);
   var y = Math.floor((extent[3] - coordinate[1]) / resolution);
@@ -226,7 +226,7 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
     'FORMAT': 'image/png',
     'TRANSPARENT': true
   };
-  ol.object.assign(params, this.params_);
+  ol.obj.assign(params, this.params_);
 
   this.imageSize_[0] = Math.ceil(imageWidth * this.ratio_);
   this.imageSize_[1] = Math.ceil(imageHeight * this.ratio_);
@@ -358,7 +358,7 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
  * @api stable
  */
 ol.source.ImageWMS.prototype.updateParams = function(params) {
-  ol.object.assign(this.params_, params);
+  ol.obj.assign(this.params_, params);
   this.updateV13_();
   this.image_ = null;
   this.changed();

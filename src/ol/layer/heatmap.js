@@ -6,7 +6,7 @@ goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.layer.Vector');
 goog.require('ol.math');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
@@ -38,7 +38,7 @@ ol.layer.HeatmapLayerProperty = {
 ol.layer.Heatmap = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var baseOptions = ol.object.assign({}, options);
+  var baseOptions = ol.obj.assign({}, options);
 
   delete baseOptions.gradient;
   delete baseOptions.radius;

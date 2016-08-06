@@ -5,7 +5,7 @@ goog.require('ol.Image');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
 goog.require('ol.uri');
@@ -129,7 +129,7 @@ ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resoluti
     'FORMAT': 'PNG32',
     'TRANSPARENT': true
   };
-  ol.object.assign(params, this.params_);
+  ol.obj.assign(params, this.params_);
 
   extent = extent.slice();
   var centerX = (extent[0] + extent[2]) / 2;
@@ -260,7 +260,7 @@ ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
  * @api stable
  */
 ol.source.ImageArcGISRest.prototype.updateParams = function(params) {
-  ol.object.assign(this.params_, params);
+  ol.obj.assign(this.params_, params);
   this.image_ = null;
   this.changed();
 };

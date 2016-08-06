@@ -44,7 +44,7 @@ describe('ol.rendering.layer.Tile', function() {
       var options = {
         source: source
       };
-      ol.object.assign(options, layerOptions[i] || layerOptions);
+      ol.obj.assign(options, layerOptions[i] || layerOptions);
       map.addLayer(new ol.layer.Tile(options));
     });
   }
@@ -252,7 +252,7 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.source.XYZ');

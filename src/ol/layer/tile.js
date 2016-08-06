@@ -2,7 +2,7 @@ goog.provide('ol.layer.Tile');
 
 goog.require('ol');
 goog.require('ol.layer.Layer');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -31,7 +31,7 @@ ol.layer.TileProperty = {
 ol.layer.Tile = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var baseOptions = ol.object.assign({}, options);
+  var baseOptions = ol.obj.assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;

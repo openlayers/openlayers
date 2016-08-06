@@ -9,7 +9,7 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -155,7 +155,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
-  var attributions = ol.object.assign({}, frameState.attributions);
+  var attributions = ol.obj.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
@@ -266,14 +266,14 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
 
   var renderVisible =
-      !ol.object.isEmpty(this.attributionElementRenderedVisible_) ||
-      !ol.object.isEmpty(frameState.logos);
+      !ol.obj.isEmpty(this.attributionElementRenderedVisible_) ||
+      !ol.obj.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
     this.element.style.display = renderVisible ? '' : 'none';
     this.renderedVisible_ = renderVisible;
   }
   if (renderVisible &&
-      ol.object.isEmpty(this.attributionElementRenderedVisible_)) {
+      ol.obj.isEmpty(this.attributionElementRenderedVisible_)) {
     this.element.classList.add('ol-logo-only');
   } else {
     this.element.classList.remove('ol-logo-only');
@@ -323,7 +323,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
     }
   }
 
-  this.logoLi_.style.display = !ol.object.isEmpty(logos) ? '' : 'none';
+  this.logoLi_.style.display = !ol.obj.isEmpty(logos) ? '' : 'none';
 
 };
 

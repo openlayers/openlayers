@@ -19,7 +19,7 @@ goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat.simplify');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
@@ -248,7 +248,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     goog.DEBUG && console.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
-  var skipFeatures = !ol.object.isEmpty(skippedFeaturesHash);
+  var skipFeatures = !ol.obj.isEmpty(skippedFeaturesHash);
   var i = 0; // instruction index
   var ii = instructions.length; // end of instructions
   var d = 0; // data index
@@ -1957,7 +1957,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
  * @inheritDoc
  */
 ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
-  return ol.object.isEmpty(this.replaysByZIndex_);
+  return ol.obj.isEmpty(this.replaysByZIndex_);
 };
 
 

@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.array');
 goog.require('ol.events');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
@@ -263,9 +263,9 @@ ol.webgl.Context.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-  ol.object.clear(this.bufferCache_);
-  ol.object.clear(this.shaderCache_);
-  ol.object.clear(this.programCache_);
+  ol.obj.clear(this.bufferCache_);
+  ol.obj.clear(this.shaderCache_);
+  ol.obj.clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;

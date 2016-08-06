@@ -1,4 +1,4 @@
-goog.provide('ol.object');
+goog.provide('ol.obj');
 
 
 /**
@@ -10,7 +10,7 @@ goog.provide('ol.object');
  * @param {...Object} var_sources The source object(s).
  * @return {!Object} The modified target object.
  */
-ol.object.assign = (typeof Object.assign === 'function') ? Object.assign : function(target, var_sources) {
+ol.obj.assign = (typeof Object.assign === 'function') ? Object.assign : function(target, var_sources) {
   if (target === undefined || target === null) {
     throw new TypeError('Cannot convert undefined or null to object');
   }
@@ -34,7 +34,7 @@ ol.object.assign = (typeof Object.assign === 'function') ? Object.assign : funct
  * Removes all properties from an object.
  * @param {Object} object The object to clear.
  */
-ol.object.clear = function(object) {
+ol.obj.clear = function(object) {
   for (var property in object) {
     delete object[property];
   }
@@ -47,7 +47,7 @@ ol.object.clear = function(object) {
  * @return {!Array<V>} The property values.
  * @template K,V
  */
-ol.object.getValues = function(object) {
+ol.obj.getValues = function(object) {
   var values = [];
   for (var property in object) {
     values.push(object[property]);
@@ -61,7 +61,7 @@ ol.object.getValues = function(object) {
  * @param {Object} object The object to check.
  * @return {boolean} The object is empty.
  */
-ol.object.isEmpty = function(object) {
+ol.obj.isEmpty = function(object) {
   var property;
   for (property in object) {
     return false;

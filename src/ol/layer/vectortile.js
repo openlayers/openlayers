@@ -1,7 +1,7 @@
 goog.provide('ol.layer.VectorTile');
 
 goog.require('ol.layer.Vector');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -48,7 +48,7 @@ ol.layer.VectorTileRenderType = {
 ol.layer.VectorTile = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var baseOptions = ol.object.assign({}, options);
+  var baseOptions = ol.obj.assign({}, options);
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;

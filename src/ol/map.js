@@ -30,7 +30,7 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.transform');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
@@ -1258,7 +1258,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
-      logos: ol.object.assign({}, this.logos_),
+      logos: ol.obj.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],

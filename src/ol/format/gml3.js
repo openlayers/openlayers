@@ -15,7 +15,7 @@ goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
@@ -984,7 +984,7 @@ ol.format.GML3.prototype.writeCurveSegments_ = function(node, line, objectStack)
  */
 ol.format.GML3.prototype.writeGeometryElement = function(node, geometry, objectStack) {
   var context = /** @type {olx.format.WriteOptions} */ (objectStack[objectStack.length - 1]);
-  var item = ol.object.assign({}, context);
+  var item = ol.obj.assign({}, context);
   item.node = node;
   var value;
   if (Array.isArray(geometry)) {
@@ -1042,7 +1042,7 @@ ol.format.GML3.prototype.writeFeatureElement = function(node, feature, objectSta
       }
     }
   }
-  var item = ol.object.assign({}, context);
+  var item = ol.obj.assign({}, context);
   item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       (item), context.serializers,
@@ -1066,7 +1066,7 @@ ol.format.GML3.prototype.writeFeatureMembers_ = function(node, features, objectS
   serializers[featureNS] = {};
   serializers[featureNS][featureType] = ol.xml.makeChildAppender(
       this.writeFeatureElement, this);
-  var item = ol.object.assign({}, context);
+  var item = ol.obj.assign({}, context);
   item.node = node;
   ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       (item),
@@ -1243,7 +1243,7 @@ ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
     curve: this.curve_, surface: this.surface_,
     multiSurface: this.multiSurface_, multiCurve: this.multiCurve_};
   if (opt_options) {
-    ol.object.assign(context, opt_options);
+    ol.obj.assign(context, opt_options);
   }
   this.writeGeometryElement(geom, geometry, [context]);
   return geom;
@@ -1286,7 +1286,7 @@ ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
     featureType: this.featureType
   };
   if (opt_options) {
-    ol.object.assign(context, opt_options);
+    ol.obj.assign(context, opt_options);
   }
   this.writeFeatureMembers_(node, features, [context]);
   return node;

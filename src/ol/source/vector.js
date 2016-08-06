@@ -16,7 +16,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.featureloader');
 goog.require('ol.loadingstrategy');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
@@ -394,11 +394,11 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
   if (this.featuresCollection_) {
     this.featuresCollection_.clear();
   }
-  goog.DEBUG && console.assert(ol.object.isEmpty(this.featureChangeKeys_),
+  goog.DEBUG && console.assert(ol.obj.isEmpty(this.featureChangeKeys_),
       'featureChangeKeys is an empty object now');
-  goog.DEBUG && console.assert(ol.object.isEmpty(this.idIndex_),
+  goog.DEBUG && console.assert(ol.obj.isEmpty(this.idIndex_),
       'idIndex is an empty object now');
-  goog.DEBUG && console.assert(ol.object.isEmpty(this.undefIdIndex_),
+  goog.DEBUG && console.assert(ol.obj.isEmpty(this.undefIdIndex_),
       'undefIdIndex is an empty object now');
 
   if (this.featuresRtree_) {
@@ -552,9 +552,9 @@ ol.source.Vector.prototype.getFeatures = function() {
     features = this.featuresCollection_.getArray();
   } else if (this.featuresRtree_) {
     features = this.featuresRtree_.getAll();
-    if (!ol.object.isEmpty(this.nullGeometryFeatures_)) {
+    if (!ol.obj.isEmpty(this.nullGeometryFeatures_)) {
       ol.array.extend(
-          features, ol.object.getValues(this.nullGeometryFeatures_));
+          features, ol.obj.getValues(this.nullGeometryFeatures_));
     }
   }
   return /** @type {Array.<ol.Feature>} */ (features);
@@ -771,7 +771,7 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
  */
 ol.source.Vector.prototype.isEmpty = function() {
   return this.featuresRtree_.isEmpty() &&
-      ol.object.isEmpty(this.nullGeometryFeatures_);
+      ol.obj.isEmpty(this.nullGeometryFeatures_);
 };
 
 

@@ -9,7 +9,7 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
@@ -72,7 +72,7 @@ ol.format.OSMXML.readNode_ = function(node, objectStack) {
   var values = ol.xml.pushParseAndPop({
     tags: {}
   }, ol.format.OSMXML.NODE_PARSERS_, node, objectStack);
-  if (!ol.object.isEmpty(values.tags)) {
+  if (!ol.obj.isEmpty(values.tags)) {
     var geometry = new ol.geom.Point(coordinates);
     ol.format.Feature.transformWithOptions(geometry, false, options);
     var feature = new ol.Feature(geometry);

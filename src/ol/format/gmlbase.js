@@ -16,7 +16,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
@@ -629,7 +629,7 @@ ol.format.GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
     featureNS: this.featureNS
   };
   if (opt_options) {
-    ol.object.assign(options, this.getReadOptions(node, opt_options));
+    ol.obj.assign(options, this.getReadOptions(node, opt_options));
   }
   var features = this.readFeaturesInternal(node, [options]);
   return features || [];

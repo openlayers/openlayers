@@ -9,7 +9,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 
 
@@ -297,7 +297,7 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
     }
     /** @type {Array.<ol.Feature>} */
     var features = [];
-    var topoJSONFeatures = ol.object.getValues(topoJSONTopology.objects);
+    var topoJSONFeatures = ol.obj.getValues(topoJSONTopology.objects);
     var i, ii;
     var feature;
     for (i = 0, ii = topoJSONFeatures.length; i < ii; ++i) {

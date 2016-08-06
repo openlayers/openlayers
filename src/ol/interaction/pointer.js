@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -131,7 +131,7 @@ ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEve
       // update only when there was a pointerdown event for this pointer
       this.trackedPointers_[event.pointerId] = event;
     }
-    this.targetPointers = ol.object.getValues(this.trackedPointers_);
+    this.targetPointers = ol.obj.getValues(this.trackedPointers_);
   }
 };
 

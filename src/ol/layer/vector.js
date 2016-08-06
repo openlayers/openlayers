@@ -2,7 +2,7 @@ goog.provide('ol.layer.Vector');
 
 goog.require('ol');
 goog.require('ol.layer.Layer');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.style.Style');
 
 
@@ -37,7 +37,7 @@ ol.layer.Vector = function(opt_options) {
       typeof options.renderOrder === 'function',
       'renderOrder must be a comparator function');
 
-  var baseOptions = ol.object.assign({}, options);
+  var baseOptions = ol.obj.assign({}, options);
 
   delete baseOptions.style;
   delete baseOptions.renderBuffer;

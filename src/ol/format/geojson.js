@@ -13,7 +13,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 
 
@@ -206,7 +206,7 @@ ol.format.GeoJSON.writeEmptyGeometryCollectionGeometry_ = function(geometry) {
 ol.format.GeoJSON.writeGeometryCollectionGeometry_ = function(
     geometry, opt_options) {
   var geometries = geometry.getGeometriesArray().map(function(geometry) {
-    var options = ol.object.assign({}, opt_options);
+    var options = ol.obj.assign({}, opt_options);
     delete options.featureProjection;
     return ol.format.GeoJSON.writeGeometry_(geometry, options);
   });
@@ -526,7 +526,7 @@ ol.format.GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) 
   }
   var properties = feature.getProperties();
   delete properties[feature.getGeometryName()];
-  if (!ol.object.isEmpty(properties)) {
+  if (!ol.obj.isEmpty(properties)) {
     object.properties = properties;
   } else {
     object.properties = null;

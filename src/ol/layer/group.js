@@ -7,7 +7,7 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.layer.Base');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.source.State');
 
 
@@ -34,7 +34,7 @@ ol.layer.Group = function(opt_options) {
 
   var options = opt_options || {};
   var baseOptions = /** @type {olx.layer.GroupOptions} */
-      (ol.object.assign({}, options));
+      (ol.obj.assign({}, options));
   delete baseOptions.layers;
 
   var layers = options.layers;
@@ -103,7 +103,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   for (var id in this.listenerKeys_) {
     this.listenerKeys_[id].forEach(ol.events.unlistenByKey);
   }
-  ol.object.clear(this.listenerKeys_);
+  ol.obj.clear(this.listenerKeys_);
 
   var layersArray = layers.getArray();
   var i, ii, layer;

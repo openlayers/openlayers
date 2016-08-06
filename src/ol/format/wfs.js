@@ -15,7 +15,7 @@ goog.require('ol.format.ogc.filter.IsLike');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
@@ -109,7 +109,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
     'featureType': this.featureType_,
     'featureNS': this.featureNS_
   });
-  ol.object.assign(context, this.getReadOptions(node,
+  ol.obj.assign(context, this.getReadOptions(node,
       opt_options ? opt_options : {}));
   var objectStack = [context];
   this.gmlFormat_.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS][
@@ -526,7 +526,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
     ol.xml.setAttributeNS(node, ol.format.WFS.XMLNS, 'xmlns:' + featurePrefix,
         featureNS);
   }
-  var item = /** @type {ol.XmlNodeStackItem} */ (ol.object.assign({}, context));
+  var item = /** @type {ol.XmlNodeStackItem} */ (ol.obj.assign({}, context));
   item.node = node;
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.QUERY_SERIALIZERS_,
@@ -767,7 +767,7 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
  */
 ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
   var context = /** @type {Object} */ (objectStack[objectStack.length - 1]);
-  var item = /** @type {ol.XmlNodeStackItem} */ (ol.object.assign({}, context));
+  var item = /** @type {ol.XmlNodeStackItem} */ (ol.obj.assign({}, context));
   item.node = node;
   ol.xml.pushSerializeAndPop(item,
       ol.format.WFS.GETFEATURE_SERIALIZERS_,
@@ -873,7 +873,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     obj = {node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': options.featurePrefix,
       'srsName': options.srsName};
-    ol.object.assign(obj, baseObj);
+    ol.obj.assign(obj, baseObj);
     ol.xml.pushSerializeAndPop(obj,
         ol.format.WFS.TRANSACTION_SERIALIZERS_,
         ol.xml.makeSimpleNodeFactory('Insert'), inserts,
@@ -883,7 +883,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     obj = {node: node, 'featureNS': options.featureNS,
       'featureType': options.featureType, 'featurePrefix': options.featurePrefix,
       'srsName': options.srsName};
-    ol.object.assign(obj, baseObj);
+    ol.obj.assign(obj, baseObj);
     ol.xml.pushSerializeAndPop(obj,
         ol.format.WFS.TRANSACTION_SERIALIZERS_,
         ol.xml.makeSimpleNodeFactory('Update'), updates,

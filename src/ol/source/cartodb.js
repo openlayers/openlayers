@@ -1,6 +1,6 @@
 goog.provide('ol.source.CartoDB');
 
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.source.State');
 goog.require('ol.source.XYZ');
 
@@ -73,7 +73,7 @@ ol.source.CartoDB.prototype.getConfig = function() {
  * @api
  */
 ol.source.CartoDB.prototype.updateConfig = function(config) {
-  ol.object.assign(this.config_, config);
+  ol.obj.assign(this.config_, config);
   this.initializeMap_();
 };
 

@@ -14,7 +14,7 @@ goog.require('ol.ext.pixelworks');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.source.Image');
@@ -181,10 +181,10 @@ ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
 ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
   var frameState = /** @type {olx.FrameState} */ (
-      ol.object.assign({}, this.frameState_));
+      ol.obj.assign({}, this.frameState_));
 
   frameState.viewState = /** @type {olx.ViewState} */ (
-      ol.object.assign({}, frameState.viewState));
+      ol.obj.assign({}, frameState.viewState));
 
   var center = ol.extent.getCenter(extent);
   var width = Math.round(ol.extent.getWidth(extent) / resolution);

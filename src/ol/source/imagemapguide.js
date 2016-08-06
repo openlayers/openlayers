@@ -4,7 +4,7 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.Image');
 goog.require('ol.extent');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.source.Image');
 goog.require('ol.uri');
 
@@ -191,7 +191,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
  * @api stable
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
-  ol.object.assign(this.params_, params);
+  ol.obj.assign(this.params_, params);
   this.changed();
 };
 
@@ -221,7 +221,7 @@ ol.source.ImageMapGuide.prototype.getUrl = function(baseUrl, params, extent, siz
     'SETVIEWCENTERX': center[0],
     'SETVIEWCENTERY': center[1]
   };
-  ol.object.assign(baseParams, params);
+  ol.obj.assign(baseParams, params);
   return ol.uri.appendParams(baseUrl, baseParams);
 };
 
