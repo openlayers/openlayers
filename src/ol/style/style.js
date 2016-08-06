@@ -267,16 +267,6 @@ ol.style.createDefaultEditingStyles = function() {
   var white = [255, 255, 255, 1];
   var blue = [0, 153, 255, 1];
   var width = 3;
-  styles[ol.geom.GeometryType.POLYGON] = [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: [255, 255, 255, 0.5]
-      })
-    })
-  ];
-  styles[ol.geom.GeometryType.MULTI_POLYGON] =
-      styles[ol.geom.GeometryType.POLYGON];
-
   styles[ol.geom.GeometryType.LINE_STRING] = [
     new ol.style.Style({
       stroke: new ol.style.Stroke({
@@ -291,6 +281,21 @@ ol.style.createDefaultEditingStyles = function() {
       })
     })
   ];
+
+  styles[ol.geom.GeometryType.POLYGON] = [
+    new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: [255, 255, 255, 0.5]
+      })
+    })
+  ];
+  styles[ol.geom.GeometryType.POLYGON] =
+      styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.LINE_STRING]
+      );
+  styles[ol.geom.GeometryType.MULTI_POLYGON] =
+      styles[ol.geom.GeometryType.POLYGON];
+
   styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
       styles[ol.geom.GeometryType.LINE_STRING];
 
