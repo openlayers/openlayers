@@ -50,6 +50,10 @@ describe('each file', () => {
   it('has a path that maps to the provide', () => {
     for (let file in provides) {
       const provide = provides[file][0];
+      if (!provide) {
+        assert.equal(file, path.join('ol', 'typedefs.js'), 'only ol/typedefs.js can be missing a provide');
+        continue;
+      }
       let ext;
       if (file.endsWith('index.js')) {
         ext = path.sep + 'index.js';
