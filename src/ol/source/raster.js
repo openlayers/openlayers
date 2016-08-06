@@ -1,5 +1,5 @@
-goog.provide('ol.RasterOperationType');
 goog.provide('ol.source.Raster');
+goog.provide('ol.RasterOperationType');
 goog.provide('ol.source.RasterEvent');
 goog.provide('ol.source.RasterEventType');
 

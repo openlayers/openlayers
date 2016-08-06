@@ -1,5 +1,5 @@
-goog.provide('ol.RendererType');
 goog.provide('ol.renderer.Map');
+goog.provide('ol.RendererType');
 
 goog.require('ol.transform');
 goog.require('ol');
