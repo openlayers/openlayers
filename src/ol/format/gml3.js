@@ -1,4 +1,3 @@
-goog.provide('ol.format.GML');
 goog.provide('ol.format.GML3');
 
 goog.require('ol');
@@ -1292,42 +1291,3 @@ ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {
   this.writeFeatureMembers_(node, features, [context]);
   return node;
 };
-
-
-/**
- * @classdesc
- * Feature format for reading and writing data in the GML format
- * version 3.1.1.
- * Currently only supports GML 3.1.1 Simple Features profile.
- *
- * @constructor
- * @param {olx.format.GMLOptions=} opt_options
- *     Optional configuration object.
- * @extends {ol.format.GMLBase}
- * @api stable
- */
-ol.format.GML = ol.format.GML3;
-
-
-/**
- * Encode an array of features in GML 3.1.1 Simple Features.
- *
- * @function
- * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {string} Result.
- * @api stable
- */
-ol.format.GML.prototype.writeFeatures;
-
-
-/**
- * Encode an array of features in the GML 3.1.1 format as an XML node.
- *
- * @function
- * @param {Array.<ol.Feature>} features Features.
- * @param {olx.format.WriteOptions=} opt_options Options.
- * @return {Node} Node.
- * @api
- */
-ol.format.GML.prototype.writeFeaturesNode;
