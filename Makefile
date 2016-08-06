@@ -2,7 +2,7 @@ OS := $(shell uname)
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
 SRC_GLSL := $(shell find src -type f -name '*.glsl')
-SRC_SHADER_JS := $(patsubst %.glsl,%shader.js,$(SRC_GLSL))
+SRC_SHADER_JS := $(patsubst %shader.glsl,%shader.js,$(SRC_GLSL))
 SRC_JS := $(filter-out $(SRC_SHADER_JS),$(shell find src -name '*.js'))
 SRC_JSDOC = $(shell find src -type f -name '*.jsdoc')
 
@@ -302,5 +302,5 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 	@mkdir -p $(@D)
 	@node tasks/generate-requires.js $^ > $@
 
-%shader.js: %.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
+%shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@

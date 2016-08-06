@@ -6,10 +6,7 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
-goog.require('ol.render.webgl.imagereplay.shader.Default');
-goog.require('ol.render.webgl.imagereplay.shader.Default.Locations');
-goog.require('ol.render.webgl.imagereplay.shader.DefaultFragment');
-goog.require('ol.render.webgl.imagereplay.shader.DefaultVertex');
+goog.require('ol.renderer.webgl.imagereplay.defaultshader');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -105,7 +102,7 @@ ol.render.webgl.ImageReplay = function(tolerance, maxExtent) {
 
   /**
    * @private
-   * @type {ol.render.webgl.imagereplay.shader.Default.Locations}
+   * @type {ol.renderer.webgl.imagereplay.defaultshader.Locations}
    */
   this.defaultLocations_ = null;
 
@@ -518,16 +515,16 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
 
   // get the program
   var fragmentShader =
-      ol.render.webgl.imagereplay.shader.DefaultFragment.getInstance();
+      ol.renderer.webgl.imagereplay.defaultshader.Fragment.getInstance();
   var vertexShader =
-      ol.render.webgl.imagereplay.shader.DefaultVertex.getInstance();
+      ol.renderer.webgl.imagereplay.defaultshader.Vertex.getInstance();
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations
   var locations;
   if (!this.defaultLocations_) {
     locations =
-        new ol.render.webgl.imagereplay.shader.Default.Locations(gl, program);
+        new ol.renderer.webgl.imagereplay.defaultshader.Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;

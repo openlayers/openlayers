@@ -1,5 +1,5 @@
-//! NAMESPACE=ol.renderer.webgl.tilelayer.shader
-//! CLASS=ol.renderer.webgl.tilelayer.shader.
+//! NAMESPACE=ol.renderer.webgl.tilelayershader
+//! CLASS=ol.renderer.webgl.tilelayershader
 
 
 //! COMMON

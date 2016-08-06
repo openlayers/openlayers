@@ -1,5 +1,5 @@
-//! NAMESPACE=ol.render.webgl.imagereplay.shader.Default
-//! CLASS=ol.render.webgl.imagereplay.shader.Default
+//! NAMESPACE=ol.renderer.webgl.imagereplay.defaultshader
+//! CLASS=ol.renderer.webgl.imagereplay.defaultshader
 
 
 //! COMMON

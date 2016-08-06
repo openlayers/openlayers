@@ -5,10 +5,7 @@ goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
-goog.require('ol.renderer.webgl.map.shader.Default');
-goog.require('ol.renderer.webgl.map.shader.Default.Locations');
-goog.require('ol.renderer.webgl.map.shader.DefaultFragment');
-goog.require('ol.renderer.webgl.map.shader.DefaultVertex');
+goog.require('ol.renderer.webgl.defaultmapshader');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -80,7 +77,7 @@ ol.renderer.webgl.Layer = function(mapRenderer, layer) {
 
   /**
    * @private
-   * @type {ol.renderer.webgl.map.shader.Default.Locations}
+   * @type {ol.renderer.webgl.defaultmapshader.Locations}
    */
   this.defaultLocations_ = null;
 
@@ -148,16 +145,15 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
 
   var gl = context.getGL();
 
-  var fragmentShader =
-      ol.renderer.webgl.map.shader.DefaultFragment.getInstance();
-  var vertexShader = ol.renderer.webgl.map.shader.DefaultVertex.getInstance();
+  var fragmentShader = ol.renderer.webgl.defaultmapshader.Fragment.getInstance();
+  var vertexShader = ol.renderer.webgl.defaultmapshader.Vertex.getInstance();
 
   var program = context.getProgram(fragmentShader, vertexShader);
 
   var locations;
   if (!this.defaultLocations_) {
     locations =
-        new ol.renderer.webgl.map.shader.Default.Locations(gl, program);
+        new ol.renderer.webgl.defaultmapshader.Locations(gl, program);
     this.defaultLocations_ = locations;
   } else {
     locations = this.defaultLocations_;

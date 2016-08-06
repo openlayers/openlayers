@@ -11,9 +11,7 @@ goog.require('ol.extent');
 goog.require('ol.layer.Tile');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
-goog.require('ol.renderer.webgl.tilelayer.shader.Fragment');
-goog.require('ol.renderer.webgl.tilelayer.shader.Locations');
-goog.require('ol.renderer.webgl.tilelayer.shader.Vertex');
+goog.require('ol.renderer.webgl.tilelayershader');
 goog.require('ol.size');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -31,20 +29,20 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
   /**
    * @private
-   * @type {ol.webgl.shader.Fragment}
+   * @type {ol.webgl.Fragment}
    */
   this.fragmentShader_ =
-      ol.renderer.webgl.tilelayer.shader.Fragment.getInstance();
+      ol.renderer.webgl.tilelayershader.Fragment.getInstance();
 
   /**
    * @private
-   * @type {ol.webgl.shader.Vertex}
+   * @type {ol.webgl.Vertex}
    */
-  this.vertexShader_ = ol.renderer.webgl.tilelayer.shader.Vertex.getInstance();
+  this.vertexShader_ = ol.renderer.webgl.tilelayershader.Vertex.getInstance();
 
   /**
    * @private
-   * @type {ol.renderer.webgl.tilelayer.shader.Locations}
+   * @type {ol.renderer.webgl.tilelayershader.Locations}
    */
   this.locations_ = null;
 
@@ -213,7 +211,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
     context.useProgram(program);
     if (!this.locations_) {
       this.locations_ =
-          new ol.renderer.webgl.tilelayer.shader.Locations(gl, program);
+          new ol.renderer.webgl.tilelayershader.Locations(gl, program);
     }
 
     context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);
