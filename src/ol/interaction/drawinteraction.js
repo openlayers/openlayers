@@ -77,6 +77,17 @@ ol.inherits(ol.interaction.DrawEvent, ol.events.Event);
  * @classdesc
  * Interaction for drawing feature geometries.
  *
+ * Geometries are drawn in an internal FeatureOverlay. When drawing of a feature
+ * is complete (double-click for a linestring, clicking again on the initial
+ * point to close a polygon), it is copied to the destination defined in the
+ * `features` and/or `source` options, and then removed from the FeatureOverlay.
+ * Those in a `source` will continue to be displayed, but those written to a
+ * `features` collection will disappear from the screen. If you wish these new
+ * features to remain on the screen, you can write them to your own
+ * FeatureOverlay; see the draw-and-modify-features example for an example of
+ * this. Any features stored in a collection can of course be serialized with a
+ * format at any point, whether or not they appear on the screen.
+ *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.DrawEvent
