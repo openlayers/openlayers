@@ -94,7 +94,9 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
  */
 ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
-  return [tileSize[0] * pixelRatio, tileSize[1] * pixelRatio];
+  tileSize[0] *= pixelRatio;
+  tileSize[1] *= pixelRatio;
+  return tileSize;
 };
 
 
