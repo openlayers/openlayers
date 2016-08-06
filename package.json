@@ -82,7 +82,6 @@
       "proj4": false
     },
     "rules": {
-      "no-constant-condition": 0
     }
   },
   "ext": [
