@@ -16,8 +16,20 @@ The URL constructor is supported by all modern browsers, but not by older ones, 
 
 A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
 
- * rename `ol.CollectionEvent` to `ol.Collection.Event`
  * rename `ol.CollectionEventType` to `ol.Collection.EventType`
+ * rename `ol.CollectionEvent` to `ol.Collection.Event`
+ * rename `ol.render.webgl.imagereplay.shader.Default.Locations` to `ol.renderer.webgl.imagereplay.defaultshader.Locations`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultFragment` to `ol.renderer.webgl.imagereplay.defaultshader.Fragment`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultVertex` to `ol.renderer.webgl.imagereplay.defaultshader.Vertex`
+ * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
+ * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
+ * rename `ol.renderer.webgl.map.shader.DefaultFragment` to `ol.renderer.webgl.defaultmapshader.Fragment`
+ * rename `ol.renderer.webgl.map.shader.DefaultVertex` to `ol.renderer.webgl.defaultmapshader.Vertex`
+ * rename `ol.renderer.webgl.tilelayer.shader.Fragment` to `ol.renderer.webgl.tilelayershader.Fragment`
+ * rename `ol.renderer.webgl.tilelayer.shader.Locations` to `ol.renderer.webgl.tilelayershader.Locations`
+ * rename `ol.renderer.webgl.tilelayer.shader.Vertex` to `ol.renderer.webgl.tilelayershader.Vertex`
+ * rename `ol.webgl.shader.Fragment` to `ol.webgl.Fragment`
+ * rename `ol.webgl.shader.Vertex` to `ol.webgl.Vertex`
 
 ### v3.17.0
 
