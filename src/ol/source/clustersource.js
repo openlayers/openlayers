@@ -91,6 +91,7 @@ ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
   if (resolution !== this.resolution_) {
     this.clear();
     this.resolution_ = resolution;
+    this.source_.loadFeatures(extent, resolution);
     this.cluster_();
     this.addFeatures(this.features_);
   }
