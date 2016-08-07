@@ -11,10 +11,8 @@ goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.layer.Tile');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
-goog.require('ol.tilegrid.TileGrid');
 
 
 /**

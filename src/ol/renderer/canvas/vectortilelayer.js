@@ -1,12 +1,8 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
-goog.require('ol.events');
 goog.require('ol.transform');
-goog.require('ol.Feature');
-goog.require('ol.VectorTile');
 goog.require('ol.array');
 goog.require('ol.extent');
-goog.require('ol.layer.VectorTile');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
 goog.require('ol.render.EventType');
@@ -15,7 +11,6 @@ goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.vector');
 goog.require('ol.size');
-goog.require('ol.source.VectorTile');
 
 
 /**

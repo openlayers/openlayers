@@ -11,7 +11,6 @@ goog.require('ol.extent');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.size');
-goog.require('ol.source.Tile');
 
 
 /**

@@ -2,7 +2,6 @@ goog.provide('ol.render.webgl.Immediate');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.render.VectorContext');
-goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.ReplayGroup');
 
 

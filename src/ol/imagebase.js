@@ -3,7 +3,6 @@ goog.provide('ol.ImageState');
 
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
-goog.require('ol.Attribution');
 
 
 /**

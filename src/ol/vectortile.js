@@ -3,7 +3,6 @@ goog.provide('ol.VectorTile');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.dom');
-goog.require('ol.proj.Projection');
 
 
 /**

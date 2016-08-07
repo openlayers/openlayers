@@ -3,18 +3,15 @@ goog.provide('ol.interaction.SnapProperty');
 
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.Feature');
 goog.require('ol.Object');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
-goog.require('ol.geom.Geometry');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.functions');
 goog.require('ol.obj');
-goog.require('ol.source.Vector');
 goog.require('ol.source.VectorEvent');
 goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');

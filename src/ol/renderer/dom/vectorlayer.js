@@ -1,11 +1,9 @@
 goog.provide('ol.renderer.dom.VectorLayer');
 
-goog.require('ol.events');
 goog.require('ol.transform');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas.Immediate');

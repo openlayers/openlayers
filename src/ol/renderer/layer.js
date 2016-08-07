@@ -6,11 +6,9 @@ goog.require('ol');
 goog.require('ol.functions');
 goog.require('ol.ImageState');
 goog.require('ol.Observable');
-goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.transform');
 goog.require('ol.source.State');
-goog.require('ol.source.Tile');
 
 
 /**

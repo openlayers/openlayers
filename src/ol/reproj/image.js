@@ -5,7 +5,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 goog.require('ol.extent');
-goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
 

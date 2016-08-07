@@ -1,9 +1,6 @@
 goog.provide('ol.renderer.vector');
 
-goog.require('ol.render.Feature');
-goog.require('ol.render.IReplayGroup');
 goog.require('ol.style.ImageState');
-goog.require('ol.style.Style');
 
 
 /**

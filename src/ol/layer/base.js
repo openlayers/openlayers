@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.math');
 goog.require('ol.obj');
-goog.require('ol.source.State');
 
 
 /**

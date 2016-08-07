@@ -4,7 +4,6 @@ goog.provide('ol.render.webgl.ReplayGroup');
 goog.require('ol.transform');
 goog.require('ol.extent');
 goog.require('ol.obj');
-goog.require('ol.render.IReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.imagereplay.defaultshader');
 goog.require('ol.vec.Mat4');

@@ -4,7 +4,6 @@ goog.provide('ol.control.Attribution');
 
 goog.require('ol');
 goog.require('ol.dom');
-goog.require('ol.Attribution');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.events');

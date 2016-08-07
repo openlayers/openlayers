@@ -1,7 +1,6 @@
 goog.provide('ol.Tile');
 goog.provide('ol.TileState');
 
-goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 

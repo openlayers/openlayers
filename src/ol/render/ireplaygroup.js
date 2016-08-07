@@ -1,7 +1,5 @@
 goog.provide('ol.render.IReplayGroup');
 
-goog.require('ol.render.VectorContext');
-
 
 /**
  * @enum {string}

@@ -1,10 +1,8 @@
 goog.provide('ol.style.Style');
 
-goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Image');
 goog.require('ol.style.Stroke');
 
 

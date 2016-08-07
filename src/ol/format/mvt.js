@@ -2,12 +2,10 @@
 
 goog.provide('ol.format.MVT');
 
-goog.require('ol.Feature');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
-goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -15,7 +13,6 @@ goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.render.Feature');

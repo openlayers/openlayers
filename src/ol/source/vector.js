@@ -7,7 +7,6 @@ goog.provide('ol.source.VectorEventType');
 
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.Feature');
 goog.require('ol.ObjectEventType');
 goog.require('ol.array');
 goog.require('ol.events');
@@ -17,7 +16,6 @@ goog.require('ol.extent');
 goog.require('ol.featureloader');
 goog.require('ol.loadingstrategy');
 goog.require('ol.obj');
-goog.require('ol.proj');
 goog.require('ol.source.Source');
 goog.require('ol.source.State');
 goog.require('ol.structs.RBush');

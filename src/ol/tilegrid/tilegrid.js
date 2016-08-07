@@ -9,7 +9,6 @@ goog.require('ol.math');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
-goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.size');
 goog.require('ol.tilecoord');

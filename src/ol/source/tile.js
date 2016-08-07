@@ -4,13 +4,11 @@ goog.provide('ol.source.TileEvent');
 goog.require('ol.events.Event');
 goog.require('ol');
 goog.require('ol.TileCache');
-goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.Source');
 goog.require('ol.tilecoord');
-goog.require('ol.tilegrid.TileGrid');
 
 
 /**

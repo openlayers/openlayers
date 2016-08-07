@@ -6,7 +6,6 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.obj');
-goog.require('ol.proj');
 goog.require('ol.source.Image');
 goog.require('ol.uri');
 

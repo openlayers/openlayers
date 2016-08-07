@@ -2,7 +2,6 @@ goog.provide('ol.format.GML3');
 
 goog.require('ol');
 goog.require('ol.array');
-goog.require('ol.Feature');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.GMLBase');
@@ -10,10 +9,8 @@ goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.obj');
 goog.require('ol.proj');
