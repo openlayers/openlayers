@@ -1,6 +1,0 @@
-{
-  "extend": "openlayers",
-  "rules": {
-    "no-console": [2, {"allow": ["assert"]}]
-  }
-}
