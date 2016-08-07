@@ -29,7 +29,6 @@ goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.has');
 goog.require('ol.interaction');
-goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
 goog.require('ol.transform');
 goog.require('ol.object');
