@@ -72,6 +72,13 @@ ol.render.canvas.defaultLineWidth = 1;
 
 
 /**
+ * @const
+ * @type {number}
+ */
+ol.render.canvas.defaultCornerRadius = 0;
+
+
+/**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} rotation Rotation.
  * @param {number} offsetX X offset.

@@ -61,6 +61,12 @@ ol.style.Stroke = function(opt_options) {
    * @type {string|undefined}
    */
   this.checksum_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.cornerRadius_ = options.cornerRadius !== undefined ? options.cornerRadius : undefined;
 };
 
 
@@ -123,6 +129,14 @@ ol.style.Stroke.prototype.getWidth = function() {
   return this.width_;
 };
 
+/**
+ * Get the radius of the corners of the line.
+ * @return {number|undefined} Corner Radius.
+ * @api
+ */
+ol.style.Stroke.prototype.getCornerRadius = function() {
+  return this.cornerRadius_;
+};
 
 /**
  * Set the color.
@@ -201,6 +215,15 @@ ol.style.Stroke.prototype.setWidth = function(width) {
   this.checksum_ = undefined;
 };
 
+/**
+ * Set the radiusCorner.
+ *
+ * @param {number|undefined} cornerRadius Corner Radius.
+ * @api
+ */
+ol.style.Stroke.prototype.setCornerRadius = function(cornerRadius) {
+  this.cornerRadius_ = cornerRadius;
+};
 
 /**
  * @return {string} The checksum.
