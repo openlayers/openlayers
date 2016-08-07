@@ -86,7 +86,7 @@ check-deps:
 	done ;\
 
 .PHONY: ci
-ci: lint build test test-rendering compile-examples check-examples apidoc
+ci: lint build test test-rendering test-node compile-examples check-examples apidoc
 
 .PHONY: compile-examples
 compile-examples: build/compiled-examples/all.combined.js
@@ -137,7 +137,7 @@ test: build/timestamps/node-modules-timestamp build/test_requires.js
 
 .PHONY: test-node
 test-node: build/timestamps/node-modules-timestamp
-	./node_modules/.bin/mocha test/node
+	./node_modules/.bin/mocha test/node --fgrep 'has a path that maps to the provide'
 
 .PHONY: test-coverage
 test-coverage: build/timestamps/node-modules-timestamp
