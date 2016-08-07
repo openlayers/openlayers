@@ -29,6 +29,7 @@ exports.rule = {
     docs: {
       description: 'disallow unused goog.require() calls'
     },
+    fixable: 'code',
     schema: []
   },
   create: function(context) {
@@ -55,7 +56,15 @@ exports.rule = {
           if (name in requireNodes) {
             return context.report(node, `Duplicate goog.require('${name}')`);
           }
-          requireNodes[name] = node;
+          const ancestors = context.getAncestors();
+          const parent = ancestors[ancestors.length - 1];
+          if (!parent || parent.type !== 'ExpressionStatement') {
+            return context.report(node, 'Expected goog.require() to be in an expression statement');
+          }
+          requireNodes[name] = {
+            expression: node,
+            statement: parent
+          };
         }
 
       },
@@ -90,7 +99,18 @@ exports.rule = {
         for (let name in requireNodes) {
           if (!usedNames[name]) {
             const unusedRequire = requireNodes[name];
-            context.report(unusedRequire, `Unused ${source.getText(unusedRequire)}`);
+            context.report({
+              node: unusedRequire.expression,
+              message: `Unused ${source.getText(unusedRequire.expression)}`,
+              fix: function(fixer) {
+                const afterToken = source.getTokenAfter(unusedRequire.statement);
+                const range = [
+                  unusedRequire.statement.range[0],
+                  afterToken ? afterToken.range[0] : unusedRequire.statement.range[1]
+                ];
+                return fixer.removeRange(range);
+              }
+            });
           }
         }
       }
