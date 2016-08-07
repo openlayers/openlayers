@@ -36,10 +36,23 @@ describe('ol.proj.EPSG3857', function() {
       var epsg4326 = ol.proj.get('EPSG:4326');
       var resolution = 19.11;
       var latitude;
-      for (latitude = 0; latitude < 90; ++latitude) {
+      for (latitude = 0; latitude < 85; ++latitude) {
         var point = ol.proj.transform([0, latitude], epsg4326, epsg3857);
         expect(epsg3857.getPointResolution(resolution, point)).
             to.roughlyEqual(19.11 * Math.cos(Math.PI * latitude / 180), 1e-9);
+      }
+    });
+
+    it('returns the correct point scale at extrem latitudes', function() {
+      // @see http://msdn.microsoft.com/en-us/library/aa940990.aspx
+      var epsg3857 = ol.proj.get('EPSG:3857');
+      var epsg4326 = ol.proj.get('EPSG:4326');
+      var resolution = 19.11;
+      var latitude;
+      for (latitude = 85; latitude < 90; ++latitude) {
+        var point = ol.proj.transform([0, latitude], epsg4326, epsg3857);
+        expect(epsg3857.getPointResolution(resolution, point)).
+            to.roughlyEqual(19.11 * Math.cos(Math.PI * 85 / 180), 1e-9);
       }
     });
 
