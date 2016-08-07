@@ -371,8 +371,6 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
 
   var ovview = ovmap.getView();
 
-  var ovmapSize = ovmap.getSize();
-
   var rotation = view.getRotation();
 
   var overlay = this.boxOverlay_;

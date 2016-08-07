@@ -315,7 +315,9 @@ ol.format.EsriJSON.writeLineStringGeometry_ = function(geometry, opt_options) {
   return /** @type {EsriJSONPolyline} */ ({
     hasZ: hasZM.hasZ,
     hasM: hasZM.hasM,
-    paths: [/** @type {ol.geom.LineString} */ (geometry).getCoordinates()]
+    paths: [
+      /** @type {ol.geom.LineString} */ (geometry).getCoordinates()
+    ]
   });
 };
 

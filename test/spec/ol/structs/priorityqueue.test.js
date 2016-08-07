@@ -16,7 +16,7 @@ describe('ol.structs.PriorityQueue', function() {
         if (!assertion) {
           throw new Error(message);
         }
-      }
+      };
       pq = new ol.structs.PriorityQueue(
           identity, identity);
     });

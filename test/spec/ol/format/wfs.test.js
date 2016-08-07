@@ -672,7 +672,7 @@ describe('ol.format.WFS', function() {
         [-12240318, 6507071],
         [-12416429, 6604910]
       ]]));
-      var error = false;
+
       expect(function() {
         format.writeTransaction(null, [updateFeature], null, {
           featureNS: 'http://foo',

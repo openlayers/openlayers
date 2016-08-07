@@ -709,7 +709,6 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
   if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
     if (mapBrowserEvent.type != ol.MapBrowserEvent.EventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_) {
-      var geometry = /** @type {ol.geom.Point} */ (this.vertexFeature_.getGeometry());
       handled = this.removePoint();
     } else {
       handled = true;

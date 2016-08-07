@@ -103,9 +103,6 @@ ol.renderer.dom.VectorLayer.prototype.clearFrame = function() {
  * @inheritDoc
  */
 ol.renderer.dom.VectorLayer.prototype.composeFrame = function(frameState, layerState) {
-
-  var vectorLayer = /** @type {ol.layer.Vector} */ (this.getLayer());
-
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;
   var viewRotation = viewState.rotation;
