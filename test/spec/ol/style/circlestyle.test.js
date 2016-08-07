@@ -5,6 +5,27 @@ describe('ol.style.Circle', function() {
 
   describe('#constructor', function() {
 
+    it('can be constructed without a defined fill color', function() {
+      var style = new ol.style.Circle({
+        radius: 10,
+        fill: new ol.style.Fill({
+          color: undefined
+        })
+      });
+      expect(style.getImage()).to.be.an(HTMLCanvasElement);
+    });
+
+    it('can be constructed without a defined stroke color', function() {
+      var style = new ol.style.Circle({
+        radius: 10,
+        stroke: new ol.style.Stroke({
+          color: undefined,
+          width: 2
+        })
+      });
+      expect(style.getImage()).to.be.an(HTMLCanvasElement);
+    });
+
     it('creates a canvas if no atlas is used (no fill-style)', function() {
       var style = new ol.style.Circle({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
