@@ -9,7 +9,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.layer.Layer');
-goog.require('ol.renderer.Layer');
 goog.require('ol.style.IconImageCache');
 
 

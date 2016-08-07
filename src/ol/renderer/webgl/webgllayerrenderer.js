@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.webgl.Layer');
 
-goog.require('ol.layer.Layer');
 goog.require('ol.transform');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
