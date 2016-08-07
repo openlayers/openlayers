@@ -1,7 +1,6 @@
 goog.provide('ol.math');
 
 
-
 /**
  * Takes a number and clamps it to within the provided bounds.
  * @param {number} value The input number.

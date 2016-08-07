@@ -256,7 +256,7 @@ build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                    build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@echo "Running eslint..."
-	@./node_modules/.bin/eslint $?
+	@./node_modules/.bin/eslint tasks test test_rendering src examples
 	@touch $@
 
 build/timestamps/node-modules-timestamp: package.json

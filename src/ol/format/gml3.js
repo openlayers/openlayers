@@ -911,7 +911,6 @@ ol.format.GML3.prototype.writeRing_ = function(node, ring, objectStack) {
  * @private
  */
 ol.format.GML3.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStack) {
-  var context = objectStack[objectStack.length - 1];
   var child = this.GEOMETRY_NODE_FACTORY_(
       polygon, objectStack);
   if (child) {
@@ -941,7 +940,6 @@ ol.format.GML3.prototype.writePointMember_ = function(node, point, objectStack) 
  * @private
  */
 ol.format.GML3.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
-  var context = objectStack[objectStack.length - 1];
   var child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
   if (child) {
     node.appendChild(child);

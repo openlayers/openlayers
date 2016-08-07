@@ -83,6 +83,7 @@
       "proj4": false
     },
     "rules": {
+      "no-console": [2, {"allow": ["assert"]}],
       "no-constant-condition": 0
     }
   },

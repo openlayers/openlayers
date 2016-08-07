@@ -5,7 +5,7 @@ const path = require('path');
 
 const src = path.join(__dirname, '..', '..', 'src');
 
-const PROVIDE_RE = /^goog.provide\('(.*)'\);/
+const PROVIDE_RE = /^goog.provide\('(.*)'\);/;
 
 describe('each file', () => {
 

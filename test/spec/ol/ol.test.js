@@ -29,7 +29,7 @@ describe('ol', function() {
     it('has a name', function() {
       var error = new ol.AssertionError(42);
       expect(error.name).to.be('AssertionError');
-    })
+    });
   });
 
 });
