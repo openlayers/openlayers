@@ -1,0 +1,6 @@
+{
+  "name": "eslint-plugin-openlayers-internal",
+  "version": "1.0.0",
+  "description": "Custom ESLint rules for the OpenLayers project",
+  "main": "index.js"
+}

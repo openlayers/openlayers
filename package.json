@@ -35,6 +35,7 @@
     "browserify": "13.1.0",
     "closure-util": "1.15.0",
     "derequire": "2.0.3",
+    "eslint-plugin-openlayers-internal": "file:test/rules",
     "fs-extra": "0.30.0",
     "glob": "7.0.5",
     "handlebars": "4.0.5",
@@ -82,6 +83,9 @@
       "goog": false,
       "proj4": false
     },
+    "plugins": [
+      "openlayers-internal"
+    ],
     "rules": {
       "no-console": [
         2,
@@ -91,7 +95,8 @@
           ]
         }
       ],
-      "no-constant-condition": 0
+      "no-constant-condition": 0,
+      "openlayers-internal/no-unused-requires": 2
     }
   },
   "ext": [
