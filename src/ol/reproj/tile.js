@@ -6,7 +6,7 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.math');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
@@ -223,7 +223,7 @@ ol.reproj.Tile.prototype.getImage = function(opt_context) {
     var key = ol.getUid(opt_context);
     if (key in this.canvasByContext_) {
       return this.canvasByContext_[key];
-    } else if (ol.object.isEmpty(this.canvasByContext_)) {
+    } else if (ol.obj.isEmpty(this.canvasByContext_)) {
       image = this.canvas_;
     } else {
       image = /** @type {HTMLCanvasElement} */ (this.canvas_.cloneNode(false));

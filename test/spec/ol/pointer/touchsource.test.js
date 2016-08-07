@@ -119,7 +119,7 @@ describe('ol.pointer.TouchSource', function() {
     touches = touches !== undefined ? touches : changedTouches;
 
     var event = new ol.events.Event(type);
-    ol.object.assign(event, {
+    ol.obj.assign(event, {
       touches: touches,
       changedTouches: changedTouches
     });
@@ -131,7 +131,7 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
 goog.require('ol.has');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 goog.require('ol.pointer.TouchSource');

@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.array');
 goog.require('ol.events');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
@@ -233,8 +233,8 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
  * Get the program from the cache if it's in the cache. Otherwise create
  * the WebGL program, attach the shaders to it, and add an entry to the
  * cache.
- * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
- * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.
+ * @param {ol.webgl.Fragment} fragmentShaderObject Fragment shader.
+ * @param {ol.webgl.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
 ol.webgl.Context.prototype.getProgram = function(
@@ -263,9 +263,9 @@ ol.webgl.Context.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-  ol.object.clear(this.bufferCache_);
-  ol.object.clear(this.shaderCache_);
-  ol.object.clear(this.programCache_);
+  ol.obj.clear(this.bufferCache_);
+  ol.obj.clear(this.shaderCache_);
+  ol.obj.clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;

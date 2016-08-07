@@ -1,6 +1,6 @@
 goog.provide('ol.structs.PriorityQueue');
 
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -89,7 +89,7 @@ if (goog.DEBUG) {
 ol.structs.PriorityQueue.prototype.clear = function() {
   this.elements_.length = 0;
   this.priorities_.length = 0;
-  ol.object.clear(this.queuedElements_);
+  ol.obj.clear(this.queuedElements_);
 };
 
 

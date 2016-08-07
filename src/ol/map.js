@@ -7,7 +7,6 @@ goog.provide('ol.MapProperty');
 
 goog.require('goog.async.nextTick');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserEventHandler');
@@ -31,7 +30,7 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.transform');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
@@ -404,17 +403,17 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.controls_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.controls_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(null);
@@ -429,17 +428,17 @@ ol.Map = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.interactions_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.interactions_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(null);
@@ -447,17 +446,17 @@ ol.Map = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.overlays_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.overlays_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         var id = event.element.getId();
@@ -1259,7 +1258,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
-      logos: ol.object.assign({}, this.logos_),
+      logos: ol.obj.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],
