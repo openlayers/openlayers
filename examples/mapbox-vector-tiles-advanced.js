@@ -1,4 +1,4 @@
-goog.require('ol.Attribution');
+/* eslint-disable openlayers-internal/no-unused-requires */
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.MVT');
