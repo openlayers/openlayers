@@ -1,3 +1,5 @@
+'use strict';
+
 const util = require('./util');
 
 function getName(node) {

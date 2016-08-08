@@ -1,3 +1,5 @@
+'use strict';
+
 module.exports = {
   rules: {
     'no-duplicate-requires': require('./no-duplicate-requires').rule,
