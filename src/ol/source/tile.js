@@ -282,7 +282,7 @@ ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, op
       opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
   if (this.getWrapX() && projection.isGlobal()) {
-    tileCoord = ol.tilecoord.wrapX(tileCoord, tileGrid, projection);
+    tileCoord = ol.tilegrid.wrapX(tileGrid, tileCoord, projection);
   }
   return ol.tilecoord.withinExtentAndZ(tileCoord, tileGrid) ? tileCoord : null;
 };

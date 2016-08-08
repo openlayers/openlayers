@@ -1,5 +1,6 @@
 goog.provide('ol.tilegrid');
 
+goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.obj');
 goog.require('ol.proj');
@@ -19,6 +20,27 @@ ol.tilegrid.getForProjection = function(projection) {
     projection.setDefaultTileGrid(tileGrid);
   }
   return tileGrid;
+};
+
+
+/**
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
+ * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {ol.proj.Projection} projection Projection.
+ * @return {ol.TileCoord} Tile coordinate.
+ */
+ol.tilegrid.wrapX = function(tileGrid, tileCoord, projection) {
+  var z = tileCoord[0];
+  var center = tileGrid.getTileCoordCenter(tileCoord);
+  var projectionExtent = ol.tilegrid.extentFromProjection(projection);
+  if (!ol.extent.containsCoordinate(projectionExtent, center)) {
+    var worldWidth = ol.extent.getWidth(projectionExtent);
+    var worldsAway = Math.ceil((projectionExtent[0] - center[0]) / worldWidth);
+    center[0] += worldWidth * worldsAway;
+    return tileGrid.getTileCoordForCoordAndZ(center, z);
+  } else {
+    return tileCoord;
+  }
 };
 
 
