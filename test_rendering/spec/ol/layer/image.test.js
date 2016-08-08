@@ -1,5 +1,13 @@
 goog.provide('ol.test.rendering.layer.Image');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Image');
+goog.require('ol.obj');
+goog.require('ol.proj');
+goog.require('ol.source.ImageStatic');
+
+
 describe('ol.rendering.layer.Image', function() {
 
   var target, map;
@@ -108,10 +116,3 @@ describe('ol.rendering.layer.Image', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.source.ImageStatic');

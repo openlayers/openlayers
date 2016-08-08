@@ -1,5 +1,19 @@
 goog.provide('ol.test.rendering.layer.Tile');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Tile');
+goog.require('ol.obj');
+goog.require('ol.proj');
+goog.require('ol.source.TileImage');
+goog.require('ol.source.XYZ');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.rendering.layer.Tile', function() {
 
   var target, map;
@@ -247,16 +261,3 @@ describe('ol.rendering.layer.Tile', function() {
     });
   });
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Tile');
-goog.require('ol.obj');
-goog.require('ol.proj');
-goog.require('ol.source.TileImage');
-goog.require('ol.source.XYZ');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');
-goog.require('ol.tilegrid.TileGrid');

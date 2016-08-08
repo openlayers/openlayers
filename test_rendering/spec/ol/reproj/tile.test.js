@@ -1,5 +1,12 @@
 goog.provide('ol.test.rendering.reproj.Tile');
 
+goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.reproj.Tile');
+goog.require('ol.source.XYZ');
+goog.require('ol.TileState');
+
+
 describe('ol.rendering.reproj.Tile', function() {
 
   function testSingleTile(source, targetProjection, targetTileGrid, z, x, y,
@@ -172,9 +179,3 @@ describe('ol.rendering.reproj.Tile', function() {
     });
   });
 });
-
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.reproj.Tile');
-goog.require('ol.source.XYZ');
-goog.require('ol.TileState');
