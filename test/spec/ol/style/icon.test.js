@@ -2,7 +2,7 @@ goog.provide('ol.test.style.Icon');
 goog.provide('ol.test.style.IconImageCache');
 
 goog.require('ol.events');
-goog.require('ol.style.IconImageCache');
+goog.require('ol.style.iconImageCache');
 goog.require('ol.style.Icon');
 
 
@@ -145,7 +145,7 @@ describe('ol.style.Icon', function() {
     it('takes the real image size', function() {
       // pretend that the image is already in the cache,
       // this image will be used for the icon.
-      var cache = ol.style.IconImageCache.getInstance();
+      var cache = ol.style.iconImageCache;
       var src = 'test.png';
       var iconImage = new ol.style.IconImage_(null, 'test.png', imgSize);
       cache.set(src, null, null, iconImage);
@@ -170,23 +170,23 @@ describe('ol.style.IconImageCache', function() {
   var originalMaxCacheSize;
 
   beforeEach(function() {
-    var cache = ol.style.IconImageCache.getInstance();
+    var cache = ol.style.iconImageCache;
     cache.clear();
     originalMaxCacheSize = cache.maxCacheSize;
     cache.maxCacheSize_ = 4;
   });
 
   afterEach(function() {
-    var cache = ol.style.IconImageCache.getInstance();
+    var cache = ol.style.iconImageCache;
     cache.maxCacheSize_ = originalMaxCacheSize;
     cache.clear();
   });
 
   describe('#expire', function() {
     it('expires images when expected', function() {
-      var cache = ol.style.IconImageCache.getInstance();
+      var cache = ol.style.iconImageCache;
 
-      var i, src, iconImage, key;
+      var i, src, iconImage;
 
       for (i = 0; i < 4; ++i) {
         src = i + '';
@@ -223,11 +223,8 @@ describe('ol.style.IconImageCache', function() {
 
       // check that '0' and '4' are not removed from the cache
       cache.expire();
-      key = ol.style.IconImageCache.getKey('0', null, null);
-      expect(key in cache.cache_).to.be.ok();
-      key = ol.style.IconImageCache.getKey('4', null, null);
-      expect(key in cache.cache_).to.be.ok();
-
+      expect(cache.get('0', null, null)).to.not.be(null);
+      expect(cache.get('4', null, null)).to.not.be(null);
     });
   });
 });

@@ -145,8 +145,8 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
 
   var gl = context.getGL();
 
-  var fragmentShader = ol.renderer.webgl.defaultmapshader.Fragment.getInstance();
-  var vertexShader = ol.renderer.webgl.defaultmapshader.Vertex.getInstance();
+  var fragmentShader = ol.renderer.webgl.defaultmapshader.fragment;
+  var vertexShader = ol.renderer.webgl.defaultmapshader.vertex;
 
   var program = context.getProgram(fragmentShader, vertexShader);
 

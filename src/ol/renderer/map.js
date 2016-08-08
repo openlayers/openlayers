@@ -9,7 +9,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.layer.Layer');
-goog.require('ol.style.IconImageCache');
+goog.require('ol.style.iconImageCache');
 
 
 /**
@@ -104,7 +104,7 @@ ol.renderer.Map.prototype.disposeInternal = function() {
  * @private
  */
 ol.renderer.Map.expireIconCache_ = function(map, frameState) {
-  ol.style.IconImageCache.getInstance().expire();
+  ol.style.iconImageCache.expire();
 };
 
 

@@ -1,7 +1,7 @@
 goog.provide('ol.style.Icon');
 goog.provide('ol.style.IconAnchorUnits');
-goog.provide('ol.style.IconImageCache');
 goog.provide('ol.style.IconOrigin');
+goog.provide('ol.style.iconImageCache');
 
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
@@ -458,7 +458,7 @@ ol.inherits(ol.style.IconImage_, ol.events.EventTarget);
  */
 ol.style.IconImage_.get = function(image, src, size, crossOrigin, imageState,
                                    color) {
-  var iconImageCache = ol.style.IconImageCache.getInstance();
+  var iconImageCache = ol.style.iconImageCache;
   var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
     iconImage = new ol.style.IconImage_(
@@ -638,6 +638,7 @@ ol.style.IconImage_.prototype.unlistenImage_ = function() {
 
 /**
  * @constructor
+ * @private
  */
 ol.style.IconImageCache = function() {
 
@@ -660,7 +661,6 @@ ol.style.IconImageCache = function() {
    */
   this.maxCacheSize_ = 32;
 };
-goog.addSingletonGetter(ol.style.IconImageCache);
 
 
 /**
@@ -728,3 +728,6 @@ ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color,
   this.cache_[key] = iconImage;
   ++this.cacheSize_;
 };
+
+
+ol.style.iconImageCache = new ol.style.IconImageCache();
