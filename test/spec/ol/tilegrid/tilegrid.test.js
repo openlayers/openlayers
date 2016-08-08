@@ -1,11 +1,12 @@
 goog.provide('ol.test.TileGrid');
 
+goog.require('ol.TileRange');
 goog.require('ol.extent');
 goog.require('ol.proj');
-goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.EPSG3857');
+goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Projection');
-goog.require('ol.TileRange');
+goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');
 
 

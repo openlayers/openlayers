@@ -13,6 +13,7 @@ goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.VectorTile');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
+goog.require('ol.tilegrid');
 
 
 describe('ol.renderer.canvas.VectorTileLayer', function() {

@@ -10,6 +10,7 @@ goog.require('ol.source.XYZ');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.tilegrid');
 
 
 var serviceUrl = 'http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +

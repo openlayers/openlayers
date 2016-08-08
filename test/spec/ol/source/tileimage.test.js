@@ -7,6 +7,7 @@ goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.TileImage');
+goog.require('ol.tilegrid');
 
 
 describe('ol.source.TileImage', function() {

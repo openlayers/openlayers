@@ -6,6 +6,7 @@ goog.require('ol.format.MVT');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.obj');
 goog.require('ol.source.VectorTile');
+goog.require('ol.tilegrid');
 
 
 describe('ol.rendering.layer.VectorTile', function() {

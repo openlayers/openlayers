@@ -4,6 +4,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.reproj.Tile');
+goog.require('ol.tilegrid');
 
 
 describe('ol.reproj.Tile', function() {

@@ -8,6 +8,7 @@ goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
+goog.require('ol.tilegrid');
 
 
 /**

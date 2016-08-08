@@ -6,6 +6,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.ImageStatic');
+goog.require('ol.tilegrid');
 
 
 describe('ol.rendering.layer.Image', function() {

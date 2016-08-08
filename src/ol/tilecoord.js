@@ -1,6 +1,7 @@
 goog.provide('ol.tilecoord');
 
 goog.require('ol.extent');
+goog.require('ol.tilegrid');
 
 
 /**

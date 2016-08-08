@@ -1,8 +1,9 @@
 goog.provide('ol.test.source.TileWMS');
 
 goog.require('ol.ImageTile');
-goog.require('ol.source.TileWMS');
 goog.require('ol.proj');
+goog.require('ol.source.TileWMS');
+goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');
 
 
