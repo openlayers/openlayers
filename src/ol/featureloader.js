@@ -1,10 +1,7 @@
 goog.provide('ol.featureloader');
 
 goog.require('ol.TileState');
-goog.require('ol.VectorTile');
 goog.require('ol.format.FormatType');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
 goog.require('ol.xml');
 
 
