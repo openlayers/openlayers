@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.vector');
 
+goog.require('ol.render.ReplayType');
 goog.require('ol.style.ImageState');
 
 
@@ -35,7 +36,7 @@ ol.renderer.vector.getTolerance = function(resolution, pixelRatio) {
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Circle} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
@@ -61,7 +62,7 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
@@ -98,7 +99,7 @@ ol.renderer.vector.renderFeature = function(
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
@@ -118,7 +119,7 @@ ol.renderer.vector.renderFeature_ = function(
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
@@ -136,7 +137,7 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ = function(replayGroup, geo
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.LineString|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -161,7 +162,7 @@ ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, s
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.MultiLineString|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -188,7 +189,7 @@ ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geomet
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
@@ -216,7 +217,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Point|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -245,7 +246,7 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.MultiPoint|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -275,7 +276,7 @@ ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, s
 
 
 /**
- * @param {ol.render.IReplayGroup} replayGroup Replay group.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  * @param {ol.geom.Polygon|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -305,7 +306,7 @@ ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, styl
  * @const
  * @private
  * @type {Object.<ol.geom.GeometryType,
- *                function(ol.render.IReplayGroup, ol.geom.Geometry,
+ *                function(ol.render.ReplayGroup, ol.geom.Geometry,
  *                         ol.style.Style, Object)>}
  */
 ol.renderer.vector.GEOMETRY_RENDERERS_ = {
