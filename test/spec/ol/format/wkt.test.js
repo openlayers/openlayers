@@ -1,5 +1,11 @@
 goog.provide('ol.test.format.WKT');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.format.WKT');
+goog.require('ol.proj');
+
+
 describe('ol.format.WKT', function() {
 
   var format = new ol.format.WKT();
@@ -427,8 +433,3 @@ describe('ol.format.WKT', function() {
   });
 
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.format.WKT');
-goog.require('ol.proj');

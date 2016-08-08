@@ -1,5 +1,8 @@
 goog.provide('ol.test.layer.Heatmap');
 
+goog.require('ol.layer.Heatmap');
+
+
 describe('ol.layer.Heatmap', function() {
 
   describe('constructor', function() {
@@ -12,5 +15,3 @@ describe('ol.layer.Heatmap', function() {
   });
 
 });
-
-goog.require('ol.layer.Heatmap');

@@ -1,5 +1,10 @@
 goog.provide('ol.test.renderer.Map');
 
+goog.require('ol.Disposable');
+goog.require('ol.Map');
+goog.require('ol.renderer.Map');
+
+
 describe('ol.renderer.Map', function() {
 
   describe('constructor', function() {
@@ -16,7 +21,3 @@ describe('ol.renderer.Map', function() {
   });
 
 });
-
-goog.require('ol.Disposable');
-goog.require('ol.Map');
-goog.require('ol.renderer.Map');

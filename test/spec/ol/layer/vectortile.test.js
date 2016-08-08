@@ -1,5 +1,9 @@
 goog.provide('ol.test.layer.VectorTile');
 
+goog.require('ol.layer.VectorTile');
+goog.require('ol.source.VectorTile');
+
+
 describe('ol.layer.VectorTile', function() {
 
   describe('constructor (defaults)', function() {
@@ -56,6 +60,3 @@ describe('ol.layer.VectorTile', function() {
   });
 
 });
-
-goog.require('ol.layer.VectorTile');
-goog.require('ol.source.VectorTile');

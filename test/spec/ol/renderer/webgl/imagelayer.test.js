@@ -1,5 +1,13 @@
 goog.provide('ol.test.renderer.webgl.ImageLayer');
 
+goog.require('ol.transform');
+goog.require('ol.Map');
+goog.require('ol.proj.common');
+goog.require('ol.layer.Image');
+goog.require('ol.source.Image');
+goog.require('ol.renderer.webgl.ImageLayer');
+
+
 describe('ol.renderer.webgl.ImageLayer', function() {
   describe('updateProjectionMatrix_', function() {
     var map;
@@ -71,10 +79,3 @@ describe('ol.renderer.webgl.ImageLayer', function() {
     });
   });
 });
-
-goog.require('ol.transform');
-goog.require('ol.Map');
-goog.require('ol.proj.common');
-goog.require('ol.layer.Image');
-goog.require('ol.source.Image');
-goog.require('ol.renderer.webgl.ImageLayer');

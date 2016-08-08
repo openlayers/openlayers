@@ -1,5 +1,13 @@
 goog.provide('ol.test.pointer.PointerEventHandler');
 
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+goog.require('ol.has');
+goog.require('ol.pointer.MouseSource');
+goog.require('ol.pointer.PointerEvent');
+goog.require('ol.pointer.PointerEventHandler');
+
+
 describe('ol.pointer.PointerEventHandler', function() {
   var handler;
   var target;
@@ -159,10 +167,3 @@ describe('ol.pointer.PointerEventHandler', function() {
   });
 
 });
-
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');
-goog.require('ol.has');
-goog.require('ol.pointer.MouseSource');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.pointer.PointerEventHandler');

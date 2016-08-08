@@ -1,5 +1,15 @@
 goog.provide('ol.test.source.TileImageSource');
 
+goog.require('ol.ImageTile');
+goog.require('ol.Tile');
+goog.require('ol.TileUrlFunction');
+goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.reproj.Tile');
+goog.require('ol.source.TileImage');
+
+
 describe('ol.source.TileImage', function() {
   function createSource(opt_proj, opt_tileGrid) {
     var proj = opt_proj || 'EPSG:3857';
@@ -152,12 +162,3 @@ describe('ol.source.TileImage', function() {
     });
   });
 });
-
-goog.require('ol.ImageTile');
-goog.require('ol.Tile');
-goog.require('ol.TileUrlFunction');
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.reproj.Tile');
-goog.require('ol.source.TileImage');

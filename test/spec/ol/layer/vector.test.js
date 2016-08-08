@@ -1,5 +1,11 @@
 goog.provide('ol.test.layer.Vector');
 
+goog.require('ol.layer.Layer');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Style');
+
+
 describe('ol.layer.Vector', function() {
 
   describe('constructor', function() {
@@ -120,8 +126,3 @@ describe('ol.layer.Vector', function() {
   });
 
 });
-
-goog.require('ol.layer.Layer');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');

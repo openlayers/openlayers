@@ -1,5 +1,25 @@
 goog.provide('ol.test.interaction.Draw');
 
+goog.require('ol.array');
+goog.require('ol.events');
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.MapBrowserPointerEvent');
+goog.require('ol.View');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.interaction.Draw');
+goog.require('ol.interaction.Interaction');
+goog.require('ol.layer.Vector');
+goog.require('ol.pointer.PointerEvent');
+goog.require('ol.source.Vector');
+
+
 describe('ol.interaction.Draw', function() {
   var target, map, source;
 
@@ -859,22 +879,3 @@ describe('ol.interaction.Draw', function() {
 
   });
 });
-
-goog.require('ol.array');
-goog.require('ol.events');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Draw');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');

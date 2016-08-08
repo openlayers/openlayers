@@ -1,5 +1,12 @@
 goog.provide('ol.test.source.WMTS');
 
+goog.require('ol.format.WMTSCapabilities');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.tilegrid.WMTS');
+goog.require('ol.source.WMTS');
+
+
 describe('ol.source.WMTS', function() {
 
   describe('when creating options from capabilities', function() {
@@ -264,9 +271,3 @@ describe('ol.source.WMTS', function() {
   });
 
 });
-
-goog.require('ol.format.WMTSCapabilities');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.tilegrid.WMTS');
-goog.require('ol.source.WMTS');

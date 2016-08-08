@@ -1,5 +1,9 @@
 goog.provide('ol.test.layer.Tile');
 
+goog.require('ol.layer.Tile');
+goog.require('ol.source.OSM');
+
+
 describe('ol.layer.Tile', function() {
 
   describe('constructor (defaults)', function() {
@@ -31,6 +35,3 @@ describe('ol.layer.Tile', function() {
   });
 
 });
-
-goog.require('ol.layer.Tile');
-goog.require('ol.source.OSM');

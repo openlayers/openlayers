@@ -1,6 +1,13 @@
 /*global createMapDiv, disposeMap*/
 goog.provide('ol.test.interaction.KeyboardPan');
 
+goog.require('ol.Map');
+goog.require('ol.MapBrowserEvent');
+goog.require('ol.View');
+goog.require('ol.events.Event');
+goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.KeyboardPan');
+
 
 describe('ol.interaction.KeyboardPan', function() {
   var map;
@@ -45,11 +52,3 @@ describe('ol.interaction.KeyboardPan', function() {
   });
 
 });
-
-
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEvent');
-goog.require('ol.View');
-goog.require('ol.events.Event');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.KeyboardPan');

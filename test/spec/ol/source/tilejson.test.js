@@ -1,5 +1,10 @@
 goog.provide('ol.test.source.TileJSON');
 
+goog.require('ol.events');
+goog.require('ol.source.Source');
+goog.require('ol.source.TileJSON');
+goog.require('ol.Observable');
+
 
 describe('ol.source.TileJSON', function() {
 
@@ -120,8 +125,3 @@ describe('ol.source.TileJSON', function() {
   });
 
 });
-
-goog.require('ol.events');
-goog.require('ol.source.Source');
-goog.require('ol.source.TileJSON');
-goog.require('ol.Observable');

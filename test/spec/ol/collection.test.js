@@ -1,5 +1,9 @@
 goog.provide('ol.test.Collection');
 
+goog.require('ol.events');
+goog.require('ol.Collection');
+
+
 describe('ol.collection', function() {
   var collection;
 
@@ -282,7 +286,3 @@ describe('ol.collection', function() {
   });
 
 });
-
-
-goog.require('ol.events');
-goog.require('ol.Collection');

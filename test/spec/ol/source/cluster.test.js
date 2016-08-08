@@ -1,5 +1,12 @@
 goog.provide('ol.test.source.ClusterSource');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
+goog.require('ol.source.Cluster');
+goog.require('ol.source.Source');
 goog.require('ol.source.Vector');
 
 describe('ol.source.Cluster', function() {
@@ -57,11 +64,3 @@ describe('ol.source.Cluster', function() {
     });
   });
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.proj');
-goog.require('ol.source.Cluster');
-goog.require('ol.source.Source');

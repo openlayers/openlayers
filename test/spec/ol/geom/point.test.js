@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.Point');
 
+goog.require('ol.extent');
+goog.require('ol.geom.Point');
+
 
 describe('ol.geom.Point', function() {
 
@@ -216,7 +219,3 @@ describe('ol.geom.Point', function() {
   });
 
 });
-
-
-goog.require('ol.extent');
-goog.require('ol.geom.Point');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.deflate');
 
+goog.require('ol.geom.flat.deflate');
+
+
 describe('ol.geom.flat.deflate', function() {
 
   describe('ol.geom.flat.deflate.coordinates', function() {
@@ -35,5 +38,3 @@ describe('ol.geom.flat.deflate', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.deflate');

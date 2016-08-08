@@ -1,5 +1,13 @@
 goog.provide('ol.test.source.Vector');
 
+goog.require('ol.events');
+goog.require('ol.Collection');
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
+goog.require('ol.proj');
+goog.require('ol.source.Vector');
+
 
 describe('ol.source.Vector', function() {
 
@@ -583,12 +591,3 @@ describe('ol.source.Vector', function() {
   });
 
 });
-
-
-goog.require('ol.events');
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.LineString');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');

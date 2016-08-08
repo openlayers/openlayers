@@ -1,5 +1,12 @@
 goog.provide('ol.test.render.webgl.Replay');
 
+goog.require('ol.extent');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');
+goog.require('ol.render.webgl.ImageReplay');
+goog.require('ol.style.Image');
+
+
 describe('ol.render.webgl.ImageReplay', function() {
   var replay;
 
@@ -162,9 +169,3 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
   });
 });
-
-goog.require('ol.extent');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.Point');
-goog.require('ol.render.webgl.ImageReplay');
-goog.require('ol.style.Image');

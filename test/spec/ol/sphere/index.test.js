@@ -3,6 +3,10 @@
 
 goog.provide('ol.test.Sphere');
 
+goog.require('ol.Sphere');
+goog.require('ol.sphere.WGS84');
+goog.require('ol.format.WKT');
+
 
 describe('ol.Sphere', function() {
 
@@ -103,8 +107,3 @@ describe('ol.Sphere', function() {
   });
 
 });
-
-
-goog.require('ol.Sphere');
-goog.require('ol.sphere.WGS84');
-goog.require('ol.format.WKT');

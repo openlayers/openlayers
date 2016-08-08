@@ -1,5 +1,7 @@
 goog.provide('ol.test.net');
 
+goog.require('ol.net');
+
 
 describe('ol.net', function() {
 
@@ -84,6 +86,3 @@ describe('ol.net', function() {
   });
 
 });
-
-
-goog.require('ol.net');

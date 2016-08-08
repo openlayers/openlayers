@@ -1,5 +1,10 @@
 goog.provide('ol.test.source.TileWMS');
 
+goog.require('ol.ImageTile');
+goog.require('ol.source.TileWMS');
+goog.require('ol.proj');
+goog.require('ol.tilegrid.TileGrid');
+
 
 describe('ol.source.TileWMS', function() {
 
@@ -279,9 +284,3 @@ describe('ol.source.TileWMS', function() {
     });
   });
 });
-
-
-goog.require('ol.ImageTile');
-goog.require('ol.source.TileWMS');
-goog.require('ol.proj');
-goog.require('ol.tilegrid.TileGrid');

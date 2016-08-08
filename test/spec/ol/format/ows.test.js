@@ -1,6 +1,8 @@
 goog.provide('ol.test.format.OWS');
 
+goog.require('ol.format.OWS');
 goog.require('ol.xml');
+
 
 describe('ol.format.OWS 1.1', function() {
 
@@ -152,5 +154,3 @@ describe('ol.format.OWS 1.1', function() {
   });
 
 });
-
-goog.require('ol.format.OWS');

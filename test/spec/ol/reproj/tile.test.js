@@ -1,5 +1,11 @@
 goog.provide('ol.test.reproj.Tile');
 
+goog.require('ol.ImageTile');
+goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.reproj.Tile');
+
+
 describe('ol.reproj.Tile', function() {
   beforeEach(function() {
     proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 ' +
@@ -92,9 +98,3 @@ describe('ol.reproj.Tile', function() {
     tile.load();
   });
 });
-
-
-goog.require('ol.ImageTile');
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.reproj.Tile');

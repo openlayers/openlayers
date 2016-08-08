@@ -1,5 +1,8 @@
 goog.provide('ol.test.DeviceOrientation');
 
+goog.require('ol.DeviceOrientation');
+
+
 describe('ol.DeviceOrientation', function() {
 
   describe('constructor', function() {
@@ -12,5 +15,3 @@ describe('ol.DeviceOrientation', function() {
   });
 
 });
-
-goog.require('ol.DeviceOrientation');

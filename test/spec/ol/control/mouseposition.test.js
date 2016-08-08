@@ -1,5 +1,7 @@
 goog.provide('ol.test.control.MousePosition');
 
+goog.require('ol.control.MousePosition');
+
 describe('ol.control.MousePosition', function() {
 
   describe('constructor', function() {
@@ -21,5 +23,3 @@ describe('ol.control.MousePosition', function() {
   });
 
 });
-
-goog.require('ol.control.MousePosition');

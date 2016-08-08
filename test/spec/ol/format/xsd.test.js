@@ -1,5 +1,8 @@
 goog.provide('ol.test.XSD');
 
+goog.require('ol.format.XSD');
+
+
 describe('ol.format.XSD', function() {
 
   describe('readDateTime', function() {
@@ -12,5 +15,3 @@ describe('ol.format.XSD', function() {
   });
 
 });
-
-goog.require('ol.format.XSD');

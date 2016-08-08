@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.inflate');
 
+goog.require('ol.geom.flat.inflate');
+
+
 describe('ol.geom.flat.inflate', function() {
 
   describe('ol.geom.flat.inflate.coordinates', function() {
@@ -22,5 +25,3 @@ describe('ol.geom.flat.inflate', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.inflate');

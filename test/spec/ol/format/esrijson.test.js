@@ -1,5 +1,17 @@
 goog.provide('ol.test.reader.EsriJSON');
 
+goog.require('ol.Feature');
+goog.require('ol.extent');
+goog.require('ol.format.EsriJSON');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
+
 
 describe('ol.format.EsriJSON', function() {
 
@@ -1054,16 +1066,3 @@ describe('ol.format.EsriJSON', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.extent');
-goog.require('ol.format.EsriJSON');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.proj');

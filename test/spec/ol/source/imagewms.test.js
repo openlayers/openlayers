@@ -1,5 +1,8 @@
 goog.provide('ol.test.source.ImageWMS');
 
+goog.require('ol.source.ImageWMS');
+goog.require('ol.proj');
+
 
 describe('ol.source.ImageWMS', function() {
 
@@ -243,7 +246,3 @@ describe('ol.source.ImageWMS', function() {
   });
 
 });
-
-
-goog.require('ol.source.ImageWMS');
-goog.require('ol.proj');

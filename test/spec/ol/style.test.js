@@ -1,5 +1,10 @@
 goog.provide('ol.test.style.Style');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.style.Style');
+
+
 describe('ol.style.Style', function() {
 
   describe('#setZIndex', function() {
@@ -90,7 +95,3 @@ describe('ol.style.createStyleFunction()', function() {
   });
 
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.style.Style');

@@ -1,5 +1,15 @@
 goog.provide('ol.test.format.WFS');
+
+goog.require('ol.Feature');
+goog.require('ol.format.GML2');
+goog.require('ol.format.WFS');
 goog.require('ol.format.ogc.filter');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
+goog.require('ol.xml');
 
 describe('ol.format.WFS', function() {
 
@@ -964,14 +974,3 @@ describe('ol.format.WFS', function() {
   });
 
 });
-
-
-goog.require('ol.xml');
-goog.require('ol.Feature');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Polygon');
-goog.require('ol.format.GML2');
-goog.require('ol.format.WFS');
-goog.require('ol.proj');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.uri');
 
+goog.require('ol.uri');
+
+
 describe('ol.uri.appendParams()', function() {
 
   it('should append empty STYLES with =', function() {
@@ -60,5 +63,3 @@ describe('ol.uri.appendParams()', function() {
   });
 
 });
-
-goog.require('ol.uri');

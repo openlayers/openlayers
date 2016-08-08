@@ -1,5 +1,12 @@
 goog.provide('ol.test.source.TileUTFGrid');
 
+goog.require('ol.net');
+goog.require('ol.proj');
+goog.require('ol.source.Tile');
+goog.require('ol.source.TileUTFGrid');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.source.TileUTFGrid', function() {
 
   var url = 'spec/ol/data/tileutfgrid.json';
@@ -284,10 +291,3 @@ describe('ol.source.TileUTFGrid', function() {
   });
 
 });
-
-
-goog.require('ol.net');
-goog.require('ol.proj');
-goog.require('ol.source.Tile');
-goog.require('ol.source.TileUTFGrid');
-goog.require('ol.tilegrid.TileGrid');

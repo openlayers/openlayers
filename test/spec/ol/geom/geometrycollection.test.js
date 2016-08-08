@@ -1,6 +1,11 @@
 goog.provide('ol.test.geom.GeometryCollection');
 
 goog.require('ol.extent');
+goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 
 describe('ol.geom.GeometryCollection', function() {
 
@@ -237,10 +242,3 @@ describe('ol.geom.GeometryCollection', function() {
   });
 
 });
-
-
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');

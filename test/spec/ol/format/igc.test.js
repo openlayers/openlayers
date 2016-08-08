@@ -1,5 +1,9 @@
 goog.provide('ol.test.format.IGC');
 
+goog.require('ol.format.IGC');
+goog.require('ol.Feature');
+goog.require('ol.proj');
+
 
 describe('ol.format.IGC', function() {
 
@@ -130,7 +134,3 @@ describe('ol.format.IGC', function() {
   });
 
 });
-
-goog.require('ol.format.IGC');
-goog.require('ol.Feature');
-goog.require('ol.proj');

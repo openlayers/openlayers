@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.flat.area');
 
+goog.require('ol.geom.flat.area');
+
 describe('ol.geom.flat.area', function() {
 
   describe('ol.geom.flat.area.linearRing', function() {
@@ -28,5 +30,3 @@ describe('ol.geom.flat.area', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.area');

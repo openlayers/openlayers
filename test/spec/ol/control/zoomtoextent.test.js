@@ -1,5 +1,7 @@
 goog.provide('ol.test.control.ZoomToExtent');
 
+goog.require('ol.control.ZoomToExtent');
+
 describe('ol.control.ZoomToExtent', function() {
 
   describe('constructor', function() {
@@ -12,5 +14,3 @@ describe('ol.control.ZoomToExtent', function() {
   });
 
 });
-
-goog.require('ol.control.ZoomToExtent');

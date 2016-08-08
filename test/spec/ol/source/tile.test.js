@@ -1,5 +1,14 @@
 goog.provide('ol.test.source.TileSource');
 
+goog.require('ol.Tile');
+goog.require('ol.TileRange');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.source.Source');
+goog.require('ol.source.Tile');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.source.Tile', function() {
 
   describe('constructor', function() {
@@ -313,11 +322,3 @@ describe('ol.test.source.TileMock', function() {
   });
 
 });
-
-goog.require('ol.Tile');
-goog.require('ol.TileRange');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.Source');
-goog.require('ol.source.Tile');
-goog.require('ol.tilegrid.TileGrid');

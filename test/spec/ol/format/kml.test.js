@@ -1,5 +1,27 @@
 goog.provide('ol.test.format.KML');
 
+goog.require('ol.array');
+goog.require('ol.Feature');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.format.KML');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
+goog.require('ol.style.Text');
+goog.require('ol.xml');
+
 
 describe('ol.format.KML', function() {
 
@@ -2867,26 +2889,3 @@ describe('ol.format.KML', function() {
   });
 
 });
-
-
-goog.require('ol.array');
-goog.require('ol.Feature');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.format.KML');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');
-goog.require('ol.xml');

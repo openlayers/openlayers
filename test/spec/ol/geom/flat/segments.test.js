@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.segments');
 
+goog.require('ol.geom.flat.segments');
+
+
 describe('ol.geom.flat.segments', function() {
 
   describe('ol.geom.flat.segments.forEach', function() {
@@ -53,5 +56,3 @@ describe('ol.geom.flat.segments', function() {
     });
   });
 });
-
-goog.require('ol.geom.flat.segments');

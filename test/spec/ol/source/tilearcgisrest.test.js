@@ -1,5 +1,9 @@
 goog.provide('ol.test.source.TileArcGISRest');
 
+goog.require('ol.ImageTile');
+goog.require('ol.source.TileArcGISRest');
+goog.require('ol.proj');
+
 
 describe('ol.source.TileArcGISRest', function() {
 
@@ -260,7 +264,3 @@ describe('ol.source.TileArcGISRest', function() {
   });
 
 });
-
-goog.require('ol.ImageTile');
-goog.require('ol.source.TileArcGISRest');
-goog.require('ol.proj');

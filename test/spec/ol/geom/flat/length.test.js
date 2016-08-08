@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.length');
 
+goog.require('ol.geom.flat.length');
+
+
 describe('ol.geom.flat.length', function() {
 
   describe('ol.geom.flat.length.lineString', function() {
@@ -90,5 +93,3 @@ describe('ol.geom.flat.length', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.length');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.source.Stamen');
 
+goog.require('ol.source.Stamen');
+
+
 describe('ol.source.Stamen', function() {
 
   describe('constructor', function() {
@@ -24,5 +27,3 @@ describe('ol.source.Stamen', function() {
   });
 
 });
-
-goog.require('ol.source.Stamen');

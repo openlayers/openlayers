@@ -1,5 +1,10 @@
 goog.provide('ol.test.style.Circle');
 
+goog.require('ol.style.AtlasManager');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+
 
 describe('ol.style.Circle', function() {
 
@@ -229,8 +234,3 @@ describe('ol.style.Circle', function() {
 
   });
 });
-
-goog.require('ol.style.AtlasManager');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');

@@ -1,5 +1,16 @@
 goog.provide('ol.test.renderer.canvas.Map');
 
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
+goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.renderer.canvas.Map');
+goog.require('ol.source.Vector');
+
+
 describe('ol.renderer.canvas.Map', function() {
 
   describe('constructor', function() {
@@ -127,14 +138,3 @@ describe('ol.renderer.canvas.Map', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.renderer.canvas.Map');
-goog.require('ol.source.Vector');

@@ -1,5 +1,11 @@
 goog.provide('ol.test.renderer.canvas.Layer');
 
+goog.require('ol.render.canvas');
+goog.require('ol.transform');
+goog.require('ol.layer.Image');
+goog.require('ol.renderer.Map');
+goog.require('ol.renderer.canvas.Layer');
+
 
 describe('ol.renderer.canvas.Layer', function() {
 
@@ -59,10 +65,3 @@ describe('ol.renderer.canvas.Layer', function() {
   });
 
 });
-
-
-goog.require('ol.render.canvas');
-goog.require('ol.transform');
-goog.require('ol.layer.Image');
-goog.require('ol.renderer.Map');
-goog.require('ol.renderer.canvas.Layer');

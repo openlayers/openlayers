@@ -1,5 +1,20 @@
 goog.provide('ol.test.renderer.canvas.VectorTileLayer');
 
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.VectorTile');
+goog.require('ol.View');
+goog.require('ol.format.MVT');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.VectorTile');
+goog.require('ol.proj');
+goog.require('ol.proj.Projection');
+goog.require('ol.renderer.canvas.VectorTileLayer');
+goog.require('ol.source.VectorTile');
+goog.require('ol.style.Style');
+goog.require('ol.style.Text');
+
+
 describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('constructor', function() {
@@ -180,18 +195,3 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.VectorTile');
-goog.require('ol.View');
-goog.require('ol.format.MVT');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
-goog.require('ol.renderer.canvas.VectorTileLayer');
-goog.require('ol.source.VectorTile');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');

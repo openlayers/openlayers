@@ -1,5 +1,11 @@
 goog.provide('ol.test.source.BingMaps');
 
+goog.require('ol.net');
+goog.require('ol.source.BingMaps');
+goog.require('ol.tilecoord');
+goog.require('ol.Observable');
+
+
 describe('ol.source.BingMaps', function() {
 
   describe('#tileUrlFunction()', function() {
@@ -70,9 +76,3 @@ describe('ol.source.BingMaps', function() {
   });
 
 });
-
-
-goog.require('ol.net');
-goog.require('ol.source.BingMaps');
-goog.require('ol.tilecoord');
-goog.require('ol.Observable');

@@ -1,5 +1,14 @@
 goog.provide('ol.test.format.GPX');
 
+goog.require('ol.Feature');
+goog.require('ol.format.GPX');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
+goog.require('ol.xml');
+
 describe('ol.format.GPX', function() {
 
   var format;
@@ -673,13 +682,3 @@ describe('ol.format.GPX', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.format.GPX');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.proj');
-goog.require('ol.xml');

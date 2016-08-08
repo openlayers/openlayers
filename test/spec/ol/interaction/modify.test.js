@@ -1,5 +1,22 @@
 goog.provide('ol.test.interaction.Modify');
 
+goog.require('ol.events');
+goog.require('ol.Collection');
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.MapBrowserPointerEvent');
+goog.require('ol.View');
+goog.require('ol.events.condition');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.interaction.Modify');
+goog.require('ol.interaction.ModifyEvent');
+goog.require('ol.layer.Vector');
+goog.require('ol.pointer.PointerEvent');
+goog.require('ol.source.Vector');
+
+
 describe('ol.interaction.Modify', function() {
 
   var target, map, source, features;
@@ -503,19 +520,3 @@ describe('ol.interaction.Modify', function() {
   });
 
 });
-
-goog.require('ol.events');
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.events.condition');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Modify');
-goog.require('ol.interaction.ModifyEvent');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');

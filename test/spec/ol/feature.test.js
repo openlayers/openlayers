@@ -1,5 +1,11 @@
 goog.provide('ol.test.Feature');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.obj');
+goog.require('ol.style.Style');
+
+
 describe('ol.Feature', function() {
 
   describe('constructor', function() {
@@ -460,9 +466,3 @@ describe('ol.Feature.createStyleFunction()', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.obj');
-goog.require('ol.style.Style');

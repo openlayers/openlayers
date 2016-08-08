@@ -1,5 +1,10 @@
 goog.provide('ol.test.control.OverviewMap');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.control.Control');
+goog.require('ol.control.OverviewMap');
+
 describe('ol.control.OverviewMap', function() {
   var map, target;
 
@@ -85,8 +90,3 @@ describe('ol.control.OverviewMap', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control.Control');
-goog.require('ol.control.OverviewMap');

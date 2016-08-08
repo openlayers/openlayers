@@ -1,5 +1,14 @@
 goog.provide('ol.test.TileGrid');
 
+goog.require('ol.extent');
+goog.require('ol.proj');
+goog.require('ol.proj.METERS_PER_UNIT');
+goog.require('ol.proj.EPSG3857');
+goog.require('ol.proj.Projection');
+goog.require('ol.TileRange');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.tilegrid.TileGrid', function() {
   var extent;
   var resolutions;
@@ -1092,11 +1101,3 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 });
-
-goog.require('ol.extent');
-goog.require('ol.proj');
-goog.require('ol.proj.METERS_PER_UNIT');
-goog.require('ol.proj.EPSG3857');
-goog.require('ol.proj.Projection');
-goog.require('ol.TileRange');
-goog.require('ol.tilegrid.TileGrid');

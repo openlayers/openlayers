@@ -1,5 +1,16 @@
 goog.provide('ol.test.source.RasterSource');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Image');
+goog.require('ol.proj.Projection');
+goog.require('ol.source.Image');
+goog.require('ol.source.ImageStatic');
+goog.require('ol.source.Raster');
+goog.require('ol.source.Source');
+goog.require('ol.source.Tile');
+
+
 var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
     'BAAEAAAICRAEAOw==';
 
@@ -293,13 +304,3 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.Image');
-goog.require('ol.source.ImageStatic');
-goog.require('ol.source.Raster');
-goog.require('ol.source.Source');
-goog.require('ol.source.Tile');

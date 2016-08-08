@@ -1,5 +1,12 @@
 goog.provide('ol.test.ImageTile');
 
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol.source.Image');
+goog.require('ol.ImageTile');
+goog.require('ol.TileState');
+
+
 describe('ol.ImageTile', function() {
 
   describe('#load()', function() {
@@ -57,9 +64,3 @@ describe('ol.ImageTile', function() {
   });
 
 });
-
-goog.require('ol.events');
-goog.require('ol.events.EventType');
-goog.require('ol.source.Image');
-goog.require('ol.ImageTile');
-goog.require('ol.TileState');

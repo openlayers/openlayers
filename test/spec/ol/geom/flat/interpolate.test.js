@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.interpolate');
 
+goog.require('ol.geom.flat.interpolate');
+
+
 describe('ol.geom.flat.interpolate', function() {
 
   describe('ol.geom.flat.interpolate.lineString', function() {
@@ -77,5 +80,3 @@ describe('ol.geom.flat.interpolate', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.interpolate');

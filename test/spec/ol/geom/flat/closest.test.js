@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.flat.closest');
 
+goog.require('ol.geom.flat.closest');
+
 
 describe('ol.geom.flat.closest', function() {
 
@@ -141,6 +143,3 @@ describe('ol.geom.flat.closest', function() {
   });
 
 });
-
-
-goog.require('ol.geom.flat.closest');

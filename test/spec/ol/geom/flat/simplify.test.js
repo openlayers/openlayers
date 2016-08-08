@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.simplify');
 
+goog.require('ol.geom.flat.simplify');
+
 
 describe('ol.geom.flat.simplify', function() {
 
@@ -353,6 +355,3 @@ describe('ol.geom.flat.simplify', function() {
   });
 
 });
-
-
-goog.require('ol.geom.flat.simplify');

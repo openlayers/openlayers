@@ -1,6 +1,8 @@
 goog.provide('ol.test.style.Icon');
 goog.provide('ol.test.style.IconImageCache');
 
+goog.require('ol.events');
+goog.require('ol.style.IconImageCache');
 goog.require('ol.style.Icon');
 
 
@@ -229,6 +231,3 @@ describe('ol.style.IconImageCache', function() {
     });
   });
 });
-
-goog.require('ol.events');
-goog.require('ol.style.IconImageCache');

@@ -1,5 +1,16 @@
 goog.provide('ol.test.layer.Group');
 
+goog.require('ol.array');
+goog.require('ol.Collection');
+goog.require('ol.events');
+goog.require('ol.extent');
+goog.require('ol.layer.Group');
+goog.require('ol.layer.Layer');
+goog.require('ol.obj');
+goog.require('ol.renderer.Map');
+goog.require('ol.source.Source');
+
+
 describe('ol.layer.Group', function() {
 
   describe('constructor (defaults)', function() {
@@ -488,13 +499,3 @@ describe('ol.layer.Group', function() {
   });
 
 });
-
-goog.require('ol.array');
-goog.require('ol.Collection');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.layer.Group');
-goog.require('ol.layer.Layer');
-goog.require('ol.obj');
-goog.require('ol.renderer.Map');
-goog.require('ol.source.Source');

@@ -1,5 +1,12 @@
 goog.provide('ol.test.interaction.DragAndDrop');
 
+goog.require('ol.interaction.DragAndDrop');
+goog.require('ol.View');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventTarget');
+goog.require('ol.format.GeoJSON');
+
+
 describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
 
@@ -108,9 +115,3 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
 });
-
-goog.require('ol.interaction.DragAndDrop');
-goog.require('ol.View');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventTarget');
-goog.require('ol.format.GeoJSON');

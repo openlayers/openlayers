@@ -1,5 +1,8 @@
 goog.provide('ol.test.object');
 
+goog.require('ol.obj');
+
+
 describe('ol.obj.assign()', function() {
 
   it('is an alias for Object.assign() where available', function() {
@@ -62,5 +65,3 @@ describe('ol.obj.isEmpty()', function() {
   });
 
 });
-
-goog.require('ol.obj');

@@ -1,5 +1,18 @@
 goog.provide('ol.test.format.GML');
 
+goog.require('ol.format.GML');
+goog.require('ol.format.GML2');
+goog.require('ol.format.GML3');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.xml');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
+
 var readGeometry = function(format, text, opt_options) {
   var doc = ol.xml.parse(text);
   // we need an intermediate node for testing purposes
@@ -1254,17 +1267,3 @@ describe('ol.format.GML3', function() {
   });
 
 });
-
-
-goog.require('ol.format.GML');
-goog.require('ol.format.GML2');
-goog.require('ol.format.GML3');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.xml');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.proj');

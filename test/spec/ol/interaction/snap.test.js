@@ -1,5 +1,14 @@
 goog.provide('ol.test.interaction.Snap');
 
+goog.require('ol.Collection');
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
+goog.require('ol.interaction.Snap');
+
+
 describe('ol.interaction.Snap', function() {
 
   describe('constructor', function() {
@@ -123,11 +132,3 @@ describe('ol.interaction.Snap', function() {
   });
 
 });
-
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.LineString');
-goog.require('ol.interaction.Snap');

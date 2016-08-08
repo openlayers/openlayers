@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.intersectsextent');
 
+goog.require('ol.geom.flat.intersectsextent');
+
+
 describe('ol.geom.flat.intersectsextent', function() {
 
   describe('ol.geom.flat.intersectsextent.lineString', function() {
@@ -89,5 +92,3 @@ describe('ol.geom.flat.intersectsextent', function() {
     });
   });
 });
-
-goog.require('ol.geom.flat.intersectsextent');
