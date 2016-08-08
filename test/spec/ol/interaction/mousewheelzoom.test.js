@@ -6,9 +6,6 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.View');
 goog.require('ol.events.Event');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.MouseWheelZoom');
-
-
 describe('ol.interaction.MouseWheelZoom', function() {
   var map;
 

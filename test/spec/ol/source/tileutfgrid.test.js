@@ -1,6 +1,5 @@
 goog.provide('ol.test.source.TileUTFGrid');
 
-goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.Tile');
 goog.require('ol.source.TileUTFGrid');

@@ -1,7 +1,6 @@
 goog.provide('ol.test.source.TileImageSource');
 
 goog.require('ol.ImageTile');
-goog.require('ol.Tile');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.proj');

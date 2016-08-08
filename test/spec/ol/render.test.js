@@ -3,9 +3,6 @@ goog.provide('ol.test.render');
 goog.require('ol.transform');
 goog.require('ol.render');
 goog.require('ol.render.canvas.Immediate');
-goog.require('ol.vec.Mat4');
-
-
 describe('ol.render', function() {
 
   describe('toContext', function() {

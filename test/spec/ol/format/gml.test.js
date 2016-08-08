@@ -2,7 +2,6 @@ goog.provide('ol.test.format.GML');
 
 goog.require('ol.format.GML');
 goog.require('ol.format.GML2');
-goog.require('ol.format.GML3');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.LinearRing');
 goog.require('ol.geom.MultiPoint');

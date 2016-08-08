@@ -6,9 +6,6 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.View');
 goog.require('ol.events.Event');
 goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.KeyboardPan');
-
-
 describe('ol.interaction.KeyboardPan', function() {
   var map;
 

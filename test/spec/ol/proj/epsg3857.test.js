@@ -2,9 +2,6 @@ goog.provide('ol.test.proj.EPSG3857');
 
 goog.require('ol.proj');
 goog.require('ol.proj.common');
-goog.require('ol.proj.EPSG3857');
-
-
 describe('ol.proj.EPSG3857', function() {
 
   afterEach(function() {

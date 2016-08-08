@@ -1,6 +1,5 @@
 goog.provide('ol.test.renderer.canvas.Layer');
 
-goog.require('ol.render.canvas');
 goog.require('ol.transform');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');

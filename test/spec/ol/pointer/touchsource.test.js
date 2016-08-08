@@ -5,11 +5,7 @@ goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
 goog.require('ol.has');
 goog.require('ol.obj');
-goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
-goog.require('ol.pointer.TouchSource');
-
-
 describe('ol.pointer.TouchSource', function() {
   var handler;
   var target;

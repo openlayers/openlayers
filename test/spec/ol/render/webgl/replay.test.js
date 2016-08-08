@@ -1,6 +1,5 @@
 goog.provide('ol.test.render.webgl.Replay');
 
-goog.require('ol.extent');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
 goog.require('ol.render.webgl.ImageReplay');
