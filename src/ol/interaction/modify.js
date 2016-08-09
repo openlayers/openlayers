@@ -1034,7 +1034,7 @@ ol.interaction.Modify.prototype.updateSegmentIndices_ = function(
  * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Modify.getDefaultStyleFunction = function() {
-  var style = ol.style.createDefaultEditingStyles();
+  var style = ol.style.Style.createDefaultEditing();
   return function(feature, resolution) {
     return style[ol.geom.GeometryType.POINT];
   };

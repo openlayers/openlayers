@@ -67,16 +67,16 @@ describe('ol.style.Style', function() {
 
 });
 
-describe('ol.style.createStyleFunction()', function() {
+describe('ol.style.Style.createFunction()', function() {
   var style = new ol.style.Style();
 
   it('creates a style function from a single style', function() {
-    var styleFunction = ol.style.createStyleFunction(style);
+    var styleFunction = ol.style.Style.createFunction(style);
     expect(styleFunction()).to.eql([style]);
   });
 
   it('creates a style function from an array of styles', function() {
-    var styleFunction = ol.style.createStyleFunction([style]);
+    var styleFunction = ol.style.Style.createFunction([style]);
     expect(styleFunction()).to.eql([style]);
   });
 
@@ -84,13 +84,13 @@ describe('ol.style.createStyleFunction()', function() {
     var original = function() {
       return [style];
     };
-    var styleFunction = ol.style.createStyleFunction(original);
+    var styleFunction = ol.style.Style.createFunction(original);
     expect(styleFunction).to.be(original);
   });
 
   it('throws on (some) unexpected input', function() {
     expect(function() {
-      ol.style.createStyleFunction({bogus: 'input'});
+      ol.style.Style.createFunction({bogus: 'input'});
     }).to.throwException();
   });
 

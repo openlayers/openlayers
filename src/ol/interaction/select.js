@@ -342,7 +342,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
  * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
-  var styles = ol.style.createDefaultEditingStyles();
+  var styles = ol.style.Style.createDefaultEditing();
   ol.array.extend(styles[ol.geom.GeometryType.POLYGON],
       styles[ol.geom.GeometryType.LINE_STRING]);
   ol.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
