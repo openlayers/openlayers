@@ -1,8 +1,9 @@
 goog.provide('ol.test.style.Icon');
 goog.provide('ol.test.style.IconImageCache');
 
+goog.require('ol');
 goog.require('ol.events');
-goog.require('ol.style.iconImageCache');
+goog.require('ol.style.IconImage');
 goog.require('ol.style.Icon');
 
 
@@ -19,7 +20,7 @@ describe('ol.style.Icon', function() {
         img: canvas,
         imgSize: size
       });
-      expect(ol.style.IconImage_.get(
+      expect(ol.style.IconImage.get(
           canvas, ol.getUid(canvas), size, '').getImage()).to.eql(canvas);
     });
 
@@ -147,7 +148,7 @@ describe('ol.style.Icon', function() {
       // this image will be used for the icon.
       var cache = ol.style.iconImageCache;
       var src = 'test.png';
-      var iconImage = new ol.style.IconImage_(null, 'test.png', imgSize);
+      var iconImage = new ol.style.IconImage(null, 'test.png', imgSize);
       cache.set(src, null, null, iconImage);
 
       var iconStyle = new ol.style.Icon({
@@ -190,7 +191,7 @@ describe('ol.style.IconImageCache', function() {
 
       for (i = 0; i < 4; ++i) {
         src = i + '';
-        iconImage = new ol.style.IconImage_(src, null);
+        iconImage = new ol.style.IconImage(src, null);
         cache.set(src, null, null, iconImage);
       }
 
@@ -200,7 +201,7 @@ describe('ol.style.IconImageCache', function() {
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
-      iconImage = new ol.style.IconImage_(src, null);
+      iconImage = new ol.style.IconImage(src, null);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 
@@ -208,14 +209,14 @@ describe('ol.style.IconImageCache', function() {
       expect(cache.cacheSize_).to.eql(3);
 
       src = '0';
-      iconImage = new ol.style.IconImage_(src, null);
+      iconImage = new ol.style.IconImage(src, null);
       ol.events.listen(iconImage, 'change',
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
-      iconImage = new ol.style.IconImage_(src, null);
+      iconImage = new ol.style.IconImage(src, null);
       ol.events.listen(iconImage, 'change',
           ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
