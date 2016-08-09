@@ -54,7 +54,7 @@ ol.TileRange.boundingTileRange = function(var_args) {
     tileCoordZ = tileCoord[0];
     tileCoordX = tileCoord[1];
     tileCoordY = tileCoord[2];
-    ol.assert(tileCoordZ == tileCoord0Z,
+    ol.asserts.assert(tileCoordZ == tileCoord0Z,
         23); // The passed `ol.TileCoord`s must all have the same `z` value
     tileRange.minX = Math.min(tileRange.minX, tileCoordX);
     tileRange.maxX = Math.max(tileRange.maxX, tileCoordX);

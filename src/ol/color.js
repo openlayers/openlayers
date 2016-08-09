@@ -159,7 +159,7 @@ ol.color.fromStringInternal_ = function(s) {
 
   if (ol.color.hexColorRe_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
-    ol.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
+    ol.asserts.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
     var d = n == 3 ? 1 : 2; // number of digits per channel
     r = parseInt(s.substr(1 + 0 * d, d), 16);
     g = parseInt(s.substr(1 + 1 * d, d), 16);
@@ -183,7 +183,7 @@ ol.color.fromStringInternal_ = function(s) {
     b = Number(match[3]);
     color = ol.color.normalize([r, g, b, 1]);
   } else {
-    ol.assert(false, 14); // Invalid color
+    ol.asserts.assert(false, 14); // Invalid color
   }
   return /** @type {ol.Color} */ (color);
 };

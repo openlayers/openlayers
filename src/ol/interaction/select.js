@@ -225,7 +225,7 @@ ol.interaction.Select.prototype.getFeatures = function() {
  * @api
  */
 ol.interaction.Select.prototype.getLayer = function(feature) {
-  ol.assert(feature instanceof ol.Feature,
+  ol.asserts.assert(feature instanceof ol.Feature,
       42); // Expected an `ol.Feature`, but got an `ol.RenderFeature`
   var key = ol.getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);

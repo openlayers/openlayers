@@ -58,7 +58,7 @@ ol.layer.VectorTile = function(opt_options) {
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
       options.useInterimTilesOnError : true);
 
-  ol.assert(options.renderMode == undefined ||
+  ol.asserts.assert(options.renderMode == undefined ||
       options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
       options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
       options.renderMode == ol.layer.VectorTileRenderType.VECTOR,

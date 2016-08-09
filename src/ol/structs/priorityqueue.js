@@ -125,7 +125,7 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
  * @return {boolean} The element was added to the queue.
  */
 ol.structs.PriorityQueue.prototype.enqueue = function(element) {
-  ol.assert(!(this.keyFunction_(element) in this.queuedElements_),
+  ol.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_),
       31); // Tried to enqueue an `element` that was already added to the queue
   var priority = this.priorityFunction_(element);
   if (priority != ol.structs.PriorityQueue.DROP) {

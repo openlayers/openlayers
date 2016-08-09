@@ -101,15 +101,15 @@ ol.style.Icon = function(opt_options) {
    */
   var src = options.src;
 
-  ol.assert(!(src !== undefined && image),
+  ol.asserts.assert(!(src !== undefined && image),
       4); // `image` and `src` cannot be provided at the same time
-  ol.assert(!image || (image && imgSize),
+  ol.asserts.assert(!image || (image && imgSize),
       5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
     src = image.src || ol.getUid(image).toString();
   }
-  ol.assert(src !== undefined && src.length > 0,
+  ol.asserts.assert(src !== undefined && src.length > 0,
       6); // A defined and non-empty `src` or `image` must be provided
 
   /**

@@ -221,8 +221,8 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
     if (typeof logo === 'string') {
       frameState.logos[logo] = '';
     } else if (logo) {
-      ol.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      ol.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
+      ol.asserts.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      ol.asserts.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       frameState.logos[logo.src] = logo.href;
     }
   }

@@ -101,7 +101,7 @@ ol.source.Vector = function(opt_options) {
   if (options.loader !== undefined) {
     this.loader_ = options.loader;
   } else if (this.url_ !== undefined) {
-    ol.assert(this.format_, 7); // `format` must be set when `url` is set
+    ol.asserts.assert(this.format_, 7); // `format` must be set when `url` is set
     // create a XHR feature loader for "url" and "format"
     this.loader_ = ol.featureloader.xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_));
   }
@@ -257,7 +257,7 @@ ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
       valid = false;
     }
   } else {
-    ol.assert(!(featureKey in this.undefIdIndex_),
+    ol.asserts.assert(!(featureKey in this.undefIdIndex_),
         30); // The passed `feature` was already added to the source
     this.undefIdIndex_[featureKey] = feature;
   }

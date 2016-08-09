@@ -289,11 +289,11 @@ ol.View.prototype.getHints = function(opt_hints) {
  */
 ol.View.prototype.calculateExtent = function(size) {
   var center = /** @type {!ol.Coordinate} */ (this.getCenter());
-  ol.assert(center, 1); // The view center is not defined
+  ol.asserts.assert(center, 1); // The view center is not defined
   var resolution = /** @type {!number} */ (this.getResolution());
-  ol.assert(resolution !== undefined, 2); // The view resolution is not defined
+  ol.asserts.assert(resolution !== undefined, 2); // The view resolution is not defined
   var rotation = /** @type {!number} */ (this.getRotation());
-  ol.assert(rotation !== undefined, 3); // The view rotation is not defined
+  ol.asserts.assert(rotation !== undefined, 3); // The view rotation is not defined
 
   return ol.extent.getForViewAndSize(center, resolution, rotation, size);
 };
@@ -492,9 +492,9 @@ ol.View.prototype.getZoom = function() {
  */
 ol.View.prototype.fit = function(geometry, size, opt_options) {
   if (!(geometry instanceof ol.geom.SimpleGeometry)) {
-    ol.assert(Array.isArray(geometry),
+    ol.asserts.assert(Array.isArray(geometry),
         24); // Invalid extent or geometry provided as `geometry`
-    ol.assert(!ol.extent.isEmpty(geometry),
+    ol.asserts.assert(!ol.extent.isEmpty(geometry),
         25); // Cannot fit empty extent provided as `geometry`
     geometry = ol.geom.Polygon.fromExtent(geometry);
   }

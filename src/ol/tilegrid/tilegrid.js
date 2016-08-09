@@ -32,7 +32,7 @@ ol.tilegrid.TileGrid = function(options) {
    * @type {!Array.<number>}
    */
   this.resolutions_ = options.resolutions;
-  ol.assert(ol.array.isSorted(this.resolutions_, function(a, b) {
+  ol.asserts.assert(ol.array.isSorted(this.resolutions_, function(a, b) {
     return b - a;
   }, true), 17); // `resolutions` must be sorted in descending order
 
@@ -55,7 +55,7 @@ ol.tilegrid.TileGrid = function(options) {
   this.origins_ = null;
   if (options.origins !== undefined) {
     this.origins_ = options.origins;
-    ol.assert(this.origins_.length == this.resolutions_.length,
+    ol.asserts.assert(this.origins_.length == this.resolutions_.length,
         20); // Number of `origins` and `resolutions` must be equal
   }
 
@@ -66,7 +66,7 @@ ol.tilegrid.TileGrid = function(options) {
     this.origin_ = ol.extent.getTopLeft(extent);
   }
 
-  ol.assert(
+  ol.asserts.assert(
       (!this.origin_ && this.origins_) || (this.origin_ && !this.origins_),
       18); // Either `origin` or `origins` must be configured, never both
 
@@ -77,7 +77,7 @@ ol.tilegrid.TileGrid = function(options) {
   this.tileSizes_ = null;
   if (options.tileSizes !== undefined) {
     this.tileSizes_ = options.tileSizes;
-    ol.assert(this.tileSizes_.length == this.resolutions_.length,
+    ol.asserts.assert(this.tileSizes_.length == this.resolutions_.length,
         19); // Number of `tileSizes` and `resolutions` must be equal
   }
 
@@ -88,7 +88,7 @@ ol.tilegrid.TileGrid = function(options) {
   this.tileSize_ = options.tileSize !== undefined ?
       options.tileSize :
       !this.tileSizes_ ? ol.DEFAULT_TILE_SIZE : null;
-  ol.assert(
+  ol.asserts.assert(
       (!this.tileSize_ && this.tileSizes_) ||
       (this.tileSize_ && !this.tileSizes_),
       22); // Either `tileSize` or `tileSizes` must be configured, never both
@@ -122,7 +122,7 @@ ol.tilegrid.TileGrid = function(options) {
           Math.min(0, size[0]), Math.max(size[0] - 1, -1),
           Math.min(0, size[1]), Math.max(size[1] - 1, -1));
       if (this.minZoom <= z && z <= this.maxZoom && extent !== undefined) {
-        ol.assert(tileRange.containsTileRange(
+        ol.asserts.assert(tileRange.containsTileRange(
             this.getTileRangeForExtentAndZ(extent, z)),
             21); // Tile range for `extent` must not exceed tilegrid width and height
       }

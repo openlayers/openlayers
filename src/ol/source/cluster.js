@@ -55,7 +55,7 @@ ol.source.Cluster = function(options) {
    */
   this.geometryFunction_ = options.geometryFunction || function(feature) {
     var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
-    ol.assert(geometry instanceof ol.geom.Point,
+    ol.asserts.assert(geometry instanceof ol.geom.Point,
         10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
     return geometry;
   };

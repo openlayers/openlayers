@@ -110,7 +110,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
       .replace(/MapServer\/?$/, 'MapServer/export')
       .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
-    ol.assert(false, 50); // Cannot determine Rest Service from url
+    ol.asserts.assert(false, 50); // Cannot determine Rest Service from url
   }
   return ol.uri.appendParams(modifiedUrl, params);
 };

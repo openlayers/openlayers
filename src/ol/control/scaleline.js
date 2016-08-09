@@ -245,7 +245,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    ol.assert(false, 33); // Invalid units
+    ol.asserts.assert(false, 33); // Invalid units
   }
 
   var i = 3 * Math.floor(

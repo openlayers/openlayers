@@ -61,7 +61,7 @@ ol.layer.Group = function(opt_options) {
     if (Array.isArray(layers)) {
       layers = new ol.Collection(layers.slice());
     } else {
-      ol.assert(layers instanceof ol.Collection,
+      ol.asserts.assert(layers instanceof ol.Collection,
           43); // Expected `layers` to be an array or an `ol.Collection`
       layers = layers;
     }

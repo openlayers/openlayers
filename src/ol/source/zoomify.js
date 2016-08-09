@@ -64,7 +64,7 @@ ol.source.Zoomify = function(opt_options) {
       }
       break;
     default:
-      ol.assert(false, 53); // Unknown `tierSizeCalculation` configured
+      ol.asserts.assert(false, 53); // Unknown `tierSizeCalculation` configured
       break;
   }
 

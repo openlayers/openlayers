@@ -69,7 +69,7 @@ ol.source.TileUTFGrid = function(options) {
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
-    ol.assert(false, 51); // Either `url` or `tileJSON` options must be provided
+    ol.asserts.assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 };
 ol.inherits(ol.source.TileUTFGrid, ol.source.Tile);
