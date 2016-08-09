@@ -1,5 +1,6 @@
 goog.provide('ol.test.layer.Layer');
 
+goog.require('ol');
 goog.require('ol.Map');
 goog.require('ol.layer.Layer');
 goog.require('ol.proj');

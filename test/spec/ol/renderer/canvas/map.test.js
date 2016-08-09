@@ -1,5 +1,6 @@
 goog.provide('ol.test.renderer.canvas.Map');
 
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');

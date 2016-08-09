@@ -1,5 +1,6 @@
 goog.provide('ol.test.renderer.vector');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
