@@ -1,5 +1,6 @@
 goog.provide('ol.source.TileImage');
 
+goog.require('ol');
 goog.require('ol.ImageTile');
 goog.require('ol.TileCache');
 goog.require('ol.TileState');

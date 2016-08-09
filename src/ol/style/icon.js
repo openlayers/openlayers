@@ -4,9 +4,11 @@ goog.provide('ol.style.IconOrigin');
 goog.provide('ol.style.iconImageCache');
 
 goog.require('ol');
+goog.require('ol.asserts');
+goog.require('ol.color');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.color');
+goog.require('ol.style.IconImage');
 goog.require('ol.style.Image');
 goog.require('ol.style.ImageState');
 

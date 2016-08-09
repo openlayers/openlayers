@@ -1,5 +1,8 @@
 goog.provide('ol.transform');
 
+goog.require('ol.asserts');
+
+
 /**
  * Collection of affine 2d transformation functions. The functions work on an
  * array of 6 elements. The element order is compatible with the [SVGMatrix

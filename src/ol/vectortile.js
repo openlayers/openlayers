@@ -1,5 +1,6 @@
 goog.provide('ol.VectorTile');
 
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 goog.require('ol.dom');

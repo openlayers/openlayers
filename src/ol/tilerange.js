@@ -1,5 +1,7 @@
 goog.provide('ol.TileRange');
 
+goog.require('ol.asserts');
+
 
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
