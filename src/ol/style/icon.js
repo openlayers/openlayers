@@ -640,7 +640,7 @@ ol.style.IconImage_.prototype.unlistenImage_ = function() {
  * @constructor
  * @private
  */
-ol.style.IconImageCache = function() {
+ol.style.IconImageCache_ = function() {
 
   /**
    * @type {Object.<string, ol.style.IconImage_>}
@@ -669,7 +669,7 @@ ol.style.IconImageCache = function() {
  * @param {ol.Color} color Color.
  * @return {string} Cache key.
  */
-ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
+ol.style.IconImageCache_.getKey = function(src, crossOrigin, color) {
   goog.DEBUG && console.assert(crossOrigin !== undefined,
       'argument crossOrigin must be defined');
   var colorString = color ? ol.color.asString(color) : 'null';
@@ -680,7 +680,7 @@ ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
 /**
  * FIXME empty description for jsdoc
  */
-ol.style.IconImageCache.prototype.clear = function() {
+ol.style.IconImageCache_.prototype.clear = function() {
   this.cache_ = {};
   this.cacheSize_ = 0;
 };
@@ -689,7 +689,7 @@ ol.style.IconImageCache.prototype.clear = function() {
 /**
  * FIXME empty description for jsdoc
  */
-ol.style.IconImageCache.prototype.expire = function() {
+ol.style.IconImageCache_.prototype.expire = function() {
   if (this.cacheSize_ > this.maxCacheSize_) {
     var i = 0;
     var key, iconImage;
@@ -710,8 +710,8 @@ ol.style.IconImageCache.prototype.expire = function() {
  * @param {ol.Color} color Color.
  * @return {ol.style.IconImage_} Icon image.
  */
-ol.style.IconImageCache.prototype.get = function(src, crossOrigin, color) {
-  var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
+ol.style.IconImageCache_.prototype.get = function(src, crossOrigin, color) {
+  var key = ol.style.IconImageCache_.getKey(src, crossOrigin, color);
   return key in this.cache_ ? this.cache_[key] : null;
 };
 
@@ -722,12 +722,12 @@ ol.style.IconImageCache.prototype.get = function(src, crossOrigin, color) {
  * @param {ol.Color} color Color.
  * @param {ol.style.IconImage_} iconImage Icon image.
  */
-ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color,
+ol.style.IconImageCache_.prototype.set = function(src, crossOrigin, color,
                                                  iconImage) {
-  var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
+  var key = ol.style.IconImageCache_.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;
 };
 
 
-ol.style.iconImageCache = new ol.style.IconImageCache();
+ol.style.iconImageCache = new ol.style.IconImageCache_();
