@@ -13,13 +13,12 @@ exports.rule = {
     return {
       CallExpression: function(expression) {
         if (util.isRequireExpression(expression)) {
-          const ancestors = context.getAncestors();
-          const parent = ancestors[ancestors.length - 1];
+          const parent = expression.parent;
           if (parent.type !== 'ExpressionStatement') {
             return context.report(expression, 'Expected goog.require() to in an expression statement');
           }
 
-          if (ancestors.length !== 2) {
+          if (parent.parent.type !== 'Program') {
             return context.report(expression, 'Expected goog.require() to be at the top level');
           }
 
