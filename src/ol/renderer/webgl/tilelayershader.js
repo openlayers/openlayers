@@ -14,7 +14,6 @@ ol.renderer.webgl.tilelayershader.Fragment = function() {
   ol.webgl.Fragment.call(this, ol.renderer.webgl.tilelayershader.Fragment.SOURCE);
 };
 ol.inherits(ol.renderer.webgl.tilelayershader.Fragment, ol.webgl.Fragment);
-goog.addSingletonGetter(ol.renderer.webgl.tilelayershader.Fragment);
 
 
 /**
@@ -40,6 +39,9 @@ ol.renderer.webgl.tilelayershader.Fragment.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
 
 
+ol.renderer.webgl.tilelayershader.fragment = new ol.renderer.webgl.tilelayershader.Fragment();
+
+
 /**
  * @constructor
  * @extends {ol.webgl.Vertex}
@@ -49,7 +51,6 @@ ol.renderer.webgl.tilelayershader.Vertex = function() {
   ol.webgl.Vertex.call(this, ol.renderer.webgl.tilelayershader.Vertex.SOURCE);
 };
 ol.inherits(ol.renderer.webgl.tilelayershader.Vertex, ol.webgl.Vertex);
-goog.addSingletonGetter(ol.renderer.webgl.tilelayershader.Vertex);
 
 
 /**
@@ -73,6 +74,9 @@ ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;attr
 ol.renderer.webgl.tilelayershader.Vertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE :
     ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
+
+
+ol.renderer.webgl.tilelayershader.vertex = new ol.renderer.webgl.tilelayershader.Vertex();
 
 
 /**

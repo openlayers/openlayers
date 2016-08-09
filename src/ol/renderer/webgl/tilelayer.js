@@ -30,14 +30,13 @@ ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
    * @private
    * @type {ol.webgl.Fragment}
    */
-  this.fragmentShader_ =
-      ol.renderer.webgl.tilelayershader.Fragment.getInstance();
+  this.fragmentShader_ = ol.renderer.webgl.tilelayershader.fragment;
 
   /**
    * @private
    * @type {ol.webgl.Vertex}
    */
-  this.vertexShader_ = ol.renderer.webgl.tilelayershader.Vertex.getInstance();
+  this.vertexShader_ = ol.renderer.webgl.tilelayershader.vertex;
 
   /**
    * @private

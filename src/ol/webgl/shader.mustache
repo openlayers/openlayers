@@ -14,7 +14,6 @@ goog.require('ol.webgl.Vertex');
   ol.webgl.Fragment.call(this, {{className}}.Fragment.SOURCE);
 };
 ol.inherits({{className}}.Fragment, ol.webgl.Fragment);
-goog.addSingletonGetter({{className}}.Fragment);
 
 
 /**
@@ -40,6 +39,9 @@ goog.addSingletonGetter({{className}}.Fragment);
     {{className}}.Fragment.OPTIMIZED_SOURCE;
 
 
+{{className}}.fragment = new {{className}}.Fragment();
+
+
 /**
  * @constructor
  * @extends {ol.webgl.Vertex}
@@ -49,7 +51,6 @@ goog.addSingletonGetter({{className}}.Fragment);
   ol.webgl.Vertex.call(this, {{className}}.Vertex.SOURCE);
 };
 ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
-goog.addSingletonGetter({{className}}.Vertex);
 
 
 /**
@@ -73,6 +74,9 @@ goog.addSingletonGetter({{className}}.Vertex);
 {{className}}.Vertex.SOURCE = goog.DEBUG ?
     {{className}}.Vertex.DEBUG_SOURCE :
     {{className}}.Vertex.OPTIMIZED_SOURCE;
+
+
+{{className}}.vertex = new {{className}}.Vertex();
 
 
 /**

@@ -515,10 +515,8 @@ ol.render.webgl.ImageReplay.prototype.replay = function(context,
   context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer_);
 
   // get the program
-  var fragmentShader =
-      ol.render.webgl.imagereplay.defaultshader.Fragment.getInstance();
-  var vertexShader =
-      ol.render.webgl.imagereplay.defaultshader.Vertex.getInstance();
+  var fragmentShader = ol.render.webgl.imagereplay.defaultshader.fragment;
+  var vertexShader = ol.render.webgl.imagereplay.defaultshader.vertex;
   var program = context.getProgram(fragmentShader, vertexShader);
 
   // get the locations

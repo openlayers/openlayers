@@ -14,7 +14,6 @@ ol.render.webgl.imagereplay.defaultshader.Fragment = function() {
   ol.webgl.Fragment.call(this, ol.render.webgl.imagereplay.defaultshader.Fragment.SOURCE);
 };
 ol.inherits(ol.render.webgl.imagereplay.defaultshader.Fragment, ol.webgl.Fragment);
-goog.addSingletonGetter(ol.render.webgl.imagereplay.defaultshader.Fragment);
 
 
 /**
@@ -40,6 +39,9 @@ ol.render.webgl.imagereplay.defaultshader.Fragment.SOURCE = goog.DEBUG ?
     ol.render.webgl.imagereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
+ol.render.webgl.imagereplay.defaultshader.fragment = new ol.render.webgl.imagereplay.defaultshader.Fragment();
+
+
 /**
  * @constructor
  * @extends {ol.webgl.Vertex}
@@ -49,7 +51,6 @@ ol.render.webgl.imagereplay.defaultshader.Vertex = function() {
   ol.webgl.Vertex.call(this, ol.render.webgl.imagereplay.defaultshader.Vertex.SOURCE);
 };
 ol.inherits(ol.render.webgl.imagereplay.defaultshader.Vertex, ol.webgl.Vertex);
-goog.addSingletonGetter(ol.render.webgl.imagereplay.defaultshader.Vertex);
 
 
 /**
@@ -73,6 +74,9 @@ ol.render.webgl.imagereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'varying vec
 ol.render.webgl.imagereplay.defaultshader.Vertex.SOURCE = goog.DEBUG ?
     ol.render.webgl.imagereplay.defaultshader.Vertex.DEBUG_SOURCE :
     ol.render.webgl.imagereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+
+
+ol.render.webgl.imagereplay.defaultshader.vertex = new ol.render.webgl.imagereplay.defaultshader.Vertex();
 
 
 /**

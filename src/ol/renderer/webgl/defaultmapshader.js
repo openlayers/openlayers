@@ -14,7 +14,6 @@ ol.renderer.webgl.defaultmapshader.Fragment = function() {
   ol.webgl.Fragment.call(this, ol.renderer.webgl.defaultmapshader.Fragment.SOURCE);
 };
 ol.inherits(ol.renderer.webgl.defaultmapshader.Fragment, ol.webgl.Fragment);
-goog.addSingletonGetter(ol.renderer.webgl.defaultmapshader.Fragment);
 
 
 /**
@@ -40,6 +39,9 @@ ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
 
 
+ol.renderer.webgl.defaultmapshader.fragment = new ol.renderer.webgl.defaultmapshader.Fragment();
+
+
 /**
  * @constructor
  * @extends {ol.webgl.Vertex}
@@ -49,7 +51,6 @@ ol.renderer.webgl.defaultmapshader.Vertex = function() {
   ol.webgl.Vertex.call(this, ol.renderer.webgl.defaultmapshader.Vertex.SOURCE);
 };
 ol.inherits(ol.renderer.webgl.defaultmapshader.Vertex, ol.webgl.Vertex);
-goog.addSingletonGetter(ol.renderer.webgl.defaultmapshader.Vertex);
 
 
 /**
@@ -73,6 +74,9 @@ ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;att
 ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = goog.DEBUG ?
     ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE :
     ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
+
+
+ol.renderer.webgl.defaultmapshader.vertex = new ol.renderer.webgl.defaultmapshader.Vertex();
 
 
 /**
