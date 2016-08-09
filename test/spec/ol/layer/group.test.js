@@ -1,5 +1,6 @@
 goog.provide('ol.test.layer.Group');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.Collection');
 goog.require('ol.extent');

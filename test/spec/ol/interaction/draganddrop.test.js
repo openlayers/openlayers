@@ -1,14 +1,16 @@
 goog.provide('ol.test.interaction.DragAndDrop');
 
-goog.require('ol.interaction.DragAndDrop');
+goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
 goog.require('ol.format.GeoJSON');
+goog.require('ol.interaction.DragAndDrop');
 
 
 describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
+  var global = ol.global;
 
   beforeEach(function() {
     viewport = new ol.events.EventTarget();
@@ -69,7 +71,7 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('#handleDrop_', function() {
-    var origFileReader = ol.global.FileReader;
+    var origFileReader = global.FileReader;
 
     beforeEach(function() {
       FileReader = function() {
@@ -83,7 +85,7 @@ describe('ol.interaction.DragAndDrop', function() {
     });
 
     afterEach(function() {
-      ol.global.FileReader = origFileReader;
+      global.FileReader = origFileReader;
     });
 
     it('reads dropped files', function(done) {
