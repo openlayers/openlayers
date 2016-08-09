@@ -2,7 +2,6 @@ goog.provide('ol.events.condition');
 
 goog.require('ol.functions');
 goog.require('ol.MapBrowserEvent.EventType');
-goog.require('ol.MapBrowserPointerEvent');
 
 
 /**
@@ -199,14 +198,14 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
 /**
  * Return `true` if the event originates from a mouse device.
  *
- * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Map browser pointer
- * event.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @return {boolean} True if the event originates from a mouse device.
  * @api stable
  */
-ol.events.condition.mouseOnly = function(mapBrowserPointerEvent) {
+ol.events.condition.mouseOnly = function(mapBrowserEvent) {
+  ol.assert(mapBrowserEvent.pointerEvent, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-  return mapBrowserPointerEvent.pointerEvent.pointerType == 'mouse';
+  return /** @type {ol.MapBrowserEvent} */ (mapBrowserEvent).pointerEvent.pointerType == 'mouse';
 };
 
 
