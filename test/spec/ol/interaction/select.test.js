@@ -1,5 +1,18 @@
 goog.provide('ol.test.interaction.Select');
 
+goog.require('ol.Collection');
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.MapBrowserPointerEvent');
+goog.require('ol.View');
+goog.require('ol.geom.Polygon');
+goog.require('ol.interaction.Select');
+goog.require('ol.interaction.Interaction');
+goog.require('ol.layer.Vector');
+goog.require('ol.pointer.PointerEvent');
+goog.require('ol.source.Vector');
+
+
 describe('ol.interaction.Select', function() {
   var target, map, layer, source;
 
@@ -431,15 +444,3 @@ describe('ol.interaction.Select', function() {
     });
   });
 });
-
-goog.require('ol.Collection');
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserPointerEvent');
-goog.require('ol.View');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Select');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.layer.Vector');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.source.Vector');

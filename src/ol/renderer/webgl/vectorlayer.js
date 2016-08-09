@@ -1,9 +1,7 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
-goog.require('ol.events');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
-goog.require('ol.layer.Vector');
 goog.require('ol.transform');
 goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.vector');

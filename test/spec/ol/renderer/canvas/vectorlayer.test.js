@@ -1,5 +1,18 @@
 goog.provide('ol.test.renderer.canvas.VectorLayer');
 
+goog.require('ol.Feature');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.extent');
+goog.require('ol.geom.Point');
+goog.require('ol.layer.Vector');
+goog.require('ol.proj');
+goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Style');
+goog.require('ol.style.Text');
+
+
 describe('ol.renderer.canvas.VectorLayer', function() {
 
   describe('constructor', function() {
@@ -164,16 +177,3 @@ describe('ol.renderer.canvas.VectorLayer', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.geom.Point');
-goog.require('ol.layer.Vector');
-goog.require('ol.proj');
-goog.require('ol.renderer.canvas.VectorLayer');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
-goog.require('ol.style.Text');

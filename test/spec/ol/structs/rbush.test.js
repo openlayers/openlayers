@@ -1,5 +1,7 @@
 goog.provide('ol.test.structs.RBush');
 
+goog.require('ol.structs.RBush');
+
 
 describe('ol.structs.RBush', function() {
 
@@ -373,5 +375,3 @@ describe('ol.structs.RBush', function() {
   });
 
 });
-
-goog.require('ol.structs.RBush');

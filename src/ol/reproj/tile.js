@@ -7,7 +7,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.obj');
-goog.require('ol.proj');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
 

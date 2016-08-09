@@ -8,8 +8,6 @@ goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
 
 
 /**

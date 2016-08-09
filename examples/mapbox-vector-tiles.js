@@ -1,4 +1,5 @@
-goog.require('ol.Attribution');
+/* eslint-disable openlayers-internal/no-unused-requires */
+
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.MVT');
@@ -9,6 +10,7 @@ goog.require('ol.style.Icon');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
+goog.require('ol.tilegrid');
 
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';

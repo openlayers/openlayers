@@ -1,5 +1,14 @@
 goog.provide('ol.test.rendering.layer.VectorTile');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.format.MVT');
+goog.require('ol.layer.VectorTile');
+goog.require('ol.obj');
+goog.require('ol.source.VectorTile');
+goog.require('ol.tilegrid');
+
+
 describe('ol.rendering.layer.VectorTile', function() {
 
   var target, map;
@@ -73,10 +82,3 @@ describe('ol.rendering.layer.VectorTile', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.format.MVT');
-goog.require('ol.layer.VectorTile');
-goog.require('ol.obj');
-goog.require('ol.source.VectorTile');

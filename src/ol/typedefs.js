@@ -607,7 +607,7 @@ ol.TilePriorityFunction;
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedTileRevision: number,
  *     renderedRevision: number,
- *     replayGroup: ol.render.IReplayGroup,
+ *     replayGroup: ol.render.ReplayGroup,
  *     skippedFeatures: Array.<string>}}
  */
 ol.TileReplayState;

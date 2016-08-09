@@ -8,6 +8,7 @@ goog.require('ol.events.EventType');
 goog.require('ol.proj');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.UrlTile');
+goog.require('ol.tilegrid');
 
 
 /**

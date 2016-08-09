@@ -1,5 +1,15 @@
 goog.provide('ol.test.rendering.style.Icon');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Icon');
+goog.require('ol.style.Style');
+
+
 describe('ol.rendering.style.Icon', function() {
 
   var target, map, vectorSource;
@@ -110,12 +120,3 @@ describe('ol.rendering.style.Icon', function() {
     });
   });
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Style');

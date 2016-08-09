@@ -1,5 +1,8 @@
 goog.provide('ol.test.style.Text');
 
+goog.require('ol.style.Fill');
+goog.require('ol.style.Text');
+
 
 describe('ol.style.Text', function() {
 
@@ -26,6 +29,3 @@ describe('ol.style.Text', function() {
   });
 
 });
-
-goog.require('ol.style.Fill');
-goog.require('ol.style.Text');

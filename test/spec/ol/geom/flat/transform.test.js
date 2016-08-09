@@ -1,5 +1,9 @@
 goog.provide('ol.test.geom.flat.transform');
 
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.flat.transform');
+
+
 describe('ol.geom.flat.transform', function() {
 
   describe('ol.geom.flat.transform.transform2D', function() {
@@ -127,6 +131,3 @@ describe('ol.geom.flat.transform', function() {
   });
 
 });
-
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.flat.transform');

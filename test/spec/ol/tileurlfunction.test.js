@@ -1,5 +1,10 @@
 goog.provide('ol.test.TileUrlFunction');
 
+goog.require('ol.TileUrlFunction');
+goog.require('ol.tilegrid');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.TileUrlFunction', function() {
 
   describe('expandUrl', function() {
@@ -104,6 +109,3 @@ describe('ol.TileUrlFunction', function() {
   });
 
 });
-
-goog.require('ol.TileUrlFunction');
-goog.require('ol.tilegrid.TileGrid');

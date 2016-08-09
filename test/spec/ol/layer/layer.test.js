@@ -1,5 +1,12 @@
 goog.provide('ol.test.layer.Layer');
 
+goog.require('ol.Map');
+goog.require('ol.layer.Layer');
+goog.require('ol.proj');
+goog.require('ol.render.Event');
+goog.require('ol.source.Source');
+
+
 describe('ol.layer.Layer', function() {
 
   describe('constructor (defaults)', function() {
@@ -431,9 +438,3 @@ describe('ol.layer.Layer', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.layer.Layer');
-goog.require('ol.proj');
-goog.require('ol.render.Event');
-goog.require('ol.source.Source');

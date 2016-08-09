@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.orient');
 
+goog.require('ol.geom.flat.orient');
+
+
 describe('ol.geom.flat.orient', function() {
 
   describe('ol.geom.flat.orient.linearRingIsClockwise()', function() {
@@ -158,5 +161,3 @@ describe('ol.geom.flat.orient', function() {
 
 
 });
-
-goog.require('ol.geom.flat.orient');

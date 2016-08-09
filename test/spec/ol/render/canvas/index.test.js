@@ -1,5 +1,7 @@
 goog.provide('ol.test.render.canvas');
 
+goog.require('ol.render.canvas');
+
 
 describe('ol.render.canvas', function() {
 
@@ -19,7 +21,3 @@ describe('ol.render.canvas', function() {
   });
 
 });
-
-
-goog.require('ol.render');
-goog.require('ol.render.canvas');

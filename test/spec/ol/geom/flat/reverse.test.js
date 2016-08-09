@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.reverse');
 
+goog.require('ol.geom.flat.reverse');
+
+
 describe('ol.geom.flat.reverse', function() {
 
   describe('ol.geom.flat.reverse.coordinates', function() {
@@ -126,5 +129,3 @@ describe('ol.geom.flat.reverse', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.reverse');

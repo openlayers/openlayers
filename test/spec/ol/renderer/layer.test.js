@@ -1,5 +1,10 @@
 goog.provide('ol.test.renderer.Layer');
 
+goog.require('ol.Image');
+goog.require('ol.layer.Layer');
+goog.require('ol.renderer.Layer');
+
+
 describe('ol.renderer.Layer', function() {
   var renderer;
   var eventType = 'change';
@@ -78,7 +83,3 @@ describe('ol.renderer.Layer', function() {
 
   });
 });
-
-goog.require('ol.Image');
-goog.require('ol.layer.Layer');
-goog.require('ol.renderer.Layer');

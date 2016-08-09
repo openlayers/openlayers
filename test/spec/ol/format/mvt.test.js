@@ -1,5 +1,11 @@
 goog.provide('ol.test.format.MVT');
 
+goog.require('ol.Feature');
+goog.require('ol.ext.pbf');
+goog.require('ol.ext.vectortile');
+goog.require('ol.format.MVT');
+goog.require('ol.render.Feature');
+
 where('ArrayBuffer').describe('ol.format.MVT', function() {
 
   var data;
@@ -77,10 +83,3 @@ where('ArrayBuffer').describe('ol.format.MVT', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.ext.pbf');
-goog.require('ol.ext.vectortile');
-goog.require('ol.format.MVT');
-goog.require('ol.render.Feature');

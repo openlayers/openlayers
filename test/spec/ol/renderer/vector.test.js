@@ -1,5 +1,21 @@
 goog.provide('ol.test.renderer.vector');
 
+goog.require('ol.events');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.render.canvas.ReplayGroup');
+goog.require('ol.renderer.vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
+goog.require('ol.Feature');
+
+
 describe('ol.renderer.vector', function() {
   describe('#renderFeature', function() {
     var replayGroup;
@@ -154,18 +170,3 @@ describe('ol.renderer.vector', function() {
 
   });
 });
-
-goog.require('ol.events');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.geom.MultiLineString');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.render.canvas.ReplayGroup');
-goog.require('ol.renderer.vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.Style');
-goog.require('ol.Feature');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.format.WMTSCapabilities');
 
+goog.require('ol.format.WMTSCapabilities');
+
+
 describe('ol.format.WMTSCapabilities', function() {
 
   describe('when parsing ogcsample.xml', function() {
@@ -113,5 +116,3 @@ describe('ol.format.WMTSCapabilities', function() {
 
   });
 });
-
-goog.require('ol.format.WMTSCapabilities');

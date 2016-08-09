@@ -1,5 +1,9 @@
 goog.provide('ol.test.source.UrlTile');
 
+goog.require('ol.proj');
+goog.require('ol.source.UrlTile');
+goog.require('ol.tilegrid');
+
 
 describe('ol.source.UrlTile', function() {
 
@@ -215,6 +219,3 @@ describe('ol.source.UrlTile', function() {
   });
 
 });
-
-goog.require('ol.proj');
-goog.require('ol.source.UrlTile');

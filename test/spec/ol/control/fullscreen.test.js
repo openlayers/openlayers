@@ -1,5 +1,7 @@
 goog.provide('ol.test.control.FullScreen');
 
+goog.require('ol.control.FullScreen');
+
 describe('ol.control.FullScreen', function() {
 
   describe('constructor', function() {
@@ -12,5 +14,3 @@ describe('ol.control.FullScreen', function() {
   });
 
 });
-
-goog.require('ol.control.FullScreen');

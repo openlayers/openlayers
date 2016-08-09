@@ -6,7 +6,6 @@ goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.obj');
 goog.require('ol.webgl');
-goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.WebGLContextEventType');
 
 

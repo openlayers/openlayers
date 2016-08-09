@@ -8,7 +8,6 @@ goog.provide('ol.render.canvas.PolygonReplay');
 goog.provide('ol.render.canvas.ReplayGroup');
 goog.provide('ol.render.canvas.TextReplay');
 
-goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.color');
@@ -20,9 +19,11 @@ goog.require('ol.geom.flat.simplify');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.obj');
-goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.ReplayGroup');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
+goog.require('ol.render.replay');
+goog.require('ol.transform');
 
 
 /**
@@ -1806,15 +1807,15 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
 
 /**
  * @constructor
- * @implements {ol.render.IReplayGroup}
+ * @extends {ol.render.ReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, opt_renderBuffer) {
+ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution, opt_renderBuffer) {
+  ol.render.ReplayGroup.call(this);
 
   /**
    * @private
@@ -1860,6 +1861,7 @@ ol.render.canvas.ReplayGroup = function(
   this.hitDetectionTransform_ = ol.transform.create();
 
 };
+ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
 
 /**
@@ -1969,7 +1971,7 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
- *     to replay. Default is {@link ol.render.REPLAY_ORDER}
+ *     to replay. Default is {@link ol.render.replay.ORDER}
  */
 ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
     transform, viewRotation, skippedFeaturesHash, opt_replayTypes) {
@@ -1997,7 +1999,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
   context.closePath();
   context.clip();
 
-  var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.REPLAY_ORDER;
+  var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
   var i, ii, j, jj, replays, replay;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
@@ -2040,8 +2042,8 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
   var i, ii, j, replays, replay, result;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     replays = this.replaysByZIndex_[zs[i].toString()];
-    for (j = ol.render.REPLAY_ORDER.length - 1; j >= 0; --j) {
-      replay = replays[ol.render.REPLAY_ORDER[j]];
+    for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ol.render.replay.ORDER[j]];
       if (replay !== undefined) {
         result = replay.replayHitDetection(context, transform, viewRotation,
             skippedFeaturesHash, featureCallback, opt_hitExtent);

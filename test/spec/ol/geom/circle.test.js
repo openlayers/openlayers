@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.Circle');
 
+goog.require('ol.geom.Circle');
+
 
 describe('ol.geom.Circle', function() {
 
@@ -273,6 +275,3 @@ describe('ol.geom.Circle', function() {
   });
 
 });
-
-
-goog.require('ol.geom.Circle');

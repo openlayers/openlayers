@@ -1,5 +1,11 @@
 goog.provide('ol.test.style.RegularShape');
 
+goog.require('ol.style.AtlasManager');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+
+
 describe('ol.style.RegularShape', function() {
 
   describe('#constructor', function() {
@@ -294,8 +300,3 @@ describe('ol.style.RegularShape', function() {
 
   });
 });
-
-goog.require('ol.style.AtlasManager');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Stroke');

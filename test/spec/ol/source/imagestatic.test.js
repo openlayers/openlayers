@@ -1,5 +1,9 @@
 goog.provide('ol.test.source.ImageStatic');
 
+goog.require('ol.source.ImageStatic');
+goog.require('ol.proj');
+
+
 describe('ol.source.ImageStatic', function() {
 
   var extent, pixelRatio, projection, resolution;
@@ -80,6 +84,3 @@ describe('ol.source.ImageStatic', function() {
     });
   });
 });
-
-goog.require('ol.source.ImageStatic');
-goog.require('ol.proj');

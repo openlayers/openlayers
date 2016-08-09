@@ -1,5 +1,9 @@
 goog.provide('ol.test.tilegrid.WMTS');
 
+goog.require('ol.format.WMTSCapabilities');
+goog.require('ol.tilegrid.WMTS');
+
+
 describe('ol.tilegrid.WMTS', function() {
 
   describe('when creating tileGrid from capabilities', function() {
@@ -53,6 +57,3 @@ describe('ol.tilegrid.WMTS', function() {
         });
   });
 });
-
-goog.require('ol.format.WMTSCapabilities');
-goog.require('ol.tilegrid.WMTS');

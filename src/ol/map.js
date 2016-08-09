@@ -31,7 +31,6 @@ goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.transform');
 goog.require('ol.obj');
-goog.require('ol.proj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');

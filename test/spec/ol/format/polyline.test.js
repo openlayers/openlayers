@@ -1,5 +1,10 @@
 goog.provide('ol.test.format.Polyline');
 
+goog.require('ol.Feature');
+goog.require('ol.format.Polyline');
+goog.require('ol.geom.LineString');
+goog.require('ol.proj');
+
 describe('ol.format.Polyline', function() {
 
   var format;
@@ -396,8 +401,3 @@ describe('ol.format.Polyline', function() {
   });
 
 });
-
-goog.require('ol.Feature');
-goog.require('ol.format.Polyline');
-goog.require('ol.geom.LineString');
-goog.require('ol.proj');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.flat.flip');
 
+goog.require('ol.geom.flat.flip');
+
+
 describe('ol.geom.flat.flip', function() {
 
   describe('ol.geom.flat.flip.flipXY', function() {
@@ -34,5 +37,3 @@ describe('ol.geom.flat.flip', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.flip');

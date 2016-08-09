@@ -1,6 +1,11 @@
 /*global createMapDiv, disposeMap*/
 goog.provide('ol.test.control.ZoomSlider');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.control.ZoomSlider');
+goog.require('ol.pointer.PointerEvent');
+
 describe('ol.control.ZoomSlider', function() {
   var map, target, zoomslider;
 
@@ -170,8 +175,3 @@ describe('ol.control.ZoomSlider', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control.ZoomSlider');
-goog.require('ol.pointer.PointerEvent');

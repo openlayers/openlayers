@@ -12,6 +12,7 @@ goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
+goog.require('ol.tilegrid');
 
 
 /**

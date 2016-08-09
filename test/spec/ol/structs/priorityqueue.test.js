@@ -1,5 +1,7 @@
 goog.provide('ol.test.structs.PriorityQueue');
 
+goog.require('ol.structs.PriorityQueue');
+
 
 describe('ol.structs.PriorityQueue', function() {
 
@@ -205,6 +207,3 @@ describe('ol.structs.PriorityQueue', function() {
   });
 
 });
-
-
-goog.require('ol.structs.PriorityQueue');

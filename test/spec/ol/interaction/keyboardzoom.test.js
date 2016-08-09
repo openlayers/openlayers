@@ -1,7 +1,11 @@
 /*global createMapDiv, disposeMap*/
 goog.provide('ol.test.interaction.KeyboardZoom');
 
-
+goog.require('ol.Map');
+goog.require('ol.MapBrowserEvent');
+goog.require('ol.View');
+goog.require('ol.events.Event');
+goog.require('ol.interaction.Interaction');
 describe('ol.interaction.KeyboardZoom', function() {
   var map;
 
@@ -39,11 +43,3 @@ describe('ol.interaction.KeyboardZoom', function() {
   });
 
 });
-
-
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEvent');
-goog.require('ol.View');
-goog.require('ol.events.Event');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.KeyboardZoom');

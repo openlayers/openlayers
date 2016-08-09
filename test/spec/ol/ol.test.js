@@ -1,5 +1,8 @@
 goog.provide('ol.test');
 
+goog.require('ol');
+
+
 describe('ol', function() {
 
   describe('ol.assert', function() {
@@ -33,5 +36,3 @@ describe('ol', function() {
   });
 
 });
-
-goog.require('ol');

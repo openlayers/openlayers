@@ -1,6 +1,9 @@
 /*global Modernizr*/
 goog.provide('ol.test.dom');
 
+goog.require('goog.userAgent');
+goog.require('ol.transform');
+goog.require('ol.dom');
 
 /*! modernizr 3.3.1 (Custom Build) | MIT
  *
@@ -562,7 +565,3 @@ describe('ol.dom', function() {
   });
 
 });
-
-goog.require('goog.userAgent');
-goog.require('ol.transform');
-goog.require('ol.dom');

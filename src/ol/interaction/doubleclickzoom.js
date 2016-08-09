@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DoubleClickZoom');
 
-goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.interaction.Interaction');
 

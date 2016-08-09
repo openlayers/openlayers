@@ -1,16 +1,13 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
-goog.require('ol.events');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.layer.Vector');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
-goog.require('ol.source.Vector');
 
 
 /**

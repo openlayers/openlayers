@@ -1,5 +1,11 @@
 goog.provide('ol.test.format.OSMXML');
 
+goog.require('ol.Feature');
+goog.require('ol.format.OSMXML');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.LineString');
+goog.require('ol.proj');
+
 
 describe('ol.format.OSMXML', function() {
 
@@ -107,10 +113,3 @@ describe('ol.format.OSMXML', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.format.OSMXML');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.LineString');
-goog.require('ol.proj');

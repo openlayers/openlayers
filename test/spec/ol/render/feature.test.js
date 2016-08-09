@@ -1,5 +1,8 @@
 goog.provide('ol.test.render.Feature');
 
+goog.require('ol.render.Feature');
+
+
 describe('ol.render.Feature', function() {
 
   var renderFeature;
@@ -85,6 +88,3 @@ describe('ol.render.Feature', function() {
   });
 
 });
-
-
-goog.require('ol.render.Feature');

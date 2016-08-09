@@ -1,6 +1,7 @@
 goog.provide('ol.source.XYZ');
 
 goog.require('ol.source.TileImage');
+goog.require('ol.tilegrid');
 
 
 /**

@@ -1,5 +1,17 @@
 goog.provide('ol.test.reader.GeoJSON');
 
+goog.require('ol.Feature');
+goog.require('ol.extent');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
+goog.require('ol.proj');
+
 
 describe('ol.format.GeoJSON', function() {
 
@@ -769,16 +781,3 @@ describe('ol.format.GeoJSON', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.extent');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.proj');

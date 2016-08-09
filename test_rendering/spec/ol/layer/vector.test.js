@@ -1,5 +1,14 @@
 goog.provide('ol.test.rendering.layer.Vector');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.Feature');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.Polygon');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+
+
 describe('ol.rendering.layer.Vector', function() {
 
   var center, target, map;
@@ -76,11 +85,3 @@ describe('ol.rendering.layer.Vector', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.Feature');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.Polygon');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');

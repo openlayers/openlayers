@@ -1,12 +1,13 @@
 goog.provide('ol.render.webgl.ImageReplay');
 goog.provide('ol.render.webgl.ReplayGroup');
 
-goog.require('ol.transform');
 goog.require('ol.extent');
 goog.require('ol.obj');
-goog.require('ol.render.IReplayGroup');
+goog.require('ol.render.ReplayGroup');
 goog.require('ol.render.VectorContext');
+goog.require('ol.render.replay');
 goog.require('ol.render.webgl.imagereplay.defaultshader');
+goog.require('ol.transform');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
@@ -907,14 +908,14 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
 
 /**
  * @constructor
- * @implements {ol.render.IReplayGroup}
+ * @extends {ol.render.ReplayGroup}
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number=} opt_renderBuffer Render buffer.
  * @struct
  */
-ol.render.webgl.ReplayGroup = function(
-    tolerance, maxExtent, opt_renderBuffer) {
+ol.render.webgl.ReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
+  ol.render.ReplayGroup.call(this);
 
   /**
    * @type {ol.Extent}
@@ -942,6 +943,7 @@ ol.render.webgl.ReplayGroup = function(
   this.replays_ = {};
 
 };
+ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
 
 
 /**
@@ -1014,8 +1016,8 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, skippedFeaturesHash) {
   var i, ii, replay;
-  for (i = 0, ii = ol.render.REPLAY_ORDER.length; i < ii; ++i) {
-    replay = this.replays_[ol.render.REPLAY_ORDER[i]];
+  for (i = 0, ii = ol.render.replay.ORDER.length; i < ii; ++i) {
+    replay = this.replays_[ol.render.replay.ORDER[i]];
     if (replay !== undefined) {
       replay.replay(context,
           center, resolution, rotation, size, pixelRatio,
@@ -1048,8 +1050,8 @@ ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
     center, resolution, rotation, size, pixelRatio, opacity,
     skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
   var i, replay, result;
-  for (i = ol.render.REPLAY_ORDER.length - 1; i >= 0; --i) {
-    replay = this.replays_[ol.render.REPLAY_ORDER[i]];
+  for (i = ol.render.replay.ORDER.length - 1; i >= 0; --i) {
+    replay = this.replays_[ol.render.replay.ORDER[i]];
     if (replay !== undefined) {
       result = replay.replay(context,
           center, resolution, rotation, size, pixelRatio, opacity,

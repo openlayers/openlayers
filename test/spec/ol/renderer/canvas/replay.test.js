@@ -1,5 +1,11 @@
 goog.provide('ol.test.renderer.canvas.Replay');
 
+goog.require('ol.render.canvas.LineStringReplay');
+goog.require('ol.render.canvas.PolygonReplay');
+goog.require('ol.render.canvas.Replay');
+goog.require('ol.style.Stroke');
+
+
 describe('ol.render.canvas.Replay', function() {
 
   describe('constructor', function() {
@@ -121,8 +127,3 @@ describe('ol.render.canvas.PolygonReplay', function() {
   });
 
 });
-
-goog.require('ol.render.canvas.LineStringReplay');
-goog.require('ol.render.canvas.PolygonReplay');
-goog.require('ol.render.canvas.Replay');
-goog.require('ol.style.Stroke');

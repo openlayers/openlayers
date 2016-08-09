@@ -1,5 +1,10 @@
 goog.provide('ol.test.geom.Polygon');
 
+goog.require('ol.extent');
+goog.require('ol.geom.Circle');
+goog.require('ol.geom.LinearRing');
+goog.require('ol.geom.Polygon');
+
 
 describe('ol.geom.Polygon', function() {
 
@@ -583,9 +588,3 @@ describe('ol.geom.Polygon', function() {
   });
 
 });
-
-
-goog.require('ol.extent');
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.LinearRing');
-goog.require('ol.geom.Polygon');

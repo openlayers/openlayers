@@ -1,7 +1,11 @@
 /*global createMapDiv, disposeMap*/
 goog.provide('ol.test.interaction.MouseWheelZoom');
 
-
+goog.require('ol.Map');
+goog.require('ol.MapBrowserEvent');
+goog.require('ol.View');
+goog.require('ol.events.Event');
+goog.require('ol.interaction.Interaction');
 describe('ol.interaction.MouseWheelZoom', function() {
   var map;
 
@@ -124,11 +128,3 @@ describe('ol.interaction.MouseWheelZoom', function() {
   });
 
 });
-
-
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEvent');
-goog.require('ol.View');
-goog.require('ol.events.Event');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.MouseWheelZoom');

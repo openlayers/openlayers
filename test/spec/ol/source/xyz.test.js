@@ -1,5 +1,11 @@
 goog.provide('ol.test.source.XYZ');
 
+goog.require('ol.source.Tile');
+goog.require('ol.source.TileImage');
+goog.require('ol.source.UrlTile');
+goog.require('ol.source.XYZ');
+goog.require('ol.tilegrid');
+
 
 describe('ol.source.XYZ', function() {
 
@@ -186,8 +192,3 @@ describe('ol.source.XYZ', function() {
   });
 
 });
-
-goog.require('ol.source.Tile');
-goog.require('ol.source.TileImage');
-goog.require('ol.source.UrlTile');
-goog.require('ol.source.XYZ');

@@ -1,5 +1,7 @@
 goog.provide('ol.test.interaction.DragRotateAndZoom');
 
+goog.require('ol.interaction.DragRotateAndZoom');
+
 describe('ol.interaction.DragRotateAndZoom', function() {
 
   describe('constructor', function() {
@@ -12,5 +14,3 @@ describe('ol.interaction.DragRotateAndZoom', function() {
   });
 
 });
-
-goog.require('ol.interaction.DragRotateAndZoom');

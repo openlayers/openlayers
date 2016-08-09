@@ -1,5 +1,8 @@
 goog.provide('ol.test.source.ImageArcGISRest');
 
+goog.require('ol.source.ImageArcGISRest');
+goog.require('ol.proj');
+
 
 describe('ol.source.ImageArcGISRest', function() {
 
@@ -180,6 +183,3 @@ describe('ol.source.ImageArcGISRest', function() {
 
 
 });
-
-goog.require('ol.source.ImageArcGISRest');
-goog.require('ol.proj');

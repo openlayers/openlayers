@@ -1,5 +1,8 @@
 goog.provide('ol.test.array');
 
+goog.require('ol.array');
+
+
 describe('ol.array', function() {
 
   describe('binarySearch', function() {
@@ -589,5 +592,3 @@ describe('ol.array', function() {
   });
 
 });
-
-goog.require('ol.array');

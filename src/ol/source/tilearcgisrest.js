@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.math');
-goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.events');
 
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+
 
 describe('ol.events', function() {
   var add, remove, target;
@@ -219,7 +222,3 @@ describe('ol.events', function() {
   });
 
 });
-
-
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');

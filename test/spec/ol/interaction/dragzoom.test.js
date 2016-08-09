@@ -1,5 +1,15 @@
 goog.provide('ol.test.interaction.DragZoom');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.extent');
+goog.require('ol.geom.Polygon');
+goog.require('ol.interaction.DragZoom');
+goog.require('ol.layer.Vector');
+goog.require('ol.render.Box');
+goog.require('ol.source.Vector');
+
+
 describe('ol.interaction.DragZoom', function() {
 
   var target, map, source;
@@ -106,12 +116,3 @@ describe('ol.interaction.DragZoom', function() {
 
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.DragZoom');
-goog.require('ol.layer.Vector');
-goog.require('ol.render.Box');
-goog.require('ol.source.Vector');

@@ -1,5 +1,8 @@
 goog.provide('ol.test.string');
 
+goog.require('ol.string');
+
+
 describe('ol.string', function() {
 
   describe('ol.string.padNumber', function() {
@@ -69,6 +72,3 @@ describe('ol.string', function() {
     });
   });
 });
-
-
-goog.require('ol.string');

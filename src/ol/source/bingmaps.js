@@ -1,7 +1,6 @@
 goog.provide('ol.source.BingMaps');
 
 goog.require('ol.Attribution');
-goog.require('ol.TileRange');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');
 goog.require('ol.net');
@@ -9,6 +8,7 @@ goog.require('ol.proj');
 goog.require('ol.source.State');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
+goog.require('ol.tilegrid');
 
 
 /**

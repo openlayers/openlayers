@@ -1,21 +1,18 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
-goog.require('ol.events');
-goog.require('ol.transform');
-goog.require('ol.Feature');
-goog.require('ol.VectorTile');
 goog.require('ol.array');
 goog.require('ol.extent');
-goog.require('ol.layer.VectorTile');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
 goog.require('ol.render.EventType');
+goog.require('ol.render.ReplayType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
+goog.require('ol.render.replay');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.vector');
 goog.require('ol.size');
-goog.require('ol.source.VectorTile');
+goog.require('ol.transform');
 
 
 /**
@@ -23,7 +20,7 @@ goog.require('ol.source.VectorTile');
  * @type {!Object.<string, Array.<ol.render.ReplayType>>}
  */
 ol.renderer.canvas.IMAGE_REPLAYS = {
-  'image': ol.render.REPLAY_ORDER,
+  'image': ol.render.replay.ORDER,
   'hybrid': [ol.render.ReplayType.POLYGON, ol.render.ReplayType.LINE_STRING]
 };
 
@@ -34,7 +31,7 @@ ol.renderer.canvas.IMAGE_REPLAYS = {
  */
 ol.renderer.canvas.VECTOR_REPLAYS = {
   'hybrid': [ol.render.ReplayType.IMAGE, ol.render.ReplayType.TEXT],
-  'vector': ol.render.REPLAY_ORDER
+  'vector': ol.render.replay.ORDER
 };
 
 

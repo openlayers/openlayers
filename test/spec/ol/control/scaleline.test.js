@@ -1,5 +1,10 @@
 goog.provide('ol.test.control.ScaleLine');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.control.ScaleLine');
+goog.require('ol.proj');
+
 describe('ol.control.ScaleLine', function() {
   var mapDiv;
   var map;
@@ -344,9 +349,3 @@ describe('ol.control.ScaleLine', function() {
   });
 
 });
-
-
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.control.ScaleLine');
-goog.require('ol.proj');

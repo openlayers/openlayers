@@ -14,7 +14,6 @@ goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
-goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 
 

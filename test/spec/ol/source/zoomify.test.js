@@ -1,5 +1,11 @@
 goog.provide('ol.test.source.Zoomify');
 
+goog.require('ol.dom');
+goog.require('ol.events');
+goog.require('ol.proj.Projection');
+goog.require('ol.source.Zoomify');
+goog.require('ol.tilegrid.TileGrid');
+
 
 describe('ol.source.Zoomify', function() {
   var w = 1024;
@@ -256,10 +262,3 @@ describe('ol.source.Zoomify', function() {
   });
 
 });
-
-
-goog.require('ol.dom');
-goog.require('ol.events');
-goog.require('ol.proj.Projection');
-goog.require('ol.source.Zoomify');
-goog.require('ol.tilegrid.TileGrid');

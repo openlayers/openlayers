@@ -3,7 +3,6 @@ goog.provide('ol.layer.Vector');
 goog.require('ol');
 goog.require('ol.layer.Layer');
 goog.require('ol.obj');
-goog.require('ol.style.Style');
 
 
 /**

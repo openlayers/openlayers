@@ -1,5 +1,8 @@
 goog.provide('ol.test.format.WMSGetFeatureInfo');
 
+goog.require('ol.format.WMSGetFeatureInfo');
+
+
 describe('ol.format.WMSGetFeatureInfo', function() {
 
   describe('#readFormat', function() {
@@ -213,6 +216,3 @@ describe('ol.format.WMSGetFeatureInfo', function() {
     });
   });
 });
-
-
-goog.require('ol.format.WMSGetFeatureInfo');

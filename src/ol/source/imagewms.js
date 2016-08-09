@@ -10,7 +10,6 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
-goog.require('ol.source.wms');
 goog.require('ol.source.wms.ServerType');
 goog.require('ol.string');
 goog.require('ol.uri');

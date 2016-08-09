@@ -1,5 +1,9 @@
 goog.provide('ol.test.geom.flat.center');
 
+goog.require('ol.geom.flat.center');
+goog.require('ol.geom.MultiPolygon');
+
+
 describe('ol.geom.flat.center', function() {
 
   describe('ol.geom.flat.center.linearRingss', function() {
@@ -52,6 +56,3 @@ describe('ol.geom.flat.center', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.center');
-goog.require('ol.geom.MultiPolygon');

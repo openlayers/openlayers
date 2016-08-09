@@ -5,7 +5,6 @@ goog.require('ol.ImageTile');
 goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.TileGrid');
 

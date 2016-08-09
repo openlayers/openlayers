@@ -2,7 +2,6 @@ goog.provide('ol.render.Event');
 goog.provide('ol.render.EventType');
 
 goog.require('ol.events.Event');
-goog.require('ol.render.VectorContext');
 
 
 /**

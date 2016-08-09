@@ -1,5 +1,8 @@
 goog.provide('ol.test.TileRange');
 
+goog.require('ol.TileRange');
+
+
 describe('ol.TileRange', function() {
 
   describe('constructor', function() {
@@ -128,5 +131,3 @@ describe('ol.TileRange', function() {
   });
 
 });
-
-goog.require('ol.TileRange');

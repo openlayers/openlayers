@@ -1,6 +1,5 @@
 goog.provide('ol.source.UrlTile');
 
-goog.require('ol.events');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.Tile');

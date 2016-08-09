@@ -1,7 +1,5 @@
 goog.provide('ol.interaction.DragPan');
 
-goog.require('ol.Kinetic');
-
 goog.require('ol.ViewHint');
 goog.require('ol.coordinate');
 goog.require('ol.functions');

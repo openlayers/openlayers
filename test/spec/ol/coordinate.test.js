@@ -1,5 +1,8 @@
 goog.provide('ol.test.coordinate');
 
+goog.require('ol.coordinate');
+
+
 describe('ol.coordinate', function() {
 
   describe('#add', function() {
@@ -248,5 +251,3 @@ describe('ol.coordinate', function() {
     });
   });
 });
-
-goog.require('ol.coordinate');
