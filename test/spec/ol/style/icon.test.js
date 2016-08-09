@@ -3,8 +3,9 @@ goog.provide('ol.test.style.IconImageCache');
 
 goog.require('ol');
 goog.require('ol.events');
-goog.require('ol.style.IconImage');
+goog.require('ol.style');
 goog.require('ol.style.Icon');
+goog.require('ol.style.IconImage');
 
 
 describe('ol.style.Icon', function() {
