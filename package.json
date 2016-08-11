@@ -67,6 +67,7 @@
     "phantomjs-prebuilt": "2.1.11",
     "proj4": "2.3.14",
     "resemblejs": "2.2.1",
+    "serve-files": "1.0.0",
     "sinon": "1.17.5",
     "slimerjs": "0.906.2"
   },

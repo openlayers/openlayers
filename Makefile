@@ -184,7 +184,7 @@ build/timestamps/check-%-timestamp: $(BUILD_HOSTED)/examples/%.html \
                                     $(BUILD_HOSTED)/build/ol.js \
                                     $(BUILD_HOSTED)/css/ol.css
 	@mkdir -p $(@D)
-	./node_modules/.bin/phantomjs --local-to-remote-url-access=true --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js $<
+	./node_modules/.bin/serve-files 8000 . & pid=$$! && ./node_modules/.bin/phantomjs --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js http://localhost:8000/$< && kill -9 $$pid
 	@touch $@
 
 build/compiled-examples/all.js: $(EXAMPLES_JS)
