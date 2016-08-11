@@ -2004,7 +2004,6 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
   context.lineTo(flatClipCoords[2], flatClipCoords[3]);
   context.lineTo(flatClipCoords[4], flatClipCoords[5]);
   context.lineTo(flatClipCoords[6], flatClipCoords[7]);
-  context.closePath();
   context.clip();
 
   var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;

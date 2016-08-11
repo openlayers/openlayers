@@ -224,7 +224,6 @@ ol.reproj.render = function(width, height, pixelRatio,
       context.lineTo(u1, v1);
       context.lineTo(u2, v2);
     }
-    context.closePath();
     context.clip();
 
     context.transform(
