@@ -1205,6 +1205,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
+  var stroke = state.strokeStyle != undefined;
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
@@ -1213,10 +1214,15 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
         flatCoordinates, offset, end, stride, true);
     var moveToLineToInstruction =
         [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
-    var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
-    this.instructions.push(moveToLineToInstruction, closePathInstruction);
-    this.hitDetectionInstructions.push(moveToLineToInstruction,
-        closePathInstruction);
+    this.instructions.push(moveToLineToInstruction);
+    this.hitDetectionInstructions.push(moveToLineToInstruction);
+    if (stroke) {
+      // Performance optimization: only call closePath() when we have a stroke.
+      // Otherwise the ring is closed already (see appendFlatCoordinates above).
+      var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
+      this.instructions.push(closePathInstruction);
+      this.hitDetectionInstructions.push(closePathInstruction);
+    }
     offset = end;
   }
   // FIXME is it quicker to fill and stroke each polygon individually,
@@ -1226,7 +1232,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
   if (state.fillStyle !== undefined) {
     this.instructions.push(fillInstruction);
   }
-  if (state.strokeStyle !== undefined) {
+  if (stroke) {
     goog.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
