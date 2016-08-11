@@ -216,12 +216,12 @@ ol.reproj.render = function(width, height, pixelRatio,
       var p1 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u1, v1);
       var p2 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u2, v2);
 
-      context.moveTo(p0[0], p0[1]);
-      context.lineTo(p1[0], p1[1]);
+      context.moveTo(p1[0], p1[1]);
+      context.lineTo(p0[0], p0[1]);
       context.lineTo(p2[0], p2[1]);
     } else {
-      context.moveTo(u0, v0);
-      context.lineTo(u1, v1);
+      context.moveTo(u1, v1);
+      context.lineTo(u0, v0);
       context.lineTo(u2, v2);
     }
     context.clip();
@@ -255,8 +255,8 @@ ol.reproj.render = function(width, height, pixelRatio,
           v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
 
       context.beginPath();
-      context.moveTo(u0, v0);
-      context.lineTo(u1, v1);
+      context.moveTo(u1, v1);
+      context.lineTo(u0, v0);
       context.lineTo(u2, v2);
       context.closePath();
       context.stroke();
