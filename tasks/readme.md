@@ -109,6 +109,14 @@ Called internally to parse the library for annotations and write out a `build/in
 
 Builds examples and the example index.
 
+## `check-example.js`
+
+Runs an example in PhantomJS and returns an exit code != 0 after printing a stack trace when something is wrong with the example.
+
+To check the `simple.html` example when on master, first run the `build-examples.js` task, then invoke
+
+    node tasks/check-example.js build/hosted/master/simple.html
+
 
 ## `serve.js`
 
