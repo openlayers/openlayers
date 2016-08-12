@@ -1,7 +1,6 @@
 goog.provide('ol.ImageTile');
 
 goog.require('ol.Tile');
-goog.require('ol.TileState');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.obj');
@@ -11,7 +10,7 @@ goog.require('ol.obj');
  * @constructor
  * @extends {ol.Tile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
+ * @param {ol.Tile.State} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
@@ -63,13 +62,13 @@ ol.inherits(ol.ImageTile, ol.Tile);
  * @inheritDoc
  */
 ol.ImageTile.prototype.disposeInternal = function() {
-  if (this.state == ol.TileState.LOADING) {
+  if (this.state == ol.Tile.State.LOADING) {
     this.unlistenImage_();
   }
   if (this.interimTile) {
     this.interimTile.dispose();
   }
-  this.state = ol.TileState.ABORT;
+  this.state = ol.Tile.State.ABORT;
   this.changed();
   ol.Tile.prototype.disposeInternal.call(this);
 };
@@ -113,7 +112,7 @@ ol.ImageTile.prototype.getKey = function() {
  * @private
  */
 ol.ImageTile.prototype.handleImageError_ = function() {
-  this.state = ol.TileState.ERROR;
+  this.state = ol.Tile.State.ERROR;
   this.unlistenImage_();
   this.changed();
 };
@@ -126,9 +125,9 @@ ol.ImageTile.prototype.handleImageError_ = function() {
  */
 ol.ImageTile.prototype.handleImageLoad_ = function() {
   if (this.image_.naturalWidth && this.image_.naturalHeight) {
-    this.state = ol.TileState.LOADED;
+    this.state = ol.Tile.State.LOADED;
   } else {
-    this.state = ol.TileState.EMPTY;
+    this.state = ol.Tile.State.EMPTY;
   }
   this.unlistenImage_();
   this.changed();
@@ -142,8 +141,8 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
  * @api
  */
 ol.ImageTile.prototype.load = function() {
-  if (this.state == ol.TileState.IDLE || this.state == ol.TileState.ERROR) {
-    this.state = ol.TileState.LOADING;
+  if (this.state == ol.Tile.State.IDLE || this.state == ol.Tile.State.ERROR) {
+    this.state = ol.Tile.State.LOADING;
     this.changed();
     goog.DEBUG && console.assert(!this.imageListenerKeys_,
         'this.imageListenerKeys_ should be null');

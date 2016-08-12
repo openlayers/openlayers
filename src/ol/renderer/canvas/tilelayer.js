@@ -4,7 +4,7 @@ goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('ol.transform');
 goog.require('ol.TileRange');
-goog.require('ol.TileState');
+goog.require('ol.Tile');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -131,9 +131,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
        */
       function(tile) {
         var tileState = tile.getState();
-        return tileState == ol.TileState.LOADED ||
-            tileState == ol.TileState.EMPTY ||
-            tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+        return tileState == ol.Tile.State.LOADED ||
+            tileState == ol.Tile.State.EMPTY ||
+            tileState == ol.Tile.State.ERROR && !useInterimTilesOnError;
       });
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
@@ -168,7 +168,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
     tilesToDraw = tilesToDrawByZ[currentZ];
     for (tileCoordKey in tilesToDraw) {
       tile = tilesToDraw[tileCoordKey];
-      if (tile.getState() == ol.TileState.LOADED) {
+      if (tile.getState() == ol.Tile.State.LOADED) {
         renderables.push(tile);
       }
     }

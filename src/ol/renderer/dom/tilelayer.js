@@ -6,7 +6,7 @@ goog.provide('ol.renderer.dom.TileLayer');
 goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.TileRange');
-goog.require('ol.TileState');
+goog.require('ol.Tile');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.dom');
@@ -120,18 +120,18 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
       tileState = tile.getState();
-      drawable = tileState == ol.TileState.LOADED ||
-          tileState == ol.TileState.EMPTY ||
-          tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+      drawable = tileState == ol.Tile.State.LOADED ||
+          tileState == ol.Tile.State.EMPTY ||
+          tileState == ol.Tile.State.ERROR && !useInterimTilesOnError;
       if (!drawable && tile.interimTile) {
         tile = tile.interimTile;
       }
       tileState = tile.getState();
-      if (tileState == ol.TileState.LOADED) {
+      if (tileState == ol.Tile.State.LOADED) {
         tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
         continue;
-      } else if (tileState == ol.TileState.EMPTY ||
-                 (tileState == ol.TileState.ERROR &&
+      } else if (tileState == ol.Tile.State.EMPTY ||
+                 (tileState == ol.Tile.State.ERROR &&
                   !useInterimTilesOnError)) {
         continue;
       }

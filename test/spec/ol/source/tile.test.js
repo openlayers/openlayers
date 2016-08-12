@@ -248,7 +248,7 @@ describe('ol.source.Tile', function() {
  *
  * @constructor
  * @extends {ol.source.Tile}
- * @param {Object.<string, ol.TileState>} tileStates Lookup of tile key to
+ * @param {Object.<string, ol.Tile.State>} tileStates Lookup of tile key to
  *     tile state.
  */
 ol.test.source.TileMock = function(tileStates) {

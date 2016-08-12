@@ -2,8 +2,8 @@ goog.provide('ol.source.TileImage');
 
 goog.require('ol');
 goog.require('ol.ImageTile');
+goog.require('ol.Tile');
 goog.require('ol.TileCache');
-goog.require('ol.TileState');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.proj');
@@ -51,7 +51,7 @@ ol.source.TileImage = function(options) {
 
   /**
    * @protected
-   * @type {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
+   * @type {function(new: ol.ImageTile, ol.TileCoord, ol.Tile.State, string,
    *        ?string, ol.TileLoadFunctionType)}
    */
   this.tileClass = options.tileClass !== undefined ?
@@ -219,7 +219,7 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
       this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
   var tile = new this.tileClass(
       tileCoord,
-      tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+      tileUrl !== undefined ? ol.Tile.State.IDLE : ol.Tile.State.EMPTY,
       tileUrl !== undefined ? tileUrl : '',
       this.crossOrigin,
       this.tileLoadFunction);
@@ -303,18 +303,18 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
       // cases we attempt to assign an interim tile to the new tile.
       var /** @type {ol.Tile} */ interimTile = tile;
       if (tile.interimTile && tile.interimTile.key == key) {
-        goog.DEBUG && console.assert(tile.interimTile.getState() == ol.TileState.LOADED);
+        goog.DEBUG && console.assert(tile.interimTile.getState() == ol.Tile.State.LOADED);
         goog.DEBUG && console.assert(tile.interimTile.interimTile === null);
         tile = tile.interimTile;
-        if (interimTile.getState() == ol.TileState.LOADED) {
+        if (interimTile.getState() == ol.Tile.State.LOADED) {
           tile.interimTile = interimTile;
         }
       } else {
         tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-        if (interimTile.getState() == ol.TileState.LOADED) {
+        if (interimTile.getState() == ol.Tile.State.LOADED) {
           tile.interimTile = interimTile;
         } else if (interimTile.interimTile &&
-            interimTile.interimTile.getState() == ol.TileState.LOADED) {
+            interimTile.interimTile.getState() == ol.Tile.State.LOADED) {
           tile.interimTile = interimTile.interimTile;
           interimTile.interimTile = null;
         }
