@@ -48,7 +48,7 @@ ol.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
  */
 ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
   goog.DEBUG && console.assert(0 <= z && z < this.matrixIds_.length,
-      'attempted to retrive matrixId for illegal z (%s)', z);
+      'attempted to retrieve matrixId for illegal z (%s)', z);
   return this.matrixIds_[z];
 };
 
