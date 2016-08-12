@@ -5,7 +5,6 @@ goog.require('ol.color');
 
 /**
  * @constructor
- * @private
  */
 ol.style.IconImageCache = function() {
 
