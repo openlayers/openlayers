@@ -104,7 +104,8 @@ ol.renderer.Map.prototype.disposeInternal = function() {
  * @private
  */
 ol.renderer.Map.expireIconCache_ = function(map, frameState) {
-  ol.style.iconImageCache.expire();
+  var cache = ol.style.iconImageCache;
+  cache.expire();
 };
 
 

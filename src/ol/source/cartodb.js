@@ -1,5 +1,6 @@
 goog.provide('ol.source.CartoDB');
 
+goog.require('ol');
 goog.require('ol.obj');
 goog.require('ol.source.State');
 goog.require('ol.source.XYZ');

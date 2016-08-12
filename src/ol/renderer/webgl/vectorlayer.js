@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
+goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.extent');
 goog.require('ol.render.webgl.ReplayGroup');

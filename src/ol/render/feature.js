@@ -1,6 +1,6 @@
 goog.provide('ol.render.Feature');
 
-
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 

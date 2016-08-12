@@ -1,6 +1,5 @@
 goog.provide('ol.test.geom.flat.transform');
 
-goog.require('ol.geom');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.flat.transform');
 

@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
+goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.dom');
 goog.require('ol.extent');

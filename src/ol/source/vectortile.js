@@ -1,5 +1,6 @@
 goog.provide('ol.source.VectorTile');
 
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.VectorTile');
 goog.require('ol.events');

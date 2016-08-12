@@ -1,9 +1,11 @@
 goog.provide('ol.source.TileUTFGrid');
 
 goog.require('goog.async.nextTick');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');

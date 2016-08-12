@@ -4,7 +4,7 @@
 
 goog.provide('ol.render.canvas.Immediate');
 
-goog.require('ol.transform');
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.colorlike');
@@ -14,6 +14,7 @@ goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
+goog.require('ol.transform');
 
 
 /**

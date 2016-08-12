@@ -3,15 +3,16 @@
 
 goog.provide('ol.renderer.webgl.TileLayer');
 
-goog.require('ol.transform');
-goog.require('ol.TileRange');
+goog.require('ol');
 goog.require('ol.Tile');
+goog.require('ol.TileRange');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayershader');
 goog.require('ol.size');
+goog.require('ol.transform');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 

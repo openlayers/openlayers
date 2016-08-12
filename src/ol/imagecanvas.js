@@ -1,5 +1,6 @@
 goog.provide('ol.ImageCanvas');
 
+goog.require('ol');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 

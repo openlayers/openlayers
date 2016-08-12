@@ -1,5 +1,6 @@
 goog.provide('ol.structs.PriorityQueue');
 
+goog.require('ol.asserts');
 goog.require('ol.obj');
 
 

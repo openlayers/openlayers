@@ -3,6 +3,8 @@
 
 goog.provide('ol.source.Cluster');
 
+goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.Feature');
 goog.require('ol.coordinate');
 goog.require('ol.events.EventType');

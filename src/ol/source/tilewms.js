@@ -5,6 +5,7 @@
 goog.provide('ol.source.TileWMS');
 
 goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.math');

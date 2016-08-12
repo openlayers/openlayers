@@ -1,8 +1,9 @@
 goog.provide('ol.source.ImageMapGuide');
 
+goog.require('ol');
+goog.require('ol.Image');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.Image');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.source.Image');

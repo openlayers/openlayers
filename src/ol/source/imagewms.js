@@ -4,6 +4,7 @@ goog.provide('ol.source.ImageWMS');
 
 goog.require('ol');
 goog.require('ol.Image');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');

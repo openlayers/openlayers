@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.dom.VectorLayer');
 
-goog.require('ol.transform');
-goog.require('ol.View.Hint');
+goog.require('ol');
+goog.require('ol.View');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.Event');
@@ -10,6 +10,7 @@ goog.require('ol.render.canvas.Immediate');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.renderer.vector');
+goog.require('ol.transform');
 
 
 /**

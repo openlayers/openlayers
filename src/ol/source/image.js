@@ -1,9 +1,10 @@
 goog.provide('ol.source.Image');
 goog.provide('ol.source.ImageEvent');
 
-goog.require('ol.events.Event');
+goog.require('ol');
 goog.require('ol.ImageState');
 goog.require('ol.array');
+goog.require('ol.events.Event');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.reproj.Image');

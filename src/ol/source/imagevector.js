@@ -1,13 +1,15 @@
 goog.provide('ol.source.ImageVector');
 
+goog.require('ol');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.transform');
-goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
+goog.require('ol.style.Style');
+goog.require('ol.transform');
 
 
 /**

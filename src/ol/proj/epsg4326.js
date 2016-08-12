@@ -1,5 +1,6 @@
 goog.provide('ol.proj.EPSG4326');
 
+goog.require('ol');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');

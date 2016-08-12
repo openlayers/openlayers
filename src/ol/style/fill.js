@@ -1,5 +1,6 @@
 goog.provide('ol.style.Fill');
 
+goog.require('ol');
 goog.require('ol.color');
 
 

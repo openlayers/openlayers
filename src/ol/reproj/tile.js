@@ -1,5 +1,6 @@
 goog.provide('ol.reproj.Tile');
 
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
@@ -320,7 +321,8 @@ ol.reproj.Tile.prototype.load = function() {
     });
 
     if (leftToLoad === 0) {
-      ol.global.setTimeout(this.reproject_.bind(this), 0);
+      var global = ol.global;
+      global.setTimeout(this.reproject_.bind(this), 0);
     }
   }
 };

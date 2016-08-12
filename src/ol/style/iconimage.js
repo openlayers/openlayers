@@ -5,6 +5,7 @@ goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
+goog.require('ol.style');
 goog.require('ol.style.ImageState');
 
 

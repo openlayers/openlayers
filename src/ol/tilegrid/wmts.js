@@ -1,5 +1,6 @@
 goog.provide('ol.tilegrid.WMTS');
 
+goog.require('ol');
 goog.require('ol.proj');
 goog.require('ol.tilegrid.TileGrid');
 

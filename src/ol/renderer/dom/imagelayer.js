@@ -1,6 +1,8 @@
 goog.provide('ol.renderer.dom.ImageLayer');
 
+goog.require('ol');
 goog.require('ol.View');
+goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');

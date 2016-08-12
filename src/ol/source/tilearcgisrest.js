@@ -1,9 +1,10 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.extent');
-goog.require('ol.obj');
 goog.require('ol.math');
+goog.require('ol.obj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
