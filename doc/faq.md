@@ -20,6 +20,7 @@ Table of contents:
 * [Why is the order of a coordinate [lon,lat], and not [lat,lon]?](#why-is-the-order-of-a-coordinate-lon-lat-and-not-lat-lon-)
 * [Why aren't there any features in my source?](#why-aren-t-there-any-features-in-my-source-)
 * [How do I force a re-render of the map?](#how-do-i-force-a-re-render-of-the-map-)
+* [Why are my features not found?](#why-are-my-features-not-found-)
 * [How do I create a custom build of OpenLayers?](#how-do-i-create-a-custom-build-of-openlayers-)
 * [Do I need to write my own code using Closure library?](#do-i-need-to-write-my-own-code-using-closure-library-)
 * [Do I need to compress my code with Closure compiler?](#do-i-need-to-compress-my-code-with-closure-compiler-)
@@ -316,6 +317,24 @@ map.render();
 map.renderSync();
 ```
 
+## Why are my features not found?
+
+You are using `ol.Map#forEachFeatureAtPixel` or `ol.Map#hasFeatureAtPixel`, but
+it sometimes does not work for large icons or labels? The *hit detection* only
+checks features that are within a certain distance of the given position. For large
+icons, the actual geometry of a feature might be too far away and is not considered.
+
+In this case, set the `renderBuffer` property of `ol.layer.Vector` (the default
+value is 100px):
+
+```javascript
+var vectorLayer = new ol.layer.Vector({
+  ...
+  renderBuffer: 200
+});
+```
+
+The recommended value is the size of the largest symbol, line width or label.
 
 ## How do I create a custom build of OpenLayers?
 
