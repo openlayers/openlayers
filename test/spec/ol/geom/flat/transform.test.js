@@ -1,6 +1,7 @@
 goog.provide('ol.test.geom.flat.transform');
 
 goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.transform');
 
 
@@ -32,7 +33,7 @@ describe('ol.geom.flat.transform', function() {
         0, -0.0004088332670837288,
         4480.991370439071, 1529.5752568707105
       ];
-      var pixelCoordinates = ol.geom.transformSimpleGeometry2D(
+      var pixelCoordinates = ol.geom.SimpleGeometry.transform2D(
           multiPolygonGeometry, transform, []);
       expect(pixelCoordinates[0]).to.roughlyEqual(806.6035275946265, 1e-9);
       expect(pixelCoordinates[1]).to.roughlyEqual(160.48916296287916, 1e-9);
