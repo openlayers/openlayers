@@ -2,6 +2,7 @@ goog.provide('ol.test.rendering.layer.Tile');
 
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.obj');
