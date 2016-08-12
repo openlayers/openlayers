@@ -1,6 +1,4 @@
 goog.provide('ol.View');
-goog.provide('ol.ViewHint');
-goog.provide('ol.ViewProperty');
 
 goog.require('ol');
 goog.require('ol.CenterConstraint');
@@ -17,25 +15,6 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
-
-
-/**
- * @enum {string}
- */
-ol.ViewProperty = {
-  CENTER: 'center',
-  RESOLUTION: 'resolution',
-  ROTATION: 'rotation'
-};
-
-
-/**
- * @enum {number}
- */
-ol.ViewHint = {
-  ANIMATING: 0,
-  INTERACTING: 1
-};
 
 
 /**
@@ -109,7 +88,7 @@ ol.View = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var properties = {};
-  properties[ol.ViewProperty.CENTER] = options.center !== undefined ?
+  properties[ol.View.Property.CENTER] = options.center !== undefined ?
       options.center : null;
 
   /**
@@ -164,12 +143,12 @@ ol.View = function(opt_options) {
       centerConstraint, resolutionConstraint, rotationConstraint);
 
   if (options.resolution !== undefined) {
-    properties[ol.ViewProperty.RESOLUTION] = options.resolution;
+    properties[ol.View.Property.RESOLUTION] = options.resolution;
   } else if (options.zoom !== undefined) {
-    properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
+    properties[ol.View.Property.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
   }
-  properties[ol.ViewProperty.ROTATION] =
+  properties[ol.View.Property.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
 };
@@ -261,7 +240,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.ViewProperty.CENTER));
+      this.get(ol.View.Property.CENTER));
 };
 
 
@@ -339,7 +318,7 @@ ol.View.prototype.getProjection = function() {
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.ViewProperty.RESOLUTION));
+      this.get(ol.View.Property.RESOLUTION));
 };
 
 
@@ -402,7 +381,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
  * @api stable
  */
 ol.View.prototype.getRotation = function() {
-  return /** @type {number} */ (this.get(ol.ViewProperty.ROTATION));
+  return /** @type {number} */ (this.get(ol.View.Property.ROTATION));
 };
 
 
@@ -623,12 +602,12 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * @api stable
  */
 ol.View.prototype.setCenter = function(center) {
-  this.set(ol.ViewProperty.CENTER, center);
+  this.set(ol.View.Property.CENTER, center);
 };
 
 
 /**
- * @param {ol.ViewHint} hint Hint.
+ * @param {ol.View.Hint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
  */
@@ -649,7 +628,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * @api stable
  */
 ol.View.prototype.setResolution = function(resolution) {
-  this.set(ol.ViewProperty.RESOLUTION, resolution);
+  this.set(ol.View.Property.RESOLUTION, resolution);
 };
 
 
@@ -660,7 +639,7 @@ ol.View.prototype.setResolution = function(resolution) {
  * @api stable
  */
 ol.View.prototype.setRotation = function(rotation) {
-  this.set(ol.ViewProperty.ROTATION, rotation);
+  this.set(ol.View.Property.ROTATION, rotation);
 };
 
 
@@ -796,4 +775,23 @@ ol.View.createRotationConstraint_ = function(options) {
   } else {
     return ol.RotationConstraint.disable;
   }
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.View.Property = {
+  CENTER: 'center',
+  RESOLUTION: 'resolution',
+  ROTATION: 'rotation'
+};
+
+
+/**
+ * @enum {number}
+ */
+ol.View.Hint = {
+  ANIMATING: 0,
+  INTERACTING: 1
 };

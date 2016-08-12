@@ -17,7 +17,6 @@ goog.require('ol.ObjectEventType');
 goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
-goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.control');
 goog.require('ol.dom');
@@ -29,7 +28,6 @@ goog.require('ol.functions');
 goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Group');
-goog.require('ol.transform');
 goog.require('ol.obj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
@@ -38,6 +36,7 @@ goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
+goog.require('ol.transform');
 
 
 /**
@@ -1002,11 +1001,11 @@ ol.Map.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[ol.ViewHint.ANIMATING]) {
+      if (hints[ol.View.Hint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[ol.ViewHint.INTERACTING]) {
+      if (hints[ol.View.Hint.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -1298,8 +1297,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
+        !frameState.viewHints[ol.View.Hint.ANIMATING] &&
+        !frameState.viewHints[ol.View.Hint.INTERACTING] &&
         !ol.extent.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {

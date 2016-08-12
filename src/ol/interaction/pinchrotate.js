@@ -1,8 +1,8 @@
 goog.provide('ol.interaction.PinchRotate');
 
 goog.require('ol');
+goog.require('ol.View');
 goog.require('ol.functions');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
@@ -128,7 +128,7 @@ ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(ol.View.Hint.INTERACTING, -1);
     if (this.rotating_) {
       var rotation = view.getRotation();
       ol.interaction.Interaction.rotate(
@@ -155,7 +155,7 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
     this.rotating_ = false;
     this.rotationDelta_ = 0.0;
     if (!this.handlingDownUpSequence) {
-      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+      map.getView().setHint(ol.View.Hint.INTERACTING, 1);
     }
     map.render();
     return true;

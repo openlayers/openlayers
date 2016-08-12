@@ -2,16 +2,16 @@
 
 goog.provide('ol.control.ZoomSlider');
 
-goog.require('ol.events');
-goog.require('ol.events.Event');
-goog.require('ol.events.EventType');
-goog.require('ol.pointer.PointerEventHandler');
-goog.require('ol.ViewHint');
+goog.require('ol.View');
 goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
+goog.require('ol.events');
+goog.require('ol.events.Event');
+goog.require('ol.events.EventType');
 goog.require('ol.math');
+goog.require('ol.pointer.PointerEventHandler');
 
 
 /**
@@ -255,7 +255,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
   if (!this.dragging_ &&
       event.originalEvent.target === this.element.firstElementChild) {
-    this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
+    this.getMap().getView().setHint(ol.View.Hint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;
     this.dragging_ = true;
@@ -306,7 +306,7 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
     var map = this.getMap();
     var view = map.getView();
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(ol.View.Hint.INTERACTING, -1);
     map.beforeRender(ol.animation.zoom({
       resolution: /** @type {number} */ (this.currentResolution_),
       duration: this.duration_,

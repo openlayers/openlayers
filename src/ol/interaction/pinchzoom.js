@@ -1,8 +1,8 @@
 goog.provide('ol.interaction.PinchZoom');
 
 goog.require('ol');
+goog.require('ol.View');
 goog.require('ol.functions');
-goog.require('ol.ViewHint');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
@@ -110,7 +110,7 @@ ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length < 2) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(ol.View.Hint.INTERACTING, -1);
     var resolution = view.getResolution();
     // Zoom to final resolution, with an animation, and provide a
     // direction not to zoom out/in if user was pinching in/out.
@@ -138,7 +138,7 @@ ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
     this.lastDistance_ = undefined;
     this.lastScaleDelta_ = 1;
     if (!this.handlingDownUpSequence) {
-      map.getView().setHint(ol.ViewHint.INTERACTING, 1);
+      map.getView().setHint(ol.View.Hint.INTERACTING, 1);
     }
     map.render();
     return true;

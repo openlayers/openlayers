@@ -3,16 +3,16 @@
 
 goog.provide('ol.renderer.dom.TileLayer');
 
-goog.require('ol.transform');
 goog.require('ol');
-goog.require('ol.TileRange');
 goog.require('ol.Tile');
-goog.require('ol.ViewHint');
+goog.require('ol.TileRange');
+goog.require('ol.View');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.renderer.dom.Layer');
 goog.require('ol.size');
+goog.require('ol.transform');
 
 
 /**
@@ -225,8 +225,8 @@ ol.renderer.dom.TileLayer.prototype.prepareFrame = function(frameState, layerSta
         this.target.insertBefore(tileLayerZ.target, this.target.childNodes[0] || null);
       }
     } else {
-      if (!frameState.viewHints[ol.ViewHint.ANIMATING] &&
-          !frameState.viewHints[ol.ViewHint.INTERACTING]) {
+      if (!frameState.viewHints[ol.View.Hint.ANIMATING] &&
+          !frameState.viewHints[ol.View.Hint.INTERACTING]) {
         tileLayerZ.removeTilesOutsideExtent(extent, tmpTileRange);
       }
     }

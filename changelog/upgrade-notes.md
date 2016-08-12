@@ -18,6 +18,8 @@ A number of internal types have been renamed.  This will not affect those who us
 
  * rename `ol.CollectionEventType` to `ol.Collection.EventType`
  * rename `ol.CollectionEvent` to `ol.Collection.Event`
+ * rename `ol.ViewHint` to `ol.View.Hint`
+ * rename `ol.ViewProperty` to `ol.View.Property`
  * rename `ol.render.webgl.imagereplay.shader.Default.Locations` to `ol.render.webgl.imagereplay.defaultshader.Locations`
  * rename `ol.render.webgl.imagereplay.shader.DefaultFragment` to `ol.render.webgl.imagereplay.defaultshader.Fragment`
  * rename `ol.render.webgl.imagereplay.shader.DefaultVertex` to `ol.render.webgl.imagereplay.defaultshader.Vertex`
