@@ -13,7 +13,6 @@
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
     "pretest": "eslint tasks test test_rendering src examples",
-    "test-node": "mocha test/node",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
   },
