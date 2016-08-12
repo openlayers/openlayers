@@ -102,6 +102,7 @@
       "openlayers-internal/no-unused-requires": 2,
       "openlayers-internal/one-provide": 1,
       "openlayers-internal/requires-first": 2,
+      "openlayers-internal/valid-provide": 2,
       "openlayers-internal/valid-requires": 2
     }
   },
