@@ -3,7 +3,19 @@
 const path = require('path');
 const util = require('./util');
 
-const sourceRoot = path.join(__dirname, '..', 'src');
+function longestCommonPrefix(path1, path2) {
+  const parts1 = path.resolve(path1).split(path.sep);
+  const parts2 = path.resolve(path2).split(path.sep);
+  const common = [];
+  for (let i = 0, ii = parts1.length; i < ii; ++i) {
+    if (parts1[i] === parts2[i]) {
+      common.push(parts1[i]);
+    } else {
+      break;
+    }
+  }
+  return common.join(path.sep);
+}
 
 exports.rule = {
   meta: {
@@ -39,17 +51,19 @@ exports.rule = {
             return context.report(expression, 'Expected goog.require() to be called with a string');
           }
 
-          const filePath = path.relative(sourceRoot, context.getFilename());
+          const filePath = context.getFilename();
+          const sourceRoot = path.join(longestCommonPrefix(__dirname, filePath), 'src');
+          const requirePath = path.relative(sourceRoot, filePath);
           let ext;
-          if (path.basename(filePath) === 'index.js') {
+          if (path.basename(requirePath) === 'index.js') {
             ext = path.sep + 'index.js';
           } else {
             ext = '.js';
           }
           const name = arg.value;
           const expectedPath = name.split('.').join(path.sep) + ext;
-          if (expectedPath.toLowerCase() !== filePath.toLowerCase()) {
-            return context.report(expression, `Expected goog.provide('${name}') to be like ${filePath}`);
+          if (expectedPath.toLowerCase() !== requirePath.toLowerCase()) {
+            return context.report(expression, `Expected goog.provide('${name}') to be like ${requirePath}`);
           }
         }
       }
