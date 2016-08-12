@@ -300,13 +300,14 @@ describe('ol.format.WFS', function() {
           '    </ogc:Or>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.or(f.equalTo('name', 'New York'), f.equalTo('area', 1234))
+        filter: ol.format.ogc.filter.or(
+            ol.format.ogc.filter.equalTo('name', 'New York'),
+            ol.format.ogc.filter.equalTo('area', 1234))
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -341,20 +342,19 @@ describe('ol.format.WFS', function() {
           '    </ogc:Or>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.or(
-          f.and(
-            f.greaterThan('area', 100),
-            f.greaterThanOrEqualTo('pop', 20000)
+        filter: ol.format.ogc.filter.or(
+          ol.format.ogc.filter.and(
+            ol.format.ogc.filter.greaterThan('area', 100),
+            ol.format.ogc.filter.greaterThanOrEqualTo('pop', 20000)
           ),
-          f.and(
-            f.lessThan('area', 100),
-            f.lessThanOrEqualTo('pop', 20000)
+          ol.format.ogc.filter.and(
+            ol.format.ogc.filter.lessThan('area', 100),
+            ol.format.ogc.filter.lessThanOrEqualTo('pop', 20000)
           )
         )
       });
@@ -374,13 +374,12 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsBetween>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.between('area', 100, 1000)
+        filter: ol.format.ogc.filter.between('area', 100, 1000)
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -396,13 +395,12 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsNull>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.isNull('area')
+        filter: ol.format.ogc.filter.isNull('area')
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -419,13 +417,12 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsLike>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.like('name', 'New*')
+        filter: ol.format.ogc.filter.like('name', 'New*')
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -442,13 +439,12 @@ describe('ol.format.WFS', function() {
           '    </ogc:PropertyIsLike>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.like('name', 'New*', '*', '.', '!', false)
+        filter: ol.format.ogc.filter.like('name', 'New*', '*', '.', '!', false)
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -467,13 +463,12 @@ describe('ol.format.WFS', function() {
           '    </ogc:Not>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.not(f.equalTo('name', 'New York'))
+        filter: ol.format.ogc.filter.not(ol.format.ogc.filter.equalTo('name', 'New York'))
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -500,15 +495,14 @@ describe('ol.format.WFS', function() {
           '    </ogc:And>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'urn:ogc:def:crs:EPSG::4326',
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: f.and(
-          f.equalTo('name', 'New York'),
-          f.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326')
+        filter: ol.format.ogc.filter.and(
+          ol.format.ogc.filter.equalTo('name', 'New York'),
+          ol.format.ogc.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326')
         )
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
@@ -534,11 +528,10 @@ describe('ol.format.WFS', function() {
           '    </ogc:Intersects>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
-        filter: f.intersects(
+        filter: ol.format.ogc.filter.intersects(
             'the_geom',
             new ol.geom.Polygon([[
                 [10, 20],
@@ -572,11 +565,10 @@ describe('ol.format.WFS', function() {
           '    </ogc:Within>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
-      var f = ol.format.ogc.filter;
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
-        filter: f.within(
+        filter: ol.format.ogc.filter.within(
             'the_geom',
             new ol.geom.Polygon([[
                 [10, 20],

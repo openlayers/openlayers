@@ -1,5 +1,6 @@
 goog.provide('ol.test.source.TileSource');
 
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.TileRange');
 goog.require('ol.proj');
