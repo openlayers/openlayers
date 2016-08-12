@@ -28,6 +28,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.renderer.webgl.tilelayer.shader.Fragment` to `ol.renderer.webgl.tilelayershader.Fragment`
  * rename `ol.renderer.webgl.tilelayer.shader.Locations` to `ol.renderer.webgl.tilelayershader.Locations`
  * rename `ol.renderer.webgl.tilelayer.shader.Vertex` to `ol.renderer.webgl.tilelayershader.Vertex`
+ * rename `ol.webgl.WebGLContextEventType` to `ol.webgl.ContextEventType`
  * rename `ol.webgl.shader.Fragment` to `ol.webgl.Fragment`
  * rename `ol.webgl.shader.Vertex` to `ol.webgl.Vertex`
 

@@ -6,7 +6,7 @@ goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.obj');
 goog.require('ol.webgl');
-goog.require('ol.webgl.WebGLContextEventType');
+goog.require('ol.webgl.ContextEventType');
 
 
 /**
@@ -87,9 +87,9 @@ ol.webgl.Context = function(canvas, gl) {
         'Failed to get extension "OES_element_index_uint"');
   }
 
-  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
       this.handleWebGLContextLost, this);
-  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
 };

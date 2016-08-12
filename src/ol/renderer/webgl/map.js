@@ -24,7 +24,7 @@ goog.require('ol.structs.LRUCache');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
-goog.require('ol.webgl.WebGLContextEventType');
+goog.require('ol.webgl.ContextEventType');
 
 
 /**
@@ -91,9 +91,9 @@ ol.renderer.webgl.Map = function(container, map) {
    */
   this.context_ = new ol.webgl.Context(this.canvas_, this.gl_);
 
-  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
       this.handleWebGLContextLost, this);
-  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
   /**
