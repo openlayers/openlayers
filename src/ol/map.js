@@ -619,10 +619,11 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.layer.Layer): T} callback Layer
- *     callback. Will receive one argument, the {@link ol.layer.Layer layer}
- *     that contains the color pixel. To stop detection, callback functions can
- *     return a truthy value.
+ * @param {function(this: S, ol.layer.Layer, ol.Color): T} callback Layer
+ *     callback. This callback will recieve two arguments: first is the
+ *     {@link ol.layer.Layer layer}, second argument is {@link ol.Color}
+ *     and will be null for layer types that do not currently support this
+ *     argument. To stop detection callback functions can return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
