@@ -74,6 +74,7 @@ describe('ol.TileUrlFunction', function() {
           templates, tileGrid);
       var tileCoord = [3, 2, -2];
 
+      /* eslint-disable openlayers-internal/no-missing-requires */
       sinon.stub(ol.tilecoord, 'hash', function() {
         return 3;
       });
@@ -91,6 +92,7 @@ describe('ol.TileUrlFunction', function() {
       });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
       ol.tilecoord.hash.restore();
+      /* eslint-enable */
     });
   });
 

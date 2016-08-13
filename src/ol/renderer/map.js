@@ -1,7 +1,6 @@
 goog.provide('ol.renderer.Map');
 goog.provide('ol.RendererType');
 
-goog.require('ol.transform');
 goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.events');
@@ -9,7 +8,8 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.layer.Layer');
-goog.require('ol.style.iconImageCache');
+goog.require('ol.style');
+goog.require('ol.transform');
 
 
 /**
@@ -104,7 +104,8 @@ ol.renderer.Map.prototype.disposeInternal = function() {
  * @private
  */
 ol.renderer.Map.expireIconCache_ = function(map, frameState) {
-  ol.style.iconImageCache.expire();
+  var cache = ol.style.iconImageCache;
+  cache.expire();
 };
 
 

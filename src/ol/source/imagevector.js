@@ -1,13 +1,15 @@
 goog.provide('ol.source.ImageVector');
 
+goog.require('ol');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.transform');
-goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.vector');
 goog.require('ol.source.ImageCanvas');
+goog.require('ol.style.Style');
+goog.require('ol.transform');
 
 
 /**
@@ -293,8 +295,8 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
  * @api stable
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
-  this.style_ = style !== undefined ? style : ol.style.defaultStyleFunction;
+  this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
   this.styleFunction_ = !style ?
-      undefined : ol.style.createStyleFunction(this.style_);
+      undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
 };

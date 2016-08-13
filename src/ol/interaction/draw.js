@@ -312,7 +312,7 @@ ol.inherits(ol.interaction.Draw, ol.interaction.Pointer);
  * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Draw.getDefaultStyleFunction = function() {
-  var styles = ol.style.createDefaultEditingStyles();
+  var styles = ol.style.Style.createDefaultEditing();
   return function(feature, resolution) {
     return styles[feature.getGeometry().getType()];
   };

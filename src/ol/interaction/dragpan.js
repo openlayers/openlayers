@@ -1,9 +1,9 @@
 goog.provide('ol.interaction.DragPan');
 
-goog.require('ol.ViewHint');
+goog.require('ol.View');
 goog.require('ol.coordinate');
-goog.require('ol.functions');
 goog.require('ol.events.condition');
+goog.require('ol.functions');
 goog.require('ol.interaction.Pointer');
 
 
@@ -115,7 +115,7 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
       dest = view.constrainCenter(dest);
       view.setCenter(dest);
     }
-    view.setHint(ol.ViewHint.INTERACTING, -1);
+    view.setHint(ol.View.Hint.INTERACTING, -1);
     map.render();
     return false;
   } else {
@@ -137,7 +137,7 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     var view = map.getView();
     this.lastCentroid = null;
     if (!this.handlingDownUpSequence) {
-      view.setHint(ol.ViewHint.INTERACTING, 1);
+      view.setHint(ol.View.Hint.INTERACTING, 1);
     }
     map.render();
     if (this.kineticPreRenderFn_ &&

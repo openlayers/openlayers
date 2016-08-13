@@ -1,5 +1,6 @@
 goog.provide('ol.reproj.Triangulation');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');

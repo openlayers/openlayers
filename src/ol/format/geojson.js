@@ -422,7 +422,7 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(
           opt_options));
     }
   } else {
-    ol.assert(false, 35); // Unknown GeoJSON object type
+    ol.asserts.assert(false, 35); // Unknown GeoJSON object type
   }
   return /** Array.<ol.Feature> */ (features);
 };
@@ -478,7 +478,7 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
       // is fixed and widely deployed.
       projection = ol.proj.get('EPSG:' + crs.properties.code);
     } else {
-      ol.assert(false, 36); // Unknown SRS type
+      ol.asserts.assert(false, 36); // Unknown SRS type
     }
   } else {
     projection = this.defaultDataProjection;

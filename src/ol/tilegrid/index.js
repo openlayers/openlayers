@@ -1,5 +1,7 @@
 goog.provide('ol.tilegrid');
 
+goog.require('ol');
+goog.require('ol.size');
 goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.obj');

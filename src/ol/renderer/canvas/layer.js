@@ -1,12 +1,13 @@
 goog.provide('ol.renderer.canvas.Layer');
 
-goog.require('ol.transform');
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
+goog.require('ol.transform');
 
 
 /**

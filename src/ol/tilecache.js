@@ -1,5 +1,6 @@
 goog.provide('ol.TileCache');
 
+goog.require('ol');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.tilecoord');
 

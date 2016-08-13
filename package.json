@@ -13,7 +13,6 @@
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
     "pretest": "eslint tasks test test_rendering src examples",
-    "test-node": "mocha test/node",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
   },
@@ -35,7 +34,6 @@
     "browserify": "13.1.0",
     "closure-util": "1.15.0",
     "derequire": "2.0.3",
-    "eslint-plugin-openlayers-internal": "file:rules",
     "fs-extra": "0.30.0",
     "glob": "7.0.5",
     "handlebars": "4.0.5",
@@ -57,6 +55,7 @@
     "debounce": "^1.0.0",
     "eslint": "3.2.2",
     "eslint-config-openlayers": "5.0.0",
+    "eslint-plugin-openlayers-internal": "2.1.0",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",
     "istanbul": "0.4.4",
@@ -98,8 +97,11 @@
       ],
       "no-constant-condition": 0,
       "openlayers-internal/no-duplicate-requires": 2,
+      "openlayers-internal/no-missing-requires": 1,
       "openlayers-internal/no-unused-requires": 2,
+      "openlayers-internal/one-provide": 1,
       "openlayers-internal/requires-first": 2,
+      "openlayers-internal/valid-provide": 2,
       "openlayers-internal/valid-requires": 2
     }
   },

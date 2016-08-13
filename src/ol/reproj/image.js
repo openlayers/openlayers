@@ -1,9 +1,10 @@
 goog.provide('ol.reproj.Image');
 
-goog.require('ol.events');
-goog.require('ol.events.EventType');
+goog.require('ol');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');

@@ -1,5 +1,4 @@
 goog.provide('ol.webgl');
-goog.provide('ol.webgl.WebGLContextEventType');
 
 
 /** Constants taken from goog.webgl
@@ -266,15 +265,6 @@ ol.webgl.CONTEXT_IDS_ = [
   'webkit-3d',
   'moz-webgl'
 ];
-
-
-/**
- * @enum {string}
- */
-ol.webgl.WebGLContextEventType = {
-  LOST: 'webglcontextlost',
-  RESTORED: 'webglcontextrestored'
-};
 
 
 /**

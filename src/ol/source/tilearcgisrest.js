@@ -1,9 +1,10 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.extent');
-goog.require('ol.obj');
 goog.require('ol.math');
+goog.require('ol.obj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
@@ -110,7 +111,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
       .replace(/MapServer\/?$/, 'MapServer/export')
       .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
-    ol.assert(false, 50); // Cannot determine Rest Service from url
+    ol.asserts.assert(false, 50); // Cannot determine Rest Service from url
   }
   return ol.uri.appendParams(modifiedUrl, params);
 };

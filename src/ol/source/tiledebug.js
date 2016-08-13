@@ -1,7 +1,7 @@
 goog.provide('ol.source.TileDebug');
 
+goog.require('ol');
 goog.require('ol.Tile');
-goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.size');
 goog.require('ol.source.Tile');
@@ -17,7 +17,7 @@ goog.require('ol.source.Tile');
  */
 ol.DebugTile_ = function(tileCoord, tileSize, text) {
 
-  ol.Tile.call(this, tileCoord, ol.TileState.LOADED);
+  ol.Tile.call(this, tileCoord, ol.Tile.State.LOADED);
 
   /**
    * @private

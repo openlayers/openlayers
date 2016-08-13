@@ -1,5 +1,6 @@
 goog.provide('ol.structs.LRUCache');
 
+goog.require('ol.asserts');
 goog.require('ol.obj');
 
 
@@ -130,7 +131,7 @@ ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
  */
 ol.structs.LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
-  ol.assert(entry !== undefined,
+  ol.asserts.assert(entry !== undefined,
       15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     return entry.value_;
@@ -244,7 +245,7 @@ ol.structs.LRUCache.prototype.replace = function(key, value) {
 ol.structs.LRUCache.prototype.set = function(key, value) {
   goog.DEBUG && console.assert(!(key in {}),
       'key is not a standard property of objects (e.g. "__proto__")');
-  ol.assert(!(key in this.entries_),
+  ol.asserts.assert(!(key in this.entries_),
       16); // Tried to set a value for a key that is used already
   var entry = /** @type {ol.LRUCacheEntry} */ ({
     key_: key,

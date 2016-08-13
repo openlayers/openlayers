@@ -5,6 +5,7 @@
 goog.provide('ol.source.TileWMS');
 
 goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.math');
@@ -237,7 +238,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        ol.assert(false, 52); // Unknown `serverType` configured
+        ol.asserts.assert(false, 52); // Unknown `serverType` configured
         break;
     }
   }

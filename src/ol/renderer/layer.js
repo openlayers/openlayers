@@ -1,14 +1,15 @@
 goog.provide('ol.renderer.Layer');
 
-goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol');
-goog.require('ol.functions');
 goog.require('ol.ImageState');
 goog.require('ol.Observable');
-goog.require('ol.TileState');
-goog.require('ol.transform');
+goog.require('ol.Tile');
+goog.require('ol.asserts');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol.functions');
 goog.require('ol.source.State');
+goog.require('ol.transform');
 
 
 /**
@@ -221,8 +222,8 @@ ol.renderer.Layer.prototype.updateLogos = function(frameState, source) {
     if (typeof logo === 'string') {
       frameState.logos[logo] = '';
     } else if (logo) {
-      ol.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      ol.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
+      ol.asserts.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      ol.asserts.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       frameState.logos[logo.src] = logo.href;
     }
   }
@@ -306,7 +307,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-          if (tile.getState() == ol.TileState.IDLE) {
+          if (tile.getState() == ol.Tile.State.IDLE) {
             wantedTiles[tile.getKey()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {
               tileQueue.enqueue([tile, tileSourceKey,

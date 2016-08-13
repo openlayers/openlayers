@@ -2,6 +2,7 @@ goog.provide('ol.source.ImageArcGISRest');
 
 goog.require('ol');
 goog.require('ol.Image');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
@@ -211,7 +212,7 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
     .replace(/MapServer\/?$/, 'MapServer/export')
     .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
-    ol.assert(false, 50); // `options.featureTypes` should be an Array
+    ol.asserts.assert(false, 50); // `options.featureTypes` should be an Array
   }
   return ol.uri.appendParams(modifiedUrl, params);
 };

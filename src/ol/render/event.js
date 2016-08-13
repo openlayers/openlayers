@@ -1,6 +1,7 @@
 goog.provide('ol.render.Event');
 goog.provide('ol.render.EventType');
 
+goog.require('ol');
 goog.require('ol.events.Event');
 
 

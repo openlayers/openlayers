@@ -86,7 +86,7 @@ check-deps:
 	done ;\
 
 .PHONY: ci
-ci: lint build test test-rendering test-node compile-examples check-examples apidoc
+ci: lint build test test-rendering compile-examples check-examples apidoc
 
 .PHONY: compile-examples
 compile-examples: build/compiled-examples/all.combined.js
@@ -134,10 +134,6 @@ serve: build/test_requires.js build/test_rendering_requires.js
 .PHONY: test
 test: build/timestamps/node-modules-timestamp build/test_requires.js
 	node tasks/test.js
-
-.PHONY: test-node
-test-node: build/timestamps/node-modules-timestamp
-	./node_modules/.bin/mocha test/node --fgrep 'has a path that maps to the provide'
 
 .PHONY: test-coverage
 test-coverage: build/timestamps/node-modules-timestamp
@@ -256,7 +252,7 @@ build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                    build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@echo "Running eslint..."
-	@./node_modules/.bin/eslint tasks test test_rendering src examples
+	@./node_modules/.bin/eslint --quiet tasks test test_rendering src examples
 	@touch $@
 
 build/timestamps/node-modules-timestamp: package.json

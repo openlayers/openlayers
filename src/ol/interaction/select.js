@@ -225,7 +225,7 @@ ol.interaction.Select.prototype.getFeatures = function() {
  * @api
  */
 ol.interaction.Select.prototype.getLayer = function(feature) {
-  ol.assert(feature instanceof ol.Feature,
+  ol.asserts.assert(feature instanceof ol.Feature,
       42); // Expected an `ol.Feature`, but got an `ol.RenderFeature`
   var key = ol.getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
@@ -342,7 +342,7 @@ ol.interaction.Select.prototype.setMap = function(map) {
  * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
-  var styles = ol.style.createDefaultEditingStyles();
+  var styles = ol.style.Style.createDefaultEditing();
   ol.array.extend(styles[ol.geom.GeometryType.POLYGON],
       styles[ol.geom.GeometryType.LINE_STRING]);
   ol.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],

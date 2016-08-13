@@ -282,7 +282,7 @@ ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
       y: coordinates[1]
     });
   } else {
-    ol.assert(false, 34); // Invalid geometry layout
+    ol.asserts.assert(false, 34); // Invalid geometry layout
   }
   return /** @type {EsriJSONGeometry} */ (esriJSON);
 };

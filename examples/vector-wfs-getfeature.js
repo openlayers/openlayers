@@ -40,16 +40,15 @@ var map = new ol.Map({
 });
 
 // generate a GetFeature request
-var f = ol.format.ogc.filter;
 var featureRequest = new ol.format.WFS().writeGetFeature({
   srsName: 'EPSG:3857',
   featureNS: 'http://openstreemap.org',
   featurePrefix: 'osm',
   featureTypes: ['water_areas'],
   outputFormat: 'application/json',
-  filter: f.and(
-    f.like('name', 'Mississippi*'),
-    f.equalTo('waterway', 'riverbank')
+  filter: ol.format.ogc.filter.and(
+    ol.format.ogc.filter.like('name', 'Mississippi*'),
+    ol.format.ogc.filter.equalTo('waterway', 'riverbank')
   )
 });
 

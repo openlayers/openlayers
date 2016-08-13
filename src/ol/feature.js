@@ -301,7 +301,7 @@ ol.Feature.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      ol.assert(obj instanceof ol.style.Style,
+      ol.asserts.assert(obj instanceof ol.style.Style,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }

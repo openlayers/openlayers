@@ -386,7 +386,7 @@ ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
  */
 ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  ol.assert(feature.getId() !== undefined, 26); // Features must have an id set
+  ol.asserts.assert(feature.getId() !== undefined, 26); // Features must have an id set
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   featurePrefix = featurePrefix ? featurePrefix :
@@ -410,7 +410,7 @@ ol.format.WFS.writeDelete_ = function(node, feature, objectStack) {
  */
 ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
   var context = objectStack[objectStack.length - 1];
-  ol.assert(feature.getId() !== undefined, 27); // Features must have an id set
+  ol.asserts.assert(feature.getId() !== undefined, 27); // Features must have an id set
   var featureType = context['featureType'];
   var featurePrefix = context['featurePrefix'];
   featurePrefix = featurePrefix ? featurePrefix :
@@ -802,7 +802,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     }
     filter = options.filter;
     if (options.bbox) {
-      ol.assert(options.geometryName,
+      ol.asserts.assert(options.geometryName,
           12); // `options.geometryName` must also be provided when `options.bbox` is set
       var bbox = ol.format.ogc.filter.bbox(
           /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
@@ -826,7 +826,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     'filter': filter,
     'propertyNames': options.propertyNames ? options.propertyNames : []
   };
-  ol.assert(Array.isArray(options.featureTypes),
+  ol.asserts.assert(Array.isArray(options.featureTypes),
       11); // `options.featureTypes` should be an Array
   ol.format.WFS.writeGetFeature_(node, /** @type {!Array.<string>} */ (options.featureTypes), [context]);
   return node;

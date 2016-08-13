@@ -2,6 +2,7 @@
 
 goog.provide('ol.render.Box');
 
+goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.geom.Polygon');
 

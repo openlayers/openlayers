@@ -4,6 +4,7 @@ goog.provide('ol.source.ImageWMS');
 
 goog.require('ol');
 goog.require('ol.Image');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
@@ -267,7 +268,7 @@ ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
  */
 ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
-  ol.assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
+  ol.asserts.assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -293,7 +294,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
-        ol.assert(false, 8); // Unknown `serverType` configured
+        ol.asserts.assert(false, 8); // Unknown `serverType` configured
         break;
     }
   }

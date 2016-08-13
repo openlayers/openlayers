@@ -1,5 +1,6 @@
 goog.provide('ol.source.BingMaps');
 
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.extent');

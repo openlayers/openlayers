@@ -3,6 +3,7 @@ goog.provide('ol.RasterOperationType');
 goog.provide('ol.source.RasterEvent');
 goog.provide('ol.source.RasterEventType');
 
+goog.require('ol');
 goog.require('ol.transform');
 goog.require('ol.ImageCanvas');
 goog.require('ol.TileQueue');

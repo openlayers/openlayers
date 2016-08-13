@@ -1,5 +1,6 @@
 goog.provide('ol.structs.RBush');
 
+goog.require('ol');
 goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 goog.require('ol.obj');

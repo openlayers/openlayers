@@ -526,7 +526,7 @@ ol.extent.getCorner = function(extent, corner) {
   } else if (corner === ol.extent.Corner.TOP_RIGHT) {
     coordinate = ol.extent.getTopRight(extent);
   } else {
-    ol.assert(false, 13); // Invalid corner
+    ol.asserts.assert(false, 13); // Invalid corner
   }
   return /** @type {!ol.Coordinate} */ (coordinate);
 };

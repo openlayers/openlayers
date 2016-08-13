@@ -1,11 +1,12 @@
 goog.provide('ol.renderer.webgl.Layer');
 
-goog.require('ol.transform');
+goog.require('ol');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.defaultmapshader');
+goog.require('ol.transform');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');

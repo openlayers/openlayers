@@ -1,5 +1,6 @@
 goog.provide('ol.proj.EPSG3857');
 
+goog.require('ol');
 goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');

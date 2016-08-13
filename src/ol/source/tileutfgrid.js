@@ -1,10 +1,11 @@
 goog.provide('ol.source.TileUTFGrid');
 
 goog.require('goog.async.nextTick');
+goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
-goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
@@ -69,7 +70,7 @@ ol.source.TileUTFGrid = function(options) {
   } else if (options.tileJSON) {
     this.handleTileJSONResponse(options.tileJSON);
   } else {
-    ol.assert(false, 51); // Either `url` or `tileJSON` options must be provided
+    ol.asserts.assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 };
 ol.inherits(ol.source.TileUTFGrid, ol.source.Tile);
@@ -236,7 +237,7 @@ ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projecti
     var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGridTile_(
         tileCoord,
-        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+        tileUrl !== undefined ? ol.Tile.State.IDLE : ol.Tile.State.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_,
@@ -262,7 +263,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  * @constructor
  * @extends {ol.Tile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
+ * @param {ol.Tile.State} state State.
  * @param {string} src Image source URI.
  * @param {ol.Extent} extent Extent of the tile.
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
@@ -384,7 +385,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  * @template T
  */
 ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
-  if (this.state == ol.TileState.IDLE && opt_request === true) {
+  if (this.state == ol.Tile.State.IDLE && opt_request === true) {
     ol.events.listenOnce(this, ol.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, this);
@@ -413,7 +414,7 @@ ol.source.TileUTFGridTile_.prototype.getKey = function() {
  * @private
  */
 ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
-  this.state = ol.TileState.ERROR;
+  this.state = ol.Tile.State.ERROR;
   this.changed();
 };
 
@@ -427,7 +428,7 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
   this.keys_ = json.keys;
   this.data_ = json.data;
 
-  this.state = ol.TileState.EMPTY;
+  this.state = ol.Tile.State.EMPTY;
   this.changed();
 };
 
@@ -436,8 +437,8 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
  * @private
  */
 ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
-  if (this.state == ol.TileState.IDLE) {
-    this.state = ol.TileState.LOADING;
+  if (this.state == ol.Tile.State.IDLE) {
+    this.state = ol.Tile.State.LOADING;
     if (this.jsonp_) {
       ol.net.jsonp(this.src_, this.handleLoad_.bind(this),
           this.handleError_.bind(this));

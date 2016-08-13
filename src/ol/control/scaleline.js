@@ -1,35 +1,13 @@
 goog.provide('ol.control.ScaleLine');
-goog.provide('ol.control.ScaleLineUnits');
 
-goog.require('ol.events');
 goog.require('ol');
 goog.require('ol.Object');
+goog.require('ol.asserts');
 goog.require('ol.control.Control');
 goog.require('ol.css');
+goog.require('ol.events');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
-
-
-/**
- * @enum {string}
- */
-ol.control.ScaleLineProperty = {
-  UNITS: 'units'
-};
-
-
-/**
- * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
- * `'nautical'`, `'metric'`, `'us'`.
- * @enum {string}
- */
-ol.control.ScaleLineUnits = {
-  DEGREES: 'degrees',
-  IMPERIAL: 'imperial',
-  NAUTICAL: 'nautical',
-  METRIC: 'metric',
-  US: 'us'
-};
 
 
 /**
@@ -107,11 +85,11 @@ ol.control.ScaleLine = function(opt_options) {
   });
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.control.ScaleLineProperty.UNITS),
+      this, ol.Object.getChangeEventType(ol.control.ScaleLine.Property.UNITS),
       this.handleUnitsChanged_, this);
 
-  this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
-      ol.control.ScaleLineUnits.METRIC);
+  this.setUnits(/** @type {ol.control.ScaleLine.Units} */ (options.units) ||
+      ol.control.ScaleLine.Units.METRIC);
 
 };
 ol.inherits(ol.control.ScaleLine, ol.control.Control);
@@ -126,14 +104,14 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
 
 /**
  * Return the units to use in the scale line.
- * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
+ * @return {ol.control.ScaleLine.Units|undefined} The units to use in the scale
  *     line.
  * @observable
  * @api stable
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
-  return /** @type {ol.control.ScaleLineUnits|undefined} */ (
-      this.get(ol.control.ScaleLineProperty.UNITS));
+  return /** @type {ol.control.ScaleLine.Units|undefined} */ (
+      this.get(ol.control.ScaleLine.Property.UNITS));
 };
 
 
@@ -164,12 +142,12 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 
 /**
  * Set the units to use in the scale line.
- * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
+ * @param {ol.control.ScaleLine.Units} units The units to use in the scale line.
  * @observable
  * @api stable
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {
-  this.set(ol.control.ScaleLineProperty.UNITS, units);
+  this.set(ol.control.ScaleLine.Property.UNITS, units);
 };
 
 
@@ -197,7 +175,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
   var units = this.getUnits();
-  if (units == ol.control.ScaleLineUnits.DEGREES) {
+  if (units == ol.control.ScaleLine.Units.DEGREES) {
     var metersPerDegree = ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES];
     pointResolution /= metersPerDegree;
     if (nominalCount < metersPerDegree / 60) {
@@ -209,7 +187,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     } else {
       suffix = '\u00b0'; // degrees
     }
-  } else if (units == ol.control.ScaleLineUnits.IMPERIAL) {
+  } else if (units == ol.control.ScaleLine.Units.IMPERIAL) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution /= 0.0254;
@@ -220,10 +198,10 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       suffix = 'mi';
       pointResolution /= 1609.344;
     }
-  } else if (units == ol.control.ScaleLineUnits.NAUTICAL) {
+  } else if (units == ol.control.ScaleLine.Units.NAUTICAL) {
     pointResolution /= 1852;
     suffix = 'nm';
-  } else if (units == ol.control.ScaleLineUnits.METRIC) {
+  } else if (units == ol.control.ScaleLine.Units.METRIC) {
     if (nominalCount < 1) {
       suffix = 'mm';
       pointResolution *= 1000;
@@ -233,7 +211,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       suffix = 'km';
       pointResolution /= 1000;
     }
-  } else if (units == ol.control.ScaleLineUnits.US) {
+  } else if (units == ol.control.ScaleLine.Units.US) {
     if (nominalCount < 0.9144) {
       suffix = 'in';
       pointResolution *= 39.37;
@@ -245,7 +223,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
       pointResolution /= 1609.3472;
     }
   } else {
-    ol.assert(false, 33); // Invalid units
+    ol.asserts.assert(false, 33); // Invalid units
   }
 
   var i = 3 * Math.floor(
@@ -281,4 +259,27 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     this.renderedVisible_ = true;
   }
 
+};
+
+
+/**
+ * @enum {string}
+ * @api
+ */
+ol.control.ScaleLine.Property = {
+  UNITS: 'units'
+};
+
+
+/**
+ * Units for the scale line. Supported values are `'degrees'`, `'imperial'`,
+ * `'nautical'`, `'metric'`, `'us'`.
+ * @enum {string}
+ */
+ol.control.ScaleLine.Units = {
+  DEGREES: 'degrees',
+  IMPERIAL: 'imperial',
+  NAUTICAL: 'nautical',
+  METRIC: 'metric',
+  US: 'us'
 };

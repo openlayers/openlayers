@@ -3,15 +3,16 @@
 
 goog.provide('ol.renderer.webgl.TileLayer');
 
-goog.require('ol.transform');
+goog.require('ol');
+goog.require('ol.Tile');
 goog.require('ol.TileRange');
-goog.require('ol.TileState');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayershader');
 goog.require('ol.size');
+goog.require('ol.transform');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 
@@ -248,20 +249,20 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
           }
         }
         tileState = tile.getState();
-        drawable = tileState == ol.TileState.LOADED ||
-            tileState == ol.TileState.EMPTY ||
-            tileState == ol.TileState.ERROR && !useInterimTilesOnError;
+        drawable = tileState == ol.Tile.State.LOADED ||
+            tileState == ol.Tile.State.EMPTY ||
+            tileState == ol.Tile.State.ERROR && !useInterimTilesOnError;
         if (!drawable && tile.interimTile) {
           tile = tile.interimTile;
         }
         tileState = tile.getState();
-        if (tileState == ol.TileState.LOADED) {
+        if (tileState == ol.Tile.State.LOADED) {
           if (mapRenderer.isTileTextureLoaded(tile)) {
             tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
             continue;
           }
-        } else if (tileState == ol.TileState.EMPTY ||
-                   (tileState == ol.TileState.ERROR &&
+        } else if (tileState == ol.Tile.State.EMPTY ||
+                   (tileState == ol.Tile.State.ERROR &&
                     !useInterimTilesOnError)) {
           continue;
         }
@@ -328,7 +329,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
        * @param {ol.Tile} tile Tile.
        */
       function(tile) {
-        if (tile.getState() == ol.TileState.LOADED &&
+        if (tile.getState() == ol.Tile.State.LOADED &&
             !mapRenderer.isTileTextureLoaded(tile) &&
             !tileTextureQueue.isKeyQueued(tile.getKey())) {
           tileTextureQueue.enqueue([

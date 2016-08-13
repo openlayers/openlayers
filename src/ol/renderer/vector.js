@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.vector');
 
+goog.require('ol');
 goog.require('ol.render.ReplayType');
 goog.require('ol.style.ImageState');
 

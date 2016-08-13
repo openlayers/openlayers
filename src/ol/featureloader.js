@@ -1,6 +1,6 @@
 goog.provide('ol.featureloader');
 
-goog.require('ol.TileState');
+goog.require('ol.Tile');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -93,7 +93,7 @@ ol.featureloader.tile = function(url, format) {
        * @this {ol.VectorTile}
        */
       function() {
-        this.setState(ol.TileState.ERROR);
+        this.setState(ol.Tile.State.ERROR);
       });
 };
 

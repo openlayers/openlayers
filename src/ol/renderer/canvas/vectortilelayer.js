@@ -1,5 +1,6 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.proj');

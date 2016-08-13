@@ -76,10 +76,10 @@ describe('ol.layer.Vector', function() {
     });
 
     it('updates the internal style function', function() {
-      expect(layer.getStyleFunction()).to.be(ol.style.defaultStyleFunction);
+      expect(layer.getStyleFunction()).to.be(ol.style.Style.defaultFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          ol.style.defaultStyleFunction);
+          ol.style.Style.defaultFunction);
     });
 
     it('allows setting an null style', function() {
@@ -91,8 +91,8 @@ describe('ol.layer.Vector', function() {
     it('sets the default style when passing undefined', function() {
       layer.setStyle(style);
       layer.setStyle(undefined);
-      expect(layer.getStyle()).to.be(ol.style.defaultStyleFunction);
-      expect(layer.getStyleFunction()).to.be(ol.style.defaultStyleFunction);
+      expect(layer.getStyle()).to.be(ol.style.Style.defaultFunction);
+      expect(layer.getStyleFunction()).to.be(ol.style.Style.defaultFunction);
     });
 
   });
@@ -107,7 +107,7 @@ describe('ol.layer.Vector', function() {
         source: source
       });
 
-      expect(layer.getStyle()).to.be(ol.style.defaultStyleFunction);
+      expect(layer.getStyle()).to.be(ol.style.Style.defaultFunction);
 
       layer.setStyle(style);
       expect(layer.getStyle()).to.be(style);

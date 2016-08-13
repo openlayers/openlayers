@@ -173,7 +173,7 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
  *     This can happen if the developer defines projections improperly and/or
  *     with unlimited extents.
  *     If too many tiles are required, no tiles are loaded and
- *     `ol.TileState.ERROR` state is set. Default is `100`.
+ *     `ol.Tile.State.ERROR` state is set. Default is `100`.
  */
 ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
 
@@ -303,48 +303,3 @@ if (typeof window !== 'undefined') {
 } else if (typeof self !== 'undefined') {
   ol.global = self;
 }
-
-
-/**
- * Error object thrown when an assertion failed. This is an ECMA-262 Error,
- * extended with a `code` property.
- * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error}
- * @constructor
- * @extends {Error}
- * @implements {oli.AssertionError}
- * @param {number} code Error code.
- */
-ol.AssertionError = function(code) {
-
-  /**
-   * @type {string}
-   */
-  this.message = 'Assertion failed. See ' +
-      (ol.VERSION ? 'http://openlayers.org/en/' + ol.VERSION.split('-')[0] : '') +
-      '/doc/errors/#' + code + ' for details.';
-
-  /**
-   * Error code. The meaning of the code can be found on
-   * {@link http://openlayers.org/en/latest/errors.html} (replace `latest` with
-   * the version found in the OpenLayers script's header comment if a version
-   * other than the latest is used).
-   * @type {number}
-   * @api
-   */
-  this.code = code;
-
-  this.name = 'AssertionError';
-
-};
-ol.inherits(ol.AssertionError, Error);
-
-
-/**
- * @param {*} assertion Assertion we expected to be truthy.
- * @param {number} errorCode Error code.
- */
-ol.assert = function(assertion, errorCode) {
-  if (!assertion) {
-    throw new ol.AssertionError(errorCode);
-  }
-};

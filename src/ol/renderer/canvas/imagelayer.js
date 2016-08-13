@@ -1,13 +1,14 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
-goog.require('ol.transform');
-goog.require('ol.functions');
-goog.require('ol.ViewHint');
+goog.require('ol');
+goog.require('ol.View');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.proj');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.source.ImageVector');
+goog.require('ol.transform');
 
 
 /**
@@ -160,7 +161,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
         renderedExtent, layerState.extent);
   }
 
-  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
+  if (!hints[ol.View.Hint.ANIMATING] && !hints[ol.View.Hint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     if (!ol.ENABLE_RASTER_REPROJECTION) {

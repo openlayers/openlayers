@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
-goog.require('ol.ViewHint');
+goog.require('ol');
+goog.require('ol.View');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.EventType');
@@ -201,8 +202,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
-  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
+  var animating = frameState.viewHints[ol.View.Hint.ANIMATING];
+  var interacting = frameState.viewHints[ol.View.Hint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 

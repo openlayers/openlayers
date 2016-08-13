@@ -17,7 +17,6 @@ goog.require('ol.ObjectEventType');
 goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
-goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.control');
 goog.require('ol.dom');
@@ -29,7 +28,6 @@ goog.require('ol.functions');
 goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Group');
-goog.require('ol.transform');
 goog.require('ol.obj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
@@ -38,6 +36,7 @@ goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
+goog.require('ol.transform');
 
 
 /**
@@ -1003,11 +1002,11 @@ ol.Map.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[ol.ViewHint.ANIMATING]) {
+      if (hints[ol.View.Hint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[ol.ViewHint.INTERACTING]) {
+      if (hints[ol.View.Hint.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -1299,8 +1298,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
+        !frameState.viewHints[ol.View.Hint.ANIMATING] &&
+        !frameState.viewHints[ol.View.Hint.INTERACTING] &&
         !ol.extent.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
@@ -1444,8 +1443,8 @@ ol.Map.createOptionsInternal = function(options) {
     } else if (logo instanceof HTMLElement) {
       logos[ol.getUid(logo).toString()] = logo;
     } else if (logo) {
-      ol.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      ol.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
+      ol.asserts.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      ol.asserts.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       logos[logo.src] = logo.href;
     }
   }
@@ -1474,7 +1473,7 @@ ol.Map.createOptionsInternal = function(options) {
     } else if (typeof options.renderer === 'string') {
       rendererTypes = [options.renderer];
     } else {
-      ol.assert(false, 46); // Incorrect format for `renderer` option
+      ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
     }
   } else {
     rendererTypes = ol.DEFAULT_RENDERER_TYPES;
@@ -1507,7 +1506,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.controls)) {
       controls = new ol.Collection(options.controls.slice());
     } else {
-      ol.assert(options.controls instanceof ol.Collection,
+      ol.asserts.assert(options.controls instanceof ol.Collection,
           47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
@@ -1520,7 +1519,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.interactions)) {
       interactions = new ol.Collection(options.interactions.slice());
     } else {
-      ol.assert(options.interactions instanceof ol.Collection,
+      ol.asserts.assert(options.interactions instanceof ol.Collection,
           48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
@@ -1533,7 +1532,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.overlays)) {
       overlays = new ol.Collection(options.overlays.slice());
     } else {
-      ol.assert(options.overlays instanceof ol.Collection,
+      ol.asserts.assert(options.overlays instanceof ol.Collection,
           49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }

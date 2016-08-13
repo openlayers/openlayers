@@ -1,3 +1,5 @@
+/* eslint-disable openlayers-internal/no-missing-requires */
+
 /**
  * File for all typedefs used by the compiler, and referenced by JSDoc.
  *
