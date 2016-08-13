@@ -12,7 +12,6 @@ goog.require('ol.extent');
 goog.require('ol.render.canvas');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.size');
 
 
 /**
@@ -245,10 +244,7 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   if (rotation || hasRenderListeners) {
     renderContext = this.context;
     var renderCanvas = renderContext.canvas;
-    var drawZ = tileGrid.getZForResolution(resolution);
-    var drawTileSize = source.getTilePixelSize(drawZ, pixelRatio, projection);
-    var tileSize = ol.size.toSize(tileGrid.getTileSize(drawZ));
-    drawScale = drawTileSize[0] / tileSize[0];
+    drawScale = source.getTilePixelRatio(pixelRatio) / pixelRatio;
     var width = context.canvas.width * drawScale;
     var height = context.canvas.height * drawScale;
     // Make sure the canvas is big enough for all possible rotation angles
