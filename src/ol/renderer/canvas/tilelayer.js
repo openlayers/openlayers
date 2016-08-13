@@ -240,7 +240,8 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
 
   var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
   var renderContext = context;
-  var drawOffsetX, drawOffsetY, drawScale, drawSize;
+  var drawScale = 1;
+  var drawOffsetX, drawOffsetY, drawSize;
   if (rotation || hasRenderListeners) {
     renderContext = this.context;
     var renderCanvas = renderContext.canvas;
@@ -294,14 +295,18 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
     var ox = drawOffsetX || 0;
     var oy = drawOffsetY || 0;
     renderContext.save();
-    var cx = (renderContext.canvas.width * pixelRatio) / 2;
-    var cy = (renderContext.canvas.height * pixelRatio) / 2;
+    var cx = (renderContext.canvas.width) / 2;
+    var cy = (renderContext.canvas.height) / 2;
     ol.render.canvas.rotateAtOffset(renderContext, -rotation, cx, cy);
     renderContext.beginPath();
-    renderContext.moveTo(topLeft[0] * pixelRatio + ox, topLeft[1] * pixelRatio + oy);
-    renderContext.lineTo(topRight[0] * pixelRatio + ox, topRight[1] * pixelRatio + oy);
-    renderContext.lineTo(bottomRight[0] * pixelRatio + ox, bottomRight[1] * pixelRatio + oy);
-    renderContext.lineTo(bottomLeft[0] * pixelRatio + ox, bottomLeft[1] * pixelRatio + oy);
+    renderContext.moveTo(drawScale * (topLeft[0] * pixelRatio + ox),
+        drawScale * (topLeft[1] * pixelRatio + oy));
+    renderContext.lineTo(drawScale * (topRight[0] * pixelRatio + ox),
+        drawScale * (topRight[1] * pixelRatio + oy));
+    renderContext.lineTo(drawScale * (bottomRight[0] * pixelRatio + ox),
+        drawScale * (bottomRight[1] * pixelRatio + oy));
+    renderContext.lineTo(drawScale * (bottomLeft[0] * pixelRatio + ox),
+        drawScale * (bottomLeft[1] * pixelRatio + oy));
     renderContext.clip();
     ol.render.canvas.rotateAtOffset(renderContext, rotation, cx, cy);
   }
