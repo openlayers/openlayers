@@ -122,11 +122,6 @@ ol.tilegrid.TileGrid = function(options) {
       var tileRange = new ol.TileRange(
           Math.min(0, size[0]), Math.max(size[0] - 1, -1),
           Math.min(0, size[1]), Math.max(size[1] - 1, -1));
-      if (this.minZoom <= z && z <= this.maxZoom && extent !== undefined) {
-        ol.asserts.assert(tileRange.containsTileRange(
-            this.getTileRangeForExtentAndZ(extent, z)),
-            21); // Tile range for `extent` must not exceed tilegrid width and height
-      }
       return tileRange;
     }, this);
   } else if (extent) {

@@ -85,10 +85,6 @@ Number of `tileSizes` and `resolutions` must be equal.
 
 Number of `origins` and `resolutions` must be equal.
 
-### 21
-
-Tile range for `extent` must not exceed tilegrid width and height.
-
 ### 22
 
 Either `tileSize` or `tileSizes` must be configured, never both.
