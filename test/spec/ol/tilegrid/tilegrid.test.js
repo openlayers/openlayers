@@ -159,28 +159,6 @@ describe('ol.tilegrid.TileGrid', function() {
     });
   });
 
-  describe('create with extent exceeding tile ranges', function() {
-    it('throws an exception', function() {
-      expect(function() {
-        return new ol.tilegrid.TileGrid({
-          extent: [10, 20, 30, 40],
-          sizes: [[1, 1]],
-          tileSize: 10,
-          resolutions: [1]
-        });
-      }).to.throwException();
-      expect(function() {
-        return new ol.tilegrid.TileGrid({
-          extent: [10, 20, 30, 40],
-          origin: [10, 40], // top-left origin
-          sizes: [[3, 3]], // would have to be [[3, -3]] for this to not throw
-          tileSize: 10,
-          resolutions: [1]
-        });
-      }).to.throwException();
-    });
-  });
-
   describe('create with origin', function() {
     var tileGrid;
     beforeEach(function() {
