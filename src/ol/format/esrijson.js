@@ -254,9 +254,9 @@ ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
  * @return {EsriJSONGeometry} EsriJSON geometry.
  */
 ol.format.EsriJSON.writePointGeometry_ = function(geometry, opt_options) {
-  var coordinates = /** @type ol.geom.Point */ (geometry).getCoordinates();
+  var coordinates = /** @type {ol.geom.Point} */ (geometry).getCoordinates();
   var esriJSON;
-  var layout = /** @type ol.geom.Point */ (geometry).getLayout();
+  var layout = /** @type {ol.geom.Point} */ (geometry).getLayout();
   if (layout === ol.geom.GeometryLayout.XYZ) {
     esriJSON = /** @type {EsriJSONPoint} */ ({
       x: coordinates[0],
