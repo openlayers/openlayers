@@ -8,6 +8,7 @@ goog.require('ol.Tile');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.render.canvas');
 goog.require('ol.render.EventType');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.size');
