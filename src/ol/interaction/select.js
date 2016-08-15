@@ -2,6 +2,7 @@ goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectEventType');
 
+goog.require('ol.asserts');
 goog.require('ol.functions');
 goog.require('ol.Collection');
 goog.require('ol.Feature');

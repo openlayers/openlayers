@@ -1,5 +1,7 @@
 goog.provide('ol.math');
 
+goog.require('ol.asserts');
+
 
 /**
  * Takes a number and clamps it to within the provided bounds.

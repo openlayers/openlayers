@@ -1,5 +1,6 @@
 goog.provide('ol.layer.VectorTile');
 
+goog.require('ol.asserts');
 goog.require('ol.layer.Vector');
 goog.require('ol.obj');
 

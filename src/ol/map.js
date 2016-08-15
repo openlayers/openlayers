@@ -18,6 +18,7 @@ goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.array');
+goog.require('ol.asserts');
 goog.require('ol.control');
 goog.require('ol.dom');
 goog.require('ol.events');
