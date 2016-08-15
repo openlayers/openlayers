@@ -2,6 +2,7 @@ goog.provide('ol.geom.Geometry');
 goog.provide('ol.geom.GeometryLayout');
 goog.provide('ol.geom.GeometryType');
 
+goog.require('ol');
 goog.require('ol.functions');
 goog.require('ol.Object');
 goog.require('ol.extent');

@@ -1,6 +1,7 @@
 goog.provide('ol.format.IGC');
 goog.provide('ol.format.IGCZ');
 
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.TextFeature');

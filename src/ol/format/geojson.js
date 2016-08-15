@@ -3,6 +3,7 @@
 
 goog.provide('ol.format.GeoJSON');
 
+goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');

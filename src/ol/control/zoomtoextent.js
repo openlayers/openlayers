@@ -1,5 +1,6 @@
 goog.provide('ol.control.ZoomToExtent');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.control.Control');

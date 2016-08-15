@@ -1,5 +1,6 @@
 goog.provide('ol.geom.SimpleGeometry');
 
+goog.require('ol');
 goog.require('ol.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');

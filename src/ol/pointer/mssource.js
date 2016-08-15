@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.MsSource');
 
+goog.require('ol');
 goog.require('ol.pointer.EventSource');
 
 

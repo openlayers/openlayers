@@ -1,5 +1,6 @@
 goog.provide('ol.interaction.DragPan');
 
+goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.coordinate');
 goog.require('ol.events.condition');

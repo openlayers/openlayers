@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.NativeSource');
 
+goog.require('ol');
 goog.require('ol.pointer.EventSource');
 
 

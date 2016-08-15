@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Image');
 
+goog.require('ol');
 goog.require('ol.layer.Layer');
 
 

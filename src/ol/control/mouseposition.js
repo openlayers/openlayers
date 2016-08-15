@@ -2,6 +2,7 @@
 
 goog.provide('ol.control.MousePosition');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.Object');

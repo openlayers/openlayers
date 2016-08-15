@@ -6,6 +6,7 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.async.nextTick');
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');

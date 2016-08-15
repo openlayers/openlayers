@@ -1,5 +1,6 @@
 goog.provide('ol.format.GPX');
 
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.format.Feature');

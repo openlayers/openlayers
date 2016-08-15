@@ -1,5 +1,6 @@
 goog.provide('ol.interaction.KeyboardZoom');
 
+goog.require('ol');
 goog.require('ol.events.EventType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');

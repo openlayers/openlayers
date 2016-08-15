@@ -5,6 +5,7 @@
 
 goog.provide('ol.Collection');
 
+goog.require('ol');
 goog.require('ol.events.Event');
 goog.require('ol.Object');
 

@@ -3,6 +3,7 @@
 // envelopes/extents, only geometries!
 goog.provide('ol.format.GMLBase');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');

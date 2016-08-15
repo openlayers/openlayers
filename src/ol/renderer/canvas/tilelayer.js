@@ -2,6 +2,7 @@
 
 goog.provide('ol.renderer.canvas.TileLayer');
 
+goog.require('ol');
 goog.require('ol.transform');
 goog.require('ol.TileRange');
 goog.require('ol.Tile');

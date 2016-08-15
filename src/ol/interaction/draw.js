@@ -3,6 +3,7 @@ goog.provide('ol.interaction.DrawEvent');
 goog.provide('ol.interaction.DrawEventType');
 goog.provide('ol.interaction.DrawMode');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.Feature');

@@ -1,5 +1,6 @@
 goog.provide('ol.format.JSONFeature');
 
+goog.require('ol');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 

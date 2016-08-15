@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.PointerEventHandler');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 

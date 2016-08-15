@@ -2,6 +2,7 @@
 
 goog.provide('ol.control.ZoomSlider');
 
+goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.animation');
 goog.require('ol.control.Control');

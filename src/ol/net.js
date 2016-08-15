@@ -1,5 +1,7 @@
 goog.provide('ol.net');
 
+goog.require('ol');
+
 
 /**
  * Simple JSONP helper. Supports error callbacks and a custom callback param.

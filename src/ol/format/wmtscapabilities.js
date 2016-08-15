@@ -1,5 +1,6 @@
 goog.provide('ol.format.WMTSCapabilities');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.format.OWS');
 goog.require('ol.format.XLink');

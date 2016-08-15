@@ -1,5 +1,6 @@
 goog.provide('ol.layer.Group');
 
+goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.Collection');
 goog.require('ol.Object');

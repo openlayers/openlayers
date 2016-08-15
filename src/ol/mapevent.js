@@ -1,6 +1,7 @@
 goog.provide('ol.MapEvent');
 goog.provide('ol.MapEventType');
 
+goog.require('ol');
 goog.require('ol.events.Event');
 
 
