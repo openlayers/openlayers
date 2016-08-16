@@ -2014,7 +2014,8 @@ olx.format.WFSOptions.prototype.schemaLocation;
  *     startIndex: (number|undefined),
  *     count: (number|undefined),
  *     bbox: (ol.Extent|undefined),
- *     filter: (ol.format.ogc.filter.Filter|undefined)}}
+ *     filter: (ol.format.ogc.filter.Filter|undefined),
+ *     resultType: (string|undefined)}}
  */
 olx.format.WFSWriteGetFeatureOptions;
 
@@ -2125,6 +2126,15 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
  * @api
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.filter;
+
+
+/**
+ * Indicates what response should be returned, E.g. `hits` only includes the
+ * `numberOfFeatures` attribute in the response and no features.
+ * @type {string|undefined}
+ * @api
+ */
+olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
 
 
 /**
