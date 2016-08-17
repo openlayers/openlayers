@@ -128,3 +128,8 @@ Run a debug server that provides all library sources unminified.  Provides a sta
 ## `test.js`
 
 Run the tests once in a headless browser.  Note that you can also run the tests by running the `serve.js` task and then visiting the root of the test directory in your browser.
+
+
+## `test-compile-each-example.sh`
+
+Compile all examples individually.
