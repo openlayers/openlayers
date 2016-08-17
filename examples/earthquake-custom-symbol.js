@@ -13,7 +13,7 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 
-var symbol = [[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]];
+var symbols = [[0, 0], [4, 2], [6, 0], [10, 5], [6, 3], [4, 5], [0, 0]];
 var scale;
 var scaleFunction = function(coordinate) {
   return [coordinate[0] * scale, coordinate[1] * scale];
@@ -39,7 +39,7 @@ var styleFunction = function(feature) {
       fill: new ol.style.Fill({color: 'rgba(255, 153, 0, 0.4)'}),
       stroke: new ol.style.Stroke({color: 'rgba(255, 204, 0, 0.2)', width: 2})
     }));
-    vectorContext.drawGeometry(new ol.geom.Polygon([symbol.map(scaleFunction)]));
+    vectorContext.drawGeometry(new ol.geom.Polygon([symbols.map(scaleFunction)]));
     style = new ol.style.Style({
       image: new ol.style.Icon({
         img: canvas,
