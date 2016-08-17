@@ -7,6 +7,7 @@ tmp="`mktemp`"
 logs="build/compiled-examples/logs"
 > $logs
 
+has_errors=0
 for i in examples/*.html
 do
   echo Testing example $i | tee -a $logs
@@ -16,6 +17,10 @@ do
 
   make build/compiled-examples/$key.json
   node tasks/build.js build/compiled-examples/$key.json build/compiled-examples/$key.combined.js 2> >(tee $tmp >&2)
-  echo "$? $key examples/$key.js" >> $logs
+  status="$?"
+  [ $status -ne 0 ] && has_errors=1
+  echo "$status $key examples/$key.js" >> $logs
   cat $tmp >> $logs
 done
+
+exit $has_errors
