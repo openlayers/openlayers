@@ -5,7 +5,6 @@
 
 goog.provide('ol.format.KML');
 
-goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.array');
@@ -24,7 +23,6 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.math');
-goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
@@ -301,27 +299,47 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
   var textAlign = 'start';
   if (foundStyle.getImage()) {
     var imageSize = foundStyle.getImage().getImageSize();
+    if (imageSize == null){
+    	imageSize = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
+    }
+    var imageScale = foundStyle.getImage().getScale();
+    if (isNaN(imageScale)){
+      imageScale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
+    } else {
+      imageScale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ * imageScale;
+    }
     if (imageSize && imageSize.length == 2) {
       // Offset the label to be centered to the right of the icon, if there is
       // one.
-      textOffset[0] = foundStyle.getImage().getScale() * imageSize[0] / 2;
-      textOffset[1] = -foundStyle.getImage().getScale() * imageSize[1] / 2;
+      textOffset[0] = imageScale * imageSize[0] / 2;
+      textOffset[1] = -imageScale * imageSize[1] / 2;
       textAlign = 'left';
     }
   }
-  if (!ol.obj.isEmpty(foundStyle.getText())) {
-    textStyle = /** @type {ol.style.Text} */
-        (goog.object.clone(foundStyle.getText()));
-    textStyle.setText(name);
-    textStyle.setTextAlign(textAlign);
-    textStyle.setOffsetX(textOffset[0]);
-    textStyle.setOffsetY(textOffset[1]);
+  if (foundStyle.getText() !== null) {
+	// clone the text style, customizing it with name, alignments and offset.
+    // Note that kml does not support many text options that OpenLayers does (rotation, textBaseline).
+    var foundText = foundStyle.getText();
+    textStyle = new ol.style.Text({
+      text: name,
+      textAlign: textAlign,
+      offsetX: textOffset[0],
+      offsetY: textOffset[1],
+      font: foundText.getFont() || ol.format.KML.DEFAULT_TEXT_STYLE_.getFont(),
+      scale: foundText.getScale() || ol.format.KML.DEFAULT_TEXT_STYLE_.getScale(),
+      fill: foundText.getFill() || ol.format.KML.DEFAULT_TEXT_STYLE_.getFill(),
+      stroke: foundText.getStroke() || ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_
+    });
   } else {
     textStyle = new ol.style.Text({
       text: name,
       offsetX: textOffset[0],
       offsetY: textOffset[1],
-      textAlign: textAlign
+      textAlign: textAlign,
+      font: ol.format.KML.DEFAULT_TEXT_STYLE_.getFont(),
+      scale: ol.format.KML.DEFAULT_TEXT_STYLE_.getScale(),
+      fill: ol.format.KML.DEFAULT_TEXT_STYLE_.getFill(),
+      stroke: ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_
     });
   }
   var nameStyle = new ol.style.Style({
@@ -598,6 +616,8 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
       (IconObject['h']);
   if (w !== undefined && h !== undefined) {
     size = [w, h];
+  } else {
+    size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
   }
 
   var rotation;
@@ -608,7 +628,10 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   }
 
   var scale = /** @type {number|undefined} */
-      (object['scale']);
+      (object['scale'] * ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_);
+  if (isNaN(scale)) {
+    scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
+  }
   if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
     if (scale === undefined) {
