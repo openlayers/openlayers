@@ -1,4 +1,5 @@
 goog.provide('ol.control.ScaleLine');
+goog.provide('ol.control.ScaleLine.Units');
 
 goog.require('ol');
 goog.require('ol.Object');

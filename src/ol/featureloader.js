@@ -1,6 +1,8 @@
 goog.provide('ol.featureloader');
 
 goog.require('ol.Tile');
+// eslint-disable-next-line openlayers-internal/no-unused-requires
+goog.require('ol.VectorTile');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
