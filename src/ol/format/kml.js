@@ -222,6 +222,13 @@ ol.format.KML.createStyleDefaults_ = function() {
 
   /**
    * @const
+   * @type {string}
+   * @private
+   */
+  ol.format.KML.DEFAULT_NO_IMAGE_STYLE_ = 'NO_IMAGE';
+
+  /**
+   * @const
    * @type {ol.style.Stroke}
    * @private
    */
@@ -305,10 +312,8 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
     var imageScale = foundStyle.getImage().getScale();
     if (isNaN(imageScale)) {
       imageScale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
-    } else {
-      imageScale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ * imageScale;
     }
-    if (imageSize && imageSize.length == 2) {
+    if (imageSize.length == 2) {
       // Offset the label to be centered to the right of the icon, if there is
       // one.
       textOffset[0] = imageScale * imageSize[0] / 2;
@@ -531,12 +536,7 @@ ol.format.KML.readVec2_ = function(node) {
  * @return {number|undefined} Scale.
  */
 ol.format.KML.readScale_ = function(node) {
-  var number = ol.format.XSD.readDecimal(node);
-  if (number !== undefined) {
-    return Math.sqrt(number);
-  } else {
-    return undefined;
-  }
+  return ol.format.XSD.readDecimal(node);
 };
 
 
@@ -575,12 +575,13 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   }
   var styleObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var IconObject = 'Icon' in object ? object['Icon'] : {};
+  var drawIcon = (!('Icon' in object) || Object.keys(IconObject).length > 0);
   var src;
   var href = /** @type {string|undefined} */
       (IconObject['href']);
   if (href) {
     src = href;
-  } else {
+  } else if (drawIcon) {
     src = ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_;
   }
   var anchor, anchorXUnits, anchorYUnits;
@@ -616,8 +617,6 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
       (IconObject['h']);
   if (w !== undefined && h !== undefined) {
     size = [w, h];
-  } else {
-    size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
   }
 
   var rotation;
@@ -628,31 +627,39 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
   }
 
   var scale = /** @type {number|undefined} */
-      (object['scale'] * ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_);
-  if (isNaN(scale)) {
+      (object['scale']);
+  if (isNaN(scale) || scale === undefined) {
     scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
-  }
-  if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
-    size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
-    if (scale === undefined) {
-      scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
-    }
+  } else {
+    scale = scale * ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
   }
 
-  var imageStyle = new ol.style.Icon({
-    anchor: anchor,
-    anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
-    anchorXUnits: anchorXUnits,
-    anchorYUnits: anchorYUnits,
-    crossOrigin: 'anonymous', // FIXME should this be configurable?
-    offset: offset,
-    offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
-    rotation: rotation,
-    scale: scale,
-    size: size,
-    src: src
-  });
-  styleObject['imageStyle'] = imageStyle;
+  if (drawIcon) {
+    if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
+      size = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
+      if (scale === undefined) {
+        scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
+      }
+    }
+
+    var imageStyle = new ol.style.Icon({
+      anchor: anchor,
+      anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
+      anchorXUnits: anchorXUnits,
+      anchorYUnits: anchorYUnits,
+      crossOrigin: 'anonymous', // FIXME should this be configurable?
+      offset: offset,
+      offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
+      rotation: rotation,
+      scale: scale,
+      size: size,
+      src: src
+    });
+    styleObject['imageStyle'] = imageStyle;
+  } else {
+    // handle the case when we explicitly want to draw no icon.
+    styleObject['imageStyle'] = ol.format.KML.DEFAULT_NO_IMAGE_STYLE_;
+  }
 };
 
 
@@ -1101,6 +1108,9 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
   var imageStyle = /** @type {ol.style.Image} */
       ('imageStyle' in styleObject ?
           styleObject['imageStyle'] : ol.format.KML.DEFAULT_IMAGE_STYLE_);
+  if (imageStyle == ol.format.KML.DEFAULT_NO_IMAGE_STYLE_) {
+    imageStyle = undefined;
+  }
   var textStyle = /** @type {ol.style.Text} */
       ('textStyle' in styleObject ?
           styleObject['textStyle'] : ol.format.KML.DEFAULT_TEXT_STYLE_);
