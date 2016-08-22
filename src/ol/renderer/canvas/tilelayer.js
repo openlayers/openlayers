@@ -233,7 +233,7 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var pixelScale = pixelRatio / resolution;
   var layer = this.getLayer();
   var source = /** @type {ol.source.Tile} */ (layer.getSource());
-  var tileGutter = source.getGutter(projection);
+  var tileGutter = pixelRatio * source.getGutter(projection);
   var tileGrid = source.getTileGridForProjection(projection);
 
   var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
