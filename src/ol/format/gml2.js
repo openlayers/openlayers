@@ -1,5 +1,6 @@
 goog.provide('ol.format.GML2');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');

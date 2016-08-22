@@ -1,7 +1,9 @@
 goog.provide('ol.format.EsriJSON');
 
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.array');
+goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');

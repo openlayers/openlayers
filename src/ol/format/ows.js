@@ -1,5 +1,6 @@
 goog.provide('ol.format.OWS');
 
+goog.require('ol');
 goog.require('ol.format.XLink');
 goog.require('ol.format.XML');
 goog.require('ol.format.XSD');

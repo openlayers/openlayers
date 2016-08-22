@@ -2,6 +2,8 @@ goog.provide('ol.interaction.Select');
 goog.provide('ol.interaction.SelectEvent');
 goog.provide('ol.interaction.SelectEventType');
 
+goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.functions');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
@@ -14,6 +16,7 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
 goog.require('ol.obj');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Style');
 
 
 /**

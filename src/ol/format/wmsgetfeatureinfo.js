@@ -1,5 +1,6 @@
 goog.provide('ol.format.WMSGetFeatureInfo');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.format.GML2');
 goog.require('ol.format.XMLFeature');

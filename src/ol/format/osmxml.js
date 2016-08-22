@@ -1,6 +1,7 @@
 // FIXME add typedef for stack state objects
 goog.provide('ol.format.OSMXML');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');

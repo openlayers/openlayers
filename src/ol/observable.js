@@ -1,5 +1,6 @@
 goog.provide('ol.Observable');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');

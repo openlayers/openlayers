@@ -1,5 +1,6 @@
 goog.provide('ol.interaction.DragZoom');
 
+goog.require('ol');
 goog.require('ol.animation');
 goog.require('ol.easing');
 goog.require('ol.events.condition');

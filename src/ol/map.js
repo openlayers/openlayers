@@ -6,6 +6,7 @@ goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
 goog.require('goog.async.nextTick');
+goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
@@ -18,6 +19,7 @@ goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.array');
+goog.require('ol.asserts');
 goog.require('ol.control');
 goog.require('ol.dom');
 goog.require('ol.events');

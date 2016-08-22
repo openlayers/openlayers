@@ -1,6 +1,7 @@
 goog.provide('ol.ImageBase');
 goog.provide('ol.ImageState');
 
+goog.require('ol');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 

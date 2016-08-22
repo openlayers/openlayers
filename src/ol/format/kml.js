@@ -9,6 +9,7 @@ goog.require('goog.object');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.array');
+goog.require('ol.asserts');
 goog.require('ol.color');
 goog.require('ol.format.Feature');
 goog.require('ol.format.XMLFeature');

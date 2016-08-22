@@ -1,5 +1,6 @@
 goog.provide('ol.geom.MultiPoint');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');

@@ -1,5 +1,6 @@
 goog.provide('ol.format.TopoJSON');
 
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.format.Feature');
 goog.require('ol.format.JSONFeature');

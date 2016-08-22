@@ -1,6 +1,7 @@
 goog.provide('ol.format.WFS');
 
 goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.format.GML3');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.ogc.filter');

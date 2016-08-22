@@ -1,5 +1,6 @@
 goog.provide('ol.geom.GeometryCollection');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');

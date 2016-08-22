@@ -1,5 +1,6 @@
 goog.provide('ol.ImageTile');
 
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');

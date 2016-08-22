@@ -1,5 +1,6 @@
 goog.provide('ol.format.XMLFeature');
 
+goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');

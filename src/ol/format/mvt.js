@@ -2,6 +2,7 @@
 
 goog.provide('ol.format.MVT');
 
+goog.require('ol');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
 goog.require('ol.format.Feature');

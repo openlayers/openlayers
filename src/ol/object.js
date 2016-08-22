@@ -2,6 +2,7 @@ goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
+goog.require('ol');
 goog.require('ol.Observable');
 goog.require('ol.events.Event');
 goog.require('ol.obj');
