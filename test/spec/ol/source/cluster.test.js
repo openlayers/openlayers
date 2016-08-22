@@ -19,6 +19,7 @@ describe('ol.source.Cluster', function() {
       });
       expect(source).to.be.a(ol.source.Source);
       expect(source).to.be.a(ol.source.Cluster);
+      expect(source.distance_).to.be(20);
     });
   });
 
@@ -63,4 +64,17 @@ describe('ol.source.Cluster', function() {
       expect(source.getFeatures()[0].get('features').length).to.be(2);
     });
   });
+
+  describe('#setDistance', function() {
+    it('changes the distance value', function() {
+      var source = new ol.source.Cluster({
+        distance: 100,
+        source: new ol.source.Vector()
+      });
+      expect(source.distance_).to.be(100);
+      source.setDistance(10);
+      expect(source.distance_).to.be(10);
+    });
+  });
+
 });
