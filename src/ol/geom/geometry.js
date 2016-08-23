@@ -129,10 +129,12 @@ ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
 
 
 /**
+ * Returns true if this geometry includes the specified coordinate. If the
+ * coordinate is on the boundary of the geometry, returns false.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {boolean} Contains coordinate.
  */
-ol.geom.Geometry.prototype.containsCoordinate = function(coordinate) {
+ol.geom.Geometry.prototype.intersectsCoordinate = function(coordinate) {
   return this.containsXY(coordinate[0], coordinate[1]);
 };
 
