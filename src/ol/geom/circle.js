@@ -149,7 +149,7 @@ ol.geom.Circle.prototype.intersectsExtent = function(extent) {
       return true;
     }
 
-    return ol.extent.forEachCorner(extent, this.containsCoordinate, this);
+    return ol.extent.forEachCorner(extent, this.intersectsCoordinate, this);
   }
   return false;
 

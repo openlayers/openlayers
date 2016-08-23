@@ -113,15 +113,15 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('does not contain outside coordinates', function() {
-      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
     });
 
     it('does contain inside coordinates', function() {
-      expect(polygon.containsCoordinate(inside)).to.be(true);
+      expect(polygon.intersectsCoordinate(inside)).to.be(true);
     });
 
     it('does not contain inside inner coordinates', function() {
-      expect(polygon.containsCoordinate(insideInner)).to.be(false);
+      expect(polygon.intersectsCoordinate(insideInner)).to.be(false);
     });
 
     describe('#getCoordinates()', function() {
@@ -208,15 +208,15 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('does not contain outside coordinates', function() {
-      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
     });
 
     it('does contain inside coordinates', function() {
-      expect(polygon.containsCoordinate(inside)).to.be(true);
+      expect(polygon.intersectsCoordinate(inside)).to.be(true);
     });
 
     it('does not contain inside inner coordinates', function() {
-      expect(polygon.containsCoordinate(insideInner)).to.be(false);
+      expect(polygon.intersectsCoordinate(insideInner)).to.be(false);
     });
 
     describe('#intersectsExtent', function() {
@@ -307,15 +307,15 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('does not contain outside coordinates', function() {
-      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
     });
 
     it('does contain inside coordinates', function() {
-      expect(polygon.containsCoordinate(inside)).to.be(true);
+      expect(polygon.intersectsCoordinate(inside)).to.be(true);
     });
 
     it('does not contain inside inner coordinates', function() {
-      expect(polygon.containsCoordinate(insideInner)).to.be(false);
+      expect(polygon.intersectsCoordinate(insideInner)).to.be(false);
     });
 
     describe('#intersectsExtent', function() {
@@ -413,16 +413,16 @@ describe('ol.geom.Polygon', function() {
     });
 
     it('does not contain outside coordinates', function() {
-      expect(polygon.containsCoordinate(outsideOuter)).to.be(false);
+      expect(polygon.intersectsCoordinate(outsideOuter)).to.be(false);
     });
 
     it('does contain inside coordinates', function() {
-      expect(polygon.containsCoordinate(inside)).to.be(true);
+      expect(polygon.intersectsCoordinate(inside)).to.be(true);
     });
 
     it('does not contain inside inner coordinates', function() {
-      expect(polygon.containsCoordinate(insideInner1)).to.be(false);
-      expect(polygon.containsCoordinate(insideInner2)).to.be(false);
+      expect(polygon.intersectsCoordinate(insideInner1)).to.be(false);
+      expect(polygon.intersectsCoordinate(insideInner2)).to.be(false);
     });
 
     describe('#intersectsExtent', function() {

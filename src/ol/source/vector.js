@@ -452,7 +452,7 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(coordinat
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
     goog.DEBUG && console.assert(geometry, 'feature geometry is defined and not null');
-    if (geometry.containsCoordinate(coordinate)) {
+    if (geometry.intersectsCoordinate(coordinate)) {
       return callback.call(opt_this, feature);
     } else {
       return undefined;
