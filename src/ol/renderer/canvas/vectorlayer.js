@@ -85,6 +85,12 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 
   this.dispatchPreComposeEvent(context, frameState, transform);
 
+  // clipped rendering if layer extent is set
+  var clipExtent = layerState.extent;
+  var clipped = clipExtent !== undefined;
+  if (clipped) {
+    this.clip(context, frameState, clipExtent);
+  }
   var replayGroup = this.replayGroup_;
   if (replayGroup && !replayGroup.isEmpty()) {
     var layer = this.getLayer();
@@ -160,6 +166,9 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     replayContext.globalAlpha = alpha;
   }
 
+  if (clipped) {
+    context.restore();
+  }
   this.dispatchPostComposeEvent(context, frameState, transform);
 
 };

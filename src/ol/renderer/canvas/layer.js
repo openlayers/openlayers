@@ -30,6 +30,39 @@ ol.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
 
 
 /**
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.Extent} extent Clip extent.
+ * @protected
+ */
+ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) {
+  var pixelRatio = frameState.pixelRatio;
+  var width = frameState.size[0] * pixelRatio;
+  var height = frameState.size[1] * pixelRatio;
+  var rotation = frameState.viewState.rotation;
+  var topLeft = ol.extent.getTopLeft(/** @type {ol.Extent} */ (extent));
+  var topRight = ol.extent.getTopRight(/** @type {ol.Extent} */ (extent));
+  var bottomRight = ol.extent.getBottomRight(/** @type {ol.Extent} */ (extent));
+  var bottomLeft = ol.extent.getBottomLeft(/** @type {ol.Extent} */ (extent));
+
+  ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
+  ol.transform.apply(frameState.coordinateToPixelTransform, topRight);
+  ol.transform.apply(frameState.coordinateToPixelTransform, bottomRight);
+  ol.transform.apply(frameState.coordinateToPixelTransform, bottomLeft);
+
+  context.save();
+  ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
+  context.beginPath();
+  context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
+  context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
+  context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
+  context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
+  context.clip();
+  ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
+};
+
+
+/**
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.LayerState} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
@@ -45,29 +78,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
     var extent = layerState.extent;
     var clipped = extent !== undefined;
     if (clipped) {
-      var pixelRatio = frameState.pixelRatio;
-      var width = frameState.size[0] * pixelRatio;
-      var height = frameState.size[1] * pixelRatio;
-      var rotation = frameState.viewState.rotation;
-      var topLeft = ol.extent.getTopLeft(/** @type {ol.Extent} */ (extent));
-      var topRight = ol.extent.getTopRight(/** @type {ol.Extent} */ (extent));
-      var bottomRight = ol.extent.getBottomRight(/** @type {ol.Extent} */ (extent));
-      var bottomLeft = ol.extent.getBottomLeft(/** @type {ol.Extent} */ (extent));
-
-      ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
-      ol.transform.apply(frameState.coordinateToPixelTransform, topRight);
-      ol.transform.apply(frameState.coordinateToPixelTransform, bottomRight);
-      ol.transform.apply(frameState.coordinateToPixelTransform, bottomLeft);
-
-      context.save();
-      ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
-      context.beginPath();
-      context.moveTo(topLeft[0] * pixelRatio, topLeft[1] * pixelRatio);
-      context.lineTo(topRight[0] * pixelRatio, topRight[1] * pixelRatio);
-      context.lineTo(bottomRight[0] * pixelRatio, bottomRight[1] * pixelRatio);
-      context.lineTo(bottomLeft[0] * pixelRatio, bottomLeft[1] * pixelRatio);
-      context.clip();
-      ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
+      this.clip(context, frameState, extent);
     }
 
     var imageTransform = this.getImageTransform();
