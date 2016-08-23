@@ -17,7 +17,7 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      url: 'http://wms.geo.admin.ch/'
+      url: 'https://wms.geo.admin.ch/'
     })
   }),
   new ol.layer.Image({
@@ -27,7 +27,7 @@ var layers = [
       crossOrigin: 'anonymous',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       serverType: 'mapserver',
-      url: 'http://wms.geo.admin.ch/'
+      url: 'https://wms.geo.admin.ch/'
     })
   })
 ];

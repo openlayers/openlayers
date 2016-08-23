@@ -31,7 +31,7 @@ for (var z = zoomOffset / reuseZoomLevels; z <= 22 / reuseZoomLevels; ++z) {
   resolutions.push(156543.03392804097 / Math.pow(2, z * reuseZoomLevels));
 }
 function tileUrlFunction(tileCoord) {
-  return ('http://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
+  return ('https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
       '{z}/{x}/{y}.vector.pbf?access_token=' + key)
       .replace('{z}', String(tileCoord[0] * reuseZoomLevels + zoomOffset))
       .replace('{x}', String(tileCoord[1]))

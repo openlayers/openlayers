@@ -87,7 +87,7 @@ layers['wms21781'] = new ol.layer.Tile({
       'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
       'FORMAT': 'image/jpeg'
     },
-    url: 'http://wms.geo.admin.ch/',
+    url: 'https://wms.geo.admin.ch/',
     projection: 'EPSG:21781'
   })
 });

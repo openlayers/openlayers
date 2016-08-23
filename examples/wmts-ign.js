@@ -43,7 +43,7 @@ var tileGrid = new ol.tilegrid.WMTS({
 var key = '2mqbg0z6cx7ube8gsou10nrt';
 
 var ign_source = new ol.source.WMTS({
-  url: 'http://wxs.ign.fr/' + key + '/wmts',
+  url: 'https://wxs.ign.fr/' + key + '/wmts',
   layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
   matrixSet: 'PM',
   format: 'image/jpeg',
