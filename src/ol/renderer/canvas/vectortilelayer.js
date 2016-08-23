@@ -77,7 +77,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
   var extent = layerState.extent;
   var clipped = extent !== undefined;
   if (clipped) {
-    this.clip(context, frameState, extent);
+    this.clip(context, frameState,  /** @type {ol.Extent} */ (extent));
   }
 
   var renderMode = this.getLayer().getRenderMode();

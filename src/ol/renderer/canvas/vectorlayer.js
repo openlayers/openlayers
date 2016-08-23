@@ -89,7 +89,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   var clipExtent = layerState.extent;
   var clipped = clipExtent !== undefined;
   if (clipped) {
-    this.clip(context, frameState, clipExtent);
+    this.clip(context, frameState,  /** @type {ol.Extent} */ (clipExtent));
   }
   var replayGroup = this.replayGroup_;
   if (replayGroup && !replayGroup.isEmpty()) {

@@ -78,7 +78,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
     var extent = layerState.extent;
     var clipped = extent !== undefined;
     if (clipped) {
-      this.clip(context, frameState, extent);
+      this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
     }
 
     var imageTransform = this.getImageTransform();
