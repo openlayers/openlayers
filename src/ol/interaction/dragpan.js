@@ -85,7 +85,6 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
     ol.coordinate.rotate(center, viewState.rotation);
     ol.coordinate.add(center, viewState.center);
     center = view.constrainCenter(center);
-    map.render();
     view.setCenter(center);
   }
   this.lastCentroid = centroid;
@@ -117,7 +116,6 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
       view.setCenter(dest);
     }
     view.setHint(ol.View.Hint.INTERACTING, -1);
-    map.render();
     return false;
   } else {
     this.lastCentroid = null;
@@ -140,7 +138,6 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     if (!this.handlingDownUpSequence) {
       view.setHint(ol.View.Hint.INTERACTING, 1);
     }
-    map.render();
     if (this.kineticPreRenderFn_ &&
         map.removePreRenderFunction(this.kineticPreRenderFn_)) {
       view.setCenter(mapBrowserEvent.frameState.viewState.center);

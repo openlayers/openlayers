@@ -132,7 +132,6 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
 
   var view = map.getView();
 
-  map.render();
   ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
       this.duration_);
 
