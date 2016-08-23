@@ -19,8 +19,9 @@ describe('ol.rendering.layer.Tile', function() {
 
   var target, map;
 
-  function createMap(renderer, opt_center) {
-    target = createMapDiv(50, 50);
+  function createMap(renderer, opt_center, opt_size) {
+    var size = opt_size !== undefined ? opt_size : [50, 50];
+    target = createMapDiv(size[0], size[1]);
 
     map = new ol.Map({
       target: target,
@@ -253,11 +254,11 @@ describe('ol.rendering.layer.Tile', function() {
     });
 
     it('works with the canvas renderer', function(done) {
-      map = createMap('canvas');
+      map = createMap('canvas', undefined, [100, 100]);
       map.getLayers().on('add', onAddLayer);
       waitForTiles([source], {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/render-canvas.png',
-            2.6, done);
+            IMAGE_TOLERANCE, done);
       });
     });
   });
