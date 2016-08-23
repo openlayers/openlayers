@@ -20,7 +20,7 @@ var map = new ol.Map({
       source: new ol.source.XYZ({
         attributions: 'Tiles © USGS, rendered with ' +
             '<a href="http://www.maptiler.com/">MapTiler</a>',
-        url: 'http://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
+        url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
         tilePixelRatio: 2, // THIS IS IMPORTANT
         minZoom: mapMinZoom,
         maxZoom: mapMaxZoom
