@@ -69,7 +69,7 @@ ol.source.Cluster = function(options) {
   this.source_ = options.source;
 
   this.source_.on(ol.events.EventType.CHANGE,
-      ol.source.Cluster.prototype.onSourceChange_, this);
+      ol.source.Cluster.prototype.refresh_, this);
 };
 ol.inherits(ol.source.Cluster, ol.source.Vector);
 
@@ -100,10 +100,21 @@ ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
 
 
 /**
+ * Set the distance in pixels between clusters.
+ * @param {number} distance The distance in pixels.
+ * @api
+ */
+ol.source.Cluster.prototype.setDistance = function(distance) {
+  this.distance_ = distance;
+  this.refresh_();
+};
+
+
+/**
  * handle the source changing
  * @private
  */
-ol.source.Cluster.prototype.onSourceChange_ = function() {
+ol.source.Cluster.prototype.refresh_ = function() {
   this.clear();
   this.cluster_();
   this.addFeatures(this.features_);
