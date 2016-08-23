@@ -72,6 +72,14 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
     frameState, layerState, context) {
   var transform = this.getTransform(frameState, 0);
   this.dispatchPreComposeEvent(context, frameState, transform);
+
+  // clipped rendering if layer extent is set
+  var extent = layerState.extent;
+  var clipped = extent !== undefined;
+  if (clipped) {
+    this.clip(context, frameState, extent);
+  }
+
   var renderMode = this.getLayer().getRenderMode();
   if (renderMode !== ol.layer.VectorTileRenderType.VECTOR) {
     this.renderTileImages(context, frameState, layerState);
@@ -79,6 +87,11 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
   if (renderMode !== ol.layer.VectorTileRenderType.IMAGE) {
     this.renderTileReplays_(context, frameState, layerState);
   }
+
+  if (clipped) {
+    context.restore();
+  }
+
   this.dispatchPostComposeEvent(context, frameState, transform);
 };
 
