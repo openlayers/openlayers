@@ -265,11 +265,13 @@ describe('ol.source.TileWMS', function() {
   });
 
   describe('#setUrl()', function() {
-    var source = new ol.source.TileWMS(options);
-    var url = 'http://foo/';
-    source.setUrl(url);
-    var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
-    expect(tileUrl.indexOf(url)).to.be(0);
+    it('sets the correct url', function() {
+      var source = new ol.source.TileWMS(options);
+      var url = 'http://foo/';
+      source.setUrl(url);
+      var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
+      expect(tileUrl.indexOf(url)).to.be(0);
+    });
   });
 
   describe('#setUrls()', function() {
