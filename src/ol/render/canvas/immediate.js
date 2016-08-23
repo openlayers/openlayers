@@ -191,6 +191,12 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.textRotateWithView_ = false;
+
+  /**
+   * @private
    * @type {number}
    */
   this.textRotation_ = 0;
@@ -318,14 +324,18 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
       flatCoordinates, offset, end, stride, this.transform_,
       this.pixelCoordinates_);
   var context = this.context_;
+  var rotation = this.textRotation_;
+  if (this.textRotateWithView_) {
+    rotation += this.viewRotation_;
+  }
   for (; offset < end; offset += stride) {
     var x = pixelCoordinates[offset] + this.textOffsetX_;
     var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
-    if (this.textRotation_ !== 0 || this.textScale_ != 1) {
+    if (rotation !== 0 || this.textScale_ != 1) {
       var localTransform = ol.transform.compose(this.tmpLocalTransform_,
           x, y,
           this.textScale_, this.textScale_,
-          this.textRotation_,
+          rotation,
           -x, -y);
       context.setTransform.apply(context, localTransform);
     }
@@ -336,7 +346,7 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
       context.fillText(this.text_, x, y);
     }
   }
-  if (this.textRotation_ !== 0 || this.textScale_ != 1) {
+  if (rotation !== 0 || this.textScale_ != 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
   }
 };
@@ -918,6 +928,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     var textFont = textStyle.getFont();
     var textOffsetX = textStyle.getOffsetX();
     var textOffsetY = textStyle.getOffsetY();
+    var textRotateWithView = textStyle.getRotateWithView();
     var textRotation = textStyle.getRotation();
     var textScale = textStyle.getScale();
     var textText = textStyle.getText();
@@ -936,6 +947,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
         textOffsetX !== undefined ? (this.pixelRatio_ * textOffsetX) : 0;
     this.textOffsetY_ =
         textOffsetY !== undefined ? (this.pixelRatio_ * textOffsetY) : 0;
+    this.textRotateWithView_ = textRotateWithView !== undefined ? textRotateWithView : false;
     this.textRotation_ = textRotation !== undefined ? textRotation : 0;
     this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
         textScale : 1);

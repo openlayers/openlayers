@@ -30,6 +30,12 @@ ol.style.Text = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean|undefined}
+   */
+  this.rotateWithView_ = options.rotateWithView;
+
+  /**
+   * @private
    * @type {number|undefined}
    */
   this.scale_ = options.scale;
@@ -126,6 +132,16 @@ ol.style.Text.prototype.getOffsetY = function() {
  */
 ol.style.Text.prototype.getFill = function() {
   return this.fill_;
+};
+
+
+/**
+ * Determine whether the text rotates with the map.
+ * @return {boolean|undefined} Rotate with map.
+ * @api
+ */
+ol.style.Text.prototype.getRotateWithView = function() {
+  return this.rotateWithView_;
 };
 
 
