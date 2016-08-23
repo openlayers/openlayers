@@ -248,7 +248,7 @@ ol.inherits(ol.interaction.Modify, ol.interaction.Pointer);
  */
 ol.interaction.Modify.prototype.addFeature_ = function(feature) {
   var geometry = feature.getGeometry();
-  if (geometry.getType() in this.SEGMENT_WRITERS_) {
+  if (geometry && geometry.getType() in this.SEGMENT_WRITERS_) {
     this.SEGMENT_WRITERS_[geometry.getType()].call(this, feature, geometry);
   }
   var map = this.getMap();

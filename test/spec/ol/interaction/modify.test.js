@@ -162,6 +162,22 @@ describe('ol.interaction.Modify', function() {
       expect(rbushEntries.length).to.be(1);
       expect(rbushEntries[0].feature).to.be(feature);
     });
+
+    it('accepts feature without geometry', function() {
+      var feature = new ol.Feature();
+      var features = new ol.Collection([feature]);
+      var modify = new ol.interaction.Modify({
+        features: features
+      });
+      var rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(0);
+
+      feature.setGeometry(new ol.geom.Point([0, 10]));
+      rbushEntries = modify.rBush_.getAll();
+      expect(rbushEntries.length).to.be(1);
+      expect(rbushEntries[0].feature).to.be(feature);
+    });
+
   });
 
   describe('vertex deletion', function() {
