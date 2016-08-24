@@ -1202,12 +1202,16 @@ ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
  */
 ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
+  var fill = state.fillStyle !== undefined;
+  var stroke = state.strokeStyle != undefined;
+  var numEnds = ends.length;
+  if (!fill && !stroke) {
+    return ends[numEnds - 1];
+  }
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
-  var stroke = state.strokeStyle != undefined;
-  var i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (var i = 0; i < numEnds; ++i) {
     var end = ends[i];
     var myBegin = this.coordinates.length;
     var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride,
@@ -1231,7 +1235,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
   // FIXME or all polygons together?
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
-  if (state.fillStyle !== undefined) {
+  if (fill) {
     this.instructions.push(fillInstruction);
   }
   if (stroke) {

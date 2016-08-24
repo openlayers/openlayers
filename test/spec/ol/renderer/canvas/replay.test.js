@@ -108,14 +108,35 @@ describe('ol.render.canvas.LineStringReplay', function() {
 
 describe('ol.render.canvas.PolygonReplay', function() {
 
+  var replay;
+
+  beforeEach(function() {
+    var tolerance = 1;
+    var extent = [-180, -90, 180, 90];
+    var resolution = 10;
+    replay = new ol.render.canvas.PolygonReplay(tolerance, extent,
+        resolution);
+  });
+
+  describe('#drawFlatCoordinatess_()', function() {
+    it('returns correct offset', function() {
+      var coords = [1, 2, 3, 4, 5, 6, 1, 2, 1, 2, 3, 4, 5, 6, 1, 2];
+      var ends = [7, 14];
+      var stroke = new ol.style.Stroke({
+        width: 5
+      });
+      replay.setFillStrokeStyle(null, stroke);
+      var offset = replay.drawFlatCoordinatess_(coords, 0, ends, 2);
+      expect(offset).to.be(14);
+      replay.setFillStrokeStyle(null, null);
+      offset = replay.drawFlatCoordinatess_(coords, 0, ends, 2);
+      expect(offset).to.be(14);
+    });
+  });
+
   describe('#getBufferedMaxExtent()', function() {
 
     it('buffers the max extent to accommodate stroke width', function() {
-      var tolerance = 1;
-      var extent = [-180, -90, 180, 90];
-      var resolution = 10;
-      var replay = new ol.render.canvas.PolygonReplay(tolerance, extent,
-          resolution);
       var stroke = new ol.style.Stroke({
         width: 5
       });
