@@ -233,4 +233,19 @@ describe('ol.style.Circle', function() {
     });
 
   });
+
+  describe('#setRadius', function() {
+    it('changes the circle radius', function() {
+      var style = new ol.style.Circle({
+        radius: 10,
+        fill: new ol.style.Fill({
+          color: '#FFFF00'
+        })
+      });
+      expect(style.getRadius()).to.eql(10);
+      style.setRadius(20);
+      expect(style.getRadius()).to.eql(20);
+    });
+  });
+
 });
