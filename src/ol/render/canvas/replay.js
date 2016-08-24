@@ -52,10 +52,11 @@ ol.render.canvas.Instruction = {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
   ol.render.VectorContext.call(this);
 
   /**
@@ -70,6 +71,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution) {
    * @type {ol.Extent}
    */
   this.maxExtent = maxExtent;
+
+  /**
+   * @protected
+   * @type {boolean}
+   */
+  this.overlaps = overlaps;
 
   /**
    * @private
@@ -257,6 +264,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var localTransform = this.tmpLocalTransform_;
   var localTransformInv = this.tmpLocalTransformInv_;
   var prevX, prevY, roundX, roundY;
+  var pendingFill = 0;
+  var pendingStroke = 0;
+  // When the batch size gets too big, performance decreases. 200 is a good
+  // balance between batch size and number of fill/stroke instructions.
+  var batchSize =
+      this.instructions != instructions || this.overlaps ? 0 : 200;
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
@@ -276,7 +289,17 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         }
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
-        context.beginPath();
+        if (pendingFill > batchSize) {
+          context.fill();
+          pendingFill = 0;
+        }
+        if (pendingStroke > batchSize) {
+          context.stroke();
+          pendingStroke = 0;
+        }
+        if (!pendingFill && !pendingStroke) {
+          context.beginPath();
+        }
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
@@ -290,6 +313,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dx = x2 - x1;
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
+        context.moveTo(x2, y2);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
         ++i;
         break;
@@ -442,7 +466,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.FILL:
-        context.fill();
+        if (batchSize) {
+          pendingFill++;
+        } else {
+          context.fill();
+        }
         ++i;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
@@ -479,6 +507,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
+        if (pendingFill) {
+          context.fill();
+          pendingFill = 0;
+        }
+
         context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
         ++i;
         break;
@@ -498,6 +531,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var usePixelRatio = instruction[7] !== undefined ?
             instruction[7] : true;
         var lineWidth = /** @type {number} */ (instruction[2]);
+        if (pendingStroke) {
+          context.stroke();
+          pendingStroke = 0;
+        }
         context.strokeStyle = /** @type {string} */ (instruction[1]);
         context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
         context.lineCap = /** @type {string} */ (instruction[3]);
@@ -523,7 +560,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
-        context.stroke();
+        if (batchSize) {
+          pendingStroke++;
+        } else {
+          context.stroke();
+        }
         ++i;
         break;
       default:
@@ -531,6 +572,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i; // consume the instruction anyway, to avoid an infinite loop
         break;
     }
+  }
+  if (pendingFill) {
+    context.fill();
+  }
+  if (pendingStroke) {
+    context.stroke();
   }
   // assert that all instructions were consumed
   goog.DEBUG && console.assert(i == instructions.length,
@@ -551,7 +598,7 @@ ol.render.canvas.Replay.prototype.replay = function(
     context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
   var instructions = this.instructions;
   this.replay_(context, pixelRatio, transform, viewRotation,
-      skippedFeaturesHash, instructions, undefined);
+      skippedFeaturesHash, instructions, undefined, undefined);
 };
 
 
@@ -651,11 +698,12 @@ ol.render.canvas.Replay.prototype.getBufferedMaxExtent = function() {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution) {
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, overlaps) {
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -917,12 +965,13 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -1151,12 +1200,13 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -1223,8 +1273,6 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
         closePathInstruction);
     offset = end;
   }
-  // FIXME is it quicker to fill and stroke each polygon individually,
-  // FIXME or all polygons together?
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
   if (state.fillStyle !== undefined) {
@@ -1506,12 +1554,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Maximum extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay can have overlapping geometries.
  * @protected
  * @struct
  */
-ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution) {
+ol.render.canvas.TextReplay = function(tolerance, maxExtent, resolution, overlaps) {
 
-  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution);
+  ol.render.canvas.Replay.call(this, tolerance, maxExtent, resolution, overlaps);
 
   /**
    * @private
@@ -1823,10 +1872,12 @@ ol.render.canvas.TextReplay.prototype.setTextStyle = function(textStyle) {
  * @param {number} tolerance Tolerance.
  * @param {ol.Extent} maxExtent Max extent.
  * @param {number} resolution Resolution.
+ * @param {boolean} overlaps The replay group can have overlapping geometries.
  * @param {number=} opt_renderBuffer Optional rendering buffer.
  * @struct
  */
-ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution, opt_renderBuffer) {
+ol.render.canvas.ReplayGroup = function(
+    tolerance, maxExtent, resolution, overlaps, opt_renderBuffer) {
   ol.render.ReplayGroup.call(this);
 
   /**
@@ -1840,6 +1891,12 @@ ol.render.canvas.ReplayGroup = function(tolerance, maxExtent, resolution, opt_re
    * @type {ol.Extent}
    */
   this.maxExtent_ = maxExtent;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.overlaps_ = overlaps;
 
   /**
    * @private
@@ -1960,7 +2017,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
         replayType +
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_);
+        this.resolution_, this.overlaps_);
     replays[replayType] = replay;
   }
   return replay;
@@ -2074,7 +2131,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  * @private
  * @type {Object.<ol.render.ReplayType,
  *                function(new: ol.render.canvas.Replay, number, ol.Extent,
- *                number)>}
+ *                number, boolean)>}
  */
 ol.render.canvas.BATCH_CONSTRUCTORS_ = {
   'Image': ol.render.canvas.ImageReplay,

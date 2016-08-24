@@ -29,7 +29,8 @@ var style = new ol.style.Style({
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: 'data/topojson/world-110m.json',
-    format: new ol.format.TopoJSON()
+    format: new ol.format.TopoJSON(),
+    overlaps: false
   }),
   style: function(feature) {
     // don't want to render the full world polygon, which repeats all countries
