@@ -548,7 +548,7 @@ ol.source.Vector.prototype.getFeaturesCollection = function() {
 
 
 /**
- * Get all features on the source.
+ * Get all features on the source in random order.
  * @return {Array.<ol.Feature>} Features.
  * @api stable
  */
@@ -583,9 +583,9 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
 
 
 /**
- * Get all features in the provided extent.  Note that this returns all features
- * whose bounding boxes intersect the given extent (so it may include features
- * whose geometries do not intersect the extent).
+ * Get all features in the provided extent.  Note that this returns an array of
+ * all features intersecting the given extent in random order (so it may include
+ * features whose geometries do not intersect the extent).
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
