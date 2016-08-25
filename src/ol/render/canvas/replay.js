@@ -1256,29 +1256,41 @@ ol.inherits(ol.render.canvas.PolygonReplay, ol.render.canvas.Replay);
  */
 ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCoordinates, offset, ends, stride) {
   var state = this.state_;
+  var fill = state.fillStyle !== undefined;
+  var stroke = state.strokeStyle != undefined;
+  var numEnds = ends.length;
+  if (!fill && !stroke) {
+    return ends[numEnds - 1];
+  }
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
-  var i, ii;
-  for (i = 0, ii = ends.length; i < ii; ++i) {
+  for (var i = 0; i < numEnds; ++i) {
     var end = ends[i];
     var myBegin = this.coordinates.length;
-    var myEnd = this.appendFlatCoordinates(
-        flatCoordinates, offset, end, stride, true);
+    var myEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride,
+        // Performance optimization: only close the ring when we do not have a
+        // stroke. Otherwise closePath() will take care of that.
+        !stroke);
     var moveToLineToInstruction =
         [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
-    var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
-    this.instructions.push(moveToLineToInstruction, closePathInstruction);
-    this.hitDetectionInstructions.push(moveToLineToInstruction,
-        closePathInstruction);
+    this.instructions.push(moveToLineToInstruction);
+    this.hitDetectionInstructions.push(moveToLineToInstruction);
+    if (stroke) {
+      // Performance optimization: only call closePath() when we have a stroke.
+      // Otherwise the ring is closed already (see appendFlatCoordinates above).
+      var closePathInstruction = [ol.render.canvas.Instruction.CLOSE_PATH];
+      this.instructions.push(closePathInstruction);
+      this.hitDetectionInstructions.push(closePathInstruction);
+    }
     offset = end;
   }
   var fillInstruction = [ol.render.canvas.Instruction.FILL];
   this.hitDetectionInstructions.push(fillInstruction);
-  if (state.fillStyle !== undefined) {
+  if (fill) {
     this.instructions.push(fillInstruction);
   }
-  if (state.strokeStyle !== undefined) {
+  if (stroke) {
     goog.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
@@ -2065,7 +2077,6 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
   context.lineTo(flatClipCoords[2], flatClipCoords[3]);
   context.lineTo(flatClipCoords[4], flatClipCoords[5]);
   context.lineTo(flatClipCoords[6], flatClipCoords[7]);
-  context.closePath();
   context.clip();
 
   var replayTypes = opt_replayTypes ? opt_replayTypes : ol.render.replay.ORDER;
