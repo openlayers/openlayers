@@ -10,6 +10,11 @@ goog.require('ol.style.Style');
 goog.require('ol.tilegrid');
 
 
+var key = 'vector-tiles-5eJz6JX';
+
+var attribution = [new ol.Attribution({
+  html: '&copy; OpenStreetMap contributors, Who’s On First, Natural Earth, and openstreetmapdata.com'
+})];
 var format = new ol.format.TopoJSON();
 var tileGrid = ol.tilegrid.createXYZ({maxZoom: 19});
 var roadStyleCache = {};
@@ -18,7 +23,6 @@ var roadColor = {
   'minor_road': '#ccb',
   'highway': '#f39'
 };
-var landuseStyleCache = {};
 var buildingStyle = new ol.style.Style({
   fill: new ol.style.Fill({
     color: '#666',
@@ -34,10 +38,10 @@ var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        attributions: attribution,
         format: format,
         tileGrid: tileGrid,
-        url: 'http://{a-c}.tile.openstreetmap.us/' +
-            'vectiles-water-areas/{z}/{x}/{y}.topojson'
+        url: 'https://vector.mapzen.com/osm/water/{z}/{x}/{y}.topojson?api_key=' + key
       }),
       style: new ol.style.Style({
         fill: new ol.style.Fill({
@@ -47,10 +51,10 @@ var map = new ol.Map({
     }),
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        attributions: attribution,
         format: format,
         tileGrid: tileGrid,
-        url: 'http://{a-c}.tile.openstreetmap.us/' +
-            'vectiles-highroad/{z}/{x}/{y}.topojson'
+        url: 'https://vector.mapzen.com/osm/roads/{z}/{x}/{y}.topojson?api_key=' + key
       }),
       style: function(feature) {
         var kind = feature.get('kind');
@@ -81,55 +85,13 @@ var map = new ol.Map({
     }),
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
+        attributions: attribution,
         format: format,
         tileGrid: tileGrid,
-        url: 'http://{a-c}.tile.openstreetmap.us/' +
-            'vectiles-buildings/{z}/{x}/{y}.topojson'
+        url: 'https://vector.mapzen.com/osm/buildings/{z}/{x}/{y}.topojson?api_key=' + key
       }),
       style: function(f, resolution) {
         return (resolution < 10) ? buildingStyle : null;
-      }
-    }),
-    new ol.layer.VectorTile({
-      source: new ol.source.VectorTile({
-        format: format,
-        overlaps: false,
-        tileGrid: tileGrid,
-        url: 'http://{a-c}.tile.openstreetmap.us/' +
-            'vectiles-land-usages/{z}/{x}/{y}.topojson'
-      }),
-      visible: false,
-      style: function(feature) {
-        var kind = feature.get('kind');
-        var styleKey = kind;
-        var style = landuseStyleCache[styleKey];
-        if (!style) {
-          var color, width;
-          color = {
-            'parking': '#ddd',
-            'industrial': '#aaa',
-            'urban area': '#aaa',
-            'park': '#76C759',
-            'school': '#DA10E7',
-            'garden': '#76C759',
-            'pitch': '#D58F8D',
-            'scrub': '#3E7D28',
-            'residential': '#4C9ED9'
-          }[kind];
-          width = kind == 'highway' ? 1.5 : 1;
-          style = new ol.style.Style({
-            stroke: new ol.style.Stroke({
-              color: color,
-              width: width
-            }),
-            fill: new ol.style.Fill({
-              color: color,
-              opacity: 0.5
-            })
-          });
-          landuseStyleCache[styleKey] = style;
-        }
-        return style;
       }
     })
   ],
