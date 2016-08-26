@@ -1389,7 +1389,7 @@ describe('ol.format.KML', function() {
         expect(style.getStroke()).to.be(ol.format.KML.DEFAULT_STROKE_STYLE_);
         var imageStyle = style.getImage();
         expect(imageStyle).to.be.an(ol.style.Icon);
-        expect(imageStyle.getSrc()).to.eql('http://foo.png');
+        expect(new URL(imageStyle.getSrc()).href).to.eql(new URL('http://foo.png').href);
         expect(imageStyle.getAnchor()).to.be(null);
         expect(imageStyle.getOrigin()).to.be(null);
         expect(imageStyle.getRotation()).to.eql(0);
@@ -2882,7 +2882,7 @@ describe('ol.format.KML', function() {
     it('returns an array of network links', function() {
       expect(nl).to.have.length(2);
       expect(nl[0].name).to.be('bar');
-      expect(nl[0].href.replace(window.location.href, '')).to.be('/bar/bar.kml');
+      expect(/\/bar\/bar\.kml$/.test(nl[0].href)).to.be.ok();
       expect(nl[1].href).to.be('http://foo.com/foo.kml');
     });
 
