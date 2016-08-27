@@ -271,7 +271,8 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
  * @inheritDoc
  */
 ol.source.TileWMS.prototype.getTilePixelRatio = function(pixelRatio) {
-  return (!this.hidpi_ || this.serverType_ === undefined) ? 1 : pixelRatio;
+  return (!this.hidpi_ || this.serverType_ === undefined) ? 1 :
+      /** @type {number} */ (pixelRatio);
 };
 
 

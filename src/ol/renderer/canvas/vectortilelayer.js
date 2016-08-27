@@ -117,7 +117,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
   var size = frameState.size;
   var pixelScale = pixelRatio / resolution;
   var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
-  var tilePixelRatio = source.getTilePixelRatio(pixelRatio);
+  var tilePixelRatio = source.getTilePixelRatio();
 
   var transform = this.getTransform(frameState, 0);
 
@@ -207,7 +207,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
   var resolution = tileGrid.getResolution(tileCoord[0]);
   var extent, reproject, tileResolution;
   if (pixelSpace) {
-    var tilePixelRatio = tileResolution = source.getTilePixelRatio(pixelRatio);
+    var tilePixelRatio = tileResolution = source.getTilePixelRatio();
     var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]));
     extent = [0, 0, tileSize[0] * tilePixelRatio, tileSize[1] * tilePixelRatio];
   } else {
@@ -276,7 +276,6 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
  * @inheritDoc
  */
 ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  var pixelRatio = frameState.pixelRatio;
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var layer = this.getLayer();
@@ -299,7 +298,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     }
     if (tile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {
       origin = ol.extent.getTopLeft(tileExtent);
-      tilePixelRatio = source.getTilePixelRatio(pixelRatio);
+      tilePixelRatio = source.getTilePixelRatio();
       tileResolution = tileGrid.getResolution(tileCoord[0]) / tilePixelRatio;
       tileSpaceCoordinate = [
         (coordinate[0] - origin[0]) / tileResolution,
@@ -421,7 +420,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
     tileContext.translate(width / 2, height / 2);
     var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
     var pixelScale = pixelRatio / resolution;
-    var tilePixelRatio = source.getTilePixelRatio(pixelRatio);
+    var tilePixelRatio = source.getTilePixelRatio();
     var tilePixelResolution = tileResolution / tilePixelRatio;
     var tileExtent = tileGrid.getTileCoordExtent(
         tile.getTileCoord(), this.tmpExtent);
