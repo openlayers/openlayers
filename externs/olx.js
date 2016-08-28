@@ -2722,7 +2722,7 @@ olx.interaction.ExtentOptions;
 olx.interaction.ExtentOptions.prototype.extent;
 
 /**
- * Style for the drawn extent box. 
+ * Style for the drawn extent box.
  * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POLYGON]
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
@@ -2730,7 +2730,7 @@ olx.interaction.ExtentOptions.prototype.extent;
 olx.interaction.ExtentOptions.prototype.boxStyle;
 
 /**
- * Style for the cursor used to draw the extent. 
+ * Style for the cursor used to draw the extent.
  * Defaults to ol.style.Style.createDefaultEditing()[ol.geom.GeometryType.POINT]
  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  * @api
@@ -2738,7 +2738,7 @@ olx.interaction.ExtentOptions.prototype.boxStyle;
 olx.interaction.ExtentOptions.prototype.pointerStyle;
 
 /**
- * Wrap the drawn extent across multiple maps in the X direction? 
+ * Wrap the drawn extent across multiple maps in the X direction?
  * Only affects visuals, not functionality. Defaults to false.
  * @type {boolean|undefined}
  * @api
@@ -6636,14 +6636,14 @@ olx.style.FillOptions.prototype.color;
 
 /**
  * @typedef {{anchor: (Array.<number>|undefined),
- *     anchorOrigin: (ol.style.IconOrigin|undefined),
- *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
- *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
+ *     anchorOrigin: (ol.style.Icon.Origin|undefined),
+ *     anchorXUnits: (ol.style.Icon.AnchorUnits|undefined),
+ *     anchorYUnits: (ol.style.Icon.AnchorUnits|undefined),
  *     color: (ol.Color|string|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|HTMLCanvasElement|undefined),
  *     offset: (Array.<number>|undefined),
- *     offsetOrigin: (ol.style.IconOrigin|undefined),
+ *     offsetOrigin: (ol.style.Icon.Origin|undefined),
  *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
@@ -6667,7 +6667,7 @@ olx.style.IconOptions.prototype.anchor;
 /**
  * Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.IconOrigin|undefined}
+ * @type {ol.style.Icon.Origin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorOrigin;
@@ -6677,7 +6677,7 @@ olx.style.IconOptions.prototype.anchorOrigin;
  * Units in which the anchor x value is specified. A value of `'fraction'`
  * indicates the x value is a fraction of the icon. A value of `'pixels'`
  * indicates the x value in pixels. Default is `'fraction'`.
- * @type {ol.style.IconAnchorUnits|undefined}
+ * @type {ol.style.Icon.AnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorXUnits;
@@ -6687,7 +6687,7 @@ olx.style.IconOptions.prototype.anchorXUnits;
  * Units in which the anchor y value is specified. A value of `'fraction'`
  * indicates the y value is a fraction of the icon. A value of `'pixels'`
  * indicates the y value in pixels. Default is `'fraction'`.
- * @type {ol.style.IconAnchorUnits|undefined}
+ * @type {ol.style.Icon.AnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorYUnits;
@@ -6736,7 +6736,7 @@ olx.style.IconOptions.prototype.offset;
 /**
  * Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.IconOrigin|undefined}
+ * @type {ol.style.Icon.Origin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;

@@ -4,6 +4,13 @@
 
 As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
 
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
+ * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
+
 ### v3.18.0
 
 #### Changes in the way assertions are handled
