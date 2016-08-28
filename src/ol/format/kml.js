@@ -223,10 +223,10 @@ ol.format.KML.createStyleDefaults_ = function() {
 
   /**
    * @const
-   * @type {string}
+   * @type {ol.style.Image}
    * @private
    */
-  ol.format.KML.DEFAULT_NO_IMAGE_STYLE_ = 'NO_IMAGE';
+  ol.format.KML.DEFAULT_NO_IMAGE_STYLE_ = null;
 
   /**
    * @const
@@ -1106,10 +1106,9 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
-  var imageStyle = /** @type {ol.style.Image} */
-      ('imageStyle' in styleObject ?
-          styleObject['imageStyle'] : ol.format.KML.DEFAULT_IMAGE_STYLE_);
-  if (imageStyle == ol.format.KML.DEFAULT_NO_IMAGE_STYLE_) {
+  var imageStyle = 'imageStyle' in styleObject ?
+      styleObject['imageStyle'] : ol.format.KML.DEFAULT_IMAGE_STYLE_;
+  if (imageStyle === ol.format.KML.DEFAULT_NO_IMAGE_STYLE_) {
     imageStyle = undefined;
   }
   var textStyle = /** @type {ol.style.Text} */
