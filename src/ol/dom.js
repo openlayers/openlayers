@@ -1,7 +1,7 @@
 goog.provide('ol.dom');
 
-goog.require('goog.userAgent');
 goog.require('ol');
+goog.require('ol.has');
 goog.require('ol.vec.Mat4');
 
 
@@ -115,7 +115,7 @@ ol.dom.setTransform = function(element, value) {
   style.transform = value;
 
   // IE 9+ seems to assume transform-origin: 100% 100%; for some unknown reason
-  if (goog.userAgent.IE && goog.userAgent.isVersionOrHigher('9.0')) {
+  if (ol.has.IE) {
     element.style.transformOrigin = '0 0';
   }
 };

@@ -1,12 +1,20 @@
 goog.provide('ol.has');
 
 goog.require('ol');
-goog.require('ol.dom');
 goog.require('ol.webgl');
 
 
 var ua = typeof navigator !== 'undefined' ?
     navigator.userAgent.toLowerCase() : '';
+
+var ie = ua.match(/msie ([0-9]{1,}[\.0-9]{0,})/);
+var trident = ua.match(/trident\/([0-9]{1,}[\.0-9]{0,})/);
+
+/**
+ * User agent string says we are dealing with IE >= 9 as browser.
+ * @type {boolean}
+ */
+ol.has.IE = !!(ie && parseFloat(ie[1]) >= 9 || trident && parseFloat(trident[1]) >= 6);
 
 /**
  * User agent string says we are dealing with Firefox as browser.
@@ -18,7 +26,13 @@ ol.has.FIREFOX = ua.indexOf('firefox') !== -1;
  * User agent string says we are dealing with Safari as browser.
  * @type {boolean}
  */
-ol.has.SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') === -1;
+ol.has.SAFARI = ua.indexOf('safari') !== -1 && ua.indexOf('chrom') == -1;
+
+/**
+ * User agent string says we are dealing with a WebKit engine.
+ * @type {boolean}
+ */
+ol.has.WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
 
 /**
  * User agent string says we are dealing with a Mac as platform.
@@ -60,7 +74,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
         return false;
       }
       try {
-        var context = ol.dom.createCanvasContext2D();
+        var context = document.createElement('CANVAS').getContext('2d');
         if (!context) {
           return false;
         } else {
