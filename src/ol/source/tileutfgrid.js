@@ -1,6 +1,5 @@
 goog.provide('ol.source.TileUTFGrid');
 
-goog.require('goog.async.nextTick');
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
@@ -140,9 +139,9 @@ ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
     tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_request);
   } else {
     if (opt_request === true) {
-      goog.async.nextTick(function() {
+      ol.global.setTimeout(function() {
         callback.call(opt_this, null);
-      });
+      }, 0);
     } else {
       callback.call(opt_this, null);
     }
@@ -392,9 +391,9 @@ ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, 
     this.loadInternal_();
   } else {
     if (opt_request === true) {
-      goog.async.nextTick(function() {
+      ol.global.setTimeout(function() {
         callback.call(opt_this, this.getData(coordinate));
-      }, this);
+      }.bind(this), 0);
     } else {
       callback.call(opt_this, this.getData(coordinate));
     }

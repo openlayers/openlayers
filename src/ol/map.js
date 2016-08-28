@@ -5,7 +5,6 @@
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
-goog.require('goog.async.nextTick');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.MapBrowserEvent');
@@ -1314,7 +1313,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
-  goog.async.nextTick(this.handlePostRender, this);
+  ol.global.setTimeout(this.handlePostRender.bind(this), 0);
 
 };
 
