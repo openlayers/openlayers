@@ -116,7 +116,7 @@ ol.inherits(ol.source.TileWMS, ol.source.TileImage);
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
 
-  goog.DEBUG && console.assert(!('VERSION' in params),
+  ol.DEBUG && console.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
 
   var projectionObj = ol.proj.get(projection);

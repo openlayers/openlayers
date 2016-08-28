@@ -72,7 +72,7 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
 ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
 
   node.setAttribute('namespaceURI', this.featureNS_);
-  goog.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
+  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
       'node.nodeType should be ELEMENT');
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
@@ -88,7 +88,7 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
       }
       var context = objectStack[0];
 
-      goog.DEBUG && console.assert(layer.localName.indexOf(
+      ol.DEBUG && console.assert(layer.localName.indexOf(
           ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0,
           'localName of layer node should match layerIdentifier');
 

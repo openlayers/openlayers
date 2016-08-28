@@ -220,9 +220,9 @@ ol.style.IconImage.prototype.getSrc = function() {
  */
 ol.style.IconImage.prototype.load = function() {
   if (this.imageState_ == ol.Image.State.IDLE) {
-    goog.DEBUG && console.assert(this.src_ !== undefined,
+    ol.DEBUG && console.assert(this.src_ !== undefined,
         'this.src_ must not be undefined');
-    goog.DEBUG && console.assert(!this.imageListenerKeys_,
+    ol.DEBUG && console.assert(!this.imageListenerKeys_,
         'no listener keys existing');
     this.imageState_ = ol.Image.State.LOADING;
     this.imageListenerKeys_ = [

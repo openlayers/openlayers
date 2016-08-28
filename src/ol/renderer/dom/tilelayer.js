@@ -329,7 +329,7 @@ ol.renderer.dom.TileLayerZ_.prototype.addTile = function(tile, tileGutter) {
   var tileCoordZ = tileCoord[0];
   var tileCoordX = tileCoord[1];
   var tileCoordY = tileCoord[2];
-  goog.DEBUG && console.assert(tileCoordZ == this.tileCoordOrigin_[0],
+  ol.DEBUG && console.assert(tileCoordZ == this.tileCoordOrigin_[0],
       'tileCoordZ matches z of tileCoordOrigin');
   var tileCoordKey = tileCoord.toString();
   if (tileCoordKey in this.tiles_) {

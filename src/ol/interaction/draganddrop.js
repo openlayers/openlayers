@@ -101,7 +101,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
   if (!projection) {
     var view = map.getView();
     projection = view.getProjection();
-    goog.DEBUG && console.assert(projection !== undefined,
+    ol.DEBUG && console.assert(projection !== undefined,
         'projection should be defined');
   }
   var formatConstructors = this.formatConstructors_;

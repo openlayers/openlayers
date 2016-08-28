@@ -32,7 +32,7 @@ ol.layer.Vector = function(opt_options) {
   var options = opt_options ?
       opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
-  goog.DEBUG && console.assert(
+  ol.DEBUG && console.assert(
       options.renderOrder === undefined || !options.renderOrder ||
       typeof options.renderOrder === 'function',
       'renderOrder must be a comparator function');
@@ -158,7 +158,7 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
  *     Render order.
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
-  goog.DEBUG && console.assert(
+  ol.DEBUG && console.assert(
       renderOrder === undefined || !renderOrder ||
       typeof renderOrder === 'function',
       'renderOrder must be a comparator function');

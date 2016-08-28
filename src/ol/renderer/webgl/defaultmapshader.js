@@ -35,7 +35,7 @@ ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE = 'precision medium
  * @const
  * @type {string}
  */
-ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = goog.DEBUG ?
+ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.DEBUG ?
     ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE :
     ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
 
@@ -72,7 +72,7 @@ ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;att
  * @const
  * @type {string}
  */
-ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = goog.DEBUG ?
+ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.DEBUG ?
     ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE :
     ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
 
@@ -92,35 +92,35 @@ ol.renderer.webgl.defaultmapshader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_opacity = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_opacity' : 'f');
+      program, ol.DEBUG ? 'u_opacity' : 'f');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'e');
+      program, ol.DEBUG ? 'u_projectionMatrix' : 'e');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_texCoordMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_texCoordMatrix' : 'd');
+      program, ol.DEBUG ? 'u_texCoordMatrix' : 'd');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_texture = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_texture' : 'g');
+      program, ol.DEBUG ? 'u_texture' : 'g');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_position' : 'b');
+      program, ol.DEBUG ? 'a_position' : 'b');
 
   /**
    * @type {number}
    */
   this.a_texCoord = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_texCoord' : 'c');
+      program, ol.DEBUG ? 'a_texCoord' : 'c');
 };

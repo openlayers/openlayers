@@ -495,7 +495,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   var offset = this.getOffset();
 
   var positioning = this.getPositioning();
-  goog.DEBUG && console.assert(positioning !== undefined,
+  ol.DEBUG && console.assert(positioning !== undefined,
       'positioning should be defined');
 
   var offsetX = offset[0];

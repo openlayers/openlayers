@@ -83,7 +83,7 @@ ol.renderer.webgl.Map = function(container, map) {
     preserveDrawingBuffer: false,
     stencil: true
   });
-  goog.DEBUG && console.assert(this.gl_, 'got a WebGLRenderingContext');
+  ol.DEBUG && console.assert(this.gl_, 'got a WebGLRenderingContext');
 
   /**
    * @private
@@ -244,7 +244,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     return new ol.renderer.webgl.VectorLayer(this, layer);
   } else {
-    goog.DEBUG && console.assert(false, 'unexpected layer configuration');
+    ol.DEBUG && console.assert(false, 'unexpected layer configuration');
     return null;
   }
 };

@@ -279,7 +279,7 @@ ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
  * @api stable
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
-  goog.DEBUG && console.assert(
+  ol.DEBUG && console.assert(
       ol.proj.get(source).getUnits() !== ol.proj.Units.TILE_PIXELS &&
       ol.proj.get(destination).getUnits() !== ol.proj.Units.TILE_PIXELS,
       'cannot transform geometries with TILE_PIXELS units');

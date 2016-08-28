@@ -59,7 +59,7 @@ ol.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
-  goog.DEBUG && console.assert(lineString.getLayout() == this.layout,
+  ol.DEBUG && console.assert(lineString.getLayout() == this.layout,
       'layout of lineString should match the layout');
   if (!this.flatCoordinates) {
     this.flatCoordinates = lineString.getFlatCoordinates().slice();
@@ -165,7 +165,7 @@ ol.geom.MultiLineString.prototype.getEnds = function() {
  * @api stable
  */
 ol.geom.MultiLineString.prototype.getLineString = function(index) {
-  goog.DEBUG && console.assert(0 <= index && index < this.ends_.length,
+  ol.DEBUG && console.assert(0 <= index && index < this.ends_.length,
       'index should be in between 0 and length of the this.ends_ array');
   if (index < 0 || this.ends_.length <= index) {
     return null;
@@ -286,13 +286,13 @@ ol.geom.MultiLineString.prototype.setCoordinates = function(coordinates, opt_lay
  */
 ol.geom.MultiLineString.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
   if (!flatCoordinates) {
-    goog.DEBUG && console.assert(ends && ends.length === 0,
+    ol.DEBUG && console.assert(ends && ends.length === 0,
         'ends must be truthy and ends.length should be 0');
   } else if (ends.length === 0) {
-    goog.DEBUG && console.assert(flatCoordinates.length === 0,
+    ol.DEBUG && console.assert(flatCoordinates.length === 0,
         'flatCoordinates should be an empty array');
   } else {
-    goog.DEBUG && console.assert(flatCoordinates.length == ends[ends.length - 1],
+    ol.DEBUG && console.assert(flatCoordinates.length == ends[ends.length - 1],
         'length of flatCoordinates array should match the last value of ends');
   }
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
@@ -315,7 +315,7 @@ ol.geom.MultiLineString.prototype.setLineStrings = function(lineStrings) {
       layout = lineString.getLayout();
     } else {
       // FIXME better handle the case of non-matching layouts
-      goog.DEBUG && console.assert(lineString.getLayout() == layout,
+      ol.DEBUG && console.assert(lineString.getLayout() == layout,
           'layout of lineString should match layout');
     }
     ol.array.extend(flatCoordinates, lineString.getFlatCoordinates());

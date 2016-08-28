@@ -131,7 +131,7 @@ ol.Image.prototype.load = function() {
   if (this.state == ol.Image.State.IDLE || this.state == ol.Image.State.ERROR) {
     this.state = ol.Image.State.LOADING;
     this.changed();
-    goog.DEBUG && console.assert(!this.imageListenerKeys_,
+    ol.DEBUG && console.assert(!this.imageListenerKeys_,
         'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,

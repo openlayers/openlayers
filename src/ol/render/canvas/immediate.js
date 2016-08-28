@@ -252,8 +252,8 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
   if (!this.image_) {
     return;
   }
-  goog.DEBUG && console.assert(offset === 0, 'offset should be 0');
-  goog.DEBUG && console.assert(end == flatCoordinates.length,
+  ol.DEBUG && console.assert(offset === 0, 'offset should be 0');
+  ol.DEBUG && console.assert(end == flatCoordinates.length,
       'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, 2, this.transform_,
@@ -317,8 +317,8 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
     this.setContextStrokeState_(this.textStrokeState_);
   }
   this.setContextTextState_(this.textState_);
-  goog.DEBUG && console.assert(offset === 0, 'offset should be 0');
-  goog.DEBUG && console.assert(end == flatCoordinates.length,
+  ol.DEBUG && console.assert(offset === 0, 'offset should be 0');
+  ol.DEBUG && console.assert(end == flatCoordinates.length,
       'end should be equal to the length of flatCoordinates');
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
       flatCoordinates, offset, end, stride, this.transform_,
@@ -488,7 +488,7 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
       this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
       break;
     default:
-      goog.DEBUG && console.assert(false, 'Unsupported geometry type: ' + type);
+      ol.DEBUG && console.assert(false, 'Unsupported geometry type: ' + type);
   }
 };
 
@@ -863,7 +863,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
-    goog.DEBUG && console.assert(imageImage, 'imageImage must be truthy');
+    ol.DEBUG && console.assert(imageImage, 'imageImage must be truthy');
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];

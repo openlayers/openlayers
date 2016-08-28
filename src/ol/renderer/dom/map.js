@@ -99,7 +99,7 @@ ol.renderer.dom.Map.prototype.createLayerRenderer = function(layer) {
   } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
     layerRenderer = new ol.renderer.dom.VectorLayer(layer);
   } else {
-    goog.DEBUG && console.assert(false, 'unexpected layer configuration');
+    ol.DEBUG && console.assert(false, 'unexpected layer configuration');
     return null;
   }
   return layerRenderer;

@@ -141,7 +141,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
       imageState != ol.Image.State.ERROR) {
     // the image is either "idle" or "loading", register the change
     // listener (a noop if the listener was already registered)
-    goog.DEBUG && console.assert(imageState == ol.Image.State.IDLE ||
+    ol.DEBUG && console.assert(imageState == ol.Image.State.IDLE ||
         imageState == ol.Image.State.LOADING,
         'imageState is "idle" or "loading"');
     ol.events.listen(image, ol.events.EventType.CHANGE,
@@ -150,7 +150,7 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
   if (imageState == ol.Image.State.IDLE) {
     image.load();
     imageState = image.getState();
-    goog.DEBUG && console.assert(imageState == ol.Image.State.LOADING ||
+    ol.DEBUG && console.assert(imageState == ol.Image.State.LOADING ||
         imageState == ol.Image.State.LOADED,
         'imageState is "loading" or "loaded"');
   }

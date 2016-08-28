@@ -1047,7 +1047,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   var targetElement;
   if (this.getTarget()) {
     targetElement = this.getTargetElement();
-    goog.DEBUG && console.assert(targetElement !== null,
+    ol.DEBUG && console.assert(targetElement !== null,
         'expects a non-null value for targetElement');
   }
 

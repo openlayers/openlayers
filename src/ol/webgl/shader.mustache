@@ -35,7 +35,7 @@ ol.inherits({{className}}.Fragment, ol.webgl.Fragment);
  * @const
  * @type {string}
  */
-{{className}}.Fragment.SOURCE = goog.DEBUG ?
+{{className}}.Fragment.SOURCE = ol.DEBUG ?
     {{className}}.Fragment.DEBUG_SOURCE :
     {{className}}.Fragment.OPTIMIZED_SOURCE;
 
@@ -72,7 +72,7 @@ ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
  * @const
  * @type {string}
  */
-{{className}}.Vertex.SOURCE = goog.DEBUG ?
+{{className}}.Vertex.SOURCE = ol.DEBUG ?
     {{className}}.Vertex.DEBUG_SOURCE :
     {{className}}.Vertex.OPTIMIZED_SOURCE;
 
@@ -93,7 +93,7 @@ ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
    * @type {WebGLUniformLocation}
    */
   this.{{originalName}} = gl.getUniformLocation(
-      program, goog.DEBUG ? '{{originalName}}' : '{{shortName}}');
+      program, ol.DEBUG ? '{{originalName}}' : '{{shortName}}');
 {{/getUniforms}}
 {{#getAttributes}}
 
@@ -101,6 +101,6 @@ ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
    * @type {number}
    */
   this.{{originalName}} = gl.getAttribLocation(
-      program, goog.DEBUG ? '{{originalName}}' : '{{shortName}}');
+      program, ol.DEBUG ? '{{originalName}}' : '{{shortName}}');
 {{/getAttributes}}
 };

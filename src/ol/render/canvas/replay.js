@@ -253,7 +253,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         this.coordinates, 0, this.coordinates.length, 2,
         transform, this.pixelCoordinates_);
     ol.transform.setFromArray(this.renderedTransform_, transform);
-    goog.DEBUG && console.assert(pixelCoordinates === this.pixelCoordinates_,
+    ol.DEBUG && console.assert(pixelCoordinates === this.pixelCoordinates_,
         'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
   var skipFeatures = !ol.obj.isEmpty(skippedFeaturesHash);
@@ -303,7 +303,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
-        goog.DEBUG && console.assert(typeof instruction[1] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
             'second instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
@@ -322,10 +322,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:
-        goog.DEBUG && console.assert(typeof instruction[1] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
             'second instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        goog.DEBUG && console.assert(typeof instruction[2] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
             'third instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
@@ -381,31 +381,31 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_TEXT:
-        goog.DEBUG && console.assert(typeof instruction[1] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
             '2nd instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        goog.DEBUG && console.assert(typeof instruction[2] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
-        goog.DEBUG && console.assert(typeof instruction[3] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[3] === 'string',
             '4th instruction should be a string');
         text = /** @type {string} */ (instruction[3]);
-        goog.DEBUG && console.assert(typeof instruction[4] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[4] === 'number',
             '5th instruction should be a number');
         var offsetX = /** @type {number} */ (instruction[4]) * pixelRatio;
-        goog.DEBUG && console.assert(typeof instruction[5] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[5] === 'number',
             '6th instruction should be a number');
         var offsetY = /** @type {number} */ (instruction[5]) * pixelRatio;
-        goog.DEBUG && console.assert(typeof instruction[6] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[6] === 'number',
             '7th instruction should be a number');
         rotation = /** @type {number} */ (instruction[6]);
-        goog.DEBUG && console.assert(typeof instruction[7] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[7] === 'number',
             '8th instruction should be a number');
         scale = /** @type {number} */ (instruction[7]) * pixelRatio;
-        goog.DEBUG && console.assert(typeof instruction[8] === 'boolean',
+        ol.DEBUG && console.assert(typeof instruction[8] === 'boolean',
             '9th instruction should be a boolean');
         fill = /** @type {boolean} */ (instruction[8]);
-        goog.DEBUG && console.assert(typeof instruction[9] === 'boolean',
+        ol.DEBUG && console.assert(typeof instruction[9] === 'boolean',
             '10th instruction should be a boolean');
         stroke = /** @type {boolean} */ (instruction[9]);
         rotateWithView = /** @type {boolean} */ (instruction[10]);
@@ -474,10 +474,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
-        goog.DEBUG && console.assert(typeof instruction[1] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
             '2nd instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        goog.DEBUG && console.assert(typeof instruction[2] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         x = pixelCoordinates[d];
@@ -503,7 +503,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_FILL_STYLE:
-        goog.DEBUG && console.assert(
+        ol.DEBUG && console.assert(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
@@ -516,17 +516,17 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        goog.DEBUG && console.assert(typeof instruction[1] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[1] === 'string',
             '2nd instruction should be a string');
-        goog.DEBUG && console.assert(typeof instruction[2] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
-        goog.DEBUG && console.assert(typeof instruction[3] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[3] === 'string',
             '4rd instruction should be a string');
-        goog.DEBUG && console.assert(typeof instruction[4] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[4] === 'string',
             '5th instruction should be a string');
-        goog.DEBUG && console.assert(typeof instruction[5] === 'number',
+        ol.DEBUG && console.assert(typeof instruction[5] === 'number',
             '6th instruction should be a number');
-        goog.DEBUG && console.assert(instruction[6],
+        ol.DEBUG && console.assert(instruction[6],
             '7th instruction should not be null');
         var usePixelRatio = instruction[7] !== undefined ?
             instruction[7] : true;
@@ -548,11 +548,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_TEXT_STYLE:
-        goog.DEBUG && console.assert(typeof instruction[1] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[1] === 'string',
             '2nd instruction should be a string');
-        goog.DEBUG && console.assert(typeof instruction[2] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[2] === 'string',
             '3rd instruction should be a string');
-        goog.DEBUG && console.assert(typeof instruction[3] === 'string',
+        ol.DEBUG && console.assert(typeof instruction[3] === 'string',
             '4th instruction should be a string');
         context.font = /** @type {string} */ (instruction[1]);
         context.textAlign = /** @type {string} */ (instruction[2]);
@@ -568,7 +568,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       default:
-        goog.DEBUG && console.assert(false, 'Unknown canvas render instruction');
+        ol.DEBUG && console.assert(false, 'Unknown canvas render instruction');
         ++i; // consume the instruction anyway, to avoid an infinite loop
         break;
     }
@@ -580,7 +580,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     context.stroke();
   }
   // assert that all instructions were consumed
-  goog.DEBUG && console.assert(i == instructions.length,
+  ol.DEBUG && console.assert(i == instructions.length,
       'all instructions should be consumed');
   return undefined;
 };
@@ -641,11 +641,11 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ = function() 
     instruction = hitDetectionInstructions[i];
     type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
-      goog.DEBUG && console.assert(begin == -1, 'begin should be -1');
+      ol.DEBUG && console.assert(begin == -1, 'begin should be -1');
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
       instruction[2] = i;
-      goog.DEBUG && console.assert(begin >= 0,
+      ol.DEBUG && console.assert(begin >= 0,
           'begin should be larger than or equal to 0');
       ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
@@ -659,11 +659,11 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions_ = function() 
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.endGeometry = function(geometry, feature) {
-  goog.DEBUG && console.assert(this.beginGeometryInstruction1_,
+  ol.DEBUG && console.assert(this.beginGeometryInstruction1_,
       'this.beginGeometryInstruction1_ should not be null');
   this.beginGeometryInstruction1_[2] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;
-  goog.DEBUG && console.assert(this.beginGeometryInstruction2_,
+  ol.DEBUG && console.assert(this.beginGeometryInstruction2_,
       'this.beginGeometryInstruction2_ should not be null');
   this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
@@ -808,25 +808,25 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   if (!this.image_) {
     return;
   }
-  goog.DEBUG && console.assert(this.anchorX_ !== undefined,
+  ol.DEBUG && console.assert(this.anchorX_ !== undefined,
       'this.anchorX_ should be defined');
-  goog.DEBUG && console.assert(this.anchorY_ !== undefined,
+  ol.DEBUG && console.assert(this.anchorY_ !== undefined,
       'this.anchorY_ should be defined');
-  goog.DEBUG && console.assert(this.height_ !== undefined,
+  ol.DEBUG && console.assert(this.height_ !== undefined,
       'this.height_ should be defined');
-  goog.DEBUG && console.assert(this.opacity_ !== undefined,
+  ol.DEBUG && console.assert(this.opacity_ !== undefined,
       'this.opacity_ should be defined');
-  goog.DEBUG && console.assert(this.originX_ !== undefined,
+  ol.DEBUG && console.assert(this.originX_ !== undefined,
       'this.originX_ should be defined');
-  goog.DEBUG && console.assert(this.originY_ !== undefined,
+  ol.DEBUG && console.assert(this.originY_ !== undefined,
       'this.originY_ should be defined');
-  goog.DEBUG && console.assert(this.rotateWithView_ !== undefined,
+  ol.DEBUG && console.assert(this.rotateWithView_ !== undefined,
       'this.rotateWithView_ should be defined');
-  goog.DEBUG && console.assert(this.rotation_ !== undefined,
+  ol.DEBUG && console.assert(this.rotation_ !== undefined,
       'this.rotation_ should be defined');
-  goog.DEBUG && console.assert(this.scale_ !== undefined,
+  ol.DEBUG && console.assert(this.scale_ !== undefined,
       'this.scale_ should be defined');
-  goog.DEBUG && console.assert(this.width_ !== undefined,
+  ol.DEBUG && console.assert(this.width_ !== undefined,
       'this.width_ should be defined');
   this.beginGeometry(pointGeometry, feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
@@ -860,25 +860,25 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   if (!this.image_) {
     return;
   }
-  goog.DEBUG && console.assert(this.anchorX_ !== undefined,
+  ol.DEBUG && console.assert(this.anchorX_ !== undefined,
       'this.anchorX_ should be defined');
-  goog.DEBUG && console.assert(this.anchorY_ !== undefined,
+  ol.DEBUG && console.assert(this.anchorY_ !== undefined,
       'this.anchorY_ should be defined');
-  goog.DEBUG && console.assert(this.height_ !== undefined,
+  ol.DEBUG && console.assert(this.height_ !== undefined,
       'this.height_ should be defined');
-  goog.DEBUG && console.assert(this.opacity_ !== undefined,
+  ol.DEBUG && console.assert(this.opacity_ !== undefined,
       'this.opacity_ should be defined');
-  goog.DEBUG && console.assert(this.originX_ !== undefined,
+  ol.DEBUG && console.assert(this.originX_ !== undefined,
       'this.originX_ should be defined');
-  goog.DEBUG && console.assert(this.originY_ !== undefined,
+  ol.DEBUG && console.assert(this.originY_ !== undefined,
       'this.originY_ should be defined');
-  goog.DEBUG && console.assert(this.rotateWithView_ !== undefined,
+  ol.DEBUG && console.assert(this.rotateWithView_ !== undefined,
       'this.rotateWithView_ should be defined');
-  goog.DEBUG && console.assert(this.rotation_ !== undefined,
+  ol.DEBUG && console.assert(this.rotation_ !== undefined,
       'this.rotation_ should be defined');
-  goog.DEBUG && console.assert(this.scale_ !== undefined,
+  ol.DEBUG && console.assert(this.scale_ !== undefined,
       'this.scale_ should be defined');
-  goog.DEBUG && console.assert(this.width_ !== undefined,
+  ol.DEBUG && console.assert(this.width_ !== undefined,
       'this.width_ should be defined');
   this.beginGeometry(multiPointGeometry, feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
@@ -931,18 +931,18 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
-  goog.DEBUG && console.assert(imageStyle, 'imageStyle should not be null');
+  ol.DEBUG && console.assert(imageStyle, 'imageStyle should not be null');
   var anchor = imageStyle.getAnchor();
-  goog.DEBUG && console.assert(anchor, 'anchor should not be null');
+  ol.DEBUG && console.assert(anchor, 'anchor should not be null');
   var size = imageStyle.getSize();
-  goog.DEBUG && console.assert(size, 'size should not be null');
+  ol.DEBUG && console.assert(size, 'size should not be null');
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-  goog.DEBUG && console.assert(hitDetectionImage,
+  ol.DEBUG && console.assert(hitDetectionImage,
       'hitDetectionImage should not be null');
   var image = imageStyle.getImage(1);
-  goog.DEBUG && console.assert(image, 'image should not be null');
+  ol.DEBUG && console.assert(image, 'image should not be null');
   var origin = imageStyle.getOrigin();
-  goog.DEBUG && console.assert(origin, 'origin should not be null');
+  ol.DEBUG && console.assert(origin, 'origin should not be null');
   this.anchorX_ = anchor[0];
   this.anchorY_ = anchor[1];
   this.hitDetectionImage_ = hitDetectionImage;
@@ -1055,13 +1055,13 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  goog.DEBUG && console.assert(strokeStyle !== undefined,
+  ol.DEBUG && console.assert(strokeStyle !== undefined,
       'strokeStyle should be defined');
-  goog.DEBUG && console.assert(lineCap !== undefined, 'lineCap should be defined');
-  goog.DEBUG && console.assert(lineDash, 'lineDash should not be null');
-  goog.DEBUG && console.assert(lineJoin !== undefined, 'lineJoin should be defined');
-  goog.DEBUG && console.assert(lineWidth !== undefined, 'lineWidth should be defined');
-  goog.DEBUG && console.assert(miterLimit !== undefined, 'miterLimit should be defined');
+  ol.DEBUG && console.assert(lineCap !== undefined, 'lineCap should be defined');
+  ol.DEBUG && console.assert(lineDash, 'lineDash should not be null');
+  ol.DEBUG && console.assert(lineJoin !== undefined, 'lineJoin should be defined');
+  ol.DEBUG && console.assert(lineWidth !== undefined, 'lineWidth should be defined');
+  ol.DEBUG && console.assert(miterLimit !== undefined, 'miterLimit should be defined');
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
       !ol.array.equals(state.currentLineDash, lineDash) ||
@@ -1092,7 +1092,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
  */
 ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
   var state = this.state_;
-  goog.DEBUG && console.assert(state, 'state should not be null');
+  ol.DEBUG && console.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
@@ -1119,7 +1119,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
   var state = this.state_;
-  goog.DEBUG && console.assert(state, 'state should not be null');
+  ol.DEBUG && console.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
@@ -1151,7 +1151,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
  */
 ol.render.canvas.LineStringReplay.prototype.finish = function() {
   var state = this.state_;
-  goog.DEBUG && console.assert(state, 'state should not be null');
+  ol.DEBUG && console.assert(state, 'state should not be null');
   if (state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
@@ -1164,9 +1164,9 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  goog.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
-  goog.DEBUG && console.assert(!fillStyle, 'fillStyle should be null');
-  goog.DEBUG && console.assert(strokeStyle, 'strokeStyle should not be null');
+  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
+  ol.DEBUG && console.assert(!fillStyle, 'fillStyle should be null');
+  ol.DEBUG && console.assert(strokeStyle, 'strokeStyle should not be null');
   var strokeStyleColor = strokeStyle.getColor();
   this.state_.strokeStyle = ol.color.asString(strokeStyleColor ?
       strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
@@ -1291,7 +1291,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
     this.instructions.push(fillInstruction);
   }
   if (stroke) {
-    goog.DEBUG && console.assert(state.lineWidth !== undefined,
+    ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
@@ -1306,14 +1306,14 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
  */
 ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
   var state = this.state_;
-  goog.DEBUG && console.assert(state, 'state should not be null');
+  ol.DEBUG && console.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
   if (fillStyle === undefined && strokeStyle === undefined) {
     return;
   }
   if (strokeStyle !== undefined) {
-    goog.DEBUG && console.assert(state.lineWidth !== undefined,
+    ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_();
@@ -1343,7 +1343,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    goog.DEBUG && console.assert(state.lineWidth !== undefined,
+    ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
@@ -1358,14 +1358,14 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
  */
 ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   var state = this.state_;
-  goog.DEBUG && console.assert(state, 'state should not be null');
+  ol.DEBUG && console.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
   if (fillStyle === undefined && strokeStyle === undefined) {
     return;
   }
   if (strokeStyle !== undefined) {
-    goog.DEBUG && console.assert(state.lineWidth !== undefined,
+    ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_();
@@ -1393,14 +1393,14 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
  */
 ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
   var state = this.state_;
-  goog.DEBUG && console.assert(state, 'state should not be null');
+  ol.DEBUG && console.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
   if (fillStyle === undefined && strokeStyle === undefined) {
     return;
   }
   if (strokeStyle !== undefined) {
-    goog.DEBUG && console.assert(state.lineWidth !== undefined,
+    ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_();
@@ -1432,7 +1432,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.finish = function() {
-  goog.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
+  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
   this.reverseHitDetectionInstructions_();
   this.state_ = null;
   // We want to preserve topology when drawing polygons.  Polygons are
@@ -1469,8 +1469,8 @@ ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  goog.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
-  goog.DEBUG && console.assert(fillStyle || strokeStyle,
+  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
+  ol.DEBUG && console.assert(fillStyle || strokeStyle,
       'fillStyle or strokeStyle should not be null');
   var state = this.state_;
   if (fillStyle) {
@@ -1534,11 +1534,11 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
-    goog.DEBUG && console.assert(lineCap !== undefined, 'lineCap should be defined');
-    goog.DEBUG && console.assert(lineDash, 'lineDash should not be null');
-    goog.DEBUG && console.assert(lineJoin !== undefined, 'lineJoin should be defined');
-    goog.DEBUG && console.assert(lineWidth !== undefined, 'lineWidth should be defined');
-    goog.DEBUG && console.assert(miterLimit !== undefined,
+    ol.DEBUG && console.assert(lineCap !== undefined, 'lineCap should be defined');
+    ol.DEBUG && console.assert(lineDash, 'lineDash should not be null');
+    ol.DEBUG && console.assert(lineJoin !== undefined, 'lineJoin should be defined');
+    ol.DEBUG && console.assert(lineWidth !== undefined, 'lineWidth should be defined');
+    ol.DEBUG && console.assert(miterLimit !== undefined,
         'miterLimit should be defined');
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
@@ -2025,7 +2025,7 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
   var replay = replays[replayType];
   if (replay === undefined) {
     var Constructor = ol.render.canvas.BATCH_CONSTRUCTORS_[replayType];
-    goog.DEBUG && console.assert(Constructor !== undefined,
+    ol.DEBUG && console.assert(Constructor !== undefined,
         replayType +
         ' constructor missing from ol.render.canvas.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,

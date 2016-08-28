@@ -1,5 +1,9 @@
 ## Upgrade notes
 
+#### ´goog.DEBUG´ define was renamed to ´ol.DEBUG´
+
+As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
+
 ### v3.18.0
 
 #### Changes in the way assertions are handled

@@ -35,7 +35,7 @@ ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE = 'precision mediump
  * @const
  * @type {string}
  */
-ol.renderer.webgl.tilelayershader.Fragment.SOURCE = goog.DEBUG ?
+ol.renderer.webgl.tilelayershader.Fragment.SOURCE = ol.DEBUG ?
     ol.renderer.webgl.tilelayershader.Fragment.DEBUG_SOURCE :
     ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
 
@@ -72,7 +72,7 @@ ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;attr
  * @const
  * @type {string}
  */
-ol.renderer.webgl.tilelayershader.Vertex.SOURCE = goog.DEBUG ?
+ol.renderer.webgl.tilelayershader.Vertex.SOURCE = ol.DEBUG ?
     ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE :
     ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
 
@@ -92,23 +92,23 @@ ol.renderer.webgl.tilelayershader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_texture = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_texture' : 'e');
+      program, ol.DEBUG ? 'u_texture' : 'e');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_tileOffset = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_tileOffset' : 'd');
+      program, ol.DEBUG ? 'u_tileOffset' : 'd');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_position' : 'b');
+      program, ol.DEBUG ? 'a_position' : 'b');
 
   /**
    * @type {number}
    */
   this.a_texCoord = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_texCoord' : 'c');
+      program, ol.DEBUG ? 'a_texCoord' : 'c');
 };
