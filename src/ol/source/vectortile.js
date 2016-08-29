@@ -107,9 +107,19 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
 /**
  * @inheritDoc
  */
+ol.source.VectorTile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
+  return opt_pixelRatio == undefined ?
+      ol.source.UrlTile.prototype.getTilePixelRatio.call(this, opt_pixelRatio) :
+      opt_pixelRatio;
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
-  return [tileSize[0] * pixelRatio, tileSize[1] * pixelRatio];
+  return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
 
 
