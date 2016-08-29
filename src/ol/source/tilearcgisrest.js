@@ -121,7 +121,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
  * @inheritDoc
  */
 ol.source.TileArcGISRest.prototype.getTilePixelRatio = function(pixelRatio) {
-  return pixelRatio;
+  return /** @type {number} */ (pixelRatio);
 };
 
 

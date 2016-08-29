@@ -242,10 +242,14 @@ ol.source.Tile.prototype.getTileCacheForProjection = function(projection) {
 
 
 /**
- * @param {number} pixelRatio Pixel ratio.
+ * Get the tile pixel ratio for this source. Subclasses may override this
+ * method, which is meant to return a supported pixel ratio that matches the
+ * provided `opt_pixelRatio` as close as possible. When no `opt_pixelRatio` is
+ * provided, it is meant to return `this.tilePixelRatio_`.
+ * @param {number=} opt_pixelRatio Pixel ratio.
  * @return {number} Tile pixel ratio.
  */
-ol.source.Tile.prototype.getTilePixelRatio = function(pixelRatio) {
+ol.source.Tile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
   return this.tilePixelRatio_;
 };
 
