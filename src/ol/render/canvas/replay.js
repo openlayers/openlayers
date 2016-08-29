@@ -313,7 +313,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var dx = x2 - x1;
         var dy = y2 - y1;
         var r = Math.sqrt(dx * dx + dy * dy);
-        context.moveTo(x2, y2);
+        context.moveTo(x1 + r, y1);
         context.arc(x1, y1, r, 0, 2 * Math.PI, true);
         ++i;
         break;
