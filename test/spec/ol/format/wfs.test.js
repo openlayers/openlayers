@@ -369,8 +369,8 @@ describe('ol.format.WFS', function() {
           '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
           '    <ogc:PropertyIsBetween>' +
           '      <ogc:PropertyName>area</ogc:PropertyName>' +
-          '      <ogc:LowerBoundary>100</ogc:LowerBoundary>' +
-          '      <ogc:UpperBoundary>1000</ogc:UpperBoundary>' +
+          '      <ogc:LowerBoundary><ogc:Literal>100</ogc:Literal></ogc:LowerBoundary>' +
+          '      <ogc:UpperBoundary><ogc:Literal>1000</ogc:Literal></ogc:UpperBoundary>' +
           '    </ogc:PropertyIsBetween>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';

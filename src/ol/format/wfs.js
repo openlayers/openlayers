@@ -667,8 +667,14 @@ ol.format.WFS.writeIsNullFilter_ = function(node, filter, objectStack) {
  */
 ol.format.WFS.writeIsBetweenFilter_ = function(node, filter, objectStack) {
   ol.format.WFS.writeOgcPropertyName_(node, filter.propertyName);
-  ol.format.WFS.writeOgcExpression_('LowerBoundary', node, '' + filter.lowerBoundary);
-  ol.format.WFS.writeOgcExpression_('UpperBoundary', node, '' + filter.upperBoundary);
+
+  var lowerBoundary = ol.xml.createElementNS('http://www.opengis.net/ogc', 'LowerBoundary');
+  node.appendChild(lowerBoundary);
+  ol.format.WFS.writeOgcLiteral_(lowerBoundary, '' + filter.lowerBoundary);
+
+  var upperBoundary = ol.xml.createElementNS('http://www.opengis.net/ogc', 'UpperBoundary');
+  node.appendChild(upperBoundary);
+  ol.format.WFS.writeOgcLiteral_(upperBoundary, '' + filter.upperBoundary);
 };
 
 
