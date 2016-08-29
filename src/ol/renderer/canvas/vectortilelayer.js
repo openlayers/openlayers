@@ -5,6 +5,7 @@ goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
+goog.require('ol.layer.VectorTile');
 goog.require('ol.render.EventType');
 goog.require('ol.render.ReplayType');
 goog.require('ol.render.canvas');
@@ -59,7 +60,7 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
   this.zDirection =
-      layer.getRenderMode() == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
+      layer.getRenderMode() == ol.layer.VectorTile.RenderType.VECTOR ? 1 : 0;
 
 };
 ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
@@ -81,10 +82,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
   }
 
   var renderMode = this.getLayer().getRenderMode();
-  if (renderMode !== ol.layer.VectorTileRenderType.VECTOR) {
+  if (renderMode !== ol.layer.VectorTile.RenderType.VECTOR) {
     this.renderTileImages(context, frameState, layerState);
   }
-  if (renderMode !== ol.layer.VectorTileRenderType.IMAGE) {
+  if (renderMode !== ol.layer.VectorTile.RenderType.IMAGE) {
     this.renderTileReplays_(context, frameState, layerState);
   }
 
