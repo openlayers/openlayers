@@ -2,7 +2,6 @@ goog.provide('ol.source.ImageStatic');
 
 goog.require('ol');
 goog.require('ol.Image');
-goog.require('ol.ImageState');
 goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
@@ -71,7 +70,7 @@ ol.source.ImageStatic.prototype.getImageInternal = function(extent, resolution, 
  * @inheritDoc
  */
 ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
-  if (this.image_.getState() == ol.ImageState.LOADED) {
+  if (this.image_.getState() == ol.Image.State.LOADED) {
     var imageExtent = this.image_.getExtent();
     var image = this.image_.getImage();
     var imageWidth, imageHeight;

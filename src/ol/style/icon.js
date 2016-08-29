@@ -7,9 +7,9 @@ goog.require('ol.asserts');
 goog.require('ol.color');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
+goog.require('ol.Image');
 goog.require('ol.style.IconImage');
 goog.require('ol.style.Image');
-goog.require('ol.style.ImageState');
 
 
 /**
@@ -113,10 +113,10 @@ ol.style.Icon = function(opt_options) {
       6); // A defined and non-empty `src` or `image` must be provided
 
   /**
-   * @type {ol.style.ImageState}
+   * @type {ol.Image.State}
    */
   var imageState = options.src !== undefined ?
-      ol.style.ImageState.IDLE : ol.style.ImageState.LOADED;
+      ol.Image.State.IDLE : ol.Image.State.LOADED;
 
   /**
    * @type {ol.Color}
