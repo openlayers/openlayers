@@ -12,6 +12,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
  * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
+ * rename `ol.CollectionProperty` to `ol.Collection.Property`
 
 ### v3.18.0
 
