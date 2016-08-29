@@ -346,7 +346,7 @@ ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
   }
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG) {
+      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG && this.sketchFeature_ !== null) {
     this.addToDrawing_(mapBrowserEvent);
     pass = false;
   } else if (mapBrowserEvent.type ===
