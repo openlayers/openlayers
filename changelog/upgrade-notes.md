@@ -10,6 +10,7 @@ A number of internal types have been renamed.  This will not affect those who us
 
  * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
  * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
+ * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
 
 ### v3.18.0
 
