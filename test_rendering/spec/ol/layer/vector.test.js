@@ -96,6 +96,26 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
+    it('renders rotation correctly with the canvas renderer', function(done) {
+      map = createMap('canvas');
+      map.getView().setRotation(Math.PI + Math.PI / 4);
+      addPolygon(300);
+      addCircle(500);
+      map.addLayer(new ol.layer.Vector({
+        source: source,
+        style: new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            width: 2,
+            color: 'black'
+          })
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-rotated.png',
+            1.7, done);
+      });
+    });
+
     it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
       source = new ol.source.Vector({
