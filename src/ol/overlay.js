@@ -11,18 +11,6 @@ goog.require('ol.extent');
 
 
 /**
- * @enum {string}
- */
-ol.OverlayProperty = {
-  ELEMENT: 'element',
-  MAP: 'map',
-  OFFSET: 'offset',
-  POSITION: 'position',
-  POSITIONING: 'positioning'
-};
-
-
-/**
  * Overlay position: `'bottom-left'`, `'bottom-center'`,  `'bottom-right'`,
  * `'center-left'`, `'center-center'`, `'center-right'`, `'top-left'`,
  * `'top-center'`, `'top-right'`
@@ -136,23 +124,23 @@ ol.Overlay = function(options) {
   this.mapPostrenderListenerKey_ = null;
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.OverlayProperty.ELEMENT),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property.ELEMENT),
       this.handleElementChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.OverlayProperty.MAP),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property.MAP),
       this.handleMapChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.OverlayProperty.OFFSET),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property.OFFSET),
       this.handleOffsetChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITION),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property.POSITION),
       this.handlePositionChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.OverlayProperty.POSITIONING),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property.POSITIONING),
       this.handlePositioningChanged, this);
 
   if (options.element !== undefined) {
@@ -181,7 +169,7 @@ ol.inherits(ol.Overlay, ol.Object);
  */
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
-      this.get(ol.OverlayProperty.ELEMENT));
+      this.get(ol.Overlay.Property.ELEMENT));
 };
 
 
@@ -203,7 +191,7 @@ ol.Overlay.prototype.getId = function() {
  */
 ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
-      this.get(ol.OverlayProperty.MAP));
+      this.get(ol.Overlay.Property.MAP));
 };
 
 
@@ -215,7 +203,7 @@ ol.Overlay.prototype.getMap = function() {
  */
 ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
-      this.get(ol.OverlayProperty.OFFSET));
+      this.get(ol.Overlay.Property.OFFSET));
 };
 
 
@@ -228,7 +216,7 @@ ol.Overlay.prototype.getOffset = function() {
  */
 ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.OverlayProperty.POSITION));
+      this.get(ol.Overlay.Property.POSITION));
 };
 
 
@@ -241,7 +229,7 @@ ol.Overlay.prototype.getPosition = function() {
  */
 ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
-      this.get(ol.OverlayProperty.POSITIONING));
+      this.get(ol.Overlay.Property.POSITIONING));
 };
 
 
@@ -303,7 +291,7 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition();
-  if (this.get(ol.OverlayProperty.POSITION) !== undefined && this.autoPan) {
+  if (this.get(ol.Overlay.Property.POSITION) !== undefined && this.autoPan) {
     this.panIntoView_();
   }
 };
@@ -324,7 +312,7 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
  * @api stable
  */
 ol.Overlay.prototype.setElement = function(element) {
-  this.set(ol.OverlayProperty.ELEMENT, element);
+  this.set(ol.Overlay.Property.ELEMENT, element);
 };
 
 
@@ -335,7 +323,7 @@ ol.Overlay.prototype.setElement = function(element) {
  * @api stable
  */
 ol.Overlay.prototype.setMap = function(map) {
-  this.set(ol.OverlayProperty.MAP, map);
+  this.set(ol.Overlay.Property.MAP, map);
 };
 
 
@@ -346,7 +334,7 @@ ol.Overlay.prototype.setMap = function(map) {
  * @api stable
  */
 ol.Overlay.prototype.setOffset = function(offset) {
-  this.set(ol.OverlayProperty.OFFSET, offset);
+  this.set(ol.Overlay.Property.OFFSET, offset);
 };
 
 
@@ -359,7 +347,7 @@ ol.Overlay.prototype.setOffset = function(offset) {
  * @api stable
  */
 ol.Overlay.prototype.setPosition = function(position) {
-  this.set(ol.OverlayProperty.POSITION, position);
+  this.set(ol.Overlay.Property.POSITION, position);
 };
 
 
@@ -450,7 +438,7 @@ ol.Overlay.prototype.getRect_ = function(element, size) {
  * @api stable
  */
 ol.Overlay.prototype.setPositioning = function(positioning) {
-  this.set(ol.OverlayProperty.POSITIONING, positioning);
+  this.set(ol.Overlay.Property.POSITIONING, positioning);
 };
 
 
@@ -550,4 +538,16 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
   }
 
   this.setVisible(true);
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.Overlay.Property = {
+  ELEMENT: 'element',
+  MAP: 'map',
+  OFFSET: 'offset',
+  POSITION: 'position',
+  POSITIONING: 'positioning'
 };
