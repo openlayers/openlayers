@@ -2,6 +2,7 @@ goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('ol');
 goog.require('ol.events.EventType');
+goog.require('ol.has');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.math');
 
