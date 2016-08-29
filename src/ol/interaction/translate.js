@@ -3,6 +3,7 @@ goog.provide('ol.interaction.TranslateEvent');
 
 goog.require('ol');
 goog.require('ol.events.Event');
+goog.require('ol.functions');
 goog.require('ol.array');
 goog.require('ol.interaction.Pointer');
 
