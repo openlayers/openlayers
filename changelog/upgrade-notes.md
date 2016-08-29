@@ -14,6 +14,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
  * rename `ol.CollectionProperty` to `ol.Collection.Property`
  * rename `ol.DeviceOrientationProperty` to `ol.DeviceOrientation.Property`
+ * rename `ol.GeolocationProperty` to `ol.Geolocation.Property`
 
 ### v3.18.0
 
