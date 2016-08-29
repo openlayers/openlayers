@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.vector');
 
 goog.require('ol');
-goog.require('ol.ImageState');
+goog.require('ol.Image');
 goog.require('ol.render.ReplayType');
 
 
@@ -79,15 +79,15 @@ ol.renderer.vector.renderFeature = function(
   imageStyle = style.getImage();
   if (imageStyle) {
     imageState = imageStyle.getImageState();
-    if (imageState == ol.ImageState.LOADED ||
-        imageState == ol.ImageState.ERROR) {
+    if (imageState == ol.Image.State.LOADED ||
+        imageState == ol.Image.State.ERROR) {
       imageStyle.unlistenImageChange(listener, thisArg);
     } else {
-      if (imageState == ol.ImageState.IDLE) {
+      if (imageState == ol.Image.State.IDLE) {
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      goog.DEBUG && console.assert(imageState == ol.ImageState.LOADING,
+      goog.DEBUG && console.assert(imageState == ol.Image.State.LOADING,
           'imageState should be LOADING');
       imageStyle.listenImageChange(listener, thisArg);
       loading = true;
@@ -227,7 +227,7 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
 ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
-    if (imageStyle.getImageState() != ol.ImageState.LOADED) {
+    if (imageStyle.getImageState() != ol.Image.State.LOADED) {
       return;
     }
     var imageReplay = replayGroup.getReplay(
@@ -256,7 +256,7 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
 ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
   var imageStyle = style.getImage();
   if (imageStyle) {
-    if (imageStyle.getImageState() != ol.ImageState.LOADED) {
+    if (imageStyle.getImageState() != ol.Image.State.LOADED) {
       return;
     }
     var imageReplay = replayGroup.getReplay(

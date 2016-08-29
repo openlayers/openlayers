@@ -2,7 +2,7 @@ goog.provide('ol.source.Image');
 goog.provide('ol.source.ImageEvent');
 
 goog.require('ol');
-goog.require('ol.ImageState');
+goog.require('ol.Image');
 goog.require('ol.array');
 goog.require('ol.events.Event');
 goog.require('ol.extent');
@@ -148,17 +148,17 @@ ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelR
 ol.source.Image.prototype.handleImageChange = function(event) {
   var image = /** @type {ol.Image} */ (event.target);
   switch (image.getState()) {
-    case ol.ImageState.LOADING:
+    case ol.Image.State.LOADING:
       this.dispatchEvent(
           new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADSTART,
               image));
       break;
-    case ol.ImageState.LOADED:
+    case ol.Image.State.LOADED:
       this.dispatchEvent(
           new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADEND,
               image));
       break;
-    case ol.ImageState.ERROR:
+    case ol.Image.State.ERROR:
       this.dispatchEvent(
           new ol.source.ImageEvent(ol.source.ImageEventType.IMAGELOADERROR,
               image));

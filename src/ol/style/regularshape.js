@@ -5,7 +5,7 @@ goog.require('ol.color');
 goog.require('ol.colorlike');
 goog.require('ol.dom');
 goog.require('ol.has');
-goog.require('ol.ImageState');
+goog.require('ol.Image');
 goog.require('ol.render.canvas');
 goog.require('ol.style.Image');
 
@@ -205,7 +205,7 @@ ol.style.RegularShape.prototype.getHitDetectionImageSize = function() {
  * @inheritDoc
  */
 ol.style.RegularShape.prototype.getImageState = function() {
-  return ol.ImageState.LOADED;
+  return ol.Image.State.LOADED;
 };
 
 
