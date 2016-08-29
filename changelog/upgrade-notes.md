@@ -11,6 +11,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
  * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
+ * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
 
 ### v3.18.0
 
