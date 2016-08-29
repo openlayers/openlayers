@@ -308,7 +308,7 @@ olx.MapOptions.prototype.view;
  *     element: (Element|undefined),
  *     offset: (Array.<number>|undefined),
  *     position: (ol.Coordinate|undefined),
- *     positioning: (ol.OverlayPositioning|string|undefined),
+ *     positioning: (ol.Overlay.Positioning|string|undefined),
  *     stopEvent: (boolean|undefined),
  *     insertFirst: (boolean|undefined),
  *     autoPan: (boolean|undefined),
@@ -359,7 +359,7 @@ olx.OverlayOptions.prototype.position;
  * property. Possible values are `'bottom-left'`, `'bottom-center'`,
  * `'bottom-right'`, `'center-left'`, `'center-center'`, `'center-right'`,
  * `'top-left'`, `'top-center'`, and `'top-right'`. Default is `'top-left'`.
- * @type {ol.OverlayPositioning|string|undefined}
+ * @type {ol.Overlay.Positioning|string|undefined}
  * @api stable
  */
 olx.OverlayOptions.prototype.positioning;

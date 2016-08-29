@@ -16,6 +16,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.DeviceOrientationProperty` to `ol.DeviceOrientation.Property`
  * rename `ol.GeolocationProperty` to `ol.Geolocation.Property`
  * rename `ol.OverlayProperty` to `ol.Overlay.Property`
+ * rename `ol.OverlayPositioning` to `ol.Overlay.Positioning`
 
 ### v3.18.0
 
