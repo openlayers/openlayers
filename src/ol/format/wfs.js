@@ -77,6 +77,20 @@ ol.format.WFS.XMLNS = 'http://www.w3.org/2000/xmlns/';
  * @const
  * @type {string}
  */
+ol.format.WFS.OGCNS = 'http://www.opengis.net/ogc';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.format.WFS.WFSNS = 'http://www.opengis.net/wfs';
+
+
+/**
+ * @const
+ * @type {string}
+ */
 ol.format.WFS.SCHEMA_LOCATION = 'http://www.opengis.net/wfs ' +
     'http://schemas.opengis.net/wfs/1.1.0/wfs.xsd';
 
@@ -370,8 +384,8 @@ ol.format.WFS.writeFeature_ = function(node, feature, objectStack) {
  * @private
  */
 ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
-  var filter = ol.xml.createElementNS('http://www.opengis.net/ogc', 'Filter');
-  var child = ol.xml.createElementNS('http://www.opengis.net/ogc', 'FeatureId');
+  var filter = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
+  var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'FeatureId');
   filter.appendChild(child);
   child.setAttribute('fid', fid);
   node.appendChild(filter);
@@ -446,11 +460,11 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
  * @private
  */
 ol.format.WFS.writeProperty_ = function(node, pair, objectStack) {
-  var name = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Name');
+  var name = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Name');
   node.appendChild(name);
   ol.format.XSD.writeStringTextNode(name, pair.name);
   if (pair.value !== undefined && pair.value !== null) {
-    var value = ol.xml.createElementNS('http://www.opengis.net/wfs', 'Value');
+    var value = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Value');
     node.appendChild(value);
     if (pair.value instanceof ol.geom.Geometry) {
       ol.format.GML3.prototype.writeGeometryElement(value,
@@ -526,7 +540,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
       objectStack);
   var filter = context['filter'];
   if (filter) {
-    var child = ol.xml.createElementNS('http://www.opengis.net/ogc', 'Filter');
+    var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
     node.appendChild(child);
     ol.format.WFS.writeFilterCondition_(child, filter, objectStack);
   }
@@ -668,11 +682,11 @@ ol.format.WFS.writeIsNullFilter_ = function(node, filter, objectStack) {
 ol.format.WFS.writeIsBetweenFilter_ = function(node, filter, objectStack) {
   ol.format.WFS.writeOgcPropertyName_(node, filter.propertyName);
 
-  var lowerBoundary = ol.xml.createElementNS('http://www.opengis.net/ogc', 'LowerBoundary');
+  var lowerBoundary = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'LowerBoundary');
   node.appendChild(lowerBoundary);
   ol.format.WFS.writeOgcLiteral_(lowerBoundary, '' + filter.lowerBoundary);
 
-  var upperBoundary = ol.xml.createElementNS('http://www.opengis.net/ogc', 'UpperBoundary');
+  var upperBoundary = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'UpperBoundary');
   node.appendChild(upperBoundary);
   ol.format.WFS.writeOgcLiteral_(upperBoundary, '' + filter.upperBoundary);
 };
@@ -703,7 +717,7 @@ ol.format.WFS.writeIsLikeFilter_ = function(node, filter, objectStack) {
  * @private
  */
 ol.format.WFS.writeOgcExpression_ = function(tagName, node, value) {
-  var property = ol.xml.createElementNS('http://www.opengis.net/ogc', tagName);
+  var property = ol.xml.createElementNS(ol.format.WFS.OGCNS, tagName);
   ol.format.XSD.writeStringTextNode(property, value);
   node.appendChild(property);
 };
@@ -782,8 +796,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
  * @api stable
  */
 ol.format.WFS.prototype.writeGetFeature = function(options) {
-  var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
-      'GetFeature');
+  var node = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'GetFeature');
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', '1.1.0');
   var filter;
@@ -852,8 +865,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {
   var objectStack = [];
-  var node = ol.xml.createElementNS('http://www.opengis.net/wfs',
-      'Transaction');
+  var node = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Transaction');
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', '1.1.0');
   var baseObj;
