@@ -54,6 +54,16 @@ ol.layer.Base = function(options) {
       options.minResolution !== undefined ? options.minResolution : 0;
 
   this.setProperties(properties);
+
+  /**
+   * @type {ol.LayerState}
+   * @private
+   */
+  this.state_ = /** @type {ol.LayerState} */ ({
+    layer: /** @type {ol.layer.Layer} */ (this),
+    managed: true
+  });
+
 };
 ol.inherits(ol.layer.Base, ol.Object);
 
@@ -62,24 +72,15 @@ ol.inherits(ol.layer.Base, ol.Object);
  * @return {ol.LayerState} Layer state.
  */
 ol.layer.Base.prototype.getLayerState = function() {
-  var opacity = this.getOpacity();
-  var sourceState = this.getSourceState();
-  var visible = this.getVisible();
-  var extent = this.getExtent();
-  var zIndex = this.getZIndex();
-  var maxResolution = this.getMaxResolution();
-  var minResolution = this.getMinResolution();
-  return {
-    layer: /** @type {ol.layer.Layer} */ (this),
-    opacity: ol.math.clamp(opacity, 0, 1),
-    sourceState: sourceState,
-    visible: visible,
-    managed: true,
-    extent: extent,
-    zIndex: zIndex,
-    maxResolution: maxResolution,
-    minResolution: Math.max(minResolution, 0)
-  };
+  this.state_.opacity = ol.math.clamp(this.getOpacity(), 0, 1);
+  this.state_.sourceState = this.getSourceState();
+  this.state_.visible = this.getVisible();
+  this.state_.extent = this.getExtent();
+  this.state_.zIndex = this.getZIndex();
+  this.state_.maxResolution = this.getMaxResolution();
+  this.state_.minResolution = Math.max(this.getMinResolution(), 0);
+
+  return this.state_;
 };
 
 
