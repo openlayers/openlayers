@@ -20,6 +20,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
  * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
  * rename `ol.source.WMTSRequestEncoding` to `ol.source.WMTS.RequestEncoding`
+ * rename `ol.layer.HeatmapLayerProperty` to `ol.layer.Heatmap.Property`
 
 ### v3.18.0
 
