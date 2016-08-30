@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Snap');
-goog.provide('ol.interaction.SnapProperty');
 
 goog.require('ol');
 goog.require('ol.Collection');
