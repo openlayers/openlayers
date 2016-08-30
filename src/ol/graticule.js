@@ -123,26 +123,7 @@ ol.Graticule = function(opt_options) {
    * @private
    */
   this.parallelsLabels_ = [];
-
-  /**
-   * @type {ol.style.Stroke}
-   * @private
-   */
-  this.strokeStyle_ = options.strokeStyle !== undefined ?
-      options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
-
-  this.baseTextStyle_ = {
-    font: '12px Calibri,sans-serif',
-    textAlign: 'center',
-    fill: new ol.style.Fill({
-      color: 'rgba(0,0,0,1)'
-    }),
-    stroke: new ol.style.Stroke({
-      color: 'rgba(255,255,255,1)',
-      width: 3
-    })
-  };
-
+	  
   /**
    * @type {ol.TransformFunction|undefined}
    * @private
@@ -180,7 +161,7 @@ ol.Graticule = function(opt_options) {
    * @private
    */
   this.lonLabelPosition_ = options.lonLabelPosition !== undefined ?
-      ol.math.clamp(options.lonLabelPosition, 0.0, 1.0) : 1.0;
+      ol.math.clamp(options.lonLabelPosition, 0.0, 1.0) : 0.0;
 
   /**
    * @type {?Function}
@@ -195,20 +176,76 @@ ol.Graticule = function(opt_options) {
    */
   this.latLabelPosition_ = options.latLabelPosition !== undefined ?
       ol.math.clamp(options.latLabelPosition, 0.0, 1.0) : 1.0;
+      
+  /**
+   * @type {number} between 0.0 and 1.0
+   * @private
+   */
+  this.latLabelPositionUser_ = this.latLabelPosition_;
+  
+  /**
+   * @type {ol.style.Stroke}
+   * @private
+   */
+  this.defaultStrokeStyle_ = new ol.style.Stroke({
+	color: 'rgba(0,0,0,0.2)'
+  });
+  
+  /**
+   * @type {ol.style.Stroke}
+   * @private
+   */
+  this.strokeStyle_ = options.strokeStyle !== undefined ?
+      options.strokeStyle : this.defaultStrokeStyle_;
+
+  /**
+   * @type {ol.style.Text}
+   * @private
+   */
+  this.defaultLatLabelStyle_ = new ol.style.Text({
+    font: '12px Calibri,sans-serif',
+	textBaseline: 'middle',
+    fill: new ol.style.Fill({
+      color: 'rgba(0,0,0,1)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(255,255,255,1)',
+      width: 3
+    })
+  });
+
+  /**
+   * @type {ol.style.Text}
+   * @private
+   */  
+  this.latLabelStyle_ = options.latLabelStyle !== undefined ?
+      options.latLabelStyle : this.defaultLatLabelStyle_;
+
+	  
+  /**
+   * @type {ol.style.Text}
+   * @private
+   */
+  this.defaultLonLabelStyle_ = new ol.style.Text({
+    font: '12px Calibri,sans-serif',
+    fill: new ol.style.Fill({
+      color: 'rgba(0,0,0,1)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(255,255,255,1)',
+      width: 3
+    })
+  });	  
+	  
+  /**
+   * @type {ol.style.Text}
+   * @private
+   */  
+  this.lonLabelStyle_ = options.lonLabelStyle !== undefined ?
+      options.lonLabelStyle : this.defaultLonLabelStyle_;	  
 
   this.setMap(options.map !== undefined ? options.map : null);
 };
-
-
-/**
- * @type {ol.style.Stroke}
- * @private
- * @const
- */
-ol.Graticule.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
-  color: 'rgba(0,0,0,0.2)'
-});
-
 
 /**
  * TODO can be configurable
@@ -239,6 +276,25 @@ ol.Graticule.prototype.addMeridian_ =
   return index;
 };
 
+/**
+ * @param {ol.style.Text} style
+ * @return {ol.style.Text} cloned style
+ * @private
+ */  
+ol.Graticule.prototype.configureTextStyle_ = function(style){
+	var s = new ol.style.Text();
+	s.setFill(style.getFill());
+	s.setFont(style.getFont());
+	s.setOffsetX(style.getOffsetX());
+	s.setOffsetY(style.getOffsetY());
+	s.setRotation(style.getRotation());
+	s.setScale(style.getScale());
+	s.setStroke(style.getStroke());
+	s.setText(style.getText());
+	s.setTextAlign(style.getTextAlign());
+	s.setTextBaseline(style.getTextBaseline());
+	return s;
+}
 
 /**
  *
@@ -252,7 +308,7 @@ ol.Graticule.prototype.addMeridian_ =
 ol.Graticule.prototype.addMeridianLabel_ =
     function(lon, squaredTolerance, extent, index) {
   var textPoint = this.getMeridianPoint_(lon, squaredTolerance, extent, index);
-  var style = new ol.style.Text(this.baseTextStyle_);
+  var style = this.configureTextStyle_(this.lonLabelStyle_);
   style.setText(this.lonLabelFormatter_ ?
       this.lonLabelFormatter_(lon) : lon.toString());
   style.setTextBaseline('bottom');
@@ -262,6 +318,27 @@ ol.Graticule.prototype.addMeridianLabel_ =
 };
 
 
+/**
+ *
+ * @param {number} lon Longitude
+ * @param {number} squaredTolerance Squared tolerance.
+ * @param {ol.Extent} extent Extent.
+ * @param {number} index Index.
+ * @private
+ */
+ol.Graticule.prototype.checkLatLabelPosition_ =
+	function(lon, squaredTolerance, extent, index) {
+  var textPoint = this.getMeridianPoint_(lon, squaredTolerance, extent, index);
+  var textLon = textPoint.getCoordinates()[0];
+  if(extent[2] > textLon) {	
+    if(textLon < 0) textLon = Math.abs(textLon);
+	this.latLabelPosition_ = Math.abs(extent[0] - textLon)
+		/ Math.abs(extent[0] - extent[2]) - (1 - this.latLabelPositionUser_);
+  }else{
+	this.latLabelPosition_ = this.latLabelPositionUser_;
+  }
+};
+	
 /**
  *
  * @param {number} lon Longitude
@@ -324,8 +401,7 @@ ol.Graticule.prototype.addParallelLabel_ =
     function(lat, squaredTolerance, extent, index) {
   var textPoint = this.getParallelPoint_(
       lat, squaredTolerance, extent, index);
-  var style = new ol.style.Text(this.baseTextStyle_);
-  style.setTextBaseline('middle');
+  var style = this.configureTextStyle_(this.latLabelStyle_);
   style.setText(this.latLabelFormatter_ ?
       this.latLabelFormatter_(lat) : lat.toString());
   style.setTextAlign('right');
@@ -414,6 +490,7 @@ ol.Graticule.prototype.createGraticule_ =
     lon = Math.max(lon - interval, this.minLon_);
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
     if (this.showLabels_) {
+	  this.checkLatLabelPosition_(lon, squaredTolerance, extent, idxLabels);
       idxLabels = this.addMeridianLabel_(
           lon, squaredTolerance, extent, idxLabels);
     }
@@ -426,6 +503,7 @@ ol.Graticule.prototype.createGraticule_ =
     lon = Math.min(lon + interval, this.maxLon_);
     idx = this.addMeridian_(lon, minLat, maxLat, squaredTolerance, extent, idx);
     if (this.showLabels_) {
+	  this.checkLatLabelPosition_(lon, squaredTolerance, extent, idxLabels);
       idxLabels = this.addMeridianLabel_(
           lon, squaredTolerance, extent, idxLabels);
     }

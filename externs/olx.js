@@ -106,6 +106,8 @@ olx.LogoOptions.prototype.src;
  *     latLabelFormatter: (Function|undefined),
  *     lonLabelPosition: (number|undefined),
  *     latLabelPosition: (number|undefined),
+ *     lonLabelStyle: (ol.style.Text|undefined),
+ *     latLabelStyle: (ol.style.Text|undefined), 
  *     targetSize: (number|undefined)}}
  * @api
  */
