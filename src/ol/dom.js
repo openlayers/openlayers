@@ -1,14 +1,6 @@
 goog.provide('ol.dom');
 
 goog.require('ol');
-goog.require('ol.vec.Mat4');
-
-
-/**
- * @type {Array.<number>}
- * @private
- */
-ol.dom.tmpMat4_ = ol.vec.Mat4.create();
 
 
 /**
