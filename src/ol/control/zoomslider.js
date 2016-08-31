@@ -12,6 +12,7 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
 goog.require('ol.math');
+goog.require('ol.pointer.EventType');
 goog.require('ol.pointer.PointerEventHandler');
 
 

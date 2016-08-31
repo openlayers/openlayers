@@ -8,6 +8,7 @@ goog.require('ol.MapEvent');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
+goog.require('ol.pointer.EventType');
 goog.require('ol.pointer.PointerEventHandler');
 
 
