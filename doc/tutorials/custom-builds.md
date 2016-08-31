@@ -156,7 +156,6 @@ Setting some of these to `false` means that the portions of the code relating to
 
 You might have noticed that the build file you've just created is considerably smaller than the full build, but it can be reduced further. This is because all three renderers and all layer types are included by default. We only need one renderer, and only need the tile layer, so can exclude the others by setting these properties with `define`s. So add the following to the define section of the config above:
 ```
-      "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false",
       "ol.ENABLE_PROJ4JS=false",
       "ol.ENABLE_IMAGE=false",
@@ -207,7 +206,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
       "externs/oli.js"
     ],
     "define": [
-      "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false",
       "ol.ENABLE_PROJ4JS=false",
       "ol.ENABLE_IMAGE=false",

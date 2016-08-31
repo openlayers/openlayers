@@ -99,14 +99,6 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in olGlobal;
 
 
 /**
- * True if `ol.ENABLE_DOM` is set to `true` at compile time.
- * @const
- * @type {boolean}
- */
-ol.has.DOM = ol.ENABLE_DOM;
-
-
-/**
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}

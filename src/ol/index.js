@@ -68,15 +68,6 @@ ol.ENABLE_CANVAS = true;
 
 
 /**
- * @define {boolean} Enable the DOM renderer (used as a fallback where Canvas is
- *     not available).  Default is `true`. Setting this to false at compile time
- *     in advanced mode removes all code supporting the DOM renderer from the
- *     build.
- */
-ol.ENABLE_DOM = true;
-
-
-/**
  * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
  *     is `true`. Setting this to false at compile time in advanced mode removes
  *     all code supporting Image layers from the build.

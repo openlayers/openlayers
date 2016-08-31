@@ -33,7 +33,6 @@ goog.require('ol.obj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
@@ -81,8 +80,7 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
  */
 ol.DEFAULT_RENDERER_TYPES = [
   ol.RendererType.CANVAS,
-  ol.RendererType.WEBGL,
-  ol.RendererType.DOM
+  ol.RendererType.WEBGL
 ];
 
 
@@ -125,8 +123,7 @@ ol.MapProperty = {
  * `ol-overlaycontainer-stopevent` for controls and some overlays, and one with
  * CSS class name `ol-overlaycontainer` for other overlays (see the `stopEvent`
  * option of {@link ol.Overlay} for the difference). The map itself is placed in
- * a further element within the viewport, either DOM or Canvas, depending on the
- * renderer.
+ * a further element within the viewport.
  *
  * Layers are stored as a `ol.Collection` in layerGroups. A top-level group is
  * provided by the library. This is what is accessed by `getLayerGroup` and
@@ -1481,6 +1478,10 @@ ol.Map.createOptionsInternal = function(options) {
     } else {
       ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
     }
+    if (rendererTypes.indexOf(/** @type {ol.RendererType} */ ('dom')) >= 0) {
+      goog.DEBUG && console.assert(false, 'The DOM render has been removed');
+      rendererTypes = rendererTypes.concat(ol.DEFAULT_RENDERER_TYPES);
+    }
   } else {
     rendererTypes = ol.DEFAULT_RENDERER_TYPES;
   }
@@ -1492,11 +1493,6 @@ ol.Map.createOptionsInternal = function(options) {
     if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
       if (ol.has.CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
-        break;
-      }
-    } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
-      if (ol.has.DOM) {
-        rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {

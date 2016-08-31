@@ -13,12 +13,11 @@ goog.require('ol.transform');
 
 
 /**
- * Available renderers: `'canvas'`, `'dom'` or `'webgl'`.
+ * Available renderers: `'canvas'` or `'webgl'`.
  * @enum {string}
  */
 ol.RendererType = {
   CANVAS: 'canvas',
-  DOM: 'dom',
   WEBGL: 'webgl'
 };
 

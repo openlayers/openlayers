@@ -170,7 +170,6 @@ The minimum config file looks like this:
     ],
     "define": [
       "ol.DEBUG=false",
-      "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
@@ -222,7 +221,6 @@ Here is a version of `config.json` with more compilation checks enabled:
     ],
     "define": [
       "ol.DEBUG=false",
-      "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
