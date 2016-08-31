@@ -1,11 +1,11 @@
 goog.provide('ol.Overlay');
 
 goog.require('ol');
-goog.require('ol.events');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.animation');
 goog.require('ol.dom');
+goog.require('ol.events');
 goog.require('ol.extent');
 
 
@@ -398,9 +398,10 @@ ol.Overlay.prototype.panIntoView_ = function() {
  * @private
  */
 ol.Overlay.prototype.getRect_ = function(element, size) {
+  var global = ol.global;
   var box = element.getBoundingClientRect();
-  var offsetX = box.left + ol.global.pageXOffset;
-  var offsetY = box.top + ol.global.pageYOffset;
+  var offsetX = box.left + global.pageXOffset;
+  var offsetY = box.top + global.pageYOffset;
   return [
     offsetX,
     offsetY,

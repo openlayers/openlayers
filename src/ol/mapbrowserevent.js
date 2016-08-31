@@ -214,20 +214,22 @@ ol.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
  * @private
  */
 ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
-  var newEvent;
-  newEvent = new ol.MapBrowserPointerEvent(
+  var global = ol.global;
+  var clearTimeout = global.clearTimeout;
+  var setTimeout = global.setTimeout;
+  var newEvent = new ol.MapBrowserPointerEvent(
       ol.MapBrowserEvent.EventType.CLICK, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
   if (this.clickTimeoutId_ !== 0) {
     // double-click
-    ol.global.clearTimeout(this.clickTimeoutId_);
+    clearTimeout(this.clickTimeoutId_);
     this.clickTimeoutId_ = 0;
     newEvent = new ol.MapBrowserPointerEvent(
         ol.MapBrowserEvent.EventType.DBLCLICK, this.map_, pointerEvent);
     this.dispatchEvent(newEvent);
   } else {
     // click
-    this.clickTimeoutId_ = ol.global.setTimeout(function() {
+    this.clickTimeoutId_ = setTimeout(function() {
       this.clickTimeoutId_ = 0;
       var newEvent = new ol.MapBrowserPointerEvent(
           ol.MapBrowserEvent.EventType.SINGLECLICK, this.map_, pointerEvent);
