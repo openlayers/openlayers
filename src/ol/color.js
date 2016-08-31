@@ -83,7 +83,7 @@ ol.color.fromNamed = function(color) {
   var el = document.createElement('div');
   el.style.color = color;
   document.body.appendChild(el);
-  var rgb = window.getComputedStyle(el).color;
+  var rgb = ol.global.getComputedStyle(el).color;
   document.body.removeChild(el);
   return rgb;
 };
