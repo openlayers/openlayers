@@ -103,6 +103,14 @@ ol.Tile.prototype.load = function() {};
 
 
 /**
+ * Abort tile loading.
+ * @abstract
+ * @api
+ */
+ol.Tile.prototype.abort = function() {};
+
+
+/**
  * @enum {number}
  */
 ol.Tile.State = {

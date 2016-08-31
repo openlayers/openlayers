@@ -62,9 +62,18 @@ ol.inherits(ol.ImageTile, ol.Tile);
 /**
  * @inheritDoc
  */
+ol.ImageTile.prototype.abort = function() {
+  this.disposeInternal();
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.ImageTile.prototype.disposeInternal = function() {
   if (this.state == ol.Tile.State.LOADING) {
     this.unlistenImage_();
+    this.image_.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
   }
   if (this.interimTile) {
     this.interimTile.dispose();
