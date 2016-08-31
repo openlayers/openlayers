@@ -31,43 +31,6 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
 
 
 /**
- * Detect 2d transform.
- * Adapted from http://stackoverflow.com/q/5661671/130442
- * http://caniuse.com/#feat=transforms2d
- * @return {boolean}
- */
-ol.dom.canUseCssTransform = (function() {
-  var global = ol.global;
-  var canUseCssTransform;
-  return function() {
-    if (canUseCssTransform === undefined) {
-      var el = document.createElement('P'),
-          has2d,
-          transforms = {
-            'webkitTransform': '-webkit-transform',
-            'OTransform': '-o-transform',
-            'msTransform': '-ms-transform',
-            'MozTransform': '-moz-transform',
-            'transform': 'transform'
-          };
-      document.body.appendChild(el);
-      for (var t in transforms) {
-        if (t in el.style) {
-          el.style[t] = 'translate(1px,1px)';
-          has2d = global.getComputedStyle(el).getPropertyValue(
-              transforms[t]);
-        }
-      }
-      document.body.removeChild(el);
-
-      canUseCssTransform = (has2d && has2d !== 'none');
-    }
-    return canUseCssTransform;
-  };
-}());
-
-
-/**
  * @param {Element} element Element.
  * @param {string} value Value.
  */
