@@ -1,7 +1,6 @@
 /*global Modernizr*/
 goog.provide('ol.test.dom');
 
-goog.require('ol.transform');
 goog.require('ol.dom');
 
 /*! modernizr 3.3.1 (Custom Build) | MIT
@@ -135,120 +134,6 @@ describe('ol.dom', function() {
 
       // revert mock-ups
       ol.has.IE = originalIsIE;
-    });
-
-  });
-
-  describe('ol.dom.transformElement2D', function() {
-    var element = null;
-    var transform = ol.transform.create();
-    var transformFloat = ol.transform.create();
-    transformFloat[0] = 0.12345;
-    beforeEach(function() {
-      element = document.createElement('div');
-    });
-    afterEach(function() {
-      element = null;
-    });
-
-    it('first prefers 3D transforms if available', function() {
-      // save original value
-      var originalCanUse3D = ol.dom.canUseCssTransform3D;
-      // mock up
-      ol.dom.canUseCssTransform3D = function() {
-        return true;
-      };
-
-      // test
-      ol.dom.transformElement2D(element, transform);
-      expect(element.style.transform).to.match(/matrix3d\(/);
-      expect(element.style.left).to.not.be('0px');
-      expect(element.style.top).to.not.be('0px');
-
-      // revert mock-up
-      ol.dom.canUseCssTransform3D = originalCanUse3D;
-    });
-
-    it('allows to configure precision for 3D transforms', function() {
-      // save original value
-      var originalCanUse3D = ol.dom.canUseCssTransform3D;
-      // mock up
-      ol.dom.canUseCssTransform3D = function() {
-        return true;
-      };
-
-      // test
-      ol.dom.transformElement2D(element, transformFloat, 2);
-      expect(element.style.transform).to.match(/matrix3d\(0\.12/);
-
-      // revert mock-up
-      ol.dom.canUseCssTransform3D = originalCanUse3D;
-    });
-
-    it('second prefers 2D transforms if available', function() {
-      // save original values
-      var originalCanUse3D = ol.dom.canUseCssTransform3D;
-      var originalCanUse2D = ol.dom.canUseCssTransform;
-      // mock up
-      ol.dom.canUseCssTransform3D = function() {
-        return false;
-      };
-      ol.dom.canUseCssTransform = function() {
-        return true;
-      };
-
-      // test
-      ol.dom.transformElement2D(element, transform);
-      expect(element.style.transform).to.match(/matrix\(/);
-      expect(element.style.left).to.not.be('0px');
-      expect(element.style.top).to.not.be('0px');
-
-      // revert mock-up
-      ol.dom.canUseCssTransform3D = originalCanUse3D;
-      ol.dom.canUseCssTransform = originalCanUse2D;
-    });
-
-    it('allows to configure precision for 2D transforms', function() {
-      // save original values
-      var originalCanUse3D = ol.dom.canUseCssTransform3D;
-      var originalCanUse2D = ol.dom.canUseCssTransform;
-      // mock up
-      ol.dom.canUseCssTransform3D = function() {
-        return false;
-      };
-      ol.dom.canUseCssTransform = function() {
-        return true;
-      };
-
-      // test
-      ol.dom.transformElement2D(element, transformFloat, 2);
-      expect(element.style.transform).to.match(/matrix\(0\.12/);
-
-      // revert mock-up
-      ol.dom.canUseCssTransform3D = originalCanUse3D;
-      ol.dom.canUseCssTransform = originalCanUse2D;
-    });
-
-    it('uses "left" and "top" otherwise', function() {
-      // save original values
-      var originalCanUse3D = ol.dom.canUseCssTransform3D;
-      var originalCanUse2D = ol.dom.canUseCssTransform;
-      // mock up
-      ol.dom.canUseCssTransform3D = function() {
-        return false;
-      };
-      ol.dom.canUseCssTransform = function() {
-        return false;
-      };
-
-      // test
-      ol.dom.transformElement2D(element, transform);
-      expect(element.style.left).to.be('0px');
-      expect(element.style.top).to.be('0px');
-
-      // revert mock-up
-      ol.dom.canUseCssTransform3D = originalCanUse3D;
-      ol.dom.canUseCssTransform = originalCanUse2D;
     });
 
   });
