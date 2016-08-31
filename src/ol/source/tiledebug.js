@@ -79,9 +79,9 @@ ol.source.TileDebug.Tile_ = function(tileCoord, tileSize, text) {
 
   /**
    * @private
-   * @type {Object.<number, HTMLCanvasElement>}
+   * @type {HTMLCanvasElement}
    */
-  this.canvasByContext_ = {};
+  this.canvas_ = null;
 
 };
 ol.inherits(ol.source.TileDebug.Tile_, ol.Tile);
@@ -89,16 +89,12 @@ ol.inherits(ol.source.TileDebug.Tile_, ol.Tile);
 
 /**
  * Get the image element for this tile.
- * @param {Object=} opt_context Optional context. Only used by the DOM
- *     renderer.
  * @return {HTMLCanvasElement} Image.
  */
-ol.source.TileDebug.Tile_.prototype.getImage = function(opt_context) {
-  var key = opt_context !== undefined ? ol.getUid(opt_context) : -1;
-  if (key in this.canvasByContext_) {
-    return this.canvasByContext_[key];
+ol.source.TileDebug.Tile_.prototype.getImage = function() {
+  if (this.canvas_) {
+    return this.canvas_;
   } else {
-
     var tileSize = this.tileSize_;
     var context = ol.dom.createCanvasContext2D(tileSize[0], tileSize[1]);
 
@@ -111,8 +107,7 @@ ol.source.TileDebug.Tile_.prototype.getImage = function(opt_context) {
     context.font = '24px sans-serif';
     context.fillText(this.text_, tileSize[0] / 2, tileSize[1] / 2);
 
-    this.canvasByContext_[key] = context.canvas;
+    this.canvas_ = context.canvas;
     return context.canvas;
-
   }
 };

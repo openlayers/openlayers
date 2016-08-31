@@ -140,10 +140,9 @@ ol.source.Zoomify.Tile_ = function(
 
   /**
    * @private
-   * @type {Object.<string,
-   *                HTMLCanvasElement|HTMLImageElement|HTMLVideoElement>}
+   * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
    */
-  this.zoomifyImageByContext_ = {};
+  this.zoomifyImage_ = null;
 
 };
 ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
@@ -152,27 +151,24 @@ ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
 /**
  * @inheritDoc
  */
-ol.source.Zoomify.Tile_.prototype.getImage = function(opt_context) {
+ol.source.Zoomify.Tile_.prototype.getImage = function() {
+  if (this.zoomifyImage_) {
+    return this.zoomifyImage_;
+  }
   var tileSize = ol.DEFAULT_TILE_SIZE;
-  var key = opt_context !== undefined ?
-      ol.getUid(opt_context).toString() : '';
-  if (key in this.zoomifyImageByContext_) {
-    return this.zoomifyImageByContext_[key];
-  } else {
-    var image = ol.ImageTile.prototype.getImage.call(this, opt_context);
-    if (this.state == ol.Tile.State.LOADED) {
-      if (image.width == tileSize && image.height == tileSize) {
-        this.zoomifyImageByContext_[key] = image;
-        return image;
-      } else {
-        var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
-        context.drawImage(image, 0, 0);
-        this.zoomifyImageByContext_[key] = context.canvas;
-        return context.canvas;
-      }
-    } else {
+  var image = ol.ImageTile.prototype.getImage.call(this);
+  if (this.state == ol.Tile.State.LOADED) {
+    if (image.width == tileSize && image.height == tileSize) {
+      this.zoomifyImage_ = image;
       return image;
+    } else {
+      var context = ol.dom.createCanvasContext2D(tileSize, tileSize);
+      context.drawImage(image, 0, 0);
+      this.zoomifyImage_ = context.canvas;
+      return context.canvas;
     }
+  } else {
+    return image;
   }
 };
 
