@@ -35,7 +35,7 @@ ol.render.webgl.imagereplay.defaultshader.Fragment.OPTIMIZED_SOURCE = 'precision
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.defaultshader.Fragment.SOURCE = goog.DEBUG ?
+ol.render.webgl.imagereplay.defaultshader.Fragment.SOURCE = ol.DEBUG ?
     ol.render.webgl.imagereplay.defaultshader.Fragment.DEBUG_SOURCE :
     ol.render.webgl.imagereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
@@ -72,7 +72,7 @@ ol.render.webgl.imagereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'varying vec
  * @const
  * @type {string}
  */
-ol.render.webgl.imagereplay.defaultshader.Vertex.SOURCE = goog.DEBUG ?
+ol.render.webgl.imagereplay.defaultshader.Vertex.SOURCE = ol.DEBUG ?
     ol.render.webgl.imagereplay.defaultshader.Vertex.DEBUG_SOURCE :
     ol.render.webgl.imagereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
@@ -92,59 +92,59 @@ ol.render.webgl.imagereplay.defaultshader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_image = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_image' : 'l');
+      program, ol.DEBUG ? 'u_image' : 'l');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetRotateMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_offsetRotateMatrix' : 'j');
+      program, ol.DEBUG ? 'u_offsetRotateMatrix' : 'j');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetScaleMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_offsetScaleMatrix' : 'i');
+      program, ol.DEBUG ? 'u_offsetScaleMatrix' : 'i');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_opacity = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_opacity' : 'k');
+      program, ol.DEBUG ? 'u_opacity' : 'k');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, goog.DEBUG ? 'u_projectionMatrix' : 'h');
+      program, ol.DEBUG ? 'u_projectionMatrix' : 'h');
 
   /**
    * @type {number}
    */
   this.a_offsets = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_offsets' : 'e');
+      program, ol.DEBUG ? 'a_offsets' : 'e');
 
   /**
    * @type {number}
    */
   this.a_opacity = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_opacity' : 'f');
+      program, ol.DEBUG ? 'a_opacity' : 'f');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_position' : 'c');
+      program, ol.DEBUG ? 'a_position' : 'c');
 
   /**
    * @type {number}
    */
   this.a_rotateWithView = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_rotateWithView' : 'g');
+      program, ol.DEBUG ? 'a_rotateWithView' : 'g');
 
   /**
    * @type {number}
    */
   this.a_texCoord = gl.getAttribLocation(
-      program, goog.DEBUG ? 'a_texCoord' : 'd');
+      program, ol.DEBUG ? 'a_texCoord' : 'd');
 };

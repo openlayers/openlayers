@@ -163,7 +163,7 @@ ol.geom.Circle.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
-  goog.DEBUG && console.assert(center.length == stride,
+  ol.DEBUG && console.assert(center.length == stride,
       'center array length should match stride');
   var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
   var flatCoordinates = center.slice();

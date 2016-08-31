@@ -514,7 +514,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
         new ol.geom.LineString(this.sketchLineCoords_));
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
-  goog.DEBUG && console.assert(geometry !== undefined, 'geometry should be defined');
+  ol.DEBUG && console.assert(geometry !== undefined, 'geometry should be defined');
   this.sketchFeature_ = new ol.Feature();
   if (this.geometryName_) {
     this.sketchFeature_.setGeometryName(this.geometryName_);
@@ -550,7 +550,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   }
   last[0] = coordinate[0];
   last[1] = coordinate[1];
-  goog.DEBUG && console.assert(this.sketchCoords_, 'sketchCoords_ expected');
+  ol.DEBUG && console.assert(this.sketchCoords_, 'sketchCoords_ expected');
   this.geometryFunction_(
       /** @type {!ol.Coordinate|!Array.<ol.Coordinate>|!Array.<Array.<ol.Coordinate>>} */ (this.sketchCoords_),
       geometry);
@@ -708,9 +708,9 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
  */
 ol.interaction.Draw.prototype.extend = function(feature) {
   var geometry = feature.getGeometry();
-  goog.DEBUG && console.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
+  ol.DEBUG && console.assert(this.mode_ == ol.interaction.DrawMode.LINE_STRING,
       'interaction mode must be "line"');
-  goog.DEBUG && console.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
+  ol.DEBUG && console.assert(geometry.getType() == ol.geom.GeometryType.LINE_STRING,
       'feature geometry must be a line string');
   var lineString = /** @type {ol.geom.LineString} */ (geometry);
   this.sketchFeature_ = feature;

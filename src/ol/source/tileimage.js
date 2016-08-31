@@ -303,8 +303,8 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
       // cases we attempt to assign an interim tile to the new tile.
       var /** @type {ol.Tile} */ interimTile = tile;
       if (tile.interimTile && tile.interimTile.key == key) {
-        goog.DEBUG && console.assert(tile.interimTile.getState() == ol.Tile.State.LOADED);
-        goog.DEBUG && console.assert(tile.interimTile.interimTile === null);
+        ol.DEBUG && console.assert(tile.interimTile.getState() == ol.Tile.State.LOADED);
+        ol.DEBUG && console.assert(tile.interimTile.interimTile === null);
         tile = tile.interimTile;
         if (interimTile.getState() == ol.Tile.State.LOADED) {
           tile.interimTile = interimTile;

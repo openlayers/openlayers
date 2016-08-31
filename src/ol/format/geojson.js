@@ -86,7 +86,7 @@ ol.format.GeoJSON.readGeometry_ = function(object, opt_options) {
  */
 ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(
     object, opt_options) {
-  goog.DEBUG && console.assert(object.type == 'GeometryCollection',
+  ol.DEBUG && console.assert(object.type == 'GeometryCollection',
       'object.type should be GeometryCollection');
   var geometries = object.geometries.map(
       /**
@@ -106,7 +106,7 @@ ol.format.GeoJSON.readGeometryCollectionGeometry_ = function(
  * @return {ol.geom.Point} Point.
  */
 ol.format.GeoJSON.readPointGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.type == 'Point',
+  ol.DEBUG && console.assert(object.type == 'Point',
       'object.type should be Point');
   return new ol.geom.Point(object.coordinates);
 };
@@ -118,7 +118,7 @@ ol.format.GeoJSON.readPointGeometry_ = function(object) {
  * @return {ol.geom.LineString} LineString.
  */
 ol.format.GeoJSON.readLineStringGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.type == 'LineString',
+  ol.DEBUG && console.assert(object.type == 'LineString',
       'object.type should be LineString');
   return new ol.geom.LineString(object.coordinates);
 };
@@ -130,7 +130,7 @@ ol.format.GeoJSON.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiLineString} MultiLineString.
  */
 ol.format.GeoJSON.readMultiLineStringGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.type == 'MultiLineString',
+  ol.DEBUG && console.assert(object.type == 'MultiLineString',
       'object.type should be MultiLineString');
   return new ol.geom.MultiLineString(object.coordinates);
 };
@@ -142,7 +142,7 @@ ol.format.GeoJSON.readMultiLineStringGeometry_ = function(object) {
  * @return {ol.geom.MultiPoint} MultiPoint.
  */
 ol.format.GeoJSON.readMultiPointGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.type == 'MultiPoint',
+  ol.DEBUG && console.assert(object.type == 'MultiPoint',
       'object.type should be MultiPoint');
   return new ol.geom.MultiPoint(object.coordinates);
 };
@@ -154,7 +154,7 @@ ol.format.GeoJSON.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.MultiPolygon} MultiPolygon.
  */
 ol.format.GeoJSON.readMultiPolygonGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.type == 'MultiPolygon',
+  ol.DEBUG && console.assert(object.type == 'MultiPolygon',
       'object.type should be MultiPolygon');
   return new ol.geom.MultiPolygon(object.coordinates);
 };
@@ -166,7 +166,7 @@ ol.format.GeoJSON.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Polygon} Polygon.
  */
 ol.format.GeoJSON.readPolygonGeometry_ = function(object) {
-  goog.DEBUG && console.assert(object.type == 'Polygon',
+  ol.DEBUG && console.assert(object.type == 'Polygon',
       'object.type should be Polygon');
   return new ol.geom.Polygon(object.coordinates);
 };
@@ -384,7 +384,7 @@ ol.format.GeoJSON.prototype.readFeatures;
 ol.format.GeoJSON.prototype.readFeatureFromObject = function(
     object, opt_options) {
   var geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
-  goog.DEBUG && console.assert(geoJSONFeature.type == 'Feature',
+  ol.DEBUG && console.assert(geoJSONFeature.type == 'Feature',
       'geoJSONFeature.type should be Feature');
   var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature.geometry,
       opt_options);

@@ -19,7 +19,7 @@ ol.QuadKeyCharCode = {
  */
 ol.tilecoord.createFromString = function(str) {
   var v = str.split('/');
-  goog.DEBUG && console.assert(v.length === 3,
+  ol.DEBUG && console.assert(v.length === 3,
       'must provide a string in "z/x/y" format, got "%s"', str);
   return v.map(function(e) {
     return parseInt(e, 10);

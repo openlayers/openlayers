@@ -975,7 +975,7 @@ ol.interaction.Modify.prototype.removeVertex_ = function() {
         segments.push(right.segment[1]);
       }
       if (left !== undefined && right !== undefined) {
-        goog.DEBUG && console.assert(newIndex >= 0, 'newIndex should be larger than 0');
+        ol.DEBUG && console.assert(newIndex >= 0, 'newIndex should be larger than 0');
 
         var newSegmentData = /** @type {ol.ModifySegmentDataType} */ ({
           depth: segmentData.depth,

@@ -425,7 +425,7 @@ ol.source.Raster.createRenderer_ = function(source) {
   } else if (source instanceof ol.source.Image) {
     renderer = ol.source.Raster.createImageRenderer_(source);
   } else {
-    goog.DEBUG && console.assert(false, 'Unsupported source type: ' + source);
+    ol.DEBUG && console.assert(false, 'Unsupported source type: ' + source);
   }
   return renderer;
 };

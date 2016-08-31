@@ -1,7 +1,6 @@
 /*global Modernizr*/
 goog.provide('ol.test.dom');
 
-goog.require('goog.userAgent');
 goog.require('ol.transform');
 goog.require('ol.dom');
 
@@ -92,10 +91,13 @@ describe('ol.dom', function() {
 
   describe('ol.dom.setTransform', function() {
     var element = null;
+    var originalIsIE;
     beforeEach(function() {
       element = document.createElement('div');
+      originalIsIE = ol.has.IE;
     });
     afterEach(function() {
+      ol.has.IE = originalIsIE;
       element = null;
     });
 
@@ -115,35 +117,24 @@ describe('ol.dom', function() {
     });
 
     it('sets transform origin for IE 9', function() {
-      // save old user agent information
-      var originalIsIE = goog.userAgent.IE;
-      var originalIsVersionOrHigher = goog.userAgent.isVersionOrHigher;
-
       // Mock up IE 9
-      goog.userAgent.IE = true;
-      goog.userAgent.isVersionOrHigher = function() {
-        return true;
-      };
+      ol.has.IE = true;
 
       ol.dom.setTransform(element, 'rotate(48deg)');
       expect(element.style.transformOrigin).to.not.be('');
-
-      // revert mock-ups
-      goog.userAgent.IE = originalIsIE;
-      goog.userAgent.isVersionOrHigher = originalIsVersionOrHigher;
     });
 
     it('sets transform origin *only* for IE 9', function() {
       // save old user agent information
-      var originalIsIE = goog.userAgent.IE;
+      var originalIsIE = ol.has.IE;
       // Mock up some non-IE browser
-      goog.userAgent.IE = false;
+      ol.has.IE = false;
 
       ol.dom.setTransform(element, 'rotate(48deg)');
       expect(!element.style.transformOrigin).to.be(true);
 
       // revert mock-ups
-      goog.userAgent.IE = originalIsIE;
+      ol.has.IE = originalIsIE;
     });
 
   });

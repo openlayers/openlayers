@@ -308,16 +308,16 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
 ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
 
   // TODO: add support for TileMatrixLimits
-  goog.DEBUG && console.assert(config['layer'],
+  ol.DEBUG && console.assert(config['layer'],
       'config "layer" must not be null');
 
   var layers = wmtsCap['Contents']['Layer'];
   var l = ol.array.find(layers, function(elt, index, array) {
     return elt['Identifier'] == config['layer'];
   });
-  goog.DEBUG && console.assert(l, 'found a matching layer in Contents/Layer');
+  ol.DEBUG && console.assert(l, 'found a matching layer in Contents/Layer');
 
-  goog.DEBUG && console.assert(l['TileMatrixSetLink'].length > 0,
+  ol.DEBUG && console.assert(l['TileMatrixSetLink'].length > 0,
       'layer has TileMatrixSetLink');
   var tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
   var idx, matrixSet;
@@ -347,7 +347,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
 
-  goog.DEBUG && console.assert(matrixSet, 'TileMatrixSet must not be null');
+  ol.DEBUG && console.assert(matrixSet, 'TileMatrixSet must not be null');
 
   var format = /** @type {string} */ (l['Format'][0]);
   if ('format' in config) {
@@ -371,12 +371,12 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       var key = elt['Identifier'];
       var value = elt['Default'];
       if (value !== undefined) {
-        goog.DEBUG && console.assert(ol.array.includes(elt['Value'], value),
+        ol.DEBUG && console.assert(ol.array.includes(elt['Value'], value),
             'default value contained in values');
       } else {
         value = elt['Value'][0];
       }
-      goog.DEBUG && console.assert(value !== undefined, 'value could be found');
+      ol.DEBUG && console.assert(value !== undefined, 'value could be found');
       dimensions[key] = value;
     });
   }
@@ -385,7 +385,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var matrixSetObj = ol.array.find(matrixSets, function(elt, index, array) {
     return elt['Identifier'] == matrixSet;
   });
-  goog.DEBUG && console.assert(matrixSetObj,
+  ol.DEBUG && console.assert(matrixSetObj,
       'found matrixSet in Contents/TileMatrixSet');
 
   var projection;
@@ -422,21 +422,21 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   var requestEncoding = config['requestEncoding'];
   requestEncoding = requestEncoding !== undefined ? requestEncoding : '';
 
-  goog.DEBUG && console.assert(
+  ol.DEBUG && console.assert(
       ol.array.includes(['REST', 'RESTful', 'KVP', ''], requestEncoding),
       'requestEncoding (%s) is one of "REST", "RESTful", "KVP" or ""',
       requestEncoding);
 
   if ('OperationsMetadata' in wmtsCap && 'GetTile' in wmtsCap['OperationsMetadata']) {
     var gets = wmtsCap['OperationsMetadata']['GetTile']['DCP']['HTTP']['Get'];
-    goog.DEBUG && console.assert(gets.length >= 1);
+    ol.DEBUG && console.assert(gets.length >= 1);
 
     for (var i = 0, ii = gets.length; i < ii; ++i) {
       var constraint = ol.array.find(gets[i]['Constraint'], function(element) {
         return element['name'] == 'GetEncoding';
       });
       var encodings = constraint['AllowedValues']['Value'];
-      goog.DEBUG && console.assert(encodings.length >= 1);
+      ol.DEBUG && console.assert(encodings.length >= 1);
 
       if (requestEncoding === '') {
         // requestEncoding not provided, use the first encoding from the list
@@ -460,7 +460,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       }
     });
   }
-  goog.DEBUG && console.assert(urls.length > 0, 'At least one URL found');
+  ol.DEBUG && console.assert(urls.length > 0, 'At least one URL found');
 
   return {
     urls: urls,

@@ -100,12 +100,12 @@ ol.layer.Heatmap = function(opt_options) {
   } else {
     weightFunction = weight;
   }
-  goog.DEBUG && console.assert(typeof weightFunction === 'function',
+  ol.DEBUG && console.assert(typeof weightFunction === 'function',
       'weightFunction should be a function');
 
   this.setStyle(function(feature, resolution) {
-    goog.DEBUG && console.assert(this.styleCache_, 'this.styleCache_ expected');
-    goog.DEBUG && console.assert(this.circleImage_ !== undefined,
+    ol.DEBUG && console.assert(this.styleCache_, 'this.styleCache_ expected');
+    ol.DEBUG && console.assert(this.circleImage_ !== undefined,
         'this.circleImage_ should be defined');
     var weight = weightFunction(feature);
     var opacity = weight !== undefined ? ol.math.clamp(weight, 0, 1) : 1;
@@ -173,7 +173,7 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
 ol.layer.Heatmap.prototype.createCircle_ = function() {
   var radius = this.getRadius();
   var blur = this.getBlur();
-  goog.DEBUG && console.assert(radius !== undefined && blur !== undefined,
+  ol.DEBUG && console.assert(radius !== undefined && blur !== undefined,
       'radius and blur should be defined');
   var halfSize = radius + blur + 1;
   var size = 2 * halfSize;
@@ -246,9 +246,9 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
  * @private
  */
 ol.layer.Heatmap.prototype.handleRender_ = function(event) {
-  goog.DEBUG && console.assert(event.type == ol.render.EventType.RENDER,
+  ol.DEBUG && console.assert(event.type == ol.render.EventType.RENDER,
       'event.type should be RENDER');
-  goog.DEBUG && console.assert(this.gradient_, 'this.gradient_ expected');
+  ol.DEBUG && console.assert(this.gradient_, 'this.gradient_ expected');
   var context = event.context;
   var canvas = context.canvas;
   var image = context.getImageData(0, 0, canvas.width, canvas.height);

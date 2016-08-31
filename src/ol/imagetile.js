@@ -145,7 +145,7 @@ ol.ImageTile.prototype.load = function() {
   if (this.state == ol.Tile.State.IDLE || this.state == ol.Tile.State.ERROR) {
     this.state = ol.Tile.State.LOADING;
     this.changed();
-    goog.DEBUG && console.assert(!this.imageListenerKeys_,
+    ol.DEBUG && console.assert(!this.imageListenerKeys_,
         'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,

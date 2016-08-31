@@ -65,7 +65,7 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var viewState = frameState.viewState;
   var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
   var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
-  goog.DEBUG && console.assert(coordinateToPixelTransform,
+  ol.DEBUG && console.assert(coordinateToPixelTransform,
       'frameState has a coordinateToPixelTransform');
 
   ol.transform.compose(coordinateToPixelTransform,
@@ -263,7 +263,7 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
  * @return {ol.renderer.Layer} Layer renderer.
  */
 ol.renderer.Map.prototype.getLayerRendererByKey = function(layerKey) {
-  goog.DEBUG && console.assert(layerKey in this.layerRenderers_,
+  ol.DEBUG && console.assert(layerKey in this.layerRenderers_,
       'given layerKey (%s) exists in layerRenderers', layerKey);
   return this.layerRenderers_[layerKey];
 };
@@ -308,12 +308,12 @@ ol.renderer.Map.prototype.handleLayerRendererChange_ = function() {
  * @private
  */
 ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
-  goog.DEBUG && console.assert(layerKey in this.layerRenderers_,
+  ol.DEBUG && console.assert(layerKey in this.layerRenderers_,
       'given layerKey (%s) exists in layerRenderers', layerKey);
   var layerRenderer = this.layerRenderers_[layerKey];
   delete this.layerRenderers_[layerKey];
 
-  goog.DEBUG && console.assert(layerKey in this.layerRendererListeners_,
+  ol.DEBUG && console.assert(layerKey in this.layerRendererListeners_,
       'given layerKey (%s) exists in layerRendererListeners', layerKey);
   ol.events.unlistenByKey(this.layerRendererListeners_[layerKey]);
   delete this.layerRendererListeners_[layerKey];

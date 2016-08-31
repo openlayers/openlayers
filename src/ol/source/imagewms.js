@@ -135,7 +135,7 @@ ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
  */
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
 
-  goog.DEBUG && console.assert(!('VERSION' in params),
+  ol.DEBUG && console.assert(!('VERSION' in params),
       'key VERSION is not allowed in params');
 
   if (this.url_ === undefined) {

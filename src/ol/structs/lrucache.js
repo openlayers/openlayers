@@ -41,7 +41,7 @@ ol.structs.LRUCache = function() {
 };
 
 
-if (goog.DEBUG) {
+if (ol.DEBUG) {
   /**
    * FIXME empty description for jsdoc
    */
@@ -168,7 +168,7 @@ ol.structs.LRUCache.prototype.getKeys = function() {
   for (entry = this.newest_; entry; entry = entry.older) {
     keys[i++] = entry.key_;
   }
-  goog.DEBUG && console.assert(i == this.count_, 'iterated correct number of times');
+  ol.DEBUG && console.assert(i == this.count_, 'iterated correct number of times');
   return keys;
 };
 
@@ -183,7 +183,7 @@ ol.structs.LRUCache.prototype.getValues = function() {
   for (entry = this.newest_; entry; entry = entry.older) {
     values[i++] = entry.value_;
   }
-  goog.DEBUG && console.assert(i == this.count_, 'iterated correct number of times');
+  ol.DEBUG && console.assert(i == this.count_, 'iterated correct number of times');
   return values;
 };
 
@@ -192,7 +192,7 @@ ol.structs.LRUCache.prototype.getValues = function() {
  * @return {T} Last value.
  */
 ol.structs.LRUCache.prototype.peekLast = function() {
-  goog.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
+  ol.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
   return this.oldest_.value_;
 };
 
@@ -201,7 +201,7 @@ ol.structs.LRUCache.prototype.peekLast = function() {
  * @return {string} Last key.
  */
 ol.structs.LRUCache.prototype.peekLastKey = function() {
-  goog.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
+  ol.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
   return this.oldest_.key_;
 };
 
@@ -210,10 +210,10 @@ ol.structs.LRUCache.prototype.peekLastKey = function() {
  * @return {T} value Value.
  */
 ol.structs.LRUCache.prototype.pop = function() {
-  goog.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
-  goog.DEBUG && console.assert(this.newest_, 'newest must not be null');
+  ol.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
+  ol.DEBUG && console.assert(this.newest_, 'newest must not be null');
   var entry = this.oldest_;
-  goog.DEBUG && console.assert(entry.key_ in this.entries_,
+  ol.DEBUG && console.assert(entry.key_ in this.entries_,
       'oldest is indexed in entries');
   delete this.entries_[entry.key_];
   if (entry.newer) {
@@ -243,7 +243,7 @@ ol.structs.LRUCache.prototype.replace = function(key, value) {
  * @param {T} value Value.
  */
 ol.structs.LRUCache.prototype.set = function(key, value) {
-  goog.DEBUG && console.assert(!(key in {}),
+  ol.DEBUG && console.assert(!(key in {}),
       'key is not a standard property of objects (e.g. "__proto__")');
   ol.asserts.assert(!(key in this.entries_),
       16); // Tried to set a value for a key that is used already
