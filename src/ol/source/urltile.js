@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.Tile');
-goog.require('ol.source.TileEvent');
 
 
 /**
@@ -12,7 +11,7 @@ goog.require('ol.source.TileEvent');
  * Base class for sources providing tiles divided into a tile grid over http.
  *
  * @constructor
- * @fires ol.source.TileEvent
+ * @fires ol.source.Tile.Event
  * @extends {ol.source.Tile}
  * @param {ol.SourceUrlTileOptions} options Image tile options.
  */
@@ -112,15 +111,15 @@ ol.source.UrlTile.prototype.handleTileChange = function(event) {
   switch (tile.getState()) {
     case ol.Tile.State.LOADING:
       this.dispatchEvent(
-          new ol.source.TileEvent(ol.source.TileEventType.TILELOADSTART, tile));
+          new ol.source.Tile.Event(ol.source.Tile.EventType.TILELOADSTART, tile));
       break;
     case ol.Tile.State.LOADED:
       this.dispatchEvent(
-          new ol.source.TileEvent(ol.source.TileEventType.TILELOADEND, tile));
+          new ol.source.Tile.Event(ol.source.Tile.EventType.TILELOADEND, tile));
       break;
     case ol.Tile.State.ERROR:
       this.dispatchEvent(
-          new ol.source.TileEvent(ol.source.TileEventType.TILELOADERROR, tile));
+          new ol.source.Tile.Event(ol.source.Tile.EventType.TILELOADERROR, tile));
       break;
     default:
       // pass
