@@ -1,7 +1,6 @@
 goog.provide('ol.dom');
 
 goog.require('ol');
-goog.require('ol.has');
 goog.require('ol.vec.Mat4');
 
 
@@ -27,25 +26,6 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
     canvas.height = opt_height;
   }
   return canvas.getContext('2d');
-};
-
-
-/**
- * @param {Element} element Element.
- * @param {string} value Value.
- */
-ol.dom.setTransform = function(element, value) {
-  var style = element.style;
-  style.WebkitTransform = value;
-  style.MozTransform = value;
-  style.OTransform = value;
-  style.msTransform = value;
-  style.transform = value;
-
-  // IE 9+ seems to assume transform-origin: 100% 100%; for some unknown reason
-  if (ol.has.IE) {
-    element.style.transformOrigin = '0 0';
-  }
 };
 
 
