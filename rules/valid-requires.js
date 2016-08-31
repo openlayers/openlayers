@@ -15,7 +15,7 @@ exports.rule = {
         if (util.isRequireExpression(expression)) {
           const parent = expression.parent;
           if (parent.type !== 'ExpressionStatement') {
-            return context.report(expression, 'Expected goog.require() to in an expression statement');
+            return context.report(expression, 'Expected goog.require() to be in an expression statement');
           }
 
           if (parent.parent.type !== 'Program') {
