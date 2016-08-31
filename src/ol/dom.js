@@ -68,43 +68,6 @@ ol.dom.canUseCssTransform = (function() {
 
 
 /**
- * Detect 3d transform.
- * Adapted from http://stackoverflow.com/q/5661671/130442
- * http://caniuse.com/#feat=transforms3d
- * @return {boolean}
- */
-ol.dom.canUseCssTransform3D = (function() {
-  var global = ol.global;
-  var canUseCssTransform3D;
-  return function() {
-    if (canUseCssTransform3D === undefined) {
-      var el = document.createElement('P'),
-          has3d,
-          transforms = {
-            'webkitTransform': '-webkit-transform',
-            'OTransform': '-o-transform',
-            'msTransform': '-ms-transform',
-            'MozTransform': '-moz-transform',
-            'transform': 'transform'
-          };
-      document.body.appendChild(el);
-      for (var t in transforms) {
-        if (t in el.style) {
-          el.style[t] = 'translate3d(1px,1px,1px)';
-          has3d = global.getComputedStyle(el).getPropertyValue(
-              transforms[t]);
-        }
-      }
-      document.body.removeChild(el);
-
-      canUseCssTransform3D = (has3d && has3d !== 'none');
-    }
-    return canUseCssTransform3D;
-  };
-}());
-
-
-/**
  * @param {Element} element Element.
  * @param {string} value Value.
  */

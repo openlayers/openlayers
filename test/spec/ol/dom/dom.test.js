@@ -74,20 +74,6 @@ describe('ol.dom', function() {
 
   });
 
-  describe('ol.dom.canUseCssTransform3D', function() {
-
-    it('always returns a boolean', function() {
-      var canUse = ol.dom.canUseCssTransform3D();
-      expect(typeof canUse).to.be('boolean');
-    });
-
-    it('returns the same result as the Modernizr implementation', function() {
-      var canUse = ol.dom.canUseCssTransform3D();
-      expect(canUse).to.be(Modernizr.csstransforms3d);
-    });
-
-  });
-
   describe('ol.dom.setTransform', function() {
     var element = null;
     var originalIsIE;
