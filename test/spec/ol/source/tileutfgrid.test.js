@@ -236,7 +236,7 @@ describe('ol.source.TileUTFGrid', function() {
         var urlTileCoord =
             this.getTileCoordForTileUrlFunction(tileCoord, projection);
         var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-        var tile = new ol.source.TileUTFGridTile_(
+        var tile = new ol.source.TileUTFGrid.Tile_(
             tileCoord,
             tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
             tileUrl !== undefined ? tileUrl : '',

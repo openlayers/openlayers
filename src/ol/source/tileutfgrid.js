@@ -134,7 +134,7 @@ ol.source.TileUTFGrid.prototype.forDataAtCoordinateAndResolution = function(
   if (this.tileGrid) {
     var tileCoord = this.tileGrid.getTileCoordForCoordAndResolution(
         coordinate, resolution);
-    var tile = /** @type {!ol.source.TileUTFGridTile_} */(this.getTile(
+    var tile = /** @type {!ol.source.TileUTFGrid.Tile_} */(this.getTile(
         tileCoord[0], tileCoord[1], tileCoord[2], 1, this.getProjection()));
     tile.forDataAtCoordinate(coordinate, callback, opt_this, opt_request);
   } else {
@@ -234,7 +234,7 @@ ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projecti
     var urlTileCoord =
         this.getTileCoordForTileUrlFunction(tileCoord, projection);
     var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
-    var tile = new ol.source.TileUTFGridTile_(
+    var tile = new ol.source.TileUTFGrid.Tile_(
         tileCoord,
         tileUrl !== undefined ? ol.Tile.State.IDLE : ol.Tile.State.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
@@ -269,7 +269,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  * @param {boolean} jsonp Load the tile as a script.
  * @private
  */
-ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
+ol.source.TileUTFGrid.Tile_ = function(tileCoord, state, src, extent, preemptive, jsonp) {
 
   ol.Tile.call(this, tileCoord, state);
 
@@ -317,7 +317,7 @@ ol.source.TileUTFGridTile_ = function(tileCoord, state, src, extent, preemptive,
   this.jsonp_ = jsonp;
 
 };
-ol.inherits(ol.source.TileUTFGridTile_, ol.Tile);
+ol.inherits(ol.source.TileUTFGrid.Tile_, ol.Tile);
 
 
 /**
@@ -326,7 +326,7 @@ ol.inherits(ol.source.TileUTFGridTile_, ol.Tile);
  *     renderer.
  * @return {Image} Image.
  */
-ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
+ol.source.TileUTFGrid.Tile_.prototype.getImage = function(opt_context) {
   return null;
 };
 
@@ -336,7 +336,7 @@ ol.source.TileUTFGridTile_.prototype.getImage = function(opt_context) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {*} The data.
  */
-ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
+ol.source.TileUTFGrid.Tile_.prototype.getData = function(coordinate) {
   if (!this.grid_ || !this.keys_) {
     return null;
   }
@@ -383,7 +383,7 @@ ol.source.TileUTFGridTile_.prototype.getData = function(coordinate) {
  *                               The tile data is requested if not yet loaded.
  * @template T
  */
-ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
+ol.source.TileUTFGrid.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
   if (this.state == ol.Tile.State.IDLE && opt_request === true) {
     ol.events.listenOnce(this, ol.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
@@ -404,7 +404,7 @@ ol.source.TileUTFGridTile_.prototype.forDataAtCoordinate = function(coordinate, 
 /**
  * @inheritDoc
  */
-ol.source.TileUTFGridTile_.prototype.getKey = function() {
+ol.source.TileUTFGrid.Tile_.prototype.getKey = function() {
   return this.src_;
 };
 
@@ -412,7 +412,7 @@ ol.source.TileUTFGridTile_.prototype.getKey = function() {
 /**
  * @private
  */
-ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
+ol.source.TileUTFGrid.Tile_.prototype.handleError_ = function() {
   this.state = ol.Tile.State.ERROR;
   this.changed();
 };
@@ -422,7 +422,7 @@ ol.source.TileUTFGridTile_.prototype.handleError_ = function() {
  * @param {!UTFGridJSON} json UTFGrid data.
  * @private
  */
-ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
+ol.source.TileUTFGrid.Tile_.prototype.handleLoad_ = function(json) {
   this.grid_ = json.grid;
   this.keys_ = json.keys;
   this.data_ = json.data;
@@ -435,7 +435,7 @@ ol.source.TileUTFGridTile_.prototype.handleLoad_ = function(json) {
 /**
  * @private
  */
-ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
+ol.source.TileUTFGrid.Tile_.prototype.loadInternal_ = function() {
   if (this.state == ol.Tile.State.IDLE) {
     this.state = ol.Tile.State.LOADING;
     if (this.jsonp_) {
@@ -456,7 +456,7 @@ ol.source.TileUTFGridTile_.prototype.loadInternal_ = function() {
  * @private
  * @param {Event} event The load event.
  */
-ol.source.TileUTFGridTile_.prototype.onXHRLoad_ = function(event) {
+ol.source.TileUTFGrid.Tile_.prototype.onXHRLoad_ = function(event) {
   var client = /** @type {XMLHttpRequest} */ (event.target);
   // status will be 0 for file:// urls
   if (!client.status || client.status >= 200 && client.status < 300) {
@@ -478,7 +478,7 @@ ol.source.TileUTFGridTile_.prototype.onXHRLoad_ = function(event) {
  * @private
  * @param {Event} event The error event.
  */
-ol.source.TileUTFGridTile_.prototype.onXHRError_ = function(event) {
+ol.source.TileUTFGrid.Tile_.prototype.onXHRError_ = function(event) {
   this.handleError_();
 };
 
@@ -486,7 +486,7 @@ ol.source.TileUTFGridTile_.prototype.onXHRError_ = function(event) {
 /**
  * Load not yet loaded URI.
  */
-ol.source.TileUTFGridTile_.prototype.load = function() {
+ol.source.TileUTFGrid.Tile_.prototype.load = function() {
   if (this.preemptive_) {
     this.loadInternal_();
   }
