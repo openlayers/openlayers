@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.obj');
 
 
 /**
@@ -80,22 +79,8 @@ ol.ImageTile.prototype.disposeInternal = function() {
  * @inheritDoc
  * @api
  */
-ol.ImageTile.prototype.getImage = function(opt_context) {
-  if (opt_context !== undefined) {
-    var image;
-    var key = ol.getUid(opt_context);
-    if (key in this.imageByContext_) {
-      return this.imageByContext_[key];
-    } else if (ol.obj.isEmpty(this.imageByContext_)) {
-      image = this.image_;
-    } else {
-      image = /** @type {Image} */ (this.image_.cloneNode(false));
-    }
-    this.imageByContext_[key] = image;
-    return image;
-  } else {
-    return this.image_;
-  }
+ol.ImageTile.prototype.getImage = function() {
+  return this.image_;
 };
 
 

@@ -1,10 +1,10 @@
 ---
 layout: example.html
 title: Shared Views
-shortdesc: The three maps, one WebGL, one Canvas, one DOM, share the same center, resolution, rotation and layers.
+shortdesc: Two maps with different renderers share view properties
 docs: >
-  The three maps, one WebGL, one Canvas, one DOM, share the same center, resolution, rotation and layers.
-tags: "side-by-side, canvas, webgl, dom, canvas, sync, object"
+  Two maps (one with the Canvas renderer, one with the WebGL renderer) share the same center, resolution, rotation and layers.
+tags: "side-by-side, canvas, webgl"
 ---
 <h4>Canvas</h4>
 <div id="canvasMap" class="map"></div>
@@ -13,5 +13,3 @@ tags: "side-by-side, canvas, webgl, dom, canvas, sync, object"
 <div id="no-webgl" class="alert alert-danger" style="display: none">
   This map requires a browser that supports <a href="http://get.webgl.org/">WebGL</a>.
 </div>
-<h4>DOM</h4>
-<div id="domMap" class="map"></div>

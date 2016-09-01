@@ -7,15 +7,6 @@ var olGlobal = ol.global;
 var ua = typeof navigator !== 'undefined' ?
     navigator.userAgent.toLowerCase() : '';
 
-var ie = ua.match(/msie ([0-9]{1,}[\.0-9]{0,})/);
-var trident = ua.match(/trident\/([0-9]{1,}[\.0-9]{0,})/);
-
-/**
- * User agent string says we are dealing with IE >= 9 as browser.
- * @type {boolean}
- */
-ol.has.IE = !!(ie && parseFloat(ie[1]) >= 9 || trident && parseFloat(trident[1]) >= 6);
-
 /**
  * User agent string says we are dealing with Firefox as browser.
  * @type {boolean}
@@ -96,14 +87,6 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  * @api stable
  */
 ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in olGlobal;
-
-
-/**
- * True if `ol.ENABLE_DOM` is set to `true` at compile time.
- * @const
- * @type {boolean}
- */
-ol.has.DOM = ol.ENABLE_DOM;
 
 
 /**

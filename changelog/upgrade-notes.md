@@ -26,6 +26,10 @@ A number of internal types have been renamed.  This will not affect those who us
 
 ### v3.18.0
 
+#### Removal of the DOM renderer
+
+The DOM renderer has been removed.  Instead, the Canvas renderer should be used.  If you were previously constructing a map with `'dom'` as the `renderer` option, you will see an error message in the console in debug mode and the Canvas renderer will be used instead.  To remove the warning, remove the `renderer` option from your map constructor.
+
 #### Changes in the way assertions are handled
 
 Previously, minified builds of the library did not have any assertions. This caused applications to fail silently or with cryptic stack traces. Starting with this release, developers get notified of many runtime errors through the new `ol.AssertionError`. This error has a `code` property. The meaning of the code can be found on http://openlayers.org/en/latest/doc/errors/. There are additional console assertion checks in debug mode when the `goog.DEBUG` compiler flag is `true`. As this is `true` by default, it is recommended that those creating custom builds set this to `false` so these assertions are stripped.'

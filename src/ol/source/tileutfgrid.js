@@ -322,11 +322,9 @@ ol.inherits(ol.source.TileUTFGrid.Tile_, ol.Tile);
 
 /**
  * Get the image element for this tile.
- * @param {Object=} opt_context Optional context. Only used for the DOM
- *     renderer.
  * @return {Image} Image.
  */
-ol.source.TileUTFGrid.Tile_.prototype.getImage = function(opt_context) {
+ol.source.TileUTFGrid.Tile_.prototype.getImage = function() {
   return null;
 };
 
