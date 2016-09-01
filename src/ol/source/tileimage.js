@@ -302,26 +302,16 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
       // can use it then we use it. Otherwise we create a new tile.  In both
       // cases we attempt to assign an interim tile to the new tile.
       var /** @type {ol.Tile} */ interimTile = tile;
-      if (tile.interimTile && tile.interimTile.key == key) {
-        ol.DEBUG && console.assert(tile.interimTile.getState() == ol.Tile.State.LOADED);
-        ol.DEBUG && console.assert(tile.interimTile.interimTile === null);
-        tile = tile.interimTile;
-        if (interimTile.getState() == ol.Tile.State.LOADED) {
-          tile.interimTile = interimTile;
-        }
+      tile = this.createTile_(z, x, y, pixelRatio, projection, key);
+
+      //make the new tile the head of the list,
+      if (interimTile.getState() == ol.Tile.State.IDLE) {
+        //the old tile hasn't begun loading yet, and is now outdated, so we can simply discard it
+        tile.interimTile = interimTile.interimTile;
       } else {
-        tile = this.createTile_(z, x, y, pixelRatio, projection, key);
-        if (interimTile.getState() == ol.Tile.State.LOADED) {
-          tile.interimTile = interimTile;
-        } else if (interimTile.interimTile &&
-            interimTile.interimTile.getState() == ol.Tile.State.LOADED) {
-          tile.interimTile = interimTile.interimTile;
-          interimTile.interimTile = null;
-        }
+        tile.interimTile = interimTile;
       }
-      if (tile.interimTile) {
-        tile.interimTile.interimTile = null;
-      }
+      tile.refreshInterimChain();
       this.tileCache.replace(tileCoordKey, tile);
     }
   }

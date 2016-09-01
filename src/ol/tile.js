@@ -72,6 +72,17 @@ ol.Tile.prototype.getKey = function() {
   return this.key + '/' + this.tileCoord;
 };
 
+/**
+ * Get the interim tile if it exists, otherwise returns the tile itself.
+ * @return {!ol.Tile} The interim tile, or the tile itself
+ *
+ */
+ol.Tile.prototype.getInterimTile = function() {
+  if (this.interimTile) {
+    return this.interimTile;
+  }
+  return this;
+};
 
 /**
  * Get the tile coordinate for this tile.
