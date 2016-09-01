@@ -113,7 +113,13 @@ ol.style.RegularShape = function(options) {
    */
   this.hitDetectionImageSize_ = null;
 
-  this.render_(options.atlasManager);
+  /**
+   * @private
+   * @type {ol.style.AtlasManager|undefined}
+   */
+  this.atlasManager_ = options.atlasManager;
+
+  this.render_(this.atlasManager_);
 
   /**
    * @type {boolean}
@@ -137,6 +143,31 @@ ol.style.RegularShape = function(options) {
 
 };
 ol.inherits(ol.style.RegularShape, ol.style.Image);
+
+
+/**
+ * Clones the style.
+ * @return {ol.style.RegularShape} The cloned style.
+ * @api
+ */
+ol.style.RegularShape.prototype.clone = function() {
+  var style = new ol.style.RegularShape({
+    fill: this.getFill() ? this.getFill().clone() : undefined,
+    points: this.getPoints(),
+    radius: this.getRadius(),
+    radius2: this.getRadius2(),
+    angle: this.getAngle(),
+    snapToPixel: this.getSnapToPixel(),
+    stroke: this.getStroke() ?  this.getStroke().clone() : undefined,
+    rotation: this.getRotation(),
+    rotateWithView: this.getRotateWithView(),
+    atlasManager: this.atlasManager_
+  });
+
+  this.setOpacity(this.getOpacity());
+  this.setScale(this.getScale());
+  return style;
+};
 
 
 /**

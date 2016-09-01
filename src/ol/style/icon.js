@@ -57,9 +57,10 @@ ol.style.Icon = function(opt_options) {
       options.anchorYUnits : ol.style.Icon.AnchorUnits.FRACTION;
 
   /**
+   * @private
    * @type {?string}
    */
-  var crossOrigin =
+  this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
@@ -95,9 +96,10 @@ ol.style.Icon = function(opt_options) {
       ol.Image.State.IDLE : ol.Image.State.LOADED;
 
   /**
+   * @private
    * @type {ol.Color}
    */
-  var color = options.color !== undefined ? ol.color.asArray(options.color) :
+  this.color_ = options.color !== undefined ? ol.color.asArray(options.color) :
       null;
 
   /**
@@ -105,7 +107,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconImage}
    */
   this.iconImage_ = ol.style.IconImage.get(
-      image, /** @type {string} */ (src), imgSize, crossOrigin, imageState, color);
+      image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
 
   /**
    * @private
@@ -169,6 +171,35 @@ ol.style.Icon = function(opt_options) {
 
 };
 ol.inherits(ol.style.Icon, ol.style.Image);
+
+
+/**
+ * Clones the style.
+ * @return {ol.style.Icon} The cloned style.
+ * @api
+ */
+ol.style.Icon.prototype.clone = function() {
+  var useImg = (this.iconImage_.getImageState() === ol.Image.State.LOADED);
+  return new ol.style.Icon({
+    anchor: this.getAnchor().slice(0),
+    anchorOrigin: this.anchorOrigin_.slice(0),
+    anchorXUnits: this.anchorXUnits_,
+    anchorYUnits: this.anchorYUnits_,
+    crossOrigin: this.crossOrigin_,
+    color: this.color_.slice(0),
+    img: useImg ? this.getImage(1) : undefined,
+    imgSize: useImg ? this.iconImage_.getSize().slice(0) : undefined,
+    src: useImg ? undefined : this.getSrc(),
+    offset: this.offset_.slice(0),
+    offsetOrigin: this.offsetOrigin_,
+    size: this.getSize().slice(0),
+    opacity: this.getOpacity(),
+    scale: this.getScale(),
+    snapToPixel: this.getSnapToPixel(),
+    rotation: this.getRotation(),
+    rotateWithView: this.getRotateWithView()
+  });
+};
 
 
 /**

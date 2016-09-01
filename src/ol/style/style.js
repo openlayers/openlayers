@@ -72,6 +72,26 @@ ol.style.Style = function(opt_options) {
 
 
 /**
+ * Clones the style.
+ * @return {ol.style.Style} The cloned style.
+ * @api
+ */
+ol.style.Style.prototype.clone = function() {
+  var geometry = this.getGeometry();
+  if (geometry && geometry.clone) {
+    geometry = geometry.clone();
+  }
+  return new ol.style.Style({
+    geometry: geometry,
+    fill: this.getFill() ? this.getFill().clone() : undefined,
+    stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+    text: this.getText() ? this.getText().clone() : undefined,
+    zIndex: this.getZIndex()
+  });
+};
+
+
+/**
  * Get the geometry to be rendered.
  * @return {string|ol.geom.Geometry|ol.StyleGeometryFunction}
  * Feature property or geometry or function that returns the geometry that will

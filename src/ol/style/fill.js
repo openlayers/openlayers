@@ -31,6 +31,18 @@ ol.style.Fill = function(opt_options) {
 
 
 /**
+ * Clones the style.
+ * @return {ol.style.Fill} The cloned style.
+ * @api
+ */
+ol.style.Fill.prototype.clone = function() {
+  return new ol.style.Fill({
+    color: (this.getColor() instanceof Array) ? this.getColor().slice(0) : this.getColor()
+  });
+};
+
+
+/**
  * Get the fill color.
  * @return {ol.Color|ol.ColorLike} Color.
  * @api
