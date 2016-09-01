@@ -63,6 +63,22 @@ ol.style.Stroke = function(opt_options) {
   this.checksum_ = undefined;
 };
 
+/**
+ * Clones the style.
+ * @returns {ol.style.Stroke}
+ * @api
+ */
+ol.style.Stroke.prototype.clone = function() {
+  return new ol.style.Stroke({
+    color: this.getColor(),
+    lineCap: this.getLineCap(),
+    lineDash: this.getLineDash(),
+    lineJoin: this.getLineJoin(),
+    miterLimit: this.getMiterLimit(),
+    width: this.getWidth()
+  });
+};
+
 
 /**
  * Get the stroke color.

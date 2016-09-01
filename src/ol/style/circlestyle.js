@@ -113,6 +113,25 @@ goog.inherits(ol.style.Circle, ol.style.Image);
 
 
 /**
+ * Clones the style.
+ * @returns {ol.style.Image}
+ * @api
+ */
+ol.style.Circle.prototype.clone = function() {
+  var style = new ol.style.Image({
+    fill: this.getFill().clone(),
+    stroke: this.getStroke().clone(),
+    radius: this.getRadius(),
+    snapToPixel: this.getSnapToPixel()
+  });
+  style.setOpacity(this.getOpacity());
+  style.setRotation(this.getRotation());
+  style.setScale(this.getScale());
+  return style;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.style.Circle.prototype.getAnchor = function() {
