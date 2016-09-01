@@ -9,8 +9,9 @@ const util = require('./util');
  *   if so, require the "namespace" (ol.foo)
  * 2. check if a name looks like a class (ol.foo.Bar or ol.foo.XYZ)
  *   if so, require the class (ol.foo.Bar)
- * 3. otherwise, lop off the last part of a name and require the rest
- *   (e.g. ol.foo.bar would require ol.foo)
+ * 3. otherwise, unless it's an external dependency (ol.ext.*), lop off the last
+ *   part of a name and require the rest (e.g. ol.foo.bar would require ol.foo,
+ *   but ol.ext.foo would require ol.ext.foo)
  */
 
 const CONST_RE = /^(ol(\.[a-z]\w*)*)\.[A-Z]+_([_A-Z])+$/;
@@ -76,7 +77,10 @@ exports.rule = {
             }
             // otherwise, assume the object should be required
             const parts = name.split('.');
-            parts.pop();
+            if (parts[1] !== 'ext') {
+              // unless it's an ol.ext.*
+              parts.pop();
+            }
             const objectName = parts.join('.');
             if (!defined[objectName]) {
               context.report(expression, `Missing goog.require('${objectName}')`);

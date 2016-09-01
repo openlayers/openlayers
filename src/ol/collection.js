@@ -11,14 +11,6 @@ goog.require('ol.Object');
 
 
 /**
- * @enum {string}
- */
-ol.CollectionProperty = {
-  LENGTH: 'length'
-};
-
-
-/**
  * @classdesc
  * An expanded version of standard JS Array, adding convenience methods for
  * manipulation. Add and remove changes to the Collection trigger a Collection
@@ -121,7 +113,7 @@ ol.Collection.prototype.item = function(index) {
  * @api stable
  */
 ol.Collection.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.CollectionProperty.LENGTH));
+  return /** @type {number} */ (this.get(ol.Collection.Property.LENGTH));
 };
 
 
@@ -227,7 +219,15 @@ ol.Collection.prototype.setAt = function(index, elem) {
  * @private
  */
 ol.Collection.prototype.updateLength_ = function() {
-  this.set(ol.CollectionProperty.LENGTH, this.array_.length);
+  this.set(ol.Collection.Property.LENGTH, this.array_.length);
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.Collection.Property = {
+  LENGTH: 'length'
 };
 
 

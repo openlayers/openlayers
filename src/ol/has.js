@@ -3,7 +3,7 @@ goog.provide('ol.has');
 goog.require('ol');
 goog.require('ol.webgl');
 
-
+var olGlobal = ol.global;
 var ua = typeof navigator !== 'undefined' ?
     navigator.userAgent.toLowerCase() : '';
 
@@ -48,7 +48,7 @@ ol.has.MAC = ua.indexOf('macintosh') !== -1;
  * @type {number}
  * @api stable
  */
-ol.has.DEVICE_PIXEL_RATIO = ol.global.devicePixelRatio || 1;
+ol.has.DEVICE_PIXEL_RATIO = olGlobal.devicePixelRatio || 1;
 
 
 /**
@@ -70,7 +70,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
      * @return {boolean} Canvas supported.
      */
     function() {
-      if (!('HTMLCanvasElement' in ol.global)) {
+      if (!('HTMLCanvasElement' in olGlobal)) {
         return false;
       }
       try {
@@ -95,7 +95,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  * @type {boolean}
  * @api stable
  */
-ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in ol.global;
+ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in olGlobal;
 
 
 /**
@@ -112,7 +112,7 @@ ol.has.DOM = ol.ENABLE_DOM;
  * @type {boolean}
  * @api stable
  */
-ol.has.GEOLOCATION = 'geolocation' in ol.global.navigator;
+ol.has.GEOLOCATION = 'geolocation' in olGlobal.navigator;
 
 
 /**
@@ -121,7 +121,7 @@ ol.has.GEOLOCATION = 'geolocation' in ol.global.navigator;
  * @type {boolean}
  * @api stable
  */
-ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in ol.global;
+ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in olGlobal;
 
 
 /**
@@ -129,7 +129,7 @@ ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in ol.global;
  * @const
  * @type {boolean}
  */
-ol.has.POINTER = 'PointerEvent' in ol.global;
+ol.has.POINTER = 'PointerEvent' in olGlobal;
 
 
 /**
@@ -137,7 +137,7 @@ ol.has.POINTER = 'PointerEvent' in ol.global;
  * @const
  * @type {boolean}
  */
-ol.has.MSPOINTER = !!(ol.global.navigator.msPointerEnabled);
+ol.has.MSPOINTER = !!(olGlobal.navigator.msPointerEnabled);
 
 
 /**
@@ -156,7 +156,7 @@ ol.has.WEBGL;
     var textureSize;
     var /** @type {Array.<string>} */ extensions = [];
 
-    if ('WebGLRenderingContext' in ol.global) {
+    if ('WebGLRenderingContext' in olGlobal) {
       try {
         var canvas = /** @type {HTMLCanvasElement} */
             (document.createElement('CANVAS'));

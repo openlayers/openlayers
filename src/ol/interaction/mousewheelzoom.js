@@ -2,6 +2,7 @@ goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('ol');
 goog.require('ol.events.EventType');
+goog.require('ol.has');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.math');
 
@@ -86,13 +87,15 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
     //TODO There's more good stuff in there for inspiration to improve this interaction.
     var delta;
+    var global = ol.global;
+    var WheelEvent = global.WheelEvent;
     if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
       delta = wheelEvent.deltaY;
       if (ol.has.FIREFOX &&
-          wheelEvent.deltaMode === ol.global.WheelEvent.DOM_DELTA_PIXEL) {
+          wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
         delta /= ol.has.DEVICE_PIXEL_RATIO;
       }
-      if (wheelEvent.deltaMode === ol.global.WheelEvent.DOM_DELTA_LINE) {
+      if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
         delta *= 40;
       }
     } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
@@ -111,8 +114,8 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
     var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
 
-    ol.global.clearTimeout(this.timeoutId_);
-    this.timeoutId_ = ol.global.setTimeout(
+    global.clearTimeout(this.timeoutId_);
+    this.timeoutId_ = global.setTimeout(
         this.doZoom_.bind(this, map), timeLeft);
 
     mapBrowserEvent.preventDefault();

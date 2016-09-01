@@ -1,5 +1,6 @@
 goog.provide('ol.featureloader');
 
+goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');

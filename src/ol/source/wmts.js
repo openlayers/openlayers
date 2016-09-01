@@ -1,5 +1,4 @@
 goog.provide('ol.source.WMTS');
-goog.provide('ol.source.WMTSRequestEncoding');
 
 goog.require('ol');
 goog.require('ol.TileUrlFunction');
@@ -10,16 +9,6 @@ goog.require('ol.proj');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.WMTS');
 goog.require('ol.uri');
-
-
-/**
- * Request encoding. One of 'KVP', 'REST'.
- * @enum {string}
- */
-ol.source.WMTSRequestEncoding = {
-  KVP: 'KVP',  // see spec §8
-  REST: 'REST' // see spec §10
-};
 
 
 /**
@@ -81,11 +70,11 @@ ol.source.WMTS = function(options) {
 
   /**
    * @private
-   * @type {ol.source.WMTSRequestEncoding}
+   * @type {ol.source.WMTS.RequestEncoding}
    */
   this.requestEncoding_ = options.requestEncoding !== undefined ?
-      /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
-      ol.source.WMTSRequestEncoding.KVP;
+      /** @type {ol.source.WMTS.RequestEncoding} */ (options.requestEncoding) :
+      ol.source.WMTS.RequestEncoding.KVP;
 
   var requestEncoding = this.requestEncoding_;
 
@@ -101,7 +90,7 @@ ol.source.WMTS = function(options) {
     'tilematrixset': this.matrixSet_
   };
 
-  if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
+  if (requestEncoding == ol.source.WMTS.RequestEncoding.KVP) {
     ol.obj.assign(context, {
       'Service': 'WMTS',
       'Request': 'GetTile',
@@ -122,7 +111,7 @@ ol.source.WMTS = function(options) {
     // order conforms to wmts spec guidance, and so that we can avoid to escape
     // special template params
 
-    template = (requestEncoding == ol.source.WMTSRequestEncoding.KVP) ?
+    template = (requestEncoding == ol.source.WMTS.RequestEncoding.KVP) ?
         ol.uri.appendParams(template, context) :
         template.replace(/\{(\w+?)\}/g, function(m, p) {
           return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
@@ -146,7 +135,7 @@ ol.source.WMTS = function(options) {
             };
             ol.obj.assign(localContext, dimensions);
             var url = template;
-            if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
+            if (requestEncoding == ol.source.WMTS.RequestEncoding.KVP) {
               url = ol.uri.appendParams(url, localContext);
             } else {
               url = url.replace(/\{(\w+?)\}/g, function(m, p) {
@@ -229,7 +218,7 @@ ol.source.WMTS.prototype.getMatrixSet = function() {
 
 /**
  * Return the request encoding, either "KVP" or "REST".
- * @return {ol.source.WMTSRequestEncoding} Request encoding.
+ * @return {ol.source.WMTS.RequestEncoding} Request encoding.
  * @api
  */
 ol.source.WMTS.prototype.getRequestEncoding = function() {
@@ -442,8 +431,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
         // requestEncoding not provided, use the first encoding from the list
         requestEncoding = encodings[0];
       }
-      if (requestEncoding === ol.source.WMTSRequestEncoding.KVP) {
-        if (ol.array.includes(encodings, ol.source.WMTSRequestEncoding.KVP)) {
+      if (requestEncoding === ol.source.WMTS.RequestEncoding.KVP) {
+        if (ol.array.includes(encodings, ol.source.WMTS.RequestEncoding.KVP)) {
           urls.push(/** @type {string} */ (gets[i]['href']));
         }
       } else {
@@ -452,7 +441,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     }
   }
   if (urls.length === 0) {
-    requestEncoding = ol.source.WMTSRequestEncoding.REST;
+    requestEncoding = ol.source.WMTS.RequestEncoding.REST;
     l['ResourceURL'].forEach(function(element) {
       if (element['resourceType'] === 'tile') {
         format = element['format'];
@@ -475,4 +464,14 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     wrapX: wrapX
   };
 
+};
+
+
+/**
+ * Request encoding. One of 'KVP', 'REST'.
+ * @enum {string}
+ */
+ol.source.WMTS.RequestEncoding = {
+  KVP: 'KVP',  // see spec §8
+  REST: 'REST' // see spec §10
 };

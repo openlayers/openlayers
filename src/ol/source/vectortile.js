@@ -21,7 +21,7 @@ goog.require('ol.source.UrlTile');
  * editing.
  *
  * @constructor
- * @fires ol.source.TileEvent
+ * @fires ol.source.Tile.Event
  * @extends {ol.source.UrlTile}
  * @param {olx.source.VectorTileOptions} options Vector tile options.
  * @api

@@ -4,6 +4,26 @@
 
 As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
 
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.CollectionProperty` to `ol.Collection.Property`
+ * rename `ol.DeviceOrientationProperty` to `ol.DeviceOrientation.Property`
+ * rename `ol.GeolocationProperty` to `ol.Geolocation.Property`
+ * rename `ol.OverlayPositioning` to `ol.Overlay.Positioning`
+ * rename `ol.OverlayProperty` to `ol.Overlay.Property`
+ * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
+ * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
+ * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
+ * rename `ol.layer.HeatmapLayerProperty` to `ol.layer.Heatmap.Property`
+ * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
+ * rename `ol.source.TileEvent` to `ol.source.Tile.Event`
+ * rename `ol.source.TileEventType` to `ol.source.Tile.EventType`
+ * rename `ol.source.WMTSRequestEncoding` to `ol.source.WMTS.RequestEncoding`
+ * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
+ * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
+
 ### v3.18.0
 
 #### Changes in the way assertions are handled

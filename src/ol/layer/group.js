@@ -14,14 +14,6 @@ goog.require('ol.source.State');
 
 
 /**
- * @enum {string}
- */
-ol.layer.GroupProperty = {
-  LAYERS: 'layers'
-};
-
-
-/**
  * @classdesc
  * A {@link ol.Collection} of layers that are handled together.
  *
@@ -56,7 +48,7 @@ ol.layer.Group = function(opt_options) {
   this.listenerKeys_ = {};
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.GroupProperty.LAYERS),
+      ol.Object.getChangeEventType(ol.layer.Group.Property.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {
@@ -166,7 +158,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
-      ol.layer.GroupProperty.LAYERS));
+      ol.layer.Group.Property.LAYERS));
 };
 
 
@@ -179,7 +171,7 @@ ol.layer.Group.prototype.getLayers = function() {
  * @api stable
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
-  this.set(ol.layer.GroupProperty.LAYERS, layers);
+  this.set(ol.layer.Group.Property.LAYERS, layers);
 };
 
 
@@ -236,4 +228,11 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
  */
 ol.layer.Group.prototype.getSourceState = function() {
   return ol.source.State.READY;
+};
+
+/**
+ * @enum {string}
+ */
+ol.layer.Group.Property = {
+  LAYERS: 'layers'
 };

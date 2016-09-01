@@ -1,5 +1,4 @@
 goog.provide('ol.format.IGC');
-goog.provide('ol.format.IGCZ');
 
 goog.require('ol');
 goog.require('ol.Feature');
@@ -8,17 +7,6 @@ goog.require('ol.format.TextFeature');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
-
-
-/**
- * IGC altitude/z. One of 'barometric', 'gps', 'none'.
- * @enum {string}
- */
-ol.format.IGCZ = {
-  BAROMETRIC: 'barometric',
-  GPS: 'gps',
-  NONE: 'none'
-};
 
 
 /**
@@ -43,10 +31,10 @@ ol.format.IGC = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.format.IGCZ}
+   * @type {ol.format.IGC.Z}
    */
   this.altitudeMode_ = options.altitudeMode ?
-      options.altitudeMode : ol.format.IGCZ.NONE;
+      options.altitudeMode : ol.format.IGC.Z.NONE;
 
 };
 ol.inherits(ol.format.IGC, ol.format.TextFeature);
@@ -147,11 +135,11 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
           x = -x;
         }
         flatCoordinates.push(x, y);
-        if (altitudeMode != ol.format.IGCZ.NONE) {
+        if (altitudeMode != ol.format.IGC.Z.NONE) {
           var z;
-          if (altitudeMode == ol.format.IGCZ.GPS) {
+          if (altitudeMode == ol.format.IGC.Z.GPS) {
             z = parseInt(m[11], 10);
-          } else if (altitudeMode == ol.format.IGCZ.BAROMETRIC) {
+          } else if (altitudeMode == ol.format.IGC.Z.BAROMETRIC) {
             z = parseInt(m[12], 10);
           } else {
             ol.DEBUG && console.assert(false, 'Unknown altitude mode.');
@@ -185,7 +173,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
     return null;
   }
   var lineString = new ol.geom.LineString(null);
-  var layout = altitudeMode == ol.format.IGCZ.NONE ?
+  var layout = altitudeMode == ol.format.IGC.Z.NONE ?
       ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
   var feature = new ol.Feature(ol.format.Feature.transformWithOptions(
@@ -230,3 +218,14 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * @api
  */
 ol.format.IGC.prototype.readProjection;
+
+
+/**
+ * IGC altitude/z. One of 'barometric', 'gps', 'none'.
+ * @enum {string}
+ */
+ol.format.IGC.Z = {
+  BAROMETRIC: 'barometric',
+  GPS: 'gps',
+  NONE: 'none'
+};

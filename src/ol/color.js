@@ -11,7 +11,7 @@ goog.require('ol.math');
  * @type {RegExp}
  * @private
  */
-ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
+ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 
 /**
@@ -20,7 +20,7 @@ ol.color.hexColorRe_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
  * @type {RegExp}
  * @private
  */
-ol.color.rgbColorRe_ =
+ol.color.RGB_COLOR_RE_ =
     /^(?:rgb)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2})\)$/i;
 
 
@@ -30,7 +30,7 @@ ol.color.rgbColorRe_ =
  * @type {RegExp}
  * @private
  */
-ol.color.rgbaColorRe_ =
+ol.color.RGBA_COLOR_RE_ =
     /^(?:rgba)?\((0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|[1-9]\d{0,2}),\s?(0|1|0\.\d{0,10})\)$/i;
 
 
@@ -40,7 +40,7 @@ ol.color.rgbaColorRe_ =
  * @type {RegExp}
  * @private
  */
-ol.color.namedColorRe_ =
+ol.color.NAMED_COLOR_RE_ =
     /^([a-z]*)$/i;
 
 
@@ -154,11 +154,11 @@ ol.color.fromString = (
 ol.color.fromStringInternal_ = function(s) {
   var r, g, b, a, color, match;
 
-  if (ol.color.namedColorRe_.exec(s)) {
+  if (ol.color.NAMED_COLOR_RE_.exec(s)) {
     s = ol.color.fromNamed(s);
   }
 
-  if (ol.color.hexColorRe_.exec(s)) { // hex
+  if (ol.color.HEX_COLOR_RE_.exec(s)) { // hex
     var n = s.length - 1; // number of hex digits
     ol.asserts.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
     var d = n == 3 ? 1 : 2; // number of digits per channel
@@ -172,13 +172,13 @@ ol.color.fromStringInternal_ = function(s) {
     }
     a = 1;
     color = [r, g, b, a];
-  } else if ((match = ol.color.rgbaColorRe_.exec(s))) { // rgba()
+  } else if ((match = ol.color.RGBA_COLOR_RE_.exec(s))) { // rgba()
     r = Number(match[1]);
     g = Number(match[2]);
     b = Number(match[3]);
     a = Number(match[4]);
     color = ol.color.normalize([r, g, b, a]);
-  } else if ((match = ol.color.rgbColorRe_.exec(s))) { // rgb()
+  } else if ((match = ol.color.RGB_COLOR_RE_.exec(s))) { // rgb()
     r = Number(match[1]);
     g = Number(match[2]);
     b = Number(match[3]);

@@ -2,17 +2,6 @@ goog.provide('ol.tilecoord');
 
 
 /**
- * @enum {number}
- */
-ol.QuadKeyCharCode = {
-  ZERO: '0'.charCodeAt(0),
-  ONE: '1'.charCodeAt(0),
-  TWO: '2'.charCodeAt(0),
-  THREE: '3'.charCodeAt(0)
-};
-
-
-/**
  * @param {string} str String that follows pattern “z/x/y” where x, y and z are
  *   numbers.
  * @return {ol.TileCoord} Tile coord.
@@ -76,7 +65,8 @@ ol.tilecoord.quadKey = function(tileCoord) {
   var mask = 1 << (z - 1);
   var i, charCode;
   for (i = 0; i < z; ++i) {
-    charCode = ol.QuadKeyCharCode.ZERO;
+    // 48 is charCode for 0 - '0'.charCodeAt(0)
+    charCode = 48;
     if (tileCoord[1] & mask) {
       charCode += 1;
     }

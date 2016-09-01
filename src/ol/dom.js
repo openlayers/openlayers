@@ -37,6 +37,7 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
  * @return {boolean}
  */
 ol.dom.canUseCssTransform = (function() {
+  var global = ol.global;
   var canUseCssTransform;
   return function() {
     if (canUseCssTransform === undefined) {
@@ -53,7 +54,7 @@ ol.dom.canUseCssTransform = (function() {
       for (var t in transforms) {
         if (t in el.style) {
           el.style[t] = 'translate(1px,1px)';
-          has2d = ol.global.getComputedStyle(el).getPropertyValue(
+          has2d = global.getComputedStyle(el).getPropertyValue(
               transforms[t]);
         }
       }
@@ -73,6 +74,7 @@ ol.dom.canUseCssTransform = (function() {
  * @return {boolean}
  */
 ol.dom.canUseCssTransform3D = (function() {
+  var global = ol.global;
   var canUseCssTransform3D;
   return function() {
     if (canUseCssTransform3D === undefined) {
@@ -89,7 +91,7 @@ ol.dom.canUseCssTransform3D = (function() {
       for (var t in transforms) {
         if (t in el.style) {
           el.style[t] = 'translate3d(1px,1px,1px)';
-          has3d = ol.global.getComputedStyle(el).getPropertyValue(
+          has3d = global.getComputedStyle(el).getPropertyValue(
               transforms[t]);
         }
       }
@@ -177,8 +179,9 @@ ol.dom.transformElement2D = function(element, transform, opt_precision) {
  * @return {number} The width.
  */
 ol.dom.outerWidth = function(element) {
+  var global = ol.global;
   var width = element.offsetWidth;
-  var style = element.currentStyle || ol.global.getComputedStyle(element);
+  var style = element.currentStyle || global.getComputedStyle(element);
   width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
 
   return width;
@@ -193,8 +196,9 @@ ol.dom.outerWidth = function(element) {
  * @return {number} The height.
  */
 ol.dom.outerHeight = function(element) {
+  var global = ol.global;
   var height = element.offsetHeight;
-  var style = element.currentStyle || ol.global.getComputedStyle(element);
+  var style = element.currentStyle || global.getComputedStyle(element);
   height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 
   return height;

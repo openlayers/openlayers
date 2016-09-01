@@ -4,10 +4,10 @@ goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapEventType');
+goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.Overlay');
-goog.require('ol.OverlayPositioning');
 goog.require('ol.View');
 goog.require('ol.control.Control');
 goog.require('ol.coordinate');
@@ -123,7 +123,7 @@ ol.control.OverviewMap = function(opt_options) {
    */
   this.boxOverlay_ = new ol.Overlay({
     position: [0, 0],
-    positioning: ol.OverlayPositioning.BOTTOM_LEFT,
+    positioning: ol.Overlay.Positioning.BOTTOM_LEFT,
     element: box
   });
   this.ovmap_.addOverlay(this.boxOverlay_);

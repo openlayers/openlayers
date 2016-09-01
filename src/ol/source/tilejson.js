@@ -5,7 +5,6 @@
  */
 
 goog.provide('ol.source.TileJSON');
-goog.provide('ol.tilejson');
 
 goog.require('ol');
 goog.require('ol.Attribution');

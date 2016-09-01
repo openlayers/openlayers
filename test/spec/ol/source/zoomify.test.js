@@ -189,15 +189,15 @@ describe('ol.source.Zoomify', function() {
 
   describe('uses a custom tileClass', function() {
 
-    it('uses "ol.source.ZoomifyTile_" as tileClass', function() {
+    it('uses "ol.source.Zoomify.Tile_" as tileClass', function() {
       var source = getZoomifySource();
-      expect(source.tileClass).to.be(ol.source.ZoomifyTile_);
+      expect(source.tileClass).to.be(ol.source.Zoomify.Tile_);
     });
 
     it('returns expected tileClass instances via "getTile"', function() {
       var source = getZoomifySource();
       var tile = source.getTile(0, 0, -1, 1, proj);
-      expect(tile).to.be.an(ol.source.ZoomifyTile_);
+      expect(tile).to.be.an(ol.source.Zoomify.Tile_);
     });
 
     it('"tile.getImage" returns and caches an unloaded image', function() {
