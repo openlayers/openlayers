@@ -1,22 +1,8 @@
 goog.provide('ol.Tile');
-goog.provide('ol.TileState');
 
-goog.require('ol.events');
+goog.require('ol');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
-
-
-/**
- * @enum {number}
- */
-ol.TileState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3,
-  EMPTY: 4,
-  ABORT: 5
-};
 
 
 /**
@@ -26,7 +12,7 @@ ol.TileState = {
  * @constructor
  * @extends {ol.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.TileState} state State.
+ * @param {ol.Tile.State} state State.
  */
 ol.Tile = function(tileCoord, state) {
 
@@ -39,7 +25,7 @@ ol.Tile = function(tileCoord, state) {
 
   /**
    * @protected
-   * @type {ol.TileState}
+   * @type {ol.Tile.State}
    */
   this.state = state;
 
@@ -74,10 +60,9 @@ ol.Tile.prototype.changed = function() {
 /**
  * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
  * @abstract
- * @param {Object=} opt_context Object.
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
  */
-ol.Tile.prototype.getImage = function(opt_context) {};
+ol.Tile.prototype.getImage = function() {};
 
 
 /**
@@ -99,7 +84,7 @@ ol.Tile.prototype.getTileCoord = function() {
 
 
 /**
- * @return {ol.TileState} State.
+ * @return {ol.Tile.State} State.
  */
 ol.Tile.prototype.getState = function() {
   return this.state;
@@ -114,3 +99,16 @@ ol.Tile.prototype.getState = function() {
  * @api
  */
 ol.Tile.prototype.load = function() {};
+
+
+/**
+ * @enum {number}
+ */
+ol.Tile.State = {
+  IDLE: 0,
+  LOADING: 1,
+  LOADED: 2,
+  ERROR: 3,
+  EMPTY: 4,
+  ABORT: 5
+};

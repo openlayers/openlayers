@@ -1,5 +1,7 @@
 goog.provide('ol.net');
 
+goog.require('ol');
+
 
 /**
  * Simple JSONP helper. Supports error callbacks and a custom callback param.
@@ -13,25 +15,26 @@ goog.provide('ol.net');
  *     callback. Default is 'callback'.
  */
 ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
-  var script = ol.global.document.createElement('script');
+  var global = ol.global;
+  var script = global.document.createElement('script');
   var key = 'olc_' + ol.getUid(callback);
   function cleanup() {
-    delete ol.global[key];
+    delete global[key];
     script.parentNode.removeChild(script);
   }
   script.async = true;
   script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
       (opt_callbackParam || 'callback') + '=' + key;
-  var timer = ol.global.setTimeout(function() {
+  var timer = global.setTimeout(function() {
     cleanup();
     if (opt_errback) {
       opt_errback();
     }
   }, 10000);
-  ol.global[key] = function(data) {
-    ol.global.clearTimeout(timer);
+  global[key] = function(data) {
+    global.clearTimeout(timer);
     cleanup();
     callback(data);
   };
-  ol.global.document.getElementsByTagName('head')[0].appendChild(script);
+  document.getElementsByTagName('head')[0].appendChild(script);
 };

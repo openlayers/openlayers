@@ -2,6 +2,8 @@ goog.provide('ol.extent');
 goog.provide('ol.extent.Corner');
 goog.provide('ol.extent.Relationship');
 
+goog.require('ol.asserts');
+
 
 /**
  * Extent corner.
@@ -53,8 +55,8 @@ ol.extent.boundingExtent = function(coordinates) {
  * @return {ol.Extent} Extent.
  */
 ol.extent.boundingExtentXYs_ = function(xs, ys, opt_extent) {
-  goog.DEBUG && console.assert(xs.length > 0, 'xs length should be larger than 0');
-  goog.DEBUG && console.assert(ys.length > 0, 'ys length should be larger than 0');
+  ol.DEBUG && console.assert(xs.length > 0, 'xs length should be larger than 0');
+  ol.DEBUG && console.assert(ys.length > 0, 'ys length should be larger than 0');
   var minX = Math.min.apply(null, xs);
   var minY = Math.min.apply(null, ys);
   var maxX = Math.max.apply(null, xs);
@@ -526,7 +528,7 @@ ol.extent.getCorner = function(extent, corner) {
   } else if (corner === ol.extent.Corner.TOP_RIGHT) {
     coordinate = ol.extent.getTopRight(extent);
   } else {
-    ol.assert(false, 13); // Invalid corner
+    ol.asserts.assert(false, 13); // Invalid corner
   }
   return /** @type {!ol.Coordinate} */ (coordinate);
 };

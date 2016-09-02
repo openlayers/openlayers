@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.Circle');
 
+goog.require('ol.geom.Circle');
+
 
 describe('ol.geom.Circle', function() {
 
@@ -22,31 +24,31 @@ describe('ol.geom.Circle', function() {
 
     });
 
-    describe('#containsCoordinate', function() {
+    describe('#intersectsCoordinate', function() {
 
       it('contains the center', function() {
-        expect(circle.containsCoordinate([0, 0])).to.be(true);
+        expect(circle.intersectsCoordinate([0, 0])).to.be(true);
       });
 
       it('contains points inside the perimeter', function() {
-        expect(circle.containsCoordinate([0.5, 0.5])).to.be(true);
-        expect(circle.containsCoordinate([-0.5, 0.5])).to.be(true);
-        expect(circle.containsCoordinate([-0.5, -0.5])).to.be(true);
-        expect(circle.containsCoordinate([0.5, -0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([0.5, 0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([-0.5, 0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([-0.5, -0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([0.5, -0.5])).to.be(true);
       });
 
       it('contains points on the perimeter', function() {
-        expect(circle.containsCoordinate([1, 0])).to.be(true);
-        expect(circle.containsCoordinate([0, 1])).to.be(true);
-        expect(circle.containsCoordinate([-1, 0])).to.be(true);
-        expect(circle.containsCoordinate([0, -1])).to.be(true);
+        expect(circle.intersectsCoordinate([1, 0])).to.be(true);
+        expect(circle.intersectsCoordinate([0, 1])).to.be(true);
+        expect(circle.intersectsCoordinate([-1, 0])).to.be(true);
+        expect(circle.intersectsCoordinate([0, -1])).to.be(true);
       });
 
       it('does not contain points outside the perimeter', function() {
-        expect(circle.containsCoordinate([2, 0])).to.be(false);
-        expect(circle.containsCoordinate([1, 1])).to.be(false);
-        expect(circle.containsCoordinate([-2, 0])).to.be(false);
-        expect(circle.containsCoordinate([0, -2])).to.be(false);
+        expect(circle.intersectsCoordinate([2, 0])).to.be(false);
+        expect(circle.intersectsCoordinate([1, 1])).to.be(false);
+        expect(circle.intersectsCoordinate([-2, 0])).to.be(false);
+        expect(circle.intersectsCoordinate([0, -2])).to.be(false);
       });
 
     });
@@ -273,6 +275,3 @@ describe('ol.geom.Circle', function() {
   });
 
 });
-
-
-goog.require('ol.geom.Circle');

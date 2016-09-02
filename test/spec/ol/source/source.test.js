@@ -1,5 +1,10 @@
 goog.provide('ol.test.source.Source');
 
+goog.require('ol.Attribution');
+goog.require('ol.proj');
+goog.require('ol.source.Source');
+
+
 describe('ol.source.Source', function() {
 
   describe('constructor', function() {
@@ -161,7 +166,3 @@ describe('ol.source.Source', function() {
   });
 
 });
-
-goog.require('ol.Attribution');
-goog.require('ol.proj');
-goog.require('ol.source.Source');

@@ -1,5 +1,13 @@
 goog.provide('ol.test.rendering.reproj.Image');
 
+goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
+goog.require('ol.reproj.Image');
+goog.require('ol.source.ImageStatic');
+goog.require('ol.tilegrid');
+
+
 describe('ol.rendering.reproj.Image', function() {
 
   function testSingleImage(source, targetProj,
@@ -52,9 +60,3 @@ describe('ol.rendering.reproj.Image', function() {
     });
   });
 });
-
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.proj.EPSG3857');
-goog.require('ol.reproj.Image');
-goog.require('ol.source.ImageStatic');

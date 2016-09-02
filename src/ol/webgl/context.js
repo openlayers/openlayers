@@ -4,10 +4,9 @@ goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.array');
 goog.require('ol.events');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.webgl');
-goog.require('ol.webgl.Buffer');
-goog.require('ol.webgl.WebGLContextEventType');
+goog.require('ol.webgl.ContextEventType');
 
 
 /**
@@ -84,13 +83,13 @@ ol.webgl.Context = function(canvas, gl) {
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {
     var ext = gl.getExtension('OES_element_index_uint');
-    goog.DEBUG && console.assert(ext,
+    ol.DEBUG && console.assert(ext,
         'Failed to get extension "OES_element_index_uint"');
   }
 
-  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
       this.handleWebGLContextLost, this);
-  ol.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
       this.handleWebGLContextRestored, this);
 
 };
@@ -114,7 +113,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    goog.DEBUG && console.assert(target == ol.webgl.ARRAY_BUFFER ||
+    ol.DEBUG && console.assert(target == ol.webgl.ARRAY_BUFFER ||
         target == ol.webgl.ELEMENT_ARRAY_BUFFER,
         'target is supposed to be an ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER');
     var /** @type {ArrayBufferView} */ arrayBuffer;
@@ -139,7 +138,7 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
 ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
   var bufferKey = String(ol.getUid(buf));
-  goog.DEBUG && console.assert(bufferKey in this.bufferCache_,
+  ol.DEBUG && console.assert(bufferKey in this.bufferCache_,
       'attempted to delete uncached buffer');
   var bufferCacheEntry = this.bufferCache_[bufferKey];
   if (!gl.isContextLost()) {
@@ -219,7 +218,7 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     var shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
-    goog.DEBUG && console.assert(
+    ol.DEBUG && console.assert(
         gl.getShaderParameter(shader, ol.webgl.COMPILE_STATUS) ||
         gl.isContextLost(),
         gl.getShaderInfoLog(shader) || 'illegal state, shader not compiled or context lost');
@@ -233,8 +232,8 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
  * Get the program from the cache if it's in the cache. Otherwise create
  * the WebGL program, attach the shaders to it, and add an entry to the
  * cache.
- * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
- * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.
+ * @param {ol.webgl.Fragment} fragmentShaderObject Fragment shader.
+ * @param {ol.webgl.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
 ol.webgl.Context.prototype.getProgram = function(
@@ -249,7 +248,7 @@ ol.webgl.Context.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
-    goog.DEBUG && console.assert(
+    ol.DEBUG && console.assert(
         gl.getProgramParameter(program, ol.webgl.LINK_STATUS) ||
         gl.isContextLost(),
         gl.getProgramInfoLog(program) || 'illegal state, shader not linked or context lost');
@@ -263,9 +262,9 @@ ol.webgl.Context.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-  ol.object.clear(this.bufferCache_);
-  ol.object.clear(this.shaderCache_);
-  ol.object.clear(this.programCache_);
+  ol.obj.clear(this.bufferCache_);
+  ol.obj.clear(this.shaderCache_);
+  ol.obj.clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;

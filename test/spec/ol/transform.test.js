@@ -1,5 +1,8 @@
 goog.provide('ol.test.transform');
 
+goog.require('ol.transform');
+
+
 describe('ol.transform', function() {
 
   function assertRoughlyEqual(t1, t2) {
@@ -117,5 +120,3 @@ describe('ol.transform', function() {
   });
 
 });
-
-goog.require('ol.transform');

@@ -2,10 +2,10 @@ goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
+goog.require('ol');
 goog.require('ol.Observable');
-goog.require('ol.events');
 goog.require('ol.events.Event');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -170,7 +170,7 @@ ol.Object.prototype.getKeys = function() {
  * @api stable
  */
 ol.Object.prototype.getProperties = function() {
-  return ol.object.assign({}, this.values_);
+  return ol.obj.assign({}, this.values_);
 };
 
 

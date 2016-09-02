@@ -1,5 +1,8 @@
 goog.provide('ol.test.uri');
 
+goog.require('ol.uri');
+
+
 describe('ol.uri.appendParams()', function() {
 
   it('should append empty STYLES with =', function() {
@@ -59,6 +62,13 @@ describe('ol.uri.appendParams()', function() {
     expect(url).to.equal('http://example.com/foo?bar=bam&baz=bat&bop=&k=v');
   });
 
-});
+  it('should not append null or undefined parameters to the url', function() {
+    var url = ol.uri.appendParams('http://example.com/foo', {
+      a: '1',
+      b: null,
+      c: undefined
+    });
+    expect(url).to.equal('http://example.com/foo?a=1');
+  });
 
-goog.require('ol.uri');
+});

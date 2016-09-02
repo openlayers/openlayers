@@ -1,4 +1,3 @@
-goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
@@ -34,7 +33,7 @@ var layers = [
   new ol.layer.Image({
     extent: extent,
     source: new ol.source.ImageWMS({
-      url: 'http://wms.geo.admin.ch/',
+      url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
@@ -48,7 +47,7 @@ var layers = [
   new ol.layer.Image({
     extent: extent,
     source: new ol.source.ImageWMS({
-      url: 'http://wms.geo.admin.ch/',
+      url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',

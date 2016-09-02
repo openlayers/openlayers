@@ -1,5 +1,6 @@
 goog.provide('ol.geom.Circle');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
@@ -148,7 +149,7 @@ ol.geom.Circle.prototype.intersectsExtent = function(extent) {
       return true;
     }
 
-    return ol.extent.forEachCorner(extent, this.containsCoordinate, this);
+    return ol.extent.forEachCorner(extent, this.intersectsCoordinate, this);
   }
   return false;
 
@@ -162,7 +163,7 @@ ol.geom.Circle.prototype.intersectsExtent = function(extent) {
  */
 ol.geom.Circle.prototype.setCenter = function(center) {
   var stride = this.stride;
-  goog.DEBUG && console.assert(center.length == stride,
+  ol.DEBUG && console.assert(center.length == stride,
       'center array length should match stride');
   var radius = this.flatCoordinates[stride] - this.flatCoordinates[0];
   var flatCoordinates = center.slice();

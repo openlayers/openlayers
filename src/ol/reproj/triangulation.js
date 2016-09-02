@@ -1,5 +1,6 @@
 goog.provide('ol.reproj.Triangulation');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');
@@ -117,7 +118,7 @@ ol.reproj.Triangulation = function(sourceProj, targetProj, targetExtent,
     // Fix coordinates (ol.proj returns wrapped coordinates, "unwrap" here).
     // This significantly simplifies the rest of the reprojection process.
 
-    goog.DEBUG && console.assert(this.sourceWorldWidth_ !== null);
+    ol.DEBUG && console.assert(this.sourceWorldWidth_ !== null);
     var leftBound = Infinity;
     this.triangles_.forEach(function(triangle, i, arr) {
       leftBound = Math.min(leftBound,

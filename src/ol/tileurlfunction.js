@@ -1,5 +1,6 @@
 goog.provide('ol.TileUrlFunction');
 
+goog.require('ol.asserts');
 goog.require('ol.math');
 goog.require('ol.tilecoord');
 
@@ -34,7 +35,7 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
               .replace(dashYRegEx, function() {
                 var z = tileCoord[0];
                 var range = tileGrid.getFullTileRange(z);
-                ol.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+                ol.asserts.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
                 var y = range.getHeight() + tileCoord[2];
                 return y.toString();
               });
@@ -64,7 +65,7 @@ ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
-  goog.DEBUG && console.assert(tileUrlFunctions.length > 0,
+  ol.DEBUG && console.assert(tileUrlFunctions.length > 0,
       'Length of tile url functions should be greater than 0');
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];

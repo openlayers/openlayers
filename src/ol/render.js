@@ -1,5 +1,6 @@
 goog.provide('ol.render');
 
+goog.require('ol.has');
 goog.require('ol.transform');
 goog.require('ol.render.canvas.Immediate');
 

@@ -2,7 +2,7 @@ OS := $(shell uname)
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 
 SRC_GLSL := $(shell find src -type f -name '*.glsl')
-SRC_SHADER_JS := $(patsubst %.glsl,%shader.js,$(SRC_GLSL))
+SRC_SHADER_JS := $(patsubst %shader.glsl,%shader.js,$(SRC_GLSL))
 SRC_JS := $(filter-out $(SRC_SHADER_JS),$(shell find src -name '*.js'))
 SRC_JSDOC = $(shell find src -type f -name '*.jsdoc')
 
@@ -180,7 +180,7 @@ build/timestamps/check-%-timestamp: $(BUILD_HOSTED)/examples/%.html \
                                     $(BUILD_HOSTED)/build/ol.js \
                                     $(BUILD_HOSTED)/css/ol.css
 	@mkdir -p $(@D)
-	./node_modules/.bin/phantomjs --local-to-remote-url-access=true --ssl-protocol=any --ignore-ssl-errors=true bin/check-example.js $<
+	node tasks/check-example.js $<
 	@touch $@
 
 build/compiled-examples/all.js: $(EXAMPLES_JS)
@@ -252,7 +252,7 @@ build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                    build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@echo "Running eslint..."
-	@./node_modules/.bin/eslint $?
+	@./node_modules/.bin/eslint --quiet tasks test test_rendering src examples
 	@touch $@
 
 build/timestamps/node-modules-timestamp: package.json
@@ -298,5 +298,5 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 	@mkdir -p $(@D)
 	@node tasks/generate-requires.js $^ > $@
 
-%shader.js: %.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
+%shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@

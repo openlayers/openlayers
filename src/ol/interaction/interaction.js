@@ -4,7 +4,6 @@ goog.provide('ol.interaction.Interaction');
 goog.provide('ol.interaction.InteractionProperty');
 
 goog.require('ol');
-goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.animation');
 goog.require('ol.easing');

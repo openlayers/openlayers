@@ -1,5 +1,17 @@
 goog.provide('ol.test.rendering.style.RegularShape');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.RegularShape');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
+
+
 describe('ol.rendering.style.RegularShape', function() {
 
   var target, map, vectorSource;
@@ -115,14 +127,3 @@ describe('ol.rendering.style.RegularShape', function() {
     });
   });
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.RegularShape');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');

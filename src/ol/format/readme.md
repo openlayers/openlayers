@@ -1,5 +1,5 @@
-# Implementing formats with ol.format.Format
-`ol.format.Format` defines a number of abstract methods including:
+# Implementing formats with ol.format.Feature
+`ol.format.Feature` defines a number of abstract methods including:
 
 * `readFeatures` returning an `Array.<ol.Feature>`
 * `readFeature` returning an `ol.Feature`
@@ -36,7 +36,7 @@ The `ol.format.XML` class includes a number of methods for reading arrays of fea
 
 `ol.format.XML` is for formats that contain features and geometries. If your XML file contains something else then you should not inherit from `ol.format.XML` and can skip ahead to the `ol.xml` section.
 
-`ol.format.XML` is perhaps easiest to explain first, since it is higher level than `ol.xml`, but before reading about `ol.format.XML`, read the description of [`ol.format.Format`](https://github.com/openlayers/ol3/wiki/Implementing-formats-with-%60ol.format.Format%60).
+`ol.format.XML` is perhaps easiest to explain first, since it is higher level than `ol.xml`.
 
 `ol.format.XML` defines a number of abstract type-checked methods with names including:
 

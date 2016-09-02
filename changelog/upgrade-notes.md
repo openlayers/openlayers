@@ -1,5 +1,35 @@
 ## Upgrade notes
 
+#### ´goog.DEBUG´ define was renamed to ´ol.DEBUG´
+
+As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
+
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.CollectionProperty` to `ol.Collection.Property`
+ * rename `ol.DeviceOrientationProperty` to `ol.DeviceOrientation.Property`
+ * rename `ol.GeolocationProperty` to `ol.Geolocation.Property`
+ * rename `ol.OverlayPositioning` to `ol.Overlay.Positioning`
+ * rename `ol.OverlayProperty` to `ol.Overlay.Property`
+ * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
+ * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
+ * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
+ * rename `ol.layer.HeatmapLayerProperty` to `ol.layer.Heatmap.Property`
+ * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
+ * rename `ol.source.TileEvent` to `ol.source.Tile.Event`
+ * rename `ol.source.TileEventType` to `ol.source.Tile.EventType`
+ * rename `ol.source.WMTSRequestEncoding` to `ol.source.WMTS.RequestEncoding`
+ * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
+ * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
+
+### v3.18.0
+
+#### Removal of the DOM renderer
+
+The DOM renderer has been removed.  Instead, the Canvas renderer should be used.  If you were previously constructing a map with `'dom'` as the `renderer` option, you will see an error message in the console in debug mode and the Canvas renderer will be used instead.  To remove the warning, remove the `renderer` option from your map constructor.
+
 #### Changes in the way assertions are handled
 
 Previously, minified builds of the library did not have any assertions. This caused applications to fail silently or with cryptic stack traces. Starting with this release, developers get notified of many runtime errors through the new `ol.AssertionError`. This error has a `code` property. The meaning of the code can be found on http://openlayers.org/en/latest/doc/errors/. There are additional console assertion checks in debug mode when the `goog.DEBUG` compiler flag is `true`. As this is `true` by default, it is recommended that those creating custom builds set this to `false` so these assertions are stripped.'
@@ -11,6 +41,28 @@ This option was previously needed to use named colors with the WebGL renderer bu
 #### KML format now uses URL()
 
 The URL constructor is supported by all modern browsers, but not by older ones, such as IE. To use the KML format in such older browsers, a URL polyfill will have to be loaded before use.
+
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.CollectionEventType` to `ol.Collection.EventType`
+ * rename `ol.CollectionEvent` to `ol.Collection.Event`
+ * rename `ol.ViewHint` to `ol.View.Hint`
+ * rename `ol.ViewProperty` to `ol.View.Property`
+ * rename `ol.render.webgl.imagereplay.shader.Default.Locations` to `ol.render.webgl.imagereplay.defaultshader.Locations`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultFragment` to `ol.render.webgl.imagereplay.defaultshader.Fragment`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultVertex` to `ol.render.webgl.imagereplay.defaultshader.Vertex`
+ * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
+ * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
+ * rename `ol.renderer.webgl.map.shader.DefaultFragment` to `ol.renderer.webgl.defaultmapshader.Fragment`
+ * rename `ol.renderer.webgl.map.shader.DefaultVertex` to `ol.renderer.webgl.defaultmapshader.Vertex`
+ * rename `ol.renderer.webgl.tilelayer.shader.Fragment` to `ol.renderer.webgl.tilelayershader.Fragment`
+ * rename `ol.renderer.webgl.tilelayer.shader.Locations` to `ol.renderer.webgl.tilelayershader.Locations`
+ * rename `ol.renderer.webgl.tilelayer.shader.Vertex` to `ol.renderer.webgl.tilelayershader.Vertex`
+ * rename `ol.webgl.WebGLContextEventType` to `ol.webgl.ContextEventType`
+ * rename `ol.webgl.shader.Fragment` to `ol.webgl.Fragment`
+ * rename `ol.webgl.shader.Vertex` to `ol.webgl.Vertex`
 
 ### v3.17.0
 

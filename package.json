@@ -1,6 +1,6 @@
 {
   "name": "openlayers",
-  "version": "3.17.1",
+  "version": "3.18.2",
   "description": "Build tools and sources for developing OpenLayers based mapping applications",
   "keywords": [
     "map",
@@ -32,17 +32,17 @@
   "dependencies": {
     "async": "2.0.1",
     "browserify": "13.1.0",
-    "closure-util": "1.15.0",
+    "closure-util": "1.15.1",
     "derequire": "2.0.3",
     "fs-extra": "0.30.0",
-    "glob": "7.0.5",
+    "glob": "7.0.6",
     "handlebars": "4.0.5",
     "jsdoc": "3.4.0",
     "marked": "0.3.6",
-    "metalsmith": "2.1.0",
+    "metalsmith": "2.2.0",
     "metalsmith-layouts": "1.6.5",
     "nomnom": "1.8.1",
-    "pbf": "2.0.1",
+    "pbf": "3.0.0",
     "pixelworks": "1.1.0",
     "rbush": "2.0.1",
     "temp": "0.8.3",
@@ -53,18 +53,20 @@
     "clean-css": "3.4.19",
     "coveralls": "2.11.12",
     "debounce": "^1.0.0",
-    "eslint": "3.2.2",
+    "eslint": "3.4.0",
     "eslint-config-openlayers": "5.0.0",
+    "eslint-plugin-openlayers-internal": "2.2.0",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",
-    "istanbul": "0.4.4",
+    "istanbul": "0.4.5",
     "jquery": "3.1.0",
-    "mocha": "2.5.3",
+    "mocha": "3.0.2",
     "mocha-phantomjs-core": "^1.3.0",
     "mustache": "2.2.1",
-    "phantomjs-prebuilt": "2.1.10",
-    "proj4": "2.3.14",
+    "phantomjs-prebuilt": "2.1.12",
+    "proj4": "2.3.15",
     "resemblejs": "2.2.1",
+    "serve-files": "1.0.0",
     "sinon": "1.17.5",
     "slimerjs": "0.906.2"
   },
@@ -81,8 +83,26 @@
       "goog": false,
       "proj4": false
     },
+    "plugins": [
+      "openlayers-internal"
+    ],
     "rules": {
-      "no-constant-condition": 0
+      "no-console": [
+        2,
+        {
+          "allow": [
+            "assert"
+          ]
+        }
+      ],
+      "no-constant-condition": 0,
+      "openlayers-internal/no-duplicate-requires": 2,
+      "openlayers-internal/no-missing-requires": 1,
+      "openlayers-internal/no-unused-requires": 2,
+      "openlayers-internal/one-provide": 1,
+      "openlayers-internal/requires-first": 2,
+      "openlayers-internal/valid-provide": 2,
+      "openlayers-internal/valid-requires": 2
     }
   },
   "ext": [
