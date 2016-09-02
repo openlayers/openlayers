@@ -252,8 +252,8 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
         drawable = tileState == ol.Tile.State.LOADED ||
             tileState == ol.Tile.State.EMPTY ||
             tileState == ol.Tile.State.ERROR && !useInterimTilesOnError;
-        if (!drawable && tile.interimTile) {
-          tile = tile.interimTile;
+        if (!drawable) {
+          tile = tile.getInterimTile();
         }
         tileState = tile.getState();
         if (tileState == ol.Tile.State.LOADED) {
