@@ -1,5 +1,7 @@
 goog.provide('ol.TileRange');
 
+goog.require('ol.asserts');
+
 
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
@@ -54,7 +56,7 @@ ol.TileRange.boundingTileRange = function(var_args) {
     tileCoordZ = tileCoord[0];
     tileCoordX = tileCoord[1];
     tileCoordY = tileCoord[2];
-    ol.assert(tileCoordZ == tileCoord0Z,
+    ol.asserts.assert(tileCoordZ == tileCoord0Z,
         23); // The passed `ol.TileCoord`s must all have the same `z` value
     tileRange.minX = Math.min(tileRange.minX, tileCoordX);
     tileRange.maxX = Math.max(tileRange.maxX, tileCoordX);

@@ -1,4 +1,3 @@
-goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.extent');
@@ -58,7 +57,7 @@ var layers = {};
 layers['bng'] = new ol.layer.Tile({
   source: new ol.source.XYZ({
     projection: 'EPSG:27700',
-    url: 'http://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
+    url: 'https://tileserver.maptiler.com/miniscale/{z}/{x}/{y}.png',
     crossOrigin: '',
     maxZoom: 6
   })
@@ -88,7 +87,7 @@ layers['wms21781'] = new ol.layer.Tile({
       'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
       'FORMAT': 'image/jpeg'
     },
-    url: 'http://wms.geo.admin.ch/',
+    url: 'https://wms.geo.admin.ch/',
     projection: 'EPSG:21781'
   })
 });
@@ -112,7 +111,7 @@ fetch(url).then(function(response) {
 
 layers['grandcanyon'] = new ol.layer.Tile({
   source: new ol.source.XYZ({
-    url: 'http://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
+    url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
     crossOrigin: '',
     tilePixelRatio: 2,
     maxZoom: 15,

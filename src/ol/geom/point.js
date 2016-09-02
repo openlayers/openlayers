@@ -1,5 +1,6 @@
 goog.provide('ol.geom.Point');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');

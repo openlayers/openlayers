@@ -1,5 +1,15 @@
 goog.provide('ol.test.rendering.style.LineString');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.LineString');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
+
+
 describe('ol.rendering.style.LineString', function() {
 
   var target, map, vectorSource;
@@ -90,12 +100,3 @@ describe('ol.rendering.style.LineString', function() {
     });
   });
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.LineString');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');

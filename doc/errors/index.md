@@ -85,10 +85,6 @@ Number of `tileSizes` and `resolutions` must be equal.
 
 Number of `origins` and `resolutions` must be equal.
 
-### 21
-
-Tile range for `extent` must not exceed tilegrid width and height.
-
 ### 22
 
 Either `tileSize` or `tileSizes` must be configured, never both.
@@ -224,3 +220,7 @@ Hex color should have 3 or 6 digits.
 ### 55
 
 The `{-y}` placeholder requires a tile grid with extent.
+
+### 56
+
+`mapBrowserEvent` must originate from a pointer event.

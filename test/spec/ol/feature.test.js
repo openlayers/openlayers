@@ -1,5 +1,11 @@
 goog.provide('ol.test.Feature');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.obj');
+goog.require('ol.style.Style');
+
+
 describe('ol.Feature', function() {
 
   describe('constructor', function() {
@@ -81,7 +87,7 @@ describe('ol.Feature', function() {
     it('is empty by default', function() {
       var feature = new ol.Feature();
       var properties = feature.getProperties();
-      expect(ol.object.isEmpty(properties)).to.be(true);
+      expect(ol.obj.isEmpty(properties)).to.be(true);
     });
 
   });
@@ -460,9 +466,3 @@ describe('ol.Feature.createStyleFunction()', function() {
   });
 
 });
-
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.object');
-goog.require('ol.style.Style');

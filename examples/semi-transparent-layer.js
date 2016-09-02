@@ -13,7 +13,7 @@ var map = new ol.Map({
     }),
     new ol.layer.Tile({
       source: new ol.source.TileJSON({
-        url: 'http://api.tiles.mapbox.com/v3/mapbox.va-quake-aug.json',
+        url: 'https://api.tiles.mapbox.com/v3/mapbox.va-quake-aug.json?secure',
         crossOrigin: 'anonymous'
       })
     })

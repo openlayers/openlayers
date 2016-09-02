@@ -1,5 +1,11 @@
 goog.provide('ol.test.reproj.Image');
 
+goog.require('ol.Image');
+goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.reproj.Image');
+
+
 describe('ol.reproj.Image', function() {
   function createImage(pixelRatio) {
     return new ol.reproj.Image(
@@ -52,9 +58,3 @@ describe('ol.reproj.Image', function() {
     image.load();
   });
 });
-
-
-goog.require('ol.Image');
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.reproj.Image');

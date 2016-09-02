@@ -1,20 +1,8 @@
 goog.provide('ol.ImageBase');
-goog.provide('ol.ImageState');
 
+goog.require('ol');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
-goog.require('ol.Attribution');
-
-
-/**
- * @enum {number}
- */
-ol.ImageState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3
-};
 
 
 /**
@@ -23,7 +11,7 @@ ol.ImageState = {
  * @param {ol.Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.ImageState} state State.
+ * @param {ol.Image.State} state State.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  */
 ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
@@ -56,7 +44,7 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
 
   /**
    * @protected
-   * @type {ol.ImageState}
+   * @type {ol.Image.State}
    */
   this.state = state;
 
@@ -108,13 +96,13 @@ ol.ImageBase.prototype.getPixelRatio = function() {
  * @return {number} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
-  goog.DEBUG && console.assert(this.resolution !== undefined, 'resolution not yet set');
+  ol.DEBUG && console.assert(this.resolution !== undefined, 'resolution not yet set');
   return /** @type {number} */ (this.resolution);
 };
 
 
 /**
- * @return {ol.ImageState} State.
+ * @return {ol.Image.State} State.
  */
 ol.ImageBase.prototype.getState = function() {
   return this.state;

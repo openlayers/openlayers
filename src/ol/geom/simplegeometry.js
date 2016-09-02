@@ -1,11 +1,12 @@
 goog.provide('ol.geom.SimpleGeometry');
 
+goog.require('ol');
 goog.require('ol.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -57,7 +58,7 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
   } else if (stride == 4) {
     layout = ol.geom.GeometryLayout.XYZM;
   }
-  goog.DEBUG && console.assert(layout, 'unsupported stride: ' + stride);
+  ol.DEBUG && console.assert(layout, 'unsupported stride: ' + stride);
   return /** @type {ol.geom.GeometryLayout} */ (layout);
 };
 
@@ -75,7 +76,7 @@ ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
   } else if (layout == ol.geom.GeometryLayout.XYZM) {
     stride = 4;
   }
-  goog.DEBUG && console.assert(stride, 'unsupported layout: ' + layout);
+  ol.DEBUG && console.assert(stride, 'unsupported layout: ' + layout);
   return /** @type {number} */ (stride);
 };
 
@@ -146,7 +147,7 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
  */
 ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    ol.object.clear(this.simplifiedGeometryCache);
+    ol.obj.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
@@ -323,7 +324,7 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
-ol.geom.transformSimpleGeometry2D = function(simpleGeometry, transform, opt_dest) {
+ol.geom.SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
   var flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;

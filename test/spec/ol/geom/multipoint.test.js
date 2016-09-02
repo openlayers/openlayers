@@ -1,5 +1,9 @@
 goog.provide('ol.test.geom.MultiPoint');
 
+goog.require('ol.extent');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.Point');
+
 
 describe('ol.geom.MultiPoint', function() {
 
@@ -286,8 +290,3 @@ describe('ol.geom.MultiPoint', function() {
   });
 
 });
-
-
-goog.require('ol.extent');
-goog.require('ol.geom.MultiPoint');
-goog.require('ol.geom.Point');

@@ -1,5 +1,12 @@
 goog.provide('ol.test.format.TopoJSON');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
+goog.require('ol.format.Feature');
+goog.require('ol.proj');
+goog.require('ol.format.TopoJSON');
+
 var aruba = {
   type: 'Topology',
   transform: {
@@ -172,10 +179,3 @@ describe('ol.format.TopoJSON', function() {
   });
 
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Polygon');
-goog.require('ol.format.Feature');
-goog.require('ol.proj');
-goog.require('ol.format.TopoJSON');

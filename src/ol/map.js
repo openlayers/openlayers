@@ -5,9 +5,8 @@
 goog.provide('ol.Map');
 goog.provide('ol.MapProperty');
 
-goog.require('goog.async.nextTick');
+goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserEventHandler');
@@ -18,8 +17,8 @@ goog.require('ol.ObjectEventType');
 goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
-goog.require('ol.ViewHint');
 goog.require('ol.array');
+goog.require('ol.asserts');
 goog.require('ol.control');
 goog.require('ol.dom');
 goog.require('ol.events');
@@ -29,18 +28,15 @@ goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.has');
 goog.require('ol.interaction');
-goog.require('ol.layer.Base');
 goog.require('ol.layer.Group');
-goog.require('ol.transform');
-goog.require('ol.object');
-goog.require('ol.proj');
+goog.require('ol.obj');
 goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
-goog.require('ol.renderer.dom.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
+goog.require('ol.transform');
 
 
 /**
@@ -84,8 +80,7 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
  */
 ol.DEFAULT_RENDERER_TYPES = [
   ol.RendererType.CANVAS,
-  ol.RendererType.WEBGL,
-  ol.RendererType.DOM
+  ol.RendererType.WEBGL
 ];
 
 
@@ -128,8 +123,7 @@ ol.MapProperty = {
  * `ol-overlaycontainer-stopevent` for controls and some overlays, and one with
  * CSS class name `ol-overlaycontainer` for other overlays (see the `stopEvent`
  * option of {@link ol.Overlay} for the difference). The map itself is placed in
- * a further element within the viewport, either DOM or Canvas, depending on the
- * renderer.
+ * a further element within the viewport.
  *
  * Layers are stored as a `ol.Collection` in layerGroups. A top-level group is
  * provided by the library. This is what is accessed by `getLayerGroup` and
@@ -405,17 +399,17 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.controls_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.controls_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(null);
@@ -430,17 +424,17 @@ ol.Map = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.interactions_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.interactions_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         event.element.setMap(null);
@@ -448,17 +442,17 @@ ol.Map = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
+  ol.events.listen(this.overlays_, ol.Collection.EventType.ADD,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
+  ol.events.listen(this.overlays_, ol.Collection.EventType.REMOVE,
       /**
-       * @param {ol.CollectionEvent} event Collection event.
+       * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
         var id = event.element.getId();
@@ -556,6 +550,7 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
+  var global = ol.global;
   this.mapBrowserEventHandler_.dispose();
   this.renderer_.dispose();
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
@@ -563,12 +558,12 @@ ol.Map.prototype.disposeInternal = function() {
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    ol.global.removeEventListener(ol.events.EventType.RESIZE,
+    global.removeEventListener(ol.events.EventType.RESIZE,
         this.handleResize_, false);
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
-    ol.global.cancelAnimationFrame(this.animationDelayKey_);
+    global.cancelAnimationFrame(this.animationDelayKey_);
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
@@ -622,10 +617,11 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt
  * execute a callback with each matching layer. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {function(this: S, ol.layer.Layer): T} callback Layer
- *     callback. Will receive one argument, the {@link ol.layer.Layer layer}
- *     that contains the color pixel. To stop detection, callback functions can
- *     return a truthy value.
+ * @param {function(this: S, ol.layer.Layer, ol.Color): T} callback Layer
+ *     callback. This callback will recieve two arguments: first is the
+ *     {@link ol.layer.Layer layer}, second argument is {@link ol.Color}
+ *     and will be null for layer types that do not currently support this
+ *     argument. To stop detection callback functions can return a truthy value.
  * @param {S=} opt_this Value to use as `this` when executing `callback`.
  * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
  *     filter function. The filter function will receive one argument, the
@@ -1007,11 +1003,11 @@ ol.Map.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[ol.ViewHint.ANIMATING]) {
+      if (hints[ol.View.Hint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[ol.ViewHint.INTERACTING]) {
+      if (hints[ol.View.Hint.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -1043,6 +1039,7 @@ ol.Map.prototype.handleSizeChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleTargetChanged_ = function() {
+  var global = ol.global;
   // target may be undefined, null, a string or an Element.
   // If it's a string we convert it to an Element before proceeding.
   // If it's not now an Element we remove the viewport from the DOM.
@@ -1051,7 +1048,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   var targetElement;
   if (this.getTarget()) {
     targetElement = this.getTargetElement();
-    goog.DEBUG && console.assert(targetElement !== null,
+    ol.DEBUG && console.assert(targetElement !== null,
         'expects a non-null value for targetElement');
   }
 
@@ -1065,7 +1062,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   if (!targetElement) {
     ol.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      ol.global.removeEventListener(ol.events.EventType.RESIZE,
+      global.removeEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
       this.handleResize_ = undefined;
     }
@@ -1083,7 +1080,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      ol.global.addEventListener(ol.events.EventType.RESIZE,
+      global.addEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
     }
   }
@@ -1164,8 +1161,9 @@ ol.Map.prototype.isRendered = function() {
  * @api stable
  */
 ol.Map.prototype.renderSync = function() {
+  var global = ol.global;
   if (this.animationDelayKey_) {
-    ol.global.cancelAnimationFrame(this.animationDelayKey_);
+    global.cancelAnimationFrame(this.animationDelayKey_);
   }
   this.animationDelay_();
 };
@@ -1176,8 +1174,9 @@ ol.Map.prototype.renderSync = function() {
  * @api stable
  */
 ol.Map.prototype.render = function() {
+  var global = ol.global;
   if (this.animationDelayKey_ === undefined) {
-    this.animationDelayKey_ = ol.global.requestAnimationFrame(
+    this.animationDelayKey_ = global.requestAnimationFrame(
         this.animationDelay_);
   }
 };
@@ -1262,7 +1261,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
       index: this.frameIndex_++,
       layerStates: layerStates,
       layerStatesArray: layerStatesArray,
-      logos: ol.object.assign({}, this.logos_),
+      logos: ol.obj.assign({}, this.logos_),
       pixelRatio: this.pixelRatio_,
       pixelToCoordinateTransform: this.pixelToCoordinateTransform_,
       postRenderFunctions: [],
@@ -1303,8 +1302,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
+        !frameState.viewHints[ol.View.Hint.ANIMATING] &&
+        !frameState.viewHints[ol.View.Hint.INTERACTING] &&
         !ol.extent.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
@@ -1317,7 +1316,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
-  goog.async.nextTick(this.handlePostRender, this);
+  ol.global.setTimeout(this.handlePostRender.bind(this), 0);
 
 };
 
@@ -1384,12 +1383,13 @@ ol.Map.prototype.skipFeature = function(feature) {
  * @api stable
  */
 ol.Map.prototype.updateSize = function() {
+  var global = ol.global;
   var targetElement = this.getTargetElement();
 
   if (!targetElement) {
     this.setSize(undefined);
   } else {
-    var computedStyle = ol.global.getComputedStyle(targetElement);
+    var computedStyle = global.getComputedStyle(targetElement);
     this.setSize([
       targetElement.offsetWidth -
           parseFloat(computedStyle['borderLeftWidth']) -
@@ -1448,8 +1448,8 @@ ol.Map.createOptionsInternal = function(options) {
     } else if (logo instanceof HTMLElement) {
       logos[ol.getUid(logo).toString()] = logo;
     } else if (logo) {
-      ol.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
-      ol.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
+      ol.asserts.assert(typeof logo.href == 'string', 44); // `logo.href` should be a string.
+      ol.asserts.assert(typeof logo.src == 'string', 45); // `logo.src` should be a string.
       logos[logo.src] = logo.href;
     }
   }
@@ -1478,7 +1478,11 @@ ol.Map.createOptionsInternal = function(options) {
     } else if (typeof options.renderer === 'string') {
       rendererTypes = [options.renderer];
     } else {
-      ol.assert(false, 46); // Incorrect format for `renderer` option
+      ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
+    }
+    if (rendererTypes.indexOf(/** @type {ol.RendererType} */ ('dom')) >= 0) {
+      ol.DEBUG && console.assert(false, 'The DOM render has been removed');
+      rendererTypes = rendererTypes.concat(ol.DEFAULT_RENDERER_TYPES);
     }
   } else {
     rendererTypes = ol.DEFAULT_RENDERER_TYPES;
@@ -1491,11 +1495,6 @@ ol.Map.createOptionsInternal = function(options) {
     if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
       if (ol.has.CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
-        break;
-      }
-    } else if (ol.ENABLE_DOM && rendererType == ol.RendererType.DOM) {
-      if (ol.has.DOM) {
-        rendererConstructor = ol.renderer.dom.Map;
         break;
       }
     } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
@@ -1511,7 +1510,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.controls)) {
       controls = new ol.Collection(options.controls.slice());
     } else {
-      ol.assert(options.controls instanceof ol.Collection,
+      ol.asserts.assert(options.controls instanceof ol.Collection,
           47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
@@ -1524,7 +1523,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.interactions)) {
       interactions = new ol.Collection(options.interactions.slice());
     } else {
-      ol.assert(options.interactions instanceof ol.Collection,
+      ol.asserts.assert(options.interactions instanceof ol.Collection,
           48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
@@ -1537,7 +1536,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.overlays)) {
       overlays = new ol.Collection(options.overlays.slice());
     } else {
-      ol.assert(options.overlays instanceof ol.Collection,
+      ol.asserts.assert(options.overlays instanceof ol.Collection,
           49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }

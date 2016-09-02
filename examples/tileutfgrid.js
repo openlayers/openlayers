@@ -9,13 +9,13 @@ var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 var mapLayer = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v4/mapbox.geography-class.json?access_token=' + key
+    url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
   })
 });
 
 
 var gridSource = new ol.source.TileUTFGrid({
-  url: 'http://api.tiles.mapbox.com/v4/mapbox.geography-class.json?access_token=' + key
+  url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
 });
 
 var gridLayer = new ol.layer.Tile({source: gridSource});

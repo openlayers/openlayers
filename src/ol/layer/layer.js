@@ -6,7 +6,7 @@ goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
-goog.require('ol.object');
+goog.require('ol.obj');
 goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
@@ -34,7 +34,7 @@ goog.require('ol.source.State');
  */
 ol.layer.Layer = function(options) {
 
-  var baseOptions = ol.object.assign({}, options);
+  var baseOptions = ol.obj.assign({}, options);
   delete baseOptions.source;
 
   ol.layer.Base.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));

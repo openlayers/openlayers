@@ -1,5 +1,7 @@
 goog.provide('ol.test.math');
 
+goog.require('ol.math');
+
 
 describe('ol.math.clamp', function() {
 
@@ -197,6 +199,3 @@ describe('ol.math.modulo', function() {
     });
   });
 });
-
-
-goog.require('ol.math');

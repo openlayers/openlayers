@@ -1,3 +1,5 @@
+/* eslint-disable openlayers-internal/no-missing-requires */
+
 /**
  * File for all typedefs used by the compiler, and referenced by JSDoc.
  *
@@ -104,7 +106,7 @@ ol.CircleRenderOptions;
  * red, green, and blue should be integers in the range 0..255 inclusive.
  * alpha should be a float in the range 0..1 inclusive. If no alpha value is
  * given then `1` will be used.
- * @typedef {Array.<number>}
+ * @typedef {Array.<number>|Uint8Array|Uint8ClampedArray}
  */
 ol.Color;
 
@@ -272,8 +274,8 @@ ol.ImageLoadFunctionType;
 
 
 /**
- * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
+ * @typedef {{x: number, xunits: (ol.style.Icon.AnchorUnits|undefined),
+ *            y: number, yunits: (ol.style.Icon.AnchorUnits|undefined)}}
  */
 ol.KMLVec2_;
 
@@ -607,7 +609,7 @@ ol.TilePriorityFunction;
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedTileRevision: number,
  *     renderedRevision: number,
- *     replayGroup: ol.render.IReplayGroup,
+ *     replayGroup: ol.render.ReplayGroup,
  *     skippedFeatures: Array.<string>}}
  */
 ol.TileReplayState;

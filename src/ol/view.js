@@ -1,6 +1,4 @@
 goog.provide('ol.View');
-goog.provide('ol.ViewHint');
-goog.provide('ol.ViewProperty');
 
 goog.require('ol');
 goog.require('ol.CenterConstraint');
@@ -8,33 +6,15 @@ goog.require('ol.Constraints');
 goog.require('ol.Object');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
+goog.require('ol.array');
+goog.require('ol.asserts');
 goog.require('ol.coordinate');
 goog.require('ol.extent');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
-goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
-
-
-/**
- * @enum {string}
- */
-ol.ViewProperty = {
-  CENTER: 'center',
-  RESOLUTION: 'resolution',
-  ROTATION: 'rotation'
-};
-
-
-/**
- * @enum {number}
- */
-ol.ViewHint = {
-  ANIMATING: 0,
-  INTERACTING: 1
-};
 
 
 /**
@@ -108,7 +88,7 @@ ol.View = function(opt_options) {
    * @type {Object.<string, *>}
    */
   var properties = {};
-  properties[ol.ViewProperty.CENTER] = options.center !== undefined ?
+  properties[ol.View.Property.CENTER] = options.center !== undefined ?
       options.center : null;
 
   /**
@@ -163,12 +143,12 @@ ol.View = function(opt_options) {
       centerConstraint, resolutionConstraint, rotationConstraint);
 
   if (options.resolution !== undefined) {
-    properties[ol.ViewProperty.RESOLUTION] = options.resolution;
+    properties[ol.View.Property.RESOLUTION] = options.resolution;
   } else if (options.zoom !== undefined) {
-    properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
+    properties[ol.View.Property.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
   }
-  properties[ol.ViewProperty.ROTATION] =
+  properties[ol.View.Property.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
 };
@@ -260,7 +240,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.ViewProperty.CENTER));
+      this.get(ol.View.Property.CENTER));
 };
 
 
@@ -290,11 +270,11 @@ ol.View.prototype.getHints = function(opt_hints) {
  */
 ol.View.prototype.calculateExtent = function(size) {
   var center = /** @type {!ol.Coordinate} */ (this.getCenter());
-  ol.assert(center, 1); // The view center is not defined
+  ol.asserts.assert(center, 1); // The view center is not defined
   var resolution = /** @type {!number} */ (this.getResolution());
-  ol.assert(resolution !== undefined, 2); // The view resolution is not defined
+  ol.asserts.assert(resolution !== undefined, 2); // The view resolution is not defined
   var rotation = /** @type {!number} */ (this.getRotation());
-  ol.assert(rotation !== undefined, 3); // The view rotation is not defined
+  ol.asserts.assert(rotation !== undefined, 3); // The view rotation is not defined
 
   return ol.extent.getForViewAndSize(center, resolution, rotation, size);
 };
@@ -338,7 +318,7 @@ ol.View.prototype.getProjection = function() {
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.ViewProperty.RESOLUTION));
+      this.get(ol.View.Property.RESOLUTION));
 };
 
 
@@ -385,7 +365,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
        */
       function(value) {
         var resolution = maxResolution / Math.pow(power, value * max);
-        goog.DEBUG && console.assert(resolution >= minResolution &&
+        ol.DEBUG && console.assert(resolution >= minResolution &&
             resolution <= maxResolution,
             'calculated resolution outside allowed bounds (%s <= %s <= %s)',
             minResolution, resolution, maxResolution);
@@ -401,7 +381,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
  * @api stable
  */
 ol.View.prototype.getRotation = function() {
-  return /** @type {number} */ (this.get(ol.ViewProperty.ROTATION));
+  return /** @type {number} */ (this.get(ol.View.Property.ROTATION));
 };
 
 
@@ -424,7 +404,7 @@ ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
       function(resolution) {
         var value =
             (Math.log(maxResolution / resolution) / Math.log(power)) / max;
-        goog.DEBUG && console.assert(value >= 0 && value <= 1,
+        ol.DEBUG && console.assert(value >= 0 && value <= 1,
             'calculated value (%s) ouside allowed range (0-1)', value);
         return value;
       });
@@ -435,7 +415,7 @@ ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
  * @return {olx.ViewState} View state.
  */
 ol.View.prototype.getState = function() {
-  goog.DEBUG && console.assert(this.isDef(),
+  ol.DEBUG && console.assert(this.isDef(),
       'the view was not defined (had no center and/or resolution)');
   var center = /** @type {ol.Coordinate} */ (this.getCenter());
   var projection = this.getProjection();
@@ -493,9 +473,9 @@ ol.View.prototype.getZoom = function() {
  */
 ol.View.prototype.fit = function(geometry, size, opt_options) {
   if (!(geometry instanceof ol.geom.SimpleGeometry)) {
-    ol.assert(Array.isArray(geometry),
+    ol.asserts.assert(Array.isArray(geometry),
         24); // Invalid extent or geometry provided as `geometry`
-    ol.assert(!ol.extent.isEmpty(geometry),
+    ol.asserts.assert(!ol.extent.isEmpty(geometry),
         25); // Cannot fit empty extent provided as `geometry`
     geometry = ol.geom.Polygon.fromExtent(geometry);
   }
@@ -519,7 +499,7 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
 
   // calculate rotated extent
   var rotation = this.getRotation();
-  goog.DEBUG && console.assert(rotation !== undefined, 'rotation was not defined');
+  ol.DEBUG && console.assert(rotation !== undefined, 'rotation was not defined');
   var cosAngle = Math.cos(-rotation);
   var sinAngle = Math.sin(-rotation);
   var minRotX = +Infinity;
@@ -622,20 +602,20 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * @api stable
  */
 ol.View.prototype.setCenter = function(center) {
-  this.set(ol.ViewProperty.CENTER, center);
+  this.set(ol.View.Property.CENTER, center);
 };
 
 
 /**
- * @param {ol.ViewHint} hint Hint.
+ * @param {ol.View.Hint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
  */
 ol.View.prototype.setHint = function(hint, delta) {
-  goog.DEBUG && console.assert(0 <= hint && hint < this.hints_.length,
+  ol.DEBUG && console.assert(0 <= hint && hint < this.hints_.length,
       'illegal hint (%s), must be between 0 and %s', hint, this.hints_.length);
   this.hints_[hint] += delta;
-  goog.DEBUG && console.assert(this.hints_[hint] >= 0,
+  ol.DEBUG && console.assert(this.hints_[hint] >= 0,
       'Hint at %s must be positive, was %s', hint, this.hints_[hint]);
   return this.hints_[hint];
 };
@@ -648,7 +628,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * @api stable
  */
 ol.View.prototype.setResolution = function(resolution) {
-  this.set(ol.ViewProperty.RESOLUTION, resolution);
+  this.set(ol.View.Property.RESOLUTION, resolution);
 };
 
 
@@ -659,7 +639,7 @@ ol.View.prototype.setResolution = function(resolution) {
  * @api stable
  */
 ol.View.prototype.setRotation = function(rotation) {
-  this.set(ol.ViewProperty.ROTATION, rotation);
+  this.set(ol.View.Property.ROTATION, rotation);
 };
 
 
@@ -788,11 +768,30 @@ ol.View.createRotationConstraint_ = function(options) {
     } else if (typeof constrainRotation === 'number') {
       return ol.RotationConstraint.createSnapToN(constrainRotation);
     } else {
-      goog.DEBUG && console.assert(false,
+      ol.DEBUG && console.assert(false,
           'illegal option for constrainRotation (%s)', constrainRotation);
       return ol.RotationConstraint.none;
     }
   } else {
     return ol.RotationConstraint.disable;
   }
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.View.Property = {
+  CENTER: 'center',
+  RESOLUTION: 'resolution',
+  ROTATION: 'rotation'
+};
+
+
+/**
+ * @enum {number}
+ */
+ol.View.Hint = {
+  ANIMATING: 0,
+  INTERACTING: 1
 };

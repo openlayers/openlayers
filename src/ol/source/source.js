@@ -1,22 +1,10 @@
 goog.provide('ol.source.Source');
-goog.provide('ol.source.State');
 
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Object');
 goog.require('ol.proj');
-
-
-/**
- * State of the source, one of 'undefined', 'loading', 'ready' or 'error'.
- * @enum {string}
- */
-ol.source.State = {
-  UNDEFINED: 'undefined',
-  LOADING: 'loading',
-  READY: 'ready',
-  ERROR: 'error'
-};
+goog.require('ol.source.State');
 
 
 /**

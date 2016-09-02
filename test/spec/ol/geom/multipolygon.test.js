@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.MultiPolygon');
 
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
+
 
 describe('ol.geom.MultiPolygon', function() {
 
@@ -193,7 +196,3 @@ describe('ol.geom.MultiPolygon', function() {
   });
 
 });
-
-
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Polygon');

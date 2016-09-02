@@ -1,5 +1,8 @@
 goog.provide('ol.test.control.Control');
 
+goog.require('ol.Map');
+goog.require('ol.control.Control');
+
 describe('ol.control.Control', function() {
   var map, control;
 
@@ -49,6 +52,3 @@ describe('ol.control.Control\'s target', function() {
     });
   });
 });
-
-goog.require('ol.Map');
-goog.require('ol.control.Control');

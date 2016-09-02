@@ -1,5 +1,10 @@
 goog.provide('ol.test.TileUrlFunction');
 
+goog.require('ol.TileUrlFunction');
+goog.require('ol.tilegrid');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.TileUrlFunction', function() {
 
   describe('expandUrl', function() {
@@ -69,6 +74,7 @@ describe('ol.TileUrlFunction', function() {
           templates, tileGrid);
       var tileCoord = [3, 2, -2];
 
+      /* eslint-disable openlayers-internal/no-missing-requires */
       sinon.stub(ol.tilecoord, 'hash', function() {
         return 3;
       });
@@ -86,6 +92,7 @@ describe('ol.TileUrlFunction', function() {
       });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
       ol.tilecoord.hash.restore();
+      /* eslint-enable */
     });
   });
 
@@ -104,6 +111,3 @@ describe('ol.TileUrlFunction', function() {
   });
 
 });
-
-goog.require('ol.TileUrlFunction');
-goog.require('ol.tilegrid.TileGrid');

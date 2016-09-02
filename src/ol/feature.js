@@ -1,5 +1,6 @@
 goog.provide('ol.Feature');
 
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol');
@@ -301,7 +302,7 @@ ol.Feature.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      ol.assert(obj instanceof ol.style.Style,
+      ol.asserts.assert(obj instanceof ol.style.Style,
           41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }

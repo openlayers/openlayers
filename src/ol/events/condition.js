@@ -1,8 +1,9 @@
 goog.provide('ol.events.condition');
 
-goog.require('ol.functions');
 goog.require('ol.MapBrowserEvent.EventType');
-goog.require('ol.MapBrowserPointerEvent');
+goog.require('ol.asserts');
+goog.require('ol.functions');
+goog.require('ol.has');
 
 
 /**
@@ -74,7 +75,7 @@ ol.events.condition.click = function(mapBrowserEvent) {
 ol.events.condition.mouseActionButton = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return originalEvent.button == 0 &&
-      !(goog.userAgent.WEBKIT && ol.has.MAC && originalEvent.ctrlKey);
+      !(ol.has.WEBKIT && ol.has.MAC && originalEvent.ctrlKey);
 };
 
 
@@ -204,10 +205,9 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.mouseOnly = function(mapBrowserEvent) {
+  ol.asserts.assert(mapBrowserEvent.pointerEvent, 56); // mapBrowserEvent must originate from a pointer event
   // see http://www.w3.org/TR/pointerevents/#widl-PointerEvent-pointerType
-  goog.asserts.assertInstanceof(mapBrowserEvent, ol.MapBrowserPointerEvent,
-      'Requires an ol.MapBrowserPointerEvent to work.');
-  return mapBrowserEvent.pointerEvent.pointerType == 'mouse';
+  return /** @type {ol.MapBrowserEvent} */ (mapBrowserEvent).pointerEvent.pointerType == 'mouse';
 };
 
 

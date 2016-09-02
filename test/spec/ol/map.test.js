@@ -1,5 +1,18 @@
 goog.provide('ol.test.Map');
 
+goog.require('ol.Map');
+goog.require('ol.MapEvent');
+goog.require('ol.Overlay');
+goog.require('ol.View');
+goog.require('ol.has');
+goog.require('ol.interaction');
+goog.require('ol.interaction.DoubleClickZoom');
+goog.require('ol.interaction.Interaction');
+goog.require('ol.interaction.MouseWheelZoom');
+goog.require('ol.layer.Tile');
+goog.require('ol.source.XYZ');
+
+
 describe('ol.Map', function() {
 
   describe('constructor', function() {
@@ -424,14 +437,3 @@ describe('ol.Map', function() {
   });
 
 });
-
-goog.require('ol.Map');
-goog.require('ol.MapEvent');
-goog.require('ol.Overlay');
-goog.require('ol.View');
-goog.require('ol.interaction');
-goog.require('ol.interaction.Interaction');
-goog.require('ol.interaction.DoubleClickZoom');
-goog.require('ol.interaction.MouseWheelZoom');
-goog.require('ol.layer.Tile');
-goog.require('ol.source.XYZ');

@@ -1,5 +1,12 @@
 goog.provide('ol.test.View');
 
+goog.require('ol');
+goog.require('ol.View');
+goog.require('ol.extent');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+
+
 describe('ol.View', function() {
 
   describe('constructor (defaults)', function() {
@@ -568,8 +575,3 @@ describe('ol.View', function() {
     });
   });
 });
-
-goog.require('ol.View');
-goog.require('ol.extent');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');

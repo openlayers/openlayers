@@ -1,11 +1,23 @@
 goog.provide('ol.test.rendering.style.Polygon');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Polygon');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Style');
+goog.require('ol.style.Stroke');
+
+
 describe('ol.rendering.style.Polygon', function() {
 
   var target, map, vectorSource;
 
-  function createMap(renderer) {
-    target = createMapDiv(50, 50);
+  function createMap(renderer, opt_size) {
+    var size = opt_size || 50;
+    target = createMapDiv(size, size);
 
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
@@ -77,6 +89,68 @@ describe('ol.rendering.style.Polygon', function() {
       map = createMap('canvas');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas.png',
+          IMAGE_TOLERANCE, done);
+    });
+  });
+
+  describe('different types with stroke', function() {
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    function createFeatures() {
+      var stroke = new ol.style.Stroke({
+        width: 10,
+        color: '#000',
+        lineJoin: 'round',
+        lineCap: 'butt'
+      });
+
+      var feature;
+      // rectangle
+      feature = new ol.Feature({
+        geometry: new ol.geom.Polygon([
+          [[-20, 10], [-20, 20], [-5, 20], [-5, 10], [-20, 10]]
+        ])
+      });
+      feature.setStyle(new ol.style.Style({
+        stroke: stroke
+      }));
+      vectorSource.addFeature(feature);
+
+      // rectangle with 1 hole
+      feature = new ol.Feature({
+        geometry: new ol.geom.Polygon([
+          [[0, 10], [0, 20], [20, 20], [20, 10], [0, 10]],
+          [[5, 13], [10, 13], [10, 17], [5, 17], [5, 13]]
+
+        ])
+      });
+      feature.setStyle(new ol.style.Style({
+        stroke: stroke
+      }));
+      vectorSource.addFeature(feature);
+
+      // rectangle with 2 holes
+      feature = new ol.Feature({
+        geometry: new ol.geom.Polygon([
+          [[-20, -20], [-20, 5], [20, 5], [20, -20], [-20, -20]],
+          [[-12, -12], [-8, -12], [-8, -3], [-12, -3], [-12, -3]],
+          [[0, -12], [13, -12], [13, -3], [0, -3], [0, -12]]
+
+        ])
+      });
+      feature.setStyle(new ol.style.Style({
+        stroke: stroke
+      }));
+      vectorSource.addFeature(feature);
+    }
+
+    it('tests the canvas renderer', function(done) {
+      map = createMap('canvas', 100);
+      map.getView().setResolution(0.5);
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas-stroke.png',
           IMAGE_TOLERANCE, done);
     });
   });
@@ -187,13 +261,3 @@ describe('ol.rendering.style.Polygon', function() {
     });
   });
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Polygon');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Style');
-goog.require('ol.style.Stroke');
