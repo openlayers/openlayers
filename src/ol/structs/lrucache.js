@@ -1,5 +1,6 @@
 goog.provide('ol.structs.LRUCache');
 
+goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.obj');
 
