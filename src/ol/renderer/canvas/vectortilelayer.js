@@ -143,7 +143,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
   var currentZ, i, ii, offsetX, offsetY, origin, pixelSpace, replayState;
   var tile, tileExtent, tilePixelResolution, tileResolution, tileTransform;
   for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
-    tile = tilesToDraw[i];
+    tile = /** @type {ol.VectorTile} */ (tilesToDraw[i]);
     replayState = tile.getReplayState();
     tileExtent = tileGrid.getTileCoordExtent(
         tile.getTileCoord(), this.tmpExtent);
