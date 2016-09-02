@@ -12,7 +12,7 @@ goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.TileImage');
-goog.require('ol.source.wms.ServerType');
+goog.require('ol.source.WMSServerType');
 goog.require('ol.tilecoord');
 goog.require('ol.string');
 goog.require('ol.uri');
@@ -69,10 +69,10 @@ ol.source.TileWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.source.wms.ServerType|undefined}
+   * @type {ol.source.WMSServerType|undefined}
    */
   this.serverType_ =
-      /** @type {ol.source.wms.ServerType|undefined} */ (options.serverType);
+      /** @type {ol.source.WMSServerType|undefined} */ (options.serverType);
 
   /**
    * @private
@@ -222,7 +222,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
 
   if (pixelRatio != 1) {
     switch (this.serverType_) {
-      case ol.source.wms.ServerType.GEOSERVER:
+      case ol.source.WMSServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
         if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
@@ -230,11 +230,11 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
           params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
         }
         break;
-      case ol.source.wms.ServerType.MAPSERVER:
+      case ol.source.WMSServerType.MAPSERVER:
         params['MAP_RESOLUTION'] = 90 * pixelRatio;
         break;
-      case ol.source.wms.ServerType.CARMENTA_SERVER:
-      case ol.source.wms.ServerType.QGIS:
+      case ol.source.WMSServerType.CARMENTA_SERVER:
+      case ol.source.WMSServerType.QGIS:
         params['DPI'] = 90 * pixelRatio;
         break;
       default:

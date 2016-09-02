@@ -41,7 +41,7 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver')
+      serverType: /** @type {ol.source.WMSServerType} */ ('mapserver')
     })
   }),
   new ol.layer.Image({
@@ -52,7 +52,7 @@ var layers = [
       attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      serverType: /** @type {ol.source.wms.ServerType} */ ('mapserver')
+      serverType: /** @type {ol.source.WMSServerType} */ ('mapserver')
     })
   })
 ];

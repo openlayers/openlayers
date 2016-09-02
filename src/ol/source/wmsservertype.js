@@ -1,5 +1,4 @@
-goog.provide('ol.source.wms');
-goog.provide('ol.source.wms.ServerType');
+goog.provide('ol.source.WMSServerType');
 
 
 /**
@@ -8,7 +7,7 @@ goog.provide('ol.source.wms.ServerType');
  *     specification that OpenLayers can make use of.
  * @enum {string}
  */
-ol.source.wms.ServerType = {
+ol.source.WMSServerType = {
   CARMENTA_SERVER: 'carmentaserver',
   GEOSERVER: 'geoserver',
   MAPSERVER: 'mapserver',
