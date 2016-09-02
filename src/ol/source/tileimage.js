@@ -296,12 +296,12 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
     tile = this.createTile_(z, x, y, pixelRatio, projection, key);
     this.tileCache.set(tileCoordKey, tile);
   } else {
-    tile = /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
+    tile = this.tileCache.get(tileCoordKey);
     if (tile.key != key) {
       // The source's params changed. If the tile has an interim tile and if we
       // can use it then we use it. Otherwise we create a new tile.  In both
       // cases we attempt to assign an interim tile to the new tile.
-      var /** @type {ol.Tile} */ interimTile = tile;
+      var interimTile = tile;
       tile = this.createTile_(z, x, y, pixelRatio, projection, key);
 
       //make the new tile the head of the list,
