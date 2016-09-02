@@ -1,26 +1,13 @@
 goog.provide('ga.Tooltip');
 
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.net.Jsonp');
-goog.require('goog.Uri');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
-goog.require('goog.style');
-goog.require('goog.Disposable');
-goog.require('goog.events.MouseWheelEvent');
-goog.require('goog.events.MouseWheelHandler');
-goog.require('goog.events.MouseWheelHandler.EventType');
-
+goog.require('ol.Disposable');
 goog.require('ol.Overlay');
-goog.require('ol.MapBrowserEvent.EventType');
-goog.require('ol.Overlay');
+goog.require('ol.events');
 goog.require('ol.layer.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Style');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
-goog.require('ol.style.Circle');
 goog.require('ol.source.Vector');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
@@ -33,11 +20,11 @@ goog.require('ol.geom.GeometryCollection');
 
 /**
  * @constructor
- * @extends {goog.Disposable}
+ * @extends {ol.Disposable}
  */
 ga.Tooltip = function() {
 
-  goog.base(this);
+  ol.Disposable.call(this);
 
   /**
    * To enable and disable the gaTooltip programmatically.
@@ -49,11 +36,7 @@ ga.Tooltip = function() {
    * @type {ol.Map}
    */
   this.map_ = null;
-
-  /**
-   * @type {goog.events.Key}
-   * @private
-   */
+  
   this.mapClickListenerKey_ = null;
 
   /**
@@ -79,7 +62,7 @@ ga.Tooltip = function() {
   this.createOverlay_();
 
 };
-goog.inherits(ga.Tooltip, goog.Disposable);
+goog.inherits(ga.Tooltip, ol.Disposable);
 
 ga.Tooltip.prototype.createOverlay_ = function() {
   var className = 'ga-tooltip';
@@ -90,22 +73,24 @@ ga.Tooltip.prototype.createOverlay_ = function() {
       element.style.position = 'absolute';
     }
   };
-  this.tooltipContentElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className + '-content'
-  });
-  goog.events.listen(this.tooltipContentElement_ , 'mousewheel',
-      this.handleWheel_, false, this);
-  var closeAnchor = goog.dom.createDom(goog.dom.TagName.A, {
-    'class': className + '-closer'
-  });
-  goog.events.listen(closeAnchor, 'click',
-      this.handleClose_, false, this);
-  this.tooltipElement_ = goog.dom.createDom(goog.dom.TagName.DIV, {
-    'class': className
-  }, closeAnchor, this.tooltipContentElement_);
+  this.tooltipContentElement_ = document.createElement('div');
+  this.tooltipContentElement_.className =  className + '-content';
+  ol.events.listen(this.tooltipContentElement_ , 'mousewheel',
+      this.handleWheel_, this);
+
+  var closeAnchor = document.createElement('a');
+  closeAnchor.className = className + '-closer';
+  ol.events.listen(closeAnchor, 'click', this.handleClose_, this);
+
+  this.tooltipElement_ =  document.createElement('div');
+  this.tooltipElement_.className = className;
+  this.tooltipElement_.appendChild(closeAnchor);
+  this.tooltipElement_.appendChild(this.tooltipContentElement_);
+
   this.overlay_ = new ol.Overlay({
     element: this.tooltipElement_
   });
+
   var parentEl = this.overlay_.getElement().parentNode;
   setPositionStyle(parentEl);
   window.onresize = function() {
@@ -131,10 +116,7 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
   this.overlay_.setPosition(coordinate);
   var size = this.map_.getSize();
   var extent = this.map_.getView().calculateExtent(/** @type {ol.Size} */ (size));
-  var jsonp = new goog.net.Jsonp(
-    new goog.Uri( window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/identify'),
-      'callback');
-  var layerList = new Array();
+    var layerList = new Array();
   var layer;
   for (var i = 0, ii = this.map_.getLayers().getArray().length; i < ii; i++) {
     layer = this.map_.getLayers().getArray()[i];
@@ -143,22 +125,20 @@ ga.Tooltip.prototype.handleClick_ = function(mapBrowserEvent) {
     }
   }
   if (layerList.length > 0 && this.enabled_) {
-  
-    var payload = {
-      'geometryType': 'esriGeometryPoint',
-      'geometry': coordinate[0] + ',' + coordinate[1],
-      'geometryFormat': 'geojson',
-      'imageDisplay': size[0] + ',' + size[1] + ',96',
-      'mapExtent': extent.join(','),
-      'tolerance': 10,
-      'layers': 'all:' + layerList.join(','),
-      'lang': window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
-        window['GeoAdmin']['lang'] : "de"
-    };
-    jsonp.send(payload,
-      goog.bind(this.handleIdentifyResponse_, this),
-      goog.bind(this.handleIdentifyError_, this));
-
+    ol.net.jsonp(
+      window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/identify' +
+        '?geometryType=esriGeometryPoint' +
+        '&geometry=' + coordinate[0] + ',' + coordinate[1] +
+        '&geometryFormat=geojson' +
+        '&imageDisplay=' + size[0] + ',' + size[1] + ',96' +
+        '&mapExtent=' + extent.join(',') +
+        '&tolerance=10' +
+        '&layers=all:' + layerList.join(',') +
+        '&lang=' + (window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
+          window['GeoAdmin']['lang'] : "de"),
+      this.handleIdentifyResponse_.bind(this),
+      this.handleIdentifyError_.bind(this),
+      'callback');
   }
 };
 
@@ -202,15 +182,14 @@ ga.Tooltip.prototype.handleIdentifyResponse_ = function(response) {
   for (var i = 0, ii = response['results'].length; i < ii; i++) {
     var lang = window['GeoAdmin'] && window['GeoAdmin']['lang'] ?
                 window['GeoAdmin']['lang'] : "de";
-    var jsonp = new goog.net.Jsonp(
-      new goog.Uri( window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/' +
+    ol.net.jsonp(
+      window['GeoAdmin']['serviceUrl'] + '/rest/services/api/MapServer/' +
         response['results'][i]['layerBodId'] + '/' +
         response['results'][i]['featureId'] + '/' +
-        'htmlPopup?lang=' + lang),
+        'htmlPopup?lang=' + lang,
+      this.handleHtmlpopupResponse_.bind(this),
+      this.handleHtmlpopupError_.bind(this),
       'callback');
-    jsonp.send({},
-      goog.bind(this.handleHtmlpopupResponse_, this),
-      goog.bind(this.handleHtmlpopupError_, this));
   }
 };
 
@@ -220,12 +199,12 @@ ga.Tooltip.prototype.handleHtmlpopupResponse_ = function(response) {
   this.tooltipElement_.style.display = 'block';
 };
 
-ga.Tooltip.prototype.handleIdentifyError_ = function(payload) {
+ga.Tooltip.prototype.handleIdentifyError_ = function() {
   alert("Unfortunately an error occured in tooltip identify. " +
     "Sorry for inconvenience.");
 };
 
-ga.Tooltip.prototype.handleHtmlpopupError_ = function(payload) {
+ga.Tooltip.prototype.handleHtmlpopupError_ = function() {
   alert("Unfortunately an error occured in tooltip html popup. " +
     "Sorry for inconvenience.");
 };
@@ -262,7 +241,7 @@ ga.Tooltip.prototype.createFeatures_ = function(response) {
 
 
 /**
- * @param {goog.events.BrowserEvent} event Browser event.
+ * @param {Event} event Browser event.
  */
 ga.Tooltip.prototype.handleClose_ = function(event) {
   this.hidePopup();
@@ -285,16 +264,16 @@ ga.Tooltip.prototype.hidePopup = function() {
  * @param {ol.Map} map Map.
  */
 ga.Tooltip.prototype.setMap = function(map) {
-  if (!goog.isNull(this.mapClickListenerKey_)) {
-    goog.events.unlistenByKey(this.mapClickListenerKey_);
+  if (this.mapClickListenerKey_ !== null) {
+    ol.Observable.unByKey(this.mapClickListenerKey_);
     this.mapClickListenerKey_ = null;
   }
-  if (!goog.isNull(this.map_)) {
+  if (this.map_ !== null) {
     this.map_.removeOverlay(this.overlay_);
   }
-  if (!goog.isNull(map)) {
-    this.mapClickListenerKey_ = goog.events.listen(map, 'singleclick',
-        this.handleClick_, false, this);
+  if (map !== null) {
+    this.mapClickListenerKey_ = map.on('singleclick',
+        this.handleClick_, this);
     map.addOverlay(this.overlay_);
   }
   this.map_ = map;

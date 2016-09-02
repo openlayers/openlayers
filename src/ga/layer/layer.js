@@ -6,11 +6,6 @@ goog.require('ga.style.StylesFromLiterals');
 
 goog.require('goog.array');
 goog.require('goog.object');
-goog.require('goog.events');
-goog.require('goog.net.EventType');
-goog.require('goog.net.XhrIo');
-goog.require('goog.net.XhrIo.ResponseType');
-goog.require('goog.json');
 goog.require('ol.Attribution');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
@@ -91,32 +86,32 @@ ga.layer.create = function(layer, options) {
         source: olSource
       });
       var setLayerStyle = function() {
-        var xhrIo = new goog.net.XhrIo;
-        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
-        goog.events.listenOnce(xhrIo, goog.net.EventType.COMPLETE,
-          function(event) {
-            var source = goog.json.parse(xhrIo.getResponseText());
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', layerConfig['styleUrl'], true);
+        xhr.responseType = 'text';
+        xhr.onload = function(event) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var source = JSON.parse(xhr.responseText);
             var olStyleForVector = new ga.style.StylesFromLiterals(source);
             olLayer.setStyle(function(feature) {
               return [olStyleForVector.getFeatureStyle(feature)];
             });
-            xhrIo.dispose();
           }
-        );
-        xhrIo.send(layerConfig['styleUrl'], 'GET');
+        };
+        xhr.send();
       };
       var setLayerSource = function() {
-        var xhrIo = new goog.net.XhrIo;
-        xhrIo.setResponseType(goog.net.XhrIo.ResponseType.TEXT);
-        goog.events.listenOnce(xhrIo, goog.net.EventType.COMPLETE,
-          function(event) {
-            var source = xhrIo.getResponseText();
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', layerConfig['geojsonUrl'], true);
+        xhr.responseType = 'text';
+        xhr.onload = function(event) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var source = xhr.responseText;
             olSource.clear();
             olSource.addFeatures(geojsonFormat.readFeatures(source));
-            xhrIo.dispose();
           }
-        );
-        xhrIo.send(layerConfig['geojsonUrl'], 'GET');
+        };
+        xhr.send();
       };
       setLayerStyle();
       setLayerSource();
@@ -226,7 +221,7 @@ ga.layer.create = function(layer, options) {
 /**
  * @type {Object.<string, Object>}
  */
-ga.layer.layerConfig = (window.GeoAdmin) ? GeoAdmin.getConfig() : {};
+ga.layer.layerConfig = (window.GeoAdmin) ? window.GeoAdmin.getConfig() : {};
 
 /**
  * @type {Object.<string, Object>}
