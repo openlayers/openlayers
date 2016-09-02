@@ -1,7 +1,6 @@
 goog.provide('ol.Image');
 
 goog.require('ol');
-goog.require('ol.Image');
 goog.require('ol.ImageBase');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
