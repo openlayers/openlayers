@@ -214,9 +214,6 @@ ol.inherits(ol.MapBrowserEventHandler, ol.events.EventTarget);
  * @private
  */
 ol.MapBrowserEventHandler.prototype.emulateClick_ = function(pointerEvent) {
-  var global = ol.global;
-  var clearTimeout = global.clearTimeout;
-  var setTimeout = global.setTimeout;
   var newEvent = new ol.MapBrowserPointerEvent(
       ol.MapBrowserEvent.EventType.CLICK, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);

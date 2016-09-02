@@ -181,14 +181,13 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
  * @private
  */
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
-  var global = ol.global;
   var container = this.element;
   var containerSize = {
     width: container.offsetWidth, height: container.offsetHeight
   };
 
   var thumb = container.firstElementChild;
-  var computedStyle = global.getComputedStyle(thumb);
+  var computedStyle = getComputedStyle(thumb);
   var thumbWidth = thumb.offsetWidth +
       parseFloat(computedStyle['marginRight']) +
       parseFloat(computedStyle['marginLeft']);

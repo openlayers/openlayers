@@ -87,8 +87,6 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
     //TODO There's more good stuff in there for inspiration to improve this interaction.
     var delta;
-    var global = ol.global;
-    var WheelEvent = global.WheelEvent;
     if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
       delta = wheelEvent.deltaY;
       if (ol.has.FIREFOX &&
@@ -114,8 +112,8 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
     var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
 
-    global.clearTimeout(this.timeoutId_);
-    this.timeoutId_ = global.setTimeout(
+    clearTimeout(this.timeoutId_);
+    this.timeoutId_ = setTimeout(
         this.doZoom_.bind(this, map), timeLeft);
 
     mapBrowserEvent.preventDefault();

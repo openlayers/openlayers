@@ -398,10 +398,9 @@ ol.Overlay.prototype.panIntoView_ = function() {
  * @private
  */
 ol.Overlay.prototype.getRect_ = function(element, size) {
-  var global = ol.global;
   var box = element.getBoundingClientRect();
-  var offsetX = box.left + global.pageXOffset;
-  var offsetY = box.top + global.pageYOffset;
+  var offsetX = box.left + window.pageXOffset;
+  var offsetY = box.top + window.pageYOffset;
   return [
     offsetX,
     offsetY,

@@ -550,7 +550,6 @@ ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
  * @inheritDoc
  */
 ol.Map.prototype.disposeInternal = function() {
-  var global = ol.global;
   this.mapBrowserEventHandler_.dispose();
   this.renderer_.dispose();
   ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
@@ -558,12 +557,12 @@ ol.Map.prototype.disposeInternal = function() {
   ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
       this.handleBrowserEvent, this);
   if (this.handleResize_ !== undefined) {
-    global.removeEventListener(ol.events.EventType.RESIZE,
+    window.removeEventListener(ol.events.EventType.RESIZE,
         this.handleResize_, false);
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
-    global.cancelAnimationFrame(this.animationDelayKey_);
+    cancelAnimationFrame(this.animationDelayKey_);
     this.animationDelayKey_ = undefined;
   }
   this.setTarget(null);
@@ -1037,7 +1036,6 @@ ol.Map.prototype.handleSizeChanged_ = function() {
  * @private
  */
 ol.Map.prototype.handleTargetChanged_ = function() {
-  var global = ol.global;
   // target may be undefined, null, a string or an Element.
   // If it's a string we convert it to an Element before proceeding.
   // If it's not now an Element we remove the viewport from the DOM.
@@ -1060,7 +1058,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   if (!targetElement) {
     ol.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      global.removeEventListener(ol.events.EventType.RESIZE,
+      window.removeEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
       this.handleResize_ = undefined;
     }
@@ -1078,7 +1076,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      global.addEventListener(ol.events.EventType.RESIZE,
+      window.addEventListener(ol.events.EventType.RESIZE,
           this.handleResize_, false);
     }
   }
@@ -1159,9 +1157,8 @@ ol.Map.prototype.isRendered = function() {
  * @api stable
  */
 ol.Map.prototype.renderSync = function() {
-  var global = ol.global;
   if (this.animationDelayKey_) {
-    global.cancelAnimationFrame(this.animationDelayKey_);
+    cancelAnimationFrame(this.animationDelayKey_);
   }
   this.animationDelay_();
 };
@@ -1172,9 +1169,8 @@ ol.Map.prototype.renderSync = function() {
  * @api stable
  */
 ol.Map.prototype.render = function() {
-  var global = ol.global;
   if (this.animationDelayKey_ === undefined) {
-    this.animationDelayKey_ = global.requestAnimationFrame(
+    this.animationDelayKey_ = requestAnimationFrame(
         this.animationDelay_);
   }
 };
@@ -1314,7 +1310,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   this.dispatchEvent(
       new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
-  ol.global.setTimeout(this.handlePostRender.bind(this), 0);
+  setTimeout(this.handlePostRender.bind(this), 0);
 
 };
 
@@ -1381,13 +1377,12 @@ ol.Map.prototype.skipFeature = function(feature) {
  * @api stable
  */
 ol.Map.prototype.updateSize = function() {
-  var global = ol.global;
   var targetElement = this.getTargetElement();
 
   if (!targetElement) {
     this.setSize(undefined);
   } else {
-    var computedStyle = global.getComputedStyle(targetElement);
+    var computedStyle = getComputedStyle(targetElement);
     this.setSize([
       targetElement.offsetWidth -
           parseFloat(computedStyle['borderLeftWidth']) -

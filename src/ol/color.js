@@ -1,6 +1,5 @@
 goog.provide('ol.color');
 
-goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.math');
 
@@ -83,7 +82,7 @@ ol.color.fromNamed = function(color) {
   var el = document.createElement('div');
   el.style.color = color;
   document.body.appendChild(el);
-  var rgb = ol.global.getComputedStyle(el).color;
+  var rgb = getComputedStyle(el).color;
   document.body.removeChild(el);
   return rgb;
 };

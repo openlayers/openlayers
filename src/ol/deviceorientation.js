@@ -194,7 +194,7 @@ ol.DeviceOrientation.prototype.handleTrackingChanged_ = function() {
   if (ol.has.DEVICE_ORIENTATION) {
     var tracking = this.getTracking();
     if (tracking && !this.listenerKey_) {
-      this.listenerKey_ = ol.events.listen(ol.global, 'deviceorientation',
+      this.listenerKey_ = ol.events.listen(window, 'deviceorientation',
           this.orientationChange_, this);
     } else if (!tracking && this.listenerKey_ !== null) {
       ol.events.unlistenByKey(this.listenerKey_);

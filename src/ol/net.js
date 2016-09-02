@@ -15,24 +15,23 @@ goog.require('ol');
  *     callback. Default is 'callback'.
  */
 ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
-  var global = ol.global;
-  var script = global.document.createElement('script');
+  var script = document.createElement('script');
   var key = 'olc_' + ol.getUid(callback);
   function cleanup() {
-    delete global[key];
+    delete window[key];
     script.parentNode.removeChild(script);
   }
   script.async = true;
   script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
       (opt_callbackParam || 'callback') + '=' + key;
-  var timer = global.setTimeout(function() {
+  var timer = setTimeout(function() {
     cleanup();
     if (opt_errback) {
       opt_errback();
     }
   }, 10000);
-  global[key] = function(data) {
-    global.clearTimeout(timer);
+  window[key] = function(data) {
+    clearTimeout(timer);
     cleanup();
     callback(data);
   };

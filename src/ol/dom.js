@@ -1,7 +1,5 @@
 goog.provide('ol.dom');
 
-goog.require('ol');
-
 
 /**
  * Create an html canvas element and returns its 2d context.
@@ -29,9 +27,8 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
  * @return {number} The width.
  */
 ol.dom.outerWidth = function(element) {
-  var global = ol.global;
   var width = element.offsetWidth;
-  var style = element.currentStyle || global.getComputedStyle(element);
+  var style = element.currentStyle || getComputedStyle(element);
   width += parseInt(style.marginLeft, 10) + parseInt(style.marginRight, 10);
 
   return width;
@@ -46,9 +43,8 @@ ol.dom.outerWidth = function(element) {
  * @return {number} The height.
  */
 ol.dom.outerHeight = function(element) {
-  var global = ol.global;
   var height = element.offsetHeight;
-  var style = element.currentStyle || global.getComputedStyle(element);
+  var style = element.currentStyle || getComputedStyle(element);
   height += parseInt(style.marginTop, 10) + parseInt(style.marginBottom, 10);
 
   return height;
