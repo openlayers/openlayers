@@ -22,6 +22,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.source.TileEventType` to `ol.source.Tile.EventType`
  * rename `ol.source.VectorEvent` to `ol.source.Vector.Event`
  * rename `ol.source.VectorEventType` to `ol.source.Vector.EventType`
+ * rename `ol.source.wms.ServerType` to `ol.source.WMSServerType`
  * rename `ol.source.WMTSRequestEncoding` to `ol.source.WMTS.RequestEncoding`
  * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
  * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`

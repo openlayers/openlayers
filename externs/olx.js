@@ -5175,7 +5175,7 @@ olx.source.RasterOptions.prototype.operationType;
  * @typedef {{attributions: (ol.AttributionLike|undefined),
  *     crossOrigin: (null|string|undefined),
  *     hidpi: (boolean|undefined),
- *     serverType: (ol.source.wms.ServerType|string|undefined),
+ *     serverType: (ol.source.WMSServerType|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
@@ -5219,7 +5219,7 @@ olx.source.ImageWMSOptions.prototype.hidpi;
 /**
  * The type of the remote WMS server: `mapserver`, `geoserver` or `qgis`. Only
  * needed if `hidpi` is `true`. Default is `undefined`.
- * @type {ol.source.wms.ServerType|string|undefined}
+ * @type {ol.source.WMSServerType|string|undefined}
  * @api
  */
 olx.source.ImageWMSOptions.prototype.serverType;
@@ -5686,7 +5686,7 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
- *     serverType: (ol.source.wms.ServerType|string|undefined),
+ *     serverType: (ol.source.WMSServerType|string|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     url: (string|undefined),
  *     urls: (Array.<string>|undefined),
@@ -5797,7 +5797,7 @@ olx.source.TileWMSOptions.prototype.reprojectionErrorThreshold;
 /**
  * The type of the remote WMS server. Currently only used when `hidpi` is
  * `true`. Default is `undefined`.
- * @type {ol.source.wms.ServerType|string|undefined}
+ * @type {ol.source.WMSServerType|string|undefined}
  * @api
  */
 olx.source.TileWMSOptions.prototype.serverType;

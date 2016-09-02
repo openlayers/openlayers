@@ -11,7 +11,7 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
-goog.require('ol.source.wms.ServerType');
+goog.require('ol.source.WMSServerType');
 goog.require('ol.string');
 goog.require('ol.uri');
 
@@ -72,10 +72,10 @@ ol.source.ImageWMS = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.source.wms.ServerType|undefined}
+   * @type {ol.source.WMSServerType|undefined}
    */
   this.serverType_ =
-      /** @type {ol.source.wms.ServerType|undefined} */ (options.serverType);
+      /** @type {ol.source.WMSServerType|undefined} */ (options.serverType);
 
   /**
    * @private
@@ -278,7 +278,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
 
   if (pixelRatio != 1) {
     switch (this.serverType_) {
-      case ol.source.wms.ServerType.GEOSERVER:
+      case ol.source.WMSServerType.GEOSERVER:
         var dpi = (90 * pixelRatio + 0.5) | 0;
         if ('FORMAT_OPTIONS' in params) {
           params['FORMAT_OPTIONS'] += ';dpi:' + dpi;
@@ -286,11 +286,11 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
           params['FORMAT_OPTIONS'] = 'dpi:' + dpi;
         }
         break;
-      case ol.source.wms.ServerType.MAPSERVER:
+      case ol.source.WMSServerType.MAPSERVER:
         params['MAP_RESOLUTION'] = 90 * pixelRatio;
         break;
-      case ol.source.wms.ServerType.CARMENTA_SERVER:
-      case ol.source.wms.ServerType.QGIS:
+      case ol.source.WMSServerType.CARMENTA_SERVER:
+      case ol.source.WMSServerType.QGIS:
         params['DPI'] = 90 * pixelRatio;
         break;
       default:
