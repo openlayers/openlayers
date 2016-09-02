@@ -1479,7 +1479,7 @@ ol.Map.createOptionsInternal = function(options) {
       ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
     }
     if (rendererTypes.indexOf(/** @type {ol.RendererType} */ ('dom')) >= 0) {
-      goog.DEBUG && console.assert(false, 'The DOM render has been removed');
+      ol.DEBUG && console.assert(false, 'The DOM render has been removed');
       rendererTypes = rendererTypes.concat(ol.DEFAULT_RENDERER_TYPES);
     }
   } else {
