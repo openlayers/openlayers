@@ -2,8 +2,6 @@
 // FIXME make change-detection more refined (notably, geometry hint)
 
 goog.provide('ol.source.Vector');
-goog.provide('ol.source.VectorEvent');
-goog.provide('ol.source.VectorEventType');
 
 goog.require('ol');
 goog.require('ol.Collection');
@@ -24,41 +22,6 @@ goog.require('ol.structs.RBush');
 
 
 /**
- * @enum {string}
- */
-ol.source.VectorEventType = {
-  /**
-   * Triggered when a feature is added to the source.
-   * @event ol.source.VectorEvent#addfeature
-   * @api stable
-   */
-  ADDFEATURE: 'addfeature',
-
-  /**
-   * Triggered when a feature is updated.
-   * @event ol.source.VectorEvent#changefeature
-   * @api
-   */
-  CHANGEFEATURE: 'changefeature',
-
-  /**
-   * Triggered when the clear method is called on the source.
-   * @event ol.source.VectorEvent#clear
-   * @api
-   */
-  CLEAR: 'clear',
-
-  /**
-   * Triggered when a feature is removed from the source.
-   * See {@link ol.source.Vector#clear source.clear()} for exceptions.
-   * @event ol.source.VectorEvent#removefeature
-   * @api stable
-   */
-  REMOVEFEATURE: 'removefeature'
-};
-
-
-/**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
  * by this source are suitable for editing. See {@link ol.source.VectorTile} for
@@ -66,7 +29,7 @@ ol.source.VectorEventType = {
  *
  * @constructor
  * @extends {ol.source.Source}
- * @fires ol.source.VectorEvent
+ * @fires ol.source.Vector.Event
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
  * @api stable
  */
@@ -227,7 +190,7 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   }
 
   this.dispatchEvent(
-      new ol.source.VectorEvent(ol.source.VectorEventType.ADDFEATURE, feature));
+      new ol.source.Vector.Event(ol.source.Vector.EventType.ADDFEATURE, feature));
 };
 
 
@@ -323,8 +286,8 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
   }
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
-    this.dispatchEvent(new ol.source.VectorEvent(
-        ol.source.VectorEventType.ADDFEATURE, newFeatures[i]));
+    this.dispatchEvent(new ol.source.Vector.Event(
+        ol.source.Vector.EventType.ADDFEATURE, newFeatures[i]));
   }
 };
 
@@ -337,7 +300,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
   ol.DEBUG && console.assert(!this.featuresCollection_,
       'bindFeaturesCollection can only be called once');
   var modifyingCollection = false;
-  ol.events.listen(this, ol.source.VectorEventType.ADDFEATURE,
+  ol.events.listen(this, ol.source.Vector.EventType.ADDFEATURE,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -345,7 +308,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
           modifyingCollection = false;
         }
       });
-  ol.events.listen(this, ol.source.VectorEventType.REMOVEFEATURE,
+  ol.events.listen(this, ol.source.Vector.EventType.REMOVEFEATURE,
       function(evt) {
         if (!modifyingCollection) {
           modifyingCollection = true;
@@ -413,7 +376,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
   this.loadedExtentsRtree_.clear();
   this.nullGeometryFeatures_ = {};
 
-  var clearEvent = new ol.source.VectorEvent(ol.source.VectorEventType.CLEAR);
+  var clearEvent = new ol.source.Vector.Event(ol.source.Vector.EventType.CLEAR);
   this.dispatchEvent(clearEvent);
   this.changed();
 };
@@ -775,8 +738,8 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
     }
   }
   this.changed();
-  this.dispatchEvent(new ol.source.VectorEvent(
-      ol.source.VectorEventType.CHANGEFEATURE, feature));
+  this.dispatchEvent(new ol.source.Vector.Event(
+      ol.source.Vector.EventType.CHANGEFEATURE, feature));
 };
 
 
@@ -855,8 +818,8 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   } else {
     delete this.undefIdIndex_[featureKey];
   }
-  this.dispatchEvent(new ol.source.VectorEvent(
-      ol.source.VectorEventType.REMOVEFEATURE, feature));
+  this.dispatchEvent(new ol.source.Vector.Event(
+      ol.source.Vector.EventType.REMOVEFEATURE, feature));
 };
 
 
@@ -887,11 +850,11 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
  *
  * @constructor
  * @extends {ol.events.Event}
- * @implements {oli.source.VectorEvent}
+ * @implements {oli.source.Vector.Event}
  * @param {string} type Type.
  * @param {ol.Feature=} opt_feature Feature.
  */
-ol.source.VectorEvent = function(type, opt_feature) {
+ol.source.Vector.Event = function(type, opt_feature) {
 
   ol.events.Event.call(this, type);
 
@@ -903,4 +866,39 @@ ol.source.VectorEvent = function(type, opt_feature) {
   this.feature = opt_feature;
 
 };
-ol.inherits(ol.source.VectorEvent, ol.events.Event);
+ol.inherits(ol.source.Vector.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.source.Vector.EventType = {
+  /**
+   * Triggered when a feature is added to the source.
+   * @event ol.source.Vector.Event#addfeature
+   * @api stable
+   */
+  ADDFEATURE: 'addfeature',
+
+  /**
+   * Triggered when a feature is updated.
+   * @event ol.source.Vector.Event#changefeature
+   * @api
+   */
+  CHANGEFEATURE: 'changefeature',
+
+  /**
+   * Triggered when the clear method is called on the source.
+   * @event ol.source.Vector.Event#clear
+   * @api
+   */
+  CLEAR: 'clear',
+
+  /**
+   * Triggered when a feature is removed from the source.
+   * See {@link ol.source.Vector#clear source.clear()} for exceptions.
+   * @event ol.source.Vector.Event#removefeature
+   * @api stable
+   */
+  REMOVEFEATURE: 'removefeature'
+};

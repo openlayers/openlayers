@@ -11,8 +11,7 @@ goog.require('ol.extent');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.functions');
 goog.require('ol.obj');
-goog.require('ol.source.VectorEvent');
-goog.require('ol.source.VectorEventType');
+goog.require('ol.source.Vector');
 goog.require('ol.structs.RBush');
 
 
@@ -226,12 +225,12 @@ ol.interaction.Snap.prototype.getFeatures_ = function() {
 
 
 /**
- * @param {ol.source.VectorEvent|ol.Collection.Event} evt Event.
+ * @param {ol.source.Vector.Event|ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleFeatureAdd_ = function(evt) {
   var feature;
-  if (evt instanceof ol.source.VectorEvent) {
+  if (evt instanceof ol.source.Vector.Event) {
     feature = evt.feature;
   } else if (evt instanceof ol.Collection.Event) {
     feature = evt.element;
@@ -241,12 +240,12 @@ ol.interaction.Snap.prototype.handleFeatureAdd_ = function(evt) {
 
 
 /**
- * @param {ol.source.VectorEvent|ol.Collection.Event} evt Event.
+ * @param {ol.source.Vector.Event|ol.Collection.Event} evt Event.
  * @private
  */
 ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
   var feature;
-  if (evt instanceof ol.source.VectorEvent) {
+  if (evt instanceof ol.source.Vector.Event) {
     feature = evt.feature;
   } else if (evt instanceof ol.Collection.Event) {
     feature = evt.element;
@@ -343,9 +342,9 @@ ol.interaction.Snap.prototype.setMap = function(map) {
       );
     } else if (this.source_) {
       keys.push(
-        ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
+        ol.events.listen(this.source_, ol.source.Vector.EventType.ADDFEATURE,
             this.handleFeatureAdd_, this),
-        ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
+        ol.events.listen(this.source_, ol.source.Vector.EventType.REMOVEFEATURE,
             this.handleFeatureRemove_, this)
       );
     }
