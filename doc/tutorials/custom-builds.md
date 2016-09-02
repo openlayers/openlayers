@@ -190,7 +190,7 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
     "ol.format.KML",
     "ol.layer.Heatmap#getSource",
     "ol.source.Vector#on",
-    "ol.source.VectorEvent#feature",
+    "ol.source.Vector.Event#feature",
     "ol.Feature#get",
     "ol.Feature#set",
     "ol.layer.Tile",
@@ -217,7 +217,7 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openla
 }
 ```
 
-The exports are given here in the order in which they occur in the `heatmaps-earthquakes` example's JavaScript code. In this example we not only use the `ol.` functions and constructors, but also `prototype` methods where the `ol` namespace is not directly used. In the code, we have for example `vector.getSource().on()`. This means we are using the `getSource` method of `layer.Heatmap` and the `on` method of `source.KML`, so this is what has to be exported. Similarly, `event.feature.get()` means we are using the `feature` property of `source.VectorEvent` and the `get` method of `Feature`. If any of these names are left out, the compile will complete successfully, but the missing names will be obfuscated and you will get a 'property undefined' error when you try and run the script.
+The exports are given here in the order in which they occur in the `heatmaps-earthquakes` example's JavaScript code. In this example we not only use the `ol.` functions and constructors, but also `prototype` methods where the `ol` namespace is not directly used. In the code, we have for example `vector.getSource().on()`. This means we are using the `getSource` method of `layer.Heatmap` and the `on` method of `source.KML`, so this is what has to be exported. Similarly, `event.feature.get()` means we are using the `feature` property of `source.Vector.Event` and the `get` method of `Feature`. If any of these names are left out, the compile will complete successfully, but the missing names will be obfuscated and you will get a 'property undefined' error when you try and run the script.
 
 As this example uses a vector layer it is necessary to remove `"ol.ENABLE_VECTOR=false"` in the `define` section of the configuration.
 

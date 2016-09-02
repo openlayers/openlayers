@@ -359,10 +359,10 @@ oli.source.Tile.Event.prototype.tile;
 /**
  * @interface
  */
-oli.source.VectorEvent = function() {};
+oli.source.Vector.Event = function() {};
 
 
 /**
  * @type {ol.Feature|undefined}
  */
-oli.source.VectorEvent.prototype.feature;
+oli.source.Vector.Event.prototype.feature;
