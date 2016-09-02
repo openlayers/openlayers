@@ -2,6 +2,7 @@ goog.provide('ol.extent');
 goog.provide('ol.extent.Corner');
 goog.provide('ol.extent.Relationship');
 
+goog.require('ol');
 goog.require('ol.asserts');
 
 
