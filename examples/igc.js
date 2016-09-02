@@ -1,6 +1,4 @@
-goog.require('ol.Attribution');
 goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
@@ -26,19 +24,19 @@ var colors = {
 };
 
 var styleCache = {};
-var styleFunction = function(feature, resolution) {
+var styleFunction = function(feature) {
   var color = colors[feature.get('PLT')];
-  var styleArray = styleCache[color];
-  if (!styleArray) {
-    styleArray = [new ol.style.Style({
+  var style = styleCache[color];
+  if (!style) {
+    style = new ol.style.Style({
       stroke: new ol.style.Stroke({
         color: color,
         width: 3
       })
-    })];
-    styleCache[color] = styleArray;
+    });
+    styleCache[color] = style;
   }
-  return styleArray;
+  return style;
 };
 
 var vectorSource = new ol.source.Vector();
@@ -87,10 +85,7 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.OSM({
         attributions: [
-          new ol.Attribution({
-            html: 'All maps &copy; ' +
-                '<a href="http://www.opencyclemap.org/">OpenCycleMap</a>'
-          }),
+          'All maps © <a href="http://www.opencyclemap.org/">OpenCycleMap</a>',
           ol.source.OSM.ATTRIBUTION
         ],
         url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
@@ -156,39 +151,38 @@ map.on('click', function(evt) {
   displaySnap(evt.coordinate);
 });
 
-var imageStyle = new ol.style.Circle({
-  radius: 5,
-  fill: null,
-  stroke: new ol.style.Stroke({
-    color: 'rgba(255,0,0,0.9)',
-    width: 1
-  })
-});
-var strokeStyle = new ol.style.Stroke({
+var stroke = new ol.style.Stroke({
   color: 'rgba(255,0,0,0.9)',
   width: 1
 });
+var style = new ol.style.Style({
+  stroke: stroke,
+  image: new ol.style.Circle({
+    radius: 5,
+    fill: null,
+    stroke: stroke
+  })
+});
 map.on('postcompose', function(evt) {
   var vectorContext = evt.vectorContext;
+  vectorContext.setStyle(style);
   if (point !== null) {
-    vectorContext.setImageStyle(imageStyle);
-    vectorContext.drawPointGeometry(point);
+    vectorContext.drawGeometry(point);
   }
   if (line !== null) {
-    vectorContext.setFillStrokeStyle(null, strokeStyle);
-    vectorContext.drawLineStringGeometry(line);
+    vectorContext.drawGeometry(line);
   }
 });
 
-var featureOverlay = new ol.FeatureOverlay({
+var featureOverlay = new ol.layer.Vector({
+  source: new ol.source.Vector(),
   map: map,
   style: new ol.style.Style({
     image: new ol.style.Circle({
       radius: 5,
       fill: new ol.style.Fill({
         color: 'rgba(255,0,0,0.9)'
-      }),
-      stroke: null
+      })
     })
   })
 });
@@ -203,7 +197,7 @@ document.getElementById('time').addEventListener('input', function() {
     if (highlight === undefined) {
       highlight = new ol.Feature(new ol.geom.Point(coordinate));
       feature.set('highlight', highlight);
-      featureOverlay.addFeature(highlight);
+      featureOverlay.getSource().addFeature(highlight);
     } else {
       highlight.getGeometry().setCoordinates(coordinate);
     }

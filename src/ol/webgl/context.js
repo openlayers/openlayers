@@ -1,21 +1,12 @@
 goog.provide('ol.webgl.Context');
 
-goog.require('goog.array');
-goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.log');
-goog.require('goog.object');
 goog.require('ol');
-goog.require('ol.webgl.Buffer');
-goog.require('ol.webgl.WebGLContextEventType');
-
-
-/**
- * @typedef {{buf: ol.webgl.Buffer,
- *            buffer: WebGLBuffer}}
- */
-ol.webgl.BufferCacheEntry;
-
+goog.require('ol.Disposable');
+goog.require('ol.array');
+goog.require('ol.events');
+goog.require('ol.obj');
+goog.require('ol.webgl');
+goog.require('ol.webgl.ContextEventType');
 
 
 /**
@@ -23,10 +14,9 @@ ol.webgl.BufferCacheEntry;
  * A WebGL context for accessing low-level WebGL capabilities.
  *
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.Disposable}
  * @param {HTMLCanvasElement} canvas Canvas.
  * @param {WebGLRenderingContext} gl GL.
- * @api
  */
 ol.webgl.Context = function(canvas, gl) {
 
@@ -44,13 +34,13 @@ ol.webgl.Context = function(canvas, gl) {
 
   /**
    * @private
-   * @type {Object.<number, ol.webgl.BufferCacheEntry>}
+   * @type {Object.<string, ol.WebglBufferCacheEntry>}
    */
   this.bufferCache_ = {};
 
   /**
    * @private
-   * @type {Object.<number, WebGLShader>}
+   * @type {Object.<string, WebGLShader>}
    */
   this.shaderCache_ = {};
 
@@ -87,22 +77,23 @@ ol.webgl.Context = function(canvas, gl) {
   /**
    * @type {boolean}
    */
-  this.hasOESElementIndexUint = goog.array.contains(
+  this.hasOESElementIndexUint = ol.array.includes(
       ol.WEBGL_EXTENSIONS, 'OES_element_index_uint');
 
   // use the OES_element_index_uint extension if available
   if (this.hasOESElementIndexUint) {
     var ext = gl.getExtension('OES_element_index_uint');
-    goog.asserts.assert(!goog.isNull(ext),
+    goog.DEBUG && console.assert(ext,
         'Failed to get extension "OES_element_index_uint"');
   }
 
-  goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.LOST,
-      this.handleWebGLContextLost, false, this);
-  goog.events.listen(this.canvas_, ol.webgl.WebGLContextEventType.RESTORED,
-      this.handleWebGLContextRestored, false, this);
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
+      this.handleWebGLContextLost, this);
+  ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
+      this.handleWebGLContextRestored, this);
 
 };
+ol.inherits(ol.webgl.Context, ol.Disposable);
 
 
 /**
@@ -115,24 +106,22 @@ ol.webgl.Context = function(canvas, gl) {
 ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
   var gl = this.getGL();
   var arr = buf.getArray();
-  var bufferKey = goog.getUid(buf);
+  var bufferKey = String(ol.getUid(buf));
   if (bufferKey in this.bufferCache_) {
     var bufferCacheEntry = this.bufferCache_[bufferKey];
     gl.bindBuffer(target, bufferCacheEntry.buffer);
   } else {
     var buffer = gl.createBuffer();
     gl.bindBuffer(target, buffer);
-    goog.asserts.assert(target == goog.webgl.ARRAY_BUFFER ||
-        target == goog.webgl.ELEMENT_ARRAY_BUFFER,
+    goog.DEBUG && console.assert(target == ol.webgl.ARRAY_BUFFER ||
+        target == ol.webgl.ELEMENT_ARRAY_BUFFER,
         'target is supposed to be an ARRAY_BUFFER or ELEMENT_ARRAY_BUFFER');
     var /** @type {ArrayBufferView} */ arrayBuffer;
-    if (target == goog.webgl.ARRAY_BUFFER) {
+    if (target == ol.webgl.ARRAY_BUFFER) {
       arrayBuffer = new Float32Array(arr);
-    } else if (target == goog.webgl.ELEMENT_ARRAY_BUFFER) {
+    } else if (target == ol.webgl.ELEMENT_ARRAY_BUFFER) {
       arrayBuffer = this.hasOESElementIndexUint ?
           new Uint32Array(arr) : new Uint16Array(arr);
-    } else {
-      goog.asserts.fail();
     }
     gl.bufferData(target, arrayBuffer, buf.getUsage());
     this.bufferCache_[bufferKey] = {
@@ -148,8 +137,8 @@ ol.webgl.Context.prototype.bindBuffer = function(target, buf) {
  */
 ol.webgl.Context.prototype.deleteBuffer = function(buf) {
   var gl = this.getGL();
-  var bufferKey = goog.getUid(buf);
-  goog.asserts.assert(bufferKey in this.bufferCache_,
+  var bufferKey = String(ol.getUid(buf));
+  goog.DEBUG && console.assert(bufferKey in this.bufferCache_,
       'attempted to delete uncached buffer');
   var bufferCacheEntry = this.bufferCache_[bufferKey];
   if (!gl.isContextLost()) {
@@ -163,17 +152,19 @@ ol.webgl.Context.prototype.deleteBuffer = function(buf) {
  * @inheritDoc
  */
 ol.webgl.Context.prototype.disposeInternal = function() {
+  ol.events.unlistenAll(this.canvas_);
   var gl = this.getGL();
   if (!gl.isContextLost()) {
-    goog.object.forEach(this.bufferCache_, function(bufferCacheEntry) {
-      gl.deleteBuffer(bufferCacheEntry.buffer);
-    });
-    goog.object.forEach(this.programCache_, function(program) {
-      gl.deleteProgram(program);
-    });
-    goog.object.forEach(this.shaderCache_, function(shader) {
-      gl.deleteShader(shader);
-    });
+    var key;
+    for (key in this.bufferCache_) {
+      gl.deleteBuffer(this.bufferCache_[key].buffer);
+    }
+    for (key in this.programCache_) {
+      gl.deleteProgram(this.programCache_[key]);
+    }
+    for (key in this.shaderCache_) {
+      gl.deleteShader(this.shaderCache_[key]);
+    }
     // delete objects for hit-detection
     gl.deleteFramebuffer(this.hitDetectionFramebuffer_);
     gl.deleteRenderbuffer(this.hitDetectionRenderbuffer_);
@@ -203,10 +194,9 @@ ol.webgl.Context.prototype.getGL = function() {
 /**
  * Get the frame buffer for hit detection.
  * @return {WebGLFramebuffer} The hit detection frame buffer.
- * @api
  */
 ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
-  if (goog.isNull(this.hitDetectionFramebuffer_)) {
+  if (!this.hitDetectionFramebuffer_) {
     this.initHitDetectionFramebuffer_();
   }
   return this.hitDetectionFramebuffer_;
@@ -220,7 +210,7 @@ ol.webgl.Context.prototype.getHitDetectionFramebuffer = function() {
  * @return {WebGLShader} Shader.
  */
 ol.webgl.Context.prototype.getShader = function(shaderObject) {
-  var shaderKey = goog.getUid(shaderObject);
+  var shaderKey = String(ol.getUid(shaderObject));
   if (shaderKey in this.shaderCache_) {
     return this.shaderCache_[shaderKey];
   } else {
@@ -228,16 +218,10 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
     var shader = gl.createShader(shaderObject.getType());
     gl.shaderSource(shader, shaderObject.getSource());
     gl.compileShader(shader);
-    if (goog.DEBUG) {
-      if (!gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) &&
-          !gl.isContextLost()) {
-        goog.log.error(this.logger_, gl.getShaderInfoLog(shader));
-      }
-    }
-    goog.asserts.assert(
-        gl.getShaderParameter(shader, goog.webgl.COMPILE_STATUS) ||
+    goog.DEBUG && console.assert(
+        gl.getShaderParameter(shader, ol.webgl.COMPILE_STATUS) ||
         gl.isContextLost(),
-        'illegal state, shader not compiled or context lost');
+        gl.getShaderInfoLog(shader) || 'illegal state, shader not compiled or context lost');
     this.shaderCache_[shaderKey] = shader;
     return shader;
   }
@@ -248,14 +232,14 @@ ol.webgl.Context.prototype.getShader = function(shaderObject) {
  * Get the program from the cache if it's in the cache. Otherwise create
  * the WebGL program, attach the shaders to it, and add an entry to the
  * cache.
- * @param {ol.webgl.shader.Fragment} fragmentShaderObject Fragment shader.
- * @param {ol.webgl.shader.Vertex} vertexShaderObject Vertex shader.
+ * @param {ol.webgl.Fragment} fragmentShaderObject Fragment shader.
+ * @param {ol.webgl.Vertex} vertexShaderObject Vertex shader.
  * @return {WebGLProgram} Program.
  */
 ol.webgl.Context.prototype.getProgram = function(
     fragmentShaderObject, vertexShaderObject) {
   var programKey =
-      goog.getUid(fragmentShaderObject) + '/' + goog.getUid(vertexShaderObject);
+      ol.getUid(fragmentShaderObject) + '/' + ol.getUid(vertexShaderObject);
   if (programKey in this.programCache_) {
     return this.programCache_[programKey];
   } else {
@@ -264,16 +248,10 @@ ol.webgl.Context.prototype.getProgram = function(
     gl.attachShader(program, this.getShader(fragmentShaderObject));
     gl.attachShader(program, this.getShader(vertexShaderObject));
     gl.linkProgram(program);
-    if (goog.DEBUG) {
-      if (!gl.getProgramParameter(program, goog.webgl.LINK_STATUS) &&
-          !gl.isContextLost()) {
-        goog.log.error(this.logger_, gl.getProgramInfoLog(program));
-      }
-    }
-    goog.asserts.assert(
-        gl.getProgramParameter(program, goog.webgl.LINK_STATUS) ||
+    goog.DEBUG && console.assert(
+        gl.getProgramParameter(program, ol.webgl.LINK_STATUS) ||
         gl.isContextLost(),
-        'illegal state, shader not linked or context lost');
+        gl.getProgramInfoLog(program) || 'illegal state, shader not linked or context lost');
     this.programCache_[programKey] = program;
     return program;
   }
@@ -284,9 +262,9 @@ ol.webgl.Context.prototype.getProgram = function(
  * FIXME empy description for jsdoc
  */
 ol.webgl.Context.prototype.handleWebGLContextLost = function() {
-  goog.object.clear(this.bufferCache_);
-  goog.object.clear(this.shaderCache_);
-  goog.object.clear(this.programCache_);
+  ol.obj.clear(this.bufferCache_);
+  ol.obj.clear(this.shaderCache_);
+  ol.obj.clear(this.programCache_);
   this.currentProgram_ = null;
   this.hitDetectionFramebuffer_ = null;
   this.hitDetectionTexture_ = null;
@@ -348,17 +326,10 @@ ol.webgl.Context.prototype.useProgram = function(program) {
 
 
 /**
- * @private
- * @type {goog.log.Logger}
- */
-ol.webgl.Context.prototype.logger_ = goog.log.getLogger('ol.webgl.Context');
-
-
-/**
  * @param {WebGLRenderingContext} gl WebGL rendering context.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture}
+ * @return {WebGLTexture} The texture.
  * @private
  */
 ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
@@ -367,13 +338,13 @@ ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-  if (goog.isDef(opt_wrapS)) {
+  if (opt_wrapS !== undefined) {
     gl.texParameteri(
-        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_S, opt_wrapS);
+        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
   }
-  if (goog.isDef(opt_wrapT)) {
+  if (opt_wrapT !== undefined) {
     gl.texParameteri(
-        goog.webgl.TEXTURE_2D, goog.webgl.TEXTURE_WRAP_T, opt_wrapT);
+        ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, opt_wrapT);
   }
 
   return texture;
@@ -386,7 +357,7 @@ ol.webgl.Context.createTexture_ = function(gl, opt_wrapS, opt_wrapT) {
  * @param {number} height Height.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture}
+ * @return {WebGLTexture} The texture.
  */
 ol.webgl.Context.createEmptyTexture = function(
     gl, width, height, opt_wrapS, opt_wrapT) {
@@ -404,7 +375,7 @@ ol.webgl.Context.createEmptyTexture = function(
  * @param {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} image Image.
  * @param {number=} opt_wrapS wrapS.
  * @param {number=} opt_wrapT wrapT.
- * @return {WebGLTexture}
+ * @return {WebGLTexture} The texture.
  */
 ol.webgl.Context.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
   var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);

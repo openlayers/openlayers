@@ -3,7 +3,6 @@ goog.require('ol.View');
 goog.require('ol.format.GPX');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.proj');
 goog.require('ol.source.BingMaps');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
@@ -11,17 +10,15 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-var projection = ol.proj.get('EPSG:3857');
-
 var raster = new ol.layer.Tile({
   source: new ol.source.BingMaps({
     imagerySet: 'Aerial',
-    key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3'
+    key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
   })
 });
 
 var style = {
-  'Point': [new ol.style.Style({
+  'Point': new ol.style.Style({
     image: new ol.style.Circle({
       fill: new ol.style.Fill({
         color: 'rgba(255,255,0,0.4)'
@@ -32,19 +29,19 @@ var style = {
         width: 1
       })
     })
-  })],
-  'LineString': [new ol.style.Style({
+  }),
+  'LineString': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#f00',
       width: 3
     })
-  })],
-  'MultiLineString': [new ol.style.Style({
+  }),
+  'MultiLineString': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#0f0',
       width: 3
     })
-  })]
+  })
 };
 
 var vector = new ol.layer.Vector({
@@ -52,7 +49,7 @@ var vector = new ol.layer.Vector({
     url: 'data/gpx/fells_loop.gpx',
     format: new ol.format.GPX()
   }),
-  style: function(feature, resolution) {
+  style: function(feature) {
     return style[feature.getGeometry().getType()];
   }
 });
@@ -68,7 +65,7 @@ var map = new ol.Map({
 
 var displayFeatureInfo = function(pixel) {
   var features = [];
-  map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  map.forEachFeatureAtPixel(pixel, function(feature) {
     features.push(feature);
   });
   if (features.length > 0) {

@@ -7,9 +7,8 @@
  *      async.waterfall.
  */
 
-var fs = require('fs');
+var fs = require('fs-extra');
 var istanbul = require('istanbul');
-var wrench = require('wrench');
 var path = require('path');
 var glob = require('glob');
 
@@ -28,52 +27,25 @@ var collector = new istanbul.Collector();
 
 // General options used for the resource shuffling / directory copying
 var copyOpts = {
-  // Whether to overwrite existing directory or not
-  forceDelete: true,
-  // Whether to copy hidden Unix files or not (preceding .)
-  excludeHiddenUnix: false,
-  // If we're overwriting something and the file already exists, keep the
-  // existing
-  preserveFiles: false,
+  // Overwrite existing file or directory
+  clobber: true,
   // Preserve the mtime and atime when copying files
-  preserveTimestamps: true,
-  // Whether to follow symlinks or not when copying files
-  inflateSymlinks: false
+  preserveTimestamps: true
 };
 
 /**
  * A small utility method printing out log messages.
+ * @param {string} msg The message.
  */
-var log = function(msg){
+var log = function(msg) {
   process.stdout.write(msg + '\n');
-};
-
-
-/**
- * A utility method to recursively delete a non-empty folder.
- *
- * See http://www.geedew.com/remove-a-directory-that-is-not-empty-in-nodejs/
- * adjusted to use path.join
- */
-var deleteFolderRecursive = function(p) {
-  if( fs.existsSync(p) ) {
-    fs.readdirSync(p).forEach(function(file,index){
-      var curPath = path.join(p, file);
-      if(fs.lstatSync(curPath).isDirectory()) { // recurse
-        deleteFolderRecursive(curPath);
-      } else { // delete file
-        fs.unlinkSync(curPath);
-      }
-    });
-    fs.rmdirSync(p);
-  }
 };
 
 /**
  * Creates folders for backup and instrumentation and copies the contents of the
  * current src folder into them.
  */
-var setupBackupAndInstrumentationDir = function(){
+var setupBackupAndInstrumentationDir = function() {
   if (!fs.existsSync(backupDir)) {
     log('• create directory for backup of src: ' + backupDir);
     fs.mkdirSync(backupDir);
@@ -85,9 +57,9 @@ var setupBackupAndInstrumentationDir = function(){
   }
 
   log('• copy src files to backup folder');
-  wrench.copyDirSyncRecursive(dir, backupDir, copyOpts);
+  fs.copySync(dir, backupDir, copyOpts);
   log('• copy src files to instrumentation folder');
-  wrench.copyDirSyncRecursive(dir, instrumentedDir, copyOpts);
+  fs.copySync(dir, instrumentedDir, copyOpts);
 };
 
 /**
@@ -95,20 +67,20 @@ var setupBackupAndInstrumentationDir = function(){
  * backup over the src directory and removes the instrumentation and backup
  * directory.
  */
-var revertBackupAndInstrumentationDir = function(){
+var revertBackupAndInstrumentationDir = function() {
   log('• copy original src back to src folder');
-  wrench.copyDirSyncRecursive(backupDir, dir, copyOpts);
+  fs.copySync(backupDir, dir, copyOpts);
   log('• delete backup directory');
-  deleteFolderRecursive(backupDir);
+  fs.removeSync(backupDir);
   log('• delete instrumentation directory');
-  deleteFolderRecursive(instrumentedDir);
+  fs.removeSync(instrumentedDir);
 };
 
 
 /**
  * Callback for when runTestsuite() has finished.
  */
-var collectAndWriteCoverageData = function(code) {
+var collectAndWriteCoverageData = function() {
   log('• collect data from coverage.json');
 
   var coverageFile = path.join(__dirname,'../coverage/coverage.json');
@@ -120,7 +92,7 @@ var collectAndWriteCoverageData = function(code) {
   revertBackupAndInstrumentationDir();
 
   log('• write report from collected data');
-  reporter.write(collector, true, function () {
+  reporter.write(collector, true, function() {
     process.exit(0);
   });
 };
@@ -128,6 +100,8 @@ var collectAndWriteCoverageData = function(code) {
 /**
  * Will instrument all JavaScript files that are passed as second parameter.
  * This is the callback to the glob call.
+ * @param {Error} err Any error.
+ * @param {Array.<string>} files List of file paths.
  */
 var foundAllJavaScriptSourceFiles = function(err, files) {
   if (err) {
@@ -157,10 +131,10 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
   log('  • done. ' + cnt + ' files instrumented');
   log('• copy instrumented src back to src folder');
 
-  wrench.copyDirSyncRecursive(instrumentedDir, dir, copyOpts);
+  fs.copySync(instrumentedDir, dir, copyOpts);
 
   log('• run test suite on instrumented code');
-  runTestsuite(true, collectAndWriteCoverageData);
+  runTestsuite({coverage: true, reporter: 'dot'}, collectAndWriteCoverageData);
 };
 
 /**
@@ -168,17 +142,13 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
  * coverage process by gathering all JavaScript files and then instrumenting
  * them.
  */
-var main = function(){
+var main = function() {
   setupBackupAndInstrumentationDir();
   glob(dir + '/**/*.js', {}, foundAllJavaScriptSourceFiles);
 };
-
-
 
 if (require.main === module) {
   main();
 }
 
 module.exports = main;
-
-

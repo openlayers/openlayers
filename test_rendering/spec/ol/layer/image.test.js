@@ -1,5 +1,14 @@
 goog.provide('ol.test.rendering.layer.Image');
 
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Image');
+goog.require('ol.obj');
+goog.require('ol.proj');
+goog.require('ol.source.ImageStatic');
+goog.require('ol.tilegrid');
+
+
 describe('ol.rendering.layer.Image', function() {
 
   var target, map;
@@ -29,7 +38,7 @@ describe('ol.rendering.layer.Image', function() {
       }
     };
 
-    goog.array.forEach(sources, function(source) {
+    sources.forEach(function(source) {
       source.on('imageloadstart', function(event) {
         imagesLoading++;
       });
@@ -44,7 +53,7 @@ describe('ol.rendering.layer.Image', function() {
       var options = {
         source: source
       };
-      goog.object.extend(options, layerOptions);
+      ol.obj.assign(options, layerOptions);
       map.addLayer(new ol.layer.Image(options));
     });
   }
@@ -56,7 +65,7 @@ describe('ol.rendering.layer.Image', function() {
       source = new ol.source.ImageStatic({
         url: 'spec/ol/data/tiles/osm/5/5/12.png',
         imageExtent: ol.tilegrid.createXYZ().getTileCoordExtent(
-            [5, 5, 32 - 12 - 1]),
+            [5, 5, -12 - 1]),
         projection: ol.proj.get('EPSG:3857')
       });
     });
@@ -82,12 +91,29 @@ describe('ol.rendering.layer.Image', function() {
       });
     });
   });
-});
 
-goog.require('goog.array');
-goog.require('goog.object');
-goog.require('ol.proj');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Image');
-goog.require('ol.source.ImageStatic');
+  describe('single image layer - scaled', function() {
+    var source;
+
+    beforeEach(function() {
+      source = new ol.source.ImageStatic({
+        url: 'spec/ol/data/tiles/osm/5/5/12.png',
+        imageExtent: ol.proj.transformExtent(
+            [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders correctly', function(done) {
+      map = createMap('canvas');
+      waitForImages([source], {}, function() {
+        expectResemble(map, 'spec/ol/layer/expected/image-scaled.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+  });
+
+});

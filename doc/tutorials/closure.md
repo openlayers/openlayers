@@ -160,16 +160,15 @@ The minimum config file looks like this:
     "closure_entry_point": "app",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
+      "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
+      "node_modules/openlayers/externs/esrijson.js",
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
@@ -177,9 +176,6 @@ The minimum config file looks like this:
     "js": [
       "node_modules/openlayers/externs/olx.js",
       "node_modules/openlayers/externs/oli.js"
-    ],
-    "jscomp_off": [
-      "unknownDefines"
     ],
     "extra_annotation_name": [
       "api", "observable"
@@ -216,16 +212,15 @@ Here is a version of `config.json` with more compilation checks enabled:
     "closure_entry_point": "app",
     "externs": [
       "node_modules/openlayers/externs/bingmaps.js",
+      "node_modules/openlayers/externs/cartodb.js",
       "node_modules/openlayers/externs/closure-compiler.js",
+      "node_modules/openlayers/externs/esrijson.js",
       "node_modules/openlayers/externs/geojson.js",
       "node_modules/openlayers/externs/proj4js.js",
       "node_modules/openlayers/externs/tilejson.js",
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.array.ASSUME_NATIVE_FUNCTIONS=true",
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.json.USE_NATIVE_JSON=true",
       "goog.DEBUG=false",
       "ol.ENABLE_DOM=false",
       "ol.ENABLE_WEBGL=false"
@@ -235,42 +230,12 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/oli.js"
     ],
     "jscomp_error": [
-      "accessControls",
-      "ambiguousFunctionDecl",
-      "checkEventfulObjectDisposal",
-      "checkRegExp",
-      "checkStructDictInheritance",
-      "checkTypes",
-      "checkVars",
-      "const",
-      "constantProperty",
-      "deprecated",
-      "duplicateMessage",
-      "es3",
-      "es5Strict",
-      "externsValidation",
-      "fileoverviewTags",
-      "globalThis",
-      "internetExplorerChecks",
-      "invalidCasts",
-      "misplacedTypeAnnotation",
-      "missingGetCssName",
-      "missingProperties",
-      "missingProvide",
-      "missingRequire",
-      "missingReturn",
-      "newCheckTypes",
-      "nonStandardJsDocs",
-      "suspiciousCode",
-      "strictModuleDepCheck",
-      "typeInvalidation",
-      "undefinedNames",
-      "undefinedVars",
-      "uselessCode",
-      "visibility"
+      "*"
     ],
     "jscomp_off": [
-      "unknownDefines"
+      "unknownDefines",
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"
@@ -313,7 +278,7 @@ directory:
 ```
 
 Note that the page includes a `script` tag referencing the `app.js` file,
-which is the file resuted from the compilation.
+which is the file resulting from the compilation.
 
 You are done!
 

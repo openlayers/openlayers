@@ -1,15 +1,11 @@
 ---
-template: example.html
-title: Min/max resolution example
+layout: example.html
+title: Layer Min/Max Resolution
 shortdesc: Show/hide layers depending on current view resolution.
 docs: >
-  <p>Zoom in twice: the MapBox layer should hide whereas the OSM layer should be shown.</p>
+  <p>Zoom in twice: the MapBox layer should hide and the OSM layer should be shown.</p>
   <p>If you continue to zoom in, you'll see the OSM layer also disappear.</p>
   <p>The rendering of the layers are here controlled using minResolution and maxResolution options.</p>
 tags: "minResolution, maxResolution, resolution"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-</div>
+<div id="map" class="map"></div>

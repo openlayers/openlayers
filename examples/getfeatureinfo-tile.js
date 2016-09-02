@@ -8,7 +8,7 @@ var wmsSource = new ol.source.TileWMS({
   url: 'http://demo.boundlessgeo.com/geoserver/wms',
   params: {'LAYERS': 'ne:ne'},
   serverType: 'geoserver',
-  crossOrigin: ''
+  crossOrigin: 'anonymous'
 });
 
 var wmsLayer = new ol.layer.Tile({
@@ -44,7 +44,7 @@ map.on('pointermove', function(evt) {
     return;
   }
   var pixel = map.getEventPixel(evt.originalEvent);
-  var hit = map.forEachLayerAtPixel(pixel, function(layer) {
+  var hit = map.forEachLayerAtPixel(pixel, function() {
     return true;
   });
   map.getTargetElement().style.cursor = hit ? 'pointer' : '';

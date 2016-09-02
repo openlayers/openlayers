@@ -6,7 +6,7 @@
 var path = require('path');
 var spawn = require('child_process').spawn;
 
-var phantomjs = require('phantomjs');
+var phantomjs = require('phantomjs-prebuilt');
 
 var serve = require('./serve');
 
@@ -31,13 +31,18 @@ function listen(min, max, server, callback) {
         callback(err);
       }
     });
-    server.listen(port, '127.0.0.1', callback);
+    server.listen(port, '127.0.0.1');
   }
+  server.once('listening', function() {
+    callback(null);
+  });
   _listen(min);
 }
 
 
-function runTests(includeCoverage, callback) {
+function runTests(conf, callback) {
+  var coverage = 'coverage' in conf ? conf.coverage : false;
+  var reporter = 'reporter' in conf ? conf.reporter : 'spec';
   /**
    * Create the debug server and run tests.
    */
@@ -55,17 +60,20 @@ function runTests(includeCoverage, callback) {
       var address = server.address();
       var url = 'http://' + address.address + ':' + address.port;
       var args = [
-        path.join(
-          __dirname,
-          '../node_modules/mocha-phantomjs/lib/mocha-phantomjs.coffee'
-        ),
-        url + '/test/index.html'
+        require.resolve('mocha-phantomjs-core'),
+        url + '/test/index.html',
+        reporter
       ];
+      var config = {
+        ignoreResourceErrors: true,
+        useColors: true
+      };
 
-      if (includeCoverage) {
-        args.push('spec', '{"hooks": "' +
-          path.join(__dirname, '../test/phantom_hooks.js') + '"}');
+      if (coverage) {
+        config.hooks = path.join(__dirname, '../test/phantom_hooks.js');
       }
+
+      args.push(JSON.stringify(config));
 
       var child = spawn(phantomjs.path, args, {stdio: 'inherit'});
       child.on('exit', function(code) {
@@ -76,7 +84,7 @@ function runTests(includeCoverage, callback) {
 }
 
 if (require.main === module) {
-  runTests(false, function(code){
+  runTests({coverage: false, reporter: 'spec'}, function(code) {
     process.exit(code);
   });
 }
@@ -85,5 +93,3 @@ module.exports = {
   runTests: runTests,
   listen: listen
 };
-
-

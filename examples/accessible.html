@@ -1,6 +1,6 @@
 ---
-template: example.html
-title: Accessibility example
+layout: example.html
+title: Accessible Map
 shortdesc: Example of an accessible map.
 docs: >
   This page's `map` element has its `tabindex` attribute set to `"0"`, that makes it focusable. To focus the map element you can either navigate to it using the "tab" key or use the skip link. When the `map` element is focused the + and - keys can be used to zoom in and out and the arrow keys can be used to pan.
@@ -10,11 +10,7 @@ docs: >
 
 tags: "accessibility, tabindex"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <a class="skiplink" href="#map">Go to map</a>
-    <div id="map" class="map" tabindex="0"></div>
-    <button id="zoom-out">Zoom out</button>
-    <button id="zoom-in">Zoom in</button>
-  </div>
-</div>
+<a class="skiplink" href="#map">Go to map</a>
+<div id="map" class="map" tabindex="0"></div>
+<button id="zoom-out">Zoom out</button>
+<button id="zoom-in">Zoom in</button>

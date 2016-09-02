@@ -17,7 +17,7 @@ goog.require('ol.style.Style');
  * currently midnight would have an opacity of 0.  This doesn't account for
  * daylight savings, so don't use it to plan your vacation.
  */
-var styleFunction = function(feature, resolution) {
+var styleFunction = function(feature) {
   var offset = 0;
   var name = feature.get('name'); // e.g. GMT -08:30
   var match = name.match(/([\-+]\d{2}):(\d{2})$/);
@@ -35,14 +35,14 @@ var styleFunction = function(feature, resolution) {
     delta = 24 - delta;
   }
   var opacity = 0.75 * (1 - delta / 12);
-  return [new ol.style.Style({
+  return new ol.style.Style({
     fill: new ol.style.Fill({
       color: [0xff, 0xff, 0x33, opacity]
     }),
     stroke: new ol.style.Stroke({
       color: '#ffffff'
     })
-  })];
+  });
 };
 
 var vector = new ol.layer.Vector({
@@ -81,7 +81,7 @@ var displayFeatureInfo = function(pixel) {
     left: pixel[0] + 'px',
     top: (pixel[1] - 15) + 'px'
   });
-  var feature = map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
   if (feature) {

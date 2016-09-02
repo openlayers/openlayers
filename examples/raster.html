@@ -1,0 +1,30 @@
+---
+layout: example.html
+title: Raster Source
+shortdesc: Demonstrates pixelwise operations with a raster source.
+docs: >
+  <p>
+    This example uses a <code>ol.source.Raster</code> to generate data
+    based on another source.  The raster source accepts any number of
+    input sources (tile or image based) and runs a pipeline of
+    operations on the input pixels.  The return from the final
+    operation is used as the data for the output source.
+  </p>
+  <p>
+    In this case, a single tiled source of imagery is used as input.
+    For each pixel, the Vegetation Greenness Index
+    (<a href="http://www.tandfonline.com/doi/abs/10.1080/10106040108542184#.Vb90ITBViko">VGI</a>)
+    is calculated from the input pixels.  A second operation colors
+    those pixels based on a threshold value (values above the
+    threshold are green and those below are transparent).
+  </p>
+tags: "raster, pixel"
+resources:
+  - https://d3js.org/d3.v3.min.js
+cloak:
+  AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF: Your Bing Maps Key from http://www.bingmapsportal.com/ here
+---
+<div class="rel">
+  <div id="map" class="map"></div>
+  <div id="plot"></div>
+</div>

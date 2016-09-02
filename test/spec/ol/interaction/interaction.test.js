@@ -1,5 +1,10 @@
 goog.provide('ol.test.interaction.Interaction');
 
+goog.require('ol.events.EventTarget');
+goog.require('ol.Map');
+goog.require('ol.interaction.Interaction');
+
+
 describe('ol.interaction.Interaction', function() {
 
   describe('constructor', function() {
@@ -11,7 +16,7 @@ describe('ol.interaction.Interaction', function() {
 
     it('creates a new interaction', function() {
       expect(interaction).to.be.a(ol.interaction.Interaction);
-      expect(interaction).to.be.a(goog.events.EventTarget);
+      expect(interaction).to.be.a(ol.events.EventTarget);
     });
 
     it('creates an active interaction', function() {
@@ -54,7 +59,3 @@ describe('ol.interaction.Interaction', function() {
   });
 
 });
-
-goog.require('goog.events.EventTarget');
-goog.require('ol.Map');
-goog.require('ol.interaction.Interaction');

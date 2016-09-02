@@ -1,5 +1,9 @@
 goog.provide('ol.test.Collection');
 
+goog.require('ol.events');
+goog.require('ol.Collection');
+
+
 describe('ol.collection', function() {
   var collection;
 
@@ -114,7 +118,7 @@ describe('ol.collection', function() {
     it('fires a remove event', function() {
       var collection = new ol.Collection([0, 1, 2]);
       var cb = sinon.spy();
-      goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
+      ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb).to.be.called();
       expect(cb.lastCall.args[0].element).to.eql(1);
@@ -137,11 +141,11 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a', 'b']);
       var added, removed;
-      goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
         added = e.element;
       });
-      goog.events.listen(
-          collection, ol.CollectionEventType.REMOVE, function(e) {
+      ol.events.listen(
+          collection, ol.Collection.EventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.setAt(1, 1);
@@ -154,8 +158,8 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a']);
       var removed;
-      goog.events.listen(
-          collection, ol.CollectionEventType.REMOVE, function(e) {
+      ol.events.listen(
+          collection, ol.Collection.EventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.pop();
@@ -167,8 +171,8 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection([0, 2]);
       var added;
-      goog.events.listen(
-          collection, ol.CollectionEventType.ADD, function(e) {
+      ol.events.listen(
+          collection, ol.Collection.EventType.ADD, function(e) {
             added = e.element;
           });
       collection.insertAt(1, 1);
@@ -179,8 +183,8 @@ describe('ol.collection', function() {
   describe('setAt beyond end', function() {
     it('triggers events properly', function() {
       var added = [];
-      goog.events.listen(
-          collection, ol.CollectionEventType.ADD, function(e) {
+      ol.events.listen(
+          collection, ol.Collection.EventType.ADD, function(e) {
             added.push(e.element);
           });
       collection.setAt(2, 0);
@@ -200,7 +204,7 @@ describe('ol.collection', function() {
     beforeEach(function() {
       collection = new ol.Collection([0, 1, 2]);
       cb = sinon.spy();
-      goog.events.listen(collection, 'change:length', cb);
+      ol.events.listen(collection, 'change:length', cb);
     });
 
     describe('insertAt', function() {
@@ -229,7 +233,7 @@ describe('ol.collection', function() {
     it('triggers add when pushing', function() {
       var collection = new ol.Collection();
       var elem;
-      goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
         elem = e.element;
       });
       collection.push(1);
@@ -246,8 +250,8 @@ describe('ol.collection', function() {
     });
     describe('setAt', function() {
       it('triggers remove', function() {
-        goog.events.listen(collection, ol.CollectionEventType.ADD, cb1);
-        goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb2);
+        ol.events.listen(collection, ol.Collection.EventType.ADD, cb1);
+        ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb2);
         collection.setAt(0, 2);
         expect(cb2.lastCall.args[0].element).to.eql(1);
         expect(cb1.lastCall.args[0].element).to.eql(2);
@@ -255,7 +259,7 @@ describe('ol.collection', function() {
     });
     describe('pop', function() {
       it('triggers remove', function() {
-        goog.events.listen(collection, ol.CollectionEventType.REMOVE, cb1);
+        ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb1);
         collection.pop();
         expect(cb1.lastCall.args[0].element).to.eql(1);
       });
@@ -273,7 +277,7 @@ describe('ol.collection', function() {
     it('fires events', function() {
       var collection = new ol.Collection();
       var elems = [];
-      goog.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
         elems.push(e.element);
       });
       collection.extend([1, 2]);
@@ -282,8 +286,3 @@ describe('ol.collection', function() {
   });
 
 });
-
-
-goog.require('goog.events');
-goog.require('ol.Collection');
-goog.require('ol.CollectionEventType');

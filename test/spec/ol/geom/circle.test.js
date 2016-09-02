@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.Circle');
 
+goog.require('ol.geom.Circle');
+
 
 describe('ol.geom.Circle', function() {
 
@@ -22,31 +24,31 @@ describe('ol.geom.Circle', function() {
 
     });
 
-    describe('#containsCoordinate', function() {
+    describe('#intersectsCoordinate', function() {
 
       it('contains the center', function() {
-        expect(circle.containsCoordinate([0, 0])).to.be(true);
+        expect(circle.intersectsCoordinate([0, 0])).to.be(true);
       });
 
       it('contains points inside the perimeter', function() {
-        expect(circle.containsCoordinate([0.5, 0.5])).to.be(true);
-        expect(circle.containsCoordinate([-0.5, 0.5])).to.be(true);
-        expect(circle.containsCoordinate([-0.5, -0.5])).to.be(true);
-        expect(circle.containsCoordinate([0.5, -0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([0.5, 0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([-0.5, 0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([-0.5, -0.5])).to.be(true);
+        expect(circle.intersectsCoordinate([0.5, -0.5])).to.be(true);
       });
 
       it('contains points on the perimeter', function() {
-        expect(circle.containsCoordinate([1, 0])).to.be(true);
-        expect(circle.containsCoordinate([0, 1])).to.be(true);
-        expect(circle.containsCoordinate([-1, 0])).to.be(true);
-        expect(circle.containsCoordinate([0, -1])).to.be(true);
+        expect(circle.intersectsCoordinate([1, 0])).to.be(true);
+        expect(circle.intersectsCoordinate([0, 1])).to.be(true);
+        expect(circle.intersectsCoordinate([-1, 0])).to.be(true);
+        expect(circle.intersectsCoordinate([0, -1])).to.be(true);
       });
 
       it('does not contain points outside the perimeter', function() {
-        expect(circle.containsCoordinate([2, 0])).to.be(false);
-        expect(circle.containsCoordinate([1, 1])).to.be(false);
-        expect(circle.containsCoordinate([-2, 0])).to.be(false);
-        expect(circle.containsCoordinate([0, -2])).to.be(false);
+        expect(circle.intersectsCoordinate([2, 0])).to.be(false);
+        expect(circle.intersectsCoordinate([1, 1])).to.be(false);
+        expect(circle.intersectsCoordinate([-2, 0])).to.be(false);
+        expect(circle.intersectsCoordinate([0, -2])).to.be(false);
       });
 
     });
@@ -91,7 +93,7 @@ describe('ol.geom.Circle', function() {
 
       it('maintains Z coordinates', function() {
         var circle = new ol.geom.Circle([0, 0, 1], 1);
-        expect(circle.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+        expect(circle.getLayout()).to.be('XYZ');
         var closestPoint = circle.getClosestPoint([2, 0]);
         expect(closestPoint).to.have.length(3);
         expect(closestPoint[0]).to.roughlyEqual(1, 1e-15);
@@ -101,7 +103,7 @@ describe('ol.geom.Circle', function() {
 
       it('maintains M coordinates', function() {
         var circle = new ol.geom.Circle([0, 0, 2], 1,
-            ol.geom.GeometryLayout.XYM);
+            'XYM');
         var closestPoint = circle.getClosestPoint([2, 0]);
         expect(closestPoint).to.have.length(3);
         expect(closestPoint[0]).to.roughlyEqual(1, 1e-15);
@@ -111,7 +113,7 @@ describe('ol.geom.Circle', function() {
 
       it('maintains Z and M coordinates', function() {
         var circle = new ol.geom.Circle([0, 0, 1, 2], 1);
-        expect(circle.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        expect(circle.getLayout()).to.be('XYZM');
         var closestPoint = circle.getClosestPoint([2, 0]);
         expect(closestPoint).to.have.length(4);
         expect(closestPoint[0]).to.roughlyEqual(1, 1e-15);
@@ -149,7 +151,7 @@ describe('ol.geom.Circle', function() {
     describe('#getType', function() {
 
       it('returns the expected value', function() {
-        expect(circle.getType()).to.be(ol.geom.GeometryType.CIRCLE);
+        expect(circle.getType()).to.be('Circle');
       });
 
     });
@@ -173,7 +175,7 @@ describe('ol.geom.Circle', function() {
     describe('#setFlatCoordinates', function() {
 
       it('sets both center and radius', function() {
-        circle.setFlatCoordinates(ol.geom.GeometryLayout.XY, [1, 2, 4, 2]);
+        circle.setFlatCoordinates('XY', [1, 2, 4, 2]);
         expect(circle.getCenter()).to.eql([1, 2]);
         expect(circle.getRadius()).to.be(3);
       });
@@ -181,7 +183,7 @@ describe('ol.geom.Circle', function() {
       it('fires a single change event', function() {
         var spy = sinon.spy();
         circle.on('change', spy);
-        circle.setFlatCoordinates(ol.geom.GeometryLayout.XY, [1, 2, 4, 2]);
+        circle.setFlatCoordinates('XY', [1, 2, 4, 2]);
         expect(spy.calledOnce).to.be(true);
       });
 
@@ -273,8 +275,3 @@ describe('ol.geom.Circle', function() {
   });
 
 });
-
-
-goog.require('ol.geom.Circle');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.GeometryLayout');

@@ -4,7 +4,6 @@ goog.require('ol.layer.Image');
 goog.require('ol.source.ImageWMS');
 
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.
@@ -33,10 +32,11 @@ Progress.prototype.addLoading = function() {
  * Increment the count of loaded tiles.
  */
 Progress.prototype.addLoaded = function() {
+  var this_ = this;
   setTimeout(function() {
-    ++this.loaded;
-    this.update();
-  }.bind(this), 100);
+    ++this_.loaded;
+    this_.update();
+  }, 100);
 };
 
 
@@ -49,7 +49,10 @@ Progress.prototype.update = function() {
   if (this.loading === this.loaded) {
     this.loading = 0;
     this.loaded = 0;
-    setTimeout(this.hide.bind(this), 500);
+    var this_ = this;
+    setTimeout(function() {
+      this_.hide();
+    }, 500);
   }
 };
 
@@ -80,14 +83,14 @@ var source = new ol.source.ImageWMS({
   serverType: 'geoserver'
 });
 
-source.on('imageloadstart', function(event) {
+source.on('imageloadstart', function() {
   progress.addLoading();
 });
 
-source.on('imageloadend', function(event) {
+source.on('imageloadend', function() {
   progress.addLoaded();
 });
-source.on('imageloaderror', function(event) {
+source.on('imageloaderror', function() {
   progress.addLoaded();
 });
 

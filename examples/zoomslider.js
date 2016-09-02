@@ -2,7 +2,7 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control.ZoomSlider');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 
 
 /**
@@ -12,9 +12,9 @@ goog.require('ol.source.MapQuest');
  * @return {ol.Map} The ol.Map instance.
  */
 var createMap = function(divId) {
-  var source, layer, map, zoomslider, resolutions;
+  var source, layer, map, zoomslider;
 
-  source = new ol.source.MapQuest({layer: 'sat'});
+  source = new ol.source.OSM();
   layer = new ol.layer.Tile({
     source: source
   });

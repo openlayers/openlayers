@@ -5,7 +5,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Cluster');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -13,6 +13,8 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
+
+var distance = document.getElementById('distance');
 
 var count = 20000;
 var features = new Array(count);
@@ -27,18 +29,18 @@ var source = new ol.source.Vector({
 });
 
 var clusterSource = new ol.source.Cluster({
-  distance: 40,
+  distance: parseInt(distance.value, 10),
   source: source
 });
 
 var styleCache = {};
 var clusters = new ol.layer.Vector({
   source: clusterSource,
-  style: function(feature, resolution) {
+  style: function(feature) {
     var size = feature.get('features').length;
     var style = styleCache[size];
     if (!style) {
-      style = [new ol.style.Style({
+      style = new ol.style.Style({
         image: new ol.style.Circle({
           radius: 10,
           stroke: new ol.style.Stroke({
@@ -54,7 +56,7 @@ var clusters = new ol.layer.Vector({
             color: '#fff'
           })
         })
-      })];
+      });
       styleCache[size] = style;
     }
     return style;
@@ -62,11 +64,7 @@ var clusters = new ol.layer.Vector({
 });
 
 var raster = new ol.layer.Tile({
-  source: new ol.source.MapQuest({layer: 'sat'})
-});
-
-var raw = new ol.layer.Vector({
-  source: source
+  source: new ol.source.OSM()
 });
 
 var map = new ol.Map({
@@ -77,4 +75,8 @@ var map = new ol.Map({
     center: [0, 0],
     zoom: 2
   })
+});
+
+distance.addEventListener('input', function() {
+  clusterSource.setDistance(parseInt(distance.value, 10));
 });

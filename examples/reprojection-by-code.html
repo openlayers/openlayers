@@ -1,0 +1,25 @@
+---
+layout: example.html
+title: Reprojection with EPSG.io Search
+shortdesc: Demonstrates client-side raster reprojection of OSM to arbitrary projection
+docs: >
+  This example shows client-side raster reprojection capabilities from
+  OSM (EPSG:3857) to arbitrary projection by searching
+  in <a href="http://epsg.io/">EPSG.io</a> database.
+tags: "reprojection, projection, proj4js, epsg.io"
+resources:
+  - https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label for="epsg-query">Search projection:</label>
+  <input type="text" id="epsg-query" placeholder="4326, 27700, US National Atlas, Swiss, France, ..." class="form-control" size="50" />
+  <button id="epsg-search" class="btn">Search</button>
+  <span id="epsg-result"></span>
+  <div>
+    <label for="render-edges">
+      Render reprojection edges
+      <input type="checkbox" id="render-edges">
+    </label>
+  </div>
+</form>

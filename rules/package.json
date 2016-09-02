@@ -1,0 +1,11 @@
+{
+  "name": "eslint-plugin-openlayers-internal",
+  "version": "2.1.0",
+  "description": "Custom ESLint rules for the OpenLayers project",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/openlayers/ol3.git"
+  },
+  "license": "BSD-2-Clause"
+}

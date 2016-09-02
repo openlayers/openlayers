@@ -1,13 +1,12 @@
 goog.provide('ol.geom.SimpleGeometry');
 
-goog.require('goog.asserts');
-goog.require('goog.functions');
-goog.require('goog.object');
+goog.require('ol');
+goog.require('ol.functions');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
-
+goog.require('ol.obj');
 
 
 /**
@@ -21,7 +20,7 @@ goog.require('ol.geom.flat.transform');
  */
 ol.geom.SimpleGeometry = function() {
 
-  goog.base(this);
+  ol.geom.Geometry.call(this);
 
   /**
    * @protected
@@ -42,7 +41,7 @@ ol.geom.SimpleGeometry = function() {
   this.flatCoordinates = null;
 
 };
-goog.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
+ol.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
 
 
 /**
@@ -51,15 +50,16 @@ goog.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
  * @return {ol.geom.GeometryLayout} layout Layout.
  */
 ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
+  var layout;
   if (stride == 2) {
-    return ol.geom.GeometryLayout.XY;
+    layout = ol.geom.GeometryLayout.XY;
   } else if (stride == 3) {
-    return ol.geom.GeometryLayout.XYZ;
+    layout = ol.geom.GeometryLayout.XYZ;
   } else if (stride == 4) {
-    return ol.geom.GeometryLayout.XYZM;
-  } else {
-    goog.asserts.fail('unsupported stride: ' + stride);
+    layout = ol.geom.GeometryLayout.XYZM;
   }
+  goog.DEBUG && console.assert(layout, 'unsupported stride: ' + stride);
+  return /** @type {ol.geom.GeometryLayout} */ (layout);
 };
 
 
@@ -68,24 +68,23 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
  * @return {number} Stride.
  */
 ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
+  var stride;
   if (layout == ol.geom.GeometryLayout.XY) {
-    return 2;
-  } else if (layout == ol.geom.GeometryLayout.XYZ) {
-    return 3;
-  } else if (layout == ol.geom.GeometryLayout.XYM) {
-    return 3;
+    stride = 2;
+  } else if (layout == ol.geom.GeometryLayout.XYZ || layout == ol.geom.GeometryLayout.XYM) {
+    stride = 3;
   } else if (layout == ol.geom.GeometryLayout.XYZM) {
-    return 4;
-  } else {
-    goog.asserts.fail('unsupported layout: ' + layout);
+    stride = 4;
   }
+  goog.DEBUG && console.assert(stride, 'unsupported layout: ' + layout);
+  return /** @type {number} */ (stride);
 };
 
 
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.containsXY = goog.functions.FALSE;
+ol.geom.SimpleGeometry.prototype.containsXY = ol.functions.FALSE;
 
 
 /**
@@ -99,9 +98,10 @@ ol.geom.SimpleGeometry.prototype.computeExtent = function(extent) {
 
 
 /**
+ * @abstract
  * @return {Array} Coordinates.
  */
-ol.geom.SimpleGeometry.prototype.getCoordinates = goog.abstractMethod;
+ol.geom.SimpleGeometry.prototype.getCoordinates = function() {};
 
 
 /**
@@ -145,10 +145,9 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
-    function(squaredTolerance) {
+ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    goog.object.clear(this.simplifiedGeometryCache);
+    ol.obj.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
@@ -188,8 +187,7 @@ ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry =
  * @return {ol.geom.SimpleGeometry} Simplified geometry.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.getSimplifiedGeometryInternal =
-    function(squaredTolerance) {
+ol.geom.SimpleGeometry.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
   return this;
 };
 
@@ -207,8 +205,7 @@ ol.geom.SimpleGeometry.prototype.getStride = function() {
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
-    function(layout, flatCoordinates) {
+ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoordinates) {
   this.stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
@@ -216,10 +213,11 @@ ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal =
 
 
 /**
+ * @abstract
  * @param {Array} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.SimpleGeometry.prototype.setCoordinates = goog.abstractMethod;
+ol.geom.SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layout) {};
 
 
 /**
@@ -228,11 +226,10 @@ ol.geom.SimpleGeometry.prototype.setCoordinates = goog.abstractMethod;
  * @param {number} nesting Nesting.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.setLayout =
-    function(layout, coordinates, nesting) {
+ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
   /** @type {number} */
   var stride;
-  if (goog.isDef(layout)) {
+  if (layout) {
     stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   } else {
     var i;
@@ -245,7 +242,7 @@ ol.geom.SimpleGeometry.prototype.setLayout =
         coordinates = /** @type {Array} */ (coordinates[0]);
       }
     }
-    stride = (/** @type {Array} */ (coordinates)).length;
+    stride = coordinates.length;
     layout = ol.geom.SimpleGeometry.getLayoutForStride_(stride);
   }
   this.layout = layout;
@@ -258,8 +255,48 @@ ol.geom.SimpleGeometry.prototype.setLayout =
  * @api stable
  */
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
-  if (!goog.isNull(this.flatCoordinates)) {
+  if (this.flatCoordinates) {
     transformFn(this.flatCoordinates, this.flatCoordinates, this.stride);
+    this.changed();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.SimpleGeometry.prototype.rotate = function(angle, anchor) {
+  var flatCoordinates = this.getFlatCoordinates();
+  if (flatCoordinates) {
+    var stride = this.getStride();
+    ol.geom.flat.transform.rotate(
+        flatCoordinates, 0, flatCoordinates.length,
+        stride, angle, anchor, flatCoordinates);
+    this.changed();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
+  var sy = opt_sy;
+  if (sy === undefined) {
+    sy = sx;
+  }
+  var anchor = opt_anchor;
+  if (!anchor) {
+    anchor = ol.extent.getCenter(this.getExtent());
+  }
+  var flatCoordinates = this.getFlatCoordinates();
+  if (flatCoordinates) {
+    var stride = this.getStride();
+    ol.geom.flat.transform.scale(
+        flatCoordinates, 0, flatCoordinates.length,
+        stride, sx, sy, anchor, flatCoordinates);
     this.changed();
   }
 };
@@ -271,7 +308,7 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   var flatCoordinates = this.getFlatCoordinates();
-  if (!goog.isNull(flatCoordinates)) {
+  if (flatCoordinates) {
     var stride = this.getStride();
     ol.geom.flat.transform.translate(
         flatCoordinates, 0, flatCoordinates.length, stride,
@@ -283,14 +320,13 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
 
 /**
  * @param {ol.geom.SimpleGeometry} simpleGeometry Simple geometry.
- * @param {goog.vec.Mat4.Number} transform Transform.
+ * @param {ol.Transform} transform Transform.
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
-ol.geom.transformSimpleGeometry2D =
-    function(simpleGeometry, transform, opt_dest) {
+ol.geom.SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
   var flatCoordinates = simpleGeometry.getFlatCoordinates();
-  if (goog.isNull(flatCoordinates)) {
+  if (!flatCoordinates) {
     return null;
   } else {
     var stride = simpleGeometry.getStride();

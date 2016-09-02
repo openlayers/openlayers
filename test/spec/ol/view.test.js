@@ -1,5 +1,12 @@
 goog.provide('ol.test.View');
 
+goog.require('ol');
+goog.require('ol.View');
+goog.require('ol.extent');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+
+
 describe('ol.View', function() {
 
   describe('constructor (defaults)', function() {
@@ -20,6 +27,32 @@ describe('ol.View', function() {
   });
 
   describe('create constraints', function() {
+
+    describe('create center constraint', function() {
+
+      describe('with no options', function() {
+        it('gives a correct center constraint function', function() {
+          var options = {};
+          var fn = ol.View.createCenterConstraint_(options);
+          expect(fn([0, 0])).to.eql([0, 0]);
+          expect(fn(undefined)).to.eql(undefined);
+          expect(fn([42, -100])).to.eql([42, -100]);
+        });
+      });
+
+      describe('with extent option', function() {
+        it('gives a correct center constraint function', function() {
+          var options = {
+            extent: [0, 0, 1, 1]
+          };
+          var fn = ol.View.createCenterConstraint_(options);
+          expect(fn([0, 0])).to.eql([0, 0]);
+          expect(fn([-10, 0])).to.eql([0, 0]);
+          expect(fn([100, 100])).to.eql([1, 1]);
+        });
+      });
+
+    });
 
     describe('create resolution constraint', function() {
 
@@ -268,6 +301,23 @@ describe('ol.View', function() {
 
   });
 
+  describe('#getResolutions', function() {
+    var view;
+    var resolutions = [512, 256, 128, 64, 32, 16];
+
+    it('returns correct resolutions', function() {
+      view = new ol.View({
+        resolutions: resolutions
+      });
+      expect(view.getResolutions()).to.be(resolutions);
+    });
+
+    it('returns resolutions as undefined', function() {
+      view = new ol.View();
+      expect(view.getResolutions()).to.be(undefined);
+    });
+  });
+
   describe('#getZoom', function() {
     var view;
     beforeEach(function() {
@@ -280,23 +330,48 @@ describe('ol.View', function() {
       view.setResolution(undefined);
       expect(view.getZoom()).to.be(undefined);
 
-      view.setResolution(511);
+      view.setResolution(513);
       expect(view.getZoom()).to.be(undefined);
 
       view.setResolution(512);
       expect(view.getZoom()).to.be(0);
 
-      view.setResolution(64);
-      expect(view.getZoom()).to.be(3);
+      view.setResolution(100);
+      expect(view.getZoom()).to.roughlyEqual(2.35614, 1e-5);
 
       view.setResolution(65);
-      expect(view.getZoom()).to.be(undefined);
+      expect(view.getZoom()).to.roughlyEqual(2.97763, 1e-5);
+
+      view.setResolution(64);
+      expect(view.getZoom()).to.be(3);
 
       view.setResolution(16);
       expect(view.getZoom()).to.be(5);
 
       view.setResolution(15);
       expect(view.getZoom()).to.be(undefined);
+    });
+
+    it('works for resolution arrays with variable zoom factors', function() {
+      var view = new ol.View({
+        resolutions: [10, 5, 2, 1]
+      });
+
+      view.setZoom(1);
+      expect(view.getZoom()).to.be(1);
+
+      view.setZoom(1.3);
+      expect(view.getZoom()).to.be(1.3);
+
+      view.setZoom(2);
+      expect(view.getZoom()).to.be(2);
+
+      view.setZoom(2.7);
+      expect(view.getZoom()).to.be(2.7);
+
+      view.setZoom(3);
+      expect(view.getZoom()).to.be(3);
+
     });
   });
 
@@ -315,6 +390,9 @@ describe('ol.View', function() {
 
       view.setZoom(15);
       expect(view.getZoom()).to.be(15);
+
+      view.setZoom(15.3);
+      expect(view.getZoom()).to.be(15.3);
 
       view.setZoom(20);
       expect(view.getZoom()).to.be(20);
@@ -364,86 +442,108 @@ describe('ol.View', function() {
     });
   });
 
-  describe('fitGeometry', function() {
+  describe('#calculateExtent', function() {
+    it('returns the expected extent', function() {
+      var view = new ol.View({
+        resolutions: [512],
+        zoom: 0,
+        center: [0, 0]
+      });
+
+      var extent = view.calculateExtent([100, 200]);
+      expect(extent[0]).to.be(-25600);
+      expect(extent[1]).to.be(-51200);
+      expect(extent[2]).to.be(25600);
+      expect(extent[3]).to.be(51200);
+    });
+    it('returns the expected extent with rotation', function() {
+      var view = new ol.View({
+        resolutions: [512],
+        zoom: 0,
+        center: [0, 0],
+        rotation: Math.PI / 2
+      });
+      var extent = view.calculateExtent([100, 200]);
+      expect(extent[0]).to.roughlyEqual(-51200, 1e-9);
+      expect(extent[1]).to.roughlyEqual(-25600, 1e-9);
+      expect(extent[2]).to.roughlyEqual(51200, 1e-9);
+      expect(extent[3]).to.roughlyEqual(25600, 1e-9);
+    });
+  });
+
+  describe('fit', function() {
     var view;
     beforeEach(function() {
       view = new ol.View({
         resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
       });
     });
-    it('fit correctly to the geometry', function() {
-      view.fitGeometry(
+    it('fits correctly to the geometry', function() {
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            constrainResolution: false
-          }
-      );
+          {padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100]
-          }
-      );
+          {padding: [100, 0, 0, 100]});
       expect(view.getResolution()).to.be(20);
       expect(view.getCenter()[0]).to.be(5500);
       expect(view.getCenter()[1]).to.be(47550);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            nearest: true
-          }
-      );
+          {padding: [100, 0, 0, 100], nearest: true});
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(47050);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.Point([6000, 46000]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            minResolution: 2
-          }
-      );
+          {padding: [100, 0, 0, 100], minResolution: 2});
       expect(view.getResolution()).to.be(2);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
-      view.fitGeometry(
+      view.fit(
           new ol.geom.Point([6000, 46000]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            maxZoom: 6
-          }
-      );
+          {padding: [100, 0, 0, 100], maxZoom: 6});
       expect(view.getResolution()).to.be(2);
       expect(view.getZoom()).to.be(6);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
       view.setRotation(Math.PI / 4);
-      view.fitGeometry(
+      view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
           [200, 200],
-          {
-            padding: [100, 0, 0, 100],
-            constrainResolution: false
-          }
-      );
+          {padding: [100, 0, 0, 100], constrainResolution: false});
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
+    });
+    it('fit correctly to the extent', function() {
+      view.fit([1000, 1000, 2000, 2000], [200, 200]);
+      expect(view.getResolution()).to.be(5);
+      expect(view.getCenter()[0]).to.be(1500);
+      expect(view.getCenter()[1]).to.be(1500);
+    });
+    it('throws on invalid geometry/extent value', function() {
+      expect(function() {
+        view.fit(true, [200, 200]);
+      }).to.throwException();
+    });
+    it('throws on empty extent', function() {
+      expect(function() {
+        view.fit(ol.extent.createEmpty(), [200, 200]);
+      }).to.throwException();
     });
   });
 
@@ -475,7 +575,3 @@ describe('ol.View', function() {
     });
   });
 });
-
-goog.require('ol.View');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');

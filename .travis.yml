@@ -1,16 +1,30 @@
+sudo: false
+
+language: node_js
+
+node_js:
+  - "6"
+
+cache:
+  directories:
+    - node_modules
 env:
   - DISPLAY=:99.0
 
 before_install:
-  - "sudo pip install -r requirements.txt"
-  - "npm install -g npm && npm install"
+  - "npm prune"
 
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
   - "sh -e /etc/init.d/xvfb start"
+  - "npm ls"
 
 script: "make ci"
 
 after_success:
   - "make test-coverage"
   - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
+
+branches:
+  only:
+    - master

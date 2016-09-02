@@ -1,0 +1,37 @@
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/kml/2.2 https://developers.google.com/kml/schema/kml22gx.xsd">
+    <Document>
+        <name>Drawing</name>
+        <Placemark id="linepolygon_1436780794279">
+            <Style>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>3</width>
+                </LineStyle>
+                <PolyStyle>
+                    <color>660000ff</color>
+                </PolyStyle>
+            </Style>
+            <LineString>
+                <coordinates>7.282103855735575,47.252335388740185 7.286372432423239,47.23794977574282 7.353199702540651,47.23711986131712 7.287223923345992,47.26352553438413</coordinates>
+            </LineString>
+        </Placemark>
+        <Placemark id="linepolygon_1436780799384">
+            <Style>
+                <LineStyle>
+                    <color>ff0000ff</color>
+                    <width>3</width>
+                </LineStyle>
+                <PolyStyle>
+                    <color>660000ff</color>
+                </PolyStyle>
+            </Style>
+            <Polygon>
+                <outerBoundaryIs>
+                    <LinearRing>
+                        <coordinates>7.227134983319887,47.25587491183515 7.23801833800725,47.242582453518516 7.260803078150167,47.2619584739595 7.239912047946697,47.265971706882716 7.227134983319887,47.25587491183515</coordinates>
+                    </LinearRing>
+                </outerBoundaryIs>
+            </Polygon>
+        </Placemark>
+    </Document>
+</kml>
