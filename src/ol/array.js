@@ -1,5 +1,7 @@
 goog.provide('ol.array');
 
+goog.require('ol');
+
 
 /**
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
