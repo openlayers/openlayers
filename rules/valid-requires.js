@@ -10,8 +10,13 @@ exports.rule = {
   },
 
   create: function(context) {
+    let provides;
     return {
       CallExpression: function(expression) {
+        if (!provides && util.isProvideExpression(expression)) {
+          // save the first provide to check later against requires
+          provides = expression.arguments[0].value;
+        }
         if (util.isRequireExpression(expression)) {
           const parent = expression.parent;
           if (parent.type !== 'ExpressionStatement') {
@@ -29,6 +34,11 @@ exports.rule = {
           const arg = expression.arguments[0];
           if (arg.type !== 'Literal' || !arg.value || typeof arg.value !== 'string') {
             return context.report(expression, 'Expected goog.require() to be called with a string');
+          }
+
+          // don't require self
+          if (provides === arg.value) {
+            return context.report(expression, 'Expected goog.require() to be different from goog.provide (require self?)');
           }
         }
       }
