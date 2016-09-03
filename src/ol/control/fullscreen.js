@@ -158,10 +158,9 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
  * @api stable
  */
 ol.control.FullScreen.prototype.setMap = function(map) {
-  var global = ol.global;
   ol.control.Control.prototype.setMap.call(this, map);
   if (map) {
-    this.listenerKeys.push(ol.events.listen(global.document,
+    this.listenerKeys.push(ol.events.listen(document,
         ol.control.FullScreen.getChangeType_(),
         this.handleFullScreenChange_, this)
     );

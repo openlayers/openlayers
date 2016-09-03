@@ -113,9 +113,7 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
  * @private
  */
 ol.Geolocation.prototype.handleTrackingChanged_ = function() {
-  var global = ol.global;
   if (ol.has.GEOLOCATION) {
-    var navigator = global.navigator;
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
       this.watchId_ = navigator.geolocation.watchPosition(

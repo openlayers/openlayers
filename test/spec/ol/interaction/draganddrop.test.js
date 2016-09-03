@@ -10,7 +10,6 @@ goog.require('ol.interaction.DragAndDrop');
 
 describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
-  var global = ol.global;
 
   beforeEach(function() {
     viewport = new ol.events.EventTarget();
@@ -71,7 +70,7 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('#handleDrop_', function() {
-    var origFileReader = global.FileReader;
+    var OrigFileReader = FileReader;
 
     beforeEach(function() {
       FileReader = function() {
@@ -85,7 +84,7 @@ describe('ol.interaction.DragAndDrop', function() {
     });
 
     afterEach(function() {
-      global.FileReader = origFileReader;
+      FileReader = OrigFileReader;
     });
 
     it('reads dropped files', function(done) {

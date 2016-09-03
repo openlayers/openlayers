@@ -139,7 +139,7 @@ ol.proj.Projection = function(options) {
   ol.DEBUG && console.assert(code !== undefined,
       'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS) {
-    var proj4js = ol.proj.proj4_ || ol.global['proj4'];
+    var proj4js = ol.proj.proj4_ || window['proj4'];
     if (typeof proj4js == 'function' && projections[code] === undefined) {
       var def = proj4js.defs(code);
       if (def !== undefined) {
@@ -668,7 +668,7 @@ ol.proj.get = function(projectionLike) {
     var code = projectionLike;
     projection = ol.proj.projections_[code];
     if (ol.ENABLE_PROJ4JS) {
-      var proj4js = ol.proj.proj4_ || ol.global['proj4'];
+      var proj4js = ol.proj.proj4_ || window['proj4'];
       if (projection === undefined && typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
         projection = new ol.proj.Projection({code: code});

@@ -300,8 +300,7 @@ ol.reproj.Tile.prototype.load = function() {
     });
 
     if (leftToLoad === 0) {
-      var global = ol.global;
-      global.setTimeout(this.reproject_.bind(this), 0);
+      setTimeout(this.reproject_.bind(this), 0);
     }
   }
 };
