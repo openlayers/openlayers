@@ -49,7 +49,8 @@ worker.onmessage = function(e) {
     ready = true;
     update();
   } else {
-    markers.getSource().getSource().clear();
+    var imageVector = /** @type {ol.source.ImageVector} */ (markers.getSource());
+    imageVector.getSource().clear();
     var geojsonObject = {
       'type': 'FeatureCollection',
       'features': e.data
@@ -60,14 +61,14 @@ worker.onmessage = function(e) {
         featureProjection: 'EPSG:3857'
       }
     );
-    markers.getSource().getSource().addFeatures(features);
+    imageVector.getSource().addFeatures(features);
   }
 };
 
 function update() {
   if (!ready) return;
   var bounds = ol.proj.transformExtent(
-    map.getView().calculateExtent(map.getSize()),
+    map.getView().calculateExtent(/** @type {Array<number>|null} */(map.getSize())),
     'EPSG:3857',
     'EPSG:4326'
   );
