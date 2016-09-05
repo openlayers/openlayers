@@ -181,18 +181,18 @@ ol.inherits(ol.style.Icon, ol.style.Image);
 ol.style.Icon.prototype.clone = function() {
   var useImg = (this.iconImage_.getImageState() === ol.Image.State.LOADED);
   return new ol.style.Icon({
-    anchor: this.getAnchor().slice(0),
-    anchorOrigin: this.anchorOrigin_.slice(0),
+    anchor: this.anchor_.slice(0),
+    anchorOrigin: this.anchorOrigin_,
     anchorXUnits: this.anchorXUnits_,
     anchorYUnits: this.anchorYUnits_,
     crossOrigin: this.crossOrigin_,
-    color: this.color_.slice(0),
+    color: this.color_ !== null ? this.color_.slice(0) : undefined,
     img: useImg ? this.getImage(1) : undefined,
     imgSize: useImg ? this.iconImage_.getSize().slice(0) : undefined,
     src: useImg ? undefined : this.getSrc(),
     offset: this.offset_.slice(0),
     offsetOrigin: this.offsetOrigin_,
-    size: this.getSize().slice(0),
+    size: this.size_ !== null ? this.size_.slice(0) : undefined,
     opacity: this.getOpacity(),
     scale: this.getScale(),
     snapToPixel: this.getSnapToPixel(),

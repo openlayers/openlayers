@@ -18,7 +18,7 @@ describe('ol.style.Fill', function() {
         color: '#319FD3'
       });
       var clone = original.clone();
-      expect(original.getColor()).to.be(clone.getColor());
+      expect(original.getColor()).to.eql(clone.getColor());
     });
   });
 });
