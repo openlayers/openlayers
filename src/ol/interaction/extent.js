@@ -61,7 +61,7 @@ ol.inherits(ol.interaction.ExtentEvent, ol.events.Event);
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.ExtentEvent
- * @param {olx.interaction.ExtentOptions} opt_options Options.
+ * @param {olx.interaction.ExtentOptions=} opt_options Options.
  * @api
  */
 ol.interaction.Extent = function(opt_options) {
@@ -86,13 +86,6 @@ ol.interaction.Extent = function(opt_options) {
    * @private
    */
   this.pixelTolerance_ = 10;
-
-  /**
-   * Last known pixel coordinate of the pointer
-   * @type {ol.Pixel}
-   * @private
-   */
-  this.lastPixel_ = null;
 
   /**
    * Is the pointer snapped to an extent vertex
@@ -251,7 +244,6 @@ ol.interaction.Extent.handleDownEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.Extent.handleDragEvent_ = function(mapBrowserEvent) {
-  this.lastPixel_ = mapBrowserEvent.pixel;
   if (this.pointerHandler_) {
     var pixelCoordinate = mapBrowserEvent.coordinate;
     this.setExtent(this.pointerHandler_(pixelCoordinate));
@@ -432,17 +424,6 @@ ol.interaction.Extent.prototype.createOrUpdateExtentFeature_ = function(extent) 
   return extentFeature;
 };
 
-/**
- * @this {ol.interaction.Extent}
- * @private
- */
-ol.interaction.Extent.prototype.removeExtentFeature_ = function() {
-  var extentFeature = this.extentFeature_;
-  if (extentFeature) {
-    this.extentOverlay_.getSource().removeFeature(extentFeature);
-    this.extentFeature_ = null;
-  }
-};
 
 /**
  * @param {ol.Coordinate} vertex location of feature
@@ -462,16 +443,6 @@ ol.interaction.Extent.prototype.createOrUpdatePointerFeature_ = function(vertex)
   return vertexFeature;
 };
 
-/**
- * @private
- */
-ol.interaction.Extent.prototype.removePointerFeature_ = function() {
-  var vertexFeature = this.vertexFeature_;
-  if (vertexFeature) {
-    this.vertexOverlay_.getSource().removeFeature(vertexFeature);
-    this.vertexFeature_ = null;
-  }
-};
 
 /**
  * @inheritDoc
