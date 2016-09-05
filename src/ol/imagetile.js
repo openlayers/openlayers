@@ -38,12 +38,6 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   /**
    * @private
-   * @type {Object.<number, Image>}
-   */
-  this.imageByContext_ = {};
-
-  /**
-   * @private
    * @type {Array.<ol.EventsKey>}
    */
   this.imageListenerKeys_ = null;
