@@ -443,16 +443,6 @@ ol.interaction.Extent.prototype.createOrUpdatePointerFeature_ = function(vertex)
   return vertexFeature;
 };
 
-/**
- * @private
- */
-ol.interaction.Extent.prototype.removePointerFeature_ = function() {
-  var vertexFeature = this.vertexFeature_;
-  if (vertexFeature) {
-    this.vertexOverlay_.getSource().removeFeature(vertexFeature);
-    this.vertexFeature_ = null;
-  }
-};
 
 /**
  * @inheritDoc
