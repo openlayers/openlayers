@@ -18,6 +18,15 @@ describe('ol.TileUrlFunction', function() {
           'http://tile-3/{z}/{x}/{y}'
         ]);
       });
+      it('creates expected URLs', function() {
+        var template = 'http://tile-{9-11}/{z}/{x}/{y}';
+        var urls = ol.TileUrlFunction.expandUrl(template);
+        expect(urls).to.eql([
+          'http://tile-9/{z}/{x}/{y}',
+          'http://tile-10/{z}/{x}/{y}',
+          'http://tile-11/{z}/{x}/{y}'
+        ]);
+      });
     });
     describe('with character range', function() {
       it('creates expected URLs', function() {
@@ -27,6 +36,15 @@ describe('ol.TileUrlFunction', function() {
           'http://tile-c/{z}/{x}/{y}',
           'http://tile-d/{z}/{x}/{y}',
           'http://tile-e/{z}/{x}/{y}'
+        ]);
+      });
+    });
+    describe('without range', function() {
+      it('creates expected URLs', function() {
+        var template = 'http://tiles.example.com/{z}/{x}/{y}';
+        var urls = ol.TileUrlFunction.expandUrl(template);
+        expect(urls).to.eql([
+          'http://tiles.example.com/{z}/{x}/{y}'
         ]);
       });
     });

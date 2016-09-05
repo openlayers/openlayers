@@ -107,16 +107,26 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, project
  */
 ol.TileUrlFunction.expandUrl = function(url) {
   var urls = [];
-  var match = /\{(\d)-(\d)\}/.exec(url) || /\{([a-z])-([a-z])\}/.exec(url);
+  var match = /\{([a-z])-([a-z])\}/.exec(url);
   if (match) {
+    // char range
     var startCharCode = match[1].charCodeAt(0);
     var stopCharCode = match[2].charCodeAt(0);
     var charCode;
     for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
       urls.push(url.replace(match[0], String.fromCharCode(charCode)));
     }
-  } else {
-    urls.push(url);
+    return urls;
   }
+  match = match = /\{(\d+)-(\d+)\}/.exec(url);
+  if (match) {
+    // number range
+    var stop = parseInt(match[2], 10);
+    for (var i = parseInt(match[1], 10); i <= stop; i++) {
+      urls.push(url.replace(match[0], i.toString()));
+    }
+    return urls;
+  }
+  urls.push(url);
   return urls;
 };
