@@ -179,20 +179,32 @@ ol.inherits(ol.style.Icon, ol.style.Image);
  * @api
  */
 ol.style.Icon.prototype.clone = function() {
-  var useImg = (this.iconImage_.getImageState() === ol.Image.State.LOADED);
+  var oldImage = this.getImage(1);
+  var newImage;
+  if (this.iconImage_.getImageState() === ol.Image.State.LOADED) {
+    if (oldImage.tagName.toUpperCase() === 'IMG') {
+      newImage = /** @type {Image} */ (oldImage.cloneNode(true));
+    } else {
+      newImage = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+      var context = newImage.getContext('2d');
+      newImage.width = oldImage.width;
+      newImage.height = oldImage.height;
+      context.drawImage(oldImage, 0, 0);
+    }
+  }
   return new ol.style.Icon({
-    anchor: this.anchor_.slice(0),
+    anchor: this.anchor_.slice(),
     anchorOrigin: this.anchorOrigin_,
     anchorXUnits: this.anchorXUnits_,
     anchorYUnits: this.anchorYUnits_,
     crossOrigin: this.crossOrigin_,
-    color: this.color_ !== null ? this.color_.slice(0) : undefined,
-    img: useImg ? this.getImage(1) : undefined,
-    imgSize: useImg ? this.iconImage_.getSize().slice(0) : undefined,
-    src: useImg ? undefined : this.getSrc(),
-    offset: this.offset_.slice(0),
+    color: (this.color_ && this.color_.slice) ? this.color_.slice() : this.color_ || undefined,
+    img: newImage ? newImage : undefined,
+    imgSize: newImage ? this.iconImage_.getSize().slice() : undefined,
+    src: newImage ? undefined : this.getSrc(),
+    offset: this.offset_.slice(),
     offsetOrigin: this.offsetOrigin_,
-    size: this.size_ !== null ? this.size_.slice(0) : undefined,
+    size: this.size_ !== null ? this.size_.slice() : undefined,
     opacity: this.getOpacity(),
     scale: this.getScale(),
     snapToPixel: this.getSnapToPixel(),

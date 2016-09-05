@@ -68,10 +68,11 @@ ol.style.Stroke = function(opt_options) {
  * @api
  */
 ol.style.Stroke.prototype.clone = function() {
+  var color = this.getColor();
   return new ol.style.Stroke({
-    color: (this.getColor() instanceof Array) ? this.getColor().slice(0) : this.getColor(),
+    color: (color && color.slice) ? color.slice() : color || undefined,
     lineCap: this.getLineCap(),
-    lineDash: this.getLineDash() ? this.getLineDash().slice(0) : undefined,
+    lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
     lineJoin: this.getLineJoin(),
     miterLimit: this.getMiterLimit(),
     width: this.getWidth()

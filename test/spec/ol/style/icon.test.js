@@ -78,6 +78,7 @@ describe('ol.style.Icon', function() {
       expect(original.crossOrigin_).to.be(clone.crossOrigin_);
       expect(original.color_).to.not.be(clone.color_);
       expect(original.color_).to.eql(clone.color_);
+      expect(original.getImage(1)).not.to.be(clone.getImage(1));
       expect(original.getImage(1).src).to.be(clone.getImage(1).src);
       expect(original.getImage(1).toDataURL()).to.be(original.getImage(1).toDataURL());
       expect(original.offset_).to.not.be(clone.offset_);
