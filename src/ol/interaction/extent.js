@@ -88,13 +88,6 @@ ol.interaction.Extent = function(opt_options) {
   this.pixelTolerance_ = 10;
 
   /**
-   * Last known pixel coordinate of the pointer
-   * @type {ol.Pixel}
-   * @private
-   */
-  this.lastPixel_ = null;
-
-  /**
    * Is the pointer snapped to an extent vertex
    * @type {boolean}
    * @private
@@ -251,7 +244,6 @@ ol.interaction.Extent.handleDownEvent_ = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.Extent.handleDragEvent_ = function(mapBrowserEvent) {
-  this.lastPixel_ = mapBrowserEvent.pixel;
   if (this.pointerHandler_) {
     var pixelCoordinate = mapBrowserEvent.coordinate;
     this.setExtent(this.pointerHandler_(pixelCoordinate));
