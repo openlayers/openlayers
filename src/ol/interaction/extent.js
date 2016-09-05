@@ -424,17 +424,6 @@ ol.interaction.Extent.prototype.createOrUpdateExtentFeature_ = function(extent) 
   return extentFeature;
 };
 
-/**
- * @this {ol.interaction.Extent}
- * @private
- */
-ol.interaction.Extent.prototype.removeExtentFeature_ = function() {
-  var extentFeature = this.extentFeature_;
-  if (extentFeature) {
-    this.extentOverlay_.getSource().removeFeature(extentFeature);
-    this.extentFeature_ = null;
-  }
-};
 
 /**
  * @param {ol.Coordinate} vertex location of feature
