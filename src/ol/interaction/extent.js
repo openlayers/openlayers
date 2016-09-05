@@ -61,7 +61,7 @@ ol.inherits(ol.interaction.ExtentEvent, ol.events.Event);
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.ExtentEvent
- * @param {olx.interaction.ExtentOptions} opt_options Options.
+ * @param {olx.interaction.ExtentOptions=} opt_options Options.
  * @api
  */
 ol.interaction.Extent = function(opt_options) {
