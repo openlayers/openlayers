@@ -76,6 +76,40 @@ describe('ol.style.Circle', function() {
     });
   });
 
+  describe('#clone', function() {
+
+    it('creates a new ol.style.Circle', function() {
+      var original = new ol.style.Circle();
+      var clone = original.clone();
+      expect(clone instanceof ol.style.Circle).to.eql(true);
+      expect(clone).to.not.be(original);
+    });
+
+    it('clones all values', function() {
+      var original = new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        }),
+        radius: 5,
+        snapToPixel: false
+      });
+      original.setOpacity(0.5);
+      original.setScale(1.5);
+      var clone = original.clone();
+      expect(original.getFill()).to.not.be(clone.getFill());
+      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
+      expect(original.getOpacity()).to.be(clone.getOpacity());
+      expect(original.getRadius()).to.be(clone.getRadius());
+      expect(original.getScale()).to.be(clone.getScale());
+      expect(original.getSnapToPixel()).to.be(clone.getSnapToPixel());
+      expect(original.getStroke()).to.not.be(clone.getStroke());
+      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+    });
+  });
+
   describe('#getChecksum', function() {
 
     it('calculates the same hash code for default options', function() {
