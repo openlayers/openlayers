@@ -32,14 +32,14 @@ ol.render.canvas.PolygonReplay = function(tolerance, maxExtent, resolution, over
   /**
    * @private
    * @type {{currentFillStyle: (ol.ColorLike|undefined),
-   *         currentStrokeStyle: (string|undefined),
+   *         currentStrokeStyle: (ol.ColorLike|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         currentMiterLimit: (number|undefined),
    *         fillStyle: (ol.ColorLike|undefined),
-   *         strokeStyle: (string|undefined),
+   *         strokeStyle: (ol.ColorLike|undefined),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
    *         lineJoin: (string|undefined),
@@ -301,7 +301,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
   }
   if (strokeStyle) {
     var strokeStyleColor = strokeStyle.getColor();
-    state.strokeStyle = ol.color.asString(strokeStyleColor ?
+    state.strokeStyle = ol.colorlike.asColorLike(strokeStyleColor ?
         strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
     var strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?

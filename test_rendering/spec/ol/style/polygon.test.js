@@ -260,4 +260,62 @@ describe('ol.rendering.style.Polygon', function() {
           IMAGE_TOLERANCE, done);
     });
   });
+
+  describe('CanvasPattern and LinearGradient as fills and strokes', function() {
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    function createRainbowGradient() {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      var gradient = context.createLinearGradient(0,0,30,0);
+      gradient.addColorStop(0, 'red');
+      gradient.addColorStop(1 / 6, 'orange');
+      gradient.addColorStop(2 / 6, 'yellow');
+      gradient.addColorStop(3 / 6, 'green');
+      gradient.addColorStop(4 / 6, 'aqua');
+      gradient.addColorStop(5 / 6, 'blue');
+      gradient.addColorStop(1, 'purple');
+      return gradient;
+    }
+
+    function createPattern() {
+      var canvas = document.createElement('canvas');
+      var context = canvas.getContext('2d');
+      canvas.width = 11;
+      canvas.height = 11;
+      context.fillStyle = 'rgba(102, 0, 102, 0.5)';
+      context.beginPath();
+      context.arc(5, 5, 4, 0, 2 * Math.PI);
+      context.fill();
+      context.fillStyle = 'rgb(55, 0, 170)';
+      context.beginPath();
+      context.arc(5, 5, 2, 0, 2 * Math.PI);
+      context.fill();
+      return context.createPattern(canvas, 'repeat');
+    }
+
+    function createFeatures() {
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Polygon([
+          [[-20, -20], [-20, 20], [18, 20], [-20, -20]]
+        ])
+      });
+      feature.setStyle(new ol.style.Style({
+        fill: new ol.style.Fill({color: createPattern()}),
+        stroke: new ol.style.Stroke({color: createRainbowGradient(), width: 3})
+      }));
+      vectorSource.addFeature(feature);
+    }
+
+    it('tests the canvas renderer', function(done) {
+      map = createMap('canvas');
+      createFeatures();
+      expectResemble(
+          map, 'spec/ol/style/expected/polygon-pattern-gradient-canvas.png',
+          2.75, done);
+    });
+  });
+
 });
