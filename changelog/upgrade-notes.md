@@ -11,6 +11,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.CollectionProperty` to `ol.Collection.Property`
  * rename `ol.DeviceOrientationProperty` to `ol.DeviceOrientation.Property`
  * rename `ol.DragBoxEvent` to `ol.interaction.DragBox.Event`
+ * rename `ol.DragBoxEventType` to `ol.interaction.DragBox.EventType`
  * rename `ol.GeolocationProperty` to `ol.Geolocation.Property`
  * rename `ol.OverlayPositioning` to `ol.Overlay.Positioning`
  * rename `ol.OverlayProperty` to `ol.Overlay.Property`

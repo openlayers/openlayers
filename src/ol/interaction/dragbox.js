@@ -18,33 +18,6 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
 
 
 /**
- * @enum {string}
- */
-ol.DragBoxEventType = {
-  /**
-   * Triggered upon drag box start.
-   * @event ol.interaction.DragBox.Event#boxstart
-   * @api stable
-   */
-  BOXSTART: 'boxstart',
-
-  /**
-   * Triggered on drag when box is active.
-   * @event ol.interaction.DragBox.Event#boxdrag
-   * @api
-   */
-  BOXDRAG: 'boxdrag',
-
-  /**
-   * Triggered upon drag box end.
-   * @event ol.interaction.DragBox.Event#boxend
-   * @api stable
-   */
-  BOXEND: 'boxend'
-};
-
-
-/**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
@@ -130,7 +103,7 @@ ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-  this.dispatchEvent(new ol.interaction.DragBox.Event(ol.DragBoxEventType.BOXDRAG,
+  this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXDRAG,
     mapBrowserEvent.coordinate, mapBrowserEvent));
 };
 
@@ -170,7 +143,7 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.boxEndCondition_(mapBrowserEvent,
       this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
-    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.DragBoxEventType.BOXEND,
+    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXEND,
         mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
@@ -193,12 +166,39 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.DragBoxEventType.BOXSTART,
+    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXSTART,
         mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
     return false;
   }
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.DragBox.EventType = {
+  /**
+   * Triggered upon drag box start.
+   * @event ol.interaction.DragBox.Event#boxstart
+   * @api stable
+   */
+  BOXSTART: 'boxstart',
+
+  /**
+   * Triggered on drag when box is active.
+   * @event ol.interaction.DragBox.Event#boxdrag
+   * @api
+   */
+  BOXDRAG: 'boxdrag',
+
+  /**
+   * Triggered upon drag box end.
+   * @event ol.interaction.DragBox.Event#boxend
+   * @api stable
+   */
+  BOXEND: 'boxend'
 };
 
 
