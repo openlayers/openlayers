@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Translate');
-goog.provide('ol.interaction.TranslateEvent');
 
 goog.require('ol');
 goog.require('ol.events.Event');
@@ -14,19 +13,19 @@ goog.require('ol.interaction.Pointer');
 ol.interaction.TranslateEventType = {
   /**
    * Triggered upon feature translation start.
-   * @event ol.interaction.TranslateEvent#translatestart
+   * @event ol.interaction.Translate.Event#translatestart
    * @api
    */
   TRANSLATESTART: 'translatestart',
   /**
    * Triggered upon feature translation.
-   * @event ol.interaction.TranslateEvent#translating
+   * @event ol.interaction.Translate.Event#translating
    * @api
    */
   TRANSLATING: 'translating',
   /**
    * Triggered upon feature translation end.
-   * @event ol.interaction.TranslateEvent#translateend
+   * @event ol.interaction.Translate.Event#translateend
    * @api
    */
   TRANSLATEEND: 'translateend'
@@ -35,45 +34,11 @@ ol.interaction.TranslateEventType = {
 
 /**
  * @classdesc
- * Events emitted by {@link ol.interaction.Translate} instances are instances of
- * this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.interaction.TranslateEvent}
- * @param {ol.interaction.TranslateEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features translated.
- * @param {ol.Coordinate} coordinate The event coordinate.
- */
-ol.interaction.TranslateEvent = function(type, features, coordinate) {
-
-  ol.events.Event.call(this, type);
-
-  /**
-   * The features being translated.
-   * @type {ol.Collection.<ol.Feature>}
-   * @api
-   */
-  this.features = features;
-
-  /**
-   * The coordinate of the drag event.
-   * @const
-   * @type {ol.Coordinate}
-   * @api
-   */
-  this.coordinate = coordinate;
-};
-ol.inherits(ol.interaction.TranslateEvent, ol.events.Event);
-
-
-/**
- * @classdesc
  * Interaction for translating (moving) features.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.TranslateEvent
+ * @fires ol.interaction.Translate.Event
  * @param {olx.interaction.TranslateOptions} options Options.
  * @api
  */
@@ -149,7 +114,7 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     this.dispatchEvent(
-        new ol.interaction.TranslateEvent(
+        new ol.interaction.Translate.Event(
             ol.interaction.TranslateEventType.TRANSLATESTART, this.features_,
             event.coordinate));
     return true;
@@ -169,7 +134,7 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     this.dispatchEvent(
-        new ol.interaction.TranslateEvent(
+        new ol.interaction.Translate.Event(
             ol.interaction.TranslateEventType.TRANSLATEEND, this.features_,
             event.coordinate));
     return true;
@@ -203,7 +168,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
-        new ol.interaction.TranslateEvent(
+        new ol.interaction.Translate.Event(
             ol.interaction.TranslateEventType.TRANSLATING, this.features_,
             newCoordinate));
   }
@@ -261,3 +226,37 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
 
   return found;
 };
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Translate} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.interaction.TranslateEvent}
+ * @param {ol.interaction.TranslateEventType} type Type.
+ * @param {ol.Collection.<ol.Feature>} features The features translated.
+ * @param {ol.Coordinate} coordinate The event coordinate.
+ */
+ol.interaction.Translate.Event = function(type, features, coordinate) {
+
+  ol.events.Event.call(this, type);
+
+  /**
+   * The features being translated.
+   * @type {ol.Collection.<ol.Feature>}
+   * @api
+   */
+  this.features = features;
+
+  /**
+   * The coordinate of the drag event.
+   * @const
+   * @type {ol.Coordinate}
+   * @api
+   */
+  this.coordinate = coordinate;
+};
+ol.inherits(ol.interaction.Translate.Event, ol.events.Event);

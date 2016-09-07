@@ -19,6 +19,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
  * rename `ol.interaction.DragAndDropEvent` to `ol.interaction.DragAndDrop.Event`
  * rename `ol.interaction.DragAndDropEventType` to `ol.interaction.DragAndDrop.EventType`
+ * rename `ol.interaction.TranslateEvent` to `ol.interaction.Translate.Event`
  * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
  * rename `ol.layer.HeatmapLayerProperty` to `ol.layer.Heatmap.Property`
  * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
