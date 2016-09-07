@@ -8,31 +8,6 @@ goog.require('ol.interaction.Pointer');
 
 
 /**
- * @enum {string}
- */
-ol.interaction.TranslateEventType = {
-  /**
-   * Triggered upon feature translation start.
-   * @event ol.interaction.Translate.Event#translatestart
-   * @api
-   */
-  TRANSLATESTART: 'translatestart',
-  /**
-   * Triggered upon feature translation.
-   * @event ol.interaction.Translate.Event#translating
-   * @api
-   */
-  TRANSLATING: 'translating',
-  /**
-   * Triggered upon feature translation end.
-   * @event ol.interaction.Translate.Event#translateend
-   * @api
-   */
-  TRANSLATEEND: 'translateend'
-};
-
-
-/**
  * @classdesc
  * Interaction for translating (moving) features.
  *
@@ -115,7 +90,7 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.TranslateEventType.TRANSLATESTART, this.features_,
+            ol.interaction.Translate.EventType.TRANSLATESTART, this.features_,
             event.coordinate));
     return true;
   }
@@ -135,7 +110,7 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.TranslateEventType.TRANSLATEEND, this.features_,
+            ol.interaction.Translate.EventType.TRANSLATEEND, this.features_,
             event.coordinate));
     return true;
   }
@@ -169,7 +144,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.TranslateEventType.TRANSLATING, this.features_,
+            ol.interaction.Translate.EventType.TRANSLATING, this.features_,
             newCoordinate));
   }
 };
@@ -236,7 +211,7 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.TranslateEvent}
- * @param {ol.interaction.TranslateEventType} type Type.
+ * @param {ol.interaction.Translate.EventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features translated.
  * @param {ol.Coordinate} coordinate The event coordinate.
  */
@@ -260,3 +235,28 @@ ol.interaction.Translate.Event = function(type, features, coordinate) {
   this.coordinate = coordinate;
 };
 ol.inherits(ol.interaction.Translate.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Translate.EventType = {
+  /**
+   * Triggered upon feature translation start.
+   * @event ol.interaction.Translate.Event#translatestart
+   * @api
+   */
+  TRANSLATESTART: 'translatestart',
+  /**
+   * Triggered upon feature translation.
+   * @event ol.interaction.Translate.Event#translating
+   * @api
+   */
+  TRANSLATING: 'translating',
+  /**
+   * Triggered upon feature translation end.
+   * @event ol.interaction.Translate.Event#translateend
+   * @api
+   */
+  TRANSLATEEND: 'translateend'
+};
