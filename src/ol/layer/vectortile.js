@@ -2,6 +2,7 @@ goog.provide('ol.layer.VectorTile');
 
 goog.require('ol');
 goog.require('ol.asserts');
+goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.obj');
 
@@ -94,7 +95,7 @@ ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
  * @api
  */
 ol.layer.VectorTile.prototype.setPreload = function(preload) {
-  this.set(ol.layer.TileProperty.PRELOAD, preload);
+  this.set(ol.layer.Tile.Property.PRELOAD, preload);
 };
 
 
@@ -106,7 +107,7 @@ ol.layer.VectorTile.prototype.setPreload = function(preload) {
  */
 ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
-      ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+      ol.layer.Tile.Property.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
 };
 
 

@@ -10,7 +10,6 @@ goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEvent.EventType');
 goog.require('ol.MapBrowserEventHandler');
 goog.require('ol.MapEvent');
-goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.TileQueue');
@@ -1290,13 +1289,13 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
     if (idle) {
       this.dispatchEvent(
-          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
+          new ol.MapEvent(ol.MapEvent.Type.MOVEEND, this, frameState));
       ol.extent.clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
+      new ol.MapEvent(ol.MapEvent.Type.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 

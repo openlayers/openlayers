@@ -21,7 +21,7 @@ goog.require('ol.uri');
  * Source for WMS servers providing single, untiled images.
  *
  * @constructor
- * @fires ol.source.ImageEvent
+ * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
  * @api stable

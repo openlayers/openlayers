@@ -1,6 +1,4 @@
 goog.provide('ol.interaction.Extent');
-goog.provide('ol.interaction.ExtentEvent');
-goog.provide('ol.interaction.ExtentEventType');
 
 goog.require('ol');
 goog.require('ol.Feature');
@@ -19,40 +17,6 @@ goog.require('ol.style.Style');
 
 
 /**
- * @enum {string}
- */
-ol.interaction.ExtentEventType = {
-  /**
-   * Triggered after the extent is changed
-   * @event ol.interaction.ExtentEvent
-   * @api
-   */
-  EXTENTCHANGED: 'extentchanged'
-};
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Extent} instances are instances of
- * this type.
- *
- * @constructor
- * @param {ol.Extent} extent the new extent
- * @extends {ol.events.Event}
- */
-ol.interaction.ExtentEvent = function(extent) {
-  ol.events.Event.call(this, ol.interaction.ExtentEventType.EXTENTCHANGED);
-
-  /**
-   * The current extent.
-   * @type {ol.Extent}
-   * @api
-   */
-  this.extent_ = extent;
-};
-
-ol.inherits(ol.interaction.ExtentEvent, ol.events.Event);
-
-/**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map.
  * Once drawn, the vector box can be modified by dragging its vertices or edges.
@@ -60,7 +24,7 @@ ol.inherits(ol.interaction.ExtentEvent, ol.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.interaction.ExtentEvent
+ * @fires ol.interaction.Extent.Event
  * @param {olx.interaction.ExtentOptions=} opt_options Options.
  * @api
  */
@@ -473,5 +437,40 @@ ol.interaction.Extent.prototype.setExtent = function(extent) {
   //Null extent means no bbox
   this.extent_ = extent ? extent : null;
   this.createOrUpdateExtentFeature_(extent);
-  this.dispatchEvent(new ol.interaction.ExtentEvent(this.extent_));
+  this.dispatchEvent(new ol.interaction.Extent.Event(this.extent_));
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Extent} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @param {ol.Extent} extent the new extent
+ * @extends {ol.events.Event}
+ */
+ol.interaction.Extent.Event = function(extent) {
+  ol.events.Event.call(this, ol.interaction.Extent.EventType.EXTENTCHANGED);
+
+  /**
+   * The current extent.
+   * @type {ol.Extent}
+   * @api
+   */
+  this.extent_ = extent;
+};
+ol.inherits(ol.interaction.Extent.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Extent.EventType = {
+  /**
+   * Triggered after the extent is changed
+   * @event ol.interaction.Extent.Event
+   * @api
+   */
+  EXTENTCHANGED: 'extentchanged'
 };
