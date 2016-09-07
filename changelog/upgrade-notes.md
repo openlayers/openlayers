@@ -25,6 +25,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.interaction.TranslateEventType` to `ol.interaction.Translate.EventType`
  * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
  * rename `ol.layer.HeatmapLayerProperty` to `ol.layer.Heatmap.Property`
+ * rename `ol.layer.TileProperty` to `ol.layer.Tile.Property`
  * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
  * rename `ol.MapEventType` to `ol.MapEvent.Type`
  * rename `ol.MapProperty` to `ol.Map.Property`
