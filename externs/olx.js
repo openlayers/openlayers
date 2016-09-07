@@ -171,7 +171,7 @@ olx.interaction.InteractionOptions.prototype.handleEvent;
  *     loadTilesWhileInteracting: (boolean|undefined),
  *     logo: (boolean|string|olx.LogoOptions|Element|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
- *     renderer: (ol.RendererType|Array.<ol.RendererType|string>|string|undefined),
+ *     renderer: (ol.renderer.Type|Array.<ol.renderer.Type|string>|string|undefined),
  *     target: (Element|string|undefined),
  *     view: (ol.View|undefined)}}
  */
@@ -274,10 +274,10 @@ olx.MapOptions.prototype.overlays;
 /**
  * Renderer. By default, Canvas and WebGL renderers are tested for support
  * in that order, and the first supported used. Specify a
- * {@link ol.RendererType} here to use a specific renderer.
+ * {@link ol.renderer.Type} here to use a specific renderer.
  * Note that the Canvas renderer fully supports vector data, but WebGL can only
  * render Point geometries.
- * @type {ol.RendererType|Array.<ol.RendererType|string>|string|undefined}
+ * @type {ol.renderer.Type|Array.<ol.renderer.Type|string>|string|undefined}
  * @api stable
  */
 olx.MapOptions.prototype.renderer;

@@ -3,7 +3,6 @@
 goog.provide('ol.renderer.webgl.Map');
 
 goog.require('ol');
-goog.require('ol.RendererType');
 goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
@@ -16,6 +15,7 @@ goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 goog.require('ol.renderer.webgl.VectorLayer');
@@ -353,7 +353,7 @@ ol.renderer.webgl.Map.prototype.getTileTextureQueue = function() {
  * @inheritDoc
  */
 ol.renderer.webgl.Map.prototype.getType = function() {
-  return ol.RendererType.WEBGL;
+  return ol.renderer.Type.WEBGL;
 };
 
 

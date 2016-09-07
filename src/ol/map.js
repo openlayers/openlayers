@@ -14,7 +14,6 @@ goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
-goog.require('ol.RendererType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.array');
@@ -31,6 +30,7 @@ goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.obj');
 goog.require('ol.proj.common');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.webgl.Map');
@@ -75,12 +75,12 @@ ol.OL3_LOGO_URL = 'data:image/png;base64,' +
 
 
 /**
- * @type {Array.<ol.RendererType>}
+ * @type {Array.<ol.renderer.Type>}
  * @const
  */
 ol.DEFAULT_RENDERER_TYPES = [
-  ol.RendererType.CANVAS,
-  ol.RendererType.WEBGL
+  ol.renderer.Type.CANVAS,
+  ol.renderer.Type.WEBGL
 ];
 
 
@@ -1462,7 +1462,7 @@ ol.Map.createOptionsInternal = function(options) {
   var rendererConstructor = ol.renderer.Map;
 
   /**
-   * @type {Array.<ol.RendererType>}
+   * @type {Array.<ol.renderer.Type>}
    */
   var rendererTypes;
   if (options.renderer !== undefined) {
@@ -1473,7 +1473,7 @@ ol.Map.createOptionsInternal = function(options) {
     } else {
       ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
     }
-    if (rendererTypes.indexOf(/** @type {ol.RendererType} */ ('dom')) >= 0) {
+    if (rendererTypes.indexOf(/** @type {ol.renderer.Type} */ ('dom')) >= 0) {
       ol.DEBUG && console.assert(false, 'The DOM render has been removed');
       rendererTypes = rendererTypes.concat(ol.DEFAULT_RENDERER_TYPES);
     }
@@ -1483,14 +1483,14 @@ ol.Map.createOptionsInternal = function(options) {
 
   var i, ii;
   for (i = 0, ii = rendererTypes.length; i < ii; ++i) {
-    /** @type {ol.RendererType} */
+    /** @type {ol.renderer.Type} */
     var rendererType = rendererTypes[i];
-    if (ol.ENABLE_CANVAS && rendererType == ol.RendererType.CANVAS) {
+    if (ol.ENABLE_CANVAS && rendererType == ol.renderer.Type.CANVAS) {
       if (ol.has.CANVAS) {
         rendererConstructor = ol.renderer.canvas.Map;
         break;
       }
-    } else if (ol.ENABLE_WEBGL && rendererType == ol.RendererType.WEBGL) {
+    } else if (ol.ENABLE_WEBGL && rendererType == ol.renderer.Type.WEBGL) {
       if (ol.has.WEBGL) {
         rendererConstructor = ol.renderer.webgl.Map;
         break;
