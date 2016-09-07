@@ -19,6 +19,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
  * rename `ol.interaction.DrawMode` to `ol.interaction.Draw.Mode`
  * rename `ol.interaction.DrawEvent` to `ol.interaction.Draw.Event`
+ * rename `ol.interaction.DrawEventType` to `ol.interaction.Draw.EventType`
  * rename `ol.interaction.ExtentEvent` to `ol.interaction.Extent.Event`
  * rename `ol.interaction.ExtentEventType` to `ol.interaction.Extent.EventType`
  * rename `ol.interaction.DragAndDropEvent` to `ol.interaction.DragAndDrop.Event`

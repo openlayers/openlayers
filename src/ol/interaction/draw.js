@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Draw');
-goog.provide('ol.interaction.DrawEventType');
 
 goog.require('ol');
 goog.require('ol.events');
@@ -23,25 +22,6 @@ goog.require('ol.interaction.Pointer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
-
-
-/**
- * @enum {string}
- */
-ol.interaction.DrawEventType = {
-  /**
-   * Triggered upon feature draw start
-   * @event ol.interaction.Draw.Event#drawstart
-   * @api stable
-   */
-  DRAWSTART: 'drawstart',
-  /**
-   * Triggered upon feature draw end
-   * @event ol.interaction.Draw.Event#drawend
-   * @api stable
-   */
-  DRAWEND: 'drawend'
-};
 
 
 /**
@@ -494,7 +474,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
   this.dispatchEvent(new ol.interaction.Draw.Event(
-      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+      ol.interaction.Draw.EventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -609,7 +589,7 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
 
 /**
  * Stop drawing and add the sketch feature to the target layer.
- * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
+ * The {@link ol.interaction.Draw.EventType.DRAWEND} event is dispatched before
  * inserting the feature.
  * @api
  */
@@ -641,7 +621,7 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
 
   // First dispatch event to allow full set up of feature
   this.dispatchEvent(new ol.interaction.Draw.Event(
-      ol.interaction.DrawEventType.DRAWEND, sketchFeature));
+      ol.interaction.Draw.EventType.DRAWEND, sketchFeature));
 
   // Then insert feature
   if (this.features_) {
@@ -692,7 +672,7 @@ ol.interaction.Draw.prototype.extend = function(feature) {
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
   this.dispatchEvent(new ol.interaction.Draw.Event(
-      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+      ol.interaction.Draw.EventType.DRAWSTART, this.sketchFeature_));
 };
 
 
@@ -817,7 +797,7 @@ ol.interaction.Draw.Mode = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.DrawEvent}
- * @param {ol.interaction.DrawEventType} type Type.
+ * @param {ol.interaction.Draw.EventType} type Type.
  * @param {ol.Feature} feature The feature drawn.
  */
 ol.interaction.Draw.Event = function(type, feature) {
@@ -833,3 +813,22 @@ ol.interaction.Draw.Event = function(type, feature) {
 
 };
 ol.inherits(ol.interaction.Draw.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Draw.EventType = {
+  /**
+   * Triggered upon feature draw start
+   * @event ol.interaction.Draw.Event#drawstart
+   * @api stable
+   */
+  DRAWSTART: 'drawstart',
+  /**
+   * Triggered upon feature draw end
+   * @event ol.interaction.Draw.Event#drawend
+   * @api stable
+   */
+  DRAWEND: 'drawend'
+};
