@@ -1,7 +1,6 @@
 // FIXME should handle all geo-referenced data, not just vector data
 
 goog.provide('ol.interaction.DragAndDrop');
-goog.provide('ol.interaction.DragAndDropEvent');
 
 goog.require('ol');
 goog.require('ol.functions');
@@ -18,7 +17,7 @@ goog.require('ol.proj');
  *
  * @constructor
  * @extends {ol.interaction.Interaction}
- * @fires ol.interaction.DragAndDropEvent
+ * @fires ol.interaction.DragAndDrop.Event
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
  * @api stable
  */
@@ -118,7 +117,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
     }
   }
   this.dispatchEvent(
-      new ol.interaction.DragAndDropEvent(
+      new ol.interaction.DragAndDrop.Event(
           ol.interaction.DragAndDropEventType.ADD_FEATURES, file,
           features, projection));
 };
@@ -182,7 +181,7 @@ ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text, o
 ol.interaction.DragAndDropEventType = {
   /**
    * Triggered when features are added
-   * @event ol.interaction.DragAndDropEvent#addfeatures
+   * @event ol.interaction.DragAndDrop.Event#addfeatures
    * @api stable
    */
   ADD_FEATURES: 'addfeatures'
@@ -202,7 +201,7 @@ ol.interaction.DragAndDropEventType = {
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
  */
-ol.interaction.DragAndDropEvent = function(type, file, opt_features, opt_projection) {
+ol.interaction.DragAndDrop.Event = function(type, file, opt_features, opt_projection) {
 
   ol.events.Event.call(this, type);
 
@@ -228,4 +227,4 @@ ol.interaction.DragAndDropEvent = function(type, file, opt_features, opt_project
   this.projection = opt_projection;
 
 };
-ol.inherits(ol.interaction.DragAndDropEvent, ol.events.Event);
+ol.inherits(ol.interaction.DragAndDrop.Event, ol.events.Event);
