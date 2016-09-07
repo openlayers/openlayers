@@ -1,6 +1,5 @@
 // FIXME draw drag box
 goog.provide('ol.interaction.DragBox');
-goog.provide('ol.DragBoxEvent');
 
 goog.require('ol.events.Event');
 goog.require('ol');
@@ -19,67 +18,6 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
 
 
 /**
- * @enum {string}
- */
-ol.DragBoxEventType = {
-  /**
-   * Triggered upon drag box start.
-   * @event ol.DragBoxEvent#boxstart
-   * @api stable
-   */
-  BOXSTART: 'boxstart',
-
-  /**
-   * Triggered on drag when box is active.
-   * @event ol.DragBoxEvent#boxdrag
-   * @api
-   */
-  BOXDRAG: 'boxdrag',
-
-  /**
-   * Triggered upon drag box end.
-   * @event ol.DragBoxEvent#boxend
-   * @api stable
-   */
-  BOXEND: 'boxend'
-};
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.DragBox} instances are instances of
- * this type.
- *
- * @param {string} type The event type.
- * @param {ol.Coordinate} coordinate The event coordinate.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
- * @extends {ol.events.Event}
- * @constructor
- * @implements {oli.DragBoxEvent}
- */
-ol.DragBoxEvent = function(type, coordinate, mapBrowserEvent) {
-  ol.events.Event.call(this, type);
-
-  /**
-   * The coordinate of the drag event.
-   * @const
-   * @type {ol.Coordinate}
-   * @api stable
-   */
-  this.coordinate = coordinate;
-
-  /**
-   * @const
-   * @type {ol.MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserEvent;
-
-};
-ol.inherits(ol.DragBoxEvent, ol.events.Event);
-
-
-/**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
@@ -92,7 +30,7 @@ ol.inherits(ol.DragBoxEvent, ol.events.Event);
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @fires ol.DragBoxEvent
+ * @fires ol.interaction.DragBox.Event
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
  * @api stable
  */
@@ -165,7 +103,7 @@ ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-  this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXDRAG,
+  this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXDRAG,
     mapBrowserEvent.coordinate, mapBrowserEvent));
 };
 
@@ -205,7 +143,7 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
   if (this.boxEndCondition_(mapBrowserEvent,
       this.startPixel_, mapBrowserEvent.pixel)) {
     this.onBoxEnd(mapBrowserEvent);
-    this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXEND,
+    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXEND,
         mapBrowserEvent.coordinate, mapBrowserEvent));
   }
   return false;
@@ -228,10 +166,71 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new ol.DragBoxEvent(ol.DragBoxEventType.BOXSTART,
+    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType.BOXSTART,
         mapBrowserEvent.coordinate, mapBrowserEvent));
     return true;
   } else {
     return false;
   }
 };
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.DragBox.EventType = {
+  /**
+   * Triggered upon drag box start.
+   * @event ol.interaction.DragBox.Event#boxstart
+   * @api stable
+   */
+  BOXSTART: 'boxstart',
+
+  /**
+   * Triggered on drag when box is active.
+   * @event ol.interaction.DragBox.Event#boxdrag
+   * @api
+   */
+  BOXDRAG: 'boxdrag',
+
+  /**
+   * Triggered upon drag box end.
+   * @event ol.interaction.DragBox.Event#boxend
+   * @api stable
+   */
+  BOXEND: 'boxend'
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.DragBox} instances are instances of
+ * this type.
+ *
+ * @param {string} type The event type.
+ * @param {ol.Coordinate} coordinate The event coordinate.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent Originating event.
+ * @extends {ol.events.Event}
+ * @constructor
+ * @implements {oli.DragBoxEvent}
+ */
+ol.interaction.DragBox.Event = function(type, coordinate, mapBrowserEvent) {
+  ol.events.Event.call(this, type);
+
+  /**
+   * The coordinate of the drag event.
+   * @const
+   * @type {ol.Coordinate}
+   * @api stable
+   */
+  this.coordinate = coordinate;
+
+  /**
+   * @const
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserEvent;
+
+};
+ol.inherits(ol.interaction.DragBox.Event, ol.events.Event);
