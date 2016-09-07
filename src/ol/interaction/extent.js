@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Extent');
-goog.provide('ol.interaction.ExtentEventType');
 
 goog.require('ol');
 goog.require('ol.Feature');
@@ -15,19 +14,6 @@ goog.require('ol.interaction.Pointer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
-
-
-/**
- * @enum {string}
- */
-ol.interaction.ExtentEventType = {
-  /**
-   * Triggered after the extent is changed
-   * @event ol.interaction.Extent.Event
-   * @api
-   */
-  EXTENTCHANGED: 'extentchanged'
-};
 
 
 /**
@@ -465,7 +451,7 @@ ol.interaction.Extent.prototype.setExtent = function(extent) {
  * @extends {ol.events.Event}
  */
 ol.interaction.Extent.Event = function(extent) {
-  ol.events.Event.call(this, ol.interaction.ExtentEventType.EXTENTCHANGED);
+  ol.events.Event.call(this, ol.interaction.Extent.EventType.EXTENTCHANGED);
 
   /**
    * The current extent.
@@ -475,3 +461,16 @@ ol.interaction.Extent.Event = function(extent) {
   this.extent_ = extent;
 };
 ol.inherits(ol.interaction.Extent.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Extent.EventType = {
+  /**
+   * Triggered after the extent is changed
+   * @event ol.interaction.Extent.Event
+   * @api
+   */
+  EXTENTCHANGED: 'extentchanged'
+};

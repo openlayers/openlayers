@@ -18,6 +18,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
  * rename `ol.interaction.ExtentEvent` to `ol.interaction.Extent.Event`
+ * rename `ol.interaction.ExtentEventType` to `ol.interaction.Extent.EventType`
  * rename `ol.interaction.DragAndDropEvent` to `ol.interaction.DragAndDrop.Event`
  * rename `ol.interaction.DragAndDropEventType` to `ol.interaction.DragAndDrop.EventType`
  * rename `ol.interaction.TranslateEvent` to `ol.interaction.Translate.Event`
