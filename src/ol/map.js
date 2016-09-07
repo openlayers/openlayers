@@ -3,7 +3,6 @@
 // FIXME add tilt and height?
 
 goog.provide('ol.Map');
-goog.provide('ol.MapProperty');
 
 goog.require('ol');
 goog.require('ol.Collection');
@@ -82,17 +81,6 @@ ol.DEFAULT_RENDERER_TYPES = [
   ol.renderer.Type.CANVAS,
   ol.renderer.Type.WEBGL
 ];
-
-
-/**
- * @enum {string}
- */
-ol.MapProperty = {
-  LAYERGROUP: 'layergroup',
-  SIZE: 'size',
-  TARGET: 'target',
-  VIEW: 'view'
-};
 
 
 /**
@@ -377,13 +365,13 @@ ol.Map = function(options) {
   this.skippedFeatureUids_ = {};
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
+      this, ol.Object.getChangeEventType(ol.Map.Property.LAYERGROUP),
       this.handleLayerGroupChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
+  ol.events.listen(this, ol.Object.getChangeEventType(ol.Map.Property.VIEW),
       this.handleViewChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
+  ol.events.listen(this, ol.Object.getChangeEventType(ol.Map.Property.SIZE),
       this.handleSizeChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
+  ol.events.listen(this, ol.Object.getChangeEventType(ol.Map.Property.TARGET),
       this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
@@ -714,7 +702,7 @@ ol.Map.prototype.getEventPixel = function(event) {
  */
 ol.Map.prototype.getTarget = function() {
   return /** @type {Element|string|undefined} */ (
-      this.get(ol.MapProperty.TARGET));
+      this.get(ol.Map.Property.TARGET));
 };
 
 
@@ -810,7 +798,7 @@ ol.Map.prototype.getInteractions = function() {
  * @api stable
  */
 ol.Map.prototype.getLayerGroup = function() {
-  return /** @type {ol.layer.Group} */ (this.get(ol.MapProperty.LAYERGROUP));
+  return /** @type {ol.layer.Group} */ (this.get(ol.Map.Property.LAYERGROUP));
 };
 
 
@@ -859,7 +847,7 @@ ol.Map.prototype.getRenderer = function() {
  * @api stable
  */
 ol.Map.prototype.getSize = function() {
-  return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
+  return /** @type {ol.Size|undefined} */ (this.get(ol.Map.Property.SIZE));
 };
 
 
@@ -871,7 +859,7 @@ ol.Map.prototype.getSize = function() {
  * @api stable
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
+  return /** @type {ol.View} */ (this.get(ol.Map.Property.VIEW));
 };
 
 
@@ -1323,7 +1311,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
  * @api stable
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
-  this.set(ol.MapProperty.LAYERGROUP, layerGroup);
+  this.set(ol.Map.Property.LAYERGROUP, layerGroup);
 };
 
 
@@ -1334,7 +1322,7 @@ ol.Map.prototype.setLayerGroup = function(layerGroup) {
  * @api
  */
 ol.Map.prototype.setSize = function(size) {
-  this.set(ol.MapProperty.SIZE, size);
+  this.set(ol.Map.Property.SIZE, size);
 };
 
 
@@ -1346,7 +1334,7 @@ ol.Map.prototype.setSize = function(size) {
  * @api stable
  */
 ol.Map.prototype.setTarget = function(target) {
-  this.set(ol.MapProperty.TARGET, target);
+  this.set(ol.Map.Property.TARGET, target);
 };
 
 
@@ -1357,7 +1345,7 @@ ol.Map.prototype.setTarget = function(target) {
  * @api stable
  */
 ol.Map.prototype.setView = function(view) {
-  this.set(ol.MapProperty.VIEW, view);
+  this.set(ol.Map.Property.VIEW, view);
 };
 
 
@@ -1449,11 +1437,11 @@ ol.Map.createOptionsInternal = function(options) {
 
   var layerGroup = (options.layers instanceof ol.layer.Group) ?
       options.layers : new ol.layer.Group({layers: options.layers});
-  values[ol.MapProperty.LAYERGROUP] = layerGroup;
+  values[ol.Map.Property.LAYERGROUP] = layerGroup;
 
-  values[ol.MapProperty.TARGET] = options.target;
+  values[ol.Map.Property.TARGET] = options.target;
 
-  values[ol.MapProperty.VIEW] = options.view !== undefined ?
+  values[ol.Map.Property.VIEW] = options.view !== undefined ?
       options.view : new ol.View();
 
   /**
@@ -1547,6 +1535,16 @@ ol.Map.createOptionsInternal = function(options) {
     values: values
   };
 
+};
+
+/**
+ * @enum {string}
+ */
+ol.Map.Property = {
+  LAYERGROUP: 'layergroup',
+  SIZE: 'size',
+  TARGET: 'target',
+  VIEW: 'view'
 };
 
 
