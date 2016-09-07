@@ -4,7 +4,6 @@ goog.provide('ol.renderer.canvas.Map');
 
 goog.require('ol.transform');
 goog.require('ol');
-goog.require('ol.RendererType');
 goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
@@ -18,6 +17,7 @@ goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
@@ -134,7 +134,7 @@ ol.renderer.canvas.Map.prototype.getTransform = function(frameState) {
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.getType = function() {
-  return ol.RendererType.CANVAS;
+  return ol.renderer.Type.CANVAS;
 };
 
 

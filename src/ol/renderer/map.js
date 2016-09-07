@@ -1,5 +1,4 @@
 goog.provide('ol.renderer.Map');
-goog.provide('ol.RendererType');
 
 goog.require('ol');
 goog.require('ol.Disposable');
@@ -10,16 +9,6 @@ goog.require('ol.functions');
 goog.require('ol.layer.Layer');
 goog.require('ol.style');
 goog.require('ol.transform');
-
-
-/**
- * Available renderers: `'canvas'` or `'webgl'`.
- * @enum {string}
- */
-ol.RendererType = {
-  CANVAS: 'canvas',
-  WEBGL: 'webgl'
-};
 
 
 /**
