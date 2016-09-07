@@ -25,6 +25,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.interaction.DragAndDropEvent` to `ol.interaction.DragAndDrop.Event`
  * rename `ol.interaction.DragAndDropEventType` to `ol.interaction.DragAndDrop.EventType`
  * rename `ol.interaction.SelectEvent` to `ol.interaction.Select.Event`
+ * rename `ol.interaction.SelectEventType` to `ol.interaction.Select.EventType`
  * rename `ol.interaction.TranslateEvent` to `ol.interaction.Translate.Event`
  * rename `ol.interaction.TranslateEventType` to `ol.interaction.Translate.EventType`
  * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`

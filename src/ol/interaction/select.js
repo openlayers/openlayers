@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Select');
-goog.provide('ol.interaction.SelectEventType');
 
 goog.require('ol');
 goog.require('ol.asserts');
@@ -16,19 +15,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.obj');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
-
-
-/**
- * @enum {string}
- */
-ol.interaction.SelectEventType = {
-  /**
-   * Triggered when feature(s) has been (de)selected.
-   * @event ol.interaction.Select.Event#select
-   * @api
-   */
-  SELECT: 'select'
-};
 
 
 /**
@@ -271,7 +257,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
-        new ol.interaction.Select.Event(ol.interaction.SelectEventType.SELECT,
+        new ol.interaction.Select.Event(ol.interaction.Select.EventType.SELECT,
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
@@ -354,7 +340,7 @@ ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(featur
  * Events emitted by {@link ol.interaction.Select} instances are instances of
  * this type.
  *
- * @param {string} type The event type.
+ * @param {ol.interaction.Select.EventType} type The event type.
  * @param {Array.<ol.Feature>} selected Selected features.
  * @param {Array.<ol.Feature>} deselected Deselected features.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Associated
@@ -388,3 +374,16 @@ ol.interaction.Select.Event = function(type, selected, deselected, mapBrowserEve
   this.mapBrowserEvent = mapBrowserEvent;
 };
 ol.inherits(ol.interaction.Select.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Select.EventType = {
+  /**
+   * Triggered when feature(s) has been (de)selected.
+   * @event ol.interaction.Select.Event#select
+   * @api
+   */
+  SELECT: 'select'
+};
