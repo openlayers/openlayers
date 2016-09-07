@@ -21,7 +21,7 @@ goog.require('ol.uri');
  * {@link ol.source.TileArcGISRest} data source.
  *
  * @constructor
- * @fires ol.source.ImageEvent
+ * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageArcGISRestOptions=} opt_options Image ArcGIS Rest Options.
  * @api

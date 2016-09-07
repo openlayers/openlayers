@@ -15,7 +15,7 @@ goog.require('ol.uri');
  * Source for images from Mapguide servers
  *
  * @constructor
- * @fires ol.source.ImageEvent
+ * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageMapGuideOptions} options Options.
  * @api stable
