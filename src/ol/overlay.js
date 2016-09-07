@@ -1,7 +1,7 @@
 goog.provide('ol.Overlay');
 
 goog.require('ol');
-goog.require('ol.MapEventType');
+goog.require('ol.MapEvent');
 goog.require('ol.Object');
 goog.require('ol.animation');
 goog.require('ol.dom');
@@ -237,7 +237,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
   var map = this.getMap();
   if (map) {
     this.mapPostrenderListenerKey_ = ol.events.listen(map,
-        ol.MapEventType.POSTRENDER, this.render, this);
+        ol.MapEvent.Type.POSTRENDER, this.render, this);
     this.updatePixelPosition();
     var container = this.stopEvent_ ?
         map.getOverlayContainerStopEvent() : map.getOverlayContainer();
