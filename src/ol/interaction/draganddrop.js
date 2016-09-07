@@ -118,7 +118,7 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
   }
   this.dispatchEvent(
       new ol.interaction.DragAndDrop.Event(
-          ol.interaction.DragAndDropEventType.ADD_FEATURES, file,
+          ol.interaction.DragAndDrop.EventType.ADD_FEATURES, file,
           features, projection));
 };
 
@@ -178,7 +178,7 @@ ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text, o
 /**
  * @enum {string}
  */
-ol.interaction.DragAndDropEventType = {
+ol.interaction.DragAndDrop.EventType = {
   /**
    * Triggered when features are added
    * @event ol.interaction.DragAndDrop.Event#addfeatures
@@ -196,7 +196,7 @@ ol.interaction.DragAndDropEventType = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.DragAndDropEvent}
- * @param {ol.interaction.DragAndDropEventType} type Type.
+ * @param {ol.interaction.DragAndDrop.EventType} type Type.
  * @param {File} file File.
  * @param {Array.<ol.Feature>=} opt_features Features.
  * @param {ol.proj.Projection=} opt_projection Projection.
