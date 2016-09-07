@@ -149,17 +149,17 @@ ol.source.Image.prototype.handleImageChange = function(event) {
   switch (image.getState()) {
     case ol.Image.State.LOADING:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.ImageEventType.IMAGELOADSTART,
+          new ol.source.Image.Event(ol.source.Image.EventType.IMAGELOADSTART,
               image));
       break;
     case ol.Image.State.LOADED:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.ImageEventType.IMAGELOADEND,
+          new ol.source.Image.Event(ol.source.Image.EventType.IMAGELOADEND,
               image));
       break;
     case ol.Image.State.ERROR:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.ImageEventType.IMAGELOADERROR,
+          new ol.source.Image.Event(ol.source.Image.EventType.IMAGELOADERROR,
               image));
       break;
     default:
@@ -208,7 +208,7 @@ ol.inherits(ol.source.Image.Event, ol.events.Event);
 /**
  * @enum {string}
  */
-ol.source.ImageEventType = {
+ol.source.Image.EventType = {
 
   /**
    * Triggered when an image starts loading.

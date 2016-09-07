@@ -28,6 +28,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.MapProperty` to `ol.Map.Property`
  * rename `ol.RendererType` to `ol.renderer.Type`
  * rename `ol.source.ImageEvent` to `ol.source.Image.Event`
+ * rename `ol.source.ImageEventType` to `ol.source.Image.EventType`
  * rename `ol.source.TileEvent` to `ol.source.Tile.Event`
  * rename `ol.source.TileEventType` to `ol.source.Tile.EventType`
  * rename `ol.source.VectorEvent` to `ol.source.Vector.Event`
