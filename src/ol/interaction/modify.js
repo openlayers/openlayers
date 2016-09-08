@@ -1,5 +1,4 @@
 goog.provide('ol.interaction.Modify');
-goog.provide('ol.interaction.ModifyEvent');
 
 goog.require('ol');
 goog.require('ol.Collection');
@@ -24,66 +23,13 @@ goog.require('ol.style.Style');
 
 
 /**
- * @enum {string}
- */
-ol.ModifyEventType = {
-  /**
-   * Triggered upon feature modification start
-   * @event ol.interaction.ModifyEvent#modifystart
-   * @api
-   */
-  MODIFYSTART: 'modifystart',
-  /**
-   * Triggered upon feature modification end
-   * @event ol.interaction.ModifyEvent#modifyend
-   * @api
-   */
-  MODIFYEND: 'modifyend'
-};
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.interaction.Modify} instances are instances of
- * this type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.ModifyEvent}
- * @param {ol.ModifyEventType} type Type.
- * @param {ol.Collection.<ol.Feature>} features The features modified.
- * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
- *     {@link ol.MapBrowserPointerEvent}.
- */
-ol.interaction.ModifyEvent = function(type, features, mapBrowserPointerEvent) {
-
-  ol.events.Event.call(this, type);
-
-  /**
-   * The features being modified.
-   * @type {ol.Collection.<ol.Feature>}
-   * @api
-   */
-  this.features = features;
-
-  /**
-   * Associated {@link ol.MapBrowserEvent}.
-   * @type {ol.MapBrowserEvent}
-   * @api
-   */
-  this.mapBrowserEvent = mapBrowserPointerEvent;
-};
-ol.inherits(ol.interaction.ModifyEvent, ol.events.Event);
-
-
-/**
  * @classdesc
  * Interaction for modifying feature geometries.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.ModifyOptions} options Options.
- * @fires ol.interaction.ModifyEvent
+ * @fires ol.interaction.Modify.Event
  * @api
  */
 ol.interaction.Modify = function(options) {
@@ -267,8 +213,8 @@ ol.interaction.Modify.prototype.addFeature_ = function(feature) {
 ol.interaction.Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
-    this.dispatchEvent(new ol.interaction.ModifyEvent(
-        ol.ModifyEventType.MODIFYSTART, this.features_, evt));
+    this.dispatchEvent(new ol.interaction.Modify.Event(
+        ol.interaction.Modify.EventType.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -674,8 +620,8 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
         segmentData);
   }
   if (this.modified_) {
-    this.dispatchEvent(new ol.interaction.ModifyEvent(
-        ol.ModifyEventType.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new ol.interaction.Modify.Event(
+        ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -872,8 +818,8 @@ ol.interaction.Modify.prototype.removePoint = function() {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     handled = this.removeVertex_();
-    this.dispatchEvent(new ol.interaction.ModifyEvent(
-        ol.ModifyEventType.MODIFYEND, this.features_, evt));
+    this.dispatchEvent(new ol.interaction.Modify.Event(
+        ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return handled;
@@ -1039,4 +985,57 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
   return function(feature, resolution) {
     return style[ol.geom.GeometryType.POINT];
   };
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.interaction.Modify} instances are instances of
+ * this type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.ModifyEvent}
+ * @param {ol.interaction.Modify.EventType} type Type.
+ * @param {ol.Collection.<ol.Feature>} features The features modified.
+ * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
+ *     {@link ol.MapBrowserPointerEvent}.
+ */
+ol.interaction.Modify.Event = function(type, features, mapBrowserPointerEvent) {
+
+  ol.events.Event.call(this, type);
+
+  /**
+   * The features being modified.
+   * @type {ol.Collection.<ol.Feature>}
+   * @api
+   */
+  this.features = features;
+
+  /**
+   * Associated {@link ol.MapBrowserEvent}.
+   * @type {ol.MapBrowserEvent}
+   * @api
+   */
+  this.mapBrowserEvent = mapBrowserPointerEvent;
+};
+ol.inherits(ol.interaction.Modify.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Modify.EventType = {
+  /**
+   * Triggered upon feature modification start
+   * @event ol.interaction.Modify.Event#modifystart
+   * @api
+   */
+  MODIFYSTART: 'modifystart',
+  /**
+   * Triggered upon feature modification end
+   * @event ol.interaction.Modify.Event#modifyend
+   * @api
+   */
+  MODIFYEND: 'modifyend'
 };

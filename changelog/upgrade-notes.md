@@ -17,10 +17,16 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.OverlayProperty` to `ol.Overlay.Property`
  * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
+ * rename `ol.interaction.DrawMode` to `ol.interaction.Draw.Mode`
+ * rename `ol.interaction.DrawEvent` to `ol.interaction.Draw.Event`
+ * rename `ol.interaction.DrawEventType` to `ol.interaction.Draw.EventType`
  * rename `ol.interaction.ExtentEvent` to `ol.interaction.Extent.Event`
  * rename `ol.interaction.ExtentEventType` to `ol.interaction.Extent.EventType`
  * rename `ol.interaction.DragAndDropEvent` to `ol.interaction.DragAndDrop.Event`
  * rename `ol.interaction.DragAndDropEventType` to `ol.interaction.DragAndDrop.EventType`
+ * rename `ol.interaction.ModifyEvent` to `ol.interaction.Modify.Event`
+ * rename `ol.interaction.SelectEvent` to `ol.interaction.Select.Event`
+ * rename `ol.interaction.SelectEventType` to `ol.interaction.Select.EventType`
  * rename `ol.interaction.TranslateEvent` to `ol.interaction.Translate.Event`
  * rename `ol.interaction.TranslateEventType` to `ol.interaction.Translate.EventType`
  * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
@@ -29,6 +35,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
  * rename `ol.MapEventType` to `ol.MapEvent.Type`
  * rename `ol.MapProperty` to `ol.Map.Property`
+ * rename `ol.ModifyEventType` to `ol.interaction.Modify.EventType`
  * rename `ol.RendererType` to `ol.renderer.Type`
  * rename `ol.source.ImageEvent` to `ol.source.Image.Event`
  * rename `ol.source.ImageEventType` to `ol.source.Image.EventType`
