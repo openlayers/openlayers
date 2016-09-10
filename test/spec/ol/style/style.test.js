@@ -3,9 +3,84 @@ goog.provide('ol.test.style.Style');
 goog.require('ol.Feature');
 goog.require('ol.geom.Point');
 goog.require('ol.style.Style');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Text');
 
 
 describe('ol.style.Style', function() {
+
+  describe('#clone', function() {
+
+    it('creates a new ol.style.Style', function() {
+      var original = new ol.style.Style();
+      var clone = original.clone();
+      expect(clone).to.be.an(ol.style.Style);
+      expect(clone).to.not.be(original);
+    });
+
+    it('copies all values', function() {
+      var original = new ol.style.Style({
+        geometry: new ol.geom.Point([0,0,0]),
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        image: new ol.style.Circle({
+          radius: 5
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        }),
+        text: new ol.style.Text({
+          text: 'test'
+        }),
+        zIndex: 2
+      });
+      var clone = original.clone();
+      expect(original.getGeometry().getCoordinates()).to.eql(clone.getGeometry().getCoordinates());
+      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
+      expect(original.getImage().getRadius()).to.eql(clone.getImage().getRadius());
+      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getText().getText()).to.eql(clone.getText().getText());
+      expect(original.getZIndex()).to.eql(clone.getZIndex());
+    });
+
+    it('the clone does not reference the same objects as the original', function() {
+      var original = new ol.style.Style({
+        geometry: new ol.geom .Point([0,0,0]),
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        image: new ol.style.Circle({
+          radius: 5
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        }),
+        text: new ol.style.Text({
+          text: 'test'
+        })
+      });
+      var clone = original.clone();
+      expect(original.getGeometry()).not.to.be(clone.getGeometry());
+      expect(original.getFill()).not.to.be(clone.getFill());
+      expect(original.getImage()).not.to.be(clone.getImage());
+      expect(original.getStroke()).not.to.be(clone.getStroke());
+      expect(original.getText()).not.to.be(clone.getText());
+
+      clone.getGeometry().setCoordinates([1,1,1]);
+      clone.getFill().setColor('#012345');
+      clone.getImage().setScale(2);
+      clone.getStroke().setColor('#012345');
+      clone.getText().setText('other');
+      expect(original.getGeometry().getCoordinates()).not.to.eql(clone.getGeometry().getCoordinates());
+      expect(original.getFill().getColor()).not.to.eql(clone.getFill().getColor());
+      expect(original.getImage().getScale()).not.to.eql(clone.getImage().getScale());
+      expect(original.getStroke().getColor()).not.to.eql(clone.getStroke().getColor());
+      expect(original.getText().getText()).not.to.eql(clone.getText().getText());
+    });
+  });
 
   describe('#setZIndex', function() {
 

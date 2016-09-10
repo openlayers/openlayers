@@ -84,6 +84,7 @@ ol.style.Style.prototype.clone = function() {
   return new ol.style.Style({
     geometry: geometry,
     fill: this.getFill() ? this.getFill().clone() : undefined,
+    image: this.getImage() ? this.getImage().clone() : undefined,
     stroke: this.getStroke() ? this.getStroke().clone() : undefined,
     text: this.getText() ? this.getText().clone() : undefined,
     zIndex: this.getZIndex()

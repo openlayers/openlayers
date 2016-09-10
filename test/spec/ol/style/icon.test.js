@@ -45,11 +45,11 @@ describe('ol.style.Icon', function() {
         src: src
       });
       var clone = original.clone();
-      expect(clone instanceof ol.style.Icon).to.be(true);
+      expect(clone).to.be.an(ol.style.Icon);
       expect(clone).to.not.be(original);
     });
 
-    it('clones all values ', function() {
+    it('copies all values ', function() {
       var canvas = document.createElement('canvas');
       var original = new ol.style.Icon({
         anchor: [1, 0],
@@ -70,23 +70,18 @@ describe('ol.style.Icon', function() {
       });
 
       var clone = original.clone();
-      expect(original.getAnchor()).to.not.be(clone.getAnchor());
       expect(original.getAnchor()).to.eql(clone.getAnchor());
       expect(original.anchorOrigin_).to.be(clone.anchorOrigin_);
       expect(original.anchorXUnits_).to.be(clone.anchorXUnits_);
       expect(original.anchorYUnits_).to.be(clone.anchorYUnits_);
       expect(original.crossOrigin_).to.be(clone.crossOrigin_);
-      expect(original.color_).to.not.be(clone.color_);
       expect(original.color_).to.eql(clone.color_);
-      expect(original.getImage(1)).not.to.be(clone.getImage(1));
       expect(original.getImage(1).src).to.be(clone.getImage(1).src);
       expect(original.getImage(1).toDataURL()).to.be(original.getImage(1).toDataURL());
-      expect(original.offset_).to.not.be(clone.offset_);
       expect(original.offset_).to.eql(clone.offset_);
       expect(original.offsetOrigin_).to.be(clone.offsetOrigin_);
-      expect(original.getSize()).not.to.be(clone.getSize());
       expect(original.getSize()).to.eql(clone.getSize());
-      expect(original.getSrc()).to.not.eql(clone.getSrc());
+      expect(original.getSrc()).not.to.eql(clone.getSrc());
       expect(original.getOpacity()).to.be(clone.getOpacity());
       expect(original.getRotation()).to.be(clone.getRotation());
       expect(original.getRotateWithView()).to.be(clone.getRotateWithView());
@@ -97,6 +92,35 @@ describe('ol.style.Icon', function() {
       });
       var clone2 = original2.clone();
       expect(original2.getSrc()).to.be(clone2.getSrc());
+    });
+
+    it('the clone does not reference the same objects as the original', function() {
+      var canvas = document.createElement('canvas');
+      var original = new ol.style.Icon({
+        anchor: [1, 0],
+        color: [1, 2, 3, 0.4],
+        img: canvas,
+        imgSize: size,
+        offset: [1, 2],
+        size: [10, 12]
+      });
+      var clone = original.clone();
+      expect(original.getAnchor()).not.to.be(clone.getAnchor());
+      expect(original.getImage(1)).not.to.be(clone.getImage(1));
+      expect(original.offset_).not.to.be(clone.offset_);
+      expect(original.color_).not.to.be(clone.color_);
+      expect(original.getSize()).not.to.be(clone.getSize());
+
+      clone.anchor_[0] = 0;
+      clone.getImage(1).width = 50;
+      clone.offset_[0] = 0;
+      clone.color_[0] = 0;
+      clone.size_[0] = 5;
+      expect(original.anchor_).not.to.eql(clone.anchor_);
+      expect(original.getImage(1).width).not.to.eql(clone.getImage(1).width);
+      expect(original.offset_).not.to.eql(clone.offset_);
+      expect(original.color_).not.to.eql(clone.color_);
+      expect(original.size_).not.to.eql(clone.size_);
     });
   });
 
