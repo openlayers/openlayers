@@ -146,7 +146,7 @@ ol.inherits(ol.style.RegularShape, ol.style.Image);
 
 
 /**
- * Clones the style.
+ * Clones the style. If an atlasmanger was provided to the original style it will be used in the cloned style, too.
  * @return {ol.style.RegularShape} The cloned style.
  * @api
  */
