@@ -106,7 +106,7 @@ ol.CircleRenderOptions;
  * red, green, and blue should be integers in the range 0..255 inclusive.
  * alpha should be a float in the range 0..1 inclusive. If no alpha value is
  * given then `1` will be used.
- * @typedef {Array.<number>|Uint8Array|Uint8ClampedArray}
+ * @typedef {Array.<number>}
  */
 ol.Color;
 

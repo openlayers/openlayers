@@ -367,7 +367,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
 /**
  * @param {ol.Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.layer.Layer, ol.Color): T} callback Layer
+ * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
  * @return {T|undefined} Callback result.
@@ -395,7 +395,7 @@ ol.renderer.webgl.TileLayer.prototype.forEachLayerAtPixel = function(pixel, fram
       gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
   if (imageData[3] > 0) {
-    return callback.call(thisArg, this.getLayer(),  imageData);
+    return callback.call(thisArg, this.getLayer(), imageData);
   } else {
     return undefined;
   }
