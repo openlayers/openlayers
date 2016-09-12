@@ -57,9 +57,10 @@ ol.style.Icon = function(opt_options) {
       options.anchorYUnits : ol.style.Icon.AnchorUnits.FRACTION;
 
   /**
+   * @private
    * @type {?string}
    */
-  var crossOrigin =
+  this.crossOrigin_ =
       options.crossOrigin !== undefined ? options.crossOrigin : null;
 
   /**
@@ -95,9 +96,10 @@ ol.style.Icon = function(opt_options) {
       ol.Image.State.IDLE : ol.Image.State.LOADED;
 
   /**
+   * @private
    * @type {ol.Color}
    */
-  var color = options.color !== undefined ? ol.color.asArray(options.color) :
+  this.color_ = options.color !== undefined ? ol.color.asArray(options.color) :
       null;
 
   /**
@@ -105,7 +107,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconImage}
    */
   this.iconImage_ = ol.style.IconImage.get(
-      image, /** @type {string} */ (src), imgSize, crossOrigin, imageState, color);
+      image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
 
   /**
    * @private
@@ -169,6 +171,47 @@ ol.style.Icon = function(opt_options) {
 
 };
 ol.inherits(ol.style.Icon, ol.style.Image);
+
+
+/**
+ * Clones the style.
+ * @return {ol.style.Icon} The cloned style.
+ * @api
+ */
+ol.style.Icon.prototype.clone = function() {
+  var oldImage = this.getImage(1);
+  var newImage;
+  if (this.iconImage_.getImageState() === ol.Image.State.LOADED) {
+    if (oldImage.tagName.toUpperCase() === 'IMG') {
+      newImage = /** @type {Image} */ (oldImage.cloneNode(true));
+    } else {
+      newImage = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+      var context = newImage.getContext('2d');
+      newImage.width = oldImage.width;
+      newImage.height = oldImage.height;
+      context.drawImage(oldImage, 0, 0);
+    }
+  }
+  return new ol.style.Icon({
+    anchor: this.anchor_.slice(),
+    anchorOrigin: this.anchorOrigin_,
+    anchorXUnits: this.anchorXUnits_,
+    anchorYUnits: this.anchorYUnits_,
+    crossOrigin: this.crossOrigin_,
+    color: (this.color_ && this.color_.slice) ? this.color_.slice() : this.color_ || undefined,
+    img: newImage ? newImage : undefined,
+    imgSize: newImage ? this.iconImage_.getSize().slice() : undefined,
+    src: newImage ? undefined : this.getSrc(),
+    offset: this.offset_.slice(),
+    offsetOrigin: this.offsetOrigin_,
+    size: this.size_ !== null ? this.size_.slice() : undefined,
+    opacity: this.getOpacity(),
+    scale: this.getScale(),
+    snapToPixel: this.getSnapToPixel(),
+    rotation: this.getRotation(),
+    rotateWithView: this.getRotateWithView()
+  });
+};
 
 
 /**

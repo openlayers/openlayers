@@ -76,6 +76,58 @@ describe('ol.style.Circle', function() {
     });
   });
 
+  describe('#clone', function() {
+
+    it('creates a new ol.style.Circle', function() {
+      var original = new ol.style.Circle();
+      var clone = original.clone();
+      expect(clone).to.be.an(ol.style.Circle);
+      expect(clone).to.not.be(original);
+    });
+
+    it('copies all values', function() {
+      var original = new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        }),
+        radius: 5,
+        snapToPixel: false
+      });
+      original.setOpacity(0.5);
+      original.setScale(1.5);
+      var clone = original.clone();
+      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
+      expect(original.getOpacity()).to.eql(clone.getOpacity());
+      expect(original.getRadius()).to.eql(clone.getRadius());
+      expect(original.getScale()).to.eql(clone.getScale());
+      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
+      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+    });
+
+    it('the clone does not reference the same objects as the original', function() {
+      var original = new ol.style.Circle({
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        })
+      });
+      var clone = original.clone();
+      expect(original.getFill()).to.not.be(clone.getFill());
+      expect(original.getStroke()).to.not.be(clone.getStroke());
+
+      clone.getFill().setColor('#012345');
+      clone.getStroke().setColor('#012345');
+      expect(original.getFill().getColor()).to.not.eql(clone.getFill().getColor());
+      expect(original.getStroke().getColor()).to.not.eql(clone.getStroke().getColor());
+    });
+
+  });
+
   describe('#getChecksum', function() {
 
     it('calculates the same hash code for default options', function() {

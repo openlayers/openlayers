@@ -38,6 +38,92 @@ describe('ol.style.Icon', function() {
 
   });
 
+  describe('#clone', function() {
+
+    it('creates a new ol.style.Icon', function() {
+      var original = new ol.style.Icon({
+        src: src
+      });
+      var clone = original.clone();
+      expect(clone).to.be.an(ol.style.Icon);
+      expect(clone).to.not.be(original);
+    });
+
+    it('copies all values ', function() {
+      var canvas = document.createElement('canvas');
+      var original = new ol.style.Icon({
+        anchor: [1, 0],
+        anchorOrigin: 'bottom-right',
+        anchorXUnits: 'pixels',
+        anchorYUnits: 'pixels',
+        color: '#319FD3',
+        crossOrigin: 'Anonymous',
+        img: canvas,
+        imgSize: size,
+        offset: [1, 2],
+        offsetOrigin: 'bottom-left',
+        opacity: 0.5,
+        scale: 2,
+        snapToPixel: false,
+        rotation: 4,
+        size: [10, 12]
+      });
+
+      var clone = original.clone();
+      expect(original.getAnchor()).to.eql(clone.getAnchor());
+      expect(original.anchorOrigin_).to.eql(clone.anchorOrigin_);
+      expect(original.anchorXUnits_).to.eql(clone.anchorXUnits_);
+      expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
+      expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
+      expect(original.color_).to.eql(clone.color_);
+      expect(original.getImage(1).src).to.eql(clone.getImage(1).src);
+      expect(original.getImage(1).toDataURL()).to.eql(original.getImage(1).toDataURL());
+      expect(original.offset_).to.eql(clone.offset_);
+      expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
+      expect(original.getSize()).to.eql(clone.getSize());
+      expect(original.getSrc()).not.to.eql(clone.getSrc());
+      expect(original.getOpacity()).to.eql(clone.getOpacity());
+      expect(original.getRotation()).to.eql(clone.getRotation());
+      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
+      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
+
+      var original2 = new ol.style.Icon({
+        src: src
+      });
+      var clone2 = original2.clone();
+      expect(original2.getSrc()).to.be(clone2.getSrc());
+    });
+
+    it('the clone does not reference the same objects as the original', function() {
+      var canvas = document.createElement('canvas');
+      var original = new ol.style.Icon({
+        anchor: [1, 0],
+        color: [1, 2, 3, 0.4],
+        img: canvas,
+        imgSize: size,
+        offset: [1, 2],
+        size: [10, 12]
+      });
+      var clone = original.clone();
+      expect(original.getAnchor()).not.to.be(clone.getAnchor());
+      expect(original.getImage(1)).not.to.be(clone.getImage(1));
+      expect(original.offset_).not.to.be(clone.offset_);
+      expect(original.color_).not.to.be(clone.color_);
+      expect(original.getSize()).not.to.be(clone.getSize());
+
+      clone.anchor_[0] = 0;
+      clone.getImage(1).width = 50;
+      clone.offset_[0] = 0;
+      clone.color_[0] = 0;
+      clone.size_[0] = 5;
+      expect(original.anchor_).not.to.eql(clone.anchor_);
+      expect(original.getImage(1).width).not.to.eql(clone.getImage(1).width);
+      expect(original.offset_).not.to.eql(clone.offset_);
+      expect(original.color_).not.to.eql(clone.color_);
+      expect(original.size_).not.to.eql(clone.size_);
+    });
+  });
+
   describe('#getAnchor', function() {
     var fractionAnchor = [0.25, 0.25];
 

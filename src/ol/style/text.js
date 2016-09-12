@@ -96,6 +96,28 @@ ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
 
 
 /**
+ * Clones the style.
+ * @return {ol.style.Text} The cloned style.
+ * @api
+ */
+ol.style.Text.prototype.clone = function() {
+  return new ol.style.Text({
+    font: this.getFont(),
+    rotation: this.getRotation(),
+    rotateWithView: this.getRotateWithView(),
+    scale: this.getScale(),
+    text: this.getText(),
+    textAlign: this.getTextAlign(),
+    textBaseline: this.getTextBaseline(),
+    fill: this.getFill() ? this.getFill().clone() : undefined,
+    stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+    offsetX: this.getOffsetX(),
+    offsetY: this.getOffsetY()
+  });
+};
+
+
+/**
  * Get the font name.
  * @return {string|undefined} Font.
  * @api
