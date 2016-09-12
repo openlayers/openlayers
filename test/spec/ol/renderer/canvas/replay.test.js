@@ -165,19 +165,25 @@ describe('ol.render.canvas.Replay', function() {
 
     it('appends coordinates that are within the max extent', function() {
       var flat = [-110, 45, 110, 45, 110, -45, -110, -45];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql(flat);
     });
 
     it('appends polygon coordinates that are within the max extent', function() {
       var flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
       expect(replay.coordinates).to.eql(flat);
+    });
+
+    it('appends polygon coordinates that are within the max extent (skipping first)', function() {
+      var flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+      expect(replay.coordinates).to.eql([110, 45, 110, -45, -110, -45, -110, 45]);
     });
 
     it('works with a single coordinate (inside)', function() {
       var flat = [-110, 45];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql(flat);
     });
 
@@ -185,7 +191,7 @@ describe('ol.render.canvas.Replay', function() {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first point
       var flat = [-110, 145];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql(flat);
     });
 
@@ -193,21 +199,27 @@ describe('ol.render.canvas.Replay', function() {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first point
       var flat = [-110, 145, -110, 145];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
       expect(replay.coordinates).to.eql(flat);
+    });
+
+    it('skips first polygon vertex upon request (also when outside)', function() {
+      var flat = [-110, 145, -110, 145];
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+      expect(replay.coordinates).to.eql([-110, 145]);
     });
 
     it('appends points when segments cross (top to bottom)', function() {
       // this means we get a few extra points when coordinates are not
       // part of a linestring or ring, but only a few extra
       var flat = [0, 200, 0, -200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql(flat);
     });
 
     it('appends points when segments cross (top to inside)', function() {
       var flat = [0, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql(flat);
     });
 
@@ -215,7 +227,7 @@ describe('ol.render.canvas.Replay', function() {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first segment
       var flat = [-10, 200, 10, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql(flat);
     });
 
@@ -223,44 +235,68 @@ describe('ol.render.canvas.Replay', function() {
       // this could be changed, but to make the code simpler for properly
       // closing rings, we always add the first segment
       var flat = [-10, 200, 10, 200, -10, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
       expect(replay.coordinates).to.eql(flat);
+    });
+
+    it('skips first polygon segment upon request (also when outside)', function() {
+      var flat = [-10, 200, 10, 200, -10, 200];
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+      expect(replay.coordinates).to.eql([10, 200, -10, 200]);
     });
 
     it('eliminates segments outside (and not changing rel)', function() {
       var flat = [0, 0, 0, 200, 5, 200, 10, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql([0, 0, 0, 200]);
     });
 
     it('eliminates polygon segments outside (and not changing rel)', function() {
       var flat = [0, 0, 0, 200, 5, 200, 10, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
       expect(replay.coordinates).to.eql([0, 0, 0, 200, 10, 200, 0, 0]);
+    });
+
+    it('eliminates polygon segments outside (skipping first and not changing rel)', function() {
+      var flat = [0, 0, 0, 10, 0, 200, 5, 200, 10, 200, 0, 0];
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+      expect(replay.coordinates).to.eql([0, 10, 0, 200, 10, 200, 0, 0]);
     });
 
     it('eliminates segments outside (and not changing rel)', function() {
       var flat = [0, 0, 0, 200, 10, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql([0, 0, 0, 200]);
     });
 
     it('includes polygon segments outside (and not changing rel) when on last segment', function() {
       var flat = [0, 0, 0, 200, 10, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
       expect(replay.coordinates).to.eql(flat);
+    });
+
+    it('includes polygon segments outside (skipping first and not changing rel) when on last segment', function() {
+      var flat = [0, 0, 0, 200, 10, 200, 0, 0];
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+      expect(replay.coordinates).to.eql([0, 200, 10, 200, 0, 0]);
     });
 
     it('includes outside segments that change relationship', function() {
       var flat = [0, 0, 0, 200, 200, 200, 250, 200];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, false, false);
       expect(replay.coordinates).to.eql([0, 0, 0, 200, 200, 200]);
     });
 
     it('includes outside polygon segments that change relationship when on last segment', function() {
       var flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
-      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true);
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, false);
       expect(replay.coordinates).to.eql(flat);
+    });
+
+    it('includes outside polygon segments that change relationship when on last segment (when skipping first)', function() {
+      var flat = [0, 0, 0, 200, 200, 200, 250, 200, 0, 0];
+      replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
+      expect(replay.coordinates).to.eql([0, 200, 200, 200, 250, 200, 0, 0]);
     });
 
   });

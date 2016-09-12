@@ -109,7 +109,7 @@ ol.inherits(ol.render.canvas.ImageReplay, ol.render.canvas.Replay);
  */
 ol.render.canvas.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
   return this.appendFlatCoordinates(
-      flatCoordinates, offset, end, stride, false);
+      flatCoordinates, offset, end, stride, false, false);
 };
 
 
