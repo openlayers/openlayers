@@ -318,6 +318,14 @@ ol.LayoutOptions;
 
 
 /**
+ * @typedef {{prev: (ol.LinkedListItem|undefined),
+ *            next: (ol.LinkedListItem|undefined),
+ *            data: ?}}
+ */
+ol.LinkedListItem;
+
+
+/**
  * A function that takes an {@link ol.Extent} and a resolution as arguments, and
  * returns an array of {@link ol.Extent} with the extents to load. Usually this
  * is one of the standard {@link ol.loadingstrategy} strategies.
@@ -684,6 +692,15 @@ ol.ViewAnimation;
  *            buffer: WebGLBuffer}}
  */
 ol.WebglBufferCacheEntry;
+
+
+/**
+ * @typedef {{x: number,
+ *            y: number,
+ *            i: number,
+ *            reflex: (boolean|undefined)}}
+ */
+ol.WebglPolygonVertex;
 
 
 /**
