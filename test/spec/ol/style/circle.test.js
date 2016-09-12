@@ -100,10 +100,10 @@ describe('ol.style.Circle', function() {
       original.setScale(1.5);
       var clone = original.clone();
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
-      expect(original.getOpacity()).to.be(clone.getOpacity());
-      expect(original.getRadius()).to.be(clone.getRadius());
-      expect(original.getScale()).to.be(clone.getScale());
-      expect(original.getSnapToPixel()).to.be(clone.getSnapToPixel());
+      expect(original.getOpacity()).to.eql(clone.getOpacity());
+      expect(original.getRadius()).to.eql(clone.getRadius());
+      expect(original.getScale()).to.eql(clone.getScale());
+      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
       expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
     });
 

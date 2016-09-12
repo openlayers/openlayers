@@ -71,21 +71,21 @@ describe('ol.style.Icon', function() {
 
       var clone = original.clone();
       expect(original.getAnchor()).to.eql(clone.getAnchor());
-      expect(original.anchorOrigin_).to.be(clone.anchorOrigin_);
-      expect(original.anchorXUnits_).to.be(clone.anchorXUnits_);
-      expect(original.anchorYUnits_).to.be(clone.anchorYUnits_);
-      expect(original.crossOrigin_).to.be(clone.crossOrigin_);
+      expect(original.anchorOrigin_).to.eql(clone.anchorOrigin_);
+      expect(original.anchorXUnits_).to.eql(clone.anchorXUnits_);
+      expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
+      expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
       expect(original.color_).to.eql(clone.color_);
-      expect(original.getImage(1).src).to.be(clone.getImage(1).src);
-      expect(original.getImage(1).toDataURL()).to.be(original.getImage(1).toDataURL());
+      expect(original.getImage(1).src).to.eql(clone.getImage(1).src);
+      expect(original.getImage(1).toDataURL()).to.eql(original.getImage(1).toDataURL());
       expect(original.offset_).to.eql(clone.offset_);
-      expect(original.offsetOrigin_).to.be(clone.offsetOrigin_);
+      expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
       expect(original.getSize()).to.eql(clone.getSize());
       expect(original.getSrc()).not.to.eql(clone.getSrc());
-      expect(original.getOpacity()).to.be(clone.getOpacity());
-      expect(original.getRotation()).to.be(clone.getRotation());
-      expect(original.getRotateWithView()).to.be(clone.getRotateWithView());
-      expect(original.getSnapToPixel()).to.be(clone.getSnapToPixel());
+      expect(original.getOpacity()).to.eql(clone.getOpacity());
+      expect(original.getRotation()).to.eql(clone.getRotation());
+      expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
+      expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
 
       var original2 = new ol.style.Icon({
         src: src

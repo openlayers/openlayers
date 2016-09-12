@@ -24,12 +24,11 @@ describe('ol.style.Stroke', function() {
       });
       var clone = original.clone();
       expect(original.getColor()).to.eql(clone.getColor());
-      expect(original.getLineCap()).to.be(clone.getLineCap());
-      expect(original.getLineJoin()).to.be(clone.getLineJoin());
-      expect(original.getLineDash()).not.to.be(clone.getLineDash());
+      expect(original.getLineCap()).to.eql(clone.getLineCap());
+      expect(original.getLineJoin()).to.eql(clone.getLineJoin());
       expect(original.getLineDash()).to.eql(clone.getLineDash());
-      expect(original.getMiterLimit()).to.be(clone.getMiterLimit());
-      expect(original.getWidth()).to.be(clone.getWidth());
+      expect(original.getMiterLimit()).to.eql(clone.getMiterLimit());
+      expect(original.getWidth()).to.eql(clone.getWidth());
     });
 
     it('the clone does not reference the same objects as the original', function() {
