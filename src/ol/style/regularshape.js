@@ -153,7 +153,7 @@ ol.inherits(ol.style.RegularShape, ol.style.Image);
 ol.style.RegularShape.prototype.clone = function() {
   var style = new ol.style.RegularShape({
     fill: this.getFill() ? this.getFill().clone() : undefined,
-    points: this.getPoints(),
+    points: this.getRadius2() !== this.getRadius() ? this.getPoints() / 2 : this.getPoints(),
     radius: this.getRadius(),
     radius2: this.getRadius2(),
     angle: this.getAngle(),
@@ -431,12 +431,11 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   context.translate(x, y);
 
   context.beginPath();
-  var points = this.points_;
   if (this.radius2_ !== this.radius_) {
-    points = 2 * points;
+    this.points_ = 2 * this.points_;
   }
-  for (i = 0; i <= points; i++) {
-    angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+  for (i = 0; i <= this.points_; i++) {
+    angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
     radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
     context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
                    renderOptions.size / 2 + radiusC * Math.sin(angle0));
@@ -496,13 +495,12 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
   context.translate(x, y);
 
   context.beginPath();
-  var points = this.points_;
   if (this.radius2_ !== this.radius_) {
-    points = 2 * points;
+    this.points_ = 2 * this.points_;
   }
   var i, radiusC, angle0;
-  for (i = 0; i <= points; i++) {
-    angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
+  for (i = 0; i <= this.points_; i++) {
+    angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
     radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
     context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
                    renderOptions.size / 2 + radiusC * Math.sin(angle0));
