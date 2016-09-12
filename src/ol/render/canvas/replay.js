@@ -157,15 +157,10 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinat
     lastRel = nextRel;
   }
 
-  // handle case where there is only one point to append
-  if (i === offset + stride) {
+  // When we want to close or there is only one point to append:
+  if ((close && skipped) || i === offset + stride) {
     this.coordinates[myEnd++] = lastCoord[0];
     this.coordinates[myEnd++] = lastCoord[1];
-  }
-
-  if (close) {
-    this.coordinates[myEnd++] = flatCoordinates[offset];
-    this.coordinates[myEnd++] = flatCoordinates[offset + 1];
   }
   return myEnd;
 };
