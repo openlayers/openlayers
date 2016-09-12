@@ -321,31 +321,22 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
     }
   }
   if (foundStyle.getText() !== null) {
-	// clone the text style, customizing it with name, alignments and offset.
+    // clone the text style, customizing it with name, alignments and offset.
     // Note that kml does not support many text options that OpenLayers does (rotation, textBaseline).
     var foundText = foundStyle.getText();
-    textStyle = new ol.style.Text({
-      text: name,
-      textAlign: textAlign,
-      offsetX: textOffset[0],
-      offsetY: textOffset[1],
-      font: foundText.getFont() || ol.format.KML.DEFAULT_TEXT_STYLE_.getFont(),
-      scale: foundText.getScale() || ol.format.KML.DEFAULT_TEXT_STYLE_.getScale(),
-      fill: foundText.getFill() || ol.format.KML.DEFAULT_TEXT_STYLE_.getFill(),
-      stroke: foundText.getStroke() || ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_
-    });
+    textStyle = foundText.clone();
+    textStyle.setFont(foundText.getFont() || ol.format.KML.DEFAULT_TEXT_STYLE_.getFont());
+    textStyle.setScale(foundText.getScale() || ol.format.KML.DEFAULT_TEXT_STYLE_.getScale());
+    textStyle.setFill(foundText.getFill() || ol.format.KML.DEFAULT_TEXT_STYLE_.getFill());
+    textStyle.setStroke(foundText.getStroke() || ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_);
   } else {
-    textStyle = new ol.style.Text({
-      text: name,
-      offsetX: textOffset[0],
-      offsetY: textOffset[1],
-      textAlign: textAlign,
-      font: ol.format.KML.DEFAULT_TEXT_STYLE_.getFont(),
-      scale: ol.format.KML.DEFAULT_TEXT_STYLE_.getScale(),
-      fill: ol.format.KML.DEFAULT_TEXT_STYLE_.getFill(),
-      stroke: ol.format.KML.DEFAULT_TEXT_STROKE_STYLE_
-    });
+    textStyle = ol.format.KML.DEFAULT_TEXT_STYLE_.clone();
   }
+  textStyle.setText(name);
+  textStyle.setOffsetX(textOffset[0]);
+  textStyle.setOffsetY(textOffset[1]);
+  textStyle.setTextAlign(textAlign);
+
   var nameStyle = new ol.style.Style({
     text: textStyle
   });
