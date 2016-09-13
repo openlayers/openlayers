@@ -271,4 +271,91 @@ describe('ol.rendering.layer.Vector', function() {
     });
   });
 
+  describe('Polygon simplification', function() {
+
+    var layer, map;
+
+    beforeEach(function() {
+      var src = new ol.source.Vector({
+        features: [
+          new ol.Feature(new ol.geom.Polygon([[
+            [-22, 58],
+            [-22, 78],
+            [-9, 78],
+            [-9, 58],
+            [-22, 58]
+          ]])),
+          new ol.Feature(new ol.geom.Polygon([[
+            [-9, 58],
+            [-9, 78],
+            [4, 78],
+            [4, 58],
+            [-9, 58]
+          ]]))
+        ]
+      });
+      layer = new ol.layer.Vector({
+        renderBuffer: 0,
+        source: src
+      });
+      var view = new ol.View({
+        center: [-9.5, 78],
+        zoom: 2,
+        projection: 'EPSG:4326'
+      });
+
+      map = new ol.Map({
+        layers: [layer],
+        target: createMapDiv(100, 100),
+        view: view
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders partially out-of-view polygons with a fill and stroke', function(done) {
+      layer.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: [0, 0, 0, 1],
+          width: 2
+        }),
+        fill: new ol.style.Fill({
+          color: [255, 0, 0, 1]
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('renders partially out-of-view polygons with a fill', function(done) {
+      layer.setStyle(new ol.style.Style({
+        fill: new ol.style.Fill({
+          color: [0, 0, 0, 1]
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-fill.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('renders partially out-of-view polygons with a stroke', function(done) {
+      layer.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: [0, 0, 0, 1],
+          width: 2
+        })
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-stroke.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+  });
+
 });
