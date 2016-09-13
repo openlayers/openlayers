@@ -80,9 +80,6 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
   var fill = state.fillStyle !== undefined;
   var stroke = state.strokeStyle != undefined;
   var numEnds = ends.length;
-  if (!fill && !stroke) {
-    return ends[numEnds - 1];
-  }
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   this.instructions.push(beginPathInstruction);
   this.hitDetectionInstructions.push(beginPathInstruction);
@@ -90,7 +87,7 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
     var end = ends[i];
     var myBegin = this.coordinates.length;
     var myEnd = this.appendFlatCoordinates(
-        flatCoordinates, offset, end, stride, true);
+        flatCoordinates, offset, end, stride, true, !stroke);
     var moveToLineToInstruction =
         [ol.render.canvas.Instruction.MOVE_TO_LINE_TO, myBegin, myEnd];
     this.instructions.push(moveToLineToInstruction);
@@ -151,7 +148,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
   var stride = circleGeometry.getStride();
   var myBegin = this.coordinates.length;
   this.appendFlatCoordinates(
-      flatCoordinates, 0, flatCoordinates.length, stride, false);
+      flatCoordinates, 0, flatCoordinates.length, stride, false, false);
   var beginPathInstruction = [ol.render.canvas.Instruction.BEGIN_PATH];
   var circleInstruction = [ol.render.canvas.Instruction.CIRCLE, myBegin];
   this.instructions.push(beginPathInstruction, circleInstruction);
@@ -178,11 +175,9 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
 ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   var state = this.state_;
   ol.DEBUG && console.assert(state, 'state should not be null');
-  var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
-  if (fillStyle === undefined && strokeStyle === undefined) {
-    return;
-  }
+  ol.DEBUG && console.assert(state.fillStyle === undefined && strokeStyle === undefined,
+      'fillStyle or strokeStyle should be defined');
   if (strokeStyle !== undefined) {
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');

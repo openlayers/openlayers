@@ -120,14 +120,18 @@ ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @param {number} offset Offset.
  * @param {number} end End.
  * @param {number} stride Stride.
- * @param {boolean} close Close.
+ * @param {boolean} closed Last input coordinate equals first.
+ * @param {boolean} skipFirst Skip first coordinate.
  * @protected
  * @return {number} My end.
  */
-ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride, close) {
+ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride, closed, skipFirst) {
 
   var myEnd = this.coordinates.length;
   var extent = this.getBufferedMaxExtent();
+  if (skipFirst) {
+    offset += stride;
+  }
   var lastCoord = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   var nextCoord = [NaN, NaN];
   var skipped = true;
@@ -157,15 +161,10 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinat
     lastRel = nextRel;
   }
 
-  // handle case where there is only one point to append
-  if (i === offset + stride) {
+  // Last coordinate equals first or only one point to append:
+  if ((closed && skipped) || i === offset + stride) {
     this.coordinates[myEnd++] = lastCoord[0];
     this.coordinates[myEnd++] = lastCoord[1];
-  }
-
-  if (close) {
-    this.coordinates[myEnd++] = flatCoordinates[offset];
-    this.coordinates[myEnd++] = flatCoordinates[offset + 1];
   }
   return myEnd;
 };

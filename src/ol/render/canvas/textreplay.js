@@ -115,7 +115,7 @@ ol.render.canvas.TextReplay.prototype.drawText = function(flatCoordinates, offse
   this.beginGeometry(geometry, feature);
   var myBegin = this.coordinates.length;
   var myEnd =
-      this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false);
+      this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
   var fill = !!this.textFillState_;
   var stroke = !!this.textStrokeState_;
   var drawTextInstruction = [
