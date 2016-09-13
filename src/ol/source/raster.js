@@ -1,7 +1,5 @@
 goog.provide('ol.source.Raster');
 goog.provide('ol.RasterOperationType');
-goog.provide('ol.source.RasterEvent');
-goog.provide('ol.source.RasterEventType');
 
 goog.require('ol');
 goog.require('ol.transform');
@@ -41,7 +39,7 @@ ol.RasterOperationType = {
  *
  * @constructor
  * @extends {ol.source.Image}
- * @fires ol.source.RasterEvent
+ * @fires ol.source.Raster.Event
  * @param {olx.source.RasterOptions} options Options.
  * @api
  */
@@ -305,8 +303,8 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
   }
 
   var data = {};
-  this.dispatchEvent(new ol.source.RasterEvent(
-      ol.source.RasterEventType.BEFOREOPERATIONS, frameState, data));
+  this.dispatchEvent(new ol.source.Raster.Event(
+      ol.source.Raster.EventType.BEFOREOPERATIONS, frameState, data));
 
   this.worker_.process(imageDatas, data,
       this.onWorkerComplete_.bind(this, frameState, callback));
@@ -334,8 +332,8 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
     return;
   }
 
-  this.dispatchEvent(new ol.source.RasterEvent(
-      ol.source.RasterEventType.AFTEROPERATIONS, frameState, data));
+  this.dispatchEvent(new ol.source.Raster.Event(
+      ol.source.Raster.EventType.AFTEROPERATIONS, frameState, data));
 
   var resolution = frameState.viewState.resolution / frameState.pixelRatio;
   if (!this.isDirty_(frameState.extent, resolution)) {
@@ -467,7 +465,7 @@ ol.source.Raster.createTileRenderer_ = function(source) {
  * @param {olx.FrameState} frameState The frame state.
  * @param {Object} data An object made available to operations.
  */
-ol.source.RasterEvent = function(type, frameState, data) {
+ol.source.Raster.Event = function(type, frameState, data) {
   ol.events.Event.call(this, type);
 
   /**
@@ -493,23 +491,23 @@ ol.source.RasterEvent = function(type, frameState, data) {
   this.data = data;
 
 };
-ol.inherits(ol.source.RasterEvent, ol.events.Event);
+ol.inherits(ol.source.Raster.Event, ol.events.Event);
 
 
 /**
  * @enum {string}
  */
-ol.source.RasterEventType = {
+ol.source.Raster.EventType = {
   /**
    * Triggered before operations are run.
-   * @event ol.source.RasterEvent#beforeoperations
+   * @event ol.source.Raster.Event#beforeoperations
    * @api
    */
   BEFOREOPERATIONS: 'beforeoperations',
 
   /**
    * Triggered after operations are run.
-   * @event ol.source.RasterEvent#afteroperations
+   * @event ol.source.Raster.Event#afteroperations
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
