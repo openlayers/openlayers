@@ -229,7 +229,7 @@ describe('ol.interaction.Select', function() {
       // Select again to make sure the internal layer isn't reported
       simulateEvent('singleclick', 10, -20);
 
-      expect(listenerSpy.callCount).to.be(2);
+      expect(listenerSpy.callCount).to.be(1);
 
       features = select.getFeatures();
       expect(features.getLength()).to.equal(4);

@@ -217,14 +217,19 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             return !this.multi_;
           }
         }, this, this.layerFilter_);
-    if (selected.length > 0 && features.getLength() == 1 && features.item(0) == selected[0]) {
-      // No change; an already selected feature is selected again
-      selected.length = 0;
-    } else {
-      if (features.getLength() !== 0) {
-        deselected = Array.prototype.concat(features.getArray());
-        features.clear();
+    var i;
+    for (i = features.getLength() - 1; i >= 0; --i) {
+      var feature = features.item(i);
+      var index = selected.indexOf(feature);
+      if (index > -1) {
+        // feature is already selected
+        selected.splice(index, 1);
+      } else {
+        features.remove(feature);
+        deselected.push(feature);
       }
+    }
+    if (selected.length !== 0) {
       features.extend(selected);
     }
   } else {
@@ -249,9 +254,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             return !this.multi_;
           }
         }, this, this.layerFilter_);
-    var i;
-    for (i = deselected.length - 1; i >= 0; --i) {
-      features.remove(deselected[i]);
+    var j;
+    for (j = deselected.length - 1; j >= 0; --j) {
+      features.remove(deselected[j]);
     }
     features.extend(selected);
   }
