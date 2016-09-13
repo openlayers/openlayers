@@ -1773,17 +1773,23 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
   var p0;
   /** @type {ol.WebglPolygonVertex} */
   var p1;
+  var extents = [];
+  var segments = [];
   if (clockwise === isClockwise) {
     start = this.createPoint_(flatCoordinates[0], flatCoordinates[1], n++);
     p0 = start;
     maxX = flatCoordinates[0];
     for (i = stride, ii = flatCoordinates.length; i < ii; i += stride) {
       p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
-      this.insertItem_(p0, p1, list);
+      segments.push(this.insertItem_(p0, p1, list));
+      extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
+          Math.max(p0.y, p1.y)]);
       maxX = flatCoordinates[i] > maxX ? flatCoordinates[i] : maxX;
       p0 = p1;
     }
-    this.insertItem_(p1, start, list);
+    segments.push(this.insertItem_(p1, start, list));
+    extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
+        Math.max(p0.y, p1.y)]);
   } else {
     var end = flatCoordinates.length - stride;
     start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
@@ -1791,12 +1797,17 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
     maxX = flatCoordinates[end];
     for (i = end - stride, ii = 0; i >= ii; i -= stride) {
       p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
-      this.insertItem_(p0, p1, list);
+      segments.push(this.insertItem_(p0, p1, list));
+      extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
+          Math.max(p0.y, p1.y)]);
       maxX = flatCoordinates[i] > maxX ? flatCoordinates[i] : maxX;
       p0 = p1;
     }
-    this.insertItem_(p1, start, list);
+    segments.push(this.insertItem_(p1, start, list));
+    extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
+        Math.max(p0.y, p1.y)]);
   }
+  this.rtree_.load(extents, segments);
 
   return maxX;
 };
@@ -1899,8 +1910,8 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
   var p1Bridge = {x: seg.p1.x, y: seg.p1.y, i: seg.p1.i, reflex: undefined};
 
   hole.getNextItem().p0 = p0Bridge;
-  this.insertItem_(p1, seg.p1, hole);
-  this.insertItem_(p1Bridge, p0Bridge, hole);
+  this.insertItem_(p1, seg.p1, hole, true);
+  this.insertItem_(p1Bridge, p0Bridge, hole, true);
   seg.p1 = p1Bridge;
   hole.setFirstItem();
   list.concat(hole);
@@ -2101,15 +2112,20 @@ ol.render.webgl.PolygonReplay.prototype.createPoint_ = function(x, y, i) {
  * @param {ol.WebglPolygonVertex} p0 First point of segment.
  * @param {ol.WebglPolygonVertex} p1 Second point of segment.
  * @param {ol.structs.LinkedList} list Polygon ring.
+ * @param {boolean=} opt_rtree Insert the segment into the R-Tree.
+ * @return {Object.<string, ol.WebglPolygonVertex>} segment.
  */
-ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list) {
+ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
   var seg = {
     p0: p0,
     p1: p1
   };
   list.insertItem(seg);
-  this.rtree_.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y),
-      Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
+  if (opt_rtree) {
+    this.rtree_.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y),
+        Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
+  }
+  return seg;
 };
 
 
