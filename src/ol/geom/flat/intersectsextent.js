@@ -1,5 +1,6 @@
 goog.provide('ol.geom.flat.intersectsextent');
 
+goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.flat.contains');
 goog.require('ol.geom.flat.segments');

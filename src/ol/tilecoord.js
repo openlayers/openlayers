@@ -1,5 +1,7 @@
 goog.provide('ol.tilecoord');
 
+goog.require('ol');
+
 
 /**
  * @param {string} str String that follows pattern “z/x/y” where x, y and z are

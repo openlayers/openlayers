@@ -1,5 +1,6 @@
 goog.provide('ol.style.IconImageCache');
 
+goog.require('ol');
 goog.require('ol.color');
 
 
