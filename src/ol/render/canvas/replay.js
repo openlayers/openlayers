@@ -476,8 +476,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        ol.DEBUG && console.assert(typeof instruction[1] === 'string',
-            '2nd instruction should be a string');
+        ol.DEBUG && console.assert(ol.colorlike.isColorLike(instruction[1]),
+            '2nd instruction should be a string, CanvasPattern, or CanvasGradient');
         ol.DEBUG && console.assert(typeof instruction[2] === 'number',
             '3rd instruction should be a number');
         ol.DEBUG && console.assert(typeof instruction[3] === 'string',
@@ -495,7 +495,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           context.stroke();
           pendingStroke = 0;
         }
-        context.strokeStyle = /** @type {string} */ (instruction[1]);
+        context.strokeStyle = /** @type {ol.ColorLike} */ (instruction[1]);
         context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
         context.lineCap = /** @type {string} */ (instruction[3]);
         context.lineJoin = /** @type {string} */ (instruction[4]);

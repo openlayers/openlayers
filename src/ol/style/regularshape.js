@@ -1,7 +1,6 @@
 goog.provide('ol.style.RegularShape');
 
 goog.require('ol');
-goog.require('ol.color');
 goog.require('ol.colorlike');
 goog.require('ol.dom');
 goog.require('ol.has');
@@ -329,7 +328,7 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   var strokeWidth = 0;
 
   if (this.stroke_) {
-    strokeStyle = ol.color.asString(this.stroke_.getColor());
+    strokeStyle = ol.colorlike.asColorLike(this.stroke_.getColor());
     strokeWidth = this.stroke_.getWidth();
     if (strokeWidth === undefined) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
