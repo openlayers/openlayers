@@ -148,6 +148,9 @@ ol.source.WMTS = function(options) {
       });
   }
 
+  // Store it as accessible function to be used  later on:
+  this.createFromWMTSTemplate = createFromWMTSTemplate;
+
   var tileUrlFunction = (urls && urls.length > 0) ?
     ol.TileUrlFunction.createFromTileUrlFunctions(
         urls.map(createFromWMTSTemplate)) :
@@ -175,6 +178,19 @@ ol.source.WMTS = function(options) {
 };
 ol.inherits(ol.source.WMTS, ol.source.TileImage);
 
+/**
+ * Set the URLs to use for requests.
+ * URLs may contain OCG conform URL Template Variables: {TileMatrix}, {TileRow}, {TileCol}.
+ * @param {Array.<string>} urls URLs.
+ * @api stable
+ */
+ol.source.WMTS.prototype.setUrls = function(urls) {
+  this.urls = urls;
+  var key = urls.join('\n');
+  this.setTileUrlFunction(this.fixedTileUrlFunction ?
+      this.fixedTileUrlFunction.bind(this) :
+      ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(this.createFromWMTSTemplate.bind(this))), key);
+};
 
 /**
  * Get the dimensions, i.e. those passed to the constructor through the
