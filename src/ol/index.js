@@ -8,9 +8,9 @@ goog.provide('ol');
  */
 
 
- /**
-  * @define {boolean} Enable debug mode. Default is `true`.
-  */
+/**
+ * @define {boolean} Enable debug mode. Default is `true`.
+ */
 ol.DEBUG = true;
 
 
