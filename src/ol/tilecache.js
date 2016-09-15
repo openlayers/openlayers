@@ -2,7 +2,6 @@ goog.provide('ol.TileCache');
 
 goog.require('ol');
 goog.require('ol.structs.LRUCache');
-goog.require('ol.tilecoord');
 
 
 /**
@@ -45,24 +44,6 @@ ol.TileCache.prototype.expireCache = function(usedTiles) {
       break;
     } else {
       this.pop().dispose();
-    }
-  }
-};
-
-
-/**
- * Remove a tile range from the cache, e.g. to invalidate tiles.
- * @param {ol.TileRange} tileRange The tile range to prune.
- */
-ol.TileCache.prototype.pruneTileRange = function(tileRange) {
-  var i = this.getCount(),
-      key;
-  while (i--) {
-    key = this.peekLastKey();
-    if (tileRange.contains(ol.tilecoord.createFromString(key))) {
-      this.pop().dispose();
-    } else {
-      this.get(key);
     }
   }
 };
