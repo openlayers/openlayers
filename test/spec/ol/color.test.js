@@ -103,28 +103,6 @@ describe('ol.color', function() {
 
   });
 
-  describe('ol.color.isValid', function() {
-
-    it('identifies valid colors', function() {
-      expect(ol.color.isValid([0, 0, 0, 0])).to.be(true);
-      expect(ol.color.isValid([255, 255, 255, 1])).to.be(true);
-    });
-
-    it('identifies out-of-range channels', function() {
-      expect(ol.color.isValid([-1, 0, 0, 0])).to.be(false);
-      expect(ol.color.isValid([256, 0, 0, 0])).to.be(false);
-      expect(ol.color.isValid([0, -1, 0, 0])).to.be(false);
-      expect(ol.color.isValid([0, 256, 0, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, -1, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, 256, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, -1, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, 256, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, 0, -1])).to.be(false);
-      expect(ol.color.isValid([0, 0, 0, 2])).to.be(false);
-    });
-
-  });
-
   describe('ol.color.normalize', function() {
 
     it('clamps out-of-range channels', function() {
