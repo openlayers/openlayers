@@ -232,22 +232,4 @@ describe('ol.coordinate', function() {
     });
   });
 
-  describe('#fromProjectedArray', function() {
-    it('returns an inverted coord for "n" or "s"', function() {
-      var northCoord = ol.coordinate.fromProjectedArray([1, 2], 'n');
-      var southCoord = ol.coordinate.fromProjectedArray([1, 2], 's');
-      expect(northCoord).to.eql([2, 1]);
-      expect(southCoord).to.eql([2, 1]);
-    });
-    it('returns an unchanged coord for any other "axis"', function() {
-      var eastCoord = ol.coordinate.fromProjectedArray([1, 2], 'e');
-      var westCoord = ol.coordinate.fromProjectedArray([1, 2], 'w');
-      var bogusCoord = ol.coordinate.fromProjectedArray([1, 2], 'q');
-      var unchangedCoord = ol.coordinate.fromProjectedArray([1, 2], '');
-      expect(eastCoord).to.eql([1, 2]);
-      expect(westCoord).to.eql([1, 2]);
-      expect(bogusCoord).to.eql([1, 2]);
-      expect(unchangedCoord).to.eql([1, 2]);
-    });
-  });
 });

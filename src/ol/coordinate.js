@@ -319,28 +319,3 @@ ol.coordinate.toStringHDMS = function(coordinate, opt_fractionDigits) {
 ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
   return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);
 };
-
-
-/**
- * Create an ol.Coordinate from an Array and take into account axis order.
- *
- * Examples:
- *
- *     var northCoord = ol.coordinate.fromProjectedArray([1, 2], 'n');
- *     // northCoord is now [2, 1]
- *
- *     var eastCoord = ol.coordinate.fromProjectedArray([1, 2], 'e');
- *     // eastCoord is now [1, 2]
- *
- * @param {Array} array The array with coordinates.
- * @param {string} axis the axis info.
- * @return {ol.Coordinate} The coordinate created.
- */
-ol.coordinate.fromProjectedArray = function(array, axis) {
-  var firstAxis = axis.charAt(0);
-  if (firstAxis === 'n' || firstAxis === 's') {
-    return [array[1], array[0]];
-  } else {
-    return array;
-  }
-};
