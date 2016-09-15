@@ -42,11 +42,19 @@ ol.control.OverviewMap = function(opt_options) {
   this.collapsible_ = options.collapsible !== undefined ?
       options.collapsible : true;
 
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.interactive_ = options.interactive !== undefined ? options.interactive : false;
+
   if (!this.collapsible_) {
     this.collapsed_ = false;
   }
 
   var className = options.className !== undefined ? options.className : 'ol-overviewmap';
+
+  if (this.interactive_) className += ' ol-overviewmap-interactive';
 
   var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
 
@@ -377,6 +385,42 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
   var ovresolution = ovview.getResolution();
   var bottomLeft = ol.extent.getBottomLeft(extent);
   var topRight = ol.extent.getTopRight(extent);
+
+  /* Interactive map */
+
+  if (this.interactive_) {
+
+    /* Functions definition */
+
+    var computeDesiredMousePosition = function(mousePosition) {
+      return {
+        clientX: mousePosition.clientX - (box.offsetWidth / 2),
+        clientY: mousePosition.clientY + (box.offsetHeight / 2)
+      };
+    };
+
+    var move = function(event) {
+      var coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+
+      overlay.setPosition(coordinates);
+    };
+
+    var endMoving = function(event) {
+      var coordinates = ovmap.getEventCoordinate(event);
+
+      map.getView().setCenter(coordinates);
+
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseup', endMoving);
+    };
+
+    /* Binding */
+
+    box.addEventListener('mousedown', function() {
+      window.addEventListener('mousemove', move);
+      window.addEventListener('mouseup', endMoving);
+    });
+  }
 
   // set position using bottom left coordinates
   var rotateBottomLeft = this.calculateCoordinateRotate_(rotation, bottomLeft);
