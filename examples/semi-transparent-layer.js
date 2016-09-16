@@ -18,7 +18,6 @@ var map = new ol.Map({
       })
     })
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([-77.93255, 37.9555]),

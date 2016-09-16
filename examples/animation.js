@@ -54,7 +54,6 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: common.getRendererFromQueryString(),
   // Improve user experience by loading tiles while animating. Will make
   // animations stutter on mobile or slow devices.
   loadTilesWhileAnimating: true,

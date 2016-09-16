@@ -99,7 +99,6 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Image({source: source})
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [-10997148, 4569099],
