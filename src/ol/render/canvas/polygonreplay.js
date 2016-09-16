@@ -176,7 +176,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
   var state = this.state_;
   ol.DEBUG && console.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
-  ol.DEBUG && console.assert(state.fillStyle === undefined && strokeStyle === undefined,
+  ol.DEBUG && console.assert(state.fillStyle !== undefined || strokeStyle !== undefined,
       'fillStyle or strokeStyle should be defined');
   if (strokeStyle !== undefined) {
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
