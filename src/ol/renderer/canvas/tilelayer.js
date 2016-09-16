@@ -90,15 +90,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewState.resolution, this.zDirection);
   var tileResolution = tileGrid.getResolution(z);
-  var center = viewState.center;
-  var extent;
-  if (tileResolution == viewState.resolution) {
-    center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.extent.getForViewAndSize(
-        center, tileResolution, viewState.rotation, frameState.size);
-  } else {
-    extent = frameState.extent;
-  }
+  var extent = frameState.extent;
 
   if (layerState.extent !== undefined) {
     extent = ol.extent.getIntersection(extent, layerState.extent);
