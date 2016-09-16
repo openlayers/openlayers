@@ -62,7 +62,6 @@ var map = new ol.Map({
     new ol.control.ScaleLine()
   ]),
   layers: layers,
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: projection,

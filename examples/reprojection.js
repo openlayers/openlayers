@@ -148,7 +148,6 @@ var map = new ol.Map({
     layers['osm'],
     layers['bng']
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: 'EPSG:3857',

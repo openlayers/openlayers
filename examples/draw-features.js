@@ -38,7 +38,6 @@ var vector = new ol.layer.Vector({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [-11000000, 4600000],

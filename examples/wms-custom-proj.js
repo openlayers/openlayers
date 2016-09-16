@@ -76,7 +76,6 @@ var map = new ol.Map({
     })
   ]),
   layers: layers,
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     projection: projection,
