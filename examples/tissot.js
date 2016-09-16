@@ -28,7 +28,6 @@ var map4326 = new ol.Map({
     }),
     vectorLayer4326
   ],
-  renderer: 'canvas',
   target: 'map4326',
   view: new ol.View({
     projection: 'EPSG:4326',
@@ -49,7 +48,6 @@ var map3857 = new ol.Map({
     }),
     vectorLayer3857
   ],
-  renderer: 'canvas',
   target: 'map3857',
   view: new ol.View({
     center: [0, 0],

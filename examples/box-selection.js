@@ -25,7 +25,6 @@ var map = new ol.Map({
       source: vectorSource
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View({
     center: [0, 0],

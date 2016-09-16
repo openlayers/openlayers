@@ -22,7 +22,7 @@ var map1 = new ol.Map({
 if (ol.has.WEBGL) {
   var map2 = new ol.Map({
     target: 'webglMap',
-    renderer: 'webgl',
+    renderer: /** @type {ol.renderer.Type} */ ('webgl'),
     layers: [layer],
     view: view
   });
