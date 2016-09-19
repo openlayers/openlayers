@@ -1,7 +1,7 @@
 'use strict';
 
 // eslint-disable-next-line
-importScripts('resources/supercluster.min.js');
+importScripts('//unpkg.com/supercluster@2.2.0/dist/supercluster.min.js');
 
 var index;
 
