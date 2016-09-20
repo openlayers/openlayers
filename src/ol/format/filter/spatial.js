@@ -1,7 +1,7 @@
-goog.provide('ol.format.ogc.filter.Spatial');
+goog.provide('ol.format.filter.Spatial');
 
 goog.require('ol');
-goog.require('ol.format.ogc.filter.Filter');
+goog.require('ol.format.filter.Filter');
 
 
 /**
@@ -15,12 +15,12 @@ goog.require('ol.format.ogc.filter.Filter');
  * @param {!ol.geom.Geometry} geometry Geometry.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @extends {ol.format.ogc.filter.Filter}
+ * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.ogc.filter.Spatial = function(tagName, geometryName, geometry, opt_srsName) {
+ol.format.filter.Spatial = function(tagName, geometryName, geometry, opt_srsName) {
 
-  ol.format.ogc.filter.Filter.call(this, tagName);
+  ol.format.filter.Filter.call(this, tagName);
 
   /**
    * @public
@@ -40,4 +40,4 @@ ol.format.ogc.filter.Spatial = function(tagName, geometryName, geometry, opt_srs
    */
   this.srsName = opt_srsName;
 };
-ol.inherits(ol.format.ogc.filter.Spatial, ol.format.ogc.filter.Filter);
+ol.inherits(ol.format.filter.Spatial, ol.format.filter.Filter);

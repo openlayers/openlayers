@@ -1,7 +1,7 @@
-goog.provide('ol.format.ogc.filter.Comparison');
+goog.provide('ol.format.filter.Comparison');
 
 goog.require('ol');
-goog.require('ol.format.ogc.filter.Filter');
+goog.require('ol.format.filter.Filter');
 
 
 /**
@@ -12,12 +12,12 @@ goog.require('ol.format.ogc.filter.Filter');
  * @constructor
  * @param {!string} tagName The XML tag name for this filter.
  * @param {!string} propertyName Name of the context property to compare.
- * @extends {ol.format.ogc.filter.Filter}
+ * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.ogc.filter.Comparison = function(tagName, propertyName) {
+ol.format.filter.Comparison = function(tagName, propertyName) {
 
-  ol.format.ogc.filter.Filter.call(this, tagName);
+  ol.format.filter.Filter.call(this, tagName);
 
   /**
    * @public
@@ -25,4 +25,4 @@ ol.format.ogc.filter.Comparison = function(tagName, propertyName) {
    */
   this.propertyName = propertyName;
 };
-ol.inherits(ol.format.ogc.filter.Comparison, ol.format.ogc.filter.Filter);
+ol.inherits(ol.format.filter.Comparison, ol.format.filter.Filter);

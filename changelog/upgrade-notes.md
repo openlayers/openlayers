@@ -4,6 +4,11 @@
 
 As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
 
+#### `ol.format.ogc.filter` namespace was renamed to `ol.format.filter`
+
+`ol.format.ogc.filter` was simplified to `ol.format.filter`; to upgrade your code, simply remove the `ogc` string from the name.
+For example: `ol.format.ogc.filter.and` to `ol.format.filter.and`.
+
 #### Changes only relevant to those who compile their applications together with the Closure Compiler
 
 A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:

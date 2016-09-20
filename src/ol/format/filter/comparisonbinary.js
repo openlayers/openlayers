@@ -1,7 +1,7 @@
-goog.provide('ol.format.ogc.filter.ComparisonBinary');
+goog.provide('ol.format.filter.ComparisonBinary');
 
 goog.require('ol');
-goog.require('ol.format.ogc.filter.Comparison');
+goog.require('ol.format.filter.Comparison');
 
 
 /**
@@ -14,13 +14,13 @@ goog.require('ol.format.ogc.filter.Comparison');
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!(string|number)} expression The value to compare.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @extends {ol.format.ogc.filter.Comparison}
+ * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.ogc.filter.ComparisonBinary = function(
+ol.format.filter.ComparisonBinary = function(
     tagName, propertyName, expression, opt_matchCase) {
 
-  ol.format.ogc.filter.Comparison.call(this, tagName, propertyName);
+  ol.format.filter.Comparison.call(this, tagName, propertyName);
 
   /**
    * @public
@@ -34,4 +34,4 @@ ol.format.ogc.filter.ComparisonBinary = function(
    */
   this.matchCase = opt_matchCase;
 };
-ol.inherits(ol.format.ogc.filter.ComparisonBinary, ol.format.ogc.filter.Comparison);
+ol.inherits(ol.format.filter.ComparisonBinary, ol.format.filter.Comparison);

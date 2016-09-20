@@ -3,7 +3,7 @@ goog.provide('ol.test.format.WFS');
 goog.require('ol.Feature');
 goog.require('ol.format.GML2');
 goog.require('ol.format.WFS');
-goog.require('ol.format.ogc.filter');
+goog.require('ol.format.filter');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
@@ -277,7 +277,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.equalTo('name', 'New York', false)
+        filter: ol.format.filter.equalTo('name', 'New York', false)
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -305,9 +305,9 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.or(
-            ol.format.ogc.filter.equalTo('name', 'New York'),
-            ol.format.ogc.filter.equalTo('area', 1234))
+        filter: ol.format.filter.or(
+            ol.format.filter.equalTo('name', 'New York'),
+            ol.format.filter.equalTo('area', 1234))
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -347,14 +347,14 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.or(
-          ol.format.ogc.filter.and(
-            ol.format.ogc.filter.greaterThan('area', 100),
-            ol.format.ogc.filter.greaterThanOrEqualTo('pop', 20000)
+        filter: ol.format.filter.or(
+          ol.format.filter.and(
+            ol.format.filter.greaterThan('area', 100),
+            ol.format.filter.greaterThanOrEqualTo('pop', 20000)
           ),
-          ol.format.ogc.filter.and(
-            ol.format.ogc.filter.lessThan('area', 100),
-            ol.format.ogc.filter.lessThanOrEqualTo('pop', 20000)
+          ol.format.filter.and(
+            ol.format.filter.lessThan('area', 100),
+            ol.format.filter.lessThanOrEqualTo('pop', 20000)
           )
         )
       });
@@ -379,7 +379,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.between('area', 100, 1000)
+        filter: ol.format.filter.between('area', 100, 1000)
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -400,7 +400,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.isNull('area')
+        filter: ol.format.filter.isNull('area')
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -422,7 +422,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.like('name', 'New*')
+        filter: ol.format.filter.like('name', 'New*')
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -444,7 +444,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.like('name', 'New*', '*', '.', '!', false)
+        filter: ol.format.filter.like('name', 'New*', '*', '.', '!', false)
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -468,7 +468,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.not(ol.format.ogc.filter.equalTo('name', 'New York'))
+        filter: ol.format.filter.not(ol.format.filter.equalTo('name', 'New York'))
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -500,9 +500,9 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featurePrefix: 'topp',
         featureTypes: ['states'],
-        filter: ol.format.ogc.filter.and(
-          ol.format.ogc.filter.equalTo('name', 'New York'),
-          ol.format.ogc.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326')
+        filter: ol.format.filter.and(
+          ol.format.filter.equalTo('name', 'New York'),
+          ol.format.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326')
         )
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
@@ -531,7 +531,7 @@ describe('ol.format.WFS', function() {
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
-        filter: ol.format.ogc.filter.intersects(
+        filter: ol.format.filter.intersects(
             'the_geom',
             new ol.geom.Polygon([[
                 [10, 20],
@@ -568,7 +568,7 @@ describe('ol.format.WFS', function() {
       var serialized = new ol.format.WFS().writeGetFeature({
         srsName: 'EPSG:4326',
         featureTypes: ['area'],
-        filter: ol.format.ogc.filter.within(
+        filter: ol.format.filter.within(
             'the_geom',
             new ol.geom.Polygon([[
                 [10, 20],
