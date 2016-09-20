@@ -191,18 +191,6 @@ ol.color.fromStringInternal_ = function(s) {
 
 /**
  * @param {ol.Color} color Color.
- * @return {boolean} Is valid.
- */
-ol.color.isValid = function(color) {
-  return 0 <= color[0] && color[0] < 256 &&
-      0 <= color[1] && color[1] < 256 &&
-      0 <= color[2] && color[2] < 256 &&
-      0 <= color[3] && color[3] <= 1;
-};
-
-
-/**
- * @param {ol.Color} color Color.
  * @param {ol.Color=} opt_color Color.
  * @return {ol.Color} Clamped color.
  */
