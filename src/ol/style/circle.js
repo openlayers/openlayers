@@ -25,6 +25,12 @@ ol.style.Circle = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.style.AtlasManager|undefined}
+   */
+  this.atlasManager_ = options.atlasManager;
+
+  /**
+   * @private
    * @type {Array.<string>}
    */
   this.checksums_ = null;
@@ -88,12 +94,6 @@ ol.style.Circle = function(opt_options) {
    * @type {ol.Size}
    */
   this.hitDetectionImageSize_ = null;
-
-  /**
-   * @private
-   * @type {ol.style.AtlasManager|undefined}
-   */
-  this.atlasManager_ = options.atlasManager;
 
   this.render_(this.atlasManager_);
 
@@ -228,6 +228,18 @@ ol.style.Circle.prototype.getSize = function() {
  */
 ol.style.Circle.prototype.getStroke = function() {
   return this.stroke_;
+};
+
+
+/**
+ * Set the circle radius.
+ *
+ * @param {number} radius Circle radius.
+ * @api
+ */
+ol.style.Circle.prototype.setRadius = function(radius) {
+  this.radius_ = radius;
+  this.render_(this.atlasManager_);
 };
 
 
