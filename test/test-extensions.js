@@ -383,7 +383,12 @@
 
   function resembleCanvas(canvas, referenceImage, tolerance, done) {
     if (showMap) {
-      document.body.appendChild(canvas);
+      var wrapper = document.createElement('div');
+      wrapper.style.width = canvas.width + 'px';
+      wrapper.style.height = canvas.height + 'px';
+      wrapper.appendChild(canvas);
+      document.body.appendChild(wrapper);
+      document.body.appendChild(document.createTextNode(referenceImage));
     }
 
     resemble(referenceImage)
