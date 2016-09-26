@@ -31,9 +31,9 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @protected
-   * @type {Array.<ol.Tile|undefined>}
+   * @type {!Array.<ol.Tile|undefined>}
    */
-  this.renderedTiles = null;
+  this.renderedTiles = [];
 
   /**
    * @protected
@@ -114,7 +114,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
 
   var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
 
-  var tmpExtent = ol.extent.createEmpty();
+  var tmpExtent = this.tmpExtent;
   var tmpTileRange = new ol.TileRange(0, 0, 0, 0);
   var childTileRange, fullyLoaded, tile, x, y;
   var drawableTile = (
@@ -154,7 +154,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
   /** @type {Array.<number>} */
   var zs = Object.keys(tilesToDrawByZ).map(Number);
   zs.sort(ol.array.numberSafeCompareFunction);
-  var renderables = [];
+  var renderables = this.renderedTiles;
+  renderables.length = 0;
   var i, ii, currentZ, tileCoordKey, tilesToDraw;
   for (i = 0, ii = zs.length; i < ii; ++i) {
     currentZ = zs[i];
@@ -166,7 +167,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
       }
     }
   }
-  this.renderedTiles = renderables;
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
