@@ -1,7 +1,7 @@
-goog.provide('ol.format.ogc.filter.IsLike');
+goog.provide('ol.format.filter.IsLike');
 
 goog.require('ol');
-goog.require('ol.format.ogc.filter.Comparison');
+goog.require('ol.format.filter.Comparison');
 
 
 /**
@@ -18,12 +18,12 @@ goog.require('ol.format.ogc.filter.Comparison');
  * @param {string=} opt_escapeChar Escape character which can be used to escape
  *    the pattern characters. Default is '!'.
  * @param {boolean=} opt_matchCase Case-sensitive?
- * @extends {ol.format.ogc.filter.Comparison}
+ * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.ogc.filter.IsLike = function(propertyName, pattern,
+ol.format.filter.IsLike = function(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  ol.format.ogc.filter.Comparison.call(this, 'PropertyIsLike', propertyName);
+  ol.format.filter.Comparison.call(this, 'PropertyIsLike', propertyName);
 
   /**
    * @public
@@ -55,4 +55,4 @@ ol.format.ogc.filter.IsLike = function(propertyName, pattern,
    */
   this.matchCase = opt_matchCase;
 };
-ol.inherits(ol.format.ogc.filter.IsLike, ol.format.ogc.filter.Comparison);
+ol.inherits(ol.format.filter.IsLike, ol.format.filter.Comparison);

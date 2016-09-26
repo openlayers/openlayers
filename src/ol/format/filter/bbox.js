@@ -1,7 +1,7 @@
-goog.provide('ol.format.ogc.filter.Bbox');
+goog.provide('ol.format.filter.Bbox');
 
 goog.require('ol');
-goog.require('ol.format.ogc.filter.Filter');
+goog.require('ol.format.filter.Filter');
 
 
 /**
@@ -14,12 +14,12 @@ goog.require('ol.format.ogc.filter.Filter');
  * @param {!ol.Extent} extent Extent.
  * @param {string=} opt_srsName SRS name. No srsName attribute will be
  *    set on geometries when this is not provided.
- * @extends {ol.format.ogc.filter.Filter}
+ * @extends {ol.format.filter.Filter}
  * @api
  */
-ol.format.ogc.filter.Bbox = function(geometryName, extent, opt_srsName) {
+ol.format.filter.Bbox = function(geometryName, extent, opt_srsName) {
 
-  ol.format.ogc.filter.Filter.call(this, 'BBOX');
+  ol.format.filter.Filter.call(this, 'BBOX');
 
   /**
    * @public
@@ -39,4 +39,4 @@ ol.format.ogc.filter.Bbox = function(geometryName, extent, opt_srsName) {
    */
   this.srsName = opt_srsName;
 };
-ol.inherits(ol.format.ogc.filter.Bbox, ol.format.ogc.filter.Filter);
+ol.inherits(ol.format.filter.Bbox, ol.format.filter.Filter);

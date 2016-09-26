@@ -1,4 +1,4 @@
-goog.provide('ol.format.ogc.filter.Filter');
+goog.provide('ol.format.filter.Filter');
 
 goog.require('ol');
 
@@ -13,7 +13,7 @@ goog.require('ol');
  * @struct
  * @api
  */
-ol.format.ogc.filter.Filter = function(tagName) {
+ol.format.filter.Filter = function(tagName) {
 
   /**
    * @private
@@ -26,6 +26,6 @@ ol.format.ogc.filter.Filter = function(tagName) {
  * The XML tag name for a filter.
  * @returns {!string} Name.
  */
-ol.format.ogc.filter.Filter.prototype.getTagName = function() {
+ol.format.filter.Filter.prototype.getTagName = function() {
   return this.tagName_;
 };

@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.format.GML3');
 goog.require('ol.format.GMLBase');
-goog.require('ol.format.ogc.filter');
+goog.require('ol.format.filter');
 goog.require('ol.format.XMLFeature');
 goog.require('ol.format.XSD');
 goog.require('ol.geom.Geometry');
@@ -550,7 +550,7 @@ ol.format.WFS.writeQuery_ = function(node, featureType, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Filter} filter Filter.
+ * @param {ol.format.filter.Filter} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -566,7 +566,7 @@ ol.format.WFS.writeFilterCondition_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Bbox} filter Filter.
+ * @param {ol.format.filter.Bbox} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -581,7 +581,7 @@ ol.format.WFS.writeBboxFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Intersects} filter Filter.
+ * @param {ol.format.filter.Intersects} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -596,7 +596,7 @@ ol.format.WFS.writeIntersectsFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Within} filter Filter.
+ * @param {ol.format.filter.Within} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -611,7 +611,7 @@ ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.LogicalBinary} filter Filter.
+ * @param {ol.format.filter.LogicalBinary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -633,7 +633,7 @@ ol.format.WFS.writeLogicalFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.Not} filter Filter.
+ * @param {ol.format.filter.Not} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -650,7 +650,7 @@ ol.format.WFS.writeNotFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.ComparisonBinary} filter Filter.
+ * @param {ol.format.filter.ComparisonBinary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -665,7 +665,7 @@ ol.format.WFS.writeComparisonFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.IsNull} filter Filter.
+ * @param {ol.format.filter.IsNull} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -676,7 +676,7 @@ ol.format.WFS.writeIsNullFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.IsBetween} filter Filter.
+ * @param {ol.format.filter.IsBetween} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -695,7 +695,7 @@ ol.format.WFS.writeIsBetweenFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.ogc.filter.IsLike} filter Filter.
+ * @param {ol.format.filter.IsLike} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
@@ -824,11 +824,11 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
     if (options.bbox) {
       ol.asserts.assert(options.geometryName,
           12); // `options.geometryName` must also be provided when `options.bbox` is set
-      var bbox = ol.format.ogc.filter.bbox(
+      var bbox = ol.format.filter.bbox(
           /** @type {string} */ (options.geometryName), options.bbox, options.srsName);
       if (filter) {
         // if bbox and filter are both set, combine the two into a single filter
-        filter = ol.format.ogc.filter.and(filter, bbox);
+        filter = ol.format.filter.and(filter, bbox);
       } else {
         filter = bbox;
       }

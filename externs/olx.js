@@ -2014,7 +2014,7 @@ olx.format.WFSOptions.prototype.schemaLocation;
  *     startIndex: (number|undefined),
  *     count: (number|undefined),
  *     bbox: (ol.Extent|undefined),
- *     filter: (ol.format.ogc.filter.Filter|undefined),
+ *     filter: (ol.format.filter.Filter|undefined),
  *     resultType: (string|undefined)}}
  */
 olx.format.WFSWriteGetFeatureOptions;
@@ -2121,8 +2121,8 @@ olx.format.WFSWriteGetFeatureOptions.prototype.bbox;
 
 
 /**
- * OGC filter condition. See {@link ol.format.ogc.filter} for more information.
- * @type {ol.format.ogc.filter.Filter|undefined}
+ * Filter condition. See {@link ol.format.filter} for more information.
+ * @type {ol.format.filter.Filter|undefined}
  * @api
  */
 olx.format.WFSWriteGetFeatureOptions.prototype.filter;

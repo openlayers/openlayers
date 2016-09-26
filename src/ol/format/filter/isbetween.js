@@ -1,7 +1,7 @@
-goog.provide('ol.format.ogc.filter.IsBetween');
+goog.provide('ol.format.filter.IsBetween');
 
 goog.require('ol');
-goog.require('ol.format.ogc.filter.Comparison');
+goog.require('ol.format.filter.Comparison');
 
 
 /**
@@ -12,11 +12,11 @@ goog.require('ol.format.ogc.filter.Comparison');
  * @param {!string} propertyName Name of the context property to compare.
  * @param {!number} lowerBoundary The lower bound of the range.
  * @param {!number} upperBoundary The upper bound of the range.
- * @extends {ol.format.ogc.filter.Comparison}
+ * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.ogc.filter.IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
-  ol.format.ogc.filter.Comparison.call(this, 'PropertyIsBetween', propertyName);
+ol.format.filter.IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
+  ol.format.filter.Comparison.call(this, 'PropertyIsBetween', propertyName);
 
   /**
    * @public
@@ -30,4 +30,4 @@ ol.format.ogc.filter.IsBetween = function(propertyName, lowerBoundary, upperBoun
    */
   this.upperBoundary = upperBoundary;
 };
-ol.inherits(ol.format.ogc.filter.IsBetween, ol.format.ogc.filter.Comparison);
+ol.inherits(ol.format.filter.IsBetween, ol.format.filter.Comparison);

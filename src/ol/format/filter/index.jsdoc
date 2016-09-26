@@ -9,12 +9,12 @@
  *         featureNS: 'http://www.openplans.org/topp',
  *         featurePrefix: 'topp',
  *         featureTypes: ['states'],
- *         filter: ol.format.ogc.filter.equalTo('name', 'New York')
+ *         filter: ol.format.filter.equalTo('name', 'New York')
  *       });
  *
  * Or to combine a `BBOX` filter with a `PropertyIsLike` filter:
  *
- *       var f = ol.format.ogc.filter;
+ *       var f = ol.format.filter;
  *       var request = new ol.format.WFS().writeGetFeature({
  *         srsName: 'urn:ogc:def:crs:EPSG::4326',
  *         featureNS: 'http://www.openplans.org/topp',
@@ -25,5 +25,5 @@
  *           f.like('name', 'New*')
  *         )
  *       });
- * @namespace ol.format.ogc.filter
+ * @namespace ol.format.filter
  */
