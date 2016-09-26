@@ -255,21 +255,6 @@ ol.renderer.Layer.prototype.updateUsedTiles = function(usedTiles, tileSource, z,
 
 
 /**
- * @param {ol.Coordinate} center Center.
- * @param {number} resolution Resolution.
- * @param {ol.Size} size Size.
- * @protected
- * @return {ol.Coordinate} Snapped center.
- */
-ol.renderer.Layer.prototype.snapCenterToPixel = function(center, resolution, size) {
-  return [
-    resolution * (Math.round(center[0] / resolution) + (size[0] % 2) / 2),
-    resolution * (Math.round(center[1] / resolution) + (size[1] % 2) / 2)
-  ];
-};
-
-
-/**
  * Manage tile pyramid.
  * This function performs a number of functions related to the tiles at the
  * current zoom and lower zoom levels:

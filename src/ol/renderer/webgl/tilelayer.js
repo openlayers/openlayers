@@ -164,14 +164,7 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   var tileGutter = frameState.pixelRatio * tileSource.getGutter(projection);
 
   var center = viewState.center;
-  var extent;
-  if (tileResolution == viewState.resolution) {
-    center = this.snapCenterToPixel(center, tileResolution, frameState.size);
-    extent = ol.extent.getForViewAndSize(
-        center, tileResolution, viewState.rotation, frameState.size);
-  } else {
-    extent = frameState.extent;
-  }
+  var extent = frameState.extent;
   var tileRange = tileGrid.getTileRangeForExtentAndResolution(
       extent, tileResolution);
 
@@ -346,9 +339,9 @@ ol.renderer.webgl.TileLayer.prototype.prepareFrame = function(frameState, layerS
   var texCoordMatrix = this.texCoordMatrix;
   ol.transform.reset(texCoordMatrix);
   ol.transform.translate(texCoordMatrix,
-      (center[0] - framebufferExtent[0]) /
+      (Math.round(center[0] / tileResolution) * tileResolution - framebufferExtent[0]) /
           (framebufferExtent[2] - framebufferExtent[0]),
-      (center[1] - framebufferExtent[1]) /
+      (Math.round(center[1] / tileResolution) * tileResolution - framebufferExtent[1]) /
           (framebufferExtent[3] - framebufferExtent[1]));
   if (viewState.rotation !== 0) {
     ol.transform.rotate(texCoordMatrix, viewState.rotation);
