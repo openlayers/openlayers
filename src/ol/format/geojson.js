@@ -42,6 +42,10 @@ ol.format.GeoJSON = function(opt_options) {
           options.defaultDataProjection : 'EPSG:4326');
 
 
+  if (options.featureProjection) {
+    this.defaultFeatureProjection = ol.proj.get(options.featureProjection);
+  }
+
   /**
    * Name of the geometry attribute for features.
    * @type {string|undefined}

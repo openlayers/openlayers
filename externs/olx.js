@@ -1666,7 +1666,8 @@ olx.format.WriteOptions.prototype.decimals;
 
 /**
  * @typedef {{defaultDataProjection: ol.ProjectionLike,
- *     geometryName: (string|undefined)}}
+ *     geometryName: (string|undefined),
+ *     featureProjection: ol.ProjectionLike}}
  */
 olx.format.GeoJSONOptions;
 
@@ -1677,6 +1678,15 @@ olx.format.GeoJSONOptions;
  * @api stable
  */
 olx.format.GeoJSONOptions.prototype.defaultDataProjection;
+
+
+/**
+ * Projection for features read or written by the format.  Options passed to
+ * read or write methods will take precedence.
+ * @type {ol.ProjectionLike}
+ * @api stable
+ */
+olx.format.GeoJSONOptions.prototype.featureProjection;
 
 
 /**
