@@ -208,6 +208,24 @@ describe('ol.format.GeoJSON', function() {
           ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
     });
 
+    it('uses featureProjection passed to the constructor', function() {
+      var format = new ol.format.GeoJSON({featureProjection: 'EPSG:3857'});
+      var feature = format.readFeatures(pointGeoJSON);
+      expect(feature[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+    });
+
+    it('gives precedence to options passed to the read method', function() {
+      var format = new ol.format.GeoJSON({featureProjection: 'EPSG:1234'});
+      var feature = format.readFeatures(pointGeoJSON, {
+        featureProjection: 'EPSG:3857'
+      });
+      expect(feature[0].getGeometry()).to.be.an(ol.geom.Point);
+      expect(feature[0].getGeometry().getCoordinates()).to.eql(
+          ol.proj.transform([102.0, 0.5], 'EPSG:4326', 'EPSG:3857'));
+    });
+
     it('can read and transform a feature collection', function() {
       var features = format.readFeatures(featureCollectionGeoJSON, {
         featureProjection: 'EPSG:3857'
@@ -576,6 +594,21 @@ describe('ol.format.GeoJSON', function() {
       var geojson = format.writeGeometry(point);
       expect(point.getCoordinates()).to.eql(
           format.readGeometry(geojson).getCoordinates());
+    });
+
+    it('accepts featureProjection', function() {
+      var point = new ol.geom.Point(ol.proj.fromLonLat([10, 20]));
+      var geojson = format.writeGeometry(point, {featureProjection: 'EPSG:3857'});
+      var obj = JSON.parse(geojson);
+      expect(obj.coordinates).to.eql([10, 20]);
+    });
+
+    it('respects featureProjection passed to constructor', function() {
+      var format = new ol.format.GeoJSON({featureProjection: 'EPSG:3857'});
+      var point = new ol.geom.Point(ol.proj.fromLonLat([10, 20]));
+      var geojson = format.writeGeometry(point);
+      var obj = JSON.parse(geojson);
+      expect(obj.coordinates).to.eql([10, 20]);
     });
 
     it('encodes linestring', function() {
