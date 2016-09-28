@@ -65,19 +65,6 @@ ol.render.canvas.ReplayGroup = function(
    *        Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
    */
   this.replaysByZIndex_ = {};
-
-  /**
-   * @private
-   * @type {CanvasRenderingContext2D}
-   */
-  this.hitDetectionContext_ = ol.dom.createCanvasContext2D(1, 1);
-
-  /**
-   * @private
-   * @type {ol.Transform}
-   */
-  this.hitDetectionTransform_ = ol.transform.create();
-
 };
 ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
@@ -111,14 +98,17 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, skippedFeaturesHash, callback) {
 
-  var transform = ol.transform.compose(this.hitDetectionTransform_,
-      0.5, 0.5,
+  var hitTolerance = 10;
+  var contextSize = hitTolerance * 2 + 1;
+
+  var transform = ol.transform.compose(ol.transform.create(),
+      hitTolerance + 0.5, hitTolerance + 0.5,
       1 / resolution, -1 / resolution,
       -rotation,
       -coordinate[0], -coordinate[1]);
 
-  var context = this.hitDetectionContext_;
-  context.clearRect(0, 0, 1, 1);
+  var context = ol.dom.createCanvasContext2D(contextSize, contextSize);
+  context.clearRect(0, 0, contextSize, contextSize);
 
   /**
    * @type {ol.Extent}
@@ -137,14 +127,21 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
        * @return {?} Callback result.
        */
       function(feature) {
-        var imageData = context.getImageData(0, 0, 1, 1).data;
-        if (imageData[3] > 0) {
-          var result = callback(feature);
-          if (result) {
-            return result;
+        var imageData;
+        for (var i = 0; i < contextSize; i++) {
+          for (var j = 0; j < contextSize; j++) {
+            imageData = context.getImageData(i, j, i + 1, j + 1).data;
+            if (imageData[3] > 0) {
+              var result = callback(feature);
+              if (result) {
+                return result;
+              }
+              i = contextSize;
+              j = contextSize;
+            }
           }
-          context.clearRect(0, 0, 1, 1);
         }
+        context.clearRect(0, 0, contextSize, contextSize);
       }, hitExtent);
 };
 
