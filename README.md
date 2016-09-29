@@ -1,3 +1,9 @@
+# Geoadmin API
+
+Build ga files:
+
+    $  make -f Makefile-ga build-ga
+
 # OpenLayers 3
 
 [![Travis CI Status](https://secure.travis-ci.org/openlayers/ol3.svg)](http://travis-ci.org/#!/openlayers/ol3)
