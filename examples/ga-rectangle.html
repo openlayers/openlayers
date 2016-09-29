@@ -1,40 +1,35 @@
 ---
-template: example-ga.html
+layout: example-ga.html
 title: GeoAdmin rectangle example 
 shortdesc: This example shows to draw and delete a rectangle over the map.
 docs: >
   <p>See the <a href="ga-rectangle.js" target="_blank">ga-rectangle.js source</a> to see how this is done.</p>
 tags: "ga, geoadmin, rectangle"
 ---
-      <div class="row-fluid">
-        <div class="span12">
-          <div id="map" class="map"></div>
-          <div> 
-            <a href="#" class="viewer-new-rectangle">New rectangle</a>
-            <a href="#" class="viewer-delete-rectangle">Delete rectangle</a>
-          </div> 
-          <h3>Box coordinates: </h3>
-          <div class="coordinates">
-            <div>
-              <label>North: <input type="text" id="north"/></label>
-            </div>
-            <div class="eastwest">
-              <label>West: <input type="text" id="west"/></label>
-              <label>East: <input type="text" id="east"/></label> 
-            </div>
-            <div>
-              <label>South: <input type="text" id="south"> </label>
-            </div>
-          </div>
-          <h3>Scale:</h3>
-          <div class="layers">
-            <label><input type="radio" name="maplayer" value="1"/> 1:25000</label> 
-            <label><input type="radio" name="maplayer" value="2"/> 1:50000</label>
-            <label><input type="radio" name="maplayer" value="3"/> 1:100000</label>
-            <label><input type="radio" name="maplayer" value="4"/> 1:200000</label>
-            <label><input type="radio" name="maplayer" value="5"/> 1:500000</label>
-            <label><input type="radio" name="maplayer" value="0" checked/> Multiscale</label>
-          </div>
-          <br/> 
-        </div>
-      </div>
+<div id="map" class="map"></div>
+<div> 
+  <a href="#" class="viewer-new-rectangle">New rectangle</a>
+  <a href="#" class="viewer-delete-rectangle">Delete rectangle</a>
+</div> 
+<h3>Box coordinates: </h3>
+<div class="coordinates">
+  <div>
+    <label>North: <input type="text" id="north"/></label>
+  </div>
+  <div class="eastwest">
+    <label>West: <input type="text" id="west"/></label>
+    <label>East: <input type="text" id="east"/></label> 
+  </div>
+  <div>
+    <label>South: <input type="text" id="south"> </label>
+  </div>
+</div>
+<h3>Scale:</h3>
+<div class="layers">
+  <label><input type="radio" name="maplayer" value="1"/> 1:25000</label> 
+  <label><input type="radio" name="maplayer" value="2"/> 1:50000</label>
+  <label><input type="radio" name="maplayer" value="3"/> 1:100000</label>
+  <label><input type="radio" name="maplayer" value="4"/> 1:200000</label>
+  <label><input type="radio" name="maplayer" value="5"/> 1:500000</label>
+  <label><input type="radio" name="maplayer" value="0" checked/> Multiscale</label>
+</div>

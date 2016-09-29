@@ -12,6 +12,7 @@ goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.interaction');
+goog.require('ol.net');
 goog.require('ol.proj');
 goog.require('ol.Overlay');
 goog.require('ol.format.GeoJSON');
@@ -204,7 +205,7 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
   ol.net.jsonp(
     this.serviceUrl + '/rest/services/api/MapServer/' +
-      layerId + '/' + featureId + '&geometryFormat=geojson',
+      layerId + '/' + featureId + '?geometryFormat=geojson',
     this.handleHighlight_.bind(this), 
     this.handleHighlightError_.bind(this));
 };
@@ -242,7 +243,7 @@ ga.Map.prototype.handleHighlightError_ = function() {
 };
 
 ga.Map.prototype.showGeocoderDialog_ = function(results) {
-  this.geocoderDialog_.setTextContent('<div id="geocoderList"></div>');
+  this.geocoderDialog_.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'geocoderList'}));
   this.geocoderDialog_.setVisible(true); 
   this.geocoderList_ = new goog.ui.Menu();
   var geocoderListContainer = goog.dom.getElement('geocoderList');

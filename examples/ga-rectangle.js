@@ -1,10 +1,10 @@
 goog.require('ga.Map');
 goog.require('ga.layer');
-goog.require('ol.Feature');
-goog.require('ol.FeatureOverlay');
+goog.require('ol.layer.Vector');
 goog.require('ol.View');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.DragBox');
+goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
@@ -29,7 +29,7 @@ var map = new ga.Map({
 
 var setOneLayerVisible = function(layerIndex) {
   var layers = map.getLayers().getArray();
-  for (var i = 0, ii = layers.length; i < ii; i++) {
+  for (var i = 0, ii = 6; i < ii; i++) {
     var layer = layers[i];
     if (i == layerIndex) {
       layer.setVisible(true);
@@ -56,16 +56,17 @@ var dragBox = new ol.interaction.DragBox({
   style: boxStyle
 });
 
-var overlay = new ol.FeatureOverlay({
-  map: map,
+var overlay = new ol.layer.Vector({
+  source: new ol.source.Vector(),
   style: function(feature, resolution) {
     return [boxStyle];
   }
 });
+map.addLayer(overlay);
 
 // Listeners dragbox interaction event
 dragBox.on('boxstart', function(evt) {
-  overlay.getFeatures().clear();
+  overlay.getSource().clear();
 });
 
 dragBox.on('boxend', function(evt) {
@@ -74,7 +75,7 @@ dragBox.on('boxend', function(evt) {
   $('#south').val(Math.round(bbox[1]));
   $('#east').val(Math.round(bbox[2]));
   $('#west').val(Math.round(bbox[0]));
-  overlay.addFeature(new ol.Feature(dragBox.getGeometry()));
+  overlay.getSource().addFeature(new ol.Feature(dragBox.getGeometry()));
   map.removeInteraction(dragBox);
   $('#map').removeClass('drawing');
 });
@@ -96,8 +97,8 @@ $('.coordinates input').keyup(function() {
         );
 
     // Apply the new coordinates to the box
-    overlay.getFeatures().clear();
-    overlay.addFeature(new ol.Feature(polygon));
+    overlay.getSource().clear();
+    overlay.getSource().addFeature(new ol.Feature(polygon));
   }
 });
 
@@ -114,7 +115,7 @@ $('.viewer-new-rectangle').click(function(e) {
 // Add delete rectangle link click event
 $('.viewer-delete-rectangle').click(function(e) {
   e.preventDefault();
-  overlay.getFeatures().clear();
+  overlay.getSource().clear();
   $('#north').val(undefined);
   $('#south').val(undefined);
   $('#east').val(undefined);

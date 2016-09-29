@@ -1,8 +1,22 @@
 # Geoadmin API
 
-Build ga files:
+To compile use:
 
-    $  make -f Makefile-ga build-ga
+    $ make -f Makefile-ga build-ga
+
+To run examples use:
+
+    $ make -f Makefile-ga serve
+
+Examples available at : http://localhost:3000/build/examples/
+
+To run hosted examples use:
+
+    $ make -f Makefile-ga hosted-examples-ga
+
+Hosted example with compiled version : http://localhost:3000/build/hosted/master/examples/ga-custom.html
+
+Hosted example with non-compiled version : http://localhost:3000/build/hosted/master/examples/ga-custom.html?mode=raw
 
 # OpenLayers 3
 
