@@ -1,4 +1,5 @@
 goog.provide('ol.source.WMTS');
+goog.provide('ol.source.WMTS.RequestEncoding');
 
 goog.require('ol');
 goog.require('ol.TileUrlFunction');

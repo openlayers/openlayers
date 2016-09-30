@@ -1,4 +1,5 @@
 goog.provide('ol.format.IGC');
+goog.provide('ol.format.IGC.Z');
 
 goog.require('ol');
 goog.require('ol.Feature');

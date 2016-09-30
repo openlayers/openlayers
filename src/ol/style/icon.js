@@ -1,4 +1,6 @@
 goog.provide('ol.style.Icon');
+goog.provide('ol.style.Icon.AnchorUnits');
+goog.provide('ol.style.Icon.Origin');
 
 goog.require('ol');
 goog.require('ol.asserts');

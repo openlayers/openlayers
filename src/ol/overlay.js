@@ -1,4 +1,5 @@
 goog.provide('ol.Overlay');
+goog.provide('ol.Overlay.Positioning');
 
 goog.require('ol');
 goog.require('ol.MapEvent');
