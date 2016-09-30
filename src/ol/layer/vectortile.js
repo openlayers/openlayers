@@ -1,4 +1,5 @@
 goog.provide('ol.layer.VectorTile');
+goog.provide('ol.layer.VectorTile.RenderType');
 
 goog.require('ol');
 goog.require('ol.asserts');
