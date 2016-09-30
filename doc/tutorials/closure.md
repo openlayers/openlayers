@@ -173,6 +173,7 @@ The minimum config file looks like this:
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
+      "node_modules/openlayers/src/ol/typedefs.js",
       "node_modules/openlayers/externs/olx.js",
       "node_modules/openlayers/externs/oli.js"
     ],
@@ -224,6 +225,7 @@ Here is a version of `config.json` with more compilation checks enabled:
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
+      "node_modules/openlayers/src/ol/typedefs.js",
       "node_modules/openlayers/externs/olx.js",
       "node_modules/openlayers/externs/oli.js"
     ],
