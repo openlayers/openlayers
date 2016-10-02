@@ -442,7 +442,8 @@ ol.Map = function(options) {
        * @param {ol.Collection.Event} event Collection event.
        */
       function(event) {
-        var id = event.element.getId();
+        var overlay = /** @type {ol.Overlay} */ (event.element);
+        var id = overlay.getId();
         if (id !== undefined) {
           delete this.overlayIdIndex_[id.toString()];
         }
