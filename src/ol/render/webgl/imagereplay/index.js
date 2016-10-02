@@ -1701,11 +1701,6 @@ ol.render.webgl.PolygonReplay = function(tolerance, maxExtent) {
     changed: false
   };
 
-  /**
-   * @private
-   */
-  this.rtree_ = new ol.structs.RBush();
-
 };
 ol.inherits(ol.render.webgl.PolygonReplay, ol.render.webgl.Replay);
 
@@ -1721,8 +1716,9 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(
     flatCoordinates, holeFlatCoordinates, stride) {
   // Triangulate the polygon
   var outerRing = new ol.structs.LinkedList();
+  var rtree = new ol.structs.RBush();
   // Initialize the outer ring
-  var maxX = this.processFlatCoordinates_(flatCoordinates, stride, outerRing, true);
+  var maxX = this.processFlatCoordinates_(flatCoordinates, stride, outerRing, rtree, true);
 
   // Eliminate holes, if there are any
   if (holeFlatCoordinates.length) {
@@ -1735,20 +1731,17 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(
       };
       holeLists.push(holeList);
       holeList.maxX = this.processFlatCoordinates_(holeFlatCoordinates[i],
-          stride, holeList.list, false);
+          stride, holeList.list, rtree, false);
     }
     holeLists.sort(function(a, b) {
       return b.maxX - a.maxX;
     });
     for (i = 0; i < holeLists.length; ++i) {
-      this.bridgeHole_(holeLists[i].list, holeLists[i].maxX, outerRing, maxX);
+      this.bridgeHole_(holeLists[i].list, holeLists[i].maxX, outerRing, maxX, rtree);
     }
   }
-  this.classifyPoints_(outerRing, false);
-  this.triangulate_(outerRing);
-
-  // We clear the R-Tree here, because hit detection does not call finish()
-  this.rtree_.clear();
+  this.classifyPoints_(outerRing, rtree, false);
+  this.triangulate_(outerRing, rtree);
 };
 
 
@@ -1758,11 +1751,12 @@ ol.render.webgl.PolygonReplay.prototype.drawCoordinates_ = function(
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} stride Stride.
  * @param {ol.structs.LinkedList} list Linked list.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean} clockwise Coordinate order should be clockwise.
  * @return {number} Maximum X value.
  */
 ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
-    flatCoordinates, stride, list, clockwise) {
+    flatCoordinates, stride, list, rtree, clockwise) {
   var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates,
       0, flatCoordinates.length, stride);
   var i, ii, maxX;
@@ -1807,7 +1801,7 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
     extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
         Math.max(p0.y, p1.y)]);
   }
-  this.rtree_.load(extents, segments);
+  rtree.load(extents, segments);
 
   return maxX;
 };
@@ -1817,10 +1811,11 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
  * Classifies the points of a polygon list as convex, reflex. Removes collinear vertices.
  * @private
  * @param {ol.structs.LinkedList} list Polygon ring.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean} ccw The orientation of the polygon is counter-clockwise.
  * @return {boolean} There were reclassified points.
  */
-ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, ccw) {
+ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, rtree, ccw) {
   var start = list.firstItem();
   var s0 = start;
   var s1 = list.nextItem();
@@ -1831,7 +1826,7 @@ ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, ccw) {
         ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
         s0.p1.y, s1.p1.x, s1.p1.y);
     if (reflex === undefined) {
-      this.removeItem_(s0, s1, list);
+      this.removeItem_(s0, s1, list, rtree);
       pointsReclassified = true;
       if (s1 === start) {
         start = list.getNextItem();
@@ -1855,9 +1850,10 @@ ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, ccw) {
  * @param {number} holeMaxX Maximum X value of the hole.
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
  * @param {number} listMaxX Maximum X value of the polygon.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  */
 ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
-    list, listMaxX) {
+    list, listMaxX, rtree) {
   var seg = hole.firstItem();
   while (seg.p1.x !== holeMaxX) {
     seg = hole.nextItem();
@@ -1871,7 +1867,7 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
   /** @type {ol.WebglPolygonVertex} */
   var p5;
 
-  var intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, true);
+  var intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, rtree, true);
   for (i = 0, ii = intersectingSegments.length; i < ii; ++i) {
     var currSeg = intersectingSegments[i];
     if (currSeg.p0 !== p1 && currSeg.p1 !== p1) {
@@ -1887,7 +1883,7 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
   }
   bestPoint = seg.p1;
 
-  var pointsInTriangle = this.getPointsInTriangle_(p1, p5, seg.p1);
+  var pointsInTriangle = this.getPointsInTriangle_(p1, p5, seg.p1, rtree);
   if (pointsInTriangle.length) {
     var theta = Infinity;
     for (i = 0, ii = pointsInTriangle.length; i < ii; ++i) {
@@ -1910,8 +1906,8 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
   var p1Bridge = {x: seg.p1.x, y: seg.p1.y, i: seg.p1.i, reflex: undefined};
 
   hole.getNextItem().p0 = p0Bridge;
-  this.insertItem_(p1, seg.p1, hole, true);
-  this.insertItem_(p1Bridge, p0Bridge, hole, true);
+  this.insertItem_(p1, seg.p1, hole, rtree);
+  this.insertItem_(p1Bridge, p0Bridge, hole, rtree);
   seg.p1 = p1Bridge;
   hole.setFirstItem();
   list.concat(hole);
@@ -1921,17 +1917,18 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
 /**
  * @private
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  */
-ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list) {
+ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
   var ccw = false;
-  var simple = this.isSimple_(list);
+  var simple = this.isSimple_(list, rtree);
   var pass = 0;
 
   // Start clipping ears
   while (list.getLength() > 3) {
     if (simple) {
-      if (!this.clipEars_(list, simple, ccw)) {
-        if (!this.classifyPoints_(list, ccw)) {
+      if (!this.clipEars_(list, rtree, simple, ccw)) {
+        if (!this.classifyPoints_(list, rtree, ccw)) {
           // We have the wrongly oriented remains of a self-intersecting polygon.
           pass++;
           if (pass > 1) {
@@ -1939,18 +1936,19 @@ ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list) {
             break;
           }
           ccw = !ccw;
-          this.classifyPoints_(list, ccw);
+          this.classifyPoints_(list, rtree, ccw);
         }
       }
     } else {
-      if (!this.clipEars_(list, simple, ccw)) {
+      if (!this.clipEars_(list, rtree, simple, ccw)) {
         // We ran out of ears, try to reclassify.
-        if (!this.classifyPoints_(list, ccw)) {
+        if (!this.classifyPoints_(list, rtree, ccw)) {
           // We have a bad polygon, try to resolve local self-intersections.
-          if (!this.resolveLocalSelfIntersections_(list)) {
-            simple = this.isSimple_(list);
+          if (!this.resolveLocalSelfIntersections_(list, rtree)) {
+            simple = this.isSimple_(list, rtree);
             if (!simple) {
               // We have a really bad polygon, try more time consuming methods.
+              this.splitPolygon_(list, rtree);
               break;
             }
           }
@@ -1970,11 +1968,12 @@ ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list) {
 /**
  * @private
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean} simple The polygon is simple.
  * @param {boolean} ccw Orientation of the polygon is counter-clockwise.
  * @return {boolean} There were processed ears.
  */
-ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, simple, ccw) {
+ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple, ccw) {
   var numIndices = this.indices_.length;
   var start = list.firstItem();
   var s0 = list.getPrevItem();
@@ -1991,8 +1990,8 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, simple, ccw) 
       // We might have a valid ear
       var diagonalIsInside = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0,
           s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
-      if ((simple || this.getIntersections_({p0: p0, p1: p2}).length === 0) &&
-          diagonalIsInside && this.getPointsInTriangle_(p0, p1, p2, true).length === 0) {
+      if ((simple || this.getIntersections_({p0: p0, p1: p2}, rtree).length === 0) &&
+          diagonalIsInside && this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0) {
         //The diagonal is completely inside the polygon
         if (p0.reflex === false || p2.reflex === false ||
             ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
@@ -2001,7 +2000,7 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, simple, ccw) 
           this.indices_[numIndices++] = p0.i;
           this.indices_[numIndices++] = p1.i;
           this.indices_[numIndices++] = p2.i;
-          this.removeItem_(s1, s2, list);
+          this.removeItem_(s1, s2, list, rtree);
           if (s2 === start) {
             start = s3;
           }
@@ -2023,10 +2022,11 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, simple, ccw) 
 /**
  * @private
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @return {boolean} There were resolved intersections.
 */
 ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = function(
-    list) {
+    list, rtree) {
   var start = list.firstItem();
   list.nextItem();
   var s0 = start;
@@ -2043,12 +2043,12 @@ ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = functio
 
       var seg = list.prevItem();
       list.removeItem();
-      this.rtree_.remove(seg);
+      rtree.remove(seg);
       s0.p1 = p;
       s1.p0 = p;
-      this.rtree_.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
+      rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
           Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
-      this.rtree_.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y),
+      rtree.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y),
           Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
       this.indices_[numIndices++] = seg.p0.i;
       this.indices_[numIndices++] = seg.p1.i;
@@ -2070,18 +2070,63 @@ ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = functio
 /**
  * @private
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @return {boolean} The polygon is simple.
  */
-ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list) {
+ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list, rtree) {
   var start = list.firstItem();
   var seg = start;
   do {
-    if (this.getIntersections_(seg).length) {
+    if (this.getIntersections_(seg, rtree).length) {
       return false;
     }
     seg = list.nextItem();
   } while (seg !== start);
   return true;
+};
+
+
+/**
+ * @private
+ * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ */
+ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
+  var start = list.firstItem();
+  var s0 = start;
+  do {
+    var intersections = this.getIntersections_(s0, rtree);
+    if (intersections.length) {
+      var s1 = intersections[0];
+      var n = this.vertices_.length / 2;
+      var intersection = this.calculateIntersection_(s0.p0,
+          s0.p1, s1.p0, s1.p1);
+      var p = this.createPoint_(intersection[0], intersection[1], n);
+      var newPolygon = new ol.structs.LinkedList();
+      var newRtree = new ol.structs.RBush();
+      this.insertItem_(p, s0.p1, newPolygon, newRtree);
+      s0.p1 = p;
+      rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y),
+          Math.max(s0.p0.x, p.x), Math.max(s0.p0.y, p.y)], s0);
+      var currItem = list.nextItem();
+      while (currItem !== s1) {
+        this.insertItem_(currItem.p0, currItem.p1, newPolygon, newRtree);
+        rtree.remove(currItem);
+        list.removeItem();
+        currItem = list.getCurrItem();
+      }
+      this.insertItem_(s1.p0, p, newPolygon, newRtree);
+      s1.p0 = p;
+      rtree.update([Math.min(s1.p1.x, p.x), Math.min(s1.p1.y, p.y),
+          Math.max(s1.p1.x, p.x), Math.max(s1.p1.y, p.y)], s1);
+      this.classifyPoints_(list, rtree, false);
+      this.triangulate_(list, rtree);
+      this.classifyPoints_(newPolygon, newRtree, false);
+      this.triangulate_(newPolygon, newRtree);
+      break;
+    }
+    s0 = list.nextItem();
+  } while (s0 !== start);
 };
 
 
@@ -2112,8 +2157,8 @@ ol.render.webgl.PolygonReplay.prototype.createPoint_ = function(x, y, i) {
  * @param {ol.WebglPolygonVertex} p0 First point of segment.
  * @param {ol.WebglPolygonVertex} p1 Second point of segment.
  * @param {ol.structs.LinkedList} list Polygon ring.
- * @param {boolean=} opt_rtree Insert the segment into the R-Tree.
- * @return {Object.<string, ol.WebglPolygonVertex>} segment.
+ * @param {ol.structs.RBush=} opt_rtree Insert the segment into the R-Tree.
+ * @return {ol.WebglPolygonSegment} segment.
  */
 ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt_rtree) {
   var seg = {
@@ -2122,7 +2167,7 @@ ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt
   };
   list.insertItem(seg);
   if (opt_rtree) {
-    this.rtree_.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y),
+    opt_rtree.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y),
         Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
   }
   return seg;
@@ -2131,15 +2176,16 @@ ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt
 
  /**
   * @private
-  * @param {Object.<string, ol.WebglPolygonVertex>} s0 Segment before the remove candidate.
-  * @param {Object.<string, ol.WebglPolygonVertex>} s1 Remove candidate segment.
+  * @param {ol.WebglPolygonSegment} s0 Segment before the remove candidate.
+  * @param {ol.WebglPolygonSegment} s1 Remove candidate segment.
   * @param {ol.structs.LinkedList} list Polygon ring.
+  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
   */
-ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list) {
+ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
   list.removeItem();
   s0.p1 = s1.p1;
-  this.rtree_.remove(s1);
-  this.rtree_.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
+  rtree.remove(s1);
+  rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
       Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
 };
 
@@ -2149,14 +2195,15 @@ ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list) {
  * @param {ol.WebglPolygonVertex} p0 First point.
  * @param {ol.WebglPolygonVertex} p1 Second point.
  * @param {ol.WebglPolygonVertex} p2 Third point.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_reflex Only include reflex points.
- * @return {Array.<Object.<string, number>>} Points in the triangle.
+ * @return {Array.<ol.WebglPolygonVertex>} Points in the triangle.
  */
 ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
-    p2, opt_reflex) {
+    p2, rtree, opt_reflex) {
   var i, ii, j, p;
   var result = [];
-  var segmentsInExtent = this.rtree_.getInExtent([Math.min(p0.x, p1.x, p2.x),
+  var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x),
       Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y,
       p1.y, p2.y)]);
   for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
@@ -2178,14 +2225,15 @@ ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
 
 /**
  * @private
- * @param {Object.<string, ol.WebglPolygonVertex>} segment Segment.
+ * @param {ol.WebglPolygonSegment} segment Segment.
+ * @param {ol.structs.RBush} rtree R-Tree of the polygon.
  * @param {boolean=} opt_touch Touching segments should be considered an intersection.
- * @return {Array.<Object.<string, ol.WebglPolygonVertex>>} Intersecting segments.
+ * @return {Array.<ol.WebglPolygonSegment>} Intersecting segments.
  */
-ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, opt_touch) {
+ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, rtree, opt_touch) {
   var p0 = segment.p0;
   var p1 = segment.p1;
-  var segmentsInExtent = this.rtree_.getInExtent([Math.min(p0.x, p1.x),
+  var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x),
       Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
   var result = [];
   var i, ii;

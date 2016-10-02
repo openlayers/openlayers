@@ -695,6 +695,12 @@ ol.WebglBufferCacheEntry;
 
 
 /**
+ * @typedef {{p0: ol.WebglPolygonVertex,
+ *            p1: ol.WebglPolygonVertex}}
+ */
+ol.WebglPolygonSegment;
+
+/**
  * @typedef {{x: number,
  *            y: number,
  *            i: number,
