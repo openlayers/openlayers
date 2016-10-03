@@ -1922,21 +1922,18 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
 ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
   var ccw = false;
   var simple = this.isSimple_(list, rtree);
-  var pass = 0;
 
   // Start clipping ears
   while (list.getLength() > 3) {
     if (simple) {
       if (!this.clipEars_(list, rtree, simple, ccw)) {
         if (!this.classifyPoints_(list, rtree, ccw)) {
-          // We have the wrongly oriented remains of a self-intersecting polygon.
-          pass++;
-          if (pass > 1) {
+          // Due to the behavior of OL's PIP algorithm, the ear clipping cannot
+          // introduce touching segments. However, the original data may have some.
+          if (!this.resolveLocalSelfIntersections_(list, rtree, true)) {
             // Something went wrong.
             break;
           }
-          ccw = !ccw;
-          this.classifyPoints_(list, rtree, ccw);
         }
       }
     } else {
@@ -1950,6 +1947,9 @@ ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
               // We have a really bad polygon, try more time consuming methods.
               this.splitPolygon_(list, rtree);
               break;
+            } else {
+              ccw = !this.isClockwise_(list);
+              this.classifyPoints_(list, rtree, ccw);
             }
           }
         }
@@ -1993,7 +1993,7 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple
       if ((simple || this.getIntersections_({p0: p0, p1: p2}, rtree).length === 0) &&
           diagonalIsInside && this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0) {
         //The diagonal is completely inside the polygon
-        if (p0.reflex === false || p2.reflex === false ||
+        if (simple || p0.reflex === false || p2.reflex === false ||
             ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
             p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
           //The diagonal is persumably valid, we have an ear
@@ -2023,10 +2023,11 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple
  * @private
  * @param {ol.structs.LinkedList} list Linked list of the polygon.
  * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+ * @param {boolean=} opt_touch Resolve touching segments.
  * @return {boolean} There were resolved intersections.
 */
 ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = function(
-    list, rtree) {
+    list, rtree, opt_touch) {
   var start = list.firstItem();
   list.nextItem();
   var s0 = start;
@@ -2034,28 +2035,48 @@ ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = functio
   var resolvedIntersections = false;
 
   do {
-    var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1);
+    var intersection = this.calculateIntersection_(s0.p0, s0.p1, s1.p0, s1.p1,
+        opt_touch);
     if (intersection) {
+      var breakCond = false;
       var numVertices = this.vertices_.length;
       var numIndices = this.indices_.length;
       var n = numVertices / 2;
-      var p = this.createPoint_(intersection[0], intersection[1], n);
-
       var seg = list.prevItem();
       list.removeItem();
       rtree.remove(seg);
-      s0.p1 = p;
-      s1.p0 = p;
-      rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
-          Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
-      rtree.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y),
-          Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
+      breakCond = (seg === start);
+      var p;
+      if (opt_touch) {
+        if (intersection[0] === s0.p0.x && intersection[1] === s0.p0.y) {
+          list.prevItem();
+          p = s0.p0;
+          s1.p0 = p;
+          rtree.remove(s0);
+          breakCond = breakCond || (s0 === start);
+        } else {
+          p = s1.p1;
+          s0.p1 = p;
+          rtree.remove(s1);
+          breakCond = breakCond || (s1 === start);
+        }
+        list.removeItem();
+      } else {
+        p = this.createPoint_(intersection[0], intersection[1], n);
+        s0.p1 = p;
+        s1.p0 = p;
+        rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
+            Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
+        rtree.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y),
+            Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
+      }
+
       this.indices_[numIndices++] = seg.p0.i;
       this.indices_[numIndices++] = seg.p1.i;
       this.indices_[numIndices++] = p.i;
 
       resolvedIntersections = true;
-      if (start === seg) {
+      if (breakCond) {
         break;
       }
     }
@@ -2083,6 +2104,26 @@ ol.render.webgl.PolygonReplay.prototype.isSimple_ = function(list, rtree) {
     seg = list.nextItem();
   } while (seg !== start);
   return true;
+};
+
+
+/**
+ * @private
+ * @param {ol.structs.LinkedList} list Linked list of the polygon.
+ * @return {boolean} Orientation is clockwise.
+ */
+ol.render.webgl.PolygonReplay.prototype.isClockwise_ = function(list) {
+  var length = list.getLength() * 2;
+  var flatCoordinates = new Array(length);
+  var start = list.firstItem();
+  var seg = start;
+  var i = 0;
+  do {
+    flatCoordinates[i++] = seg.p0.x;
+    flatCoordinates[i++] = seg.p0.y;
+    seg = list.nextItem();
+  } while (seg !== start);
+  return ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates, 0, length, 2);
 };
 
 
