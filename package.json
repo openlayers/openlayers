@@ -37,7 +37,7 @@
     "fs-extra": "0.30.0",
     "glob": "7.1.0",
     "handlebars": "4.0.5",
-    "jsdoc": "3.4.1",
+    "jsdoc": "3.4.2",
     "marked": "0.3.6",
     "metalsmith": "2.2.0",
     "metalsmith-layouts": "1.6.5",
