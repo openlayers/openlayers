@@ -86,9 +86,16 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas.png',
+          IMAGE_TOLERANCE, done);
+    });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-types-webgl.png',
           IMAGE_TOLERANCE, done);
     });
   });
@@ -153,6 +160,14 @@ describe('ol.rendering.style.Polygon', function() {
       expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas-stroke.png',
           IMAGE_TOLERANCE, done);
     });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl', 100);
+      map.getView().setResolution(0.5);
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-types-webgl-stroke.png',
+          IMAGE_TOLERANCE, done);
+    });
   });
 
   describe('z-index', function() {
@@ -204,6 +219,13 @@ describe('ol.rendering.style.Polygon', function() {
       map = createMap('canvas');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/polygon-zindex-canvas.png',
+          IMAGE_TOLERANCE, done);
+    });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-zindex-webgl.png',
           IMAGE_TOLERANCE, done);
     });
   });
@@ -258,6 +280,14 @@ describe('ol.rendering.style.Polygon', function() {
       expectResemble(
           map, 'spec/ol/style/expected/polygon-fill-and-strokes-canvas.png',
           IMAGE_TOLERANCE, done);
+    });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(
+          map, 'spec/ol/style/expected/polygon-fill-and-strokes-webgl.png',
+          5.76, done);
     });
   });
 
