@@ -1,5 +1,5 @@
-//! NAMESPACE=ol.render.webgl.polygonreplay.shader.Default
-//! CLASS=ol.render.webgl.polygonreplay.shader.Default
+//! NAMESPACE=ol.render.webgl.polygonreplay.defaultshader
+//! CLASS=ol.render.webgl.polygonreplay.defaultshader
 
 
 //! COMMON

@@ -1,6 +1,5 @@
 goog.provide('ol.test.render.webgl.Replay');
 
-goog.require('ol.extent');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.MultiPoint');
@@ -8,6 +7,7 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.webgl.ImageReplay');
+goog.require('ol.render.webgl.LineStringReplay');
 goog.require('ol.render.webgl.PolygonReplay');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Image');
@@ -107,25 +107,25 @@ describe('ol.render.webgl.ImageReplay', function() {
 
       point = new ol.geom.Point([1000, 2000]);
       replay.drawPoint(point, null);
-      expect(replay.vertices_).to.have.length(32);
-      expect(replay.indices_).to.have.length(6);
-      expect(replay.indices_[0]).to.be(0);
-      expect(replay.indices_[1]).to.be(1);
-      expect(replay.indices_[2]).to.be(2);
-      expect(replay.indices_[3]).to.be(0);
-      expect(replay.indices_[4]).to.be(2);
-      expect(replay.indices_[5]).to.be(3);
+      expect(replay.vertices).to.have.length(32);
+      expect(replay.indices).to.have.length(6);
+      expect(replay.indices[0]).to.be(0);
+      expect(replay.indices[1]).to.be(1);
+      expect(replay.indices[2]).to.be(2);
+      expect(replay.indices[3]).to.be(0);
+      expect(replay.indices[4]).to.be(2);
+      expect(replay.indices[5]).to.be(3);
 
       point = new ol.geom.Point([2000, 3000]);
       replay.drawPoint(point, null);
-      expect(replay.vertices_).to.have.length(64);
-      expect(replay.indices_).to.have.length(12);
-      expect(replay.indices_[6]).to.be(4);
-      expect(replay.indices_[7]).to.be(5);
-      expect(replay.indices_[8]).to.be(6);
-      expect(replay.indices_[9]).to.be(4);
-      expect(replay.indices_[10]).to.be(6);
-      expect(replay.indices_[11]).to.be(7);
+      expect(replay.vertices).to.have.length(64);
+      expect(replay.indices).to.have.length(12);
+      expect(replay.indices[6]).to.be(4);
+      expect(replay.indices[7]).to.be(5);
+      expect(replay.indices[8]).to.be(6);
+      expect(replay.indices[9]).to.be(4);
+      expect(replay.indices[10]).to.be(6);
+      expect(replay.indices[11]).to.be(7);
     });
   });
 
@@ -141,38 +141,38 @@ describe('ol.render.webgl.ImageReplay', function() {
       multiPoint = new ol.geom.MultiPoint(
           [[1000, 2000], [2000, 3000]]);
       replay.drawMultiPoint(multiPoint, null);
-      expect(replay.vertices_).to.have.length(64);
-      expect(replay.indices_).to.have.length(12);
-      expect(replay.indices_[0]).to.be(0);
-      expect(replay.indices_[1]).to.be(1);
-      expect(replay.indices_[2]).to.be(2);
-      expect(replay.indices_[3]).to.be(0);
-      expect(replay.indices_[4]).to.be(2);
-      expect(replay.indices_[5]).to.be(3);
-      expect(replay.indices_[6]).to.be(4);
-      expect(replay.indices_[7]).to.be(5);
-      expect(replay.indices_[8]).to.be(6);
-      expect(replay.indices_[9]).to.be(4);
-      expect(replay.indices_[10]).to.be(6);
-      expect(replay.indices_[11]).to.be(7);
+      expect(replay.vertices).to.have.length(64);
+      expect(replay.indices).to.have.length(12);
+      expect(replay.indices[0]).to.be(0);
+      expect(replay.indices[1]).to.be(1);
+      expect(replay.indices[2]).to.be(2);
+      expect(replay.indices[3]).to.be(0);
+      expect(replay.indices[4]).to.be(2);
+      expect(replay.indices[5]).to.be(3);
+      expect(replay.indices[6]).to.be(4);
+      expect(replay.indices[7]).to.be(5);
+      expect(replay.indices[8]).to.be(6);
+      expect(replay.indices[9]).to.be(4);
+      expect(replay.indices[10]).to.be(6);
+      expect(replay.indices[11]).to.be(7);
 
       multiPoint = new ol.geom.MultiPoint(
           [[3000, 4000], [4000, 5000]]);
       replay.drawMultiPoint(multiPoint, null);
-      expect(replay.vertices_).to.have.length(128);
-      expect(replay.indices_).to.have.length(24);
-      expect(replay.indices_[12]).to.be(8);
-      expect(replay.indices_[13]).to.be(9);
-      expect(replay.indices_[14]).to.be(10);
-      expect(replay.indices_[15]).to.be(8);
-      expect(replay.indices_[16]).to.be(10);
-      expect(replay.indices_[17]).to.be(11);
-      expect(replay.indices_[18]).to.be(12);
-      expect(replay.indices_[19]).to.be(13);
-      expect(replay.indices_[20]).to.be(14);
-      expect(replay.indices_[21]).to.be(12);
-      expect(replay.indices_[22]).to.be(14);
-      expect(replay.indices_[23]).to.be(15);
+      expect(replay.vertices).to.have.length(128);
+      expect(replay.indices).to.have.length(24);
+      expect(replay.indices[12]).to.be(8);
+      expect(replay.indices[13]).to.be(9);
+      expect(replay.indices[14]).to.be(10);
+      expect(replay.indices[15]).to.be(8);
+      expect(replay.indices[16]).to.be(10);
+      expect(replay.indices[17]).to.be(11);
+      expect(replay.indices[18]).to.be(12);
+      expect(replay.indices[19]).to.be(13);
+      expect(replay.indices[20]).to.be(14);
+      expect(replay.indices[21]).to.be(12);
+      expect(replay.indices[22]).to.be(14);
+      expect(replay.indices[23]).to.be(15);
     });
   });
 });
@@ -230,20 +230,20 @@ describe('ol.render.webgl.LineStringReplay', function() {
           [[1000, 2000], [2000, 3000]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawLineString(linestring, null);
-      expect(replay.vertices_).to.have.length(56);
-      expect(replay.indices_).to.have.length(18);
+      expect(replay.vertices).to.have.length(56);
+      expect(replay.indices).to.have.length(18);
       expect(replay.state_.changed).to.be(false);
-      expect(replay.startIndices_).to.have.length(1);
-      expect(replay.startIndicesFeature_).to.have.length(1);
+      expect(replay.startIndices).to.have.length(1);
+      expect(replay.startIndicesFeature).to.have.length(1);
 
       linestring = new ol.geom.LineString(
           [[1000, 3000], [2000, 4000], [3000, 3000]]);
       replay.drawLineString(linestring, null);
-      expect(replay.vertices_).to.have.length(140);
-      expect(replay.indices_).to.have.length(48);
+      expect(replay.vertices).to.have.length(140);
+      expect(replay.indices).to.have.length(48);
       expect(replay.state_.changed).to.be(false);
-      expect(replay.startIndices_).to.have.length(2);
-      expect(replay.startIndicesFeature_).to.have.length(2);
+      expect(replay.startIndices).to.have.length(2);
+      expect(replay.startIndicesFeature).to.have.length(2);
     });
   });
 
@@ -257,11 +257,11 @@ describe('ol.render.webgl.LineStringReplay', function() {
           [[1000, 3000], [2000, 4000], [3000, 3000]]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawMultiLineString(multilinestring, null);
-      expect(replay.vertices_).to.have.length(140);
-      expect(replay.indices_).to.have.length(48);
+      expect(replay.vertices).to.have.length(140);
+      expect(replay.indices).to.have.length(48);
       expect(replay.state_.changed).to.be(false);
-      expect(replay.startIndices_).to.have.length(1);
-      expect(replay.startIndicesFeature_).to.have.length(1);
+      expect(replay.startIndices).to.have.length(1);
+      expect(replay.startIndicesFeature).to.have.length(1);
     });
   });
 
@@ -282,7 +282,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
-      expect(replay.indices_).to.eql(
+      expect(replay.indices).to.eql(
           [2, 0, 1, 4, 2, 1,
           2, 4, 3,
           5, 3, 4, 4, 6, 5]);
@@ -302,7 +302,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
-      expect(replay.indices_).to.eql(
+      expect(replay.indices).to.eql(
           [2, 0, 1, 4, 2, 1,
           2, 4, 3, 3, 5, 2,
           6, 3, 4, 4, 7, 6]);
@@ -321,7 +321,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
-      expect(replay.indices_).to.eql(
+      expect(replay.indices).to.eql(
           [2, 0, 1, 1, 3, 2,
           4, 2, 3, 6, 4, 3,
           4, 6, 5, 5, 7, 4,
@@ -344,7 +344,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
-      expect(replay.indices_).to.eql(
+      expect(replay.indices).to.eql(
           [2, 0, 1, 4, 2, 0,
           2, 4, 3,
           5, 3, 4, 4, 6, 5]);
@@ -365,17 +365,17 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.setFillStrokeStyle(null, stroke);
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
-      expect(replay.indices_).to.eql(
+      expect(replay.indices).to.eql(
           [0, 2, 1, 3, 1, 2,
           5, 3, 2,
           3, 5, 4, 6, 4, 5,
           8, 6, 5,
           6, 8, 7, 9, 7, 8,
           10, 9, 8]);
-      expect(replay.vertices_.slice(0, 7)).to.eql(
-          replay.vertices_.slice(-14, -7));
-      expect(replay.vertices_.slice(14, 21)).to.eql(
-          replay.vertices_.slice(-7));
+      expect(replay.vertices.slice(0, 7)).to.eql(
+          replay.vertices.slice(-14, -7));
+      expect(replay.vertices.slice(14, 21)).to.eql(
+          replay.vertices.slice(-7));
     });
   });
 });

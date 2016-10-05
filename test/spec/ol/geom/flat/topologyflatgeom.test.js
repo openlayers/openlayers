@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.flat.topology');
 
+goog.require('ol.geom.flat.topology');
+
 describe('ol.geom.flat.topology', function() {
 
   describe('ol.geom.flat.topology.lineStringIsClosed', function() {
@@ -29,5 +31,3 @@ describe('ol.geom.flat.topology', function() {
   });
 
 });
-
-goog.require('ol.geom.flat.topology');

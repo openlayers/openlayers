@@ -1,5 +1,5 @@
-//! NAMESPACE=ol.render.webgl.linestringreplay.shader.Default
-//! CLASS=ol.render.webgl.linestringreplay.shader.Default
+//! NAMESPACE=ol.render.webgl.linestringreplay.defaultshader
+//! CLASS=ol.render.webgl.linestringreplay.defaultshader
 
 
 //! COMMON
