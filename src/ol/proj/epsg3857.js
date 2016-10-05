@@ -118,8 +118,14 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
       'modulus of output.length with dimension should be 0');
   for (var i = 0; i < length; i += dimension) {
     output[i] = ol.proj.EPSG3857.RADIUS * Math.PI * input[i] / 180;
-    output[i + 1] = ol.proj.EPSG3857.RADIUS *
+    var y = ol.proj.EPSG3857.RADIUS *
         Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
+    if (y > ol.proj.EPSG3857.HALF_SIZE) {
+      y = ol.proj.EPSG3857.HALF_SIZE;
+    } else if (y < -ol.proj.EPSG3857.HALF_SIZE) {
+      y = -ol.proj.EPSG3857.HALF_SIZE;
+    }
+    output[i + 1] = y;
   }
   return output;
 };
