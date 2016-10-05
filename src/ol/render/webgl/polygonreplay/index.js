@@ -851,6 +851,14 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, siz
 /**
  * @inheritDoc
  */
+ol.render.webgl.PolygonReplay.prototype.shutDownProgram_ = function(gl, locations) {
+  gl.disableVertexAttribArray(locations.a_position);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
   var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));

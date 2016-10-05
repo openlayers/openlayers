@@ -475,6 +475,17 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, 
 /**
  * @inheritDoc
  */
+ol.render.webgl.LineStringReplay.prototype.shutDownProgram_ = function(gl, locations) {
+  gl.disableVertexAttribArray(locations.a_lastPos);
+  gl.disableVertexAttribArray(locations.a_position);
+  gl.disableVertexAttribArray(locations.a_nextPos);
+  gl.disableVertexAttribArray(locations.a_direction);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   //Save GL parameters.
   var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));

@@ -143,6 +143,17 @@ ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixe
  * @abstract
  * @protected
  * @param {WebGLRenderingContext} gl gl.
+ * @param {ol.render.webgl.imagereplay.defaultshader.Locations|
+           ol.render.webgl.linestringreplay.defaultshader.Locations|
+           ol.render.webgl.polygonreplay.defaultshader.Locations} locations Locations.
+ */
+ol.render.webgl.Replay.prototype.shutDownProgram_ = function(gl, locations) {};
+
+
+/**
+ * @abstract
+ * @private
+ * @param {WebGLRenderingContext} gl gl.
  * @param {ol.webgl.Context} context Context.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *  to skip.
@@ -286,11 +297,7 @@ ol.render.webgl.Replay.prototype.replay = function(context,
   }
 
   // disable the vertex attrib arrays
-  for (var i in locations) {
-    if (typeof locations[i] === 'number') {
-      gl.disableVertexAttribArray(locations[i]);
-    }
-  }
+  this.shutDownProgram_(gl, locations);
 
   if (this.lineStringReplay) {
     this.lineStringReplay.replay(context,
