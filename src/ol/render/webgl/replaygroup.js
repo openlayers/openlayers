@@ -1,6 +1,7 @@
 goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.render.ReplayGroup');
 goog.require('ol.render.webgl');
 goog.require('ol.render.webgl.ImageReplay');
@@ -37,11 +38,11 @@ ol.render.webgl.ReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
   this.renderBuffer_ = opt_renderBuffer;
 
   /**
-   * ImageReplay only is supported at this point.
-   * @type {Object.<ol.render.ReplayType, ol.render.webgl.Replay>}
    * @private
+   * @type {!Object.<string,
+   *        Object.<ol.render.ReplayType, ol.render.webgl.Replay>>}
    */
-  this.replays_ = {};
+  this.replaysByZIndex_ = {};
 
 };
 ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
@@ -53,10 +54,14 @@ ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
  */
 ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
   var functions = [];
-  var replayKey;
-  for (replayKey in this.replays_) {
-    functions.push(
-        this.replays_[replayKey].getDeleteResourcesFunction(context));
+  var zKey;
+  for (zKey in this.replaysByZIndex_) {
+    var replays = this.replaysByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replays) {
+      functions.push(
+          replays[replayKey].getDeleteResourcesFunction(context));
+    }
   }
   return function() {
     var length = functions.length;
@@ -73,9 +78,13 @@ ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(cont
  * @param {ol.webgl.Context} context Context.
  */
 ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
-  var replayKey;
-  for (replayKey in this.replays_) {
-    this.replays_[replayKey].finish(context);
+  var zKey;
+  for (zKey in this.replaysByZIndex_) {
+    var replays = this.replaysByZIndex_[zKey];
+    var replayKey;
+    for (replayKey in replays) {
+      replays[replayKey].finish(context);
+    }
   }
 };
 
@@ -84,11 +93,20 @@ ol.render.webgl.ReplayGroup.prototype.finish = function(context) {
  * @inheritDoc
  */
 ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
-  var replay = this.replays_[replayType];
+  var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
+  var replays = this.replaysByZIndex_[zIndexKey];
+  if (replays === undefined) {
+    replays = {};
+    this.replaysByZIndex_[zIndexKey] = replays;
+  }
+  var replay = replays[replayType];
   if (replay === undefined) {
-    var constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-    replay = new constructor(this.tolerance_, this.maxExtent_);
-    this.replays_[replayType] = replay;
+    var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
+    ol.DEBUG && console.assert(Constructor !== undefined,
+        replayType +
+        ' constructor missing from ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_');
+    replay = new Constructor(this.tolerance_, this.maxExtent_);
+    replays[replayType] = replay;
   }
   return replay;
 };
@@ -98,7 +116,7 @@ ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
  * @inheritDoc
  */
 ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
-  return ol.obj.isEmpty(this.replays_);
+  return ol.obj.isEmpty(this.replaysByZIndex_);
 };
 
 
@@ -116,14 +134,21 @@ ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
 ol.render.webgl.ReplayGroup.prototype.replay = function(context,
     center, resolution, rotation, size, pixelRatio,
     opacity, skippedFeaturesHash) {
-  var i, ii, replay;
-  for (i = 0, ii = ol.render.replay.ORDER.length; i < ii; ++i) {
-    replay = this.replays_[ol.render.replay.ORDER[i]];
-    if (replay !== undefined) {
-      replay.replay(context,
-          center, resolution, rotation, size, pixelRatio,
-          opacity, skippedFeaturesHash,
-          undefined, false);
+  /** @type {Array.<number>} */
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  zs.sort(ol.array.numberSafeCompareFunction);
+
+  var i, ii, j, jj, replays, replay;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = 0, jj = ol.render.replay.ORDER.length; j < jj; ++j) {
+      replay = replays[ol.render.replay.ORDER[j]];
+      if (replay !== undefined) {
+        replay.replay(context,
+            center, resolution, rotation, size, pixelRatio,
+            opacity, skippedFeaturesHash,
+            undefined, false);
+      }
     }
   }
 };
@@ -150,15 +175,24 @@ ol.render.webgl.ReplayGroup.prototype.replay = function(context,
 ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
     center, resolution, rotation, size, pixelRatio, opacity,
     skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
-  var i, replay, result;
-  for (i = ol.render.replay.ORDER.length - 1; i >= 0; --i) {
-    replay = this.replays_[ol.render.replay.ORDER[i]];
-    if (replay !== undefined) {
-      result = replay.replay(context,
-          center, resolution, rotation, size, pixelRatio, opacity,
-          skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
-      if (result) {
-        return result;
+  /** @type {Array.<number>} */
+  var zs = Object.keys(this.replaysByZIndex_).map(Number);
+  zs.sort(function(a, b) {
+    return b - a;
+  });
+
+  var i, ii, j, replays, replay, result;
+  for (i = 0, ii = zs.length; i < ii; ++i) {
+    replays = this.replaysByZIndex_[zs[i].toString()];
+    for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
+      replay = replays[ol.render.replay.ORDER[j]];
+      if (replay !== undefined) {
+        result = replay.replay(context,
+            center, resolution, rotation, size, pixelRatio, opacity,
+            skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
+        if (result) {
+          return result;
+        }
       }
     }
   }
