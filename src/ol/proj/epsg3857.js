@@ -116,10 +116,17 @@ ol.proj.EPSG3857.fromEPSG4326 = function(input, opt_output, opt_dimension) {
   }
   ol.DEBUG && console.assert(output.length % dimension === 0,
       'modulus of output.length with dimension should be 0');
+  var halfSize = ol.proj.EPSG3857.HALF_SIZE;
   for (var i = 0; i < length; i += dimension) {
-    output[i] = ol.proj.EPSG3857.RADIUS * Math.PI * input[i] / 180;
-    output[i + 1] = ol.proj.EPSG3857.RADIUS *
+    output[i] = halfSize * input[i] / 180;
+    var y = ol.proj.EPSG3857.RADIUS *
         Math.log(Math.tan(Math.PI * (input[i + 1] + 90) / 360));
+    if (y > halfSize) {
+      y = halfSize;
+    } else if (y < -halfSize) {
+      y = -halfSize;
+    }
+    output[i + 1] = y;
   }
   return output;
 };
@@ -148,7 +155,7 @@ ol.proj.EPSG3857.toEPSG4326 = function(input, opt_output, opt_dimension) {
   ol.DEBUG && console.assert(output.length % dimension === 0,
       'modulus of output.length with dimension should be 0');
   for (var i = 0; i < length; i += dimension) {
-    output[i] = 180 * input[i] / (ol.proj.EPSG3857.RADIUS * Math.PI);
+    output[i] = 180 * input[i] / ol.proj.EPSG3857.HALF_SIZE;
     output[i + 1] = 360 * Math.atan(
         Math.exp(input[i + 1] / ol.proj.EPSG3857.RADIUS)) / Math.PI - 90;
   }
