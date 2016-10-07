@@ -3,6 +3,7 @@ goog.provide('ol.test.rendering.layer.Vector');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.format.GeoJSON');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Polygon');
@@ -269,6 +270,64 @@ describe('ol.rendering.layer.Vector', function() {
         });
       });
     });
+  });
+
+  describe.only('polygon rendering', function() {
+
+    var map;
+    beforeEach(function() {
+      map = new ol.Map({
+        target: createMapDiv(128, 128),
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      });
+    });
+
+    afterEach(function() {
+      disposeMap(map);
+    });
+
+    it('renders a feature that spans the world', function(done) {
+      var json = {
+        type: 'Feature',
+        geometry: {
+          type: 'Polygon',
+          coordinates: [
+            [
+              [-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]
+            ],
+            [
+              [0, 60], [-17.6336, 24.2705], [-57.0634, 18.5410], [-28.5317, -9.2705], [-35.2671, -48.5410], [0, -30], [35.2671, -48.5410], [28.5317, -9.2705], [57.0634, 18.5410], [17.6336, 24.2705], [0, 60]
+            ]
+          ]
+        },
+        properties: {}
+      };
+
+      var format = new ol.format.GeoJSON({featureProjection: 'EPSG:3857'});
+      var feature = format.readFeature(json);
+
+      var layer = new ol.layer.Vector({
+        source: new ol.source.Vector({
+          features: [feature]
+        }),
+        style: new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: 'blue'
+          })
+        })
+      });
+
+      map.addLayer(layer);
+
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/inverted-star.png', 1, done);
+      });
+
+    });
+
   });
 
   describe('Polygon simplification', function() {
