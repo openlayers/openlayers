@@ -559,7 +559,8 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
         componentSegments[uid] = new Array(2);
       }
       if (segmentDataMatch.geometry.getType() === ol.geom.GeometryType.CIRCLE &&
-      segmentDataMatch.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+        segmentDataMatch.index === ol.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
+
         var closestVertex = ol.interaction.Modify.closestOnSegmentData_(vertex, segmentDataMatch);
         if (ol.coordinate.equals(closestVertex, vertex) && !componentSegments[uid][0]) {
           this.dragSegments_.push([segmentDataMatch, 0]);
