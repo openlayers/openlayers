@@ -580,11 +580,13 @@ ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt
   * @param {ol.structs.RBush} rtree R-Tree of the polygon.
   */
 ol.render.webgl.PolygonReplay.prototype.removeItem_ = function(s0, s1, list, rtree) {
-  list.removeItem();
-  s0.p1 = s1.p1;
-  rtree.remove(s1);
-  rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
+  if (list.getCurrItem() === s1) {
+    list.removeItem();
+    s0.p1 = s1.p1;
+    rtree.remove(s1);
+    rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
       Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
+  }
 };
 
 
@@ -607,7 +609,7 @@ ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
   for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
     for (j in segmentsInExtent[i]) {
       p = segmentsInExtent[i][j];
-      if (p.x && p.y && (!opt_reflex || p.reflex)) {
+      if (typeof p === 'object' && (!opt_reflex || p.reflex)) {
         if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) &&
             (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 &&
             ol.geom.flat.contains.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y,
