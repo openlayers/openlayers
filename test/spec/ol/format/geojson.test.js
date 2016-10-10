@@ -154,6 +154,14 @@ describe('ol.format.GeoJSON', function() {
       expect(feature.get('prop0')).to.be('value0');
     });
 
+    it('can read a single point geometry as a feature feature', function() {
+      var feature = format.readFeature(pointGeoJSON.geometry);
+      expect(feature).to.be.an(ol.Feature);
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.an(ol.geom.Point);
+      expect(geometry.getCoordinates()).to.eql([102.0, 0.5]);
+    });
+
     it('can read a single line string feature', function() {
       var feature = format.readFeature(lineStringGeoJSON);
       expect(feature).to.be.an(ol.Feature);
@@ -275,6 +283,14 @@ describe('ol.format.GeoJSON', function() {
       expect(second.get('ST_NAME')).to.be('BRUNNSGATAN');
       var secondGeom = second.getGeometry();
       expect(secondGeom).to.be.a(ol.geom.LineString);
+    });
+
+    it('can parse a polygon geometry as an array of one feature', function() {
+      var features = format.readFeatures(polygonGeoJSON);
+      expect(features).to.be.an(Array);
+      expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.an(ol.geom.Polygon);
     });
 
     it('parses countries.geojson', function(done) {
