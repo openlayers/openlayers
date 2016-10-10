@@ -252,6 +252,13 @@ ol.render.webgl.Replay.prototype.replay = function(context,
     featureCallback, oneByOne, opt_hitExtent) {
   var gl = context.getGL();
 
+  if (this.lineStringReplay) {
+    this.lineStringReplay.replay(context,
+        center, resolution, rotation, size, pixelRatio,
+        opacity, skippedFeaturesHash,
+        featureCallback, oneByOne, opt_hitExtent);
+  }
+
   // bind the vertices buffer
   ol.DEBUG && console.assert(this.verticesBuffer,
       'verticesBuffer must not be null');
@@ -298,13 +305,6 @@ ol.render.webgl.Replay.prototype.replay = function(context,
 
   // disable the vertex attrib arrays
   this.shutDownProgram_(gl, locations);
-
-  if (this.lineStringReplay) {
-    this.lineStringReplay.replay(context,
-        center, resolution, rotation, size, pixelRatio,
-        opacity, skippedFeaturesHash,
-        featureCallback, oneByOne, opt_hitExtent);
-  }
 
   return result;
 };

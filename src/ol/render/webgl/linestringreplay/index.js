@@ -495,6 +495,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
     gl.enable(gl.DEPTH_TEST);
     gl.depthMask(true);
     gl.depthFunc(gl.NOTEQUAL);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
   }
 
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
@@ -515,7 +516,6 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
     }
   }
   if (!hitDetection) {
-    gl.clear(gl.DEPTH_BUFFER_BIT);
     gl.disable(gl.DEPTH_TEST);
     //Restore GL parameters.
     gl.depthMask(tmpDepthMask);
