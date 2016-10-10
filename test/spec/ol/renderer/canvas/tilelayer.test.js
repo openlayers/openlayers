@@ -40,6 +40,14 @@ describe('ol.renderer.canvas.TileLayer', function() {
         canvas: canvas,
         drawImage: sinon.spy()
       };
+      renderer.renderedTiles = [{
+        getTileCoord: function() {
+          return [0, 0, 0];
+        },
+        getImage: function() {
+          return new Image();
+        }
+      }];
       renderer.composeFrame(frameState, layerState, context);
       expect(context.drawImage.firstCall.args[0].width).to.be(112);
     });
