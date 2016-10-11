@@ -170,8 +170,8 @@ ol.Feature.prototype.getGeometryName = function() {
 
 
 /**
- * Get the feature's style.  This return for this method depends on what was
- * provided to the {@link ol.Feature#setStyle} method.
+ * Get the feature's style. Will return what was provided to the
+ * {@link ol.Feature#setStyle} method.
  * @return {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} The feature style.
  * @api stable
