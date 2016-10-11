@@ -357,8 +357,9 @@ ol.format.GeoJSON.prototype.getExtensions = function() {
 
 
 /**
- * Read a feature from a GeoJSON Feature source.  Only works for Feature,
- * use `readFeatures` to read FeatureCollection source.
+ * Read a feature from a GeoJSON Feature source.  Only works for Feature or
+ * geometry types.  Use {@link ol.format.GeoJSON#readFeatures} to read
+ * FeatureCollection source.
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
@@ -370,8 +371,9 @@ ol.format.GeoJSON.prototype.readFeature;
 
 
 /**
- * Read all features from a GeoJSON source.  Works with both Feature and
- * FeatureCollection sources.
+ * Read all features from a GeoJSON source.  Works for all GeoJSON types.
+ * If the source includes only geometries, features will be created with those
+ * geometries.
  *
  * @function
  * @param {Document|Node|Object|string} source Source.
@@ -387,11 +389,23 @@ ol.format.GeoJSON.prototype.readFeatures;
  */
 ol.format.GeoJSON.prototype.readFeatureFromObject = function(
     object, opt_options) {
-  var geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
-  ol.DEBUG && console.assert(geoJSONFeature.type == 'Feature',
-      'geoJSONFeature.type should be Feature');
-  var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature.geometry,
-      opt_options);
+
+  ol.DEBUG && console.assert(object.type !== 'FeatureCollection', 'Expected a Feature or geometry');
+
+  /**
+   * @type {GeoJSONFeature}
+   */
+  var geoJSONFeature = null;
+  if (object.type === 'Feature') {
+    geoJSONFeature = /** @type {GeoJSONFeature} */ (object);
+  } else {
+    geoJSONFeature = /** @type {GeoJSONFeature} */ ({
+      type: 'Feature',
+      geometry: /** @type {GeoJSONGeometry|GeoJSONGeometryCollection} */ (object)
+    });
+  }
+
+  var geometry = ol.format.GeoJSON.readGeometry_(geoJSONFeature.geometry, opt_options);
   var feature = new ol.Feature();
   if (this.geometryName_) {
     feature.setGeometryName(this.geometryName_);
@@ -414,10 +428,8 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(
     object, opt_options) {
   var geoJSONObject = /** @type {GeoJSONObject} */ (object);
   /** @type {Array.<ol.Feature>} */
-  var features;
-  if (geoJSONObject.type == 'Feature') {
-    features = [this.readFeatureFromObject(object, opt_options)];
-  } else if (geoJSONObject.type == 'FeatureCollection') {
+  var features = null;
+  if (geoJSONObject.type === 'FeatureCollection') {
     var geoJSONFeatureCollection = /** @type {GeoJSONFeatureCollection} */
         (object);
     features = [];
@@ -428,9 +440,9 @@ ol.format.GeoJSON.prototype.readFeaturesFromObject = function(
           opt_options));
     }
   } else {
-    ol.asserts.assert(false, 35); // Unknown GeoJSON object type
+    features = [this.readFeatureFromObject(object, opt_options)];
   }
-  return /** Array.<ol.Feature> */ (features);
+  return features;
 };
 
 
