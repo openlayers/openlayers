@@ -154,7 +154,7 @@ describe('ol.format.GeoJSON', function() {
       expect(feature.get('prop0')).to.be('value0');
     });
 
-    it('can read a single point geometry as a feature feature', function() {
+    it('can read a single point geometry as a feature', function() {
       var feature = format.readFeature(pointGeoJSON.geometry);
       expect(feature).to.be.an(ol.Feature);
       var geometry = feature.getGeometry();
