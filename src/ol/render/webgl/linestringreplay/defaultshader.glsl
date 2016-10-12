@@ -16,6 +16,7 @@ attribute float a_direction;
 
 uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
+uniform mat4 u_offsetRotateMatrix;
 uniform float u_lineWidth;
 uniform float u_miterLimit;
 
@@ -23,6 +24,7 @@ void main(void) {
   bool degenerate = false;
   v_halfWidth = u_lineWidth / 2.0;
   float miterLimit = u_miterLimit + u_lineWidth;
+  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
   vec2 offset;
   v_round = 0.0;
   float direction = a_direction / abs(a_direction);
@@ -65,10 +67,10 @@ void main(void) {
         shortProjVertex = u_projectionMatrix * vec4(a_nextPos, 0., 1.);
       }
       //Intersection algorithm based on theory by Paul Bourke (http://paulbourke.net/geometry/pointlineplane/).
-      vec4 p1 = u_projectionMatrix * vec4(longVertex, 0., 1.) + u_offsetScaleMatrix * vec4(longOffset, 0., 0.);
-      vec4 p2 = projPos + u_offsetScaleMatrix * vec4(longOffset, 0., 0.);
-      vec4 p3 = shortProjVertex + u_offsetScaleMatrix * vec4(-shortOffset, 0., 0.);
-      vec4 p4 = shortProjVertex + u_offsetScaleMatrix * vec4(shortOffset, 0., 0.);
+      vec4 p1 = u_projectionMatrix * vec4(longVertex, 0., 1.) + offsetMatrix * vec4(longOffset, 0., 0.);
+      vec4 p2 = projPos + offsetMatrix * vec4(longOffset, 0., 0.);
+      vec4 p3 = shortProjVertex + offsetMatrix * vec4(-shortOffset, 0., 0.);
+      vec4 p4 = shortProjVertex + offsetMatrix * vec4(shortOffset, 0., 0.);
       float denom = (p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y);
       float epsilon = 0.000000000001;
       float firstU = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) / denom;
@@ -104,7 +106,7 @@ void main(void) {
     }
   }
   if (!degenerate) {
-    vec4 offsets = u_offsetScaleMatrix * vec4(offset, 0., 0.);
+    vec4 offsets = offsetMatrix * vec4(offset, 0., 0.);
     gl_Position = projPos + offsets;
   }
 }
