@@ -211,6 +211,7 @@ ol.render.webgl.PolygonReplay.prototype.classifyPoints_ = function(list, rtree, 
  */
 ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
     list, listMaxX, rtree) {
+  this.classifyPoints_(hole, rtree, true);
   var seg = hole.firstItem();
   while (seg.p1.x !== holeMaxX) {
     seg = hole.nextItem();
@@ -227,7 +228,7 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
   var intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, rtree, true);
   for (i = 0, ii = intersectingSegments.length; i < ii; ++i) {
     var currSeg = intersectingSegments[i];
-    if (currSeg.p0 !== p1 && currSeg.p1 !== p1) {
+    if (currSeg.p0.reflex === undefined) {
       var intersection = this.calculateIntersection_(p1, p2, currSeg.p0,
           currSeg.p1, true);
       var dist = Math.abs(p1.x - intersection[0]);
@@ -238,17 +239,22 @@ ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
       }
     }
   }
+  if (minDist === Infinity) {
+    return;
+  }
   bestPoint = seg.p1;
 
-  var pointsInTriangle = this.getPointsInTriangle_(p1, p5, seg.p1, rtree);
-  if (pointsInTriangle.length) {
-    var theta = Infinity;
-    for (i = 0, ii = pointsInTriangle.length; i < ii; ++i) {
-      var currPoint = pointsInTriangle[i];
-      var currTheta = Math.atan2(p1.y - currPoint.y, p2.x - currPoint.x);
-      if (currTheta < theta || (currTheta === theta && currPoint.x < bestPoint.x)) {
-        theta = currTheta;
-        bestPoint = currPoint;
+  if (minDist > 0) {
+    var pointsInTriangle = this.getPointsInTriangle_(p1, p5, seg.p1, rtree);
+    if (pointsInTriangle.length) {
+      var theta = Infinity;
+      for (i = 0, ii = pointsInTriangle.length; i < ii; ++i) {
+        var currPoint = pointsInTriangle[i];
+        var currTheta = Math.atan2(p1.y - currPoint.y, p2.x - currPoint.x);
+        if (currTheta < theta || (currTheta === theta && currPoint.x < bestPoint.x)) {
+          theta = currTheta;
+          bestPoint = currPoint;
+        }
       }
     }
   }
