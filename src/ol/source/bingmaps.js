@@ -46,9 +46,21 @@ ol.source.BingMaps = function(options) {
    */
   this.maxZoom_ = options.maxZoom !== undefined ? options.maxZoom : -1;
 
+  /**
+   * @private
+   * @type {string}
+   */
+  this.apiKey_ = options.key;
+
+  /**
+   * @private
+   * @type {string}
+   */
+  this.imagerySet_ = options.imagerySet;
+
   var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-      options.imagerySet +
-      '?uriScheme=https&include=ImageryProviders&key=' + options.key;
+      this.imagerySet_ +
+      '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_;
 
   ol.net.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
       'jsonp');
@@ -69,6 +81,28 @@ ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
       'href="http://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
 });
+
+
+/**
+ * Get the api key used for this source.
+ *
+ * @return {string} The api key.
+ * @api
+ */
+ol.source.BingMaps.prototype.getApiKey = function() {
+  return this.apiKey_;
+};
+
+
+/**
+ * Get the imagery set associated with this source.
+ *
+ * @return {string} The imagery set.
+ * @api
+ */
+ol.source.BingMaps.prototype.getImagerySet = function() {
+  return this.imagerySet_;
+};
 
 
 /**
