@@ -1,5 +1,7 @@
 goog.provide('ol.style.Stroke');
 
+goog.require('ol');
+
 
 /**
  * @classdesc
