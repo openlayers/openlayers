@@ -60,6 +60,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.alignFill_ = false;
+
+  /**
+   * @private
    * @type {Array.<*>}
    */
   this.beginGeometryInstruction1_ = null;
@@ -185,6 +191,19 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 };
 
 
+ol.render.canvas.Replay.prototype.fill_ = function(context, transform, rotation) {
+  if (this.alignFill_) {
+    context.translate(transform[4], transform[5]);
+    context.rotate(rotation);
+  }
+  context.fill();
+  if (this.alignFill_) {
+    context.rotate(-rotation);
+    context.translate(-transform[4], -transform[5]);
+  }
+};
+
+
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
@@ -250,7 +269,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
         if (pendingFill > batchSize) {
-          context.fill();
+          this.fill_(context, transform, viewRotation);
           pendingFill = 0;
         }
         if (pendingStroke > batchSize) {
@@ -429,7 +448,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (batchSize) {
           pendingFill++;
         } else {
-          context.fill();
+          this.fill_(context, transform, viewRotation);
         }
         ++i;
         break;
@@ -467,8 +486,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
+        this.alignFill_ = instruction[2];
+
         if (pendingFill) {
-          context.fill();
+          this.fill_(context, transform, viewRotation);
           pendingFill = 0;
         }
 
@@ -534,7 +555,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     }
   }
   if (pendingFill) {
-    context.fill();
+    this.fill_(context, transform, viewRotation);
   }
   if (pendingStroke) {
     context.stroke();

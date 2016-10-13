@@ -344,7 +344,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var miterLimit = state.miterLimit;
   if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
     this.instructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle]);
+        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle, typeof fillStyle != 'string']);
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
