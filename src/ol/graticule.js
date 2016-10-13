@@ -7,7 +7,7 @@ goog.require('ol.geom.LineString');
 goog.require('ol.geom.flat.geodesic');
 goog.require('ol.math');
 goog.require('ol.proj');
-goog.require('ol.render.EventType');
+goog.require('ol.render.Event');
 goog.require('ol.style.Stroke');
 
 
@@ -519,12 +519,12 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
  */
 ol.Graticule.prototype.setMap = function(map) {
   if (this.map_) {
-    this.map_.un(ol.render.EventType.POSTCOMPOSE,
+    this.map_.un(ol.render.Event.Type.POSTCOMPOSE,
         this.handlePostCompose_, this);
     this.map_.render();
   }
   if (map) {
-    map.on(ol.render.EventType.POSTCOMPOSE,
+    map.on(ol.render.Event.Type.POSTCOMPOSE,
         this.handlePostCompose_, this);
     map.render();
   }

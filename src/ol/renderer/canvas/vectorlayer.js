@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.render.EventType');
+goog.require('ol.render.Event');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
@@ -97,7 +97,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var drawOffsetX = 0;
     var drawOffsetY = 0;
     var replayContext;
-    if (layer.hasListener(ol.render.EventType.RENDER)) {
+    if (layer.hasListener(ol.render.Event.Type.RENDER)) {
       var drawWidth = context.canvas.width;
       var drawHeight = context.canvas.height;
       if (rotation) {

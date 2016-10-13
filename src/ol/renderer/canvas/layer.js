@@ -3,7 +3,6 @@ goog.provide('ol.renderer.canvas.Layer');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.render.Event');
-goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
@@ -109,7 +108,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
 
 
 /**
- * @param {ol.render.EventType} type Event type.
+ * @param {ol.render.Event.Type} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.Transform=} opt_transform Transform.
@@ -142,7 +141,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, context,
+  this.dispatchComposeEvent_(ol.render.Event.Type.POSTCOMPOSE, context,
       frameState, opt_transform);
 };
 
@@ -154,7 +153,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, 
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context,
+  this.dispatchComposeEvent_(ol.render.Event.Type.PRECOMPOSE, context,
       frameState, opt_transform);
 };
 
@@ -166,7 +165,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, f
  * @protected
  */
 ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(ol.render.EventType.RENDER, context,
+  this.dispatchComposeEvent_(ol.render.Event.Type.RENDER, context,
       frameState, opt_transform);
 };
 

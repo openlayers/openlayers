@@ -1,20 +1,11 @@
 // FIXME factor out key precondition (shift et. al)
 
 goog.provide('ol.interaction.Interaction');
-goog.provide('ol.interaction.InteractionProperty');
 
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.animation');
 goog.require('ol.easing');
-
-
-/**
- * @enum {string}
- */
-ol.interaction.InteractionProperty = {
-  ACTIVE: 'active'
-};
 
 
 /**
@@ -63,7 +54,7 @@ ol.inherits(ol.interaction.Interaction, ol.Object);
  */
 ol.interaction.Interaction.prototype.getActive = function() {
   return /** @type {boolean} */ (
-      this.get(ol.interaction.InteractionProperty.ACTIVE));
+      this.get(ol.interaction.Interaction.Property.ACTIVE));
 };
 
 
@@ -84,7 +75,7 @@ ol.interaction.Interaction.prototype.getMap = function() {
  * @api
  */
 ol.interaction.Interaction.prototype.setActive = function(active) {
-  this.set(ol.interaction.InteractionProperty.ACTIVE, active);
+  this.set(ol.interaction.Interaction.Property.ACTIVE, active);
 };
 
 
@@ -237,4 +228,12 @@ ol.interaction.Interaction.zoomWithoutConstraints = function(map, view, resoluti
     }
     view.setResolution(resolution);
   }
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.Interaction.Property = {
+  ACTIVE: 'active'
 };

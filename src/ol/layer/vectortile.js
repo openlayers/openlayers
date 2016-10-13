@@ -8,15 +8,6 @@ goog.require('ol.obj');
 
 
 /**
- * @enum {string}
- */
-ol.layer.VectorTileProperty = {
-  PRELOAD: 'preload',
-  USE_INTERIM_TILES_ON_ERROR: 'useInterimTilesOnError'
-};
-
-
-/**
  * @classdesc
  * Layer for vector tile data that is rendered client-side.
  * Note that any property set in the options is set as a {@link ol.Object}
@@ -64,7 +55,7 @@ ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
  * @api
  */
 ol.layer.VectorTile.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(ol.layer.VectorTileProperty.PRELOAD));
+  return /** @type {number} */ (this.get(ol.layer.VectorTile.Property.PRELOAD));
 };
 
 
@@ -84,7 +75,7 @@ ol.layer.VectorTile.prototype.getRenderMode = function() {
  */
 ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
   return /** @type {boolean} */ (
-      this.get(ol.layer.VectorTileProperty.USE_INTERIM_TILES_ON_ERROR));
+      this.get(ol.layer.VectorTile.Property.USE_INTERIM_TILES_ON_ERROR));
 };
 
 
@@ -108,6 +99,15 @@ ol.layer.VectorTile.prototype.setPreload = function(preload) {
 ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
   this.set(
       ol.layer.Tile.Property.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.layer.VectorTile.Property = {
+  PRELOAD: 'preload',
+  USE_INTERIM_TILES_ON_ERROR: 'useInterimTilesOnError'
 };
 
 

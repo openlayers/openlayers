@@ -7,7 +7,7 @@ goog.require('ol.dom');
 goog.require('ol.layer.Vector');
 goog.require('ol.math');
 goog.require('ol.obj');
-goog.require('ol.render.EventType');
+goog.require('ol.render.Event');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
@@ -120,7 +120,7 @@ ol.layer.Heatmap = function(opt_options) {
   // The render order is not relevant for a heatmap representation.
   this.setRenderOrder(null);
 
-  ol.events.listen(this, ol.render.EventType.RENDER, this.handleRender_, this);
+  ol.events.listen(this, ol.render.Event.Type.RENDER, this.handleRender_, this);
 
 };
 ol.inherits(ol.layer.Heatmap, ol.layer.Vector);
@@ -236,7 +236,7 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
  * @private
  */
 ol.layer.Heatmap.prototype.handleRender_ = function(event) {
-  ol.DEBUG && console.assert(event.type == ol.render.EventType.RENDER,
+  ol.DEBUG && console.assert(event.type == ol.render.Event.Type.RENDER,
       'event.type should be RENDER');
   ol.DEBUG && console.assert(this.gradient_, 'this.gradient_ expected');
   var context = event.context;

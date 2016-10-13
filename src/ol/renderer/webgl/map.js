@@ -12,7 +12,6 @@ goog.require('ol.layer.Layer');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
-goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.Type');
@@ -251,7 +250,7 @@ ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
- * @param {ol.render.EventType} type Event type.
+ * @param {ol.render.Event.Type} type Event type.
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
@@ -433,7 +432,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
   this.textureCache_.set((-frameState.index).toString(), null);
   ++this.textureCacheFrameMarkerCount_;
 
-  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(ol.render.Event.Type.PRECOMPOSE, frameState);
 
   /** @type {Array.<ol.LayerState>} */
   var layerStatesToDraw = [];
@@ -492,7 +491,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
     frameState.animate = true;
   }
 
-  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(ol.render.Event.Type.POSTCOMPOSE, frameState);
 
   this.scheduleRemoveUnusedLayerRenderers(frameState);
   this.scheduleExpireIconCache(frameState);

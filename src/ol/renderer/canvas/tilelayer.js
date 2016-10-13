@@ -10,7 +10,7 @@ goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.canvas');
-goog.require('ol.render.EventType');
+goog.require('ol.render.Event');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.size');
 
@@ -235,7 +235,7 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var tileGutter = pixelRatio * source.getGutter(projection);
   var tileGrid = source.getTileGridForProjection(projection);
 
-  var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
+  var hasRenderListeners = layer.hasListener(ol.render.Event.Type.RENDER);
   var renderContext = context;
   var drawScale = 1;
   var drawOffsetX, drawOffsetY, drawSize;

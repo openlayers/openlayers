@@ -27,6 +27,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.OverlayProperty` to `ol.Overlay.Property`
  * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
  * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
+ * rename `ol.interaction.InteractionProperty` to `ol.interaction.Interaction.Property`
  * rename `ol.interaction.DrawMode` to `ol.interaction.Draw.Mode`
  * rename `ol.interaction.DrawEvent` to `ol.interaction.Draw.Event`
  * rename `ol.interaction.DrawEventType` to `ol.interaction.Draw.EventType`
@@ -47,6 +48,7 @@ A number of internal types have been renamed.  This will not affect those who us
  * rename `ol.MapProperty` to `ol.Map.Property`
  * rename `ol.ModifyEventType` to `ol.interaction.Modify.EventType`
  * rename `ol.RendererType` to `ol.renderer.Type`
+ * rename `ol.render.EventType` to `ol.render.Event.Type`
  * rename `ol.source.ImageEvent` to `ol.source.Image.Event`
  * rename `ol.source.ImageEventType` to `ol.source.Image.EventType`
  * rename `ol.source.RasterEvent` to `ol.source.Raster.Event`

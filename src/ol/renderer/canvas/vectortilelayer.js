@@ -6,7 +6,7 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
 goog.require('ol.layer.VectorTile');
-goog.require('ol.render.EventType');
+goog.require('ol.render.Event');
 goog.require('ol.render.ReplayType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -123,7 +123,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
   var transform = this.getTransform(frameState, 0);
 
   var replayContext;
-  if (layer.hasListener(ol.render.EventType.RENDER)) {
+  if (layer.hasListener(ol.render.Event.Type.RENDER)) {
     // resize and clear
     this.context.canvas.width = context.canvas.width;
     this.context.canvas.height = context.canvas.height;
