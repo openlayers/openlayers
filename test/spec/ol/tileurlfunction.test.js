@@ -1,5 +1,10 @@
 goog.provide('ol.test.TileUrlFunction');
 
+goog.require('ol.TileUrlFunction');
+goog.require('ol.tilegrid');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.TileUrlFunction', function() {
 
   describe('expandUrl', function() {
@@ -13,6 +18,15 @@ describe('ol.TileUrlFunction', function() {
           'http://tile-3/{z}/{x}/{y}'
         ]);
       });
+      it('creates expected URLs', function() {
+        var template = 'http://tile-{9-11}/{z}/{x}/{y}';
+        var urls = ol.TileUrlFunction.expandUrl(template);
+        expect(urls).to.eql([
+          'http://tile-9/{z}/{x}/{y}',
+          'http://tile-10/{z}/{x}/{y}',
+          'http://tile-11/{z}/{x}/{y}'
+        ]);
+      });
     });
     describe('with character range', function() {
       it('creates expected URLs', function() {
@@ -22,6 +36,15 @@ describe('ol.TileUrlFunction', function() {
           'http://tile-c/{z}/{x}/{y}',
           'http://tile-d/{z}/{x}/{y}',
           'http://tile-e/{z}/{x}/{y}'
+        ]);
+      });
+    });
+    describe('without range', function() {
+      it('creates expected URLs', function() {
+        var template = 'http://tiles.example.com/{z}/{x}/{y}';
+        var urls = ol.TileUrlFunction.expandUrl(template);
+        expect(urls).to.eql([
+          'http://tiles.example.com/{z}/{x}/{y}'
         ]);
       });
     });
@@ -69,6 +92,7 @@ describe('ol.TileUrlFunction', function() {
           templates, tileGrid);
       var tileCoord = [3, 2, -2];
 
+      /* eslint-disable openlayers-internal/no-missing-requires */
       sinon.stub(ol.tilecoord, 'hash', function() {
         return 3;
       });
@@ -86,6 +110,7 @@ describe('ol.TileUrlFunction', function() {
       });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
       ol.tilecoord.hash.restore();
+      /* eslint-enable */
     });
   });
 
@@ -104,6 +129,3 @@ describe('ol.TileUrlFunction', function() {
   });
 
 });
-
-goog.require('ol.TileUrlFunction');
-goog.require('ol.tilegrid.TileGrid');

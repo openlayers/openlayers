@@ -10,9 +10,14 @@ goog.provide('ol.uri');
  * @return {string} The new URI.
  */
 ol.uri.appendParams = function(uri, params) {
-  var qs = Object.keys(params).map(function(k) {
-    return k + '=' + encodeURIComponent(params[k]);
-  }).join('&');
+  var keyParams = [];
+  // Skip any null or undefined parameter values
+  Object.keys(params).forEach(function(k) {
+    if (params[k] !== null && params[k] !== undefined) {
+      keyParams.push(k + '=' + encodeURIComponent(params[k]));
+    }
+  });
+  var qs = keyParams.join('&');
   // remove any trailing ? or &
   uri = uri.replace(/[?&]$/, '');
   // append ? or & depending on whether uri has existing parameters

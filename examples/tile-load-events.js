@@ -78,7 +78,7 @@ Progress.prototype.hide = function() {
 var progress = new Progress(document.getElementById('progress'));
 
 var source = new ol.source.TileJSON({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.json',
+  url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
   crossOrigin: 'anonymous'
 });
 
@@ -98,7 +98,6 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({source: source})
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

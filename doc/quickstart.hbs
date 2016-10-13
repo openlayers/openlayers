@@ -31,7 +31,7 @@ Below you'll find a complete working example.  Create a new file, copy in the co
         target: 'map',
         layers: [
           new ol.layer.Tile({
-            source: new ol.source.MapQuest({layer: 'sat'})
+            source: new ol.source.OSM()
           })
         ],
         view: new ol.View({
@@ -60,6 +60,12 @@ To include a map a web page you will need 3 things:
 
 The first part is to include the JavaScript library. For the purpose of this tutorial, here we simply point to the openlayers.org website to get the whole library. In a production environment, we would build a custom version of the library including only the module needed for our application.
 
+**Optional:** If the application is intended to run on old platforms like Internet Explorer or Android 4.x, another script needs to be included before OpenLayers:
+
+```xml
+  <script src="http://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList"></script>
+```
+
 
 ### `<div>` to contain the map
 
@@ -85,7 +91,7 @@ The map in the application is contained in a [`<div>` HTML element](http://en.wi
     target: 'map',
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.MapQuest({layer: 'sat'})
+        source: new ol.source.OSM()
       })
     ],
     view: new ol.View({
@@ -95,7 +101,7 @@ The map in the application is contained in a [`<div>` HTML element](http://en.wi
   });
 ```
 
-With this JavaScript code, a map object is created with a MapQuest Open Aerial layer zoomed on the African East coast. Let's break this down:
+With this JavaScript code, a map object is created with an OSM layer zoomed on the African East coast. Let's break this down:
 
 The following line creates an OpenLayers `Map` object. Just by itself, this does nothing since there's no layers or interaction attached to it.
 
@@ -114,14 +120,14 @@ The `layers: [ ... ]` array is used to define the list of layers available in th
 ```js
     layers: [
       new ol.layer.Tile({
-        source: new ol.source.MapQuest({layer: 'sat'})
+        source: new ol.source.OSM()
       })
     ]
 ```
 
 Layers in OpenLayers 3 are defined with a type (Image, Tile or Vector) which contains a source. The source is the protocol used to get the map tiles. You can consult the list of [available layer sources here](/en/{{ latest }}/apidoc/ol.source.html)
 
-The next part of the `Map` object is the `View`. The view allow to specify the center, resolution, and rotation of the map. The simplest way to define a view is to define a center point and a zoom level.  Note that zoom level 0 is zoomed out.
+The next part of the `Map` object is the `View`. The view allows to specify the center, resolution, and rotation of the map. The simplest way to define a view is to define a center point and a zoom level.  Note that zoom level 0 is zoomed out.
 
 ```js
     view: new ol.View({

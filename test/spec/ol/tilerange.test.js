@@ -1,5 +1,8 @@
 goog.provide('ol.test.TileRange');
 
+goog.require('ol.TileRange');
+
+
 describe('ol.TileRange', function() {
 
   describe('constructor', function() {
@@ -44,23 +47,6 @@ describe('ol.TileRange', function() {
       expect(tileRange.contains([0, 4, 2])).to.not.be();
       expect(tileRange.contains([0, 4, 3])).to.not.be();
       expect(tileRange.contains([0, 4, 4])).to.not.be();
-    });
-  });
-
-  describe('boundingTileRange', function() {
-    it('returns the expected TileRange', function() {
-      var tileRange = new ol.TileRange.boundingTileRange(
-          [3, 1, 3], [3, 2, 0]);
-      expect(tileRange.minX).to.eql(1);
-      expect(tileRange.maxX).to.eql(2);
-      expect(tileRange.minY).to.eql(0);
-      expect(tileRange.maxY).to.eql(3);
-    });
-
-    describe('with mixed z', function() {
-      expect(function() {
-        return new ol.TileRange.boundingTileRange([3, 1, 3], [4, 2, 0]);
-      }).to.throwException();
     });
   });
 
@@ -126,5 +112,3 @@ describe('ol.TileRange', function() {
   });
 
 });
-
-goog.require('ol.TileRange');

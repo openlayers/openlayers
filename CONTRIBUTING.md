@@ -80,7 +80,7 @@ include:
 ### Follow OpenLayers 3's coding style
 
 OpenLayers 3 follows [Google's JavaScript Style
-Guide](http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml).
+Guide](https://google.github.io/styleguide/javascriptguide.xml).
 This is checked using [ESLint](http://eslint.org/), you
 can run the linter locally on your machine before committing using the `lint`
 target:

@@ -1,5 +1,13 @@
 goog.provide('ol.test.rendering.reproj.Image');
 
+goog.require('ol.events');
+goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
+goog.require('ol.reproj.Image');
+goog.require('ol.source.ImageStatic');
+goog.require('ol.tilegrid');
+
+
 describe('ol.rendering.reproj.Image', function() {
 
   function testSingleImage(source, targetProj,
@@ -14,9 +22,9 @@ describe('ol.rendering.reproj.Image', function() {
           imagesRequested++;
           return source.getImage(extent, resolution, pixelRatio, sourceProj);
         });
-    if (image.getState() == ol.ImageState.IDLE) {
+    if (image.getState() == 0) { // IDLE
       ol.events.listen(image, 'change', function(e) {
-        if (image.getState() == ol.ImageState.LOADED) {
+        if (image.getState() == 2) { // LOADED
           expect(imagesRequested).to.be(1);
           resembleCanvas(image.getImage(), expectedUrl, IMAGE_TOLERANCE, done);
         }
@@ -52,10 +60,3 @@ describe('ol.rendering.reproj.Image', function() {
     });
   });
 });
-
-goog.require('ol.events');
-goog.require('ol.proj');
-goog.require('ol.proj.EPSG3857');
-goog.require('ol.reproj.Image');
-goog.require('ol.source.ImageStatic');
-goog.require('ol.ImageState');

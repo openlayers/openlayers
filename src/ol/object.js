@@ -2,10 +2,10 @@ goog.provide('ol.Object');
 goog.provide('ol.ObjectEvent');
 goog.provide('ol.ObjectEventType');
 
+goog.require('ol');
 goog.require('ol.Observable');
-goog.require('ol.events');
 goog.require('ol.events.Event');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -102,11 +102,11 @@ ol.inherits(ol.ObjectEvent, ol.events.Event);
 ol.Object = function(opt_values) {
   ol.Observable.call(this);
 
-  // Call goog.getUid to ensure that the order of objects' ids is the same as
+  // Call ol.getUid to ensure that the order of objects' ids is the same as
   // the order in which they were created.  This also helps to ensure that
   // object properties are always added in the same order, which helps many
   // JavaScript engines generate faster code.
-  goog.getUid(this);
+  ol.getUid(this);
 
   /**
    * @private
@@ -170,7 +170,7 @@ ol.Object.prototype.getKeys = function() {
  * @api stable
  */
 ol.Object.prototype.getProperties = function() {
-  return ol.object.assign({}, this.values_);
+  return ol.obj.assign({}, this.values_);
 };
 
 

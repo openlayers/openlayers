@@ -1,5 +1,11 @@
 goog.provide('ol.test.MapBrowserEventHandler');
 
+goog.require('ol.events');
+goog.require('ol.Map');
+goog.require('ol.MapBrowserEventHandler');
+goog.require('ol.pointer.PointerEvent');
+
+
 describe('ol.MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {
     var clock;
@@ -110,8 +116,3 @@ describe('ol.MapBrowserEventHandler', function() {
 
   });
 });
-
-goog.require('ol.events');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEventHandler');
-goog.require('ol.pointer.PointerEvent');

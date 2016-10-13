@@ -1,6 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.format.ogc.filter');
+goog.require('ol.format.filter');
 goog.require('ol.format.WFS');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
@@ -40,16 +40,15 @@ var map = new ol.Map({
 });
 
 // generate a GetFeature request
-var f = ol.format.ogc.filter;
 var featureRequest = new ol.format.WFS().writeGetFeature({
   srsName: 'EPSG:3857',
   featureNS: 'http://openstreemap.org',
   featurePrefix: 'osm',
   featureTypes: ['water_areas'],
   outputFormat: 'application/json',
-  filter: f.and(
-    f.like('name', 'Mississippi*'),
-    f.equalTo('waterway', 'riverbank')
+  filter: ol.format.filter.and(
+    ol.format.filter.like('name', 'Mississippi*'),
+    ol.format.filter.equalTo('waterway', 'riverbank')
   )
 });
 

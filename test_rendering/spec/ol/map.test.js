@@ -1,5 +1,13 @@
 goog.provide('ol.test.rendering.Map');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.Map');
+goog.require('ol.View');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
+
+
 describe('ol.rendering.Map', function() {
 
   var target, map;
@@ -114,10 +122,3 @@ describe('ol.rendering.Map', function() {
     });
   });
 });
-
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
-goog.require('ol.Map');
-goog.require('ol.View');
-goog.require('ol.layer.Vector');
-goog.require('ol.source.Vector');

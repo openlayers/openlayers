@@ -1,6 +1,7 @@
 goog.provide('ol.TileUrlFunction');
 
-goog.require('goog.asserts');
+goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.math');
 goog.require('ol.tilecoord');
 
@@ -35,8 +36,7 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
               .replace(dashYRegEx, function() {
                 var z = tileCoord[0];
                 var range = tileGrid.getFullTileRange(z);
-                goog.asserts.assert(range,
-                    'The {-y} template requires a tile grid with extent');
+                ol.asserts.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
                 var y = range.getHeight() + tileCoord[2];
                 return y.toString();
               });
@@ -66,7 +66,7 @@ ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
 ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
-  goog.asserts.assert(tileUrlFunctions.length > 0,
+  ol.DEBUG && console.assert(tileUrlFunctions.length > 0,
       'Length of tile url functions should be greater than 0');
   if (tileUrlFunctions.length === 1) {
     return tileUrlFunctions[0];
@@ -107,16 +107,26 @@ ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, project
  */
 ol.TileUrlFunction.expandUrl = function(url) {
   var urls = [];
-  var match = /\{(\d)-(\d)\}/.exec(url) || /\{([a-z])-([a-z])\}/.exec(url);
+  var match = /\{([a-z])-([a-z])\}/.exec(url);
   if (match) {
+    // char range
     var startCharCode = match[1].charCodeAt(0);
     var stopCharCode = match[2].charCodeAt(0);
     var charCode;
     for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
       urls.push(url.replace(match[0], String.fromCharCode(charCode)));
     }
-  } else {
-    urls.push(url);
+    return urls;
   }
+  match = match = /\{(\d+)-(\d+)\}/.exec(url);
+  if (match) {
+    // number range
+    var stop = parseInt(match[2], 10);
+    for (var i = parseInt(match[1], 10); i <= stop; i++) {
+      urls.push(url.replace(match[0], i.toString()));
+    }
+    return urls;
+  }
+  urls.push(url);
   return urls;
 };

@@ -4,65 +4,10 @@
  */
 
 goog.provide('ol.Collection');
-goog.provide('ol.CollectionEvent');
-goog.provide('ol.CollectionEventType');
 
+goog.require('ol');
 goog.require('ol.events.Event');
 goog.require('ol.Object');
-
-
-/**
- * @enum {string}
- */
-ol.CollectionEventType = {
-  /**
-   * Triggered when an item is added to the collection.
-   * @event ol.CollectionEvent#add
-   * @api stable
-   */
-  ADD: 'add',
-  /**
-   * Triggered when an item is removed from the collection.
-   * @event ol.CollectionEvent#remove
-   * @api stable
-   */
-  REMOVE: 'remove'
-};
-
-
-/**
- * @classdesc
- * Events emitted by {@link ol.Collection} instances are instances of this
- * type.
- *
- * @constructor
- * @extends {ol.events.Event}
- * @implements {oli.CollectionEvent}
- * @param {ol.CollectionEventType} type Type.
- * @param {*=} opt_element Element.
- * @param {Object=} opt_target Target.
- */
-ol.CollectionEvent = function(type, opt_element, opt_target) {
-
-  ol.events.Event.call(this, type, opt_target);
-
-  /**
-   * The element that is added to or removed from the collection.
-   * @type {*}
-   * @api stable
-   */
-  this.element = opt_element;
-
-};
-ol.inherits(ol.CollectionEvent, ol.events.Event);
-
-
-/**
- * @enum {string}
- */
-ol.CollectionProperty = {
-  LENGTH: 'length'
-};
 
 
 /**
@@ -75,7 +20,7 @@ ol.CollectionProperty = {
  *
  * @constructor
  * @extends {ol.Object}
- * @fires ol.CollectionEvent
+ * @fires ol.Collection.Event
  * @param {!Array.<T>=} opt_array Array.
  * @template T
  * @api stable
@@ -168,7 +113,7 @@ ol.Collection.prototype.item = function(index) {
  * @api stable
  */
 ol.Collection.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.CollectionProperty.LENGTH));
+  return /** @type {number} */ (this.get(ol.Collection.Property.LENGTH));
 };
 
 
@@ -182,7 +127,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
-      new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
+      new ol.Collection.Event(ol.Collection.EventType.ADD, elem));
 };
 
 
@@ -240,7 +185,7 @@ ol.Collection.prototype.removeAt = function(index) {
   this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
-      new ol.CollectionEvent(ol.CollectionEventType.REMOVE, prev, this));
+      new ol.Collection.Event(ol.Collection.EventType.REMOVE, prev));
   return prev;
 };
 
@@ -257,9 +202,9 @@ ol.Collection.prototype.setAt = function(index, elem) {
     var prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-        new ol.CollectionEvent(ol.CollectionEventType.REMOVE, prev, this));
+        new ol.Collection.Event(ol.Collection.EventType.REMOVE, prev));
     this.dispatchEvent(
-        new ol.CollectionEvent(ol.CollectionEventType.ADD, elem, this));
+        new ol.Collection.Event(ol.Collection.EventType.ADD, elem));
   } else {
     var j;
     for (j = n; j < index; ++j) {
@@ -274,5 +219,58 @@ ol.Collection.prototype.setAt = function(index, elem) {
  * @private
  */
 ol.Collection.prototype.updateLength_ = function() {
-  this.set(ol.CollectionProperty.LENGTH, this.array_.length);
+  this.set(ol.Collection.Property.LENGTH, this.array_.length);
 };
+
+
+/**
+ * @enum {string}
+ */
+ol.Collection.Property = {
+  LENGTH: 'length'
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.Collection.EventType = {
+  /**
+   * Triggered when an item is added to the collection.
+   * @event ol.Collection.Event#add
+   * @api stable
+   */
+  ADD: 'add',
+  /**
+   * Triggered when an item is removed from the collection.
+   * @event ol.Collection.Event#remove
+   * @api stable
+   */
+  REMOVE: 'remove'
+};
+
+
+/**
+ * @classdesc
+ * Events emitted by {@link ol.Collection} instances are instances of this
+ * type.
+ *
+ * @constructor
+ * @extends {ol.events.Event}
+ * @implements {oli.Collection.Event}
+ * @param {ol.Collection.EventType} type Type.
+ * @param {*=} opt_element Element.
+ */
+ol.Collection.Event = function(type, opt_element) {
+
+  ol.events.Event.call(this, type);
+
+  /**
+   * The element that is added to or removed from the collection.
+   * @type {*}
+   * @api stable
+   */
+  this.element = opt_element;
+
+};
+ol.inherits(ol.Collection.Event, ol.events.Event);

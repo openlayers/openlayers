@@ -5,7 +5,7 @@ goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Cluster');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
@@ -13,6 +13,8 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
+
+var distance = document.getElementById('distance');
 
 var count = 20000;
 var features = new Array(count);
@@ -27,7 +29,7 @@ var source = new ol.source.Vector({
 });
 
 var clusterSource = new ol.source.Cluster({
-  distance: 40,
+  distance: parseInt(distance.value, 10),
   source: source
 });
 
@@ -62,15 +64,18 @@ var clusters = new ol.layer.Vector({
 });
 
 var raster = new ol.layer.Tile({
-  source: new ol.source.MapQuest({layer: 'sat'})
+  source: new ol.source.OSM()
 });
 
 var map = new ol.Map({
   layers: [raster, clusters],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View({
     center: [0, 0],
     zoom: 2
   })
+});
+
+distance.addEventListener('input', function() {
+  clusterSource.setDistance(parseInt(distance.value, 10));
 });

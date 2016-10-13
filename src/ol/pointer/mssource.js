@@ -30,6 +30,7 @@
 
 goog.provide('ol.pointer.MsSource');
 
+goog.require('ol');
 goog.require('ol.pointer.EventSource');
 
 
@@ -82,7 +83,7 @@ ol.inherits(ol.pointer.MsSource, ol.pointer.EventSource);
  */
 ol.pointer.MsSource.prototype.prepareEvent_ = function(inEvent) {
   var e = inEvent;
-  if (goog.isNumber(inEvent.pointerType)) {
+  if (typeof inEvent.pointerType === 'number') {
     e = this.dispatcher.cloneEvent(inEvent, inEvent);
     e.pointerType = this.POINTER_TYPES[inEvent.pointerType];
   }

@@ -1,3 +1,5 @@
+/* eslint-disable openlayers-internal/no-missing-requires */
+
 /**
  * File for all typedefs used by the compiler, and referenced by JSDoc.
  *
@@ -41,6 +43,13 @@ ol.AtlasManagerInfo;
 
 
 /**
+ * A type that can be used to provide attribution information for data sources.
+ *
+ * It represents either
+ * * a simple string (e.g. `'© Acme Inc.'`),
+ * * an array of simple strings (e.g. `['© Acme Inc.', '© Bacme Inc.']`),
+ * * an instance of `{@link ol.Attribution}`,
+ * * or an array with multiple `{@link ol.Attribution}` instances.
  * @typedef {string|Array.<string>|ol.Attribution|Array.<ol.Attribution>}
  */
 ol.AttributionLike;
@@ -73,7 +82,7 @@ ol.CanvasFunctionType;
  *            lineJoin: string,
  *            lineWidth: number,
  *            miterLimit: number,
- *            strokeStyle: string}}
+ *            strokeStyle: ol.ColorLike}}
  */
 ol.CanvasStrokeState;
 
@@ -93,7 +102,7 @@ ol.CenterConstraintType;
 
 
 /**
- * @typedef {{strokeStyle: (string|undefined), strokeWidth: number,
+ * @typedef {{strokeStyle: (ol.ColorLike|undefined), strokeWidth: number,
  *   size: number, lineDash: Array.<number>}}
  */
 ol.CircleRenderOptions;
@@ -110,7 +119,8 @@ ol.Color;
 
 
 /**
- * A type accepted by CanvasRenderingContext2D.fillStyle.
+ * A type accepted by CanvasRenderingContext2D.fillStyle
+ * or CanvasRenderingContext2D.strokeStyle.
  * Represents a color, pattern, or gradient.
  *
  * @typedef {string|CanvasPattern|CanvasGradient}
@@ -272,8 +282,8 @@ ol.ImageLoadFunctionType;
 
 
 /**
- * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
+ * @typedef {{x: number, xunits: (ol.style.Icon.AnchorUnits|undefined),
+ *            y: number, yunits: (ol.style.Icon.AnchorUnits|undefined)}}
  */
 ol.KMLVec2_;
 
@@ -300,7 +310,9 @@ ol.LayerState;
 
 
 /**
- * One of `all`, `bbox`, `tile`.
+ * A function that takes an {@link ol.Extent} and a resolution as arguments, and
+ * returns an array of {@link ol.Extent} with the extents to load. Usually this
+ * is one of the standard {@link ol.loadingstrategy} strategies.
  *
  * @typedef {function(ol.Extent, number): Array.<ol.Extent>}
  */
@@ -330,10 +342,18 @@ ol.MapOptionsInternal;
 
 
 /**
+ * An array representing an affine 2d transformation for use with
+ * {@link ol.transform} functions. The array has 6 elements.
+ * @typedef {Array.<number>}
+ */
+ol.Transform;
+
+
+/**
  * @typedef {{depth: (Array.<number>|undefined),
  *            feature: ol.Feature,
  *            geometry: ol.geom.SimpleGeometry,
- *            index: (number|undefined),
+ *            index: (number),
  *            segment: Array.<ol.Extent>}}
  */
 ol.ModifySegmentDataType;
@@ -393,7 +413,7 @@ ol.RasterOperation;
 
 /**
  * @typedef {{
- *   strokeStyle: (string|undefined),
+ *   strokeStyle: (ol.ColorLike|undefined),
  *   strokeWidth: number,
  *   size: number,
  *   lineCap: string,
@@ -597,7 +617,7 @@ ol.TilePriorityFunction;
  *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
  *     renderedTileRevision: number,
  *     renderedRevision: number,
- *     replayGroup: ol.render.IReplayGroup,
+ *     replayGroup: ol.render.ReplayGroup,
  *     skippedFeatures: Array.<string>}}
  */
 ol.TileReplayState;
@@ -686,3 +706,10 @@ ol.XmlParser;
  * @typedef {function(Node, *, Array.<*>)}
  */
 ol.XmlSerializer;
+
+
+/**
+ * @typedef {{minX: number, minY: number, maxX: number, maxY: number,
+ *            value: (Object|undefined)}}
+ */
+ol.RBushEntry;

@@ -4,16 +4,16 @@ title: Raster Reprojection
 shortdesc: Demonstrates client-side raster reprojection between various projections.
 docs: >
   This example shows client-side raster reprojection between various projections.
-tags: "reprojection, projection, proj4js, mapquest, wms, wmts, hidpi"
+tags: "reprojection, projection, proj4js, osm, wms, wmts, hidpi"
 resources:
-  - http://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js
+  - https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js
 ---
 <div id="map" class="map"></div>
 <form class="form-inline">
   <div class="col-md-3">
     <label>Base map:</label>
     <select id="base-layer">
-      <option value="mapquest">MapQuest (EPSG:3857)</option>
+      <option value="osm">OSM (EPSG:3857)</option>
       <option value="wms4326">WMS (EPSG:4326)</option>
     </select>
   </div>

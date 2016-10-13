@@ -1,5 +1,8 @@
 goog.provide('ol.test.array');
 
+goog.require('ol.array');
+
+
 describe('ol.array', function() {
 
   describe('binarySearch', function() {
@@ -304,28 +307,6 @@ describe('ol.array', function() {
     });
   });
 
-  describe('binaryFindNearest', function() {
-    it('returns expected value', function() {
-      var arr = [1000, 500, 100];
-
-      expect(ol.array.binaryFindNearest(arr, 10000)).to.eql(0);
-      expect(ol.array.binaryFindNearest(arr, 1000)).to.eql(0);
-      expect(ol.array.binaryFindNearest(arr, 900)).to.eql(0);
-
-      expect(ol.array.binaryFindNearest(arr, 750)).to.eql(1);
-
-      expect(ol.array.binaryFindNearest(arr, 550)).to.eql(1);
-      expect(ol.array.binaryFindNearest(arr, 500)).to.eql(1);
-      expect(ol.array.binaryFindNearest(arr, 450)).to.eql(1);
-
-      expect(ol.array.binaryFindNearest(arr, 300)).to.eql(2);
-
-      expect(ol.array.binaryFindNearest(arr, 200)).to.eql(2);
-      expect(ol.array.binaryFindNearest(arr, 100)).to.eql(2);
-      expect(ol.array.binaryFindNearest(arr, 50)).to.eql(2);
-    });
-  });
-
   describe('equals', function() {
     it('returns true for [] == []', function() {
       expect(ol.array.equals([], [])).to.be(true);
@@ -372,18 +353,6 @@ describe('ol.array', function() {
       ol.array.extend(a, 2);
       expect(a).to.eql([0, 1, 2]);
     });
-    it('extends an array in place with an arraylike object', function() {
-      var a = [0, 1];
-      var arrayLikeObject = {0: 2, 1: 3, length: 2};
-      ol.array.extend(a, arrayLikeObject);
-      expect(a).to.eql([0, 1, 2, 3]);
-    });
-    it('extends an array in place with an empty arraylike object', function() {
-      var a = [0, 1];
-      var arrayLikeObject = {length: 0};
-      ol.array.extend(a, arrayLikeObject);
-      expect(a).to.eql([0, 1]);
-    });
     it('extends an array in place with a big array', function() {
       var a = [];
       var i = 250000; // original test has 1.000.000, but that was too slow
@@ -393,20 +362,6 @@ describe('ol.array', function() {
       }
       ol.array.extend(a, bigArray);
       expect(a).to.eql(bigArray);
-    });
-    it('extends an array in place with arguments', function() {
-      var f = function() {
-        return arguments;
-      };
-      var a = [0];
-      ol.array.extend(a, f(1, 2, 3));
-      expect(a).to.eql([0, 1, 2, 3]);
-    });
-    it('extends an array with a NodeList (from querySelectorAll)', function() {
-      var a = [];
-      ol.array.extend(a, document.querySelectorAll('head'));
-      expect(a.length).to.be(1);
-      expect(a[0]).to.be(document.head);
     });
   });
 
@@ -615,5 +570,3 @@ describe('ol.array', function() {
   });
 
 });
-
-goog.require('ol.array');

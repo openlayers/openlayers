@@ -30,11 +30,12 @@
 
 goog.provide('ol.pointer.PointerEventHandler');
 
-goog.require('goog.dom');
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 
 goog.require('ol.has');
+goog.require('ol.pointer.EventType');
 goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.MsSource');
 goog.require('ol.pointer.NativeSource');
@@ -334,10 +335,10 @@ ol.pointer.PointerEventHandler.prototype.enterOver = function(data, event) {
  *   contains the other element.
  */
 ol.pointer.PointerEventHandler.prototype.contains_ = function(container, contained) {
-  if (!contained) {
+  if (!container || !contained) {
     return false;
   }
-  return goog.dom.contains(container, contained);
+  return container.contains(contained);
 };
 
 
@@ -399,22 +400,6 @@ ol.pointer.PointerEventHandler.prototype.wrapMouseEvent = function(eventType, ev
 ol.pointer.PointerEventHandler.prototype.disposeInternal = function() {
   this.unregister_();
   ol.events.EventTarget.prototype.disposeInternal.call(this);
-};
-
-
-/**
- * Constants for event names.
- * @enum {string}
- */
-ol.pointer.EventType = {
-  POINTERMOVE: 'pointermove',
-  POINTERDOWN: 'pointerdown',
-  POINTERUP: 'pointerup',
-  POINTEROVER: 'pointerover',
-  POINTEROUT: 'pointerout',
-  POINTERENTER: 'pointerenter',
-  POINTERLEAVE: 'pointerleave',
-  POINTERCANCEL: 'pointercancel'
 };
 
 

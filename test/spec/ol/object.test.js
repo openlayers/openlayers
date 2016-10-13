@@ -1,5 +1,9 @@
 goog.provide('ol.test.Object');
 
+goog.require('ol.Object');
+goog.require('ol.events');
+
+
 describe('ol.Object', function() {
 
   var o;
@@ -116,7 +120,7 @@ describe('ol.Object', function() {
       ol.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      ol.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
+      ol.events.listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events', function() {
@@ -149,7 +153,7 @@ describe('ol.Object', function() {
       ol.events.listen(o, 'change:k', listener1);
 
       listener2 = sinon.spy();
-      ol.events.listen(o, ol.ObjectEventType.PROPERTYCHANGE, listener2);
+      ol.events.listen(o, 'propertychange', listener2);
     });
 
     it('dispatches events to object', function() {
@@ -237,8 +241,3 @@ describe('ol.Object', function() {
   });
 
 });
-
-
-goog.require('ol.Object');
-goog.require('ol.ObjectEventType');
-goog.require('ol.events');

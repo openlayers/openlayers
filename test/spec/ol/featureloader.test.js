@@ -1,5 +1,14 @@
 goog.provide('ol.test.featureloader');
 
+goog.require('ol.events');
+goog.require('ol.VectorTile');
+goog.require('ol.featureloader');
+goog.require('ol.format.GeoJSON');
+goog.require('ol.format.MVT');
+goog.require('ol.proj');
+goog.require('ol.source.Vector');
+
+
 describe('ol.featureloader', function() {
 
   describe('ol.featureloader.xhr', function() {
@@ -17,7 +26,7 @@ describe('ol.featureloader', function() {
 
     it('adds features to the source', function(done) {
       loader = ol.featureloader.xhr(url, format);
-      source.on(ol.source.VectorEventType.ADDFEATURE, function(e) {
+      source.on('addfeature', function(e) {
         expect(source.getFeatures().length).to.be.greaterThan(0);
         done();
       });
@@ -31,7 +40,7 @@ describe('ol.featureloader', function() {
         };
         loader = ol.featureloader.xhr(url, format);
 
-        source.on(ol.source.VectorEventType.ADDFEATURE, function(e) {
+        source.on('addfeature', function(e) {
           expect(source.getFeatures().length).to.be.greaterThan(0);
           done();
         });
@@ -92,12 +101,3 @@ describe('ol.featureloader', function() {
   });
 
 });
-
-goog.require('ol.events');
-goog.require('ol.VectorTile');
-goog.require('ol.featureloader');
-goog.require('ol.format.GeoJSON');
-goog.require('ol.format.MVT');
-goog.require('ol.proj');
-goog.require('ol.source.Vector');
-goog.require('ol.source.VectorEventType');

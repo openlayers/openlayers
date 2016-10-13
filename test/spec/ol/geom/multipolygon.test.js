@@ -1,5 +1,8 @@
 goog.provide('ol.test.geom.MultiPolygon');
 
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
+
 
 describe('ol.geom.MultiPolygon', function() {
 
@@ -51,6 +54,37 @@ describe('ol.geom.MultiPolygon', function() {
         [[[3, 0], [4, 1], [5, 2], [5, 0]]]
       ]);
       expect(multiPolygon.getPolygons().length).to.eql(2);
+    });
+
+  });
+
+  describe('#scale()', function() {
+
+    it('scales a multi-polygon', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(10);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-10, -20], [10, -20], [10, 20], [-10, 20], [-10, -20]]]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(2, 3);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-2, -6], [2, -6], [2, 6], [-2, 6], [-2, -6]]]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(3, 2, [-1, -2]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-1, -2], [5, -2], [5, 6], [-1, 6], [-1, -2]]]]);
     });
 
   });
@@ -162,7 +196,3 @@ describe('ol.geom.MultiPolygon', function() {
   });
 
 });
-
-
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Polygon');

@@ -56,8 +56,7 @@ Below is a complete `build.json` configuration file that would generate a 'full'
       "externs/topojson.js"
     ],
     "define": [
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.DEBUG=false"
+      "ol.DEBUG=false"
     ],
     "compilation_level": "ADVANCED",
     "output_wrapper": "(function(){%output%})();",
@@ -109,6 +108,14 @@ Called internally to parse the library for annotations and write out a `build/in
 ## `build-examples.js`
 
 Builds examples and the example index.
+
+## `check-example.js`
+
+Runs an example in PhantomJS and returns an exit code != 0 after printing a stack trace when something is wrong with the example.
+
+To check the `simple.html` example when on master, first run the `build-examples.js` task, then invoke
+
+    node tasks/check-example.js build/hosted/master/simple.html
 
 
 ## `serve.js`

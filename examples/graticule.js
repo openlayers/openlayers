@@ -13,7 +13,6 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderer: 'canvas',
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([4.8, 47.75]),

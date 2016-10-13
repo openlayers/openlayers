@@ -1,20 +1,14 @@
 goog.provide('ol.test.TileCoord');
 
+goog.require('ol.tilecoord');
+goog.require('ol.tilegrid.TileGrid');
+
+
 describe('ol.TileCoord', function() {
 
   describe('create', function() {
     it('sets x y z properties as expected', function() {
       var tileCoord = [1, 2, 3];
-      expect(tileCoord[0]).to.eql(1);
-      expect(tileCoord[1]).to.eql(2);
-      expect(tileCoord[2]).to.eql(3);
-    });
-  });
-
-  describe('create from string', function() {
-    it('sets x y z properties as expected', function() {
-      var str = '1/2/3';
-      var tileCoord = ol.tilecoord.createFromString(str);
       expect(tileCoord[0]).to.eql(1);
       expect(tileCoord[1]).to.eql(2);
       expect(tileCoord[2]).to.eql(3);
@@ -112,6 +106,3 @@ describe('ol.TileCoord', function() {
   });
 
 });
-
-goog.require('ol.tilecoord');
-goog.require('ol.tilegrid.TileGrid');

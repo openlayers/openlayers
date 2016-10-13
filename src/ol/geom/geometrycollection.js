@@ -1,11 +1,12 @@
 goog.provide('ol.geom.GeometryCollection');
 
+goog.require('ol');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
-goog.require('ol.object');
+goog.require('ol.obj');
 
 
 /**
@@ -160,7 +161,7 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
  */
 ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
-    ol.object.clear(this.simplifiedGeometryCache);
+    ol.obj.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
@@ -239,6 +240,23 @@ ol.geom.GeometryCollection.prototype.rotate = function(angle, anchor) {
   var geometries = this.geometries_;
   for (var i = 0, ii = geometries.length; i < ii; ++i) {
     geometries[i].rotate(angle, anchor);
+  }
+  this.changed();
+};
+
+
+/**
+ * @inheritDoc
+ * @api
+ */
+ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
+  var anchor = opt_anchor;
+  if (!anchor) {
+    anchor = ol.extent.getCenter(this.getExtent());
+  }
+  var geometries = this.geometries_;
+  for (var i = 0, ii = geometries.length; i < ii; ++i) {
+    geometries[i].scale(sx, opt_sy, anchor);
   }
   this.changed();
 };

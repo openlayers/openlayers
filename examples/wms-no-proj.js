@@ -1,4 +1,3 @@
-goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.layer.Image');
@@ -18,7 +17,7 @@ var layers = [
         'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
         'FORMAT': 'image/jpeg'
       },
-      url: 'http://wms.geo.admin.ch/'
+      url: 'https://wms.geo.admin.ch/'
     })
   }),
   new ol.layer.Image({
@@ -28,7 +27,7 @@ var layers = [
       crossOrigin: 'anonymous',
       params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       serverType: 'mapserver',
-      url: 'http://wms.geo.admin.ch/'
+      url: 'https://wms.geo.admin.ch/'
     })
   })
 ];
@@ -45,7 +44,6 @@ var projection = new ol.proj.Projection({
 
 var map = new ol.Map({
   layers: layers,
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [660000, 190000],

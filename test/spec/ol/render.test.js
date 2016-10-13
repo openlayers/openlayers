@@ -1,5 +1,12 @@
 goog.provide('ol.test.render');
 
+goog.require('ol.array');
+goog.require('ol.has');
+goog.require('ol.render');
+goog.require('ol.render.canvas.Immediate');
+goog.require('ol.transform');
+
+
 describe('ol.render', function() {
 
   describe('toContext', function() {
@@ -22,16 +29,10 @@ describe('ol.render', function() {
           [0, 0, size[0] * pixelRatio, size[1] * pixelRatio]);
       expect(canvas.style.width).to.be(size[0] + 'px');
       expect(canvas.style.height).to.be(size[1] + 'px');
-      var transform = ol.vec.Mat4.makeTransform2D(goog.vec.Mat4.createNumber(),
-          0, 0, pixelRatio, pixelRatio, 0, 0, 0);
-      expect(ol.vec.Mat4.equals2D(render.transform_, transform)).to.be.ok();
+      var transform = ol.transform.scale(ol.transform.create(),
+          pixelRatio, pixelRatio);
+      expect(ol.array.equals(render.transform_, transform)).to.be.ok();
     });
   });
 
 });
-
-
-goog.require('goog.vec.Mat4');
-goog.require('ol.render');
-goog.require('ol.render.canvas.Immediate');
-goog.require('ol.vec.Mat4');

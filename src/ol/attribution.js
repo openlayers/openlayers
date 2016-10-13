@@ -2,6 +2,7 @@ goog.provide('ol.Attribution');
 
 goog.require('ol.TileRange');
 goog.require('ol.math');
+goog.require('ol.tilegrid');
 
 
 /**

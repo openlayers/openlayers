@@ -1,5 +1,7 @@
 goog.provide('ol.test.color');
 
+goog.require('ol.color');
+
 
 describe('ol.color', function() {
 
@@ -81,15 +83,13 @@ describe('ol.color', function() {
           [255, 255, 0, 0.1]);
     });
 
-    if (ol.ENABLE_NAMED_COLORS) {
-      it('caches parsed values', function() {
-        var count = ol.color.fromStringInternal_.callCount;
-        ol.color.fromString('aquamarine');
-        expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
-        ol.color.fromString('aquamarine');
-        expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
-      });
-    }
+    it('caches parsed values', function() {
+      var count = ol.color.fromStringInternal_.callCount;
+      ol.color.fromString('aquamarine');
+      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+      ol.color.fromString('aquamarine');
+      expect(ol.color.fromStringInternal_.callCount).to.be(count + 1);
+    });
 
     it('throws an error on invalid colors', function() {
       var invalidColors = ['tuesday', '#1234567', 'rgb(255.0,0,0)'];
@@ -99,28 +99,6 @@ describe('ol.color', function() {
           ol.color.fromString(invalidColors[i]);
         }).to.throwException();
       }
-    });
-
-  });
-
-  describe('ol.color.isValid', function() {
-
-    it('identifies valid colors', function() {
-      expect(ol.color.isValid([0, 0, 0, 0])).to.be(true);
-      expect(ol.color.isValid([255, 255, 255, 1])).to.be(true);
-    });
-
-    it('identifies out-of-range channels', function() {
-      expect(ol.color.isValid([-1, 0, 0, 0])).to.be(false);
-      expect(ol.color.isValid([256, 0, 0, 0])).to.be(false);
-      expect(ol.color.isValid([0, -1, 0, 0])).to.be(false);
-      expect(ol.color.isValid([0, 256, 0, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, -1, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, 256, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, -1, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, 256, 0])).to.be(false);
-      expect(ol.color.isValid([0, 0, 0, -1])).to.be(false);
-      expect(ol.color.isValid([0, 0, 0, 2])).to.be(false);
     });
 
   });
@@ -153,6 +131,3 @@ describe('ol.color', function() {
 
   });
 });
-
-
-goog.require('ol.color');

@@ -1,10 +1,10 @@
 goog.provide('ol.control.Control');
 
-goog.require('goog.dom');
 goog.require('ol.events');
 goog.require('ol');
-goog.require('ol.MapEventType');
+goog.require('ol.MapEvent');
 goog.require('ol.Object');
+goog.require('ol.dom');
 
 
 /**
@@ -81,7 +81,7 @@ ol.inherits(ol.control.Control, ol.Object);
  * @inheritDoc
  */
 ol.control.Control.prototype.disposeInternal = function() {
-  goog.dom.removeNode(this.element);
+  ol.dom.removeNode(this.element);
   ol.Object.prototype.disposeInternal.call(this);
 };
 
@@ -105,7 +105,7 @@ ol.control.Control.prototype.getMap = function() {
  */
 ol.control.Control.prototype.setMap = function(map) {
   if (this.map_) {
-    goog.dom.removeNode(this.element);
+    ol.dom.removeNode(this.element);
   }
   for (var i = 0, ii = this.listenerKeys.length; i < ii; ++i) {
     ol.events.unlistenByKey(this.listenerKeys[i]);
@@ -118,7 +118,7 @@ ol.control.Control.prototype.setMap = function(map) {
     target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(ol.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.render, this));
+          ol.MapEvent.Type.POSTRENDER, this.render, this));
     }
     map.render();
   }
@@ -135,5 +135,7 @@ ol.control.Control.prototype.setMap = function(map) {
  * @api
  */
 ol.control.Control.prototype.setTarget = function(target) {
-  this.target_ = goog.dom.getElement(target);
+  this.target_ = typeof target === 'string' ?
+    document.getElementById(target) :
+    target;
 };

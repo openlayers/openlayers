@@ -1,5 +1,7 @@
 goog.provide('ol.test.format.WMSCapabilities');
 
+goog.require('ol.format.WMSCapabilities');
+
 describe('ol.format.WMSCapabilities', function() {
 
   describe('when parsing ogcsample.xml', function() {
@@ -144,5 +146,3 @@ describe('ol.format.WMSCapabilities', function() {
 
   });
 });
-
-goog.require('ol.format.WMSCapabilities');

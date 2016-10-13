@@ -1,5 +1,12 @@
 goog.provide('ol.test.pointer.MouseSource');
 
+goog.require('ol.events');
+goog.require('ol.events.EventTarget');
+goog.require('ol.has');
+goog.require('ol.pointer.PointerEventHandler');
+goog.require('ol.pointer.TouchSource');
+
+
 describe('ol.pointer.MouseSource', function() {
   var handler;
   var target;
@@ -88,11 +95,3 @@ describe('ol.pointer.MouseSource', function() {
     target.dispatchEvent(event);
   }
 });
-
-goog.require('ol.events');
-goog.require('ol.events.EventTarget');
-goog.require('ol.has');
-goog.require('ol.pointer.MouseSource');
-goog.require('ol.pointer.PointerEvent');
-goog.require('ol.pointer.PointerEventHandler');
-goog.require('ol.pointer.TouchSource');

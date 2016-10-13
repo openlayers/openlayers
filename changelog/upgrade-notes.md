@@ -1,5 +1,113 @@
 ## Upgrade notes
 
+#### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`
+
+Previously, gradients and patterns were aligned with the canvas, so they did not
+move and rotate with the map. This was changed to a more expected behavior by anchoring the fill to the map origin (usually at map coordinate `[0, 0]`).
+
+#### `goog.DEBUG` define was renamed to `ol.DEBUG`
+
+As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
+
+#### `ol.format.ogc.filter` namespace was renamed to `ol.format.filter`
+
+`ol.format.ogc.filter` was simplified to `ol.format.filter`; to upgrade your code, simply remove the `ogc` string from the name.
+For example: `ol.format.ogc.filter.and` to `ol.format.filter.and`.
+
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.CollectionProperty` to `ol.Collection.Property`
+ * rename `ol.DeviceOrientationProperty` to `ol.DeviceOrientation.Property`
+ * rename `ol.DragBoxEvent` to `ol.interaction.DragBox.Event`
+ * rename `ol.DragBoxEventType` to `ol.interaction.DragBox.EventType`
+ * rename `ol.GeolocationProperty` to `ol.Geolocation.Property`
+ * rename `ol.OverlayPositioning` to `ol.Overlay.Positioning`
+ * rename `ol.OverlayProperty` to `ol.Overlay.Property`
+ * rename `ol.control.MousePositionProperty` to `ol.control.MousePosition.Property`
+ * rename `ol.format.IGCZ` to `ol.format.IGC.Z`
+ * rename `ol.interaction.InteractionProperty` to `ol.interaction.Interaction.Property`
+ * rename `ol.interaction.DrawMode` to `ol.interaction.Draw.Mode`
+ * rename `ol.interaction.DrawEvent` to `ol.interaction.Draw.Event`
+ * rename `ol.interaction.DrawEventType` to `ol.interaction.Draw.EventType`
+ * rename `ol.interaction.ExtentEvent` to `ol.interaction.Extent.Event`
+ * rename `ol.interaction.ExtentEventType` to `ol.interaction.Extent.EventType`
+ * rename `ol.interaction.DragAndDropEvent` to `ol.interaction.DragAndDrop.Event`
+ * rename `ol.interaction.DragAndDropEventType` to `ol.interaction.DragAndDrop.EventType`
+ * rename `ol.interaction.ModifyEvent` to `ol.interaction.Modify.Event`
+ * rename `ol.interaction.SelectEvent` to `ol.interaction.Select.Event`
+ * rename `ol.interaction.SelectEventType` to `ol.interaction.Select.EventType`
+ * rename `ol.interaction.TranslateEvent` to `ol.interaction.Translate.Event`
+ * rename `ol.interaction.TranslateEventType` to `ol.interaction.Translate.EventType`
+ * rename `ol.layer.GroupProperty` to `ol.layer.Group.Property`
+ * rename `ol.layer.HeatmapLayerProperty` to `ol.layer.Heatmap.Property`
+ * rename `ol.layer.TileProperty` to `ol.layer.Tile.Property`
+ * rename `ol.layer.VectorTileRenderType` to `ol.layer.VectorTile.RenderType`
+ * rename `ol.MapEventType` to `ol.MapEvent.Type`
+ * rename `ol.MapProperty` to `ol.Map.Property`
+ * rename `ol.ModifyEventType` to `ol.interaction.Modify.EventType`
+ * rename `ol.RendererType` to `ol.renderer.Type`
+ * rename `ol.render.EventType` to `ol.render.Event.Type`
+ * rename `ol.source.ImageEvent` to `ol.source.Image.Event`
+ * rename `ol.source.ImageEventType` to `ol.source.Image.EventType`
+ * rename `ol.source.RasterEvent` to `ol.source.Raster.Event`
+ * rename `ol.source.RasterEventType` to `ol.source.Raster.EventType`
+ * rename `ol.source.TileEvent` to `ol.source.Tile.Event`
+ * rename `ol.source.TileEventType` to `ol.source.Tile.EventType`
+ * rename `ol.source.VectorEvent` to `ol.source.Vector.Event`
+ * rename `ol.source.VectorEventType` to `ol.source.Vector.EventType`
+ * rename `ol.source.wms.ServerType` to `ol.source.WMSServerType`
+ * rename `ol.source.WMTSRequestEncoding` to `ol.source.WMTS.RequestEncoding`
+ * rename `ol.style.IconAnchorUnits` to `ol.style.Icon.AnchorUnits`
+ * rename `ol.style.IconOrigin` to `ol.style.Icon.Origin`
+
+### v3.18.0
+
+#### Removal of the DOM renderer
+
+The DOM renderer has been removed.  Instead, the Canvas renderer should be used.  If you were previously constructing a map with `'dom'` as the `renderer` option, you will see an error message in the console in debug mode and the Canvas renderer will be used instead.  To remove the warning, remove the `renderer` option from your map constructor.
+
+#### Changes in the way assertions are handled
+
+Previously, minified builds of the library did not have any assertions. This caused applications to fail silently or with cryptic stack traces. Starting with this release, developers get notified of many runtime errors through the new `ol.AssertionError`. This error has a `code` property. The meaning of the code can be found on http://openlayers.org/en/latest/doc/errors/. There are additional console assertion checks in debug mode when the `goog.DEBUG` compiler flag is `true`. As this is `true` by default, it is recommended that those creating custom builds set this to `false` so these assertions are stripped.'
+
+#### Removal of `ol.ENABLE_NAMED_COLORS`
+
+This option was previously needed to use named colors with the WebGL renderer but is no longer needed.
+
+#### KML format now uses URL()
+
+The URL constructor is supported by all modern browsers, but not by older ones, such as IE. To use the KML format in such older browsers, a URL polyfill will have to be loaded before use.
+
+#### Changes only relevant to those who compile their applications together with the Closure Compiler
+
+A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
+
+ * rename `ol.CollectionEventType` to `ol.Collection.EventType`
+ * rename `ol.CollectionEvent` to `ol.Collection.Event`
+ * rename `ol.ViewHint` to `ol.View.Hint`
+ * rename `ol.ViewProperty` to `ol.View.Property`
+ * rename `ol.render.webgl.imagereplay.shader.Default.Locations` to `ol.render.webgl.imagereplay.defaultshader.Locations`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultFragment` to `ol.render.webgl.imagereplay.defaultshader.Fragment`
+ * rename `ol.render.webgl.imagereplay.shader.DefaultVertex` to `ol.render.webgl.imagereplay.defaultshader.Vertex`
+ * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
+ * rename `ol.renderer.webgl.map.shader.Default.Locations` to `ol.renderer.webgl.defaultmapshader.Locations`
+ * rename `ol.renderer.webgl.map.shader.DefaultFragment` to `ol.renderer.webgl.defaultmapshader.Fragment`
+ * rename `ol.renderer.webgl.map.shader.DefaultVertex` to `ol.renderer.webgl.defaultmapshader.Vertex`
+ * rename `ol.renderer.webgl.tilelayer.shader.Fragment` to `ol.renderer.webgl.tilelayershader.Fragment`
+ * rename `ol.renderer.webgl.tilelayer.shader.Locations` to `ol.renderer.webgl.tilelayershader.Locations`
+ * rename `ol.renderer.webgl.tilelayer.shader.Vertex` to `ol.renderer.webgl.tilelayershader.Vertex`
+ * rename `ol.webgl.WebGLContextEventType` to `ol.webgl.ContextEventType`
+ * rename `ol.webgl.shader.Fragment` to `ol.webgl.Fragment`
+ * rename `ol.webgl.shader.Vertex` to `ol.webgl.Vertex`
+
+### v3.17.0
+
+#### `ol.source.MapQuest` removal
+
+Because of changes at MapQuest (see: https://lists.openstreetmap.org/pipermail/talk/2016-June/076106.html) we had to remove the MapQuest source for now (see https://github.com/openlayers/ol3/issues/5484 for details).
+
 #### `ol.interaction.ModifyEvent` changes
 
 The event object previously had a `mapBrowserPointerEvent` property, which has been renamed to `mapBrowserEvent`.

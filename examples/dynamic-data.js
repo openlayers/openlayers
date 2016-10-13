@@ -1,10 +1,9 @@
-goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
@@ -14,10 +13,9 @@ goog.require('ol.style.Style');
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuest({layer: 'sat'})
+      source: new ol.source.OSM()
     })
   ],
-  renderer: common.getRendererFromQueryString(),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

@@ -1,5 +1,9 @@
 goog.provide('ol.test.reproj');
 
+goog.require('ol.reproj');
+goog.require('ol.proj');
+
+
 describe('ol.reproj', function() {
 
   describe('#calculateSourceResolution', function() {
@@ -40,7 +44,3 @@ describe('ol.reproj', function() {
     });
   });
 });
-
-
-goog.require('ol.reproj');
-goog.require('ol.proj');

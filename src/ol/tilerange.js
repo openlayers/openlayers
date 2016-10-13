@@ -1,7 +1,5 @@
 goog.provide('ol.TileRange');
 
-goog.require('goog.asserts');
-
 
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
@@ -36,34 +34,6 @@ ol.TileRange = function(minX, maxX, minY, maxY) {
    */
   this.maxY = maxY;
 
-};
-
-
-/**
- * @param {...ol.TileCoord} var_args Tile coordinates.
- * @return {!ol.TileRange} Bounding tile box.
- */
-ol.TileRange.boundingTileRange = function(var_args) {
-  var tileCoord0 = /** @type {ol.TileCoord} */ (arguments[0]);
-  var tileCoord0Z = tileCoord0[0];
-  var tileCoord0X = tileCoord0[1];
-  var tileCoord0Y = tileCoord0[2];
-  var tileRange = new ol.TileRange(tileCoord0X, tileCoord0X,
-                                   tileCoord0Y, tileCoord0Y);
-  var i, ii, tileCoord, tileCoordX, tileCoordY, tileCoordZ;
-  for (i = 1, ii = arguments.length; i < ii; ++i) {
-    tileCoord = /** @type {ol.TileCoord} */ (arguments[i]);
-    tileCoordZ = tileCoord[0];
-    tileCoordX = tileCoord[1];
-    tileCoordY = tileCoord[2];
-    goog.asserts.assert(tileCoordZ == tileCoord0Z,
-        'passed tilecoords all have the same Z-value');
-    tileRange.minX = Math.min(tileRange.minX, tileCoordX);
-    tileRange.maxX = Math.max(tileRange.maxX, tileCoordX);
-    tileRange.minY = Math.min(tileRange.minY, tileCoordY);
-    tileRange.maxY = Math.max(tileRange.maxY, tileCoordY);
-  }
-  return tileRange;
 };
 
 

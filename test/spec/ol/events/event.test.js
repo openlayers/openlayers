@@ -1,5 +1,6 @@
 goog.provide('ol.test.events.Event');
 
+goog.require('ol.events.Event');
 
 describe('ol.events.Event', function() {
 
@@ -7,11 +8,6 @@ describe('ol.events.Event', function() {
     it('takes a type as argument', function() {
       var event = new ol.events.Event('foo');
       expect(event.type).to.be('foo');
-    });
-    it('can be constructed with an optional 2nd target arg', function() {
-      var target = {id: 1};
-      var event = new ol.events.Event('foo', target);
-      expect(event.target).to.equal(target);
     });
     it('does not set the propagationStopped flag', function() {
       var event = new ol.events.Event('foo');
@@ -52,6 +48,3 @@ describe('ol.events.Event', function() {
   });
 
 });
-
-
-goog.require('ol.events.Event');

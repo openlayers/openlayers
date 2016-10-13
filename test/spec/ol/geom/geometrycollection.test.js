@@ -1,6 +1,10 @@
 goog.provide('ol.test.geom.GeometryCollection');
 
-goog.require('ol.extent');
+goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 
 describe('ol.geom.GeometryCollection', function() {
 
@@ -170,6 +174,43 @@ describe('ol.geom.GeometryCollection', function() {
 
   });
 
+  describe('#scale()', function() {
+
+    it('scales a collection', function() {
+      var geom = new ol.geom.GeometryCollection([
+        new ol.geom.Point([-1, -2]),
+        new ol.geom.LineString([[0, 0], [1, 2]])
+      ]);
+      geom.scale(10);
+      var geometries = geom.getGeometries();
+      expect(geometries[0].getCoordinates()).to.eql([-10, -20]);
+      expect(geometries[1].getCoordinates()).to.eql([[0, 0], [10, 20]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.GeometryCollection([
+        new ol.geom.Point([-1, -2]),
+        new ol.geom.LineString([[0, 0], [1, 2]])
+      ]);
+      geom.scale(2, 3);
+      var geometries = geom.getGeometries();
+      expect(geometries[0].getCoordinates()).to.eql([-2, -6]);
+      expect(geometries[1].getCoordinates()).to.eql([[0, 0], [2, 6]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.GeometryCollection([
+        new ol.geom.Point([-1, -2]),
+        new ol.geom.LineString([[0, 0], [1, 2]])
+      ]);
+      geom.scale(10, 15, [-1, -2]);
+      var geometries = geom.getGeometries();
+      expect(geometries[0].getCoordinates()).to.eql([-1, -2]);
+      expect(geometries[1].getCoordinates()).to.eql([[9, 28], [19, 58]]);
+    });
+
+  });
+
   describe('#transform()', function() {
 
     var line, multi, point;
@@ -200,10 +241,3 @@ describe('ol.geom.GeometryCollection', function() {
   });
 
 });
-
-
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');

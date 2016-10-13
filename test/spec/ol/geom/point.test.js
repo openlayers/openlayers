@@ -1,5 +1,7 @@
 goog.provide('ol.test.geom.Point');
 
+goog.require('ol.geom.Point');
+
 
 describe('ol.geom.Point', function() {
 
@@ -17,7 +19,7 @@ describe('ol.geom.Point', function() {
     });
 
     it('has the expected layout', function() {
-      expect(point.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(point.getLayout()).to.be('XY');
     });
 
     it('has the expected coordinates', function() {
@@ -50,11 +52,11 @@ describe('ol.geom.Point', function() {
 
     var point;
     beforeEach(function() {
-      point = new ol.geom.Point([1, 2, 3], ol.geom.GeometryLayout.XYM);
+      point = new ol.geom.Point([1, 2, 3], 'XYM');
     });
 
     it('has the expected layout', function() {
-      expect(point.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(point.getLayout()).to.be('XYM');
     });
 
     it('has the expected coordinates', function() {
@@ -91,7 +93,7 @@ describe('ol.geom.Point', function() {
     });
 
     it('has the expected layout', function() {
-      expect(point.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+      expect(point.getLayout()).to.be('XYZM');
     });
 
     it('has the expected coordinates', function() {
@@ -125,6 +127,31 @@ describe('ol.geom.Point', function() {
         expect(closestPoint).to.eql([1, 2, 3, 4]);
       });
 
+    });
+
+  });
+
+  describe('#scale()', function() {
+
+    it('scales a point', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(10e6);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([1, 2]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(1e6, -42);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([1, 2]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(10, 15, [0, 0]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([10, 30]);
     });
 
   });
@@ -191,8 +218,3 @@ describe('ol.geom.Point', function() {
   });
 
 });
-
-
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.Point');

@@ -1,13 +1,12 @@
 // NOCOMPILE
 // this example uses turf.js for which we don't have an externs file.
-goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.proj');
-goog.require('ol.source.MapQuest');
+goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
 
@@ -44,9 +43,7 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var rasterLayer = new ol.layer.Tile({
-  source: new ol.source.MapQuest({
-    layer: 'osm'
-  })
+  source: new ol.source.OSM()
 });
 
 var map = new ol.Map({

@@ -169,8 +169,7 @@ The minimum config file looks like this:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.DEBUG=false",
-      "ol.ENABLE_DOM=false",
+      "ol.DEBUG=false",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [
@@ -221,9 +220,7 @@ Here is a version of `config.json` with more compilation checks enabled:
       "node_modules/openlayers/externs/topojson.js"
     ],
     "define": [
-      "goog.dom.ASSUME_STANDARDS_MODE=true",
-      "goog.DEBUG=false",
-      "ol.ENABLE_DOM=false",
+      "ol.DEBUG=false",
       "ol.ENABLE_WEBGL=false"
     ],
     "js": [

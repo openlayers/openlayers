@@ -1,11 +1,8 @@
 goog.provide('ol.featureloader');
 
-goog.require('goog.asserts');
-goog.require('ol.TileState');
-goog.require('ol.VectorTile');
+goog.require('ol');
+goog.require('ol.Tile');
 goog.require('ol.format.FormatType');
-goog.require('ol.proj');
-goog.require('ol.proj.Projection');
 goog.require('ol.xml');
 
 
@@ -31,7 +28,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
       function(extent, resolution, projection) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET',
-            goog.isFunction(url) ? url(extent, resolution, projection) : url,
+            typeof url === 'function' ? url(extent, resolution, projection) : url,
             true);
         if (format.getType() == ol.format.FormatType.ARRAY_BUFFER) {
           xhr.responseType = 'arraybuffer';
@@ -41,7 +38,8 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
          * @private
          */
         xhr.onload = function(event) {
-          if (xhr.status >= 200 && xhr.status < 300) {
+          // status will be 0 for file:// urls
+          if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
             var type = format.getType();
             /** @type {Document|Node|Object|string|undefined} */
             var source;
@@ -55,15 +53,13 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
               }
             } else if (type == ol.format.FormatType.ARRAY_BUFFER) {
               source = /** @type {ArrayBuffer} */ (xhr.response);
-            } else {
-              goog.asserts.fail('unexpected format type');
             }
             if (source) {
               success.call(this, format.readFeatures(source,
                   {featureProjection: projection}),
                   format.readProjection(source));
             } else {
-              goog.asserts.fail('undefined or null source');
+              failure.call(this);
             }
           } else {
             failure.call(this);
@@ -98,7 +94,7 @@ ol.featureloader.tile = function(url, format) {
        * @this {ol.VectorTile}
        */
       function() {
-        this.setState(ol.TileState.ERROR);
+        this.setState(ol.Tile.State.ERROR);
       });
 };
 
