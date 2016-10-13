@@ -17,7 +17,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.InteractionProperty');
+goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
@@ -255,7 +255,7 @@ ol.interaction.Draw = function(options) {
       options.freehandCondition : ol.events.condition.shiftKeyOnly;
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.interaction.InteractionProperty.ACTIVE),
+      ol.Object.getChangeEventType(ol.interaction.Interaction.Property.ACTIVE),
       this.updateState_, this);
 
 };
