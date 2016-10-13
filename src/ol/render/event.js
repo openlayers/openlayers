@@ -1,37 +1,14 @@
 goog.provide('ol.render.Event');
-goog.provide('ol.render.EventType');
 
 goog.require('ol');
 goog.require('ol.events.Event');
 
 
 /**
- * @enum {string}
- */
-ol.render.EventType = {
-  /**
-   * @event ol.render.Event#postcompose
-   * @api
-   */
-  POSTCOMPOSE: 'postcompose',
-  /**
-   * @event ol.render.Event#precompose
-   * @api
-   */
-  PRECOMPOSE: 'precompose',
-  /**
-   * @event ol.render.Event#render
-   * @api
-   */
-  RENDER: 'render'
-};
-
-
-/**
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.render.Event}
- * @param {ol.render.EventType} type Type.
+ * @param {ol.render.Event.Type} type Type.
  * @param {ol.render.VectorContext=} opt_vectorContext Vector context.
  * @param {olx.FrameState=} opt_frameState Frame state.
  * @param {?CanvasRenderingContext2D=} opt_context Context.
@@ -75,3 +52,25 @@ ol.render.Event = function(
 
 };
 ol.inherits(ol.render.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ */
+ol.render.Event.Type = {
+  /**
+   * @event ol.render.Event#postcompose
+   * @api
+   */
+  POSTCOMPOSE: 'postcompose',
+  /**
+   * @event ol.render.Event#precompose
+   * @api
+   */
+  PRECOMPOSE: 'precompose',
+  /**
+   * @event ol.render.Event#render
+   * @api
+   */
+  RENDER: 'render'
+};

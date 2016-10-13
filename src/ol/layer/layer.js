@@ -7,7 +7,7 @@ goog.require('ol.Object');
 goog.require('ol.layer.Base');
 goog.require('ol.layer.LayerProperty');
 goog.require('ol.obj');
-goog.require('ol.render.EventType');
+goog.require('ol.render.Event');
 goog.require('ol.source.State');
 
 
@@ -177,7 +177,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
   }
   if (map) {
     this.mapPrecomposeKey_ = ol.events.listen(
-        map, ol.render.EventType.PRECOMPOSE, function(evt) {
+        map, ol.render.Event.Type.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
           layerState.zIndex = Infinity;
