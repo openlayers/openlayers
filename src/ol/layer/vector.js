@@ -7,14 +7,6 @@ goog.require('ol.style.Style');
 
 
 /**
- * @enum {string}
- */
-ol.layer.VectorProperty = {
-  RENDER_ORDER: 'renderOrder'
-};
-
-
-/**
  * @classdesc
  * Vector data that is rendered client-side.
  * Note that any property set in the options is set as a {@link ol.Object}
@@ -100,7 +92,7 @@ ol.layer.Vector.prototype.getRenderBuffer = function() {
  */
 ol.layer.Vector.prototype.getRenderOrder = function() {
   return /** @type {function(ol.Feature, ol.Feature):number|null|undefined} */ (
-      this.get(ol.layer.VectorProperty.RENDER_ORDER));
+      this.get(ol.layer.Vector.Property.RENDER_ORDER));
 };
 
 
@@ -162,7 +154,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
       renderOrder === undefined || !renderOrder ||
       typeof renderOrder === 'function',
       'renderOrder must be a comparator function');
-  this.set(ol.layer.VectorProperty.RENDER_ORDER, renderOrder);
+  this.set(ol.layer.Vector.Property.RENDER_ORDER, renderOrder);
 };
 
 
@@ -182,4 +174,12 @@ ol.layer.Vector.prototype.setStyle = function(style) {
   this.styleFunction_ = style === null ?
       undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.layer.Vector.Property = {
+  RENDER_ORDER: 'renderOrder'
 };
