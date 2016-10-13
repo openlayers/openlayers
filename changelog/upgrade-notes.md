@@ -1,5 +1,10 @@
 ## Upgrade notes
 
+#### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`
+
+Previously, gradients and patterns were aligned with the canvas, so they did not
+move and rotate with the map. This was changed to a more expected behavior by anchoring the fill to the map origin (usually at map coordinate `[0, 0]`).
+
 #### `goog.DEBUG` define was renamed to `ol.DEBUG`
 
 As last step in the removal of the dependency on Google Closure Library, the `goog.DEBUG` compiler define was renamed to `ol.DEBUG`. Please change accordingly in your custom build configuration json files.
