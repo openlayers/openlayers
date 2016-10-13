@@ -1,10 +1,8 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('ol');
-goog.require('ol.asserts');
 goog.require('ol.functions');
 goog.require('ol.Collection');
-goog.require('ol.Feature');
 goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.events.Event');
@@ -172,8 +170,6 @@ ol.interaction.Select.prototype.getFeatures = function() {
  * @api
  */
 ol.interaction.Select.prototype.getLayer = function(feature) {
-  ol.asserts.assert(feature instanceof ol.Feature,
-      42); // Expected an `ol.Feature`, but got an `ol.RenderFeature`
   var key = ol.getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
 };
