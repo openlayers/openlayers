@@ -187,18 +187,14 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
-        for (var existingKey in attributions)
-        {
-          if (attributions.hasOwnProperty(existingKey))
-          {
-            if (attributions[existingKey].getHTML() === sourceAttribution.getHTML())
-            {
+        for (var existingKey in attributions) {
+          if (attributions.hasOwnProperty(existingKey)) {
+            if (attributions[existingKey].getHTML() === sourceAttribution.getHTML()) {
               attributionAlreadyAdded = true;
             }
           }
         }
-        if (!attributionAlreadyAdded)
-        {
+        if (!attributionAlreadyAdded) {
           attributions[sourceAttributionKey] = sourceAttribution;
         }
       } else {
