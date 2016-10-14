@@ -53,7 +53,7 @@
     "clean-css": "3.4.20",
     "coveralls": "2.11.14",
     "debounce": "^1.0.0",
-    "eslint": "3.7.1",
+    "eslint": "3.8.0",
     "eslint-config-openlayers": "5.0.0",
     "eslint-plugin-openlayers-internal": "2.2.0",
     "expect.js": "0.3.1",
