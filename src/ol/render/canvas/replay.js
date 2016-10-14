@@ -191,6 +191,12 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 };
 
 
+/**
+ * @private
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Transform} transform Transform.
+ * @param {number} rotation Rotation.
+ */
 ol.render.canvas.Replay.prototype.fill_ = function(context, transform, rotation) {
   if (this.alignFill_) {
     context.translate(transform[4], transform[5]);
