@@ -299,17 +299,49 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdrag', 20, 40, true);
       simulateEvent('pointerup', 20, 40, true);
 
-      // finish on third point
-      simulateEvent('pointermove', 20, 40);
-      simulateEvent('pointerdown', 20, 40);
-      simulateEvent('pointerup', 20, 40);
-
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [20, -40]]);
+    });
+
+    it('allows freehand mode for part of the drawing', function() {
+
+      // non-freehand
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 20, 30);
+
+      // freehand
+      simulateEvent('pointerdown', 20, 30, true);
+      simulateEvent('pointermove', 20, 30, true);
+      simulateEvent('pointerdrag', 20, 30, true);
+      simulateEvent('pointermove', 30, 40, true);
+      simulateEvent('pointerdrag', 30, 40, true);
+      simulateEvent('pointermove', 40, 50, true);
+      simulateEvent('pointerdrag', 40, 50, true);
+
+      // non-freehand
+      simulateEvent('pointerup', 40, 50);
+      simulateEvent('pointermove', 50, 60);
+      simulateEvent('pointerdown', 50, 60);
+      simulateEvent('pointerup', 50, 60);
+      simulateEvent('pointermove', 60, 70);
+      simulateEvent('pointerdown', 60, 70);
+      simulateEvent('pointerup', 60, 70);
+
+      // finish
+      simulateEvent('pointerdown', 60, 70);
+      simulateEvent('pointerup', 60, 70);
+
+      var features = source.getFeatures();
+      // expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(
+          [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
     });
 
     it('does not add a point with a significant drag', function() {

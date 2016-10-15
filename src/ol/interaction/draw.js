@@ -290,30 +290,25 @@ ol.interaction.Draw.prototype.setMap = function(map) {
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
  * draw or finish the drawing.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {ol.MapBrowserEvent} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Draw}
  * @api
  */
-ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
-  if ((this.mode_ === ol.interaction.Draw.Mode.LINE_STRING ||
-    this.mode_ === ol.interaction.Draw.Mode.POLYGON ||
-    this.mode_ === ol.interaction.Draw.Mode.CIRCLE) &&
-    this.freehandCondition_(mapBrowserEvent)) {
-    this.freehand_ = true;
-  }
+ol.interaction.Draw.handleEvent = function(event) {
+  this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode.POINT && this.freehandCondition_(event);
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG && this.sketchFeature_ !== null) {
-    this.addToDrawing_(mapBrowserEvent);
+      event.type === ol.MapBrowserEvent.EventType.POINTERDRAG && this.sketchFeature_ !== null) {
+    this.addToDrawing_(event);
     pass = false;
-  } else if (mapBrowserEvent.type ===
+  } else if (event.type ===
       ol.MapBrowserEvent.EventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(mapBrowserEvent);
-  } else if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
+    pass = this.handlePointerMove_(event);
+  } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
     pass = false;
   }
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
+  return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
 };
 
 
@@ -352,15 +347,9 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
   var dy = downPx[1] - clickPx[1];
   var squaredDistance = dx * dx + dy * dy;
   var pass = true;
-  var shouldHandle = false;
-  if (this.freehand_ && squaredDistance > this.squaredClickTolerance_) {
-    shouldHandle = this.mode_ === ol.interaction.Draw.Mode.CIRCLE ||
-        (this.mode_ === ol.interaction.Draw.Mode.LINE_STRING && this.sketchCoords_.length >= this.maxPoints_) ||
-        (this.mode_ === ol.interaction.Draw.Mode.POLYGON && this.sketchCoords_[0].length >= this.maxPoints_);
-  } else {
-    shouldHandle = squaredDistance <= this.squaredClickTolerance_;
-  }
-  this.freehand_ = false;
+  var shouldHandle = this.freehand_ ?
+      squaredDistance > this.squaredClickTolerance_ :
+      squaredDistance <= this.squaredClickTolerance_;
   if (shouldHandle) {
     this.handlePointerMove_(event);
     if (!this.finishCoordinate_) {
@@ -368,7 +357,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       if (this.mode_ === ol.interaction.Draw.Mode.POINT) {
         this.finishDrawing();
       }
-    } else if (this.mode_ === ol.interaction.Draw.Mode.CIRCLE) {
+    } else if (this.freehand_ || this.mode_ === ol.interaction.Draw.Mode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
       if (this.finishCondition_(event)) {
@@ -426,8 +415,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
         var pixel = event.pixel;
         var dx = pixel[0] - finishPixel[0];
         var dy = pixel[1] - finishPixel[1];
-        var freehand = this.freehand_ && this.freehandCondition_(event);
-        var snapTolerance = freehand ? 1 : this.snapTolerance_;
+        var snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
         at = Math.sqrt(dx * dx + dy * dy) <= snapTolerance;
         if (at) {
           this.finishCoordinate_ = finishCoordinate;
