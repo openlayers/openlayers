@@ -292,7 +292,8 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  */
 ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
   if ((this.mode_ === ol.interaction.Draw.Mode.LINE_STRING ||
-    this.mode_ === ol.interaction.Draw.Mode.POLYGON) &&
+    this.mode_ === ol.interaction.Draw.Mode.POLYGON ||
+    this.mode_ === ol.interaction.Draw.Mode.CIRCLE) &&
     this.freehandCondition_(mapBrowserEvent)) {
     this.freehand_ = true;
   }
@@ -340,14 +341,22 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
-  this.freehand_ = false;
   var downPx = this.downPx_;
   var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
   var dy = downPx[1] - clickPx[1];
   var squaredDistance = dx * dx + dy * dy;
   var pass = true;
-  if (squaredDistance <= this.squaredClickTolerance_) {
+  var shouldHandle = false;
+  if (this.freehand_ && squaredDistance > this.squaredClickTolerance_) {
+    shouldHandle = this.mode_ === ol.interaction.Draw.Mode.CIRCLE ||
+        (this.mode_ === ol.interaction.Draw.Mode.LINE_STRING && this.sketchCoords_.length >= this.maxPoints_) ||
+        (this.mode_ === ol.interaction.Draw.Mode.POLYGON && this.sketchCoords_[0].length >= this.maxPoints_);
+  } else {
+    shouldHandle = squaredDistance <= this.squaredClickTolerance_;
+  }
+  this.freehand_ = false;
+  if (shouldHandle) {
     this.handlePointerMove_(event);
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
@@ -541,13 +550,25 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   if (this.mode_ === ol.interaction.Draw.Mode.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
     coordinates = this.sketchCoords_;
+    if (coordinates.length >= this.maxPoints_) {
+      if (this.freehand_) {
+        coordinates.pop();
+      } else {
+        done = true;
+      }
+    }
     coordinates.push(coordinate.slice());
-    done = coordinates.length > this.maxPoints_;
     this.geometryFunction_(coordinates, geometry);
   } else if (this.mode_ === ol.interaction.Draw.Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
+    if (coordinates.length >= this.maxPoints_) {
+      if (this.freehand_) {
+        coordinates.pop();
+      } else {
+        done = true;
+      }
+    }
     coordinates.push(coordinate.slice());
-    done = coordinates.length > this.maxPoints_;
     if (done) {
       this.finishCoordinate_ = coordinates[0];
     }
