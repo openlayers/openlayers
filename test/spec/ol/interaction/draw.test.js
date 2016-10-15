@@ -88,6 +88,22 @@ describe('ol.interaction.Draw', function() {
       expect(draw).to.be.a(ol.interaction.Interaction);
     });
 
+    it('accepts a freehand option', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: 'LineString',
+        freehand: true
+      });
+
+      var event = new ol.pointer.PointerEvent('pointerdown', {
+        clientX: 0,
+        clientY: 0,
+        shiftKey: false
+      });
+
+      expect(draw.freehandCondition_(event)).to.be(true);
+    });
+
   });
 
   describe('specifying a geometryName', function() {
