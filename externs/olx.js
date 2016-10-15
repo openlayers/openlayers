@@ -2582,6 +2582,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     geometryFunction: (ol.DrawGeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.EventsConditionType|undefined),
+ *     freehand: (boolean|undefined),
  *     freehandCondition: (ol.EventsConditionType|undefined),
  *     wrapX: (boolean|undefined)}}
  */
