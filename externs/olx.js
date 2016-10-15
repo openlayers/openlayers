@@ -2696,6 +2696,16 @@ olx.interaction.DrawOptions.prototype.condition;
 
 
 /**
+ * Operate in freehand mode for lines, polygons, and circles.  This makes the
+ * interaction always operate in freehand mode and takes precedence over any
+ * `freehandCondition` option.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.freehand;
+
+
+/**
  * Condition that activates freehand drawing for lines and polygons. This
  * function takes an {@link ol.MapBrowserEvent} and returns a boolean to
  * indicate whether that event should be handled. The default is

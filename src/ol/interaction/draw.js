@@ -251,8 +251,13 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.freehandCondition_ = options.freehandCondition ?
-      options.freehandCondition : ol.events.condition.shiftKeyOnly;
+  this.freehandCondition_;
+  if (options.freehand) {
+    this.freehandCondition_ = ol.events.condition.always;
+  } else {
+    this.freehandCondition_ = options.freehandCondition ?
+        options.freehandCondition : ol.events.condition.shiftKeyOnly;
+  }
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.Interaction.Property.ACTIVE),
@@ -319,14 +324,14 @@ ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.Draw.handleDownEvent_ = function(event) {
-  if (this.condition_(event)) {
-    this.downPx_ = event.pixel;
-    return true;
-  } else if (this.freehand_) {
+  if (this.freehand_) {
     this.downPx_ = event.pixel;
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
     }
+    return true;
+  } else if (this.condition_(event)) {
+    this.downPx_ = event.pixel;
     return true;
   } else {
     return false;
