@@ -81,7 +81,7 @@ var vectorSource = new ol.source.Vector({
   url: function(extent, resolution, projection) {
     var epsg4326Extent =
         ol.proj.transformExtent(extent, projection, 'EPSG:4326');
-    return 'http://overpass-api.de/api/xapi?map?bbox=' +
+    return 'https://overpass-api.de/api/xapi?map?bbox=' +
         epsg4326Extent.join(',');
   },
   strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
