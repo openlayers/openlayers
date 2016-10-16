@@ -897,6 +897,35 @@ describe('ol.interaction.Draw', function() {
     });
   });
 
+  describe('ol.interaction.Draw.createBox', function() {
+    it('creates a box-shaped polygon in Circle mode', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: ol.interaction.Draw.createBox()
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      var features = source.getFeatures();
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+      var coordinates = geometry.getCoordinates();
+      expect(coordinates[0]).to.have.length(5);
+      expect(geometry.getArea()).to.equal(400);
+      expect(geometry.getExtent()).to.eql([0, -20, 20, 0]);
+    });
+  });
+
   describe('extend an existing feature', function() {
     var draw;
     var feature;
