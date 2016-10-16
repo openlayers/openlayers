@@ -4,7 +4,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileArcGISRest');
 
-var url = 'http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
+var url = 'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
     'Specialty/ESRI_StateCityHighway_USA/MapServer';
 
 var layers = [
