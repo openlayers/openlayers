@@ -1,0 +1,22 @@
+---
+layout: example.html
+title: Freehand Drawing
+shortdesc: Example using the ol.interaction.Draw interaction in freehand mode.
+docs: >
+  This example demonstrates the `ol.interaction.Draw` in freehand mode.  During
+  freehand drawing, points are added while dragging.  Set `freehand: true` to
+  enable freehand mode.  Note that freehand mode can be conditionally enabled
+  by using the `freehandCondition` option.  For example to toggle freehand mode
+  with the `Shift` key, use `freehandCondition: ol.events.condition.shiftKeyOnly`.
+tags: "draw, edit, freehand, vector"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label>Geometry type &nbsp;</label>
+  <select id="type">
+    <option value="LineString">LineString</option>
+    <option value="Polygon">Polygon</option>
+    <option value="Circle">Circle</option>
+    <option value="None">None</option>
+  </select>
+</form>
