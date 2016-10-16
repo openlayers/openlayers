@@ -56,6 +56,6 @@ ol.inherits(ol.source.OSM, ol.source.XYZ);
  */
 ol.source.OSM.ATTRIBUTION = new ol.Attribution({
   html: '&copy; ' +
-      '<a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
+      '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
       'contributors.'
 });

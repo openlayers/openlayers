@@ -95,7 +95,7 @@ var map = new ol.Map({
 });
 ```
 
-Note that this JavaScript code corresponds to OpenLayers 3's [`simple`](http://openlayers.org/en/master/examples/simple.html) example.
+Note that this JavaScript code corresponds to OpenLayers 3's [`simple`](https://openlayers.org/en/master/examples/simple.html) example.
 
 You are now ready to create your first OpenLayers 3 build. Use the following command to create the build:
 
@@ -180,7 +180,7 @@ Note that `build.js` currently requires you to enter an output file and will wri
 
 ## A more complicated example
 
-Now let's try a more complicated example: [`heatmaps-earthquakes`](http://openlayers.org/en/master/examples/heatmap-earthquakes.html). The build configuration file looks like this:
+Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openlayers.org/en/master/examples/heatmap-earthquakes.html). The build configuration file looks like this:
 
 ```json
 {

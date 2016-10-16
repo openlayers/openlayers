@@ -7,7 +7,7 @@
     "mapping",
     "ol3"
   ],
-  "homepage": "http://openlayers.org/",
+  "homepage": "https://openlayers.org/",
   "scripts": {
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",

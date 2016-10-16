@@ -84,7 +84,7 @@ function augmentExamples(files, metalsmith, done) {
       }
       var jsSource = files[jsFilename].contents.toString()
           // Change data paths to absolute urls
-          .replace(/'data\//g, '\'http://openlayers.org/en/v' + pkg.version + '/examples/data/');
+          .replace(/'data\//g, '\'https://openlayers.org/en/v' + pkg.version + '/examples/data/');
       if (file.cloak) {
         for (var key in file.cloak) {
           jsSource = jsSource.replace(new RegExp(key, 'g'), file.cloak[key]);
@@ -115,7 +115,7 @@ function augmentExamples(files, metalsmith, done) {
         for (var i = 0, ii = file.resources.length; i < ii; ++i) {
           var resource = file.resources[i];
           var remoteResource = resource.indexOf('//') === -1 ?
-              'http://openlayers.org/en/v' + pkg.version + '/examples/' +
+              'https://openlayers.org/en/v' + pkg.version + '/examples/' +
                   resource : resource;
           fiddleResources[i] = remoteResource;
           if (isJsRegEx.test(resource)) {

@@ -85,7 +85,7 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.OSM({
         attributions: [
-          'All maps © <a href="http://www.opencyclemap.org/">OpenCycleMap</a>',
+          'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
           ol.source.OSM.ATTRIBUTION
         ],
         url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'

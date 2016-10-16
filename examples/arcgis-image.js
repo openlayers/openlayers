@@ -5,7 +5,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.source.OSM');
 goog.require('ol.source.ImageArcGISRest');
 
-var url = 'http://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
+var url = 'https://sampleserver1.arcgisonline.com/ArcGIS/rest/services/' +
     'Specialty/ESRI_StateCityHighway_USA/MapServer';
 
 var layers = [

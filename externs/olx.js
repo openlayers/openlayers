@@ -888,7 +888,7 @@ olx.control.AttributionOptions.prototype.target;
 /**
  * Specify if attributions can be collapsed. If you use an OSM source,
  * should be set to `false` — see
- * {@link http://www.openstreetmap.org/copyright OSM Copyright} —
+ * {@link https://www.openstreetmap.org/copyright OSM Copyright} —
  * Default is `true`.
  * @type {boolean|undefined}
  * @api

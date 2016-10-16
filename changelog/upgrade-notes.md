@@ -70,7 +70,7 @@ The DOM renderer has been removed.  Instead, the Canvas renderer should be used.
 
 #### Changes in the way assertions are handled
 
-Previously, minified builds of the library did not have any assertions. This caused applications to fail silently or with cryptic stack traces. Starting with this release, developers get notified of many runtime errors through the new `ol.AssertionError`. This error has a `code` property. The meaning of the code can be found on http://openlayers.org/en/latest/doc/errors/. There are additional console assertion checks in debug mode when the `goog.DEBUG` compiler flag is `true`. As this is `true` by default, it is recommended that those creating custom builds set this to `false` so these assertions are stripped.'
+Previously, minified builds of the library did not have any assertions. This caused applications to fail silently or with cryptic stack traces. Starting with this release, developers get notified of many runtime errors through the new `ol.AssertionError`. This error has a `code` property. The meaning of the code can be found on https://openlayers.org/en/latest/doc/errors/. There are additional console assertion checks in debug mode when the `goog.DEBUG` compiler flag is `true`. As this is `true` by default, it is recommended that those creating custom builds set this to `false` so these assertions are stripped.'
 
 #### Removal of `ol.ENABLE_NAMED_COLORS`
 
@@ -179,7 +179,7 @@ var v3source = new ol.source.TileUTFGrid({
 
 #### Internet Explorer 9 support
 
-As of this release, OpenLayers requires a `classList` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features#Element_prototype_classList.
+As of this release, OpenLayers requires a `classList` polyfill for IE 9 support. See https://cdn.polyfill.io/v2/docs/features#Element_prototype_classList.
 
 #### Immediate rendering API
 
@@ -228,7 +228,7 @@ The default cache size is `2048`.
 
 #### Internet Explorer 9 support
 
-As of this release, OpenLayers requires a `requestAnimationFrame`/`cancelAnimationFrame` polyfill for IE 9 support. See http://cdn.polyfill.io/v2/docs/features/#requestAnimationFrame.
+As of this release, OpenLayers requires a `requestAnimationFrame`/`cancelAnimationFrame` polyfill for IE 9 support. See https://cdn.polyfill.io/v2/docs/features/#requestAnimationFrame.
 
 #### Layer pre-/postcompose event changes
 
@@ -546,7 +546,7 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
   });
   ```
 
-  See http://openlayers.org/en/master/examples/vector-layer.html for a real example.
+  See https://openlayers.org/en/master/examples/vector-layer.html for a real example.
 
   Note that you no longer need to set a `projection` on the source!
 
@@ -568,7 +568,7 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
 
   The above code uses jQuery to send an Ajax request, but you can obviously use any Ajax library.
 
-  See http://openlayers.org/en/master/examples/igc.html for a real example.
+  See https://openlayers.org/en/master/examples/igc.html for a real example.
 
 * Note about KML
 
@@ -626,9 +626,9 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
   });
   ```
 
-  See http://openlayers.org/en/master/examples/vector-osm.html for a real example.
+  See https://openlayers.org/en/master/examples/vector-osm.html for a real example.
 
-* The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See http://openlayers.org/en/master/examples/vector-osm.html for an example.
+* The experimental `ol.loadingstrategy.createTile` function has been renamed to `ol.loadingstrategy.tile`. The signature of the function hasn't changed. See https://openlayers.org/en/master/examples/vector-osm.html for an example.
 
 #### Change to `ol.style.Icon`
 

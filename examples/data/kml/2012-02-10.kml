@@ -4,7 +4,7 @@
     <description>Created from OpenStreetMap data. Renderer v0.5</description>
     <!-- 
 Copyright (c) OpenStreetMap Contributors
-http://www.openstreetmap.org/
+https://www.openstreetmap.org/
 
 This work is licensed under the
 Creative Commons Attribution-ShareAlike 2.0 License.
@@ -13,7 +13,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
     <ScreenOverlay id="CopyrightNotice">
       <name>Copyright Notice</name>
       <description>
-        <![CDATA[The data in this KML file is Copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> Contributors. It is available under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike (CC-BY-SA) Version 2.0 License</a>.]]>
+        <![CDATA[The data in this KML file is Copyright <a href="https://www.openstreetmap.org/">OpenStreetMap</a> Contributors. It is available under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike (CC-BY-SA) Version 2.0 License</a>.]]>
       </description>
       <Snippet>Copyright (c) OpenStreetMap Contributors. CC-BY-SA 2.0 License.</Snippet>
       <Icon>
