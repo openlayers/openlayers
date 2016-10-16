@@ -732,7 +732,7 @@ ol.interaction.Draw.prototype.updateState_ = function() {
 
 
 /**
- * Create a `geometryFunction` for `mode: 'Circle'` that will create a regular
+ * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of an
  * `ol.geom.Circle` geometry.
  * @param {number=} opt_sides Number of sides of the regular polygon. Default is
