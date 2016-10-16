@@ -12,7 +12,7 @@ describe('ol.AssertionError', function() {
     var origVersion = ol.VERSION;
     ol.VERSION = 'foo';
     var error = new ol.AssertionError(42);
-    expect(error.message).to.be('Assertion failed. See http://openlayers.org/en/foo/doc/errors/#42 for details.');
+    expect(error.message).to.be('Assertion failed. See https://openlayers.org/en/foo/doc/errors/#42 for details.');
     ol.VERSION = origVersion;
   });
   it('has an error code', function() {

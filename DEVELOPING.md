@@ -77,7 +77,7 @@ Then, just point your browser <http://localhost:3000/build/examples> in your bro
 Run examples against the `ol.js` standalone build:
 
 The examples can also be run against the `ol.js` standalone build, just like
-the examples [hosted](http://openlayers.org/en/master/examples/) on GitHub.
+the examples [hosted](https://openlayers.org/en/master/examples/) on GitHub.
 Start by executing the `host-examples` build target:
 
     $ make host-examples

@@ -242,7 +242,7 @@ function getVersion(callback) {
  *     ready to be written into a file, or any error.
  */
 function addHeader(compiledSource, callback) {
-  var header = '// OpenLayers 3. See http://openlayers.org/\n';
+  var header = '// OpenLayers 3. See https://openlayers.org/\n';
   header += '// License: https://raw.githubusercontent.com/openlayers/' +
       'ol3/master/LICENSE.md\n';
   if (version !== '') {
