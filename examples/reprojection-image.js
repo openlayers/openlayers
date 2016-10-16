@@ -21,7 +21,7 @@ var map = new ol.Map({
     }),
     new ol.layer.Image({
       source: new ol.source.ImageStatic({
-        url: 'http://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
+        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
                'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
         crossOrigin: '',
         projection: 'EPSG:27700',
