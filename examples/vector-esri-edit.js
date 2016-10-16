@@ -14,7 +14,7 @@ goog.require('ol.source.XYZ');
 goog.require('ol.tilegrid');
 
 
-var serviceUrl = 'http://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
+var serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
     'services/PDX_Pedestrian_Districts/FeatureServer/';
 var layer = '0';
 
