@@ -10,7 +10,7 @@ Transformation of the map projections of the image happens directly in a web bro
 The view in any Proj4js supported coordinate reference system is possible and previously incompatible layers can now be combined and overlaid.
 
 # Usage
-The API usage is very simple. Just specify proper projection (using [EPSG](http://epsg.io) code) on `ol.View`:
+The API usage is very simple. Just specify proper projection (using [EPSG](https://epsg.io) code) on `ol.View`:
 ``` javascript
 var map = new ol.Map({
   target: 'map',
@@ -42,7 +42,7 @@ If a source (based on `ol.source.TileImage` or `ol.source.Image`) has a projecti
 
 ### Custom projection
 The easiest way to use a custom projection is to add the [Proj4js](http://proj4js.org/) library to your project and then define the projection using a proj4 definition string.
-Following example shows definition of a [British National Grid](http://epsg.io/27700):
+Following example shows definition of a [British National Grid](https://epsg.io/27700):
 
 ``` html
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js"></script>
