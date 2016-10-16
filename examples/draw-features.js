@@ -1,6 +1,5 @@
 goog.require('ol.Map');
 goog.require('ol.View');
-goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Draw');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -51,30 +50,18 @@ var draw; // global so we can remove it later
 function addInteraction() {
   var value = typeSelect.value;
   if (value !== 'None') {
-    var geometryFunction, maxPoints;
+    var geometryFunction;
     if (value === 'Square') {
       value = 'Circle';
       geometryFunction = ol.interaction.Draw.createRegularPolygon(4);
     } else if (value === 'Box') {
-      value = 'LineString';
-      maxPoints = 2;
-      geometryFunction = function(coordinates, geometry) {
-        if (!geometry) {
-          geometry = new ol.geom.Polygon(null);
-        }
-        var start = coordinates[0];
-        var end = coordinates[1];
-        geometry.setCoordinates([
-          [start, [start[0], end[1]], end, [end[0], start[1]], start]
-        ]);
-        return geometry;
-      };
+      value = 'Circle';
+      geometryFunction = ol.interaction.Draw.createBox();
     }
     draw = new ol.interaction.Draw({
       source: source,
       type: /** @type {ol.geom.GeometryType} */ (value),
-      geometryFunction: geometryFunction,
-      maxPoints: maxPoints
+      geometryFunction: geometryFunction
     });
     map.addInteraction(draw);
   }
