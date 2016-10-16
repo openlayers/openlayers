@@ -25,7 +25,7 @@ var layers = [
     extent: extent,
     source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
       attributions: ['Iowa State University'],
-      url: 'http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
+      url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
       params: {'LAYERS': 'nexrad-n0r-wmst'}
     }))
   })
