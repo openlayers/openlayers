@@ -9,7 +9,7 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.XYZ({
-        url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
+        url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
       })
     })
   ],
