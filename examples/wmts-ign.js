@@ -52,7 +52,7 @@ var ign_source = new ol.source.WMTS({
   style: 'normal',
   attributions: [new ol.Attribution({
     html: '<a href="http://www.geoportail.fr/" target="_blank">' +
-        '<img src="http://api.ign.fr/geoportail/api/js/latest/' +
+        '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
         'theme/geoportal/img/logo_gp.gif"></a>'
   })]
 });
