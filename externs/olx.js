@@ -2777,8 +2777,7 @@ olx.interaction.TranslateOptions;
 
 
 /**
- * Only features contained in this collection will be able to be translated. If
- * not specified, all features on the map will be able to be translated.
+ * Only features contained in this collection will be able to be translated.
  * @type {ol.Collection.<ol.Feature>|undefined}
  * @api
  */
