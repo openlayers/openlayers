@@ -53,7 +53,7 @@ var featureRequest = new ol.format.WFS().writeGetFeature({
 });
 
 // then post the request and add the received features to a layer
-fetch('http://demo.boundlessgeo.com/geoserver/wfs', {
+fetch('https://ahocevar.com/geoserver/wfs', {
   method: 'POST',
   body: new XMLSerializer().serializeToString(featureRequest)
 }).then(function(response) {

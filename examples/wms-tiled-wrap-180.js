@@ -11,7 +11,7 @@ var layers = [
   }),
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
-      url: 'http://demo.boundlessgeo.com/geoserver/ne/wms',
+      url: 'https://ahocevar.com/geoserver/ne/wms',
       params: {'LAYERS': 'ne:ne_10m_admin_0_countries', 'TILED': true},
       serverType: 'geoserver'
     })

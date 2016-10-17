@@ -5,7 +5,7 @@ goog.require('ol.source.ImageWMS');
 
 
 var wmsSource = new ol.source.ImageWMS({
-  url: 'http://demo.boundlessgeo.com/geoserver/wms',
+  url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'ne:ne'},
   serverType: 'geoserver',
   crossOrigin: 'anonymous'
