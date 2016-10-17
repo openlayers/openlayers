@@ -2,6 +2,7 @@ goog.provide('ol.interaction.Draw');
 
 goog.require('ol');
 goog.require('ol.events');
+goog.require('ol.extent');
 goog.require('ol.events.Event');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
@@ -731,7 +732,7 @@ ol.interaction.Draw.prototype.updateState_ = function() {
 
 
 /**
- * Create a `geometryFunction` for `mode: 'Circle'` that will create a regular
+ * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of an
  * `ol.geom.Circle` geometry.
  * @param {number=} opt_sides Number of sides of the regular polygon. Default is
@@ -762,6 +763,36 @@ ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
         ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
         return geometry;
       }
+  );
+};
+
+
+/**
+ * Create a `geometryFunction` that will create a box-shaped polygon (aligned
+ * with the coordinate system axes).  Use this with the draw interaction and
+ * `type: 'Circle'` to return a box instead of a circle geometry.
+ * @return {ol.DrawGeometryFunctionType} Function that draws a box-shaped polygon.
+ * @api
+ */
+ol.interaction.Draw.createBox = function() {
+  return (
+    /**
+     * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+     * @param {ol.geom.SimpleGeometry=} opt_geometry
+     * @return {ol.geom.SimpleGeometry}
+     */
+    function(coordinates, opt_geometry) {
+      var extent = ol.extent.boundingExtent(coordinates);
+      var geometry = opt_geometry || new ol.geom.Polygon(null);
+      geometry.setCoordinates([[
+        ol.extent.getBottomLeft(extent),
+        ol.extent.getBottomRight(extent),
+        ol.extent.getTopRight(extent),
+        ol.extent.getTopLeft(extent),
+        ol.extent.getBottomLeft(extent)
+      ]]);
+      return geometry;
+    }
   );
 };
 
