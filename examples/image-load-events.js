@@ -78,7 +78,7 @@ Progress.prototype.hide = function() {
 var progress = new Progress(document.getElementById('progress'));
 
 var source = new ol.source.ImageWMS({
-  url: 'http://demo.boundlessgeo.com/geoserver/wms',
+  url: 'https://ahocevar.com/geoserver/wms',
   params: {'LAYERS': 'topp:states'},
   serverType: 'geoserver'
 });

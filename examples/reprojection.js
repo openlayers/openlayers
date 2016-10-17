@@ -69,7 +69,7 @@ layers['osm'] = new ol.layer.Tile({
 
 layers['wms4326'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
-    url: 'http://demo.boundlessgeo.com/geoserver/wms',
+    url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {
       'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
@@ -129,7 +129,7 @@ for (var i = 0, ii = resolutions.length; i < ii; ++i) {
 
 layers['states'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
-    url: 'http://demo.boundlessgeo.com/geoserver/wms',
+    url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {'LAYERS': 'topp:states', 'TILED': true},
     serverType: 'geoserver',
