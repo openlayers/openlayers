@@ -3212,6 +3212,57 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
 
 
 /**
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
+ *     features: (ol.Collection.<ol.Feature>|undefined),
+ *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
+ *     hitTolerance: (number|undefined)
+ * }}
+ */
+olx.interaction.RotateOptions;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.always}.
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.condition;
+
+
+/**
+ * Only features contained in this collection will be able to be rotated. If
+ * not specified, all features on the map will be able to be translated.
+ * @type {ol.Collection.<ol.Feature>|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.features;
+
+
+/**
+ * A list of layers from which features should be
+ * rotated. Alternatively, a filter function can be provided. The
+ * function will be called for each layer in the map and should return
+ * `true` for layers that you want to be rotatable. If the option is
+ * absent, all visible layers will be considered rotatable.
+ * @type {undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.layers;
+
+
+/**
+ * Hit-detection tolerance. Pixels inside the radius around the given position
+ * will be checked for features. This only works for the canvas renderer and
+ * not for WebGL.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.hitTolerance;
+
+
+/**
  * @typedef {{addCondition: (ol.EventsConditionType|undefined),
  *     condition: (ol.EventsConditionType|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
