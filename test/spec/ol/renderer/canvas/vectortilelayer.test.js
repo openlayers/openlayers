@@ -169,7 +169,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       });
       renderer = new ol.renderer.canvas.VectorTileLayer(layer);
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
-          resolution, rotation, skippedFeaturesUids, callback) {
+          resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
         var feature = new ol.Feature();
         callback(feature);
         callback(feature);
@@ -190,7 +190,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       frameState.layerStates[ol.getUid(layer)] = {};
       renderer.renderedTiles = [new TileClass([0, 0, -1])];
       renderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, spy, undefined);
+          coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });

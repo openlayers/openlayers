@@ -68,14 +68,14 @@ ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var layer = this.getLayer();
   var source = layer.getSource();
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var skippedFeatureUids = frameState.skippedFeatureUids;
   return source.forEachFeatureAtCoordinate(
-      coordinate, resolution, rotation, skippedFeatureUids,
+      coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
 
       /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.

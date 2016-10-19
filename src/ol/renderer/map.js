@@ -100,6 +100,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
+ * @param {number} hitTolerance hit tolerance.
  * @param {function(this: S, (ol.Feature|ol.render.Feature),
  *     ol.layer.Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -111,7 +112,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg,
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
@@ -155,7 +156,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
             layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, forEachFeatureAtCoordinate, thisArg);
+            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
       }
       if (result) {
         return result;

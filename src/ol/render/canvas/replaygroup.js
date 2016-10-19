@@ -88,6 +88,7 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
+ * @param {number} hitTolerance hit tolerance.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
@@ -96,9 +97,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
-    coordinate, resolution, rotation, skippedFeaturesHash, callback) {
+    coordinate, resolution, rotation, hitTolerance, skippedFeaturesHash, callback) {
 
-  var hitTolerance = 10;
   var contextSize = hitTolerance * 2 + 1;
 
   var transform = ol.transform.compose(ol.transform.create(),

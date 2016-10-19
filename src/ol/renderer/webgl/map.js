@@ -502,7 +502,7 @@ ol.renderer.webgl.Map.prototype.renderFrame = function(frameState) {
 /**
  * @inheritDoc
  */
-ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg,
+ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
         layerFilter, thisArg2) {
   var result;
 
@@ -522,7 +522,7 @@ ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate
         layerFilter.call(thisArg2, layer)) {
       var layerRenderer = this.getLayerRenderer(layer);
       result = layerRenderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, callback, thisArg);
+          coordinate, frameState, hitTolerance, callback, thisArg);
       if (result) {
         return result;
       }

@@ -176,7 +176,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
   var layer = this.getLayer();
@@ -212,7 +212,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     }
     replayGroup = tile.getReplayState().replayGroup;
     found = found || replayGroup.forEachFeatureAtCoordinate(
-        tileSpaceCoordinate, resolution, rotation, {},
+        tileSpaceCoordinate, resolution, rotation, hitTolerance, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
