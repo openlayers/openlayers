@@ -24,7 +24,9 @@ describe('ol.renderer.canvas.TileLayer', function() {
   describe('#composeFrame()', function() {
     it('uses correct draw scale when rotating (HiDPI)', function() {
       var layer = new ol.layer.Tile({
-        source: new ol.source.XYZ()
+        source: new ol.source.XYZ({
+          tileSize: 1
+        })
       });
       var renderer = new ol.renderer.canvas.TileLayer(layer);
       renderer.renderedTiles = [];
