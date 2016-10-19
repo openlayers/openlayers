@@ -261,6 +261,18 @@ ol.interaction.Modify.prototype.removeFeatureSegmentData_ = function(feature) {
 /**
  * @inheritDoc
  */
+ol.interaction.Modify.prototype.setActive = function(active) {
+  if (this.vertexFeature_ && !active) {
+    this.overlay_.getSource().removeFeature(this.vertexFeature_);
+    this.vertexFeature_ = null;
+  }
+  ol.interaction.Pointer.prototype.setActive.call(this, active);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.interaction.Modify.prototype.setMap = function(map) {
   this.overlay_.setMap(map);
   ol.interaction.Pointer.prototype.setMap.call(this, map);
