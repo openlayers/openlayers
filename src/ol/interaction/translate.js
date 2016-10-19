@@ -197,7 +197,9 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
             ol.array.includes(this.features_.getArray(), feature)) {
           return feature;
         }
-      }, this, this.layerFilter_);
+      }, this, {
+        layerFilter: this.layerFilter_
+      });
 };
 
 

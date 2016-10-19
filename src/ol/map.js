@@ -555,10 +555,25 @@ ol.Map.prototype.disposeInternal = function() {
 
 
 /**
+ * @typedef {object} ol.MapForEachFeatureOptions
+ * @property {(function(this: U, ol.layer.Layer): boolean)=} layerFilter Layer
+ *     filter function. The filter function will receive one argument, the
+ *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
+ *     value. Only layers which are visible and for which this function returns
+ *     `true` will be tested for features. By default, all visible layers will
+ *     be tested.
+ * @property {U=} layerFilterThis Value to use as `this` when executing `layerFilter`.
+ * @property {number=} hitTolerance the hitTolerance in pixels in which features
+ *     get hit.
+ */
+
+
+/**
  * Detect features that intersect a pixel on the viewport, and execute a
  * callback with each intersecting feature. Layers included in the detection can
  * be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
+ * @param {ol.MapForEachFeatureOptions=} opt_options
  * @param {function(this: S, (ol.Feature|ol.render.Feature),
  *     ol.layer.Layer): T} callback Feature callback. The callback will be
  *     called with two arguments. The first argument is one
@@ -567,30 +582,27 @@ ol.Map.prototype.disposeInternal = function() {
  *     the {@link ol.layer.Layer layer} of the feature and will be null for
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
- * @param {S=} opt_this Value to use as `this` when executing `callback`.
- * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
- *     filter function. The filter function will receive one argument, the
- *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
- *     value. Only layers which are visible and for which this function returns
- *     `true` will be tested for features. By default, all visible layers will
- *     be tested.
- * @param {U=} opt_this2 Value to use as `this` when executing `layerFilter`.
+ * @param {S=} opt_this
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
  * @template S,T,U
  * @api stable
  */
-ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+ol.Map.prototype.forEachFeatureAtPixel = function(pixel, opt_options, callback, opt_this) {
+  if (typeof opt_options !== 'object') {
+    opt_this = callback;
+    callback = opt_options;
+    opt_options = {};
+  }
   if (!this.frameState_) {
     return;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
   var thisArg = opt_this !== undefined ? opt_this : null;
-  var layerFilter = opt_layerFilter !== undefined ?
-      opt_layerFilter : ol.functions.TRUE;
-  var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
+  var layerFilter = opt_options.layerFilter || ol.functions.TRUE;
+  var thisArg2 = opt_options.layerFilterThis || null;
   return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, callback, thisArg,
+      coordinate, this.frameState_, opt_options.hitTolerance || 0, callback, thisArg,
       layerFilter, thisArg2);
 };
 

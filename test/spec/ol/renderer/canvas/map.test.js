@@ -111,10 +111,11 @@ describe('ol.renderer.canvas.Map', function() {
       map.addLayer(layer);
       map.renderSync();
       var cb = sinon.spy();
-      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null,
-          function() {
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), {
+          layerFilter: function() {
             return false;
-          });
+          }
+        }, cb);
       expect(cb).to.not.be.called();
     });
 

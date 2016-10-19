@@ -200,7 +200,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // pixel, or clear the selected feature(s) if there is no feature at
     // the pixel.
     ol.obj.clear(this.featureLayerAssociation_);
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+    map.forEachFeatureAtPixel(mapBrowserEvent.pixel, {
+          layerFilter: this.layerFilter_
+        },
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
@@ -212,7 +214,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             this.addFeatureLayerAssociation_(feature, layer);
             return !this.multi_;
           }
-        }, this, this.layerFilter_);
+        }, this);
     var i;
     for (i = features.getLength() - 1; i >= 0; --i) {
       var feature = features.item(i);
@@ -230,7 +232,9 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     }
   } else {
     // Modify the currently selected feature(s).
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
+    map.forEachFeatureAtPixel(mapBrowserEvent.pixel, {
+          layerFilter: this.layerFilter_
+        },
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
@@ -249,7 +253,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             }
             return !this.multi_;
           }
-        }, this, this.layerFilter_);
+        }, this);
     var j;
     for (j = deselected.length - 1; j >= 0; --j) {
       features.remove(deselected[j]);
