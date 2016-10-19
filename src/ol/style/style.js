@@ -126,12 +126,32 @@ ol.style.Style.prototype.getFill = function() {
 
 
 /**
+ * Set the fill style.
+ * @param {ol.style.Fill} fill Fill style.
+ * @api
+ */
+ol.style.Style.prototype.setFill = function(fill) {
+  this.fill_ = fill;
+};
+
+
+/**
  * Get the image style.
  * @return {ol.style.Image} Image style.
  * @api
  */
 ol.style.Style.prototype.getImage = function() {
   return this.image_;
+};
+
+
+/**
+ * Set the image style.
+ * @param {ol.style.Image} image Image style.
+ * @api
+ */
+ol.style.Style.prototype.setImage = function(image) {
+  this.image_ = image;
 };
 
 
@@ -146,12 +166,32 @@ ol.style.Style.prototype.getStroke = function() {
 
 
 /**
+ * Set the stroke style.
+ * @param {ol.style.Stroke} stroke Stroke style.
+ * @api
+ */
+ol.style.Style.prototype.setStroke = function(stroke) {
+  this.stroke_ = stroke;
+};
+
+
+/**
  * Get the text style.
  * @return {ol.style.Text} Text style.
  * @api
  */
 ol.style.Style.prototype.getText = function() {
   return this.text_;
+};
+
+
+/**
+ * Set the text style.
+ * @param {ol.style.Text} text Text style.
+ * @api
+ */
+ol.style.Style.prototype.setText = function(text) {
+  this.text_ = text;
 };
 
 
