@@ -71,8 +71,7 @@ describe('ol.featureloader', function() {
     var tile;
 
     beforeEach(function() {
-      tile = new ol.VectorTile([0, 0, 0], undefined, undefined, undefined,
-          undefined, ol.proj.get('EPSG:3857'));
+      tile = new ol.VectorTile([0, 0, 0]);
     });
 
     it('sets features on the tile', function(done) {
