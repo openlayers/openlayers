@@ -6,7 +6,7 @@ goog.require('ol.ext.vectortile');
 goog.require('ol.format.MVT');
 goog.require('ol.render.Feature');
 
-where('ArrayBuffer').describe('ol.format.MVT', function() {
+where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
 
   var data;
   beforeEach(function(done) {
