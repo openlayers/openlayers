@@ -69,29 +69,32 @@ ol.render.canvas.ReplayGroup = function(
 ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
 /**
- * This methods creates a circle inside an exactly fitting array. Points inside the circle are marked by true, points
- * on the outside are marked with false.
- * This method uses the midpoint circle algorithm.
- * @param {Number} radius
- * @returns {Boolean[][]}
+ * This methods creates a circle inside a fitting array. Points inside the
+ * circle are marked by true, points on the outside are marked with false.
+ * It uses the midpoint circle algorithm.
+ * @param {number} radius Radius.
+ * @returns {Array.<Array.<Boolean>>} an array with marked circel points.
  * @private
  */
 ol.render.canvas.ReplayGroup.createPixelCircle_ = function(radius) {
   var arraySize = radius * 2 + 1;
   var arr = new Array(arraySize);
   for (var i = 0; i < arraySize; i++) {
-    arr[i] = (new Array(arraySize)).fill(false);
+    arr[i] = new Array(arraySize);
+    for (var j = 0; j < arraySize; j++) {
+      arr[i][j] = false;
+    }
   }
 
   function fillRowToMiddle(x, y) {
     var i;
     if (x >= radius) {
       for (i = radius; i < x; i++) {
-        arr[i][y] = true
+        arr[i][y] = true;
       }
     } else if (x < radius) {
       for (i = x + 1; i < radius; i++) {
-        arr[i][y] = true
+        arr[i][y] = true;
       }
     }
   }
@@ -112,8 +115,7 @@ ol.render.canvas.ReplayGroup.createPixelCircle_ = function(radius) {
 
     y++;
     error += 1 + 2 * y;
-    if (2 * (error - x) + 1 > 0)
-    {
+    if (2 * (error - x) + 1 > 0) {
       x -= 1;
       error += 1 - 2 * x;
     }
@@ -175,7 +177,12 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     ol.extent.buffer(hitExtent, resolution * this.renderBuffer_, hitExtent);
   }
 
-  var mask = ol.render.canvas.ReplayGroup.createPixelCircle_(hitTolerance);
+  var mask;
+  if (hitTolerance === 0) {
+    mask = [[true]];
+  } else {
+    mask = ol.render.canvas.ReplayGroup.createPixelCircle_(hitTolerance);
+  }
 
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash,

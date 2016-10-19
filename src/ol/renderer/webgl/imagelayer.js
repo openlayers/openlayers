@@ -213,7 +213,7 @@ ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvas
  */
 ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, ol.functions.TRUE, this);
+      coordinate, frameState, 0, ol.functions.TRUE, this);
   return hasFeature !== undefined;
 };
 
@@ -232,7 +232,7 @@ ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fra
     var coordinate = ol.transform.apply(
         frameState.pixelToCoordinateTransform, pixel.slice());
     var hasFeature = this.forEachFeatureAtCoordinate(
-        coordinate, frameState, ol.functions.TRUE, this);
+        coordinate, frameState, 0, ol.functions.TRUE, this);
 
     if (hasFeature) {
       return callback.call(thisArg, this.getLayer(), null);

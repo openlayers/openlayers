@@ -199,7 +199,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, call
  */
 ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, layerFilter, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, ol.functions.TRUE, this, layerFilter, thisArg);
+      coordinate, frameState, 0, ol.functions.TRUE, this, layerFilter, thisArg);
 
   return hasFeature !== undefined;
 };
