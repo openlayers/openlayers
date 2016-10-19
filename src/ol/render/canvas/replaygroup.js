@@ -68,6 +68,59 @@ ol.render.canvas.ReplayGroup = function(
 };
 ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
+/**
+ * This methods creates a circle inside an exactly fitting array. Points inside the circle are marked by true, points
+ * on the outside are marked with false.
+ * This method uses the midpoint circle algorithm.
+ * @param {Number} radius
+ * @returns {Boolean[][]}
+ * @private
+ */
+ol.render.canvas.ReplayGroup.createPixelCircle_ = function(radius) {
+  var arraySize = radius * 2 + 1;
+  var arr = new Array(arraySize);
+  for (var i = 0; i < arraySize; i++) {
+    arr[i] = (new Array(arraySize)).fill(false);
+  }
+
+  function fillRowToMiddle(x, y) {
+    var i;
+    if (x >= radius) {
+      for (i = radius; i < x; i++) {
+        arr[i][y] = true
+      }
+    } else if (x < radius) {
+      for (i = x + 1; i < radius; i++) {
+        arr[i][y] = true
+      }
+    }
+  }
+
+  var x = radius;
+  var y = 0;
+  var error = 0;
+
+  while (x >= y) {
+    fillRowToMiddle(radius + x, radius + y);
+    fillRowToMiddle(radius + y, radius + x);
+    fillRowToMiddle(radius - y, radius + x);
+    fillRowToMiddle(radius - x, radius + y);
+    fillRowToMiddle(radius - x, radius - y);
+    fillRowToMiddle(radius - y, radius - x);
+    fillRowToMiddle(radius + y, radius - x);
+    fillRowToMiddle(radius + x, radius - y);
+
+    y++;
+    error += 1 + 2 * y;
+    if (2 * (error - x) + 1 > 0)
+    {
+      x -= 1;
+      error += 1 - 2 * x;
+    }
+  }
+
+  return arr;
+};
 
 /**
  * FIXME empty description for jsdoc
@@ -99,6 +152,8 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, hitTolerance, skippedFeaturesHash, callback) {
 
+  hitTolerance = Math.round(hitTolerance);
+
   var contextSize = hitTolerance * 2 + 1;
 
   var transform = ol.transform.compose(ol.transform.create(),
@@ -120,6 +175,8 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     ol.extent.buffer(hitExtent, resolution * this.renderBuffer_, hitExtent);
   }
 
+  var mask = ol.render.canvas.ReplayGroup.createPixelCircle_(hitTolerance);
+
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash,
       /**
@@ -130,14 +187,16 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
         var imageData;
         for (var i = 0; i < contextSize; i++) {
           for (var j = 0; j < contextSize; j++) {
-            imageData = context.getImageData(i, j, i + 1, j + 1).data;
-            if (imageData[3] > 0) {
-              var result = callback(feature);
-              if (result) {
-                return result;
+            if (mask[i][j]) {
+              imageData = context.getImageData(i, j, i + 1, j + 1).data;
+              if (imageData[3] > 0) {
+                var result = callback(feature);
+                if (result) {
+                  return result;
+                }
+                i = contextSize;
+                j = contextSize;
               }
-              i = contextSize;
-              j = contextSize;
             }
           }
         }
