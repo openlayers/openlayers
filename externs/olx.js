@@ -301,17 +301,10 @@ olx.MapOptions.prototype.target;
  */
 olx.MapOptions.prototype.view;
 
-/**
- * The filter function will receive one argument, the
- * {@link ol.layer.Layer layer-candidate} and it should return a boolean
- * value.
- * @typedef {(function(ol.layer.Layer): boolean)}
- */
-olx.LayerFilterFunction;
 
 /**
  * Object literal with options for the forEachFeatureAtCoordinate methods.
- * @typedef {{layerFilter: (olx.LayerFilterFunction|undefined),
+ * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),
  *    layerFilterThis: (Object|undefined),
  *    hitTolerance: (number|undefined)}}
  */
@@ -322,7 +315,7 @@ olx.ForEachFeatureOptions;
  * Layer filter function. Only layers which are visible and for which this function returns
  * `true` will be tested for features. By default, all visible layers will
  * be tested.
- * @type {olx.LayerFilterFunction|undefined}
+ * @type {((function(ol.layer.Layer): boolean)|undefined)}
  * @api stable
  */
 olx.ForEachFeatureOptions.prototype.layerFilter;
