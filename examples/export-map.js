@@ -1,3 +1,5 @@
+// NOCOMPILE
+// this example uses FileSaver.js for which we don't have an externs file.
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.control');
@@ -31,20 +33,12 @@ var map = new ol.Map({
   })
 });
 
-var exportPNGElement = document.getElementById('export-png');
-
-if ('download' in exportPNGElement) {
-  exportPNGElement.addEventListener('click', function() {
-    map.once('postcompose', function(event) {
-      var canvas = event.context.canvas;
-      exportPNGElement.href = canvas.toDataURL('image/png');
+document.getElementById('export-png').addEventListener('click', function() {
+  map.once('postcompose', function(event) {
+    var canvas = event.context.canvas;
+    canvas.toBlob(function(blob) {
+      saveAs(blob, 'map.png');
     });
-    map.renderSync();
-  }, false);
-} else {
-  var info = document.getElementById('no-download');
-  /**
-   * display error message
-   */
-  info.style.display = '';
-}
+  });
+  map.renderSync();
+});
