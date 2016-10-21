@@ -167,24 +167,6 @@ describe('ol.extent', function() {
 
   });
 
-  describe('empty', function() {
-
-    it('returns the empty extent', function() {
-      var extent = [1, 2, 3, 4];
-      var expected = [Infinity, Infinity, -Infinity, -Infinity];
-      var got = ol.extent.empty(extent);
-      expect(got).to.eql(expected);
-    });
-
-    it('empties a passed extent in place', function() {
-      var extent = [1, 2, 3, 4];
-      var expected = [Infinity, Infinity, -Infinity, -Infinity];
-      ol.extent.empty(extent);
-      expect(extent).to.eql(expected);
-    });
-
-  });
-
   describe('forEachCorner', function() {
 
     var callbackFalse;
