@@ -167,24 +167,6 @@ describe('ol.extent', function() {
 
   });
 
-  describe('empty', function() {
-
-    it('returns the empty extent', function() {
-      var extent = [1, 2, 3, 4];
-      var expected = [Infinity, Infinity, -Infinity, -Infinity];
-      var got = ol.extent.empty(extent);
-      expect(got).to.eql(expected);
-    });
-
-    it('empties a passed extent in place', function() {
-      var extent = [1, 2, 3, 4];
-      var expected = [Infinity, Infinity, -Infinity, -Infinity];
-      ol.extent.empty(extent);
-      expect(extent).to.eql(expected);
-    });
-
-  });
-
   describe('forEachCorner', function() {
 
     var callbackFalse;
@@ -599,73 +581,6 @@ describe('ol.extent', function() {
       expect(intersects(extent, [50, 120, 100, 140])).to.be(false);
       expect(intersects(extent, [80, 120, 120, 140])).to.be(false);
       expect(intersects(extent, [120, 120, 140, 140])).to.be(false);
-    });
-  });
-
-  describe('isInfinite', function() {
-    it('returns true for infinite extents', function() {
-      var extents = [
-        [-Infinity, 0, 0, 0],
-        [0, -Infinity, 0, 0],
-        [0, 0, +Infinity, 0],
-        [0, 0, 0, +Infinity]
-      ];
-      expect(ol.extent.isInfinite(extents[0])).to.be(true);
-      expect(ol.extent.isInfinite(extents[1])).to.be(true);
-      expect(ol.extent.isInfinite(extents[2])).to.be(true);
-      expect(ol.extent.isInfinite(extents[3])).to.be(true);
-    });
-    it('returns false for other extents', function() {
-      var extents = [
-        ol.extent.createEmpty(),
-        [1, 2, 3, 4]
-      ];
-      expect(ol.extent.isInfinite(extents[0])).to.be(false);
-      expect(ol.extent.isInfinite(extents[1])).to.be(false);
-    });
-  });
-
-  describe('touches', function() {
-
-    it('returns the expected value', function() {
-      var touches = ol.extent.touches;
-      var extent = [50, 50, 100, 100];
-      expect(touches(extent, [20, 20, 80, 80])).to.be(false);
-      expect(touches(extent, [20, 20, 50, 80])).to.be(true);
-      expect(touches(extent, [20, 20, 50, 40])).to.be(false);
-      expect(touches(extent, [100, 20, 140, 80])).to.be(true);
-      expect(touches(extent, [100, 20, 140, 40])).to.be(false);
-      expect(touches(extent, [20, 20, 80, 50])).to.be(true);
-      expect(touches(extent, [20, 20, 40, 50])).to.be(false);
-      expect(touches(extent, [20, 100, 80, 140])).to.be(true);
-      expect(touches(extent, [20, 100, 40, 140])).to.be(false);
-    });
-  });
-
-  describe('normalize', function() {
-    it('returns the expected coordinate', function() {
-      var extent = [0, 1, 2, 3];
-      var coordinate;
-
-      coordinate = ol.extent.normalize(extent, [1, 2]);
-      expect(coordinate[0]).to.eql(0.5);
-      expect(coordinate[1]).to.eql(0.5);
-
-      coordinate = ol.extent.normalize(extent, [0, 3]);
-      expect(coordinate[0]).to.eql(0);
-      expect(coordinate[1]).to.eql(1);
-
-      coordinate = ol.extent.normalize(extent, [2, 1]);
-      expect(coordinate[0]).to.eql(1);
-      expect(coordinate[1]).to.eql(0);
-
-      coordinate = ol.extent.normalize(extent, [0, 0]);
-      expect(coordinate[0]).to.eql(0);
-      expect(coordinate[1]).to.eql(-0.5);
-
-      coordinate = ol.extent.normalize(extent, [-1, 1]);
-      expect(coordinate[0]).to.eql(-0.5);
-      expect(coordinate[1]).to.eql(0);
     });
   });
 
