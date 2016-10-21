@@ -642,33 +642,6 @@ describe('ol.extent', function() {
     });
   });
 
-  describe('normalize', function() {
-    it('returns the expected coordinate', function() {
-      var extent = [0, 1, 2, 3];
-      var coordinate;
-
-      coordinate = ol.extent.normalize(extent, [1, 2]);
-      expect(coordinate[0]).to.eql(0.5);
-      expect(coordinate[1]).to.eql(0.5);
-
-      coordinate = ol.extent.normalize(extent, [0, 3]);
-      expect(coordinate[0]).to.eql(0);
-      expect(coordinate[1]).to.eql(1);
-
-      coordinate = ol.extent.normalize(extent, [2, 1]);
-      expect(coordinate[0]).to.eql(1);
-      expect(coordinate[1]).to.eql(0);
-
-      coordinate = ol.extent.normalize(extent, [0, 0]);
-      expect(coordinate[0]).to.eql(0);
-      expect(coordinate[1]).to.eql(-0.5);
-
-      coordinate = ol.extent.normalize(extent, [-1, 1]);
-      expect(coordinate[0]).to.eql(-0.5);
-      expect(coordinate[1]).to.eql(0);
-    });
-  });
-
   describe('scaleFromCenter', function() {
     it('scales the extent from its center', function() {
       var extent = [1, 1, 3, 3];
