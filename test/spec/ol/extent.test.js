@@ -602,23 +602,6 @@ describe('ol.extent', function() {
     });
   });
 
-  describe('touches', function() {
-
-    it('returns the expected value', function() {
-      var touches = ol.extent.touches;
-      var extent = [50, 50, 100, 100];
-      expect(touches(extent, [20, 20, 80, 80])).to.be(false);
-      expect(touches(extent, [20, 20, 50, 80])).to.be(true);
-      expect(touches(extent, [20, 20, 50, 40])).to.be(false);
-      expect(touches(extent, [100, 20, 140, 80])).to.be(true);
-      expect(touches(extent, [100, 20, 140, 40])).to.be(false);
-      expect(touches(extent, [20, 20, 80, 50])).to.be(true);
-      expect(touches(extent, [20, 20, 40, 50])).to.be(false);
-      expect(touches(extent, [20, 100, 80, 140])).to.be(true);
-      expect(touches(extent, [20, 100, 40, 140])).to.be(false);
-    });
-  });
-
   describe('scaleFromCenter', function() {
     it('scales the extent from its center', function() {
       var extent = [1, 1, 3, 3];
