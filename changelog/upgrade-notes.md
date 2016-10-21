@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.19.0
+
 #### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`
 
 Previously, gradients and patterns were aligned with the canvas, so they did not
