@@ -602,29 +602,6 @@ describe('ol.extent', function() {
     });
   });
 
-  describe('isInfinite', function() {
-    it('returns true for infinite extents', function() {
-      var extents = [
-        [-Infinity, 0, 0, 0],
-        [0, -Infinity, 0, 0],
-        [0, 0, +Infinity, 0],
-        [0, 0, 0, +Infinity]
-      ];
-      expect(ol.extent.isInfinite(extents[0])).to.be(true);
-      expect(ol.extent.isInfinite(extents[1])).to.be(true);
-      expect(ol.extent.isInfinite(extents[2])).to.be(true);
-      expect(ol.extent.isInfinite(extents[3])).to.be(true);
-    });
-    it('returns false for other extents', function() {
-      var extents = [
-        ol.extent.createEmpty(),
-        [1, 2, 3, 4]
-      ];
-      expect(ol.extent.isInfinite(extents[0])).to.be(false);
-      expect(ol.extent.isInfinite(extents[1])).to.be(false);
-    });
-  });
-
   describe('touches', function() {
 
     it('returns the expected value', function() {
