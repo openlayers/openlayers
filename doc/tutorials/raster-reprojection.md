@@ -10,7 +10,7 @@ Transformation of the map projections of the image happens directly in a web bro
 The view in any Proj4js supported coordinate reference system is possible and previously incompatible layers can now be combined and overlaid.
 
 # Usage
-The API usage is very simple. Just specify proper projection (using [EPSG](http://epsg.io) code) on `ol.View`:
+The API usage is very simple. Just specify proper projection (using [EPSG](https://epsg.io) code) on `ol.View`:
 ``` javascript
 var map = new ol.Map({
   target: 'map',
@@ -35,14 +35,14 @@ var map = new ol.Map({
 If a source (based on `ol.source.TileImage` or `ol.source.Image`) has a projection different from the current `ol.View`’s projection then the reprojection happens automatically under the hood.
 
 ### Examples
-- [Raster reprojection demo](http://openlayers.org/en/master/examples/reprojection.html)
-- [OpenStreetMap to WGS84 reprojection](http://openlayers.org/en/master/examples/reprojection-wgs84.html)
-- [Reprojection with EPSG.io database search](http://openlayers.org/en/master/examples/reprojection-by-code.html)
-- [Image reprojection](http://openlayers.org/en/master/examples/reprojection-image.html)
+- [Raster reprojection demo](https://openlayers.org/en/master/examples/reprojection.html)
+- [OpenStreetMap to WGS84 reprojection](https://openlayers.org/en/master/examples/reprojection-wgs84.html)
+- [Reprojection with EPSG.io database search](https://openlayers.org/en/master/examples/reprojection-by-code.html)
+- [Image reprojection](https://openlayers.org/en/master/examples/reprojection-image.html)
 
 ### Custom projection
 The easiest way to use a custom projection is to add the [Proj4js](http://proj4js.org/) library to your project and then define the projection using a proj4 definition string.
-Following example shows definition of a [British National Grid](http://epsg.io/27700):
+Following example shows definition of a [British National Grid](https://epsg.io/27700):
 
 ``` html
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js"></script>
@@ -122,7 +122,7 @@ Although this is mathematically correct behavior of the inverse transformation, 
 A possible general solution would be to calculate the forward transformation for every vertex as well - but this would significantly decrease performance (especially for computationally expensive transformations).
 
 Therefore a recommended workaround is to define a proper visibility extent on the `ol.layer.Tile` in the view projection.
-Setting such a limit is demonstrated in the [reprojection demo example](http://openlayers.org/en/master/examples/reprojection.html).
+Setting such a limit is demonstrated in the [reprojection demo example](https://openlayers.org/en/master/examples/reprojection.html).
 
 ### Resolution calculation
 When determining source tiles to load, the ideal source resolution needs to be calculated.

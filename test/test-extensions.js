@@ -466,6 +466,7 @@
 
   var features = {
     ArrayBuffer: typeof ArrayBuffer === 'function',
+    'ArrayBuffer.isView': typeof ArrayBuffer === 'function' && ArrayBuffer.isView,
     Uint8ClampedArray: ('Uint8ClampedArray' in global)
   };
 

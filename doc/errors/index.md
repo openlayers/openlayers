@@ -137,10 +137,6 @@ Invalid `units`. `'degrees'`, `'imperial'`, `'nautical'`, `'metric'` or `'us'` r
 
 Invalid geometry layout. Must be `XY`, `XYZ`, `XYM` or `XYZM`.
 
-### 35
-
-Unknown GeoJSON object type. Expected `"Feature"` or `"FeatureCollection"`.
-
 ### 36
 
 Unknown SRS type. Expected `"name"` or `"EPSG"`.
@@ -164,10 +160,6 @@ Expected `feature` to have a geometry.
 ### 41
 
 Expected an `ol.style.Style` or an array of `ol.style.Style`.
-
-### 42
-
-Expected an `ol.Feature`, but got an `ol.RenderFeature`.
 
 ### 43
 

@@ -116,7 +116,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
    * @private
    * @type {ol.Transform}
    */
-  this.tmpLocalTransformInv_ = ol.transform.create();
+  this.resetTransform_ = ol.transform.create();
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
@@ -191,6 +191,12 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 };
 
 
+/**
+ * @private
+ * @param {CanvasRenderingContext2D} context Context.
+ * @param {ol.Transform} transform Transform.
+ * @param {number} rotation Rotation.
+ */
 ol.render.canvas.Replay.prototype.fill_ = function(context, transform, rotation) {
   if (this.alignFill_) {
     context.translate(transform[4], transform[5]);
@@ -241,7 +247,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var d = 0; // data index
   var dd; // end of per-instruction data
   var localTransform = this.tmpLocalTransform_;
-  var localTransformInv = this.tmpLocalTransformInv_;
+  var resetTransform = this.resetTransform_;
   var prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
@@ -336,7 +342,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             var centerY = y + anchorY;
             ol.transform.compose(localTransform,
                 centerX, centerY, scale, scale, rotation, -centerX, -centerY);
-            context.transform.apply(context, localTransform);
+            context.setTransform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
           if (opacity != 1) {
@@ -353,8 +359,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha;
           }
           if (scale != 1 || rotation !== 0) {
-            ol.transform.invert(ol.transform.setFromArray(localTransformInv, localTransform));
-            context.transform.apply(context, localTransformInv);
+            context.setTransform.apply(context, resetTransform);
           }
         }
         ++i;
@@ -396,7 +401,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
             ol.transform.compose(localTransform, x, y, scale, scale, rotation, -x, -y);
-            context.transform.apply(context, localTransform);
+            context.setTransform.apply(context, localTransform);
           }
 
           // Support multiple lines separated by \n
@@ -427,8 +432,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
 
           if (scale != 1 || rotation !== 0) {
-            ol.transform.invert(ol.transform.setFromArray(localTransformInv, localTransform));
-            context.transform.apply(context, localTransformInv);
+            context.setTransform.apply(context, resetTransform);
           }
         }
         ++i;

@@ -12,7 +12,8 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
-goog.require('ol.tilegrid');
+
+var map;
 
 var styles = {
   'amenity': {
@@ -78,15 +79,24 @@ var styles = {
 
 var vectorSource = new ol.source.Vector({
   format: new ol.format.OSMXML(),
-  url: function(extent, resolution, projection) {
+  loader: function(extent, resolution, projection) {
     var epsg4326Extent =
         ol.proj.transformExtent(extent, projection, 'EPSG:4326');
-    return 'http://overpass-api.de/api/xapi?map?bbox=' +
-        epsg4326Extent.join(',');
+    var client = new XMLHttpRequest();
+    client.open('POST', 'https://overpass-api.de/api/interpreter');
+    client.addEventListener('load', function() {
+      var features = new ol.format.OSMXML().readFeatures(client.responseText, {
+        featureProjection: map.getView().getProjection()
+      });
+      vectorSource.addFeatures(features);
+    });
+    var query = '(node(' +
+        epsg4326Extent[1] + ',' + epsg4326Extent[0] + ',' +
+        epsg4326Extent[3] + ',' + epsg4326Extent[2] +
+        ');rel(bn)->.foo;way(bn);node(w)->.foo;rel(bw););out meta;';
+    client.send(query);
   },
-  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-    maxZoom: 19
-  }))
+  strategy: ol.loadingstrategy.bbox
 });
 
 var vector = new ol.layer.Vector({
@@ -113,7 +123,7 @@ var raster = new ol.layer.Tile({
   })
 });
 
-var map = new ol.Map({
+map = new ol.Map({
   layers: [raster, vector],
   target: document.getElementById('map'),
   controls: ol.control.defaults({

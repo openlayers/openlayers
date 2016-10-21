@@ -17,7 +17,7 @@ goog.require('ol.source.ImageWMS');
 //
 // Note that we are setting the projection's extent here, which is used to
 // determine the view resolution for zoom level 0. Recommended values for a
-// projection's validity extent can be found at http://epsg.io/.
+// projection's validity extent can be found at https://epsg.io/.
 //
 // If you use Proj4js only to transform coordinates, you don't even need to
 // create an ol.proj.Projection instance. ol.proj.get() will take care of it

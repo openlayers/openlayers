@@ -534,4 +534,20 @@ describe('ol.interaction.Modify', function() {
     });
   });
 
+  describe('#setActive', function() {
+    it('removes the vertexFeature of deactivation', function() {
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+      expect(modify.vertexFeature_).to.be(null);
+
+      simulateEvent('pointermove', 10, -20, false, 0);
+      expect(modify.vertexFeature_).to.not.be(null);
+
+      modify.setActive(false);
+      expect(modify.vertexFeature_).to.be(null);
+    });
+  });
+
 });

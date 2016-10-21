@@ -8,10 +8,10 @@ goog.require('ol.source.OSM');
 var openCycleMapLayer = new ol.layer.Tile({
   source: new ol.source.OSM({
     attributions: [
-      'All maps © <a href="http://www.opencyclemap.org/">OpenCycleMap</a>',
+      'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
       ol.source.OSM.ATTRIBUTION
     ],
-    url: 'http://{a-c}.tile.opencyclemap.org/cycle/{z}/{x}/{y}.png'
+    url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png'
   })
 });
 
@@ -22,7 +22,7 @@ var openSeaMapLayer = new ol.layer.Tile({
       ol.source.OSM.ATTRIBUTION
     ],
     opaque: false,
-    url: 'http://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
+    url: 'https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png'
   })
 });
 

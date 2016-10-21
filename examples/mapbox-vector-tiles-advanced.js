@@ -47,7 +47,7 @@ var map = new ol.Map({
       preload: Infinity,
       source: new ol.source.VectorTile({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
-          '© <a href="http://www.openstreetmap.org/copyright">' +
+          '© <a href="https://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
         format: new ol.format.MVT(),
         tileGrid: new ol.tilegrid.TileGrid({

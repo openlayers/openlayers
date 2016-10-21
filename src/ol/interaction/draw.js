@@ -2,6 +2,7 @@ goog.provide('ol.interaction.Draw');
 
 goog.require('ol');
 goog.require('ol.events');
+goog.require('ol.extent');
 goog.require('ol.events.Event');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent.EventType');
@@ -251,8 +252,13 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.freehandCondition_ = options.freehandCondition ?
-      options.freehandCondition : ol.events.condition.shiftKeyOnly;
+  this.freehandCondition_;
+  if (options.freehand) {
+    this.freehandCondition_ = ol.events.condition.always;
+  } else {
+    this.freehandCondition_ = options.freehandCondition ?
+        options.freehandCondition : ol.events.condition.shiftKeyOnly;
+  }
 
   ol.events.listen(this,
       ol.Object.getChangeEventType(ol.interaction.Interaction.Property.ACTIVE),
@@ -285,29 +291,25 @@ ol.interaction.Draw.prototype.setMap = function(map) {
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
  * draw or finish the drawing.
- * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
+ * @param {ol.MapBrowserEvent} event Map browser event.
  * @return {boolean} `false` to stop event propagation.
  * @this {ol.interaction.Draw}
  * @api
  */
-ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
-  if ((this.mode_ === ol.interaction.Draw.Mode.LINE_STRING ||
-    this.mode_ === ol.interaction.Draw.Mode.POLYGON) &&
-    this.freehandCondition_(mapBrowserEvent)) {
-    this.freehand_ = true;
-  }
+ol.interaction.Draw.handleEvent = function(event) {
+  this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode.POINT && this.freehandCondition_(event);
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      mapBrowserEvent.type === ol.MapBrowserEvent.EventType.POINTERDRAG && this.sketchFeature_ !== null) {
-    this.addToDrawing_(mapBrowserEvent);
+      event.type === ol.MapBrowserEvent.EventType.POINTERDRAG && this.sketchFeature_ !== null) {
+    this.addToDrawing_(event);
     pass = false;
-  } else if (mapBrowserEvent.type ===
+  } else if (event.type ===
       ol.MapBrowserEvent.EventType.POINTERMOVE) {
-    pass = this.handlePointerMove_(mapBrowserEvent);
-  } else if (mapBrowserEvent.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
+    pass = this.handlePointerMove_(event);
+  } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
     pass = false;
   }
-  return ol.interaction.Pointer.handleEvent.call(this, mapBrowserEvent) && pass;
+  return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
 };
 
 
@@ -318,14 +320,14 @@ ol.interaction.Draw.handleEvent = function(mapBrowserEvent) {
  * @private
  */
 ol.interaction.Draw.handleDownEvent_ = function(event) {
-  if (this.condition_(event)) {
-    this.downPx_ = event.pixel;
-    return true;
-  } else if (this.freehand_) {
+  if (this.freehand_) {
     this.downPx_ = event.pixel;
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
     }
+    return true;
+  } else if (this.condition_(event)) {
+    this.downPx_ = event.pixel;
     return true;
   } else {
     return false;
@@ -340,21 +342,23 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
-  this.freehand_ = false;
   var downPx = this.downPx_;
   var clickPx = event.pixel;
   var dx = downPx[0] - clickPx[0];
   var dy = downPx[1] - clickPx[1];
   var squaredDistance = dx * dx + dy * dy;
   var pass = true;
-  if (squaredDistance <= this.squaredClickTolerance_) {
+  var shouldHandle = this.freehand_ ?
+      squaredDistance > this.squaredClickTolerance_ :
+      squaredDistance <= this.squaredClickTolerance_;
+  if (shouldHandle) {
     this.handlePointerMove_(event);
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
       if (this.mode_ === ol.interaction.Draw.Mode.POINT) {
         this.finishDrawing();
       }
-    } else if (this.mode_ === ol.interaction.Draw.Mode.CIRCLE) {
+    } else if (this.freehand_ || this.mode_ === ol.interaction.Draw.Mode.CIRCLE) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
       if (this.finishCondition_(event)) {
@@ -412,8 +416,7 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
         var pixel = event.pixel;
         var dx = pixel[0] - finishPixel[0];
         var dy = pixel[1] - finishPixel[1];
-        var freehand = this.freehand_ && this.freehandCondition_(event);
-        var snapTolerance = freehand ? 1 : this.snapTolerance_;
+        var snapTolerance = this.freehand_ ? 1 : this.snapTolerance_;
         at = Math.sqrt(dx * dx + dy * dy) <= snapTolerance;
         if (at) {
           this.finishCoordinate_ = finishCoordinate;
@@ -541,13 +544,25 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   if (this.mode_ === ol.interaction.Draw.Mode.LINE_STRING) {
     this.finishCoordinate_ = coordinate.slice();
     coordinates = this.sketchCoords_;
+    if (coordinates.length >= this.maxPoints_) {
+      if (this.freehand_) {
+        coordinates.pop();
+      } else {
+        done = true;
+      }
+    }
     coordinates.push(coordinate.slice());
-    done = coordinates.length > this.maxPoints_;
     this.geometryFunction_(coordinates, geometry);
   } else if (this.mode_ === ol.interaction.Draw.Mode.POLYGON) {
     coordinates = this.sketchCoords_[0];
+    if (coordinates.length >= this.maxPoints_) {
+      if (this.freehand_) {
+        coordinates.pop();
+      } else {
+        done = true;
+      }
+    }
     coordinates.push(coordinate.slice());
-    done = coordinates.length > this.maxPoints_;
     if (done) {
       this.finishCoordinate_ = coordinates[0];
     }
@@ -717,7 +732,7 @@ ol.interaction.Draw.prototype.updateState_ = function() {
 
 
 /**
- * Create a `geometryFunction` for `mode: 'Circle'` that will create a regular
+ * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
  * polygon with a user specified number of sides and start angle instead of an
  * `ol.geom.Circle` geometry.
  * @param {number=} opt_sides Number of sides of the regular polygon. Default is
@@ -748,6 +763,36 @@ ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
         ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
         return geometry;
       }
+  );
+};
+
+
+/**
+ * Create a `geometryFunction` that will create a box-shaped polygon (aligned
+ * with the coordinate system axes).  Use this with the draw interaction and
+ * `type: 'Circle'` to return a box instead of a circle geometry.
+ * @return {ol.DrawGeometryFunctionType} Function that draws a box-shaped polygon.
+ * @api
+ */
+ol.interaction.Draw.createBox = function() {
+  return (
+    /**
+     * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+     * @param {ol.geom.SimpleGeometry=} opt_geometry
+     * @return {ol.geom.SimpleGeometry}
+     */
+    function(coordinates, opt_geometry) {
+      var extent = ol.extent.boundingExtent(coordinates);
+      var geometry = opt_geometry || new ol.geom.Polygon(null);
+      geometry.setCoordinates([[
+        ol.extent.getBottomLeft(extent),
+        ol.extent.getBottomRight(extent),
+        ol.extent.getTopRight(extent),
+        ol.extent.getTopLeft(extent),
+        ol.extent.getBottomLeft(extent)
+      ]]);
+      return geometry;
+    }
   );
 };
 

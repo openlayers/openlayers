@@ -272,7 +272,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
   });
 
-  describe.only('polygon rendering', function() {
+  describe('polygon rendering', function() {
 
     var map;
     beforeEach(function() {

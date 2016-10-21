@@ -66,16 +66,16 @@
           <textarea class="hidden" name="css">{{ css.source }}</textarea>
           <textarea class="hidden" name="html">{{ contents }}</textarea>
           <input type="hidden" name="wrap" value="l">
-          <input type="hidden" name="resources" value="http://openlayers.org/en/v{{ olVersion }}/css/ol.css,http://openlayers.org/en/v{{ olVersion }}/build/ol.js{{ extraResources }}">
+          <input type="hidden" name="resources" value="https://openlayers.org/en/v{{ olVersion }}/css/ol.css,https://openlayers.org/en/v{{ olVersion }}/build/ol.js{{ extraResources }}">
         </form>
         <pre><code id="example-source" class="language-markup">&lt;!DOCTYPE html&gt;
 &lt;html&gt;
   &lt;head&gt;
     &lt;title&gt;{{ title }}&lt;/title&gt;
-    &lt;link rel="stylesheet" href="http://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
+    &lt;link rel="stylesheet" href="https://openlayers.org/en/v{{ olVersion }}/css/ol.css" type="text/css"&gt;
     &lt;!-- The line below is only needed for old environments like Internet Explorer and Android 4.x --&gt;
-    &lt;script src="http://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"&gt;&lt;/script&gt;
-    &lt;script src="http://openlayers.org/en/v{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;{{#if extraHead.remote}}
+    &lt;script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"&gt;&lt;/script&gt;
+    &lt;script src="https://openlayers.org/en/v{{ olVersion }}/build/ol.js"&gt;&lt;/script&gt;{{#if extraHead.remote}}
 {{ indent extraHead.remote spaces=4 }}{{/if}}{{#if css.source}}
     &lt;style&gt;
 {{ indent css.source spaces=6 }}    &lt;/style&gt;{{/if}}

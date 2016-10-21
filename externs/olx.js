@@ -888,7 +888,7 @@ olx.control.AttributionOptions.prototype.target;
 /**
  * Specify if attributions can be collapsed. If you use an OSM source,
  * should be set to `false` — see
- * {@link http://www.openstreetmap.org/copyright OSM Copyright} —
+ * {@link https://www.openstreetmap.org/copyright OSM Copyright} —
  * Default is `true`.
  * @type {boolean|undefined}
  * @api
@@ -2582,6 +2582,7 @@ olx.interaction.DragZoomOptions.prototype.out;
  *     geometryFunction: (ol.DrawGeometryFunctionType|undefined),
  *     geometryName: (string|undefined),
  *     condition: (ol.EventsConditionType|undefined),
+ *     freehand: (boolean|undefined),
  *     freehandCondition: (ol.EventsConditionType|undefined),
  *     wrapX: (boolean|undefined)}}
  */
@@ -2693,6 +2694,16 @@ olx.interaction.DrawOptions.prototype.geometryName;
  * @api
  */
 olx.interaction.DrawOptions.prototype.condition;
+
+
+/**
+ * Operate in freehand mode for lines, polygons, and circles.  This makes the
+ * interaction always operate in freehand mode and takes precedence over any
+ * `freehandCondition` option.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DrawOptions.prototype.freehand;
 
 
 /**

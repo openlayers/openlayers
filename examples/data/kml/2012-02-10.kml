@@ -2,9 +2,9 @@
   <Document>
     <name>Skimap.org OpenSkiMap </name>
     <description>Created from OpenStreetMap data. Renderer v0.5</description>
-    <!-- 
+    <!--
 Copyright (c) OpenStreetMap Contributors
-http://www.openstreetmap.org/
+https://www.openstreetmap.org/
 
 This work is licensed under the
 Creative Commons Attribution-ShareAlike 2.0 License.
@@ -13,7 +13,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
     <ScreenOverlay id="CopyrightNotice">
       <name>Copyright Notice</name>
       <description>
-        <![CDATA[The data in this KML file is Copyright <a href="http://www.openstreetmap.org/">OpenStreetMap</a> Contributors. It is available under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike (CC-BY-SA) Version 2.0 License</a>.]]>
+        <![CDATA[The data in this KML file is Copyright <a href="https://www.openstreetmap.org/">OpenStreetMap</a> Contributors. It is available under the <a href="http://creativecommons.org/licenses/by-sa/2.0/">Creative Commons Attribution-ShareAlike (CC-BY-SA) Version 2.0 License</a>.]]>
       </description>
       <Snippet>Copyright (c) OpenStreetMap Contributors. CC-BY-SA 2.0 License.</Snippet>
       <Icon>
@@ -32,7 +32,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.2</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/shapes/parking_lot.png</href>
+              <href>https://maps.google.com/mapfiles/kml/shapes/parking_lot.png</href>
             </Icon>
           </IconStyle>
         </Style>
@@ -140,7 +140,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.7</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/pal2/icon21.png</href>
+              <href>https://maps.google.com/mapfiles/kml/pal2/icon21.png</href>
             </Icon>
           </IconStyle>
         </Style>
@@ -170,7 +170,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.7</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/pal2/icon30.png</href>
+              <href>https://maps.google.com/mapfiles/kml/pal2/icon30.png</href>
             </Icon>
           </IconStyle>
         </Style>
@@ -188,7 +188,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.7</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/pal2/icon28.png</href>
+              <href>https://maps.google.com/mapfiles/kml/pal2/icon28.png</href>
             </Icon>
           </IconStyle>
         </Style>
@@ -325,7 +325,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.7</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/pal2/icon40.png</href>
+              <href>https://maps.google.com/mapfiles/kml/pal2/icon40.png</href>
             </Icon>
           </IconStyle>
         </Style>
@@ -548,7 +548,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.7</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/pal3/icon38.png</href>
+              <href>https://maps.google.com/mapfiles/kml/pal3/icon38.png</href>
             </Icon>
           </IconStyle>
         </Style>
@@ -559,7 +559,7 @@ http://creativecommons.org/licenses/by-sa/2.0/
           <IconStyle>
             <scale>0.7</scale>
             <Icon>
-              <href>http://maps.google.com/mapfiles/kml/pal3/icon38.png</href>
+              <href>https://maps.google.com/mapfiles/kml/pal3/icon38.png</href>
             </Icon>
           </IconStyle>
         </Style>

@@ -88,6 +88,22 @@ describe('ol.interaction.Draw', function() {
       expect(draw).to.be.a(ol.interaction.Interaction);
     });
 
+    it('accepts a freehand option', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: 'LineString',
+        freehand: true
+      });
+
+      var event = new ol.pointer.PointerEvent('pointerdown', {
+        clientX: 0,
+        clientY: 0,
+        shiftKey: false
+      });
+
+      expect(draw.freehandCondition_(event)).to.be(true);
+    });
+
   });
 
   describe('specifying a geometryName', function() {
@@ -283,17 +299,49 @@ describe('ol.interaction.Draw', function() {
       simulateEvent('pointerdrag', 20, 40, true);
       simulateEvent('pointerup', 20, 40, true);
 
-      // finish on third point
-      simulateEvent('pointermove', 20, 40);
-      simulateEvent('pointerdown', 20, 40);
-      simulateEvent('pointerup', 20, 40);
-
       var features = source.getFeatures();
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
       expect(geometry.getCoordinates()).to.eql(
           [[10, -20], [20, -30], [20, -40]]);
+    });
+
+    it('allows freehand mode for part of the drawing', function() {
+
+      // non-freehand
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      simulateEvent('pointermove', 20, 30);
+
+      // freehand
+      simulateEvent('pointerdown', 20, 30, true);
+      simulateEvent('pointermove', 20, 30, true);
+      simulateEvent('pointerdrag', 20, 30, true);
+      simulateEvent('pointermove', 30, 40, true);
+      simulateEvent('pointerdrag', 30, 40, true);
+      simulateEvent('pointermove', 40, 50, true);
+      simulateEvent('pointerdrag', 40, 50, true);
+
+      // non-freehand
+      simulateEvent('pointerup', 40, 50);
+      simulateEvent('pointermove', 50, 60);
+      simulateEvent('pointerdown', 50, 60);
+      simulateEvent('pointerup', 50, 60);
+      simulateEvent('pointermove', 60, 70);
+      simulateEvent('pointerdown', 60, 70);
+      simulateEvent('pointerup', 60, 70);
+
+      // finish
+      simulateEvent('pointerdown', 60, 70);
+      simulateEvent('pointerup', 60, 70);
+
+      var features = source.getFeatures();
+      // expect(features).to.have.length(1);
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.LineString);
+      expect(geometry.getCoordinates()).to.eql(
+          [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
     });
 
     it('does not add a point with a significant drag', function() {
@@ -846,6 +894,35 @@ describe('ol.interaction.Draw', function() {
       expect(coordinates[0].length).to.eql(5);
       expect(coordinates[0][0][0]).to.roughlyEqual(20, 1e-9);
       expect(coordinates[0][0][1]).to.roughlyEqual(20, 1e-9);
+    });
+  });
+
+  describe('ol.interaction.Draw.createBox', function() {
+    it('creates a box-shaped polygon in Circle mode', function() {
+      var draw = new ol.interaction.Draw({
+        source: source,
+        type: 'Circle',
+        geometryFunction: ol.interaction.Draw.createBox()
+      });
+      map.addInteraction(draw);
+
+      // first point
+      simulateEvent('pointermove', 0, 0);
+      simulateEvent('pointerdown', 0, 0);
+      simulateEvent('pointerup', 0, 0);
+
+      // finish on second point
+      simulateEvent('pointermove', 20, 20);
+      simulateEvent('pointerdown', 20, 20);
+      simulateEvent('pointerup', 20, 20);
+
+      var features = source.getFeatures();
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+      var coordinates = geometry.getCoordinates();
+      expect(coordinates[0]).to.have.length(5);
+      expect(geometry.getArea()).to.equal(400);
+      expect(geometry.getExtent()).to.eql([0, -20, 20, 0]);
     });
   });
 
