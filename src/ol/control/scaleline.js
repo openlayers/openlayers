@@ -36,7 +36,8 @@ ol.control.ScaleLine = function(opt_options) {
    * @type {Element}
    */
   this.innerElement_ = document.createElement('DIV');
-  this.innerElement_.className = className + '-inner';
+//  this.innerElement_.className = className + '-inner';
+  this.innerElement_.className = className.split(/[\s,]+/).map(function (x) { return (x + "-inner") }).join(" ");
 
   /**
    * @private
