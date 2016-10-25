@@ -12,7 +12,6 @@ goog.require('ol.extent');
 goog.require('ol.render.canvas');
 goog.require('ol.render.Event');
 goog.require('ol.renderer.canvas.Layer');
-goog.require('ol.size');
 
 
 /**
@@ -216,7 +215,7 @@ ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel = function(
  */
 ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, frameState, layerState) {
   var tilesToDraw = this.renderedTiles;
-  if (tilesToDraw.length == 0) {
+  if (tilesToDraw.length === 0) {
     return;
   }
 
@@ -264,17 +263,6 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   var alpha = renderContext.globalAlpha;
   renderContext.globalAlpha = layerState.opacity;
 
-  // Origin of the lowest resolution tile that contains the map center. We will
-  // try to use the same origin for all resolutions for pixel-perfect tile
-  // alignment across resolutions.
-  var lowResTileCoord = tilesToDraw[0].getTileCoord();
-  var minZOrigin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
-      tileGrid.getTileCoordForCoordAndZ(center,
-          lowResTileCoord[0], this.tmpTileCoord_), this.tmpExtent));
-  var maxZ = tilesToDraw[tilesToDraw.length - 1].getTileCoord()[0];
-  var maxZResolution = tileGrid.getResolution(maxZ);
-  var maxZTileSize = ol.size.toSize(tileGrid.getTileSize(maxZ));
-
   var pixelExtents;
   var opaque = source.getOpaque(projection) && layerState.opacity == 1;
   if (!opaque) {
@@ -317,23 +305,17 @@ ol.renderer.canvas.TileLayer.prototype.renderTileImages = function(context, fram
   for (var i = 0, ii = tilesToDraw.length; i < ii; ++i) {
     var tile = tilesToDraw[i];
     var tileCoord = tile.getTileCoord();
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
     var currentZ = tileCoord[0];
-    var tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ));
     // Calculate all insert points by tile widths from a common origin to avoid
     // gaps caused by rounding
-    var originTileCoord = tileGrid.getTileCoordForCoordAndZ(minZOrigin, currentZ, this.tmpTileCoord_);
-    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(originTileCoord, this.tmpExtent));
-    // Calculate tile width and height by a tile size factor from the highest
-    // resolution tile size to avoid gaps when combining tiles from different
-    // resolutions
-    var resolutionFactor = tileGrid.getResolution(currentZ) / maxZResolution;
-    var tileSizeFactorW = tileSize[0] / maxZTileSize[0] * resolutionFactor;
-    var tileSizeFactorH = tileSize[1] / maxZTileSize[1] * resolutionFactor;
-    var w = Math.round(maxZTileSize[0] / resolution * maxZResolution * pixelRatio * drawScale) * tileSizeFactorW;
-    var h = Math.round(maxZTileSize[1] / resolution * maxZResolution * pixelRatio * drawScale) * tileSizeFactorH;
-    var left = (tileCoord[1] - originTileCoord[1]) * w +
+    var origin = ol.extent.getBottomLeft(tileGrid.getTileCoordExtent(
+        tileGrid.getTileCoordForCoordAndZ(center, currentZ, this.tmpTileCoord_)));
+    var w = Math.round(ol.extent.getWidth(tileExtent) * pixelScale);
+    var h = Math.round(ol.extent.getHeight(tileExtent) * pixelScale);
+    var left = Math.round((tileExtent[0] - origin[0]) * pixelScale / w) * w +
         offsetX + Math.round((origin[0] - center[0]) * pixelScale);
-    var top = (originTileCoord[2] - tileCoord[2] - 1) * h +
+    var top = Math.round((origin[1] - tileExtent[3]) * pixelScale / h) * h +
         offsetY + Math.round((center[1] - origin[1]) * pixelScale);
     if (!opaque) {
       var pixelExtent = [left, top, left + w, top + h];
