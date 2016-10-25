@@ -100,7 +100,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
- * @param {number} hitTolerance hit tolerance.
+ * @param {number} hitTolerance Hit tolerance.
  * @param {function(this: S, (ol.Feature|ol.render.Feature),
  *     ol.layer.Layer): T} callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
@@ -189,7 +189,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, call
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
- * @param {number} hitTolerance HitTolerance.
+ * @param {number} hitTolerance Hit tolerance.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible

@@ -35,7 +35,7 @@ ol.inherits(ol.renderer.Layer, ol.Observable);
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState Frame state.
- * @param {number} hitTolerance hit tolerance.
+ * @param {number} hitTolerance Hit tolerance.
  * @param {function(this: S, (ol.Feature|ol.render.Feature), ol.layer.Layer): T}
  *     callback Feature callback.
  * @param {S} thisArg Value to use as `this` when executing `callback`.
