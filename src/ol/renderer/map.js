@@ -189,6 +189,7 @@ ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, call
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
+ * @param {number} hitTolerance HitTolerance.
  * @param {function(this: U, ol.layer.Layer): boolean} layerFilter Layer filter
  *     function, only layers which are visible and for which this function
  *     returns `true` will be tested for features.  By default, all visible
@@ -197,9 +198,9 @@ ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, call
  * @return {boolean} Is there a feature at the given coordinate?
  * @template U
  */
-ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, layerFilter, thisArg) {
+ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, ol.functions.TRUE, this, layerFilter, thisArg);
+      coordinate, frameState, hitTolerance, ol.functions.TRUE, this, layerFilter, thisArg);
 
   return hasFeature !== undefined;
 };

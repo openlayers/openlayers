@@ -303,39 +303,42 @@ olx.MapOptions.prototype.view;
 
 
 /**
- * Object literal with options for the forEachFeatureAtCoordinate methods.
+ * Object literal with options for the forEachFeatureAtPixel and
+ * hasFeatureAtPixel methods.
  * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),
  *    layerFilterThis: (Object|undefined),
  *    hitTolerance: (number|undefined)}}
  */
-olx.ForEachFeatureOptions;
+olx.FeatureAtPixelOptions;
 
 
 /**
- * Layer filter function. Only layers which are visible and for which this function returns
- * `true` will be tested for features. By default, all visible layers will
- * be tested.
+ * Layer filter function. The filter function will receive one argument, the
+ * {@link ol.layer.Layer layer-candidate} and it should return a boolean value.
+ * Only layers which are visible and for which this function returns `true`
+ * will be tested for features. By default, all visible layers will be tested.
  * @type {((function(ol.layer.Layer): boolean)|undefined)}
  * @api stable
  */
-olx.ForEachFeatureOptions.prototype.layerFilter;
+olx.FeatureAtPixelOptions.prototype.layerFilter;
 
 
 /**
  * Value to use as `this` when executing `layerFilter`.
- * @type {Object}
+ * @type {Object|undefined}
  * @api stable
  */
-olx.ForEachFeatureOptions.prototype.layerFilterThis;
+olx.FeatureAtPixelOptions.prototype.layerFilterThis;
 
 
 /**
- * Value of a radius in whichs area around the given coordinate features are
- *    called.
- * @type {number}
- * @api stable
+ * Hit-detection tolerance. Pixels inside the radius around the given position
+ * will be checked for features. This only works for the canvas renderer and
+ * not for WebGL.
+ * @type {number|undefined}
+ * @api
  */
-olx.ForEachFeatureOptions.prototype.hitTolerance;
+olx.FeatureAtPixelOptions.prototype.hitTolerance;
 
 
 /**

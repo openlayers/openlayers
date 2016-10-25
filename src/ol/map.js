@@ -568,7 +568,7 @@ ol.Map.prototype.disposeInternal = function() {
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
  * @param {S=} opt_this Value to use as this when executing callback.
- * @param {olx.ForEachFeatureOptions=} opt_options Optional options.
+ * @param {olx.FeatureAtPixelOptions=} opt_options Optional options.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
  * @template S,T
@@ -632,27 +632,22 @@ ol.Map.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_l
  * Detect if features intersect a pixel on the viewport. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {(function(this: U, ol.layer.Layer): boolean)=} opt_layerFilter Layer
- *     filter function. The filter function will receive one argument, the
- *     {@link ol.layer.Layer layer-candidate} and it should return a boolean
- *     value. Only layers which are visible and for which this function returns
- *     `true` will be tested for features. By default, all visible layers will
- *     be tested.
- * @param {U=} opt_this Value to use as `this` when executing `layerFilter`.
+ * @param {olx.FeatureAtPixelOptions=} opt_options Optional options.
  * @return {boolean} Is there a feature at the given pixel?
  * @template U
  * @api
  */
-ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_layerFilter, opt_this) {
+ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
+  opt_options = opt_options !== undefined ? opt_options : {};
   if (!this.frameState_) {
     return false;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
-  var layerFilter = opt_layerFilter !== undefined ?
-      opt_layerFilter : ol.functions.TRUE;
-  var thisArg = opt_this !== undefined ? opt_this : null;
+  var layerFilter = opt_options.layerFilter !== undefined ?
+      opt_options.layerFilter : ol.functions.TRUE;
+  var thisArg = opt_options.layerFilterThis !== undefined ? opt_options.layerFilterThis : null;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, layerFilter, thisArg);
+      coordinate, this.frameState_, opt_options.hitTolerance || 0, layerFilter, thisArg);
 };
 
 
