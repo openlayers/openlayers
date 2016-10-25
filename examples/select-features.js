@@ -31,23 +31,28 @@ var map = new ol.Map({
 var select = null;  // ref to currently selected interaction
 
 // select interaction working on "singleclick"
-var selectSingleClick = new ol.interaction.Select();
+var selectSingleClick = new ol.interaction.Select({
+  multi: true // multi is used in this example if hitTolerance > 0
+});
 
 // select interaction working on "click"
 var selectClick = new ol.interaction.Select({
-  condition: ol.events.condition.click
+  condition: ol.events.condition.click,
+  multi: true
 });
 
 // select interaction working on "pointermove"
 var selectPointerMove = new ol.interaction.Select({
-  condition: ol.events.condition.pointerMove
+  condition: ol.events.condition.pointerMove,
+  multi: true
 });
 
 var selectAltClick = new ol.interaction.Select({
   condition: function(mapBrowserEvent) {
     return ol.events.condition.click(mapBrowserEvent) &&
         ol.events.condition.altKeyOnly(mapBrowserEvent);
-  }
+  },
+  multi: true
 });
 
 var selectElement = document.getElementById('type');
@@ -85,3 +90,27 @@ var changeInteraction = function() {
  */
 selectElement.onchange = changeInteraction;
 changeInteraction();
+
+var selectHitToleranceElement = document.getElementById('hitTolerance');
+var circleCanvas = document.getElementById('circle');
+
+var changeHitTolerance = function() {
+  var value = parseInt(selectHitToleranceElement.value, 10);
+  selectSingleClick.setHitTolerance(value);
+  selectClick.setHitTolerance(value);
+  selectPointerMove.setHitTolerance(value);
+  selectAltClick.setHitTolerance(value);
+
+  var size = 2 * value + 2;
+  circleCanvas.width = size;
+  circleCanvas.height = size;
+  var ctx = circleCanvas.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+  ctx.beginPath();
+  ctx.arc(value + 1, value + 1, value + 0.5, 0, 2 * Math.PI);
+  ctx.fill();
+  ctx.stroke();
+};
+
+selectHitToleranceElement.onchange = changeHitTolerance;
+changeHitTolerance();

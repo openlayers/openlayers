@@ -3212,7 +3212,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     multi: (boolean|undefined),
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     filter: (ol.SelectFilterFunction|undefined),
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined),
+ *     hitTolerance: (number|undefined)}}
  */
 olx.interaction.SelectOptions;
 
@@ -3324,6 +3325,16 @@ olx.interaction.SelectOptions.prototype.filter;
  * @api
  */
 olx.interaction.SelectOptions.prototype.wrapX;
+
+
+/**
+ * Hit-detection tolerance. Pixels inside the radius around the given position
+ * will be checked for features. This only works for the canvas renderer and
+ * not for WebGL.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.hitTolerance;
 
 
 /**

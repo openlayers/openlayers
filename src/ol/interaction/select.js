@@ -82,6 +82,8 @@ ol.interaction.Select = function(opt_options) {
   this.filter_ = options.filter ? options.filter :
       ol.functions.TRUE;
 
+  this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
+
   var featureOverlay = new ol.layer.Vector({
     source: new ol.source.Vector({
       useSpatialIndex: false,
@@ -161,6 +163,16 @@ ol.interaction.Select.prototype.getFeatures = function() {
 
 
 /**
+ * Returns the Hit-detection tolerance.
+ * @returns {number} Hit tolerance.
+ * @api
+ */
+ol.interaction.Select.prototype.getHitTolerance = function() {
+  return this.hitTolerance_;
+};
+
+
+/**
  * Returns the associated {@link ol.layer.Vector vectorlayer} of
  * the (last) selected feature. Note that this will not work with any
  * programmatic method like pushing features to
@@ -212,7 +224,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             this.addFeatureLayerAssociation_(feature, layer);
             return !this.multi_;
           }
-        }, this, {layerFilter: this.layerFilter_});
+        }, this, {
+          layerFilter: this.layerFilter_,
+          hitTolerance: this.hitTolerance_
+        });
     var i;
     for (i = features.getLength() - 1; i >= 0; --i) {
       var feature = features.item(i);
@@ -249,7 +264,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             }
             return !this.multi_;
           }
-        }, this, {layerFilter: this.layerFilter_});
+        }, this, {
+          layerFilter: this.layerFilter_,
+          hitTolerance: this.hitTolerance_
+        });
     var j;
     for (j = deselected.length - 1; j >= 0; --j) {
       features.remove(deselected[j]);
@@ -262,6 +280,18 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
+};
+
+
+/**
+ * Hit-detection tolerance. Pixels inside the radius around the given position
+ * will be checked for features. This only works for the canvas renderer and
+ * not for WebGL.
+ * @param {number} hitTolerance Hit tolerance.
+ * @api
+ */
+ol.interaction.Select.prototype.setHitTolerance = function(hitTolerance) {
+  this.hitTolerance_ = hitTolerance;
 };
 
 
