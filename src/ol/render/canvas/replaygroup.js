@@ -65,38 +65,65 @@ ol.render.canvas.ReplayGroup = function(
    *        Object.<ol.render.ReplayType, ol.render.canvas.Replay>>}
    */
   this.replaysByZIndex_ = {};
+
+  /**
+   * @private
+   * @type {CanvasRenderingContext2D}
+   */
+  this.hitDetectionContext_ = ol.dom.createCanvasContext2D(1, 1);
 };
 ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
+
 /**
- * This methods creates a circle inside a fitting array. Points inside the
- * circle are marked by true, points on the outside are marked with false.
- * It uses the midpoint circle algorithm.
- * @param {number} radius Radius.
- * @returns {Array.<Array.<Boolean>>} an array with marked circel points.
+ * @type {Object.<number, Array.<Array.<(boolean|undefined)>>>}
  * @private
  */
-ol.render.canvas.ReplayGroup.createPixelCircle_ = function(radius) {
+ol.render.canvas.ReplayGroup.circleArrayCache_ = {
+  0: [[true]]
+};
+
+
+/**
+ * This method fills a row in the array from the given coordinate to the
+ * middle with `true`.
+ * @param {Array.<Array.<(boolean|undefined)>>} array The array that will be altered.
+ * @param {number} x X coordinate.
+ * @param {number} y Y coordinate.
+ * @private
+ */
+ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y) {
+  var i;
+  var radius = Math.floor(array.length / 2);
+  if (x >= radius) {
+    for (i = radius; i < x; i++) {
+      array[i][y] = true;
+    }
+  } else if (x < radius) {
+    for (i = x + 1; i < radius; i++) {
+      array[i][y] = true;
+    }
+  }
+};
+
+
+/**
+ * This methods creates a circle inside a fitting array. Points inside the
+ * circle are marked by true, points on the outside are undefined.
+ * It uses the midpoint circle algorithm.
+ * @param {number} radius Radius.
+ * @returns {Array.<Array.<(boolean|undefined)>>} An array with marked circle points.
+ * @private
+ */
+ol.render.canvas.ReplayGroup.getCircleArray_ = function(radius) {
+  if (ol.render.canvas.ReplayGroup.circleArrayCache_[radius] !== undefined) {
+    return ol.render.canvas.ReplayGroup.circleArrayCache_[radius];
+  }
+
   var arraySize = radius * 2 + 1;
   var arr = new Array(arraySize);
   for (var i = 0; i < arraySize; i++) {
     arr[i] = new Array(arraySize);
-    for (var j = 0; j < arraySize; j++) {
-      arr[i][j] = false;
-    }
-  }
-
-  function fillRowToMiddle(x, y) {
-    var i;
-    if (x >= radius) {
-      for (i = radius; i < x; i++) {
-        arr[i][y] = true;
-      }
-    } else if (x < radius) {
-      for (i = x + 1; i < radius; i++) {
-        arr[i][y] = true;
-      }
-    }
   }
 
   var x = radius;
@@ -104,14 +131,14 @@ ol.render.canvas.ReplayGroup.createPixelCircle_ = function(radius) {
   var error = 0;
 
   while (x >= y) {
-    fillRowToMiddle(radius + x, radius + y);
-    fillRowToMiddle(radius + y, radius + x);
-    fillRowToMiddle(radius - y, radius + x);
-    fillRowToMiddle(radius - x, radius + y);
-    fillRowToMiddle(radius - x, radius - y);
-    fillRowToMiddle(radius - y, radius - x);
-    fillRowToMiddle(radius + y, radius - x);
-    fillRowToMiddle(radius + x, radius - y);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + x, radius + y);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + y, radius + x);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - y, radius + x);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - x, radius + y);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - x, radius - y);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - y, radius - x);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + y, radius - x);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + x, radius - y);
 
     y++;
     error += 1 + 2 * y;
@@ -121,6 +148,7 @@ ol.render.canvas.ReplayGroup.createPixelCircle_ = function(radius) {
     }
   }
 
+  ol.render.canvas.ReplayGroup.circleArrayCache_[radius] = arr;
   return arr;
 };
 
@@ -143,7 +171,7 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {number} hitTolerance hit tolerance.
+ * @param {number} hitTolerance Hit tolerance.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
@@ -155,16 +183,15 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     coordinate, resolution, rotation, hitTolerance, skippedFeaturesHash, callback) {
 
   hitTolerance = Math.round(hitTolerance);
-
   var contextSize = hitTolerance * 2 + 1;
-
   var transform = ol.transform.compose(ol.transform.create(),
       hitTolerance + 0.5, hitTolerance + 0.5,
       1 / resolution, -1 / resolution,
       -rotation,
       -coordinate[0], -coordinate[1]);
-
-  var context = ol.dom.createCanvasContext2D(contextSize, contextSize);
+  var context = this.hitDetectionContext_;
+  context.canvas.width = contextSize;
+  context.canvas.height = contextSize;
   context.clearRect(0, 0, contextSize, contextSize);
 
   /**
@@ -177,12 +204,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
     ol.extent.buffer(hitExtent, resolution * this.renderBuffer_, hitExtent);
   }
 
-  var mask;
-  if (hitTolerance === 0) {
-    mask = [[true]];
-  } else {
-    mask = ol.render.canvas.ReplayGroup.createPixelCircle_(hitTolerance);
-  }
+  var mask = ol.render.canvas.ReplayGroup.getCircleArray_(hitTolerance);
 
   return this.replayHitDetection_(context, transform, rotation,
       skippedFeaturesHash,
@@ -191,23 +213,22 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
        * @return {?} Callback result.
        */
       function(feature) {
-        var imageData;
+        var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
         for (var i = 0; i < contextSize; i++) {
           for (var j = 0; j < contextSize; j++) {
             if (mask[i][j]) {
-              imageData = context.getImageData(i, j, i + 1, j + 1).data;
-              if (imageData[3] > 0) {
+              if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
                 var result = callback(feature);
                 if (result) {
                   return result;
+                } else {
+                  context.clearRect(0, 0, contextSize, contextSize);
+                  return undefined;
                 }
-                i = contextSize;
-                j = contextSize;
               }
             }
           }
         }
-        context.clearRect(0, 0, contextSize, contextSize);
       }, hitExtent);
 };
 
