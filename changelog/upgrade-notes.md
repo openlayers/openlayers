@@ -1,5 +1,10 @@
 ## Upgrade notes
 
+#### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`
+
+The origin for gradients and patterns has changed from `[0, 0]` to the top-left
+corner of the extent of the geometry being filled.
+
 ### v3.19.0
 
 #### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`

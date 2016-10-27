@@ -132,7 +132,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_();
+  this.setFillStrokeStyles_(circleGeometry);
   this.beginGeometry(circleGeometry, feature);
   // always fill the circle for hit detection
   this.hitDetectionInstructions.push(
@@ -182,7 +182,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_();
+  this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
   this.hitDetectionInstructions.push(
@@ -217,7 +217,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
     ol.DEBUG && console.assert(state.lineWidth !== undefined,
         'state.lineWidth should be defined');
   }
-  this.setFillStrokeStyles_();
+  this.setFillStrokeStyles_(multiPolygonGeometry);
   this.beginGeometry(multiPolygonGeometry, feature);
   // always fill the multi-polygon for hit detection
   this.hitDetectionInstructions.push(
@@ -332,8 +332,9 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
 
 /**
  * @private
+ * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  */
-ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
+ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometry) {
   var state = this.state_;
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
@@ -342,9 +343,13 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function() {
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  if (fillStyle !== undefined && state.currentFillStyle != fillStyle) {
-    this.instructions.push(
-        [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle, typeof fillStyle != 'string']);
+  if (typeof fillStyle !== 'string' || fillStyle !== undefined && state.currentFillStyle != fillStyle) {
+    var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
+    if (typeof fillStyle !== 'string') {
+      var fillExtent = geometry.getExtent();
+      fillInstruction.push([fillExtent[0], fillExtent[3]]);
+    }
+    this.instructions.push(fillInstruction);
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
