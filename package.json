@@ -39,7 +39,7 @@
     "handlebars": "4.0.5",
     "jsdoc": "3.4.2",
     "marked": "0.3.6",
-    "metalsmith": "2.2.0",
+    "metalsmith": "2.2.1",
     "metalsmith-layouts": "1.6.5",
     "nomnom": "1.8.1",
     "pbf": "3.0.2",
