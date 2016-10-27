@@ -494,21 +494,30 @@ describe('ol.interaction.Draw', function() {
       map.addInteraction(draw);
     });
 
+    function isClosed(polygon) {
+      var first = polygon.getFirstCoordinate();
+      var last = polygon.getLastCoordinate();
+      expect(first).to.eql(last);
+    }
+
     it('draws polygon with clicks, finishing on first point', function() {
       // first point
       simulateEvent('pointermove', 10, 20);
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
 
       // second point
       simulateEvent('pointermove', 30, 20);
       simulateEvent('pointerdown', 30, 20);
       simulateEvent('pointerup', 30, 20);
+      isClosed(draw.sketchFeature_.getGeometry());
 
       // third point
       simulateEvent('pointermove', 40, 10);
       simulateEvent('pointerdown', 40, 10);
       simulateEvent('pointerup', 40, 10);
+      isClosed(draw.sketchFeature_.getGeometry());
 
       // finish on first point
       simulateEvent('pointermove', 10, 20);
