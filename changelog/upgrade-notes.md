@@ -74,6 +74,20 @@ As last step in the removal of the dependency on Google Closure Library, the `go
 `ol.format.ogc.filter` was simplified to `ol.format.filter`; to upgrade your code, simply remove the `ogc` string from the name.
 For example: `ol.format.ogc.filter.and` to `ol.format.filter.and`.
 
+#### `ol.Map#forEachFeatureAtPixel` and `ol.Map#hasFeatureAtPixel` parameters have changed
+ 
+If you are using the layer filter of one of these methods, please note that you now have to pass in the layer filter via an `ol.AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
+ 
+New syntax:
+```
+    map.forEachFeatureAtPixel(pixel, callback, callback_this, {
+        layerFilter: layerFilterFunction,
+        layerFilterThis: someObject
+    })
+```
+
+This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
+
 #### Changes only relevant to those who compile their applications together with the Closure Compiler
 
 A number of internal types have been renamed.  This will not affect those who use the API provided by the library, but if you are compiling your application together with OpenLayers and using type names, you'll need to do the following:
