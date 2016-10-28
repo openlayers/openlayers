@@ -1,5 +1,7 @@
 ## Upgrade notes
 
+### v3.19.1
+
 #### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`
 
 The origin for gradients and patterns has changed from `[0, 0]` to the top-left
