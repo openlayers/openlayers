@@ -51,6 +51,10 @@ ol.format.KML = function(opt_options) {
 
   ol.format.XMLFeature.call(this);
 
+  if (!ol.format.KML.DEFAULT_STYLE_ARRAY_) {
+    ol.format.KML.createStyleDefaults_();
+  }
+
   /**
    * @inheritDoc
    */
@@ -61,8 +65,7 @@ ol.format.KML = function(opt_options) {
    * @type {Array.<ol.style.Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
-      options.defaultStyle :
-      (ol.format.KML.DEFAULT_STYLE_ARRAY_ || ol.format.KML.createStyleDefaults_());
+      options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
 
   /**
    * @private
