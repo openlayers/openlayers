@@ -2935,6 +2935,7 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 /**
  * @typedef {{duration: (number|undefined),
+ *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  */
 olx.interaction.MouseWheelZoomOptions;
@@ -2946,6 +2947,14 @@ olx.interaction.MouseWheelZoomOptions;
  * @api
  */
 olx.interaction.MouseWheelZoomOptions.prototype.duration;
+
+
+/**
+ * Mouse wheel timeout duration in milliseconds. Default is `80`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.timeout;
 
 
 /**

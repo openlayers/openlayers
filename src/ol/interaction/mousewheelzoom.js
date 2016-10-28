@@ -38,6 +38,12 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.timeout_ = options.timeout !== undefined ? options.timeout : 80;
+
+  /**
+   * @private
    * @type {boolean}
    */
   this.useAnchor_ = options.useAnchor !== undefined ? options.useAnchor : true;
@@ -109,8 +115,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       this.startTime_ = Date.now();
     }
 
-    var duration = ol.MOUSEWHEELZOOM_TIMEOUT_DURATION;
-    var timeLeft = Math.max(duration - (Date.now() - this.startTime_), 0);
+    var timeLeft = Math.max(this.timeout_ - (Date.now() - this.startTime_), 0);
 
     clearTimeout(this.timeoutId_);
     this.timeoutId_ = setTimeout(

@@ -20,6 +20,8 @@ var backupDir = path.join(__dirname, '../src-backup');
 var instrumentedDir = path.join(__dirname, '../src-instrumented');
 var coverageDir = path.join(__dirname, '../coverage');
 
+fs.mkdirSync(coverageDir);
+
 // The main players in the coverage generation via istanbul
 var instrumenter = new istanbul.Instrumenter();
 var reporter = new istanbul.Reporter(false, coverageDir);
@@ -76,16 +78,23 @@ var revertBackupAndInstrumentationDir = function() {
   fs.removeSync(instrumentedDir);
 };
 
-
 /**
  * Callback for when runTestsuite() has finished.
  */
 var collectAndWriteCoverageData = function() {
-  log('• collect data from coverage.json');
+  log('• collect data from coverage *.json files');
 
-  var coverageFile = path.join(__dirname,'../coverage/coverage.json');
-  var coverageJson = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
-  collector.add(coverageJson);
+  var coverageFiles = [
+    path.join(__dirname, '..', 'coverage', 'coverage.json'),
+    path.join(__dirname, '..', 'coverage', 'coverage-rendering.json')
+  ];
+  coverageFiles.forEach(function(coverageFile) {
+    if (fs.existsSync(coverageFile)) {
+      log('  • collect data from ' + path.basename(coverageFile));
+      var coverageJson = JSON.parse(fs.readFileSync(coverageFile, 'utf8'));
+      collector.add(coverageJson);
+    }
+  });
 
   reporter.addAll(['lcovonly','html']);
 
@@ -95,6 +104,44 @@ var collectAndWriteCoverageData = function() {
   reporter.write(collector, true, function() {
     process.exit(0);
   });
+};
+
+/**
+ * Runs the rendering test by spawning a call to `make test-rendering`. The
+ * `make`-call sets up certain things so that the rendering tests can actually
+ * run, which is why we call it this way.
+ *
+ * @param  {Function} callback The callback to invoke once `make` has exited.
+ *     Will receive the exit code.
+ */
+var runRenderingTestsuite = function(callback) {
+  var spawn = require('child_process').spawn;
+  var child = spawn('make', ['test-rendering'], {stdio: 'inherit'});
+  child.on('exit', function(code) {
+    callback(code);
+  });
+};
+
+/**
+ * Derive output file name from input file name, by replacing the *last*
+ * occurence of `/src/` by `/src-instrumented/`
+ *
+ * @param {String} file The input filename.
+ * @return {String} file The output filename.
+ */
+var outputFilenameByFilename = function(file) {
+  var search = '/src/';
+  var replace = '/src-instrumented/';
+  var re = new RegExp(search, 'g');
+  var m, match;
+  while ((m = re.exec(file)) !== null) {
+    match = m;
+  }
+  var idx = match.index;
+  var outfile = file.substr(0, idx) + replace +
+      file.substr(idx + search.length);
+
+  return outfile;
 };
 
 /**
@@ -113,15 +160,7 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
   files.forEach(function(file) {
     cnt++;
     var content = fs.readFileSync(file, 'utf-8');
-    // derive output file name from input file name, by replacing the *last*
-    // occurence of /src/ by /src-instrumented/
-    var re = new RegExp('/src/', 'g');
-    var m, match;
-    while ((m = re.exec(file)) !== null) {
-      match = m;
-    }
-    var outfile = file.substr(0, match.index) + '/src-instrumented/' +
-        file.substr(match.index + '/src/'.length);
+    var outfile = outputFilenameByFilename(file);
     var instrumented = instrumenter.instrumentSync(content, file);
     fs.writeFileSync(outfile, instrumented);
     if (cnt % 10 === 0) {
@@ -133,8 +172,25 @@ var foundAllJavaScriptSourceFiles = function(err, files) {
 
   fs.copySync(instrumentedDir, dir, copyOpts);
 
-  log('• run test suite on instrumented code');
-  runTestsuite({coverage: true, reporter: 'dot'}, collectAndWriteCoverageData);
+  log('• run test suites on instrumented code');
+
+  log('  • run rendering test suite');
+  runRenderingTestsuite(function(codeRendering) {
+    if (codeRendering === 0) {
+      log('  • run standard test suite');
+      runTestsuite({coverage: true, reporter: 'dot'}, function(code) {
+        if (code === 0) {
+          collectAndWriteCoverageData();
+        } else {
+          process.stderr.write('Trouble running the standard testsuite\n');
+          process.exit(1);
+        }
+      });
+    } else {
+      process.stderr.write('Trouble running the rendering testsuite\n');
+      process.exit(1);
+    }
+  });
 };
 
 /**
