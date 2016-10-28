@@ -1,5 +1,6 @@
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.has');
 goog.require('ol.layer.Vector');
@@ -20,11 +21,11 @@ var pixelRatio = ol.has.DEVICE_PIXEL_RATIO;
 function gradient(feature, resolution) {
   var extent = feature.getGeometry().getExtent();
   // Gradient starts on the left edge of each feature, and ends on the right.
-  // Coordinate origin is [0, 0], so we just divide by resolution and multiply
-  // with pixelRatio to match the renderer's pixel coordinate system.
-  var grad = context.createLinearGradient(
-      extent[0] / resolution * pixelRatio, 0,
-      extent[2] / resolution * pixelRatio, 0);
+  // Coordinate origin is the top-left corner of the extent of the geometry, so
+  // we just divide the geometry's extent width by resolution and multiply with
+  // pixelRatio to match the renderer's pixel coordinate system.
+  var grad = context.createLinearGradient(0, 0,
+      ol.extent.getWidth(extent) / resolution * pixelRatio, 0);
   grad.addColorStop(0, 'red');
   grad.addColorStop(1 / 6, 'orange');
   grad.addColorStop(2 / 6, 'yellow');

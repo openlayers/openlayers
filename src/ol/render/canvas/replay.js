@@ -60,9 +60,9 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
-   * @type {boolean}
+   * @type {ol.Coordinate}
    */
-  this.alignFill_ = false;
+  this.fillOrigin_;
 
   /**
    * @private
@@ -194,18 +194,17 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 /**
  * @private
  * @param {CanvasRenderingContext2D} context Context.
- * @param {ol.Transform} transform Transform.
  * @param {number} rotation Rotation.
  */
-ol.render.canvas.Replay.prototype.fill_ = function(context, transform, rotation) {
-  if (this.alignFill_) {
-    context.translate(transform[4], transform[5]);
+ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
+  if (this.fillOrigin_) {
+    var origin = ol.transform.apply(this.renderedTransform_, this.fillOrigin_.slice());
+    context.translate(origin[0], origin[1]);
     context.rotate(rotation);
   }
   context.fill();
-  if (this.alignFill_) {
-    context.rotate(-rotation);
-    context.translate(-transform[4], -transform[5]);
+  if (this.fillOrigin_) {
+    context.setTransform.apply(context, this.resetTransform_);
   }
 };
 
@@ -275,7 +274,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.BEGIN_PATH:
         if (pendingFill > batchSize) {
-          this.fill_(context, transform, viewRotation);
+          this.fill_(context, viewRotation);
           pendingFill = 0;
         }
         if (pendingStroke > batchSize) {
@@ -452,7 +451,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (batchSize) {
           pendingFill++;
         } else {
-          this.fill_(context, transform, viewRotation);
+          this.fill_(context, viewRotation);
         }
         ++i;
         break;
@@ -490,10 +489,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             ol.colorlike.isColorLike(instruction[1]),
             '2nd instruction should be a string, ' +
             'CanvasPattern, or CanvasGradient');
-        this.alignFill_ = instruction[2];
+        this.fillOrigin_ = instruction[2];
 
         if (pendingFill) {
-          this.fill_(context, transform, viewRotation);
+          this.fill_(context, viewRotation);
           pendingFill = 0;
         }
 
@@ -559,7 +558,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     }
   }
   if (pendingFill) {
-    this.fill_(context, transform, viewRotation);
+    this.fill_(context, viewRotation);
   }
   if (pendingStroke) {
     context.stroke();
