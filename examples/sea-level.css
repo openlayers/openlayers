@@ -1,0 +1,9 @@
+#level {
+  display: inline-block;
+  width: 150px;
+  vertical-align: text-bottom;
+}
+
+a.location {
+  cursor: pointer;
+}
