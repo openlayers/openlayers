@@ -143,12 +143,6 @@ ol.MOUSEWHEELZOOM_MAXDELTA = 1;
 
 
 /**
- * @define {number} Mouse wheel timeout duration.
- */
-ol.MOUSEWHEELZOOM_TIMEOUT_DURATION = 80;
-
-
-/**
  * @define {number} Maximum width and/or height extent ratio that determines
  * when the overview map should be zoomed out.
  */
