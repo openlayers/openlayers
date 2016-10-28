@@ -574,16 +574,19 @@ ol.Map.prototype.disposeInternal = function() {
  * @template S,T
  * @api stable
  */
-ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt_options) {
-  opt_options = opt_options !== undefined ? opt_options : {};
+ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this,opt_options) {
   if (!this.frameState_) {
     return;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
-  var hitTolerance = opt_options.hitTolerance || 0;
+  opt_options = opt_options !== undefined ? opt_options : {};
+  var hitTolerance = opt_options.hitTolerance !== undefined ?
+    opt_options.hitTolerance : 0;
   var thisArg = opt_this !== undefined ? opt_this : null;
-  var layerFilter = opt_options.layerFilter || ol.functions.TRUE;
-  var thisArg2 = opt_options.layerFilterThis || null;
+  var layerFilter = opt_options.layerFilter !== undefined ?
+    opt_options.layerFilter : ol.functions.TRUE;
+  var thisArg2 = opt_options.layerFilterThis !== undefined ?
+    opt_options.layerFilterThis : null;
   return this.renderer_.forEachFeatureAtCoordinate(
       coordinate, this.frameState_, hitTolerance, callback, thisArg,
       layerFilter, thisArg2);
@@ -638,16 +641,19 @@ ol.Map.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_l
  * @api
  */
 ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
-  opt_options = opt_options !== undefined ? opt_options : {};
   if (!this.frameState_) {
     return false;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
+  opt_options = opt_options !== undefined ? opt_options : {};
   var layerFilter = opt_options.layerFilter !== undefined ?
       opt_options.layerFilter : ol.functions.TRUE;
-  var thisArg = opt_options.layerFilterThis !== undefined ? opt_options.layerFilterThis : null;
+  var thisArg = opt_options.layerFilterThis !== undefined ?
+    opt_options.layerFilterThis : null;
+  var hitTolerance = opt_options.hitTolerance !== undefined ?
+    opt_options.hitTolerance : 0;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, opt_options.hitTolerance || 0, layerFilter, thisArg);
+      coordinate, this.frameState_, hitTolerance, layerFilter, thisArg);
 };
 
 
