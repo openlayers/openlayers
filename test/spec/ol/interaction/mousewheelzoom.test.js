@@ -27,6 +27,36 @@ describe('ol.interaction.MouseWheelZoom', function() {
     disposeMap(map);
   });
 
+  describe('timeout duration', function() {
+    var clock;
+    beforeEach(function() {
+      clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function() {
+      clock.restore();
+    });
+
+    it('works with the defaut value', function(done) {
+      var spy = sinon.spy(ol.interaction.Interaction, 'zoomByDelta');
+      var event = new ol.MapBrowserEvent('mousewheel', map, {
+        type: 'mousewheel',
+        target: map.getViewport(),
+        preventDefault: ol.events.Event.prototype.preventDefault
+      });
+      map.handleMapBrowserEvent(event);
+      clock.tick(50);
+      // default timeout is 80 ms, not called yet
+      expect(spy.called).to.be(false);
+      clock.tick(30);
+      expect(spy.called).to.be(true);
+
+      ol.interaction.Interaction.zoomByDelta.restore();
+      done();
+    });
+
+  });
+
   describe('handleEvent()', function() {
     it('[wheel] works on Firefox in DOM_DELTA_PIXEL mode', function(done) {
       var origHasFirefox = ol.has.FIREFOX;
