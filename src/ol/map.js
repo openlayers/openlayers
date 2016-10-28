@@ -568,7 +568,7 @@ ol.Map.prototype.disposeInternal = function() {
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
  * @param {S=} opt_this Value to use as this when executing callback.
- * @param {olx.FeatureAtPixelOptions=} opt_options Optional options.
+ * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
  * @template S,T
@@ -632,7 +632,7 @@ ol.Map.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_l
  * Detect if features intersect a pixel on the viewport. Layers included in the
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
- * @param {olx.FeatureAtPixelOptions=} opt_options Optional options.
+ * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {boolean} Is there a feature at the given pixel?
  * @template U
  * @api

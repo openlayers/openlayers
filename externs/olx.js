@@ -309,7 +309,7 @@ olx.MapOptions.prototype.view;
  *    layerFilterThis: (Object|undefined),
  *    hitTolerance: (number|undefined)}}
  */
-olx.FeatureAtPixelOptions;
+olx.AtPixelOptions;
 
 
 /**
@@ -320,7 +320,7 @@ olx.FeatureAtPixelOptions;
  * @type {((function(ol.layer.Layer): boolean)|undefined)}
  * @api stable
  */
-olx.FeatureAtPixelOptions.prototype.layerFilter;
+olx.AtPixelOptions.prototype.layerFilter;
 
 
 /**
@@ -328,7 +328,7 @@ olx.FeatureAtPixelOptions.prototype.layerFilter;
  * @type {Object|undefined}
  * @api stable
  */
-olx.FeatureAtPixelOptions.prototype.layerFilterThis;
+olx.AtPixelOptions.prototype.layerFilterThis;
 
 
 /**
@@ -338,7 +338,7 @@ olx.FeatureAtPixelOptions.prototype.layerFilterThis;
  * @type {number|undefined}
  * @api
  */
-olx.FeatureAtPixelOptions.prototype.hitTolerance;
+olx.AtPixelOptions.prototype.hitTolerance;
 
 
 /**
