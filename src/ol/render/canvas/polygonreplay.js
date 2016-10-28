@@ -343,7 +343,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  if (typeof fillStyle !== 'string' || fillStyle !== undefined && state.currentFillStyle != fillStyle) {
+  if (fillStyle !== undefined && (typeof fillStyle !== 'string' || state.currentFillStyle != fillStyle)) {
     var fillInstruction = [ol.render.canvas.Instruction.SET_FILL_STYLE, fillStyle];
     if (typeof fillStyle !== 'string') {
       var fillExtent = geometry.getExtent();
