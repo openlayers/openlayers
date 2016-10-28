@@ -2,6 +2,32 @@
 
 ### Next release
 
+#### `ol.Map#forEachFeatureAtPixel` and `ol.Map#hasFeatureAtPixel` parameters have changed
+ 
+If you are using the layer filter of one of these methods, please note that you now have to pass in the layer filter via an `ol.AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
+
+Old syntax:
+```
+    map.forEachFeatureAtPixel(pixel, callback, callback_this, layerFilter_function, layerFilter_this);
+    
+    map.hasFeatureAtPixel(pixel, layerFilter_function, layerFilter_this);
+```
+
+New syntax:
+```
+    map.forEachFeatureAtPixel(pixel, callback, callback_this, {
+        layerFilter: layerFilter_function,
+        layerFilterThis: layerFilter_this
+    });
+    
+    map.hasFeatureAtPixel(pixel, {
+        layerFilter: layerFilter_function,
+        layerFilterThis: layerFilter_this
+    });
+```
+
+This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
+
 #### Use `view.animate()` instead of `map.beforeRender()` and `ol.animation` functions
 
 The `map.beforeRender()` and `ol.animation` functions have been deprecated in favor of a new `view.animate()` function.  Use of the deprecated functions will result in a warning during development.  These functions are subject to removal in an upcoming release.
@@ -73,20 +99,6 @@ As last step in the removal of the dependency on Google Closure Library, the `go
 
 `ol.format.ogc.filter` was simplified to `ol.format.filter`; to upgrade your code, simply remove the `ogc` string from the name.
 For example: `ol.format.ogc.filter.and` to `ol.format.filter.and`.
-
-#### `ol.Map#forEachFeatureAtPixel` and `ol.Map#hasFeatureAtPixel` parameters have changed
- 
-If you are using the layer filter of one of these methods, please note that you now have to pass in the layer filter via an `ol.AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
- 
-New syntax:
-```
-    map.forEachFeatureAtPixel(pixel, callback, callback_this, {
-        layerFilter: layerFilterFunction,
-        layerFilterThis: someObject
-    })
-```
-
-This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
 
 #### Changes only relevant to those who compile their applications together with the Closure Compiler
 
