@@ -58,14 +58,14 @@ ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Vertex, ol.webgl.Vertex)
  * @const
  * @type {string}
  */
-ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE = '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  vec4 offsets = u_offsetScaleMatrix * vec4(0., 0., 0., 0.);\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + offsets;\n}\n\n\n';
+ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE = '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){vec4 offsets=c*vec4(0.,0.,0.,0.);gl_Position=b*vec4(a,0.,1.)+offsets;}';
+ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.,1.);}';
 
 
 /**
