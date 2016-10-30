@@ -47,10 +47,10 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
-    var polygonReplay = replayGroup.getReplay(
-        style.getZIndex(), ol.render.ReplayType.POLYGON);
-    polygonReplay.setFillStrokeStyle(fillStyle, strokeStyle);
-    polygonReplay.drawCircle(geometry, feature);
+    var circleReplay = replayGroup.getReplay(
+        style.getZIndex(), ol.render.ReplayType.CIRCLE);
+    circleReplay.setFillStrokeStyle(fillStyle, strokeStyle);
+    circleReplay.drawCircle(geometry, feature);
   }
   var textStyle = style.getText();
   if (textStyle) {

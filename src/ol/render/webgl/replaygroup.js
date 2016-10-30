@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.render.ReplayGroup');
 goog.require('ol.render.webgl');
+goog.require('ol.render.webgl.CircleReplay');
 goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.LineStringReplay');
 goog.require('ol.render.webgl.PolygonReplay');
@@ -104,7 +105,7 @@ ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
     var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
     ol.DEBUG && console.assert(Constructor !== undefined,
         replayType +
-        ' constructor missing from ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_');
+        ' constructor missing from ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }
@@ -308,6 +309,7 @@ ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_ = [1, 1];
  *                ol.Extent)>}
  */
 ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_ = {
+  'Circle': ol.render.webgl.CircleReplay,
   'Image': ol.render.webgl.ImageReplay,
   'LineString': ol.render.webgl.LineStringReplay,
   'Polygon': ol.render.webgl.PolygonReplay

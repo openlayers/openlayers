@@ -132,7 +132,8 @@ ol.render.webgl.Replay.prototype.finish = function(context) {};
  * @param {ol.webgl.Context} context Context.
  * @param {ol.Size} size Size.
  * @param {number} pixelRatio Pixel ratio.
- * @return {ol.render.webgl.imagereplay.defaultshader.Locations|
+ * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
+            ol.render.webgl.imagereplay.defaultshader.Locations|
             ol.render.webgl.linestringreplay.defaultshader.Locations|
             ol.render.webgl.polygonreplay.defaultshader.Locations} Locations.
  */
@@ -143,7 +144,8 @@ ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixe
  * @abstract
  * @protected
  * @param {WebGLRenderingContext} gl gl.
- * @param {ol.render.webgl.imagereplay.defaultshader.Locations|
+ * @param {ol.render.webgl.circlereplay.defaultshader.Locations|
+           ol.render.webgl.imagereplay.defaultshader.Locations|
            ol.render.webgl.linestringreplay.defaultshader.Locations|
            ol.render.webgl.polygonreplay.defaultshader.Locations} locations Locations.
  */
