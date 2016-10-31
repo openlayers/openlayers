@@ -299,7 +299,7 @@ ol.renderer.webgl.VectorLayer.prototype.renderFeature = function(feature, resolu
   }
   var loading = false;
   if (Array.isArray(styles)) {
-    for (var i = 0, ii = styles.length; i < ii; ++i) {
+    for (var i = styles.length - 1, ii = 0; i >= ii; --i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],
           ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),

@@ -868,16 +868,6 @@ ol.render.webgl.PolygonReplay.prototype.shutDownProgram_ = function(gl, location
  * @inheritDoc
  */
 ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
-  //Save GL parameters.
-  var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
-  var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
-
-  if (!hitDetection) {
-    gl.enable(gl.DEPTH_TEST);
-    gl.depthMask(true);
-    gl.depthFunc(gl.NOTEQUAL);
-  }
-
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
@@ -894,13 +884,6 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skipp
       this.drawElements(gl, context, start, end);
       end = start;
     }
-  }
-  if (!hitDetection) {
-    gl.clear(gl.DEPTH_BUFFER_BIT);
-    gl.disable(gl.DEPTH_TEST);
-    //Restore GL parameters.
-    gl.depthMask(tmpDepthMask);
-    gl.depthFunc(tmpDepthFunc);
   }
 };
 

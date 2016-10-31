@@ -495,7 +495,6 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
     gl.enable(gl.DEPTH_TEST);
     gl.depthMask(true);
     gl.depthFunc(gl.NOTEQUAL);
-    gl.clear(gl.DEPTH_BUFFER_BIT);
   }
 
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
@@ -512,11 +511,13 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
       nextStyle = this.styles_[i];
       this.setStrokeStyle_(gl, nextStyle[0], nextStyle[1], nextStyle[2]);
       this.drawElements(gl, context, start, end);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
       end = start;
     }
   }
   if (!hitDetection) {
     gl.disable(gl.DEPTH_TEST);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
     //Restore GL parameters.
     gl.depthMask(tmpDepthMask);
     gl.depthFunc(tmpDepthFunc);
@@ -551,6 +552,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, co
       if (skippedFeaturesHash[featureUid]) {
         if (start !== end) {
           this.drawElements(gl, context, start, end);
+          gl.clear(gl.DEPTH_BUFFER_BIT);
         }
         end = featureStart;
       }
@@ -559,6 +561,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, co
     }
     if (start !== end) {
       this.drawElements(gl, context, start, end);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
     }
   }
 };

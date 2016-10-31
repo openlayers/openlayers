@@ -253,12 +253,32 @@ ol.render.webgl.Replay.prototype.replay = function(context,
     opacity, skippedFeaturesHash,
     featureCallback, oneByOne, opt_hitExtent) {
   var gl = context.getGL();
+  var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
+      tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
 
   if (this.lineStringReplay) {
+    tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
+    tmpStencilFunc = gl.getParameter(gl.STENCIL_FUNC);
+    tmpStencilMaskVal = gl.getParameter(gl.STENCIL_VALUE_MASK);
+    tmpStencilRef = gl.getParameter(gl.STENCIL_REF);
+    tmpStencilMask = gl.getParameter(gl.STENCIL_WRITEMASK);
+    tmpStencilOpFail = gl.getParameter(gl.STENCIL_FAIL);
+    tmpStencilOpPass = gl.getParameter(gl.STENCIL_PASS_DEPTH_PASS);
+    tmpStencilOpZFail = gl.getParameter(gl.STENCIL_PASS_DEPTH_FAIL);
+
+    gl.enable(gl.STENCIL_TEST);
+    gl.clear(gl.STENCIL_BUFFER_BIT);
+    gl.stencilMask(255);
+    gl.stencilFunc(gl.ALWAYS, 1, 255);
+    gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+
     this.lineStringReplay.replay(context,
         center, resolution, rotation, size, pixelRatio,
         opacity, skippedFeaturesHash,
         featureCallback, oneByOne, opt_hitExtent);
+
+    gl.stencilMask(0);
+    gl.stencilFunc(gl.NOTEQUAL, 1, 255);
   }
 
   // bind the vertices buffer
@@ -307,6 +327,18 @@ ol.render.webgl.Replay.prototype.replay = function(context,
 
   // disable the vertex attrib arrays
   this.shutDownProgram_(gl, locations);
+
+  if (this.lineStringReplay) {
+    if (!tmpStencil) {
+      gl.disable(gl.STENCIL_TEST);
+    }
+    gl.clear(gl.STENCIL_BUFFER_BIT);
+    gl.stencilFunc(/** @type {number} */ (tmpStencilFunc),
+        /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
+    gl.stencilMask(/** @type {number} */ (tmpStencilMask));
+    gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
+        /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
+  }
 
   return result;
 };
