@@ -311,11 +311,8 @@ ol.format.KML.createNameStyleFunction_ = function(foundStyle, name) {
     if (imageSize === null) {
       imageSize = ol.format.KML.DEFAULT_IMAGE_STYLE_SIZE_;
     }
-    var imageScale = foundStyle.getImage().getScale();
-    if (isNaN(imageScale)) {
-      imageScale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
-    }
     if (imageSize.length == 2) {
+      var imageScale = foundStyle.getImage().getScale();
       // Offset the label to be centered to the right of the icon, if there is
       // one.
       textOffset[0] = imageScale * imageSize[0] / 2;
@@ -621,11 +618,6 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
   var scale = /** @type {number|undefined} */
       (object['scale']);
-  if (isNaN(scale) || scale === undefined) {
-    scale = ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
-  } else {
-    scale = scale * ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_;
-  }
 
   if (drawIcon) {
     if (src == ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
@@ -2431,7 +2423,7 @@ ol.format.KML.writePolyStyle_ = function(node, style, objectStack) {
 ol.format.KML.writeScaleTextNode_ = function(node, scale) {
   // the Math is to remove any excess decimals created by float arithmetic
   ol.format.XSD.writeDecimalTextNode(node,
-      Math.round(scale * scale * 1e6) / 1e6);
+      Math.round(scale * 1e6) / 1e6);
 };
 
 
