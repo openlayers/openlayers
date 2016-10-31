@@ -274,8 +274,9 @@ describe('ol.format.WKT', function() {
   });
 
   it('Empty geometries read / written correctly', function() {
-    var wkts = ['POINT', 'LINESTRING', 'POLYGON',
-                'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'];
+    var wkts = [
+      'POINT', 'LINESTRING', 'POLYGON', 'MULTIPOINT', 'MULTILINESTRING', 'MULTIPOLYGON'
+    ];
     for (var i = 0, ii = wkts.length; i < ii; ++i) {
       var wkt = wkts[i] + ' EMPTY';
       var geom = format.readGeometry(wkt);

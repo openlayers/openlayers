@@ -307,10 +307,10 @@ describe('ol.format.EsriJSON', function() {
         expect(first.getId()).to.be(6406);
         var firstGeom = first.getGeometry();
         expect(firstGeom).to.be.a(ol.geom.Polygon);
-        expect(ol.extent.equals(firstGeom.getExtent(),
-            [-10585772.743554419, 4712365.161160459,
-              -10579560.16462974, 4716567.373073828]))
-            .to.be(true);
+        expect(ol.extent.equals(firstGeom.getExtent(), [
+          -10585772.743554419, 4712365.161160459,
+          -10579560.16462974, 4716567.373073828
+        ])).to.be(true);
 
         var last = result[8];
         expect(last).to.be.a(ol.Feature);
@@ -318,10 +318,10 @@ describe('ol.format.EsriJSON', function() {
         expect(last.getId()).to.be(6030);
         var lastGeom = last.getGeometry();
         expect(lastGeom).to.be.a(ol.geom.Polygon);
-        expect(ol.extent.equals(lastGeom.getExtent(),
-            [-10555714.026858449, 4576511.565880965,
-              -10553671.199322715, 4578554.9934867555]))
-            .to.be(true);
+        expect(ol.extent.equals(lastGeom.getExtent(), [
+          -10555714.026858449, 4576511.565880965,
+          -10553671.199322715, 4578554.9934867555
+        ])).to.be(true);
         done();
       });
 
