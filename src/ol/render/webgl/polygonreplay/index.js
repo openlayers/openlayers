@@ -971,6 +971,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, conte
     if (start !== end) {
       this.drawElements(gl, context, start, end);
     }
+    start = end = groupStart;
   }
 };
 

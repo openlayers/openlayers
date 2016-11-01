@@ -345,6 +345,7 @@ ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, contex
     if (start !== end) {
       this.drawElements(gl, context, start, end);
     }
+    start = end = groupStart;
   }
 };
 

@@ -563,6 +563,7 @@ ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, co
       this.drawElements(gl, context, start, end);
       gl.clear(gl.DEPTH_BUFFER_BIT);
     }
+    start = end = groupStart;
   }
 };
 
