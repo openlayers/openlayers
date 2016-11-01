@@ -124,14 +124,15 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
     if (state.lastStroke != this.coordinates.length) {
-      this.instructions.push(
-          [ol.render.canvas.Instruction.STROKE]);
+      this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
     }
-    this.instructions.push(
-        [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-         strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash],
-        [ol.render.canvas.Instruction.BEGIN_PATH]);
+    this.instructions.push([
+      ol.render.canvas.Instruction.SET_STROKE_STYLE,
+      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash
+    ], [
+      ol.render.canvas.Instruction.BEGIN_PATH
+    ]);
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
@@ -155,15 +156,16 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   }
   this.setStrokeStyle_();
   this.beginGeometry(lineStringGeometry, feature);
-  this.hitDetectionInstructions.push(
-      [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-       state.miterLimit, state.lineDash],
-      [ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([
+    ol.render.canvas.Instruction.SET_STROKE_STYLE,
+    state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+    state.miterLimit, state.lineDash
+  ], [
+    ol.render.canvas.Instruction.BEGIN_PATH
+  ]);
   var flatCoordinates = lineStringGeometry.getFlatCoordinates();
   var stride = lineStringGeometry.getStride();
-  this.drawFlatCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+  this.drawFlatCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
   this.hitDetectionInstructions.push([ol.render.canvas.Instruction.STROKE]);
   this.endGeometry(lineStringGeometry, feature);
 };
@@ -182,11 +184,13 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   }
   this.setStrokeStyle_();
   this.beginGeometry(multiLineStringGeometry, feature);
-  this.hitDetectionInstructions.push(
-      [ol.render.canvas.Instruction.SET_STROKE_STYLE,
-       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-       state.miterLimit, state.lineDash],
-      [ol.render.canvas.Instruction.BEGIN_PATH]);
+  this.hitDetectionInstructions.push([
+    ol.render.canvas.Instruction.SET_STROKE_STYLE,
+    state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
+    state.miterLimit, state.lineDash
+  ], [
+    ol.render.canvas.Instruction.BEGIN_PATH
+  ]);
   var ends = multiLineStringGeometry.getEnds();
   var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
   var stride = multiLineStringGeometry.getStride();
