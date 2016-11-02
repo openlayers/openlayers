@@ -81,8 +81,8 @@ describe('ol.render.webgl.LineStringReplay', function() {
       var multilinestring;
 
       multilinestring = new ol.geom.MultiLineString(
-          [[[1000, 2000], [2000, 3000]],
-          [[1000, 3000], [2000, 4000], [3000, 3000]]]);
+        [[[1000, 2000], [2000, 3000]],
+        [[1000, 3000], [2000, 4000], [3000, 3000]]]);
       replay.setFillStrokeStyle(null, strokeStyle1);
       replay.drawMultiLineString(multilinestring, null);
       expect(replay.vertices).to.have.length(140);
@@ -111,7 +111,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 4, 2, 1,
+        [2, 0, 1, 4, 2, 1,
           2, 4, 3,
           5, 3, 4, 4, 6, 5]);
     });
@@ -131,7 +131,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 4, 2, 1,
+        [2, 0, 1, 4, 2, 1,
           2, 4, 3, 3, 5, 2,
           6, 3, 4, 4, 7, 6]);
     });
@@ -150,7 +150,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 1, 3, 2,
+        [2, 0, 1, 1, 3, 2,
           4, 2, 3, 6, 4, 3,
           4, 6, 5, 5, 7, 4,
           8, 5, 6, 6, 9, 8,
@@ -173,7 +173,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [2, 0, 1, 4, 2, 0,
+        [2, 0, 1, 4, 2, 0,
           2, 4, 3,
           5, 3, 4, 4, 6, 5]);
     });
@@ -194,7 +194,7 @@ describe('ol.render.webgl.LineStringReplay', function() {
       replay.drawCoordinates_(flatCoordinates, 0,
           flatCoordinates.length, 2);
       expect(replay.indices).to.eql(
-          [0, 2, 1, 3, 1, 2,
+        [0, 2, 1, 3, 1, 2,
           5, 3, 2,
           3, 5, 4, 6, 4, 5,
           8, 6, 5,

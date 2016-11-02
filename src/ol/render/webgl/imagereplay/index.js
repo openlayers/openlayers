@@ -452,7 +452,7 @@ ol.render.webgl.ImageReplay.prototype.setUpProgram = function(gl, context, size,
 /**
  * @inheritDoc
  */
-ol.render.webgl.ImageReplay.prototype.shutDownProgram_ = function(gl, locations) {
+ol.render.webgl.ImageReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_offsets);
   gl.disableVertexAttribArray(locations.a_texCoord);

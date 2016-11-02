@@ -136,13 +136,13 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
       p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
       segments.push(this.insertItem_(p0, p1, list));
       extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
-          Math.max(p0.y, p1.y)]);
+        Math.max(p0.y, p1.y)]);
       maxX = flatCoordinates[i] > maxX ? flatCoordinates[i] : maxX;
       p0 = p1;
     }
     segments.push(this.insertItem_(p1, start, list));
     extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
-        Math.max(p0.y, p1.y)]);
+      Math.max(p0.y, p1.y)]);
   } else {
     var end = flatCoordinates.length - stride;
     start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
@@ -152,13 +152,13 @@ ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
       p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
       segments.push(this.insertItem_(p0, p1, list));
       extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
-          Math.max(p0.y, p1.y)]);
+        Math.max(p0.y, p1.y)]);
       maxX = flatCoordinates[i] > maxX ? flatCoordinates[i] : maxX;
       p0 = p1;
     }
     segments.push(this.insertItem_(p1, start, list));
     extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
-        Math.max(p0.y, p1.y)]);
+      Math.max(p0.y, p1.y)]);
   }
   rtree.load(extents, segments);
 
@@ -360,7 +360,7 @@ ol.render.webgl.PolygonReplay.prototype.clipEars_ = function(list, rtree, simple
         //The diagonal is completely inside the polygon
         if (simple || p0.reflex === false || p2.reflex === false ||
             ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
-            p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
+              p0.y, p1.x, p1.y, p2.x, p2.y, s3.p1.x, s3.p1.y], 0, 10, 2) === !ccw) {
           //The diagonal is persumably valid, we have an ear
           this.indices[numIndices++] = p0.i;
           this.indices[numIndices++] = p1.i;
@@ -431,9 +431,9 @@ ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = functio
         s0.p1 = p;
         s1.p0 = p;
         rtree.update([Math.min(s0.p0.x, s0.p1.x), Math.min(s0.p0.y, s0.p1.y),
-            Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
+          Math.max(s0.p0.x, s0.p1.x), Math.max(s0.p0.y, s0.p1.y)], s0);
         rtree.update([Math.min(s1.p0.x, s1.p1.x), Math.min(s1.p0.y, s1.p1.y),
-            Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
+          Math.max(s1.p0.x, s1.p1.x), Math.max(s1.p0.y, s1.p1.y)], s1);
       }
 
       this.indices[numIndices++] = seg.p0.i;
@@ -513,7 +513,7 @@ ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
       this.insertItem_(p, s0.p1, newPolygon, newRtree);
       s0.p1 = p;
       rtree.update([Math.min(s0.p0.x, p.x), Math.min(s0.p0.y, p.y),
-          Math.max(s0.p0.x, p.x), Math.max(s0.p0.y, p.y)], s0);
+        Math.max(s0.p0.x, p.x), Math.max(s0.p0.y, p.y)], s0);
       var currItem = list.nextItem();
       while (currItem !== s1) {
         this.insertItem_(currItem.p0, currItem.p1, newPolygon, newRtree);
@@ -524,7 +524,7 @@ ol.render.webgl.PolygonReplay.prototype.splitPolygon_ = function(list, rtree) {
       this.insertItem_(s1.p0, p, newPolygon, newRtree);
       s1.p0 = p;
       rtree.update([Math.min(s1.p1.x, p.x), Math.min(s1.p1.y, p.y),
-          Math.max(s1.p1.x, p.x), Math.max(s1.p1.y, p.y)], s1);
+        Math.max(s1.p1.x, p.x), Math.max(s1.p1.y, p.y)], s1);
       this.classifyPoints_(list, rtree, false);
       this.triangulate_(list, rtree);
       this.classifyPoints_(newPolygon, newRtree, false);
@@ -574,7 +574,7 @@ ol.render.webgl.PolygonReplay.prototype.insertItem_ = function(p0, p1, list, opt
   list.insertItem(seg);
   if (opt_rtree) {
     opt_rtree.insert([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y),
-        Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
+      Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)], seg);
   }
   return seg;
 };
@@ -612,7 +612,7 @@ ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
   var i, ii, j, p;
   var result = [];
   var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x),
-      Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y,
+    Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y,
       p1.y, p2.y)]);
   for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
     for (j in segmentsInExtent[i]) {
@@ -621,7 +621,7 @@ ol.render.webgl.PolygonReplay.prototype.getPointsInTriangle_ = function(p0, p1,
         if ((p.x !== p0.x || p.y !== p0.y) && (p.x !== p1.x || p.y !== p1.y) &&
             (p.x !== p2.x || p.y !== p2.y) && result.indexOf(p) === -1 &&
             ol.geom.flat.contains.linearRingContainsXY([p0.x, p0.y, p1.x, p1.y,
-            p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
+              p2.x, p2.y], 0, 6, 2, p.x, p.y)) {
           result.push(p);
         }
       }
@@ -642,7 +642,7 @@ ol.render.webgl.PolygonReplay.prototype.getIntersections_ = function(segment, rt
   var p0 = segment.p0;
   var p1 = segment.p1;
   var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x),
-      Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
+    Math.min(p0.y, p1.y), Math.max(p0.x, p1.x), Math.max(p0.y, p1.y)]);
   var result = [];
   var i, ii;
   for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
@@ -861,7 +861,7 @@ ol.render.webgl.PolygonReplay.prototype.setUpProgram = function(gl, context, siz
 /**
  * @inheritDoc
  */
-ol.render.webgl.PolygonReplay.prototype.shutDownProgram_ = function(gl, locations) {
+ol.render.webgl.PolygonReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_position);
 };
 

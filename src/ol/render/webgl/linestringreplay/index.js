@@ -109,7 +109,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
       if (closed) {
         //A closed line! Complete the circle.
         p0 = [flatCoordinates[end - stride * 2],
-            flatCoordinates[end - stride * 2 + 1]];
+          flatCoordinates[end - stride * 2 + 1]];
 
         startCoords = p2;
       } else {
@@ -476,7 +476,7 @@ ol.render.webgl.LineStringReplay.prototype.setUpProgram = function(gl, context, 
 /**
  * @inheritDoc
  */
-ol.render.webgl.LineStringReplay.prototype.shutDownProgram_ = function(gl, locations) {
+ol.render.webgl.LineStringReplay.prototype.shutDownProgram = function(gl, locations) {
   gl.disableVertexAttribArray(locations.a_lastPos);
   gl.disableVertexAttribArray(locations.a_position);
   gl.disableVertexAttribArray(locations.a_nextPos);
