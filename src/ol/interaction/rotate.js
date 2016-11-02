@@ -34,6 +34,13 @@ ol.interaction.Rotate = function(options) {
       options.condition : ol.events.condition.always;
 
   /**
+   * @type {ol.EventsConditionType}
+   * @private
+   */
+  this.customAnchorCondition_ = options.customAnchorCondition ?
+      options.customAnchorCondition : ol.events.condition.never;
+
+  /**
    * @type {ol.Collection.<ol.Feature>}
    * @private
    */
@@ -65,6 +72,18 @@ ol.interaction.Rotate = function(options) {
    * @type {number}
    */
   this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
+  /**
+   * @type {ol.EventsConditionType}
+   * @private
+   */
+  this.rotateByStepCondition_ = options.rotateByStepCondition ?
+      options.rotateByStepCondition : ol.events.condition.platformModifierKeyOnly;
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.step_ = options.step !== undefined ? options.step : Math.PI / 8;
 
   /**
    * @type {ol.Coordinate}
@@ -106,11 +125,17 @@ ol.interaction.Rotate.handleDownEvent_ = function(event) {
 
   this.lastFeature_ = this.featuresAtPixel_(event.pixel, event.map);
   if (!this.lastAnchor_ && this.lastFeature_) {
-    this.lastAnchor_ = ol.extent.getCenter(
-        this.lastFeature_.getGeometry().getExtent());
+    var customAnchor = this.customAnchorCondition_(event);
 
-    this.lastAngle_ = Math.atan2(event.coordinate[1] - this.lastAnchor_[1],
-        event.coordinate[0] - this.lastAnchor_[0]);
+    if (customAnchor) {
+      this.lastAnchor_ = event.coordinate;
+    } else {
+      this.lastAnchor_ = ol.extent.getCenter(
+          this.lastFeature_.getGeometry().getExtent());
+    }
+
+    this.lastAngle_ = this.getRotateAngle_(event.coordinate, this.lastAnchor_,
+        true);
 
     var features = this.features_ || new ol.Collection([this.lastFeature_]);
 
@@ -155,8 +180,8 @@ ol.interaction.Rotate.handleDragEvent_ = function(event) {
   if (this.lastAnchor_) {
     var newCoordinate = event.coordinate;
 
-    var newAngle = Math.atan2(newCoordinate[1] - this.lastAnchor_[1],
-        newCoordinate[0] - this.lastAnchor_[0]);
+    var newAngle = this.getRotateAngle_(newCoordinate, this.lastAnchor_,
+        this.rotateByStepCondition_(event));
 
     var deltaAngle = newAngle - this.lastAngle_;
     var anchor = this.lastAnchor_;
@@ -222,6 +247,27 @@ ol.interaction.Rotate.prototype.getHitTolerance = function() {
  */
 ol.interaction.Rotate.prototype.setHitTolerance = function(hitTolerance) {
   this.hitTolerance_ = hitTolerance;
+};
+
+
+/**
+ * @param {ol.Coordinate} pointer Current pointer coordinate
+ * @param {ol.Coordinate} anchor Anchor coordinate
+ * @param {boolean} byStep Limit angle by steps
+ * @return {number} The angle
+ * @private
+ */
+ol.interaction.Rotate.prototype.getRotateAngle_ = function(pointer, anchor,
+    byStep) {
+  var angle = Math.atan2(pointer[1] - anchor[1],
+      pointer[0] - anchor[0]);
+
+  if (byStep) {
+    var step = this.step_;
+    angle = Math.round(angle / step) * step;
+  }
+
+  return angle;
 };
 
 

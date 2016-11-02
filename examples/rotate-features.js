@@ -24,6 +24,7 @@ var vector = new ol.layer.Vector({
 var select = new ol.interaction.Select();
 
 var rotate = new ol.interaction.Rotate({
+  customAnchorCondition: ol.events.condition.shiftKeyOnly,
   features: select.getFeatures()
 });
 

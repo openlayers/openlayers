@@ -188,4 +188,92 @@ describe('ol.interaction.Rotate', function() {
       expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
     });
   });
+
+  describe('rotating features from custom anchor', function() {
+    var rotate;
+
+    beforeEach(function() {
+      rotate = new ol.interaction.Rotate({
+        features: new ol.Collection([features[0]]),
+        customAnchorCondition: ol.events.condition.shiftKeyOnly
+      });
+      map.addInteraction(rotate);
+    });
+
+    it('rotates from cursor position', function() {
+      // rotates 90° anticlockwise
+      simulateEvent('pointermove', 30, -20);
+      simulateEvent('pointerdown', 30, -20, true);
+      simulateEvent('pointerdrag', 30, -30, true);
+      simulateEvent('pointerup', 30, -30, true);
+
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      var refGeometry = originalFeatures[0].getGeometry();
+      refGeometry.rotate(Math.PI / 2, [30, 20]);
+
+      expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
+    });
+
+    it('rotates from extent center when condition is not met', function() {
+      simulateEvent('pointermove', 30, -20);
+      simulateEvent('pointerdown', 30, -20);
+      simulateEvent('pointerdrag', 20, -30);
+      simulateEvent('pointerup', 20, -30);
+
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      var refGeometry = originalFeatures[0].getGeometry();
+      refGeometry.rotate(Math.PI / 2, [20, 20]);
+
+      expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
+    });
+  });
+
+  describe('rotating features with step', function() {
+    var rotate;
+
+    beforeEach(function() {
+      rotate = new ol.interaction.Rotate({
+        features: new ol.Collection([features[0]]),
+        step: Math.PI,
+        rotateByStepCondition: ol.events.condition.shiftKeyOnly
+      });
+      map.addInteraction(rotate);
+    });
+
+    it('rotates at fixed angle', function() {
+      // rotates 135° anticlockwise, should snap at 180°
+      simulateEvent('pointermove', 30, -20);
+      simulateEvent('pointerdown', 30, -20, true);
+      simulateEvent('pointerdrag', 10, -30, true);
+      simulateEvent('pointerup', 10, -30, true);
+
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      var refGeometry = originalFeatures[0].getGeometry();
+      refGeometry.rotate(Math.PI, [20, 20]);
+
+      expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
+    });
+
+    it('does not rotates at fixed angle when condition is not met', function() {
+      // rotates 135° anticlockwise
+      simulateEvent('pointermove', 30, -20);
+      simulateEvent('pointerdown', 30, -20);
+      simulateEvent('pointerdrag', 10, -30);
+      simulateEvent('pointerup', 10, -30);
+
+      var geometry = features[0].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      var refGeometry = originalFeatures[0].getGeometry();
+      refGeometry.rotate(3 * Math.PI / 4, [20, 20]);
+
+      expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
+    });
+  });
 });

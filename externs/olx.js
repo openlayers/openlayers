@@ -3213,9 +3213,12 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
 
 /**
  * @typedef {{condition: (ol.EventsConditionType|undefined),
+ *     customAnchorCondition: (ol.EventsConditionType|undefined),
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
- *     hitTolerance: (number|undefined)
+ *     hitTolerance: (number|undefined),
+ *     rotateByStepCondition: (ol.EventsConditionType|undefined),
+ *     step: (number|undefined)
  * }}
  */
 olx.interaction.RotateOptions;
@@ -3229,6 +3232,17 @@ olx.interaction.RotateOptions;
  * @api
  */
 olx.interaction.RotateOptions.prototype.condition;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.never}. Use this if you want
+ * to set the rotate anchor where the cursor is when mouse is first pressed.
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.customAnchorCondition;
 
 
 /**
@@ -3260,6 +3274,25 @@ olx.interaction.RotateOptions.prototype.layers;
  * @api
  */
 olx.interaction.RotateOptions.prototype.hitTolerance;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * By default, this is {@link ol.events.condition.platformModifierKeyOnly}. Use
+ * this if you want to limit the rotating step by a multiple of step.
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.rotateByStepCondition;
+
+
+/**
+ * Rotating step. Default is `PI / 8`, or 22.5°.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.step;
 
 
 /**
