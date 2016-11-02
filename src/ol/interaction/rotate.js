@@ -2,12 +2,17 @@ goog.provide('ol.interaction.Rotate');
 
 goog.require('ol');
 goog.require('ol.Collection');
+goog.require('ol.Feature');
 goog.require('ol.array');
+goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.functions');
+goog.require('ol.geom.Point');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.layer.Vector');
+goog.require('ol.source.Vector');
 
 /**
  * @classdesc
@@ -25,6 +30,29 @@ ol.interaction.Rotate = function(options) {
     handleDragEvent: ol.interaction.Rotate.handleDragEvent_,
     handleUpEvent: ol.interaction.Rotate.handleUpEvent_
   });
+
+  /**
+   * @type {boolean}
+   * @private
+   */
+  this.useHandle_ = options.useHandle !== undefined ? options.useHandle : false;
+
+  /**
+   * @type {ol.Feature}
+   * @private
+   */
+  this.handle_ = null;
+
+  /**
+   * @type {ol.layer.Vector}
+   * @private
+   */
+  this.handleOverlay_ = this.useHandle_ ? new ol.layer.Vector({
+    source: new ol.source.Vector({
+      useSpatialIndex: false
+    })
+  }) : null;
+
 
   /**
    * @type {ol.EventsConditionType}
@@ -45,6 +73,14 @@ ol.interaction.Rotate = function(options) {
    * @private
    */
   this.features_ = options.features !== undefined ? options.features : null;
+
+  if (this.useHandle_) {
+    this.updateHandle_();
+    ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+        this.handleFeatureAdd_, this);
+    ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+        this.handleFeatureRemove_, this);
+  }
 
   /** @type {function(ol.layer.Layer): boolean} */
   var layerFilter;
@@ -127,7 +163,9 @@ ol.interaction.Rotate.handleDownEvent_ = function(event) {
   if (!this.lastAnchor_ && this.lastFeature_) {
     var customAnchor = this.customAnchorCondition_(event);
 
-    if (customAnchor) {
+    if (this.lastFeature_ === this.handle_) {
+      this.lastAnchor_ = ol.extent.getCenter(this.getFeaturesExtent_());
+    } else if (customAnchor) {
       this.lastAnchor_ = event.coordinate;
     } else {
       this.lastAnchor_ = ol.extent.getCenter(
@@ -194,6 +232,11 @@ ol.interaction.Rotate.handleDragEvent_ = function(event) {
       geom.rotate(deltaAngle, anchor);
       feature.setGeometry(geom);
     });
+    if (this.handle_) {
+      var handleGeom = this.handle_.getGeometry();
+      handleGeom.rotate(deltaAngle, anchor);
+      this.handle_.setGeometry(handleGeom);
+    }
     this.rotatingFeature_ = false;
 
     this.lastAngle_ = newAngle;
@@ -217,7 +260,8 @@ ol.interaction.Rotate.handleDragEvent_ = function(event) {
 ol.interaction.Rotate.prototype.featuresAtPixel_ = function(pixel, map) {
   return map.forEachFeatureAtPixel(pixel,
       function(feature) {
-        if (!this.features_ ||
+        if (this.handle_ === feature ||
+            !this.features_ ||
             ol.array.includes(this.features_.getArray(), feature)) {
           return feature;
         }
@@ -251,6 +295,21 @@ ol.interaction.Rotate.prototype.setHitTolerance = function(hitTolerance) {
 
 
 /**
+ * @return {ol.Extent} Extent
+ * @private
+ */
+ol.interaction.Rotate.prototype.getFeaturesExtent_ = function() {
+  var extent = ol.extent.createEmpty();
+
+  this.features_.forEach(function(feature) {
+    ol.extent.extend(extent, feature.getGeometry().getExtent());
+  });
+
+  return extent;
+};
+
+
+/**
  * @param {ol.Coordinate} pointer Current pointer coordinate
  * @param {ol.Coordinate} anchor Anchor coordinate
  * @param {boolean} byStep Limit angle by steps
@@ -268,6 +327,80 @@ ol.interaction.Rotate.prototype.getRotateAngle_ = function(pointer, anchor,
   }
 
   return angle;
+};
+
+
+/**
+ * @param {ol.Collection.Event} evt Event.
+ * @private
+ */
+ol.interaction.Rotate.prototype.handleFeatureAdd_ = function(evt) {
+  var feature = /** @type {ol.Feature} */ (evt.element);
+  this.updateHandle_();
+  ol.events.listen(feature, ol.events.EventType.CHANGE,
+      this.handleFeatureChange_, this);
+};
+
+
+/**
+ * @param {ol.events.Event} evt Event.
+ * @private
+ */
+ol.interaction.Rotate.prototype.handleFeatureChange_ = function(evt) {
+  if (!this.rotatingFeature_) {
+    this.updateHandle_();
+  }
+};
+
+
+/**
+ * @param {ol.Collection.Event} evt Event.
+ * @private
+ */
+ol.interaction.Rotate.prototype.handleFeatureRemove_ = function(evt) {
+  var feature = /** @type {ol.Feature} */ (evt.element);
+  this.updateHandle_();
+  ol.events.unlisten(feature, ol.events.EventType.CHANGE,
+      this.handleFeatureChange_, this);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Rotate.prototype.setActive = function(active) {
+  if (this.handleOverlay_ && !active) {
+    this.handleOverlay_.getSource().clear();
+    this.handle_ = null;
+  }
+  ol.interaction.Pointer.prototype.setActive.call(this, active);
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Rotate.prototype.setMap = function(map) {
+  if (this.handleOverlay_) {
+    this.handleOverlay_.setMap(map);
+  }
+  ol.interaction.Pointer.prototype.setMap.call(this, map);
+};
+
+
+/**
+ * @private
+ */
+ol.interaction.Rotate.prototype.updateHandle_ = function() {
+  var extent = this.getFeaturesExtent_();
+
+  var rotateHandle = new ol.Feature(
+    new ol.geom.Point([extent[2], extent[1]])
+  );
+
+  this.handleOverlay_.getSource().clear();
+  this.handleOverlay_.getSource().addFeature(rotateHandle);
+  this.handle_ = rotateHandle;
 };
 
 

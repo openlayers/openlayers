@@ -5,6 +5,7 @@ goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.events.condition');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Rotate');
@@ -13,7 +14,7 @@ goog.require('ol.source.Vector');
 
 
 describe('ol.interaction.Rotate', function() {
-  var target, map, source, features, originalFeatures;
+  var target, map, source, layer, features, originalFeatures;
 
   var width = 360;
   var height = 180;
@@ -50,7 +51,7 @@ describe('ol.interaction.Rotate', function() {
       features: features
     });
 
-    var layer = new ol.layer.Vector({source: source});
+    layer = new ol.layer.Vector({source: source});
 
     map = new ol.Map({
       target: target,
@@ -274,6 +275,76 @@ describe('ol.interaction.Rotate', function() {
       refGeometry.rotate(3 * Math.PI / 4, [20, 20]);
 
       expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
+    });
+  });
+
+  describe('rotating features with handle', function() {
+    var rotate;
+
+    beforeEach(function(done) {
+      rotate = new ol.interaction.Rotate({
+        features: new ol.Collection([features[1]]),
+        useHandle: true
+      });
+      map.addInteraction(rotate);
+
+      // wait for handle to be drawn
+      map.once('postrender', function() {
+        done();
+      });
+    });
+
+    it('display an handle at the bottom-right of the geometry extent', function() {
+      rotate.setActive(false);
+
+      var pixelPosition = map.getPixelFromCoordinate([10, 0]);
+
+      var handle = map.forEachFeatureAtPixel(pixelPosition,
+          function(feature) {
+            return feature;
+          }, this, function(l) {
+            return l !== layer;
+          });
+
+      expect(handle.getGeometry()).to.be.a(ol.geom.Point);
+    });
+
+    it('rotates', function() {
+      // rotates 90° anticlockwise
+      simulateEvent('pointermove', 10, 0);
+      simulateEvent('pointerdown', 10, 0);
+      simulateEvent('pointerdrag', 5, -40);
+      simulateEvent('pointerup', 5, -40);
+
+      var geometry = features[1].getGeometry();
+      expect(geometry).to.be.a(ol.geom.Polygon);
+
+      var refGeometry = originalFeatures[1].getGeometry();
+      refGeometry.rotate(Math.PI / 2, [-15, 20]);
+
+      expect(geometry.getCoordinates()).to.eql(refGeometry.getCoordinates());
+    });
+
+    it('removes the handle when disabled', function(done) {
+      rotate.setActive(false);
+
+      var pixelPosition = map.getPixelFromCoordinate([10, 0]);
+
+      // wait for handle to be removed
+      map.once('postrender', function() {
+        var handle = map.forEachFeatureAtPixel(pixelPosition,
+            function(feature) {
+              return feature;
+            }, {
+              layerFilter: function(l) {
+                return l !== layer;
+              }
+            });
+
+        expect(handle).to.be(undefined);
+
+        done();
+      });
     });
   });
 });

@@ -23,13 +23,8 @@ var vector = new ol.layer.Vector({
 
 var select = new ol.interaction.Select();
 
-var rotate = new ol.interaction.Rotate({
-  customAnchorCondition: ol.events.condition.shiftKeyOnly,
-  features: select.getFeatures()
-});
-
 var map = new ol.Map({
-  interactions: ol.interaction.defaults().extend([select, rotate]),
+  interactions: ol.interaction.defaults().extend([select]),
   layers: [raster, vector],
   target: 'map',
   view: new ol.View({
@@ -37,3 +32,21 @@ var map = new ol.Map({
     zoom: 2
   })
 });
+
+var useHandleCheckbox = document.getElementById('useHandle');
+var rotate;
+function addRotateInteraction() {
+  rotate = new ol.interaction.Rotate({
+    customAnchorCondition: ol.events.condition.shiftKeyOnly,
+    features: select.getFeatures(),
+    useHandle: useHandleCheckbox.checked
+  });
+  map.addInteraction(rotate);
+}
+
+useHandleCheckbox.onchange = function() {
+  map.removeInteraction(rotate);
+  addRotateInteraction();
+};
+
+addRotateInteraction();

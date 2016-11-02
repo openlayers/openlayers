@@ -3218,7 +3218,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     layers: (undefined|Array.<ol.layer.Layer>|function(ol.layer.Layer): boolean),
  *     hitTolerance: (number|undefined),
  *     rotateByStepCondition: (ol.EventsConditionType|undefined),
- *     step: (number|undefined)
+ *     step: (number|undefined),
+ *     useHandle: (boolean|undefined)
  * }}
  */
 olx.interaction.RotateOptions;
@@ -3293,6 +3294,15 @@ olx.interaction.RotateOptions.prototype.rotateByStepCondition;
  * @api
  */
 olx.interaction.RotateOptions.prototype.step;
+
+
+/**
+ * Display an handle at the bottom right of the modifying feature. Default is 
+ * `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.RotateOptions.prototype.useHandle;
 
 
 /**
