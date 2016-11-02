@@ -2,6 +2,7 @@ goog.provide('ol.test.render.webgl.ImageReplay');
 
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
+goog.require('ol.render.webgl.imagereplay.defaultshader');
 goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.style.Image');
 
@@ -164,6 +165,81 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices[21]).to.be(12);
       expect(replay.indices[22]).to.be(14);
       expect(replay.indices[23]).to.be(15);
+    });
+  });
+
+  describe('#setUpProgram', function() {
+    var context, gl;
+    beforeEach(function() {
+      context = {
+        getProgram: function() {},
+        useProgram: function() {}
+      };
+      gl = {
+        enableVertexAttribArray: function() {},
+        vertexAttribPointer: function() {},
+        uniform1f: function() {},
+        uniform2fv: function() {},
+        getUniformLocation: function() {},
+        getAttribLocation: function() {}
+      };
+    });
+
+    it('returns the locations used by the shaders', function() {
+      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      expect(locations).to.be.a(
+          ol.render.webgl.imagereplay.defaultshader.Locations);
+    });
+
+    it('gets and compiles the shaders', function() {
+      sinon.spy(context, 'getProgram');
+      sinon.spy(context, 'useProgram');
+
+      replay.setUpProgram(gl, context, [2, 2], 1);
+      expect(context.getProgram.calledWithExactly(
+          ol.render.webgl.imagereplay.defaultshader.fragment,
+          ol.render.webgl.imagereplay.defaultshader.vertex)).to.be(true);
+      expect(context.useProgram.calledOnce).to.be(true);
+    });
+
+    it('initializes the attrib pointers', function() {
+      sinon.spy(gl, 'getAttribLocation');
+      sinon.spy(gl, 'vertexAttribPointer');
+      sinon.spy(gl, 'enableVertexAttribArray');
+
+      replay.setUpProgram(gl, context, [2, 2], 1);
+      expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
+      expect(gl.enableVertexAttribArray.callCount).to.be(
+          gl.getAttribLocation.callCount);
+    });
+  });
+
+  describe('#shutDownProgram', function() {
+    var context, gl;
+    beforeEach(function() {
+      context = {
+        getProgram: function() {},
+        useProgram: function() {}
+      };
+      gl = {
+        enableVertexAttribArray: function() {},
+        disableVertexAttribArray: function() {},
+        vertexAttribPointer: function() {},
+        uniform1f: function() {},
+        uniform2fv: function() {},
+        getUniformLocation: function() {},
+        getAttribLocation: function() {}
+      };
+    });
+
+    it('disables the attrib pointers', function() {
+      sinon.spy(gl, 'getAttribLocation');
+      sinon.spy(gl, 'disableVertexAttribArray');
+
+      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      replay.shutDownProgram(gl, locations);
+      expect(gl.disableVertexAttribArray.callCount).to.be(
+          gl.getAttribLocation.callCount);
     });
   });
 });

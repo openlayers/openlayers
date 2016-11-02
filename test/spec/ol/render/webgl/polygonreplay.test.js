@@ -1,7 +1,10 @@
 goog.provide('ol.test.render.webgl.PolygonReplay');
 
+goog.require('ol');
+goog.require('ol.Feature');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Polygon');
+goog.require('ol.render.webgl.polygonreplay.defaultshader');
 goog.require('ol.render.webgl.PolygonReplay');
 goog.require('ol.structs.LinkedList');
 goog.require('ol.structs.RBush');
@@ -313,6 +316,149 @@ describe('ol.render.webgl.PolygonReplay', function() {
         var simple = replay.isSimple_(list, rtree);
         expect(simple).to.be(false);
       });
+    });
+  });
+
+  describe('#setUpProgram', function() {
+    var context, gl;
+    beforeEach(function() {
+      context = {
+        getProgram: function() {},
+        useProgram: function() {}
+      };
+      gl = {
+        enableVertexAttribArray: function() {},
+        vertexAttribPointer: function() {},
+        uniform1f: function() {},
+        uniform2fv: function() {},
+        getUniformLocation: function() {},
+        getAttribLocation: function() {}
+      };
+    });
+
+    it('returns the locations used by the shaders', function() {
+      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      expect(locations).to.be.a(
+          ol.render.webgl.polygonreplay.defaultshader.Locations);
+    });
+
+    it('gets and compiles the shaders', function() {
+      sinon.spy(context, 'getProgram');
+      sinon.spy(context, 'useProgram');
+
+      replay.setUpProgram(gl, context, [2, 2], 1);
+      expect(context.getProgram.calledWithExactly(
+          ol.render.webgl.polygonreplay.defaultshader.fragment,
+          ol.render.webgl.polygonreplay.defaultshader.vertex)).to.be(true);
+      expect(context.useProgram.calledOnce).to.be(true);
+    });
+
+    it('initializes the attrib pointers', function() {
+      sinon.spy(gl, 'getAttribLocation');
+      sinon.spy(gl, 'vertexAttribPointer');
+      sinon.spy(gl, 'enableVertexAttribArray');
+
+      replay.setUpProgram(gl, context, [2, 2], 1);
+      expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
+      expect(gl.enableVertexAttribArray.callCount).to.be(
+          gl.getAttribLocation.callCount);
+    });
+  });
+
+  describe('#shutDownProgram', function() {
+    var context, gl;
+    beforeEach(function() {
+      context = {
+        getProgram: function() {},
+        useProgram: function() {}
+      };
+      gl = {
+        enableVertexAttribArray: function() {},
+        disableVertexAttribArray: function() {},
+        vertexAttribPointer: function() {},
+        uniform1f: function() {},
+        uniform2fv: function() {},
+        getUniformLocation: function() {},
+        getAttribLocation: function() {}
+      };
+    });
+
+    it('disables the attrib pointers', function() {
+      sinon.spy(gl, 'getAttribLocation');
+      sinon.spy(gl, 'disableVertexAttribArray');
+
+      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
+      replay.shutDownProgram(gl, locations);
+      expect(gl.disableVertexAttribArray.callCount).to.be(
+          gl.getAttribLocation.callCount);
+    });
+  });
+
+  describe('#drawReplay', function() {
+    var gl, context;
+    var feature1 = new ol.Feature({
+      geometry: new ol.geom.Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
+    });
+    var feature2 = new ol.Feature({
+      geometry: new ol.geom.Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
+    });
+    var feature3 = new ol.Feature({
+      geometry: new ol.geom.Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
+    });
+    beforeEach(function() {
+      gl = {};
+      context = {};
+      replay.setFillStyle_ = function() {};
+      replay.drawElements = function() {};
+      sinon.spy(replay, 'setFillStyle_');
+      sinon.spy(replay, 'drawElements');
+    });
+
+    it('draws the elements in a single call if they have the same style', function() {
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature1.getGeometry(), feature1);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature2.getGeometry(), feature2);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature3.getGeometry(), feature3);
+      replay.startIndices.push(replay.indices.length);
+
+      replay.drawReplay(gl, context, {}, false);
+      expect(replay.setFillStyle_.calledOnce).to.be(true);
+      expect(replay.drawElements.calledOnce).to.be(true);
+    });
+
+    it('draws the elements in batches if there are multiple fill styles', function() {
+      var fillStyle2 = new ol.style.Fill({
+        color: [0, 255, 0, 1]
+      });
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature1.getGeometry(), feature1);
+      replay.setFillStrokeStyle(fillStyle2, strokeStyle);
+      replay.drawPolygon(feature2.getGeometry(), feature2);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature3.getGeometry(), feature3);
+      replay.startIndices.push(replay.indices.length);
+
+      replay.drawReplay(gl, context, {}, false);
+      expect(replay.setFillStyle_.calledThrice).to.be(true);
+      expect(replay.drawElements.calledThrice).to.be(true);
+    });
+
+    it('can skip elements if needed', function() {
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature1.getGeometry(), feature1);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature2.getGeometry(), feature2);
+      replay.setFillStrokeStyle(fillStyle, strokeStyle);
+      replay.drawPolygon(feature3.getGeometry(), feature3);
+      replay.startIndices.push(replay.indices.length);
+      var skippedFeatHash = {};
+      skippedFeatHash[ol.getUid(feature2).toString()] = true;
+
+      replay.drawReplay(gl, context, skippedFeatHash, false);
+      expect(replay.setFillStyle_.calledOnce).to.be(true);
+      expect(replay.drawElements.calledTwice).to.be(true);
     });
   });
 });
