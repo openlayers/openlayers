@@ -1,8 +1,11 @@
 goog.provide('ol.render.webgl.Replay');
 
 goog.require('ol');
+goog.require('ol.extent');
 goog.require('ol.render.VectorContext');
 goog.require('ol.transform');
+goog.require('ol.vec.Mat4');
+goog.require('ol.webgl');
 
 /**
  * @constructor

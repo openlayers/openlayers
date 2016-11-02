@@ -1,9 +1,11 @@
 goog.provide('ol.render.webgl.PolygonReplay');
 
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.obj');
+goog.require('ol.geom.flat.contains');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.render.webgl.polygonreplay.defaultshader');

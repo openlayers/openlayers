@@ -1,6 +1,7 @@
 goog.provide('ol.render.webgl.CircleReplay');
 
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.extent');
 goog.require('ol.obj');
