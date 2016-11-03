@@ -616,7 +616,7 @@ describe('ol.format.GeoJSON', function() {
       var point = new ol.geom.Point(ol.proj.fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point, {featureProjection: 'EPSG:3857'});
       var obj = JSON.parse(geojson);
-      expect(obj.coordinates).to.eql([10, 20]);
+      expect(obj.coordinates).to.eql(ol.proj.toLonLat(point.getCoordinates()));
     });
 
     it('respects featureProjection passed to constructor', function() {
@@ -624,7 +624,7 @@ describe('ol.format.GeoJSON', function() {
       var point = new ol.geom.Point(ol.proj.fromLonLat([10, 20]));
       var geojson = format.writeGeometry(point);
       var obj = JSON.parse(geojson);
-      expect(obj.coordinates).to.eql([10, 20]);
+      expect(obj.coordinates).to.eql(ol.proj.toLonLat(point.getCoordinates()));
     });
 
     it('encodes linestring', function() {
