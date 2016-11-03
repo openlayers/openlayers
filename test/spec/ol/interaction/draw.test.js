@@ -728,6 +728,24 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getRadius()).to.eql(20);
     });
 
+    it('supports freehand drawing for circles', function() {
+      draw.freehand_ = true;
+      draw.freehandCondition_ = ol.events.condition.always;
+
+      // no feture created when not moved
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+      expect(source.getFeatures()).to.have.length(0);
+
+      // feature created when moved
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointermove', 30, 20);
+      simulateEvent('pointerup', 30, 20);
+      expect(source.getFeatures()).to.have.length(1);
+    });
+
     it('triggers draw events', function() {
       var ds = sinon.spy();
       var de = sinon.spy();
