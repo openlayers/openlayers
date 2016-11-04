@@ -70,7 +70,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate = function(co
 
 
 /**
- * @param {ol.Pixel} pixel Pixel.
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
@@ -78,7 +78,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate = function(co
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
@@ -86,8 +86,6 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    var coordinate = ol.transform.apply(
-        frameState.pixelToCoordinateTransform, pixel.slice());
     var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, ol.functions.TRUE, this);
 
@@ -97,13 +95,8 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
       return undefined;
     }
   } else {
-    // for all other image sources directly check the image
-    if (!this.imageTransformInv_) {
-      this.imageTransformInv_ = ol.transform.invert(this.imageTransform_.slice());
-    }
-
-    var pixelOnCanvas =
-        this.getPixelOnCanvas(pixel, this.imageTransformInv_);
+    var pixelOnCanvas = ol.transform.apply(
+        this.coordinateToCanvasPixelTransform_, coordinate.slice());
 
     if (!this.hitCanvasContext_) {
       this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
@@ -145,6 +138,7 @@ ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
 ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
+  var size = frameState.size;
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;
   var viewResolution = viewState.resolution;
@@ -197,7 +191,11 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     ol.transform.translate(transform,
         imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
         imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
-    this.imageTransformInv_ = null;
+    ol.transform.compose(ol.transform.reset(this.coordinateToCanvasPixelTransform_),
+        pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
+        pixelRatio / viewResolution, -pixelRatio / viewResolution,
+        0,
+        -viewCenter[0], -viewCenter[1]);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
