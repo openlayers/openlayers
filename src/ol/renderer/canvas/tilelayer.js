@@ -249,7 +249,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
 
 
 /**
- * @param {ol.Pixel} pixel Pixel.
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
@@ -257,9 +257,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.canvas.TileLayer.prototype.forEachLayerAtPixel = function(
-    pixel, frameState, callback, thisArg) {
-  var coordinate = ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
+ol.renderer.canvas.TileLayer.prototype.forEachLayerAtCoordinate = function(
+    coordinate, frameState, callback, thisArg) {
   var canvasPixel = ol.transform.apply(this.coordinateToCanvasPixelTransform_, coordinate);
 
   var imageData = this.context.getImageData(canvasPixel[0], canvasPixel[1], 1, 1).data;

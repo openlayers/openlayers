@@ -200,3 +200,36 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   this.scheduleRemoveUnusedLayerRenderers(frameState);
   this.scheduleExpireIconCache(frameState);
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
+        layerFilter, thisArg2) {
+  var result;
+  var viewState = frameState.viewState;
+  var viewResolution = viewState.resolution;
+
+  var layerStates = frameState.layerStatesArray;
+  var numLayers = layerStates.length;
+
+  var coordinate = ol.transform.apply(
+      frameState.pixelToCoordinateTransform, pixel.slice());
+
+  var i;
+  for (i = numLayers - 1; i >= 0; --i) {
+    var layerState = layerStates[i];
+    var layer = layerState.layer;
+    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+        layerFilter.call(thisArg2, layer)) {
+      var layerRenderer = this.getLayerRenderer(layer);
+      result = layerRenderer.forEachLayerAtCoordinate(
+          coordinate, frameState, callback, thisArg);
+      if (result) {
+        return result;
+      }
+    }
+  }
+  return undefined;
+};

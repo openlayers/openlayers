@@ -251,3 +251,16 @@ ol.renderer.webgl.Layer.prototype.handleWebGLContextLost = function() {
  * @return {boolean} whether composeFrame should be called.
  */
 ol.renderer.webgl.Layer.prototype.prepareFrame = function(frameState, layerState, context) {};
+
+
+/**
+ * @abstract
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {olx.FrameState} frameState FrameState.
+ * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+ *     callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
+ */
+ol.renderer.webgl.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {};

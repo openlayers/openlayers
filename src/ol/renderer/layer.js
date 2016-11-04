@@ -9,7 +9,6 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.functions');
 goog.require('ol.source.State');
-goog.require('ol.transform');
 
 
 /**
@@ -43,29 +42,6 @@ ol.inherits(ol.renderer.Layer, ol.Observable);
  * @template S,T
  */
 ol.renderer.Layer.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
-
-
-/**
- * @param {ol.Pixel} pixel Pixel.
- * @param {olx.FrameState} frameState Frame state.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @return {T|undefined} Callback result.
- * @template S,T
- */
-ol.renderer.Layer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
-  var coordinate = ol.transform.apply(
-      frameState.pixelToCoordinateTransform, pixel.slice());
-
-  var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, ol.functions.TRUE, this);
-
-  if (hasFeature) {
-    return callback.call(thisArg, this.layer_, null);
-  } else {
-    return undefined;
-  }
-};
 
 
 /**
