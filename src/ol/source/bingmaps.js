@@ -36,6 +36,12 @@ ol.source.BingMaps = function(options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
+
+  /**
+   * @private
    * @type {string}
    */
   this.culture_ = options.culture !== undefined ? options.culture : 'en-us';
@@ -142,6 +148,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
   this.tileGrid = tileGrid;
 
   var culture = this.culture_;
+  var hidpi = this.hidpi_;
   this.tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
       resource.imageUrlSubdomains.map(function(subdomain) {
         var quadKeyTileCoord = [0, 0, 0];
@@ -164,7 +171,11 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
               } else {
                 ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
                     -tileCoord[2] - 1, quadKeyTileCoord);
-                return imageUrl.replace('{quadkey}', ol.tilecoord.quadKey(
+                var url = imageUrl;
+                if (hidpi && pixelRatio >= 2) {
+                  url += '&dpi=d1&device=mobile';
+                }
+                return url.replace('{quadkey}', ol.tilecoord.quadKey(
                     quadKeyTileCoord));
               }
             });
