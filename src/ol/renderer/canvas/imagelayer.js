@@ -34,9 +34,9 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {?ol.Transform}
+   * @type {ol.Transform}
    */
-  this.imageTransformInv_ = null;
+  this.coordinateToCanvasPixelTransform_ = ol.transform.create();
 
   /**
    * @private
