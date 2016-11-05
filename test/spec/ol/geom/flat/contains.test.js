@@ -10,7 +10,7 @@ describe('ol.geom.flat.contains', function() {
     var flatCoordinatesSimple = [0, 0, 1, 0, 1, 1, 0, 1];
     var flatCoordinatesNonSimple = [0, 0, 4, 0, 4, 3, 1, 3, 1, 2, 3, 2, 3, 1, 2, 1, 2, 4, 0, 4];
 
-    describe('ol.geom.flat.closest.getMaxSquaredDelta', function() {
+    describe('ol.geom.flat.contains.linearRingContainsXY', function() {
 
       it('returns true for point inside a simple polygon', function() {
         expect(ol.geom.flat.contains.linearRingContainsXY(
