@@ -662,6 +662,81 @@ olx.ViewOptions.prototype.zoomFactor;
 
 
 /**
+ * @typedef {{
+ *   center: (ol.Coordinate|undefined),
+ *   zoom: (number|undefined),
+ *   resolution: (number|undefined),
+ *   rotation: (number|undefined),
+ *   rotationAnchor: (ol.Coordinate|undefined),
+ *   duration: (number|undefined),
+ *   easing: (function(number):number|undefined)
+ * }}
+ */
+olx.AnimationOptions;
+
+
+/**
+ * The center of the view at the end of the animation.
+ * @type {ol.Coordinate|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.center;
+
+
+/**
+ * The zoom level of the view at the end of the animation.  This takes
+ * precedence over `resolution`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.zoom;
+
+
+/**
+ * The resolution of the view at the end of the animation.  If `zoom` is also
+ * provided, this option will be ignored.
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.resolution;
+
+
+/**
+ * The rotation of the view at the end of the animation.
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.rotation;
+
+
+/**
+ * The rotation anchor of the view during the animation.
+ * @type {ol.Coordinate|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.rotationAnchor;
+
+
+/**
+ * The duration of the animation in milliseconds (defaults to `1000`).
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.duration;
+
+
+/**
+ * The easing function used during the animation (defaults to `ol.easing.inAndOut`).
+ * The function will be called for each frame with a number representing a
+ * fraction of the animation's duration.  The function should return a number
+ * between 0 and 1 representing the progress toward the destination state.
+ * @type {function(number):number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.easing;
+
+
+/**
  * Namespace.
  * @type {Object}
  */
