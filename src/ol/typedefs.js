@@ -653,6 +653,26 @@ ol.TransformFunction;
 
 
 /**
+ * An animation configuration
+ *
+ * @typedef {{
+ *   sourceCenter: (ol.Coordinate|undefined),
+ *   targetCenter: (ol.Coordinate|undefined),
+ *   sourceResolution: (number|undefined),
+ *   targetResolution: (number|undefined),
+ *   sourceRotation: (number|undefined),
+ *   targetRotation: (number|undefined),
+ *   rotationAnchor: (ol.Coordinate|undefined),
+ *   start: number,
+ *   duration: number,
+ *   easing: function(number):number,
+ *   callback: (function(boolean)|undefined)
+ *  }}
+ */
+ol.ViewAnimation;
+
+
+/**
  * @typedef {{buf: ol.webgl.Buffer,
  *            buffer: WebGLBuffer}}
  */

@@ -9,6 +9,7 @@ goog.require('ol.RotationConstraint');
 goog.require('ol.array');
 goog.require('ol.asserts');
 goog.require('ol.coordinate');
+goog.require('ol.easing');
 goog.require('ol.extent');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
@@ -85,6 +86,18 @@ ol.View = function(opt_options) {
   this.hints_ = [0, 0];
 
   /**
+   * @private
+   * @type {boolean}
+   */
+  this.animating_ = false;
+
+  /**
+   * @private
+   * @type {Array.<Array.<ol.ViewAnimation>>}
+   */
+  this.animations_ = [];
+
+  /**
    * @type {Object.<string, *>}
    */
   var properties = {};
@@ -153,6 +166,93 @@ ol.View = function(opt_options) {
   this.setProperties(properties);
 };
 ol.inherits(ol.View, ol.Object);
+
+
+/**
+ * Animate the view.
+ * @param {...(olx.AnimationOptions|function(boolean))} var_args Animation
+ *     options.  Multiple animations can be run in series by passing multiple
+ *     options objects.  To run multiple animations in series, call the method
+ *     multiple times.  An optional callback can be provided as a final
+ *     argument.  The callback will be called with a boolean indicating whether
+ *     the animation completed without being cancelled.
+ */
+ol.View.prototype.animate = function(var_args) {
+  var start = Date.now();
+  var center = this.getCenter().slice();
+  var resolution = this.getResolution();
+  var rotation = this.getRotation();
+  var animationCount = arguments.length;
+  var callback;
+  if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
+    callback = arguments[animationCount - 1];
+    --animationCount;
+  }
+  var series = [];
+  for (var i = 0; i < animationCount; ++i) {
+    var options = /** @type olx.AnimationOptions */ (arguments[i]);
+
+    var animation = /** @type {ol.ViewAnimation} */ ({
+      start: start,
+      duration: options.duration || 1000,
+      easing: options.easing || ol.easing.inAndOut
+    });
+
+    if (options.center) {
+      animation.sourceCenter = center;
+      animation.targetCenter = options.center;
+      center = animation.targetCenter;
+    }
+
+    if (options.zoom !== undefined) {
+      animation.sourceResolution = resolution;
+      animation.targetResolution = this.constrainResolution(
+            this.maxResolution_, options.zoom - this.minZoom_, 0);
+      resolution = animation.targetResolution;
+    } else if (options.resolution) {
+      animation.sourceResolution = this.getResolution();
+      animation.targetResolution = options.resolution;
+      resolution = animation.targetResolution;
+    }
+
+    if (options.rotation !== undefined) {
+      animation.sourceRotation = rotation;
+      animation.targetRotation = options.rotation;
+      animation.rotationAnchor = options.rotationAnchor;
+      rotation = animation.targetRotation;
+    }
+
+    animation.callback = callback;
+    start += animation.duration;
+    series.push(animation);
+  }
+  this.animations_.push(series);
+  this.animating_ = true;
+};
+
+
+/**
+ * Determine if the view is being animated.
+ * @return {boolean} The view is being animated.
+ */
+ol.View.prototype.getAnimating = function() {
+  return this.animating_;
+};
+
+
+/**
+ * Cancel any ongoing animations.
+ */
+ol.View.prototype.cancelAnimations_ = function() {
+  for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
+    var series = this.animations_[i];
+    if (series[0].callback) {
+      series[0].callback(false);
+    }
+  }
+  this.animations_.length = 0;
+  this.animating_ = false;
+};
 
 
 /**
@@ -603,6 +703,9 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.View.Property.CENTER, center);
+  if (this.animating_) {
+    this.cancelAnimations_();
+  }
 };
 
 
@@ -629,6 +732,9 @@ ol.View.prototype.setHint = function(hint, delta) {
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.View.Property.RESOLUTION, resolution);
+  if (this.animating_) {
+    this.cancelAnimations_();
+  }
 };
 
 
@@ -640,6 +746,9 @@ ol.View.prototype.setResolution = function(resolution) {
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.View.Property.ROTATION, rotation);
+  if (this.animating_) {
+    this.cancelAnimations_();
+  }
 };
 
 
