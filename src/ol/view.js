@@ -98,6 +98,14 @@ ol.View = function(opt_options) {
   this.animations_ = [];
 
   /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.updateAnimationKey_;
+
+  this.updateAnimations_ = this.updateAnimations_.bind(this);
+
+  /**
    * @type {Object.<string, *>}
    */
   var properties = {};
@@ -228,6 +236,7 @@ ol.View.prototype.animate = function(var_args) {
   }
   this.animations_.push(series);
   this.animating_ = true;
+  this.updateAnimations_();
 };
 
 
@@ -254,6 +263,67 @@ ol.View.prototype.cancelAnimations_ = function() {
   this.animating_ = false;
 };
 
+/**
+ * Update all animations.
+ */
+ol.View.prototype.updateAnimations_ = function() {
+  if (this.updateAnimationKey_ !== undefined) {
+    cancelAnimationFrame(this.updateAnimationKey_);
+    this.updateAnimationKey_ = undefined;
+  }
+  if (!this.animating_) {
+    return;
+  }
+  var now = Date.now();
+  var more = false;
+  for (var i = this.animations_.length - 1; i >= 0; --i) {
+    var series = this.animations_[i];
+    var animation;
+    for (var j = 0, jj = series.length; j < jj; ++j) {
+      var candidate = series[i];
+      if (candidate.duration > now - candidate.start) {
+        animation = candidate;
+        break;
+      }
+    }
+    if (animation) {
+      var progress = animation.easing((now - animation.start) / animation.duration);
+      if (animation.sourceCenter) {
+        var x0 = animation.sourceCenter[0];
+        var y0 = animation.sourceCenter[1];
+        var x1 = animation.targetCenter[0];
+        var y1 = animation.targetCenter[1];
+        var x = x0 + progress * (x1 - x0);
+        var y = y0 + progress * (y1 - y0);
+        this.set(ol.View.Property.CENTER, [x, y]);
+      }
+      if (animation.sourceResolution) {
+        var resolutionDelta = progress * (animation.targetResolution - animation.sourceResolution);
+        this.set(ol.View.Property.RESOLUTION, animation.sourceResolution + resolutionDelta);
+      }
+      if (animation.sourceRotation !== undefined) {
+        var rotationDelta = progress * (animation.targetRotation - animation.sourceRotation);
+        this.set(ol.View.Property.ROTATION, animation.sourceRotation + rotationDelta);
+        if (animation.rotationAnchor) {
+          var center = this.getCenter().slice();
+          ol.coordinate.sub(center, animation.rotationAnchor);
+          ol.coordinate.rotate(center, rotationDelta);
+          ol.coordinate.add(center, animation.rotationAnchor);
+          this.set(ol.View.Property.CENTER, center);
+        }
+      }
+      more = true;
+    } else {
+      this.animations_.pop();
+      if (this.animations_.length === 0) {
+        this.animating_ = false;
+      }
+    }
+  }
+  if (more && this.updateAnimationKey_ === undefined) {
+    this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
+  }
+};
 
 /**
  * @param {number} rotation Target rotation.
