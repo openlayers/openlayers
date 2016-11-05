@@ -202,6 +202,7 @@ ol.View.prototype.animate = function(var_args) {
 
     var animation = /** @type {ol.ViewAnimation} */ ({
       start: start,
+      done: false,
       duration: options.duration || 1000,
       easing: options.easing || ol.easing.inAndOut
     });
@@ -278,16 +279,21 @@ ol.View.prototype.updateAnimations_ = function() {
   var more = false;
   for (var i = this.animations_.length - 1; i >= 0; --i) {
     var series = this.animations_[i];
-    var animation;
+    var seriesDone = true;
     for (var j = 0, jj = series.length; j < jj; ++j) {
-      var candidate = series[i];
-      if (candidate.duration > now - candidate.start) {
-        animation = candidate;
-        break;
+      var animation = series[j];
+      if (animation.done) {
+        continue;
       }
-    }
-    if (animation) {
-      var progress = animation.easing((now - animation.start) / animation.duration);
+      var elapsed = now - animation.start;
+      var fraction = elapsed / animation.duration;
+      if (fraction > 1) {
+        animation.done = true;
+        fraction = 1;
+      } else {
+        seriesDone = false;
+      }
+      var progress = animation.easing(fraction);
       if (animation.sourceCenter) {
         var x0 = animation.sourceCenter[0];
         var y0 = animation.sourceCenter[1];
@@ -313,10 +319,15 @@ ol.View.prototype.updateAnimations_ = function() {
         }
       }
       more = true;
-    } else {
-      this.animations_.pop();
+    }
+    if (seriesDone) {
+      var completed = this.animations_.pop();
       if (this.animations_.length === 0) {
         this.animating_ = false;
+      }
+      var callback = completed[0].callback;
+      if (callback) {
+        callback(true);
       }
     }
   }

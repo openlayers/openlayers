@@ -665,6 +665,7 @@ ol.TransformFunction;
  *   rotationAnchor: (ol.Coordinate|undefined),
  *   start: number,
  *   duration: number,
+ *   done: boolean,
  *   easing: function(number):number,
  *   callback: (function(boolean)|undefined)
  *  }}
