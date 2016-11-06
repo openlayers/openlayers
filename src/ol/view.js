@@ -87,12 +87,6 @@ ol.View = function(opt_options) {
 
   /**
    * @private
-   * @type {boolean}
-   */
-  this.animating_ = false;
-
-  /**
-   * @private
    * @type {Array.<Array.<ol.ViewAnimation>>}
    */
   this.animations_ = [];
@@ -236,7 +230,7 @@ ol.View.prototype.animate = function(var_args) {
     series.push(animation);
   }
   this.animations_.push(series);
-  this.animating_ = true;
+  this.setHint(ol.View.Hint.ANIMATING, 1);
   this.updateAnimations_();
 };
 
@@ -246,7 +240,7 @@ ol.View.prototype.animate = function(var_args) {
  * @return {boolean} The view is being animated.
  */
 ol.View.prototype.getAnimating = function() {
-  return this.animating_;
+  return this.getHints()[ol.View.Hint.ANIMATING] > 0;
 };
 
 
@@ -261,7 +255,7 @@ ol.View.prototype.cancelAnimations_ = function() {
     }
   }
   this.animations_.length = 0;
-  this.animating_ = false;
+  this.setHint(ol.View.Hint.ANIMATING, -this.getHints()[ol.View.Hint.ANIMATING]);
 };
 
 /**
@@ -272,7 +266,7 @@ ol.View.prototype.updateAnimations_ = function() {
     cancelAnimationFrame(this.updateAnimationKey_);
     this.updateAnimationKey_ = undefined;
   }
-  if (!this.animating_) {
+  if (!this.getAnimating()) {
     return;
   }
   var now = Date.now();
@@ -324,10 +318,8 @@ ol.View.prototype.updateAnimations_ = function() {
       more = true;
     }
     if (seriesComplete) {
+      this.setHint(ol.View.Hint.ANIMATING, -1);
       var completed = this.animations_.pop();
-      if (this.animations_.length === 0) {
-        this.animating_ = false;
-      }
       var callback = completed[0].callback;
       if (callback) {
         callback(true);
@@ -787,7 +779,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.View.Property.CENTER, center);
-  if (this.animating_) {
+  if (this.getAnimating()) {
     this.cancelAnimations_();
   }
 };
@@ -816,7 +808,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.View.Property.RESOLUTION, resolution);
-  if (this.animating_) {
+  if (this.getAnimating()) {
     this.cancelAnimations_();
   }
 };
@@ -830,7 +822,7 @@ ol.View.prototype.setResolution = function(resolution) {
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.View.Property.ROTATION, rotation);
-  if (this.animating_) {
+  if (this.getAnimating()) {
     this.cancelAnimations_();
   }
 };

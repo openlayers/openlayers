@@ -372,6 +372,72 @@ describe('ol.View', function() {
       view.setCenter([1, 2]); // interrupt the animation
     });
 
+    it('properly sets the ANIMATING hint', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      var count = 3;
+      function decrement() {
+        --count;
+        if (count === 0) {
+          expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(0);
+          done();
+        }
+      }
+      view.animate({
+        center: [1, 2],
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(1);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(2);
+
+      view.animate({
+        rotate: Math.PI,
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(3);
+
+    });
+
+    it('clears the ANIMATING hint when animations are cancelled', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        center: [1, 2],
+        duration: 25
+      });
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(1);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      });
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(2);
+
+      view.animate({
+        rotate: Math.PI,
+        duration: 25
+      });
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(3);
+
+      // cancel animations
+      view.setCenter([10, 20]);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(0);
+
+    });
+
   });
 
   describe('#getResolutions', function() {
