@@ -202,7 +202,7 @@ ol.View.prototype.animate = function(var_args) {
 
     var animation = /** @type {ol.ViewAnimation} */ ({
       start: start,
-      done: false,
+      complete: false,
       anchor: options.anchor,
       duration: options.duration || 1000,
       easing: options.easing || ol.easing.inAndOut
@@ -279,19 +279,19 @@ ol.View.prototype.updateAnimations_ = function() {
   var more = false;
   for (var i = this.animations_.length - 1; i >= 0; --i) {
     var series = this.animations_[i];
-    var seriesDone = true;
+    var seriesComplete = true;
     for (var j = 0, jj = series.length; j < jj; ++j) {
       var animation = series[j];
-      if (animation.done) {
+      if (animation.complete) {
         continue;
       }
       var elapsed = now - animation.start;
       var fraction = elapsed / animation.duration;
       if (fraction > 1) {
-        animation.done = true;
+        animation.complete = true;
         fraction = 1;
       } else {
-        seriesDone = false;
+        seriesComplete = false;
       }
       var progress = animation.easing(fraction);
       if (animation.sourceCenter) {
@@ -323,7 +323,7 @@ ol.View.prototype.updateAnimations_ = function() {
       }
       more = true;
     }
-    if (seriesDone) {
+    if (seriesComplete) {
       var completed = this.animations_.pop();
       if (this.animations_.length === 0) {
         this.animating_ = false;

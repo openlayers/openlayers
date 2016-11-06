@@ -338,7 +338,38 @@ describe('ol.View', function() {
         expect(view.getAnimating()).to.eql(false);
         done();
       }, 50);
+    });
 
+    it('calls a callback when animation completes', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        done();
+      });
+    });
+
+    it('calls callback with false when animation is interrupted', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(false);
+        done();
+      });
+
+      view.setCenter([1, 2]); // interrupt the animation
     });
 
   });
