@@ -179,7 +179,7 @@ ol.inherits(ol.View, ol.Object);
  *
  * By default, the animation lasts one second and uses in-and-out easing.  You
  * can customize this behavior by including `duration` (in milliseconds) and
- * `easing` options (@link ol.easing).
+ * `easing` options (see {@link ol.easing}).
  *
  * To chain together multiple animations, call the method with multiple
  * animation objects.  For example, to first zoom and then pan:
@@ -192,12 +192,12 @@ ol.inherits(ol.View, ol.Object);
  * if it was cancelled.
  *
  * Animations are cancelled by user interactions (e.g. dragging the map) or by
- * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation`
+ * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation()`
  * (or another method that calls one of these).
  *
  * @param {...(olx.AnimationOptions|function(boolean))} var_args Animation
  *     options.  Multiple animations can be run in series by passing multiple
- *     options objects.  To run multiple animations in series, call the method
+ *     options objects.  To run multiple animations in parallel, call the method
  *     multiple times.  An optional callback can be provided as a final
  *     argument.  The callback will be called with a boolean indicating whether
  *     the animation completed without being cancelled.
