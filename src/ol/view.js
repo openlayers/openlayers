@@ -171,7 +171,30 @@ ol.inherits(ol.View, ol.Object);
 
 
 /**
- * Animate the view.
+ * Animate the view.  The view's center, zoom (or resolution), and rotation
+ * can be animated for smooth transitions between view states.  For example,
+ * to animate the view to a new zoom level:
+ *
+ *     view.animate({zoom: view.getZoom() + 1});
+ *
+ * By default, the animation lasts one second and uses in-and-out easing.  You
+ * can customize this behavior by including `duration` (in milliseconds) and
+ * `easing` options (@link ol.easing).
+ *
+ * To chain together multiple animations, call the method with multiple
+ * animation objects.  For example, to first zoom and then pan:
+ *
+ *     view.animate({zoom: 10}, {center: [0, 0]});
+ *
+ * If you provide a function as the last argument to the animate method, it
+ * will get called at the end of an animation series.  The callback will be
+ * called with `true` if the animation series completed on its own or `false`
+ * if it was cancelled.
+ *
+ * Animations are cancelled by user interactions (e.g. dragging the map) or by
+ * calling `view.setCenter()`, `view.setResolution()`, or `view.setRotation`
+ * (or another method that calls one of these).
+ *
  * @param {...(olx.AnimationOptions|function(boolean))} var_args Animation
  *     options.  Multiple animations can be run in series by passing multiple
  *     options objects.  To run multiple animations in series, call the method
