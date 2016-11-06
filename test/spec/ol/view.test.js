@@ -340,6 +340,23 @@ describe('ol.View', function() {
       }, 50);
     });
 
+    it('prefers zoom over resolution', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        resolution: view.getResolution() * 3,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        expect(view.getZoom()).to.be(4);
+        done();
+      });
+    });
+
     it('calls a callback when animation completes', function(done) {
       var view = new ol.View({
         center: [0, 0],
