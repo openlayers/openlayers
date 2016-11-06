@@ -4,7 +4,6 @@ goog.provide('ol.control.ZoomSlider');
 
 goog.require('ol');
 goog.require('ol.View');
-goog.require('ol.animation');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -306,16 +305,15 @@ ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
  */
 ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
-    var map = this.getMap();
-    var view = map.getView();
+    var view = this.getMap().getView();
     view.setHint(ol.View.Hint.INTERACTING, -1);
-    map.beforeRender(ol.animation.zoom({
-      resolution: /** @type {number} */ (this.currentResolution_),
+
+    view.animate({
+      resolution: view.constrainResolution(this.currentResolution_),
       duration: this.duration_,
       easing: ol.easing.easeOut
-    }));
-    var resolution = view.constrainResolution(this.currentResolution_);
-    view.setResolution(resolution);
+    });
+
     this.dragging_ = false;
     this.previousX_ = undefined;
     this.previousY_ = undefined;
