@@ -662,7 +662,7 @@ ol.TransformFunction;
  *   targetResolution: (number|undefined),
  *   sourceRotation: (number|undefined),
  *   targetRotation: (number|undefined),
- *   rotationAnchor: (ol.Coordinate|undefined),
+ *   anchor: (ol.Coordinate|undefined),
  *   start: number,
  *   duration: number,
  *   complete: boolean,
