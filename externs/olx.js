@@ -398,9 +398,9 @@ olx.OverlayOptions.prototype.autoPan;
 
 
 /**
- * The options used to create a `ol.animation.pan` animation. This animation
- * is only used when `autoPan` is enabled. By default the default options for
- * `ol.animation.pan` are used. If set to `null` the panning is not animated.
+ * The animation options used to pan the overlay into view. This animation
+ * is only used when `autoPan` is enabled. A `duration` and `easing` may be
+ * provided to customize the animation.
  * @type {olx.animation.PanOptions|undefined}
  * @api
  */
@@ -787,10 +787,10 @@ olx.animation.BounceOptions.prototype.easing;
 
 
 /**
- * @typedef {{source: ol.Coordinate,
- *     start: (number|undefined),
- *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ * @typedef {{
+ *   duration: (number|undefined),
+ *   easing: (function(number):number|undefined)
+ * }}
  */
 olx.animation.PanOptions;
 
