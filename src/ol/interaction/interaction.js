@@ -99,16 +99,17 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
 ol.interaction.Interaction.pan = function(map, view, delta, opt_duration) {
   var currentCenter = view.getCenter();
   if (currentCenter) {
-    if (opt_duration && opt_duration > 0) {
-      map.beforeRender(ol.animation.pan({
-        source: currentCenter,
-        duration: opt_duration,
-        easing: ol.easing.linear
-      }));
-    }
     var center = view.constrainCenter(
         [currentCenter[0] + delta[0], currentCenter[1] + delta[1]]);
-    view.setCenter(center);
+    if (opt_duration) {
+      view.animate({
+        duration: opt_duration,
+        easing: ol.easing.linear,
+        center: center
+      });
+    } else {
+      view.setCenter(center);
+    }
   }
 };
 
