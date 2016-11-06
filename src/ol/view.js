@@ -201,6 +201,7 @@ ol.inherits(ol.View, ol.Object);
  *     multiple times.  An optional callback can be provided as a final
  *     argument.  The callback will be called with a boolean indicating whether
  *     the animation completed without being cancelled.
+ * @api
  */
 ol.View.prototype.animate = function(var_args) {
   var start = Date.now();
