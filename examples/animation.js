@@ -72,7 +72,7 @@ document.getElementById('rotate-right').addEventListener('click', function() {
 document.getElementById('rotate-around-rome').addEventListener('click', function() {
   view.animate({
     rotation: view.getRotation() + 2 * Math.PI,
-    rotationAnchor: rome
+    anchor: rome
   });
 });
 

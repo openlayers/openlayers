@@ -313,15 +313,13 @@ ol.View.prototype.updateAnimations_ = function() {
         this.set(ol.View.Property.RESOLUTION, resolution);
       }
       if (animation.sourceRotation !== undefined) {
-        var rotationDelta = progress * (animation.targetRotation - animation.sourceRotation);
-        this.set(ol.View.Property.ROTATION, animation.sourceRotation + rotationDelta);
+        var rotation = animation.sourceRotation +
+            progress * (animation.targetRotation - animation.sourceRotation);
         if (animation.anchor) {
-          var center = this.getCenter().slice();
-          ol.coordinate.sub(center, animation.anchor);
-          ol.coordinate.rotate(center, rotationDelta);
-          ol.coordinate.add(center, animation.anchor);
-          this.set(ol.View.Property.CENTER, center);
+          this.set(ol.View.Property.CENTER,
+              this.calculateCenterRotate(rotation, animation.anchor));
         }
+        this.set(ol.View.Property.ROTATION, rotation);
       }
       more = true;
     }
