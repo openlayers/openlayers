@@ -110,17 +110,57 @@ onClick('spin-to-rome', function() {
   });
 });
 
-onClick('fly-to-bern', function() {
+function flyTo(location, done) {
   var duration = 2000;
+  var zoom = view.getZoom();
+  var parts = 2;
+  var called = false;
+  function callback(complete) {
+    --parts;
+    if (called) {
+      return;
+    }
+    if (parts === 0 || !complete) {
+      called = true;
+      done(complete);
+    }
+  }
   view.animate({
-    center: bern,
+    center: location,
     duration: duration
-  });
+  }, callback);
   view.animate({
-    zoom: view.getZoom() - 0.5,
+    zoom: zoom - 1,
     duration: duration / 2
   }, {
-    zoom: view.getZoom() + 1,
+    zoom: zoom,
     duration: duration / 2
-  });
+  }, callback);
+}
+
+onClick('fly-to-bern', function() {
+  flyTo(bern, function() {});
 });
+
+function tour() {
+  var locations = [london, bern, rome, moscow, istanbul];
+  var index = -1;
+  function next(more) {
+    if (more) {
+      ++index;
+      if (index < locations.length) {
+        var delay = index === 0 ? 0 : 750;
+        setTimeout(function() {
+          flyTo(locations[index], next);
+        }, delay);
+      } else {
+        alert('Tour complete');
+      }
+    } else {
+      alert('Tour cancelled');
+    }
+  }
+  next(true);
+}
+
+onClick('tour', tour);
