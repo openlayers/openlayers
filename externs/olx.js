@@ -312,7 +312,7 @@ olx.MapOptions.prototype.view;
  *     stopEvent: (boolean|undefined),
  *     insertFirst: (boolean|undefined),
  *     autoPan: (boolean|undefined),
- *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanAnimation: (olx.OverlayPanOptions|undefined),
  *     autoPanMargin: (number|undefined)}}
  */
 olx.OverlayOptions;
@@ -401,7 +401,7 @@ olx.OverlayOptions.prototype.autoPan;
  * The animation options used to pan the overlay into view. This animation
  * is only used when `autoPan` is enabled. A `duration` and `easing` may be
  * provided to customize the animation.
- * @type {olx.animation.PanOptions|undefined}
+ * @type {olx.OverlayPanOptions|undefined}
  * @api
  */
 olx.OverlayOptions.prototype.autoPanAnimation;
@@ -414,6 +414,32 @@ olx.OverlayOptions.prototype.autoPanAnimation;
  * @api
  */
 olx.OverlayOptions.prototype.autoPanMargin;
+
+
+/**
+ * @typedef {{
+ *   duration: (number|undefined),
+ *   easing: (function(number):number|undefined)
+ * }}
+ */
+olx.OverlayPanOptions;
+
+
+/**
+ * The duration of the animation in milliseconds. Default is `1000`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayPanOptions.prototype.duration;
+
+
+/**
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
+ * @type {function(number):number|undefined}
+ * @api
+ */
+olx.OverlayPanOptions.prototype.easing;
 
 
 /**
@@ -787,10 +813,10 @@ olx.animation.BounceOptions.prototype.easing;
 
 
 /**
- * @typedef {{
- *   duration: (number|undefined),
- *   easing: (function(number):number|undefined)
- * }}
+ * @typedef {{source: ol.Coordinate,
+ *     start: (number|undefined),
+ *     duration: (number|undefined),
+ *     easing: (function(number):number|undefined)}}
  */
 olx.animation.PanOptions;
 

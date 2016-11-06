@@ -68,10 +68,10 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {olx.animation.PanOptions}
+   * @type {olx.OverlayPanOptions}
    */
   this.autoPanAnimation_ = options.autoPanAnimation ||
-      /** @type {olx.animation.PanOptions} */ ({});
+      /** @type {olx.OverlayPanOptions} */ ({});
 
   /**
    * @private
