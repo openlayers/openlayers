@@ -59,8 +59,7 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
     renderedRenderOrder: null,
     renderedRevision: -1,
     renderedTileRevision: -1,
-    replayGroup: null,
-    skippedFeatures: []
+    replayGroup: null
   };
 
   /**
