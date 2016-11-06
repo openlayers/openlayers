@@ -203,6 +203,7 @@ ol.View.prototype.animate = function(var_args) {
     var animation = /** @type {ol.ViewAnimation} */ ({
       start: start,
       done: false,
+      anchor: options.anchor,
       duration: options.duration || 1000,
       easing: options.easing || ol.easing.inAndOut
     });
@@ -227,7 +228,6 @@ ol.View.prototype.animate = function(var_args) {
     if (options.rotation !== undefined) {
       animation.sourceRotation = rotation;
       animation.targetRotation = options.rotation;
-      animation.rotationAnchor = options.rotationAnchor;
       rotation = animation.targetRotation;
     }
 
@@ -304,17 +304,22 @@ ol.View.prototype.updateAnimations_ = function() {
         this.set(ol.View.Property.CENTER, [x, y]);
       }
       if (animation.sourceResolution) {
-        var resolutionDelta = progress * (animation.targetResolution - animation.sourceResolution);
-        this.set(ol.View.Property.RESOLUTION, animation.sourceResolution + resolutionDelta);
+        var resolution = animation.sourceResolution +
+            progress * (animation.targetResolution - animation.sourceResolution);
+        if (animation.anchor) {
+          this.set(ol.View.Property.CENTER,
+              this.calculateCenterZoom(resolution, animation.anchor));
+        }
+        this.set(ol.View.Property.RESOLUTION, resolution);
       }
       if (animation.sourceRotation !== undefined) {
         var rotationDelta = progress * (animation.targetRotation - animation.sourceRotation);
         this.set(ol.View.Property.ROTATION, animation.sourceRotation + rotationDelta);
-        if (animation.rotationAnchor) {
+        if (animation.anchor) {
           var center = this.getCenter().slice();
-          ol.coordinate.sub(center, animation.rotationAnchor);
+          ol.coordinate.sub(center, animation.anchor);
           ol.coordinate.rotate(center, rotationDelta);
-          ol.coordinate.add(center, animation.rotationAnchor);
+          ol.coordinate.add(center, animation.anchor);
           this.set(ol.View.Property.CENTER, center);
         }
       }

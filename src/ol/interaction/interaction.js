@@ -208,26 +208,20 @@ ol.interaction.Interaction.zoomWithoutConstraints = function(map, view, resoluti
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();
     if (currentResolution !== undefined && currentCenter &&
-        resolution !== currentResolution &&
-        opt_duration && opt_duration > 0) {
-      map.beforeRender(ol.animation.zoom({
-        resolution: currentResolution,
+        resolution !== currentResolution && opt_duration) {
+      view.animate({
+        resolution: resolution,
+        anchor: opt_anchor,
         duration: opt_duration,
         easing: ol.easing.easeOut
-      }));
+      });
+    } else {
       if (opt_anchor) {
-        map.beforeRender(ol.animation.pan({
-          source: currentCenter,
-          duration: opt_duration,
-          easing: ol.easing.easeOut
-        }));
+        var center = view.calculateCenterZoom(resolution, opt_anchor);
+        view.setCenter(center);
       }
+      view.setResolution(resolution);
     }
-    if (opt_anchor) {
-      var center = view.calculateCenterZoom(resolution, opt_anchor);
-      view.setCenter(center);
-    }
-    view.setResolution(resolution);
   }
 };
 

@@ -667,7 +667,7 @@ olx.ViewOptions.prototype.zoomFactor;
  *   zoom: (number|undefined),
  *   resolution: (number|undefined),
  *   rotation: (number|undefined),
- *   rotationAnchor: (ol.Coordinate|undefined),
+ *   anchor: (ol.Coordinate|undefined),
  *   duration: (number|undefined),
  *   easing: (function(number):number|undefined)
  * }}
@@ -710,11 +710,11 @@ olx.AnimationOptions.prototype.rotation;
 
 
 /**
- * The rotation anchor of the view during the animation.
+ * Optional anchor to remained fixed during a rotation or resolution animation.
  * @type {ol.Coordinate|undefined}
  * @api
  */
-olx.AnimationOptions.prototype.rotationAnchor;
+olx.AnimationOptions.prototype.anchor;
 
 
 /**
