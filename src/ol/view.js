@@ -340,6 +340,9 @@ ol.View.prototype.updateAnimations_ = function() {
         this.set(ol.View.Property.ROTATION, rotation);
       }
       more = true;
+      if (!animation.complete) {
+        break;
+      }
     }
     if (seriesComplete) {
       this.setHint(ol.View.Hint.ANIMATING, -1);

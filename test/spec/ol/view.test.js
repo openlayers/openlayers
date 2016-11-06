@@ -372,6 +372,35 @@ describe('ol.View', function() {
       view.setCenter([1, 2]); // interrupt the animation
     });
 
+    it('can run multiple animations in series', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      var checked = false;
+
+      view.animate({
+        zoom: 2,
+        duration: 25
+      }, {
+        center: [10, 10],
+        duration: 25
+      }, function(complete) {
+        expect(checked).to.be(true);
+        expect(view.getZoom()).to.roughlyEqual(2, 1e-5);
+        expect(view.getCenter()).to.eql([10, 10]);
+        expect(complete).to.be(true);
+        done();
+      });
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        checked = true;
+      }, 10);
+
+    });
+
     it('properly sets the ANIMATING hint', function(done) {
       var view = new ol.View({
         center: [0, 0],
