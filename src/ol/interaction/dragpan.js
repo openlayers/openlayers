@@ -3,6 +3,7 @@ goog.provide('ol.interaction.DragPan');
 goog.require('ol');
 goog.require('ol.View');
 goog.require('ol.coordinate');
+goog.require('ol.easing');
 goog.require('ol.events.condition');
 goog.require('ol.functions');
 goog.require('ol.interaction.Pointer');
@@ -32,12 +33,6 @@ ol.interaction.DragPan = function(opt_options) {
    * @type {ol.Kinetic|undefined}
    */
   this.kinetic_ = options.kinetic;
-
-  /**
-   * @private
-   * @type {?ol.PreRenderFunction}
-   */
-  this.kineticPreRenderFn_ = null;
 
   /**
    * @type {ol.Pixel}
@@ -105,15 +100,16 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
       var center = /** @type {!ol.Coordinate} */ (view.getCenter());
-      this.kineticPreRenderFn_ = this.kinetic_.pan(center);
-      map.beforeRender(this.kineticPreRenderFn_);
       var centerpx = map.getPixelFromCoordinate(center);
       var dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
-      dest = view.constrainCenter(dest);
-      view.setCenter(dest);
+      view.animate({
+        center: view.constrainCenter(dest),
+        duration: 500,
+        easing: ol.easing.easeOut
+      });
     } else {
       // the view is not updated, force a render
       map.render();
@@ -141,11 +137,8 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     if (!this.handlingDownUpSequence) {
       view.setHint(ol.View.Hint.INTERACTING, 1);
     }
-    if (this.kineticPreRenderFn_ &&
-        map.removePreRenderFunction(this.kineticPreRenderFn_)) {
-      view.setCenter(mapBrowserEvent.frameState.viewState.center);
-      this.kineticPreRenderFn_ = null;
-    }
+    // stop any current animation
+    view.setCenter(mapBrowserEvent.frameState.viewState.center);
     if (this.kinetic_) {
       this.kinetic_.begin();
     }
