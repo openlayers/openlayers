@@ -4054,7 +4054,7 @@ olx.source.BingMapsOptions.prototype.cacheSize;
 
 
 /**
- * If device pixelRatio is >= 2, hidpi tiles will be requested. Default is `false`.
+ * If `true` hidpi tiles will be requested. Default is `false`.
  * @type {boolean|undefined}
  * @api
  */
