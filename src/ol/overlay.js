@@ -3,7 +3,6 @@ goog.provide('ol.Overlay');
 goog.require('ol');
 goog.require('ol.MapEvent');
 goog.require('ol.Object');
-goog.require('ol.animation');
 goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.extent');
@@ -69,10 +68,10 @@ ol.Overlay = function(options) {
 
   /**
    * @private
-   * @type {olx.animation.PanOptions}
+   * @type {olx.OverlayPanOptions}
    */
-  this.autoPanAnimation_ = options.autoPanAnimation !== undefined ?
-      options.autoPanAnimation : /** @type {olx.animation.PanOptions} */ ({});
+  this.autoPanAnimation_ = options.autoPanAnimation ||
+      /** @type {olx.OverlayPanOptions} */ ({});
 
   /**
    * @private
@@ -380,11 +379,11 @@ ol.Overlay.prototype.panIntoView_ = function() {
         centerPx[1] + delta[1]
       ];
 
-      if (this.autoPanAnimation_) {
-        this.autoPanAnimation_.source = center;
-        map.beforeRender(ol.animation.pan(this.autoPanAnimation_));
-      }
-      map.getView().setCenter(map.getCoordinateFromPixel(newCenterPx));
+      map.getView().animate({
+        center: map.getCoordinateFromPixel(newCenterPx),
+        duration: this.autoPanAnimation_.duration,
+        easing: this.autoPanAnimation_.easing
+      });
     }
   }
 };

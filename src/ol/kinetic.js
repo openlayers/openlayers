@@ -1,7 +1,5 @@
 goog.provide('ol.Kinetic');
 
-goog.require('ol.animation');
-
 
 /**
  * @classdesc
@@ -102,32 +100,6 @@ ol.Kinetic.prototype.end = function() {
   this.angle_ = Math.atan2(dy, dx);
   this.initialVelocity_ = Math.sqrt(dx * dx + dy * dy) / duration;
   return this.initialVelocity_ > this.minVelocity_;
-};
-
-
-/**
- * @param {ol.Coordinate} source Source coordinate for the animation.
- * @return {ol.PreRenderFunction} Pre-render function for kinetic animation.
- */
-ol.Kinetic.prototype.pan = function(source) {
-  var decay = this.decay_;
-  var initialVelocity = this.initialVelocity_;
-  var velocity = this.minVelocity_ - initialVelocity;
-  var duration = this.getDuration_();
-  var easingFunction = (
-      /**
-       * @param {number} t T.
-       * @return {number} Easing.
-       */
-      function(t) {
-        return initialVelocity * (Math.exp((decay * t) * duration) - 1) /
-            velocity;
-      });
-  return ol.animation.pan({
-    source: source,
-    duration: duration,
-    easing: easingFunction
-  });
 };
 
 

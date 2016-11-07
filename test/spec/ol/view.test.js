@@ -301,6 +301,191 @@ describe('ol.View', function() {
 
   });
 
+  describe('#animate()', function() {
+
+    var originalRequestAnimationFrame = window.requestAnimationFrame;
+    var originalCancelAnimationFrame = window.cancelAnimationFrame;
+
+    beforeEach(function() {
+      window.requestAnimationFrame = function(callback) {
+        return setTimeout(callback, 1);
+      };
+      window.cancelAnimationFrame = function(key) {
+        return clearTimeout(key);
+      };
+    });
+
+    afterEach(function() {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+      window.cancelAnimationFrame = originalCancelAnimationFrame;
+    });
+
+    it('can be called to animate view properties', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        duration: 25
+      });
+      expect(view.getAnimating()).to.eql(true);
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        expect(view.getZoom()).to.eql(4);
+        expect(view.getAnimating()).to.eql(false);
+        done();
+      }, 50);
+    });
+
+    it('prefers zoom over resolution', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        resolution: view.getResolution() * 3,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        expect(view.getZoom()).to.be(4);
+        done();
+      });
+    });
+
+    it('calls a callback when animation completes', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(true);
+        done();
+      });
+    });
+
+    it('calls callback with false when animation is interrupted', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function(complete) {
+        expect(complete).to.be(false);
+        done();
+      });
+
+      view.setCenter([1, 2]); // interrupt the animation
+    });
+
+    it('can run multiple animations in series', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      var checked = false;
+
+      view.animate({
+        zoom: 2,
+        duration: 25
+      }, {
+        center: [10, 10],
+        duration: 25
+      }, function(complete) {
+        expect(checked).to.be(true);
+        expect(view.getZoom()).to.roughlyEqual(2, 1e-5);
+        expect(view.getCenter()).to.eql([10, 10]);
+        expect(complete).to.be(true);
+        done();
+      });
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        checked = true;
+      }, 10);
+
+    });
+
+    it('properly sets the ANIMATING hint', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      var count = 3;
+      function decrement() {
+        --count;
+        if (count === 0) {
+          expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(0);
+          done();
+        }
+      }
+      view.animate({
+        center: [1, 2],
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(1);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(2);
+
+      view.animate({
+        rotate: Math.PI,
+        duration: 25
+      }, decrement);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(3);
+
+    });
+
+    it('clears the ANIMATING hint when animations are cancelled', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        center: [1, 2],
+        duration: 25
+      });
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(1);
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      });
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(2);
+
+      view.animate({
+        rotate: Math.PI,
+        duration: 25
+      });
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(3);
+
+      // cancel animations
+      view.setCenter([10, 20]);
+      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(0);
+
+    });
+
+  });
+
   describe('#getResolutions', function() {
     var view;
     var resolutions = [512, 256, 128, 64, 32, 16];
