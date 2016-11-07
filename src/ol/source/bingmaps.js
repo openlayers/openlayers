@@ -23,6 +23,12 @@ goog.require('ol.tilegrid');
  */
 ol.source.BingMaps = function(options) {
 
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
+
   ol.source.TileImage.call(this, {
     cacheSize: options.cacheSize,
     crossOrigin: 'anonymous',
@@ -31,14 +37,9 @@ ol.source.BingMaps = function(options) {
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     state: ol.source.State.LOADING,
     tileLoadFunction: options.tileLoadFunction,
+    tilePixelRatio: this.hidpi_ ? 2 : 1,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : false;
 
   /**
    * @private
@@ -143,7 +144,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
-    tileSize: tileSize
+    tileSize: tileSize / this.getTilePixelRatio()
   });
   this.tileGrid = tileGrid;
 
@@ -172,7 +173,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
                 ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
                     -tileCoord[2] - 1, quadKeyTileCoord);
                 var url = imageUrl;
-                if (hidpi && pixelRatio >= 2) {
+                if (hidpi) {
                   url += '&dpi=d1&device=mobile';
                 }
                 return url.replace('{quadkey}', ol.tilecoord.quadKey(
