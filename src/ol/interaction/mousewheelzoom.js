@@ -66,6 +66,12 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    */
   this.timeoutId_ = undefined;
 
+  /**
+   * @private
+   * @type {ol.interaction.MouseWheelZoom.Mode|undefined}
+   */
+  this.mode_ = undefined;
+
 };
 ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
@@ -74,57 +80,70 @@ ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
  * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
  * mousewheel-event) and eventually zooms the map.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
- * @return {boolean} `false` to stop event propagation.
+ * @return {boolean} Allow event propagation.
  * @this {ol.interaction.MouseWheelZoom}
  * @api
  */
 ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
-  var stopEvent = false;
-  if (mapBrowserEvent.type == ol.events.EventType.WHEEL ||
-      mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
-    var map = mapBrowserEvent.map;
-    var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
-
-    if (this.useAnchor_) {
-      this.lastAnchor_ = mapBrowserEvent.coordinate;
-    }
-
-    // Delta normalisation inspired by
-    // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-    //TODO There's more good stuff in there for inspiration to improve this interaction.
-    var delta;
-    if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
-      delta = wheelEvent.deltaY;
-      if (ol.has.FIREFOX &&
-          wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
-        delta /= ol.has.DEVICE_PIXEL_RATIO;
-      }
-      if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
-        delta *= 40;
-      }
-    } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
-      delta = -wheelEvent.wheelDeltaY;
-      if (ol.has.SAFARI) {
-        delta /= 3;
-      }
-    }
-
-    this.delta_ += delta;
-
-    if (this.startTime_ === undefined) {
-      this.startTime_ = Date.now();
-    }
-
-    var timeLeft = Math.max(this.timeout_ - (Date.now() - this.startTime_), 0);
-
-    clearTimeout(this.timeoutId_);
-    this.timeoutId_ = setTimeout(
-        this.doZoom_.bind(this, map), timeLeft);
-
-    mapBrowserEvent.preventDefault();
-    stopEvent = true;
+  var type = mapBrowserEvent.type;
+  if (type !== ol.events.EventType.WHEEL && type !== ol.events.EventType.MOUSEWHEEL) {
+    return true;
   }
-  return !stopEvent;
+
+  mapBrowserEvent.preventDefault();
+
+  var map = mapBrowserEvent.map;
+  var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
+
+  if (this.useAnchor_) {
+    this.lastAnchor_ = mapBrowserEvent.coordinate;
+  }
+
+  // Delta normalisation inspired by
+  // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
+  //TODO There's more good stuff in there for inspiration to improve this interaction.
+  var delta;
+  if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
+    delta = wheelEvent.deltaY;
+    if (ol.has.FIREFOX &&
+        wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+      delta /= ol.has.DEVICE_PIXEL_RATIO;
+    }
+    if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
+      delta *= 40;
+    }
+  } else if (mapBrowserEvent.type == ol.events.EventType.MOUSEWHEEL) {
+    delta = -wheelEvent.wheelDeltaY;
+    if (ol.has.SAFARI) {
+      delta /= 3;
+    }
+  }
+
+  if (delta === 0) {
+    return false;
+  }
+
+  var now = Date.now();
+
+  if (this.startTime_ === undefined) {
+    this.startTime_ = now;
+  }
+
+  if (!this.mode_ || now - this.startTime_ > 400) {
+    this.mode_ = Math.abs(delta) < 4 ?
+        ol.interaction.MouseWheelZoom.Mode.TRACKPAD :
+        ol.interaction.MouseWheelZoom.Mode.WHEEL;
+  }
+
+  this.delta_ += delta;
+
+  var timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
+
+  clearTimeout(this.timeoutId_);
+  this.timeoutId_ = setTimeout(
+      this.doZoom_.bind(this, map), timeLeft);
+
+  return false;
 };
 
 
@@ -134,14 +153,12 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  */
 ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
   var view = map.getView();
-
   if (!view.getAnimating()) {
     var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
     var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
     ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
         this.duration_);
   }
-
   this.delta_ = 0;
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
@@ -160,4 +177,13 @@ ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
   if (!useAnchor) {
     this.lastAnchor_ = null;
   }
+};
+
+
+/**
+ * @enum {string}
+ */
+ol.interaction.MouseWheelZoom.Mode = {
+  TRACKPAD: 'trackpad',
+  WHEEL: 'wheel'
 };
