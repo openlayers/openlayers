@@ -1,12 +1,10 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('ol');
-goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
 goog.require('ol.layer.VectorTile');
-goog.require('ol.render.Event');
 goog.require('ol.render.ReplayType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -67,125 +65,11 @@ ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS = {
 
 
 /**
- * @inheritDoc
- */
-ol.renderer.canvas.VectorTileLayer.prototype.composeFrame = function(
-    frameState, layerState, context) {
-  var transform = this.getTransform(frameState, 0);
-  this.dispatchPreComposeEvent(context, frameState, transform);
-
-  // clipped rendering if layer extent is set
-  var extent = layerState.extent;
-  var clipped = extent !== undefined;
-  if (clipped) {
-    this.clip(context, frameState,  /** @type {ol.Extent} */ (extent));
-  }
-
-  var renderMode = this.getLayer().getRenderMode();
-  if (renderMode !== ol.layer.VectorTile.RenderType.VECTOR) {
-    this.renderTileImages(context, frameState, layerState);
-  }
-  if (renderMode !== ol.layer.VectorTile.RenderType.IMAGE) {
-    this.renderTileReplays_(context, frameState, layerState);
-  }
-
-  if (clipped) {
-    context.restore();
-  }
-
-  this.dispatchPostComposeEvent(context, frameState, transform);
-};
-
-
-/**
- * @param {CanvasRenderingContext2D} context Context.
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
- * @private
- */
-ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
-    context, frameState, layerState) {
-
-  var layer = this.getLayer();
-  var replays = ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS[layer.getRenderMode()];
-  var pixelRatio = frameState.pixelRatio;
-  var skippedFeatureUids = layerState.managed ?
-      frameState.skippedFeatureUids : {};
-  var viewState = frameState.viewState;
-  var center = viewState.center;
-  var resolution = viewState.resolution;
-  var rotation = viewState.rotation;
-  var size = frameState.size;
-  var pixelScale = pixelRatio / resolution;
-  var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
-  var tilePixelRatio = source.getTilePixelRatio();
-
-  var transform = this.getTransform(frameState, 0);
-
-  var replayContext;
-  if (layer.hasListener(ol.render.Event.Type.RENDER)) {
-    // resize and clear
-    this.context.canvas.width = context.canvas.width;
-    this.context.canvas.height = context.canvas.height;
-    replayContext = this.context;
-  } else {
-    replayContext = context;
-  }
-  // for performance reasons, context.save / context.restore is not used
-  // to save and restore the transformation matrix and the opacity.
-  // see http://jsperf.com/context-save-restore-versus-variable
-  var alpha = replayContext.globalAlpha;
-  replayContext.globalAlpha = layerState.opacity;
-
-  /** @type {Array.<ol.VectorTile>} */
-  var tilesToDraw = this.renderedTiles;
-
-  var tileGrid = source.getTileGrid();
-
-  var currentZ, i, ii, offsetX, offsetY, origin, pixelSpace, replayState;
-  var tile, tileExtent, tilePixelResolution, tileResolution, tileTransform;
-  for (i = 0, ii = tilesToDraw.length; i < ii; ++i) {
-    tile = tilesToDraw[i];
-    replayState = tile.getReplayState();
-    tileExtent = tileGrid.getTileCoordExtent(
-        tile.getTileCoord(), this.tmpExtent);
-    currentZ = tile.getTileCoord()[0];
-    pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
-    tileResolution = tileGrid.getResolution(currentZ);
-    tilePixelResolution = tileResolution / tilePixelRatio;
-    offsetX = Math.round(pixelRatio * size[0] / 2);
-    offsetY = Math.round(pixelRatio * size[1] / 2);
-
-    if (pixelSpace) {
-      origin = ol.extent.getTopLeft(tileExtent);
-      tileTransform = ol.transform.reset(this.tmpTransform_);
-      tileTransform = ol.transform.compose(this.tmpTransform_,
-          offsetX, offsetY,
-          pixelScale * tilePixelResolution, pixelScale * tilePixelResolution,
-          rotation,
-          (origin[0] - center[0]) / tilePixelResolution, (center[1] - origin[1]) / tilePixelResolution);
-    } else {
-      tileTransform = transform;
-    }
-    ol.render.canvas.rotateAtOffset(replayContext, -rotation, offsetX, offsetY);
-    replayState.replayGroup.replay(replayContext, pixelRatio,
-        tileTransform, rotation, skippedFeatureUids, replays);
-    ol.render.canvas.rotateAtOffset(replayContext, rotation, offsetX, offsetY);
-  }
-
-  if (replayContext != context) {
-    this.dispatchRenderEvent(replayContext, frameState, transform);
-    context.drawImage(replayContext.canvas, 0, 0);
-  }
-  replayContext.globalAlpha = alpha;
-};
-
-
-/**
  * @param {ol.VectorTile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
+ * @private
  */
-ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
+ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(tile,
     frameState) {
   var layer = this.getLayer();
   var pixelRatio = frameState.pixelRatio;
@@ -204,12 +88,11 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
 
   var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tileGrid = source.getTileGrid();
-  var tileCoord = tile.getTileCoord();
+  var tileCoord = tile.tileCoord;
   var tileProjection = tile.getProjection();
-  var pixelSpace = tileProjection.getUnits() == ol.proj.Units.TILE_PIXELS;
   var resolution = tileGrid.getResolution(tileCoord[0]);
   var extent, reproject, tileResolution;
-  if (pixelSpace) {
+  if (tileProjection.getUnits() == ol.proj.Units.TILE_PIXELS) {
     var tilePixelRatio = tileResolution = source.getTilePixelRatio();
     var tileSize = ol.size.toSize(tileGrid.getTileSize(tileCoord[0]));
     extent = [0, 0, tileSize[0] * tilePixelRatio, tileSize[1] * tilePixelRatio];
@@ -278,6 +161,21 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
 /**
  * @inheritDoc
  */
+ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
+    tile, frameState, layerState, x, y, w, h, gutter) {
+  var vectorTile = /** @type {ol.VectorTile} */ (tile);
+  this.createReplayGroup_(vectorTile, frameState);
+  var layer = this.getLayer();
+  if (layer.getRenderMode() != ol.layer.VectorTile.RenderType.VECTOR) {
+    this.renderTileImage_(vectorTile, frameState, layerState);
+  }
+  ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
+};
+
+
+/**
+ * @inheritDoc
+ */
 ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
@@ -295,9 +193,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution;
   for (i = 0, ii = replayables.length; i < ii; ++i) {
     tile = replayables[i];
-    tileCoord = tile.getTileCoord();
-    tileExtent = source.getTileGrid().getTileCoordExtent(tileCoord,
-        this.tmpExtent);
+    tileCoord = tile.tileCoord;
+    tileExtent = source.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent);
     if (!ol.extent.containsCoordinate(tileExtent, coordinate)) {
       continue;
     }
@@ -333,6 +230,41 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
 
 
 /**
+ * @param {ol.Tile} tile Tile.
+ * @param {olx.FrameState} frameState Frame state.
+ * @return {ol.Transform} transform Transform.
+ * @private
+ */
+ol.renderer.canvas.VectorTileLayer.prototype.getReplayTransform_ = function(tile, frameState) {
+  if (tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS) {
+    var layer = this.getLayer();
+    var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
+    var tileGrid = source.getTileGrid();
+    var tileCoord = tile.tileCoord;
+    var tileResolution =
+        tileGrid.getResolution(tileCoord[0]) / source.getTilePixelRatio();
+    var viewState = frameState.viewState;
+    var pixelRatio = frameState.pixelRatio;
+    var renderResolution = viewState.resolution / pixelRatio;
+    var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+    var center = viewState.center;
+    var origin = ol.extent.getTopLeft(tileExtent);
+    var size = frameState.size;
+    var offsetX = Math.round(pixelRatio * size[0] / 2);
+    var offsetY = Math.round(pixelRatio * size[1] / 2);
+    return ol.transform.compose(this.tmpTransform_,
+        offsetX, offsetY,
+        tileResolution / renderResolution, tileResolution / renderResolution,
+        viewState.rotation,
+        (origin[0] - center[0]) / tileResolution,
+        (center[1] - origin[1]) / tileResolution);
+  } else {
+    return this.getTransform(frameState, 0);
+  }
+};
+
+
+/**
  * Handle changes in image style state.
  * @param {ol.events.Event} event Image style change event.
  * @private
@@ -345,17 +277,53 @@ ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
-  var prepared = ol.renderer.canvas.TileLayer.prototype.prepareFrame.call(this, frameState, layerState);
-  if (prepared) {
-    var skippedFeatures = Object.keys(frameState.skippedFeatureUids_ || {});
-    for (var i = 0, ii = this.renderedTiles.length; i < ii; ++i) {
-      var tile = /** @type {ol.VectorTile} */ (this.renderedTiles[i]);
-      this.createReplayGroup(tile, frameState);
-      this.renderTileImage_(tile, frameState, layerState, skippedFeatures);
+ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, frameState, layerState) {
+  var renderMode = this.getLayer().getRenderMode();
+  var replays = ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS[renderMode];
+  if (replays) {
+    var pixelRatio = frameState.pixelRatio;
+    var rotation = frameState.viewState.rotation;
+    var size = frameState.size;
+    var offsetX = Math.round(pixelRatio * size[0] / 2);
+    var offsetY = Math.round(pixelRatio * size[1] / 2);
+    var tiles = this.renderedTiles;
+    var clips = [];
+    var zs = [];
+    for (var i = tiles.length - 1; i >= 0; --i) {
+      var tile = /** @type {ol.VectorTile} */ (tiles[i]);
+      // Create a clip mask for regions in this low resolution tile that are
+      // already filled by a higher resolution tile
+      var transform = this.getReplayTransform_(tile, frameState);
+      var currentClip = tile.getReplayState().replayGroup.getClipCoords(transform);
+      var currentZ = tile.tileCoord[0];
+      context.save();
+      context.globalAlpha = layerState.opacity;
+      ol.render.canvas.rotateAtOffset(context, -rotation, offsetX, offsetY);
+      for (var j = 0, jj = clips.length; j < jj; ++j) {
+        var clip = clips[j];
+        if (currentZ < zs[j]) {
+          context.beginPath();
+          // counter-clockwise (outer ring) for current tile
+          context.moveTo(currentClip[0], currentClip[1]);
+          context.lineTo(currentClip[2], currentClip[3]);
+          context.lineTo(currentClip[4], currentClip[5]);
+          context.lineTo(currentClip[6], currentClip[7]);
+          // clockwise (inner ring) for higher resolution tile
+          context.moveTo(clip[6], clip[7]);
+          context.lineTo(clip[4], clip[5]);
+          context.lineTo(clip[2], clip[3]);
+          context.lineTo(clip[0], clip[1]);
+          context.clip();
+        }
+      }
+      var replayGroup = tile.getReplayState().replayGroup;
+      replayGroup.replay(context, pixelRatio, transform, rotation, {}, replays);
+      context.restore();
+      clips.push(currentClip);
+      zs.push(currentZ);
     }
   }
-  return prepared;
+  ol.renderer.canvas.TileLayer.prototype.postCompose.apply(this, arguments);
 };
 
 
@@ -391,57 +359,38 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
  * @param {ol.VectorTile} tile Tile.
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.LayerState} layerState Layer state.
- * @param {Array.<string>} skippedFeatures Skipped features.
  * @private
  */
 ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
-    tile, frameState, layerState, skippedFeatures) {
+    tile, frameState, layerState) {
   var layer = this.getLayer();
-  var replays = ol.renderer.canvas.VectorTileLayer.IMAGE_REPLAYS[layer.getRenderMode()];
-  if (!replays) {
-    // do not create an image in 'vector' mode
-    return;
-  }
-  var pixelRatio = frameState.pixelRatio;
   var replayState = tile.getReplayState();
   var revision = layer.getRevision();
-  if (!ol.array.equals(replayState.skippedFeatures, skippedFeatures) ||
-      replayState.renderedTileRevision !== revision) {
-    replayState.skippedFeatures = skippedFeatures;
+  var replays = ol.renderer.canvas.VectorTileLayer.IMAGE_REPLAYS[layer.getRenderMode()];
+  if (replays && replayState.renderedTileRevision !== revision) {
     replayState.renderedTileRevision = revision;
-    var tileContext = tile.getContext();
+    var tileCoord = tile.tileCoord;
+    var z = tile.tileCoord[0];
+    var pixelRatio = frameState.pixelRatio;
     var source = layer.getSource();
     var tileGrid = source.getTileGrid();
-    var currentZ = tile.getTileCoord()[0];
-    var resolution = tileGrid.getResolution(currentZ);
-    var tileSize = ol.size.toSize(tileGrid.getTileSize(currentZ));
-    var tileResolution = tileGrid.getResolution(currentZ);
-    var resolutionRatio = tileResolution / resolution;
-    var width = tileSize[0] * pixelRatio * resolutionRatio;
-    var height = tileSize[1] * pixelRatio * resolutionRatio;
-    tileContext.canvas.width = width / resolutionRatio + 0.5;
-    tileContext.canvas.height = height / resolutionRatio + 0.5;
-    tileContext.scale(1 / resolutionRatio, 1 / resolutionRatio);
-    tileContext.translate(width / 2, height / 2);
-    var pixelSpace = tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS;
-    var pixelScale = pixelRatio / resolution;
     var tilePixelRatio = source.getTilePixelRatio();
-    var tilePixelResolution = tileResolution / tilePixelRatio;
-    var tileExtent = tileGrid.getTileCoordExtent(
-        tile.getTileCoord(), this.tmpExtent);
-    var tileTransform = ol.transform.reset(this.tmpTransform_);
-    if (pixelSpace) {
-      ol.transform.scale(tileTransform,
-          pixelScale * tilePixelResolution, pixelScale * tilePixelResolution);
-      ol.transform.translate(tileTransform,
-          -tileSize[0] * tilePixelRatio / 2, -tileSize[1] * tilePixelRatio / 2);
+    var transform = ol.transform.reset(this.tmpTransform_);
+    if (tile.getProjection().getUnits() == ol.proj.Units.TILE_PIXELS) {
+      var renderPixelRatio = pixelRatio / tilePixelRatio;
+      ol.transform.scale(transform, renderPixelRatio, renderPixelRatio);
     } else {
-      var tileCenter = ol.extent.getCenter(tileExtent);
-      ol.transform.scale(tileTransform, pixelScale, -pixelScale);
-      ol.transform.translate(tileTransform, -tileCenter[0], -tileCenter[1]);
+      var resolution = tileGrid.getResolution(z);
+      var pixelScale = pixelRatio / resolution;
+      var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent);
+      ol.transform.scale(transform, pixelScale, -pixelScale);
+      ol.transform.translate(transform, -tileExtent[0], -tileExtent[3]);
     }
 
-    replayState.replayGroup.replay(tileContext, pixelRatio,
-        tileTransform, 0, frameState.skippedFeatureUids || {}, replays);
+    var context = tile.getContext();
+    var size = source.getTilePixelSize(z, pixelRatio, frameState.viewState.projection);
+    context.canvas.width = size[0];
+    context.canvas.height = size[1];
+    replayState.replayGroup.replay(context, pixelRatio, transform, 0, {}, replays);
   }
 };

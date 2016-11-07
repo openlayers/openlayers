@@ -89,7 +89,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('does not render images for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
       var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'renderTileImages');
+          'renderTileImage_');
       map.renderSync();
       expect(spy.callCount).to.be(0);
       spy.restore();
@@ -98,7 +98,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     it('does not render replays for pure image rendering', function() {
       layer.renderMode_ = 'image';
       var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'renderTileReplays_');
+          'getReplayTransform_');
       map.renderSync();
       expect(spy.callCount).to.be(0);
       spy.restore();
@@ -106,9 +106,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('renders both replays and images for hybrid rendering', function() {
       var spy1 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'renderTileReplays_');
+          'getReplayTransform_');
       var spy2 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'renderTileImages');
+          'renderTileImage_');
       map.renderSync();
       expect(spy1.callCount).to.be(1);
       expect(spy2.callCount).to.be(1);

@@ -69,7 +69,7 @@ ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) 
  */
 ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {
 
-  this.dispatchPreComposeEvent(context, frameState);
+  this.preCompose(context, frameState);
 
   var image = this.getImage();
   if (image) {
@@ -103,8 +103,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
     }
   }
 
-  this.dispatchPostComposeEvent(context, frameState);
-
+  this.postCompose(context, frameState, layerState);
 };
 
 
@@ -138,10 +137,11 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.postCompose = function(context, frameState, layerState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.Event.Type.POSTCOMPOSE, context,
       frameState, opt_transform);
 };
@@ -153,7 +153,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, 
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.preCompose = function(context, frameState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.Event.Type.PRECOMPOSE, context,
       frameState, opt_transform);
 };

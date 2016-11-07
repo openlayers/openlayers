@@ -32,15 +32,18 @@ describe('ol.renderer.canvas.TileLayer', function() {
       renderer.renderedTiles = [];
       var frameState = {
         viewState: {
-          center: [2, 3],
+          center: [10, 5],
           projection: ol.proj.get('EPSG:3857'),
           resolution: 1,
           rotation: Math.PI
         },
-        size: [10, 10],
+        extent: [0, 0, 20, 10],
+        size: [20, 10],
         pixelRatio: 2,
         coordinateToPixelTransform: ol.transform.create(),
-        pixelToCoordinateTransform: ol.transform.create()
+        pixelToCoordinateTransform: ol.transform.create(),
+        usedTiles: {},
+        wantedTiles: {}
       };
       renderer.getImageTransform = function() {
         return ol.transform.create();
@@ -50,7 +53,7 @@ describe('ol.renderer.canvas.TileLayer', function() {
       var canvas = document.createElement('canvas');
       canvas.width = 200;
       canvas.height = 100;
-      var context = {
+      context = {
         canvas: canvas,
         drawImage: sinon.spy()
       };
@@ -62,8 +65,9 @@ describe('ol.renderer.canvas.TileLayer', function() {
           return img;
         }
       }];
+      renderer.prepareFrame(frameState, layerState);
       renderer.composeFrame(frameState, layerState, context);
-      expect(context.drawImage.firstCall.args[0].width).to.be(112);
+      expect(context.drawImage.firstCall.args[0].width).to.be(17);
     });
   });
 

@@ -83,7 +83,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
 
   var transform = this.getTransform(frameState, 0);
 
-  this.dispatchPreComposeEvent(context, frameState, transform);
+  this.preCompose(context, frameState, transform);
 
   // clipped rendering if layer extent is set
   var clipExtent = layerState.extent;
@@ -169,7 +169,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   if (clipped) {
     context.restore();
   }
-  this.dispatchPostComposeEvent(context, frameState, transform);
+  this.postCompose(context, frameState, layerState, transform);
 
 };
 
