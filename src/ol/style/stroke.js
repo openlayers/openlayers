@@ -38,6 +38,12 @@ ol.style.Stroke = function(opt_options) {
 
   /**
    * @private
+   * @type {number|undefined}
+   */
+  this.lineDashOffset_ = options.lineDashOffset;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.lineJoin_ = options.lineJoin;
@@ -73,6 +79,7 @@ ol.style.Stroke.prototype.clone = function() {
     color: (color && color.slice) ? color.slice() : color || undefined,
     lineCap: this.getLineCap(),
     lineDash: this.getLineDash() ? this.getLineDash().slice() : undefined,
+    lineDashOffset: this.getLineDashOffset(),
     lineJoin: this.getLineJoin(),
     miterLimit: this.getMiterLimit(),
     width: this.getWidth()
@@ -107,6 +114,16 @@ ol.style.Stroke.prototype.getLineCap = function() {
  */
 ol.style.Stroke.prototype.getLineDash = function() {
   return this.lineDash_;
+};
+
+
+/**
+ * Get the line dash offset for the stroke.
+ * @return {number|undefined} Line dash offset.
+ * @api
+ */
+ol.style.Stroke.prototype.getLineDashOffset = function() {
+  return this.lineDashOffset_;
 };
 
 
@@ -183,6 +200,18 @@ ol.style.Stroke.prototype.setLineDash = function(lineDash) {
 
 
 /**
+ * Set the line dash offset.
+ *
+ * @param {number|undefined} lineDashOffset Line dash offset.
+ * @api
+ */
+ol.style.Stroke.prototype.setLineDashOffset = function(lineDashOffset) {
+  this.lineDashOffset_ = lineDashOffset;
+  this.checksum_ = undefined;
+};
+
+
+/**
  * Set the line join.
  *
  * @param {string|undefined} lineJoin Line join.
@@ -238,6 +267,8 @@ ol.style.Stroke.prototype.getChecksum = function() {
             this.lineCap_.toString() : '-') + ',' +
         (this.lineDash_ ?
             this.lineDash_.toString() : '-') + ',' +
+        (this.lineDashOffset_ !== undefined ?
+            this.lineDashOffset_ : '-') + ',' +
         (this.lineJoin_ !== undefined ?
             this.lineJoin_ : '-') + ',' +
         (this.miterLimit_ !== undefined ?

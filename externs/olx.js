@@ -7145,6 +7145,7 @@ olx.style.RegularShapeOptions.prototype.atlasManager;
  *     lineCap: (string|undefined),
  *     lineJoin: (string|undefined),
  *     lineDash: (Array.<number>|undefined),
+ *     lineDashOffset: (number|undefined),
  *     miterLimit: (number|undefined),
  *     width: (number|undefined)}}
  */
@@ -7189,6 +7190,14 @@ olx.style.StrokeOptions.prototype.lineJoin;
  * @api
  */
 olx.style.StrokeOptions.prototype.lineDash;
+
+
+/**
+ * Line dash offset. Default is '0'.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.StrokeOptions.prototype.lineDashOffset;
 
 
 /**

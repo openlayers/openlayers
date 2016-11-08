@@ -31,6 +31,13 @@ ol.render.canvas.defaultLineDash = [];
 
 /**
  * @const
+ * @type {number}
+ */
+ol.render.canvas.defaultLineDashOffset = 0;
+
+
+/**
+ * @const
  * @type {string}
  */
 ol.render.canvas.defaultLineJoin = 'round';
