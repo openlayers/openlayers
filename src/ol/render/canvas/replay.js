@@ -465,9 +465,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        var usePixelRatio = instruction[7] !== undefined ?
-            instruction[7] : true;
-        var renderedPixelRatio = instruction[8];
+        var usePixelRatio = instruction[8] !== undefined ?
+            instruction[8] : true;
+        var renderedPixelRatio = instruction[9];
 
         var lineWidth = /** @type {number} */ (instruction[2]);
         if (pendingStroke) {
@@ -481,13 +481,17 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         context.miterLimit = /** @type {number} */ (instruction[5]);
         if (ol.has.CANVAS_LINE_DASH) {
           var lineDash = /** @type {Array.<number>} */ (instruction[6]);
+          var lineDashOffset = /** @type {number} */ (instruction[7]);
           if (usePixelRatio && pixelRatio !== renderedPixelRatio) {
             lineDash = lineDash.map(function(dash) {
               return dash * pixelRatio / renderedPixelRatio;
             });
+            lineDashOffset *= pixelRatio / renderedPixelRatio;
             instruction[6] = lineDash;
-            instruction[8] = pixelRatio;
+            instruction[7] = lineDashOffset;
+            instruction[9] = pixelRatio;
           }
+          context.lineDashOffset = lineDashOffset;
           context.setLineDash(lineDash);
         }
         prevX = NaN;

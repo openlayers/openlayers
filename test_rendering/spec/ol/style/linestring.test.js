@@ -91,6 +91,23 @@ describe('ol.rendering.style.LineString', function() {
         })
       }));
       vectorSource.addFeature(feature);
+
+      feature = new ol.Feature({
+        geometry: new ol.geom.LineString(
+            [[-20, -15], [-2, 5], [15, -15]]
+        )
+      });
+      feature.setStyle(new ol.style.Style({
+        stroke: new ol.style.Stroke({
+          color: '#000000',
+          width: 2,
+          lineCap: 'square',
+          lineDash: [4, 8],
+          lineDashOffset: 6,
+          lineJoin: 'round'
+        })
+      }));
+      vectorSource.addFeature(feature);
     }
 
     it('tests the canvas renderer', function(done) {

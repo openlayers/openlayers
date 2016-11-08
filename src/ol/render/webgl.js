@@ -24,6 +24,13 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @const
+   * @type {number}
+   */
+  ol.render.webgl.defaultLineDashOffset = 0;
+
+
+  /**
+   * @const
    * @type {string}
    */
   ol.render.webgl.defaultLineJoin = 'round';

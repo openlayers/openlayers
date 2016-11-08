@@ -34,7 +34,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
       });
       style2 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'white'}),
-        stroke: new ol.style.Stroke({color: 'black', width: 1, lineDash: [3, 6]})
+        stroke: new ol.style.Stroke({color: 'black', width: 1, lineDash: [3, 6],
+          lineDashOffset: 2})
       });
       fillCount = 0;
       strokeCount = 0;
@@ -140,13 +141,21 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(beginPathCount).to.be(3);
     });
 
-    it('applies the pixelRatio to the linedash array', function() {
-      var lineDash, lineDashCount = 0;
+    it('applies the pixelRatio to the linedash array and offset', function() {
+      var lineDash, lineDashCount = 0,
+          lineDashOffset, lineDashOffsetCount = 0;
 
       context.setLineDash = function(lineDash_) {
         lineDashCount++;
         lineDash = lineDash_.slice();
       };
+
+      Object.defineProperty(context, 'lineDashOffset', {
+        set: function(lineDashOffset_) {
+          lineDashOffsetCount++;
+          lineDashOffset = lineDashOffset_;
+        }
+      });
 
       ol.renderer.vector.renderFeature(replay, feature1, style2, 1);
       ol.renderer.vector.renderFeature(replay, feature2, style2, 1);
@@ -155,6 +164,10 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(lineDashCount).to.be(1);
       expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
       expect(lineDash).to.eql([6, 12]);
+
+      expect(lineDashOffsetCount).to.be(1);
+      expect(style2.getStroke().getLineDashOffset()).to.be(2);
+      expect(lineDashOffset).to.be(4);
     });
   });
 
