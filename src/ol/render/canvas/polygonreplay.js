@@ -143,7 +143,7 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash
+      state.miterLimit, state.lineDash, true, 1
     ]);
   }
   var flatCoordinates = circleGeometry.getFlatCoordinates();
@@ -195,7 +195,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash
+      state.miterLimit, state.lineDash, true, 1
     ]);
   }
   var ends = polygonGeometry.getEnds();
@@ -232,7 +232,7 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-      state.miterLimit, state.lineDash
+      state.miterLimit, state.lineDash, true, 1
     ]);
   }
   var endss = multiPolygonGeometry.getEndss();
@@ -373,7 +373,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
         state.currentMiterLimit != miterLimit) {
       this.instructions.push([
         ol.render.canvas.Instruction.SET_STROKE_STYLE,
-        strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash
+        strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, true, 1
       ]);
       state.currentStrokeStyle = strokeStyle;
       state.currentLineCap = lineCap;

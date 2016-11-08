@@ -169,7 +169,7 @@ ol.render.canvas.TextReplay.prototype.setReplayStrokeState_ = function(strokeSta
   var setStrokeStyleInstruction = [
     ol.render.canvas.Instruction.SET_STROKE_STYLE, strokeState.strokeStyle,
     strokeState.lineWidth, strokeState.lineCap, strokeState.lineJoin,
-    strokeState.miterLimit, strokeState.lineDash, false
+    strokeState.miterLimit, strokeState.lineDash, false, 1
   ];
   this.instructions.push(setStrokeStyleInstruction);
   this.hitDetectionInstructions.push(setStrokeStyleInstruction);
