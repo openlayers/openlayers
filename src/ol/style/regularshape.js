@@ -132,7 +132,8 @@ ol.style.RegularShape = function(options) {
     rotateWithView: rotateWithView,
     rotation: options.rotation !== undefined ? options.rotation : 0,
     scale: 1,
-    snapToPixel: snapToPixel
+    snapToPixel: snapToPixel,
+    destinationSize: null
   });
 };
 ol.inherits(ol.style.RegularShape, ol.style.Image);
@@ -157,7 +158,10 @@ ol.style.RegularShape.prototype.clone = function() {
     atlasManager: this.atlasManager_
   });
   style.setOpacity(this.getOpacity());
-  style.setScale(this.getScale());
+  style.setScale(Array.isArray(this.scale_) ?
+      this.scale_.slice() : this.scale_);
+  style.setDestinationSize(Array.isArray(this.destinationSize_) ?
+      this.destinationSize_.slice() : this.destinationSize_);
   return style;
 };
 

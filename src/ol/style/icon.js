@@ -153,7 +153,7 @@ ol.style.Icon = function(opt_options) {
   var rotation = options.rotation !== undefined ? options.rotation : 0;
 
   /**
-   * @type {number}
+   * @type {number|Array.<number>}
    */
   var scale = options.scale !== undefined ? options.scale : 1;
 
@@ -163,12 +163,18 @@ ol.style.Icon = function(opt_options) {
   var snapToPixel = options.snapToPixel !== undefined ?
       options.snapToPixel : true;
 
+  /**
+   * @type {ol.Size}
+   */
+  var destinationSize = options.destinationSize !== undefined ? options.destinationSize : null;
+
   ol.style.Image.call(this, {
     opacity: opacity,
     rotation: rotation,
     scale: scale,
     snapToPixel: snapToPixel,
-    rotateWithView: rotateWithView
+    rotateWithView: rotateWithView,
+    destinationSize: destinationSize
   });
 
 };
@@ -208,10 +214,13 @@ ol.style.Icon.prototype.clone = function() {
     offsetOrigin: this.offsetOrigin_,
     size: this.size_ !== null ? this.size_.slice() : undefined,
     opacity: this.getOpacity(),
-    scale: this.getScale(),
+    scale: Array.isArray(this.scale_) ?
+      this.scale_.slice() : this.scale_,
     snapToPixel: this.getSnapToPixel(),
     rotation: this.getRotation(),
-    rotateWithView: this.getRotateWithView()
+    rotateWithView: this.getRotateWithView(),
+    destinationSize: Array.isArray(this.destinationSize_) ?
+      this.destinationSize_.slice() : this.destinationSize_
   });
 };
 

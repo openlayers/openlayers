@@ -14,7 +14,8 @@ describe('ol.render.webgl.ImageReplay', function() {
       opacity: 0.1,
       rotateWithView: true,
       rotation: 1.5,
-      scale: 2.0
+      scale: 2.0,
+      destinationSize: null
     });
     imageStyle.getAnchor = function() {
       return [0.5, 1];

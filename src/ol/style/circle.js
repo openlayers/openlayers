@@ -45,7 +45,10 @@ ol.style.Circle.prototype.clone = function() {
     atlasManager: this.atlasManager_
   });
   style.setOpacity(this.getOpacity());
-  style.setScale(this.getScale());
+  style.setScale(Array.isArray(this.scale_) ?
+      this.scale_.slice() : this.scale_);
+  style.setDestinationSize(Array.isArray(this.destinationSize_) ?
+      this.destinationSize_.slice() : this.destinationSize_);
   return style;
 };
 

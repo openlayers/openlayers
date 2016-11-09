@@ -33,8 +33,8 @@ ol.style.Image = function(options) {
   this.rotation_ = options.rotation;
 
   /**
-   * @private
-   * @type {number}
+   * @protected
+   * @type {number|Array.<number>}
    */
   this.scale_ = options.scale;
 
@@ -43,6 +43,12 @@ ol.style.Image = function(options) {
    * @type {boolean}
    */
   this.snapToPixel_ = options.snapToPixel;
+
+  /**
+   * @protected
+   * @type {ol.Size}
+   */
+  this.destinationSize_ = options.destinationSize;
 
 };
 
@@ -79,7 +85,7 @@ ol.style.Image.prototype.getRotation = function() {
 
 /**
  * Get the symbolizer scale.
- * @return {number} Scale.
+ * @return {number|Array.<number>} Scale.
  * @api
  */
 ol.style.Image.prototype.getScale = function() {
@@ -161,6 +167,15 @@ ol.style.Image.prototype.getSize = function() {};
 
 
 /**
+ * Get the image destination size.
+ * @return {ol.Size} Destination size.
+ */
+ol.style.Image.prototype.getDestinationSize = function() {
+  return this.destinationSize_;
+};
+
+
+/**
  * Set the opacity.
  *
  * @param {number} opacity Opacity.
@@ -195,7 +210,7 @@ ol.style.Image.prototype.setRotation = function(rotation) {
 /**
  * Set the scale.
  *
- * @param {number} scale Scale.
+ * @param {number|Array.<number>} scale Scale.
  * @api
  */
 ol.style.Image.prototype.setScale = function(scale) {
@@ -210,6 +225,16 @@ ol.style.Image.prototype.setScale = function(scale) {
  */
 ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
   this.snapToPixel_ = snapToPixel;
+};
+
+
+/**
+ * Set the image destination size.
+ *
+ * @param {ol.Size} destinationSize Destination size.
+ */
+ol.style.Image.prototype.setDestinationSize = function(destinationSize) {
+  this.destinationSize_ = destinationSize;
 };
 
 

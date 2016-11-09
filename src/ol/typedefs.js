@@ -619,8 +619,9 @@ ol.StyleGeometryFunction;
  * @typedef {{opacity: number,
  *            rotateWithView: boolean,
  *            rotation: number,
- *            scale: number,
- *            snapToPixel: boolean}}
+ *            scale: (number|Array.<number>),
+ *            snapToPixel: boolean,
+ *            destinationSize: ol.Size}}
  */
 ol.StyleImageOptions;
 

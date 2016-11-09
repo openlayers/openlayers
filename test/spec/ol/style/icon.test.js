@@ -85,6 +85,7 @@ describe('ol.style.Icon', function() {
       expect(original.getOpacity()).to.eql(clone.getOpacity());
       expect(original.getRotation()).to.eql(clone.getRotation());
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
+      expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
 
       var original2 = new ol.style.Icon({
@@ -92,6 +93,15 @@ describe('ol.style.Icon', function() {
       });
       var clone2 = original2.clone();
       expect(original2.getSrc()).to.be(clone2.getSrc());
+
+      var original3 = new ol.style.Icon({
+        src: src,
+        scale: [2, 4],
+        destinationSize: [100, 200]
+      });
+      var clone3 = original3.clone();
+      expect(original3.getScale()).to.eql(clone3.getScale());
+      expect(original3.getDestinationSize()).to.eql(clone3.getDestinationSize());
     });
 
     it('the clone does not reference the same objects as the original', function() {
@@ -102,25 +112,33 @@ describe('ol.style.Icon', function() {
         img: canvas,
         imgSize: size,
         offset: [1, 2],
-        size: [10, 12]
+        scale: [2, 4],
+        size: [10, 12],
+        destinationSize: [100, 200]
       });
       var clone = original.clone();
       expect(original.getAnchor()).not.to.be(clone.getAnchor());
       expect(original.getImage(1)).not.to.be(clone.getImage(1));
       expect(original.offset_).not.to.be(clone.offset_);
       expect(original.getColor()).not.to.be(clone.getColor());
+      expect(original.getScale()).not.to.be(clone.getScale());
       expect(original.getSize()).not.to.be(clone.getSize());
+      expect(original.getDestinationSize()).not.to.be(clone.getDestinationSize());
 
       clone.anchor_[0] = 0;
       clone.getImage(1).width = 50;
       clone.offset_[0] = 0;
       clone.color_[0] = 0;
+      clone.scale_[0] = 3;
       clone.size_[0] = 5;
+      clone.destinationSize_[0] = 50;
       expect(original.anchor_).not.to.eql(clone.anchor_);
       expect(original.getImage(1).width).not.to.eql(clone.getImage(1).width);
       expect(original.offset_).not.to.eql(clone.offset_);
       expect(original.color_).not.to.eql(clone.color_);
+      expect(original.scale_).not.to.eql(clone.scale_);
       expect(original.size_).not.to.eql(clone.size_);
+      expect(original.destinationSize_).not.to.eql(clone.destinationSize_);
     });
   });
 

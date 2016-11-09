@@ -7119,11 +7119,12 @@ olx.style.FillOptions.prototype.color;
  *     offset: (Array.<number>|undefined),
  *     offsetOrigin: (ol.style.IconOrigin|undefined),
  *     opacity: (number|undefined),
- *     scale: (number|undefined),
+ *     scale: (number|Array.<number>|undefined),
  *     snapToPixel: (boolean|undefined),
  *     rotateWithView: (boolean|undefined),
  *     rotation: (number|undefined),
  *     size: (ol.Size|undefined),
+ *     destinationSize: (ol.Size|undefined),
  *     imgSize: (ol.Size|undefined),
  *     src: (string|undefined)}}
  */
@@ -7225,8 +7226,9 @@ olx.style.IconOptions.prototype.opacity;
 
 
 /**
- * Scale. Default is `1`.
- * @type {number|undefined}
+ * Scale. Can also be a pair of number defining respectively the horizontal and
+ * vertical scale. Default is `1`.
+ * @type {number|Array.<number>|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.scale;
@@ -7269,6 +7271,15 @@ olx.style.IconOptions.prototype.rotation;
  * @api
  */
 olx.style.IconOptions.prototype.size;
+
+
+/**
+ * Resized icon size in pixel. If either the width or height is `null`, it will
+ * be calculated with the same ratio.
+ * @type {ol.Size|undefined}
+ * @api
+ */
+olx.style.IconOptions.prototype.destinationSize;
 
 
 /**
