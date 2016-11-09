@@ -116,7 +116,13 @@ if (ol.ENABLE_WEBGL) {
      * @private
      * @type {number|undefined}
      */
-    this.scale_ = undefined;
+    this.scaleX_ = undefined;
+
+    /**
+     * @private
+     * @type {number|undefined}
+     */
+    this.scaleY_ = undefined;
 
     /**
      * @type {Array.<WebGLTexture>}
@@ -184,7 +190,8 @@ if (ol.ENABLE_WEBGL) {
     var rotateWithView = this.rotateWithView_ ? 1.0 : 0.0;
     // this.rotation_ is anti-clockwise, but rotation is clockwise
     var rotation = /** @type {number} */ (-this.rotation_);
-    var scale = /** @type {number} */ (this.scale_);
+    var scaleX = /** @type {number} */ (this.scaleX_);
+    var scaleY = /** @type {number} */ (this.scaleY_);
     var width = /** @type {number} */ (this.width_);
     var cos = Math.cos(rotation);
     var sin = Math.sin(rotation);
@@ -208,8 +215,8 @@ if (ol.ENABLE_WEBGL) {
       n = numVertices / 8;
 
       // bottom-left corner
-      offsetX = -scale * anchorX;
-      offsetY = -scale * (height - anchorY);
+      offsetX = -scaleX * anchorX;
+      offsetY = -scaleY * (height - anchorY);
       this.vertices[numVertices++] = x;
       this.vertices[numVertices++] = y;
       this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -220,8 +227,8 @@ if (ol.ENABLE_WEBGL) {
       this.vertices[numVertices++] = rotateWithView;
 
       // bottom-right corner
-      offsetX = scale * (width - anchorX);
-      offsetY = -scale * (height - anchorY);
+      offsetX = scaleX * (width - anchorX);
+      offsetY = -scaleY * (height - anchorY);
       this.vertices[numVertices++] = x;
       this.vertices[numVertices++] = y;
       this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -232,8 +239,8 @@ if (ol.ENABLE_WEBGL) {
       this.vertices[numVertices++] = rotateWithView;
 
       // top-right corner
-      offsetX = scale * (width - anchorX);
-      offsetY = scale * anchorY;
+      offsetX = scaleX * (width - anchorX);
+      offsetY = scaleY * anchorY;
       this.vertices[numVertices++] = x;
       this.vertices[numVertices++] = y;
       this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -244,8 +251,8 @@ if (ol.ENABLE_WEBGL) {
       this.vertices[numVertices++] = rotateWithView;
 
       // top-left corner
-      offsetX = -scale * anchorX;
-      offsetY = scale * anchorY;
+      offsetX = -scaleX * anchorX;
+      offsetY = scaleY * anchorY;
       this.vertices[numVertices++] = x;
       this.vertices[numVertices++] = y;
       this.vertices[numVertices++] = offsetX * cos - offsetY * sin;
@@ -332,7 +339,8 @@ if (ol.ENABLE_WEBGL) {
     this.originY_ = undefined;
     this.rotateWithView_ = undefined;
     this.rotation_ = undefined;
-    this.scale_ = undefined;
+    this.scaleX_ = undefined;
+    this.scaleY_ = undefined;
     this.vertices = null;
     this.width_ = undefined;
   };
@@ -571,6 +579,24 @@ if (ol.ENABLE_WEBGL) {
     var rotation = imageStyle.getRotation();
     var size = imageStyle.getSize();
     var scale = imageStyle.getScale();
+    if (!Array.isArray(scale)) {
+      scale = [scale, scale];
+    }
+    var destinationSize = imageStyle.getDestinationSize();
+    var width = destinationSize && destinationSize[0];
+    var height = destinationSize && destinationSize[1];
+    if (width !== null && width !== undefined && (height === null || height === undefined)) {
+      height = width * size[1] / size[0];
+    }
+    if (height !== null && height !== undefined && (width === null || width === undefined)) {
+      width = height * size[0] / size[1];
+    }
+    if (width !== null && width !== undefined) {
+      scale[0] *= width / size[0];
+    }
+    if (height !== null && height !== undefined) {
+      scale[1] *= height / size[1];
+    }
 
     var currentImage;
     if (this.images_.length === 0) {
@@ -604,7 +630,8 @@ if (ol.ENABLE_WEBGL) {
     this.originY_ = origin[1];
     this.rotation_ = rotation;
     this.rotateWithView_ = rotateWithView;
-    this.scale_ = scale;
+    this.scaleX_ = scale[0];
+    this.scaleY_ = scale[1];
     this.width_ = size[0];
   };
 

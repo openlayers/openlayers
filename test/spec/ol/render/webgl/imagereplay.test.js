@@ -68,7 +68,8 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.originY_).to.be(200);
       expect(replay.rotation_).to.be(1.5);
       expect(replay.rotateWithView_).to.be(true);
-      expect(replay.scale_).to.be(2.0);
+      expect(replay.scaleX_).to.be(2.0);
+      expect(replay.scaleY_).to.be(2.0);
       expect(replay.width_).to.be(256);
       expect(replay.images_).to.have.length(1);
       expect(replay.groupIndices_).to.have.length(0);
