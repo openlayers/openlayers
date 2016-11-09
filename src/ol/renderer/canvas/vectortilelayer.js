@@ -137,6 +137,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileReplays_ = function(
   var alpha = replayContext.globalAlpha;
   replayContext.globalAlpha = layerState.opacity;
 
+  /** @type {Array.<ol.VectorTile>} */
   var tilesToDraw = this.renderedTiles;
   var tileGrid = source.getTileGrid();
 
@@ -283,6 +284,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   /** @type {Object.<string, boolean>} */
   var features = {};
 
+  /** @type {Array.<ol.VectorTile>} */
   var replayables = this.renderedTiles;
   var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
   var tileGrid = source.getTileGrid();

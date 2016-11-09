@@ -48,6 +48,9 @@ oli.events.Event.prototype.preventDefault = function() {};
  */
 oli.events.Event.prototype.stopPropagation = function() {};
 
+/**
+ */
+oli.Collection = {};
 
 /**
  * @interface
