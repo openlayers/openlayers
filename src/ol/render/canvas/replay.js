@@ -317,9 +317,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var originY = /** @type {number} */ (instruction[9]);
         var rotateWithView = /** @type {boolean} */ (instruction[10]);
         var rotation = /** @type {number} */ (instruction[11]);
-        var scale = /** @type {number} */ (instruction[12]);
-        var snapToPixel = /** @type {boolean} */ (instruction[13]);
-        var width = /** @type {number} */ (instruction[14]);
+        var scaleX = /** @type {number} */ (instruction[12]);
+        var scaleY = /** @type {number} */ (instruction[13]);
+        var snapToPixel = /** @type {boolean} */ (instruction[14]);
+        var width = /** @type {number} */ (instruction[15]);
         if (rotateWithView) {
           rotation += viewRotation;
         }
@@ -330,11 +331,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             x = Math.round(x);
             y = Math.round(y);
           }
-          if (scale != 1 || rotation !== 0) {
+          if (scaleX !== 1 || scaleY !== 1 || rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
             ol.transform.compose(localTransform,
-                centerX, centerY, scale, scale, rotation, -centerX, -centerY);
+                centerX, centerY, scaleX, scaleY, rotation, -centerX, -centerY);
             context.setTransform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
@@ -351,7 +352,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (opacity != 1) {
             context.globalAlpha = alpha;
           }
-          if (scale != 1 || rotation !== 0) {
+          if (scaleX !== 1 || scaleY !== 1 || rotation !== 0) {
             context.setTransform.apply(context, resetTransform);
           }
         }
@@ -364,7 +365,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var offsetX = /** @type {number} */ (instruction[4]) * pixelRatio;
         var offsetY = /** @type {number} */ (instruction[5]) * pixelRatio;
         rotation = /** @type {number} */ (instruction[6]);
-        scale = /** @type {number} */ (instruction[7]) * pixelRatio;
+        var scale = /** @type {number} */ (instruction[7]) * pixelRatio;
         fill = /** @type {boolean} */ (instruction[8]);
         stroke = /** @type {boolean} */ (instruction[9]);
         rotateWithView = /** @type {boolean} */ (instruction[10]);

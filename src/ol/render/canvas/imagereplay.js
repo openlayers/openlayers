@@ -81,7 +81,13 @@ ol.render.canvas.ImageReplay = function(tolerance, maxExtent, resolution, overla
    * @private
    * @type {number|undefined}
    */
-  this.scale_ = undefined;
+  this.scaleX_ = undefined;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.scaleY_ = undefined;
 
   /**
    * @private
@@ -131,7 +137,7 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-    this.scale_, this.snapToPixel_, this.width_
+    this.scaleX_, this.scaleY_, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
@@ -139,7 +145,7 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-    this.scale_, this.snapToPixel_, this.width_
+    this.scaleX_, this.scaleY_, this.snapToPixel_, this.width_
   ]);
   this.endGeometry(pointGeometry, feature);
 };
@@ -163,7 +169,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-    this.scale_, this.snapToPixel_, this.width_
+    this.scaleX_, this.scaleY_, this.snapToPixel_, this.width_
   ]);
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
@@ -171,7 +177,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
       // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
-    this.scale_, this.snapToPixel_, this.width_
+    this.scaleX_, this.scaleY_, this.snapToPixel_, this.width_
   ]);
   this.endGeometry(multiPointGeometry, feature);
 };
@@ -188,7 +194,8 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
   this.hitDetectionImage_ = null;
   this.image_ = null;
   this.height_ = undefined;
-  this.scale_ = undefined;
+  this.scaleX_ = undefined;
+  this.scaleY_ = undefined;
   this.opacity_ = undefined;
   this.originX_ = undefined;
   this.originY_ = undefined;
@@ -208,6 +215,30 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
   var image = imageStyle.getImage(1);
   var origin = imageStyle.getOrigin();
+  var scale = imageStyle.getScale();
+  if (Array.isArray(scale)) {
+    scale = scale.slice();
+  } else {
+    scale = [scale, scale];
+  }
+  var destinationSize = imageStyle.getDestinationSize();
+  if (Array.isArray(destinationSize)) {
+    destinationSize = destinationSize.slice();
+
+    if (destinationSize[0] && !destinationSize[1]) {
+      destinationSize[1] = destinationSize[0] * size[1] / size[0];
+    }
+    if (destinationSize[1] && !destinationSize[0]) {
+      destinationSize[0] = destinationSize[1] * size[0] / size[1];
+    }
+    if (destinationSize[0]) {
+      scale[0] *= destinationSize[0] / size[0];
+    }
+    if (destinationSize[1]) {
+      scale[1] *= destinationSize[1] / size[1];
+    }
+  }
+
   this.anchorX_ = anchor[0];
   this.anchorY_ = anchor[1];
   this.hitDetectionImage_ = hitDetectionImage;
@@ -218,7 +249,8 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.originY_ = origin[1];
   this.rotateWithView_ = imageStyle.getRotateWithView();
   this.rotation_ = imageStyle.getRotation();
-  this.scale_ = imageStyle.getScale();
+  this.scaleX_ = scale[0];
+  this.scaleY_ = scale[1];
   this.snapToPixel_ = imageStyle.getSnapToPixel();
   this.width_ = size[0];
 };
