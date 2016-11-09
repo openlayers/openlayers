@@ -156,7 +156,13 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
    * @private
    * @type {number}
    */
-  this.imageScale_ = 0;
+  this.imageScaleX_ = 0;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.imageScaleY_ = 0;
 
   /**
    * @private
@@ -272,12 +278,12 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
       x = Math.round(x);
       y = Math.round(y);
     }
-    if (rotation !== 0 || this.imageScale_ != 1) {
+    if (rotation !== 0 || this.imageScaleX_ !== 1 || this.imageScaleY_ !== 1) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
       ol.transform.compose(localTransform,
           centerX, centerY,
-          this.imageScale_, this.imageScale_,
+          this.imageScaleX_, this.imageScaleY_,
           rotation,
           -centerX, -centerY);
       context.setTransform.apply(context, localTransform);
@@ -286,7 +292,7 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
         this.imageWidth_, this.imageHeight_, x, y,
         this.imageWidth_, this.imageHeight_);
   }
-  if (rotation !== 0 || this.imageScale_ != 1) {
+  if (rotation !== 0 || this.imageScaleX_ !== 1 || this.imageScaleY_ !== 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
   }
   if (this.imageOpacity_ != 1) {
@@ -871,6 +877,30 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     var imageImage = imageStyle.getImage(1);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
+    var scale = imageStyle.getScale();
+    if (Array.isArray(scale)) {
+      scale = scale.slice();
+    } else {
+      scale = [scale, scale];
+    }
+    var destinationSize = imageStyle.getDestinationSize();
+    if (Array.isArray(destinationSize)) {
+      destinationSize = destinationSize.slice();
+
+      if (destinationSize[0] && !destinationSize[1]) {
+        destinationSize[1] = destinationSize[0] * imageSize[1] / imageSize[0];
+      }
+      if (destinationSize[1] && !destinationSize[0]) {
+        destinationSize[0] = destinationSize[1] * imageSize[0] / imageSize[1];
+      }
+      if (destinationSize[0]) {
+        scale[0] *= destinationSize[0] / imageSize[0];
+      }
+      if (destinationSize[1]) {
+        scale[1] *= destinationSize[1] / imageSize[1];
+      }
+    }
+
     this.imageAnchorX_ = imageAnchor[0];
     this.imageAnchorY_ = imageAnchor[1];
     this.imageHeight_ = imageSize[1];
@@ -880,7 +910,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.imageOriginY_ = imageOrigin[1];
     this.imageRotateWithView_ = imageStyle.getRotateWithView();
     this.imageRotation_ = imageStyle.getRotation();
-    this.imageScale_ = imageStyle.getScale();
+    this.imageScaleX_ = scale[0];
+    this.imageScaleY_ = scale[1];
     this.imageSnapToPixel_ = imageStyle.getSnapToPixel();
     this.imageWidth_ = imageSize[0];
   }
