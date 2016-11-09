@@ -15,10 +15,10 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.Translate.Event
- * @param {olx.interaction.TranslateOptions} options Options.
+ * @param {olx.interaction.TranslateOptions=} opt_options Options.
  * @api
  */
-ol.interaction.Translate = function(options) {
+ol.interaction.Translate = function(opt_options) {
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Translate.handleDownEvent_,
     handleDragEvent: ol.interaction.Translate.handleDragEvent_,
@@ -26,6 +26,7 @@ ol.interaction.Translate = function(options) {
     handleUpEvent: ol.interaction.Translate.handleUpEvent_
   });
 
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {string|undefined}
