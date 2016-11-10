@@ -133,13 +133,14 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
  * @param {ol.Map} map Map.
  */
 ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
-  var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
-  var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
-
   var view = map.getView();
 
-  ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
-      this.duration_);
+  if (!view.getAnimating()) {
+    var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
+    var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
+    ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
+        this.duration_);
+  }
 
   this.delta_ = 0;
   this.lastAnchor_ = null;
