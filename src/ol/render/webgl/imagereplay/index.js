@@ -203,7 +203,8 @@ ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinate
   var originX = /** @type {number} */ (this.originX_);
   var originY = /** @type {number} */ (this.originY_);
   var rotateWithView = this.rotateWithView_ ? 1.0 : 0.0;
-  var rotation = /** @type {number} */ (this.rotation_);
+  // this.rotation_ is anti-clockwise, but rotation is clockwise
+  var rotation = /** @type {number} */ (-this.rotation_);
   var scale = /** @type {number} */ (this.scale_);
   var width = /** @type {number} */ (this.width_);
   var cos = Math.cos(rotation);
