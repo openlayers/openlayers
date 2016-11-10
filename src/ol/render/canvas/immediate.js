@@ -914,6 +914,18 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.imageScaleY_ = scale[1];
     this.imageSnapToPixel_ = imageStyle.getSnapToPixel();
     this.imageWidth_ = imageSize[0];
+
+    if ((this.imageScaleX_ !== this.imageScaleY_) && imageImage instanceof Image) {
+      var canvas = /** @type {HTMLCanvasElement} */
+          (document.createElement('CANVAS'));
+
+      canvas.width = imageSize[0];
+      canvas.height = imageSize[1];
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(imageImage, 0, 0);
+
+      this.image_ = canvas;
+    }
   }
 };
 

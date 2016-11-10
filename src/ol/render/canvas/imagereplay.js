@@ -253,4 +253,16 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   this.scaleY_ = scale[1];
   this.snapToPixel_ = imageStyle.getSnapToPixel();
   this.width_ = size[0];
+
+  if ((this.scaleX_ !== this.scaleY_) && image instanceof Image) {
+    var canvas = /** @type {HTMLCanvasElement} */
+        (document.createElement('CANVAS'));
+
+    canvas.width = size[0];
+    canvas.height = size[1];
+    var ctx = canvas.getContext('2d');
+    ctx.drawImage(image, 0, 0);
+
+    this.image_ = canvas;
+  }
 };
