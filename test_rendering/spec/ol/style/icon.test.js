@@ -26,7 +26,9 @@ describe('ol.rendering.style.Icon', function() {
   function createMap(renderer, width, height) {
     target = createMapDiv(width ? width : 50, height ? height : 50);
 
-    vectorSource = new ol.source.Vector();
+    vectorSource = new ol.source.Vector({
+      wrapX: false
+    });
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
@@ -82,6 +84,193 @@ describe('ol.rendering.style.Icon', function() {
         imgSize: [512, 512]
       }, function() {
         expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('resizes svg correctly from width in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [96, null],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('resizes svg correctly from height in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [null, 96],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales horizontally svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: [96 / 512, 1],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleX.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('changes width of svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [96, 512],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleX.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales vertically svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: [1, 96 / 512],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('changes height of svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [512, 96],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales horizontally and vertically svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: [192 / 512, 96 / 512],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleXY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('changes width and height of svg correctly in the canvas renderer', function(done) {
+      map = createMap('canvas', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [192, 96],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleXY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: 96 / 512,
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('resizes svg correctly from width in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [96, null],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('resizes svg correctly from height in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [null, 96],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales horizontally svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: [96 / 512, 1],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleX.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('changes width of svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [96, 512],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleX.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales vertically svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: [1, 96 / 512],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('changes height of svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [512, 96],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('scales horizontally and vertically svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        scale: [192 / 512, 96 / 512],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleXY.png',
+            IMAGE_TOLERANCE, done);
+      });
+    });
+
+    it('changes width and height of svg correctly in the WebGL renderer', function(done) {
+      map = createMap('webgl', 512, 512);
+      createFeatures('spec/ol/data/me0.svg', {
+        destinationSize: [192, 96],
+        imgSize: [512, 512]
+      }, function() {
+        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scaleXY.png',
             IMAGE_TOLERANCE, done);
       });
     });
