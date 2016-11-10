@@ -484,6 +484,39 @@ describe('ol.View', function() {
 
     });
 
+    it('completes multiple staggered animations run in parallel', function(done) {
+
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      var calls = 0;
+
+      view.animate({
+        zoom: 1,
+        duration: 25
+      }, function() {
+        ++calls;
+      });
+
+      setTimeout(function() {
+        expect(view.getZoom() > 0).to.be(true);
+        expect(view.getZoom() < 1).to.be(true);
+        expect(view.getAnimating()).to.be(true);
+        view.animate({
+          zoom: 2,
+          duration: 25
+        }, function() {
+          expect(calls).to.be(1);
+          expect(view.getZoom()).to.roughlyEqual(2, 1e-8);
+          expect(view.getAnimating()).to.be(false);
+          done();
+        });
+      }, 10);
+
+    });
+
   });
 
   describe('#getResolutions', function() {

@@ -305,7 +305,7 @@ ol.View.prototype.updateAnimations_ = function() {
       }
       var elapsed = now - animation.start;
       var fraction = elapsed / animation.duration;
-      if (fraction > 1) {
+      if (fraction >= 1) {
         animation.complete = true;
         fraction = 1;
       } else {
@@ -345,14 +345,16 @@ ol.View.prototype.updateAnimations_ = function() {
       }
     }
     if (seriesComplete) {
+      this.animations_[i] = null;
       this.setHint(ol.View.Hint.ANIMATING, -1);
-      var completed = this.animations_.pop();
-      var callback = completed[0].callback;
+      var callback = series[0].callback;
       if (callback) {
         callback(true);
       }
     }
   }
+  // prune completed series
+  this.animations_ = this.animations_.filter(Boolean);
   if (more && this.updateAnimationKey_ === undefined) {
     this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
   }
