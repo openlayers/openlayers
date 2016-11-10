@@ -271,7 +271,7 @@ ol.View.prototype.getAnimating = function() {
 /**
  * Cancel any ongoing animations.
  */
-ol.View.prototype.cancelAnimations_ = function() {
+ol.View.prototype.cancelAnimations = function() {
   for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
     var series = this.animations_[i];
     if (series[0].callback) {
@@ -809,7 +809,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.View.Property.CENTER, center);
   if (this.getAnimating()) {
-    this.cancelAnimations_();
+    this.cancelAnimations();
   }
 };
 
@@ -838,7 +838,7 @@ ol.View.prototype.setHint = function(hint, delta) {
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.View.Property.RESOLUTION, resolution);
   if (this.getAnimating()) {
-    this.cancelAnimations_();
+    this.cancelAnimations();
   }
 };
 
@@ -852,7 +852,7 @@ ol.View.prototype.setResolution = function(resolution) {
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.View.Property.ROTATION, rotation);
   if (this.getAnimating()) {
-    this.cancelAnimations_();
+    this.cancelAnimations();
   }
 };
 
