@@ -179,6 +179,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
 ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
+  hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
   var layer = this.getLayer();
   /** @type {Object.<string, boolean>} */
   var features = {};
@@ -190,12 +191,13 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
-  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution;
+  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution, pointResolution;
   for (i = 0, ii = replayables.length; i < ii; ++i) {
     tile = replayables[i];
     tileCoord = tile.tileCoord;
     tileExtent = source.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent);
-    if (!ol.extent.containsCoordinate(tileExtent, coordinate)) {
+    pointResolution = tile.getProjection().getPointResolution(resolution, coordinate);
+    if (!ol.extent.containsCoordinate(ol.extent.buffer(tileExtent, hitTolerance * pointResolution), coordinate)) {
       continue;
     }
     if (tile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {
