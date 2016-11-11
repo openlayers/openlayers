@@ -3,6 +3,7 @@ goog.provide('ol.VectorTile');
 goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.dom');
+goog.require('ol.featureloader');
 
 
 /**
@@ -185,4 +186,13 @@ ol.VectorTile.prototype.setState = function(tileState) {
  */
 ol.VectorTile.prototype.setLoader = function(loader) {
   this.loader_ = loader;
+};
+
+
+/**
+ * @param {ol.VectorTile} tile Vector tile.
+ * @param {string} url URL.
+ */
+ol.VectorTile.defaultLoadFunction = function(tile, url) {
+  tile.setLoader(ol.featureloader.tile(url, tile.getFormat()));
 };
