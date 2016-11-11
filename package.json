@@ -99,7 +99,6 @@
       "no-constant-condition": 0,
       "openlayers-internal/no-duplicate-requires": 2,
       "openlayers-internal/no-missing-requires": 1,
-      "openlayers-internal/no-unused-requires": 2,
       "openlayers-internal/one-provide": 1,
       "openlayers-internal/requires-first": 2,
       "openlayers-internal/valid-provide": 2,
