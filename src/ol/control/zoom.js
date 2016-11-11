@@ -106,6 +106,9 @@ ol.control.Zoom.prototype.zoomByDelta_ = function(delta) {
   if (currentResolution) {
     var newResolution = view.constrainResolution(currentResolution, delta);
     if (this.duration_ > 0) {
+      if (view.getAnimating()) {
+        view.cancelAnimations();
+      }
       view.animate({
         resolution: newResolution,
         duration: this.duration_,

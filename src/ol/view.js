@@ -271,7 +271,7 @@ ol.View.prototype.getAnimating = function() {
 /**
  * Cancel any ongoing animations.
  */
-ol.View.prototype.cancelAnimations_ = function() {
+ol.View.prototype.cancelAnimations = function() {
   for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
     var series = this.animations_[i];
     if (series[0].callback) {
@@ -305,7 +305,7 @@ ol.View.prototype.updateAnimations_ = function() {
       }
       var elapsed = now - animation.start;
       var fraction = elapsed / animation.duration;
-      if (fraction > 1) {
+      if (fraction >= 1) {
         animation.complete = true;
         fraction = 1;
       } else {
@@ -345,14 +345,16 @@ ol.View.prototype.updateAnimations_ = function() {
       }
     }
     if (seriesComplete) {
+      this.animations_[i] = null;
       this.setHint(ol.View.Hint.ANIMATING, -1);
-      var completed = this.animations_.pop();
-      var callback = completed[0].callback;
+      var callback = series[0].callback;
       if (callback) {
         callback(true);
       }
     }
   }
+  // prune completed series
+  this.animations_ = this.animations_.filter(Boolean);
   if (more && this.updateAnimationKey_ === undefined) {
     this.updateAnimationKey_ = requestAnimationFrame(this.updateAnimations_);
   }
@@ -807,7 +809,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.View.Property.CENTER, center);
   if (this.getAnimating()) {
-    this.cancelAnimations_();
+    this.cancelAnimations();
   }
 };
 
@@ -836,7 +838,7 @@ ol.View.prototype.setHint = function(hint, delta) {
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.View.Property.RESOLUTION, resolution);
   if (this.getAnimating()) {
-    this.cancelAnimations_();
+    this.cancelAnimations();
   }
 };
 
@@ -850,7 +852,7 @@ ol.View.prototype.setResolution = function(resolution) {
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.View.Property.ROTATION, rotation);
   if (this.getAnimating()) {
-    this.cancelAnimations_();
+    this.cancelAnimations();
   }
 };
 
