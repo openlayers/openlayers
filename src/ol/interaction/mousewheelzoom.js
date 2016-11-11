@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('ol');
+goog.require('ol.easing');
 goog.require('ol.events.EventType');
 goog.require('ol.has');
 goog.require('ol.interaction.Interaction');
@@ -135,6 +136,24 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
         ol.interaction.MouseWheelZoom.Mode.WHEEL;
   }
 
+  if (this.mode_ === ol.interaction.MouseWheelZoom.Mode.TRACKPAD) {
+    var view = map.getView();
+    view.cancelAnimations();
+    var resolution = view.getResolution() * Math.pow(2, delta / 300);
+    if (this.lastAnchor_) {
+      var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
+      view.setCenter(center);
+    }
+    view.setResolution(resolution);
+    view.animate({
+      resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
+      easing: ol.easing.easeOut,
+      anchor: this.lastAnchor_
+    });
+    this.startTime_ = now;
+    return false;
+  }
+
   this.delta_ += delta;
 
   var timeLeft = Math.max(this.timeout_ - (now - this.startTime_), 0);
@@ -159,6 +178,7 @@ ol.interaction.MouseWheelZoom.prototype.doZoom_ = function(map) {
     ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
         this.duration_);
   }
+  this.mode_ = undefined;
   this.delta_ = 0;
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
