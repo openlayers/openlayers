@@ -406,7 +406,14 @@ describe('ol.render.webgl.PolygonReplay', function() {
       geometry: new ol.geom.Polygon([[[0, 0], [500, 500], [500, 0], [0, 0]]])
     });
     beforeEach(function() {
-      gl = {};
+      gl = {
+        getParameter: function() {},
+        enable: function() {},
+        disable: function() {},
+        depthMask: function() {},
+        depthFunc: function() {},
+        clear: function() {}
+      };
       context = {};
       replay.setFillStyle_ = function() {};
       replay.drawElements = function() {};

@@ -870,6 +870,16 @@ ol.render.webgl.PolygonReplay.prototype.shutDownProgram = function(gl, locations
  * @inheritDoc
  */
 ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  //Save GL parameters.
+  var tmpDepthFunc = /** @type {number} */ (gl.getParameter(gl.DEPTH_FUNC));
+  var tmpDepthMask = /** @type {boolean} */ (gl.getParameter(gl.DEPTH_WRITEMASK));
+
+  if (!hitDetection) {
+    gl.enable(gl.DEPTH_TEST);
+    gl.depthMask(true);
+    gl.depthFunc(gl.NOTEQUAL);
+  }
+
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
@@ -886,6 +896,13 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skipp
       this.drawElements(gl, context, start, end);
       end = start;
     }
+  }
+  if (!hitDetection) {
+    gl.disable(gl.DEPTH_TEST);
+    gl.clear(gl.DEPTH_BUFFER_BIT);
+    //Restore GL parameters.
+    gl.depthMask(tmpDepthMask);
+    gl.depthFunc(tmpDepthFunc);
   }
 };
 
@@ -964,6 +981,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, conte
       if (skippedFeaturesHash[featureUid]) {
         if (start !== end) {
           this.drawElements(gl, context, start, end);
+          gl.clear(gl.DEPTH_BUFFER_BIT);
         }
         end = featureStart;
       }
@@ -972,6 +990,7 @@ ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, conte
     }
     if (start !== end) {
       this.drawElements(gl, context, start, end);
+      gl.clear(gl.DEPTH_BUFFER_BIT);
     }
     start = end = groupStart;
   }
