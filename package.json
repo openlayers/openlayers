@@ -51,7 +51,7 @@
   },
   "devDependencies": {
     "clean-css": "3.4.20",
-    "coveralls": "2.11.14",
+    "coveralls": "2.11.15",
     "debounce": "^1.0.0",
     "eslint": "3.9.1",
     "eslint-config-openlayers": "5.0.0",
