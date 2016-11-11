@@ -4135,6 +4135,7 @@ olx.source;
 /**
  * @typedef {{cacheSize: (number|undefined),
  *     culture: (string|undefined),
+ *     hidpi: (boolean|undefined),
  *     key: string,
  *     imagerySet: string,
  *     maxZoom: (number|undefined),
@@ -4151,6 +4152,14 @@ olx.source.BingMapsOptions;
  * @api
  */
 olx.source.BingMapsOptions.prototype.cacheSize;
+
+
+/**
+ * If `true` hidpi tiles will be requested. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.hidpi;
 
 
 /**
