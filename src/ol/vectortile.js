@@ -151,6 +151,25 @@ ol.VectorTile.prototype.load = function() {
 
 
 /**
+ * Handler for successful tile load.
+ * @param {Array.<ol.Feature>} features The loaded features.
+ * @param {ol.proj.Projection} dataProjection Data projection.
+ */
+ol.VectorTile.prototype.onLoad_ = function(features, dataProjection) {
+  this.setProjection(dataProjection);
+  this.setFeatures(features);
+};
+
+
+/**
+ * Handler for tile load errors.
+ */
+ol.VectorTile.prototype.onError_ = function() {
+  this.setState(ol.Tile.State.ERROR);
+};
+
+
+/**
  * @param {Array.<ol.Feature>} features Features.
  * @api
  */
@@ -190,9 +209,13 @@ ol.VectorTile.prototype.setLoader = function(loader) {
 
 
 /**
+ * Sets the loader for a tile.
  * @param {ol.VectorTile} tile Vector tile.
  * @param {string} url URL.
  */
 ol.VectorTile.defaultLoadFunction = function(tile, url) {
-  tile.setLoader(ol.featureloader.tile(url, tile.getFormat()));
+  var loader = ol.featureloader.loadFeaturesXhr(
+      url, tile.getFormat(), tile.onLoad_.bind(tile), tile.onError_.bind(tile));
+
+  tile.setLoader(loader);
 };
