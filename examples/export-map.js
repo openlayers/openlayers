@@ -37,12 +37,12 @@ document.getElementById('export-png').addEventListener('click', function() {
   map.once('postcompose', function(event) {
     var canvas = event.context.canvas;
 	if(isIE()) {
-		window.navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
-	} else {
-		canvas.toBlob(function(blob) {
-		  saveAs(blob, 'map.png');
-		});
-	}
+      window.navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
+    } else {
+      canvas.toBlob(function(blob) {
+        saveAs(blob, 'map.png');
+      });
+    }
   });
   map.renderSync();
 });
@@ -50,11 +50,9 @@ document.getElementById('export-png').addEventListener('click', function() {
 function isIE() {
   var sAgent = window.navigator.userAgent;
   var Idx = sAgent.indexOf("MSIE");
-
   // If IE, return true.
   if (Idx > 0) 
     return true;
-
   // If IE 11 then look for Updated user agent string.
   else if (!!navigator.userAgent.match(/Trident\/7\./)) 
     return true;
