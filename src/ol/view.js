@@ -272,6 +272,7 @@ ol.View.prototype.getAnimating = function() {
  * Cancel any ongoing animations.
  */
 ol.View.prototype.cancelAnimations = function() {
+  this.setHint(ol.View.Hint.ANIMATING, -this.getHints()[ol.View.Hint.ANIMATING]);
   for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
     var series = this.animations_[i];
     if (series[0].callback) {
@@ -279,7 +280,7 @@ ol.View.prototype.cancelAnimations = function() {
     }
   }
   this.animations_.length = 0;
-  this.setHint(ol.View.Hint.ANIMATING, -this.getHints()[ol.View.Hint.ANIMATING]);
+  this.changed(); // notify that the hint changed
 };
 
 /**
