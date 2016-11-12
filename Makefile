@@ -86,7 +86,7 @@ check-deps:
 	done ;\
 
 .PHONY: ci
-ci: lint build test test-rendering compile-examples check-examples apidoc
+ci: lint build test test-rendering compile-examples check-examples apidoc test-custom-build
 
 .PHONY: compile-examples
 compile-examples: build/compiled-examples/all.combined.js
@@ -146,6 +146,10 @@ test-rendering: build/timestamps/node-modules-timestamp \
 	@mkdir -p build/slimerjs-profile
 	@cp -r test_rendering/slimerjs-profile/* build/slimerjs-profile/
 	node tasks/test-rendering.js
+
+.PHONY: test-custom-build
+test-custom-build: build/timestamps/node-modules-timestamp
+	node tasks/test-custom-build.js
 
 .PHONY: host-examples
 host-examples: $(BUILD_HOSTED_EXAMPLES) \

@@ -11,6 +11,7 @@ var temp = require('temp').track();
 var exec = require('child_process').exec;
 
 var generateExports = require('./generate-exports');
+var buildTools = require('./build-tools');
 
 var log = closure.log;
 var root = path.join(__dirname, '..');
@@ -72,32 +73,6 @@ function assertValidConfig(config, callback) {
       }
     }
     callback(null);
-  });
-}
-
-
-/**
- * Read the build configuration file.
- * @param {string} configPath Path to config file.
- * @param {function(Error, Object)} callback Callback.
- */
-function readConfig(configPath, callback) {
-  fs.readFile(configPath, function(err, data) {
-    if (err) {
-      if (err.code === 'ENOENT') {
-        err = new Error('Unable to find config file: ' + configPath);
-      }
-      callback(err);
-      return;
-    }
-    var config;
-    try {
-      config = JSON.parse(String(data));
-    } catch (err2) {
-      callback(new Error('Trouble parsing config as JSON: ' + err2.message));
-      return;
-    }
-    callback(null, config);
   });
 }
 
@@ -304,7 +279,7 @@ if (require.main === module) {
 
   // read the config, run the main function, and write the output file
   async.waterfall([
-    readConfig.bind(null, options.config),
+    buildTools.readConfig.bind(null, options.config),
     main,
     fs.outputFile.bind(fs, options.output)
   ], function(err) {

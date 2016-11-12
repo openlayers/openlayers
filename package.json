@@ -14,6 +14,7 @@
     "start": "node tasks/serve.js",
     "pretest": "eslint tasks test test_rendering src examples",
     "test": "node tasks/test.js",
+    "test-custom-build": "node tasks/test-custom-build.js",
     "debug-server": "node tasks/serve-lib.js"
   },
   "main": "dist/ol.js",

@@ -1,0 +1,33 @@
+{
+  "exports": [
+    "ol.layer.Heatmap",
+    "ol.source.Vector",
+    "ol.format.KML",
+    "ol.layer.Heatmap#getSource",
+    "ol.source.Vector#on",
+    "ol.source.VectorEvent#feature",
+    "ol.Feature#get",
+    "ol.Feature#set",
+    "ol.layer.Tile",
+    "ol.source.Stamen",
+    "ol.Map",
+    "ol.View",
+    "ol.layer.Heatmap#setRadius",
+    "ol.layer.Heatmap#setBlur"
+  ],
+  "compile": {
+    "externs": [
+      "externs/olx.js",
+      "externs/oli.js"
+    ],
+    "define": [
+      "ol.ENABLE_DOM=false",
+      "ol.ENABLE_WEBGL=false",
+      "ol.ENABLE_PROJ4JS=false",
+      "ol.ENABLE_IMAGE=false",
+      "goog.DEBUG=false"
+    ],
+    "compilation_level": "ADVANCED",
+    "manage_closure_dependencies": true
+  }
+}
