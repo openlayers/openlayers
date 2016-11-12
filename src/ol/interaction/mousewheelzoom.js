@@ -73,6 +73,20 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    */
   this.mode_ = undefined;
 
+  /**
+   * The number of delta values per zoom level
+   * @private
+   * @type {number}
+   */
+  this.trackpadDeltaPerZoom_ = 300;
+
+  /**
+   * The zoom factor by which scroll zooming is allowed to exceed the limits.
+   * @private
+   * @type {number}
+   */
+  this.trackpadZoomBuffer_ = 1.5;
+
 };
 ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
 
@@ -138,18 +152,37 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   if (this.mode_ === ol.interaction.MouseWheelZoom.Mode.TRACKPAD) {
     var view = map.getView();
-    view.cancelAnimations();
-    var resolution = view.getResolution() * Math.pow(2, delta / 300);
+    var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
+    var minResolution = view.getMinResolution();
+    var maxResolution = view.getMaxResolution();
+    var rebound = 0;
+    if (resolution < minResolution) {
+      resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
+      rebound = 1;
+    } else if (resolution > maxResolution) {
+      resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
+      rebound = -1;
+    }
     if (this.lastAnchor_) {
       var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
       view.setCenter(center);
     }
     view.setResolution(resolution);
-    view.animate({
-      resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
-      easing: ol.easing.easeOut,
-      anchor: this.lastAnchor_
-    });
+    if (rebound > 0) {
+      view.animate({
+        resolution: minResolution,
+        easing: ol.easing.easeOut,
+        anchor: this.lastAnchor_,
+        duration: 500
+      });
+    } else if (rebound < 0) {
+      view.animate({
+        resolution: maxResolution,
+        easing: ol.easing.easeOut,
+        anchor: this.lastAnchor_,
+        duration: 500
+      });
+    }
     this.startTime_ = now;
     return false;
   }
