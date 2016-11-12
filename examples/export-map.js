@@ -36,9 +36,13 @@ var map = new ol.Map({
 document.getElementById('export-png').addEventListener('click', function() {
   map.once('postcompose', function(event) {
     var canvas = event.context.canvas;
-    canvas.toBlob(function(blob) {
-      saveAs(blob, 'map.png');
-    });
+    if (navigator.msSaveBlob) {
+      navigator.msSaveBlob(canvas.msToBlob(), 'map.png');
+    } else {
+      canvas.toBlob(function(blob) {
+        saveAs(blob, 'map.png');
+      });
+    }
   });
   map.renderSync();
 });
