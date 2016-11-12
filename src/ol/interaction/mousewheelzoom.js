@@ -116,7 +116,6 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   // Delta normalisation inspired by
   // https://github.com/mapbox/mapbox-gl-js/blob/001c7b9/js/ui/handler/scroll_zoom.js
-  //TODO There's more good stuff in there for inspiration to improve this interaction.
   var delta;
   if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
     delta = wheelEvent.deltaY;
