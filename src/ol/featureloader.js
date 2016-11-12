@@ -1,7 +1,6 @@
 goog.provide('ol.featureloader');
 
 goog.require('ol');
-goog.require('ol.Tile');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
@@ -66,35 +65,6 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
           }
         }.bind(this);
         xhr.send();
-      });
-};
-
-
-/**
- * Create an XHR feature loader for a `url` and `format`. The feature loader
- * loads features (with XHR), parses the features, and adds them to the
- * vector tile.
- * @param {string|ol.FeatureUrlFunction} url Feature URL service.
- * @param {ol.format.Feature} format Feature format.
- * @return {ol.FeatureLoader} The feature loader.
- * @api
- */
-ol.featureloader.tile = function(url, format) {
-  return ol.featureloader.loadFeaturesXhr(url, format,
-      /**
-       * @param {Array.<ol.Feature>} features The loaded features.
-       * @param {ol.proj.Projection} dataProjection Data projection.
-       * @this {ol.VectorTile}
-       */
-      function(features, dataProjection) {
-        this.setProjection(dataProjection);
-        this.setFeatures(features);
-      },
-      /**
-       * @this {ol.VectorTile}
-       */
-      function() {
-        this.setState(ol.Tile.State.ERROR);
       });
 };
 
