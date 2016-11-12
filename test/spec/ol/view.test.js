@@ -519,6 +519,100 @@ describe('ol.View', function() {
 
   });
 
+  describe('#cancelAnimations()', function() {
+
+    var originalRequestAnimationFrame = window.requestAnimationFrame;
+    var originalCancelAnimationFrame = window.cancelAnimationFrame;
+
+    beforeEach(function() {
+      window.requestAnimationFrame = function(callback) {
+        return setTimeout(callback, 1);
+      };
+      window.cancelAnimationFrame = function(key) {
+        return clearTimeout(key);
+      };
+    });
+
+    afterEach(function() {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+      window.cancelAnimationFrame = originalCancelAnimationFrame;
+    });
+
+    it('cancels a currently running animation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        rotation: 10,
+        duration: 50
+      });
+
+      setTimeout(function() {
+        expect(view.getAnimating()).to.be(true);
+        view.once('change', function() {
+          expect(view.getAnimating()).to.be(false);
+          done();
+        });
+        view.cancelAnimations();
+      }, 10);
+    });
+
+    it('cancels a multiple animations', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: 0
+      });
+
+      view.animate({
+        rotation: 10,
+        duration: 50
+      }, {
+        zoom: 10,
+        duration: 50
+      });
+
+      view.animate({
+        center: [10, 30],
+        duration: 100
+      });
+
+      setTimeout(function() {
+        expect(view.getAnimating()).to.be(true);
+        view.once('change', function() {
+          expect(view.getAnimating()).to.be(false);
+          done();
+        });
+        view.cancelAnimations();
+      }, 10);
+    });
+
+    it('calls callbacks with false to indicate animations did not complete', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.animate({
+        zoom: 10,
+        duration: 50
+      }, function(complete) {
+        expect(view.getAnimating()).to.be(false);
+        expect(complete).to.be(false);
+        done();
+      });
+
+      setTimeout(function() {
+        expect(view.getAnimating()).to.be(true);
+        view.cancelAnimations();
+      }, 10);
+    });
+
+  });
+
   describe('#getResolutions', function() {
     var view;
     var resolutions = [512, 256, 128, 64, 32, 16];
