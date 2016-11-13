@@ -280,7 +280,6 @@ ol.View.prototype.cancelAnimations = function() {
     }
   }
   this.animations_.length = 0;
-  this.changed(); // notify that the hint changed
 };
 
 /**

@@ -157,7 +157,6 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
     if (!this.handlingDownUpSequence) {
       map.getView().setHint(ol.View.Hint.INTERACTING, 1);
     }
-    map.render();
     return true;
   } else {
     return false;
