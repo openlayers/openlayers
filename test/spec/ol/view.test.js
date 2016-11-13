@@ -301,6 +301,35 @@ describe('ol.View', function() {
 
   });
 
+  describe('#setHint()', function() {
+
+    it('changes a view hint', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      expect(view.getHints()).to.eql([0, 0]);
+
+      view.setHint(ol.View.Hint.INTERACTING, 1);
+      expect(view.getHints()).to.eql([0, 1]);
+    });
+
+    it('triggers the change event', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0
+      });
+
+      view.on('change', function() {
+        expect(view.getHints()).to.eql([0, 1]);
+        done();
+      });
+      view.setHint(ol.View.Hint.INTERACTING, 1);
+    });
+
+  });
+
   describe('#animate()', function() {
 
     var originalRequestAnimationFrame = window.requestAnimationFrame;
