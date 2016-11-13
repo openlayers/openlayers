@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('ol');
+goog.require('ol.View');
 goog.require('ol.easing');
 goog.require('ol.events.EventType');
 goog.require('ol.has');
@@ -74,6 +75,18 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
   this.mode_ = undefined;
 
   /**
+   * Trackpad events separated by this delay will be considered separate
+   * interactions.
+   * @type {number}
+   */
+  this.trackpadEventGap_ = 400;
+
+  /**
+   * @type {number|undefined}
+   */
+  this.trackpadTimeoutId_ = undefined;
+
+  /**
    * The number of delta values per zoom level
    * @private
    * @type {number}
@@ -143,7 +156,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     this.startTime_ = now;
   }
 
-  if (!this.mode_ || now - this.startTime_ > 400) {
+  if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
     this.mode_ = Math.abs(delta) < 4 ?
         ol.interaction.MouseWheelZoom.Mode.TRACKPAD :
         ol.interaction.MouseWheelZoom.Mode.WHEEL;
@@ -151,6 +164,12 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   if (this.mode_ === ol.interaction.MouseWheelZoom.Mode.TRACKPAD) {
     var view = map.getView();
+    if (this.trackpadTimeoutId_) {
+      clearTimeout(this.trackpadTimeoutId_);
+    } else {
+      view.setHint(ol.View.Hint.INTERACTING, 1);
+    }
+    this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
     var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
     var minResolution = view.getMinResolution();
     var maxResolution = view.getMaxResolution();
@@ -194,6 +213,17 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   this.timeoutId_ = setTimeout(this.handleWheelZoom_.bind(this, map), timeLeft);
 
   return false;
+};
+
+
+/**
+ * @private
+ */
+ol.interaction.MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
+  this.trackpadTimeoutId_ = undefined;
+  var view = this.getMap().getView();
+  view.setHint(ol.View.Hint.INTERACTING, -1);
+  view.changed(); // notify listeners of the hint change
 };
 
 
