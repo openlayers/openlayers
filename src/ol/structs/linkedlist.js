@@ -4,6 +4,7 @@ goog.provide('ol.structs.LinkedList');
  * Creates an empty linked list structure.
  *
  * @constructor
+ * @struct
  * @param {boolean=} opt_circular The last item is connected to the first one,
  * and the first item to the last one. Default is true.
  */

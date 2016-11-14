@@ -61,7 +61,7 @@ ol.render.webgl.lineStringInstruction = {
 };
 
 /**
- * Calcualtes the orientation of a triangle based on the determinant method.
+ * Calculates the orientation of a triangle based on the determinant method.
  * @param {number} x1 First X coordinate.
  * @param {number} y1 First Y coordinate.
  * @param {number} x2 Second X coordinate.

@@ -150,6 +150,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         break;
       } else {
         //For the compiler not to complain. This will never be [0, 0].
+        ol.DEBUG && console.assert(p0, 'p0 should be defined');
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
@@ -189,6 +190,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
       p2 = [flatCoordinates[i + stride], flatCoordinates[i + stride + 1]];
     }
 
+    // We group CW and straight lines, thus the not so inituitive CCW checking function.
     sign = ol.render.webgl.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
         ? -1 : 1;
 
@@ -232,6 +234,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   if (closed) {
     //Link the last triangle/rhombus to the first one.
     //n will never be numVertices / 7 here. However, the compiler complains otherwise.
+    ol.DEBUG && console.assert(n, 'n should be defined');
     n = n || numVertices / 7;
     sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
         ? 1 : -1;

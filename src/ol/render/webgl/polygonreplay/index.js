@@ -297,6 +297,7 @@ ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
           // introduce touching segments. However, the original data may have some.
           if (!this.resolveLocalSelfIntersections_(list, rtree, true)) {
             // Something went wrong.
+            ol.DEBUG && console.assert(false, 'Unexpected simple polygon geometry');
             break;
           }
         }

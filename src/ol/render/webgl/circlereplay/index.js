@@ -164,7 +164,7 @@ ol.render.webgl.CircleReplay.prototype.finish = function(context) {
  */
 ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction = function(context) {
   // We only delete our stuff here. The shaders and the program may
-  // be used by other PolygonReplay instances (for other layers). And
+  // be used by other CircleReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
   // object.
   ol.DEBUG && console.assert(this.verticesBuffer,
