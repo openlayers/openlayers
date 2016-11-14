@@ -14,7 +14,7 @@ describe('ol.rendering.style.LineString', function() {
 
   var target, map, vectorSource;
 
-  function createMap(renderer) {
+  function createMap(renderer, opt_pixelRatio) {
     target = createMapDiv(50, 50);
 
     vectorSource = new ol.source.Vector();
@@ -23,6 +23,7 @@ describe('ol.rendering.style.LineString', function() {
     });
 
     map = new ol.Map({
+      pixelRatio: opt_pixelRatio || 1,
       target: target,
       renderer: renderer,
       layers: [vectorLayer],
@@ -85,6 +86,7 @@ describe('ol.rendering.style.LineString', function() {
           color: '#000000',
           width: 2,
           lineCap: 'square',
+          lineDash: [4, 8],
           lineJoin: 'round'
         })
       }));
@@ -104,6 +106,14 @@ describe('ol.rendering.style.LineString', function() {
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/linestring-strokes-webgl.png',
           14.6, done);
+    });
+
+    it('tests the canvas renderer (HiDPI)', function(done) {
+      map = createMap('canvas', 2);
+      createFeatures();
+      expectResemble(
+          map, 'spec/ol/style/expected/linestring-strokes-canvas-hidpi.png',
+          3.0, done);
     });
   });
 });

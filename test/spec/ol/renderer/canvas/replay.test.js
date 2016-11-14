@@ -34,7 +34,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
       });
       style2 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'white'}),
-        stroke: new ol.style.Stroke({color: 'black', width: 1})
+        stroke: new ol.style.Stroke({color: 'black', width: 1, lineDash: [3, 6]})
       });
       fillCount = 0;
       strokeCount = 0;
@@ -138,6 +138,23 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(fillCount).to.be(3);
       expect(strokeCount).to.be(3);
       expect(beginPathCount).to.be(3);
+    });
+
+    it('applies the pixelRatio to the linedash array', function() {
+      var lineDash, lineDashCount = 0;
+
+      context.setLineDash = function(lineDash_) {
+        lineDashCount++;
+        lineDash = lineDash_.slice();
+      };
+
+      ol.renderer.vector.renderFeature(replay, feature1, style2, 1);
+      ol.renderer.vector.renderFeature(replay, feature2, style2, 1);
+      replay.replay(context, 2, transform, 0, {});
+
+      expect(lineDashCount).to.be(1);
+      expect(style2.getStroke().getLineDash()).to.be.eql([3, 6]);
+      expect(lineDash).to.be.eql([6, 12]);
     });
   });
 
