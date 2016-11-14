@@ -223,7 +223,6 @@ ol.interaction.MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
   this.trackpadTimeoutId_ = undefined;
   var view = this.getMap().getView();
   view.setHint(ol.View.Hint.INTERACTING, -1);
-  view.changed(); // notify listeners of the hint change
 };
 
 

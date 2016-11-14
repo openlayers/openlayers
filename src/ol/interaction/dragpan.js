@@ -110,9 +110,6 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
         duration: 500,
         easing: ol.easing.easeOut
       });
-    } else {
-      // the view is not updated, force a render
-      map.render();
     }
     view.setHint(ol.View.Hint.INTERACTING, -1);
     return false;

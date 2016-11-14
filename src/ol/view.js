@@ -280,7 +280,6 @@ ol.View.prototype.cancelAnimations = function() {
     }
   }
   this.animations_.length = 0;
-  this.changed(); // notify that the hint changed
 };
 
 /**
@@ -826,6 +825,7 @@ ol.View.prototype.setHint = function(hint, delta) {
   this.hints_[hint] += delta;
   ol.DEBUG && console.assert(this.hints_[hint] >= 0,
       'Hint at %s must be positive, was %s', hint, this.hints_[hint]);
+  this.changed();
   return this.hints_[hint];
 };
 
