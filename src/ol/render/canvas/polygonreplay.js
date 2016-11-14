@@ -1,6 +1,7 @@
 goog.provide('ol.render.canvas.PolygonReplay');
 
 goog.require('ol');
+goog.require('ol.array');
 goog.require('ol.color');
 goog.require('ol.colorlike');
 goog.require('ol.extent');
@@ -367,7 +368,7 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
         'miterLimit should be defined');
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
-        state.currentLineDash != lineDash ||
+        !ol.array.equals(state.currentLineDash, lineDash) ||
         state.currentLineJoin != lineJoin ||
         state.currentLineWidth != lineWidth ||
         state.currentMiterLimit != miterLimit) {
