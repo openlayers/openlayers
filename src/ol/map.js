@@ -218,6 +218,12 @@ ol.Map = function(options) {
 
   /**
    * @private
+   * @type {?ol.EventsKey}
+   */
+  this.viewChangeListenerKey_ = null;
+
+  /**
+   * @private
    * @type {Array.<ol.EventsKey>}
    */
   this.layerGroupPropertyListenerKeys_ = null;
@@ -1102,10 +1108,17 @@ ol.Map.prototype.handleViewChanged_ = function() {
     ol.events.unlistenByKey(this.viewPropertyListenerKey_);
     this.viewPropertyListenerKey_ = null;
   }
+  if (this.viewChangeListenerKey_) {
+    ol.events.unlistenByKey(this.viewChangeListenerKey_);
+    this.viewChangeListenerKey_ = null;
+  }
   var view = this.getView();
   if (view) {
     this.viewPropertyListenerKey_ = ol.events.listen(
         view, ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleViewPropertyChanged_, this);
+    this.viewChangeListenerKey_ = ol.events.listen(
+        view, ol.events.EventType.CHANGE,
         this.handleViewPropertyChanged_, this);
   }
   this.render();
@@ -1221,7 +1234,6 @@ ol.Map.prototype.removeOverlay = function(overlay) {
  * @private
  */
 ol.Map.prototype.renderFrame_ = function(time) {
-
   var i, ii, viewState;
 
   var size = this.getSize();
