@@ -21,14 +21,14 @@ ol.inherits(ol.render.webgl.circlereplay.defaultshader.Fragment, ol.webgl.Fragme
  * @const
  * @type {string}
  */
-ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_fillColor;\nuniform vec4 u_strokeColor;\nuniform vec2 u_size;\nuniform float u_pixelRatio;\n\nvoid main(void) {\n  vec2 windowCenter = vec2((v_center.x + 1.0) / 2.0 * u_size.x * u_pixelRatio,\n      (v_center.y + 1.0) / 2.0 * u_size.y * u_pixelRatio);\n  vec2 windowOffset = vec2((v_offset.x + 1.0) / 2.0 * u_size.x * u_pixelRatio,\n      (v_offset.y + 1.0) / 2.0 * u_size.y * u_pixelRatio);\n  float radius = length(windowCenter - windowOffset);\n  float dist = length(windowCenter - gl_FragCoord.xy);\n  if (dist > (radius + v_halfWidth) * u_pixelRatio) {\n    if (u_strokeColor.a == 0.0) {\n      gl_FragColor = u_fillColor;\n    } else {\n      gl_FragColor = u_strokeColor;\n    }\n    gl_FragColor.a = gl_FragColor.a - (dist - (radius + v_halfWidth) * u_pixelRatio);\n  } else if (u_fillColor.a == 0.0) {\n    // Hooray, no fill, just stroke. We can use real antialiasing.\n    gl_FragColor = u_strokeColor;\n    if (dist < (radius - v_halfWidth) * u_pixelRatio) {\n      gl_FragColor.a = gl_FragColor.a - ((radius - v_halfWidth) * u_pixelRatio - dist);\n    }\n  } else {\n    gl_FragColor = u_fillColor;\n    float strokeDist = (radius - v_halfWidth) * u_pixelRatio;\n    if (dist > strokeDist) {\n      gl_FragColor = u_strokeColor;\n    } else if (dist >= strokeDist - 2.0) {\n      float step = smoothstep(strokeDist - 2.0, strokeDist, dist);\n      gl_FragColor = mix(u_fillColor, u_strokeColor, step);\n    }\n  }\n  gl_FragColor.a = gl_FragColor.a * u_opacity;\n  if (gl_FragColor.a <= 0.0) {\n    discard;\n  }\n}\n';
+ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE = 'precision mediump float;\nvarying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\nvarying float v_pixelRatio;\n\n\n\nuniform float u_opacity;\nuniform vec4 u_fillColor;\nuniform vec4 u_strokeColor;\nuniform vec2 u_size;\n\nvoid main(void) {\n  vec2 windowCenter = vec2((v_center.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,\n      (v_center.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);\n  vec2 windowOffset = vec2((v_offset.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,\n      (v_offset.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);\n  float radius = length(windowCenter - windowOffset);\n  float dist = length(windowCenter - gl_FragCoord.xy);\n  if (dist > radius + v_halfWidth) {\n    if (u_strokeColor.a == 0.0) {\n      gl_FragColor = u_fillColor;\n    } else {\n      gl_FragColor = u_strokeColor;\n    }\n    gl_FragColor.a = gl_FragColor.a - (dist - (radius + v_halfWidth));\n  } else if (u_fillColor.a == 0.0) {\n    // Hooray, no fill, just stroke. We can use real antialiasing.\n    gl_FragColor = u_strokeColor;\n    if (dist < radius - v_halfWidth) {\n      gl_FragColor.a = gl_FragColor.a - (radius - v_halfWidth - dist);\n    }\n  } else {\n    gl_FragColor = u_fillColor;\n    float strokeDist = radius - v_halfWidth;\n    float antialias = 2.0 * v_pixelRatio;\n    if (dist > strokeDist) {\n      gl_FragColor = u_strokeColor;\n    } else if (dist >= strokeDist - antialias) {\n      float step = smoothstep(strokeDist - antialias, strokeDist, dist);\n      gl_FragColor = mix(u_fillColor, u_strokeColor, step);\n    }\n  }\n  gl_FragColor.a = gl_FragColor.a * u_opacity;\n  if (gl_FragColor.a <= 0.0) {\n    discard;\n  }\n}\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying vec2 b;varying float c;uniform float k;uniform vec4 l;uniform vec4 m;uniform vec2 n;uniform float o;void main(void){vec2 windowCenter=vec2((a.x+1.0)/2.0*n.x*o,(a.y+1.0)/2.0*n.y*o);vec2 windowOffset=vec2((b.x+1.0)/2.0*n.x*o,(b.y+1.0)/2.0*n.y*o);float radius=length(windowCenter-windowOffset);float dist=length(windowCenter-gl_FragCoord.xy);if(dist>(radius+c)*o){if(m.a==0.0){gl_FragColor=l;}else{gl_FragColor=m;}gl_FragColor.a=gl_FragColor.a-(dist-(radius+c)*o);}else if(l.a==0.0){gl_FragColor=m;if(dist<(radius-c)*o){gl_FragColor.a=gl_FragColor.a-((radius-c)*o-dist);}} else{gl_FragColor=l;float strokeDist=(radius-c)*o;if(dist>strokeDist){gl_FragColor=m;}else if(dist>=strokeDist-2.0){float step=smoothstep(strokeDist-2.0,strokeDist,dist);gl_FragColor=mix(l,m,step);}} gl_FragColor.a=gl_FragColor.a*k;if(gl_FragColor.a<=0.0){discard;}}';
+ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;varying vec2 a;varying vec2 b;varying float c;varying float d;uniform float m;uniform vec4 n;uniform vec4 o;uniform vec2 p;void main(void){vec2 windowCenter=vec2((a.x+1.0)/2.0*p.x*d,(a.y+1.0)/2.0*p.y*d);vec2 windowOffset=vec2((b.x+1.0)/2.0*p.x*d,(b.y+1.0)/2.0*p.y*d);float radius=length(windowCenter-windowOffset);float dist=length(windowCenter-gl_FragCoord.xy);if(dist>radius+c){if(o.a==0.0){gl_FragColor=n;}else{gl_FragColor=o;}gl_FragColor.a=gl_FragColor.a-(dist-(radius+c));}else if(n.a==0.0){gl_FragColor=o;if(dist<radius-c){gl_FragColor.a=gl_FragColor.a-(radius-c-dist);}} else{gl_FragColor=n;float strokeDist=radius-c;float antialias=2.0*d;if(dist>strokeDist){gl_FragColor=o;}else if(dist>=strokeDist-antialias){float step=smoothstep(strokeDist-antialias,strokeDist,dist);gl_FragColor=mix(n,o,step);}} gl_FragColor.a=gl_FragColor.a*m;if(gl_FragColor.a<=0.0){discard;}}';
 
 
 /**
@@ -58,14 +58,14 @@ ol.inherits(ol.render.webgl.circlereplay.defaultshader.Vertex, ol.webgl.Vertex);
  * @const
  * @type {string}
  */
-ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE = 'varying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\n\n\nattribute vec2 a_position;\nattribute float a_instruction;\nattribute float a_radius;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  v_center = vec4(u_projectionMatrix * vec4(a_position, 0., 1.)).xy;\n  float newX, newY;\n  float lineWidth = u_lineWidth;\n  if (lineWidth == 0.0) {\n    lineWidth = 2.0;\n  }\n  v_halfWidth = u_lineWidth / 2.0;\n  vec2 offset;\n  // Radius with anitaliasing (roughly).\n  float radius = a_radius + 3.0;\n  // Until we get gl_VertexID in WebGL, we store an instruction.\n  if (a_instruction == 0.0) {\n    newX = a_position.x - radius;\n    newY = a_position.y - radius;\n    // Offsetting the edges of the triangle by lineWidth / 2 is necessary, however\n    // we should also leave some space for the antialiasing, thus we offset by lineWidth.\n    offset = vec2(-lineWidth, -lineWidth);\n  } else {\n    float sqrtVal = sqrt(2.0) + 1.0;\n    if (a_instruction == 1.0) {\n      newX = a_position.x + sqrtVal * radius;\n      newY = a_position.y - radius;\n      offset = vec2(lineWidth * sqrtVal, -lineWidth);\n    } else {\n      newX = a_position.x - radius;\n      newY = a_position.y + sqrtVal * radius;\n      offset = vec2(-lineWidth, lineWidth * sqrtVal);\n    }\n  }\n\n  gl_Position = u_projectionMatrix * vec4(newX, newY, 0., 1.) + offsetMatrix *\n      vec4(offset, 0., 0.);\n  v_offset = vec4(u_projectionMatrix * vec4(a_position.x + a_radius, a_position.y, 0., 1.)).xy;\n}\n\n\n';
+ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE = 'varying vec2 v_center;\nvarying vec2 v_offset;\nvarying float v_halfWidth;\nvarying float v_pixelRatio;\n\n\nattribute vec2 a_position;\nattribute float a_instruction;\nattribute float a_radius;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\nuniform float u_lineWidth;\nuniform float u_pixelRatio;\n\nvoid main(void) {\n  mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;\n  v_center = vec4(u_projectionMatrix * vec4(a_position, 0., 1.)).xy;\n  v_pixelRatio = u_pixelRatio;\n  float newX, newY;\n  float lineWidth = u_lineWidth * u_pixelRatio;\n  v_halfWidth = lineWidth / 2.0;\n  if (lineWidth == 0.0) {\n    lineWidth = 2.0 * u_pixelRatio;\n  }\n  vec2 offset;\n  // Radius with anitaliasing (roughly).\n  float radius = a_radius + 3.0 * u_pixelRatio;\n  // Until we get gl_VertexID in WebGL, we store an instruction.\n  if (a_instruction == 0.0) {\n    newX = a_position.x - radius;\n    newY = a_position.y - radius;\n    // Offsetting the edges of the triangle by lineWidth / 2 is necessary, however\n    // we should also leave some space for the antialiasing, thus we offset by lineWidth.\n    offset = vec2(-lineWidth, -lineWidth);\n  } else {\n    float sqrtVal = sqrt(2.0) + 1.0;\n    if (a_instruction == 1.0) {\n      newX = a_position.x + sqrtVal * radius;\n      newY = a_position.y - radius;\n      offset = vec2(lineWidth * sqrtVal, -lineWidth);\n    } else {\n      newX = a_position.x - radius;\n      newY = a_position.y + sqrtVal * radius;\n      offset = vec2(-lineWidth, lineWidth * sqrtVal);\n    }\n  }\n\n  gl_Position = u_projectionMatrix * vec4(newX, newY, 0., 1.) + offsetMatrix *\n      vec4(offset, 0., 0.);\n  v_offset = vec4(u_projectionMatrix * vec4(a_position.x + a_radius, a_position.y, 0., 1.)).xy;\n}\n\n\n';
 
 
 /**
  * @const
  * @type {string}
  */
-ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;varying vec2 b;varying float c;attribute vec2 d;attribute float e;attribute float f;uniform mat4 g;uniform mat4 h;uniform mat4 i;uniform float j;void main(void){mat4 offsetMatrix=h*i;a=vec4(g*vec4(d,0.,1.)).xy;float newX,newY;float lineWidth=j;if(lineWidth==0.0){lineWidth=2.0;}c=j/2.0;vec2 offset;float radius=f+3.0;if(e==0.0){newX=d.x-radius;newY=d.y-radius;offset=vec2(-lineWidth,-lineWidth);}else{float sqrtVal=sqrt(2.0)+1.0;if(e==1.0){newX=d.x+sqrtVal*radius;newY=d.y-radius;offset=vec2(lineWidth*sqrtVal,-lineWidth);}else{newX=d.x-radius;newY=d.y+sqrtVal*radius;offset=vec2(-lineWidth,lineWidth*sqrtVal);}} gl_Position=g*vec4(newX,newY,0.,1.)+offsetMatrix*vec4(offset,0.,0.);b=vec4(g*vec4(d.x+f,d.y,0.,1.)).xy;}';
+ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;varying vec2 b;varying float c;varying float d;attribute vec2 e;attribute float f;attribute float g;uniform mat4 h;uniform mat4 i;uniform mat4 j;uniform float k;uniform float l;void main(void){mat4 offsetMatrix=i*j;a=vec4(h*vec4(e,0.,1.)).xy;d=l;float newX,newY;float lineWidth=k*l;c=lineWidth/2.0;if(lineWidth==0.0){lineWidth=2.0*l;}vec2 offset;float radius=g+3.0*l;if(f==0.0){newX=e.x-radius;newY=e.y-radius;offset=vec2(-lineWidth,-lineWidth);}else{float sqrtVal=sqrt(2.0)+1.0;if(f==1.0){newX=e.x+sqrtVal*radius;newY=e.y-radius;offset=vec2(lineWidth*sqrtVal,-lineWidth);}else{newX=e.x-radius;newY=e.y+sqrtVal*radius;offset=vec2(-lineWidth,lineWidth*sqrtVal);}} gl_Position=h*vec4(newX,newY,0.,1.)+offsetMatrix*vec4(offset,0.,0.);b=vec4(h*vec4(e.x+g,e.y,0.,1.)).xy;}';
 
 
 /**
@@ -92,71 +92,71 @@ ol.render.webgl.circlereplay.defaultshader.Locations = function(gl, program) {
    * @type {WebGLUniformLocation}
    */
   this.u_fillColor = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_fillColor' : 'l');
+      program, ol.DEBUG ? 'u_fillColor' : 'n');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_lineWidth = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_lineWidth' : 'j');
+      program, ol.DEBUG ? 'u_lineWidth' : 'k');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetRotateMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_offsetRotateMatrix' : 'i');
+      program, ol.DEBUG ? 'u_offsetRotateMatrix' : 'j');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_offsetScaleMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_offsetScaleMatrix' : 'h');
+      program, ol.DEBUG ? 'u_offsetScaleMatrix' : 'i');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_opacity = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_opacity' : 'k');
+      program, ol.DEBUG ? 'u_opacity' : 'm');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_pixelRatio = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_pixelRatio' : 'o');
+      program, ol.DEBUG ? 'u_pixelRatio' : 'l');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_projectionMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_projectionMatrix' : 'g');
+      program, ol.DEBUG ? 'u_projectionMatrix' : 'h');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_size = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_size' : 'n');
+      program, ol.DEBUG ? 'u_size' : 'p');
 
   /**
    * @type {WebGLUniformLocation}
    */
   this.u_strokeColor = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_strokeColor' : 'm');
+      program, ol.DEBUG ? 'u_strokeColor' : 'o');
 
   /**
    * @type {number}
    */
   this.a_instruction = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_instruction' : 'e');
+      program, ol.DEBUG ? 'a_instruction' : 'f');
 
   /**
    * @type {number}
    */
   this.a_position = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_position' : 'd');
+      program, ol.DEBUG ? 'a_position' : 'e');
 
   /**
    * @type {number}
    */
   this.a_radius = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_radius' : 'f');
+      program, ol.DEBUG ? 'a_radius' : 'g');
 };

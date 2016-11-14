@@ -6,6 +6,7 @@
 varying vec2 v_center;
 varying vec2 v_offset;
 varying float v_halfWidth;
+varying float v_pixelRatio;
 
 
 //! VERTEX
@@ -17,19 +18,21 @@ uniform mat4 u_projectionMatrix;
 uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 uniform float u_lineWidth;
+uniform float u_pixelRatio;
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
   v_center = vec4(u_projectionMatrix * vec4(a_position, 0., 1.)).xy;
+  v_pixelRatio = u_pixelRatio;
   float newX, newY;
-  float lineWidth = u_lineWidth;
+  float lineWidth = u_lineWidth * u_pixelRatio;
+  v_halfWidth = lineWidth / 2.0;
   if (lineWidth == 0.0) {
-    lineWidth = 2.0;
+    lineWidth = 2.0 * u_pixelRatio;
   }
-  v_halfWidth = u_lineWidth / 2.0;
   vec2 offset;
   // Radius with anitaliasing (roughly).
-  float radius = a_radius + 3.0;
+  float radius = a_radius + 3.0 * u_pixelRatio;
   // Until we get gl_VertexID in WebGL, we store an instruction.
   if (a_instruction == 0.0) {
     newX = a_position.x - radius;
@@ -62,35 +65,35 @@ uniform float u_opacity;
 uniform vec4 u_fillColor;
 uniform vec4 u_strokeColor;
 uniform vec2 u_size;
-uniform float u_pixelRatio;
 
 void main(void) {
-  vec2 windowCenter = vec2((v_center.x + 1.0) / 2.0 * u_size.x * u_pixelRatio,
-      (v_center.y + 1.0) / 2.0 * u_size.y * u_pixelRatio);
-  vec2 windowOffset = vec2((v_offset.x + 1.0) / 2.0 * u_size.x * u_pixelRatio,
-      (v_offset.y + 1.0) / 2.0 * u_size.y * u_pixelRatio);
+  vec2 windowCenter = vec2((v_center.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,
+      (v_center.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);
+  vec2 windowOffset = vec2((v_offset.x + 1.0) / 2.0 * u_size.x * v_pixelRatio,
+      (v_offset.y + 1.0) / 2.0 * u_size.y * v_pixelRatio);
   float radius = length(windowCenter - windowOffset);
   float dist = length(windowCenter - gl_FragCoord.xy);
-  if (dist > (radius + v_halfWidth) * u_pixelRatio) {
+  if (dist > radius + v_halfWidth) {
     if (u_strokeColor.a == 0.0) {
       gl_FragColor = u_fillColor;
     } else {
       gl_FragColor = u_strokeColor;
     }
-    gl_FragColor.a = gl_FragColor.a - (dist - (radius + v_halfWidth) * u_pixelRatio);
+    gl_FragColor.a = gl_FragColor.a - (dist - (radius + v_halfWidth));
   } else if (u_fillColor.a == 0.0) {
     // Hooray, no fill, just stroke. We can use real antialiasing.
     gl_FragColor = u_strokeColor;
-    if (dist < (radius - v_halfWidth) * u_pixelRatio) {
-      gl_FragColor.a = gl_FragColor.a - ((radius - v_halfWidth) * u_pixelRatio - dist);
+    if (dist < radius - v_halfWidth) {
+      gl_FragColor.a = gl_FragColor.a - (radius - v_halfWidth - dist);
     }
   } else {
     gl_FragColor = u_fillColor;
-    float strokeDist = (radius - v_halfWidth) * u_pixelRatio;
+    float strokeDist = radius - v_halfWidth;
+    float antialias = 2.0 * v_pixelRatio;
     if (dist > strokeDist) {
       gl_FragColor = u_strokeColor;
-    } else if (dist >= strokeDist - 2.0) {
-      float step = smoothstep(strokeDist - 2.0, strokeDist, dist);
+    } else if (dist >= strokeDist - antialias) {
+      float step = smoothstep(strokeDist - antialias, strokeDist, dist);
       gl_FragColor = mix(u_fillColor, u_strokeColor, step);
     }
   }
