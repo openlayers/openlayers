@@ -81,6 +81,8 @@ describe('ol.color', function() {
     it('can parse rgba colors', function() {
       expect(ol.color.fromString('rgba(255, 255, 0, 0.1)')).to.eql(
           [255, 255, 0, 0.1]);
+      expect(ol.color.fromString('rgba(255, 255, 0, 0.3333333333333333)')).to.eql(
+          [255, 255, 0, 0.3333333333333333]);
     });
 
     it('caches parsed values', function() {
