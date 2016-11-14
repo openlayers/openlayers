@@ -352,10 +352,20 @@ ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiL
  */
 ol.render.webgl.LineStringReplay.prototype.drawPolygonCoordinates = function(
     flatCoordinates, holeFlatCoordinates, stride) {
+  if (!ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, 0,
+      flatCoordinates.length, stride)) {
+    flatCoordinates.push(flatCoordinates[0]);
+    flatCoordinates.push(flatCoordinates[1]);
+  }
   this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
   if (holeFlatCoordinates.length) {
     var i, ii;
     for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
+      if (!ol.geom.flat.topology.lineStringIsClosed(holeFlatCoordinates[i], 0,
+          holeFlatCoordinates[i].length, stride)) {
+        holeFlatCoordinates[i].push(holeFlatCoordinates[i][0]);
+        holeFlatCoordinates[i].push(holeFlatCoordinates[i][1]);
+      }
       this.drawCoordinates_(holeFlatCoordinates[i], 0,
           holeFlatCoordinates[i].length, stride);
     }

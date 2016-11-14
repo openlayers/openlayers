@@ -37,25 +37,25 @@ describe('ol.render.webgl.PolygonReplay', function() {
           [[[1000, 2000], [1200, 2000], [1200, 3000]]]
           );
       replay.drawPolygon(polygon1, null);
-      expect(replay.vertices).to.have.length(6);
+      expect(replay.vertices).to.have.length(8);
       expect(replay.indices).to.have.length(3);
 
       expect(replay.vertices).to.eql([
-        1200, 3000, 1200, 2000, 1000, 2000]);
+        1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000]);
       expect(replay.indices).to.eql([2, 0, 1]);
 
       var polygon2 = new ol.geom.Polygon(
           [[[4000, 2000], [4200, 2000], [4200, 3000]]]
           );
       replay.drawPolygon(polygon2, null);
-      expect(replay.vertices).to.have.length(12);
+      expect(replay.vertices).to.have.length(16);
       expect(replay.indices).to.have.length(6);
 
       expect(replay.vertices).to.eql([
-        1200, 3000, 1200, 2000, 1000, 2000,
-        4200, 3000, 4200, 2000, 4000, 2000
+        1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000,
+        4000, 2000, 4200, 3000, 4200, 2000, 4000, 2000
       ]);
-      expect(replay.indices).to.eql([2, 0, 1, 5, 3, 4]);
+      expect(replay.indices).to.eql([2, 0, 1, 6, 4, 5]);
     });
   });
 
@@ -70,14 +70,14 @@ describe('ol.render.webgl.PolygonReplay', function() {
         [[[4000, 2000], [4200, 2000], [4200, 3000]]]
       ]);
       replay.drawMultiPolygon(multiPolygon, null);
-      expect(replay.vertices).to.have.length(12);
+      expect(replay.vertices).to.have.length(16);
       expect(replay.indices).to.have.length(6);
 
       expect(replay.vertices).to.eql([
-        1200, 3000, 1200, 2000, 1000, 2000,
-        4200, 3000, 4200, 2000, 4000, 2000
+        1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000,
+        4000, 2000, 4200, 3000, 4200, 2000, 4000, 2000
       ]);
-      expect(replay.indices).to.eql([2, 0, 1, 5, 3, 4]);
+      expect(replay.indices).to.eql([2, 0, 1, 6, 4, 5]);
     });
   });
 
