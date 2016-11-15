@@ -246,7 +246,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup = function(tile,
       if (!Array.isArray(styles)) {
         styles = [styles];
       }
-      var dirty = this.renderFeature(feature, squaredTolerance, styles,
+      var dirty = this.renderFeature(feature, pixelRatio, squaredTolerance, styles,
           replayGroup);
       this.dirty_ = this.dirty_ || dirty;
       replayState.dirty = replayState.dirty || dirty;
@@ -361,13 +361,14 @@ ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState,
 
 /**
  * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {(ol.style.Style|Array.<ol.style.Style>)} styles The style or array of
  *     styles.
  * @param {ol.render.canvas.ReplayGroup} replayGroup Replay group.
  * @return {boolean} `true` if an image is loading.
  */
-ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, squaredTolerance, styles, replayGroup) {
+ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, pixelRatio, squaredTolerance, styles, replayGroup) {
   if (!styles) {
     return false;
   }
@@ -376,12 +377,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderFeature = function(feature, s
     for (var i = 0, ii = styles.length; i < ii; ++i) {
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i], squaredTolerance,
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_, pixelRatio, this) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles, squaredTolerance,
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_, pixelRatio, this) || loading;
   }
   return loading;
 };

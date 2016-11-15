@@ -120,8 +120,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
           'renderFeature');
       map.renderSync();
-      expect(spy.getCall(0).args[2]).to.be(layer.getStyle());
-      expect(spy.getCall(1).args[2]).to.be(feature2.getStyle());
+      expect(spy.getCall(0).args[3]).to.be(layer.getStyle());
+      expect(spy.getCall(1).args[3]).to.be(feature2.getStyle());
     });
 
     it('transforms geometries when tile and view projection are different', function() {

@@ -242,17 +242,18 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
 /**
  * @inheritDoc
  */
-ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
+ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle, pixelRatio) {
   ol.DEBUG && console.assert(imageStyle, 'imageStyle should not be null');
+  // Call getImage to set the correct pixelRatio, before calling getAnchor, getSize etc.
+  var image = imageStyle.getImage(pixelRatio);
+  ol.DEBUG && console.assert(image, 'image should not be null');
   var anchor = imageStyle.getAnchor();
   ol.DEBUG && console.assert(anchor, 'anchor should not be null');
   var size = imageStyle.getSize();
   ol.DEBUG && console.assert(size, 'size should not be null');
-  var hitDetectionImage = imageStyle.getHitDetectionImage(1);
+  var hitDetectionImage = imageStyle.getHitDetectionImage(pixelRatio);
   ol.DEBUG && console.assert(hitDetectionImage,
       'hitDetectionImage should not be null');
-  var image = imageStyle.getImage(1);
-  ol.DEBUG && console.assert(image, 'image should not be null');
   var origin = imageStyle.getOrigin();
   ol.DEBUG && console.assert(origin, 'origin should not be null');
   this.anchorX_ = anchor[0];

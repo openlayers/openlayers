@@ -277,7 +277,7 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles[i],
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleImageChange_, this) || loading;
+        this.handleImageChange_, pixelRatio, this) || loading;
   }
   return loading;
 };

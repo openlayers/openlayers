@@ -349,13 +349,13 @@ ol.renderer.canvas.VectorLayer.prototype.renderFeature = function(feature, resol
       loading = ol.renderer.vector.renderFeature(
           replayGroup, feature, styles[i],
           ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-          this.handleStyleImageChange_, this) || loading;
+          this.handleStyleImageChange_, pixelRatio, this) || loading;
     }
   } else {
     loading = ol.renderer.vector.renderFeature(
         replayGroup, feature, styles,
         ol.renderer.vector.getSquaredTolerance(resolution, pixelRatio),
-        this.handleStyleImageChange_, this) || loading;
+        this.handleStyleImageChange_, pixelRatio, this) || loading;
   }
   return loading;
 };

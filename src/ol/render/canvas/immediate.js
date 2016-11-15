@@ -858,8 +858,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.image_ = null;
   } else {
     var imageAnchor = imageStyle.getAnchor();
-    // FIXME pixel ratio
-    var imageImage = imageStyle.getImage(1);
+    var imageImage = imageStyle.getImage(this.pixelRatio_);
     var imageOrigin = imageStyle.getOrigin();
     var imageSize = imageStyle.getSize();
     ol.DEBUG && console.assert(imageImage, 'imageImage must be truthy');

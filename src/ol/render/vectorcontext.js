@@ -130,8 +130,9 @@ ol.render.VectorContext.prototype.setFillStrokeStyle = function(fillStyle, strok
 /**
  * @abstract
  * @param {ol.style.Image} imageStyle Image style.
+ * @param {number} pixelRatio Pixel ratio.
  */
-ol.render.VectorContext.prototype.setImageStyle = function(imageStyle) {};
+ol.render.VectorContext.prototype.setImageStyle = function(imageStyle, pixelRatio) {};
 
 
 /**

@@ -113,6 +113,12 @@ ol.style.RegularShape = function(options) {
   this.hitDetectionImageSize_ = null;
 
   /**
+   * @private
+   * @type {number}
+   */
+  this.pixelRatio_ = 1;
+
+  /**
    * @protected
    * @type {ol.style.AtlasManager|undefined}
    */
@@ -201,6 +207,7 @@ ol.style.RegularShape.prototype.getFill = function() {
  * @inheritDoc
  */
 ol.style.RegularShape.prototype.getHitDetectionImage = function(pixelRatio) {
+  // FIXME: Use pixelRatio?
   return this.hitDetectionCanvas_;
 };
 
@@ -210,6 +217,10 @@ ol.style.RegularShape.prototype.getHitDetectionImage = function(pixelRatio) {
  * @api
  */
 ol.style.RegularShape.prototype.getImage = function(pixelRatio) {
+  if (pixelRatio && this.pixelRatio_ != pixelRatio) {
+    this.pixelRatio_ = pixelRatio;
+    this.render_(this.atlasManager_);
+  }
   return this.canvas_;
 };
 
@@ -329,9 +340,9 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
 
   if (this.stroke_) {
     strokeStyle = ol.colorlike.asColorLike(this.stroke_.getColor());
-    strokeWidth = this.stroke_.getWidth();
+    strokeWidth = this.stroke_.getWidth() * this.pixelRatio_;
     if (strokeWidth === undefined) {
-      strokeWidth = ol.render.canvas.defaultLineWidth;
+      strokeWidth = ol.render.canvas.defaultLineWidth * this.pixelRatio_;
     }
     lineDash = this.stroke_.getLineDash();
     if (!ol.has.CANVAS_LINE_DASH) {
@@ -351,7 +362,8 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     }
   }
 
-  var size = 2 * (this.radius_ + strokeWidth) + 1;
+  var size = (2 * ((this.radius_ * this.pixelRatio_) + strokeWidth) + 1);
+  this.setScale((1 / this.pixelRatio_));
 
   /** @type {ol.RegularShapeRenderOptions} */
   var renderOptions = {
@@ -434,7 +446,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   if (this.points_ === Infinity) {
     context.arc(
         renderOptions.size / 2, renderOptions.size / 2,
-        this.radius_, 0, 2 * Math.PI, true);
+        (this.radius_ * this.pixelRatio_), 0, 2 * Math.PI, true);
   } else {
     if (this.radius2_ !== this.radius_) {
       this.points_ = 2 * this.points_;
@@ -506,7 +518,7 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
   if (this.points_ === Infinity) {
     context.arc(
         renderOptions.size / 2, renderOptions.size / 2,
-        this.radius_, 0, 2 * Math.PI, true);
+        (this.radius_ * this.pixelRatio_), 0, 2 * Math.PI, true);
   } else {
     if (this.radius2_ !== this.radius_) {
       this.points_ = 2 * this.points_;
@@ -549,16 +561,19 @@ ol.style.RegularShape.prototype.getChecksum = function() {
       this.radius_ != this.checksums_[3] ||
       this.radius2_ != this.checksums_[4] ||
       this.angle_ != this.checksums_[5] ||
-      this.points_ != this.checksums_[6]);
+      this.points_ != this.checksums_[6]) ||
+      this.pixelRatio_ != this.checksums_[7];
+
 
   if (recalculate) {
     var checksum = 'r' + strokeChecksum + fillChecksum +
         (this.radius_ !== undefined ? this.radius_.toString() : '-') +
         (this.radius2_ !== undefined ? this.radius2_.toString() : '-') +
         (this.angle_ !== undefined ? this.angle_.toString() : '-') +
-        (this.points_ !== undefined ? this.points_.toString() : '-');
+        (this.points_ !== undefined ? this.points_.toString() : '-') +
+        (this.pixelRatio_ !== undefined ? this.pixelRatio_.toString() : '-');
     this.checksums_ = [checksum, strokeChecksum, fillChecksum,
-      this.radius_, this.radius2_, this.angle_, this.points_];
+      this.radius_, this.radius2_, this.angle_, this.points_, this.pixelRatio_];
   }
 
   return this.checksums_[0];

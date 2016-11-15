@@ -68,12 +68,13 @@ ol.renderer.vector.renderCircleGeometry_ = function(replayGroup, geometry, style
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
  * @param {function(this: T, ol.events.Event)} listener Listener function.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {T} thisArg Value to use as `this` when executing `listener`.
  * @return {boolean} `true` if style is loading.
  * @template T
  */
 ol.renderer.vector.renderFeature = function(
-    replayGroup, feature, style, squaredTolerance, listener, thisArg) {
+    replayGroup, feature, style, squaredTolerance, listener, pixelRatio, thisArg) {
   var loading = false;
   var imageStyle, imageState;
   imageStyle = style.getImage();
@@ -94,7 +95,7 @@ ol.renderer.vector.renderFeature = function(
     }
   }
   ol.renderer.vector.renderFeature_(replayGroup, feature, style,
-      squaredTolerance);
+      squaredTolerance, pixelRatio);
   return loading;
 };
 
@@ -104,10 +105,11 @@ ol.renderer.vector.renderFeature = function(
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.style.Style} style Style.
  * @param {number} squaredTolerance Squared tolerance.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
 ol.renderer.vector.renderFeature_ = function(
-    replayGroup, feature, style, squaredTolerance) {
+    replayGroup, feature, style, squaredTolerance, pixelRatio) {
   var geometry = style.getGeometryFunction()(feature);
   if (!geometry) {
     return;
@@ -115,7 +117,7 @@ ol.renderer.vector.renderFeature_ = function(
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
   var geometryRenderer =
       ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-  geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
+  geometryRenderer(replayGroup, simplifiedGeometry, style, feature, pixelRatio);
 };
 
 
@@ -124,15 +126,16 @@ ol.renderer.vector.renderFeature_ = function(
  * @param {ol.geom.GeometryCollection} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderGeometryCollectionGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderGeometryCollectionGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     var geometryRenderer =
         ol.renderer.vector.GEOMETRY_RENDERERS_[geometries[i].getType()];
-    geometryRenderer(replayGroup, geometries[i], style, feature);
+    geometryRenderer(replayGroup, geometries[i], style, feature, pixelRatio);
   }
 };
 
@@ -142,9 +145,10 @@ ol.renderer.vector.renderGeometryCollectionGeometry_ = function(replayGroup, geo
  * @param {ol.geom.LineString|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var strokeStyle = style.getStroke();
   if (strokeStyle) {
     var lineStringReplay = replayGroup.getReplay(
@@ -167,9 +171,10 @@ ol.renderer.vector.renderLineStringGeometry_ = function(replayGroup, geometry, s
  * @param {ol.geom.MultiLineString|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var strokeStyle = style.getStroke();
   if (strokeStyle) {
     var lineStringReplay = replayGroup.getReplay(
@@ -194,9 +199,10 @@ ol.renderer.vector.renderMultiLineStringGeometry_ = function(replayGroup, geomet
  * @param {ol.geom.MultiPolygon} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (strokeStyle || fillStyle) {
@@ -222,9 +228,10 @@ ol.renderer.vector.renderMultiPolygonGeometry_ = function(replayGroup, geometry,
  * @param {ol.geom.Point|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ol.Image.State.LOADED) {
@@ -232,7 +239,7 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
     }
     var imageReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.IMAGE);
-    imageReplay.setImageStyle(imageStyle);
+    imageReplay.setImageStyle(imageStyle, pixelRatio);
     imageReplay.drawPoint(geometry, feature);
   }
   var textStyle = style.getText();
@@ -251,9 +258,10 @@ ol.renderer.vector.renderPointGeometry_ = function(replayGroup, geometry, style,
  * @param {ol.geom.MultiPoint|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var imageStyle = style.getImage();
   if (imageStyle) {
     if (imageStyle.getImageState() != ol.Image.State.LOADED) {
@@ -261,7 +269,7 @@ ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, s
     }
     var imageReplay = replayGroup.getReplay(
         style.getZIndex(), ol.render.ReplayType.IMAGE);
-    imageReplay.setImageStyle(imageStyle);
+    imageReplay.setImageStyle(imageStyle, pixelRatio);
     imageReplay.drawMultiPoint(geometry, feature);
   }
   var textStyle = style.getText();
@@ -281,9 +289,10 @@ ol.renderer.vector.renderMultiPointGeometry_ = function(replayGroup, geometry, s
  * @param {ol.geom.Polygon|ol.render.Feature} geometry Geometry.
  * @param {ol.style.Style} style Style.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} pixelRatio Pixel ratio.
  * @private
  */
-ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, style, feature) {
+ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, style, feature, pixelRatio) {
   var fillStyle = style.getFill();
   var strokeStyle = style.getStroke();
   if (fillStyle || strokeStyle) {
@@ -308,7 +317,7 @@ ol.renderer.vector.renderPolygonGeometry_ = function(replayGroup, geometry, styl
  * @private
  * @type {Object.<ol.geom.GeometryType,
  *                function(ol.render.ReplayGroup, ol.geom.Geometry,
- *                         ol.style.Style, Object)>}
+ *                         ol.style.Style, Object, number)>}
  */
 ol.renderer.vector.GEOMETRY_RENDERERS_ = {
   'Point': ol.renderer.vector.renderPointGeometry_,
