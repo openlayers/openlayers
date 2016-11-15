@@ -96,9 +96,20 @@ ol.render.webgl.CircleReplay.prototype.drawCoordinates_ = function(
     this.vertices[numVertices++] = 2;
     this.vertices[numVertices++] = this.radius_;
 
-    this.indices[numIndices++] = n++;
-    this.indices[numIndices++] = n++;
-    this.indices[numIndices++] = n++;
+    this.vertices[numVertices++] = flatCoordinates[i];
+    this.vertices[numVertices++] = flatCoordinates[i + 1];
+    this.vertices[numVertices++] = 3;
+    this.vertices[numVertices++] = this.radius_;
+
+    this.indices[numIndices++] = n;
+    this.indices[numIndices++] = n + 1;
+    this.indices[numIndices++] = n + 2;
+
+    this.indices[numIndices++] = n + 2;
+    this.indices[numIndices++] = n + 3;
+    this.indices[numIndices++] = n;
+
+    n += 4;
   }
 };
 

@@ -53,8 +53,8 @@ describe('ol.render.webgl.CircleReplay', function() {
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.drawCircle(circle, null);
-      expect(replay.vertices).to.have.length(12);
-      expect(replay.indices).to.have.length(3);
+      expect(replay.vertices).to.have.length(16);
+      expect(replay.indices).to.have.length(6);
       expect(replay.state_.changed).to.be(false);
       expect(replay.startIndices).to.have.length(1);
       expect(replay.startIndicesFeature).to.have.length(1);
@@ -91,8 +91,9 @@ describe('ol.render.webgl.CircleReplay', function() {
       replay.radius_ = 5000;
       replay.drawCoordinates_([0, 0], 0, 2, 2);
 
-      expect(replay.vertices).to.eql([0, 0, 0, 5000, 0, 0, 1, 5000, 0, 0, 2, 5000]);
-      expect(replay.indices).to.eql([0, 1, 2]);
+      expect(replay.vertices).to.eql([0, 0, 0, 5000, 0, 0, 1, 5000,
+        0, 0, 2, 5000, 0, 0, 3, 5000]);
+      expect(replay.indices).to.eql([0, 1, 2, 2, 3, 0]);
     });
   });
 
