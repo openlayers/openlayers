@@ -674,7 +674,7 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_layerFilter, opt_this) 
 
 
 /**
- * Returns the geographical coordinate for a browser event.
+ * Returns the coordinate in view projection for a browser event.
  * @param {Event} event Event.
  * @return {ol.Coordinate} Coordinate.
  * @api stable

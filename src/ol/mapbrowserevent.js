@@ -47,7 +47,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   this.pixel = map.getEventPixel(browserEvent);
 
   /**
-   * The geographical coordinate corresponding the original browser event.
+   * The coordinate in view projection corresponding to the original browser event.
    * @type {ol.Coordinate}
    * @api stable
    */
