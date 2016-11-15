@@ -260,6 +260,16 @@ ol.style.Icon.prototype.getAnchor = function() {
 
 
 /**
+ * Get the icon color.
+ * @return {ol.Color} Color.
+ * @api
+ */
+ol.style.Icon.prototype.getColor = function() {
+  return this.color_;
+};
+
+
+/**
  * Get the image icon.
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image|HTMLCanvasElement} Image or Canvas element.
