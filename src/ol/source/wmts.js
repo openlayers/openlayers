@@ -317,9 +317,14 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
             var tileMatrixSet = ol.array.find(tileMatrixSets, function(el) {
               return el['Identifier'] == elt['TileMatrixSet'];
             });
-            return tileMatrixSet['SupportedCRS'].replace(
-                /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'
-                   ) == config['projection'];
+            var supportedCRS = tileMatrixSet['SupportedCRS'].replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3');
+            var proj1 = ol.proj.get(supportedCRS);
+            var proj2 = ol.proj.get(config['projection']);
+            if (proj1 && proj2) {
+              return ol.proj.equivalent(proj1, proj2);
+            } else {
+              return supportedCRS == config['projection'];
+            }
           });
     } else {
       idx = ol.array.findIndex(l['TileMatrixSetLink'],
