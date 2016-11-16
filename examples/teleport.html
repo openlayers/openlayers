@@ -1,21 +1,11 @@
 ---
-template: example.html
-title: Teleport example
+layout: example.html
+title: Teleporting Maps
 shortdesc: Example of moving a map from one target to another.
 docs: >
-  <p>Click on the Teleport button below the map to move the map from one target to another.</p>
+  <p>Click on the teleport button the map to move the map from one target to another.</p>
 tags: "teleport, openstreetmap"
 ---
-<div class="row-fluid">
-  <div class="span8">
-    <div id="map1" class="map"></div>
-  </div>
-  <div class="span4">
-    <div id="map2" class="map"></div>
-  </div>
-</div>
-<div class="row-fluid">
-  <div class="span12">
-    <a id="teleport" href="#" class="btn">Teleport</a>
-  </div>
-</div>
+<div id="map1" class="map"></div>
+<div id="map2" class="map"></div>
+<button id="teleport">Teleport</button>

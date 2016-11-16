@@ -1,20 +1,16 @@
 ---
-template: example.html
-title: Scale line example
+layout: example.html
+title: Scale Line
 shortdesc: Example of a scale line.
 docs: >
 
 tags: "scale-line, openstreetmap"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <select id="units">
-      <option value="degrees">degrees</option>
-      <option value="imperial">imperial inch</option>
-      <option value="us">us inch</option>
-      <option value="nautical">nautical mile</option>
-      <option value="metric">metric</option>
-    </select>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<select id="units">
+  <option value="degrees">degrees</option>
+  <option value="imperial">imperial inch</option>
+  <option value="us">us inch</option>
+  <option value="nautical">nautical mile</option>
+  <option value="metric" selected>metric</option>
+</select>

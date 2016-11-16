@@ -1,18 +1,14 @@
 ---
-template: example.html
-title: Fractal Example
+layout: example.html
+title: Fractal Rendering
 shortdesc: Example of a fractal.
 docs: >
-  Example of a fractal.
+  This example demonstrates how features with many vertices can be efficiently rendered.
 tags: "fractal, vector"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <label for="depth">
-      depth:&nbsp;
-      <input id="depth" type="range" min="0" max="9" step="1" value="5">
-      &nbsp;(<span id="count">#</span> points)
-    </label>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<label for="depth">
+  depth:&nbsp;
+  <input id="depth" type="range" min="0" max="9" step="1" value="5">
+  &nbsp;(<span id="count">#</span> points)
+</label>

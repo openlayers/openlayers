@@ -20,6 +20,7 @@ Table of contents:
 * [Why is the order of a coordinate [lon,lat], and not [lat,lon]?](#why-is-the-order-of-a-coordinate-lon-lat-and-not-lat-lon-)
 * [Why aren't there any features in my source?](#why-aren-t-there-any-features-in-my-source-)
 * [How do I force a re-render of the map?](#how-do-i-force-a-re-render-of-the-map-)
+* [Why are my features not found?](#why-are-my-features-not-found-)
 * [How do I create a custom build of OpenLayers?](#how-do-i-create-a-custom-build-of-openlayers-)
 * [Do I need to write my own code using Closure library?](#do-i-need-to-write-my-own-code-using-closure-library-)
 * [Do I need to compress my code with Closure compiler?](#do-i-need-to-compress-my-code-with-closure-compiler-)
@@ -161,6 +162,22 @@ var swissCoord = ol.proj.transform([8.23, 46.86], 'EPSG:4326', 'EPSG:21781');
 
 ## Why is the order of a coordinate [lon,lat], and not [lat,lon]?
 
+Because of two different and incompatible conventions. Latitude and longitude
+are normally given in that order. Maps are 2D representations/projections
+of the earth's surface, with coordinates expressed in the `x,y` grid of the
+[Cartesian system](https://en.wikipedia.org/wiki/Cartesian_coordinate_system).
+As they are by convention drawn with west on the left and north at the top,
+this means that `x` represents longitude, and `y` latitude. As stated above,
+OpenLayers is designed to handle all projections, but the default view is in
+projected Cartesian coordinates. It would make no sense to have duplicate
+functions to handle coordinates in both the Cartesian `x,y` and `lat,lon`
+systems, so the degrees of latitude and longitude should be entered as though
+they were Cartesian, in other words, they are `lon,lat`.
+
+If you have difficulty remembering which way round it is, use the language code
+for English, `en`, as a mnemonic: East before North.
+
+#### A practical example
 So you want to center your map on a certain place on the earth and obviously you
 need to have its coordinates for this. Let's assume you want your map centered
 on Schladming, a beautiful place in Austria. Head over to the wikipedia
@@ -300,6 +317,24 @@ map.render();
 map.renderSync();
 ```
 
+## Why are my features not found?
+
+You are using `ol.Map#forEachFeatureAtPixel` or `ol.Map#hasFeatureAtPixel`, but
+it sometimes does not work for large icons or labels? The *hit detection* only
+checks features that are within a certain distance of the given position. For large
+icons, the actual geometry of a feature might be too far away and is not considered.
+
+In this case, set the `renderBuffer` property of `ol.layer.Vector` (the default
+value is 100px):
+
+```javascript
+var vectorLayer = new ol.layer.Vector({
+  ...
+  renderBuffer: 200
+});
+```
+
+The recommended value is the size of the largest symbol, line width or label.
 
 ## How do I create a custom build of OpenLayers?
 

@@ -2,7 +2,9 @@ goog.require('ol.format.WMTSCapabilities');
 
 var parser = new ol.format.WMTSCapabilities();
 
-$.ajax('data/WMTSCapabilities.xml').then(function(response) {
-  var result = parser.read(response);
-  $('#log').html(window.JSON.stringify(result, null, 2));
+fetch('data/WMTSCapabilities.xml').then(function(response) {
+  return response.text();
+}).then(function(text) {
+  var result = parser.read(text);
+  document.getElementById('log').innerText = JSON.stringify(result, null, 2);
 });

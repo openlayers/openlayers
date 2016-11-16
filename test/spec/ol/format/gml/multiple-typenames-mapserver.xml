@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding="UTF-8" ?>
+<wfs:FeatureCollection
+   xmlns:ms="http://mapserver.gis.umn.edu/mapserver"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/WFS-basic.xsd
+                       http://mapserver.gis.umn.edu/mapserver https://server.com/mapserv?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=feature:information,feature:bus_stop&amp;OUTPUTFORMAT=XMLSCHEMA">
+      <gml:boundedBy>
+      	<gml:Box srsName="EPSG:21781">
+      		<gml:coordinates>539647.507960,151807.355864 540717.151197,152910.783525</gml:coordinates>
+      	</gml:Box>
+      </gml:boundedBy>
+    <gml:featureMember>
+      <ms:bus_stop fid="bus_stop.347267989">
+        <ms:osm_id>347267989</ms:osm_id>
+      </ms:bus_stop>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:bus_stop fid="bus_stop.983813610">
+        <ms:osm_id>983813610</ms:osm_id>
+      </ms:bus_stop>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:bus_stop fid="bus_stop.347549357">
+        <ms:osm_id>347549357</ms:osm_id>
+      </ms:bus_stop>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:information fid="information.34751234">
+        <ms:osm_id>34751234</ms:osm_id>
+      </ms:information>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:information fid="information.34751235">
+        <ms:osm_id>34751235</ms:osm_id>
+      </ms:information>
+    </gml:featureMember>
+</wfs:FeatureCollection>

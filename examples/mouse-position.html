@@ -1,25 +1,19 @@
 ---
-template: example.html
-title: Mouse position example
+layout: example.html
+title: Mouse Position
 shortdesc: Example of a mouse position control, outside the map.
 docs: >
   Example of a mouse position control, outside the map.
 tags: "mouse-position, openstreetmap"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-</div>
-<div class="span6">
-  <form>
-    <label>Projection </label>
-    <select id="projection">
-      <option value="EPSG:4326">EPSG:4326</option>
-      <option value="EPSG:3857">EPSG:3857</option>
-    </select>
-    <label>Precision </label>
-    <input id="precision" type="number" min="0" max="12" value="4"/>
-  </form>
-</div>
-<div class="span6" id="mouse-position">&nbsp;</div>
+<div id="map" class="map"></div>
+<div id="mouse-position"></div>
+<form>
+  <label>Projection </label>
+  <select id="projection">
+    <option value="EPSG:4326">EPSG:4326</option>
+    <option value="EPSG:3857">EPSG:3857</option>
+  </select>
+  <label>Precision </label>
+  <input id="precision" type="number" min="0" max="12" value="4"/>
+</form>

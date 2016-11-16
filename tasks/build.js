@@ -5,8 +5,7 @@ var path = require('path');
 
 var async = require('async');
 var closure = require('closure-util');
-var fse = require('fs-extra');
-var fs = require('graceful-fs');
+var fs = require('fs-extra');
 var nomnom = require('nomnom');
 var temp = require('temp').track();
 var exec = require('child_process').exec;
@@ -16,11 +15,11 @@ var generateExports = require('./generate-exports');
 var log = closure.log;
 var root = path.join(__dirname, '..');
 
-var umdWrapper = '(function (root, factory) {\n' +
-    '  if (typeof define === "function" && define.amd) {\n' +
-    '    define([], factory);\n' +
-    '  } else if (typeof exports === "object") {\n' +
+var umdWrapper = ';(function (root, factory) {\n' +
+    '  if (typeof exports === "object") {\n' +
     '    module.exports = factory();\n' +
+    '  } else if (typeof define === "function" && define.amd) {\n' +
+    '    define([], factory);\n' +
     '  } else {\n' +
     '    root.ol = factory();\n' +
     '  }\n' +
@@ -29,6 +28,8 @@ var umdWrapper = '(function (root, factory) {\n' +
     '  %output%\n' +
     '  return OPENLAYERS.ol;\n' +
     '}));\n';
+
+var version;
 
 
 /**
@@ -62,6 +63,12 @@ function assertValidConfig(config, callback) {
       config.namespace = 'OPENLAYERS';
       if (config.compile) {
         config.compile.output_wrapper = umdWrapper;
+        if (version) {
+          if (!config.compile.define) {
+            config.compile.define = [];
+          }
+          config.compile.define.push('ol.VERSION=\'' + version + '\'');
+        }
       }
     }
     callback(null);
@@ -180,6 +187,7 @@ function concatenate(paths, callback) {
           'var goog = this.goog = {};\n' +
           'this.CLOSURE_NO_DEPS = true;\n' +
           results.join('\n') +
+          'ol.VERSION = \'' + version + '\';\n' +
           'OPENLAYERS.ol = ol;\n' +
           parts[1];
       callback(null, src);
@@ -207,9 +215,23 @@ function build(config, paths, callback) {
     concatenate(paths, callback);
   } else {
     log.info('ol', 'Compiling ' + paths.length + ' sources');
+    paths = paths.concat('src/ol/typedefs.js');
     options.compile.js = paths.concat(options.compile.js || []);
     closure.compile(options, callback);
   }
+}
+
+
+/**
+ * Gets the version from the Git tag.
+ * @param {function(Error, string)} callback Called with the output
+ *     ready to be written into a file, or any error.
+ */
+function getVersion(callback) {
+  exec('git describe --tags', function(error, stdout, stderr) {
+    version = stdout.trim();
+    callback(null);
+  });
 }
 
 
@@ -220,15 +242,13 @@ function build(config, paths, callback) {
  *     ready to be written into a file, or any error.
  */
 function addHeader(compiledSource, callback) {
-  exec('git describe --tags', function(error, stdout, stderr) {
-    var header = '// OpenLayers 3. See http://openlayers.org/\n';
-    header += '// License: https://raw.githubusercontent.com/openlayers/' +
-        'ol3/master/LICENSE.md\n';
-    if (stdout !== '') {
-      header += '// Version: ' + stdout + '\n';
-    }
-    callback(null, header + compiledSource);
-  });
+  var header = '// OpenLayers 3. See http://openlayers.org/\n';
+  header += '// License: https://raw.githubusercontent.com/openlayers/' +
+      'ol3/master/LICENSE.md\n';
+  if (version !== '') {
+    header += '// Version: ' + version + '\n';
+  }
+  callback(null, header + compiledSource);
 }
 
 
@@ -241,6 +261,7 @@ function addHeader(compiledSource, callback) {
  */
 function main(config, callback) {
   async.waterfall([
+    getVersion,
     assertValidConfig.bind(null, config),
     generateExports.bind(null, config),
     getDependencies.bind(null, config),
@@ -285,7 +306,7 @@ if (require.main === module) {
   async.waterfall([
     readConfig.bind(null, options.config),
     main,
-    fse.outputFile.bind(fse, options.output)
+    fs.outputFile.bind(fs, options.output)
   ], function(err) {
     if (err) {
       log.error(err.message);

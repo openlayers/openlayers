@@ -1,36 +1,37 @@
 goog.provide('ol.easing');
 
-goog.require('goog.fx.easing');
-
 
 /**
  * Start slow and speed up.
- * @function
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.easeIn = goog.fx.easing.easeIn;
+ol.easing.easeIn = function(t) {
+  return Math.pow(t, 3);
+};
 
 
 /**
  * Start fast and slow down.
- * @function
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.easeOut = goog.fx.easing.easeOut;
+ol.easing.easeOut = function(t) {
+  return 1 - ol.easing.easeIn(1 - t);
+};
 
 
 /**
  * Start slow, speed up, and then slow down again.
- * @function
  * @param {number} t Input between 0 and 1.
  * @return {number} Output between 0 and 1.
  * @api
  */
-ol.easing.inAndOut = goog.fx.easing.inAndOut;
+ol.easing.inAndOut = function(t) {
+  return 3 * t * t - 2 * t * t * t;
+};
 
 
 /**

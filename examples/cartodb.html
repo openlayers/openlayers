@@ -1,0 +1,26 @@
+---
+layout: example.html
+title: CartoDB source example
+shortdesc: Example of a cartodb map.
+docs: >
+  A simple example with an anonymous cartodb map
+tags: "simple, openstreetmap, attribution"
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+    <div>
+    <form class="form-horizontal">
+      <label>
+        Show countries larger than
+        <select id="country-area" class="form-control">
+          <option value="0" default>0 ㎢</option>
+          <option value="5000">5000 ㎢</option>
+          <option value="10000">10000 ㎢</option>
+          <option value="50000">50000 ㎢</option>
+          <option value="100000">100000 ㎢</option>
+        </select>
+      </label>
+    </form>
+  </div>
+</div>

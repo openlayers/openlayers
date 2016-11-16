@@ -4,7 +4,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
 
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.
@@ -33,10 +32,11 @@ Progress.prototype.addLoading = function() {
  * Increment the count of loaded tiles.
  */
 Progress.prototype.addLoaded = function() {
+  var this_ = this;
   setTimeout(function() {
-    ++this.loaded;
-    this.update();
-  }.bind(this), 100);
+    ++this_.loaded;
+    this_.update();
+  }, 100);
 };
 
 
@@ -49,7 +49,10 @@ Progress.prototype.update = function() {
   if (this.loading === this.loaded) {
     this.loading = 0;
     this.loaded = 0;
-    setTimeout(this.hide.bind(this), 500);
+    var this_ = this;
+    setTimeout(function() {
+      this_.hide();
+    }, 500);
   }
 };
 
@@ -75,18 +78,18 @@ Progress.prototype.hide = function() {
 var progress = new Progress(document.getElementById('progress'));
 
 var source = new ol.source.TileJSON({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.world-bright.jsonp',
+  url: 'https://api.tiles.mapbox.com/v3/mapbox.world-bright.json?secure',
   crossOrigin: 'anonymous'
 });
 
-source.on('tileloadstart', function(event) {
+source.on('tileloadstart', function() {
   progress.addLoading();
 });
 
-source.on('tileloadend', function(event) {
+source.on('tileloadend', function() {
   progress.addLoaded();
 });
-source.on('tileloaderror', function(event) {
+source.on('tileloaderror', function() {
   progress.addLoaded();
 });
 

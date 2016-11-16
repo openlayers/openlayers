@@ -1,16 +1,15 @@
 ---
-template: example.html
-title: Vector labels example
+layout: example.html
+title: Vector Labels
 shortdesc: Example of GeoJSON features with labels.
 docs: >
-  **Note:** The 'Text/Wrap' option is currently not working properly. This is because ol3 uses Canvas's strokeText and fillText functions that do not support text wrapping.
+  This example showcases a number of options that can be set on text styles.
+  When "Text/Wrap" is chosen (for example for the line features), the label is
+  wrapped by inserting the character `\n`, which will create a multi-line
+  label.
 tags: "geojson, vector, openstreetmap, label"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-</div>
+<div id="map" class="map"></div>
 
 <div class="edit-form">
   <input id="refresh-points" type="button" value="Refresh" />
@@ -278,3 +277,4 @@ tags: "geojson, vector, openstreetmap, label"
     <input type="text" value="3" id="polygons-outline-width" />
   </div>
 </div>
+<div class="clearall"></div>

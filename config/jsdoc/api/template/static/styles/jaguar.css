@@ -1,4 +1,4 @@
-@import url(http://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
+@import url(https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
 .navbar-inverse {
   border: 0;
 }
@@ -415,4 +415,8 @@ footer {
   top: 1em;
   left: 250px;
   font-weight: normal;
+}
+#latest-check {
+  margin-top: -10px;
+  margin-bottom: 10px;
 }

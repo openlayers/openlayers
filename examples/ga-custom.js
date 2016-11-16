@@ -18,10 +18,7 @@ var map = new ga.Map({
   })
 });
 
-var lyr = ga.layer.create(
-    'ch.swisstopo.lubis-luftbilder_schwarzweiss',
-    {timestamp: '19541231'}
-    );
+var lyr = ga.layer.create('ch.swisstopo.lubis-luftbilder_schwarzweiss',{timestamp: '19541231'});
 var lyr1 = ga.layer.create('ch.swisstopo.pixelkarte-farbe', {opacity: 0.40});
 
 map.addLayer(lyr1);

@@ -1,0 +1,36 @@
+---
+layout: example.html
+title: Region Growing
+shortdesc: Grow a region from a seed pixel
+docs: >
+  <p>Click a region on the map. The computed region will be red.</p>
+  <p>
+    This example uses a <code>ol.source.Raster</code> to generate data
+    based on another source.  The raster source accepts any number of
+    input sources (tile or image based) and runs a pipeline of
+    operations on the input data.  The return from the final
+    operation is used as the data for the output source.
+  </p>
+  <p>
+    In this case, a single tiled source of imagery data is used as input.
+    The region is calculated in a single "image" operation using the "seed"
+    pixel provided by the user clicking on the map. The "threshold" value
+    determines whether a given contiguous pixel belongs to the "region" - the
+    difference between a candidate pixel's RGB values and the seed values must
+    be below the threshold.
+  </p>
+  <p>
+    This example also shows how an additional function can be made available
+    to the operation.
+  </p>
+tags: "raster, region growing"
+cloak:
+  AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF: Your Bing Maps Key from http://www.bingmapsportal.com/ here
+---
+<div id="map" class="map" style="cursor: pointer"></div>
+<table class="controls">
+  <tr>
+    <td>Threshold: <span id="threshold-value"></span></td>
+    <td><input id="threshold" type="range" min="1" max="50" value="20"></td>
+  </tr>
+</table>

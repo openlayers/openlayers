@@ -11,6 +11,12 @@ set -o errexit
 #
 MERGE_RE=Merge\ pull\ request\ #\([0-9]+\)\ from\ \([^/]+\)\/[^\ ]+\ \(.*\)
 
+#
+# Regex to match the squash commit message. Creates capture groups for git
+# author, commit subject and pull request number.
+#
+SQUASH_RE='([^\|]+)\|([^\(]+) \(#([0-9]+)\)'
+
 GITHUB_URL=https://github.com
 PULLS_URL=${GITHUB_URL}/openlayers/ol3/pull
 
@@ -35,7 +41,7 @@ EOF
 # branch (instead only showing merges to master).
 #
 main() {
-  git log --first-parent --format='%s %b' ${1} |
+  git log --first-parent --format='%aN|%s %b' ${1} |
   {
     while read l; do
       if [[ ${l} =~ ${MERGE_RE} ]] ; then
@@ -43,6 +49,11 @@ main() {
         author="${BASH_REMATCH[2]}"
         summary="${BASH_REMATCH[3]}"
         echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([@${author}](${GITHUB_URL}/${author}))"
+      elif [[ ${l} =~ ${SQUASH_RE} ]] ; then
+        number="${BASH_REMATCH[3]}"
+        author="${BASH_REMATCH[1]}"
+        summary="${BASH_REMATCH[2]}"
+        echo " * [#${number}](${PULLS_URL}/${number}) - ${summary} ([${author}](${GITHUB_URL}/search?q=${author}&type=Users))"
       fi
     done
   }

@@ -84,4 +84,4 @@ var map = new ol.Map({
   })
 });
 
-map.getView().fitExtent([0, 0, width, height], map.getSize());
+map.getView().fit([0, 0, width, height], map.getSize());

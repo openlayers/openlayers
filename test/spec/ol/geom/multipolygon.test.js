@@ -1,12 +1,14 @@
 goog.provide('ol.test.geom.MultiPolygon');
 
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Polygon');
+
 
 describe('ol.geom.MultiPolygon', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var multiPolygon = new ol.geom.MultiPolygon(null);
-      multiPolygon = multiPolygon; // suppress gjslint warning
+      return new ol.geom.MultiPolygon(null);
     }).not.to.throwException();
   });
 
@@ -56,6 +58,37 @@ describe('ol.geom.MultiPolygon', function() {
 
   });
 
+  describe('#scale()', function() {
+
+    it('scales a multi-polygon', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(10);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-10, -20], [10, -20], [10, 20], [-10, 20], [-10, -20]]]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(2, 3);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-2, -6], [2, -6], [2, 6], [-2, 6], [-2, -6]]]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.MultiPolygon([[
+        [[-1, -2], [1, -2], [1, 2], [-1, 2], [-1, -2]]
+      ]]);
+      geom.scale(3, 2, [-1, -2]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[[[-1, -2], [5, -2], [5, 6], [-1, 6], [-1, -2]]]]);
+    });
+
+  });
+
   describe('with a simple MultiPolygon', function() {
 
     var multiPolygon;
@@ -87,6 +120,15 @@ describe('ol.geom.MultiPolygon', function() {
       expect(polygons[1]).to.be.an(ol.geom.Polygon);
       expect(polygons[1].getCoordinates()).to.eql(
           [[[3, 0], [4, 1], [5, 2], [5, 0]]]);
+    });
+
+    describe('#clone()', function() {
+
+      it('has the expected endss_', function() {
+        var clone = multiPolygon.clone();
+        expect(multiPolygon.endss_).to.eql(clone.endss_);
+      });
+
     });
 
     describe('#getCoordinates()', function() {
@@ -154,7 +196,3 @@ describe('ol.geom.MultiPolygon', function() {
   });
 
 });
-
-
-goog.require('ol.geom.MultiPolygon');
-goog.require('ol.geom.Polygon');

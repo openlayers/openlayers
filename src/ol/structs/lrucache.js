@@ -1,8 +1,7 @@
 goog.provide('ol.structs.LRUCache');
 
-goog.require('goog.asserts');
-goog.require('goog.object');
-
+goog.require('ol.asserts');
+goog.require('ol.obj');
 
 
 /**
@@ -23,68 +22,70 @@ ol.structs.LRUCache = function() {
 
   /**
    * @private
-   * @type {Object.<string, ol.structs.LRUCacheEntry>}
+   * @type {!Object.<string, ol.LRUCacheEntry>}
    */
   this.entries_ = {};
 
   /**
    * @private
-   * @type {?ol.structs.LRUCacheEntry}
+   * @type {?ol.LRUCacheEntry}
    */
   this.oldest_ = null;
 
   /**
    * @private
-   * @type {?ol.structs.LRUCacheEntry}
+   * @type {?ol.LRUCacheEntry}
    */
   this.newest_ = null;
 
 };
 
 
-/**
- * FIXME empty description for jsdoc
- */
-ol.structs.LRUCache.prototype.assertValid = function() {
-  if (this.count_ === 0) {
-    goog.asserts.assert(goog.object.isEmpty(this.entries_),
-        'entries must be an empty object (count = 0)');
-    goog.asserts.assert(goog.isNull(this.oldest_),
-        'oldest must be null (count = 0)');
-    goog.asserts.assert(goog.isNull(this.newest_),
-        'newest must be null (count = 0)');
-  } else {
-    goog.asserts.assert(goog.object.getCount(this.entries_) == this.count_,
-        'number of entries matches count');
-    goog.asserts.assert(!goog.isNull(this.oldest_),
-        'we have an oldest entry');
-    goog.asserts.assert(goog.isNull(this.oldest_.older),
-        'no entry is older than oldest');
-    goog.asserts.assert(!goog.isNull(this.newest_),
-        'we have a newest entry');
-    goog.asserts.assert(goog.isNull(this.newest_.newer),
-        'no entry is newer than newest');
-    var i, entry;
-    var older = null;
-    i = 0;
-    for (entry = this.oldest_; !goog.isNull(entry); entry = entry.newer) {
-      goog.asserts.assert(entry.older === older,
-          'entry.older links to correct older');
-      older = entry;
-      ++i;
+if (goog.DEBUG) {
+  /**
+   * FIXME empty description for jsdoc
+   */
+  ol.structs.LRUCache.prototype.assertValid = function() {
+    if (this.count_ === 0) {
+      console.assert(ol.obj.isEmpty(this.entries_),
+          'entries must be an empty object (count = 0)');
+      console.assert(!this.oldest_,
+          'oldest must be null (count = 0)');
+      console.assert(!this.newest_,
+          'newest must be null (count = 0)');
+    } else {
+      console.assert(Object.keys(this.entries_).length == this.count_,
+          'number of entries matches count');
+      console.assert(this.oldest_,
+          'we have an oldest entry');
+      console.assert(!this.oldest_.older,
+          'no entry is older than oldest');
+      console.assert(this.newest_,
+          'we have a newest entry');
+      console.assert(!this.newest_.newer,
+          'no entry is newer than newest');
+      var i, entry;
+      var older = null;
+      i = 0;
+      for (entry = this.oldest_; entry; entry = entry.newer) {
+        console.assert(entry.older === older,
+            'entry.older links to correct older');
+        older = entry;
+        ++i;
+      }
+      console.assert(i == this.count_, 'iterated correct amount of times');
+      var newer = null;
+      i = 0;
+      for (entry = this.newest_; entry; entry = entry.older) {
+        console.assert(entry.newer === newer,
+            'entry.newer links to correct newer');
+        newer = entry;
+        ++i;
+      }
+      console.assert(i == this.count_, 'iterated correct amount of times');
     }
-    goog.asserts.assert(i == this.count_, 'iterated correct amount of times');
-    var newer = null;
-    i = 0;
-    for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
-      goog.asserts.assert(entry.newer === newer,
-          'entry.newer links to correct newer');
-      newer = entry;
-      ++i;
-    }
-    goog.asserts.assert(i == this.count_, 'iterated correct amount of times');
-  }
-};
+  };
+}
 
 
 /**
@@ -117,7 +118,7 @@ ol.structs.LRUCache.prototype.containsKey = function(key) {
  */
 ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
   var entry = this.oldest_;
-  while (!goog.isNull(entry)) {
+  while (entry) {
     f.call(opt_this, entry.value_, entry.key_, this);
     entry = entry.newer;
   }
@@ -130,11 +131,12 @@ ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
  */
 ol.structs.LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
-  goog.asserts.assert(goog.isDef(entry), 'an entry exists for key %s', key);
+  ol.asserts.assert(entry !== undefined,
+      15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     return entry.value_;
   } else if (entry === this.oldest_) {
-    this.oldest_ = this.oldest_.newer;
+    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (this.oldest_.newer);
     this.oldest_.older = null;
   } else {
     entry.newer.older = entry.older;
@@ -163,10 +165,10 @@ ol.structs.LRUCache.prototype.getKeys = function() {
   var keys = new Array(this.count_);
   var i = 0;
   var entry;
-  for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
+  for (entry = this.newest_; entry; entry = entry.older) {
     keys[i++] = entry.key_;
   }
-  goog.asserts.assert(i == this.count_, 'iterated correct number of times');
+  goog.DEBUG && console.assert(i == this.count_, 'iterated correct number of times');
   return keys;
 };
 
@@ -178,10 +180,10 @@ ol.structs.LRUCache.prototype.getValues = function() {
   var values = new Array(this.count_);
   var i = 0;
   var entry;
-  for (entry = this.newest_; !goog.isNull(entry); entry = entry.older) {
+  for (entry = this.newest_; entry; entry = entry.older) {
     values[i++] = entry.value_;
   }
-  goog.asserts.assert(i == this.count_, 'iterated correct number of times');
+  goog.DEBUG && console.assert(i == this.count_, 'iterated correct number of times');
   return values;
 };
 
@@ -190,7 +192,7 @@ ol.structs.LRUCache.prototype.getValues = function() {
  * @return {T} Last value.
  */
 ol.structs.LRUCache.prototype.peekLast = function() {
-  goog.asserts.assert(!goog.isNull(this.oldest_), 'oldest must not be null');
+  goog.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
   return this.oldest_.value_;
 };
 
@@ -199,7 +201,7 @@ ol.structs.LRUCache.prototype.peekLast = function() {
  * @return {string} Last key.
  */
 ol.structs.LRUCache.prototype.peekLastKey = function() {
-  goog.asserts.assert(!goog.isNull(this.oldest_), 'oldest must not be null');
+  goog.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
   return this.oldest_.key_;
 };
 
@@ -208,17 +210,17 @@ ol.structs.LRUCache.prototype.peekLastKey = function() {
  * @return {T} value Value.
  */
 ol.structs.LRUCache.prototype.pop = function() {
-  goog.asserts.assert(!goog.isNull(this.oldest_), 'oldest must not be null');
-  goog.asserts.assert(!goog.isNull(this.newest_), 'newest must not be null');
+  goog.DEBUG && console.assert(this.oldest_, 'oldest must not be null');
+  goog.DEBUG && console.assert(this.newest_, 'newest must not be null');
   var entry = this.oldest_;
-  goog.asserts.assert(entry.key_ in this.entries_,
+  goog.DEBUG && console.assert(entry.key_ in this.entries_,
       'oldest is indexed in entries');
   delete this.entries_[entry.key_];
-  if (!goog.isNull(entry.newer)) {
+  if (entry.newer) {
     entry.newer.older = null;
   }
-  this.oldest_ = entry.newer;
-  if (goog.isNull(this.oldest_)) {
+  this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+  if (!this.oldest_) {
     this.newest_ = null;
   }
   --this.count_;
@@ -230,18 +232,28 @@ ol.structs.LRUCache.prototype.pop = function() {
  * @param {string} key Key.
  * @param {T} value Value.
  */
+ol.structs.LRUCache.prototype.replace = function(key, value) {
+  this.get(key);  // update `newest_`
+  this.entries_[key].value_ = value;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @param {T} value Value.
+ */
 ol.structs.LRUCache.prototype.set = function(key, value) {
-  goog.asserts.assert(!(key in {}),
+  goog.DEBUG && console.assert(!(key in {}),
       'key is not a standard property of objects (e.g. "__proto__")');
-  goog.asserts.assert(!(key in this.entries_),
-      'key is not used already');
-  var entry = {
+  ol.asserts.assert(!(key in this.entries_),
+      16); // Tried to set a value for a key that is used already
+  var entry = /** @type {ol.LRUCacheEntry} */ ({
     key_: key,
     newer: null,
     older: this.newest_,
     value_: value
-  };
-  if (goog.isNull(this.newest_)) {
+  });
+  if (!this.newest_) {
     this.oldest_ = entry;
   } else {
     this.newest_.newer = entry;
@@ -250,12 +262,3 @@ ol.structs.LRUCache.prototype.set = function(key, value) {
   this.entries_[key] = entry;
   ++this.count_;
 };
-
-
-/**
- * @typedef {{key_: string,
- *            newer: ol.structs.LRUCacheEntry,
- *            older: ol.structs.LRUCacheEntry,
- *            value_: *}}
- */
-ol.structs.LRUCacheEntry;

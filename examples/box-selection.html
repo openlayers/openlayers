@@ -1,20 +1,12 @@
 ---
-template: example.html
-title: Box selection example
+layout: example.html
+title: Box Selection
 shortdesc: Using a DragBox interaction to select features.
 docs: >
   <p>This example shows how to use a <code>DragBox</code> interaction to select features. Selected features are added
   to the feature overlay of a select interaction (<code>ol.interaction.Select</code>) for highlighting.</p>
-  <p>Use <code>SHIFT+drag</code> to draw boxes.</p>
+  <p>Use <code>Ctrl+Drag</code> (<code>Command+Drag</code> on Mac) to draw boxes.</p>
 tags: "DragBox, feature, selection, box"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-  <div class="span4 offset4 pull-right">
-    <div id="info" class="alert alert-success">
-      &nbsp;
-    </div>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<div id="info">No countries selected</div>

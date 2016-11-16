@@ -1,4 +1,3 @@
-goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.extent');
@@ -21,12 +20,8 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Image({
       source: new ol.source.ImageStatic({
-        attributions: [
-          new ol.Attribution({
-            html: '&copy; <a href="http://xkcd.com/license.html">xkcd</a>'
-          })
-        ],
-        url: 'http://imgs.xkcd.com/comics/online_communities.png',
+        attributions: '© <a href="http://xkcd.com/license.html">xkcd</a>',
+        url: 'https://imgs.xkcd.com/comics/online_communities.png',
         projection: projection,
         imageExtent: extent
       })
@@ -36,6 +31,7 @@ var map = new ol.Map({
   view: new ol.View({
     projection: projection,
     center: ol.extent.getCenter(extent),
-    zoom: 2
+    zoom: 2,
+    maxZoom: 8
   })
 });

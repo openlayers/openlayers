@@ -19,8 +19,10 @@ var map = new ga.Map({
 });
 
 var lyr = ga.layer.create('ch.swisstopo.pixelkarte-farbe');
+var lyr1 = ga.layer.create('ch.swisstopo.fixpunkte-agnes');
 
 map.addLayer(lyr);
+map.addLayer(lyr1);
 
 map.recenterFeature('ch.swisstopo.fixpunkte-agnes', 'PAYE');
 map.highlightFeature('ch.swisstopo.fixpunkte-agnes', 'PAYE');

@@ -1,5 +1,11 @@
 goog.provide('ol.test.MapBrowserEventHandler');
 
+goog.require('ol.events');
+goog.require('ol.Map');
+goog.require('ol.MapBrowserEventHandler');
+goog.require('ol.pointer.PointerEvent');
+
+
 describe('ol.MapBrowserEventHandler', function() {
   describe('#emulateClick_', function() {
     var clock;
@@ -11,19 +17,19 @@ describe('ol.MapBrowserEventHandler', function() {
 
     beforeEach(function() {
       clock = sinon.useFakeTimers();
-      target = goog.dom.createElement(goog.dom.TagName.DIV);
+      target = document.createElement('DIV');
       handler = new ol.MapBrowserEventHandler(new ol.Map({
         target: target
       }));
 
       clickSpy = sinon.spy();
-      goog.events.listen(handler, 'click', clickSpy);
+      ol.events.listen(handler, 'click', clickSpy);
 
       singleclickSpy = sinon.spy();
-      goog.events.listen(handler, 'singleclick', singleclickSpy);
+      ol.events.listen(handler, 'singleclick', singleclickSpy);
 
       dblclickSpy = sinon.spy();
-      goog.events.listen(handler, 'dblclick', dblclickSpy);
+      ol.events.listen(handler, 'dblclick', dblclickSpy);
 
     });
 
@@ -32,24 +38,22 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('emulates click', function() {
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
-          new goog.events.BrowserEvent({
-            type: 'mousedown',
-            target: target,
-            clientX: 0,
-            clientY: 0
-          })));
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(clickSpy.called).to.be.ok();
     });
 
     it('emulates singleclick', function() {
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
-          new goog.events.BrowserEvent({
-            type: 'mousedown',
-            target: target,
-            clientX: 0,
-            clientY: 0
-          })));
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
@@ -57,35 +61,32 @@ describe('ol.MapBrowserEventHandler', function() {
       expect(singleclickSpy.calledOnce).to.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
-          new goog.events.BrowserEvent({
-            type: 'mousedown',
-            target: target,
-            clientX: 0,
-            clientY: 0
-          })));
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.calledOnce).to.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
     });
 
     it('emulates dblclick', function() {
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
-          new goog.events.BrowserEvent({
-            type: 'mousedown',
-            target: target,
-            clientX: 0,
-            clientY: 0
-          })));
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.called).to.not.be.ok();
 
-      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown',
-          new goog.events.BrowserEvent({
-            type: 'mousedown',
-            target: target,
-            clientX: 0,
-            clientY: 0
-          })));
+      handler.emulateClick_(new ol.pointer.PointerEvent('pointerdown', {
+        type: 'mousedown',
+        target: target,
+        clientX: 0,
+        clientY: 0
+      }));
       expect(singleclickSpy.called).to.not.be.ok();
       expect(dblclickSpy.calledOnce).to.be.ok();
 
@@ -108,19 +109,10 @@ describe('ol.MapBrowserEventHandler', function() {
     });
 
     it('is an event after handlePointerDown_ has been called', function() {
-      var event = new ol.pointer.PointerEvent('pointerdown',
-          new goog.events.BrowserEvent({}));
+      var event = new ol.pointer.PointerEvent('pointerdown', {});
       handler.handlePointerDown_(event);
       expect(handler.down_).to.be(event);
     });
 
   });
 });
-
-goog.require('goog.dom');
-goog.require('goog.dom.TagName');
-goog.require('goog.events');
-goog.require('goog.events.BrowserEvent');
-goog.require('ol.Map');
-goog.require('ol.MapBrowserEventHandler');
-goog.require('ol.pointer.PointerEvent');

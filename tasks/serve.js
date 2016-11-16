@@ -10,7 +10,7 @@ var url = require('url');
 var Gaze = require('gaze').Gaze;
 var closure = require('closure-util');
 var debounce = require('debounce');
-var fse = require('fs-extra');
+var fs = require('fs-extra');
 var nomnom = require('nomnom');
 
 var buildExamples = require('./build-examples');
@@ -89,7 +89,7 @@ function buildExamplesOrFatal(opt_callback) {
     // This is awkward, but then so is CSS itself
     var src = path.join(__dirname, '..', 'css', 'ol.css');
     var dest = path.join(__dirname, '..', 'build', 'css', 'ol.css');
-    fse.copy(src, dest, function(err2) {
+    fs.copy(src, dest, function(err2) {
       if (err2) {
         log.error('serve', 'Failed to copy CSS.');
         log.error('serve', err.message);

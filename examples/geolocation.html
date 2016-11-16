@@ -1,24 +1,21 @@
 ---
-template: example.html
-title: Geolocation example
-shortdesc: Example of a geolocation map.
+layout: example.html
+title: Geolocation
+shortdesc: Using geolocation to control a map view.
 docs: >
-  Example of a geolocation map.
+  This example uses the Geolocation API to control the view.
 tags: "geolocation, openstreetmap"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <div class="span4 pull-right">
-      <div id="info" class="alert alert-error" style="display: none;"></div>
-    </div>
-    <label class="checkbox" for="track">
-      <input id="track" type="checkbox"/>track position
-    </label>
-    <p>position accuracy : <code id="accuracy"></code></p>
-    <p>altitude : <code id="altitude"></code></p>
-    <p>altitude accuracy : <code id="altitudeAccuracy"></code></p>
-    <p>heading : <code id="heading"></code></p>
-    <p>speed : <code id="speed"></code></p>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<div id="info" style="display: none;"></div>
+<label for="track">
+  track position
+  <input id="track" type="checkbox"/>
+</label>
+<p>
+  position accuracy : <code id="accuracy"></code>&nbsp;&nbsp;
+  altitude : <code id="altitude"></code>&nbsp;&nbsp;
+  altitude accuracy : <code id="altitudeAccuracy"></code>&nbsp;&nbsp;
+  heading : <code id="heading"></code>&nbsp;&nbsp;
+  speed : <code id="speed"></code>
+</p>

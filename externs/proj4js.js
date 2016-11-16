@@ -5,12 +5,21 @@
 
 
 /**
- * @param {...*} var_args
- * @return {undefined|Array.<number>|Object.<{
- *     forward: function(Array.<number>): Array.<number>,
- *     inverse: function(Array.<number>): Array.<number>}>}
+ * @constructor
  */
-var proj4 = function(var_args) {};
+var proj4 = function() {};
+
+
+/**
+ * @type {function(Array.<number>): Array.<number>}
+ */
+proj4.prototype.forward;
+
+
+/**
+ * @type {function(Array.<number>): Array.<number>}
+ */
+proj4.prototype.inverse;
 
 
 /**

@@ -1,4 +1,3 @@
-goog.require('ol.Attribution');
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.format.EsriJSON');
@@ -11,6 +10,7 @@ goog.require('ol.source.XYZ');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.tilegrid');
 
 
 var serviceUrl = 'http://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
@@ -20,50 +20,42 @@ var layer = '0';
 var esrijsonFormat = new ol.format.EsriJSON();
 
 var styleCache = {
-  'ABANDONED': [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(225, 225, 225, 255)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(0, 0, 0, 255)',
-        width: 0.4
-      })
+  'ABANDONED': new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(225, 225, 225, 255)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(0, 0, 0, 255)',
+      width: 0.4
     })
-  ],
-  'GAS': [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(255, 0, 0, 255)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(110, 110, 110, 255)',
-        width: 0.4
-      })
+  }),
+  'GAS': new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(255, 0, 0, 255)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(110, 110, 110, 255)',
+      width: 0.4
     })
-  ],
-  'OIL': [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(56, 168, 0, 255)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(110, 110, 110, 255)',
-        width: 0
-      })
+  }),
+  'OIL': new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(56, 168, 0, 255)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(110, 110, 110, 255)',
+      width: 0
     })
-  ],
-  'OILGAS': [
-    new ol.style.Style({
-      fill: new ol.style.Fill({
-        color: 'rgba(168, 112, 0, 255)'
-      }),
-      stroke: new ol.style.Stroke({
-        color: 'rgba(110, 110, 110, 255)',
-        width: 0.4
-      })
+  }),
+  'OILGAS': new ol.style.Style({
+    fill: new ol.style.Fill({
+      color: 'rgba(168, 112, 0, 255)'
+    }),
+    stroke: new ol.style.Stroke({
+      color: 'rgba(110, 110, 110, 255)',
+      width: 0.4
     })
-  ]
+  })
 };
 
 var vectorSource = new ol.source.Vector({
@@ -97,22 +89,17 @@ var vectorSource = new ol.source.Vector({
 
 var vector = new ol.layer.Vector({
   source: vectorSource,
-  style: function(feature, resolution) {
+  style: function(feature) {
     var classify = feature.get('activeprod');
     return styleCache[classify];
   }
 });
 
-
-var attribution = new ol.Attribution({
-  html: 'Tiles &copy; <a href="http://services.arcgisonline.com/ArcGIS/' +
-      'rest/services/World_Topo_Map/MapServer">ArcGIS</a>'
-});
-
 var raster = new ol.layer.Tile({
   source: new ol.source.XYZ({
-    attributions: [attribution],
-    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/' +
+    attributions: 'Tiles © <a href="http://services.arcgisonline.com/ArcGIS/' +
+        'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
         'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
   })
 });
@@ -128,7 +115,7 @@ var map = new ol.Map({
 
 var displayFeatureInfo = function(pixel) {
   var features = [];
-  map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  map.forEachFeatureAtPixel(pixel, function(feature) {
     features.push(feature);
   });
   if (features.length > 0) {

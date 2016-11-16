@@ -1,14 +1,12 @@
 goog.provide('ga.style');
 goog.provide('ga.style.StylesFromLiterals');
 
-goog.require('goog.asserts');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.MultiLineString');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.MultiPolygon');
-goog.require('ol.style.AtlasManager');
 goog.require('ol.style.Style');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');

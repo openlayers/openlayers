@@ -1,12 +1,16 @@
 goog.provide('ol.test.geom.GeometryCollection');
 
-goog.require('ol.extent');
+goog.require('ol.geom.Geometry');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.Point');
+goog.require('ol.geom.Polygon');
 
 describe('ol.geom.GeometryCollection', function() {
 
-  var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]],
-      inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]],
-      inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
+  var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]];
+  var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
+  var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
 
   describe('constructor', function() {
 
@@ -117,6 +121,8 @@ describe('ol.geom.GeometryCollection', function() {
 
   describe('#intersectsExtent()', function() {
 
+    var point, line, poly, multi;
+
     beforeEach(function() {
       point = new ol.geom.Point([5, 20]);
       line = new ol.geom.LineString([[10, 20], [30, 40]]);
@@ -135,7 +141,6 @@ describe('ol.geom.GeometryCollection', function() {
     it('returns true for intersecting part of polygon', function() {
       expect(multi.intersectsExtent([0, 0, 5, 5])).to.be(true);
     });
-
 
     it('returns false for non-matching extent within own extent', function() {
       var extent = [0, 35, 5, 40];
@@ -165,6 +170,43 @@ describe('ol.geom.GeometryCollection', function() {
       expect(multi.getExtent()).to.eql([0, 0, 30, 40]);
       line.setCoordinates([[10, 20], [300, 400]]);
       expect(multi.getExtent()).to.eql([0, 0, 300, 400]);
+    });
+
+  });
+
+  describe('#scale()', function() {
+
+    it('scales a collection', function() {
+      var geom = new ol.geom.GeometryCollection([
+        new ol.geom.Point([-1, -2]),
+        new ol.geom.LineString([[0, 0], [1, 2]])
+      ]);
+      geom.scale(10);
+      var geometries = geom.getGeometries();
+      expect(geometries[0].getCoordinates()).to.eql([-10, -20]);
+      expect(geometries[1].getCoordinates()).to.eql([[0, 0], [10, 20]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.GeometryCollection([
+        new ol.geom.Point([-1, -2]),
+        new ol.geom.LineString([[0, 0], [1, 2]])
+      ]);
+      geom.scale(2, 3);
+      var geometries = geom.getGeometries();
+      expect(geometries[0].getCoordinates()).to.eql([-2, -6]);
+      expect(geometries[1].getCoordinates()).to.eql([[0, 0], [2, 6]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.GeometryCollection([
+        new ol.geom.Point([-1, -2]),
+        new ol.geom.LineString([[0, 0], [1, 2]])
+      ]);
+      geom.scale(10, 15, [-1, -2]);
+      var geometries = geom.getGeometries();
+      expect(geometries[0].getCoordinates()).to.eql([-1, -2]);
+      expect(geometries[1].getCoordinates()).to.eql([[9, 28], [19, 58]]);
     });
 
   });
@@ -199,10 +241,3 @@ describe('ol.geom.GeometryCollection', function() {
   });
 
 });
-
-
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryCollection');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');

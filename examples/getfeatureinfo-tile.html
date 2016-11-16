@@ -1,18 +1,10 @@
 ---
-template: example.html
-title: WMS GetFeatureInfo example (tile layer)
-shortdesc: This example shows how to trigger WMS GetFeatureInfo requests on click for a WMS tile layer.
+layout: example.html
+title: WMS GetFeatureInfo (Tile Layer)
+shortdesc: Issuing GetFeatureInfo requests with a WMS tiled source
 docs: >
-  <p>Additionally <code>map.forEachLayerAtPixel</code> is used to change the mouse pointer when hovering a non-transparent pixel on the map.</p>
+  This example shows how to trigger WMS GetFeatureInfo requests on click for a WMS tile layer.  Additionally <code>map.forEachLayerAtPixel</code> is used to change the mouse pointer when hovering a non-transparent pixel on the map.
 tags: "getfeatureinfo, forEachLayerAtPixel"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-    <div class="span4 offset4 pull-right">
-      <div id="info" class="alert alert-success">
-        &nbsp;
-      </div>
-    </div>
-  </div>
-</div>
+<div id="map" class="map"></div>
+<div id="info">&nbsp;</div>

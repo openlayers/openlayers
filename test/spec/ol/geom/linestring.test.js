@@ -1,12 +1,14 @@
 goog.provide('ol.test.geom.LineString');
 
+goog.require('ol.extent');
+goog.require('ol.geom.LineString');
+
 
 describe('ol.geom.LineString', function() {
 
   it('can be constructed with a null geometry', function() {
     expect(function() {
-      var lineString = new ol.geom.LineString(null);
-      lineString = lineString; // suppress gjslint warning
+      return new ol.geom.LineString(null);
     }).not.to.throwException();
   });
 
@@ -18,7 +20,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('defaults to layout XY', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(lineString.getLayout()).to.be('XY');
     });
 
     it('has empty coordinates', function() {
@@ -54,7 +56,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XY);
+      expect(lineString.getLayout()).to.be('XY');
     });
 
     it('has the expected coordinates', function() {
@@ -89,6 +91,22 @@ describe('ol.geom.LineString', function() {
 
     });
 
+    describe('#getCoordinateAt', function() {
+
+      it('return the first point when fraction is 0', function() {
+        expect(lineString.getCoordinateAt(0)).to.eql([1, 2]);
+      });
+
+      it('return the last point when fraction is 1', function() {
+        expect(lineString.getCoordinateAt(1)).to.eql([3, 4]);
+      });
+
+      it('return the mid point when fraction is 0.5', function() {
+        expect(lineString.getCoordinateAt(0.5)).to.eql([2, 3]);
+      });
+
+    });
+
   });
 
   describe('construct with 3D coordinates', function() {
@@ -99,7 +117,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZ);
+      expect(lineString.getLayout()).to.be('XYZ');
     });
 
     it('has the expected coordinates', function() {
@@ -141,11 +159,11 @@ describe('ol.geom.LineString', function() {
     var lineString;
     beforeEach(function() {
       lineString = new ol.geom.LineString(
-          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+          [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYM);
+      expect(lineString.getLayout()).to.be('XYM');
     });
 
     it('has the expected coordinates', function() {
@@ -190,7 +208,7 @@ describe('ol.geom.LineString', function() {
     });
 
     it('has the expected layout', function() {
-      expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+      expect(lineString.getLayout()).to.be('XYZM');
     });
 
     it('has the expected coordinates', function() {
@@ -223,6 +241,31 @@ describe('ol.geom.LineString', function() {
         expect(lineString.intersectsExtent(lineString.getExtent())).to.be(true);
       });
 
+    });
+
+  });
+
+  describe('#scale()', function() {
+
+    it('scales a linestring', function() {
+      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      geom.scale(10);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-100, -200], [100, 200]]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      geom.scale(2, 3);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-20, -60], [20, 60]]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.LineString([[-10, -20], [10, 20]]);
+      geom.scale(3, 2, [10, 20]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([[-50, -60], [10, 20]]);
     });
 
   });
@@ -263,6 +306,29 @@ describe('ol.geom.LineString', function() {
 
     });
 
+    describe('#simplify', function() {
+
+      it('returns a simplified geometry', function() {
+        var simplified = lineString.simplify(1);
+        expect(simplified).to.be.an(ol.geom.LineString);
+        expect(simplified.getCoordinates()).to.eql(
+            [[0, 0], [3, 3], [5, 1], [7, 5]]);
+      });
+
+      it('does not modify the original', function() {
+        lineString.simplify(1);
+        expect(lineString.getCoordinates()).to.eql(
+            [[0, 0], [1.5, 1], [3, 3], [5, 1], [6, 3.5], [7, 5]]);
+      });
+
+      it('delegates to the internal method', function() {
+        var simplified = lineString.simplify(2);
+        var internal = lineString.getSimplifiedGeometry(4);
+        expect(simplified.getCoordinates()).to.eql(internal.getCoordinates());
+      });
+
+    });
+
     describe('#getSimplifiedGeometry', function() {
 
       it('returns the expectedResult', function() {
@@ -297,6 +363,23 @@ describe('ol.geom.LineString', function() {
 
     });
 
+    describe('#getCoordinateAt', function() {
+
+      it('return the first point when fraction is 0', function() {
+        expect(lineString.getCoordinateAt(0)).to.eql([0, 0]);
+      });
+
+      it('return the last point when fraction is 1', function() {
+        expect(lineString.getCoordinateAt(1)).to.eql([7, 5]);
+      });
+
+      it('return the mid point when fraction is 0.5', function() {
+        var midpoint = lineString.getFlatMidpoint();
+        expect(lineString.getCoordinateAt(0.5)).to.eql(midpoint);
+      });
+
+    });
+
   });
 
   describe('with a simple XYM coordinates', function() {
@@ -304,7 +387,7 @@ describe('ol.geom.LineString', function() {
     var lineString;
     beforeEach(function() {
       lineString = new ol.geom.LineString(
-          [[1, 2, 3], [4, 5, 6]], ol.geom.GeometryLayout.XYM);
+          [[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     describe('#getCoordinateAtM', function() {
@@ -350,7 +433,7 @@ describe('ol.geom.LineString', function() {
     describe('#getCoordinateAtM', function() {
 
       it('returns the expected value', function() {
-        expect(lineString.getLayout()).to.be(ol.geom.GeometryLayout.XYZM);
+        expect(lineString.getLayout()).to.be('XYZM');
         var m;
         for (m = 0; m <= 22; m += 0.5) {
           expect(lineString.getCoordinateAtM(m, true)).to.eql(
@@ -363,8 +446,3 @@ describe('ol.geom.LineString', function() {
   });
 
 });
-
-
-goog.require('ol.extent');
-goog.require('ol.geom.GeometryLayout');
-goog.require('ol.geom.LineString');

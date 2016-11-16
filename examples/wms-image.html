@@ -1,13 +1,9 @@
 ---
-template: example.html
-title: Single image WMS example
+layout: example.html
+title: Single Image WMS
 shortdesc: Example of a single image WMS layer.
 docs: >
   WMS can be used as an Image layer, as shown here, or as a Tile layer, as shown in the [Tiled WMS example](wms-tiled.html) example. Tiles can be cached, so the browser will not re-fetch data for areas that were viewed already. But there may be problems with repeated labels for WMS servers that are not aware of tiles, in which case single image WMS will produce better cartography.
 tags: "wms, image"
 ---
-<div class="row-fluid">
-  <div class="span12">
-    <div id="map" class="map"></div>
-  </div>
-</div>
+<div id="map" class="map"></div>

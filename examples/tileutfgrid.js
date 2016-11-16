@@ -5,14 +5,17 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
 goog.require('ol.source.TileUTFGrid');
 
+var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
+
 var mapLayer = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'
+    url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
   })
 });
 
+
 var gridSource = new ol.source.TileUTFGrid({
-  url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.json'
+  url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
 });
 
 var gridLayer = new ol.layer.Tile({source: gridSource});
@@ -49,10 +52,8 @@ var displayCountryInfo = function(coordinate) {
         //  info.innerHTML = Mustache.render(gridSource.getTemplate(), data);
         mapElement.style.cursor = data ? 'pointer' : '';
         if (data) {
-          /* jshint -W069 */
           flagElement.src = 'data:image/png;base64,' + data['flag_png'];
           nameElement.innerHTML = data['admin'];
-          /* jshint +W069 */
         }
         infoOverlay.setPosition(data ? coordinate : undefined);
       });

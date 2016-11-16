@@ -1,0 +1,11 @@
+---
+layout: example.html
+title: OSM Vector Tiles
+shortdesc: Using OpenStreetMap vector tiles.
+docs: >
+  A simple vector tiles map with Mapzen vector tiles. **Note**: TopoJSON vector tiles are not optimized for rendering - they might clip geometries exactly at the tile boundary instead of adding a buffer, and use geographic coordinates instead of tile relative pixel coordinates in view projection.
+tags: "vector, tiles, osm, mapzen"
+cloak:
+  vector-tiles-5eJz6JX: Your Mapzen API key from https://mapzen.com/developers
+---
+<div id="map" class="map"></div>

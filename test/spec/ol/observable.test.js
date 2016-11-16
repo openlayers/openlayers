@@ -1,5 +1,9 @@
 goog.provide('ol.test.Observable');
 
+goog.require('ol.events.EventTarget');
+goog.require('ol.Observable');
+
+
 describe('ol.Observable', function() {
 
   describe('constructor', function() {
@@ -7,7 +11,7 @@ describe('ol.Observable', function() {
     it('creates a new observable', function() {
       var observable = new ol.Observable();
       expect(observable).to.be.a(ol.Observable);
-      expect(observable).to.be.a(goog.events.EventTarget);
+      expect(observable).to.be.a(ol.events.EventTarget);
     });
 
   });
@@ -51,7 +55,7 @@ describe('ol.Observable', function() {
     it('returns a listener key', function() {
       var key = observable.on('foo', listener);
 
-      expect(key).to.be.a(goog.events.Listener);
+      expect(typeof key).to.be('object');
     });
 
   });
@@ -71,6 +75,21 @@ describe('ol.Observable', function() {
 
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
+    });
+
+    it('is safe to dispatch events of same type in a once listener', function() {
+      var callCount = 0;
+      observable.once('change', function() {
+        observable.changed();
+        observable.changed();
+      });
+      observable.on('change', function() {
+        ++callCount;
+      });
+      expect(function() {
+        observable.changed();
+      }).to.not.throwException();
+      expect(callCount).to.be(3);
     });
 
     it('accepts an array of event types (called once for each)', function() {
@@ -101,7 +120,7 @@ describe('ol.Observable', function() {
     it('returns a listener key', function() {
       var key = observable.once('foo', listener);
 
-      expect(key).to.be.a(goog.events.Listener);
+      expect(typeof key).to.be('object');
     });
 
   });
@@ -165,8 +184,3 @@ describe('ol.Observable', function() {
   });
 
 });
-
-
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.Listener');
-goog.require('ol.Observable');

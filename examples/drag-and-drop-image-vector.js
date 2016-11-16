@@ -19,7 +19,7 @@ goog.require('ol.style.Style');
 
 
 var defaultStyle = {
-  'Point': [new ol.style.Style({
+  'Point': new ol.style.Style({
     image: new ol.style.Circle({
       fill: new ol.style.Fill({
         color: 'rgba(255,255,0,0.5)'
@@ -30,14 +30,14 @@ var defaultStyle = {
         width: 1
       })
     })
-  })],
-  'LineString': [new ol.style.Style({
+  }),
+  'LineString': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#f00',
       width: 3
     })
-  })],
-  'Polygon': [new ol.style.Style({
+  }),
+  'Polygon': new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(0,255,255,0.5)'
     }),
@@ -45,8 +45,8 @@ var defaultStyle = {
       color: '#0ff',
       width: 1
     })
-  })],
-  'MultiPoint': [new ol.style.Style({
+  }),
+  'MultiPoint': new ol.style.Style({
     image: new ol.style.Circle({
       fill: new ol.style.Fill({
         color: 'rgba(255,0,255,0.5)'
@@ -57,14 +57,14 @@ var defaultStyle = {
         width: 1
       })
     })
-  })],
-  'MultiLineString': [new ol.style.Style({
+  }),
+  'MultiLineString': new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: '#0f0',
       width: 3
     })
-  })],
-  'MultiPolygon': [new ol.style.Style({
+  }),
+  'MultiPolygon': new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(0,0,255,0.5)'
     }),
@@ -72,7 +72,7 @@ var defaultStyle = {
       color: '#00f',
       width: 1
     })
-  })]
+  })
 };
 
 var styleFunction = function(feature, resolution) {
@@ -100,7 +100,7 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.BingMaps({
         imagerySet: 'Aerial',
-        key: 'Ak-dzM4wZjSqTlzveKz5u0d4IQ4bRzVI309GxmkgSVr1ewS6iPSrOvOKhA-CJlm3'
+        key: 'AkGbxXx6tDWf1swIhPJyoAVp06H0s0gDTYslNWWHZ6RoPqMpB9ld5FY1WutX8UoF'
       })
     })
   ],
@@ -122,13 +122,13 @@ dragAndDropInteraction.on('addfeatures', function(event) {
       style: styleFunction
     })
   }));
-  map.getView().fitExtent(
+  map.getView().fit(
       vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
 });
 
 var displayFeatureInfo = function(pixel) {
   var features = [];
-  map.forEachFeatureAtPixel(pixel, function(feature, layer) {
+  map.forEachFeatureAtPixel(pixel, function(feature) {
     features.push(feature);
   });
   if (features.length > 0) {

@@ -24,7 +24,9 @@ Although Closure library functions are widely used within OL3, none of them are 
 Unlike in, say, Node, where a module's exports are fixed in the source, with Closure Compiler, exports can be defined at compile time. This makes it easy to create builds that are customized to the needs of a particular site or application: a __custom build__ only exports those properties and methods needed by the site or application. As the full build is large, and will probably become larger as new features are added to the API, it's recommended that sites create a custom build for production software.
 
 ## Renderers and Browser Support
-The library currently includes three renderers: Canvas, DOM, and WebGL. All three support raster data from tile/image servers, but only the Canvas renderer currently supports vector data. This means that only those browsers that [support Canvas](http://caniuse.com/canvas) can handle vector data. In particular, this excludes Internet Explorer versions before 9, though there is some support for those in the DOM renderer. Clearly, the WebGL renderer can only be used on those devices and browsers supporting WebGL.
+The library currently includes three renderers: Canvas, DOM, and WebGL. All three support both raster data from tile/image servers, and vector data; WebGL however only supports Point vectors and does not support labels. Clearly only those browsers that [support Canvas](http://caniuse.com/canvas) can use the Canvas renderer. Equally, the WebGL renderer can only be used on those devices and [browsers](http://caniuse.com/webgl) that support WebGL.
+
+OpenLayers runs on all modern browsers that support [HTML5](https://html.spec.whatwg.org/multipage/) and [ECMAScript 5](http://www.ecma-international.org/ecma-262/5.1/). This includes Chrome, Firefox, Safari and Edge. For older browsers and platforms like Internet Explorer (down to version 9) and Android 4.x, [polyfills](http://polyfill.io) for `requestAnimationFrame` and `Element.prototype.classList` are required, and using the KML format requires a polyfill for `URL`.
 
 The library is intended for use on both desktop/laptop and mobile devices.
 

@@ -1,10 +1,5 @@
 goog.provide('ol.Constraints');
 
-goog.require('ol.CenterConstraintType');
-goog.require('ol.ResolutionConstraintType');
-goog.require('ol.RotationConstraintType');
-
-
 
 /**
  * @constructor
@@ -14,8 +9,7 @@ goog.require('ol.RotationConstraintType');
  * @param {ol.RotationConstraintType} rotationConstraint
  *     Rotation constraint.
  */
-ol.Constraints =
-    function(centerConstraint, resolutionConstraint, rotationConstraint) {
+ol.Constraints = function(centerConstraint, resolutionConstraint, rotationConstraint) {
 
   /**
    * @type {ol.CenterConstraintType}

@@ -1,9 +1,6 @@
 goog.provide('ga.Map');
+goog.provide('ol.View2D');
 
-goog.require('goog.asserts');
-goog.require('goog.net.Jsonp');
-goog.require('goog.events');
-goog.require('goog.events.EventType');
 goog.require('goog.ui.Dialog');
 goog.require('goog.ui.Menu');
 goog.require('goog.ui.MenuItem');
@@ -15,9 +12,8 @@ goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
 goog.require('ol.interaction');
+goog.require('ol.net');
 goog.require('ol.proj');
-goog.require('ol.source.State');
-goog.require('ol.extent');
 goog.require('ol.Overlay');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
@@ -107,7 +103,7 @@ ga.Map = function(options) {
     })
   });
 
-  goog.base(this, options);
+  ol.Map.call(this, options);
 
   this.addControl(new ol.control.ScaleLine());
 
@@ -119,7 +115,11 @@ ga.Map = function(options) {
   this.geocoderList_ = null;
   this.geocoderCrossElement_ = null;
   this.geocoderOverlay_ = null;
-  this.createGeocoderDialog_();
+  this.geocoderDialog_ = new goog.ui.Dialog('geocoder-dialog');
+  this.geocoderDialog_.setTitle(ga.Lang.translate('Geocoding results'));
+  this.geocoderDialog_.setModal(true);
+  this.geocoderDialog_.setButtonSet(null);
+
 
   // gaTooltip
   this.gaTooltip_ = null;
@@ -128,7 +128,6 @@ ga.Map = function(options) {
   if (options.tooltip) {
     this.gaTooltip_ = new ga.Tooltip();
     this.gaTooltip_.setMap(this);
-    this.registerDisposable(this.gaTooltip_);
   }
 };
 goog.inherits(ga.Map, ol.Map);
@@ -139,16 +138,14 @@ goog.inherits(ga.Map, ol.Map);
  * @api stable
  */
 ga.Map.prototype.geocode = function(text) {
-  var jsonp = new goog.net.Jsonp(
-    this.serviceUrl + '/rest/services/api/SearchServer');
-  var payload = { 'searchText': text,
-                  'type': 'locations',
-                  'lang': ga.Lang.getCode(),
-                  'returnGeometry': true
-  };
-  jsonp.send(payload, 
-             goog.bind(this.handleGeocode_, this), 
-             goog.bind(this.handleGeocodeError_, this));
+  ol.net.jsonp(
+    this.serviceUrl + '/rest/services/api/SearchServer' +
+      '?searchText=' + text +
+      '&type=locations' +
+      '&lang='+ ga.Lang.getCode() +
+      '&returnGeometry=true',
+    this.handleGeocode_.bind(this),
+    this.handleGeocodeError_.bind(this));
 };
 
 ga.Map.prototype.handleGeocode_ = function(response) {
@@ -163,7 +160,7 @@ ga.Map.prototype.handleGeocode_ = function(response) {
   }
 };
 
-ga.Map.prototype.handleGeocodeError_ = function(response) {
+ga.Map.prototype.handleGeocodeError_ = function() {
   alert("Geocoding failed. Sorry for inconvenience.");
 };
 
@@ -174,13 +171,12 @@ ga.Map.prototype.handleGeocodeError_ = function(response) {
  * @api stable
  */
 ga.Map.prototype.recenterFeature = function(layerId, featureId) {
-  var jsonp = new goog.net.Jsonp(
+  ol.net.jsonp(
     this.serviceUrl + '/rest/services/api/MapServer/' +
-    layerId + '/' + featureId);
-  var payload = { 'geometryFormat': 'geojson' };
-  jsonp.send(payload, 
-             goog.bind(this.handleRecenter_, this), 
-             goog.bind(this.handleRecenterError_, this));
+      layerId + '/' + featureId +
+      '?geometryFormat=geojson',
+    this.handleRecenter_.bind(this), 
+    this.handleRecenterError_.bind(this));
 };
 
 ga.Map.prototype.handleRecenter_ = function(response) {
@@ -188,13 +184,13 @@ ga.Map.prototype.handleRecenter_ = function(response) {
   this.recenterToFeature_(feature);
 };
 
-ga.Map.prototype.handleRecenterError_ = function(response) {
+ga.Map.prototype.handleRecenterError_ = function() {
   alert("Recentering failed. No feature found. Sorry for inconvenience.");
 };
 
 ga.Map.prototype.recenterToFeature_ = function(feature) {
   var extent = feature['bbox'];
-  this.getView().fitExtent(extent, /** @type {ol.Size} */ (this.getSize()));
+  this.getView().fit(extent, /** @type {ol.Size} */ (this.getSize()));
   if (this.getView().getZoom() > 7) {
     this.getView().setZoom(7);
   }
@@ -207,13 +203,11 @@ ga.Map.prototype.recenterToFeature_ = function(feature) {
  * @api stable
  */
 ga.Map.prototype.highlightFeature = function(layerId, featureId) {
-  var jsonp = new goog.net.Jsonp(
+  ol.net.jsonp(
     this.serviceUrl + '/rest/services/api/MapServer/' +
-    layerId + '/' + featureId);
-  var payload = { 'geometryFormat': 'geojson' };
-  jsonp.send(payload, 
-             goog.bind(this.handleHighlight_, this), 
-             goog.bind(this.handleHighlightError_, this));
+      layerId + '/' + featureId + '?geometryFormat=geojson',
+    this.handleHighlight_.bind(this), 
+    this.handleHighlightError_.bind(this));
 };
 
 ga.Map.prototype.handleHighlight_ = function(response) {
@@ -244,22 +238,12 @@ ga.Map.prototype.handleHighlight_ = function(response) {
   this.addLayer(vector);
 };
 
-ga.Map.prototype.handleHighlightError_ = function(response) {
+ga.Map.prototype.handleHighlightError_ = function() {
   alert("Highlighting failed. No feature found. Sorry for inconvenience.");
 };
 
-ga.Map.prototype.getFeature_ = function(layerId, featureId) {
-};
-
-ga.Map.prototype.createGeocoderDialog_ = function() {
-  this.geocoderDialog_ = new goog.ui.Dialog('geocoder-dialog');
-  this.geocoderDialog_.setTitle(ga.Lang.translate('Geocoding results'));
-  this.geocoderDialog_.setModal(true);
-  this.geocoderDialog_.setButtonSet(null);
-};
-
 ga.Map.prototype.showGeocoderDialog_ = function(results) {
-  this.geocoderDialog_.setContent('<div id="geocoderList"></div>');
+  this.geocoderDialog_.setSafeHtmlContent(goog.html.SafeHtml.create('div', {'id': 'geocoderList'}));
   this.geocoderDialog_.setVisible(true); 
   this.geocoderList_ = new goog.ui.Menu();
   var geocoderListContainer = goog.dom.getElement('geocoderList');
@@ -269,11 +253,16 @@ ga.Map.prototype.showGeocoderDialog_ = function(results) {
         replace('<b>','').replace('</b>',''),
         results[item]['attrs']),true);  
   }
-  goog.events.listen(this.geocoderList_,
-    'action',
-    goog.bind(this.handleResultSelection_,this));
+  this.geocoderList_.listen('action',
+    this.handleResultSelection_,
+    true,
+    this);
 
   this.geocoderList_.render(geocoderListContainer); 
+};
+
+ga.Map.prototype.hideGeocoderDialog_ = function() {
+  this.geocoderDialog_.setVisible(false);
 };
 
 ga.Map.prototype.handleResultSelection_ = function(e) {
@@ -299,12 +288,8 @@ ga.Map.prototype.recenterToResult_ = function(resultItem) {
     this.getView().setCenter(center);
     this.addCross_(center);
   } else {
-    this.getView().fitExtent(extent, /** @type {ol.Size} */ (this.getSize()));
+    this.getView().fit(extent, /** @type {ol.Size} */ (this.getSize()));
   }
-};
-
-ga.Map.prototype.hideGeocoderDialog_ = function() {
-  this.geocoderDialog_.setVisible(false);
 };
 
 ga.Map.prototype.parseExtent_ = function(stringBox2D) {
@@ -365,6 +350,6 @@ ga.Map.prototype.disableTooltip = function() {
  * @api stable
  */
 ol.View2D = function(opt_options) {
-  goog.base(this, opt_options);
+  ol.View.call(this, opt_options);
 };
 goog.inherits(ol.View2D, ol.View);
