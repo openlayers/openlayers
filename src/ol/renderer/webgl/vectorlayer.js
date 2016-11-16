@@ -73,11 +73,17 @@ ol.renderer.webgl.VectorLayer.prototype.composeFrame = function(frameState, laye
   this.layerState_ = layerState;
   var viewState = frameState.viewState;
   var replayGroup = this.replayGroup_;
+  var size = frameState.size;
+  var pixelRatio = frameState.pixelRatio;
+  var gl = this.mapRenderer.getGL();
   if (replayGroup && !replayGroup.isEmpty()) {
+    gl.enable(gl.SCISSOR_TEST);
+    gl.scissor(0, 0, size[0] * pixelRatio, size[1] * pixelRatio);
     replayGroup.replay(context,
         viewState.center, viewState.resolution, viewState.rotation,
-        frameState.size, frameState.pixelRatio, layerState.opacity,
+        size, pixelRatio, layerState.opacity,
         layerState.managed ? frameState.skippedFeatureUids : {});
+    gl.disable(gl.SCISSOR_TEST);
   }
 
 };
