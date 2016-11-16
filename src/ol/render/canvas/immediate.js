@@ -278,21 +278,21 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
       x = Math.round(x);
       y = Math.round(y);
     }
-    if (rotation !== 0 || this.imageScaleX_ !== 1 || this.imageScaleY_ !== 1) {
+    if (rotation !== 0) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
       ol.transform.compose(localTransform,
           centerX, centerY,
-          this.imageScaleX_, this.imageScaleY_,
+          1, 1,
           rotation,
           -centerX, -centerY);
       context.setTransform.apply(context, localTransform);
     }
     context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
         this.imageWidth_, this.imageHeight_, x, y,
-        this.imageWidth_, this.imageHeight_);
+        this.imageWidth_ * this.imageScaleX_, this.imageHeight_ * this.imageScaleY_);
   }
-  if (rotation !== 0 || this.imageScaleX_ !== 1 || this.imageScaleY_ !== 1) {
+  if (rotation !== 0) {
     context.setTransform(1, 0, 0, 1, 0, 0);
   }
   if (this.imageOpacity_ != 1) {
@@ -901,8 +901,8 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
       }
     }
 
-    this.imageAnchorX_ = imageAnchor[0];
-    this.imageAnchorY_ = imageAnchor[1];
+    this.imageAnchorX_ = imageAnchor[0] * scale[0];
+    this.imageAnchorY_ = imageAnchor[1] * scale[1];
     this.imageHeight_ = imageSize[1];
     this.image_ = imageImage;
     this.imageOpacity_ = imageStyle.getOpacity();

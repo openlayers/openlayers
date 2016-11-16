@@ -239,8 +239,8 @@ ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     }
   }
 
-  this.anchorX_ = anchor[0];
-  this.anchorY_ = anchor[1];
+  this.anchorX_ = anchor[0] * scale[0];
+  this.anchorY_ = anchor[1] * scale[1];
   this.hitDetectionImage_ = hitDetectionImage;
   this.image_ = image;
   this.height_ = size[1];

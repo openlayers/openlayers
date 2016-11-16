@@ -331,11 +331,11 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             x = Math.round(x);
             y = Math.round(y);
           }
-          if (scaleX !== 1 || scaleY !== 1 || rotation !== 0) {
+          if (rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
             ol.transform.compose(localTransform,
-                centerX, centerY, scaleX, scaleY, rotation, -centerX, -centerY);
+                centerX, centerY, 1, 1, rotation, -centerX, -centerY);
             context.setTransform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
@@ -347,12 +347,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           var h = (height + originY > image.height) ? image.height - originY : height;
 
           context.drawImage(image, originX, originY, w, h,
-              x, y, w * pixelRatio, h * pixelRatio);
+              x, y, w * pixelRatio * scaleX, h * pixelRatio * scaleY);
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
           }
-          if (scaleX !== 1 || scaleY !== 1 || rotation !== 0) {
+          if (rotation !== 0) {
             context.setTransform.apply(context, resetTransform);
           }
         }
