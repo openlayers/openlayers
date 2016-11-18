@@ -63,6 +63,15 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+
+      // with pixelRatio 2
+      var style2 = style.clone();
+      expect(style2.getImage(2)).to.be.an(HTMLCanvasElement);
+      expect(style2.getSize()).to.eql([41, 41]);
+      expect(style2.getImageSize()).to.eql([41, 41]);
+      expect(style2.getOrigin()).to.eql([0, 0]);
+      expect(style2.getAnchor()).to.eql([20.5, 20.5]);
+      expect(style2.getChecksum()).to.not.eql(style.getChecksum());
     });
 
     it('creates a canvas if no atlas is used (fill-style)', function() {
@@ -81,6 +90,15 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([21, 21]);
+
+      // with pixelRatio 2
+      var style2 = style.clone();
+      expect(style2.getImage(2)).to.be.an(HTMLCanvasElement);
+      expect(style2.getSize()).to.eql([41, 41]);
+      expect(style2.getImageSize()).to.eql([41, 41]);
+      expect(style2.getOrigin()).to.eql([0, 0]);
+      expect(style2.getAnchor()).to.eql([20.5, 20.5]);
+      expect(style2.getChecksum()).to.not.eql(style.getChecksum());
     });
 
     it('adds itself to an atlas manager (no fill-style)', function() {
@@ -96,6 +114,15 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.not.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([512, 512]);
+
+      // with pixelRatio 2
+      var style2 = style.clone();
+      expect(style2.getImage(2)).to.be.an(HTMLCanvasElement);
+      expect(style2.getSize()).to.eql([41, 41]);
+      expect(style2.getImageSize()).to.eql([512, 512]);
+      expect(style2.getOrigin()).to.eql([1, 23]);
+      expect(style2.getAnchor()).to.eql([20.5, 20.5]);
+      expect(style2.getChecksum()).to.not.eql(style.getChecksum());
     });
 
     it('adds itself to an atlas manager (fill-style)', function() {
@@ -116,6 +143,15 @@ describe('ol.style.RegularShape', function() {
       expect(style.getImage()).to.be(style.getHitDetectionImage());
       expect(style.getHitDetectionImage()).to.be.an(HTMLCanvasElement);
       expect(style.getHitDetectionImageSize()).to.eql([512, 512]);
+
+      // with pixelRatio 2
+      var style2 = style.clone();
+      expect(style2.getImage(2)).to.be.an(HTMLCanvasElement);
+      expect(style2.getSize()).to.eql([41, 41]);
+      expect(style2.getImageSize()).to.eql([512, 512]);
+      expect(style2.getOrigin()).to.eql([1, 23]);
+      expect(style2.getAnchor()).to.eql([20.5, 20.5]);
+      expect(style2.getChecksum()).to.not.eql(style.getChecksum());
     });
   });
 
