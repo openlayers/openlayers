@@ -24,7 +24,6 @@ void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
   v_center = vec4(u_projectionMatrix * vec4(a_position, 0., 1.)).xy;
   v_pixelRatio = u_pixelRatio;
-  float newX, newY;
   float lineWidth = u_lineWidth * u_pixelRatio;
   v_halfWidth = lineWidth / 2.0;
   if (lineWidth == 0.0) {
@@ -35,27 +34,19 @@ void main(void) {
   float radius = a_radius + 3.0 * u_pixelRatio;
   // Until we get gl_VertexID in WebGL, we store an instruction.
   if (a_instruction == 0.0) {
-    newX = a_position.x - radius;
-    newY = a_position.y + radius;
     // Offsetting the edges of the triangle by lineWidth / 2 is necessary, however
     // we should also leave some space for the antialiasing, thus we offset by lineWidth.
-    offset = vec2(-lineWidth, lineWidth);
+    offset = vec2(-1.0, 1.0);
   } else if (a_instruction == 1.0) {
-    newX = a_position.x - radius;
-    newY = a_position.y - radius;
-    offset = vec2(-lineWidth, -lineWidth);
+    offset = vec2(-1.0, -1.0);
   } else if (a_instruction == 2.0) {
-    newX = a_position.x + radius;
-    newY = a_position.y - radius;
-    offset = vec2(lineWidth, -lineWidth);
+    offset = vec2(1.0, -1.0);
   } else {
-    newX = a_position.x + radius;
-    newY = a_position.y + radius;
-    offset = vec2(lineWidth, lineWidth);
+    offset = vec2(1.0, 1.0);
   }
 
-  gl_Position = u_projectionMatrix * vec4(newX, newY, 0., 1.) + offsetMatrix *
-      vec4(offset, 0., 0.);
+  gl_Position = u_projectionMatrix * vec4(a_position + offset * radius, 0., 1.) +
+      offsetMatrix * vec4(offset * lineWidth, 0., 0.);
   v_offset = vec4(u_projectionMatrix * vec4(a_position.x + a_radius, a_position.y,
       0., 1.)).xy;
 

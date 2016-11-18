@@ -22,14 +22,16 @@ uniform float u_miterLimit;
 
 void main(void) {
   bool degenerate = false;
-  v_halfWidth = u_lineWidth / 2.0;
+  float direction = float(sign(a_direction));
   float miterLimit = u_miterLimit + u_lineWidth;
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
   vec2 offset;
-  v_round = 0.0;
-  float direction = a_direction / abs(a_direction);
   vec4 projPos = u_projectionMatrix * vec4(a_position, 0., 1.);
+
+  v_round = 0.0;
+  v_halfWidth = u_lineWidth / 2.0;
   v_roundVertex = projPos.xy;
+
   if (mod(a_direction, 3.0) == 0.0 || mod(a_direction, 17.0) == 0.0) {
     vec2 dirVect = a_nextPos - a_position;
     vec2 normal = normalize(vec2(-dirVect.y, dirVect.x));
