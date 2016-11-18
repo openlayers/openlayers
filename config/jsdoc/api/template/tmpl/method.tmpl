@@ -5,7 +5,9 @@ var self = this;
 <dt class="<?js= (data.stability && data.stability !== 'stable') ? 'unstable' : '' ?>">
     <div class="nameContainer<?js if (data.inherited) { ?> inherited<?js } ?>">
         <?js if (data.stability || kind !== 'class') { ?>
-        <h4 class="name" id="<?js= id ?>">
+        <div class="anchor" id="<?js= id ?>">
+        </div>
+        <h4 class="name">
             <?js= data.attribs + (kind === 'class' ? 'new ' : '') + (data.scope === 'static' ? longname : name) + (kind !== 'event' ? data.signature : '') ?>
             <?js if (data.inherited || data.inherits) { ?>
                 <span class="inherited"><?js= this.linkto(data.inherits, 'inherited') ?></span>

@@ -45,9 +45,11 @@
 body {
   padding-top: 50px;
 }
-.nameContainer .name, .prettyprint.source .pln {
+.nameContainer .anchor {
   padding-top: 50px;
   margin-top: -50px;
+  width: 0px;
+  height: 0px;
 }
 a {
   position: relative;
@@ -294,6 +296,7 @@ span.type-signature.static {
   color: gray;
 }
 .main .nameContainer h4 {
+  margin-top: 0px;
   margin-right: 150px;
   line-height: 1.3;
 }
