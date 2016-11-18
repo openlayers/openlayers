@@ -8,6 +8,7 @@ goog.require('ol.render.webgl.CircleReplay');
 goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.render.webgl.LineStringReplay');
 goog.require('ol.render.webgl.PolygonReplay');
+goog.require('ol.render.webgl.TextReplay');
 
 /**
  * @constructor
@@ -312,5 +313,6 @@ ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': ol.render.webgl.CircleReplay,
   'Image': ol.render.webgl.ImageReplay,
   'LineString': ol.render.webgl.LineStringReplay,
-  'Polygon': ol.render.webgl.PolygonReplay
+  'Polygon': ol.render.webgl.PolygonReplay,
+  'Text': ol.render.webgl.TextReplay
 };
