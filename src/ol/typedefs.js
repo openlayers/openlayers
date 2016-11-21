@@ -312,6 +312,12 @@ ol.LayerState;
 
 
 /**
+ * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
+ */
+ol.LayoutOptions;
+
+
+/**
  * A function that takes an {@link ol.Extent} and a resolution as arguments, and
  * returns an array of {@link ol.Extent} with the extents to load. Usually this
  * is one of the standard {@link ol.loadingstrategy} strategies.
