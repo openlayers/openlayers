@@ -18,21 +18,21 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 describe('ol.render.webgl.Immediate', function() {
-  var context;
-  var style = new ol.style.Style({
-    image: new ol.style.Circle(),
-    fill: new ol.style.Fill(),
-    stroke: new ol.style.Stroke()
-  });
-  var circle = new ol.geom.Circle([0, 0], 5);
-  var line = new ol.geom.LineString([[0, 0], [5, 5]]);
-  var multiLine = new ol.geom.MultiLineString([[[0, 0], [5, 5]]]);
-  var point = new ol.geom.Point([0, 0]);
-  var multiPoint = new ol.geom.MultiPoint([[0, 0]]);
-  var polygon = new ol.geom.Polygon([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
-  var multiPolygon = new ol.geom.MultiPolygon([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
+  var context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
   beforeEach(function() {
     context = new ol.render.webgl.Immediate({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
+    style = new ol.style.Style({
+      image: new ol.style.Circle(),
+      fill: new ol.style.Fill(),
+      stroke: new ol.style.Stroke()
+    });
+    circle = new ol.geom.Circle([0, 0], 5);
+    line = new ol.geom.LineString([[0, 0], [5, 5]]);
+    multiLine = new ol.geom.MultiLineString([[[0, 0], [5, 5]]]);
+    point = new ol.geom.Point([0, 0]);
+    multiPoint = new ol.geom.MultiPoint([[0, 0]]);
+    polygon = new ol.geom.Polygon([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
+    multiPolygon = new ol.geom.MultiPolygon([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
   });
 
   describe('#setStyle', function() {
@@ -84,8 +84,11 @@ describe('ol.render.webgl.Immediate', function() {
   });
 
   describe('#drawGeometryCollection', function() {
-    var geomColl = new ol.geom.GeometryCollection([circle, point, multiPoint,
-      line, multiLine, polygon, multiPolygon]);
+    var geomColl;
+    beforeEach(function() {
+      geomColl = new ol.geom.GeometryCollection([circle, point, multiPoint,
+        line, multiLine, polygon, multiPolygon]);
+    });
 
     it('draws every geometry in the collection', function() {
       context.drawGeometry = function() {};
