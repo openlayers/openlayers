@@ -13,7 +13,7 @@ uniform mat4 u_offsetScaleMatrix;
 uniform mat4 u_offsetRotateMatrix;
 
 void main(void) {
-  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.);
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);
 }
 
 

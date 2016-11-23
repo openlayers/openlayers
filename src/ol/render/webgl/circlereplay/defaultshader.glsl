@@ -22,7 +22,7 @@ uniform float u_pixelRatio;
 
 void main(void) {
   mat4 offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
-  v_center = vec4(u_projectionMatrix * vec4(a_position, 0., 1.)).xy;
+  v_center = vec4(u_projectionMatrix * vec4(a_position, 0.0, 1.0)).xy;
   v_pixelRatio = u_pixelRatio;
   float lineWidth = u_lineWidth * u_pixelRatio;
   v_halfWidth = lineWidth / 2.0;
@@ -45,13 +45,13 @@ void main(void) {
     offset = vec2(1.0, 1.0);
   }
 
-  gl_Position = u_projectionMatrix * vec4(a_position + offset * radius, 0., 1.) +
-      offsetMatrix * vec4(offset * lineWidth, 0., 0.);
+  gl_Position = u_projectionMatrix * vec4(a_position + offset * radius, 0.0, 1.0) +
+      offsetMatrix * vec4(offset * lineWidth, 0.0, 0.0);
   v_offset = vec4(u_projectionMatrix * vec4(a_position.x + a_radius, a_position.y,
-      0., 1.)).xy;
+      0.0, 1.0)).xy;
 
   if (distance(v_center, v_offset) > 20000.0) {
-    gl_Position = vec4(v_center, 0., 1.);
+    gl_Position = vec4(v_center, 0.0, 1.0);
   }
 }
 
