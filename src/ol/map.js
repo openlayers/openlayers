@@ -574,7 +574,7 @@ ol.Map.prototype.disposeInternal = function() {
  * @template S,T
  * @api stable
  */
-ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this,opt_options) {
+ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt_options) {
   if (!this.frameState_) {
     return;
   }

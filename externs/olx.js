@@ -303,8 +303,8 @@ olx.MapOptions.prototype.view;
 
 
 /**
- * Object literal with options for the forEachFeatureAtPixel and
- * hasFeatureAtPixel methods.
+ * Object literal with options for the {@link ol.Map#forEachFeatureAtPixel} and
+ * {@link ol.Map#hasFeatureAtPixel} methods.
  * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),
  *    layerFilterThis: (Object|undefined),
  *    hitTolerance: (number|undefined)}}

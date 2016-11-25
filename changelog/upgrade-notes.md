@@ -8,21 +8,21 @@ If you are using the layer filter of one of these methods, please note that you 
 
 Old syntax:
 ```
-    map.forEachFeatureAtPixel(pixel, callback, callback_this, layerFilter_function, layerFilter_this);
+    map.forEachFeatureAtPixel(pixel, callback, callbackThis, layerFilterFn, layerFilterThis);
     
-    map.hasFeatureAtPixel(pixel, layerFilter_function, layerFilter_this);
+    map.hasFeatureAtPixel(pixel, layerFilterFn, layerFilterThis);
 ```
 
 New syntax:
 ```
-    map.forEachFeatureAtPixel(pixel, callback, callback_this, {
-        layerFilter: layerFilter_function,
-        layerFilterThis: layerFilter_this
+    map.forEachFeatureAtPixel(pixel, callback, callbackThis, {
+        layerFilter: layerFilterFn,
+        layerFilterThis: layerFilterThis
     });
     
     map.hasFeatureAtPixel(pixel, {
-        layerFilter: layerFilter_function,
-        layerFilterThis: layerFilter_this
+        layerFilter: layerFilterFn,
+        layerFilterThis: layerFilterThis
     });
 ```
 

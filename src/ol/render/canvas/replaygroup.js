@@ -76,6 +76,8 @@ ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
 
 /**
+ * This cache is used for storing calculated pixel circles for increasing performance.
+ * It is a static property to allow each Replaygroup to access it.
  * @type {Object.<number, Array.<Array.<(boolean|undefined)>>>}
  * @private
  */
@@ -111,6 +113,7 @@ ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y)
  * This methods creates a circle inside a fitting array. Points inside the
  * circle are marked by true, points on the outside are undefined.
  * It uses the midpoint circle algorithm.
+ * A cache is used to increase performance.
  * @param {number} radius Radius.
  * @returns {Array.<Array.<(boolean|undefined)>>} An array with marked circle points.
  * @private
