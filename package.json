@@ -60,7 +60,7 @@
     "gaze": "^1.0.0",
     "istanbul": "0.4.5",
     "jquery": "3.1.1",
-    "mocha": "3.1.2",
+    "mocha": "3.2.0",
     "mocha-phantomjs-core": "^2.1.0",
     "mustache": "2.3.0",
     "phantomjs-prebuilt": "2.1.13",
