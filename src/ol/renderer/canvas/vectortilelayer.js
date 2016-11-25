@@ -191,13 +191,12 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var tileGrid = source.getTileGrid();
   var found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
-  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution, pointResolution;
+  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution;
   for (i = 0, ii = replayables.length; i < ii; ++i) {
     tile = replayables[i];
     tileCoord = tile.tileCoord;
     tileExtent = source.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent);
-    pointResolution = tile.getProjection().getPointResolution(resolution, coordinate);
-    if (!ol.extent.containsCoordinate(ol.extent.buffer(tileExtent, hitTolerance * pointResolution), coordinate)) {
+    if (!ol.extent.containsCoordinate(ol.extent.buffer(tileExtent, hitTolerance * resolution), coordinate)) {
       continue;
     }
     if (tile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {

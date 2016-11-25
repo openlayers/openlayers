@@ -204,7 +204,7 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   if (this.renderBuffer_ !== undefined) {
     hitExtent = ol.extent.createEmpty();
     ol.extent.extendCoordinate(hitExtent, coordinate);
-    ol.extent.buffer(hitExtent, resolution * this.renderBuffer_, hitExtent);
+    ol.extent.buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
   }
 
   var mask = ol.render.canvas.ReplayGroup.getCircleArray_(hitTolerance);
