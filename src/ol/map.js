@@ -14,7 +14,6 @@ goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
-goog.require('ol.array');
 goog.require('ol.asserts');
 goog.require('ol.control');
 goog.require('ol.dom');
@@ -529,15 +528,6 @@ ol.Map.prototype.beforeRender = function(var_args) {
   ol.DEBUG && console.warn('map.beforeRender() is deprecated.  Use view.animate() instead.');
   this.render();
   Array.prototype.push.apply(this.preRenderFunctions_, arguments);
-};
-
-
-/**
- * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
- * @return {boolean} Whether the preRenderFunction has been found and removed.
- */
-ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
-  return ol.array.remove(this.preRenderFunctions_, preRenderFunction);
 };
 
 
