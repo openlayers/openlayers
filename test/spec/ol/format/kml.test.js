@@ -1630,7 +1630,7 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getOrigin()).to.be(null);
           expect(imageStyle.getRotation()).to.eql(0);
           expect(imageStyle.getSize()).to.be(null);
-          expect(imageStyle.getScale()).to.be(ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_);
+          expect(imageStyle.getScale()).to.be(1);
           expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
@@ -1675,7 +1675,7 @@ describe('ol.format.KML', function() {
           expect(imageStyle.getAnchor()).to.eql([24, 36]);
           expect(imageStyle.getOrigin()).to.eql([24, 108]);
           expect(imageStyle.getRotation()).to.eql(0);
-          expect(imageStyle.getScale()).to.eql(ol.format.KML.DEFAULT_IMAGE_SCALE_MULTIPLIER_ * 3.0);
+          expect(imageStyle.getScale()).to.eql(3.0);
           expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
           expect(style.getZIndex()).to.be(undefined);
         });
@@ -2056,7 +2056,7 @@ describe('ol.format.KML', function() {
               '  <Placemark>' +
               '    <Style>' +
               '      <IconStyle>' +
-              '        <scale>0.25</scale>' +
+              '        <scale>0.5</scale>' +
               '        <heading>45</heading>' +
               '        <Icon>' +
               '          <href>http://foo.png</href>' +
@@ -2146,7 +2146,7 @@ describe('ol.format.KML', function() {
               '    <Style>' +
               '      <LabelStyle>' +
               '        <color>ffdf220c</color>' +
-              '        <scale>0.25</scale>' +
+              '        <scale>0.5</scale>' +
               '      </LabelStyle>' +
               '    </Style>' +
               '  </Placemark>' +
