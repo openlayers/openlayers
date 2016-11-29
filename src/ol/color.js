@@ -14,24 +14,6 @@ ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
 
 /**
- * Regular expression for matching RGB style strings.
- * @const
- * @type {RegExp}
- * @private
- */
-ol.color.RGB_COLOR_RE_ = /^rgb\(/i;
-
-
-/**
- * Regular expression for matching RGBA style strings.
- * @const
- * @type {RegExp}
- * @private
- */
-ol.color.RGBA_COLOR_RE_ = /^rgba\(/;
-
-
-/**
  * Regular expression for matching potential named color style strings.
  * @const
  * @type {RegExp}
@@ -168,10 +150,10 @@ ol.color.fromStringInternal_ = function(s) {
     }
     a = 1;
     color = [r, g, b, a];
-  } else if (ol.color.RGBA_COLOR_RE_.test(s)) { // rgba()
+  } else if (s.indexOf('rgba(') == 0) { // rgba()
     parts = s.slice(5, -1).split(',').map(Number);
     color = ol.color.normalize(parts);
-  } else if (ol.color.RGB_COLOR_RE_.test(s)) { // rgb()
+  } else if (s.indexOf('rgb(') == 0) { // rgb()
     parts = s.slice(4, -1).split(',').map(Number);
     parts.push(1);
     color = ol.color.normalize(parts);
