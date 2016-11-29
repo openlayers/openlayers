@@ -2,6 +2,9 @@ goog.provide('ol.render.webgl.ReplayGroup');
 
 goog.require('ol');
 goog.require('ol.array');
+goog.require('ol.extent');
+goog.require('ol.obj');
+goog.require('ol.render.replay');
 goog.require('ol.render.ReplayGroup');
 goog.require('ol.render.webgl');
 goog.require('ol.render.webgl.CircleReplay');
