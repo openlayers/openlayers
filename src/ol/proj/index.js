@@ -152,20 +152,6 @@ ol.proj.Projection = function(options) {
         if (options.units === undefined) {
           this.units_ = def.units;
         }
-        var currentCode, currentDef, currentProj, proj4Transform;
-        for (currentCode in projections) {
-          currentDef = proj4js.defs(currentCode);
-          if (currentDef !== undefined) {
-            currentProj = ol.proj.get(currentCode);
-            if (currentDef === def) {
-              ol.proj.addEquivalentProjections([currentProj, this]);
-            } else {
-              proj4Transform = proj4js(currentCode, code);
-              ol.proj.addCoordinateTransforms(currentProj, this,
-                  proj4Transform.forward, proj4Transform.inverse);
-            }
-          }
-        }
       }
     }
   }
@@ -737,10 +723,26 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
   var transform;
+  if (ol.ENABLE_PROJ4JS && !(sourceCode in transforms && destinationCode in transforms[sourceCode])) {
+    var proj4js = ol.proj.proj4_ || window['proj4'];
+    if (typeof proj4js == 'function') {
+      var sourceDef = proj4js.defs(sourceCode);
+      var destinationDef = proj4js.defs(destinationCode);
+
+      if (sourceDef !== undefined && destinationDef !== undefined) {
+        if (sourceDef === destinationDef) {
+          ol.proj.addEquivalentProjections([destinationProjection, sourceProjection]);
+        } else {
+          var proj4Transform = proj4js(destinationCode, sourceCode);
+          ol.proj.addCoordinateTransforms(destinationProjection, sourceProjection,
+              proj4Transform.forward, proj4Transform.inverse);
+        }
+      }
+    }
+  }
   if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
     transform = transforms[sourceCode][destinationCode];
-  }
-  if (transform === undefined) {
+  } else {
     ol.DEBUG && console.assert(transform !== undefined, 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
