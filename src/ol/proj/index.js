@@ -723,9 +723,7 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
   var transform;
-  if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
-    transform = transforms[sourceCode][destinationCode];
-  } else if (ol.ENABLE_PROJ4JS) {
+  if (ol.ENABLE_PROJ4JS && !(sourceCode in transforms && destinationCode in transforms[sourceCode])) {
     var proj4js = ol.proj.proj4_ || window['proj4'];
     if (typeof proj4js == 'function') {
       var sourceDef = proj4js.defs(sourceCode);
@@ -739,15 +737,12 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
           ol.proj.addCoordinateTransforms(destinationProjection, sourceProjection,
               proj4Transform.forward, proj4Transform.inverse);
         }
-        if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
-          transform = transforms[sourceCode][destinationCode];
-        }
-      } else {
-        transform = undefined;
       }
     }
   }
-  if (transform === undefined) {
+  if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
+    transform = transforms[sourceCode][destinationCode];
+  } else {
     ol.DEBUG && console.assert(transform !== undefined, 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
