@@ -161,15 +161,15 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(tile,
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
-    tile, frameState, layerState, x, y, w, h, gutter) {
+ol.renderer.canvas.VectorTileLayer.prototype.prepareTileImage = function(
+    tile, frameState, layerState) {
   var vectorTile = /** @type {ol.VectorTile} */ (tile);
   this.createReplayGroup_(vectorTile, frameState);
   var layer = this.getLayer();
   if (layer.getRenderMode() != ol.layer.VectorTile.RenderType.VECTOR) {
     this.renderTileImage_(vectorTile, frameState, layerState);
   }
-  ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
+  ol.renderer.canvas.TileLayer.prototype.prepareTileImage.apply(this, arguments);
 };
 
 
@@ -286,6 +286,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
     var size = frameState.size;
     var offsetX = Math.round(pixelRatio * size[0] / 2);
     var offsetY = Math.round(pixelRatio * size[1] / 2);
+    /** @type {Array.<ol.VectorTile>} */
     var tiles = this.renderedTiles;
     var clips = [];
     var zs = [];

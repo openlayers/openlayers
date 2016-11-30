@@ -24,17 +24,21 @@ describe('ol.renderer.canvas.TileLayer', function() {
   describe('#composeFrame()', function() {
     it('uses correct draw scale when rotating (HiDPI)', function() {
       var layer = new ol.layer.Tile({
-        source: new ol.source.XYZ({
-          tileSize: 1
-        })
+        source: new ol.source.XYZ()
       });
+      layer.getSource().getTile = function(z, x, y) {
+        var tile = new ol.Tile([z, x, y], 2);
+        tile.getImage = function() {
+          return {width: 256, height: 256};
+        };
+        return tile;
+      };
       var renderer = new ol.renderer.canvas.TileLayer(layer);
-      renderer.renderedTiles = [];
       var frameState = {
         viewState: {
           center: [10, 5],
           projection: ol.proj.get('EPSG:3857'),
-          resolution: 1,
+          resolution: layer.getSource().getTileGrid().getResolution(17),
           rotation: Math.PI
         },
         extent: [0, 0, 20, 10],
@@ -45,9 +49,6 @@ describe('ol.renderer.canvas.TileLayer', function() {
         usedTiles: {},
         wantedTiles: {}
       };
-      renderer.getImageTransform = function() {
-        return ol.transform.create();
-      };
       ol.renderer.Map.prototype.calculateMatrices2D(frameState);
       var layerState = layer.getLayerState();
       var canvas = document.createElement('canvas');
@@ -55,19 +56,14 @@ describe('ol.renderer.canvas.TileLayer', function() {
       canvas.height = 100;
       context = {
         canvas: canvas,
-        drawImage: sinon.spy()
+        drawImage: sinon.spy(),
+        save: function() {},
+        restore: function() {},
+        setTransform: function() {}
       };
-      renderer.renderedTiles = [{
-        getTileCoord: function() {
-          return [0, 0, 0];
-        },
-        getImage: function() {
-          return img;
-        }
-      }];
       renderer.prepareFrame(frameState, layerState);
       renderer.composeFrame(frameState, layerState, context);
-      expect(context.drawImage.firstCall.args[0].width).to.be(17);
+      expect(context.drawImage.firstCall.args[7]).to.be(512);
     });
   });
 

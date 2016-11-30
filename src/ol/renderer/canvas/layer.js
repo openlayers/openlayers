@@ -63,51 +63,6 @@ ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) 
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
- * @param {CanvasRenderingContext2D} context Context.
- */
-ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {
-
-  this.preCompose(context, frameState);
-
-  var image = this.getImage();
-  if (image) {
-
-    // clipped rendering if layer extent is set
-    var extent = layerState.extent;
-    var clipped = extent !== undefined;
-    if (clipped) {
-      this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
-    }
-
-    var imageTransform = this.getImageTransform();
-    // for performance reasons, context.save / context.restore is not used
-    // to save and restore the transformation matrix and the opacity.
-    // see http://jsperf.com/context-save-restore-versus-variable
-    var alpha = context.globalAlpha;
-    context.globalAlpha = layerState.opacity;
-
-    // for performance reasons, context.setTransform is only used
-    // when the view is rotated. see http://jsperf.com/canvas-transform
-    var dx = imageTransform[4];
-    var dy = imageTransform[5];
-    var dw = image.width * imageTransform[0];
-    var dh = image.height * imageTransform[3];
-    context.drawImage(image, 0, 0, +image.width, +image.height,
-        Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
-    context.globalAlpha = alpha;
-
-    if (clipped) {
-      context.restore();
-    }
-  }
-
-  this.postCompose(context, frameState, layerState);
-};
-
-
-/**
  * @param {ol.render.Event.Type} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
@@ -172,20 +127,6 @@ ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frame
 
 
 /**
- * @abstract
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
- */
-ol.renderer.canvas.Layer.prototype.getImage = function() {};
-
-
-/**
- * @abstract
- * @return {!ol.Transform} Image transform.
- */
-ol.renderer.canvas.Layer.prototype.getImageTransform = function() {};
-
-
-/**
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
@@ -213,6 +154,14 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) 
  */
 ol.renderer.canvas.Layer.prototype.prepareFrame = function(frameState, layerState) {};
 
+
+/**
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.LayerState} layerState Layer state.
+ * @param {CanvasRenderingContext2D} context Context.
+ * @abstract
+ */
+ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {};
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
