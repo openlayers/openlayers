@@ -38,7 +38,7 @@ var styleFunction = function(feature) {
       image: new ol.style.Icon({
         src: 'data/arrow.png',
         anchor: [0.75, 0.5],
-        rotateWithView: false,
+        rotateWithView: true,
         rotation: -rotation
       })
     }));

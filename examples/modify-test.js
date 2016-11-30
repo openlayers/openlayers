@@ -29,7 +29,7 @@ var styleFunction = (function() {
       color: 'rgba(0, 0, 255, 0.1)'
     })
   });
-  styles['MultiLinestring'] = new ol.style.Style({
+  styles['MultiLineString'] = new ol.style.Style({
     stroke: new ol.style.Stroke({
       color: 'green',
       width: 3

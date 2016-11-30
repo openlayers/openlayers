@@ -22,7 +22,7 @@ ol.AssertionError = function(code) {
 
   /**
    * Error code. The meaning of the code can be found on
-   * {@link https://openlayers.org/en/latest/errors.html} (replace `latest` with
+   * {@link https://openlayers.org/en/latest/doc/errors/} (replace `latest` with
    * the version found in the OpenLayers script's header comment if a version
    * other than the latest is used).
    * @type {number}

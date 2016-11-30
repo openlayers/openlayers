@@ -55,10 +55,11 @@ describe('ol.source.WMTS', function() {
 
     it('can create REST options from spec/ol/format/wmts/ogcsample.xml',
         function() {
-          var options = ol.source.WMTS.optionsFromCapabilities(
-              capabilities,
-              {layer: 'BlueMarbleNextGeneration', matrixSet: 'google3857',
-                requestEncoding: 'REST'});
+          var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+            layer: 'BlueMarbleNextGeneration',
+            matrixSet: 'google3857',
+            requestEncoding: 'REST'
+          });
 
           expect(options.urls).to.be.an('array');
           expect(options.urls).to.have.length(1);
@@ -85,10 +86,21 @@ describe('ol.source.WMTS', function() {
         });
 
     it('can find a MatrixSet by SRS identifier', function() {
-      var options = ol.source.WMTS.optionsFromCapabilities(
-          capabilities,
-          {layer: 'BlueMarbleNextGeneration', projection: 'EPSG:3857',
-            requestEncoding: 'REST'});
+      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+        layer: 'BlueMarbleNextGeneration',
+        projection: 'EPSG:3857',
+        requestEncoding: 'REST'
+      });
+
+      expect(options.matrixSet).to.be.eql('google3857');
+    });
+
+    it('can find a MatrixSet by equivalent SRS identifier', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+        layer: 'BlueMarbleNextGeneration',
+        projection: 'EPSG:900913',
+        requestEncoding: 'REST'
+      });
 
       expect(options.matrixSet).to.be.eql('google3857');
     });

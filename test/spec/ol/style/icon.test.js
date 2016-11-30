@@ -75,7 +75,7 @@ describe('ol.style.Icon', function() {
       expect(original.anchorXUnits_).to.eql(clone.anchorXUnits_);
       expect(original.anchorYUnits_).to.eql(clone.anchorYUnits_);
       expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
-      expect(original.color_).to.eql(clone.color_);
+      expect(original.getColor()).to.eql(clone.getColor());
       expect(original.getImage(1).src).to.eql(clone.getImage(1).src);
       expect(original.getImage(1).toDataURL()).to.eql(original.getImage(1).toDataURL());
       expect(original.offset_).to.eql(clone.offset_);
@@ -108,7 +108,7 @@ describe('ol.style.Icon', function() {
       expect(original.getAnchor()).not.to.be(clone.getAnchor());
       expect(original.getImage(1)).not.to.be(clone.getImage(1));
       expect(original.offset_).not.to.be(clone.offset_);
-      expect(original.color_).not.to.be(clone.color_);
+      expect(original.getColor()).not.to.be(clone.getColor());
       expect(original.getSize()).not.to.be(clone.getSize());
 
       clone.anchor_[0] = 0;

@@ -77,7 +77,7 @@ ol.renderer.webgl.Map = function(container, map) {
    */
   this.gl_ = ol.webgl.getContext(this.canvas_, {
     antialias: true,
-    depth: false,
+    depth: true,
     failIfMajorPerformanceCaveat: true,
     preserveDrawingBuffer: false,
     stencil: true

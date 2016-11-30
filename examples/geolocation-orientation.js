@@ -130,26 +130,6 @@ function addPosition(position, heading, m, speed) {
   }
 }
 
-var previousM = 0;
-// change center and rotation before render
-map.beforeRender(function(map, frameState) {
-  if (frameState !== null) {
-    // use sampling period to get a smooth transition
-    var m = frameState.time - deltaMean * 1.5;
-    m = Math.max(m, previousM);
-    previousM = m;
-    // interpolate position along positions LineString
-    var c = positions.getCoordinateAtM(m, true);
-    var view = frameState.viewState;
-    if (c) {
-      view.center = getCenterWithHeading(c, -c[2], view.resolution);
-      view.rotation = -c[2];
-      marker.setPosition(c);
-    }
-  }
-  return true; // Force animation to continue
-});
-
 // recenters the view by putting the given coordinates at 3/4 from the top or
 // the screen
 function getCenterWithHeading(position, rotation, resolution) {
@@ -162,9 +142,19 @@ function getCenterWithHeading(position, rotation, resolution) {
   ];
 }
 
-// postcompose callback
-function render() {
-  map.render();
+var previousM = 0;
+function updateView() {
+  // use sampling period to get a smooth transition
+  var m = Date.now() - deltaMean * 1.5;
+  m = Math.max(m, previousM);
+  previousM = m;
+  // interpolate position along positions LineString
+  var c = positions.getCoordinateAtM(m, true);
+  if (c) {
+    view.setCenter(getCenterWithHeading(c, -c[2], view.getResolution()));
+    view.setRotation(-c[2]);
+    marker.setPosition(c);
+  }
 }
 
 // geolocate device
@@ -172,7 +162,7 @@ var geolocateBtn = document.getElementById('geolocate');
 geolocateBtn.addEventListener('click', function() {
   geolocation.setTracking(true); // Start position tracking
 
-  map.on('postcompose', render);
+  map.on('postcompose', updateView);
   map.render();
 
   disableButtons();
@@ -214,7 +204,7 @@ simulateBtn.addEventListener('click', function() {
   }
   geolocate();
 
-  map.on('postcompose', render);
+  map.on('postcompose', updateView);
   map.render();
 
   disableButtons();

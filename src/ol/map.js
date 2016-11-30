@@ -14,7 +14,6 @@ goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
-goog.require('ol.array');
 goog.require('ol.asserts');
 goog.require('ol.control');
 goog.require('ol.dom');
@@ -215,6 +214,12 @@ ol.Map = function(options) {
    * @type {?ol.EventsKey}
    */
   this.viewPropertyListenerKey_ = null;
+
+  /**
+   * @private
+   * @type {?ol.EventsKey}
+   */
+  this.viewChangeListenerKey_ = null;
 
   /**
    * @private
@@ -512,6 +517,7 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
 
 
 /**
+ * Deprecated (use {@link ol.View#animate} instead).
  * Add functions to be called before rendering. This can be used for attaching
  * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
@@ -519,17 +525,9 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
  * @api
  */
 ol.Map.prototype.beforeRender = function(var_args) {
+  ol.DEBUG && console.warn('map.beforeRender() is deprecated.  Use view.animate() instead.');
   this.render();
   Array.prototype.push.apply(this.preRenderFunctions_, arguments);
-};
-
-
-/**
- * @param {ol.PreRenderFunction} preRenderFunction Pre-render function.
- * @return {boolean} Whether the preRenderFunction has been found and removed.
- */
-ol.Map.prototype.removePreRenderFunction = function(preRenderFunction) {
-  return ol.array.remove(this.preRenderFunctions_, preRenderFunction);
 };
 
 
@@ -666,7 +664,7 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_layerFilter, opt_this) 
 
 
 /**
- * Returns the geographical coordinate for a browser event.
+ * Returns the coordinate in view projection for a browser event.
  * @param {Event} event Event.
  * @return {ol.Coordinate} Coordinate.
  * @api stable
@@ -1100,10 +1098,17 @@ ol.Map.prototype.handleViewChanged_ = function() {
     ol.events.unlistenByKey(this.viewPropertyListenerKey_);
     this.viewPropertyListenerKey_ = null;
   }
+  if (this.viewChangeListenerKey_) {
+    ol.events.unlistenByKey(this.viewChangeListenerKey_);
+    this.viewChangeListenerKey_ = null;
+  }
   var view = this.getView();
   if (view) {
     this.viewPropertyListenerKey_ = ol.events.listen(
         view, ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleViewPropertyChanged_, this);
+    this.viewChangeListenerKey_ = ol.events.listen(
+        view, ol.events.EventType.CHANGE,
         this.handleViewPropertyChanged_, this);
   }
   this.render();
@@ -1219,7 +1224,6 @@ ol.Map.prototype.removeOverlay = function(overlay) {
  * @private
  */
 ol.Map.prototype.renderFrame_ = function(time) {
-
   var i, ii, viewState;
 
   var size = this.getSize();

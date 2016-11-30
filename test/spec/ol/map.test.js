@@ -160,6 +160,23 @@ describe('ol.Map', function() {
       document.body.removeChild(target);
     });
 
+    it('is called when the view.changed() is called', function() {
+      var view = map.getView();
+
+      var spy = sinon.spy(map, 'render');
+      view.changed();
+      expect(spy.callCount).to.be(1);
+    });
+
+    it('is not called on view changes after the view has been removed', function() {
+      var view = map.getView();
+      map.setView(null);
+
+      var spy = sinon.spy(map, 'render');
+      view.changed();
+      expect(spy.callCount).to.be(0);
+    });
+
     it('calls renderFrame_ and results in an postrender event', function(done) {
 
       var spy = sinon.spy(map, 'renderFrame_');

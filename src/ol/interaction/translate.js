@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.Translate');
 
 goog.require('ol');
+goog.require('ol.Collection');
 goog.require('ol.events.Event');
 goog.require('ol.functions');
 goog.require('ol.array');
@@ -14,10 +15,10 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.Translate.Event
- * @param {olx.interaction.TranslateOptions} options Options.
+ * @param {olx.interaction.TranslateOptions=} opt_options Options.
  * @api
  */
-ol.interaction.Translate = function(options) {
+ol.interaction.Translate = function(opt_options) {
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Translate.handleDownEvent_,
     handleDragEvent: ol.interaction.Translate.handleDragEvent_,
@@ -25,6 +26,7 @@ ol.interaction.Translate = function(options) {
     handleUpEvent: ol.interaction.Translate.handleUpEvent_
   });
 
+  var options = opt_options ? opt_options : {};
 
   /**
    * @type {string|undefined}
@@ -88,9 +90,12 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
   if (!this.lastCoordinate_ && this.lastFeature_) {
     this.lastCoordinate_ = event.coordinate;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
+
+    var features = this.features_ || new ol.Collection([this.lastFeature_]);
+
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATESTART, this.features_,
+            ol.interaction.Translate.EventType.TRANSLATESTART, features,
             event.coordinate));
     return true;
   }
@@ -108,9 +113,12 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
   if (this.lastCoordinate_) {
     this.lastCoordinate_ = null;
     ol.interaction.Translate.handleMoveEvent_.call(this, event);
+
+    var features = this.features_ || new ol.Collection([this.lastFeature_]);
+
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATEEND, this.features_,
+            ol.interaction.Translate.EventType.TRANSLATEEND, features,
             event.coordinate));
     return true;
   }
@@ -129,22 +137,18 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     var deltaX = newCoordinate[0] - this.lastCoordinate_[0];
     var deltaY = newCoordinate[1] - this.lastCoordinate_[1];
 
-    if (this.features_) {
-      this.features_.forEach(function(feature) {
-        var geom = feature.getGeometry();
-        geom.translate(deltaX, deltaY);
-        feature.setGeometry(geom);
-      });
-    } else if (this.lastFeature_) {
-      var geom = this.lastFeature_.getGeometry();
+    var features = this.features_ || new ol.Collection([this.lastFeature_]);
+
+    features.forEach(function(feature) {
+      var geom = feature.getGeometry();
       geom.translate(deltaX, deltaY);
-      this.lastFeature_.setGeometry(geom);
-    }
+      feature.setGeometry(geom);
+    });
 
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATING, this.features_,
+            ol.interaction.Translate.EventType.TRANSLATING, features,
             newCoordinate));
   }
 };
@@ -187,19 +191,13 @@ ol.interaction.Translate.handleMoveEvent_ = function(event) {
  * @private
  */
 ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
-  var found = null;
-
-  var intersectingFeature = map.forEachFeatureAtPixel(pixel,
+  return map.forEachFeatureAtPixel(pixel,
       function(feature) {
-        return feature;
+        if (!this.features_ ||
+            ol.array.includes(this.features_.getArray(), feature)) {
+          return feature;
+        }
       }, this, this.layerFilter_);
-
-  if (this.features_ &&
-      ol.array.includes(this.features_.getArray(), intersectingFeature)) {
-    found = intersectingFeature;
-  }
-
-  return found;
 };
 
 

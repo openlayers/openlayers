@@ -55,8 +55,23 @@ ol.source.TileArcGISRest = function(opt_options) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
+  this.setKey(this.getKeyForParams_());
 };
 ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
+
+
+/**
+ * @private
+ * @return {string} The key for the current params.
+ */
+ol.source.TileArcGISRest.prototype.getKeyForParams_ = function() {
+  var i = 0;
+  var res = [];
+  for (var key in this.params_) {
+    res[i++] = key + '-' + this.params_[key];
+  }
+  return res.join('/');
+};
 
 
 /**
@@ -168,5 +183,5 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
  */
 ol.source.TileArcGISRest.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);
-  this.changed();
+  this.setKey(this.getKeyForParams_());
 };

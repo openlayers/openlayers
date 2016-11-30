@@ -300,8 +300,10 @@ describe('ol.structs.RBush', function() {
         var i;
         for (i = 0; i < 1000; ++i) {
           var min = [Math.random() * 10000, Math.random() * 10000];
-          var max = [min[0] + Math.random() * 500,
-                     min[1] + Math.random() * 500];
+          var max = [
+            min[0] + Math.random() * 500,
+            min[1] + Math.random() * 500
+          ];
           var extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
@@ -312,10 +314,8 @@ describe('ol.structs.RBush', function() {
         var n = 0;
         var i;
         for (i = 0; i < 1000; ++i) {
-          var min = [-(Math.random() * 10000 + 501),
-                -(Math.random() * 10000 + 501)];
-          var max = [min[0] + Math.random() * 500,
-                     min[1] + Math.random() * 500];
+          var min = [-(Math.random() * 10000 + 501), -(Math.random() * 10000 + 501)];
+          var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
           var extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
@@ -330,8 +330,7 @@ describe('ol.structs.RBush', function() {
         var i;
         for (i = 1000; i < 2000; ++i) {
           var min = [Math.random() * 10000, Math.random() * 10000];
-          var max = [min[0] + Math.random() * 500,
-                     min[1] + Math.random() * 500];
+          var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
           var extent = [min[0], min[1], max[0], max[1]];
           rBush.insert(extent, {id: i});
         }

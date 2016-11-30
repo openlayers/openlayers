@@ -34,7 +34,7 @@ The library is intended for use on both desktop/laptop and mobile devices.
 OL3 uses a similar object hierarchy to the Closure library. There is a top-level `ol` namespace (basically, `var ol = {};`). Subdivisions of this are:
 
 * further namespaces, such as `ol.layer`; these have a lower-case initial
-* simple objects containing static properties and methods, such as `ol.animation`; these also have a lower-case initial
+* simple objects containing static properties and methods, such as `ol.easing`; these also have a lower-case initial
 * types, which have an upper-case initial. These are mainly 'classes', which here means a constructor function with prototypal inheritance, such as `ol.Map` or `ol.layer.Vector` (the Vector class within the layer namespace). There are however other, simpler, types, such as `ol.Extent`, which is an array.
 
 Class namespaces, such as `ol.layer` have a base class type with the same name, such as `ol.layer.Layer`. These are mainly abstract classes, from which the other subclasses inherit.

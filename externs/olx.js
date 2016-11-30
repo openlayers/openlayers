@@ -312,7 +312,7 @@ olx.MapOptions.prototype.view;
  *     stopEvent: (boolean|undefined),
  *     insertFirst: (boolean|undefined),
  *     autoPan: (boolean|undefined),
- *     autoPanAnimation: (olx.animation.PanOptions|undefined),
+ *     autoPanAnimation: (olx.OverlayPanOptions|undefined),
  *     autoPanMargin: (number|undefined)}}
  */
 olx.OverlayOptions;
@@ -398,10 +398,10 @@ olx.OverlayOptions.prototype.autoPan;
 
 
 /**
- * The options used to create a `ol.animation.pan` animation. This animation
- * is only used when `autoPan` is enabled. By default the default options for
- * `ol.animation.pan` are used. If set to `null` the panning is not animated.
- * @type {olx.animation.PanOptions|undefined}
+ * The animation options used to pan the overlay into view. This animation
+ * is only used when `autoPan` is enabled. A `duration` and `easing` may be
+ * provided to customize the animation.
+ * @type {olx.OverlayPanOptions|undefined}
  * @api
  */
 olx.OverlayOptions.prototype.autoPanAnimation;
@@ -414,6 +414,32 @@ olx.OverlayOptions.prototype.autoPanAnimation;
  * @api
  */
 olx.OverlayOptions.prototype.autoPanMargin;
+
+
+/**
+ * @typedef {{
+ *   duration: (number|undefined),
+ *   easing: (undefined|function(number):number)
+ * }}
+ */
+olx.OverlayPanOptions;
+
+
+/**
+ * The duration of the animation in milliseconds. Default is `1000`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.OverlayPanOptions.prototype.duration;
+
+
+/**
+ * The easing function to use. Can be an {@link ol.easing} or a custom function.
+ * Default is {@link ol.easing.inAndOut}.
+ * @type {undefined|function(number):number}
+ * @api
+ */
+olx.OverlayPanOptions.prototype.easing;
 
 
 /**
@@ -662,6 +688,81 @@ olx.ViewOptions.prototype.zoomFactor;
 
 
 /**
+ * @typedef {{
+ *   center: (ol.Coordinate|undefined),
+ *   zoom: (number|undefined),
+ *   resolution: (number|undefined),
+ *   rotation: (number|undefined),
+ *   anchor: (ol.Coordinate|undefined),
+ *   duration: (number|undefined),
+ *   easing: (undefined|function(number):number)
+ * }}
+ */
+olx.AnimationOptions;
+
+
+/**
+ * The center of the view at the end of the animation.
+ * @type {ol.Coordinate|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.center;
+
+
+/**
+ * The zoom level of the view at the end of the animation.  This takes
+ * precedence over `resolution`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.zoom;
+
+
+/**
+ * The resolution of the view at the end of the animation.  If `zoom` is also
+ * provided, this option will be ignored.
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.resolution;
+
+
+/**
+ * The rotation of the view at the end of the animation.
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.rotation;
+
+
+/**
+ * Optional anchor to remained fixed during a rotation or resolution animation.
+ * @type {ol.Coordinate|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.anchor;
+
+
+/**
+ * The duration of the animation in milliseconds (defaults to `1000`).
+ * @type {number|undefined}
+ * @api
+ */
+olx.AnimationOptions.prototype.duration;
+
+
+/**
+ * The easing function used during the animation (defaults to {@link ol.easing.inAndOut}).
+ * The function will be called for each frame with a number representing a
+ * fraction of the animation's duration.  The function should return a number
+ * between 0 and 1 representing the progress toward the destination state.
+ * @type {undefined|function(number):number}
+ * @api
+ */
+olx.AnimationOptions.prototype.easing;
+
+
+/**
  * Namespace.
  * @type {Object}
  */
@@ -672,7 +773,7 @@ olx.animation;
  * @typedef {{resolution: number,
  *     start: (number|undefined),
  *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ *     easing: (undefined|function(number):number)}}
  */
 olx.animation.BounceOptions;
 
@@ -705,7 +806,7 @@ olx.animation.BounceOptions.prototype.duration;
 /**
  * The easing function to use. Can be an {@link ol.easing} or a custom function.
  * Default is {@link ol.easing.upAndDown}.
- * @type {function(number):number|undefined}
+ * @type {undefined|function(number):number}
  * @api
  */
 olx.animation.BounceOptions.prototype.easing;
@@ -715,7 +816,7 @@ olx.animation.BounceOptions.prototype.easing;
  * @typedef {{source: ol.Coordinate,
  *     start: (number|undefined),
  *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ *     easing: (undefined|function(number):number)}}
  */
 olx.animation.PanOptions;
 
@@ -747,7 +848,7 @@ olx.animation.PanOptions.prototype.duration;
 /**
  * The easing function to use. Can be an {@link ol.easing} or a custom function.
  * Default is {@link ol.easing.inAndOut}.
- * @type {function(number):number|undefined}
+ * @type {undefined|function(number):number}
  * @api
  */
 olx.animation.PanOptions.prototype.easing;
@@ -758,7 +859,7 @@ olx.animation.PanOptions.prototype.easing;
  *     anchor: (ol.Coordinate|undefined),
  *     start: (number|undefined),
  *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ *     easing: (undefined|function(number):number)}}
  */
 olx.animation.RotateOptions;
 
@@ -800,7 +901,7 @@ olx.animation.RotateOptions.prototype.duration;
 /**
  * The easing function to use. Can be an {@link ol.easing} or a custom function.
  * Default is {@link ol.easing.inAndOut}.
- * @type {function(number):number|undefined}
+ * @type {undefined|function(number):number}
  * @api
  */
 olx.animation.RotateOptions.prototype.easing;
@@ -810,7 +911,7 @@ olx.animation.RotateOptions.prototype.easing;
  * @typedef {{resolution: number,
  *     start: (number|undefined),
  *     duration: (number|undefined),
- *     easing: (function(number):number|undefined)}}
+ *     easing: (undefined|function(number):number)}}
  */
 olx.animation.ZoomOptions;
 
@@ -843,7 +944,7 @@ olx.animation.ZoomOptions.prototype.duration;
 /**
  * The easing function to use. Can be an {@link ol.easing} or a custom function.
  * Default is {@link ol.easing.inAndOut}.
- * @type {function(number):number|undefined}
+ * @type {undefined|function(number):number}
  * @api
  */
 olx.animation.ZoomOptions.prototype.easing;
@@ -2935,6 +3036,7 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 /**
  * @typedef {{duration: (number|undefined),
+ *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  */
 olx.interaction.MouseWheelZoomOptions;
@@ -2946,6 +3048,14 @@ olx.interaction.MouseWheelZoomOptions;
  * @api
  */
 olx.interaction.MouseWheelZoomOptions.prototype.duration;
+
+
+/**
+ * Mouse wheel timeout duration in milliseconds. Default is `80`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.timeout;
 
 
 /**
@@ -4025,6 +4135,7 @@ olx.source;
 /**
  * @typedef {{cacheSize: (number|undefined),
  *     culture: (string|undefined),
+ *     hidpi: (boolean|undefined),
  *     key: string,
  *     imagerySet: string,
  *     maxZoom: (number|undefined),
@@ -4041,6 +4152,14 @@ olx.source.BingMapsOptions;
  * @api
  */
 olx.source.BingMapsOptions.prototype.cacheSize;
+
+
+/**
+ * If `true` hidpi tiles will be requested. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.BingMapsOptions.prototype.hidpi;
 
 
 /**

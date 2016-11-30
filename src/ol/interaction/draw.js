@@ -152,7 +152,11 @@ ol.interaction.Draw = function(options) {
       geometryFunction = function(coordinates, opt_geometry) {
         var geometry = opt_geometry;
         if (geometry) {
-          geometry.setCoordinates(coordinates);
+          if (mode === ol.interaction.Draw.Mode.POLYGON) {
+            geometry.setCoordinates([coordinates[0].concat([coordinates[0][0]])]);
+          } else {
+            geometry.setCoordinates(coordinates);
+          }
         } else {
           geometry = new Constructor(coordinates);
         }
@@ -351,6 +355,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
   var shouldHandle = this.freehand_ ?
       squaredDistance > this.squaredClickTolerance_ :
       squaredDistance <= this.squaredClickTolerance_;
+  var circleMode = this.mode_ === ol.interaction.Draw.Mode.CIRCLE;
   if (shouldHandle) {
     this.handlePointerMove_(event);
     if (!this.finishCoordinate_) {
@@ -358,7 +363,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       if (this.mode_ === ol.interaction.Draw.Mode.POINT) {
         this.finishDrawing();
       }
-    } else if (this.freehand_ || this.mode_ === ol.interaction.Draw.Mode.CIRCLE) {
+    } else if (this.freehand_ || circleMode) {
       this.finishDrawing();
     } else if (this.atFinish_(event)) {
       if (this.finishCondition_(event)) {
@@ -368,6 +373,8 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       this.addToDrawing_(event);
     }
     pass = false;
+  } else if (circleMode) {
+    this.finishCoordinate_ = null;
   }
   return pass;
 };
@@ -617,12 +624,10 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
     coordinates.pop();
     this.geometryFunction_(coordinates, geometry);
   } else if (this.mode_ === ol.interaction.Draw.Mode.POLYGON) {
-    // When we finish drawing a polygon on the last point,
-    // the last coordinate is duplicated as for LineString
-    // we force the replacement by the first point
+    // remove the redundant last point in ring
     coordinates[0].pop();
-    coordinates[0].push(coordinates[0][0]);
     this.geometryFunction_(coordinates, geometry);
+    coordinates = geometry.getCoordinates();
   }
 
   // cast multi-part geometries

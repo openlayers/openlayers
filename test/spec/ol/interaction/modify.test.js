@@ -140,7 +140,7 @@ describe('ol.interaction.Modify', function() {
     // make sure we get change events to events array
     expect(events.length > 2).to.be(true);
     // middle events should be feature modification events
-    for (var i = 1; i < events.length - 2; i++) {
+    for (var i = 1; i < events.length - 1; i++) {
       expect(events[i]).to.equal('change');
     }
 

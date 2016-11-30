@@ -40,14 +40,14 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
   this.originalEvent = browserEvent;
 
   /**
-   * The pixel of the original browser event.
+   * The map pixel relative to the viewport corresponding to the original browser event.
    * @type {ol.Pixel}
    * @api stable
    */
   this.pixel = map.getEventPixel(browserEvent);
 
   /**
-   * The coordinate of the original browser event.
+   * The coordinate in view projection corresponding to the original browser event.
    * @type {ol.Coordinate}
    * @api stable
    */

@@ -86,9 +86,16 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas.png',
+          IMAGE_TOLERANCE, done);
+    });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-types-webgl.png',
           IMAGE_TOLERANCE, done);
     });
   });
@@ -135,7 +142,7 @@ describe('ol.rendering.style.Polygon', function() {
       feature = new ol.Feature({
         geometry: new ol.geom.Polygon([
           [[-20, -20], [-20, 5], [20, 5], [20, -20], [-20, -20]],
-          [[-12, -12], [-8, -12], [-8, -3], [-12, -3], [-12, -3]],
+          [[-12, -3], [-12, -12], [-8, -12], [-8, -3], [-12, -3]],
           [[0, -12], [13, -12], [13, -3], [0, -3], [0, -12]]
 
         ])
@@ -151,6 +158,14 @@ describe('ol.rendering.style.Polygon', function() {
       map.getView().setResolution(0.5);
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas-stroke.png',
+          IMAGE_TOLERANCE, done);
+    });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl', 100);
+      map.getView().setResolution(0.5);
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-types-webgl-stroke.png',
           IMAGE_TOLERANCE, done);
     });
   });
@@ -206,6 +221,13 @@ describe('ol.rendering.style.Polygon', function() {
       expectResemble(map, 'spec/ol/style/expected/polygon-zindex-canvas.png',
           IMAGE_TOLERANCE, done);
     });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(map, 'spec/ol/style/expected/polygon-zindex-webgl.png',
+          IMAGE_TOLERANCE, done);
+    });
   });
 
   describe('different fills and strokes', function() {
@@ -258,6 +280,14 @@ describe('ol.rendering.style.Polygon', function() {
       expectResemble(
           map, 'spec/ol/style/expected/polygon-fill-and-strokes-canvas.png',
           IMAGE_TOLERANCE, done);
+    });
+
+    it('tests the webgl renderer', function(done) {
+      map = createMap('webgl');
+      createFeatures();
+      expectResemble(
+          map, 'spec/ol/style/expected/polygon-fill-and-strokes-webgl.png',
+          5.76, done);
     });
   });
 

@@ -22,8 +22,8 @@ void main(void) {
   if (a_rotateWithView == 1.0) {
     offsetMatrix = u_offsetScaleMatrix * u_offsetRotateMatrix;
   }
-  vec4 offsets = offsetMatrix * vec4(a_offsets, 0., 0.);
-  gl_Position = u_projectionMatrix * vec4(a_position, 0., 1.) + offsets;
+  vec4 offsets = offsetMatrix * vec4(a_offsets, 0.0, 0.0);
+  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0) + offsets;
   v_texCoord = a_texCoord;
   v_opacity = a_opacity;
 }

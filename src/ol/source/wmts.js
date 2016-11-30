@@ -309,7 +309,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   ol.DEBUG && console.assert(l['TileMatrixSetLink'].length > 0,
       'layer has TileMatrixSetLink');
   var tileMatrixSets = wmtsCap['Contents']['TileMatrixSet'];
-  var idx, matrixSet;
+  var idx, matrixSet, matrixLimits;
   if (l['TileMatrixSetLink'].length > 1) {
     if ('projection' in config) {
       idx = ol.array.findIndex(l['TileMatrixSetLink'],
@@ -317,9 +317,14 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
             var tileMatrixSet = ol.array.find(tileMatrixSets, function(el) {
               return el['Identifier'] == elt['TileMatrixSet'];
             });
-            return tileMatrixSet['SupportedCRS'].replace(
-                /urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3'
-                   ) == config['projection'];
+            var supportedCRS = tileMatrixSet['SupportedCRS'].replace(/urn:ogc:def:crs:(\w+):(.*:)?(\w+)$/, '$1:$3');
+            var proj1 = ol.proj.get(supportedCRS);
+            var proj2 = ol.proj.get(config['projection']);
+            if (proj1 && proj2) {
+              return ol.proj.equivalent(proj1, proj2);
+            } else {
+              return supportedCRS == config['projection'];
+            }
           });
     } else {
       idx = ol.array.findIndex(l['TileMatrixSetLink'],
@@ -335,6 +340,8 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
   matrixSet = /** @type {string} */
       (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
+  matrixLimits = /** @type {Array.<Object>} */
+      (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   ol.DEBUG && console.assert(matrixSet, 'TileMatrixSet must not be null');
 
@@ -404,7 +411,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
   }
 
   var tileGrid = ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet(
-      matrixSetObj, extent);
+      matrixSetObj, extent, matrixLimits);
 
   /** @type {!Array.<string>} */
   var urls = [];

@@ -1,5 +1,47 @@
 ## Upgrade notes
 
+### Next release
+
+#### Use `view.animate()` instead of `map.beforeRender()` and `ol.animation` functions
+
+The `map.beforeRender()` and `ol.animation` functions have been deprecated in favor of a new `view.animate()` function.  Use of the deprecated functions will result in a warning during development.  These functions are subject to removal in an upcoming release.
+
+For details on the `view.animate()` method, see the API docs and the view animation example.  Upgrading should be relatively straightforward.  For example, if you wanted to have an animated pan, zoom, and rotation previously, you might have done this:
+
+```js
+var zoom = ol.animation.zoom({
+  resolution: view.getResolution()
+});
+var pan = ol.animation.pan({
+  source: view.getCenter()
+});
+var rotate = ol.animation.rotate({
+  rotation: view.getRotation()
+});
+
+map.beforeRender(zoom, pan, rotate);
+
+map.setZoom(1);
+map.setCenter([0, 0]);
+map.setRotation(Math.PI);
+```
+
+Now, the same can be accomplished with this:
+```js
+view.animate({
+  zoom: 1,
+  center: [0, 0],
+  rotation: Math.PI
+});
+```
+
+### v3.19.1
+
+#### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`
+
+The origin for gradients and patterns has changed from `[0, 0]` to the top-left
+corner of the extent of the geometry being filled.
+
 ### v3.19.0
 
 #### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`

@@ -15,11 +15,11 @@
 </tr><tr>
 <th>Controls</th><th>Interactions</th><th>Sources and formats</th>
 </tr><tr>
-<td>[Map default controls](ol.control.html#defaults)<br>
+<td>[Map default controls](ol.control.html#.defaults)<br>
 [All controls](ol.control.html)
 </td>
 <td>
-[Map default interactions](ol.interaction.html#defaults)<br>
+[Map default interactions](ol.interaction.html#.defaults)<br>
 Interactions for [vector features](ol.Feature.html)
 <ul><li>[ol.interaction.Select](ol.interaction.Select.html)</li>
 <li>[ol.interaction.Draw](ol.interaction.Draw.html)</li>
@@ -32,7 +32,7 @@ Interactions for [vector features](ol.Feature.html)
 <br>[Formats](ol.format.Feature.html) for reading/writing vector data
 <br>[ol.format.WMSCapabilities](ol.format.WMSCapabilities.html)</td></tr>
 <tr><th>Projections</th><th>Observable objects</th><th>Other components</th></tr>
-<tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol.proj.transform()](ol.proj.html#transform) and [ol.proj.transformExtent()](ol.proj.html#transformExtent).</p>
+<tr><td><p>All coordinates and extents need to be provided in view projection (default: EPSG:3857). To transform, use [ol.proj.transform()](ol.proj.html#.transform) and [ol.proj.transformExtent()](ol.proj.html#.transformExtent).</p>
 [ol.proj](ol.proj.html)</td>
 <td><p>Changes to all [ol.Objects](ol.Object.html) can observed by calling the [object.on('propertychange')](ol.Object.html#on) method.  Listeners receive an [ol.ObjectEvent](ol.ObjectEvent.html) with information on the changed property and old value.</p>
 <td>[ol.DeviceOrientation](ol.DeviceOrientation.html)<br>

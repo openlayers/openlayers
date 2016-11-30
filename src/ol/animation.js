@@ -7,6 +7,7 @@ goog.require('ol.easing');
 
 
 /**
+ * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition that will "bounce" the resolution as it
  * approaches the final value.
  * @param {olx.animation.BounceOptions} options Bounce options.
@@ -14,6 +15,7 @@ goog.require('ol.easing');
  * @api
  */
 ol.animation.bounce = function(options) {
+  ol.DEBUG && console.warn('ol.animation.bounce() is deprecated.  Use view.animate() instead.');
   var resolution = options.resolution;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -45,12 +47,14 @@ ol.animation.bounce = function(options) {
 
 
 /**
+ * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view center.
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
  */
 ol.animation.pan = function(options) {
+  ol.DEBUG && console.warn('ol.animation.pan() is deprecated.  Use view.animate() instead.');
   var source = options.source;
   var start = options.start ? options.start : Date.now();
   var sourceX = source[0];
@@ -86,12 +90,14 @@ ol.animation.pan = function(options) {
 
 
 /**
+ * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view rotation.
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
  */
 ol.animation.rotate = function(options) {
+  ol.DEBUG && console.warn('ol.animation.rotate() is deprecated.  Use view.animate() instead.');
   var sourceRotation = options.rotation ? options.rotation : 0;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -133,12 +139,14 @@ ol.animation.rotate = function(options) {
 
 
 /**
+ * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view resolution.
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
  * @api
  */
 ol.animation.zoom = function(options) {
+  ol.DEBUG && console.warn('ol.animation.zoom() is deprecated.  Use view.animate() instead.');
   var sourceResolution = options.resolution;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;

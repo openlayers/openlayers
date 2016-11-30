@@ -282,6 +282,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  *                number, boolean)>}
  */
 ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_ = {
+  'Circle': ol.render.canvas.PolygonReplay,
   'Image': ol.render.canvas.ImageReplay,
   'LineString': ol.render.canvas.LineStringReplay,
   'Polygon': ol.render.canvas.PolygonReplay,

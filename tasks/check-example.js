@@ -51,15 +51,14 @@ server.on('connection', function(socket) {
   });
 });
 
-['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
- 'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'].forEach(signal => {
-   process.once(signal, () => {
-     process.stdout.write(`Got ${signal}, stopping...\n`),
-     server.close(() => {
-       process.stdout.write('Stopped.\n');
-       process.exit(0);
-     });
+['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'].forEach(signal => {
+  process.once(signal, () => {
+    process.stdout.write(`Got ${signal}, stopping...\n`),
+    server.close(() => {
+      process.stdout.write('Stopped.\n');
+      process.exit(0);
+    });
 
-     Object.keys(connections).forEach(cid => connections[cid].destroy());
-   });
- });
+    Object.keys(connections).forEach(cid => connections[cid].destroy());
+  });
+});

@@ -139,7 +139,7 @@ describe('ol.rendering.layer.Vector', function() {
       }));
       map.once('postrender', function() {
         expectResemble(map, 'spec/ol/layer/expected/vector-canvas-opaque.png',
-            17, done);
+            24.34, done);
       });
     });
 

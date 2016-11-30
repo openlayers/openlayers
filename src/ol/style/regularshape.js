@@ -63,7 +63,7 @@ ol.style.RegularShape = function(options) {
   this.points_ = options.points;
 
   /**
-   * @private
+   * @protected
    * @type {number}
    */
   this.radius_ = /** @type {number} */ (options.radius !== undefined ?
@@ -113,7 +113,7 @@ ol.style.RegularShape = function(options) {
   this.hitDetectionImageSize_ = null;
 
   /**
-   * @private
+   * @protected
    * @type {ol.style.AtlasManager|undefined}
    */
   this.atlasManager_ = options.atlasManager;
@@ -145,7 +145,7 @@ ol.inherits(ol.style.RegularShape, ol.style.Image);
 
 
 /**
- * Clones the style. If an atlasmanger was provided to the original style it will be used in the cloned style, too.
+ * Clones the style. If an atlasmanager was provided to the original style it will be used in the cloned style, too.
  * @return {ol.style.RegularShape} The cloned style.
  * @api
  */
@@ -315,7 +315,7 @@ ol.style.RegularShape.prototype.unlistenImageChange = ol.nullFunction;
 
 
 /**
- * @private
+ * @protected
  * @param {ol.style.AtlasManager|undefined} atlasManager An atlas manager.
  */
 ol.style.RegularShape.prototype.render_ = function(atlasManager) {
@@ -430,15 +430,23 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
   context.translate(x, y);
 
   context.beginPath();
-  if (this.radius2_ !== this.radius_) {
-    this.points_ = 2 * this.points_;
+
+  if (this.points_ === Infinity) {
+    context.arc(
+        renderOptions.size / 2, renderOptions.size / 2,
+        this.radius_, 0, 2 * Math.PI, true);
+  } else {
+    if (this.radius2_ !== this.radius_) {
+      this.points_ = 2 * this.points_;
+    }
+    for (i = 0; i <= this.points_; i++) {
+      angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
+      radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
+      context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
+                     renderOptions.size / 2 + radiusC * Math.sin(angle0));
+    }
   }
-  for (i = 0; i <= this.points_; i++) {
-    angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
-    radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
-    context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-                   renderOptions.size / 2 + radiusC * Math.sin(angle0));
-  }
+
 
   if (this.fill_) {
     context.fillStyle = ol.colorlike.asColorLike(this.fill_.getColor());
@@ -494,15 +502,22 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
   context.translate(x, y);
 
   context.beginPath();
-  if (this.radius2_ !== this.radius_) {
-    this.points_ = 2 * this.points_;
-  }
-  var i, radiusC, angle0;
-  for (i = 0; i <= this.points_; i++) {
-    angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
-    radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
-    context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-                   renderOptions.size / 2 + radiusC * Math.sin(angle0));
+
+  if (this.points_ === Infinity) {
+    context.arc(
+        renderOptions.size / 2, renderOptions.size / 2,
+        this.radius_, 0, 2 * Math.PI, true);
+  } else {
+    if (this.radius2_ !== this.radius_) {
+      this.points_ = 2 * this.points_;
+    }
+    var i, radiusC, angle0;
+    for (i = 0; i <= this.points_; i++) {
+      angle0 = i * 2 * Math.PI / this.points_ - Math.PI / 2 + this.angle_;
+      radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
+      context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
+                     renderOptions.size / 2 + radiusC * Math.sin(angle0));
+    }
   }
 
   context.fillStyle = ol.render.canvas.defaultFillStyle;

@@ -5,7 +5,6 @@ goog.require('ol.Tile');
 goog.require('ol.VectorTile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.featureloader');
 goog.require('ol.size');
 goog.require('ol.source.UrlTile');
 
@@ -38,7 +37,7 @@ ol.source.VectorTile = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : ol.source.VectorTile.defaultTileLoadFunction,
+        options.tileLoadFunction : ol.VectorTile.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
     url: options.url,
@@ -120,13 +119,4 @@ ol.source.VectorTile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
 ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
   var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
-};
-
-
-/**
- * @param {ol.VectorTile} vectorTile Vector tile.
- * @param {string} url URL.
- */
-ol.source.VectorTile.defaultTileLoadFunction = function(vectorTile, url) {
-  vectorTile.setLoader(ol.featureloader.tile(url, vectorTile.getFormat()));
 };

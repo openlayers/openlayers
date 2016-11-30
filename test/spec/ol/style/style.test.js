@@ -11,6 +11,30 @@ goog.require('ol.style.Text');
 
 describe('ol.style.Style', function() {
 
+  var testFill = new ol.style.Fill({
+    color: 'rgba(255, 255, 255, 0.6)'
+  });
+
+  var testStroke = new ol.style.Stroke({
+    color: '#319FD3',
+    width: 1
+  });
+
+  var testText = new ol.style.Text({
+    font: '12px Calibri,sans-serif',
+    fill: new ol.style.Fill({
+      color: '#000'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#fff',
+      width: 3
+    })
+  });
+
+  var testImage = new ol.style.Circle({
+    radius: 5
+  });
+
   describe('#clone', function() {
 
     it('creates a new ol.style.Style', function() {
@@ -89,6 +113,82 @@ describe('ol.style.Style', function() {
 
       style.setZIndex(0.7);
       expect(style.getZIndex()).to.be(0.7);
+    });
+  });
+
+  describe('#getFill', function() {
+    var style = new ol.style.Style({
+      fill: testFill
+    });
+
+    it('returns the fill style of a style', function() {
+      expect(style.getFill()).to.eql(testFill);
+    });
+  });
+
+  describe('#setFill', function() {
+    var style = new ol.style.Style();
+
+    it('sets the fill style of a style', function() {
+      style.setFill(testFill);
+      expect(style.getFill()).to.eql(testFill);
+    });
+  });
+
+  describe('#getImage', function() {
+    var style = new ol.style.Style({
+      image: testImage
+    });
+
+    it('returns the image style of a style', function() {
+      expect(style.getImage()).to.eql(testImage);
+    });
+  });
+
+  describe('#setImage', function() {
+    var style = new ol.style.Style();
+
+    it('sets the image style of a style', function() {
+      style.setImage(testImage);
+      expect(style.getImage()).to.eql(testImage);
+    });
+  });
+
+  describe('#getStroke', function() {
+    var style = new ol.style.Style({
+      stroke: testStroke
+    });
+
+    it('returns the stroke style of a style', function() {
+      expect(style.getStroke()).to.eql(testStroke);
+    });
+  });
+
+  describe('#setStroke', function() {
+    var style = new ol.style.Style();
+
+    it('sets the stroke style of a style', function() {
+      style.setStroke(testStroke);
+      expect(style.getStroke()).to.eql(testStroke);
+    });
+  });
+
+  describe('#getText', function() {
+    var style = new ol.style.Style({
+      text: testText
+    });
+
+    it('returns the text style of a style', function() {
+      expect(style.getText()).to.eql(testText);
+    });
+  });
+
+  describe('#setText', function() {
+    var style = new ol.style.Style();
+
+    it('sets the text style of a style', function() {
+      style.setText(testText);
+      expect(style.getText()).to.eql(testText);
     });
   });
 
