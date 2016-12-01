@@ -823,16 +823,16 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
  * @api
  */
 ol.interaction.Modify.prototype.removePoint = function() {
-  var handled = false;
   if (this.lastPointerEvent_ && this.lastPointerEvent_.type != ol.MapBrowserEvent.EventType.POINTERDRAG) {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
-    handled = this.removeVertex_();
+    this.removeVertex_();
     this.dispatchEvent(new ol.interaction.Modify.Event(
         ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
     this.modified_ = false;
+    return true;
   }
-  return handled;
+  return false;
 };
 
 /**
