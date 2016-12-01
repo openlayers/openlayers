@@ -15,7 +15,7 @@ goog.require('ol.interaction.Pointer');
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.DragPanHorizontalOptions=} opt_options Options.
+ * @param {olx.interaction.DragPanOptions=} opt_options Options.
  * @api stable
  */
 ol.interaction.DragPanHorizontal = function(opt_options) {
@@ -105,6 +105,7 @@ ol.interaction.DragPanHorizontal.handleUpEvent_ = function(mapBrowserEvent) {
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
+      dest[1] = 0;
       view.animate({
         center: view.constrainCenter(dest),
         duration: 500,
