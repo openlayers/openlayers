@@ -82,6 +82,10 @@ ol.interaction.Select = function(opt_options) {
   this.filter_ = options.filter ? options.filter :
       ol.functions.TRUE;
 
+  /**
+   * @private
+   * @type {number}
+   */
   this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
 
   var featureOverlay = new ol.layer.Vector({
