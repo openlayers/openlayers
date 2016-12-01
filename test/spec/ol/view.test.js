@@ -876,6 +876,29 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(1500);
       expect(view.getCenter()[1]).to.be(1500);
     });
+    it('returns the new center and resolution', function() {
+      var fitResult = view.fit(
+          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          [200, 200],
+          {padding: [100, 0, 0, 100], constrainResolution: false});
+
+      expect(fitResult.resolution).to.be(11);
+      expect(fitResult.center[0]).to.be(5950);
+      expect(fitResult.center[1]).to.be(47100);
+    });
+    it('does not apply if apply option is false', function() {
+      var fitResult = view.fit(
+          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          [200, 200],
+          {padding: [100, 0, 0, 100], constrainResolution: false, apply: false});
+
+      expect(view.getResolution()).to.be(undefined);
+      expect(view.getCenter()).to.be(null);
+
+      expect(fitResult.resolution).to.be(11);
+      expect(fitResult.center[0]).to.be(5950);
+      expect(fitResult.center[1]).to.be(47100);
+    });
     it('throws on invalid geometry/extent value', function() {
       expect(function() {
         view.fit(true, [200, 200]);
@@ -913,6 +936,31 @@ describe('ol.View', function() {
       );
       expect(view.getCenter()[0]).to.roughlyEqual(4585.78643762691, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+    });
+    it('returns the new center', function() {
+      view.setResolution(10);
+      var centerOnResult = view.centerOn(
+          [6000, 46000],
+          [400, 400],
+          [300, 300]
+      );
+
+      expect(centerOnResult.center[0]).to.be(5000);
+      expect(centerOnResult.center[1]).to.be(47000);
+    });
+    it('does not apply if apply option is false', function() {
+      view.setResolution(10);
+      var centerOnResult = view.centerOn(
+          [6000, 46000],
+          [400, 400],
+          [300, 300],
+          {apply: false}
+      );
+
+      expect(view.getCenter()).to.be(null);
+
+      expect(centerOnResult.center[0]).to.be(5000);
+      expect(centerOnResult.center[1]).to.be(47000);
     });
   });
 });

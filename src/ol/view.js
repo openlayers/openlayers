@@ -674,6 +674,8 @@ ol.View.prototype.getZoom = function() {
  * @param {ol.geom.SimpleGeometry|ol.Extent} geometry Geometry.
  * @param {ol.Size} size Box pixel size.
  * @param {olx.view.FitOptions=} opt_options Options.
+ * @return {olx.AnimationOptions} Object containing the new resolution and
+ * center, that can be used for animations.
  * @api
  */
 ol.View.prototype.fit = function(geometry, size, opt_options) {
@@ -735,7 +737,9 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
     }
     resolution = constrainedResolution;
   }
-  this.setResolution(resolution);
+  if (options.apply !== undefined ? options.apply : true) {
+    this.setResolution(resolution);
+  }
 
   // calculate center
   sinAngle = -sinAngle; // go back to original rotation
@@ -745,8 +749,16 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
   centerRotY += (padding[0] - padding[2]) / 2 * resolution;
   var centerX = centerRotX * cosAngle - centerRotY * sinAngle;
   var centerY = centerRotY * cosAngle + centerRotX * sinAngle;
+  var center = [centerX, centerY];
 
-  this.setCenter([centerX, centerY]);
+  if (options.apply !== undefined ? options.apply : true) {
+    this.setCenter(center);
+  }
+
+  return {
+    resolution: resolution,
+    center: center
+  };
 };
 
 
@@ -755,9 +767,14 @@ ol.View.prototype.fit = function(geometry, size, opt_options) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Size} size Box pixel size.
  * @param {ol.Pixel} position Position on the view to center on.
+ * @param {olx.view.CenterOnOptions=} opt_options Options.
+ * @return {olx.AnimationOptions} Object containing the new center that can be
+ * used for animations.
  * @api
  */
-ol.View.prototype.centerOn = function(coordinate, size, position) {
+ol.View.prototype.centerOn = function(coordinate, size, position, opt_options) {
+  var options = opt_options || {};
+
   // calculate rotated position
   var rotation = this.getRotation();
   var cosAngle = Math.cos(-rotation);
@@ -772,8 +789,15 @@ ol.View.prototype.centerOn = function(coordinate, size, position) {
   sinAngle = -sinAngle; // go back to original rotation
   var centerX = rotX * cosAngle - rotY * sinAngle;
   var centerY = rotY * cosAngle + rotX * sinAngle;
+  var center = [centerX, centerY];
 
-  this.setCenter([centerX, centerY]);
+  if (options.apply !== undefined ? options.apply : true) {
+    this.setCenter(center);
+  }
+
+  return {
+    center: center
+  };
 };
 
 

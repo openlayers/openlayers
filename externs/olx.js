@@ -7558,11 +7558,27 @@ olx.view;
 
 /**
  * @typedef {{
+ *     apply: (boolean|undefined)}}
+ */
+olx.view.CenterOnOptions;
+
+
+/**
+ * Apply the new center directly. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.view.CenterOnOptions.prototype.apply;
+
+
+/**
+ * @typedef {{
  *     padding: (!Array.<number>|undefined),
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
  *     maxZoom: (number|undefined),
- *     minResolution: (number|undefined)}}
+ *     minResolution: (number|undefined),
+ *     apply: (boolean|undefined)}}
  */
 olx.view.FitOptions;
 
@@ -7607,6 +7623,14 @@ olx.view.FitOptions.prototype.minResolution;
  * @api
  */
 olx.view.FitOptions.prototype.maxZoom;
+
+
+/**
+ * Apply the new center and resolution directly. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.view.FitOptions.prototype.apply;
 
 
 /* typedefs for object literals exposed by the library */
