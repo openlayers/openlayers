@@ -581,7 +581,7 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt
   var coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
   var hitTolerance = opt_options.hitTolerance !== undefined ?
-    opt_options.hitTolerance : 0;
+    opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   var thisArg = opt_this !== undefined ? opt_this : null;
   var layerFilter = opt_options.layerFilter !== undefined ?
     opt_options.layerFilter : ol.functions.TRUE;
@@ -651,7 +651,7 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   var thisArg = opt_options.layerFilterThis !== undefined ?
     opt_options.layerFilterThis : null;
   var hitTolerance = opt_options.hitTolerance !== undefined ?
-    opt_options.hitTolerance : 0;
+    opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
       coordinate, this.frameState_, hitTolerance, layerFilter, thisArg);
 };
