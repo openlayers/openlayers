@@ -546,6 +546,57 @@ describe('ol.View', function() {
 
     });
 
+    it('completes complex animation using resolution', function(done) {
+
+      var view = new ol.View({
+        center: [0, 0],
+        resolution: 2
+      });
+
+      var calls = 0;
+
+      function onAnimateEnd() {
+        if (calls == 2) {
+          expect(view.getAnimating()).to.be(false);
+          done();
+        }
+      }
+
+      view.animate({
+        center: [100, 100],
+        duration: 50
+      }, function() {
+        ++calls;
+        expect(view.getCenter()).to.eql([100, 100]);
+        onAnimateEnd();
+      });
+
+      view.animate({
+        resolution: 2000,
+        duration: 25
+      },{
+        resolution: 2,
+        duration: 25
+      }, function() {
+        ++calls;
+        expect(view.getResolution()).to.roughlyEqual(2, 1e-8);
+        onAnimateEnd();
+      });
+
+      setTimeout(function() {
+        expect(view.getResolution() > 2).to.be(true);
+        expect(view.getResolution() < 2000).to.be(true);
+        expect(view.getAnimating()).to.be(true);
+      }, 10);
+
+      setTimeout(function() {
+        expect(view.getResolution() > 2).to.be(true);
+        expect(view.getResolution() < 2000).to.be(true);
+        expect(view.getAnimating()).to.be(true);
+      }, 40);
+
+    });
+
   });
 
   describe('#cancelAnimations()', function() {

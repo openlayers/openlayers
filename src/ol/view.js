@@ -238,7 +238,7 @@ ol.View.prototype.animate = function(var_args) {
             this.maxResolution_, options.zoom - this.minZoom_, 0);
       resolution = animation.targetResolution;
     } else if (options.resolution) {
-      animation.sourceResolution = this.getResolution();
+      animation.sourceResolution = resolution;
       animation.targetResolution = options.resolution;
       resolution = animation.targetResolution;
     }
