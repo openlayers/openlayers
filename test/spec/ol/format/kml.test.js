@@ -1487,6 +1487,83 @@ describe('ol.format.KML', function() {
 
       describe('extended data', function() {
 
+        it('can write ExtendedData with no values', function() {
+          var feature = new ol.Feature();
+          feature.set('foo', null);
+          feature.set('bar', undefined);
+          var features = [feature];
+          var node = format.writeFeaturesNode(features);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <ExtendedData>' +
+              '      <Data name="bar"/>' +
+              '      <Data name="foo"/>' +
+              '    </ExtendedData>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
+        it('can write ExtendedData with values', function() {
+          var feature = new ol.Feature();
+          feature.set('foo', 'bar');
+          feature.set('aNumber', 1000);
+          var features = [feature];
+          var node = format.writeFeaturesNode(features);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <ExtendedData>' +
+              '      <Data name="aNumber">' +
+              '        <value>1000</value>' +
+              '      </Data>' +
+              '      <Data name="foo">' +
+              '        <value>bar</value>' +
+              '      </Data>' +
+              '    </ExtendedData>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
+        it('can write ExtendedData pair with displayName and value', function() {
+          var pair = {
+            value: 'bar',
+            displayName: 'display name'
+          };
+
+          var feature = new ol.Feature();
+          feature.set('foo', pair);
+
+          var features = [feature];
+          var node = format.writeFeaturesNode(features);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <ExtendedData>' +
+              '      <Data name="foo">' +
+              '        <displayName><![CDATA[display name]]></displayName>' +
+              '        <value>bar</value>' +
+              '      </Data>' +
+              '    </ExtendedData>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
         it('can read ExtendedData', function() {
           var text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
