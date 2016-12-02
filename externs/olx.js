@@ -2576,6 +2576,37 @@ olx.interaction.DragPanOptions.prototype.condition;
  */
 olx.interaction.DragPanOptions.prototype.kinetic;
 
+/**
+ * @typedef {{condition: (ol.EventsConditionType|undefined),
+ *     kinetic: (ol.Kinetic|undefined),
+ *     vertical: (boolean|undefined)}}
+ */
+olx.interaction.DragPanStraightOptions;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether that event should be handled.
+ * Default is {@link ol.events.condition.noModifierKeys}.
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.DragPanStraightOptions.prototype.condition;
+
+
+/**
+ * Kinetic inertia to apply to the pan.
+ * @type {ol.Kinetic|undefined}
+ * @api
+ */
+olx.interaction.DragPanStraightOptions.prototype.kinetic;
+
+/**
+ * Drag pan vertically.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DragPanStraightOptions.prototype.vertical;
 
 /**
  * @typedef {{condition: (ol.EventsConditionType|undefined),

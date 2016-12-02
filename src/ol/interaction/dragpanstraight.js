@@ -1,4 +1,4 @@
-goog.provide('ol.interaction.DragPanHorizontal');
+goog.provide('ol.interaction.DragPanStraight');
 
 goog.require('ol');
 goog.require('ol.View');
@@ -11,19 +11,19 @@ goog.require('ol.interaction.Pointer');
 
 /**
  * @classdesc
- * Allows the user to pan the map by dragging the map.
+ * Allows the user to pan the map horizontally or vertically by dragging the map.
  *
  * @constructor
  * @extends {ol.interaction.Pointer}
- * @param {olx.interaction.DragPanOptions=} opt_options Options.
+ * @param {olx.interaction.DragPanStraightOptions=} opt_options Options.
  * @api stable
  */
-ol.interaction.DragPanHorizontal = function(opt_options) {
+ol.interaction.DragPanStraight = function(opt_options) {
 
   ol.interaction.Pointer.call(this, {
-    handleDownEvent: ol.interaction.DragPanHorizontal.handleDownEvent_,
-    handleDragEvent: ol.interaction.DragPanHorizontal.handleDragEvent_,
-    handleUpEvent: ol.interaction.DragPanHorizontal.handleUpEvent_
+    handleDownEvent: ol.interaction.DragPanStraight.handleDownEvent_,
+    handleDragEvent: ol.interaction.DragPanStraight.handleDragEvent_,
+    handleUpEvent: ol.interaction.DragPanStraight.handleUpEvent_
   });
 
   var options = opt_options ? opt_options : {};
@@ -34,6 +34,12 @@ ol.interaction.DragPanHorizontal = function(opt_options) {
    */
   this.kinetic_ = options.kinetic;
 
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.vertical_ = options.vertical;
+  
   /**
    * @type {ol.Pixel}
    */
@@ -53,15 +59,15 @@ ol.interaction.DragPanHorizontal = function(opt_options) {
   this.noKinetic_ = false;
 
 };
-ol.inherits(ol.interaction.DragPanHorizontal, ol.interaction.Pointer);
+ol.inherits(ol.interaction.DragPanStraight, ol.interaction.Pointer);
 
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
- * @this {ol.interaction.DragPanHorizontal}
+ * @this {ol.interaction.DragPanStraight}
  * @private
  */
-ol.interaction.DragPanHorizontal.handleDragEvent_ = function(mapBrowserEvent) {
+ol.interaction.DragPanStraight.handleDragEvent_ = function(mapBrowserEvent) {
   ol.DEBUG && console.assert(this.targetPointers.length >= 1,
       'the length of this.targetPointers should be more than 1');
   var centroid =
@@ -70,8 +76,8 @@ ol.interaction.DragPanHorizontal.handleDragEvent_ = function(mapBrowserEvent) {
     this.kinetic_.update(centroid[0], centroid[1]);
   }
   if (this.lastCentroid) {
-    var deltaX = this.lastCentroid[0] - centroid[0];
-    var deltaY = 0; //centroid[1] - this.lastCentroid[1];
+    var deltaX = this.vertical_ ? 0 : this.lastCentroid[0] - centroid[0];
+    var deltaY = this.vertical_ ? centroid[1] - this.lastCentroid[1] : 0;
     var map = mapBrowserEvent.map;
     var view = map.getView();
     var viewState = view.getState();
@@ -89,10 +95,10 @@ ol.interaction.DragPanHorizontal.handleDragEvent_ = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
- * @this {ol.interaction.DragPanHorizontal}
+ * @this {ol.interaction.DragPanStraight}
  * @private
  */
-ol.interaction.DragPanHorizontal.handleUpEvent_ = function(mapBrowserEvent) {
+ol.interaction.DragPanStraight.handleUpEvent_ = function(mapBrowserEvent) {
   var map = mapBrowserEvent.map;
   var view = map.getView();
   if (this.targetPointers.length === 0) {
@@ -105,7 +111,10 @@ ol.interaction.DragPanHorizontal.handleUpEvent_ = function(mapBrowserEvent) {
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
-      dest[1] = 0;
+      if (this.vertical_)
+        dest[0] = 0;
+      else
+        dest[1] = 0;
       view.animate({
         center: view.constrainCenter(dest),
         duration: 500,
@@ -124,10 +133,10 @@ ol.interaction.DragPanHorizontal.handleUpEvent_ = function(mapBrowserEvent) {
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Start drag sequence?
- * @this {ol.interaction.DragPanHorizontal}
+ * @this {ol.interaction.DragPanStraight}
  * @private
  */
-ol.interaction.DragPanHorizontal.handleDownEvent_ = function(mapBrowserEvent) {
+ol.interaction.DragPanStraight.handleDownEvent_ = function(mapBrowserEvent) {
   if (this.targetPointers.length > 0 && this.condition_(mapBrowserEvent)) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
@@ -153,4 +162,4 @@ ol.interaction.DragPanHorizontal.handleDownEvent_ = function(mapBrowserEvent) {
 /**
  * @inheritDoc
  */
-ol.interaction.DragPanHorizontal.prototype.shouldStopEvent = ol.functions.FALSE;
+ol.interaction.DragPanStraight.prototype.shouldStopEvent = ol.functions.FALSE;
