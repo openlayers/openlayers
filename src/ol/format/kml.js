@@ -2558,7 +2558,8 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
 
   // don't export these to ExtendedData
   var filter = {'address': 1, 'description': 1, 'name': 1, 'open': 1,
-    'phoneNumber': 1, 'styleUrl': 1, 'visibility': 1, 'geometry': 1};
+    'phoneNumber': 1, 'styleUrl': 1, 'visibility': 1};
+  filter[feature.getGeometryName()] = 1;
   var keys = Object.keys(properties || {}).sort().filter(function(v) {
     return !filter[v];
   });
