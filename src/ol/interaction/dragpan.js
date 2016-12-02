@@ -33,6 +33,18 @@ ol.interaction.DragPan = function(opt_options) {
    * @type {ol.Kinetic|undefined}
    */
   this.kinetic_ = options.kinetic;
+  
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.horizontal_ = typeof options.horizontal === 'undefined' ? true : options.horizontal;
+  
+  /**
+   * @private
+   * @type {boolean|undefined}
+   */
+  this.vertical_ = typeof options.vertical === 'undefined' ? true : options.vertical;
 
   /**
    * @type {ol.Pixel}
@@ -70,8 +82,8 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
     this.kinetic_.update(centroid[0], centroid[1]);
   }
   if (this.lastCentroid) {
-    var deltaX = this.lastCentroid[0] - centroid[0];
-    var deltaY = centroid[1] - this.lastCentroid[1];
+    var deltaX = this.horizontal_ ? this.lastCentroid[0] - centroid[0] : 0;
+    var deltaY = this.vertical_ ? centroid[1] - this.lastCentroid[1] : 0;
     var map = mapBrowserEvent.map;
     var view = map.getView();
     var viewState = view.getState();
@@ -105,6 +117,8 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
         centerpx[0] - distance * Math.cos(angle),
         centerpx[1] - distance * Math.sin(angle)
       ]);
+      dest[0] = this.horizontal_ ? dest[0] : 0;
+      dest[1] = this.vertical_ ? dest[1] : 0;
       view.animate({
         center: view.constrainCenter(dest),
         duration: 500,

@@ -2554,7 +2554,9 @@ olx.interaction.DragBoxOptions.prototype.boxEndCondition;
 
 /**
  * @typedef {{condition: (ol.EventsConditionType|undefined),
- *     kinetic: (ol.Kinetic|undefined)}}
+ *     kinetic: (ol.Kinetic|undefined),
+ *     horizontal: (boolean|undefined),
+ *     vertical: (boolean|undefined)}}
  */
 olx.interaction.DragPanOptions;
 
@@ -2577,36 +2579,18 @@ olx.interaction.DragPanOptions.prototype.condition;
 olx.interaction.DragPanOptions.prototype.kinetic;
 
 /**
- * @typedef {{condition: (ol.EventsConditionType|undefined),
- *     kinetic: (ol.Kinetic|undefined),
- *     vertical: (boolean|undefined)}}
- */
-olx.interaction.DragPanStraightOptions;
-
-
-/**
- * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
- * to indicate whether that event should be handled.
- * Default is {@link ol.events.condition.noModifierKeys}.
- * @type {ol.EventsConditionType|undefined}
- * @api
- */
-olx.interaction.DragPanStraightOptions.prototype.condition;
-
-
-/**
- * Kinetic inertia to apply to the pan.
- * @type {ol.Kinetic|undefined}
- * @api
- */
-olx.interaction.DragPanStraightOptions.prototype.kinetic;
-
-/**
- * Drag pan vertically.
+ * Set false to disable horizontally pan.
  * @type {boolean|undefined}
  * @api
  */
-olx.interaction.DragPanStraightOptions.prototype.vertical;
+olx.interaction.DragPanOptions.prototype.horizontal;
+
+/**
+ * Set false to disable vertically pan.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DragPanOptions.prototype.vertical;
 
 /**
  * @typedef {{condition: (ol.EventsConditionType|undefined),
