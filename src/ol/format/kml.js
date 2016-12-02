@@ -2280,6 +2280,54 @@ ol.format.KML.writeCoordinatesTextNode_ = function(node, coordinates, objectStac
 
 /**
  * @param {Node} node Node.
+ * @param {{name: *, value: *}} pair Name value pair.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.KML.writeDataNode_ = function(node, pair, objectStack) {
+  node.setAttribute('name', pair.name);
+  var /** @type {ol.XmlNodeStackItem} */ context = {node: node};
+  var value = pair.value;
+
+  if (typeof value == 'object') {
+    if (value !== null && value.displayName) {
+      ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+        ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value.displayName], objectStack, ['displayName']);
+    }
+
+    if (value !== null && value.value) {
+      ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+        ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value.value], objectStack, ['value']);
+    }
+  } else {
+    ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+     ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value], objectStack, ['value']);
+  }
+};
+
+
+/**
+ * @param {Node} node Node to append a TextNode with the name to.
+ * @param {string} name DisplayName.
+ * @private
+ */
+ol.format.KML.writeDataNodeName_ = function(node, name) {
+  ol.format.XSD.writeCDATASection(node, name);
+};
+
+
+/**
+ * @param {Node} node Node to append a CDATA Section with the value to.
+ * @param {string} value Value.
+ * @private
+ */
+ol.format.KML.writeDataNodeValue_ = function(node, value) {
+  ol.format.XSD.writeStringTextNode(node, value);
+};
+
+
+/**
+ * @param {Node} node Node.
  * @param {Array.<ol.Feature>} features Features.
  * @param {Array.<*>} objectStack Object stack.
  * @this {ol.format.KML}
@@ -2290,6 +2338,24 @@ ol.format.KML.writeDocument_ = function(node, features, objectStack) {
   ol.xml.pushSerializeAndPop(context, ol.format.KML.DOCUMENT_SERIALIZERS_,
       ol.format.KML.DOCUMENT_NODE_FACTORY_, features, objectStack, undefined,
       this);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {{names: Array<string>, values: (Array<*>)}} namesAndValues Names and values.
+ * @param {Array.<*>} objectStack Object stack.
+ * @private
+ */
+ol.format.KML.writeExtendedData_ = function(node, namesAndValues, objectStack) {
+  var /** @type {ol.XmlNodeStackItem} */ context = {node: node};
+  var names = namesAndValues.names, values = namesAndValues.values;
+  var length = names.length;
+
+  for (var i = 0; i < length; i++) {
+    ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
+      ol.format.KML.DATA_NODE_FACTORY_, [{name: names[i], value: values[i]}], objectStack);
+  }
 };
 
 
@@ -2490,6 +2556,20 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
   // serialize properties (properties unknown to KML are not serialized)
   var properties = feature.getProperties();
 
+  // don't export these to ExtendedData
+  var filter = {'address': 1, 'description': 1, 'name': 1, 'open': 1,
+    'phoneNumber': 1, 'styleUrl': 1, 'visibility': 1, 'geometry': 1};
+  var keys = Object.keys(properties || {}).sort().filter(function(v) {
+    return !filter[v];
+  });
+
+  if (keys.length > 0) {
+    var sequence = ol.xml.makeSequence(properties, keys);
+    var namesAndValues = {names: keys, values: sequence};
+    ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
+      ol.format.KML.EXTENDEDDATA_NODE_FACTORY_, [namesAndValues], objectStack);
+  }
+
   var styleFunction = feature.getStyleFunction();
   if (styleFunction) {
     // FIXME the styles returned by the style function are supposed to be
@@ -2680,6 +2760,19 @@ ol.format.KML.DOCUMENT_SERIALIZERS_ = ol.xml.makeStructureNS(
 
 /**
  * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_ = ol.xml.makeStructureNS(
+    ol.format.KML.NAMESPACE_URIS_, {
+      'Data': ol.xml.makeChildAppender(ol.format.KML.writeDataNode_),
+      'value': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeValue_),
+      'displayName': ol.xml.makeChildAppender(ol.format.KML.writeDataNodeName_)
+    });
+
+
+/**
+ * @const
  * @type {Object.<string, string>}
  * @private
  */
@@ -2845,6 +2938,8 @@ ol.format.KML.PLACEMARK_SEQUENCE_ = ol.xml.makeStructureNS(
  */
 ol.format.KML.PLACEMARK_SERIALIZERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
+      'ExtendedData': ol.xml.makeChildAppender(
+          ol.format.KML.writeExtendedData_),
       'MultiGeometry': ol.xml.makeChildAppender(
           ol.format.KML.writeMultiGeometry_),
       'LineString': ol.xml.makeChildAppender(
@@ -2998,6 +3093,26 @@ ol.format.KML.COLOR_NODE_FACTORY_ = ol.xml.makeSimpleNodeFactory('color');
  */
 ol.format.KML.COORDINATES_NODE_FACTORY_ =
     ol.xml.makeSimpleNodeFactory('coordinates');
+
+
+/**
+ * A factory for creating Data nodes.
+ * @const
+ * @type {function(*, Array.<*>): (Node|undefined)}
+ * @private
+ */
+ol.format.KML.DATA_NODE_FACTORY_ =
+    ol.xml.makeSimpleNodeFactory('Data');
+
+
+/**
+ * A factory for creating ExtendedData nodes.
+ * @const
+ * @type {function(*, Array.<*>): (Node|undefined)}
+ * @private
+ */
+ol.format.KML.EXTENDEDDATA_NODE_FACTORY_ =
+    ol.xml.makeSimpleNodeFactory('ExtendedData');
 
 
 /**
