@@ -369,6 +369,26 @@ describe('ol.View', function() {
       }, 50);
     });
 
+    it('allows duration to be zero', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 5
+      });
+
+      view.animate({
+        zoom: 4,
+        duration: 0
+      });
+      expect(view.getAnimating()).to.eql(true);
+
+      setTimeout(function() {
+        expect(view.getCenter()).to.eql([0, 0]);
+        expect(view.getZoom()).to.eql(4);
+        expect(view.getAnimating()).to.eql(false);
+        done();
+      }, 10);
+    });
+
     it('prefers zoom over resolution', function(done) {
       var view = new ol.View({
         center: [0, 0],

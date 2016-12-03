@@ -222,7 +222,7 @@ ol.View.prototype.animate = function(var_args) {
       start: start,
       complete: false,
       anchor: options.anchor,
-      duration: options.duration || 1000,
+      duration: options.duration !== undefined ? options.duration : 1000,
       easing: options.easing || ol.easing.inAndOut
     });
 
