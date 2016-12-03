@@ -80,7 +80,7 @@ ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, str
  * @param {boolean} extrapolate Extrapolate.
  * @return {ol.Coordinate} Coordinate.
  */
-ol.geom.flat.lineStringCoordinateAtM = function(flatCoordinates, offset, end, stride, m, extrapolate) {
+ol.geom.flat.interpolate.lineStringCoordinateAtM = function(flatCoordinates, offset, end, stride, m, extrapolate) {
   if (end == offset) {
     return null;
   }
@@ -147,10 +147,10 @@ ol.geom.flat.lineStringCoordinateAtM = function(flatCoordinates, offset, end, st
  * @param {boolean} interpolate Interpolate.
  * @return {ol.Coordinate} Coordinate.
  */
-ol.geom.flat.lineStringsCoordinateAtM = function(
+ol.geom.flat.interpolate.lineStringsCoordinateAtM = function(
     flatCoordinates, offset, ends, stride, m, extrapolate, interpolate) {
   if (interpolate) {
-    return ol.geom.flat.lineStringCoordinateAtM(
+    return ol.geom.flat.interpolate.lineStringCoordinateAtM(
         flatCoordinates, offset, ends[ends.length - 1], stride, m, extrapolate);
   }
   var coordinate;
@@ -181,12 +181,12 @@ ol.geom.flat.lineStringsCoordinateAtM = function(
     if (m < flatCoordinates[offset + stride - 1]) {
       return null;
     } else if (m <= flatCoordinates[end - 1]) {
-      return ol.geom.flat.lineStringCoordinateAtM(
+      return ol.geom.flat.interpolate.lineStringCoordinateAtM(
           flatCoordinates, offset, end, stride, m, false);
     }
     offset = end;
   }
   ol.DEBUG && console.assert(false,
-      'ol.geom.flat.lineStringsCoordinateAtM should have returned');
+      'ol.geom.flat.interpolate.lineStringsCoordinateAtM should have returned');
   return null;
 };
