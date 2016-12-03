@@ -813,10 +813,30 @@ describe('ol.View', function() {
   });
 
   describe('fit', function() {
+
+    var originalRequestAnimationFrame = window.requestAnimationFrame;
+    var originalCancelAnimationFrame = window.cancelAnimationFrame;
+
+    beforeEach(function() {
+      window.requestAnimationFrame = function(callback) {
+        return setTimeout(callback, 1);
+      };
+      window.cancelAnimationFrame = function(key) {
+        return clearTimeout(key);
+      };
+    });
+
+    afterEach(function() {
+      window.requestAnimationFrame = originalRequestAnimationFrame;
+      window.cancelAnimationFrame = originalCancelAnimationFrame;
+    });
+
     var view;
     beforeEach(function() {
       view = new ol.View({
-        resolutions: [200, 100, 50, 20, 10, 5, 2, 1]
+        center: [0, 0],
+        resolutions: [200, 100, 50, 20, 10, 5, 2, 1],
+        zoom: 5
       });
     });
     it('fits correctly to the geometry', function() {
@@ -885,6 +905,27 @@ describe('ol.View', function() {
       expect(function() {
         view.fit(ol.extent.createEmpty(), [200, 200]);
       }).to.throwException();
+    });
+    it('animates when duration is defined', function(done) {
+      view.fit(
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        [200, 200],
+        {
+          padding: [100, 0, 0, 100],
+          constrainResolution: false,
+          duration: 25
+        });
+
+      expect(view.getAnimating()).to.eql(true);
+
+      setTimeout(function() {
+        expect(view.getResolution()).to.be(11);
+        expect(view.getCenter()[0]).to.be(5950);
+        expect(view.getCenter()[1]).to.be(47100);
+        expect(view.getAnimating()).to.eql(false);
+        done();
+      }, 50);
+
     });
   });
 

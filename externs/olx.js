@@ -7562,7 +7562,10 @@ olx.view;
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
  *     maxZoom: (number|undefined),
- *     minResolution: (number|undefined)}}
+ *     minResolution: (number|undefined),
+ *     duration: (number|undefined),
+ *     easing: (undefined|function(number):number)
+ * }}
  */
 olx.view.FitOptions;
 
@@ -7607,6 +7610,26 @@ olx.view.FitOptions.prototype.minResolution;
  * @api
  */
 olx.view.FitOptions.prototype.maxZoom;
+
+
+/**
+ * The duration of the animation in milliseconds. By default, there is no 
+ * animations.
+ * @type {number|undefined}
+ * @api
+ */
+olx.view.FitOptions.prototype.duration;
+
+
+/**
+ * The easing function used during the animation (defaults to {@link ol.easing.inAndOut}).
+ * The function will be called for each frame with a number representing a
+ * fraction of the animation's duration.  The function should return a number
+ * between 0 and 1 representing the progress toward the destination state.
+ * @type {undefined|function(number):number}
+ * @api
+ */
+olx.view.FitOptions.prototype.easing;
 
 
 /* typedefs for object literals exposed by the library */
