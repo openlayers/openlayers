@@ -1,7 +1,6 @@
 goog.provide('ol.source.TileArcGISRest');
 
 goog.require('ol');
-goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.obj');
@@ -125,9 +124,6 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   var modifiedUrl = url
       .replace(/MapServer\/?$/, 'MapServer/export')
       .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
-  if (modifiedUrl == url) {
-    ol.asserts.assert(false, 50); // Cannot determine Rest Service from url
-  }
   return ol.uri.appendParams(modifiedUrl, params);
 };
 
