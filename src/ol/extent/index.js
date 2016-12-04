@@ -1,23 +1,9 @@
 goog.provide('ol.extent');
-goog.provide('ol.extent.Relationship');
 
 goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.extent.Corner');
-
-
-/**
- * Relationship to an extent.
- * @enum {number}
- */
-ol.extent.Relationship = {
-  UNKNOWN: 0,
-  INTERSECTING: 1,
-  ABOVE: 2,
-  RIGHT: 4,
-  BELOW: 8,
-  LEFT: 16
-};
+goog.require('ol.extent.Relationship');
 
 
 /**
