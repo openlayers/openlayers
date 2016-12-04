@@ -304,7 +304,7 @@ ol.View.prototype.updateAnimations_ = function() {
         continue;
       }
       var elapsed = now - animation.start;
-      var fraction = elapsed / animation.duration;
+      var fraction = animation.duration > 0 ? elapsed / animation.duration : 1;
       if (fraction >= 1) {
         animation.complete = true;
         fraction = 1;
