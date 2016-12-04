@@ -1,5 +1,4 @@
 goog.provide('ol.geom.Geometry');
-goog.provide('ol.geom.GeometryLayout');
 
 goog.require('ol');
 goog.require('ol.Object');
@@ -7,20 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
-
-
-/**
- * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
- * or measure ('M') coordinate is available. Supported values are `'XY'`,
- * `'XYZ'`, `'XYM'`, `'XYZM'`.
- * @enum {string}
- */
-ol.geom.GeometryLayout = {
-  XY: 'XY',
-  XYZ: 'XYZ',
-  XYM: 'XYM',
-  XYZM: 'XYZM'
-};
 
 
 /**
