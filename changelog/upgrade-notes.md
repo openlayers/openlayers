@@ -35,6 +35,22 @@ view.animate({
 });
 ```
 
+#### Use `ol.proj.getPointResolution()` instead of `projection.getPointResolution()`
+
+The experimental `getPointResolution` method has been removed from `ol.Projection` instances.  Since the implementation of this method required an inverse transform (function for transforming projected coordinates to geographic coordinates) and `ol.Projection` instances are not constructed with forward or inverse transforms, it does not make sense that a projection instance can always calculate the point resolution.
+
+As a substitute for the `projection.getPointResolution()` function, a `ol.proj.getPointResolution()` function has been added.  To upgrade, you will need to change things like this:
+```js
+projection.getPointResolution(resolution, point);
+```
+
+into this:
+```js
+ol.proj.getPointResolution(projection, resolution, point);
+```
+
+Note that if you were previously creating a projection with a `getPointResolution` function in the constructor (or calling `projection.setGetPointResolution()` after construction), this function will be used by `ol.proj.getPointResolution()`.
+
 ### v3.19.1
 
 #### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`

@@ -1,9 +1,9 @@
 goog.provide('ol.proj');
 goog.provide('ol.proj.METERS_PER_UNIT');
-goog.provide('ol.proj.Projection');
 
 goog.require('ol');
 goog.require('ol.extent');
+goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.proj.proj4');
 goog.require('ol.proj.projections');
@@ -17,12 +17,7 @@ goog.require('ol.sphere.NORMAL');
  * @type {Object.<ol.proj.Units, number>}
  * @api stable
  */
-ol.proj.METERS_PER_UNIT = {};
-ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
-    2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
-ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
-ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
+ol.proj.METERS_PER_UNIT = ol.proj.Units.METERS_PER_UNIT;
 
 
 if (ol.ENABLE_PROJ4JS) {
@@ -47,329 +42,51 @@ if (ol.ENABLE_PROJ4JS) {
 
 
 /**
- * @classdesc
- * Projection definition class. One of these is created for each projection
- * supported in the application and stored in the {@link ol.proj} namespace.
- * You can use these in applications, but this is not required, as API params
- * and options use {@link ol.ProjectionLike} which means the simple string
- * code will suffice.
- *
- * You can use {@link ol.proj.get} to retrieve the object for a particular
- * projection.
- *
- * The library includes definitions for `EPSG:4326` and `EPSG:3857`, together
- * with the following aliases:
- * * `EPSG:4326`: CRS:84, urn:ogc:def:crs:EPSG:6.6:4326,
- *     urn:ogc:def:crs:OGC:1.3:CRS84, urn:ogc:def:crs:OGC:2:84,
- *     http://www.opengis.net/gml/srs/epsg.xml#4326,
- *     urn:x-ogc:def:crs:EPSG:4326
- * * `EPSG:3857`: EPSG:102100, EPSG:102113, EPSG:900913,
- *     urn:ogc:def:crs:EPSG:6.18:3:3857,
- *     http://www.opengis.net/gml/srs/epsg.xml#3857
- *
- * If you use proj4js, aliases can be added using `proj4.defs()`; see
- * [documentation](https://github.com/proj4js/proj4js). To set an alternative
- * namespace for proj4, use {@link ol.proj.setProj4}.
- *
- * @constructor
- * @param {olx.ProjectionOptions} options Projection options.
- * @struct
- * @api stable
+ * Get the resolution of the point in degrees or distance units.
+ * For projections with degrees as the unit this will simply return the
+ * provided resolution. For other projections the point resolution is
+ * estimated by transforming the 'point' pixel to EPSG:4326,
+ * measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
+ * @param {ol.proj.Projection} projection The projection.
+ * @param {number} resolution Nominal resolution in projection units.
+ * @param {ol.Coordinate} point Point to find adjusted resolution at.
+ * @return {number} Point resolution at point in projection units.
+ * @api
  */
-ol.proj.Projection = function(options) {
-
-  /**
-   * @private
-   * @type {string}
-   */
-  this.code_ = options.code;
-
-  /**
-   * @private
-   * @type {ol.proj.Units}
-   */
-  this.units_ = /** @type {ol.proj.Units} */ (options.units);
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = options.extent !== undefined ? options.extent : null;
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.worldExtent_ = options.worldExtent !== undefined ?
-      options.worldExtent : null;
-
-  /**
-   * @private
-   * @type {string}
-   */
-  this.axisOrientation_ = options.axisOrientation !== undefined ?
-      options.axisOrientation : 'enu';
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.global_ = options.global !== undefined ? options.global : false;
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.canWrapX_ = !!(this.global_ && this.extent_);
-
-  /**
-  * @private
-  * @type {function(number, ol.Coordinate):number}
-  */
-  this.getPointResolutionFunc_ = options.getPointResolution !== undefined ?
-      options.getPointResolution : this.getPointResolution_;
-
-  /**
-   * @private
-   * @type {ol.tilegrid.TileGrid}
-   */
-  this.defaultTileGrid_ = null;
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.metersPerUnit_ = options.metersPerUnit;
-
-  var code = options.code;
-  ol.DEBUG && console.assert(code !== undefined,
-      'Option "code" is required for constructing instance');
-  if (ol.ENABLE_PROJ4JS) {
-    var proj4js = ol.proj.proj4.get();
-    if (typeof proj4js == 'function' && !ol.proj.projections.get(code)) {
-      var def = proj4js.defs(code);
-      if (def !== undefined) {
-        if (def.axis !== undefined && options.axisOrientation === undefined) {
-          this.axisOrientation_ = def.axis;
-        }
-        if (options.metersPerUnit === undefined) {
-          this.metersPerUnit_ = def.to_meter;
-        }
-        if (options.units === undefined) {
-          this.units_ = def.units;
-        }
+ol.proj.getPointResolution = function(projection, resolution, point) {
+  var pointResolution;
+  var getter = projection.getPointResolutionFunc();
+  if (getter) {
+    pointResolution = getter(resolution, point);
+  } else {
+    var units = projection.getUnits();
+    if (units == ol.proj.Units.DEGREES) {
+      pointResolution = resolution;
+    } else {
+      // Estimate point resolution by transforming the center pixel to EPSG:4326,
+      // measuring its width and height on the normal sphere, and taking the
+      // average of the width and height.
+      var toEPSG4326 = ol.proj.getTransformFromProjections(projection, ol.proj.get('EPSG:4326'));
+      var vertices = [
+        point[0] - resolution / 2, point[1],
+        point[0] + resolution / 2, point[1],
+        point[0], point[1] - resolution / 2,
+        point[0], point[1] + resolution / 2
+      ];
+      vertices = toEPSG4326(vertices, vertices, 2);
+      var width = ol.sphere.NORMAL.haversineDistance(
+          vertices.slice(0, 2), vertices.slice(2, 4));
+      var height = ol.sphere.NORMAL.haversineDistance(
+          vertices.slice(4, 6), vertices.slice(6, 8));
+      pointResolution = (width + height) / 2;
+      var metersPerUnit = projection.getMetersPerUnit();
+      if (metersPerUnit !== undefined) {
+        pointResolution /= metersPerUnit;
       }
     }
   }
-
-};
-
-
-/**
- * @return {boolean} The projection is suitable for wrapping the x-axis
- */
-ol.proj.Projection.prototype.canWrapX = function() {
-  return this.canWrapX_;
-};
-
-
-/**
- * Get the code for this projection, e.g. 'EPSG:4326'.
- * @return {string} Code.
- * @api stable
- */
-ol.proj.Projection.prototype.getCode = function() {
-  return this.code_;
-};
-
-
-/**
- * Get the validity extent for this projection.
- * @return {ol.Extent} Extent.
- * @api stable
- */
-ol.proj.Projection.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-
-/**
- * Get the units of this projection.
- * @return {ol.proj.Units} Units.
- * @api stable
- */
-ol.proj.Projection.prototype.getUnits = function() {
-  return this.units_;
-};
-
-
-/**
- * Get the amount of meters per unit of this projection.  If the projection is
- * not configured with `metersPerUnit` or a units identifier, the return is
- * `undefined`.
- * @return {number|undefined} Meters.
- * @api stable
- */
-ol.proj.Projection.prototype.getMetersPerUnit = function() {
-  return this.metersPerUnit_ || ol.proj.METERS_PER_UNIT[this.units_];
-};
-
-
-/**
- * Get the world extent for this projection.
- * @return {ol.Extent} Extent.
- * @api
- */
-ol.proj.Projection.prototype.getWorldExtent = function() {
-  return this.worldExtent_;
-};
-
-
-/**
- * Get the axis orientation of this projection.
- * Example values are:
- * enu - the default easting, northing, elevation.
- * neu - northing, easting, up - useful for "lat/long" geographic coordinates,
- *     or south orientated transverse mercator.
- * wnu - westing, northing, up - some planetary coordinate systems have
- *     "west positive" coordinate systems
- * @return {string} Axis orientation.
- */
-ol.proj.Projection.prototype.getAxisOrientation = function() {
-  return this.axisOrientation_;
-};
-
-
-/**
- * Is this projection a global projection which spans the whole world?
- * @return {boolean} Whether the projection is global.
- * @api stable
- */
-ol.proj.Projection.prototype.isGlobal = function() {
-  return this.global_;
-};
-
-
-/**
-* Set if the projection is a global projection which spans the whole world
-* @param {boolean} global Whether the projection is global.
-* @api stable
-*/
-ol.proj.Projection.prototype.setGlobal = function(global) {
-  this.global_ = global;
-  this.canWrapX_ = !!(global && this.extent_);
-};
-
-
-/**
- * @return {ol.tilegrid.TileGrid} The default tile grid.
- */
-ol.proj.Projection.prototype.getDefaultTileGrid = function() {
-  return this.defaultTileGrid_;
-};
-
-
-/**
- * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
- */
-ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
-  this.defaultTileGrid_ = tileGrid;
-};
-
-
-/**
- * Set the validity extent for this projection.
- * @param {ol.Extent} extent Extent.
- * @api stable
- */
-ol.proj.Projection.prototype.setExtent = function(extent) {
-  this.extent_ = extent;
-  this.canWrapX_ = !!(this.global_ && extent);
-};
-
-
-/**
- * Set the world extent for this projection.
- * @param {ol.Extent} worldExtent World extent
- *     [minlon, minlat, maxlon, maxlat].
- * @api
- */
-ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
-  this.worldExtent_ = worldExtent;
-};
-
-
-/**
-* Set the getPointResolution function for this projection.
-* @param {function(number, ol.Coordinate):number} func Function
-* @api
-*/
-ol.proj.Projection.prototype.setGetPointResolution = function(func) {
-  this.getPointResolutionFunc_ = func;
-};
-
-
-/**
-* Default version.
-* Get the resolution of the point in degrees or distance units.
-* For projections with degrees as the unit this will simply return the
-* provided resolution. For other projections the point resolution is
-* estimated by transforming the 'point' pixel to EPSG:4326,
-* measuring its width and height on the normal sphere,
-* and taking the average of the width and height.
-* @param {number} resolution Nominal resolution in projection units.
-* @param {ol.Coordinate} point Point to find adjusted resolution at.
-* @return {number} Point resolution at point in projection units.
-* @private
-*/
-ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
-  var units = this.getUnits();
-  if (units == ol.proj.Units.DEGREES) {
-    return resolution;
-  } else {
-    // Estimate point resolution by transforming the center pixel to EPSG:4326,
-    // measuring its width and height on the normal sphere, and taking the
-    // average of the width and height.
-    var toEPSG4326 = ol.proj.getTransformFromProjections(
-        this, ol.proj.get('EPSG:4326'));
-    var vertices = [
-      point[0] - resolution / 2, point[1],
-      point[0] + resolution / 2, point[1],
-      point[0], point[1] - resolution / 2,
-      point[0], point[1] + resolution / 2
-    ];
-    vertices = toEPSG4326(vertices, vertices, 2);
-    var width = ol.sphere.NORMAL.haversineDistance(
-        vertices.slice(0, 2), vertices.slice(2, 4));
-    var height = ol.sphere.NORMAL.haversineDistance(
-        vertices.slice(4, 6), vertices.slice(6, 8));
-    var pointResolution = (width + height) / 2;
-    var metersPerUnit = this.getMetersPerUnit();
-    if (metersPerUnit !== undefined) {
-      pointResolution /= metersPerUnit;
-    }
-    return pointResolution;
-  }
-};
-
-
-/**
- * Get the resolution of the point in degrees or distance units.
- * For projections with degrees as the unit this will simply return the
- * provided resolution. The default for other projections is to estimate
- * the point resolution by transforming the 'point' pixel to EPSG:4326,
- * measuring its width and height on the normal sphere,
- * and taking the average of the width and height.
- * An alternative implementation may be given when constructing a
- * projection. For many local projections,
- * such a custom function will return the resolution unchanged.
- * @param {number} resolution Resolution in projection units.
- * @param {ol.Coordinate} point Point.
- * @return {number} Point resolution in projection units.
- * @api
- */
-ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
-  return this.getPointResolutionFunc_(resolution, point);
+  return pointResolution;
 };
 
 

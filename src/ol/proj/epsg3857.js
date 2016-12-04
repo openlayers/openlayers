@@ -22,18 +22,13 @@ ol.proj.EPSG3857_ = function(code) {
     units: ol.proj.Units.METERS,
     extent: ol.proj.EPSG3857.EXTENT,
     global: true,
-    worldExtent: ol.proj.EPSG3857.WORLD_EXTENT
+    worldExtent: ol.proj.EPSG3857.WORLD_EXTENT,
+    getPointResolution: function(resolution, point) {
+      return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS);
+    }
   });
 };
 ol.inherits(ol.proj.EPSG3857_, ol.proj.Projection);
-
-
-/**
- * @inheritDoc
- */
-ol.proj.EPSG3857_.prototype.getPointResolution = function(resolution, point) {
-  return resolution / ol.math.cosh(point[1] / ol.proj.EPSG3857.RADIUS);
-};
 
 
 /**

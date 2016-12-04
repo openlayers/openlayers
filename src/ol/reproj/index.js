@@ -50,7 +50,7 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 
   // calculate the ideal resolution of the source data
   var sourceResolution =
-      targetProj.getPointResolution(targetResolution, targetCenter);
+      ol.proj.getPointResolution(targetProj, targetResolution, targetCenter);
 
   var targetMetersPerUnit = targetProj.getMetersPerUnit();
   if (targetMetersPerUnit !== undefined) {
@@ -66,7 +66,7 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
   // in order to achieve optimal results.
 
   var compensationFactor =
-      sourceProj.getPointResolution(sourceResolution, sourceCenter) /
+      ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
       sourceResolution;
 
   if (isFinite(compensationFactor) && compensationFactor > 0) {

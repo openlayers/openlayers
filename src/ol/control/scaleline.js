@@ -6,6 +6,7 @@ goog.require('ol.asserts');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.events');
+goog.require('ol.proj');
 goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
 
@@ -169,7 +170,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   var projection = viewState.projection;
   var metersPerUnit = projection.getMetersPerUnit();
   var pointResolution =
-      projection.getPointResolution(viewState.resolution, center) *
+      ol.proj.getPointResolution(projection, viewState.resolution, center) *
       metersPerUnit;
 
   var nominalCount = this.minWidth_ * pointResolution;

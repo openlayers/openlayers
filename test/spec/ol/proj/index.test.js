@@ -310,7 +310,7 @@ describe('ol.proj', function() {
 
     it('numerically estimates point scale at the equator', function() {
       var googleProjection = ol.proj.get('GOOGLE');
-      expect(googleProjection.getPointResolution(1, [0, 0])).
+      expect(ol.proj.getPointResolution(googleProjection, 1, [0, 0])).
           to.roughlyEqual(1, 1e-1);
     });
 
@@ -320,8 +320,8 @@ describe('ol.proj', function() {
       var point, y;
       for (y = -20; y <= 20; ++y) {
         point = [0, 1000000 * y];
-        expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
-            epsg3857Projection.getPointResolution(1, point), 1e-1);
+        expect(ol.proj.getPointResolution(googleProjection, 1, point)).to.roughlyEqual(
+            ol.proj.getPointResolution(epsg3857Projection, 1, point), 1e-1);
       }
     });
 
@@ -332,8 +332,8 @@ describe('ol.proj', function() {
       for (x = -20; x <= 20; x += 2) {
         for (y = -20; y <= 20; y += 2) {
           point = [1000000 * x, 1000000 * y];
-          expect(googleProjection.getPointResolution(1, point)).to.roughlyEqual(
-              epsg3857Projection.getPointResolution(1, point), 1e-1);
+          expect(ol.proj.getPointResolution(googleProjection, 1, point)).to.roughlyEqual(
+              ol.proj.getPointResolution(epsg3857Projection, 1, point), 1e-1);
         }
       }
     });
