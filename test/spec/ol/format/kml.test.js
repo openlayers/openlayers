@@ -17,6 +17,7 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
+goog.require('ol.proj.transforms');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
@@ -358,9 +359,9 @@ describe('ol.format.KML', function() {
               '</kml>';
           expect(node).to.xmleql(ol.xml.parse(text));
 
-          ol.proj.removeTransform(
+          ol.proj.transforms.remove(
               ol.proj.get('EPSG:4326'), ol.proj.get('double'));
-          ol.proj.removeTransform(
+          ol.proj.transforms.remove(
               ol.proj.get('double'), ol.proj.get('EPSG:4326'));
         });
 

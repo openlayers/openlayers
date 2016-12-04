@@ -4,8 +4,8 @@ goog.provide('ol.proj.Projection');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.obj');
 goog.require('ol.proj.Units');
+goog.require('ol.proj.transforms');
 goog.require('ol.sphere.NORMAL');
 
 
@@ -21,6 +21,41 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
 ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
+
+
+/**
+ * @private
+ * @type {Object.<string, ol.proj.Projection>}
+ */
+ol.proj.projections_ = {};
+
+
+/**
+ * @private
+ * @type {proj4}
+ */
+ol.proj.proj4_ = null;
+
+
+if (ol.ENABLE_PROJ4JS) {
+  /**
+   * Register proj4. If not explicitly registered, it will be assumed that
+   * proj4js will be loaded in the global namespace. For example in a
+   * browserify ES6 environment you could use:
+   *
+   *     import ol from 'openlayers';
+   *     import proj4 from 'proj4';
+   *     ol.proj.setProj4(proj4);
+   *
+   * @param {proj4} proj4 Proj4.
+   * @api
+   */
+  ol.proj.setProj4 = function(proj4) {
+    ol.DEBUG && console.assert(typeof proj4 == 'function',
+        'proj4 argument should be a function');
+    ol.proj.proj4_ = proj4;
+  };
+}
 
 
 /**
@@ -92,7 +127,6 @@ ol.proj.Projection = function(options) {
    * @type {boolean}
    */
   this.global_ = options.global !== undefined ? options.global : false;
-
 
   /**
    * @private
@@ -353,48 +387,6 @@ ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
 
 
 /**
- * @private
- * @type {Object.<string, ol.proj.Projection>}
- */
-ol.proj.projections_ = {};
-
-
-/**
- * @private
- * @type {Object.<string, Object.<string, ol.TransformFunction>>}
- */
-ol.proj.transforms_ = {};
-
-
-/**
- * @private
- * @type {proj4}
- */
-ol.proj.proj4_ = null;
-
-
-if (ol.ENABLE_PROJ4JS) {
-  /**
-   * Register proj4. If not explicitly registered, it will be assumed that
-   * proj4js will be loaded in the global namespace. For example in a
-   * browserify ES6 environment you could use:
-   *
-   *     import ol from 'openlayers';
-   *     import proj4 from 'proj4';
-   *     ol.proj.setProj4(proj4);
-   *
-   * @param {proj4} proj4 Proj4.
-   * @api
-   */
-  ol.proj.setProj4 = function(proj4) {
-    ol.DEBUG && console.assert(typeof proj4 == 'function',
-        'proj4 argument should be a function');
-    ol.proj.proj4_ = proj4;
-  };
-}
-
-
-/**
  * Registers transformation functions that don't alter coordinates. Those allow
  * to transform between projections with equal meaning.
  *
@@ -406,7 +398,7 @@ ol.proj.addEquivalentProjections = function(projections) {
   projections.forEach(function(source) {
     projections.forEach(function(destination) {
       if (source !== destination) {
-        ol.proj.addTransform(source, destination, ol.proj.cloneTransform);
+        ol.proj.transforms.add(source, destination, ol.proj.cloneTransform);
       }
     });
   });
@@ -429,8 +421,8 @@ ol.proj.addEquivalentProjections = function(projections) {
 ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTransform, inverseTransform) {
   projections1.forEach(function(projection1) {
     projections2.forEach(function(projection2) {
-      ol.proj.addTransform(projection1, projection2, forwardTransform);
-      ol.proj.addTransform(projection2, projection1, inverseTransform);
+      ol.proj.transforms.add(projection1, projection2, forwardTransform);
+      ol.proj.transforms.add(projection2, projection1, inverseTransform);
     });
   });
 };
@@ -445,7 +437,7 @@ ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTr
  */
 ol.proj.addProjection = function(projection) {
   ol.proj.projections_[projection.getCode()] = projection;
-  ol.proj.addTransform(projection, projection, ol.proj.cloneTransform);
+  ol.proj.transforms.add(projection, projection, ol.proj.cloneTransform);
 };
 
 
@@ -465,7 +457,7 @@ ol.proj.addProjections = function(projections) {
  */
 ol.proj.clearAllProjections = function() {
   ol.proj.projections_ = {};
-  ol.proj.transforms_ = {};
+  ol.proj.transforms.clear();
 };
 
 
@@ -482,25 +474,6 @@ ol.proj.createProjection = function(projection, defaultCode) {
   } else {
     return /** @type {ol.proj.Projection} */ (projection);
   }
-};
-
-
-/**
- * Registers a conversion function to convert coordinates from the source
- * projection to the destination projection.
- *
- * @param {ol.proj.Projection} source Source.
- * @param {ol.proj.Projection} destination Destination.
- * @param {ol.TransformFunction} transformFn Transform.
- */
-ol.proj.addTransform = function(source, destination, transformFn) {
-  var sourceCode = source.getCode();
-  var destinationCode = destination.getCode();
-  var transforms = ol.proj.transforms_;
-  if (!(sourceCode in transforms)) {
-    transforms[sourceCode] = {};
-  }
-  transforms[sourceCode][destinationCode] = transformFn;
 };
 
 
@@ -526,9 +499,9 @@ ol.proj.addTransform = function(source, destination, transformFn) {
 ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse) {
   var sourceProj = ol.proj.get(source);
   var destProj = ol.proj.get(destination);
-  ol.proj.addTransform(sourceProj, destProj,
+  ol.proj.transforms.add(sourceProj, destProj,
       ol.proj.createTransformFromCoordinateTransform(forward));
-  ol.proj.addTransform(destProj, sourceProj,
+  ol.proj.transforms.add(destProj, sourceProj,
       ol.proj.createTransformFromCoordinateTransform(inverse));
 };
 
@@ -563,32 +536,6 @@ ol.proj.createTransformFromCoordinateTransform = function(transform) {
         }
         return output;
       });
-};
-
-
-/**
- * Unregisters the conversion function to convert coordinates from the source
- * projection to the destination projection.  This method is used to clean up
- * cached transforms during testing.
- *
- * @param {ol.proj.Projection} source Source projection.
- * @param {ol.proj.Projection} destination Destination projection.
- * @return {ol.TransformFunction} transformFn The unregistered transform.
- */
-ol.proj.removeTransform = function(source, destination) {
-  var sourceCode = source.getCode();
-  var destinationCode = destination.getCode();
-  var transforms = ol.proj.transforms_;
-  ol.DEBUG && console.assert(sourceCode in transforms,
-      'sourceCode should be in transforms');
-  ol.DEBUG && console.assert(destinationCode in transforms[sourceCode],
-      'destinationCode should be in transforms of sourceCode');
-  var transform = transforms[sourceCode][destinationCode];
-  delete transforms[sourceCode][destinationCode];
-  if (ol.obj.isEmpty(transforms[sourceCode])) {
-    delete transforms[sourceCode];
-  }
-  return transform;
 };
 
 
@@ -704,11 +651,10 @@ ol.proj.getTransform = function(source, destination) {
  * @return {ol.TransformFunction} Transform function.
  */
 ol.proj.getTransformFromProjections = function(sourceProjection, destinationProjection) {
-  var transforms = ol.proj.transforms_;
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
-  var transform;
-  if (ol.ENABLE_PROJ4JS && !(sourceCode in transforms && destinationCode in transforms[sourceCode])) {
+  var transform = ol.proj.transforms.get(sourceCode, destinationCode);
+  if (ol.ENABLE_PROJ4JS && !transform) {
     var proj4js = ol.proj.proj4_ || window['proj4'];
     if (typeof proj4js == 'function') {
       var sourceDef = proj4js.defs(sourceCode);
@@ -722,13 +668,12 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
           ol.proj.addCoordinateTransforms(destinationProjection, sourceProjection,
               proj4Transform.forward, proj4Transform.inverse);
         }
+        transform = ol.proj.transforms.get(sourceCode, destinationCode);
       }
     }
   }
-  if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
-    transform = transforms[sourceCode][destinationCode];
-  } else {
-    ol.DEBUG && console.assert(transform !== undefined, 'transform should be defined');
+  if (!transform) {
+    ol.DEBUG && console.assert(transform, 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
   return transform;

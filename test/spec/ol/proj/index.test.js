@@ -451,37 +451,6 @@ describe('ol.proj', function() {
     });
   });
 
-  describe('ol.proj.removeTransform()', function() {
-
-    var extent = [180, -90, 180, 90];
-    var units = 'degrees';
-
-    it('removes functions cached by addTransform', function() {
-      var foo = new ol.proj.Projection({
-        code: 'foo',
-        units: units,
-        extent: extent
-      });
-      var bar = new ol.proj.Projection({
-        code: 'bar',
-        units: units,
-        extent: extent
-      });
-      var transform = function(input, output, dimension) {
-        return input;
-      };
-      ol.proj.addTransform(foo, bar, transform);
-      expect(ol.proj.transforms_).not.to.be(undefined);
-      expect(ol.proj.transforms_.foo).not.to.be(undefined);
-      expect(ol.proj.transforms_.foo.bar).to.be(transform);
-
-      var removed = ol.proj.removeTransform(foo, bar);
-      expect(removed).to.be(transform);
-      expect(ol.proj.transforms_.foo).to.be(undefined);
-    });
-
-  });
-
   describe('ol.proj.transform()', function() {
 
     it('transforms a 2d coordinate', function() {
