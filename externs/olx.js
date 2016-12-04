@@ -5257,7 +5257,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     operation: (ol.RasterOperation|undefined),
  *     lib: (Object|undefined),
  *     threads: (number|undefined),
- *     operationType: (ol.RasterOperationType|undefined)}}
+ *     operationType: (ol.source.Raster.OperationType|undefined)}}
  * @api
  */
 olx.source.RasterOptions;
@@ -5305,7 +5305,7 @@ olx.source.RasterOptions.prototype.threads;
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
  * be called with an array of ImageData objects from input sources.
- * @type {ol.RasterOperationType|undefined}
+ * @type {ol.source.Raster.OperationType|undefined}
  * @api
  */
 olx.source.RasterOptions.prototype.operationType;
