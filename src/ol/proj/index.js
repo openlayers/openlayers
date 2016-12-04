@@ -5,6 +5,7 @@ goog.provide('ol.proj.Projection');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.proj.Units');
+goog.require('ol.proj.projections');
 goog.require('ol.proj.transforms');
 goog.require('ol.sphere.NORMAL');
 
@@ -21,13 +22,6 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
 ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
-
-
-/**
- * @private
- * @type {Object.<string, ol.proj.Projection>}
- */
-ol.proj.projections_ = {};
 
 
 /**
@@ -153,13 +147,12 @@ ol.proj.Projection = function(options) {
    */
   this.metersPerUnit_ = options.metersPerUnit;
 
-  var projections = ol.proj.projections_;
   var code = options.code;
   ol.DEBUG && console.assert(code !== undefined,
       'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS) {
     var proj4js = ol.proj.proj4_ || window['proj4'];
-    if (typeof proj4js == 'function' && projections[code] === undefined) {
+    if (typeof proj4js == 'function' && !ol.proj.projections.get(code)) {
       var def = proj4js.defs(code);
       if (def !== undefined) {
         if (def.axis !== undefined && options.axisOrientation === undefined) {
@@ -436,7 +429,7 @@ ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTr
  * @api stable
  */
 ol.proj.addProjection = function(projection) {
-  ol.proj.projections_[projection.getCode()] = projection;
+  ol.proj.projections.add(projection.getCode(), projection);
   ol.proj.transforms.add(projection, projection, ol.proj.cloneTransform);
 };
 
@@ -453,10 +446,10 @@ ol.proj.addProjections = function(projections) {
 
 
 /**
- * FIXME empty description for jsdoc
+ * Clear all cached projections and transforms.
  */
 ol.proj.clearAllProjections = function() {
-  ol.proj.projections_ = {};
+  ol.proj.projections.clear();
   ol.proj.transforms.clear();
 };
 
@@ -579,22 +572,22 @@ ol.proj.toLonLat = function(coordinate, opt_projection) {
  * @api stable
  */
 ol.proj.get = function(projectionLike) {
-  var projection;
+  var projection = null;
   if (projectionLike instanceof ol.proj.Projection) {
     projection = projectionLike;
   } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
-    projection = ol.proj.projections_[code];
+    projection = ol.proj.projections.get(code);
     if (ol.ENABLE_PROJ4JS) {
       var proj4js = ol.proj.proj4_ || window['proj4'];
-      if (projection === undefined && typeof proj4js == 'function' &&
+      if (!projection && typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
         projection = new ol.proj.Projection({code: code});
         ol.proj.addProjection(projection);
       }
     }
   }
-  return projection || null;
+  return projection;
 };
 
 
