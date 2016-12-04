@@ -5,6 +5,7 @@ goog.provide('ol.proj.Projection');
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.proj.Units');
+goog.require('ol.proj.proj4');
 goog.require('ol.proj.projections');
 goog.require('ol.proj.transforms');
 goog.require('ol.sphere.NORMAL');
@@ -24,13 +25,6 @@ ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
 ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
 
 
-/**
- * @private
- * @type {proj4}
- */
-ol.proj.proj4_ = null;
-
-
 if (ol.ENABLE_PROJ4JS) {
   /**
    * Register proj4. If not explicitly registered, it will be assumed that
@@ -47,7 +41,7 @@ if (ol.ENABLE_PROJ4JS) {
   ol.proj.setProj4 = function(proj4) {
     ol.DEBUG && console.assert(typeof proj4 == 'function',
         'proj4 argument should be a function');
-    ol.proj.proj4_ = proj4;
+    ol.proj.proj4.set(proj4);
   };
 }
 
@@ -151,7 +145,7 @@ ol.proj.Projection = function(options) {
   ol.DEBUG && console.assert(code !== undefined,
       'Option "code" is required for constructing instance');
   if (ol.ENABLE_PROJ4JS) {
-    var proj4js = ol.proj.proj4_ || window['proj4'];
+    var proj4js = ol.proj.proj4.get();
     if (typeof proj4js == 'function' && !ol.proj.projections.get(code)) {
       var def = proj4js.defs(code);
       if (def !== undefined) {
@@ -579,7 +573,7 @@ ol.proj.get = function(projectionLike) {
     var code = projectionLike;
     projection = ol.proj.projections.get(code);
     if (ol.ENABLE_PROJ4JS) {
-      var proj4js = ol.proj.proj4_ || window['proj4'];
+      var proj4js = ol.proj.proj4.get();
       if (!projection && typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
         projection = new ol.proj.Projection({code: code});
@@ -648,7 +642,7 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
   var destinationCode = destinationProjection.getCode();
   var transform = ol.proj.transforms.get(sourceCode, destinationCode);
   if (ol.ENABLE_PROJ4JS && !transform) {
-    var proj4js = ol.proj.proj4_ || window['proj4'];
+    var proj4js = ol.proj.proj4.get();
     if (typeof proj4js == 'function') {
       var sourceDef = proj4js.defs(sourceCode);
       var destinationDef = proj4js.defs(destinationCode);
