@@ -68,10 +68,10 @@ ol.proj.transforms.remove = function(source, destination) {
  * Get a transform given a source code and a destination code.
  * @param {string} sourceCode The code for the source projection.
  * @param {string} destinationCode The code for the destination projection.
- * @return {?ol.TransformFunction} The transform function (if found).
+ * @return {ol.TransformFunction|undefined} The transform function (if found).
  */
 ol.proj.transforms.get = function(sourceCode, destinationCode) {
-  var transform = null;
+  var transform;
   var transforms = ol.proj.transforms.cache_;
   if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
     transform = transforms[sourceCode][destinationCode];
