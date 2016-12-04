@@ -134,7 +134,7 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate
   }
   var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
   var interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
-  return ol.geom.flat.lineStringsCoordinateAtM(this.flatCoordinates, 0,
+  return ol.geom.flat.interpolate.lineStringsCoordinateAtM(this.flatCoordinates, 0,
       this.ends_, this.stride, m, extrapolate, interpolate);
 };
 

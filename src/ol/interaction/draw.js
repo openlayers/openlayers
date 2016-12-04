@@ -5,7 +5,7 @@ goog.require('ol.events');
 goog.require('ol.extent');
 goog.require('ol.events.Event');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent.EventType');
+goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
 goog.require('ol.functions');
