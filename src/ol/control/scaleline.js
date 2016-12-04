@@ -7,7 +7,6 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.events');
 goog.require('ol.proj');
-goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
 
 

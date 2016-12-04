@@ -1,5 +1,4 @@
 goog.provide('ol.proj');
-goog.provide('ol.proj.METERS_PER_UNIT');
 
 goog.require('ol');
 goog.require('ol.extent');
