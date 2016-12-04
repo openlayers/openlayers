@@ -5,7 +5,6 @@ goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Object');
-goog.require('ol.ObjectEventType');
 goog.require('ol.Overlay');
 goog.require('ol.View');
 goog.require('ol.control.Control');
@@ -166,7 +165,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
 
   if (map) {
     this.listenerKeys.push(ol.events.listen(
-        map, ol.ObjectEventType.PROPERTYCHANGE,
+        map, ol.Object.EventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked

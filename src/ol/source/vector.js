@@ -5,7 +5,7 @@ goog.provide('ol.source.Vector');
 
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.ObjectEventType');
+goog.require('ol.Object');
 goog.require('ol.array');
 goog.require('ol.asserts');
 goog.require('ol.events');
@@ -205,7 +205,7 @@ ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
   this.featureChangeKeys_[featureKey] = [
     ol.events.listen(feature, ol.events.EventType.CHANGE,
         this.handleFeatureChange_, this),
-    ol.events.listen(feature, ol.ObjectEventType.PROPERTYCHANGE,
+    ol.events.listen(feature, ol.Object.EventType.PROPERTYCHANGE,
         this.handleFeatureChange_, this)
   ];
 };
