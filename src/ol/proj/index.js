@@ -1,27 +1,12 @@
 goog.provide('ol.proj');
 goog.provide('ol.proj.METERS_PER_UNIT');
 goog.provide('ol.proj.Projection');
-goog.provide('ol.proj.Units');
 
 goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.obj');
+goog.require('ol.proj.Units');
 goog.require('ol.sphere.NORMAL');
-
-
-/**
- * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
- * `'us-ft'`.
- * @enum {string}
- */
-ol.proj.Units = {
-  DEGREES: 'degrees',
-  FEET: 'ft',
-  METERS: 'm',
-  PIXELS: 'pixels',
-  TILE_PIXELS: 'tile-pixels',
-  USFEET: 'us-ft'
-};
 
 
 /**
