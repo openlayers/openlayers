@@ -379,7 +379,6 @@ describe('ol.View', function() {
         zoom: 4,
         duration: 0
       });
-      expect(view.getAnimating()).to.eql(true);
 
       setTimeout(function() {
         expect(view.getCenter()).to.eql([0, 0]);
