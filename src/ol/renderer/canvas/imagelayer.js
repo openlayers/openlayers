@@ -34,9 +34,9 @@ ol.renderer.canvas.ImageLayer = function(imageLayer) {
 
   /**
    * @private
-   * @type {?ol.Transform}
+   * @type {ol.Transform}
    */
-  this.imageTransformInv_ = null;
+  this.coordinateToCanvasPixelTransform_ = ol.transform.create();
 
   /**
    * @private
@@ -70,7 +70,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate = function(co
 
 
 /**
- * @param {ol.Pixel} pixel Pixel.
+ * @param {ol.Coordinate} coordinate Coordinate.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
  *     callback.
@@ -78,7 +78,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachFeatureAtCoordinate = function(co
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   if (!this.getImage()) {
     return undefined;
   }
@@ -86,8 +86,6 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
   if (this.getLayer().getSource() instanceof ol.source.ImageVector) {
     // for ImageVector sources use the original hit-detection logic,
     // so that for example also transparent polygons are detected
-    var coordinate = ol.transform.apply(
-        frameState.pixelToCoordinateTransform, pixel.slice());
     var hasFeature = this.forEachFeatureAtCoordinate(
         coordinate, frameState, ol.functions.TRUE, this);
 
@@ -97,13 +95,8 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
       return undefined;
     }
   } else {
-    // for all other image sources directly check the image
-    if (!this.imageTransformInv_) {
-      this.imageTransformInv_ = ol.transform.invert(this.imageTransform_.slice());
-    }
-
-    var pixelOnCanvas =
-        this.getPixelOnCanvas(pixel, this.imageTransformInv_);
+    var pixelOnCanvas = ol.transform.apply(
+        this.coordinateToCanvasPixelTransform_, coordinate.slice());
 
     if (!this.hitCanvasContext_) {
       this.hitCanvasContext_ = ol.dom.createCanvasContext2D(1, 1);
@@ -124,7 +117,7 @@ ol.renderer.canvas.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, fr
 
 
 /**
- * @inheritDoc
+ * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
  */
 ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
   return !this.image_ ? null : this.image_.getImage();
@@ -134,17 +127,10 @@ ol.renderer.canvas.ImageLayer.prototype.getImage = function() {
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.ImageLayer.prototype.getImageTransform = function() {
-  return this.imageTransform_;
-};
-
-
-/**
- * @inheritDoc
- */
 ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, layerState) {
 
   var pixelRatio = frameState.pixelRatio;
+  var size = frameState.size;
   var viewState = frameState.viewState;
   var viewCenter = viewState.center;
   var viewResolution = viewState.resolution;
@@ -189,18 +175,64 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     var imagePixelRatio = image.getPixelRatio();
     var scale = pixelRatio * imageResolution /
         (viewResolution * imagePixelRatio);
-    var transform = ol.transform.reset(this.imageTransform_);
-    ol.transform.translate(transform,
-        pixelRatio * frameState.size[0] / 2,
-        pixelRatio * frameState.size[1] / 2);
-    ol.transform.scale(transform, scale, scale);
-    ol.transform.translate(transform,
+    var transform = this.imageTransform_;
+    ol.transform.compose(transform,
+        pixelRatio * frameState.size[0] / 2, pixelRatio * frameState.size[1] / 2,
+        scale, scale,
+        0,
         imagePixelRatio * (imageExtent[0] - viewCenter[0]) / imageResolution,
         imagePixelRatio * (viewCenter[1] - imageExtent[3]) / imageResolution);
-    this.imageTransformInv_ = null;
+    ol.transform.compose(this.coordinateToCanvasPixelTransform_,
+        pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
+        pixelRatio / viewResolution, -pixelRatio / viewResolution,
+        0,
+        -viewCenter[0], -viewCenter[1]);
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
   }
 
   return !!this.image_;
+};
+
+
+/**
+ * @inheritDoc.
+ */
+ol.renderer.canvas.ImageLayer.prototype.composeFrame = function(frameState, layerState, context) {
+
+  this.preCompose(context, frameState);
+
+  var image = this.getImage();
+  if (image) {
+
+    // clipped rendering if layer extent is set
+    var extent = layerState.extent;
+    var clipped = extent !== undefined;
+    if (clipped) {
+      this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
+    }
+
+    var imageTransform = this.imageTransform_;
+    // for performance reasons, context.save / context.restore is not used
+    // to save and restore the transformation matrix and the opacity.
+    // see http://jsperf.com/context-save-restore-versus-variable
+    var alpha = context.globalAlpha;
+    context.globalAlpha = layerState.opacity;
+
+    // for performance reasons, context.setTransform is only used
+    // when the view is rotated. see http://jsperf.com/canvas-transform
+    var dx = imageTransform[4];
+    var dy = imageTransform[5];
+    var dw = image.width * imageTransform[0];
+    var dh = image.height * imageTransform[3];
+    context.drawImage(image, 0, 0, +image.width, +image.height,
+        Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
+    context.globalAlpha = alpha;
+
+    if (clipped) {
+      context.restore();
+    }
+  }
+
+  this.postCompose(context, frameState, layerState);
 };

@@ -1,19 +1,19 @@
-goog.provide('ol.test.renderer.canvas.Layer');
+goog.provide('ol.test.renderer.canvas.ImageLayer');
 
 goog.require('ol.transform');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
-goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.renderer.canvas.ImageLayer');
 
 
-describe('ol.renderer.canvas.Layer', function() {
+describe('ol.renderer.canvas.ImageLayer', function() {
 
   describe('#composeFrame()', function() {
     it('clips to layer extent and draws image', function() {
       var layer = new ol.layer.Image({
         extent: [1, 2, 3, 4]
       });
-      var renderer = new ol.renderer.canvas.Layer(layer);
+      var renderer = new ol.renderer.canvas.ImageLayer(layer);
       var image = new Image();
       image.width = 3;
       image.height = 3;
@@ -30,9 +30,6 @@ describe('ol.renderer.canvas.Layer', function() {
         pixelRatio: 1,
         coordinateToPixelTransform: ol.transform.create(),
         pixelToCoordinateTransform: ol.transform.create()
-      };
-      renderer.getImageTransform = function() {
-        return ol.transform.create();
       };
       ol.renderer.Map.prototype.calculateMatrices2D(frameState);
       var layerState = layer.getLayerState();

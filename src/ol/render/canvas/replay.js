@@ -199,6 +199,7 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
 ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
   if (this.fillOrigin_) {
     var origin = ol.transform.apply(this.renderedTransform_, this.fillOrigin_.slice());
+    context.setTransform.apply(context, this.resetTransform_);
     context.translate(origin[0], origin[1]);
     context.rotate(rotation);
   }
@@ -399,7 +400,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           x = pixelCoordinates[d] + offsetX;
           y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
-            ol.transform.compose(localTransform, x, y, scale, scale, rotation, -x, -y);
+            var halfW = context.canvas.width / 2;
+            var halfH = context.canvas.height / 2;
+            ol.transform.compose(localTransform,
+                halfW, halfH, 1, 1, -viewRotation, -halfW, -halfH);
+            ol.transform.translate(localTransform, x, y);
+            ol.transform.scale(localTransform, scale, scale);
+            ol.transform.rotate(localTransform, rotation);
+            ol.transform.translate(localTransform, -x, -y);
             context.setTransform.apply(context, localTransform);
           }
 
