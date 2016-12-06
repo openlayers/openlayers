@@ -129,7 +129,7 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
     }
     this.instructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash
+      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, true, 1
     ], [
       ol.render.canvas.Instruction.BEGIN_PATH
     ]);
@@ -159,7 +159,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash
+    state.miterLimit, state.lineDash, true, 1
   ], [
     ol.render.canvas.Instruction.BEGIN_PATH
   ]);
@@ -187,7 +187,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash
+    state.miterLimit, state.lineDash, true, 1
   ], [
     ol.render.canvas.Instruction.BEGIN_PATH
   ]);

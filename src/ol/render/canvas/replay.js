@@ -512,8 +512,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             '6th instruction should be a number');
         ol.DEBUG && console.assert(instruction[6],
             '7th instruction should not be null');
+        ol.DEBUG && console.assert(typeof instruction[8] === 'number',
+            '9th instruction should be a number');
         var usePixelRatio = instruction[7] !== undefined ?
             instruction[7] : true;
+        var renderedPixelRatio = instruction[8];
+
         var lineWidth = /** @type {number} */ (instruction[2]);
         if (pendingStroke) {
           context.stroke();
@@ -525,7 +529,15 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         context.lineJoin = /** @type {string} */ (instruction[4]);
         context.miterLimit = /** @type {number} */ (instruction[5]);
         if (ol.has.CANVAS_LINE_DASH) {
-          context.setLineDash(/** @type {Array.<number>} */ (instruction[6]));
+          var lineDash = /** @type {Array.<number>} */ (instruction[6]);
+          if (usePixelRatio && pixelRatio !== renderedPixelRatio) {
+            lineDash = lineDash.map(function(dash) {
+              return dash * pixelRatio / renderedPixelRatio;
+            });
+            instruction[6] = lineDash;
+            instruction[8] = pixelRatio;
+          }
+          context.setLineDash(lineDash);
         }
         prevX = NaN;
         prevY = NaN;
