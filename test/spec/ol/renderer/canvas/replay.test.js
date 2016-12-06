@@ -153,8 +153,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
       replay.replay(context, 2, transform, 0, {});
 
       expect(lineDashCount).to.be(1);
-      expect(style2.getStroke().getLineDash()).to.be.eql([3, 6]);
-      expect(lineDash).to.be.eql([6, 12]);
+      expect(style2.getStroke().getLineDash()).to.eql([3, 6]);
+      expect(lineDash).to.eql([6, 12]);
     });
   });
 
