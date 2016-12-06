@@ -150,6 +150,23 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
 
 /**
+ * @param {ol.Transform} transform Transform.
+ * @return {Array.<number>} Clip coordinates.
+ */
+ol.render.canvas.ReplayGroup.prototype.getClipCoords = function(transform) {
+  var maxExtent = this.maxExtent_;
+  var minX = maxExtent[0];
+  var minY = maxExtent[1];
+  var maxX = maxExtent[2];
+  var maxY = maxExtent[3];
+  var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
+  ol.geom.flat.transform.transform2D(
+      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
+  return flatClipCoords;
+};
+
+
+/**
  * @inheritDoc
  */
 ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
@@ -200,14 +217,7 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
 
   // setup clipping so that the parts of over-simplified geometries are not
   // visible outside the current extent when panning
-  var maxExtent = this.maxExtent_;
-  var minX = maxExtent[0];
-  var minY = maxExtent[1];
-  var maxX = maxExtent[2];
-  var maxY = maxExtent[3];
-  var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
-  ol.geom.flat.transform.transform2D(
-      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
+  var flatClipCoords = this.getClipCoords(transform);
   context.save();
   context.beginPath();
   context.moveTo(flatClipCoords[0], flatClipCoords[1]);

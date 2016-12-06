@@ -2,6 +2,7 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('ol');
 goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.render.Event');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
@@ -68,7 +69,7 @@ ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) 
  */
 ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {
 
-  this.dispatchPreComposeEvent(context, frameState);
+  this.preCompose(context, frameState);
 
   var image = this.getImage();
   if (image) {
@@ -102,8 +103,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
     }
   }
 
-  this.dispatchPostComposeEvent(context, frameState);
-
+  this.postCompose(context, frameState, layerState);
 };
 
 
@@ -137,10 +137,11 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.LayerState} layerState Layer state.
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.postCompose = function(context, frameState, layerState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.Event.Type.POSTCOMPOSE, context,
       frameState, opt_transform);
 };
@@ -152,7 +153,7 @@ ol.renderer.canvas.Layer.prototype.dispatchPostComposeEvent = function(context, 
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchPreComposeEvent = function(context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.preCompose = function(context, frameState, opt_transform) {
   this.dispatchComposeEvent_(ol.render.Event.Type.PRECOMPOSE, context,
       frameState, opt_transform);
 };
@@ -214,12 +215,21 @@ ol.renderer.canvas.Layer.prototype.prepareFrame = function(frameState, layerStat
 
 
 /**
- * @param {ol.Pixel} pixelOnMap Pixel.
- * @param {ol.Transform} imageTransformInv The transformation matrix
- *        to convert from a map pixel to a canvas pixel.
- * @return {ol.Pixel} The pixel.
- * @protected
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @return {T|undefined} Callback result.
+ * @template S,T
  */
-ol.renderer.canvas.Layer.prototype.getPixelOnCanvas = function(pixelOnMap, imageTransformInv) {
-  return ol.transform.apply(imageTransformInv, pixelOnMap.slice());
+ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+
+  var hasFeature = this.forEachFeatureAtCoordinate(
+      coordinate, frameState, ol.functions.TRUE, this);
+
+  if (hasFeature) {
+    return callback.call(thisArg, this.getLayer(), null);
+  } else {
+    return undefined;
+  }
 };

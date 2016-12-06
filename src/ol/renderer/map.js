@@ -167,6 +167,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
 
 
 /**
+ * @abstract
  * @param {ol.Pixel} pixel Pixel.
  * @param {olx.FrameState} frameState FrameState.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
@@ -181,29 +182,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
  * @template S,T,U
  */
 ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-        layerFilter, thisArg2) {
-  var result;
-  var viewState = frameState.viewState;
-  var viewResolution = viewState.resolution;
-
-  var layerStates = frameState.layerStatesArray;
-  var numLayers = layerStates.length;
-  var i;
-  for (i = numLayers - 1; i >= 0; --i) {
-    var layerState = layerStates[i];
-    var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
-      var layerRenderer = this.getLayerRenderer(layer);
-      result = layerRenderer.forEachLayerAtPixel(
-          pixel, frameState, callback, thisArg);
-      if (result) {
-        return result;
-      }
-    }
-  }
-  return undefined;
-};
+        layerFilter, thisArg2) {};
 
 
 /**
