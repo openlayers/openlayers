@@ -29,15 +29,21 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {number}
+   * @type {ol.Extent}
    */
-  this.renderedRevision_;
+  this.renderedExtent_ = null;
 
   /**
    * @private
-   * @type {ol.TileRange}
+   * @type {number}
    */
-  this.renderedTileRange_ = null;
+  this.renderedResolution_;
+
+  /**
+   * @private
+   * @type {number}
+   */
+  this.renderedRevision_;
 
   /**
    * @protected
@@ -118,19 +124,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   var imageExtent = tileGrid.getTileRangeExtent(z, tileRange);
 
   var tilePixelRatio = tileSource.getTilePixelRatio(pixelRatio);
-  var scale = pixelRatio / tilePixelRatio * tileResolution / viewResolution;
-
-  var transform = ol.transform.compose(this.imageTransform_,
-      pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
-      scale, scale,
-      0,
-      tilePixelRatio * (imageExtent[0] - viewCenter[0]) / tileResolution,
-      tilePixelRatio * (viewCenter[1] - imageExtent[3]) / tileResolution);
-  ol.transform.compose(this.coordinateToCanvasPixelTransform_,
-      pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
-      pixelRatio / viewResolution, -pixelRatio / viewResolution,
-      0,
-      -viewCenter[0], -viewCenter[1]);
 
   /**
    * @type {Object.<number, Object.<string, ol.Tile>>}
@@ -178,9 +171,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     }
   }
 
-  if (newTiles || !(this.renderedTileRange_ &&
-      this.renderedTileRange_.equals(tileRange)) ||
-      this.renderedRevision_ != sourceRevision) {
+  var hints = frameState.viewHints;
+  if (!(this.renderedResolution_ && Date.now() - frameState.time > 16 &&
+      (hints[ol.View.Hint.ANIMATING] || hints[ol.View.Hint.INTERACTING])) &&
+      (newTiles || !(this.renderedExtent_ &&
+      ol.extent.equals(this.renderedExtent_, imageExtent)) ||
+      this.renderedRevision_ != sourceRevision)) {
 
     var tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
     var width = tileRange.getWidth() * tilePixelSize[0];
@@ -191,6 +187,8 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     if (canvas.width != width || canvas.height != height) {
       canvas.width = width;
       canvas.height = height;
+    } else {
+      context.clearRect(0, 0, width, height);
     }
 
     this.renderedTiles.length = 0;
@@ -221,9 +219,24 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       }
     }
 
-    this.renderedTileRange_ = tileRange;
     this.renderedRevision_ = sourceRevision;
+    this.renderedResolution_ = tileResolution;
+    this.renderedExtent_ = imageExtent;
   }
+
+  var scale = pixelRatio / tilePixelRatio * this.renderedResolution_ / viewResolution;
+  var transform = ol.transform.compose(this.imageTransform_,
+      pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
+      scale, scale,
+      0,
+      tilePixelRatio * (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution_,
+      tilePixelRatio * (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution_);
+  ol.transform.compose(this.coordinateToCanvasPixelTransform_,
+      pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
+      pixelRatio / viewResolution, -pixelRatio / viewResolution,
+      0,
+      -viewCenter[0], -viewCenter[1]);
+
 
   this.updateUsedTiles(frameState.usedTiles, tileSource, z, tileRange);
   this.manageTilePyramid(frameState, tileSource, tileGrid, pixelRatio,
