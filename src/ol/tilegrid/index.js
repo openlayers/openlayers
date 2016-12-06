@@ -6,7 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.extent.Corner');
 goog.require('ol.obj');
 goog.require('ol.proj');
-goog.require('ol.proj.METERS_PER_UNIT');
 goog.require('ol.proj.Units');
 goog.require('ol.tilegrid.TileGrid');
 

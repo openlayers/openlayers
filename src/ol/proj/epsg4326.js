@@ -36,14 +36,6 @@ ol.inherits(ol.proj.EPSG4326_, ol.proj.Projection);
 
 
 /**
- * @inheritDoc
- */
-ol.proj.EPSG4326_.prototype.getPointResolution = function(resolution, point) {
-  return resolution;
-};
-
-
-/**
  * Extent of the EPSG:4326 projection which is the whole world.
  *
  * @const

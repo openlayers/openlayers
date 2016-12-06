@@ -1,27 +1,13 @@
 goog.provide('ol.proj');
-goog.provide('ol.proj.METERS_PER_UNIT');
-goog.provide('ol.proj.Projection');
-goog.provide('ol.proj.Units');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.obj');
+goog.require('ol.proj.Projection');
+goog.require('ol.proj.Units');
+goog.require('ol.proj.proj4');
+goog.require('ol.proj.projections');
+goog.require('ol.proj.transforms');
 goog.require('ol.sphere.NORMAL');
-
-
-/**
- * Projection units: `'degrees'`, `'ft'`, `'m'`, `'pixels'`, `'tile-pixels'` or
- * `'us-ft'`.
- * @enum {string}
- */
-ol.proj.Units = {
-  DEGREES: 'degrees',
-  FEET: 'ft',
-  METERS: 'm',
-  PIXELS: 'pixels',
-  TILE_PIXELS: 'tile-pixels',
-  USFEET: 'us-ft'
-};
 
 
 /**
@@ -30,362 +16,7 @@ ol.proj.Units = {
  * @type {Object.<ol.proj.Units, number>}
  * @api stable
  */
-ol.proj.METERS_PER_UNIT = {};
-ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] =
-    2 * Math.PI * ol.sphere.NORMAL.radius / 360;
-ol.proj.METERS_PER_UNIT[ol.proj.Units.FEET] = 0.3048;
-ol.proj.METERS_PER_UNIT[ol.proj.Units.METERS] = 1;
-ol.proj.METERS_PER_UNIT[ol.proj.Units.USFEET] = 1200 / 3937;
-
-
-/**
- * @classdesc
- * Projection definition class. One of these is created for each projection
- * supported in the application and stored in the {@link ol.proj} namespace.
- * You can use these in applications, but this is not required, as API params
- * and options use {@link ol.ProjectionLike} which means the simple string
- * code will suffice.
- *
- * You can use {@link ol.proj.get} to retrieve the object for a particular
- * projection.
- *
- * The library includes definitions for `EPSG:4326` and `EPSG:3857`, together
- * with the following aliases:
- * * `EPSG:4326`: CRS:84, urn:ogc:def:crs:EPSG:6.6:4326,
- *     urn:ogc:def:crs:OGC:1.3:CRS84, urn:ogc:def:crs:OGC:2:84,
- *     http://www.opengis.net/gml/srs/epsg.xml#4326,
- *     urn:x-ogc:def:crs:EPSG:4326
- * * `EPSG:3857`: EPSG:102100, EPSG:102113, EPSG:900913,
- *     urn:ogc:def:crs:EPSG:6.18:3:3857,
- *     http://www.opengis.net/gml/srs/epsg.xml#3857
- *
- * If you use proj4js, aliases can be added using `proj4.defs()`; see
- * [documentation](https://github.com/proj4js/proj4js). To set an alternative
- * namespace for proj4, use {@link ol.proj.setProj4}.
- *
- * @constructor
- * @param {olx.ProjectionOptions} options Projection options.
- * @struct
- * @api stable
- */
-ol.proj.Projection = function(options) {
-
-  /**
-   * @private
-   * @type {string}
-   */
-  this.code_ = options.code;
-
-  /**
-   * @private
-   * @type {ol.proj.Units}
-   */
-  this.units_ = /** @type {ol.proj.Units} */ (options.units);
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = options.extent !== undefined ? options.extent : null;
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.worldExtent_ = options.worldExtent !== undefined ?
-      options.worldExtent : null;
-
-  /**
-   * @private
-   * @type {string}
-   */
-  this.axisOrientation_ = options.axisOrientation !== undefined ?
-      options.axisOrientation : 'enu';
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.global_ = options.global !== undefined ? options.global : false;
-
-
-  /**
-   * @private
-   * @type {boolean}
-   */
-  this.canWrapX_ = !!(this.global_ && this.extent_);
-
-  /**
-  * @private
-  * @type {function(number, ol.Coordinate):number}
-  */
-  this.getPointResolutionFunc_ = options.getPointResolution !== undefined ?
-      options.getPointResolution : this.getPointResolution_;
-
-  /**
-   * @private
-   * @type {ol.tilegrid.TileGrid}
-   */
-  this.defaultTileGrid_ = null;
-
-  /**
-   * @private
-   * @type {number|undefined}
-   */
-  this.metersPerUnit_ = options.metersPerUnit;
-
-  var projections = ol.proj.projections_;
-  var code = options.code;
-  ol.DEBUG && console.assert(code !== undefined,
-      'Option "code" is required for constructing instance');
-  if (ol.ENABLE_PROJ4JS) {
-    var proj4js = ol.proj.proj4_ || window['proj4'];
-    if (typeof proj4js == 'function' && projections[code] === undefined) {
-      var def = proj4js.defs(code);
-      if (def !== undefined) {
-        if (def.axis !== undefined && options.axisOrientation === undefined) {
-          this.axisOrientation_ = def.axis;
-        }
-        if (options.metersPerUnit === undefined) {
-          this.metersPerUnit_ = def.to_meter;
-        }
-        if (options.units === undefined) {
-          this.units_ = def.units;
-        }
-      }
-    }
-  }
-
-};
-
-
-/**
- * @return {boolean} The projection is suitable for wrapping the x-axis
- */
-ol.proj.Projection.prototype.canWrapX = function() {
-  return this.canWrapX_;
-};
-
-
-/**
- * Get the code for this projection, e.g. 'EPSG:4326'.
- * @return {string} Code.
- * @api stable
- */
-ol.proj.Projection.prototype.getCode = function() {
-  return this.code_;
-};
-
-
-/**
- * Get the validity extent for this projection.
- * @return {ol.Extent} Extent.
- * @api stable
- */
-ol.proj.Projection.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-
-/**
- * Get the units of this projection.
- * @return {ol.proj.Units} Units.
- * @api stable
- */
-ol.proj.Projection.prototype.getUnits = function() {
-  return this.units_;
-};
-
-
-/**
- * Get the amount of meters per unit of this projection.  If the projection is
- * not configured with `metersPerUnit` or a units identifier, the return is
- * `undefined`.
- * @return {number|undefined} Meters.
- * @api stable
- */
-ol.proj.Projection.prototype.getMetersPerUnit = function() {
-  return this.metersPerUnit_ || ol.proj.METERS_PER_UNIT[this.units_];
-};
-
-
-/**
- * Get the world extent for this projection.
- * @return {ol.Extent} Extent.
- * @api
- */
-ol.proj.Projection.prototype.getWorldExtent = function() {
-  return this.worldExtent_;
-};
-
-
-/**
- * Get the axis orientation of this projection.
- * Example values are:
- * enu - the default easting, northing, elevation.
- * neu - northing, easting, up - useful for "lat/long" geographic coordinates,
- *     or south orientated transverse mercator.
- * wnu - westing, northing, up - some planetary coordinate systems have
- *     "west positive" coordinate systems
- * @return {string} Axis orientation.
- */
-ol.proj.Projection.prototype.getAxisOrientation = function() {
-  return this.axisOrientation_;
-};
-
-
-/**
- * Is this projection a global projection which spans the whole world?
- * @return {boolean} Whether the projection is global.
- * @api stable
- */
-ol.proj.Projection.prototype.isGlobal = function() {
-  return this.global_;
-};
-
-
-/**
-* Set if the projection is a global projection which spans the whole world
-* @param {boolean} global Whether the projection is global.
-* @api stable
-*/
-ol.proj.Projection.prototype.setGlobal = function(global) {
-  this.global_ = global;
-  this.canWrapX_ = !!(global && this.extent_);
-};
-
-
-/**
- * @return {ol.tilegrid.TileGrid} The default tile grid.
- */
-ol.proj.Projection.prototype.getDefaultTileGrid = function() {
-  return this.defaultTileGrid_;
-};
-
-
-/**
- * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
- */
-ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
-  this.defaultTileGrid_ = tileGrid;
-};
-
-
-/**
- * Set the validity extent for this projection.
- * @param {ol.Extent} extent Extent.
- * @api stable
- */
-ol.proj.Projection.prototype.setExtent = function(extent) {
-  this.extent_ = extent;
-  this.canWrapX_ = !!(this.global_ && extent);
-};
-
-
-/**
- * Set the world extent for this projection.
- * @param {ol.Extent} worldExtent World extent
- *     [minlon, minlat, maxlon, maxlat].
- * @api
- */
-ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
-  this.worldExtent_ = worldExtent;
-};
-
-
-/**
-* Set the getPointResolution function for this projection.
-* @param {function(number, ol.Coordinate):number} func Function
-* @api
-*/
-ol.proj.Projection.prototype.setGetPointResolution = function(func) {
-  this.getPointResolutionFunc_ = func;
-};
-
-
-/**
-* Default version.
-* Get the resolution of the point in degrees or distance units.
-* For projections with degrees as the unit this will simply return the
-* provided resolution. For other projections the point resolution is
-* estimated by transforming the 'point' pixel to EPSG:4326,
-* measuring its width and height on the normal sphere,
-* and taking the average of the width and height.
-* @param {number} resolution Nominal resolution in projection units.
-* @param {ol.Coordinate} point Point to find adjusted resolution at.
-* @return {number} Point resolution at point in projection units.
-* @private
-*/
-ol.proj.Projection.prototype.getPointResolution_ = function(resolution, point) {
-  var units = this.getUnits();
-  if (units == ol.proj.Units.DEGREES) {
-    return resolution;
-  } else {
-    // Estimate point resolution by transforming the center pixel to EPSG:4326,
-    // measuring its width and height on the normal sphere, and taking the
-    // average of the width and height.
-    var toEPSG4326 = ol.proj.getTransformFromProjections(
-        this, ol.proj.get('EPSG:4326'));
-    var vertices = [
-      point[0] - resolution / 2, point[1],
-      point[0] + resolution / 2, point[1],
-      point[0], point[1] - resolution / 2,
-      point[0], point[1] + resolution / 2
-    ];
-    vertices = toEPSG4326(vertices, vertices, 2);
-    var width = ol.sphere.NORMAL.haversineDistance(
-        vertices.slice(0, 2), vertices.slice(2, 4));
-    var height = ol.sphere.NORMAL.haversineDistance(
-        vertices.slice(4, 6), vertices.slice(6, 8));
-    var pointResolution = (width + height) / 2;
-    var metersPerUnit = this.getMetersPerUnit();
-    if (metersPerUnit !== undefined) {
-      pointResolution /= metersPerUnit;
-    }
-    return pointResolution;
-  }
-};
-
-
-/**
- * Get the resolution of the point in degrees or distance units.
- * For projections with degrees as the unit this will simply return the
- * provided resolution. The default for other projections is to estimate
- * the point resolution by transforming the 'point' pixel to EPSG:4326,
- * measuring its width and height on the normal sphere,
- * and taking the average of the width and height.
- * An alternative implementation may be given when constructing a
- * projection. For many local projections,
- * such a custom function will return the resolution unchanged.
- * @param {number} resolution Resolution in projection units.
- * @param {ol.Coordinate} point Point.
- * @return {number} Point resolution in projection units.
- * @api
- */
-ol.proj.Projection.prototype.getPointResolution = function(resolution, point) {
-  return this.getPointResolutionFunc_(resolution, point);
-};
-
-
-/**
- * @private
- * @type {Object.<string, ol.proj.Projection>}
- */
-ol.proj.projections_ = {};
-
-
-/**
- * @private
- * @type {Object.<string, Object.<string, ol.TransformFunction>>}
- */
-ol.proj.transforms_ = {};
-
-
-/**
- * @private
- * @type {proj4}
- */
-ol.proj.proj4_ = null;
+ol.proj.METERS_PER_UNIT = ol.proj.Units.METERS_PER_UNIT;
 
 
 if (ol.ENABLE_PROJ4JS) {
@@ -404,9 +35,58 @@ if (ol.ENABLE_PROJ4JS) {
   ol.proj.setProj4 = function(proj4) {
     ol.DEBUG && console.assert(typeof proj4 == 'function',
         'proj4 argument should be a function');
-    ol.proj.proj4_ = proj4;
+    ol.proj.proj4.set(proj4);
   };
 }
+
+
+/**
+ * Get the resolution of the point in degrees or distance units.
+ * For projections with degrees as the unit this will simply return the
+ * provided resolution. For other projections the point resolution is
+ * estimated by transforming the 'point' pixel to EPSG:4326,
+ * measuring its width and height on the normal sphere,
+ * and taking the average of the width and height.
+ * @param {ol.proj.Projection} projection The projection.
+ * @param {number} resolution Nominal resolution in projection units.
+ * @param {ol.Coordinate} point Point to find adjusted resolution at.
+ * @return {number} Point resolution at point in projection units.
+ * @api
+ */
+ol.proj.getPointResolution = function(projection, resolution, point) {
+  var pointResolution;
+  var getter = projection.getPointResolutionFunc();
+  if (getter) {
+    pointResolution = getter(resolution, point);
+  } else {
+    var units = projection.getUnits();
+    if (units == ol.proj.Units.DEGREES) {
+      pointResolution = resolution;
+    } else {
+      // Estimate point resolution by transforming the center pixel to EPSG:4326,
+      // measuring its width and height on the normal sphere, and taking the
+      // average of the width and height.
+      var toEPSG4326 = ol.proj.getTransformFromProjections(projection, ol.proj.get('EPSG:4326'));
+      var vertices = [
+        point[0] - resolution / 2, point[1],
+        point[0] + resolution / 2, point[1],
+        point[0], point[1] - resolution / 2,
+        point[0], point[1] + resolution / 2
+      ];
+      vertices = toEPSG4326(vertices, vertices, 2);
+      var width = ol.sphere.NORMAL.haversineDistance(
+          vertices.slice(0, 2), vertices.slice(2, 4));
+      var height = ol.sphere.NORMAL.haversineDistance(
+          vertices.slice(4, 6), vertices.slice(6, 8));
+      pointResolution = (width + height) / 2;
+      var metersPerUnit = projection.getMetersPerUnit();
+      if (metersPerUnit !== undefined) {
+        pointResolution /= metersPerUnit;
+      }
+    }
+  }
+  return pointResolution;
+};
 
 
 /**
@@ -421,7 +101,7 @@ ol.proj.addEquivalentProjections = function(projections) {
   projections.forEach(function(source) {
     projections.forEach(function(destination) {
       if (source !== destination) {
-        ol.proj.addTransform(source, destination, ol.proj.cloneTransform);
+        ol.proj.transforms.add(source, destination, ol.proj.cloneTransform);
       }
     });
   });
@@ -444,8 +124,8 @@ ol.proj.addEquivalentProjections = function(projections) {
 ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTransform, inverseTransform) {
   projections1.forEach(function(projection1) {
     projections2.forEach(function(projection2) {
-      ol.proj.addTransform(projection1, projection2, forwardTransform);
-      ol.proj.addTransform(projection2, projection1, inverseTransform);
+      ol.proj.transforms.add(projection1, projection2, forwardTransform);
+      ol.proj.transforms.add(projection2, projection1, inverseTransform);
     });
   });
 };
@@ -459,8 +139,8 @@ ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTr
  * @api stable
  */
 ol.proj.addProjection = function(projection) {
-  ol.proj.projections_[projection.getCode()] = projection;
-  ol.proj.addTransform(projection, projection, ol.proj.cloneTransform);
+  ol.proj.projections.add(projection.getCode(), projection);
+  ol.proj.transforms.add(projection, projection, ol.proj.cloneTransform);
 };
 
 
@@ -476,11 +156,11 @@ ol.proj.addProjections = function(projections) {
 
 
 /**
- * FIXME empty description for jsdoc
+ * Clear all cached projections and transforms.
  */
 ol.proj.clearAllProjections = function() {
-  ol.proj.projections_ = {};
-  ol.proj.transforms_ = {};
+  ol.proj.projections.clear();
+  ol.proj.transforms.clear();
 };
 
 
@@ -497,25 +177,6 @@ ol.proj.createProjection = function(projection, defaultCode) {
   } else {
     return /** @type {ol.proj.Projection} */ (projection);
   }
-};
-
-
-/**
- * Registers a conversion function to convert coordinates from the source
- * projection to the destination projection.
- *
- * @param {ol.proj.Projection} source Source.
- * @param {ol.proj.Projection} destination Destination.
- * @param {ol.TransformFunction} transformFn Transform.
- */
-ol.proj.addTransform = function(source, destination, transformFn) {
-  var sourceCode = source.getCode();
-  var destinationCode = destination.getCode();
-  var transforms = ol.proj.transforms_;
-  if (!(sourceCode in transforms)) {
-    transforms[sourceCode] = {};
-  }
-  transforms[sourceCode][destinationCode] = transformFn;
 };
 
 
@@ -541,9 +202,9 @@ ol.proj.addTransform = function(source, destination, transformFn) {
 ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse) {
   var sourceProj = ol.proj.get(source);
   var destProj = ol.proj.get(destination);
-  ol.proj.addTransform(sourceProj, destProj,
+  ol.proj.transforms.add(sourceProj, destProj,
       ol.proj.createTransformFromCoordinateTransform(forward));
-  ol.proj.addTransform(destProj, sourceProj,
+  ol.proj.transforms.add(destProj, sourceProj,
       ol.proj.createTransformFromCoordinateTransform(inverse));
 };
 
@@ -578,32 +239,6 @@ ol.proj.createTransformFromCoordinateTransform = function(transform) {
         }
         return output;
       });
-};
-
-
-/**
- * Unregisters the conversion function to convert coordinates from the source
- * projection to the destination projection.  This method is used to clean up
- * cached transforms during testing.
- *
- * @param {ol.proj.Projection} source Source projection.
- * @param {ol.proj.Projection} destination Destination projection.
- * @return {ol.TransformFunction} transformFn The unregistered transform.
- */
-ol.proj.removeTransform = function(source, destination) {
-  var sourceCode = source.getCode();
-  var destinationCode = destination.getCode();
-  var transforms = ol.proj.transforms_;
-  ol.DEBUG && console.assert(sourceCode in transforms,
-      'sourceCode should be in transforms');
-  ol.DEBUG && console.assert(destinationCode in transforms[sourceCode],
-      'destinationCode should be in transforms of sourceCode');
-  var transform = transforms[sourceCode][destinationCode];
-  delete transforms[sourceCode][destinationCode];
-  if (ol.obj.isEmpty(transforms[sourceCode])) {
-    delete transforms[sourceCode];
-  }
-  return transform;
 };
 
 
@@ -647,22 +282,22 @@ ol.proj.toLonLat = function(coordinate, opt_projection) {
  * @api stable
  */
 ol.proj.get = function(projectionLike) {
-  var projection;
+  var projection = null;
   if (projectionLike instanceof ol.proj.Projection) {
     projection = projectionLike;
   } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
-    projection = ol.proj.projections_[code];
+    projection = ol.proj.projections.get(code);
     if (ol.ENABLE_PROJ4JS) {
-      var proj4js = ol.proj.proj4_ || window['proj4'];
-      if (projection === undefined && typeof proj4js == 'function' &&
+      var proj4js = ol.proj.proj4.get();
+      if (!projection && typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
         projection = new ol.proj.Projection({code: code});
         ol.proj.addProjection(projection);
       }
     }
   }
-  return projection || null;
+  return projection;
 };
 
 
@@ -719,12 +354,11 @@ ol.proj.getTransform = function(source, destination) {
  * @return {ol.TransformFunction} Transform function.
  */
 ol.proj.getTransformFromProjections = function(sourceProjection, destinationProjection) {
-  var transforms = ol.proj.transforms_;
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
-  var transform;
-  if (ol.ENABLE_PROJ4JS && !(sourceCode in transforms && destinationCode in transforms[sourceCode])) {
-    var proj4js = ol.proj.proj4_ || window['proj4'];
+  var transform = ol.proj.transforms.get(sourceCode, destinationCode);
+  if (ol.ENABLE_PROJ4JS && !transform) {
+    var proj4js = ol.proj.proj4.get();
     if (typeof proj4js == 'function') {
       var sourceDef = proj4js.defs(sourceCode);
       var destinationDef = proj4js.defs(destinationCode);
@@ -737,13 +371,12 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
           ol.proj.addCoordinateTransforms(destinationProjection, sourceProjection,
               proj4Transform.forward, proj4Transform.inverse);
         }
+        transform = ol.proj.transforms.get(sourceCode, destinationCode);
       }
     }
   }
-  if (sourceCode in transforms && destinationCode in transforms[sourceCode]) {
-    transform = transforms[sourceCode][destinationCode];
-  } else {
-    ol.DEBUG && console.assert(transform !== undefined, 'transform should be defined');
+  if (!transform) {
+    ol.DEBUG && console.assert(transform, 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
   return transform;
