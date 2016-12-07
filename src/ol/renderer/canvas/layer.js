@@ -20,6 +20,12 @@ ol.renderer.canvas.Layer = function(layer) {
   ol.renderer.Layer.call(this, layer);
 
   /**
+   * @protected
+   * @type {number}
+   */
+  this.renderedResolution;
+
+  /**
    * @private
    * @type {ol.Transform}
    */
@@ -63,51 +69,6 @@ ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) 
 
 
 /**
- * @param {olx.FrameState} frameState Frame state.
- * @param {ol.LayerState} layerState Layer state.
- * @param {CanvasRenderingContext2D} context Context.
- */
-ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {
-
-  this.preCompose(context, frameState);
-
-  var image = this.getImage();
-  if (image) {
-
-    // clipped rendering if layer extent is set
-    var extent = layerState.extent;
-    var clipped = extent !== undefined;
-    if (clipped) {
-      this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
-    }
-
-    var imageTransform = this.getImageTransform();
-    // for performance reasons, context.save / context.restore is not used
-    // to save and restore the transformation matrix and the opacity.
-    // see http://jsperf.com/context-save-restore-versus-variable
-    var alpha = context.globalAlpha;
-    context.globalAlpha = layerState.opacity;
-
-    // for performance reasons, context.setTransform is only used
-    // when the view is rotated. see http://jsperf.com/canvas-transform
-    var dx = imageTransform[4];
-    var dy = imageTransform[5];
-    var dw = image.width * imageTransform[0];
-    var dh = image.height * imageTransform[3];
-    context.drawImage(image, 0, 0, +image.width, +image.height,
-        Math.round(dx), Math.round(dy), Math.round(dw), Math.round(dh));
-    context.globalAlpha = alpha;
-
-    if (clipped) {
-      context.restore();
-    }
-  }
-
-  this.postCompose(context, frameState, layerState);
-};
-
-
-/**
  * @param {ol.render.Event.Type} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
@@ -130,6 +91,27 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
         context, null);
     layer.dispatchEvent(composeEvent);
     ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
+  }
+};
+
+
+/**
+ * @param {ol.Coordinate} coordinate Coordinate.
+ * @param {olx.FrameState} frameState FrameState.
+ * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
+ *     callback.
+ * @param {S} thisArg Value to use as `this` when executing `callback`.
+ * @return {T|undefined} Callback result.
+ * @template S,T,U
+ */
+ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+  var hasFeature = this.forEachFeatureAtCoordinate(
+      coordinate, frameState, ol.functions.TRUE, this);
+
+  if (hasFeature) {
+    return callback.call(thisArg, this.getLayer(), null);
+  } else {
+    return undefined;
   }
 };
 
@@ -172,20 +154,6 @@ ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frame
 
 
 /**
- * @abstract
- * @return {HTMLCanvasElement|HTMLVideoElement|Image} Canvas.
- */
-ol.renderer.canvas.Layer.prototype.getImage = function() {};
-
-
-/**
- * @abstract
- * @return {!ol.Transform} Image transform.
- */
-ol.renderer.canvas.Layer.prototype.getImageTransform = function() {};
-
-
-/**
  * @param {olx.FrameState} frameState Frame state.
  * @param {number} offsetX Offset on the x-axis in view coordinates.
  * @protected
@@ -209,27 +177,14 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) 
  * @abstract
  * @param {olx.FrameState} frameState Frame state.
  * @param {ol.LayerState} layerState Layer state.
+ * @param {CanvasRenderingContext2D} context Context.
+ */
+ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {};
+
+/**
+ * @abstract
+ * @param {olx.FrameState} frameState Frame state.
+ * @param {ol.LayerState} layerState Layer state.
  * @return {boolean} whether composeFrame should be called.
  */
 ol.renderer.canvas.Layer.prototype.prepareFrame = function(frameState, layerState) {};
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState Frame state.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @return {T|undefined} Callback result.
- * @template S,T
- */
-ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-
-  var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, ol.functions.TRUE, this);
-
-  if (hasFeature) {
-    return callback.call(thisArg, this.getLayer(), null);
-  } else {
-    return undefined;
-  }
-};

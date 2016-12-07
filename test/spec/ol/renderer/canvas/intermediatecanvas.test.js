@@ -3,17 +3,17 @@ goog.provide('ol.test.renderer.canvas.Layer');
 goog.require('ol.transform');
 goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
-goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.renderer.canvas.IntermediateCanvas');
 
 
-describe('ol.renderer.canvas.Layer', function() {
+describe('ol.renderer.canvas.IntermediateCanvas', function() {
 
   describe('#composeFrame()', function() {
     it('clips to layer extent and draws image', function() {
       var layer = new ol.layer.Image({
         extent: [1, 2, 3, 4]
       });
-      var renderer = new ol.renderer.canvas.Layer(layer);
+      var renderer = new ol.renderer.canvas.IntermediateCanvas(layer);
       var image = new Image();
       image.width = 3;
       image.height = 3;
