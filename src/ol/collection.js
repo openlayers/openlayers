@@ -145,13 +145,13 @@ ol.Collection.prototype.pop = function() {
 /**
  * Insert the provided element at the end of the collection.
  * @param {T} elem Element.
- * @return {number} Length.
+ * @return {number} New length of the collection.
  * @api stable
  */
 ol.Collection.prototype.push = function(elem) {
-  var n = this.array_.length;
+  var n = this.getLength();
   this.insertAt(n, elem);
-  return n;
+  return this.getLength();
 };
 
 
