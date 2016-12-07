@@ -326,6 +326,50 @@ describe('ol.interaction.Modify', function() {
 
   });
 
+  describe('vertex modification', function() {
+
+    it('keeps the third dimension', function() {
+      var lineFeature = new ol.Feature({
+        geometry: new ol.geom.LineString(
+          [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
+        )
+      });
+      features.length = 0;
+      features.push(lineFeature);
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features)
+      });
+      map.addInteraction(modify);
+
+      // Move first vertex
+      simulateEvent('pointermove', 0, 0, false, 0);
+      simulateEvent('pointerdown', 0, 0, false, 0);
+      simulateEvent('pointermove', -10, -10, false, 0);
+      simulateEvent('pointerdrag', -10, -10, false, 0);
+      simulateEvent('pointerup', -10, -10, false, 0);
+
+      // Move middle vertex
+      simulateEvent('pointermove', 0, -40, false, 0);
+      simulateEvent('pointerdown', 0, -40, false, 0);
+      simulateEvent('pointermove', 10, -30, false, 0);
+      simulateEvent('pointerdrag', 10, -30, false, 0);
+      simulateEvent('pointerup', 10, -30, false, 0);
+
+      // Move last vertex
+      simulateEvent('pointermove', 40, 0, false, 0);
+      simulateEvent('pointerdown', 40, 0, false, 0);
+      simulateEvent('pointermove', 50, -10, false, 0);
+      simulateEvent('pointerdrag', 50, -10, false, 0);
+      simulateEvent('pointerup', 50, -10, false, 0);
+
+      expect(lineFeature.getGeometry().getCoordinates()[0][2]).to.equal(10);
+      expect(lineFeature.getGeometry().getCoordinates()[2][2]).to.equal(30);
+      expect(lineFeature.getGeometry().getCoordinates()[4][2]).to.equal(50);
+    });
+
+  });
+
   describe('boundary modification', function() {
     var modify, feature, events;
 

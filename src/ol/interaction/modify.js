@@ -580,7 +580,7 @@ ol.interaction.Modify.handleDragEvent_ = function(evt) {
     var index = dragSegment[1];
 
     while (vertex.length < geometry.getStride()) {
-      vertex.push(0);
+      vertex.push(segment[index][vertex.length]);
     }
 
     switch (geometry.getType()) {
