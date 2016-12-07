@@ -217,7 +217,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // the pixel.
     ol.obj.clear(this.featureLayerAssociation_);
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
+      (/**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
@@ -228,7 +228,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             this.addFeatureLayerAssociation_(feature, layer);
             return !this.multi_;
           }
-        }, this, {
+        }).bind(this), {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_
         });
@@ -250,7 +250,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   } else {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-        /**
+      (/**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
@@ -268,7 +268,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
             }
             return !this.multi_;
           }
-        }, this, {
+        }).bind(this), {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_
         });

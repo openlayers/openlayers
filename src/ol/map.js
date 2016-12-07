@@ -567,14 +567,13 @@ ol.Map.prototype.disposeInternal = function() {
  *     the {@link ol.layer.Layer layer} of the feature and will be null for
  *     unmanaged layers. To stop detection, callback functions can return a
  *     truthy value.
- * @param {S=} opt_this Value to use as this when executing callback.
  * @param {olx.AtPixelOptions=} opt_options Optional options.
  * @return {T|undefined} Callback result, i.e. the return value of last
  * callback execution, or the first truthy callback return value.
  * @template S,T
  * @api stable
  */
-ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt_options) {
+ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) {
   if (!this.frameState_) {
     return;
   }
@@ -582,14 +581,11 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_this, opt
   opt_options = opt_options !== undefined ? opt_options : {};
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
-  var thisArg = opt_this !== undefined ? opt_this : null;
   var layerFilter = opt_options.layerFilter !== undefined ?
     opt_options.layerFilter : ol.functions.TRUE;
-  var thisArg2 = opt_options.layerFilterThis !== undefined ?
-    opt_options.layerFilterThis : null;
   return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, callback, thisArg,
-      layerFilter, thisArg2);
+      coordinate, this.frameState_, hitTolerance, callback, null,
+      layerFilter, null);
 };
 
 
@@ -648,12 +644,10 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   opt_options = opt_options !== undefined ? opt_options : {};
   var layerFilter = opt_options.layerFilter !== undefined ?
       opt_options.layerFilter : ol.functions.TRUE;
-  var thisArg = opt_options.layerFilterThis !== undefined ?
-    opt_options.layerFilterThis : null;
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, layerFilter, thisArg);
+      coordinate, this.frameState_, hitTolerance, layerFilter, null);
 };
 
 

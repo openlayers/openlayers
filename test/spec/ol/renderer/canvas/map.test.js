@@ -111,7 +111,7 @@ describe('ol.renderer.canvas.Map', function() {
       map.addLayer(layer);
       map.renderSync();
       var cb = sinon.spy();
-      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, null, {
+      map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]), cb, {
         layerFilter: function() {
           return false;
         }
@@ -151,13 +151,13 @@ describe('ol.renderer.canvas.Map', function() {
       ];
 
       for (var i = 0; i < 4; i++) {
-        map.forEachFeatureAtPixel(pixelsInside[i], cb1, null, {hitTolerance:10});
+        map.forEachFeatureAtPixel(pixelsInside[i], cb1, {hitTolerance:10});
       }
       expect(cb1.callCount).to.be(4);
       expect(cb1.firstCall.args[1]).to.be(layer);
 
       for (var j = 0; j < 4; j++) {
-        map.forEachFeatureAtPixel(pixelsOutside[j], cb2, null, {hitTolerance:10});
+        map.forEachFeatureAtPixel(pixelsOutside[j], cb2, {hitTolerance:10});
       }
       expect(cb2).not.to.be.called();
     });

@@ -15,16 +15,16 @@ Old syntax:
 
 New syntax:
 ```
-    map.forEachFeatureAtPixel(pixel, callback, callbackThis, {
-        layerFilter: layerFilterFn,
-        layerFilterThis: layerFilterThis
+    map.forEachFeatureAtPixel(pixel, callback, {
+        layerFilter: layerFilterFn
     });
     
     map.hasFeatureAtPixel(pixel, {
-        layerFilter: layerFilterFn,
-        layerFilterThis: layerFilterThis
+        layerFilter: layerFilterFn
     });
 ```
+
+To bind a function to a this, please use the bind method of the function (See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
 
 This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
 

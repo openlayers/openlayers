@@ -306,7 +306,6 @@ olx.MapOptions.prototype.view;
  * Object literal with options for the {@link ol.Map#forEachFeatureAtPixel} and
  * {@link ol.Map#hasFeatureAtPixel} methods.
  * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),
- *    layerFilterThis: (Object|undefined),
  *    hitTolerance: (number|undefined)}}
  */
 olx.AtPixelOptions;
@@ -321,14 +320,6 @@ olx.AtPixelOptions;
  * @api stable
  */
 olx.AtPixelOptions.prototype.layerFilter;
-
-
-/**
- * Value to use as `this` when executing `layerFilter`.
- * @type {Object|undefined}
- * @api stable
- */
-olx.AtPixelOptions.prototype.layerFilterThis;
 
 
 /**
@@ -7684,7 +7675,7 @@ olx.view.FitOptions.prototype.maxZoom;
 
 
 /**
- * The duration of the animation in milliseconds. By default, there is no 
+ * The duration of the animation in milliseconds. By default, there is no
  * animations.
  * @type {number|undefined}
  * @api
