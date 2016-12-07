@@ -5,7 +5,6 @@ goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
-goog.require('ol.layer.LayerProperty');
 goog.require('ol.obj');
 goog.require('ol.render.Event');
 goog.require('ol.source.State');
@@ -62,7 +61,7 @@ ol.layer.Layer = function(options) {
   }
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.LayerProperty.SOURCE),
+      ol.Object.getChangeEventType(ol.layer.Base.Property.SOURCE),
       this.handleSourcePropertyChange_, this);
 
   var source = options.source ? options.source : null;
@@ -112,7 +111,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  * @api stable
  */
 ol.layer.Layer.prototype.getSource = function() {
-  var source = this.get(ol.layer.LayerProperty.SOURCE);
+  var source = this.get(ol.layer.Base.Property.SOURCE);
   return /** @type {ol.source.Source} */ (source) || null;
 };
 
@@ -198,5 +197,5 @@ ol.layer.Layer.prototype.setMap = function(map) {
  * @api stable
  */
 ol.layer.Layer.prototype.setSource = function(source) {
-  this.set(ol.layer.LayerProperty.SOURCE, source);
+  this.set(ol.layer.Base.Property.SOURCE, source);
 };

@@ -110,21 +110,27 @@ oli.ModifyEvent.prototype.mapBrowserEvent;
 
 
 /**
+ * @type {Object}
+ */
+oli.Object;
+
+
+/**
  * @interface
  */
-oli.ObjectEvent = function() {};
+oli.Object.Event = function() {};
 
 
 /**
  * @type {string}
  */
-oli.ObjectEvent.prototype.key;
+oli.Object.Event.prototype.key;
 
 
 /**
  * @type {*}
  */
-oli.ObjectEvent.prototype.oldValue;
+oli.Object.Event.prototype.oldValue;
 
 
 /**

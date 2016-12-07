@@ -1,46 +1,11 @@
 goog.provide('ol.geom.Geometry');
-goog.provide('ol.geom.GeometryLayout');
-goog.provide('ol.geom.GeometryType');
 
 goog.require('ol');
-goog.require('ol.functions');
 goog.require('ol.Object');
 goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
-
-
-/**
- * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
- * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,
- * `'GeometryCollection'`, `'Circle'`.
- * @enum {string}
- */
-ol.geom.GeometryType = {
-  POINT: 'Point',
-  LINE_STRING: 'LineString',
-  LINEAR_RING: 'LinearRing',
-  POLYGON: 'Polygon',
-  MULTI_POINT: 'MultiPoint',
-  MULTI_LINE_STRING: 'MultiLineString',
-  MULTI_POLYGON: 'MultiPolygon',
-  GEOMETRY_COLLECTION: 'GeometryCollection',
-  CIRCLE: 'Circle'
-};
-
-
-/**
- * The coordinate layout for geometries, indicating whether a 3rd or 4th z ('Z')
- * or measure ('M') coordinate is available. Supported values are `'XY'`,
- * `'XYZ'`, `'XYM'`, `'XYZM'`.
- * @enum {string}
- */
-ol.geom.GeometryLayout = {
-  XY: 'XY',
-  XYZ: 'XYZ',
-  XYM: 'XYM',
-  XYZM: 'XYZM'
-};
 
 
 /**
