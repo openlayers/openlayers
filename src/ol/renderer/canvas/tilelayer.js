@@ -9,17 +9,17 @@ goog.require('ol.Tile');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.renderer.canvas.Layer');
+goog.require('ol.renderer.canvas.IntermediateCanvas');
 
 
 /**
  * @constructor
- * @extends {ol.renderer.canvas.Layer}
+ * @extends {ol.renderer.canvas.IntermediateCanvas}
  * @param {ol.layer.Tile|ol.layer.VectorTile} tileLayer Tile layer.
  */
 ol.renderer.canvas.TileLayer = function(tileLayer) {
 
-  ol.renderer.canvas.Layer.call(this, tileLayer);
+  ol.renderer.canvas.IntermediateCanvas.call(this, tileLayer);
 
   /**
    * @protected
@@ -32,12 +32,6 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
    * @type {ol.Extent}
    */
   this.renderedExtent_ = null;
-
-  /**
-   * @private
-   * @type {number}
-   */
-  this.renderedResolution_;
 
   /**
    * @private
@@ -76,19 +70,13 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
   this.imageTransform_ = ol.transform.create();
 
   /**
-   * @private
-   * @type {ol.Transform}
-   */
-  this.coordinateToCanvasPixelTransform_ = ol.transform.create();
-
-  /**
    * @protected
    * @type {number}
    */
   this.zDirection = 0;
 
 };
-ol.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.Layer);
+ol.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.IntermediateCanvas);
 
 
 /**
@@ -172,7 +160,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   }
 
   var hints = frameState.viewHints;
-  if (!(this.renderedResolution_ && Date.now() - frameState.time > 16 &&
+  if (!(this.renderedResolution && Date.now() - frameState.time > 16 &&
       (hints[ol.View.Hint.ANIMATING] || hints[ol.View.Hint.INTERACTING])) &&
       (newTiles || !(this.renderedExtent_ &&
       ol.extent.equals(this.renderedExtent_, imageExtent)) ||
@@ -220,18 +208,18 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     }
 
     this.renderedRevision_ = sourceRevision;
-    this.renderedResolution_ = tileResolution;
+    this.renderedResolution = tileResolution;
     this.renderedExtent_ = imageExtent;
   }
 
-  var scale = pixelRatio / tilePixelRatio * this.renderedResolution_ / viewResolution;
+  var scale = pixelRatio / tilePixelRatio * this.renderedResolution / viewResolution;
   var transform = ol.transform.compose(this.imageTransform_,
       pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
       scale, scale,
       0,
-      tilePixelRatio * (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution_,
-      tilePixelRatio * (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution_);
-  ol.transform.compose(this.coordinateToCanvasPixelTransform_,
+      tilePixelRatio * (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution,
+      tilePixelRatio * (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution);
+  ol.transform.compose(this.coordinateToCanvasPixelTransform,
       pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
       pixelRatio / viewResolution, -pixelRatio / viewResolution,
       0,
@@ -264,29 +252,6 @@ ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState
     this.context.drawImage(image, gutter, gutter,
         image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
   }
-};
-
-
-/**
- * @param {ol.Coordinate} coordinate Coordinate.
- * @param {olx.FrameState} frameState FrameState.
- * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback Layer
- *     callback.
- * @param {S} thisArg Value to use as `this` when executing `callback`.
- * @return {T|undefined} Callback result.
- * @template S,T,U
- */
-ol.renderer.canvas.TileLayer.prototype.forEachLayerAtCoordinate = function(
-    coordinate, frameState, callback, thisArg) {
-  var canvasPixel = ol.transform.apply(this.coordinateToCanvasPixelTransform_, coordinate);
-
-  var imageData = this.context.getImageData(canvasPixel[0], canvasPixel[1], 1, 1).data;
-  if (imageData[3] > 0) {
-    return callback.call(thisArg, this.getLayer(), imageData);
-  } else {
-    return undefined;
-  }
-
 };
 
 
