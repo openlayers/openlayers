@@ -31,10 +31,22 @@ describe('ol.collection', function() {
 
   describe('push to a collection', function() {
     it('adds elements to the collection', function() {
-      collection.push(1);
-      expect(collection.getLength()).to.eql(1);
+      var length = collection.push(1);
+      expect(collection.getLength()).to.eql(length);
       expect(collection.getArray()).to.eql([1]);
       expect(collection.item(0)).to.eql(1);
+    });
+    it('returns the correct new length of the collection', function() {
+      var length;
+      ol.events.listen(collection, 'add', function(event) {
+        if (event.element === 'remove_me') {
+          collection.remove(event.element);
+        }
+      });
+      length = collection.push('keep_me');
+      expect(collection.getLength()).to.eql(length);
+      length = collection.push('remove_me');
+      expect(collection.getLength()).to.eql(length);
     });
   });
 
@@ -236,8 +248,8 @@ describe('ol.collection', function() {
       ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
         elem = e.element;
       });
-      collection.push(1);
-      expect(elem).to.eql(1);
+      var length = collection.push(1);
+      expect(elem).to.eql(length);
     });
   });
 
