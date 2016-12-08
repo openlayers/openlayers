@@ -3953,6 +3953,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
+ *     preload: (number|undefined),
  *     renderBuffer: (number|undefined),
  *     renderMode: (ol.layer.VectorTile.RenderType|string|undefined),
  *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
@@ -4045,6 +4046,15 @@ olx.layer.VectorTileOptions.prototype.maxResolution;
  * @api stable
  */
 olx.layer.VectorTileOptions.prototype.opacity;
+
+
+/**
+ * Preload. Load low-resolution tiles up to `preload` levels. By default
+ * `preload` is `0`, which means no preloading.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.layer.VectorTileOptions.prototype.preload;
 
 
 /**
