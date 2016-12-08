@@ -212,7 +212,7 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
 
 /**
  * Returns the Hit-detection tolerance.
- * @returns {number} Hit tolerance.
+ * @returns {number} Hit tolerance in pixels.
  * @api
  */
 ol.interaction.Translate.prototype.getHitTolerance = function() {
@@ -224,7 +224,7 @@ ol.interaction.Translate.prototype.getHitTolerance = function() {
  * Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
  * not for WebGL.
- * @param {number} hitTolerance Hit tolerance.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @api
  */
 ol.interaction.Translate.prototype.setHitTolerance = function(hitTolerance) {

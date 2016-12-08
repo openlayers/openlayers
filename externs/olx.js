@@ -323,7 +323,7 @@ olx.AtPixelOptions.prototype.layerFilter;
 
 
 /**
- * Hit-detection tolerance. Pixels inside the radius around the given position
+ * Hit-detection tolerance in pixels. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
  * not for WebGL.
  * @type {number|undefined}

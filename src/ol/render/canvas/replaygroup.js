@@ -71,6 +71,12 @@ ol.render.canvas.ReplayGroup = function(
    * @type {CanvasRenderingContext2D}
    */
   this.hitDetectionContext_ = ol.dom.createCanvasContext2D(1, 1);
+
+  /**
+   * @private
+   * @type {ol.Transform}
+   */
+  this.hitDetectionTransform_ = ol.transform.create();
 };
 ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
@@ -174,7 +180,7 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
- * @param {number} hitTolerance Hit tolerance.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
  *     to skip.
  * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
@@ -187,15 +193,19 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
 
   hitTolerance = Math.round(hitTolerance);
   var contextSize = hitTolerance * 2 + 1;
-  var transform = ol.transform.compose(ol.transform.create(),
+  var transform = ol.transform.compose(this.hitDetectionTransform_,
       hitTolerance + 0.5, hitTolerance + 0.5,
       1 / resolution, -1 / resolution,
       -rotation,
       -coordinate[0], -coordinate[1]);
   var context = this.hitDetectionContext_;
-  context.canvas.width = contextSize;
-  context.canvas.height = contextSize;
-  context.clearRect(0, 0, contextSize, contextSize);
+
+  if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
+    context.canvas.width = contextSize;
+    context.canvas.height = contextSize;
+  } else {
+    context.clearRect(0, 0, contextSize, contextSize);
+  }
 
   /**
    * @type {ol.Extent}
