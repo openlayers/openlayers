@@ -71,6 +71,12 @@ ol.interaction.Translate = function(opt_options) {
   this.layerFilter_ = layerFilter;
 
   /**
+   * @private
+   * @type {number}
+   */
+  this.hitTolerance_ = options.hitTolerance ? options.hitTolerance : 0;
+
+  /**
    * @type {ol.Feature}
    * @private
    */
@@ -197,7 +203,32 @@ ol.interaction.Translate.prototype.featuresAtPixel_ = function(pixel, map) {
             ol.array.includes(this.features_.getArray(), feature)) {
           return feature;
         }
-      }, this, this.layerFilter_);
+      }.bind(this), {
+        layerFilter: this.layerFilter_,
+        hitTolerance: this.hitTolerance_
+      });
+};
+
+
+/**
+ * Returns the Hit-detection tolerance.
+ * @returns {number} Hit tolerance in pixels.
+ * @api
+ */
+ol.interaction.Translate.prototype.getHitTolerance = function() {
+  return this.hitTolerance_;
+};
+
+
+/**
+ * Hit-detection tolerance. Pixels inside the radius around the given position
+ * will be checked for features. This only works for the canvas renderer and
+ * not for WebGL.
+ * @param {number} hitTolerance Hit tolerance in pixels.
+ * @api
+ */
+ol.interaction.Translate.prototype.setHitTolerance = function(hitTolerance) {
+  this.hitTolerance_ = hitTolerance;
 };
 
 

@@ -94,6 +94,7 @@ ol.source.Source.toAttributionsArray_ = function(attributionLike) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
  * @param {number} rotation Rotation.
+ * @param {number} hitTolerance Hit tolerance in pixels.
  * @param {Object.<string, boolean>} skippedFeatureUids Skipped feature uids.
  * @param {function((ol.Feature|ol.render.Feature)): T} callback Feature
  *     callback.

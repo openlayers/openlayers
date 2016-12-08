@@ -176,9 +176,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
   var resolution = frameState.viewState.resolution;
   var rotation = frameState.viewState.rotation;
+  hitTolerance = hitTolerance == undefined ? 0 : hitTolerance;
   var layer = this.getLayer();
   /** @type {Object.<string, boolean>} */
   var features = {};
@@ -195,7 +196,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     tile = replayables[i];
     tileCoord = tile.tileCoord;
     tileExtent = source.getTileGrid().getTileCoordExtent(tileCoord, this.tmpExtent);
-    if (!ol.extent.containsCoordinate(tileExtent, coordinate)) {
+    if (!ol.extent.containsCoordinate(ol.extent.buffer(tileExtent, hitTolerance * resolution), coordinate)) {
       continue;
     }
     if (tile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {
@@ -212,7 +213,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     }
     replayGroup = tile.getReplayState().replayGroup;
     found = found || replayGroup.forEachFeatureAtCoordinate(
-        tileSpaceCoordinate, resolution, rotation, {},
+        tileSpaceCoordinate, resolution, rotation, hitTolerance, {},
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.

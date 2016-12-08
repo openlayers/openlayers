@@ -79,7 +79,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
       replayGroup.forEachFeatureAtCoordinate = function(coordinate,
-          resolution, rotation, skippedFeaturesUids, callback) {
+          resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
         var feature = new ol.Feature();
         callback(feature);
         callback(feature);
@@ -99,7 +99,7 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
       frameState.layerStates[ol.getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, spy, undefined);
+          coordinate, frameState, 0, spy, undefined);
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });

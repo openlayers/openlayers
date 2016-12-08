@@ -2,6 +2,32 @@
 
 ### Next release
 
+#### `ol.Map#forEachFeatureAtPixel` and `ol.Map#hasFeatureAtPixel` parameters have changed
+ 
+If you are using the layer filter of one of these methods, please note that you now have to pass in the layer filter via an `ol.AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
+
+Old syntax:
+```
+    map.forEachFeatureAtPixel(pixel, callback, callbackThis, layerFilterFn, layerFilterThis);
+    
+    map.hasFeatureAtPixel(pixel, layerFilterFn, layerFilterThis);
+```
+
+New syntax:
+```
+    map.forEachFeatureAtPixel(pixel, callback, {
+        layerFilter: layerFilterFn
+    });
+    
+    map.hasFeatureAtPixel(pixel, {
+        layerFilter: layerFilterFn
+    });
+```
+
+To bind a function to a this, please use the bind method of the function (See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
+
+This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
+
 #### Use `view.animate()` instead of `map.beforeRender()` and `ol.animation` functions
 
 The `map.beforeRender()` and `ol.animation` functions have been deprecated in favor of a new `view.animate()` function.  Use of the deprecated functions will result in a warning during development.  These functions are subject to removal in an upcoming release.

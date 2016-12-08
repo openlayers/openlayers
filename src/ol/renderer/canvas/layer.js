@@ -106,7 +106,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
  */
 ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, ol.functions.TRUE, this);
+      coordinate, frameState, 0, ol.functions.TRUE, this);
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);

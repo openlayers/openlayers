@@ -155,14 +155,14 @@ ol.source.ImageVector.prototype.canvasFunctionInternal_ = function(extent, resol
  * @inheritDoc
  */
 ol.source.ImageVector.prototype.forEachFeatureAtCoordinate = function(
-    coordinate, resolution, rotation, skippedFeatureUids, callback) {
+    coordinate, resolution, rotation, hitTolerance, skippedFeatureUids, callback) {
   if (!this.replayGroup_) {
     return undefined;
   } else {
     /** @type {Object.<string, boolean>} */
     var features = {};
     return this.replayGroup_.forEachFeatureAtCoordinate(
-        coordinate, resolution, 0, skippedFeatureUids,
+        coordinate, resolution, 0, hitTolerance, skippedFeatureUids,
         /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
