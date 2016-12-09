@@ -63,7 +63,7 @@
     "mocha": "3.2.0",
     "mocha-phantomjs-core": "^2.1.0",
     "mustache": "2.3.0",
-    "phantomjs-prebuilt": "2.1.13",
+    "phantomjs-prebuilt": "2.1.14",
     "proj4": "2.3.15",
     "resemblejs": "2.2.2",
     "serve-files": "1.0.0",
