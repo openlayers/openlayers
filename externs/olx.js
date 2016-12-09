@@ -3104,6 +3104,13 @@ olx.interaction.PinchZoomOptions;
  */
 olx.interaction.PinchZoomOptions.prototype.duration;
 
+/**
+ * Zoom to the closest integer zoom level after the pinch gesture ends. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.PinchZoomOptions.prototype.constrainResolution;
+
 
 /**
  * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
@@ -7613,7 +7620,7 @@ olx.view.FitOptions.prototype.maxZoom;
 
 
 /**
- * The duration of the animation in milliseconds. By default, there is no 
+ * The duration of the animation in milliseconds. By default, there is no
  * animations.
  * @type {number|undefined}
  * @api
