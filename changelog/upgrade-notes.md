@@ -77,6 +77,19 @@ ol.proj.getPointResolution(projection, resolution, point);
 
 Note that if you were previously creating a projection with a `getPointResolution` function in the constructor (or calling `projection.setGetPointResolution()` after construction), this function will be used by `ol.proj.getPointResolution()`.
 
+#### `ol.interaction.PinchZoom` no longer zooms to a whole-number zoom level after the gesture ends
+
+The old behavior of `ol.interaction.PinchZoom` was to zoom to the next integer zoom level after the user ends the gesture.
+
+Now the pinch zoom keeps the user selected zoom level even if it is a fractional zoom.
+
+To get the old behavior set the new `constrainResolution` parameter to `true` like this:
+```js
+new ol.interaction.PinchZoom({constrainResolution: true})
+```
+
+See the new `pinchZoom` example for a complete implementation.
+
 ### v3.19.1
 
 #### `ol.style.Fill` with `CanvasGradient` or `CanvasPattern`

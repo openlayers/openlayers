@@ -3145,6 +3145,13 @@ olx.interaction.PinchZoomOptions;
  */
 olx.interaction.PinchZoomOptions.prototype.duration;
 
+/**
+ * Zoom to the closest integer zoom level after the pinch gesture ends. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.PinchZoomOptions.prototype.constrainResolution;
+
 
 /**
  * @typedef {{handleDownEvent: (function(ol.MapBrowserPointerEvent):boolean|undefined),
