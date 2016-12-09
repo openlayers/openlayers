@@ -115,6 +115,15 @@ ol.format.XSD.writeBooleanTextNode = function(node, bool) {
 
 
 /**
+ * @param {Node} node Node to append a CDATA Section with the string to.
+ * @param {string} string String.
+ */
+ol.format.XSD.writeCDATASection = function(node, string) {
+  node.appendChild(ol.xml.DOCUMENT.createCDATASection(string));
+};
+
+
+/**
  * @param {Node} node Node to append a TextNode with the dateTime to.
  * @param {number} dateTime DateTime in seconds.
  */
