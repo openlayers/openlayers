@@ -1,32 +1,6 @@
 ## Upgrade notes
 
-### Next release
-
-#### `ol.Map#forEachFeatureAtPixel` and `ol.Map#hasFeatureAtPixel` parameters have changed
- 
-If you are using the layer filter of one of these methods, please note that you now have to pass in the layer filter via an `ol.AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
-
-Old syntax:
-```
-    map.forEachFeatureAtPixel(pixel, callback, callbackThis, layerFilterFn, layerFilterThis);
-    
-    map.hasFeatureAtPixel(pixel, layerFilterFn, layerFilterThis);
-```
-
-New syntax:
-```
-    map.forEachFeatureAtPixel(pixel, callback, {
-        layerFilter: layerFilterFn
-    });
-    
-    map.hasFeatureAtPixel(pixel, {
-        layerFilter: layerFilterFn
-    });
-```
-
-To bind a function to a this, please use the bind method of the function (See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
-
-This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
+### v3.20.0
 
 #### Use `view.animate()` instead of `map.beforeRender()` and `ol.animation` functions
 
@@ -61,6 +35,30 @@ view.animate({
 });
 ```
 
+#### `ol.Map#forEachFeatureAtPixel` and `ol.Map#hasFeatureAtPixel` parameters have changed
+
+If you are using the layer filter of one of these methods, please note that you now have to pass in the layer filter via an `ol.AtPixelOptions` object. If you are not using the layer filter the usage has not changed.
+
+Old syntax:
+```js
+map.forEachFeatureAtPixel(pixel, callback, callbackThis, layerFilterFn, layerFilterThis);
+
+map.hasFeatureAtPixel(pixel, layerFilterFn, layerFilterThis);
+```
+
+New syntax:
+```js
+map.forEachFeatureAtPixel(pixel, callback.bind(callbackThis), {
+  layerFilter: layerFilterFn.bind(layerFilterThis)
+});
+
+map.hasFeatureAtPixel(pixel, {
+  layerFilter: layerFilterFn.bind(layerFilterThis)
+});
+```
+
+This change is due to the introduction of the `hitTolerance` parameter which can be passed in via this `ol.AtPixelOptions` object, too.
+
 #### Use `ol.proj.getPointResolution()` instead of `projection.getPointResolution()`
 
 The experimental `getPointResolution` method has been removed from `ol.Projection` instances.  Since the implementation of this method required an inverse transform (function for transforming projected coordinates to geographic coordinates) and `ol.Projection` instances are not constructed with forward or inverse transforms, it does not make sense that a projection instance can always calculate the point resolution.
@@ -88,7 +86,7 @@ To get the old behavior set the new `constrainResolution` parameter to `true` li
 new ol.interaction.PinchZoom({constrainResolution: true})
 ```
 
-See the new `pinchZoom` example for a complete implementation.
+See the new `pinch-zoom` example for a complete implementation.
 
 ### v3.19.1
 
