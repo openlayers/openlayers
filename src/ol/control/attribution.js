@@ -157,6 +157,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var attributions = ol.obj.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
+  var uniqueAttributions = {};
   var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
@@ -186,7 +187,11 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
-        attributions[sourceAttributionKey] = sourceAttribution;
+        var html = sourceAttribution.getHTML();
+        if (!(html in uniqueAttributions)) {
+          uniqueAttributions[html] = true;
+          attributions[sourceAttributionKey] = sourceAttribution;
+        }
       } else {
         hiddenAttributions[sourceAttributionKey] = sourceAttribution;
       }
