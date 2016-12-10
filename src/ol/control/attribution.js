@@ -182,11 +182,21 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
       } else {
         intersectsTileRange = false;
       }
+      var attributionAlreadyAdded = false;
       if (intersectsTileRange) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
-        attributions[sourceAttributionKey] = sourceAttribution;
+        for (var existingKey in attributions) {
+          if (attributions.hasOwnProperty(existingKey)) {
+            if (attributions[existingKey].getHTML() === sourceAttribution.getHTML()) {
+              attributionAlreadyAdded = true;
+            }
+          }
+        }
+        if (!attributionAlreadyAdded) {
+          attributions[sourceAttributionKey] = sourceAttribution;
+        }
       } else {
         hiddenAttributions[sourceAttributionKey] = sourceAttribution;
       }
