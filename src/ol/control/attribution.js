@@ -157,6 +157,7 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   var attributions = ol.obj.assign({}, frameState.attributions);
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
+  var uniqueAttributions = {};
   var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
@@ -182,19 +183,13 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
       } else {
         intersectsTileRange = false;
       }
-      var attributionAlreadyAdded = false;
       if (intersectsTileRange) {
         if (sourceAttributionKey in hiddenAttributions) {
           delete hiddenAttributions[sourceAttributionKey];
         }
-        for (var existingKey in attributions) {
-          if (attributions.hasOwnProperty(existingKey)) {
-            if (attributions[existingKey].getHTML() === sourceAttribution.getHTML()) {
-              attributionAlreadyAdded = true;
-            }
-          }
-        }
-        if (!attributionAlreadyAdded) {
+        var html = sourceAttribution.getHTML();
+        if (!(html in uniqueAttributions)) {
+          uniqueAttributions[html] = true;
           attributions[sourceAttributionKey] = sourceAttribution;
         }
       } else {
