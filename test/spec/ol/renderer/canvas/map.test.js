@@ -60,7 +60,7 @@ describe('ol.renderer.canvas.Map', function() {
         }),
         style: new ol.style.Style({
           image: new ol.style.Icon({
-            img : img,
+            img: img,
             imgSize: [1, 1]
           })
         })
@@ -151,13 +151,13 @@ describe('ol.renderer.canvas.Map', function() {
       ];
 
       for (var i = 0; i < 4; i++) {
-        map.forEachFeatureAtPixel(pixelsInside[i], cb1, {hitTolerance:10});
+        map.forEachFeatureAtPixel(pixelsInside[i], cb1, {hitTolerance: 10});
       }
       expect(cb1.callCount).to.be(4);
       expect(cb1.firstCall.args[1]).to.be(layer);
 
       for (var j = 0; j < 4; j++) {
-        map.forEachFeatureAtPixel(pixelsOutside[j], cb2, {hitTolerance:10});
+        map.forEachFeatureAtPixel(pixelsOutside[j], cb2, {hitTolerance: 10});
       }
       expect(cb2).not.to.be.called();
     });

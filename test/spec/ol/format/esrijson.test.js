@@ -32,7 +32,7 @@ describe('ol.format.EsriJSON', function() {
 
   var multiPointEsriJSON = {
     geometry: {
-      'points' : [[102.0, 0.0], [103.0, 1.0]]
+      'points': [[102.0, 0.0], [103.0, 1.0]]
     },
     attributes: {
       'prop0': 'value0'
