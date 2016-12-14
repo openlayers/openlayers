@@ -407,7 +407,7 @@ describe('ol.interaction.Draw', function() {
         source: source,
         type: 'LineString',
         finishCondition: function(event) {
-          if (ol.array.equals(event.coordinate,[30,-20])) {
+          if (ol.array.equals(event.coordinate, [30, -20])) {
             return true;
           }
           return false;

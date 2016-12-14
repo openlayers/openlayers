@@ -96,7 +96,7 @@ var collectAndWriteCoverageData = function() {
     }
   });
 
-  reporter.addAll(['lcovonly','html']);
+  reporter.addAll(['lcovonly', 'html']);
 
   revertBackupAndInstrumentationDir();
 

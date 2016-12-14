@@ -137,7 +137,7 @@ describe('ol.control.ScaleLine', function() {
         expect(renderSpy.callCount).to.be(2);
         done();
       });
-      map.getView().setCenter([1,1]);
+      map.getView().setCenter([1, 1]);
     });
   });
 

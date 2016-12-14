@@ -1175,9 +1175,9 @@ describe('ol.format.KML', function() {
 
         it('can write GeometryCollection geometries', function() {
           var collection = new ol.geom.GeometryCollection([
-            new ol.geom.Point([1,2]),
-            new ol.geom.LineString([[1,2],[3,4]]),
-            new ol.geom.Polygon([[[1,2],[3,4],[3,2],[1,2]]])
+            new ol.geom.Point([1, 2]),
+            new ol.geom.LineString([[1, 2], [3, 4]]),
+            new ol.geom.Polygon([[[1, 2], [3, 4], [3, 2], [1, 2]]])
           ]);
           var features = [new ol.Feature(collection)];
           var node = format.writeFeaturesNode(features);
@@ -3255,7 +3255,7 @@ describe('ol.format.KML', function() {
         expect(nl[0].maxLodPixels).to.be(-1);
         expect(nl[0].minFadeExtent).to.be(0);
         expect(nl[0].maxFadeExtent).to.be(0);
-        expect(nl[1].extent).to.eql([0,0,180,90]);
+        expect(nl[1].extent).to.eql([0, 0, 180, 90]);
       });
     });
   });

@@ -593,7 +593,7 @@ describe('ol.View', function() {
       view.animate({
         resolution: 2000,
         duration: 25
-      },{
+      }, {
         resolution: 2,
         duration: 25
       }, function() {

@@ -809,7 +809,7 @@ describe('ol.format.GeoJSON', function() {
     });
 
     it('truncates transformed point with decimals option', function() {
-      var point = new ol.geom.Point([2, 3]).transform('EPSG:4326','EPSG:3857');
+      var point = new ol.geom.Point([2, 3]).transform('EPSG:4326', 'EPSG:3857');
       var geojson = format.writeGeometry(point, {
         featureProjection: 'EPSG:3857',
         decimals: 2
