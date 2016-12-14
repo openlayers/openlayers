@@ -32,6 +32,12 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.renderedLayerRevision_;
+
+  /**
+   * @private
    * @type {ol.Transform}
    */
   this.tmpTransform_ = ol.transform.create();
@@ -61,6 +67,19 @@ ol.renderer.canvas.VectorTileLayer.IMAGE_REPLAYS = {
 ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS = {
   'hybrid': [ol.render.ReplayType.IMAGE, ol.render.ReplayType.TEXT],
   'vector': ol.render.replay.ORDER
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
+  var layerRevision = this.getLayer().getRevision();
+  if (this.renderedLayerRevision_ != layerRevision) {
+    this.renderedTiles.length = 0;
+  }
+  this.renderedLayerRevision_ = layerRevision;
+  return ol.renderer.canvas.TileLayer.prototype.prepareFrame.apply(this, arguments);
 };
 
 

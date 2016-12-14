@@ -34,10 +34,10 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
   this.renderedExtent_ = null;
 
   /**
-   * @private
+   * @protected
    * @type {number}
    */
-  this.renderedRevision_;
+  this.renderedRevision;
 
   /**
    * @protected
@@ -164,7 +164,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       (hints[ol.View.Hint.ANIMATING] || hints[ol.View.Hint.INTERACTING])) &&
       (newTiles || !(this.renderedExtent_ &&
       ol.extent.equals(this.renderedExtent_, imageExtent)) ||
-      this.renderedRevision_ != sourceRevision)) {
+      this.renderedRevision != sourceRevision)) {
 
     var tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
     var width = tileRange.getWidth() * tilePixelSize[0];
@@ -207,7 +207,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       }
     }
 
-    this.renderedRevision_ = sourceRevision;
+    this.renderedRevision = sourceRevision;
     this.renderedResolution = tileResolution;
     this.renderedExtent_ = imageExtent;
   }
