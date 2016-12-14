@@ -89,7 +89,6 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
       var loaded = this.loadImage(image);
       if (loaded) {
         this.image_ = image;
-        this.renderedResolution = viewResolution;
       }
     }
   }
@@ -115,6 +114,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
 
     this.updateAttributions(frameState.attributions, image.getAttributions());
     this.updateLogos(frameState, imageSource);
+    this.renderedResolution = viewResolution * pixelRatio / imagePixelRatio;
   }
 
   return !!this.image_;
