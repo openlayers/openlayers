@@ -149,6 +149,46 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   });
 
+  describe('#prepareFrame', function() {
+    it('re-renders when layer changed', function() {
+      var layer = new ol.layer.VectorTile({
+        source: new ol.source.VectorTile({
+          tileGrid: ol.tilegrid.createXYZ()
+        })
+      });
+      var tile = new ol.VectorTile([0, 0, 0], 2);
+      tile.projection_ = ol.proj.get('EPSG:3857');
+      tile.features_ = [];
+      tile.getImage = function() {
+        return document.createElement('canvas');
+      };
+      layer.getSource().getTile = function() {
+        return tile;
+      };
+      var renderer = new ol.renderer.canvas.VectorTileLayer(layer);
+      renderer.renderTileImage_ = sinon.spy();
+      var proj = ol.proj.get('EPSG:3857');
+      var frameState = {
+        extent: proj.getExtent(),
+        viewState: {
+          center: [0, 0],
+          resolution: 156543.03392804097,
+          projection: proj
+        },
+        size: [256, 256],
+        usedTiles: {},
+        wantedTiles: {}
+      };
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.renderTileImage_.getCalls().length).to.be(1);
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.renderTileImage_.getCalls().length).to.be(1);
+      layer.changed();
+      renderer.prepareFrame(frameState, {});
+      expect(renderer.renderTileImage_.getCalls().length).to.be(2);
+    });
+  });
+
   describe('#forEachFeatureAtCoordinate', function() {
     var layer, renderer, replayGroup;
     var TileClass = function() {
