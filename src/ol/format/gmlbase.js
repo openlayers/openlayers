@@ -507,7 +507,7 @@ ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, object
  * @private
  */
 ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'pointMember': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.pointMemberParser_),
     'pointMembers': ol.xml.makeArrayPusher(
@@ -522,7 +522,7 @@ ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
  * @private
  */
 ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'lineStringMember': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.lineStringMemberParser_),
     'lineStringMembers': ol.xml.makeArrayPusher(
@@ -537,7 +537,7 @@ ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
  * @private
  */
 ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'polygonMember': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.polygonMemberParser_),
     'polygonMembers': ol.xml.makeArrayPusher(
@@ -552,7 +552,7 @@ ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
  * @private
  */
 ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'Point': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_)
   }
@@ -565,7 +565,7 @@ ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
  * @private
  */
 ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'LineString': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.readLineString)
   }
@@ -578,7 +578,7 @@ ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
  * @private
  */
 ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'Polygon': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.readPolygon)
   }
@@ -591,7 +591,7 @@ ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
  * @protected
  */
 ol.format.GMLBase.prototype.RING_PARSERS = {
-  'http://www.opengis.net/gml' : {
+  'http://www.opengis.net/gml': {
     'LinearRing': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readFlatLinearRing_)
   }

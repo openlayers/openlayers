@@ -17,9 +17,9 @@ const examplePath = process.argv[2];
 const phantomPath = require('phantomjs-prebuilt').path;
 
 const server = http.createServer(serveFiles.createFileResponseHandler({
-  documentRoot       : root,
+  documentRoot: root,
   followSymbolicLinks: false,
-  cacheTimeInSeconds : 3600
+  cacheTimeInSeconds: 3600
 }));
 
 server.listen(port, host, null, function() {
