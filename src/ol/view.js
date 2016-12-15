@@ -670,18 +670,24 @@ ol.View.prototype.getZoom = function() {
  * The size is pixel dimensions of the box to fit the extent into.
  * In most cases you will want to use the map size, that is `map.getSize()`.
  * Takes care of the map angle.
- * @param {ol.geom.SimpleGeometry|ol.Extent} geometry Geometry.
- * @param {ol.Size} size Box pixel size.
+ * @param {ol.geom.SimpleGeometry|ol.Extent} geometryOrExtent The geometry or
+ *     extent to fit the view to.
+ * @param {ol.Size} size The size in pixels of the box to fit the extent into.
+ *     Will often be `mep.getSize()`.
  * @param {olx.view.FitOptions=} opt_options Options.
  * @api
  */
-ol.View.prototype.fit = function(geometry, size, opt_options) {
-  if (!(geometry instanceof ol.geom.SimpleGeometry)) {
-    ol.asserts.assert(Array.isArray(geometry),
+ol.View.prototype.fit = function(geometryOrExtent, size, opt_options) {
+  /** @type {ol.geom.SimpleGeometry} */
+  var geometry;
+  if (!(geometryOrExtent instanceof ol.geom.SimpleGeometry)) {
+    ol.asserts.assert(Array.isArray(geometryOrExtent),
         24); // Invalid extent or geometry provided as `geometry`
-    ol.asserts.assert(!ol.extent.isEmpty(geometry),
+    ol.asserts.assert(!ol.extent.isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
-    geometry = ol.geom.Polygon.fromExtent(geometry);
+    geometry = ol.geom.Polygon.fromExtent(geometryOrExtent);
+  } else {
+    geometry = geometryOrExtent;
   }
 
   var options = opt_options || {};
