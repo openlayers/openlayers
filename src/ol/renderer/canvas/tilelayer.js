@@ -208,17 +208,17 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     }
 
     this.renderedRevision = sourceRevision;
-    this.renderedResolution = tileResolution;
+    this.renderedResolution = tileResolution * pixelRatio / tilePixelRatio;
     this.renderedExtent_ = imageExtent;
   }
 
-  var scale = pixelRatio / tilePixelRatio * this.renderedResolution / viewResolution;
+  var scale = this.renderedResolution / viewResolution;
   var transform = ol.transform.compose(this.imageTransform_,
       pixelRatio * size[0] / 2, pixelRatio * size[1] / 2,
       scale, scale,
       0,
-      tilePixelRatio * (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution,
-      tilePixelRatio * (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution);
+      (this.renderedExtent_[0] - viewCenter[0]) / this.renderedResolution * pixelRatio,
+      (viewCenter[1] - this.renderedExtent_[3]) / this.renderedResolution * pixelRatio);
   ol.transform.compose(this.coordinateToCanvasPixelTransform,
       pixelRatio * size[0] / 2 - transform[4], pixelRatio * size[1] / 2 - transform[5],
       pixelRatio / viewResolution, -pixelRatio / viewResolution,
