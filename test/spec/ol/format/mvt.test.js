@@ -4,6 +4,7 @@ goog.require('ol.Feature');
 goog.require('ol.ext.pbf');
 goog.require('ol.ext.vectortile');
 goog.require('ol.format.MVT');
+goog.require('ol.geom.Point');
 goog.require('ol.render.Feature');
 
 where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
@@ -80,6 +81,34 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       expect(features[0].getId()).to.be(2);
     });
 
+  });
+
+});
+
+describe('ol.format.MVT', function() {
+
+  describe('#readFeature_', function() {
+    it('accepts a geometryName', function() {
+      var format = new ol.format.MVT({
+        featureClass: ol.Feature,
+        geometryName: 'myGeom'
+      });
+      var rawFeature = {
+        id: 1,
+        properties: {
+          geometry: 'foo'
+        },
+        type: 1,
+        loadGeometry: function() {
+          return [[0, 0]];
+        }
+      };
+      var feature = format.readFeature_(rawFeature, 'mapbox');
+      var geometry = feature.getGeometry();
+      expect(geometry).to.be.a(ol.geom.Point);
+      expect(feature.get('myGeom')).to.equal(geometry);
+      expect(feature.get('geometry')).to.be('foo');
+    });
   });
 
 });
