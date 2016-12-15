@@ -46,7 +46,7 @@ describe('ol.style.Style', function() {
 
     it('copies all values', function() {
       var original = new ol.style.Style({
-        geometry: new ol.geom.Point([0,0,0]),
+        geometry: new ol.geom.Point([0, 0, 0]),
         fill: new ol.style.Fill({
           color: '#319FD3'
         }),
@@ -72,7 +72,7 @@ describe('ol.style.Style', function() {
 
     it('the clone does not reference the same objects as the original', function() {
       var original = new ol.style.Style({
-        geometry: new ol.geom .Point([0,0,0]),
+        geometry: new ol.geom .Point([0, 0, 0]),
         fill: new ol.style.Fill({
           color: '#319FD3'
         }),
@@ -93,7 +93,7 @@ describe('ol.style.Style', function() {
       expect(original.getStroke()).not.to.be(clone.getStroke());
       expect(original.getText()).not.to.be(clone.getText());
 
-      clone.getGeometry().setCoordinates([1,1,1]);
+      clone.getGeometry().setCoordinates([1, 1, 1]);
       clone.getFill().setColor('#012345');
       clone.getImage().setScale(2);
       clone.getStroke().setColor('#012345');

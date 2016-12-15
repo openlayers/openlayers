@@ -604,7 +604,7 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40 , 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
+        [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
         [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
@@ -644,7 +644,7 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40 , 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
+        [[40, 40, 1], [45, 30, 2], [20, 45, 3], [40, 40, 1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
         [[20, 35, 1], [45, 20, 2], [30, 5, 3], [10, 10, 4], [10, 30, 5], [20, 35, 1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(
@@ -684,7 +684,7 @@ describe('ol.format.WKT', function() {
     expect(polygons[0].getLinearRings().length).to.eql(1);
     expect(polygons[1].getLinearRings().length).to.eql(2);
     expect(polygons[0].getLinearRings()[0].getCoordinates()).to.eql(
-        [[40, 40 , 1, 0.1], [45, 30, 2, 0.1], [20, 45, 3, 0.1], [40, 40, 1, 0.1]]);
+        [[40, 40, 1, 0.1], [45, 30, 2, 0.1], [20, 45, 3, 0.1], [40, 40, 1, 0.1]]);
     expect(polygons[1].getLinearRings()[0].getCoordinates()).to.eql(
         [[20, 35, 1, 0.1], [45, 20, 2, 0.1], [30, 5, 3, 0.1], [10, 10, 4, 0.1], [10, 30, 5, 0.1], [20, 35, 1, 0.1]]);
     expect(polygons[1].getLinearRings()[1].getCoordinates()).to.eql(

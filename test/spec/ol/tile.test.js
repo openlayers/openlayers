@@ -16,15 +16,15 @@ describe('ol.Tile', function() {
         tile.interimTile = next;
         return next;
       };
-      var tail = addToChain(head,ol.Tile.State.IDLE); //discard, deprecated by head
-      tail = addToChain(tail,ol.Tile.State.LOADING); //keep, request already going
-      tail = addToChain(tail,ol.Tile.State.IDLE); //discard, deprecated by head
-      tail = addToChain(tail,ol.Tile.State.LOADED); //keep, use for rendering
+      var tail = addToChain(head, ol.Tile.State.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, ol.Tile.State.LOADING); //keep, request already going
+      tail = addToChain(tail, ol.Tile.State.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, ol.Tile.State.LOADED); //keep, use for rendering
       renderTile = tail; //store this tile for later tests
-      tail = addToChain(tail,ol.Tile.State.IDLE);  //rest of list outdated by tile above
-      tail = addToChain(tail,ol.Tile.State.LOADED);
-      tail = addToChain(tail,ol.Tile.State.LOADING);
-      tail = addToChain(tail,ol.Tile.State.LOADED);
+      tail = addToChain(tail, ol.Tile.State.IDLE);  //rest of list outdated by tile above
+      tail = addToChain(tail, ol.Tile.State.LOADED);
+      tail = addToChain(tail, ol.Tile.State.LOADING);
+      tail = addToChain(tail, ol.Tile.State.LOADED);
 
     });
 

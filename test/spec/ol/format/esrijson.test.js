@@ -175,7 +175,7 @@ describe('ol.format.EsriJSON', function() {
       expect(feature).to.be.an(ol.Feature);
       var geometry = feature.getGeometry();
       expect(geometry).to.be.an(ol.geom.MultiPoint);
-      expect(geometry.getCoordinates()).to.eql([[102.0, 0.0] , [103.0, 1.0]]);
+      expect(geometry.getCoordinates()).to.eql([[102.0, 0.0], [103.0, 1.0]]);
       expect(feature.get('prop0')).to.be('value0');
     });
 
@@ -874,7 +874,7 @@ describe('ol.format.EsriJSON', function() {
     });
 
     it('encodes multipoint', function() {
-      var multipoint = new ol.geom.MultiPoint([[102.0, 0.0] , [103.0, 1.0]]);
+      var multipoint = new ol.geom.MultiPoint([[102.0, 0.0], [103.0, 1.0]]);
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());

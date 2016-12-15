@@ -49,7 +49,7 @@ describe('ol.render.webgl.CircleReplay', function() {
 
   describe('#drawCircle', function() {
     it('sets the buffer data', function() {
-      var circle = new ol.geom.Circle([0,0], 5000);
+      var circle = new ol.geom.Circle([0, 0], 5000);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.drawCircle(circle, null);
@@ -62,7 +62,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('does not draw if radius is zero', function() {
-      var circle = new ol.geom.Circle([0,0], 0);
+      var circle = new ol.geom.Circle([0, 0], 0);
 
       replay.drawCircle(circle, null);
       expect(replay.vertices).to.have.length(0);
@@ -72,7 +72,7 @@ describe('ol.render.webgl.CircleReplay', function() {
     });
 
     it('resets state and removes style if it belongs to a zero radius circle', function() {
-      var circle = new ol.geom.Circle([0,0], 0);
+      var circle = new ol.geom.Circle([0, 0], 0);
 
       replay.setFillStrokeStyle(fillStyle, strokeStyle);
       replay.setFillStrokeStyle(null, strokeStyle);
