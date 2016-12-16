@@ -61,5 +61,5 @@ fetch('https://ahocevar.com/geoserver/wfs', {
 }).then(function(json) {
   var features = new ol.format.GeoJSON().readFeatures(json);
   vectorSource.addFeatures(features);
-  map.getView().fit(vectorSource.getExtent(), /** @type {ol.Size} */ (map.getSize()));
+  map.getView().fit(vectorSource.getExtent());
 });

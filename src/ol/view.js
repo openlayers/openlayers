@@ -672,12 +672,22 @@ ol.View.prototype.getZoom = function() {
  * Takes care of the map angle.
  * @param {ol.geom.SimpleGeometry|ol.Extent} geometryOrExtent The geometry or
  *     extent to fit the view to.
- * @param {ol.Size} size The size in pixels of the box to fit the extent into.
- *     Will often be `mep.getSize()`.
  * @param {olx.view.FitOptions=} opt_options Options.
- * @api
+ * @api stable
  */
-ol.View.prototype.fit = function(geometryOrExtent, size, opt_options) {
+ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
+  var options = opt_options || {};
+  var size = options.size;
+  if (!size) {
+    size = [100, 100];
+    var selector = '.ol-viewport[data-view="' + ol.getUid(this) + '"]';
+    var element = document.querySelector(selector);
+    if (element) {
+      var metrics = getComputedStyle(element);
+      size[0] = parseInt(metrics.width, 10);
+      size[1] = parseInt(metrics.height, 10);
+    }
+  }
   /** @type {ol.geom.SimpleGeometry} */
   var geometry;
   if (!(geometryOrExtent instanceof ol.geom.SimpleGeometry)) {
@@ -689,8 +699,6 @@ ol.View.prototype.fit = function(geometryOrExtent, size, opt_options) {
   } else {
     geometry = geometryOrExtent;
   }
-
-  var options = opt_options || {};
 
   var padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
   var constrainResolution = options.constrainResolution !== undefined ?

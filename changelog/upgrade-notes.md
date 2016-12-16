@@ -1,5 +1,28 @@
 ## Upgrade notes
 
+### Next release
+
+#### Simplified `ol.View#fit()` API
+
+In most cases, it is no longer necessary to provide an `ol.Size` (previously the 2nd argument) to `ol.View#fit()`. By default, the size of the first map that uses the view will be used. If you want to specify a different size, it goes in the options now (previously the 3rd argument, now the 2nd).
+
+Most common use case - old API:
+```js
+map.getView().fit(extent, map.getSize());
+```
+Most common use case - new API:
+```js
+map.getView().fit(extent);
+```
+Advanced use - old API:
+```js
+map.getView().fit(extent, [200, 100], {padding: 10});
+```
+Advanced use - new API:
+```js
+map.getView().fit(extent, {size: [200, 100], padding 10});
+```
+
 ### v3.20.0
 
 #### Use `view.animate()` instead of `map.beforeRender()` and `ol.animation` functions

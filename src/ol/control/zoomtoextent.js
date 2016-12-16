@@ -73,6 +73,5 @@ ol.control.ZoomToExtent.prototype.handleZoomToExtent_ = function() {
   var map = this.getMap();
   var view = map.getView();
   var extent = !this.extent_ ? view.getProjection().getExtent() : this.extent_;
-  var size = /** @type {ol.Size} */ (map.getSize());
-  view.fit(extent, size);
+  view.fit(extent);
 };
