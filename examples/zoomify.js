@@ -24,8 +24,8 @@ var map = new ol.Map({
   view: new ol.View({
     // adjust zoom levels to those provided by the source
     resolutions: source.getTileGrid().getResolutions(),
-    zoom: 2,
     // constrain the center: center cannot be set outside this extent
     extent: extent
   })
 });
+map.getView().fit(extent, /** @type {ol.Size} */ (map.getSize()));
