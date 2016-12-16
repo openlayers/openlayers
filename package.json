@@ -33,7 +33,7 @@
     "async": "2.1.4",
     "browserify": "13.1.1",
     "closure-util": "1.15.1",
-    "derequire": "2.0.3",
+    "derequire": "2.0.5",
     "fs-extra": "1.0.0",
     "glob": "7.1.1",
     "handlebars": "4.0.6",
