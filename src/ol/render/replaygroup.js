@@ -4,6 +4,7 @@ goog.provide('ol.render.ReplayGroup');
 /**
  * Base class for replay groups.
  * @constructor
+ * @abstract
  */
 ol.render.ReplayGroup = function() {};
 

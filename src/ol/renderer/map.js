@@ -13,6 +13,7 @@ goog.require('ol.transform');
 
 /**
  * @constructor
+ * @abstract
  * @extends {ol.Disposable}
  * @param {Element} container Container.
  * @param {ol.Map} map Map.

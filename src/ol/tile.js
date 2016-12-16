@@ -11,6 +11,7 @@ goog.require('ol.events.EventType');
  * Base class for tiles.
  *
  * @constructor
+ * @abstract
  * @extends {ol.events.EventTarget}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @param {ol.TileState} state State.

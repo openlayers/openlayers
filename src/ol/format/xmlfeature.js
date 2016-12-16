@@ -14,6 +14,7 @@ goog.require('ol.xml');
  * Base class for XML feature formats.
  *
  * @constructor
+ * @abstract
  * @extends {ol.format.Feature}
  */
 ol.format.XMLFeature = function() {

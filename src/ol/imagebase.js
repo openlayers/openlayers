@@ -7,6 +7,7 @@ goog.require('ol.events.EventType');
 
 /**
  * @constructor
+ * @abstract
  * @extends {ol.events.EventTarget}
  * @param {ol.Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.

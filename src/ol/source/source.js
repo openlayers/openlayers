@@ -16,6 +16,7 @@ goog.require('ol.source.State');
  * A generic `change` event is triggered when the state of the source changes.
  *
  * @constructor
+ * @abstract
  * @extends {ol.Object}
  * @param {ol.SourceSourceOptions} options Source options.
  * @api stable

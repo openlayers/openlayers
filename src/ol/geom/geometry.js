@@ -17,6 +17,7 @@ goog.require('ol.proj');
  * generic `change` event on your geometry instance.
  *
  * @constructor
+ * @abstract
  * @extends {ol.Object}
  * @api stable
  */

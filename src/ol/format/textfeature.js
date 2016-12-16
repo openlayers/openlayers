@@ -12,6 +12,7 @@ goog.require('ol.format.FormatType');
  * Base class for text feature formats.
  *
  * @constructor
+ * @abstract
  * @extends {ol.format.Feature}
  */
 ol.format.TextFeature = function() {

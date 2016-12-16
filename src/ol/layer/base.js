@@ -16,6 +16,7 @@ goog.require('ol.obj');
  * is observable, and has get/set accessors.
  *
  * @constructor
+ * @abstract
  * @extends {ol.Object}
  * @param {olx.layer.BaseOptions} options Layer options.
  * @api stable

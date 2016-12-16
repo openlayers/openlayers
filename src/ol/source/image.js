@@ -17,6 +17,7 @@ goog.require('ol.source.Source');
  * Base class for sources providing a single image.
  *
  * @constructor
+ * @abstract
  * @extends {ol.source.Source}
  * @param {ol.SourceImageOptions} options Single image source options.
  * @api

@@ -31,6 +31,7 @@ goog.require('ol.xml');
  * ol.format.GML3.
  *
  * @constructor
+ * @abstract
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}

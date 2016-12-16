@@ -12,6 +12,7 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @constructor
+   * @abstract
    * @extends {ol.render.VectorContext}
    * @param {number} tolerance Tolerance.
    * @param {ol.Extent} maxExtent Max extent.
