@@ -293,19 +293,19 @@ ol.style.RegularShape.prototype.getStroke = function() {
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.listenImageChange = ol.nullFunction;
+ol.style.RegularShape.prototype.listenImageChange = function(listener, thisArg) {};
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.load = ol.nullFunction;
+ol.style.RegularShape.prototype.load = function() {};
 
 
 /**
  * @inheritDoc
  */
-ol.style.RegularShape.prototype.unlistenImageChange = ol.nullFunction;
+ol.style.RegularShape.prototype.unlistenImageChange = function(listener, thisArg) {};
 
 
 /**
