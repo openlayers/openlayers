@@ -112,3 +112,9 @@ ol.source.TileDebug.Tile_.prototype.getImage = function() {
     return context.canvas;
   }
 };
+
+
+/**
+ * @override
+ */
+ol.source.TileDebug.Tile_.prototype.load = function() {};
