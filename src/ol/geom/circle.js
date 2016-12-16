@@ -30,6 +30,7 @@ ol.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.Circle} Clone.
+ * @override
  * @api
  */
 ol.geom.Circle.prototype.clone = function() {

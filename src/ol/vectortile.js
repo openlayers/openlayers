@@ -139,7 +139,7 @@ ol.VectorTile.prototype.getProjection = function() {
 
 
 /**
- * Load the tile.
+ * @inheritDoc
  */
 ol.VectorTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {

@@ -1162,6 +1162,7 @@ ol.format.GML3.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, o
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
+ * @override
  * @api
  */
 ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
@@ -1196,6 +1197,7 @@ ol.format.GML3.prototype.writeFeatures;
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
+ * @override
  * @api
  */
 ol.format.GML3.prototype.writeFeaturesNode = function(features, opt_options) {

@@ -29,6 +29,7 @@ ol.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.Point} Clone.
+ * @override
  * @api stable
  */
 ol.geom.Point.prototype.clone = function() {
@@ -62,6 +63,7 @@ ol.geom.Point.prototype.closestPointXY = function(x, y, closestPoint, minSquared
 /**
  * Return the coordinate of the point.
  * @return {ol.Coordinate} Coordinates.
+ * @override
  * @api stable
  */
 ol.geom.Point.prototype.getCoordinates = function() {
@@ -97,9 +99,7 @@ ol.geom.Point.prototype.intersectsExtent = function(extent) {
 
 
 /**
- * Set the coordinate of the point.
- * @param {ol.Coordinate} coordinates Coordinates.
- * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @inheritDoc
  * @api stable
  */
 ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {

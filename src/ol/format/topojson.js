@@ -366,9 +366,9 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
 /**
  * Read the projection from a TopoJSON source.
  *
- * @function
  * @param {Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
+ * @override
  * @api stable
  */
 ol.format.TopoJSON.prototype.readProjection = function(object) {

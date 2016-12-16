@@ -303,6 +303,7 @@ ol.interaction.Select.prototype.setHitTolerance = function(hitTolerance) {
  * Remove the interaction from its current map, if any,  and attach it to a new
  * map, if any. Pass `null` to just remove the interaction from the current map.
  * @param {ol.Map} map Map.
+ * @override
  * @api stable
  */
 ol.interaction.Select.prototype.setMap = function(map) {

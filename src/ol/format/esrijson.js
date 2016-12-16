@@ -582,6 +582,7 @@ ol.format.EsriJSON.prototype.writeGeometry;
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {EsriJSONGeometry} Object.
+ * @override
  * @api
  */
 ol.format.EsriJSON.prototype.writeGeometryObject = function(geometry,
@@ -609,6 +610,7 @@ ol.format.EsriJSON.prototype.writeFeature;
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} Object.
+ * @override
  * @api
  */
 ol.format.EsriJSON.prototype.writeFeatureObject = function(
@@ -655,6 +657,7 @@ ol.format.EsriJSON.prototype.writeFeatures;
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {Object} EsriJSON Object.
+ * @override
  * @api
  */
 ol.format.EsriJSON.prototype.writeFeaturesObject = function(features, opt_options) {

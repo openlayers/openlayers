@@ -57,6 +57,7 @@ ol.inherits(ol.source.Image, ol.source.Source);
 
 /**
  * @return {Array.<number>} Resolutions.
+ * @override
  */
 ol.source.Image.prototype.getResolutions = function() {
   return this.resolutions_;

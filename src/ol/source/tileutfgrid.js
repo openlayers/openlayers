@@ -320,6 +320,7 @@ ol.inherits(ol.source.TileUTFGrid.Tile_, ol.Tile);
 /**
  * Get the image element for this tile.
  * @return {Image} Image.
+ * @override
  */
 ol.source.TileUTFGrid.Tile_.prototype.getImage = function() {
   return null;
@@ -479,7 +480,7 @@ ol.source.TileUTFGrid.Tile_.prototype.onXHRError_ = function(event) {
 
 
 /**
- * Load not yet loaded URI.
+ * @inheritDoc
  */
 ol.source.TileUTFGrid.Tile_.prototype.load = function() {
   if (this.preemptive_) {

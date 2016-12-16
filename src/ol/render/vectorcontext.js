@@ -34,7 +34,7 @@ ol.render.VectorContext.prototype.setStyle = function(style) {};
 /**
  * @abstract
  * @param {ol.geom.Circle} circleGeometry Circle geometry.
- * @param {ol.Feature} feature Feature,
+ * @param {ol.Feature} feature Feature.
  */
 ol.render.VectorContext.prototype.drawCircle = function(circleGeometry, feature) {};
 

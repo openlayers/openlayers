@@ -33,6 +33,7 @@ ol.inherits(ol.style.Circle, ol.style.RegularShape);
 /**
  * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
  * @return {ol.style.Circle} The cloned style.
+ * @override
  * @api
  */
 ol.style.Circle.prototype.clone = function() {

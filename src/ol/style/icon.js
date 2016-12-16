@@ -275,6 +275,7 @@ ol.style.Icon.prototype.getColor = function() {
  * Get the image icon.
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image|HTMLCanvasElement} Image or Canvas element.
+ * @override
  * @api
  */
 ol.style.Icon.prototype.getImage = function(pixelRatio) {
@@ -283,8 +284,7 @@ ol.style.Icon.prototype.getImage = function(pixelRatio) {
 
 
 /**
- * Real Image size used.
- * @return {ol.Size} Size.
+ * @inheritDoc
  */
 ol.style.Icon.prototype.getImageSize = function() {
   return this.iconImage_.getSize();
@@ -379,6 +379,7 @@ ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
  * When rendering a feature with an icon style, the vector renderer will
  * automatically call this method. However, you might want to call this
  * method yourself for preloading or other purposes.
+ * @override
  * @api
  */
 ol.style.Icon.prototype.load = function() {

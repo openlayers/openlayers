@@ -83,6 +83,7 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.GeometryCollection} Clone.
+ * @override
  * @api stable
  */
 ol.geom.GeometryCollection.prototype.clone = function() {
@@ -302,6 +303,7 @@ ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
  * Translate the geometry.
  * @param {number} deltaX Delta X.
  * @param {number} deltaY Delta Y.
+ * @override
  * @api
  */
 ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {

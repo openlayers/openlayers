@@ -39,8 +39,7 @@ ol.format.WMSCapabilities.prototype.read;
 
 
 /**
- * @param {Document} doc Document.
- * @return {Object} WMS Capability object.
+ * @inheritDoc
  */
 ol.format.WMSCapabilities.prototype.readFromDocument = function(doc) {
   for (var n = doc.firstChild; n; n = n.nextSibling) {
@@ -53,8 +52,7 @@ ol.format.WMSCapabilities.prototype.readFromDocument = function(doc) {
 
 
 /**
- * @param {Node} node Node.
- * @return {Object} WMS Capability object.
+ * @inheritDoc
  */
 ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
   this.version = node.getAttribute('version').trim();
