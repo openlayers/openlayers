@@ -3,5 +3,11 @@
   "version": "3.20.0-beta.1",
   "description": "OpenLayers",
   "main": "index.js",
-  "license": "BSD-2-Clause"
+  "license": "BSD-2-Clause",
+  "dependencies": {
+    "pbf": "3.0.5",
+    "pixelworks": "1.1.0",
+    "rbush": "2.0.1",
+    "vector-tile": "1.3.0"
+  }
 }

@@ -1,3 +1,5 @@
+var pkg = require('../package.json');
+
 function rename(name) {
   const parts = name.split('.');
   return `_${parts.join('_')}_`;
@@ -6,6 +8,24 @@ function rename(name) {
 function resolve(fromName, toName) {
   const fromParts = fromName.split('.');
   const toParts = toName.split('.');
+  if (toParts[0] === 'ol' && toParts[1] === 'ext') {
+    let name = toParts[2];
+    let packageName;
+    for (let i = 0, ii = pkg.ext.length; i < ii; ++i) {
+      const dependency = pkg.ext[i];
+      if (dependency.module === name) {
+        packageName = name;
+        break;
+      } else if (dependency.name === name) {
+        packageName = dependency.module;
+        break;
+      }
+    }
+    if (!packageName) {
+      throw new Error(`Can't find package name for ${toName}`);
+    }
+    return packageName;
+  }
   var commonDepth = 1;
   var fromLength = fromParts.length;
   while (commonDepth < fromLength - 1) {
