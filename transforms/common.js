@@ -107,8 +107,13 @@ module.exports = function(info, api) {
   }
 
   // replace all uses of provided name with renamed identifier
-  root.find(j.MemberExpression, getMemberExpression(provide))
-    .replaceWith(j.identifier(rename(provide)));
+  if (provide.indexOf('.') > 0) {
+    root.find(j.MemberExpression, getMemberExpression(provide))
+      .replaceWith(j.identifier(rename(provide)));
+  } else {
+    root.find(j.Identifier, {name: provide})
+      .replaceWith(j.identifier(rename(provide)));
+  }
 
   // replace goog.require()
   const requires = {};
