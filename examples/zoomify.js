@@ -28,4 +28,4 @@ var map = new ol.Map({
     extent: extent
   })
 });
-map.getView().fit(extent, /** @type {ol.Size} */ (map.getSize()));
+map.getView().fit(extent);

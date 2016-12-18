@@ -53,11 +53,7 @@ function setProjection(code, name, proj4def, bbox) {
     projection: newProj
   });
   map.setView(newView);
-
-  var size = map.getSize();
-  if (size) {
-    newView.fit(extent, size);
-  }
+  newView.fit(extent);
 }
 
 

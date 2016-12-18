@@ -7627,6 +7627,7 @@ olx.view;
 
 /**
  * @typedef {{
+ *     size: (ol.Size|undefined),
  *     padding: (!Array.<number>|undefined),
  *     constrainResolution: (boolean|undefined),
  *     nearest: (boolean|undefined),
@@ -7637,6 +7638,16 @@ olx.view;
  * }}
  */
 olx.view.FitOptions;
+
+
+/**
+ * The size in pixels of the box to fit the extent into. Default is
+ * the current size of the first map in the DOM that uses this view, or
+ * `[100, 100]` if no such map is found.
+ * @type {ol.Size|undefined}
+ * @api
+ */
+olx.view.FitOptions.prototype.size;
 
 
 /**

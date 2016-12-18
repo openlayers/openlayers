@@ -1092,6 +1092,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
   }
   var view = this.getView();
   if (view) {
+    this.viewport_.setAttribute('data-view', ol.getUid(view));
     this.viewPropertyListenerKey_ = ol.events.listen(
         view, ol.Object.EventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
