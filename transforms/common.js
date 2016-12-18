@@ -28,7 +28,7 @@ function resolve(fromName, toName) {
   }
   var commonDepth = 1;
   var fromLength = fromParts.length;
-  while (commonDepth < fromLength - 1) {
+  while (commonDepth < fromLength - 2) {
     if (fromParts[commonDepth] === toParts[commonDepth]) {
       ++commonDepth;
     } else {
