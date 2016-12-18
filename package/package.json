@@ -1,0 +1,7 @@
+{
+  "name": "ol",
+  "version": "3.20.0-beta.1",
+  "description": "OpenLayers",
+  "main": "index.js",
+  "license": "BSD-2-Clause"
+}
