@@ -89,6 +89,8 @@ module.exports = function(info, api) {
   // store any initial comments
   const {comments} = root.find(j.Program).get('body', 0).node;
 
+  const replacements = {};
+
   // replace goog.provide()
   let provide;
   root.find(j.ExpressionStatement, getGoogExpressionStatement('provide'))
@@ -105,26 +107,17 @@ module.exports = function(info, api) {
   if (!provide) {
     throw new Error(`No provide found in ${info.path}`);
   }
-
-  // replace all uses of provided name with renamed identifier
-  if (provide.indexOf('.') > 0) {
-    root.find(j.MemberExpression, getMemberExpression(provide))
-      .replaceWith(j.identifier(rename(provide)));
-  } else {
-    root.find(j.Identifier, {name: provide})
-      .replaceWith(j.identifier(rename(provide)));
-  }
+  replacements[provide] = rename(provide);
 
   // replace goog.require()
-  const requires = {};
   root.find(j.ExpressionStatement, getGoogExpressionStatement('require'))
     .replaceWith(path => {
       const name = path.value.expression.arguments[0].value;
-      if (name in requires) {
+      if (name in replacements) {
         throw new Error(`Duplicate require found in ${info.path}: ${name}`);
       }
       const renamed = rename(name);
-      requires[name] = renamed;
+      replacements[name] = renamed;
       return j.variableDeclaration('var', [
         j.variableDeclarator(j.identifier(renamed), j.callExpression(
           j.identifier('require'), [j.literal(resolve(provide, name))]
@@ -132,14 +125,14 @@ module.exports = function(info, api) {
       ]);
     });
 
-  // replace all uses of required names with renamed identifiers
-  Object.keys(requires).sort().reverse().forEach(name => {
+  // replace all uses of required or provided names with renamed identifiers
+  Object.keys(replacements).sort().reverse().forEach(name => {
     if (name.indexOf('.') > 0) {
       root.find(j.MemberExpression, getMemberExpression(name))
-        .replaceWith(j.identifier(requires[name]));
+        .replaceWith(j.identifier(replacements[name]));
     } else {
       root.find(j.Identifier, {name: name})
-        .replaceWith(j.identifier(requires[name]));
+        .replaceWith(j.identifier(replacements[name]));
     }
   });
 
