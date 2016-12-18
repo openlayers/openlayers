@@ -1,8 +1,16 @@
-var pkg = require('../package.json');
+const pkg = require('../package.json');
+const defines = require('../build/info.json').defines;
+
+const defineLookup = {};
+defines.forEach(define => defineLookup[define.name] = define);
 
 function rename(name) {
   const parts = name.split('.');
   return `_${parts.join('_')}_`;
+}
+
+function renameDefine(name) {
+  return name.replace('.', '_').toUpperCase();
 }
 
 function resolve(fromName, toName) {
@@ -60,6 +68,34 @@ function getGoogExpressionStatement(identifier) {
   };
 }
 
+const defineAssignment = {
+  type: 'AssignmentExpression',
+  left: {
+    type: 'MemberExpression',
+    object: {
+      type: 'Identifier',
+      name: 'ol'
+    },
+    property: {
+      type: 'Identifier'
+    }
+  },
+  right: {
+    type: 'Literal'
+  }
+};
+
+const defineMemberExpression = {
+  type: 'MemberExpression',
+  object: {
+    type: 'Identifier',
+    name: 'ol'
+  },
+  property: {
+    type: 'Identifier'
+  }
+};
+
 function getMemberExpression(name) {
   function memberExpression(parts) {
     const dotIndex = parts.lastIndexOf('.');
@@ -90,6 +126,33 @@ module.exports = function(info, api) {
   const {comments} = root.find(j.Program).get('body', 0).node;
 
   const replacements = {};
+
+  // replace assignments for boolean defines (e.g. ol.FOO = true -> global.OL_FOO = true)
+  root.find(j.AssignmentExpression, defineAssignment)
+    .filter(path => {
+      const node = path.value;
+      const defineName = `${node.left.object.name}.${node.left.property.name}`;
+      return defineName in defineLookup;
+    })
+    .replaceWith(path => {
+      const node = path.value;
+      const defineName = `${node.left.object.name}.${node.left.property.name}`;
+      return j.assignmentExpression(
+        '=',
+        j.memberExpression(j.identifier('global'), j.identifier(renameDefine(defineName))),
+        j.literal(node.right.value));
+    });
+
+  // replace all uses of boolean defines with renamed define
+  root.find(j.MemberExpression, defineMemberExpression)
+    .filter(path => {
+      const node = path.value;
+      const defineName = `${node.object.name}.${node.property.name}`;
+      return defineName in defineLookup;
+    })
+    .replaceWith(path => {
+      return j.identifier(renameDefine(`${path.value.object.name}.${path.value.property.name}`));
+    });
 
   // replace goog.provide()
   let provide;

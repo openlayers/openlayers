@@ -306,6 +306,7 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 package: build/timestamps/node-modules-timestamp
 	@rm -rf build/package
 	@mkdir -p build
+	@node tasks/generate-info.js
 	@cp -r package build
 	@cd ./src && cp -r ol/* ../build/package
 	@rm build/package/typedefs.js
