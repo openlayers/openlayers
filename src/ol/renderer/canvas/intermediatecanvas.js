@@ -129,7 +129,7 @@ ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = funct
     // so that for example also transparent polygons are detected
     return ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate.apply(this, arguments);
   } else {
-    var pixel = ol.transform.apply(this.coordinateToCanvasPixelTransform, coordinate);
+    var pixel = ol.transform.apply(this.coordinateToCanvasPixelTransform, coordinate.slice());
     ol.coordinate.scale(pixel, frameState.viewState.resolution / this.renderedResolution);
 
     if (!this.hitCanvasContext_) {
