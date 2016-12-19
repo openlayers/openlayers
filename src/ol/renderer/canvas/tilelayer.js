@@ -6,6 +6,7 @@ goog.require('ol');
 goog.require('ol.transform');
 goog.require('ol.TileRange');
 goog.require('ol.Tile');
+goog.require('ol.View');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
