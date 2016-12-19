@@ -287,16 +287,19 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
       imageDatas[i] = imageData;
     } else {
       // image not yet ready
-      return;
+      imageDatas = null;
+      break;
     }
   }
 
-  var data = {};
-  this.dispatchEvent(new ol.source.Raster.Event(
-      ol.source.Raster.EventType.BEFOREOPERATIONS, frameState, data));
+  if (imageDatas) {
+    var data = {};
+    this.dispatchEvent(new ol.source.Raster.Event(
+        ol.source.Raster.EventType.BEFOREOPERATIONS, frameState, data));
 
-  this.worker_.process(imageDatas, data,
-      this.onWorkerComplete_.bind(this, frameState, callback));
+    this.worker_.process(imageDatas, data,
+        this.onWorkerComplete_.bind(this, frameState, callback));
+  }
 
   frameState.tileQueue.loadMoreTiles(16, 16);
 };
