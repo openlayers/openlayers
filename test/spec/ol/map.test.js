@@ -132,6 +132,68 @@ describe('ol.Map', function() {
 
   });
 
+  describe('#forEachLayerAtPixel()', function()  {
+
+    var target, map, original, log;
+
+    beforeEach(function(done) {
+      log = [];
+      original = ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate;
+      ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(coordinate) {
+        log.push(coordinate.slice());
+      };
+
+      target = document.createElement('div');
+      var style = target.style;
+      style.position = 'absolute';
+      style.left = '-1000px';
+      style.top = '-1000px';
+      style.width = '360px';
+      style.height = '180px';
+      document.body.appendChild(target);
+
+      map = new ol.Map({
+        target: target,
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 1
+        }),
+        layers: [
+          new ol.layer.Tile({
+            source: new ol.source.XYZ()
+          }),
+          new ol.layer.Tile({
+            source: new ol.source.XYZ()
+          }),
+          new ol.layer.Tile({
+            source: new ol.source.XYZ()
+          })
+        ]
+      });
+
+      map.once('postrender', function() {
+        done();
+      });
+    });
+
+    afterEach(function() {
+      ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = original;
+      map.dispose();
+      document.body.removeChild(target);
+      log = null;
+    });
+
+    it('calls each layer renderer with the same coordinate', function() {
+      var pixel = [10, 20];
+      map.forEachLayerAtPixel(pixel, function() {});
+      expect(log.length).to.equal(3);
+      expect(log[0].length).to.equal(2);
+      expect(log[0]).to.eql(log[1]);
+      expect(log[1]).to.eql(log[2]);
+    });
+
+  });
+
   describe('#render()', function() {
 
     var target, map;
