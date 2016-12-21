@@ -81,6 +81,19 @@ ol.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.IntermediateCanvas)
 
 
 /**
+ * @private
+ * @param {ol.Tile} tile Tile.
+ * @return {boolean} Tile is drawable.
+ */
+ol.renderer.canvas.TileLayer.prototype.isDrawableTile_ = function(tile) {
+  var tileState = tile.getState();
+  var useInterimTilesOnError = this.getLayer().getUseInterimTilesOnError();
+  return tileState == ol.Tile.State.LOADED ||
+      tileState == ol.Tile.State.EMPTY ||
+      tileState == ol.Tile.State.ERROR && !useInterimTilesOnError;
+};
+
+/**
  * @inheritDoc
  */
 ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layerState) {
@@ -123,7 +136,6 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   var findLoadedTiles = this.createLoadedTileFinder(
       tileSource, projection, tilesToDrawByZ);
 
-  var useInterimTilesOnError = tileLayer.getUseInterimTilesOnError();
   var tmpExtent = this.tmpExtent;
   var tmpTileRange = this.tmpTileRange_;
   var newTiles = false;
@@ -131,14 +143,11 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      var tileState = tile.getState();
-      var drawable = tileState == ol.Tile.State.LOADED ||
-          tileState == ol.Tile.State.EMPTY ||
-          tileState == ol.Tile.State.ERROR && !useInterimTilesOnError;
-      if (!drawable) {
+      if (!this.isDrawableTile_(tile)) {
         tile = tile.getInterimTile();
-      } else {
-        if (tileState == ol.Tile.State.LOADED) {
+      }
+      if (this.isDrawableTile_(tile)) {
+        if (tile.getState() == ol.Tile.State.LOADED) {
           tilesToDrawByZ[z][tile.tileCoord.toString()] = tile;
           if (!newTiles && this.renderedTiles.indexOf(tile) == -1) {
             newTiles = true;
