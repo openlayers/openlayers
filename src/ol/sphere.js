@@ -39,7 +39,7 @@ ol.Sphere = function(radius) {
 /**
  * Returns the geodesic area for a list of coordinates.
  *
- * [Reference](http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409)
+ * [Reference](https://trs-new.jpl.nasa.gov/handle/2014/40409)
  * Robert. G. Chamberlain and William H. Duquette, "Some Algorithms for
  * Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
  * Laboratory, Pasadena, CA, June 2007
