@@ -56,13 +56,13 @@ describe('ol.interaction.Translate', function() {
   });
 
   /**
-     * Simulates a browser event on the map viewport.  The client x/y location
-     * will be adjusted as if the map were centered at 0,0.
-     * @param {string} type Event type.
-     * @param {number} x Horizontal offset from map center.
-     * @param {number} y Vertical offset from map center.
-     * @param {boolean=} opt_shiftKey Shift key is pressed.
-     */
+   * Simulates a browser event on the map viewport.  The client x/y location
+   * will be adjusted as if the map were centered at 0,0.
+   * @param {string} type Event type.
+   * @param {number} x Horizontal offset from map center.
+   * @param {number} y Vertical offset from map center.
+   * @param {boolean=} opt_shiftKey Shift key is pressed.
+   */
   function simulateEvent(type, x, y, opt_shiftKey) {
     var viewport = map.getViewport();
     // calculated in case body has top < 0 (test runner with small window)
@@ -99,12 +99,12 @@ describe('ol.interaction.Translate', function() {
   }
 
   /**
-  * Validates the event array to verify proper event sequence. Checks
-  * that first and last event are correct TranslateEvents and that feature
-  * modifications event are in between.
-  * @param {Array<ol.interaction.Translate.Event|string>} events The events.
-  * @param {Array<ol.Feature>} features The features.
-  */
+   * Validates the event array to verify proper event sequence. Checks
+   * that first and last event are correct TranslateEvents and that feature
+   * modifications event are in between.
+   * @param {Array<ol.interaction.Translate.Event|string>} events The events.
+   * @param {Array<ol.Feature>} features The features.
+   */
   function validateEvents(events, features) {
 
     var startevent = events[0];
@@ -203,4 +203,36 @@ describe('ol.interaction.Translate', function() {
       validateEvents(events, [features[0]]);
     });
   });
+
+  describe('changes css cursor', function() {
+    var element, translate;
+
+    beforeEach(function() {
+      translate = new ol.interaction.Translate();
+      map.addInteraction(translate);
+      element = map.getTargetElement();
+    });
+
+    it('changes css cursor', function() {
+      expect(element.style.cursor).to.eql('');
+
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      simulateEvent('pointerdown', 10, 20);
+      expect(element.style.cursor).to.match(/grabbing$/);
+
+      simulateEvent('pointerup', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+    });
+
+    it('respects existing cursor value', function() {
+      element.style.cursor = 'pointer';
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('pointer');
+    });
+
+  });
+
 });

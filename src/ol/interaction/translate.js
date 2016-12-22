@@ -171,7 +171,8 @@ ol.interaction.Translate.handleMoveEvent_ = function(event) {
   // Change the cursor to grab/grabbing if hovering any of the features managed
   // by the interaction
   if (this.featuresAtPixel_(event.pixel, event.map)) {
-    this.previousCursor_ = elem.style.cursor;
+    this.previousCursor_ = this.previousCursor_ !== undefined ?
+        this.previousCursor_ : elem.style.cursor;
     // WebKit browsers don't support the grab icons without a prefix
     elem.style.cursor = this.lastCoordinate_ ?
         '-webkit-grabbing' : '-webkit-grab';
@@ -179,9 +180,8 @@ ol.interaction.Translate.handleMoveEvent_ = function(event) {
     // Thankfully, attempting to set the standard ones will silently fail,
     // keeping the prefixed icons
     elem.style.cursor = this.lastCoordinate_ ?  'grabbing' : 'grab';
-  } else {
-    elem.style.cursor = this.previousCursor_ !== undefined ?
-        this.previousCursor_ : '';
+  } else if (this.previousCursor_ !== undefined) {
+    elem.style.cursor = this.previousCursor_;
     this.previousCursor_ = undefined;
   }
 };
