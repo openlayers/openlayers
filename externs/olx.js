@@ -5064,6 +5064,7 @@ olx.source.OSMOptions.prototype.wrapX;
 /**
  * @typedef {{attributions: (Array.<ol.Attribution>|undefined),
  *     crossOrigin: (null|string|undefined),
+ *     hidpi: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
  *     imageLoadFunction: (ol.ImageLoadFunctionType|undefined),
  *     params: Object.<string,*>,
@@ -5093,6 +5094,15 @@ olx.source.ImageArcGISRestOptions.prototype.attributions;
  * @api
  */
 olx.source.ImageArcGISRestOptions.prototype.crossOrigin;
+
+
+/**
+ * Use the `ol.Map#pixelRatio` value when requesting the image from the remote
+ * server. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.ImageArcGISRestOptions.prototype.hidpi;
 
 
 /**

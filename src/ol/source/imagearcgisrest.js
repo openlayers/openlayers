@@ -46,6 +46,12 @@ ol.source.ImageArcGISRest = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.hidpi_ = options.hidpi !== undefined ? options.hidpi : true;
+
+  /**
+   * @private
    * @type {string|undefined}
    */
   this.url_ = options.url;
@@ -114,6 +120,7 @@ ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resoluti
   }
 
   resolution = this.findNearestResolution(resolution);
+  pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
   if (image &&
