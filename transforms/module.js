@@ -34,8 +34,8 @@ function resolve(fromName, toName) {
     }
     return packageName;
   }
-  var commonDepth = 1;
-  var fromLength = fromParts.length;
+  const fromLength = fromParts.length;
+  let commonDepth = 1;
   while (commonDepth < fromLength - 2) {
     if (fromParts[commonDepth] === toParts[commonDepth]) {
       ++commonDepth;
@@ -44,8 +44,12 @@ function resolve(fromName, toName) {
     }
   }
 
-  var back = new Array(fromLength - commonDepth).join('../') || './';
-  return back + toParts.slice(commonDepth).join('/').toLowerCase();
+  const back = new Array(fromLength - commonDepth).join('../') || './';
+  let relative = back + toParts.slice(commonDepth).join('/').toLowerCase();
+  if (relative.endsWith('/')) {
+    relative += 'index';
+  }
+  return relative;
 }
 
 function getGoogExpressionStatement(identifier) {
@@ -127,7 +131,7 @@ module.exports = function(info, api) {
 
   const replacements = {};
 
-  // replace assignments for boolean defines (e.g. ol.FOO = true -> global.OL_FOO = true)
+  // replace assignments for boolean defines (e.g. ol.FOO = true -> window.OL_FOO = true)
   root.find(j.AssignmentExpression, defineAssignment)
     .filter(path => {
       const node = path.value;
@@ -139,7 +143,7 @@ module.exports = function(info, api) {
       const defineName = `${node.left.object.name}.${node.left.property.name}`;
       return j.assignmentExpression(
         '=',
-        j.memberExpression(j.identifier('global'), j.identifier(renameDefine(defineName))),
+        j.memberExpression(j.identifier('window'), j.identifier(renameDefine(defineName))),
         j.literal(node.right.value));
     });
 
@@ -172,21 +176,27 @@ module.exports = function(info, api) {
   }
   replacements[provide] = rename(provide);
 
-  // replace goog.require()
+  // replace `goog.require('foo')` with `import foo from 'foo'`
+  const imports = [];
   root.find(j.ExpressionStatement, getGoogExpressionStatement('require'))
-    .replaceWith(path => {
+    .forEach(path => {
       const name = path.value.expression.arguments[0].value;
       if (name in replacements) {
         throw new Error(`Duplicate require found in ${info.path}: ${name}`);
       }
       const renamed = rename(name);
       replacements[name] = renamed;
-      return j.variableDeclaration('var', [
-        j.variableDeclarator(j.identifier(renamed), j.callExpression(
-          j.identifier('require'), [j.literal(resolve(provide, name))]
-        ))
-      ]);
-    });
+      imports.push(
+        j.importDeclaration(
+          [j.importDefaultSpecifier(j.identifier(renamed))],
+          j.literal(resolve(provide, name))
+        )
+      );
+    })
+    .remove();
+
+  const body = root.find(j.Program).get('body');
+  body.unshift.apply(body, imports);
 
   // replace all uses of required or provided names with renamed identifiers
   Object.keys(replacements).sort().reverse().forEach(name => {
@@ -199,14 +209,10 @@ module.exports = function(info, api) {
     }
   });
 
-  // add module.exports
-  root.find(j.Program).get('body').push(j.expressionStatement(
-    j.assignmentExpression(
-      '=',
-      j.memberExpression(j.identifier('module'), j.identifier('exports')),
-      j.identifier(rename(provide))
-    )
-  ));
+  // add export declaration
+  root.find(j.Program).get('body').push(
+    j.exportDefaultDeclaration(j.identifier(rename(provide)))
+  );
 
   // replace any initial comments
   root.get().node.comments = comments;

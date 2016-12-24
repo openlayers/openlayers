@@ -310,4 +310,4 @@ package: build/timestamps/node-modules-timestamp
 	@cp -r package build
 	@cd ./src && cp -r ol/* ../build/package
 	@rm build/package/typedefs.js
-	./node_modules/.bin/jscodeshift --transform transforms/common.js build/package
+	./node_modules/.bin/jscodeshift --transform transforms/module.js build/package
