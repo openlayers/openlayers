@@ -10,13 +10,13 @@ Add the `ol` package as a dependency to your project.
 
     npm install ol@beta --save
 
-Require just what you need for your application:
+Import just what you need for your application:
 
 ```js
-var OLMap = require('ol/Map');
-var View = require('ol/View');
-var TileLayer = require('ol/layer/Tile');
-var OSM = require('ol/source/OSM');
+import Map from 'ol/Map';
+import View from 'ol/View';
+import TileLayer from 'ol/layer/Tile';
+import OSM from 'ol/source/OSM';
 
 var map = new OLMap({
   target: 'map',

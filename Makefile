@@ -302,11 +302,13 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 %shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
 
+build/defines.json: src/ol/index.js build/timestamps/node-modules-timestamp
+	@node tasks/generate-defines.js
+
 .PHONY: package
-package: build/timestamps/node-modules-timestamp
+package: build/defines.json
 	@rm -rf build/package
-	@mkdir -p build
-	@node tasks/generate-info.js
+	@node tasks/generate-defines.js
 	@cp -r package build
 	@cd ./src && cp -r ol/* ../build/package
 	@rm build/package/typedefs.js

@@ -1,8 +1,5 @@
 const pkg = require('../package.json');
-const defines = require('../build/info.json').defines;
-
-const defineLookup = {};
-defines.forEach(define => defineLookup[define.name] = define);
+const defineLookup = require('../build/defines.json');
 
 function rename(name) {
   const parts = name.split('.');
@@ -134,7 +131,7 @@ module.exports = function(info, api) {
 
   const replacements = {};
 
-  // replace assignments for boolean defines (e.g. ol.FOO = true -> window.OL_FOO = true)
+  // replace assignments defines (e.g. ol.FOO = true -> window.OL_FOO = true)
   root.find(j.ExpressionStatement, defineStatement)
     .filter(path => {
       const expression = path.value.expression;
@@ -145,14 +142,17 @@ module.exports = function(info, api) {
       const expression = path.value.expression;
       const defineName = `${expression.left.object.name}.${expression.left.property.name}`;
       const comments = path.value.comments;
-      const statement = j.variableDeclaration('var', [
-        j.variableDeclarator(j.identifier(renameDefine(defineName)), j.literal(expression.right.value))
-      ]);
+      const statement = j.expressionStatement(
+        j.assignmentExpression('=',
+          j.memberExpression(j.identifier('window'), j.identifier(renameDefine(defineName))),
+          j.literal(expression.right.value)
+        )
+      );
       statement.comments = comments;
       return statement;
     });
 
-  // replace all uses of boolean defines with renamed define
+  // replace all uses of defines with renamed define
   root.find(j.MemberExpression, defineMemberExpression)
     .filter(path => {
       const node = path.value;
@@ -160,7 +160,8 @@ module.exports = function(info, api) {
       return defineName in defineLookup;
     })
     .replaceWith(path => {
-      return j.identifier(renameDefine(`${path.value.object.name}.${path.value.property.name}`));
+      const defineName = `${path.value.object.name}.${path.value.property.name}`;
+      return j.memberExpression(j.identifier('window'), j.identifier(renameDefine(defineName)));
     });
 
   // replace goog.provide()
