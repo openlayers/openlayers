@@ -72,20 +72,23 @@ function getGoogExpressionStatement(identifier) {
   };
 }
 
-const defineAssignment = {
-  type: 'AssignmentExpression',
-  left: {
-    type: 'MemberExpression',
-    object: {
-      type: 'Identifier',
-      name: 'ol'
+const defineStatement = {
+  type: 'ExpressionStatement',
+  expression: {
+    type: 'AssignmentExpression',
+    left: {
+      type: 'MemberExpression',
+      object: {
+        type: 'Identifier',
+        name: 'ol'
+      },
+      property: {
+        type: 'Identifier'
+      }
     },
-    property: {
-      type: 'Identifier'
+    right: {
+      type: 'Literal'
     }
-  },
-  right: {
-    type: 'Literal'
   }
 };
 
@@ -132,19 +135,21 @@ module.exports = function(info, api) {
   const replacements = {};
 
   // replace assignments for boolean defines (e.g. ol.FOO = true -> window.OL_FOO = true)
-  root.find(j.AssignmentExpression, defineAssignment)
+  root.find(j.ExpressionStatement, defineStatement)
     .filter(path => {
-      const node = path.value;
-      const defineName = `${node.left.object.name}.${node.left.property.name}`;
+      const expression = path.value.expression;
+      const defineName = `${expression.left.object.name}.${expression.left.property.name}`;
       return defineName in defineLookup;
     })
     .replaceWith(path => {
-      const node = path.value;
-      const defineName = `${node.left.object.name}.${node.left.property.name}`;
-      return j.assignmentExpression(
-        '=',
-        j.memberExpression(j.identifier('window'), j.identifier(renameDefine(defineName))),
-        j.literal(node.right.value));
+      const expression = path.value.expression;
+      const defineName = `${expression.left.object.name}.${expression.left.property.name}`;
+      const comments = path.value.comments;
+      const statement = j.variableDeclaration('var', [
+        j.variableDeclarator(j.identifier(renameDefine(defineName)), j.literal(expression.right.value))
+      ]);
+      statement.comments = comments;
+      return statement;
     });
 
   // replace all uses of boolean defines with renamed define
