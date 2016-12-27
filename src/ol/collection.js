@@ -114,7 +114,7 @@ ol.Collection.prototype.item = function(index) {
  * @api stable
  */
 ol.Collection.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.Collection.Property.LENGTH));
+  return /** @type {number} */ (this.get(ol.Collection.Property_.LENGTH));
 };
 
 
@@ -220,14 +220,15 @@ ol.Collection.prototype.setAt = function(index, elem) {
  * @private
  */
 ol.Collection.prototype.updateLength_ = function() {
-  this.set(ol.Collection.Property.LENGTH, this.array_.length);
+  this.set(ol.Collection.Property_.LENGTH, this.array_.length);
 };
 
 
 /**
  * @enum {string}
+ * @private
  */
-ol.Collection.Property = {
+ol.Collection.Property_ = {
   LENGTH: 'length'
 };
 
