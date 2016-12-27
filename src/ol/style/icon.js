@@ -7,6 +7,7 @@ goog.require('ol.color');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.style.IconImage');
+goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Image');
 
 
@@ -37,10 +38,10 @@ ol.style.Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Icon.Origin}
+   * @type {ol.style.IconOrigin}
    */
   this.anchorOrigin_ = options.anchorOrigin !== undefined ?
-      options.anchorOrigin : ol.style.Icon.Origin.TOP_LEFT;
+      options.anchorOrigin : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -117,10 +118,10 @@ ol.style.Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Icon.Origin}
+   * @type {ol.style.IconOrigin}
    */
   this.offsetOrigin_ = options.offsetOrigin !== undefined ?
-      options.offsetOrigin : ol.style.Icon.Origin.TOP_LEFT;
+      options.offsetOrigin : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -238,19 +239,19 @@ ol.style.Icon.prototype.getAnchor = function() {
     }
   }
 
-  if (this.anchorOrigin_ != ol.style.Icon.Origin.TOP_LEFT) {
+  if (this.anchorOrigin_ != ol.style.IconOrigin.TOP_LEFT) {
     if (!size) {
       return null;
     }
     if (anchor === this.anchor_) {
       anchor = this.anchor_.slice();
     }
-    if (this.anchorOrigin_ == ol.style.Icon.Origin.TOP_RIGHT ||
-        this.anchorOrigin_ == ol.style.Icon.Origin.BOTTOM_RIGHT) {
+    if (this.anchorOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
+        this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
       anchor[0] = -anchor[0] + size[0];
     }
-    if (this.anchorOrigin_ == ol.style.Icon.Origin.BOTTOM_LEFT ||
-        this.anchorOrigin_ == ol.style.Icon.Origin.BOTTOM_RIGHT) {
+    if (this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
+        this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
       anchor[1] = -anchor[1] + size[1];
     }
   }
@@ -323,19 +324,19 @@ ol.style.Icon.prototype.getOrigin = function() {
   }
   var offset = this.offset_;
 
-  if (this.offsetOrigin_ != ol.style.Icon.Origin.TOP_LEFT) {
+  if (this.offsetOrigin_ != ol.style.IconOrigin.TOP_LEFT) {
     var size = this.getSize();
     var iconImageSize = this.iconImage_.getSize();
     if (!size || !iconImageSize) {
       return null;
     }
     offset = offset.slice();
-    if (this.offsetOrigin_ == ol.style.Icon.Origin.TOP_RIGHT ||
-        this.offsetOrigin_ == ol.style.Icon.Origin.BOTTOM_RIGHT) {
+    if (this.offsetOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
+        this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
       offset[0] = iconImageSize[0] - size[0] - offset[0];
     }
-    if (this.offsetOrigin_ == ol.style.Icon.Origin.BOTTOM_LEFT ||
-        this.offsetOrigin_ == ol.style.Icon.Origin.BOTTOM_RIGHT) {
+    if (this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
+        this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
       offset[1] = iconImageSize[1] - size[1] - offset[1];
     }
   }
@@ -400,16 +401,4 @@ ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
 ol.style.Icon.AnchorUnits = {
   FRACTION: 'fraction',
   PIXELS: 'pixels'
-};
-
-
-/**
- * Icon origin. One of 'bottom-left', 'bottom-right', 'top-left', 'top-right'.
- * @enum {string}
- */
-ol.style.Icon.Origin = {
-  BOTTOM_LEFT: 'bottom-left',
-  BOTTOM_RIGHT: 'bottom-right',
-  TOP_LEFT: 'top-left',
-  TOP_RIGHT: 'top-right'
 };

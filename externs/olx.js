@@ -6845,14 +6845,14 @@ olx.style.FillOptions.prototype.color;
 
 /**
  * @typedef {{anchor: (Array.<number>|undefined),
- *     anchorOrigin: (ol.style.Icon.Origin|undefined),
+ *     anchorOrigin: (ol.style.IconOrigin|undefined),
  *     anchorXUnits: (ol.style.Icon.AnchorUnits|undefined),
  *     anchorYUnits: (ol.style.Icon.AnchorUnits|undefined),
  *     color: (ol.Color|string|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|HTMLCanvasElement|undefined),
  *     offset: (Array.<number>|undefined),
- *     offsetOrigin: (ol.style.Icon.Origin|undefined),
+ *     offsetOrigin: (ol.style.IconOrigin|undefined),
  *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
@@ -6876,7 +6876,7 @@ olx.style.IconOptions.prototype.anchor;
 /**
  * Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.Icon.Origin|undefined}
+ * @type {ol.style.IconOrigin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorOrigin;
@@ -6945,7 +6945,7 @@ olx.style.IconOptions.prototype.offset;
 /**
  * Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.Icon.Origin|undefined}
+ * @type {ol.style.IconOrigin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;

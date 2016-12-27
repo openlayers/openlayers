@@ -27,6 +27,7 @@ goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
+goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
@@ -212,7 +213,7 @@ ol.format.KML.createStyleDefaults_ = function() {
    */
   ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
     anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
-    anchorOrigin: ol.style.Icon.Origin.BOTTOM_LEFT,
+    anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     anchorXUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
     anchorYUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
     crossOrigin: 'anonymous',
@@ -627,12 +628,12 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
     var imageStyle = new ol.style.Icon({
       anchor: anchor,
-      anchorOrigin: ol.style.Icon.Origin.BOTTOM_LEFT,
+      anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
       anchorXUnits: anchorXUnits,
       anchorYUnits: anchorYUnits,
       crossOrigin: 'anonymous', // FIXME should this be configurable?
       offset: offset,
-      offsetOrigin: ol.style.Icon.Origin.BOTTOM_LEFT,
+      offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
       rotation: rotation,
       scale: scale,
       size: size,
