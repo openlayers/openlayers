@@ -451,7 +451,7 @@ ol.interaction.Extent.prototype.setExtent = function(extent) {
  * @extends {ol.events.Event}
  */
 ol.interaction.Extent.Event = function(extent) {
-  ol.events.Event.call(this, ol.interaction.Extent.EventType.EXTENTCHANGED);
+  ol.events.Event.call(this, ol.interaction.Extent.EventType_.EXTENTCHANGED);
 
   /**
    * The current extent.
@@ -465,8 +465,9 @@ ol.inherits(ol.interaction.Extent.Event, ol.events.Event);
 
 /**
  * @enum {string}
+ * @private
  */
-ol.interaction.Extent.EventType = {
+ol.interaction.Extent.EventType_ = {
   /**
    * Triggered after the extent is changed
    * @event ol.interaction.Extent.Event
