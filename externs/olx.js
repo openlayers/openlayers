@@ -1391,7 +1391,7 @@ olx.control.OverviewMapOptions.prototype.view;
  *     minWidth: (number|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
- *     units: (ol.control.ScaleLine.Units|string|undefined)}}
+ *     units: (ol.control.ScaleLineUnits|string|undefined)}}
  */
 olx.control.ScaleLineOptions;
 
@@ -1431,7 +1431,7 @@ olx.control.ScaleLineOptions.prototype.target;
 
 /**
  * Units. Default is `metric`.
- * @type {ol.control.ScaleLine.Units|string|undefined}
+ * @type {ol.control.ScaleLineUnits|string|undefined}
  * @api stable
  */
 olx.control.ScaleLineOptions.prototype.units;
