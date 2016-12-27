@@ -85,7 +85,7 @@ ol.control.ScaleLine = function(opt_options) {
   });
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.control.ScaleLine.Property.UNITS),
+      this, ol.Object.getChangeEventType(ol.control.ScaleLine.Property_.UNITS),
       this.handleUnitsChanged_, this);
 
   this.setUnits(/** @type {ol.control.ScaleLine.Units} */ (options.units) ||
@@ -111,7 +111,7 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLine.Units|undefined} */ (
-      this.get(ol.control.ScaleLine.Property.UNITS));
+      this.get(ol.control.ScaleLine.Property_.UNITS));
 };
 
 
@@ -147,7 +147,7 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
  * @api stable
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {
-  this.set(ol.control.ScaleLine.Property.UNITS, units);
+  this.set(ol.control.ScaleLine.Property_.UNITS, units);
 };
 
 
@@ -264,9 +264,9 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
 /**
  * @enum {string}
- * @api
+ * @private
  */
-ol.control.ScaleLine.Property = {
+ol.control.ScaleLine.Property_ = {
   UNITS: 'units'
 };
 
