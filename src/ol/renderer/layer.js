@@ -3,7 +3,7 @@ goog.provide('ol.renderer.Layer');
 goog.require('ol');
 goog.require('ol.ImageState');
 goog.require('ol.Observable');
-goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
@@ -269,7 +269,7 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
       for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
         if (currentZ - z <= preload) {
           tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-          if (tile.getState() == ol.Tile.State.IDLE) {
+          if (tile.getState() == ol.TileState.IDLE) {
             wantedTiles[tile.getKey()] = true;
             if (!tileQueue.isKeyQueued(tile.getKey())) {
               tileQueue.enqueue([tile, tileSourceKey,

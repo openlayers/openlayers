@@ -1,8 +1,8 @@
 goog.provide('ol.source.Tile');
 
 goog.require('ol');
-goog.require('ol.Tile');
 goog.require('ol.TileCache');
+goog.require('ol.TileState');
 goog.require('ol.events.Event');
 goog.require('ol.proj');
 goog.require('ol.size');
@@ -117,7 +117,7 @@ ol.source.Tile.prototype.forEachLoadedTile = function(projection, z, tileRange, 
       loaded = false;
       if (tileCache.containsKey(tileCoordKey)) {
         tile = /** @type {!ol.Tile} */ (tileCache.get(tileCoordKey));
-        loaded = tile.getState() === ol.Tile.State.LOADED;
+        loaded = tile.getState() === ol.TileState.LOADED;
         if (loaded) {
           loaded = (callback(tile) !== false);
         }

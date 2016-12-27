@@ -164,7 +164,7 @@ ol.OVERVIEWMAP_MIN_RATIO = 0.1;
  *     This can happen if the developer defines projections improperly and/or
  *     with unlimited extents.
  *     If too many tiles are required, no tiles are loaded and
- *     `ol.Tile.State.ERROR` state is set. Default is `100`.
+ *     `ol.TileState.ERROR` state is set. Default is `100`.
  */
 ol.RASTER_REPROJECTION_MAX_SOURCE_TILES = 100;
 
