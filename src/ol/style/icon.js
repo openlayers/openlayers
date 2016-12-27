@@ -6,6 +6,7 @@ goog.require('ol.asserts');
 goog.require('ol.color');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
+goog.require('ol.style.IconAnchorUnits');
 goog.require('ol.style.IconImage');
 goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Image');
@@ -45,17 +46,17 @@ ol.style.Icon = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.style.Icon.AnchorUnits}
+   * @type {ol.style.IconAnchorUnits}
    */
   this.anchorXUnits_ = options.anchorXUnits !== undefined ?
-      options.anchorXUnits : ol.style.Icon.AnchorUnits.FRACTION;
+      options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
-   * @type {ol.style.Icon.AnchorUnits}
+   * @type {ol.style.IconAnchorUnits}
    */
   this.anchorYUnits_ = options.anchorYUnits !== undefined ?
-      options.anchorYUnits : ol.style.Icon.AnchorUnits.FRACTION;
+      options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
@@ -225,16 +226,16 @@ ol.style.Icon.prototype.getAnchor = function() {
   }
   var anchor = this.anchor_;
   var size = this.getSize();
-  if (this.anchorXUnits_ == ol.style.Icon.AnchorUnits.FRACTION ||
-      this.anchorYUnits_ == ol.style.Icon.AnchorUnits.FRACTION) {
+  if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
+      this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
     if (!size) {
       return null;
     }
     anchor = this.anchor_.slice();
-    if (this.anchorXUnits_ == ol.style.Icon.AnchorUnits.FRACTION) {
+    if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION) {
       anchor[0] *= size[0];
     }
-    if (this.anchorYUnits_ == ol.style.Icon.AnchorUnits.FRACTION) {
+    if (this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
       anchor[1] *= size[1];
     }
   }
@@ -391,14 +392,4 @@ ol.style.Icon.prototype.load = function() {
 ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
   ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,
       listener, thisArg);
-};
-
-
-/**
- * Icon anchor units. One of 'fraction', 'pixels'.
- * @enum {string}
- */
-ol.style.Icon.AnchorUnits = {
-  FRACTION: 'fraction',
-  PIXELS: 'pixels'
 };

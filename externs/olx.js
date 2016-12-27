@@ -6846,8 +6846,8 @@ olx.style.FillOptions.prototype.color;
 /**
  * @typedef {{anchor: (Array.<number>|undefined),
  *     anchorOrigin: (ol.style.IconOrigin|undefined),
- *     anchorXUnits: (ol.style.Icon.AnchorUnits|undefined),
- *     anchorYUnits: (ol.style.Icon.AnchorUnits|undefined),
+ *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
+ *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
  *     color: (ol.Color|string|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|HTMLCanvasElement|undefined),
@@ -6886,7 +6886,7 @@ olx.style.IconOptions.prototype.anchorOrigin;
  * Units in which the anchor x value is specified. A value of `'fraction'`
  * indicates the x value is a fraction of the icon. A value of `'pixels'`
  * indicates the x value in pixels. Default is `'fraction'`.
- * @type {ol.style.Icon.AnchorUnits|undefined}
+ * @type {ol.style.IconAnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorXUnits;
@@ -6896,7 +6896,7 @@ olx.style.IconOptions.prototype.anchorXUnits;
  * Units in which the anchor y value is specified. A value of `'fraction'`
  * indicates the y value is a fraction of the icon. A value of `'pixels'`
  * indicates the y value in pixels. Default is `'fraction'`.
- * @type {ol.style.Icon.AnchorUnits|undefined}
+ * @type {ol.style.IconAnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorYUnits;
