@@ -104,23 +104,23 @@ ol.Overlay = function(options) {
   this.mapPostrenderListenerKey_ = null;
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.Overlay.Property.ELEMENT),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property_.ELEMENT),
       this.handleElementChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.Overlay.Property.MAP),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property_.MAP),
       this.handleMapChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.Overlay.Property.OFFSET),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property_.OFFSET),
       this.handleOffsetChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.Overlay.Property.POSITION),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property_.POSITION),
       this.handlePositionChanged, this);
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.Overlay.Property.POSITIONING),
+      this, ol.Object.getChangeEventType(ol.Overlay.Property_.POSITIONING),
       this.handlePositioningChanged, this);
 
   if (options.element !== undefined) {
@@ -149,7 +149,7 @@ ol.inherits(ol.Overlay, ol.Object);
  */
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
-      this.get(ol.Overlay.Property.ELEMENT));
+      this.get(ol.Overlay.Property_.ELEMENT));
 };
 
 
@@ -171,7 +171,7 @@ ol.Overlay.prototype.getId = function() {
  */
 ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
-      this.get(ol.Overlay.Property.MAP));
+      this.get(ol.Overlay.Property_.MAP));
 };
 
 
@@ -183,7 +183,7 @@ ol.Overlay.prototype.getMap = function() {
  */
 ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
-      this.get(ol.Overlay.Property.OFFSET));
+      this.get(ol.Overlay.Property_.OFFSET));
 };
 
 
@@ -196,7 +196,7 @@ ol.Overlay.prototype.getOffset = function() {
  */
 ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.Overlay.Property.POSITION));
+      this.get(ol.Overlay.Property_.POSITION));
 };
 
 
@@ -209,7 +209,7 @@ ol.Overlay.prototype.getPosition = function() {
  */
 ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
-      this.get(ol.Overlay.Property.POSITIONING));
+      this.get(ol.Overlay.Property_.POSITIONING));
 };
 
 
@@ -271,7 +271,7 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition();
-  if (this.get(ol.Overlay.Property.POSITION) !== undefined && this.autoPan) {
+  if (this.get(ol.Overlay.Property_.POSITION) !== undefined && this.autoPan) {
     this.panIntoView_();
   }
 };
@@ -292,7 +292,7 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
  * @api stable
  */
 ol.Overlay.prototype.setElement = function(element) {
-  this.set(ol.Overlay.Property.ELEMENT, element);
+  this.set(ol.Overlay.Property_.ELEMENT, element);
 };
 
 
@@ -303,7 +303,7 @@ ol.Overlay.prototype.setElement = function(element) {
  * @api stable
  */
 ol.Overlay.prototype.setMap = function(map) {
-  this.set(ol.Overlay.Property.MAP, map);
+  this.set(ol.Overlay.Property_.MAP, map);
 };
 
 
@@ -314,7 +314,7 @@ ol.Overlay.prototype.setMap = function(map) {
  * @api stable
  */
 ol.Overlay.prototype.setOffset = function(offset) {
-  this.set(ol.Overlay.Property.OFFSET, offset);
+  this.set(ol.Overlay.Property_.OFFSET, offset);
 };
 
 
@@ -327,7 +327,7 @@ ol.Overlay.prototype.setOffset = function(offset) {
  * @api stable
  */
 ol.Overlay.prototype.setPosition = function(position) {
-  this.set(ol.Overlay.Property.POSITION, position);
+  this.set(ol.Overlay.Property_.POSITION, position);
 };
 
 
@@ -418,7 +418,7 @@ ol.Overlay.prototype.getRect_ = function(element, size) {
  * @api stable
  */
 ol.Overlay.prototype.setPositioning = function(positioning) {
-  this.set(ol.Overlay.Property.POSITIONING, positioning);
+  this.set(ol.Overlay.Property_.POSITIONING, positioning);
 };
 
 
@@ -523,8 +523,9 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.Overlay.Property = {
+ol.Overlay.Property_ = {
   ELEMENT: 'element',
   MAP: 'map',
   OFFSET: 'offset',
