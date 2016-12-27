@@ -1,11 +1,11 @@
 goog.provide('ol.style.Icon');
 
 goog.require('ol');
+goog.require('ol.ImageState');
 goog.require('ol.asserts');
 goog.require('ol.color');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
-goog.require('ol.Image');
 goog.require('ol.style.IconImage');
 goog.require('ol.style.Image');
 
@@ -90,10 +90,10 @@ ol.style.Icon = function(opt_options) {
       6); // A defined and non-empty `src` or `image` must be provided
 
   /**
-   * @type {ol.Image.State}
+   * @type {ol.ImageState}
    */
   var imageState = options.src !== undefined ?
-      ol.Image.State.IDLE : ol.Image.State.LOADED;
+      ol.ImageState.IDLE : ol.ImageState.LOADED;
 
   /**
    * @private
@@ -181,7 +181,7 @@ ol.inherits(ol.style.Icon, ol.style.Image);
 ol.style.Icon.prototype.clone = function() {
   var oldImage = this.getImage(1);
   var newImage;
-  if (this.iconImage_.getImageState() === ol.Image.State.LOADED) {
+  if (this.iconImage_.getImageState() === ol.ImageState.LOADED) {
     if (oldImage.tagName.toUpperCase() === 'IMG') {
       newImage = /** @type {Image} */ (oldImage.cloneNode(true));
     } else {
