@@ -6194,7 +6194,7 @@ olx.source.VectorOptions.prototype.wrapX;
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
- *     requestEncoding: (ol.source.WMTS.RequestEncoding|string|undefined),
+ *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
  *     layer: string,
  *     style: string,
  *     tilePixelRatio: (number|undefined),
@@ -6276,7 +6276,7 @@ olx.source.WMTSOptions.prototype.reprojectionErrorThreshold;
 
 /**
  * Request encoding. Default is `KVP`.
- * @type {ol.source.WMTS.RequestEncoding|string|undefined}
+ * @type {ol.source.WMTSRequestEncoding|string|undefined}
  * @api stable
  */
 olx.source.WMTSOptions.prototype.requestEncoding;
