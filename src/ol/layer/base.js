@@ -2,6 +2,7 @@ goog.provide('ol.layer.Base');
 
 goog.require('ol');
 goog.require('ol.Object');
+goog.require('ol.layer.Property');
 goog.require('ol.math');
 goog.require('ol.obj');
 
@@ -27,15 +28,15 @@ ol.layer.Base = function(options) {
    * @type {Object.<string, *>}
    */
   var properties = ol.obj.assign({}, options);
-  properties[ol.layer.Base.Property.OPACITY] =
+  properties[ol.layer.Property.OPACITY] =
       options.opacity !== undefined ? options.opacity : 1;
-  properties[ol.layer.Base.Property.VISIBLE] =
+  properties[ol.layer.Property.VISIBLE] =
       options.visible !== undefined ? options.visible : true;
-  properties[ol.layer.Base.Property.Z_INDEX] =
+  properties[ol.layer.Property.Z_INDEX] =
       options.zIndex !== undefined ? options.zIndex : 0;
-  properties[ol.layer.Base.Property.MAX_RESOLUTION] =
+  properties[ol.layer.Property.MAX_RESOLUTION] =
       options.maxResolution !== undefined ? options.maxResolution : Infinity;
-  properties[ol.layer.Base.Property.MIN_RESOLUTION] =
+  properties[ol.layer.Property.MIN_RESOLUTION] =
       options.minResolution !== undefined ? options.minResolution : 0;
 
   this.setProperties(properties);
@@ -96,7 +97,7 @@ ol.layer.Base.prototype.getLayerStatesArray = function(opt_states) {};
  */
 ol.layer.Base.prototype.getExtent = function() {
   return /** @type {ol.Extent|undefined} */ (
-      this.get(ol.layer.Base.Property.EXTENT));
+      this.get(ol.layer.Property.EXTENT));
 };
 
 
@@ -108,7 +109,7 @@ ol.layer.Base.prototype.getExtent = function() {
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
   return /** @type {number} */ (
-      this.get(ol.layer.Base.Property.MAX_RESOLUTION));
+      this.get(ol.layer.Property.MAX_RESOLUTION));
 };
 
 
@@ -120,7 +121,7 @@ ol.layer.Base.prototype.getMaxResolution = function() {
  */
 ol.layer.Base.prototype.getMinResolution = function() {
   return /** @type {number} */ (
-      this.get(ol.layer.Base.Property.MIN_RESOLUTION));
+      this.get(ol.layer.Property.MIN_RESOLUTION));
 };
 
 
@@ -131,7 +132,7 @@ ol.layer.Base.prototype.getMinResolution = function() {
  * @api stable
  */
 ol.layer.Base.prototype.getOpacity = function() {
-  return /** @type {number} */ (this.get(ol.layer.Base.Property.OPACITY));
+  return /** @type {number} */ (this.get(ol.layer.Property.OPACITY));
 };
 
 
@@ -149,7 +150,7 @@ ol.layer.Base.prototype.getSourceState = function() {};
  * @api stable
  */
 ol.layer.Base.prototype.getVisible = function() {
-  return /** @type {boolean} */ (this.get(ol.layer.Base.Property.VISIBLE));
+  return /** @type {boolean} */ (this.get(ol.layer.Property.VISIBLE));
 };
 
 
@@ -161,7 +162,7 @@ ol.layer.Base.prototype.getVisible = function() {
  * @api
  */
 ol.layer.Base.prototype.getZIndex = function() {
-  return /** @type {number} */ (this.get(ol.layer.Base.Property.Z_INDEX));
+  return /** @type {number} */ (this.get(ol.layer.Property.Z_INDEX));
 };
 
 
@@ -173,7 +174,7 @@ ol.layer.Base.prototype.getZIndex = function() {
  * @api stable
  */
 ol.layer.Base.prototype.setExtent = function(extent) {
-  this.set(ol.layer.Base.Property.EXTENT, extent);
+  this.set(ol.layer.Property.EXTENT, extent);
 };
 
 
@@ -184,7 +185,7 @@ ol.layer.Base.prototype.setExtent = function(extent) {
  * @api stable
  */
 ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
-  this.set(ol.layer.Base.Property.MAX_RESOLUTION, maxResolution);
+  this.set(ol.layer.Property.MAX_RESOLUTION, maxResolution);
 };
 
 
@@ -195,7 +196,7 @@ ol.layer.Base.prototype.setMaxResolution = function(maxResolution) {
  * @api stable
  */
 ol.layer.Base.prototype.setMinResolution = function(minResolution) {
-  this.set(ol.layer.Base.Property.MIN_RESOLUTION, minResolution);
+  this.set(ol.layer.Property.MIN_RESOLUTION, minResolution);
 };
 
 
@@ -206,7 +207,7 @@ ol.layer.Base.prototype.setMinResolution = function(minResolution) {
  * @api stable
  */
 ol.layer.Base.prototype.setOpacity = function(opacity) {
-  this.set(ol.layer.Base.Property.OPACITY, opacity);
+  this.set(ol.layer.Property.OPACITY, opacity);
 };
 
 
@@ -217,7 +218,7 @@ ol.layer.Base.prototype.setOpacity = function(opacity) {
  * @api stable
  */
 ol.layer.Base.prototype.setVisible = function(visible) {
-  this.set(ol.layer.Base.Property.VISIBLE, visible);
+  this.set(ol.layer.Property.VISIBLE, visible);
 };
 
 
@@ -229,19 +230,5 @@ ol.layer.Base.prototype.setVisible = function(visible) {
  * @api
  */
 ol.layer.Base.prototype.setZIndex = function(zindex) {
-  this.set(ol.layer.Base.Property.Z_INDEX, zindex);
-};
-
-
-/**
- * @enum {string}
- */
-ol.layer.Base.Property = {
-  OPACITY: 'opacity',
-  VISIBLE: 'visible',
-  EXTENT: 'extent',
-  Z_INDEX: 'zIndex',
-  MAX_RESOLUTION: 'maxResolution',
-  MIN_RESOLUTION: 'minResolution',
-  SOURCE: 'source'
+  this.set(ol.layer.Property.Z_INDEX, zindex);
 };
