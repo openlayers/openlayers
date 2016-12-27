@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
+goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.Overlay');
 goog.require('ol.View');
@@ -191,7 +192,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
  * @private
  */
 ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
-  if (event.key === ol.Map.Property.VIEW) {
+  if (event.key === ol.MapProperty.VIEW) {
     var oldView = /** @type {ol.View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);
