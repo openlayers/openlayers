@@ -3,6 +3,7 @@ goog.provide('ol.source.TileUTFGrid');
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.asserts');
 goog.require('ol.events');
@@ -236,7 +237,7 @@ ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projecti
     var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
     var tile = new ol.source.TileUTFGrid.Tile_(
         tileCoord,
-        tileUrl !== undefined ? ol.Tile.State.IDLE : ol.Tile.State.EMPTY,
+        tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
         this.tileGrid.getTileCoordExtent(tileCoord),
         this.preemptive_,
@@ -262,7 +263,7 @@ ol.source.TileUTFGrid.prototype.useTile = function(z, x, y) {
  * @constructor
  * @extends {ol.Tile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Tile.State} state State.
+ * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {ol.Extent} extent Extent of the tile.
  * @param {boolean} preemptive Load the tile when visible (before it's needed).
@@ -382,7 +383,7 @@ ol.source.TileUTFGrid.Tile_.prototype.getData = function(coordinate) {
  * @template T
  */
 ol.source.TileUTFGrid.Tile_.prototype.forDataAtCoordinate = function(coordinate, callback, opt_this, opt_request) {
-  if (this.state == ol.Tile.State.IDLE && opt_request === true) {
+  if (this.state == ol.TileState.IDLE && opt_request === true) {
     ol.events.listenOnce(this, ol.events.EventType.CHANGE, function(e) {
       callback.call(opt_this, this.getData(coordinate));
     }, this);
@@ -411,7 +412,7 @@ ol.source.TileUTFGrid.Tile_.prototype.getKey = function() {
  * @private
  */
 ol.source.TileUTFGrid.Tile_.prototype.handleError_ = function() {
-  this.state = ol.Tile.State.ERROR;
+  this.state = ol.TileState.ERROR;
   this.changed();
 };
 
@@ -425,7 +426,7 @@ ol.source.TileUTFGrid.Tile_.prototype.handleLoad_ = function(json) {
   this.keys_ = json.keys;
   this.data_ = json.data;
 
-  this.state = ol.Tile.State.EMPTY;
+  this.state = ol.TileState.EMPTY;
   this.changed();
 };
 
@@ -434,8 +435,8 @@ ol.source.TileUTFGrid.Tile_.prototype.handleLoad_ = function(json) {
  * @private
  */
 ol.source.TileUTFGrid.Tile_.prototype.loadInternal_ = function() {
-  if (this.state == ol.Tile.State.IDLE) {
-    this.state = ol.Tile.State.LOADING;
+  if (this.state == ol.TileState.IDLE) {
+    this.state = ol.TileState.LOADING;
     if (this.jsonp_) {
       ol.net.jsonp(this.src_, this.handleLoad_.bind(this),
           this.handleError_.bind(this));

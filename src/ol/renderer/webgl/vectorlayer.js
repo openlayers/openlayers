@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.webgl.VectorLayer');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.render.webgl.ReplayGroup');
 goog.require('ol.renderer.vector');
@@ -191,8 +191,8 @@ ol.renderer.webgl.VectorLayer.prototype.prepareFrame = function(frameState, laye
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.View.Hint.ANIMATING];
-  var interacting = frameState.viewHints[ol.View.Hint.INTERACTING];
+  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 

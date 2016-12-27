@@ -1,13 +1,13 @@
 goog.provide('ol.test.Tile');
 
-goog.require('ol.Tile');
+goog.require('ol.TileState');
 
 describe('ol.Tile', function() {
   describe('interimChain', function() {
     var head, renderTile;
     beforeEach(function() {
       var tileCoord = [0, 0, 0];
-      head = new ol.ImageTile(tileCoord, ol.Tile.State.IDLE);
+      head = new ol.ImageTile(tileCoord, ol.TileState.IDLE);
       ol.getUid(head);
 
       var addToChain = function(tile, state) {
@@ -16,15 +16,15 @@ describe('ol.Tile', function() {
         tile.interimTile = next;
         return next;
       };
-      var tail = addToChain(head, ol.Tile.State.IDLE); //discard, deprecated by head
-      tail = addToChain(tail, ol.Tile.State.LOADING); //keep, request already going
-      tail = addToChain(tail, ol.Tile.State.IDLE); //discard, deprecated by head
-      tail = addToChain(tail, ol.Tile.State.LOADED); //keep, use for rendering
+      var tail = addToChain(head, ol.TileState.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, ol.TileState.LOADING); //keep, request already going
+      tail = addToChain(tail, ol.TileState.IDLE); //discard, deprecated by head
+      tail = addToChain(tail, ol.TileState.LOADED); //keep, use for rendering
       renderTile = tail; //store this tile for later tests
-      tail = addToChain(tail, ol.Tile.State.IDLE);  //rest of list outdated by tile above
-      tail = addToChain(tail, ol.Tile.State.LOADED);
-      tail = addToChain(tail, ol.Tile.State.LOADING);
-      tail = addToChain(tail, ol.Tile.State.LOADED);
+      tail = addToChain(tail, ol.TileState.IDLE);  //rest of list outdated by tile above
+      tail = addToChain(tail, ol.TileState.LOADED);
+      tail = addToChain(tail, ol.TileState.LOADING);
+      tail = addToChain(tail, ol.TileState.LOADED);
 
     });
 

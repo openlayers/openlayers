@@ -284,8 +284,8 @@ ol.ImageLoadFunctionType;
 
 
 /**
- * @typedef {{x: number, xunits: (ol.style.Icon.AnchorUnits|undefined),
- *            y: number, yunits: (ol.style.Icon.AnchorUnits|undefined)}}
+ * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
+ *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
  */
 ol.KMLVec2_;
 

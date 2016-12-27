@@ -1,7 +1,7 @@
 goog.provide('ol.renderer.canvas.ImageLayer');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
@@ -72,7 +72,7 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
         renderedExtent, layerState.extent);
   }
 
-  if (!hints[ol.View.Hint.ANIMATING] && !hints[ol.View.Hint.INTERACTING] &&
+  if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
       !ol.extent.isEmpty(renderedExtent)) {
     var projection = viewState.projection;
     if (!ol.ENABLE_RASTER_REPROJECTION) {

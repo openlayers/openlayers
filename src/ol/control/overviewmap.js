@@ -4,9 +4,10 @@ goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
+goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.Overlay');
-goog.require('ol.View');
+goog.require('ol.ViewProperty');
 goog.require('ol.control.Control');
 goog.require('ol.coordinate');
 goog.require('ol.css');
@@ -191,7 +192,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
  * @private
  */
 ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
-  if (event.key === ol.Map.Property.VIEW) {
+  if (event.key === ol.MapProperty.VIEW) {
     var oldView = /** @type {ol.View} */ (event.oldValue);
     if (oldView) {
       this.unbindView_(oldView);
@@ -209,7 +210,7 @@ ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
  */
 ol.control.OverviewMap.prototype.bindView_ = function(view) {
   ol.events.listen(view,
-      ol.Object.getChangeEventType(ol.View.Property.ROTATION),
+      ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
       this.handleRotationChanged_, this);
 };
 
@@ -221,7 +222,7 @@ ol.control.OverviewMap.prototype.bindView_ = function(view) {
  */
 ol.control.OverviewMap.prototype.unbindView_ = function(view) {
   ol.events.unlisten(view,
-      ol.Object.getChangeEventType(ol.View.Property.ROTATION),
+      ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
       this.handleRotationChanged_, this);
 };
 

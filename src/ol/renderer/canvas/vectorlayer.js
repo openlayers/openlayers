@@ -1,10 +1,10 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
-goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.renderer.canvas.Layer');
@@ -97,7 +97,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var drawOffsetX = 0;
     var drawOffsetY = 0;
     var replayContext;
-    if (layer.hasListener(ol.render.Event.Type.RENDER)) {
+    if (layer.hasListener(ol.render.EventType.RENDER)) {
       var drawWidth = context.canvas.width;
       var drawHeight = context.canvas.height;
       if (rotation) {
@@ -225,8 +225,8 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
       frameState.attributions, vectorSource.getAttributions());
   this.updateLogos(frameState, vectorSource);
 
-  var animating = frameState.viewHints[ol.View.Hint.ANIMATING];
-  var interacting = frameState.viewHints[ol.View.Hint.INTERACTING];
+  var animating = frameState.viewHints[ol.ViewHint.ANIMATING];
+  var interacting = frameState.viewHints[ol.ViewHint.INTERACTING];
   var updateWhileAnimating = vectorLayer.getUpdateWhileAnimating();
   var updateWhileInteracting = vectorLayer.getUpdateWhileInteracting();
 

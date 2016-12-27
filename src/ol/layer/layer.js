@@ -5,8 +5,9 @@ goog.require('ol.events.EventType');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.layer.Base');
+goog.require('ol.layer.Property');
 goog.require('ol.obj');
-goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
 
@@ -61,7 +62,7 @@ ol.layer.Layer = function(options) {
   }
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Base.Property.SOURCE),
+      ol.Object.getChangeEventType(ol.layer.Property.SOURCE),
       this.handleSourcePropertyChange_, this);
 
   var source = options.source ? options.source : null;
@@ -111,7 +112,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  * @api stable
  */
 ol.layer.Layer.prototype.getSource = function() {
-  var source = this.get(ol.layer.Base.Property.SOURCE);
+  var source = this.get(ol.layer.Property.SOURCE);
   return /** @type {ol.source.Source} */ (source) || null;
 };
 
@@ -176,7 +177,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
   }
   if (map) {
     this.mapPrecomposeKey_ = ol.events.listen(
-        map, ol.render.Event.Type.PRECOMPOSE, function(evt) {
+        map, ol.render.EventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
           layerState.managed = false;
           layerState.zIndex = Infinity;
@@ -197,5 +198,5 @@ ol.layer.Layer.prototype.setMap = function(map) {
  * @api stable
  */
 ol.layer.Layer.prototype.setSource = function(source) {
-  this.set(ol.layer.Base.Property.SOURCE, source);
+  this.set(ol.layer.Property.SOURCE, source);
 };

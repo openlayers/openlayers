@@ -4450,7 +4450,7 @@ olx.source.TileUTFGridOptions.prototype.url;
  *            reprojectionErrorThreshold: (number|undefined),
  *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.ImageTile, ol.TileCoord,
- *                                 ol.Tile.State, string, ?string,
+ *                                 ol.TileState, string, ?string,
  *                                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
@@ -4535,7 +4535,7 @@ olx.source.TileImageOptions.prototype.state;
 /**
  * Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
  * @type {function(new: ol.ImageTile, ol.TileCoord,
- *                 ol.Tile.State, string, ?string,
+ *                 ol.TileState, string, ?string,
  *                 ol.TileLoadFunctionType)|undefined}
  * @api
  */
@@ -4620,7 +4620,7 @@ olx.source.TileImageOptions.prototype.wrapX;
  *            projection: ol.ProjectionLike,
  *            state: (ol.source.State|undefined),
  *            tileClass: (function(new: ol.VectorTile, ol.TileCoord,
- *                 ol.Tile.State, string, ol.format.Feature,
+ *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
@@ -4696,7 +4696,7 @@ olx.source.VectorTileOptions.prototype.state;
 /**
  * Class used to instantiate image tiles. Default is {@link ol.VectorTile}.
  * @type {function(new: ol.VectorTile, ol.TileCoord,
- *                 ol.Tile.State, string, ol.format.Feature,
+ *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined}
  * @api
  */
@@ -6206,7 +6206,7 @@ olx.source.VectorOptions.prototype.wrapX;
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
  *     urls: (Array.<string>|undefined),
  *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
- *                          ol.Tile.State, string, ?string,
+ *                          ol.TileState, string, ?string,
  *                          ol.TileLoadFunctionType)|undefined),
  *     wrapX: (boolean|undefined)}}
  */
@@ -6301,7 +6301,7 @@ olx.source.WMTSOptions.prototype.style;
 /**
  * Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
  * @type {function(new: ol.ImageTile, ol.TileCoord,
- *                 ol.Tile.State, string, ?string,
+ *                 ol.TileState, string, ?string,
  *                 ol.TileLoadFunctionType)|undefined}
  * @api
  */
@@ -6845,14 +6845,14 @@ olx.style.FillOptions.prototype.color;
 
 /**
  * @typedef {{anchor: (Array.<number>|undefined),
- *     anchorOrigin: (ol.style.Icon.Origin|undefined),
- *     anchorXUnits: (ol.style.Icon.AnchorUnits|undefined),
- *     anchorYUnits: (ol.style.Icon.AnchorUnits|undefined),
+ *     anchorOrigin: (ol.style.IconOrigin|undefined),
+ *     anchorXUnits: (ol.style.IconAnchorUnits|undefined),
+ *     anchorYUnits: (ol.style.IconAnchorUnits|undefined),
  *     color: (ol.Color|string|undefined),
  *     crossOrigin: (null|string|undefined),
  *     img: (Image|HTMLCanvasElement|undefined),
  *     offset: (Array.<number>|undefined),
- *     offsetOrigin: (ol.style.Icon.Origin|undefined),
+ *     offsetOrigin: (ol.style.IconOrigin|undefined),
  *     opacity: (number|undefined),
  *     scale: (number|undefined),
  *     snapToPixel: (boolean|undefined),
@@ -6876,7 +6876,7 @@ olx.style.IconOptions.prototype.anchor;
 /**
  * Origin of the anchor: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.Icon.Origin|undefined}
+ * @type {ol.style.IconOrigin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorOrigin;
@@ -6886,7 +6886,7 @@ olx.style.IconOptions.prototype.anchorOrigin;
  * Units in which the anchor x value is specified. A value of `'fraction'`
  * indicates the x value is a fraction of the icon. A value of `'pixels'`
  * indicates the x value in pixels. Default is `'fraction'`.
- * @type {ol.style.Icon.AnchorUnits|undefined}
+ * @type {ol.style.IconAnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorXUnits;
@@ -6896,7 +6896,7 @@ olx.style.IconOptions.prototype.anchorXUnits;
  * Units in which the anchor y value is specified. A value of `'fraction'`
  * indicates the y value is a fraction of the icon. A value of `'pixels'`
  * indicates the y value in pixels. Default is `'fraction'`.
- * @type {ol.style.Icon.AnchorUnits|undefined}
+ * @type {ol.style.IconAnchorUnits|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.anchorYUnits;
@@ -6945,7 +6945,7 @@ olx.style.IconOptions.prototype.offset;
 /**
  * Origin of the offset: `bottom-left`, `bottom-right`, `top-left` or
  * `top-right`. Default is `top-left`.
- * @type {ol.style.Icon.Origin|undefined}
+ * @type {ol.style.IconOrigin|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.offsetOrigin;

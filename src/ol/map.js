@@ -9,9 +9,11 @@ goog.require('ol.Collection');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEventHandler');
 goog.require('ol.MapEvent');
+goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.asserts');
 goog.require('ol.control');
 goog.require('ol.dom');
@@ -25,8 +27,8 @@ goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.obj');
 goog.require('ol.proj.common');
-goog.require('ol.renderer.Type');
 goog.require('ol.renderer.Map');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.webgl.Map');
 goog.require('ol.size');
@@ -367,13 +369,13 @@ ol.Map = function(options) {
   this.skippedFeatureUids_ = {};
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.Map.Property.LAYERGROUP),
+      this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
       this.handleLayerGroupChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.Map.Property.VIEW),
+  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
       this.handleViewChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.Map.Property.SIZE),
+  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
       this.handleSizeChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.Map.Property.TARGET),
+  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
       this.handleTargetChanged_, this);
 
   // setProperties will trigger the rendering of the map if the map
@@ -689,7 +691,7 @@ ol.Map.prototype.getEventPixel = function(event) {
  */
 ol.Map.prototype.getTarget = function() {
   return /** @type {Element|string|undefined} */ (
-      this.get(ol.Map.Property.TARGET));
+      this.get(ol.MapProperty.TARGET));
 };
 
 
@@ -785,7 +787,7 @@ ol.Map.prototype.getInteractions = function() {
  * @api stable
  */
 ol.Map.prototype.getLayerGroup = function() {
-  return /** @type {ol.layer.Group} */ (this.get(ol.Map.Property.LAYERGROUP));
+  return /** @type {ol.layer.Group} */ (this.get(ol.MapProperty.LAYERGROUP));
 };
 
 
@@ -834,7 +836,7 @@ ol.Map.prototype.getRenderer = function() {
  * @api stable
  */
 ol.Map.prototype.getSize = function() {
-  return /** @type {ol.Size|undefined} */ (this.get(ol.Map.Property.SIZE));
+  return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
 };
 
 
@@ -846,7 +848,7 @@ ol.Map.prototype.getSize = function() {
  * @api stable
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.Map.Property.VIEW));
+  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
 };
 
 
@@ -975,11 +977,11 @@ ol.Map.prototype.handlePostRender = function() {
     var maxNewLoads = maxTotalLoading;
     if (frameState) {
       var hints = frameState.viewHints;
-      if (hints[ol.View.Hint.ANIMATING]) {
+      if (hints[ol.ViewHint.ANIMATING]) {
         maxTotalLoading = this.loadTilesWhileAnimating_ ? 8 : 0;
         maxNewLoads = 2;
       }
-      if (hints[ol.View.Hint.INTERACTING]) {
+      if (hints[ol.ViewHint.INTERACTING]) {
         maxTotalLoading = this.loadTilesWhileInteracting_ ? 8 : 0;
         maxNewLoads = 2;
       }
@@ -1278,8 +1280,8 @@ ol.Map.prototype.renderFrame_ = function(time) {
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
     var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.viewHints[ol.View.Hint.ANIMATING] &&
-        !frameState.viewHints[ol.View.Hint.INTERACTING] &&
+        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
         !ol.extent.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
@@ -1305,7 +1307,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
  * @api stable
  */
 ol.Map.prototype.setLayerGroup = function(layerGroup) {
-  this.set(ol.Map.Property.LAYERGROUP, layerGroup);
+  this.set(ol.MapProperty.LAYERGROUP, layerGroup);
 };
 
 
@@ -1316,7 +1318,7 @@ ol.Map.prototype.setLayerGroup = function(layerGroup) {
  * @api
  */
 ol.Map.prototype.setSize = function(size) {
-  this.set(ol.Map.Property.SIZE, size);
+  this.set(ol.MapProperty.SIZE, size);
 };
 
 
@@ -1328,7 +1330,7 @@ ol.Map.prototype.setSize = function(size) {
  * @api stable
  */
 ol.Map.prototype.setTarget = function(target) {
-  this.set(ol.Map.Property.TARGET, target);
+  this.set(ol.MapProperty.TARGET, target);
 };
 
 
@@ -1339,7 +1341,7 @@ ol.Map.prototype.setTarget = function(target) {
  * @api stable
  */
 ol.Map.prototype.setView = function(view) {
-  this.set(ol.Map.Property.VIEW, view);
+  this.set(ol.MapProperty.VIEW, view);
 };
 
 
@@ -1431,11 +1433,11 @@ ol.Map.createOptionsInternal = function(options) {
 
   var layerGroup = (options.layers instanceof ol.layer.Group) ?
       options.layers : new ol.layer.Group({layers: options.layers});
-  values[ol.Map.Property.LAYERGROUP] = layerGroup;
+  values[ol.MapProperty.LAYERGROUP] = layerGroup;
 
-  values[ol.Map.Property.TARGET] = options.target;
+  values[ol.MapProperty.TARGET] = options.target;
 
-  values[ol.Map.Property.VIEW] = options.view !== undefined ?
+  values[ol.MapProperty.VIEW] = options.view !== undefined ?
       options.view : new ol.View();
 
   /**
@@ -1530,16 +1532,5 @@ ol.Map.createOptionsInternal = function(options) {
   };
 
 };
-
-/**
- * @enum {string}
- */
-ol.Map.Property = {
-  LAYERGROUP: 'layergroup',
-  SIZE: 'size',
-  TARGET: 'target',
-  VIEW: 'view'
-};
-
 
 ol.proj.common.add();

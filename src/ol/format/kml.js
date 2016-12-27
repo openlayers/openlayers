@@ -27,6 +27,8 @@ goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Icon');
+goog.require('ol.style.IconAnchorUnits');
+goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
@@ -169,19 +171,19 @@ ol.format.KML.createStyleDefaults_ = function() {
 
   /**
    * @const
-   * @type {ol.style.Icon.AnchorUnits}
+   * @type {ol.style.IconAnchorUnits}
    * @private
    */
   ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_ =
-      ol.style.Icon.AnchorUnits.PIXELS;
+      ol.style.IconAnchorUnits.PIXELS;
 
   /**
    * @const
-   * @type {ol.style.Icon.AnchorUnits}
+   * @type {ol.style.IconAnchorUnits}
    * @private
    */
   ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_ =
-      ol.style.Icon.AnchorUnits.PIXELS;
+      ol.style.IconAnchorUnits.PIXELS;
 
   /**
    * @const
@@ -212,7 +214,7 @@ ol.format.KML.createStyleDefaults_ = function() {
    */
   ol.format.KML.DEFAULT_IMAGE_STYLE_ = new ol.style.Icon({
     anchor: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_,
-    anchorOrigin: ol.style.Icon.Origin.BOTTOM_LEFT,
+    anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
     anchorXUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_,
     anchorYUnits: ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_,
     crossOrigin: 'anonymous',
@@ -287,12 +289,12 @@ ol.format.KML.createStyleDefaults_ = function() {
 
 /**
  * @const
- * @type {Object.<string, ol.style.Icon.AnchorUnits>}
+ * @type {Object.<string, ol.style.IconAnchorUnits>}
  * @private
  */
 ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
-  'fraction': ol.style.Icon.AnchorUnits.FRACTION,
-  'pixels': ol.style.Icon.AnchorUnits.PIXELS
+  'fraction': ol.style.IconAnchorUnits.FRACTION,
+  'pixels': ol.style.IconAnchorUnits.PIXELS
 };
 
 
@@ -585,8 +587,8 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     anchorYUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_Y_UNITS_;
   } else if (/^http:\/\/maps\.(?:google|gstatic)\.com\//.test(src)) {
     anchor = [0.5, 0];
-    anchorXUnits = ol.style.Icon.AnchorUnits.FRACTION;
-    anchorYUnits = ol.style.Icon.AnchorUnits.FRACTION;
+    anchorXUnits = ol.style.IconAnchorUnits.FRACTION;
+    anchorYUnits = ol.style.IconAnchorUnits.FRACTION;
   }
 
   var offset;
@@ -627,12 +629,12 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
     var imageStyle = new ol.style.Icon({
       anchor: anchor,
-      anchorOrigin: ol.style.Icon.Origin.BOTTOM_LEFT,
+      anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
       anchorXUnits: anchorXUnits,
       anchorYUnits: anchorYUnits,
       crossOrigin: 'anonymous', // FIXME should this be configurable?
       offset: offset,
-      offsetOrigin: ol.style.Icon.Origin.BOTTOM_LEFT,
+      offsetOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
       rotation: rotation,
       scale: scale,
       size: size,
@@ -2411,9 +2413,9 @@ ol.format.KML.writeIconStyle_ = function(node, style, objectStack) {
     if (anchor && anchor[0] !== 0 && anchor[1] !== size[1]) {
       var /** @type {ol.KMLVec2_} */ hotSpot = {
         x: anchor[0],
-        xunits: ol.style.Icon.AnchorUnits.PIXELS,
+        xunits: ol.style.IconAnchorUnits.PIXELS,
         y: size[1] - anchor[1],
-        yunits: ol.style.Icon.AnchorUnits.PIXELS
+        yunits: ol.style.IconAnchorUnits.PIXELS
       };
       properties['hotSpot'] = hotSpot;
     }

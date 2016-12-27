@@ -3,7 +3,7 @@
 goog.provide('ol.control.ZoomSlider');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
@@ -256,7 +256,7 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
   if (!this.dragging_ &&
       event.originalEvent.target === this.element.firstElementChild) {
-    this.getMap().getView().setHint(ol.View.Hint.INTERACTING, 1);
+    this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;
     this.dragging_ = true;
@@ -306,7 +306,7 @@ ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
 ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   if (this.dragging_) {
     var view = this.getMap().getView();
-    view.setHint(ol.View.Hint.INTERACTING, -1);
+    view.setHint(ol.ViewHint.INTERACTING, -1);
 
     view.animate({
       resolution: view.constrainResolution(this.currentResolution_),

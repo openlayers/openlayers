@@ -2,7 +2,7 @@ goog.provide('ol.source.Zoomify');
 
 goog.require('ol');
 goog.require('ol.ImageTile');
-goog.require('ol.Tile');
+goog.require('ol.TileState');
 goog.require('ol.asserts');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -127,7 +127,7 @@ ol.inherits(ol.source.Zoomify, ol.source.TileImage);
  * @constructor
  * @extends {ol.ImageTile}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
- * @param {ol.Tile.State} state State.
+ * @param {ol.TileState} state State.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
@@ -157,7 +157,7 @@ ol.source.Zoomify.Tile_.prototype.getImage = function() {
   }
   var tileSize = ol.DEFAULT_TILE_SIZE;
   var image = ol.ImageTile.prototype.getImage.call(this);
-  if (this.state == ol.Tile.State.LOADED) {
+  if (this.state == ol.TileState.LOADED) {
     if (image.width == tileSize && image.height == tileSize) {
       this.zoomifyImage_ = image;
       return image;

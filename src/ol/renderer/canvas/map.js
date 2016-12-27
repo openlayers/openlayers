@@ -13,6 +13,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
@@ -87,7 +88,7 @@ ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
 
 
 /**
- * @param {ol.render.Event.Type} type Event type.
+ * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
@@ -165,7 +166,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
 
   this.calculateMatrices2D(frameState);
 
-  this.dispatchComposeEvent_(ol.render.Event.Type.PRECOMPOSE, frameState);
+  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, frameState);
 
   var layerStatesArray = frameState.layerStatesArray;
   ol.array.stableSort(layerStatesArray, ol.renderer.Map.sortByZIndex);
@@ -190,7 +191,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
 
   this.dispatchComposeEvent_(
-      ol.render.Event.Type.POSTCOMPOSE, frameState);
+      ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
     this.canvas_.style.display = '';

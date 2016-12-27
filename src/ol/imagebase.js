@@ -11,7 +11,7 @@ goog.require('ol.events.EventType');
  * @param {ol.Extent} extent Extent.
  * @param {number|undefined} resolution Resolution.
  * @param {number} pixelRatio Pixel ratio.
- * @param {ol.Image.State} state State.
+ * @param {ol.ImageState} state State.
  * @param {Array.<ol.Attribution>} attributions Attributions.
  */
 ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
@@ -44,7 +44,7 @@ ol.ImageBase = function(extent, resolution, pixelRatio, state, attributions) {
 
   /**
    * @protected
-   * @type {ol.Image.State}
+   * @type {ol.ImageState}
    */
   this.state = state;
 
@@ -102,7 +102,7 @@ ol.ImageBase.prototype.getResolution = function() {
 
 
 /**
- * @return {ol.Image.State} State.
+ * @return {ol.ImageState} State.
  */
 ol.ImageBase.prototype.getState = function() {
   return this.state;
