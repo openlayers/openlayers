@@ -2,7 +2,7 @@ goog.provide('ol.interaction.Extent');
 
 goog.require('ol');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.coordinate');
 goog.require('ol.events.Event');
@@ -132,7 +132,7 @@ ol.interaction.Extent.handleEvent_ = function(mapBrowserEvent) {
     return true;
   }
   //display pointer (if not dragging)
-  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE && !this.handlingDownUpSequence) {
+  if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   //call pointer to determine up/down/drag

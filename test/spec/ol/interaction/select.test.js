@@ -3,7 +3,7 @@ goog.provide('ol.test.interaction.Select');
 goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
-goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.View');
 goog.require('ol.geom.Polygon');
@@ -150,7 +150,7 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, -10, -10);
+      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, -10, -10);
 
       expect(listenerSpy.callCount).to.be(0);
 
@@ -164,8 +164,8 @@ describe('ol.interaction.Select', function() {
       });
       select.on('select', listenerSpy);
 
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 10, -20);
-      simulateEvent(ol.MapBrowserEvent.EventType.SINGLECLICK, 9, -21);
+      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, 10, -20);
+      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, 9, -21);
 
       expect(listenerSpy.callCount).to.be(1);
 

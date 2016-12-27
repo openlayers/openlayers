@@ -2,7 +2,7 @@ goog.provide('ol.interaction.Draw');
 
 goog.require('ol');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
 goog.require('ol.events');
@@ -304,13 +304,13 @@ ol.interaction.Draw.handleEvent = function(event) {
   this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode_.POINT && this.freehandCondition_(event);
   var pass = !this.freehand_;
   if (this.freehand_ &&
-      event.type === ol.MapBrowserEvent.EventType.POINTERDRAG && this.sketchFeature_ !== null) {
+      event.type === ol.MapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
     this.addToDrawing_(event);
     pass = false;
   } else if (event.type ===
-      ol.MapBrowserEvent.EventType.POINTERMOVE) {
+      ol.MapBrowserEventType.POINTERMOVE) {
     pass = this.handlePointerMove_(event);
-  } else if (event.type === ol.MapBrowserEvent.EventType.DBLCLICK) {
+  } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
   return ol.interaction.Pointer.handleEvent.call(this, event) && pass;

@@ -8,6 +8,7 @@ goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserEventHandler');
 goog.require('ol.MapEvent');
 goog.require('ol.MapProperty');
@@ -262,7 +263,7 @@ ol.Map = function(options) {
     ol.events.EventType.MOUSEDOWN,
     ol.events.EventType.TOUCHSTART,
     ol.events.EventType.MSPOINTERDOWN,
-    ol.MapBrowserEvent.EventType.POINTERDOWN,
+    ol.MapBrowserEventType.POINTERDOWN,
     ol.events.EventType.MOUSEWHEEL,
     ol.events.EventType.WHEEL
   ];
@@ -277,8 +278,8 @@ ol.Map = function(options) {
    * @type {ol.MapBrowserEventHandler}
    */
   this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this);
-  for (var key in ol.MapBrowserEvent.EventType) {
-    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEvent.EventType[key],
+  for (var key in ol.MapBrowserEventType) {
+    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEventType[key],
         this.handleMapBrowserEvent, this);
   }
 
