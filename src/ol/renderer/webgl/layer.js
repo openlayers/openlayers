@@ -2,6 +2,7 @@ goog.provide('ol.renderer.webgl.Layer');
 
 goog.require('ol');
 goog.require('ol.render.Event');
+goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.renderer.webgl.defaultmapshader');
@@ -139,7 +140,7 @@ ol.renderer.webgl.Layer.prototype.bindFramebuffer = function(frameState, framebu
 ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState, context) {
 
   this.dispatchComposeEvent_(
-      ol.render.Event.Type.PRECOMPOSE, context, frameState);
+      ol.render.EventType.PRECOMPOSE, context, frameState);
 
   context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.arrayBuffer_);
 
@@ -178,13 +179,13 @@ ol.renderer.webgl.Layer.prototype.composeFrame = function(frameState, layerState
   gl.drawArrays(ol.webgl.TRIANGLE_STRIP, 0, 4);
 
   this.dispatchComposeEvent_(
-      ol.render.Event.Type.POSTCOMPOSE, context, frameState);
+      ol.render.EventType.POSTCOMPOSE, context, frameState);
 
 };
 
 
 /**
- * @param {ol.render.Event.Type} type Event type.
+ * @param {ol.render.EventType} type Event type.
  * @param {ol.webgl.Context} context WebGL context.
  * @param {olx.FrameState} frameState Frame state.
  * @private
