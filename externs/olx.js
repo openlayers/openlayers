@@ -4014,7 +4014,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     opacity: (number|undefined),
  *     preload: (number|undefined),
  *     renderBuffer: (number|undefined),
- *     renderMode: (ol.layer.VectorTile.RenderType|string|undefined),
+ *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
  *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
  *     source: (ol.source.VectorTile|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
@@ -4049,7 +4049,7 @@ olx.layer.VectorTileOptions.prototype.renderBuffer;
  *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance than the other options.
  *  The default is `'hybrid'`.
- * @type {ol.layer.VectorTile.RenderType|string|undefined}
+ * @type {ol.layer.VectorTileRenderType|string|undefined}
  * @api
  */
 olx.layer.VectorTileOptions.prototype.renderMode;

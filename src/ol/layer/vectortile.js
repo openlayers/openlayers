@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.layer.TileProperty');
 goog.require('ol.layer.Vector');
+goog.require('ol.layer.VectorTileRenderType');
 goog.require('ol.obj');
 
 
@@ -33,16 +34,16 @@ ol.layer.VectorTile = function(opt_options) {
       options.useInterimTilesOnError : true);
 
   ol.asserts.assert(options.renderMode == undefined ||
-      options.renderMode == ol.layer.VectorTile.RenderType.IMAGE ||
-      options.renderMode == ol.layer.VectorTile.RenderType.HYBRID ||
-      options.renderMode == ol.layer.VectorTile.RenderType.VECTOR,
+      options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
+      options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
+      options.renderMode == ol.layer.VectorTileRenderType.VECTOR,
       28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
 
   /**
    * @private
-   * @type {ol.layer.VectorTile.RenderType|string}
+   * @type {ol.layer.VectorTileRenderType|string}
    */
-  this.renderMode_ = options.renderMode || ol.layer.VectorTile.RenderType.HYBRID;
+  this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
 
 };
 ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
@@ -60,7 +61,7 @@ ol.layer.VectorTile.prototype.getPreload = function() {
 
 
 /**
- * @return {ol.layer.VectorTile.RenderType|string} The render mode.
+ * @return {ol.layer.VectorTileRenderType|string} The render mode.
  */
 ol.layer.VectorTile.prototype.getRenderMode = function() {
   return this.renderMode_;
@@ -109,24 +110,4 @@ ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTil
 ol.layer.VectorTile.Property_ = {
   PRELOAD: 'preload',
   USE_INTERIM_TILES_ON_ERROR: 'useInterimTilesOnError'
-};
-
-
-/**
- * @enum {string}
- * Render mode for vector tiles:
- *  * `'image'`: Vector tiles are rendered as images. Great performance, but
- *    point symbols and texts are always rotated with the view and pixels are
- *    scaled during zoom animations.
- *  * `'hybrid'`: Polygon and line elements are rendered as images, so pixels
- *    are scaled during zoom animations. Point symbols and texts are accurately
- *    rendered as vectors and can stay upright on rotated views.
- *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
- *    even during animations, but slower performance than the other options.
- * @api
- */
-ol.layer.VectorTile.RenderType = {
-  IMAGE: 'image',
-  HYBRID: 'hybrid',
-  VECTOR: 'vector'
 };
