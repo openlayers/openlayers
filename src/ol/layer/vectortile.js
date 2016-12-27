@@ -55,7 +55,7 @@ ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
  * @api
  */
 ol.layer.VectorTile.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(ol.layer.VectorTile.Property.PRELOAD));
+  return /** @type {number} */ (this.get(ol.layer.VectorTile.Property_.PRELOAD));
 };
 
 
@@ -75,7 +75,7 @@ ol.layer.VectorTile.prototype.getRenderMode = function() {
  */
 ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
   return /** @type {boolean} */ (
-      this.get(ol.layer.VectorTile.Property.USE_INTERIM_TILES_ON_ERROR));
+      this.get(ol.layer.VectorTile.Property_.USE_INTERIM_TILES_ON_ERROR));
 };
 
 
@@ -104,8 +104,9 @@ ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTil
 
 /**
  * @enum {string}
+ * @private
  */
-ol.layer.VectorTile.Property = {
+ol.layer.VectorTile.Property_ = {
   PRELOAD: 'preload',
   USE_INTERIM_TILES_ON_ERROR: 'useInterimTilesOnError'
 };
