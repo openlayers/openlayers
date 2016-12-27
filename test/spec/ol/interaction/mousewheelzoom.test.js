@@ -69,7 +69,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
       var origHasFirefox = ol.has.FIREFOX;
       ol.has.FIREFOX = true;
       map.once('postrender', function() {
-        expect(interaction.mode_).to.be(ol.interaction.MouseWheelZoom.Mode.TRACKPAD);
+        expect(interaction.mode_).to.be(ol.interaction.MouseWheelZoom.Mode_.TRACKPAD);
         ol.has.FIREFOX = origHasFirefox;
         done();
       });
@@ -88,7 +88,7 @@ describe('ol.interaction.MouseWheelZoom', function() {
       var origHasFirefox = ol.has.FIREFOX;
       ol.has.FIREFOX = false;
       map.once('postrender', function() {
-        expect(interaction.mode_).to.be(ol.interaction.MouseWheelZoom.Mode.TRACKPAD);
+        expect(interaction.mode_).to.be(ol.interaction.MouseWheelZoom.Mode_.TRACKPAD);
         ol.has.FIREFOX = origHasFirefox;
         done();
       });
