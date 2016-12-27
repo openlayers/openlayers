@@ -5,6 +5,7 @@ goog.provide('ol.interaction.Interaction');
 goog.require('ol');
 goog.require('ol.Object');
 goog.require('ol.easing');
+goog.require('ol.interaction.Property');
 
 
 /**
@@ -53,7 +54,7 @@ ol.inherits(ol.interaction.Interaction, ol.Object);
  */
 ol.interaction.Interaction.prototype.getActive = function() {
   return /** @type {boolean} */ (
-      this.get(ol.interaction.Interaction.Property.ACTIVE));
+      this.get(ol.interaction.Property.ACTIVE));
 };
 
 
@@ -74,7 +75,7 @@ ol.interaction.Interaction.prototype.getMap = function() {
  * @api
  */
 ol.interaction.Interaction.prototype.setActive = function(active) {
-  this.set(ol.interaction.Interaction.Property.ACTIVE, active);
+  this.set(ol.interaction.Property.ACTIVE, active);
 };
 
 
@@ -216,12 +217,4 @@ ol.interaction.Interaction.zoomWithoutConstraints = function(map, view, resoluti
       view.setResolution(resolution);
     }
   }
-};
-
-
-/**
- * @enum {string}
- */
-ol.interaction.Interaction.Property = {
-  ACTIVE: 'active'
 };

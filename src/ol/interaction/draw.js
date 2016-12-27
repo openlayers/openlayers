@@ -1,15 +1,15 @@
 goog.provide('ol.interaction.Draw');
 
 goog.require('ol');
-goog.require('ol.events');
-goog.require('ol.extent');
-goog.require('ol.events.Event');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.Object');
 goog.require('ol.coordinate');
-goog.require('ol.functions');
+goog.require('ol.events');
+goog.require('ol.events.Event');
 goog.require('ol.events.condition');
+goog.require('ol.extent');
+goog.require('ol.functions');
 goog.require('ol.geom.Circle');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.LineString');
@@ -18,8 +18,8 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.interaction.Property');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
@@ -265,7 +265,7 @@ ol.interaction.Draw = function(options) {
   }
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.interaction.Interaction.Property.ACTIVE),
+      ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
       this.updateState_, this);
 
 };
