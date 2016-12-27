@@ -1,6 +1,7 @@
 goog.provide('ol.Object');
 
 goog.require('ol');
+goog.require('ol.ObjectEventType');
 goog.require('ol.Observable');
 goog.require('ol.events.Event');
 goog.require('ol.obj');
@@ -134,7 +135,7 @@ ol.Object.prototype.notify = function(key, oldValue) {
   var eventType;
   eventType = ol.Object.getChangeEventType(key);
   this.dispatchEvent(new ol.Object.Event(eventType, key, oldValue));
-  eventType = ol.Object.EventType.PROPERTYCHANGE;
+  eventType = ol.ObjectEventType.PROPERTYCHANGE;
   this.dispatchEvent(new ol.Object.Event(eventType, key, oldValue));
 };
 
@@ -188,19 +189,6 @@ ol.Object.prototype.unset = function(key, opt_silent) {
       this.notify(key, oldValue);
     }
   }
-};
-
-
-/**
- * @enum {string}
- */
-ol.Object.EventType = {
-  /**
-   * Triggered when a property is changed.
-   * @event ol.Object.Event#propertychange
-   * @api stable
-   */
-  PROPERTYCHANGE: 'propertychange'
 };
 
 

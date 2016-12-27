@@ -1,10 +1,11 @@
 goog.provide('ol.layer.Group');
 
 goog.require('ol');
-goog.require('ol.asserts');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
@@ -104,7 +105,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   for (i = 0, ii = layersArray.length; i < ii; i++) {
     layer = layersArray[i];
     this.listenerKeys_[ol.getUid(layer).toString()] = [
-      ol.events.listen(layer, ol.Object.EventType.PROPERTYCHANGE,
+      ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
           this.handleLayerChange_, this),
       ol.events.listen(layer, ol.events.EventType.CHANGE,
           this.handleLayerChange_, this)
@@ -125,7 +126,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   ol.DEBUG && console.assert(!(key in this.listenerKeys_),
       'listeners already registered');
   this.listenerKeys_[key] = [
-    ol.events.listen(layer, ol.Object.EventType.PROPERTYCHANGE,
+    ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
     ol.events.listen(layer, ol.events.EventType.CHANGE,
         this.handleLayerChange_, this)

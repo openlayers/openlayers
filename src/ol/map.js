@@ -14,6 +14,7 @@ goog.require('ol.MapEvent');
 goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
@@ -1099,7 +1100,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
   if (view) {
     this.viewport_.setAttribute('data-view', ol.getUid(view));
     this.viewPropertyListenerKey_ = ol.events.listen(
-        view, ol.Object.EventType.PROPERTYCHANGE,
+        view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = ol.events.listen(
         view, ol.events.EventType.CHANGE,
@@ -1121,7 +1122,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       ol.events.listen(
-          layerGroup, ol.Object.EventType.PROPERTYCHANGE,
+          layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
           this.render, this),
       ol.events.listen(
           layerGroup, ol.events.EventType.CHANGE,
