@@ -48,7 +48,7 @@ ol.layer.Group = function(opt_options) {
   this.listenerKeys_ = {};
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Group.Property.LAYERS),
+      ol.Object.getChangeEventType(ol.layer.Group.Property_.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {
@@ -158,7 +158,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
-      ol.layer.Group.Property.LAYERS));
+      ol.layer.Group.Property_.LAYERS));
 };
 
 
@@ -171,7 +171,7 @@ ol.layer.Group.prototype.getLayers = function() {
  * @api stable
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
-  this.set(ol.layer.Group.Property.LAYERS, layers);
+  this.set(ol.layer.Group.Property_.LAYERS, layers);
 };
 
 
@@ -232,7 +232,8 @@ ol.layer.Group.prototype.getSourceState = function() {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.layer.Group.Property = {
+ol.layer.Group.Property_ = {
   LAYERS: 'layers'
 };
