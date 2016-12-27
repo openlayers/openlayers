@@ -1,5 +1,9 @@
 const pkg = require('../package.json');
-const defineLookup = require('../build/defines.json');
+
+const defines = {
+  'ol.DEBUG': false,
+  'ol.ENABLE_WEBGL': false
+};
 
 function rename(name) {
   const parts = name.split('.');
@@ -69,26 +73,6 @@ function getGoogExpressionStatement(identifier) {
   };
 }
 
-const defineStatement = {
-  type: 'ExpressionStatement',
-  expression: {
-    type: 'AssignmentExpression',
-    left: {
-      type: 'MemberExpression',
-      object: {
-        type: 'Identifier',
-        name: 'ol'
-      },
-      property: {
-        type: 'Identifier'
-      }
-    },
-    right: {
-      type: 'Literal'
-    }
-  }
-};
-
 const defineMemberExpression = {
   type: 'MemberExpression',
   object: {
@@ -131,37 +115,16 @@ module.exports = function(info, api) {
 
   const replacements = {};
 
-  // replace assignments defines (e.g. ol.FOO = true -> window.OL_FOO = true)
-  root.find(j.ExpressionStatement, defineStatement)
-    .filter(path => {
-      const expression = path.value.expression;
-      const defineName = `${expression.left.object.name}.${expression.left.property.name}`;
-      return defineName in defineLookup;
-    })
-    .replaceWith(path => {
-      const expression = path.value.expression;
-      const defineName = `${expression.left.object.name}.${expression.left.property.name}`;
-      const comments = path.value.comments;
-      const statement = j.expressionStatement(
-        j.assignmentExpression('=',
-          j.memberExpression(j.identifier('window'), j.identifier(renameDefine(defineName))),
-          j.literal(expression.right.value)
-        )
-      );
-      statement.comments = comments;
-      return statement;
-    });
-
-  // replace all uses of defines with renamed define
+  // replace all uses of defines
   root.find(j.MemberExpression, defineMemberExpression)
     .filter(path => {
       const node = path.value;
-      const defineName = `${node.object.name}.${node.property.name}`;
-      return defineName in defineLookup;
+      const name = `${node.object.name}.${node.property.name}`;
+      return (name in defines) && path.parentPath.value.type !== 'AssignmentExpression';
     })
     .replaceWith(path => {
-      const defineName = `${path.value.object.name}.${path.value.property.name}`;
-      return j.memberExpression(j.identifier('window'), j.identifier(renameDefine(defineName)));
+      const name = `${path.value.object.name}.${path.value.property.name}`;
+      return j.literal(defines[name]);
     });
 
   // replace goog.provide()

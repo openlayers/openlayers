@@ -1,6 +1,6 @@
 # `ol`
 
-[OpenLayers](https://openlayers.org/) for CommonJS module loaders.
+[OpenLayers](https://openlayers.org/) for module loaders.
 
 **Note: This is still a work in progress.  Not yet ready for production.**
 
@@ -18,7 +18,7 @@ import View from 'ol/View';
 import TileLayer from 'ol/layer/Tile';
 import OSM from 'ol/source/OSM';
 
-var map = new OLMap({
+var map = new Map({
   target: 'map',
   layers: [
     new TileLayer({
