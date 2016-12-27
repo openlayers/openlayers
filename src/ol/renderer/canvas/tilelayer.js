@@ -6,7 +6,7 @@ goog.require('ol');
 goog.require('ol.transform');
 goog.require('ol.TileRange');
 goog.require('ol.Tile');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -171,7 +171,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
 
   var hints = frameState.viewHints;
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 &&
-      (hints[ol.View.Hint.ANIMATING] || hints[ol.View.Hint.INTERACTING])) &&
+      (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING])) &&
       (newTiles || !(this.renderedExtent_ &&
       ol.extent.equals(this.renderedExtent_, imageExtent)) ||
       this.renderedRevision != sourceRevision)) {

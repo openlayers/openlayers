@@ -2,6 +2,7 @@ goog.provide('ol.test.View');
 
 goog.require('ol');
 goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.extent');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
@@ -311,7 +312,7 @@ describe('ol.View', function() {
 
       expect(view.getHints()).to.eql([0, 0]);
 
-      view.setHint(ol.View.Hint.INTERACTING, 1);
+      view.setHint(ol.ViewHint.INTERACTING, 1);
       expect(view.getHints()).to.eql([0, 1]);
     });
 
@@ -325,7 +326,7 @@ describe('ol.View', function() {
         expect(view.getHints()).to.eql([0, 1]);
         done();
       });
-      view.setHint(ol.View.Hint.INTERACTING, 1);
+      view.setHint(ol.ViewHint.INTERACTING, 1);
     });
 
   });
@@ -477,7 +478,7 @@ describe('ol.View', function() {
       function decrement() {
         --count;
         if (count === 0) {
-          expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(0);
+          expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(0);
           done();
         }
       }
@@ -485,19 +486,19 @@ describe('ol.View', function() {
         center: [1, 2],
         duration: 25
       }, decrement);
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(1);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(1);
 
       view.animate({
         zoom: 1,
         duration: 25
       }, decrement);
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(2);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(2);
 
       view.animate({
         rotate: Math.PI,
         duration: 25
       }, decrement);
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(3);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(3);
 
     });
 
@@ -512,23 +513,23 @@ describe('ol.View', function() {
         center: [1, 2],
         duration: 25
       });
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(1);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(1);
 
       view.animate({
         zoom: 1,
         duration: 25
       });
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(2);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(2);
 
       view.animate({
         rotate: Math.PI,
         duration: 25
       });
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(3);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(3);
 
       // cancel animations
       view.setCenter([10, 20]);
-      expect(view.getHints()[ol.View.Hint.ANIMATING]).to.be(0);
+      expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(0);
 
     });
 

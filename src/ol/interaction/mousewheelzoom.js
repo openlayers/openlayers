@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.MouseWheelZoom');
 
 goog.require('ol');
-goog.require('ol.View');
+goog.require('ol.ViewHint');
 goog.require('ol.easing');
 goog.require('ol.events.EventType');
 goog.require('ol.has');
@@ -167,7 +167,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     if (this.trackpadTimeoutId_) {
       clearTimeout(this.trackpadTimeoutId_);
     } else {
-      view.setHint(ol.View.Hint.INTERACTING, 1);
+      view.setHint(ol.ViewHint.INTERACTING, 1);
     }
     this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
     var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
@@ -222,7 +222,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 ol.interaction.MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
   this.trackpadTimeoutId_ = undefined;
   var view = this.getMap().getView();
-  view.setHint(ol.View.Hint.INTERACTING, -1);
+  view.setHint(ol.ViewHint.INTERACTING, -1);
 };
 
 

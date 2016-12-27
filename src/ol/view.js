@@ -6,6 +6,7 @@ goog.require('ol.Constraints');
 goog.require('ol.Object');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
+goog.require('ol.ViewHint');
 goog.require('ol.ViewProperty');
 goog.require('ol.array');
 goog.require('ol.asserts');
@@ -254,7 +255,7 @@ ol.View.prototype.animate = function(var_args) {
     series.push(animation);
   }
   this.animations_.push(series);
-  this.setHint(ol.View.Hint.ANIMATING, 1);
+  this.setHint(ol.ViewHint.ANIMATING, 1);
   this.updateAnimations_();
 };
 
@@ -264,7 +265,7 @@ ol.View.prototype.animate = function(var_args) {
  * @return {boolean} The view is being animated.
  */
 ol.View.prototype.getAnimating = function() {
-  return this.getHints()[ol.View.Hint.ANIMATING] > 0;
+  return this.getHints()[ol.ViewHint.ANIMATING] > 0;
 };
 
 
@@ -272,7 +273,7 @@ ol.View.prototype.getAnimating = function() {
  * Cancel any ongoing animations.
  */
 ol.View.prototype.cancelAnimations = function() {
-  this.setHint(ol.View.Hint.ANIMATING, -this.getHints()[ol.View.Hint.ANIMATING]);
+  this.setHint(ol.ViewHint.ANIMATING, -this.getHints()[ol.ViewHint.ANIMATING]);
   for (var i = 0, ii = this.animations_.length; i < ii; ++i) {
     var series = this.animations_[i];
     if (series[0].callback) {
@@ -346,7 +347,7 @@ ol.View.prototype.updateAnimations_ = function() {
     }
     if (seriesComplete) {
       this.animations_[i] = null;
-      this.setHint(ol.View.Hint.ANIMATING, -1);
+      this.setHint(ol.ViewHint.ANIMATING, -1);
       var callback = series[0].callback;
       if (callback) {
         callback(true);
@@ -839,7 +840,7 @@ ol.View.prototype.setCenter = function(center) {
 
 
 /**
- * @param {ol.View.Hint} hint Hint.
+ * @param {ol.ViewHint} hint Hint.
  * @param {number} delta Delta.
  * @return {number} New value.
  */
@@ -1014,13 +1015,4 @@ ol.View.createRotationConstraint_ = function(options) {
   } else {
     return ol.RotationConstraint.disable;
   }
-};
-
-
-/**
- * @enum {number}
- */
-ol.View.Hint = {
-  ANIMATING: 0,
-  INTERACTING: 1
 };
