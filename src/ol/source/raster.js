@@ -295,7 +295,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
   if (imageDatas) {
     var data = {};
     this.dispatchEvent(new ol.source.Raster.Event(
-        ol.source.Raster.EventType.BEFOREOPERATIONS, frameState, data));
+        ol.source.Raster.EventType_.BEFOREOPERATIONS, frameState, data));
 
     this.worker_.process(imageDatas, data,
         this.onWorkerComplete_.bind(this, frameState, callback));
@@ -325,7 +325,7 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
   }
 
   this.dispatchEvent(new ol.source.Raster.Event(
-      ol.source.Raster.EventType.AFTEROPERATIONS, frameState, data));
+      ol.source.Raster.EventType_.AFTEROPERATIONS, frameState, data));
 
   var resolution = frameState.viewState.resolution / frameState.pixelRatio;
   if (!this.isDirty_(frameState.extent, resolution)) {
@@ -488,8 +488,9 @@ ol.inherits(ol.source.Raster.Event, ol.events.Event);
 
 /**
  * @enum {string}
+ * @private
  */
-ol.source.Raster.EventType = {
+ol.source.Raster.EventType_ = {
   /**
    * Triggered before operations are run.
    * @event ol.source.Raster.Event#beforeoperations
