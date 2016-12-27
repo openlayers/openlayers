@@ -214,7 +214,7 @@ ol.interaction.Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
     this.dispatchEvent(new ol.interaction.Modify.Event(
-        ol.interaction.Modify.EventType.MODIFYSTART, this.features_, evt));
+        ol.interaction.Modify.EventType_.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -633,7 +633,7 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
   }
   if (this.modified_) {
     this.dispatchEvent(new ol.interaction.Modify.Event(
-        ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
+        ol.interaction.Modify.EventType_.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -828,7 +828,7 @@ ol.interaction.Modify.prototype.removePoint = function() {
     this.willModifyFeatures_(evt);
     this.removeVertex_();
     this.dispatchEvent(new ol.interaction.Modify.Event(
-        ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
+        ol.interaction.Modify.EventType_.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }
@@ -1006,7 +1006,7 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.ModifyEvent}
- * @param {ol.interaction.Modify.EventType} type Type.
+ * @param {ol.interaction.Modify.EventType_} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features modified.
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
@@ -1034,8 +1034,9 @@ ol.inherits(ol.interaction.Modify.Event, ol.events.Event);
 
 /**
  * @enum {string}
+ * @private
  */
-ol.interaction.Modify.EventType = {
+ol.interaction.Modify.EventType_ = {
   /**
    * Triggered upon feature modification start
    * @event ol.interaction.Modify.Event#modifystart
