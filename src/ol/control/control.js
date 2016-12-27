@@ -1,10 +1,10 @@
 goog.provide('ol.control.Control');
 
-goog.require('ol.events');
 goog.require('ol');
-goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.dom');
+goog.require('ol.events');
 
 
 /**
@@ -118,7 +118,7 @@ ol.control.Control.prototype.setMap = function(map) {
     target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(ol.events.listen(map,
-          ol.MapEvent.Type.POSTRENDER, this.render, this));
+          ol.MapEventType.POSTRENDER, this.render, this));
     }
     map.render();
   }

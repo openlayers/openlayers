@@ -3,7 +3,7 @@ goog.provide('ol.control.OverviewMap');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
-goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.Overlay');
@@ -443,7 +443,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    ol.events.listenOnce(ovmap, ol.MapEvent.Type.POSTRENDER,
+    ol.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
         },

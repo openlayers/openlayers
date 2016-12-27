@@ -8,9 +8,10 @@ goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
-goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserEventHandler');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.TileQueue');
@@ -1288,13 +1289,13 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
     if (idle) {
       this.dispatchEvent(
-          new ol.MapEvent(ol.MapEvent.Type.MOVEEND, this, frameState));
+          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
       ol.extent.clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new ol.MapEvent(ol.MapEvent.Type.POSTRENDER, this, frameState));
+      new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 
