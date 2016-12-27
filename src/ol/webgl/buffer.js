@@ -23,7 +23,7 @@ ol.webgl.Buffer = function(opt_arr, opt_usage) {
    * @type {number}
    */
   this.usage_ = opt_usage !== undefined ?
-      opt_usage : ol.webgl.Buffer.Usage.STATIC_DRAW;
+      opt_usage : ol.webgl.Buffer.Usage_.STATIC_DRAW;
 
 };
 
@@ -46,8 +46,9 @@ ol.webgl.Buffer.prototype.getUsage = function() {
 
 /**
  * @enum {number}
+ * @private
  */
-ol.webgl.Buffer.Usage = {
+ol.webgl.Buffer.Usage_ = {
   STATIC_DRAW: ol.webgl.STATIC_DRAW,
   STREAM_DRAW: ol.webgl.STREAM_DRAW,
   DYNAMIC_DRAW: ol.webgl.DYNAMIC_DRAW
