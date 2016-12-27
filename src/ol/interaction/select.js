@@ -1,12 +1,12 @@
 goog.provide('ol.interaction.Select');
 
 goog.require('ol');
-goog.require('ol.functions');
-goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.array');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.condition');
+goog.require('ol.functions');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.layer.Vector');
@@ -136,9 +136,9 @@ ol.interaction.Select = function(opt_options) {
   this.featureLayerAssociation_ = {};
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
-  ol.events.listen(features, ol.Collection.EventType.ADD,
+  ol.events.listen(features, ol.CollectionEventType.ADD,
       this.addFeature_, this);
-  ol.events.listen(features, ol.Collection.EventType.REMOVE,
+  ol.events.listen(features, ol.CollectionEventType.REMOVE,
       this.removeFeature_, this);
 
 };

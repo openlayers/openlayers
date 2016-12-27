@@ -1,7 +1,7 @@
 goog.provide('ol.interaction.Modify');
 
 goog.require('ol');
-goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserPointerEvent');
@@ -173,9 +173,9 @@ ol.interaction.Modify = function(options) {
   this.features_ = options.features;
 
   this.features_.forEach(this.addFeature_, this);
-  ol.events.listen(this.features_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.features_, ol.CollectionEventType.ADD,
       this.handleFeatureAdd_, this);
-  ol.events.listen(this.features_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
       this.handleFeatureRemove_, this);
 
   /**

@@ -6,6 +6,7 @@ goog.provide('ol.Map');
 
 goog.require('ol');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEventHandler');
 goog.require('ol.MapEvent');
@@ -391,7 +392,7 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.controls_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -399,7 +400,7 @@ ol.Map = function(options) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -416,7 +417,7 @@ ol.Map = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.interactions_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -424,7 +425,7 @@ ol.Map = function(options) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -434,7 +435,7 @@ ol.Map = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -442,7 +443,7 @@ ol.Map = function(options) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  ol.events.listen(this.overlays_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */

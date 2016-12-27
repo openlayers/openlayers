@@ -6,8 +6,9 @@
 goog.provide('ol.Collection');
 
 goog.require('ol');
-goog.require('ol.events.Event');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
+goog.require('ol.events.Event');
 
 
 /**
@@ -127,7 +128,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
-      new ol.Collection.Event(ol.Collection.EventType.ADD, elem));
+      new ol.Collection.Event(ol.CollectionEventType.ADD, elem));
 };
 
 
@@ -185,7 +186,7 @@ ol.Collection.prototype.removeAt = function(index) {
   this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
-      new ol.Collection.Event(ol.Collection.EventType.REMOVE, prev));
+      new ol.Collection.Event(ol.CollectionEventType.REMOVE, prev));
   return prev;
 };
 
@@ -202,9 +203,9 @@ ol.Collection.prototype.setAt = function(index, elem) {
     var prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-        new ol.Collection.Event(ol.Collection.EventType.REMOVE, prev));
+        new ol.Collection.Event(ol.CollectionEventType.REMOVE, prev));
     this.dispatchEvent(
-        new ol.Collection.Event(ol.Collection.EventType.ADD, elem));
+        new ol.Collection.Event(ol.CollectionEventType.ADD, elem));
   } else {
     var j;
     for (j = n; j < index; ++j) {
@@ -232,25 +233,6 @@ ol.Collection.Property = {
 
 
 /**
- * @enum {string}
- */
-ol.Collection.EventType = {
-  /**
-   * Triggered when an item is added to the collection.
-   * @event ol.Collection.Event#add
-   * @api stable
-   */
-  ADD: 'add',
-  /**
-   * Triggered when an item is removed from the collection.
-   * @event ol.Collection.Event#remove
-   * @api stable
-   */
-  REMOVE: 'remove'
-};
-
-
-/**
  * @classdesc
  * Events emitted by {@link ol.Collection} instances are instances of this
  * type.
@@ -258,7 +240,7 @@ ol.Collection.EventType = {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.Collection.Event}
- * @param {ol.Collection.EventType} type Type.
+ * @param {ol.CollectionEventType} type Type.
  * @param {*=} opt_element Element.
  */
 ol.Collection.Event = function(type, opt_element) {

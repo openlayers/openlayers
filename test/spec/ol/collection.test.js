@@ -2,6 +2,7 @@ goog.provide('ol.test.Collection');
 
 goog.require('ol.events');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 
 
 describe('ol.collection', function() {
@@ -130,7 +131,7 @@ describe('ol.collection', function() {
     it('fires a remove event', function() {
       var collection = new ol.Collection([0, 1, 2]);
       var cb = sinon.spy();
-      ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb);
+      ol.events.listen(collection, ol.CollectionEventType.REMOVE, cb);
       expect(collection.remove(1)).to.eql(1);
       expect(cb).to.be.called();
       expect(cb.lastCall.args[0].element).to.eql(1);
@@ -153,11 +154,11 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a', 'b']);
       var added, removed;
-      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         added = e.element;
       });
       ol.events.listen(
-          collection, ol.Collection.EventType.REMOVE, function(e) {
+          collection, ol.CollectionEventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.setAt(1, 1);
@@ -171,7 +172,7 @@ describe('ol.collection', function() {
       var collection = new ol.Collection(['a']);
       var removed;
       ol.events.listen(
-          collection, ol.Collection.EventType.REMOVE, function(e) {
+          collection, ol.CollectionEventType.REMOVE, function(e) {
             removed = e.element;
           });
       collection.pop();
@@ -184,7 +185,7 @@ describe('ol.collection', function() {
       var collection = new ol.Collection([0, 2]);
       var added;
       ol.events.listen(
-          collection, ol.Collection.EventType.ADD, function(e) {
+          collection, ol.CollectionEventType.ADD, function(e) {
             added = e.element;
           });
       collection.insertAt(1, 1);
@@ -196,7 +197,7 @@ describe('ol.collection', function() {
     it('triggers events properly', function() {
       var added = [];
       ol.events.listen(
-          collection, ol.Collection.EventType.ADD, function(e) {
+          collection, ol.CollectionEventType.ADD, function(e) {
             added.push(e.element);
           });
       collection.setAt(2, 0);
@@ -245,7 +246,7 @@ describe('ol.collection', function() {
     it('triggers add when pushing', function() {
       var collection = new ol.Collection();
       var elem;
-      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         elem = e.element;
       });
       var length = collection.push(1);
@@ -262,8 +263,8 @@ describe('ol.collection', function() {
     });
     describe('setAt', function() {
       it('triggers remove', function() {
-        ol.events.listen(collection, ol.Collection.EventType.ADD, cb1);
-        ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb2);
+        ol.events.listen(collection, ol.CollectionEventType.ADD, cb1);
+        ol.events.listen(collection, ol.CollectionEventType.REMOVE, cb2);
         collection.setAt(0, 2);
         expect(cb2.lastCall.args[0].element).to.eql(1);
         expect(cb1.lastCall.args[0].element).to.eql(2);
@@ -271,7 +272,7 @@ describe('ol.collection', function() {
     });
     describe('pop', function() {
       it('triggers remove', function() {
-        ol.events.listen(collection, ol.Collection.EventType.REMOVE, cb1);
+        ol.events.listen(collection, ol.CollectionEventType.REMOVE, cb1);
         collection.pop();
         expect(cb1.lastCall.args[0].element).to.eql(1);
       });
@@ -289,7 +290,7 @@ describe('ol.collection', function() {
     it('fires events', function() {
       var collection = new ol.Collection();
       var elems = [];
-      ol.events.listen(collection, ol.Collection.EventType.ADD, function(e) {
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         elems.push(e.element);
       });
       collection.extend([1, 2]);
