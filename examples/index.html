@@ -29,6 +29,11 @@
       .example:hover {
         background-color: #ddd;
       }
+      
+      .api {
+        font-size: smaller;
+        word-wrap: break-word;
+      }
 
       ::-webkit-scrollbar {
         width: 8px;
@@ -106,7 +111,8 @@
             };
             if (dict) {
               updateScores();
-            } else {
+            }
+            if (!dict || Object.keys(scores).length < 3){
               var r;
               for (idx in info.index) {
                 r = new RegExp(word);
@@ -213,6 +219,7 @@
                 <small jugl:content="'(' + example.example + ')'"></small>
               </span>
               <p class="description" jugl:content="example.shortdesc"></p>
+              <p class="api" jugl:content="example.requires"></p>
             </a>
           </div>
         </div>
