@@ -1,6 +1,6 @@
 goog.provide('ol.events.condition');
 
-goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.asserts');
 goog.require('ol.functions');
 goog.require('ol.has');
@@ -59,7 +59,7 @@ ol.events.condition.always = ol.functions.TRUE;
  * @api stable
  */
 ol.events.condition.click = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.CLICK;
+  return mapBrowserEvent.type == ol.MapBrowserEventType.CLICK;
 };
 
 
@@ -111,7 +111,7 @@ ol.events.condition.pointerMove = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.singleClick = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK;
+  return mapBrowserEvent.type == ol.MapBrowserEventType.SINGLECLICK;
 };
 
 
@@ -123,7 +123,7 @@ ol.events.condition.singleClick = function(mapBrowserEvent) {
  * @api stable
  */
 ol.events.condition.doubleClick = function(mapBrowserEvent) {
-  return mapBrowserEvent.type == ol.MapBrowserEvent.EventType.DBLCLICK;
+  return mapBrowserEvent.type == ol.MapBrowserEventType.DBLCLICK;
 };
 
 

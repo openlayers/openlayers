@@ -2,7 +2,7 @@ goog.provide('ol.interaction.Pointer');
 
 goog.require('ol');
 goog.require('ol.functions');
-goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.obj');
@@ -109,9 +109,9 @@ ol.interaction.Pointer.centroid = function(pointerEvents) {
 ol.interaction.Pointer.prototype.isPointerDraggingEvent_ = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
   return (
-      type === ol.MapBrowserEvent.EventType.POINTERDOWN ||
-      type === ol.MapBrowserEvent.EventType.POINTERDRAG ||
-      type === ol.MapBrowserEvent.EventType.POINTERUP);
+      type === ol.MapBrowserEventType.POINTERDOWN ||
+      type === ol.MapBrowserEventType.POINTERDRAG ||
+      type === ol.MapBrowserEventType.POINTERUP);
 };
 
 
@@ -123,10 +123,10 @@ ol.interaction.Pointer.prototype.updateTrackedPointers_ = function(mapBrowserEve
   if (this.isPointerDraggingEvent_(mapBrowserEvent)) {
     var event = mapBrowserEvent.pointerEvent;
 
-    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
+    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
       delete this.trackedPointers_[event.pointerId];
     } else if (mapBrowserEvent.type ==
-        ol.MapBrowserEvent.EventType.POINTERDOWN) {
+        ol.MapBrowserEventType.POINTERDOWN) {
       this.trackedPointers_[event.pointerId] = event;
     } else if (event.pointerId in this.trackedPointers_) {
       // update only when there was a pointerdown event for this pointer
@@ -184,17 +184,17 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
   this.updateTrackedPointers_(mapBrowserEvent);
   if (this.handlingDownUpSequence) {
-    if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDRAG) {
+    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
-    } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERUP) {
+    } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
       this.handlingDownUpSequence = this.handleUpEvent_(mapBrowserEvent);
     }
   }
-  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERDOWN) {
+  if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDOWN) {
     var handled = this.handleDownEvent_(mapBrowserEvent);
     this.handlingDownUpSequence = handled;
     stopEvent = this.shouldStopEvent(handled);
-  } else if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE) {
+  } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE) {
     this.handleMoveEvent_(mapBrowserEvent);
   }
   return !stopEvent;

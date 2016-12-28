@@ -6,11 +6,15 @@ goog.provide('ol.Map');
 
 goog.require('ol');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.MapBrowserEvent');
 goog.require('ol.MapBrowserEventHandler');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
@@ -261,7 +265,7 @@ ol.Map = function(options) {
     ol.events.EventType.MOUSEDOWN,
     ol.events.EventType.TOUCHSTART,
     ol.events.EventType.MSPOINTERDOWN,
-    ol.MapBrowserEvent.EventType.POINTERDOWN,
+    ol.MapBrowserEventType.POINTERDOWN,
     ol.events.EventType.MOUSEWHEEL,
     ol.events.EventType.WHEEL
   ];
@@ -276,8 +280,8 @@ ol.Map = function(options) {
    * @type {ol.MapBrowserEventHandler}
    */
   this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this);
-  for (var key in ol.MapBrowserEvent.EventType) {
-    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEvent.EventType[key],
+  for (var key in ol.MapBrowserEventType) {
+    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEventType[key],
         this.handleMapBrowserEvent, this);
   }
 
@@ -391,7 +395,7 @@ ol.Map = function(options) {
         control.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.controls_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -399,7 +403,7 @@ ol.Map = function(options) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.controls_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -416,7 +420,7 @@ ol.Map = function(options) {
         interaction.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.interactions_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -424,7 +428,7 @@ ol.Map = function(options) {
         event.element.setMap(this);
       }, this);
 
-  ol.events.listen(this.interactions_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -434,7 +438,7 @@ ol.Map = function(options) {
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -442,7 +446,7 @@ ol.Map = function(options) {
         this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
       }, this);
 
-  ol.events.listen(this.overlays_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
       /**
        * @param {ol.Collection.Event} event Collection event.
        */
@@ -1096,7 +1100,7 @@ ol.Map.prototype.handleViewChanged_ = function() {
   if (view) {
     this.viewport_.setAttribute('data-view', ol.getUid(view));
     this.viewPropertyListenerKey_ = ol.events.listen(
-        view, ol.Object.EventType.PROPERTYCHANGE,
+        view, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleViewPropertyChanged_, this);
     this.viewChangeListenerKey_ = ol.events.listen(
         view, ol.events.EventType.CHANGE,
@@ -1118,7 +1122,7 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       ol.events.listen(
-          layerGroup, ol.Object.EventType.PROPERTYCHANGE,
+          layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
           this.render, this),
       ol.events.listen(
           layerGroup, ol.events.EventType.CHANGE,
@@ -1286,13 +1290,13 @@ ol.Map.prototype.renderFrame_ = function(time) {
 
     if (idle) {
       this.dispatchEvent(
-          new ol.MapEvent(ol.MapEvent.Type.MOVEEND, this, frameState));
+          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
       ol.extent.clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new ol.MapEvent(ol.MapEvent.Type.POSTRENDER, this, frameState));
+      new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
 
   setTimeout(this.handlePostRender.bind(this), 0);
 

@@ -42,12 +42,12 @@ ol.control.ZoomSlider = function(opt_options) {
 
   /**
    * The direction of the slider. Will be determined from actual display of the
-   * container and defaults to ol.control.ZoomSlider.direction.VERTICAL.
+   * container and defaults to ol.control.ZoomSlider.Direction_.VERTICAL.
    *
-   * @type {ol.control.ZoomSlider.direction}
+   * @type {ol.control.ZoomSlider.Direction_}
    * @private
    */
-  this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
+  this.direction_ = ol.control.ZoomSlider.Direction_.VERTICAL;
 
   /**
    * @type {boolean}
@@ -154,8 +154,9 @@ ol.control.ZoomSlider.prototype.disposeInternal = function() {
  * The enum for available directions.
  *
  * @enum {number}
+ * @private
  */
-ol.control.ZoomSlider.direction = {
+ol.control.ZoomSlider.Direction_ = {
   VERTICAL: 0,
   HORIZONTAL: 1
 };
@@ -196,10 +197,10 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
-    this.direction_ = ol.control.ZoomSlider.direction.HORIZONTAL;
+    this.direction_ = ol.control.ZoomSlider.Direction_.HORIZONTAL;
     this.widthLimit_ = containerSize.width - thumbWidth;
   } else {
-    this.direction_ = ol.control.ZoomSlider.direction.VERTICAL;
+    this.direction_ = ol.control.ZoomSlider.Direction_.VERTICAL;
     this.heightLimit_ = containerSize.height - thumbHeight;
   }
   this.sliderInitialized_ = true;
@@ -333,7 +334,7 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
   var position = this.getPositionForResolution_(res);
   var thumb = this.element.firstElementChild;
 
-  if (this.direction_ == ol.control.ZoomSlider.direction.HORIZONTAL) {
+  if (this.direction_ == ol.control.ZoomSlider.Direction_.HORIZONTAL) {
     thumb.style.left = this.widthLimit_ * position + 'px';
   } else {
     thumb.style.top = this.heightLimit_ * position + 'px';
@@ -353,7 +354,7 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
  */
 ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   var amount;
-  if (this.direction_ === ol.control.ZoomSlider.direction.HORIZONTAL) {
+  if (this.direction_ === ol.control.ZoomSlider.Direction_.HORIZONTAL) {
     amount = x / this.widthLimit_;
   } else {
     amount = y / this.heightLimit_;

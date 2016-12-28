@@ -2,16 +2,18 @@ goog.provide('ol.interaction.Snap');
 
 goog.require('ol');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.Observable');
 goog.require('ol.coordinate');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
-goog.require('ol.interaction.Pointer');
 goog.require('ol.functions');
+goog.require('ol.interaction.Pointer');
 goog.require('ol.obj');
 goog.require('ol.source.Vector');
+goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');
 
 
@@ -335,16 +337,16 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   if (map) {
     if (this.features_) {
       keys.push(
-        ol.events.listen(this.features_, ol.Collection.EventType.ADD,
+        ol.events.listen(this.features_, ol.CollectionEventType.ADD,
             this.handleFeatureAdd_, this),
-        ol.events.listen(this.features_, ol.Collection.EventType.REMOVE,
+        ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
             this.handleFeatureRemove_, this)
       );
     } else if (this.source_) {
       keys.push(
-        ol.events.listen(this.source_, ol.source.Vector.EventType.ADDFEATURE,
+        ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
             this.handleFeatureAdd_, this),
-        ol.events.listen(this.source_, ol.source.Vector.EventType.REMOVEFEATURE,
+        ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
             this.handleFeatureRemove_, this)
       );
     }

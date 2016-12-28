@@ -40,7 +40,7 @@ ol.control.MousePosition = function(opt_options) {
   });
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.control.MousePosition.Property.PROJECTION),
+      ol.Object.getChangeEventType(ol.control.MousePosition.Property_.PROJECTION),
       this.handleProjectionChanged_, this);
 
   if (options.coordinateFormat) {
@@ -122,7 +122,7 @@ ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
  */
 ol.control.MousePosition.prototype.getCoordinateFormat = function() {
   return /** @type {ol.CoordinateFormatType|undefined} */ (
-      this.get(ol.control.MousePosition.Property.COORDINATE_FORMAT));
+      this.get(ol.control.MousePosition.Property_.COORDINATE_FORMAT));
 };
 
 
@@ -135,7 +135,7 @@ ol.control.MousePosition.prototype.getCoordinateFormat = function() {
  */
 ol.control.MousePosition.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.control.MousePosition.Property.PROJECTION));
+      this.get(ol.control.MousePosition.Property_.PROJECTION));
 };
 
 
@@ -186,7 +186,7 @@ ol.control.MousePosition.prototype.setMap = function(map) {
  * @api stable
  */
 ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
-  this.set(ol.control.MousePosition.Property.COORDINATE_FORMAT, format);
+  this.set(ol.control.MousePosition.Property_.COORDINATE_FORMAT, format);
 };
 
 
@@ -198,7 +198,7 @@ ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
  * @api stable
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
-  this.set(ol.control.MousePosition.Property.PROJECTION, projection);
+  this.set(ol.control.MousePosition.Property_.PROJECTION, projection);
 };
 
 
@@ -239,8 +239,9 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.control.MousePosition.Property = {
+ol.control.MousePosition.Property_ = {
   PROJECTION: 'projection',
   COORDINATE_FORMAT: 'coordinateFormat'
 };

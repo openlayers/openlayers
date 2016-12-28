@@ -92,7 +92,7 @@ ol.layer.Vector.prototype.getRenderBuffer = function() {
  */
 ol.layer.Vector.prototype.getRenderOrder = function() {
   return /** @type {function(ol.Feature, ol.Feature):number|null|undefined} */ (
-      this.get(ol.layer.Vector.Property.RENDER_ORDER));
+      this.get(ol.layer.Vector.Property_.RENDER_ORDER));
 };
 
 
@@ -154,7 +154,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
       renderOrder === undefined || !renderOrder ||
       typeof renderOrder === 'function',
       'renderOrder must be a comparator function');
-  this.set(ol.layer.Vector.Property.RENDER_ORDER, renderOrder);
+  this.set(ol.layer.Vector.Property_.RENDER_ORDER, renderOrder);
 };
 
 
@@ -179,7 +179,8 @@ ol.layer.Vector.prototype.setStyle = function(style) {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.layer.Vector.Property = {
+ol.layer.Vector.Property_ = {
   RENDER_ORDER: 'renderOrder'
 };

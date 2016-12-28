@@ -101,7 +101,7 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
 
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATESTART, features,
+            ol.interaction.Translate.EventType_.TRANSLATESTART, features,
             event.coordinate));
     return true;
   }
@@ -124,7 +124,7 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
 
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATEEND, features,
+            ol.interaction.Translate.EventType_.TRANSLATEEND, features,
             event.coordinate));
     return true;
   }
@@ -154,7 +154,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType.TRANSLATING, features,
+            ol.interaction.Translate.EventType_.TRANSLATING, features,
             newCoordinate));
   }
 };
@@ -240,7 +240,7 @@ ol.interaction.Translate.prototype.setHitTolerance = function(hitTolerance) {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.TranslateEvent}
- * @param {ol.interaction.Translate.EventType} type Type.
+ * @param {ol.interaction.Translate.EventType_} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features translated.
  * @param {ol.Coordinate} coordinate The event coordinate.
  */
@@ -268,8 +268,9 @@ ol.inherits(ol.interaction.Translate.Event, ol.events.Event);
 
 /**
  * @enum {string}
+ * @private
  */
-ol.interaction.Translate.EventType = {
+ol.interaction.Translate.EventType_ = {
   /**
    * Triggered upon feature translation start.
    * @event ol.interaction.Translate.Event#translatestart

@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
-goog.require('ol.layer.VectorTile');
+goog.require('ol.layer.VectorTileRenderType');
 goog.require('ol.render.ReplayType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
@@ -44,7 +44,7 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
   this.zDirection =
-      layer.getRenderMode() == ol.layer.VectorTile.RenderType.VECTOR ? 1 : 0;
+      layer.getRenderMode() == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
 
 };
 ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
@@ -185,7 +185,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
   var vectorTile = /** @type {ol.VectorTile} */ (tile);
   this.createReplayGroup_(vectorTile, frameState);
   var layer = this.getLayer();
-  if (layer.getRenderMode() != ol.layer.VectorTile.RenderType.VECTOR) {
+  if (layer.getRenderMode() != ol.layer.VectorTileRenderType.VECTOR) {
     this.renderTileImage_(vectorTile, frameState, layerState);
   }
   ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);

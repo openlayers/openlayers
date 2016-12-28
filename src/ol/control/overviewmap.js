@@ -3,10 +3,12 @@ goog.provide('ol.control.OverviewMap');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Map');
-goog.require('ol.MapEvent');
+goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
 goog.require('ol.Overlay');
+goog.require('ol.OverlayPositioning');
 goog.require('ol.ViewProperty');
 goog.require('ol.control.Control');
 goog.require('ol.coordinate');
@@ -122,7 +124,7 @@ ol.control.OverviewMap = function(opt_options) {
    */
   this.boxOverlay_ = new ol.Overlay({
     position: [0, 0],
-    positioning: ol.Overlay.Positioning.BOTTOM_LEFT,
+    positioning: ol.OverlayPositioning.BOTTOM_LEFT,
     element: box
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
@@ -166,7 +168,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
 
   if (map) {
     this.listenerKeys.push(ol.events.listen(
-        map, ol.Object.EventType.PROPERTYCHANGE,
+        map, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
 
     // TODO: to really support map switching, this would need to be reworked
@@ -443,7 +445,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    ol.events.listenOnce(ovmap, ol.MapEvent.Type.POSTRENDER,
+    ol.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
         function(event) {
           this.updateBox_();
         },

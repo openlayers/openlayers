@@ -26,7 +26,7 @@ ol.source.Zoomify = function(opt_options) {
   var size = options.size;
   var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
       options.tierSizeCalculation :
-      ol.source.Zoomify.TierSizeCalculation.DEFAULT;
+      ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];
@@ -34,7 +34,7 @@ ol.source.Zoomify = function(opt_options) {
   var tileSize = ol.DEFAULT_TILE_SIZE;
 
   switch (tierSizeCalculation) {
-    case ol.source.Zoomify.TierSizeCalculation.DEFAULT:
+    case ol.source.Zoomify.TierSizeCalculation_.DEFAULT:
       while (imageWidth > tileSize || imageHeight > tileSize) {
         tierSizeInTiles.push([
           Math.ceil(imageWidth / tileSize),
@@ -43,7 +43,7 @@ ol.source.Zoomify = function(opt_options) {
         tileSize += tileSize;
       }
       break;
-    case ol.source.Zoomify.TierSizeCalculation.TRUNCATED:
+    case ol.source.Zoomify.TierSizeCalculation_.TRUNCATED:
       var width = imageWidth;
       var height = imageHeight;
       while (width > tileSize || height > tileSize) {
@@ -175,8 +175,9 @@ ol.source.Zoomify.Tile_.prototype.getImage = function() {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.source.Zoomify.TierSizeCalculation = {
+ol.source.Zoomify.TierSizeCalculation_ = {
   DEFAULT: 'default',
   TRUNCATED: 'truncated'
 };

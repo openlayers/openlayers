@@ -1,9 +1,9 @@
 goog.provide('ol.interaction.Modify');
 
 goog.require('ol');
-goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Feature');
-goog.require('ol.MapBrowserEvent');
+goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
@@ -173,9 +173,9 @@ ol.interaction.Modify = function(options) {
   this.features_ = options.features;
 
   this.features_.forEach(this.addFeature_, this);
-  ol.events.listen(this.features_, ol.Collection.EventType.ADD,
+  ol.events.listen(this.features_, ol.CollectionEventType.ADD,
       this.handleFeatureAdd_, this);
-  ol.events.listen(this.features_, ol.Collection.EventType.REMOVE,
+  ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
       this.handleFeatureRemove_, this);
 
   /**
@@ -214,7 +214,7 @@ ol.interaction.Modify.prototype.willModifyFeatures_ = function(evt) {
   if (!this.modified_) {
     this.modified_ = true;
     this.dispatchEvent(new ol.interaction.Modify.Event(
-        ol.interaction.Modify.EventType.MODIFYSTART, this.features_, evt));
+        ol.interaction.Modify.EventType_.MODIFYSTART, this.features_, evt));
   }
 };
 
@@ -633,7 +633,7 @@ ol.interaction.Modify.handleUpEvent_ = function(evt) {
   }
   if (this.modified_) {
     this.dispatchEvent(new ol.interaction.Modify.Event(
-        ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
+        ol.interaction.Modify.EventType_.MODIFYEND, this.features_, evt));
     this.modified_ = false;
   }
   return false;
@@ -656,12 +656,12 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
 
   var handled;
   if (!mapBrowserEvent.map.getView().getHints()[ol.ViewHint.INTERACTING] &&
-      mapBrowserEvent.type == ol.MapBrowserEvent.EventType.POINTERMOVE &&
+      mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE &&
       !this.handlingDownUpSequence) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   if (this.vertexFeature_ && this.deleteCondition_(mapBrowserEvent)) {
-    if (mapBrowserEvent.type != ol.MapBrowserEvent.EventType.SINGLECLICK ||
+    if (mapBrowserEvent.type != ol.MapBrowserEventType.SINGLECLICK ||
         !this.ignoreNextSingleClick_) {
       handled = this.removePoint();
     } else {
@@ -669,7 +669,7 @@ ol.interaction.Modify.handleEvent = function(mapBrowserEvent) {
     }
   }
 
-  if (mapBrowserEvent.type == ol.MapBrowserEvent.EventType.SINGLECLICK) {
+  if (mapBrowserEvent.type == ol.MapBrowserEventType.SINGLECLICK) {
     this.ignoreNextSingleClick_ = false;
   }
 
@@ -823,12 +823,12 @@ ol.interaction.Modify.prototype.insertVertex_ = function(segmentData, vertex) {
  * @api
  */
 ol.interaction.Modify.prototype.removePoint = function() {
-  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != ol.MapBrowserEvent.EventType.POINTERDRAG) {
+  if (this.lastPointerEvent_ && this.lastPointerEvent_.type != ol.MapBrowserEventType.POINTERDRAG) {
     var evt = this.lastPointerEvent_;
     this.willModifyFeatures_(evt);
     this.removeVertex_();
     this.dispatchEvent(new ol.interaction.Modify.Event(
-        ol.interaction.Modify.EventType.MODIFYEND, this.features_, evt));
+        ol.interaction.Modify.EventType_.MODIFYEND, this.features_, evt));
     this.modified_ = false;
     return true;
   }
@@ -1006,7 +1006,7 @@ ol.interaction.Modify.getDefaultStyleFunction = function() {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.ModifyEvent}
- * @param {ol.interaction.Modify.EventType} type Type.
+ * @param {ol.interaction.Modify.EventType_} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features modified.
  * @param {ol.MapBrowserPointerEvent} mapBrowserPointerEvent Associated
  *     {@link ol.MapBrowserPointerEvent}.
@@ -1034,8 +1034,9 @@ ol.inherits(ol.interaction.Modify.Event, ol.events.Event);
 
 /**
  * @enum {string}
+ * @private
  */
-ol.interaction.Modify.EventType = {
+ol.interaction.Modify.EventType_ = {
   /**
    * Triggered upon feature modification start
    * @event ol.interaction.Modify.Event#modifystart

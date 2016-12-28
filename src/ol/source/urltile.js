@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.TileState');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.source.Tile');
+goog.require('ol.source.TileEventType');
 
 
 /**
@@ -111,15 +112,15 @@ ol.source.UrlTile.prototype.handleTileChange = function(event) {
   switch (tile.getState()) {
     case ol.TileState.LOADING:
       this.dispatchEvent(
-          new ol.source.Tile.Event(ol.source.Tile.EventType.TILELOADSTART, tile));
+          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADSTART, tile));
       break;
     case ol.TileState.LOADED:
       this.dispatchEvent(
-          new ol.source.Tile.Event(ol.source.Tile.EventType.TILELOADEND, tile));
+          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADEND, tile));
       break;
     case ol.TileState.ERROR:
       this.dispatchEvent(
-          new ol.source.Tile.Event(ol.source.Tile.EventType.TILELOADERROR, tile));
+          new ol.source.Tile.Event(ol.source.TileEventType.TILELOADERROR, tile));
       break;
     default:
       // pass

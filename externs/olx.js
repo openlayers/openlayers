@@ -338,7 +338,7 @@ olx.AtPixelOptions.prototype.hitTolerance;
  *     element: (Element|undefined),
  *     offset: (Array.<number>|undefined),
  *     position: (ol.Coordinate|undefined),
- *     positioning: (ol.Overlay.Positioning|string|undefined),
+ *     positioning: (ol.OverlayPositioning|string|undefined),
  *     stopEvent: (boolean|undefined),
  *     insertFirst: (boolean|undefined),
  *     autoPan: (boolean|undefined),
@@ -389,7 +389,7 @@ olx.OverlayOptions.prototype.position;
  * property. Possible values are `'bottom-left'`, `'bottom-center'`,
  * `'bottom-right'`, `'center-left'`, `'center-center'`, `'center-right'`,
  * `'top-left'`, `'top-center'`, and `'top-right'`. Default is `'top-left'`.
- * @type {ol.Overlay.Positioning|string|undefined}
+ * @type {ol.OverlayPositioning|string|undefined}
  * @api stable
  */
 olx.OverlayOptions.prototype.positioning;
@@ -1391,7 +1391,7 @@ olx.control.OverviewMapOptions.prototype.view;
  *     minWidth: (number|undefined),
  *     render: (function(ol.MapEvent)|undefined),
  *     target: (Element|undefined),
- *     units: (ol.control.ScaleLine.Units|string|undefined)}}
+ *     units: (ol.control.ScaleLineUnits|string|undefined)}}
  */
 olx.control.ScaleLineOptions;
 
@@ -1431,7 +1431,7 @@ olx.control.ScaleLineOptions.prototype.target;
 
 /**
  * Units. Default is `metric`.
- * @type {ol.control.ScaleLine.Units|string|undefined}
+ * @type {ol.control.ScaleLineUnits|string|undefined}
  * @api stable
  */
 olx.control.ScaleLineOptions.prototype.units;
@@ -1932,7 +1932,7 @@ olx.format.TopoJSONOptions.prototype.defaultDataProjection;
 
 
 /**
- * @typedef {{altitudeMode: (ol.format.IGC.Z|undefined)}}
+ * @typedef {{altitudeMode: (ol.format.IGCZ|undefined)}}
  */
 olx.format.IGCOptions;
 
@@ -1940,7 +1940,7 @@ olx.format.IGCOptions;
 /**
  * Altitude mode. Possible values are `barometric`, `gps`, and `none`. Default
  * is `none`.
- * @type {ol.format.IGC.Z|undefined}
+ * @type {ol.format.IGCZ|undefined}
  * @api
  */
 olx.format.IGCOptions.prototype.altitudeMode;
@@ -4014,7 +4014,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     opacity: (number|undefined),
  *     preload: (number|undefined),
  *     renderBuffer: (number|undefined),
- *     renderMode: (ol.layer.VectorTile.RenderType|string|undefined),
+ *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
  *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
  *     source: (ol.source.VectorTile|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
@@ -4049,7 +4049,7 @@ olx.layer.VectorTileOptions.prototype.renderBuffer;
  *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance than the other options.
  *  The default is `'hybrid'`.
- * @type {ol.layer.VectorTile.RenderType|string|undefined}
+ * @type {ol.layer.VectorTileRenderType|string|undefined}
  * @api
  */
 olx.layer.VectorTileOptions.prototype.renderMode;
@@ -5326,7 +5326,7 @@ olx.source.ImageVectorOptions.prototype.style;
  *     operation: (ol.RasterOperation|undefined),
  *     lib: (Object|undefined),
  *     threads: (number|undefined),
- *     operationType: (ol.source.Raster.OperationType|undefined)}}
+ *     operationType: (ol.source.RasterOperationType|undefined)}}
  * @api
  */
 olx.source.RasterOptions;
@@ -5374,7 +5374,7 @@ olx.source.RasterOptions.prototype.threads;
  * `'pixel'` operations are assumed, and operations will be called with an
  * array of pixels from input sources.  If set to `'image'`, operations will
  * be called with an array of ImageData objects from input sources.
- * @type {ol.source.Raster.OperationType|undefined}
+ * @type {ol.source.RasterOperationType|undefined}
  * @api
  */
 olx.source.RasterOptions.prototype.operationType;
@@ -6194,7 +6194,7 @@ olx.source.VectorOptions.prototype.wrapX;
  *     tileGrid: ol.tilegrid.WMTS,
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
- *     requestEncoding: (ol.source.WMTS.RequestEncoding|string|undefined),
+ *     requestEncoding: (ol.source.WMTSRequestEncoding|string|undefined),
  *     layer: string,
  *     style: string,
  *     tilePixelRatio: (number|undefined),
@@ -6276,7 +6276,7 @@ olx.source.WMTSOptions.prototype.reprojectionErrorThreshold;
 
 /**
  * Request encoding. Default is `KVP`.
- * @type {ol.source.WMTS.RequestEncoding|string|undefined}
+ * @type {ol.source.WMTSRequestEncoding|string|undefined}
  * @api stable
  */
 olx.source.WMTSOptions.prototype.requestEncoding;

@@ -70,7 +70,7 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.interaction.MouseWheelZoom.Mode|undefined}
+   * @type {ol.interaction.MouseWheelZoom.Mode_|undefined}
    */
   this.mode_ = undefined;
 
@@ -158,11 +158,11 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
 
   if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
     this.mode_ = Math.abs(delta) < 4 ?
-        ol.interaction.MouseWheelZoom.Mode.TRACKPAD :
-        ol.interaction.MouseWheelZoom.Mode.WHEEL;
+        ol.interaction.MouseWheelZoom.Mode_.TRACKPAD :
+        ol.interaction.MouseWheelZoom.Mode_.WHEEL;
   }
 
-  if (this.mode_ === ol.interaction.MouseWheelZoom.Mode.TRACKPAD) {
+  if (this.mode_ === ol.interaction.MouseWheelZoom.Mode_.TRACKPAD) {
     var view = map.getView();
     if (this.trackpadTimeoutId_) {
       clearTimeout(this.trackpadTimeoutId_);
@@ -263,8 +263,9 @@ ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.interaction.MouseWheelZoom.Mode = {
+ol.interaction.MouseWheelZoom.Mode_ = {
   TRACKPAD: 'trackpad',
   WHEEL: 'wheel'
 };

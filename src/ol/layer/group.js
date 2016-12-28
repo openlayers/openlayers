@@ -1,9 +1,11 @@
 goog.provide('ol.layer.Group');
 
 goog.require('ol');
-goog.require('ol.asserts');
 goog.require('ol.Collection');
+goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
+goog.require('ol.ObjectEventType');
+goog.require('ol.asserts');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
@@ -47,7 +49,7 @@ ol.layer.Group = function(opt_options) {
   this.listenerKeys_ = {};
 
   ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Group.Property.LAYERS),
+      ol.Object.getChangeEventType(ol.layer.Group.Property_.LAYERS),
       this.handleLayersChanged_, this);
 
   if (layers) {
@@ -88,9 +90,9 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 
   var layers = this.getLayers();
   this.layersListenerKeys_.push(
-      ol.events.listen(layers, ol.Collection.EventType.ADD,
+      ol.events.listen(layers, ol.CollectionEventType.ADD,
           this.handleLayersAdd_, this),
-      ol.events.listen(layers, ol.Collection.EventType.REMOVE,
+      ol.events.listen(layers, ol.CollectionEventType.REMOVE,
           this.handleLayersRemove_, this));
 
   for (var id in this.listenerKeys_) {
@@ -103,7 +105,7 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
   for (i = 0, ii = layersArray.length; i < ii; i++) {
     layer = layersArray[i];
     this.listenerKeys_[ol.getUid(layer).toString()] = [
-      ol.events.listen(layer, ol.Object.EventType.PROPERTYCHANGE,
+      ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
           this.handleLayerChange_, this),
       ol.events.listen(layer, ol.events.EventType.CHANGE,
           this.handleLayerChange_, this)
@@ -124,7 +126,7 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   ol.DEBUG && console.assert(!(key in this.listenerKeys_),
       'listeners already registered');
   this.listenerKeys_[key] = [
-    ol.events.listen(layer, ol.Object.EventType.PROPERTYCHANGE,
+    ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
     ol.events.listen(layer, ol.events.EventType.CHANGE,
         this.handleLayerChange_, this)
@@ -157,7 +159,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
-      ol.layer.Group.Property.LAYERS));
+      ol.layer.Group.Property_.LAYERS));
 };
 
 
@@ -170,7 +172,7 @@ ol.layer.Group.prototype.getLayers = function() {
  * @api stable
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
-  this.set(ol.layer.Group.Property.LAYERS, layers);
+  this.set(ol.layer.Group.Property_.LAYERS, layers);
 };
 
 
@@ -231,7 +233,8 @@ ol.layer.Group.prototype.getSourceState = function() {
 
 /**
  * @enum {string}
+ * @private
  */
-ol.layer.Group.Property = {
+ol.layer.Group.Property_ = {
   LAYERS: 'layers'
 };

@@ -81,7 +81,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   var numVertices = this.vertices.length;
   var numIndices = this.indices.length;
   //To save a vertex, the direction of a point is a product of the sign (1 or -1), a prime from
-  //ol.render.webgl.lineStringInstruction, and a rounding factor (1 or 2). If the product is even,
+  //ol.render.webgl.LineStringReplay.Instruction_, and a rounding factor (1 or 2). If the product is even,
   //we round it. If it is odd, we don't.
   var lineJoin = this.state_.lineJoin === 'bevel' ? 0 :
       this.state_.lineJoin === 'miter' ? 1 : 2;
@@ -117,10 +117,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
         if (lineCap) {
           numVertices = this.addVertices_([0, 0], p1, p2,
-              lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
+              lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_([0, 0], p1, p2,
-              -lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE_CAP * lineCap, numVertices);
+              -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -133,10 +133,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         }
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-            lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
+            lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_([0, 0], p1, p2,
-            -lastSign * ol.render.webgl.lineStringInstruction.BEGIN_LINE * (lineCap || 1), numVertices);
+            -lastSign * ol.render.webgl.LineStringReplay.Instruction_.BEGIN_LINE * (lineCap || 1), numVertices);
 
         lastIndex = numVertices / 7 - 1;
 
@@ -154,10 +154,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-            lastSign * ol.render.webgl.lineStringInstruction.END_LINE * (lineCap || 1), numVertices);
+            lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
-            -lastSign * ol.render.webgl.lineStringInstruction.END_LINE * (lineCap || 1), numVertices);
+            -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE * (lineCap || 1), numVertices);
 
         this.indices[numIndices++] = n;
         this.indices[numIndices++] = lastIndex - 1;
@@ -169,10 +169,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
 
         if (lineCap) {
           numVertices = this.addVertices_(p0, p1, [0, 0],
-              lastSign * ol.render.webgl.lineStringInstruction.END_LINE_CAP * lineCap, numVertices);
+              lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
 
           numVertices = this.addVertices_(p0, p1, [0, 0],
-              -lastSign * ol.render.webgl.lineStringInstruction.END_LINE_CAP * lineCap, numVertices);
+              -lastSign * ol.render.webgl.LineStringReplay.Instruction_.END_LINE_CAP * lineCap, numVertices);
 
           this.indices[numIndices++] = n + 2;
           this.indices[numIndices++] = n;
@@ -195,13 +195,13 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         ? -1 : 1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.lineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+        sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.lineStringInstruction.BEVEL_SECOND * (lineJoin || 1), numVertices);
+        sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_SECOND * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        -sign * ol.render.webgl.lineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+        -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     if (i > offset) {
       this.indices[numIndices++] = n;
@@ -223,7 +223,7 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
     //Add miter
     if (lineJoin) {
       numVertices = this.addVertices_(p0, p1, p2,
-          sign * ol.render.webgl.lineStringInstruction.MITER_TOP * lineJoin, numVertices);
+          sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_TOP * lineJoin, numVertices);
 
       this.indices[numIndices++] = n + 1;
       this.indices[numIndices++] = n + 3;
@@ -240,10 +240,10 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         ? 1 : -1;
 
     numVertices = this.addVertices_(p0, p1, p2,
-        sign * ol.render.webgl.lineStringInstruction.BEVEL_FIRST * (lineJoin || 1), numVertices);
+        sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
 
     numVertices = this.addVertices_(p0, p1, p2,
-        -sign * ol.render.webgl.lineStringInstruction.MITER_BOTTOM * (lineJoin || 1), numVertices);
+        -sign * ol.render.webgl.LineStringReplay.Instruction_.MITER_BOTTOM * (lineJoin || 1), numVertices);
 
     this.indices[numIndices++] = n;
     this.indices[numIndices++] = lastIndex - 1;
@@ -680,4 +680,20 @@ ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillSty
     this.state_.miterLimit = strokeStyleMiterLimit;
     this.styles_.push([strokeStyleColor, strokeStyleWidth, strokeStyleMiterLimit]);
   }
+};
+
+/**
+ * @enum {number}
+ * @private
+ */
+ol.render.webgl.LineStringReplay.Instruction_ = {
+  ROUND: 2,
+  BEGIN_LINE: 3,
+  END_LINE: 5,
+  BEGIN_LINE_CAP: 7,
+  END_LINE_CAP: 11,
+  BEVEL_FIRST: 13,
+  BEVEL_SECOND: 17,
+  MITER_BOTTOM: 19,
+  MITER_TOP: 23
 };

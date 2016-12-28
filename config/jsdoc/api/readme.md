@@ -34,7 +34,7 @@ Events are documented using `@fires` and `@event` annotations:
  * Constants for event names.
  * @enum {string}
  */
-ol.MapBrowserEvent.EventType = {
+ol.MapBrowserEventType = {
   /**
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.

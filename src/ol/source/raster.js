@@ -1,7 +1,6 @@
 goog.provide('ol.source.Raster');
 
 goog.require('ol');
-goog.require('ol.transform');
 goog.require('ol.ImageCanvas');
 goog.require('ol.TileQueue');
 goog.require('ol.dom');
@@ -16,8 +15,10 @@ goog.require('ol.obj');
 goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.source.Image');
+goog.require('ol.source.RasterOperationType');
 goog.require('ol.source.State');
 goog.require('ol.source.Tile');
+goog.require('ol.transform');
 
 
 /**
@@ -42,10 +43,10 @@ ol.source.Raster = function(options) {
 
   /**
    * @private
-   * @type {ol.source.Raster.OperationType}
+   * @type {ol.source.RasterOperationType}
    */
   this.operationType_ = options.operationType !== undefined ?
-      options.operationType : ol.source.Raster.OperationType.PIXEL;
+      options.operationType : ol.source.RasterOperationType.PIXEL;
 
   /**
    * @private
@@ -149,7 +150,7 @@ ol.inherits(ol.source.Raster, ol.source.Image);
 ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
   this.worker_ = new ol.ext.pixelworks.Processor({
     operation: operation,
-    imageOps: this.operationType_ === ol.source.Raster.OperationType.IMAGE,
+    imageOps: this.operationType_ === ol.source.RasterOperationType.IMAGE,
     queue: 1,
     lib: opt_lib,
     threads: this.threads_
@@ -295,7 +296,7 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
   if (imageDatas) {
     var data = {};
     this.dispatchEvent(new ol.source.Raster.Event(
-        ol.source.Raster.EventType.BEFOREOPERATIONS, frameState, data));
+        ol.source.Raster.EventType_.BEFOREOPERATIONS, frameState, data));
 
     this.worker_.process(imageDatas, data,
         this.onWorkerComplete_.bind(this, frameState, callback));
@@ -325,7 +326,7 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
   }
 
   this.dispatchEvent(new ol.source.Raster.Event(
-      ol.source.Raster.EventType.AFTEROPERATIONS, frameState, data));
+      ol.source.Raster.EventType_.AFTEROPERATIONS, frameState, data));
 
   var resolution = frameState.viewState.resolution / frameState.pixelRatio;
   if (!this.isDirty_(frameState.extent, resolution)) {
@@ -488,8 +489,9 @@ ol.inherits(ol.source.Raster.Event, ol.events.Event);
 
 /**
  * @enum {string}
+ * @private
  */
-ol.source.Raster.EventType = {
+ol.source.Raster.EventType_ = {
   /**
    * Triggered before operations are run.
    * @event ol.source.Raster.Event#beforeoperations
@@ -503,14 +505,4 @@ ol.source.Raster.EventType = {
    * @api
    */
   AFTEROPERATIONS: 'afteroperations'
-};
-
-
-/**
- * Raster operation type. Supported values are `'pixel'` and `'image'`.
- * @enum {string}
- */
-ol.source.Raster.OperationType = {
-  PIXEL: 'pixel',
-  IMAGE: 'image'
 };
