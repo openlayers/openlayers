@@ -1,7 +1,7 @@
 {
   "name": "ol",
-  "version": "3.21.0-beta.10",
-  "description": "OpenLayers",
+  "version": "3.21.0-beta.16",
+  "description": "OpenLayers as ES2015 modules",
   "main": "index.js",
   "module": "index.js",
   "license": "BSD-2-Clause",

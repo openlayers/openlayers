@@ -10,10 +10,6 @@ function rename(name) {
   return `_${parts.join('_')}_`;
 }
 
-function renameDefine(name) {
-  return name.replace('.', '_').toUpperCase();
-}
-
 function resolve(fromName, toName) {
   const fromParts = fromName.split('.');
   const toParts = toName.split('.');
@@ -106,6 +102,16 @@ function getMemberExpression(name) {
   return memberExpression(name);
 }
 
+function getMemberExpressionAssignment(name) {
+  return {
+    type: 'ExpressionStatement',
+    expression: {
+      type: 'AssignmentExpression',
+      left: getMemberExpression(name)
+    }
+  };
+}
+
 module.exports = function(info, api) {
   const j = api.jscodeshift;
   const root = j(info.source);
@@ -127,23 +133,42 @@ module.exports = function(info, api) {
       return j.literal(defines[name]);
     });
 
-  // replace goog.provide()
+  // remove goog.provide()
   let provide;
   root.find(j.ExpressionStatement, getGoogExpressionStatement('provide'))
-    .replaceWith(path => {
+    .forEach(path => {
       if (provide) {
         throw new Error(`Multiple provides in ${info.path}`);
       }
       provide = path.value.expression.arguments[0].value;
-      return j.variableDeclaration('var', [
-        j.variableDeclarator(j.identifier(rename(provide)), j.objectExpression([]))
-      ]);
-    });
+    }).remove();
 
   if (!provide) {
     throw new Error(`No provide found in ${info.path}`);
   }
   replacements[provide] = rename(provide);
+
+  // replace provide assignment with variable declarator
+  // e.g. `ol.foo.Bar = function() {}` -> `var _ol_foo_Bar_ = function() {}`
+  let declaredProvide = false;
+  root.find(j.ExpressionStatement, getMemberExpressionAssignment(provide))
+    .replaceWith(path => {
+      declaredProvide = true;
+      const statement = j.variableDeclaration('var', [
+        j.variableDeclarator(j.identifier(rename(provide)), path.value.expression.right)
+      ]);
+      statement.comments = path.value.comments;
+      return statement;
+    });
+
+  if (!declaredProvide) {
+    const body = root.find(j.Program).get('body');
+    body.unshift(
+      j.variableDeclaration('var', [
+        j.variableDeclarator(j.identifier(rename(provide)), j.objectExpression([]))
+      ])
+    );
+  }
 
   // replace `goog.require('foo')` with `import foo from 'foo'`
   const imports = [];
