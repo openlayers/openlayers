@@ -68,15 +68,6 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
 
 
 /**
- * @abstract
- * @param {ol.layer.Layer} layer Layer.
- * @protected
- * @return {ol.renderer.Layer} layerRenderer Layer renderer.
- */
-ol.renderer.Map.prototype.createLayerRenderer = function(layer) {};
-
-
-/**
  * @inheritDoc
  */
 ol.renderer.Map.prototype.disposeInternal = function() {
@@ -216,7 +207,7 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
   if (layerKey in this.layerRenderers_) {
     return this.layerRenderers_[layerKey];
   } else {
-    var layerRenderer = this.createLayerRenderer(layer);
+    var layerRenderer = layer.createRenderer(this);
     this.layerRenderers_[layerKey] = layerRenderer;
     this.layerRendererListeners_[layerKey] = ol.events.listen(layerRenderer,
         ol.events.EventType.CHANGE, this.handleLayerRendererChange_, this);
