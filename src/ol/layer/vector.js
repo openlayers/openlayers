@@ -3,6 +3,9 @@ goog.provide('ol.layer.Vector');
 goog.require('ol');
 goog.require('ol.layer.Layer');
 goog.require('ol.obj');
+goog.require('ol.renderer.Type');
+goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.renderer.webgl.VectorLayer');
 goog.require('ol.style.Style');
 
 
@@ -76,6 +79,21 @@ ol.layer.Vector = function(opt_options) {
 
 };
 ol.inherits(ol.layer.Vector, ol.layer.Layer);
+
+
+/**
+ * @inheritDoc
+ */
+ol.layer.Vector.prototype.createRenderer = function(mapRenderer) {
+  var renderer = null;
+  var type = mapRenderer.getType();
+  if (ol.ENABLE_CANVAS && type === ol.renderer.Type.CANVAS) {
+    renderer = new ol.renderer.canvas.VectorLayer(this);
+  } else if (ol.ENABLE_WEBGL && type === ol.renderer.Type.WEBGL) {
+    renderer = new ol.renderer.webgl.VectorLayer(/** @type {ol.renderer.webgl.Map} */ (mapRenderer), this);
+  }
+  return renderer;
+};
 
 
 /**

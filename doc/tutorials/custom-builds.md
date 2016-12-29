@@ -158,8 +158,6 @@ You might have noticed that the build file you've just created is considerably s
 ```
       "ol.ENABLE_WEBGL=false",
       "ol.ENABLE_PROJ4JS=false",
-      "ol.ENABLE_IMAGE=false",
-      "ol.ENABLE_VECTOR=false",
 ```
 
 and re-run the build script. The build size should now be smaller.
@@ -208,7 +206,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
     "define": [
       "ol.ENABLE_WEBGL=false",
       "ol.ENABLE_PROJ4JS=false",
-      "ol.ENABLE_IMAGE=false",
       "ol.DEBUG=false"
     ],
     "compilation_level": "ADVANCED",

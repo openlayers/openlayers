@@ -55,6 +55,15 @@ ol.inherits(ol.layer.Base, ol.Object);
 
 
 /**
+ * Create a renderer for this layer.
+ * @abstract
+ * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @return {ol.renderer.Layer} A layer renderer.
+ */
+ol.layer.Base.prototype.createRenderer = function(mapRenderer) {};
+
+
+/**
  * @return {ol.LayerState} Layer state.
  */
 ol.layer.Base.prototype.getLayerState = function() {

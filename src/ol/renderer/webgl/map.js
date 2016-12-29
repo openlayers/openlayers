@@ -7,18 +7,12 @@ goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.events');
-goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.webgl.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.Type');
-goog.require('ol.renderer.webgl.ImageLayer');
-goog.require('ol.renderer.webgl.TileLayer');
-goog.require('ol.renderer.webgl.VectorLayer');
 goog.require('ol.source.State');
 goog.require('ol.structs.LRUCache');
 goog.require('ol.structs.PriorityQueue');
@@ -229,23 +223,6 @@ ol.renderer.webgl.Map.prototype.bindTileTexture = function(tile, tileSize, tileG
       magFilter: magFilter,
       minFilter: minFilter
     });
-  }
-};
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.webgl.Map.prototype.createLayerRenderer = function(layer) {
-  if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
-    return new ol.renderer.webgl.ImageLayer(this, layer);
-  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
-    return new ol.renderer.webgl.TileLayer(this, layer);
-  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
-    return new ol.renderer.webgl.VectorLayer(this, layer);
-  } else {
-    ol.DEBUG && console.assert(false, 'unexpected layer configuration');
-    return null;
   }
 };
 

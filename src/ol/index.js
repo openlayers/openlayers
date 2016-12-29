@@ -68,14 +68,6 @@ ol.ENABLE_CANVAS = true;
 
 
 /**
- * @define {boolean} Enable rendering of ol.layer.Image based layers.  Default
- *     is `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Image layers from the build.
- */
-ol.ENABLE_IMAGE = true;
-
-
-/**
  * @define {boolean} Enable integration with the Proj4js library.  Default is
  *     `true`.
  */
@@ -87,30 +79,6 @@ ol.ENABLE_PROJ4JS = true;
  *     `true`.
  */
 ol.ENABLE_RASTER_REPROJECTION = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Tile based layers.  Default is
- *     `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Tile layers from the build.
- */
-ol.ENABLE_TILE = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.Vector based layers.  Default
- *     is `true`. Setting this to false at compile time in advanced mode removes
- *     all code supporting Vector layers from the build.
- */
-ol.ENABLE_VECTOR = true;
-
-
-/**
- * @define {boolean} Enable rendering of ol.layer.VectorTile based layers.
- *     Default is `true`. Setting this to false at compile time in advanced mode
- *     removes all code supporting VectorTile layers from the build.
- */
-ol.ENABLE_VECTOR_TILE = true;
 
 
 /**

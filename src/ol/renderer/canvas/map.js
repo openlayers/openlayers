@@ -7,21 +7,13 @@ goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
-goog.require('ol.layer.Image');
 goog.require('ol.layer.Layer');
-goog.require('ol.layer.Tile');
-goog.require('ol.layer.Vector');
-goog.require('ol.layer.VectorTile');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.Type');
-goog.require('ol.renderer.canvas.ImageLayer');
-goog.require('ol.renderer.canvas.TileLayer');
-goog.require('ol.renderer.canvas.VectorLayer');
-goog.require('ol.renderer.canvas.VectorTileLayer');
 goog.require('ol.source.State');
 
 
@@ -66,25 +58,6 @@ ol.renderer.canvas.Map = function(container, map) {
 
 };
 ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
-
-
-/**
- * @inheritDoc
- */
-ol.renderer.canvas.Map.prototype.createLayerRenderer = function(layer) {
-  if (ol.ENABLE_IMAGE && layer instanceof ol.layer.Image) {
-    return new ol.renderer.canvas.ImageLayer(layer);
-  } else if (ol.ENABLE_TILE && layer instanceof ol.layer.Tile) {
-    return new ol.renderer.canvas.TileLayer(layer);
-  } else if (ol.ENABLE_VECTOR_TILE && layer instanceof ol.layer.VectorTile) {
-    return new ol.renderer.canvas.VectorTileLayer(layer);
-  } else if (ol.ENABLE_VECTOR && layer instanceof ol.layer.Vector) {
-    return new ol.renderer.canvas.VectorLayer(layer);
-  } else {
-    ol.DEBUG && console.assert(false, 'unexpected layer configuration');
-    return null;
-  }
-};
 
 
 /**

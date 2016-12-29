@@ -2,6 +2,9 @@ goog.provide('ol.layer.Image');
 
 goog.require('ol');
 goog.require('ol.layer.Layer');
+goog.require('ol.renderer.Type');
+goog.require('ol.renderer.canvas.ImageLayer');
+goog.require('ol.renderer.webgl.ImageLayer');
 
 
 /**
@@ -23,6 +26,21 @@ ol.layer.Image = function(opt_options) {
   ol.layer.Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (options));
 };
 ol.inherits(ol.layer.Image, ol.layer.Layer);
+
+
+/**
+ * @inheritDoc
+ */
+ol.layer.Image.prototype.createRenderer = function(mapRenderer) {
+  var renderer = null;
+  var type = mapRenderer.getType();
+  if (ol.ENABLE_CANVAS && type === ol.renderer.Type.CANVAS) {
+    renderer = new ol.renderer.canvas.ImageLayer(this);
+  } else if (ol.ENABLE_WEBGL && type === ol.renderer.Type.WEBGL) {
+    renderer = new ol.renderer.webgl.ImageLayer(/** @type {ol.renderer.webgl.Map} */ (mapRenderer), this);
+  }
+  return renderer;
+};
 
 
 /**
