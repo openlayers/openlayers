@@ -178,10 +178,6 @@ ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction = function(con
   // be used by other CircleReplay instances (for other layers). And
   // they will be deleted when disposing of the ol.webgl.Context
   // object.
-  ol.DEBUG && console.assert(this.verticesBuffer,
-      'verticesBuffer must not be null');
-  ol.DEBUG && console.assert(this.indicesBuffer,
-      'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer;
   var indicesBuffer = this.indicesBuffer;
   return function() {
@@ -251,9 +247,6 @@ ol.render.webgl.CircleReplay.prototype.drawReplay = function(gl, context, skippe
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
-    ol.DEBUG && console.assert(this.styles_.length === this.styleIndices_.length,
-        'number of styles and styleIndices match');
-
     //Draw by style groups to minimize drawElements() calls.
     var i, start, end, nextStyle;
     end = this.startIndices[this.startIndices.length - 1];
@@ -275,11 +268,6 @@ ol.render.webgl.CircleReplay.prototype.drawReplay = function(gl, context, skippe
  */
 ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
-  ol.DEBUG && console.assert(this.styles_.length === this.styleIndices_.length,
-      'number of styles and styleIndices match');
-  ol.DEBUG && console.assert(this.startIndices.length - 1 === this.startIndicesFeature.length,
-      'number of startIndices and startIndicesFeature match');
-
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
   end = this.startIndices[featureIndex + 1];
@@ -326,9 +314,6 @@ ol.render.webgl.CircleReplay.prototype.drawHitDetectionReplayOneByOne = function
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 ol.render.webgl.CircleReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
-  ol.DEBUG && console.assert(this.startIndices.length - 1 === this.startIndicesFeature.length,
-      'number of startIndices and startIndicesFeature match');
-
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -388,7 +373,6 @@ ol.render.webgl.CircleReplay.prototype.setStrokeStyle_ = function(gl, color, lin
  * @inheritDoc
  */
 ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
   var strokeStyleColor, strokeStyleWidth;
   if (strokeStyle) {
     var strokeStyleLineDash = strokeStyle.getLineDash();

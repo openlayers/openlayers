@@ -205,7 +205,6 @@ ol.format.WKT.encodeGeometryLayout_ = function(geom) {
 ol.format.WKT.encode_ = function(geom) {
   var type = geom.getType();
   var geometryEncoder = ol.format.WKT.GeometryEncoder_[type];
-  ol.DEBUG && console.assert(geometryEncoder, 'geometryEncoder should be defined');
   var enc = geometryEncoder(geom);
   type = type.toUpperCase();
   if (geom instanceof ol.geom.SimpleGeometry) {
@@ -629,8 +628,6 @@ ol.format.WKT.Parser.prototype.match = function(type) {
 ol.format.WKT.Parser.prototype.parse = function() {
   this.consume_();
   var geometry = this.parseGeometry_();
-  ol.DEBUG && console.assert(this.token_.type == ol.format.WKT.TokenType_.EOF,
-      'token type should be end of file');
   return geometry;
 };
 

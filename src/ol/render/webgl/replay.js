@@ -284,14 +284,8 @@ ol.render.webgl.Replay.prototype.replay = function(context,
     gl.stencilFunc(gl.NOTEQUAL, 1, 255);
   }
 
-  // bind the vertices buffer
-  ol.DEBUG && console.assert(this.verticesBuffer,
-      'verticesBuffer must not be null');
   context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.verticesBuffer);
 
-  // bind the indices buffer
-  ol.DEBUG && console.assert(this.indicesBuffer,
-      'indicesBuffer must not be null');
   context.bindBuffer(ol.webgl.ELEMENT_ARRAY_BUFFER, this.indicesBuffer);
 
   var locations = this.setUpProgram(gl, context, size, pixelRatio);
@@ -311,11 +305,11 @@ ol.render.webgl.Replay.prototype.replay = function(context,
   }
 
   gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
+     ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
   gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+     ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
   gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+     ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
   gl.uniform1f(locations.u_opacity, opacity);
 
   // draw!
@@ -337,10 +331,10 @@ ol.render.webgl.Replay.prototype.replay = function(context,
     }
     gl.clear(gl.STENCIL_BUFFER_BIT);
     gl.stencilFunc(/** @type {number} */ (tmpStencilFunc),
-        /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
+       /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
     gl.stencilMask(/** @type {number} */ (tmpStencilMask));
     gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
-        /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
+       /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
   }
 
   return result;

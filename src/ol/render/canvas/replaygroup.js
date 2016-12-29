@@ -276,9 +276,6 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
   var replay = replays[replayType];
   if (replay === undefined) {
     var Constructor = ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-    ol.DEBUG && console.assert(Constructor !== undefined,
-        replayType +
-        ' constructor missing from ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_,
         this.resolution_, this.overlaps_);
     replays[replayType] = replay;

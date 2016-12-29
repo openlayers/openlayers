@@ -296,8 +296,6 @@ ol.render.webgl.PolygonReplay.prototype.triangulate_ = function(list, rtree) {
           // Due to the behavior of OL's PIP algorithm, the ear clipping cannot
           // introduce touching segments. However, the original data may have some.
           if (!this.resolveLocalSelfIntersections_(list, rtree, true)) {
-            // Something went wrong.
-            ol.DEBUG && console.assert(false, 'Unexpected simple polygon geometry');
             break;
           }
         }
@@ -809,14 +807,6 @@ ol.render.webgl.PolygonReplay.prototype.finish = function(context) {
  * @inheritDoc
  */
 ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction = function(context) {
-  // We only delete our stuff here. The shaders and the program may
-  // be used by other PolygonReplay instances (for other layers). And
-  // they will be deleted when disposing of the ol.webgl.Context
-  // object.
-  ol.DEBUG && console.assert(this.verticesBuffer,
-      'verticesBuffer must not be null');
-  ol.DEBUG && console.assert(this.indicesBuffer,
-      'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer;
   var indicesBuffer = this.indicesBuffer;
   var lineDeleter = this.lineStringReplay.getDeleteResourcesFunction(context);
@@ -884,9 +874,6 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skipp
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
-    ol.DEBUG && console.assert(this.styles_.length === this.styleIndices_.length,
-        'number of styles and styleIndices match');
-
     //Draw by style groups to minimize drawElements() calls.
     var i, start, end, nextStyle;
     end = this.startIndices[this.startIndices.length - 1];
@@ -913,11 +900,6 @@ ol.render.webgl.PolygonReplay.prototype.drawReplay = function(gl, context, skipp
  */
 ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
-  ol.DEBUG && console.assert(this.styles_.length === this.styleIndices_.length,
-      'number of styles and styleIndices match');
-  ol.DEBUG && console.assert(this.startIndices.length - 1 === this.startIndicesFeature.length,
-      'number of startIndices and startIndicesFeature match');
-
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
   end = this.startIndices[featureIndex + 1];
@@ -962,9 +944,6 @@ ol.render.webgl.PolygonReplay.prototype.drawHitDetectionReplayOneByOne = functio
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 ol.render.webgl.PolygonReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
-  ol.DEBUG && console.assert(this.startIndices.length - 1 === this.startIndicesFeature.length,
-      'number of startIndices and startIndicesFeature match');
-
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -1012,7 +991,6 @@ ol.render.webgl.PolygonReplay.prototype.setFillStyle_ = function(gl, color) {
  * @inheritDoc
  */
 ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
   var fillStyleColor = fillStyle ? fillStyle.getColor() : [0, 0, 0, 0];
   if (!(fillStyleColor instanceof CanvasGradient) &&
       !(fillStyleColor instanceof CanvasPattern)) {

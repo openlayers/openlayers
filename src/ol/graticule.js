@@ -18,119 +18,116 @@ goog.require('ol.style.Stroke');
  * @api
  */
 ol.Graticule = function(opt_options) {
-
   var options = opt_options || {};
 
-  /**
-   * @type {ol.Map}
-   * @private
-   */
+ /**
+  * @type {ol.Map}
+  * @private
+  */
   this.map_ = null;
 
-  /**
-   * @type {ol.proj.Projection}
-   * @private
-   */
+ /**
+  * @type {ol.proj.Projection}
+  * @private
+  */
   this.projection_ = null;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.maxLat_ = Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.maxLon_ = Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.minLat_ = -Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.minLon_ = -Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.maxLatP_ = Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.maxLonP_ = Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.minLatP_ = -Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.minLonP_ = -Infinity;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.targetSize_ = options.targetSize !== undefined ?
-      options.targetSize : 100;
+     options.targetSize : 100;
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
-  ol.DEBUG && console.assert(this.maxLines_ > 0,
-      'this.maxLines_ should be more than 0');
 
-  /**
-   * @type {Array.<ol.geom.LineString>}
-   * @private
-   */
+ /**
+  * @type {Array.<ol.geom.LineString>}
+  * @private
+  */
   this.meridians_ = [];
 
-  /**
-   * @type {Array.<ol.geom.LineString>}
-   * @private
-   */
+ /**
+  * @type {Array.<ol.geom.LineString>}
+  * @private
+  */
   this.parallels_ = [];
 
-  /**
-   * @type {ol.style.Stroke}
-   * @private
-   */
+ /**
+  * @type {ol.style.Stroke}
+  * @private
+  */
   this.strokeStyle_ = options.strokeStyle !== undefined ?
-      options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
+     options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
 
-  /**
-   * @type {ol.TransformFunction|undefined}
-   * @private
-   */
+ /**
+  * @type {ol.TransformFunction|undefined}
+  * @private
+  */
   this.fromLonLatTransform_ = undefined;
 
-  /**
-   * @type {ol.TransformFunction|undefined}
-   * @private
-   */
+ /**
+  * @type {ol.TransformFunction|undefined}
+  * @private
+  */
   this.toLonLatTransform_ = undefined;
 
-  /**
-   * @type {ol.Coordinate}
-   * @private
-   */
+ /**
+  * @type {ol.Coordinate}
+  * @private
+  */
   this.projectionCenterLonLat_ = null;
 
   this.setMap(options.map !== undefined ? options.map : null);
@@ -334,16 +331,10 @@ ol.Graticule.prototype.getMap = function() {
  */
 ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
                                                squaredTolerance, index) {
-  ol.DEBUG && console.assert(lon >= this.minLon_,
-      'lon should be larger than or equal to this.minLon_');
-  ol.DEBUG && console.assert(lon <= this.maxLon_,
-      'lon should be smaller than or equal to this.maxLon_');
   var flatCoordinates = ol.geom.flat.geodesic.meridian(lon,
-      minLat, maxLat, this.projection_, squaredTolerance);
-  ol.DEBUG && console.assert(flatCoordinates.length > 0,
-      'flatCoordinates cannot be empty');
+     minLat, maxLat, this.projection_, squaredTolerance);
   var lineString = this.meridians_[index] !== undefined ?
-      this.meridians_[index] : new ol.geom.LineString(null);
+     this.meridians_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
@@ -370,16 +361,10 @@ ol.Graticule.prototype.getMeridians = function() {
  */
 ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
                                                squaredTolerance, index) {
-  ol.DEBUG && console.assert(lat >= this.minLat_,
-      'lat should be larger than or equal to this.minLat_');
-  ol.DEBUG && console.assert(lat <= this.maxLat_,
-      'lat should be smaller than or equal to this.maxLat_');
   var flatCoordinates = ol.geom.flat.geodesic.parallel(lat,
-      this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
-  ol.DEBUG && console.assert(flatCoordinates.length > 0,
-      'flatCoordinates cannot be empty');
+     this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
   var lineString = this.parallels_[index] !== undefined ?
-      this.parallels_[index] : new ol.geom.LineString(null);
+     this.parallels_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
@@ -461,7 +446,7 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var extent = projection.getExtent();
   var worldExtent = projection.getWorldExtent();
   var worldExtentP = ol.proj.transformExtent(worldExtent,
-      epsg4326Projection, projection);
+     epsg4326Projection, projection);
 
   var maxLat = worldExtent[3];
   var maxLon = worldExtent[2];
@@ -472,20 +457,6 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   var maxLonP = worldExtentP[2];
   var minLatP = worldExtentP[1];
   var minLonP = worldExtentP[0];
-
-  ol.DEBUG && console.assert(maxLat !== undefined, 'maxLat should be defined');
-  ol.DEBUG && console.assert(maxLon !== undefined, 'maxLon should be defined');
-  ol.DEBUG && console.assert(minLat !== undefined, 'minLat should be defined');
-  ol.DEBUG && console.assert(minLon !== undefined, 'minLon should be defined');
-
-  ol.DEBUG && console.assert(maxLatP !== undefined,
-      'projected maxLat should be defined');
-  ol.DEBUG && console.assert(maxLonP !== undefined,
-      'projected maxLon should be defined');
-  ol.DEBUG && console.assert(minLatP !== undefined,
-      'projected minLat should be defined');
-  ol.DEBUG && console.assert(minLonP !== undefined,
-      'projected minLon should be defined');
 
   this.maxLat_ = maxLat;
   this.maxLon_ = maxLon;
@@ -499,13 +470,13 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
 
 
   this.fromLonLatTransform_ = ol.proj.getTransform(
-      epsg4326Projection, projection);
+     epsg4326Projection, projection);
 
   this.toLonLatTransform_ = ol.proj.getTransform(
-      projection, epsg4326Projection);
+     projection, epsg4326Projection);
 
   this.projectionCenterLonLat_ = this.toLonLatTransform_(
-      ol.extent.getCenter(extent));
+     ol.extent.getCenter(extent));
 
   this.projection_ = projection;
 };

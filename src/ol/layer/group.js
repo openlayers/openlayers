@@ -123,8 +123,6 @@ ol.layer.Group.prototype.handleLayersChanged_ = function(event) {
 ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = ol.getUid(layer).toString();
-  ol.DEBUG && console.assert(!(key in this.listenerKeys_),
-      'listeners already registered');
   this.listenerKeys_[key] = [
     ol.events.listen(layer, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleLayerChange_, this),
@@ -142,7 +140,6 @@ ol.layer.Group.prototype.handleLayersAdd_ = function(collectionEvent) {
 ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
   var layer = /** @type {ol.layer.Base} */ (collectionEvent.element);
   var key = ol.getUid(layer).toString();
-  ol.DEBUG && console.assert(key in this.listenerKeys_, 'no listeners to unregister');
   this.listenerKeys_[key].forEach(ol.events.unlistenByKey);
   delete this.listenerKeys_[key];
   this.changed();

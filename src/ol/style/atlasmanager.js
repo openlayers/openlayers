@@ -118,10 +118,6 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
  *    entry, or `null` if the entry is not part of the atlases.
  */
 ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
-  ol.DEBUG && console.assert(info.offsetX === hitInfo.offsetX,
-      'in order to merge, offsetX of info and hitInfo must be equal');
-  ol.DEBUG && console.assert(info.offsetY === hitInfo.offsetY,
-      'in order to merge, offsetY of info and hitInfo must be equal');
   return /** @type {ol.AtlasManagerInfo} */ ({
     offsetX: info.offsetX,
     offsetY: info.offsetY,
@@ -219,6 +215,5 @@ ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
       ++ii;
     }
   }
-  ol.DEBUG && console.assert(false, 'Failed to add to atlasmanager');
   return null;
 };

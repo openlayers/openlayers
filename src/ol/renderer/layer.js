@@ -116,20 +116,12 @@ ol.renderer.Layer.prototype.loadImage = function(image) {
   var imageState = image.getState();
   if (imageState != ol.ImageState.LOADED &&
       imageState != ol.ImageState.ERROR) {
-    // the image is either "idle" or "loading", register the change
-    // listener (a noop if the listener was already registered)
-    ol.DEBUG && console.assert(imageState == ol.ImageState.IDLE ||
-        imageState == ol.ImageState.LOADING,
-        'imageState is "idle" or "loading"');
     ol.events.listen(image, ol.events.EventType.CHANGE,
         this.handleImageChange_, this);
   }
   if (imageState == ol.ImageState.IDLE) {
     image.load();
     imageState = image.getState();
-    ol.DEBUG && console.assert(imageState == ol.ImageState.LOADING ||
-        imageState == ol.ImageState.LOADED,
-        'imageState is "loading" or "loaded"');
   }
   return imageState == ol.ImageState.LOADED;
 };

@@ -175,9 +175,6 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (tileJSON.scheme !== undefined) {
-    ol.DEBUG && console.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
-  }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
   var tileGrid = ol.tilegrid.createXYZ({
@@ -230,7 +227,6 @@ ol.source.TileUTFGrid.prototype.getTile = function(z, x, y, pixelRatio, projecti
   if (this.tileCache.containsKey(tileCoordKey)) {
     return /** @type {!ol.Tile} */ (this.tileCache.get(tileCoordKey));
   } else {
-    ol.DEBUG && console.assert(projection, 'argument projection is truthy');
     var tileCoord = [z, x, y];
     var urlTileCoord =
         this.getTileCoordForTileUrlFunction(tileCoord, projection);

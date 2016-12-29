@@ -15,7 +15,6 @@ goog.require('ol.easing');
  * @api
  */
 ol.animation.bounce = function(options) {
-  ol.DEBUG && console.warn('ol.animation.bounce() is deprecated.  Use view.animate() instead.');
   var resolution = options.resolution;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -54,7 +53,6 @@ ol.animation.bounce = function(options) {
  * @api
  */
 ol.animation.pan = function(options) {
-  ol.DEBUG && console.warn('ol.animation.pan() is deprecated.  Use view.animate() instead.');
   var source = options.source;
   var start = options.start ? options.start : Date.now();
   var sourceX = source[0];
@@ -97,7 +95,6 @@ ol.animation.pan = function(options) {
  * @api
  */
 ol.animation.rotate = function(options) {
-  ol.DEBUG && console.warn('ol.animation.rotate() is deprecated.  Use view.animate() instead.');
   var sourceRotation = options.rotation ? options.rotation : 0;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;
@@ -146,7 +143,6 @@ ol.animation.rotate = function(options) {
  * @api
  */
 ol.animation.zoom = function(options) {
-  ol.DEBUG && console.warn('ol.animation.zoom() is deprecated.  Use view.animate() instead.');
   var sourceResolution = options.resolution;
   var start = options.start ? options.start : Date.now();
   var duration = options.duration !== undefined ? options.duration : 1000;

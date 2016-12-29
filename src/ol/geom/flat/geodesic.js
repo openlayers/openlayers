@@ -65,8 +65,6 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
       // segment.
       flatCoordinates.push(b[0], b[1]);
       key = fracB.toString();
-      ol.DEBUG && console.assert(!(key in fractions),
-          'fractions object should contain key : ' + key);
       fractions[key] = true;
     } else {
       // Otherwise, we need to subdivide the current line segment.  Split it
@@ -76,8 +74,6 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
       geoStack.push(geoB, geoM, geoM, geoA);
     }
   }
-  ol.DEBUG && console.assert(maxIterations > 0,
-      'maxIterations should be more than 0');
 
   return flatCoordinates;
 };

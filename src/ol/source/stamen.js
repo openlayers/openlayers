@@ -16,15 +16,10 @@ goog.require('ol.source.XYZ');
  * @api stable
  */
 ol.source.Stamen = function(options) {
-
   var i = options.layer.indexOf('-');
   var provider = i == -1 ? options.layer : options.layer.slice(0, i);
-  ol.DEBUG && console.assert(provider in ol.source.Stamen.ProviderConfig,
-      'known provider configured');
   var providerConfig = ol.source.Stamen.ProviderConfig[provider];
 
-  ol.DEBUG && console.assert(options.layer in ol.source.Stamen.LayerConfig,
-      'known layer configured');
   var layerConfig = ol.source.Stamen.LayerConfig[options.layer];
 
   var url = options.url !== undefined ? options.url :
@@ -42,7 +37,6 @@ ol.source.Stamen = function(options) {
     tileLoadFunction: options.tileLoadFunction,
     url: url
   });
-
 };
 ol.inherits(ol.source.Stamen, ol.source.XYZ);
 

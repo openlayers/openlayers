@@ -14,9 +14,6 @@
       "externs/tilejson.js",
       "externs/topojson.js"
     ],
-    "define": [
-      "ol.DEBUG=false"
-    ],
     "jscomp_error": [
       "*"
     ],

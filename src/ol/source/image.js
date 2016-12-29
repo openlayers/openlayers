@@ -22,7 +22,6 @@ goog.require('ol.source.Source');
  * @api
  */
 ol.source.Image = function(options) {
-
   ol.source.Source.call(this, {
     attributions: options.attributions,
     extent: options.extent,
@@ -37,11 +36,6 @@ ol.source.Image = function(options) {
    */
   this.resolutions_ = options.resolutions !== undefined ?
       options.resolutions : null;
-  ol.DEBUG && console.assert(!this.resolutions_ ||
-      ol.array.isSorted(this.resolutions_,
-          function(a, b) {
-            return b - a;
-          }, true), 'resolutions must be null or sorted in descending order');
 
 
   /**
@@ -56,7 +50,6 @@ ol.source.Image = function(options) {
    * @type {number}
    */
   this.reprojectedRevision_ = 0;
-
 };
 ol.inherits(ol.source.Image, ol.source.Source);
 

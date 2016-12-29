@@ -156,20 +156,17 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEven
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new ol.MapBrowserPointerEvent(
-      ol.MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
+     ol.MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
-  // We emulate click events on left mouse button click, touch contact, and pen
-  // contact. isMouseActionButton returns true in these cases (evt.button is set
-  // to 0).
-  // See http://www.w3.org/TR/pointerevents/#button-states
+ // We emulate click events on left mouse button click, touch contact, and pen
+ // contact. isMouseActionButton returns true in these cases (evt.button is set
+ // to 0).
+ // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
-    ol.DEBUG && console.assert(this.down_, 'this.down_ must be truthy');
     this.emulateClick_(this.down_);
   }
 
-  ol.DEBUG && console.assert(this.activePointers_ >= 0,
-      'this.activePointers_ should be equal to or larger than 0');
   if (this.activePointers_ === 0) {
     this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
     this.dragListenerKeys_.length = 0;

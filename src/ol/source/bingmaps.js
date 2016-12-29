@@ -116,7 +116,6 @@ ol.source.BingMaps.prototype.getImagerySet = function() {
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
 ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) {
-
   if (response.statusCode != 200 ||
       response.statusDescription != 'OK' ||
       response.authenticationResultCode != 'ValidCredentials' ||
@@ -132,8 +131,6 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
   }
   //var copyright = response.copyright;  // FIXME do we need to display this?
   var resource = response.resourceSets[0].resources[0];
-  ol.DEBUG && console.assert(resource.imageWidth == resource.imageHeight,
-      'resource has imageWidth equal to imageHeight, i.e. is square');
   var maxZoom = this.maxZoom_ == -1 ? resource.zoomMax : this.maxZoom_;
 
   var sourceProjection = this.getProjection();
@@ -164,9 +161,6 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
              * @return {string|undefined} Tile URL.
              */
             function(tileCoord, pixelRatio, projection) {
-              ol.DEBUG && console.assert(ol.proj.equivalent(
-                  projection, sourceProjection),
-                  'projections are equivalent');
               if (!tileCoord) {
                 return undefined;
               } else {
@@ -216,5 +210,4 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
   this.setLogo(brandLogoUri);
 
   this.setState(ol.source.State.READY);
-
 };

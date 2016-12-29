@@ -73,8 +73,6 @@ ol.format.GPX.SCHEMA_LOCATION_ = 'http://www.topografix.com/GPX/1/1 ' +
  * @return {Array.<number>} Flat coordinates.
  */
 ol.format.GPX.appendCoordinate_ = function(flatCoordinates, layoutOptions, node, values) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
   flatCoordinates.push(
       parseFloat(node.getAttribute('lon')),
       parseFloat(node.getAttribute('lat')));
@@ -147,9 +145,6 @@ ol.format.GPX.applyLayoutOptions_ = function(layoutOptions, flatCoordinates, end
  * @private
  */
 ol.format.GPX.parseLink_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'link', 'localName should be link');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   var href = node.getAttribute('href');
   if (href !== null) {
@@ -165,10 +160,6 @@ ol.format.GPX.parseLink_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseExtensions_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'extensions',
-      'localName should be extensions');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   values['extensionsNode_'] = node;
 };
@@ -180,9 +171,6 @@ ol.format.GPX.parseExtensions_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseRtePt_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'rtept', 'localName should be rtept');
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.RTEPT_PARSERS_, node, objectStack);
   if (values) {
@@ -202,9 +190,6 @@ ol.format.GPX.parseRtePt_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseTrkPt_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'trkpt', 'localName should be trkpt');
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.TRKPT_PARSERS_, node, objectStack);
   if (values) {
@@ -224,10 +209,6 @@ ol.format.GPX.parseTrkPt_ = function(node, objectStack) {
  * @private
  */
 ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'trkseg',
-      'localName should be trkseg');
   var values = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   ol.xml.parseNode(ol.format.GPX.TRKSEG_PARSERS_, node, objectStack);
   var flatCoordinates = /** @type {Array.<number>} */
@@ -244,9 +225,6 @@ ol.format.GPX.parseTrkSeg_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 ol.format.GPX.readRte_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'rte', 'localName should be rte');
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop({
     'flatCoordinates': [],
@@ -277,9 +255,6 @@ ol.format.GPX.readRte_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Track.
  */
 ol.format.GPX.readTrk_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'trk', 'localName should be trk');
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop({
     'flatCoordinates': [],
@@ -313,9 +288,6 @@ ol.format.GPX.readTrk_ = function(node, objectStack) {
  * @return {ol.Feature|undefined} Waypoint.
  */
 ol.format.GPX.readWpt_ = function(node, objectStack) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
-  ol.DEBUG && console.assert(node.localName == 'wpt', 'localName should be wpt');
   var options = /** @type {olx.format.ReadOptions} */ (objectStack[0]);
   var values = ol.xml.pushParseAndPop(
       {}, ol.format.GPX.WPT_PARSERS_, node, objectStack);
@@ -516,8 +488,6 @@ ol.format.GPX.prototype.readFeature;
  * @inheritDoc
  */
 ol.format.GPX.prototype.readFeatureFromNode = function(node, opt_options) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
   if (!ol.array.includes(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return null;
   }
@@ -552,8 +522,6 @@ ol.format.GPX.prototype.readFeatures;
  * @inheritDoc
  */
 ol.format.GPX.prototype.readFeaturesFromNode = function(node, opt_options) {
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
   if (!ol.array.includes(ol.format.GPX.NAMESPACE_URIS_, node.namespaceURI)) {
     return [];
   }
@@ -612,8 +580,6 @@ ol.format.GPX.writeLink_ = function(node, value, objectStack) {
 ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var parentNode = context.node;
-  ol.DEBUG && console.assert(ol.xml.isNode(parentNode),
-      'parentNode should be an XML node');
   var namespaceURI = parentNode.namespaceURI;
   var properties = context['properties'];
   //FIXME Projection handling
@@ -919,8 +885,6 @@ ol.format.GPX.GPX_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
     var nodeName = ol.format.GPX.GEOMETRY_TYPE_TO_NODENAME_[geometry.getType()];
     if (nodeName) {
       var parentNode = objectStack[objectStack.length - 1].node;
-      ol.DEBUG && console.assert(ol.xml.isNode(parentNode),
-          'parentNode should be an XML node');
       return ol.xml.createElementNS(parentNode.namespaceURI, nodeName);
     }
   }

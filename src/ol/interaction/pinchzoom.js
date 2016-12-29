@@ -67,8 +67,6 @@ ol.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
-  ol.DEBUG && console.assert(this.targetPointers.length >= 2,
-      'length of this.targetPointers should be 2 or more');
   var scaleDelta = 1.0;
 
   var touch0 = this.targetPointers[0];
@@ -102,7 +100,6 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
   map.render();
   ol.interaction.Interaction.zoomWithoutConstraints(
       map, view, resolution * scaleDelta, this.anchor_);
-
 };
 
 

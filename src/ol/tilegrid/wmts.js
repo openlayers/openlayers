@@ -17,12 +17,6 @@ goog.require('ol.tilegrid.TileGrid');
  * @api
  */
 ol.tilegrid.WMTS = function(options) {
-
-  ol.DEBUG && console.assert(
-      options.resolutions.length == options.matrixIds.length,
-      'options resolutions and matrixIds must have equal length (%s == %s)',
-      options.resolutions.length, options.matrixIds.length);
-
   /**
    * @private
    * @type {!Array.<string>}
@@ -39,7 +33,6 @@ ol.tilegrid.WMTS = function(options) {
     tileSizes: options.tileSizes,
     sizes: options.sizes
   });
-
 };
 ol.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
 
@@ -49,8 +42,6 @@ ol.inherits(ol.tilegrid.WMTS, ol.tilegrid.TileGrid);
  * @return {string} MatrixId..
  */
 ol.tilegrid.WMTS.prototype.getMatrixId = function(z) {
-  ol.DEBUG && console.assert(0 <= z && z < this.matrixIds_.length,
-      'attempted to retrieve matrixId for illegal z (%s)', z);
   return this.matrixIds_[z];
 };
 

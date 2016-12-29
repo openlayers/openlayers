@@ -120,35 +120,15 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   if (!this.image_) {
     return;
   }
-  ol.DEBUG && console.assert(this.anchorX_ !== undefined,
-      'this.anchorX_ should be defined');
-  ol.DEBUG && console.assert(this.anchorY_ !== undefined,
-      'this.anchorY_ should be defined');
-  ol.DEBUG && console.assert(this.height_ !== undefined,
-      'this.height_ should be defined');
-  ol.DEBUG && console.assert(this.opacity_ !== undefined,
-      'this.opacity_ should be defined');
-  ol.DEBUG && console.assert(this.originX_ !== undefined,
-      'this.originX_ should be defined');
-  ol.DEBUG && console.assert(this.originY_ !== undefined,
-      'this.originY_ should be defined');
-  ol.DEBUG && console.assert(this.rotateWithView_ !== undefined,
-      'this.rotateWithView_ should be defined');
-  ol.DEBUG && console.assert(this.rotation_ !== undefined,
-      'this.rotation_ should be defined');
-  ol.DEBUG && console.assert(this.scale_ !== undefined,
-      'this.scale_ should be defined');
-  ol.DEBUG && console.assert(this.width_ !== undefined,
-      'this.width_ should be defined');
   this.beginGeometry(pointGeometry, feature);
   var flatCoordinates = pointGeometry.getFlatCoordinates();
   var stride = pointGeometry.getStride();
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+        flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
-    // Remaining arguments to DRAW_IMAGE are in alphabetical order
+      // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -156,7 +136,7 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
-    // Remaining arguments to DRAW_IMAGE are in alphabetical order
+      // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -172,35 +152,15 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   if (!this.image_) {
     return;
   }
-  ol.DEBUG && console.assert(this.anchorX_ !== undefined,
-      'this.anchorX_ should be defined');
-  ol.DEBUG && console.assert(this.anchorY_ !== undefined,
-      'this.anchorY_ should be defined');
-  ol.DEBUG && console.assert(this.height_ !== undefined,
-      'this.height_ should be defined');
-  ol.DEBUG && console.assert(this.opacity_ !== undefined,
-      'this.opacity_ should be defined');
-  ol.DEBUG && console.assert(this.originX_ !== undefined,
-      'this.originX_ should be defined');
-  ol.DEBUG && console.assert(this.originY_ !== undefined,
-      'this.originY_ should be defined');
-  ol.DEBUG && console.assert(this.rotateWithView_ !== undefined,
-      'this.rotateWithView_ should be defined');
-  ol.DEBUG && console.assert(this.rotation_ !== undefined,
-      'this.rotation_ should be defined');
-  ol.DEBUG && console.assert(this.scale_ !== undefined,
-      'this.scale_ should be defined');
-  ol.DEBUG && console.assert(this.width_ !== undefined,
-      'this.width_ should be defined');
   this.beginGeometry(multiPointGeometry, feature);
   var flatCoordinates = multiPointGeometry.getFlatCoordinates();
   var stride = multiPointGeometry.getStride();
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+        flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
-    // Remaining arguments to DRAW_IMAGE are in alphabetical order
+      // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -208,7 +168,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
-    // Remaining arguments to DRAW_IMAGE are in alphabetical order
+      // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -243,18 +203,11 @@ ol.render.canvas.ImageReplay.prototype.finish = function() {
  * @inheritDoc
  */
 ol.render.canvas.ImageReplay.prototype.setImageStyle = function(imageStyle) {
-  ol.DEBUG && console.assert(imageStyle, 'imageStyle should not be null');
   var anchor = imageStyle.getAnchor();
-  ol.DEBUG && console.assert(anchor, 'anchor should not be null');
   var size = imageStyle.getSize();
-  ol.DEBUG && console.assert(size, 'size should not be null');
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-  ol.DEBUG && console.assert(hitDetectionImage,
-      'hitDetectionImage should not be null');
   var image = imageStyle.getImage(1);
-  ol.DEBUG && console.assert(image, 'image should not be null');
   var origin = imageStyle.getOrigin();
-  ol.DEBUG && console.assert(origin, 'origin should not be null');
   this.anchorX_ = anchor[0];
   this.anchorY_ = anchor[1];
   this.hitDetectionImage_ = hitDetectionImage;

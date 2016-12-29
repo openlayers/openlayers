@@ -110,13 +110,6 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
-  ol.DEBUG && console.assert(strokeStyle !== undefined,
-      'strokeStyle should be defined');
-  ol.DEBUG && console.assert(lineCap !== undefined, 'lineCap should be defined');
-  ol.DEBUG && console.assert(lineDash, 'lineDash should not be null');
-  ol.DEBUG && console.assert(lineJoin !== undefined, 'lineJoin should be defined');
-  ol.DEBUG && console.assert(lineWidth !== undefined, 'lineWidth should be defined');
-  ol.DEBUG && console.assert(miterLimit !== undefined, 'miterLimit should be defined');
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
       !ol.array.equals(state.currentLineDash, lineDash) ||
@@ -148,7 +141,6 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
  */
 ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineStringGeometry, feature) {
   var state = this.state_;
-  ol.DEBUG && console.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
@@ -176,7 +168,6 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
  */
 ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
   var state = this.state_;
-  ol.DEBUG && console.assert(state, 'state should not be null');
   var strokeStyle = state.strokeStyle;
   var lineWidth = state.lineWidth;
   if (strokeStyle === undefined || lineWidth === undefined) {
@@ -210,7 +201,6 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
  */
 ol.render.canvas.LineStringReplay.prototype.finish = function() {
   var state = this.state_;
-  ol.DEBUG && console.assert(state, 'state should not be null');
   if (state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
@@ -223,9 +213,6 @@ ol.render.canvas.LineStringReplay.prototype.finish = function() {
  * @inheritDoc
  */
 ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
-  ol.DEBUG && console.assert(!fillStyle, 'fillStyle should be null');
-  ol.DEBUG && console.assert(strokeStyle, 'strokeStyle should not be null');
   var strokeStyleColor = strokeStyle.getColor();
   this.state_.strokeStyle = ol.colorlike.asColorLike(strokeStyleColor ?
       strokeStyleColor : ol.render.canvas.defaultStrokeStyle);

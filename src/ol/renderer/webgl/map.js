@@ -28,7 +28,6 @@ goog.require('ol.webgl.ContextEventType');
  * @param {ol.Map} map Map.
  */
 ol.renderer.webgl.Map = function(container, map) {
-
   ol.renderer.Map.call(this, container, map);
 
   /**
@@ -77,7 +76,6 @@ ol.renderer.webgl.Map = function(container, map) {
     preserveDrawingBuffer: false,
     stencil: true
   });
-  ol.DEBUG && console.assert(this.gl_, 'got a WebGLRenderingContext');
 
   /**
    * @private
@@ -129,12 +127,12 @@ ol.renderer.webgl.Map = function(container, map) {
       });
 
 
- /**
-  * @param {ol.Map} map Map.
-  * @param {?olx.FrameState} frameState Frame state.
-  * @return {boolean} false.
-  * @this {ol.renderer.webgl.Map}
-  */
+  /**
+   * @param {ol.Map} map Map.
+   * @param {?olx.FrameState} frameState Frame state.
+   * @return {boolean} false.
+   * @this {ol.renderer.webgl.Map}
+   */
   this.loadNextTileTexture_ =
       function(map, frameState) {
         if (!this.tileTextureQueue_.isEmpty()) {
@@ -157,7 +155,6 @@ ol.renderer.webgl.Map = function(container, map) {
   this.textureCacheFrameMarkerCount_ = 0;
 
   this.initializeGL_();
-
 };
 ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
 

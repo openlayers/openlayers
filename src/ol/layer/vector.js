@@ -23,14 +23,8 @@ goog.require('ol.style.Style');
  * @api stable
  */
 ol.layer.Vector = function(opt_options) {
-
   var options = opt_options ?
-      opt_options : /** @type {olx.layer.VectorOptions} */ ({});
-
-  ol.DEBUG && console.assert(
-      options.renderOrder === undefined || !options.renderOrder ||
-      typeof options.renderOrder === 'function',
-      'renderOrder must be a comparator function');
+     opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
   var baseOptions = ol.obj.assign({}, options);
 
@@ -40,43 +34,42 @@ ol.layer.Vector = function(opt_options) {
   delete baseOptions.updateWhileInteracting;
   ol.layer.Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
-  /**
-   * @type {number}
-   * @private
-   */
+ /**
+  * @type {number}
+  * @private
+  */
   this.renderBuffer_ = options.renderBuffer !== undefined ?
-      options.renderBuffer : 100;
+     options.renderBuffer : 100;
 
-  /**
-   * User provided style.
-   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
-   * @private
-   */
+ /**
+  * User provided style.
+  * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
+  * @private
+  */
   this.style_ = null;
 
-  /**
-   * Style function for use within the library.
-   * @type {ol.StyleFunction|undefined}
-   * @private
-   */
+ /**
+  * Style function for use within the library.
+  * @type {ol.StyleFunction|undefined}
+  * @private
+  */
   this.styleFunction_ = undefined;
 
   this.setStyle(options.style);
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+ /**
+  * @type {boolean}
+  * @private
+  */
   this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
-      options.updateWhileAnimating : false;
+     options.updateWhileAnimating : false;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
+ /**
+  * @type {boolean}
+  * @private
+  */
   this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
-      options.updateWhileInteracting : false;
-
+     options.updateWhileInteracting : false;
 };
 ol.inherits(ol.layer.Vector, ol.layer.Layer);
 
@@ -168,10 +161,6 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
  *     Render order.
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
-  ol.DEBUG && console.assert(
-      renderOrder === undefined || !renderOrder ||
-      typeof renderOrder === 'function',
-      'renderOrder must be a comparator function');
   this.set(ol.layer.Vector.Property_.RENDER_ORDER, renderOrder);
 };
 
