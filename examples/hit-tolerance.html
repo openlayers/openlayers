@@ -1,9 +1,13 @@
 ---
 layout: example.html
 title: Hit Tolerance
-shortdesc: Example of using the hitTolerance parameter.
+shortdesc: Example using the hitTolerance parameter.
 docs: >
-  Choose the hit tolerance parameter in pixels and try to click on or near the line feature. If the feature gets hit, it is colored green.
+  By default, the map.forEachFeatureAtPixel() function only considers features that are directly under the provided
+  pixel. This can make it difficult to interact with features on touch devices. To consider features within some
+  distance of the provided pixel, use the hitTolerance option. For example,
+  map.forEachFeatureAtPixel(pixel, callback, {hitTolerance: 3}) will call the callback with all features that are
+  within three pixels of the provided pixel.
 tags: "hitTolerance"
 ---
 <div id="map" class="map"></div>
