@@ -5,35 +5,35 @@ layout: doc.hbs
 
 # Creating custom builds
 
-OpenLayers 3 is a big library providing a lot of functionality. So it is unlikely that an application will need and use all the functionality OpenLayers 3 provides. This is why creating application-specific OpenLayers 3 builds, with just the functionality your application needs, is often a good idea.
+OpenLayers is a big library providing a lot of functionality. So it is unlikely that an application will need and use all the functionality OpenLayers provides. This is why creating application-specific OpenLayers builds, with just the functionality your application needs, is often a good idea.
 
-An alternative to creating custom builds is to compile your application code together with OpenLayers 3. See the [Compiling Application with Closure Compiler](closure.html) tutorial for more information.
+An alternative to creating custom builds is to compile your application code together with OpenLayers. See the [Compiling Application with Closure Compiler](closure.html) tutorial for more information.
 
-This particular tutorial explains how to create custom builds of OpenLayers 3.
+This particular tutorial explains how to create custom builds of OpenLayers.
 
 ## Requirements
 
-OpenLayers 3's build tools use Node and Java, so you need to have Node and Java installed on your machine. You can run `node --version` and `java -version` to test that Node and Java are installed, respectively. See [developing guide](https://github.com/openlayers/ol3/blob/master/DEVELOPING.md) for minimum version numbers required.
+OpenLayers's build tools use Node and Java, so you need to have Node and Java installed on your machine. You can run `node --version` and `java -version` to test that Node and Java are installed, respectively. See [developing guide](https://github.com/openlayers/openlayers/blob/master/DEVELOPING.md) for minimum version numbers required.
 
 ## Download OpenLayers
 
-Obviously, creating a custom build requires the OpenLayers 3 source and specific build scripts.
+Obviously, creating a custom build requires the OpenLayers source and specific build scripts.
 
-To get the OpenLayers 3 source and the build scripts you can clone the `ol3` [repository](https://github.com/openlayers/ol3), or you can download one of the release archives. You can also download the `openlayers` Node package from the Node package registry, using NPM (the Node Package Manager). This is the method we are going to use in this tutorial.
+To get the OpenLayers source and the build scripts you can clone the openlayers [repository](https://github.com/openlayers/openlayers), or you can download one of the release archives. You can also download the `openlayers` Node package from the Node package registry, using NPM (the Node Package Manager). This is the method we are going to use in this tutorial.
 
 Create a directory:
 
     $ mkdir openlayers
 
-Download the OpenLayers 3 distribution using NPM:
+Download the OpenLayers distribution using NPM:
 
     $ npm install openlayers
 
-This will download the latest stable version of OpenLayers 3, and install it under `node_modules`. You can list the content of `node_modules` to verify that it effectively contains a directory named "openlayers".
+This will download the latest stable version of OpenLayers, and install it under `node_modules`. You can list the content of `node_modules` to verify that it effectively contains a directory named "openlayers".
 
-The Node packages onto which the `openlayers` package depends are installed under `node_modules/openlayers/node_modules`. That directory should, for example, include `closure-util`, which is the utility library OpenLayers 3 uses for Closure.
+The Node packages onto which the `openlayers` package depends are installed under `node_modules/openlayers/node_modules`. That directory should, for example, include `closure-util`, which is the utility library OpenLayers uses for Closure.
 
-You should now have everything you need to create custom builds of OpenLayers 3!
+You should now have everything you need to create custom builds of OpenLayers!
 
 ## Create a build configuration file
 
@@ -92,9 +92,9 @@ var map = new ol.Map({
 });
 ```
 
-Note that this JavaScript code corresponds to OpenLayers 3's [`simple`](https://openlayers.org/en/master/examples/simple.html) example.
+Note that this JavaScript code corresponds to OpenLayers's [`simple`](https://openlayers.org/en/master/examples/simple.html) example.
 
-You are now ready to create your first OpenLayers 3 build. Use the following command to create the build:
+You are now ready to create your first OpenLayers build. Use the following command to create the build:
 
     $ cd node_modules/openlayers
     $ node tasks/build.js build/ol-custom.json build/ol-custom.js
@@ -113,7 +113,7 @@ As a test, you can use the following HTML file to verify that your custom build 
 <html>
 <head>
     <meta charset="utf-8" />
-    <title>OpenLayers 3 example</title>
+    <title>OpenLayers example</title>
     <link rel="stylesheet" href="node_modules/openlayers/css/ol.css" />
     <style>
       #map {
@@ -147,7 +147,7 @@ As a test, you can use the following HTML file to verify that your custom build 
 
 ### `define`'s
 
-Closure allows you to define constants that can be set at compile time. The `define` config property above sets four `goog` properties for the Closure library. The OpenLayers 3 code also has defined values you can set.
+Closure allows you to define constants that can be set at compile time. The `define` config property above sets four `goog` properties for the Closure library. The OpenLayers code also has defined values you can set.
 
 Setting some of these to `false` means that the portions of the code relating to this setting become "dead", i.e. are never executed. As Closure Compiler's `ADVANCED` mode removes dead code, this makes the size of the advanced compiled file smaller.
 
@@ -161,9 +161,9 @@ and re-run the build script. The build size should now be smaller.
 
 ### Externs
 
-The Closure documentation explains that "externs" are for external names used in the code being compiled. The compiler includes externs for built-ins such as `document`. The `externs` directory of the OpenLayers 3 code includes files for all those used in some part of the library. For example, if you use Bing Maps, you should include the Bing externs file in the `externs` section of the config file.
+The Closure documentation explains that "externs" are for external names used in the code being compiled. The compiler includes externs for built-ins such as `document`. The `externs` directory of the OpenLayers code includes files for all those used in some part of the library. For example, if you use Bing Maps, you should include the Bing externs file in the `externs` section of the config file.
 
-`oli.js` and `olx.js` are externs files for the OpenLayers 3 API. For examples `olx.js` includes extern definitions for OpenLayers 3's constructor options. You should always use these two files as externs when creating custom builds.
+`oli.js` and `olx.js` are externs files for the OpenLayers API. For examples `olx.js` includes extern definitions for OpenLayers's constructor options. You should always use these two files as externs when creating custom builds.
 
 ### Other compiler options
 
@@ -220,4 +220,4 @@ If you installed OpenLayers from the Node package, you can use `npm` to upgrade 
 
 ## Conclusion
 
-This tutorial should have given you the information you need to create custom builds, i.e. builds tailored to your application. See the [tasks readme](https://github.com/openlayers/ol3/tree/master/tasks/readme.md) for more information on the build scripts and the properties you can use in the build configuration file.
+This tutorial should have given you the information you need to create custom builds, i.e. builds tailored to your application. See the [tasks readme](https://github.com/openlayers/openlayers/tree/master/tasks/readme.md) for more information on the build scripts and the properties you can use in the build configuration file.

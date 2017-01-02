@@ -5,12 +5,12 @@ layout: doc.hbs
 
 # Compiling Application with Closure Compiler
 
-The OpenLayers 3 code uses the Closure Library, and it is compiled with the
-Closure Compiler. Using OpenLayers 3 in an application does not require using
-Closure. But using Closure in an OpenLayers 3 application is possible. And this
+The OpenLayers code uses the Closure Library, and it is compiled with the
+Closure Compiler. Using OpenLayers in an application does not require using
+Closure. But using Closure in an OpenLayers application is possible. And this
 is what this tutorial is about.
 
-This tutorial will teach you how to set up an OpenLayers 3 application based on
+This tutorial will teach you how to set up an OpenLayers application based on
 the [`closure-util`](https://github.com/openlayers/closure-util) node package,
 which provides utilities for working with Closure. Using `closure-util` is one
 way to use Closure in a web application, but there are others. This tutorial
@@ -30,19 +30,19 @@ GitHub.
 ## Advantages of using Closure
 
 This tutorial will show you how to use the Closure Compiler to compile an
-application and OpenLayers 3 together. Compiling the application code together
-with the OpenLayers 3 code has a number of advantages.
+application and OpenLayers together. Compiling the application code together
+with the OpenLayers code has a number of advantages.
 
-First of all, it allows you to only "pay" for the OpenLayers 3 code your
-application uses, as the compiler will exclude the OpenLayers 3 code that the
+First of all, it allows you to only "pay" for the OpenLayers code your
+application uses, as the compiler will exclude the OpenLayers code that the
 application doesn't use. And there is no need to write and maintain a list of
-"exports", which is necessary when creating custom builds of OpenLayers 3.
+"exports", which is necessary when creating custom builds of OpenLayers.
 
-Also, compiling the application and OpenLayers 3 together allows using
-OpenLayers 3 functions and objects that are not part of the official OpenLayers
+Also, compiling the application and OpenLayers together allows using
+OpenLayers functions and objects that are not part of the official OpenLayers
 3 API. Using non-API functions and objects may be risky, but it is mitigated by
 the fact that the compiler will complain if you use functions or objects
-that are not in OpenLayers 3 anymore.
+that are not in OpenLayers anymore.
 
 ## Setting up the Application
 
@@ -70,7 +70,7 @@ Create the application's `package.json` file:
 You can pretty much use the default answers to the questions `npm init` asks
 you.
 
-Now install OpenLayers 3 using:
+Now install OpenLayers using:
 
     $ npm install openlayers --save
 
@@ -99,9 +99,9 @@ been installed with `openlayers`. Use the following to verify that
        -l LEVEL, --loglevel LEVEL   Log level  [info]
 
 
-## Create an OpenLayers 3 map
+## Create an OpenLayers map
 
-You're now going to create a JavaScript file that creates an OpenLayers 3 map.
+You're now going to create a JavaScript file that creates an OpenLayers map.
 This is the file that we will define the application's entry point.
 
 First of all create an `src` directory at the root of the application:
@@ -143,7 +143,7 @@ OpenLayers map as you would do in any OpenLayers application.
 
 ## Compiling the Application
 
-We're now going to compile the application and OpenLayers 3 together, using the
+We're now going to compile the application and OpenLayers together, using the
 Closure Compiler and `closure-util`. For this we need to create a JSON config
 file, that we will then pass as an input file to the `closure-util` command.
 
@@ -195,7 +195,7 @@ We can now use `closure-util` to compile the code:
 
 The resulting `app.js` file, which you can view in your editor if you're
 curious, includes a minified version of the application code (`main.js`), and
-the OpenLayers 3 code that the application code uses.
+the OpenLayers code that the application code uses.
 
 Here is a version of `config.json` with more compilation checks enabled:
 

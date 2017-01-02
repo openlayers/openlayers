@@ -21,7 +21,7 @@ BUILDS=dist
 #
 # URL for canonical repo.
 #
-REMOTE=https://github.com/openlayers/ol3.git
+REMOTE=https://github.com/openlayers/openlayers.git
 
 #
 # Display usage and exit.

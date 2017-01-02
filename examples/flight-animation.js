@@ -67,7 +67,7 @@ var animateFlights = function(event) {
       vectorContext.drawGeometry(currentLine);
     }
   }
-  // tell OL3 to continue the animation
+  // tell OpenLayers to continue the animation
   map.render();
 };
 

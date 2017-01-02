@@ -5,7 +5,7 @@
   "keywords": [
     "map",
     "mapping",
-    "ol3"
+    "ol"
   ],
   "homepage": "https://openlayers.org/",
   "scripts": {
@@ -19,11 +19,11 @@
   "main": "dist/ol.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/openlayers/ol3.git"
+    "url": "git://github.com/openlayers/openlayers.git"
   },
   "license": "BSD-2-Clause",
   "bugs": {
-    "url": "https://github.com/openlayers/ol3/issues"
+    "url": "https://github.com/openlayers/openlayers/issues"
   },
   "browser": "dist/ol.js",
   "style": [

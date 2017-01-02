@@ -908,7 +908,7 @@ ol.View.createResolutionConstraint_ = function(options) {
   var minResolution;
 
   // TODO: move these to be ol constants
-  // see https://github.com/openlayers/ol3/issues/2076
+  // see https://github.com/openlayers/openlayers/issues/2076
   var defaultMaxZoom = 28;
   var defaultZoomFactor = 2;
 

@@ -8,16 +8,16 @@
  *
  * Example usage:
  *
- *     user@host:~/ol3/bin $ phantomjs example-screenshot.js \
- *                           http://localhost:8000/ol3/examples/ \
+ *     user@host:~/openlayers/bin $ phantomjs example-screenshot.js \
+ *                           http://localhost:8000/openlayers/examples/ \
  *                           ../examples
  *
  * The above command will generate `*.png` files in `examples/` for all html
- * files that are served through `http://localhost:8000/ol3/examples/`.
+ * files that are served through `http://localhost:8000/openlayers/examples/`.
  *
  * So if there is a file `my-humpty-example.html` inside of the relative folder
  * `../examples/` which is being served through the webserver so that
- * `http://localhost:8000/ol3/examples/my-humpty-example.html` is a valid and
+ * `http://localhost:8000/openlayers/examples/my-humpty-example.html` is a valid and
  * reachable URL, this script will generate a screenshot and store it as
  * `my-humpty-example.html.png`.
  *

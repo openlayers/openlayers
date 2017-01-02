@@ -166,7 +166,7 @@ var moveFeature = function(event) {
     var feature = new ol.Feature(currentPoint);
     vectorContext.drawFeature(feature, styles.geoMarker);
   }
-  // tell OL3 to continue the postcompose animation
+  // tell OpenLayers to continue the postcompose animation
   map.render();
 };
 

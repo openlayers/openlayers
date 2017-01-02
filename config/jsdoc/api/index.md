@@ -44,7 +44,7 @@ Interactions for [vector features](ol.Feature.html)
 
 #### API change policy
 
-The OpenLayers 3.x API consists of
+The OpenLayers.x API consists of
 * names of classes, class methods and properties
 * names of static functions and constants
 * order and types of function arguments

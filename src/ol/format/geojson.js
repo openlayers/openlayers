@@ -1,5 +1,5 @@
 // TODO: serialize dataProjection as crs member when writing
-// see https://github.com/openlayers/ol3/issues/2078
+// see https://github.com/openlayers/openlayers/issues/2078
 
 goog.provide('ol.format.GeoJSON');
 

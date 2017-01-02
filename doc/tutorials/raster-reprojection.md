@@ -5,7 +5,7 @@ layout: doc.hbs
 
 # Raster Reprojection
 
-OpenLayers 3 has an ability to display raster data from WMS, WMTS, static images and many other sources in a different coordinate system than delivered from the server.
+OpenLayers has an ability to display raster data from WMS, WMTS, static images and many other sources in a different coordinate system than delivered from the server.
 Transformation of the map projections of the image happens directly in a web browser.
 The view in any Proj4js supported coordinate reference system is possible and previously incompatible layers can now be combined and overlaid.
 

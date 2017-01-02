@@ -6,7 +6,7 @@
  * loads Closure Library's base.js, ol-deps.js, the example's "goog.require"
  * script, and the example's script in "development" mode.
  *
- * The ol.js and ol-deps.js scripts are built using ol3's Makefile. They are
+ * The ol.js and ol-deps.js scripts are built using OpenLayers's Makefile. They are
  * located in the ../build/ directory, relative to this script.
  *
  * The script must be named loader.js.

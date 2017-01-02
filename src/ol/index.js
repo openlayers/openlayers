@@ -16,7 +16,7 @@ ol.ASSUME_TOUCH = false;
 
 /**
  * TODO: rename this to something having to do with tile grids
- * see https://github.com/openlayers/ol3/issues/2076
+ * see https://github.com/openlayers/openlayers/issues/2076
  * @define {number} Default maximum zoom for default tile grids.
  */
 ol.DEFAULT_MAX_ZOOM = 42;
