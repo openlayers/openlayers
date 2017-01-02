@@ -97,6 +97,13 @@ olx.LogoOptions.prototype.src;
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
+ *     showLabels: (boolean|undefined),
+ *     lonLabelFormatter: (Function|undefined),
+ *     latLabelFormatter: (Function|undefined),
+ *     lonLabelPosition: (number|undefined),
+ *     latLabelPosition: (number|undefined),
+ *     lonLabelStyle: (ol.style.Text|undefined),
+ *     latLabelStyle: (ol.style.Text|undefined), 
  *     targetSize: (number|undefined)}}
  */
 olx.GraticuleOptions;
