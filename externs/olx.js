@@ -256,7 +256,7 @@ olx.MapOptions.prototype.loadTilesWhileInteracting;
  * provided, the `src` property should be the URL for an image and the `href`
  * property should be a URL for creating a link. If an element is provided,
  * the element will be used. To disable the map logo, set the option to
- * `false`. By default, the OpenLayers 3 logo is shown.
+ * `false`. By default, the OpenLayers logo is shown.
  * @type {boolean|string|olx.LogoOptions|Element|undefined}
  * @api stable
  */

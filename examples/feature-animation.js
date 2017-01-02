@@ -84,7 +84,7 @@ function flash(feature) {
       ol.Observable.unByKey(listenerKey);
       return;
     }
-    // tell OL3 to continue postcompose animation
+    // tell OpenLayers to continue postcompose animation
     map.render();
   }
   listenerKey = map.on('postcompose', animate);

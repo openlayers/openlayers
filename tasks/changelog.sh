@@ -18,7 +18,7 @@ MERGE_RE=Merge\ pull\ request\ #\([0-9]+\)\ from\ \([^/]+\)\/[^\ ]+\ \(.*\)
 SQUASH_RE='([^\|]+)\|([^\(]+) \(#([0-9]+)\)'
 
 GITHUB_URL=https://github.com
-PULLS_URL=${GITHUB_URL}/openlayers/ol3/pull
+PULLS_URL=${GITHUB_URL}/openlayers/openlayers/pull
 
 display_usage() {
   cat <<-EOF

@@ -3,7 +3,7 @@
 ## Setting up development environment
 
 You will obviously start by
-[forking](https://github.com/openlayers/ol3/fork) the ol3 repository.
+[forking](https://github.com/openlayers/openlayers/fork) the OpenLayers repository.
 
 ### Travis CI
 
@@ -33,7 +33,7 @@ To install the Node.js dependencies run
 
 ## Working with the build tool
 
-As an ol3 developer you will use `make` to run build targets defined in the
+As an OpenLayers developer you will use `make` to run build targets defined in the
 `Makefile` located at the root of the repository. The `Makefile` includes
 targets for running the linter, the compiler, the tests, etc.
 
@@ -51,7 +51,7 @@ latter is a meta-target that basically runs `lint`, `build`, and `test`.
 
 The `serve` target starts a node-based web server, which we will refer to as the *dev server*. You'll need to start that server for running the examples and the tests in a browser. More information on that further down.
 
-Other targets include `apidoc` and `ci`. The latter is the target used on Travis CI. See ol3's [Travis configuration file](https://github.com/openlayers/ol3/blob/master/.travis.yml).
+Other targets include `apidoc` and `ci`. The latter is the target used on Travis CI. See OpenLayers's [Travis configuration file](https://github.com/openlayers/openlayers/blob/master/.travis.yml).
 
 ## Running the `check` target
 
@@ -126,11 +126,11 @@ You can use `simple.js` and `simple.html` as templates for new examples.
 
 ### Use of the `goog` namespace in examples
 
-Short story: the ol3 examples should not use the `goog` namespace, except
+Short story: the OpenLayers examples should not use the `goog` namespace, except
 for `goog.require`.
 
-Longer story: we want that the ol3 examples work in multiple modes, with the
+Longer story: we want that the OpenLayers examples work in multiple modes, with the
 standalone lib (which has implications of the symbols and properties we
-export), and compiled together with the ol3 library.
+export), and compiled together with the OpenLayers library.
 
 Compiling the examples together with the library makes it mandatory to declare dependencies with `goog.require` statements.

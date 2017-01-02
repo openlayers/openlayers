@@ -4,7 +4,7 @@ This directory contains externs files, which tell the Closure compiler about sym
 
 ## oli.js and olx.js
 
-These two files are special externs that belong to ol3, and this document explains their purpose and how they are used.
+These two files are special externs that belong to OpenLayers, and this document explains their purpose and how they are used.
 
 ### Prevent class properties from being renamed
 

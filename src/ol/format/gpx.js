@@ -938,7 +938,7 @@ ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {
   ol.xml.setAttributeNS(gpx, xmlSchemaInstanceUri, 'xsi:schemaLocation',
       ol.format.GPX.SCHEMA_LOCATION_);
   gpx.setAttribute('version', '1.1');
-  gpx.setAttribute('creator', 'OpenLayers 3');
+  gpx.setAttribute('creator', 'OpenLayers');
 
   ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       ({node: gpx}), ol.format.GPX.GPX_SERIALIZERS_,

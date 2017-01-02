@@ -30,7 +30,7 @@ Build configuration files are JSON files that are used to determine what should 
 
   * **src** - `Array.<string>` Optional array of [path patterns](https://github.com/isaacs/minimatch/blob/master/README.md) for source files, that is, those that provide the symbols/names included in `exports`.  By default, all of the library source files will be included (`'src/**/*.js'`).  If you want to provide additional source files to be configured together with the library, you need to provide path patterns to your source files *and* the library source files.  Note that these patterns are `/` delimited even on Windows.  There is a bit of special handling with the `src` config.
 
-  * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the ol3 repository.
+  * **cwd** - `string` Optional path to be used as the current working directory.  All paths in the `compile` object are assumed to be relative to `cwd`.  Default is the root of the OpenLayers repository.
 
   * **namespace** - `string` Optional namespace for exporting the `ol` object.  By default, `ol` is assigned to the global object.
 
@@ -67,7 +67,7 @@ To generate a build named `ol.min.js` with the `build.json`, you would run this:
 
     node tasks/build.js build.json ol.min.js
 
-To export the `ol` symbol to somewhere other than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an ol3 AMD module, by simply providing a build configuration like the following:
+To export the `ol` symbol to somewhere other than the global namespace, a `namespace` option is available. This can e.g. be useful for creating an OpenLayers AMD module, by simply providing a build configuration like the following:
 
 ```json
 {
@@ -80,7 +80,7 @@ To export the `ol` symbol to somewhere other than the global namespace, a `names
 }
 ```
 
-The `defines` section of `build.json` above lists common settings for the Closure library in production code. The OL3 library also defines constants that can be set in this section at compile time. These are all defined in the `ol.js` source file; see the comments in this file to see what effect setting these would have. Some of them can reduce the size of the build in advanced mode.
+The `defines` section of `build.json` above lists common settings for the Closure library in production code. The OpenLayers library also defines constants that can be set in this section at compile time. These are all defined in the `ol.js` source file; see the comments in this file to see what effect setting these would have. Some of them can reduce the size of the build in advanced mode.
 
 ## `generate-exports.js`
 
@@ -89,12 +89,12 @@ Called internally to generate a `build/exports.js` file optionally with a limite
 
 ## `generate-externs.js`
 
-Can be called to generate a Closure externs file for the full OpenLayers 3 API.
+Can be called to generate a Closure externs file for the full OpenLayers API.
 See the `--help` option for more detail.
 
     node tasks/generate-externs.js --help
 
-This is useful for projects that use the Closure Compiler to build, but want to use OpenLayers 3 as external library rather than building together with OpenLayers 3.
+This is useful for projects that use the Closure Compiler to build, but want to use OpenLayers as external library rather than building together with OpenLayers.
 
 
 ## `generate-info.js`

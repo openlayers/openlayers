@@ -7,12 +7,12 @@ layout: doc.hbs
 
 When going beyond modifying existing examples you might be looking for a
 way to setup your own code with dependency management together with external
-dependencies like OpenLayers 3.
+dependencies like OpenLayers.
 
 This tutorial serves as a suggested project setup using NPM and Browserify
 for the most basic needs. There are several other options and in particular
 you might be interested in 
-[compiling your own code together with OpenLayers 3](closure.html).
+[compiling your own code together with OpenLayers](closure.html).
 
 ## Initial steps
 
@@ -84,6 +84,6 @@ to the script section in `package.json`:
 ```
 
 Note that `bundle.js` will contain your application code and all dependencies
-used in your application, in this case the official full build of OpenLayers 3.
-If you only need parts of OpenLayers 3 you can create
+used in your application, in this case the official full build of OpenLayers.
+If you only need parts of OpenLayers you can create
 [custom builds](../../builder).
