@@ -6,95 +6,99 @@ goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
 
-/**
- * @constructor
- * @extends {ol.webgl.Fragment}
- * @struct
- */
-{{className}}.Fragment = function() {
-  ol.webgl.Fragment.call(this, {{className}}.Fragment.SOURCE);
-};
-ol.inherits({{className}}.Fragment, ol.webgl.Fragment);
-
-
-/**
- * @const
- * @type {string}
- */
-{{className}}.Fragment.DEBUG_SOURCE = 'precision mediump float;\n{{{getOriginalFragmentSource}}}';
-
-
-/**
- * @const
- * @type {string}
- */
-{{className}}.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;{{{getFragmentSource}}}';
-
-
-/**
- * @const
- * @type {string}
- */
-{{className}}.Fragment.SOURCE = {{className}}.Fragment.OPTIMIZED_SOURCE;
-
-
-{{className}}.fragment = new {{className}}.Fragment();
-
-
-/**
- * @constructor
- * @extends {ol.webgl.Vertex}
- * @struct
- */
-{{className}}.Vertex = function() {
-  ol.webgl.Vertex.call(this, {{className}}.Vertex.SOURCE);
-};
-ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
-
-
-/**
- * @const
- * @type {string}
- */
-{{className}}.Vertex.DEBUG_SOURCE = '{{{getOriginalVertexSource}}}';
-
-
-/**
- * @const
- * @type {string}
- */
-{{className}}.Vertex.OPTIMIZED_SOURCE = '{{{getVertexSource}}}';
-
-
-/**
- * @const
- * @type {string}
- */
-{{className}}.Vertex.SOURCE = {{className}}.Vertex.OPTIMIZED_SOURCE;
-
-
-{{className}}.vertex = new {{className}}.Vertex();
-
-
-/**
- * @constructor
- * @param {WebGLRenderingContext} gl GL.
- * @param {WebGLProgram} program Program.
- * @struct
- */
-{{namespace}}.Locations = function(gl, program) {
-{{#getUniforms}}
+if (ol.ENABLE_WEBGL) {
 
   /**
-   * @type {WebGLUniformLocation}
+   * @constructor
+   * @extends {ol.webgl.Fragment}
+   * @struct
    */
-  this.{{originalName}} = gl.getUniformLocation(program, '{{shortName}}');
-{{/getUniforms}}
-{{#getAttributes}}
+  {{className}}.Fragment = function() {
+    ol.webgl.Fragment.call(this, {{className}}.Fragment.SOURCE);
+  };
+  ol.inherits({{className}}.Fragment, ol.webgl.Fragment);
+
 
   /**
-   * @type {number}
+   * @const
+   * @type {string}
    */
-  this.{{originalName}} = gl.getAttribLocation(program, '{{shortName}}');
-{{/getAttributes}}
-};
+  {{className}}.Fragment.DEBUG_SOURCE = 'precision mediump float;\n{{{getOriginalFragmentSource}}}';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  {{className}}.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;{{{getFragmentSource}}}';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  {{className}}.Fragment.SOURCE = {{className}}.Fragment.OPTIMIZED_SOURCE;
+
+
+  {{className}}.fragment = new {{className}}.Fragment();
+
+
+  /**
+   * @constructor
+   * @extends {ol.webgl.Vertex}
+   * @struct
+   */
+  {{className}}.Vertex = function() {
+    ol.webgl.Vertex.call(this, {{className}}.Vertex.SOURCE);
+  };
+  ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  {{className}}.Vertex.DEBUG_SOURCE = '{{{getOriginalVertexSource}}}';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  {{className}}.Vertex.OPTIMIZED_SOURCE = '{{{getVertexSource}}}';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  {{className}}.Vertex.SOURCE = {{className}}.Vertex.OPTIMIZED_SOURCE;
+
+
+  {{className}}.vertex = new {{className}}.Vertex();
+
+
+  /**
+   * @constructor
+   * @param {WebGLRenderingContext} gl GL.
+   * @param {WebGLProgram} program Program.
+   * @struct
+   */
+  {{namespace}}.Locations = function(gl, program) {
+  {{#getUniforms}}
+
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.{{originalName}} = gl.getUniformLocation(program, '{{shortName}}');
+  {{/getUniforms}}
+  {{#getAttributes}}
+
+    /**
+     * @type {number}
+     */
+    this.{{originalName}} = gl.getAttribLocation(program, '{{shortName}}');
+  {{/getAttributes}}
+  };
+
+}
