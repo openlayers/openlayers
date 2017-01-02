@@ -220,10 +220,6 @@ ol.style.IconImage.prototype.getSrc = function() {
  */
 ol.style.IconImage.prototype.load = function() {
   if (this.imageState_ == ol.ImageState.IDLE) {
-    ol.DEBUG && console.assert(this.src_ !== undefined,
-        'this.src_ must not be undefined');
-    ol.DEBUG && console.assert(!this.imageListenerKeys_,
-        'no listener keys existing');
     this.imageState_ = ol.ImageState.LOADING;
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,

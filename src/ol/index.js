@@ -9,12 +9,6 @@ goog.provide('ol');
 
 
 /**
- * @define {boolean} Enable debug mode. Default is `true`.
- */
-ol.DEBUG = true;
-
-
-/**
  * @define {boolean} Assume touch.  Default is `false`.
  */
 ol.ASSUME_TOUCH = false;

@@ -115,10 +115,6 @@ ol.inherits(ol.source.TileWMS, ol.source.TileImage);
  * @api stable
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
-
-  ol.DEBUG && console.assert(!('VERSION' in params),
-      'key VERSION is not allowed in params');
-
   var projectionObj = ol.proj.get(projection);
 
   var tileGrid = this.getTileGrid();

@@ -149,8 +149,6 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
         p2 = startCoords;
         break;
       } else {
-        //For the compiler not to complain. This will never be [0, 0].
-        ol.DEBUG && console.assert(p0, 'p0 should be defined');
         p0 = p0 || [0, 0];
 
         numVertices = this.addVertices_(p0, p1, [0, 0],
@@ -232,9 +230,6 @@ ol.render.webgl.LineStringReplay.prototype.drawCoordinates_ = function(flatCoord
   }
 
   if (closed) {
-    //Link the last triangle/rhombus to the first one.
-    //n will never be numVertices / 7 here. However, the compiler complains otherwise.
-    ol.DEBUG && console.assert(n, 'n should be defined');
     n = n || numVertices / 7;
     sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
         ? 1 : -1;
@@ -425,11 +420,6 @@ ol.render.webgl.LineStringReplay.prototype.finish = function(context) {
  * @inheritDoc
  */
 ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction = function(context) {
-  // We only delete our stuff here. The shaders and the program may
-  // be used by other LineStringReplay instances (for other layers). And
-  // they will be deleted when disposing of the ol.webgl.Context
-  // object.
-  ol.DEBUG && console.assert(this.verticesBuffer, 'verticesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer;
   var indicesBuffer = this.indicesBuffer;
   return function() {
@@ -514,9 +504,6 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(gl, context, skippedFeaturesHash);
   } else {
-    ol.DEBUG && console.assert(this.styles_.length === this.styleIndices_.length,
-        'number of styles and styleIndices match');
-
     //Draw by style groups to minimize drawElements() calls.
     var i, start, end, nextStyle;
     end = this.startIndices[this.startIndices.length - 1];
@@ -546,9 +533,6 @@ ol.render.webgl.LineStringReplay.prototype.drawReplay = function(gl, context, sk
  * @param {Object} skippedFeaturesHash Ids of features to skip.
  */
 ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash) {
-  ol.DEBUG && console.assert(this.startIndices.length - 1 === this.startIndicesFeature.length,
-      'number of startIndices and startIndicesFeature match');
-
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex, featureStart;
   featureIndex = this.startIndices.length - 2;
   end = start = this.startIndices[featureIndex + 1];
@@ -587,11 +571,6 @@ ol.render.webgl.LineStringReplay.prototype.drawReplaySkipping_ = function(gl, co
  */
 ol.render.webgl.LineStringReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
-  ol.DEBUG && console.assert(this.styles_.length === this.styleIndices_.length,
-      'number of styles and styleIndices match');
-  ol.DEBUG && console.assert(this.startIndices.length - 1 === this.startIndicesFeature.length,
-      'number of startIndices and startIndicesFeature match');
-
   var i, start, end, nextStyle, groupStart, feature, featureUid, featureIndex;
   featureIndex = this.startIndices.length - 2;
   end = this.startIndices[featureIndex + 1];
@@ -647,7 +626,6 @@ ol.render.webgl.LineStringReplay.prototype.setStrokeStyle_ = function(gl, color,
  * @inheritDoc
  */
 ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
   var strokeStyleLineCap = strokeStyle.getLineCap();
   this.state_.lineCap = strokeStyleLineCap !== undefined ?
       strokeStyleLineCap : ol.render.webgl.defaultLineCap;

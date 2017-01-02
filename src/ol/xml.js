@@ -133,12 +133,8 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
       function(node, objectStack) {
         var value = valueReader.call(opt_this, node, objectStack);
         if (value !== undefined) {
-          ol.DEBUG && console.assert(Array.isArray(value),
-              'valueReader function is expected to return an array of values');
           var array = /** @type {Array.<*>} */
               (objectStack[objectStack.length - 1]);
-          ol.DEBUG && console.assert(Array.isArray(array),
-              'objectStack is supposed to be an array of arrays');
           ol.array.extend(array, value);
         }
       });
@@ -164,8 +160,6 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
             node, objectStack);
         if (value !== undefined) {
           var array = objectStack[objectStack.length - 1];
-          ol.DEBUG && console.assert(Array.isArray(array),
-              'objectStack is supposed to be an array of arrays');
           array.push(value);
         }
       });
@@ -206,8 +200,6 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  * @template T
  */
 ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
-  ol.DEBUG && console.assert(valueReader !== undefined,
-      'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
        * @param {Node} node Node.
@@ -242,8 +234,6 @@ ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) 
  * @template T
  */
 ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
-  ol.DEBUG && console.assert(valueReader !== undefined,
-      'undefined valueReader, expected function(this: T, Node, Array.<*>)');
   return (
       /**
        * @param {Node} node Node.
@@ -279,9 +269,6 @@ ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
         node, value, objectStack);
     var parent = objectStack[objectStack.length - 1];
     var parentNode = parent.node;
-    ol.DEBUG && console.assert(ol.xml.isNode(parentNode) ||
-        ol.xml.isDocument(parentNode),
-        'expected parentNode %s to be a Node or a Document', parentNode);
     parentNode.appendChild(node);
   };
 };
@@ -340,8 +327,6 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
       function(value, objectStack, opt_nodeName) {
         var context = objectStack[objectStack.length - 1];
         var node = context.node;
-        ol.DEBUG && console.assert(ol.xml.isNode(node) || ol.xml.isDocument(node),
-            'expected node %s to be a Node or a Document', node);
         var nodeName = fixedNodeName;
         if (nodeName === undefined) {
           nodeName = opt_nodeName;
@@ -350,7 +335,6 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
         if (opt_namespaceURI === undefined) {
           namespaceURI = node.namespaceURI;
         }
-        ol.DEBUG && console.assert(nodeName !== undefined, 'nodeName was undefined');
         return ol.xml.createElementNS(namespaceURI, /** @type {string} */ (nodeName));
       }
   );

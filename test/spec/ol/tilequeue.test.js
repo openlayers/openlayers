@@ -95,9 +95,6 @@ describe('ol.TileQueue', function() {
       addRandomPriorityTiles(tq, 100);
 
       tq.heapify_();
-      expect(function() {
-        tq.assertValid();
-      }).not.to.throwException();
     });
   });
 
@@ -123,9 +120,6 @@ describe('ol.TileQueue', function() {
       tq.reprioritize();
       expect(tq.elements_.length).to.eql(50);
       expect(tq.priorities_.length).to.eql(50);
-      expect(function() {
-        tq.assertValid();
-      }).not.to.throwException();
 
     });
   });

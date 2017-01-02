@@ -529,7 +529,6 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
  * @api
  */
 ol.Map.prototype.beforeRender = function(var_args) {
-  ol.DEBUG && console.warn('map.beforeRender() is deprecated.  Use view.animate() instead.');
   this.render();
   Array.prototype.push.apply(this.preRenderFunctions_, arguments);
 };
@@ -1025,8 +1024,6 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   var targetElement;
   if (this.getTarget()) {
     targetElement = this.getTargetElement();
-    ol.DEBUG && console.assert(targetElement !== null,
-        'expects a non-null value for targetElement');
   }
 
   if (this.keyHandlerKeys_) {
@@ -1462,7 +1459,6 @@ ol.Map.createOptionsInternal = function(options) {
       ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
     }
     if (rendererTypes.indexOf(/** @type {ol.renderer.Type} */ ('dom')) >= 0) {
-      ol.DEBUG && console.assert(false, 'The DOM render has been removed');
       rendererTypes = rendererTypes.concat(ol.DEFAULT_RENDERER_TYPES);
     }
   } else {

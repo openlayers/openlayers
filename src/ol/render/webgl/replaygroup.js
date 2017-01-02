@@ -107,9 +107,6 @@ ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
   var replay = replays[replayType];
   if (replay === undefined) {
     var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-    ol.DEBUG && console.assert(Constructor !== undefined,
-        replayType +
-        ' constructor missing from ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_');
     replay = new Constructor(this.tolerance_, this.maxExtent_);
     replays[replayType] = replay;
   }

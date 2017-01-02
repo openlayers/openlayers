@@ -62,29 +62,6 @@ ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
 ol.structs.PriorityQueue.DROP = Infinity;
 
 
-if (ol.DEBUG) {
-  /**
-   * FIXME empty description for jsdoc
-   */
-  ol.structs.PriorityQueue.prototype.assertValid = function() {
-    var elements = this.elements_;
-    var priorities = this.priorities_;
-    var n = elements.length;
-    console.assert(priorities.length == n);
-    var i, priority;
-    for (i = 0; i < (n >> 1) - 1; ++i) {
-      priority = priorities[i];
-      console.assert(priority <= priorities[this.getLeftChildIndex_(i)],
-          'priority smaller than or equal to priority of left child (%s <= %s)',
-          priority, priorities[this.getLeftChildIndex_(i)]);
-      console.assert(priority <= priorities[this.getRightChildIndex_(i)],
-          'priority smaller than or equal to priority of right child (%s <= %s)',
-          priority, priorities[this.getRightChildIndex_(i)]);
-    }
-  };
-}
-
-
 /**
  * FIXME empty description for jsdoc
  */
@@ -101,8 +78,6 @@ ol.structs.PriorityQueue.prototype.clear = function() {
  */
 ol.structs.PriorityQueue.prototype.dequeue = function() {
   var elements = this.elements_;
-  ol.DEBUG && console.assert(elements.length > 0,
-      'must have elements in order to be able to dequeue');
   var priorities = this.priorities_;
   var element = elements[0];
   if (elements.length == 1) {
@@ -114,8 +89,6 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
     this.siftUp_(0);
   }
   var elementKey = this.keyFunction_(element);
-  ol.DEBUG && console.assert(elementKey in this.queuedElements_,
-      'key %s is not listed as queued', elementKey);
   delete this.queuedElements_[elementKey];
   return element;
 };

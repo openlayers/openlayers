@@ -35,9 +35,7 @@ ol.inherits({{className}}.Fragment, ol.webgl.Fragment);
  * @const
  * @type {string}
  */
-{{className}}.Fragment.SOURCE = ol.DEBUG ?
-    {{className}}.Fragment.DEBUG_SOURCE :
-    {{className}}.Fragment.OPTIMIZED_SOURCE;
+{{className}}.Fragment.SOURCE = {{className}}.Fragment.OPTIMIZED_SOURCE;
 
 
 {{className}}.fragment = new {{className}}.Fragment();
@@ -72,9 +70,7 @@ ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
  * @const
  * @type {string}
  */
-{{className}}.Vertex.SOURCE = ol.DEBUG ?
-    {{className}}.Vertex.DEBUG_SOURCE :
-    {{className}}.Vertex.OPTIMIZED_SOURCE;
+{{className}}.Vertex.SOURCE = {{className}}.Vertex.OPTIMIZED_SOURCE;
 
 
 {{className}}.vertex = new {{className}}.Vertex();
@@ -92,15 +88,13 @@ ol.inherits({{className}}.Vertex, ol.webgl.Vertex);
   /**
    * @type {WebGLUniformLocation}
    */
-  this.{{originalName}} = gl.getUniformLocation(
-      program, ol.DEBUG ? '{{originalName}}' : '{{shortName}}');
+  this.{{originalName}} = gl.getUniformLocation(program, '{{shortName}}');
 {{/getUniforms}}
 {{#getAttributes}}
 
   /**
    * @type {number}
    */
-  this.{{originalName}} = gl.getAttribLocation(
-      program, ol.DEBUG ? '{{originalName}}' : '{{shortName}}');
+  this.{{originalName}} = gl.getAttribLocation(program, '{{shortName}}');
 {{/getAttributes}}
 };

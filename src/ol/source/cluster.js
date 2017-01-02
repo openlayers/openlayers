@@ -149,7 +149,6 @@ ol.source.Cluster.prototype.cluster_ = function() {
         ol.extent.buffer(extent, mapDistance, extent);
 
         var neighbors = this.source_.getFeaturesInExtent(extent);
-        ol.DEBUG && console.assert(neighbors.length >= 1, 'at least one neighbor found');
         neighbors = neighbors.filter(function(neighbor) {
           var uid = ol.getUid(neighbor).toString();
           if (!(uid in clustered)) {
@@ -163,9 +162,6 @@ ol.source.Cluster.prototype.cluster_ = function() {
       }
     }
   }
-  ol.DEBUG && console.assert(
-      Object.keys(clustered).length == this.source_.getFeatures().length,
-      'number of clustered equals number of features in the source');
 };
 
 

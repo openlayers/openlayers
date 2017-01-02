@@ -86,7 +86,7 @@ describe('ol.rendering.style.Polygon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('webgl');
+      map = createMap('canvas');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/polygon-types-canvas.png',
           IMAGE_TOLERANCE, done);

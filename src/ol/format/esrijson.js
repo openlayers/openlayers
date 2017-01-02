@@ -144,8 +144,6 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
  * @return {ol.geom.Geometry} Point.
  */
 ol.format.EsriJSON.readPointGeometry_ = function(object) {
-  ol.DEBUG && console.assert(typeof object.x === 'number', 'object.x should be number');
-  ol.DEBUG && console.assert(typeof object.y === 'number', 'object.y should be number');
   var point;
   if (object.m !== undefined && object.z !== undefined) {
     point = new ol.geom.Point([object.x, object.y, object.z, object.m],
@@ -169,10 +167,6 @@ ol.format.EsriJSON.readPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} LineString.
  */
 ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
-  ol.DEBUG && console.assert(Array.isArray(object.paths),
-      'object.paths should be an array');
-  ol.DEBUG && console.assert(object.paths.length === 1,
-      'object.paths array length should be 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.LineString(object.paths[0], layout);
 };
@@ -184,10 +178,6 @@ ol.format.EsriJSON.readLineStringGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiLineString.
  */
 ol.format.EsriJSON.readMultiLineStringGeometry_ = function(object) {
-  ol.DEBUG && console.assert(Array.isArray(object.paths),
-      'object.paths should be an array');
-  ol.DEBUG && console.assert(object.paths.length > 1,
-      'object.paths array length should be more than 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiLineString(object.paths, layout);
 };
@@ -228,8 +218,6 @@ ol.format.EsriJSON.readMultiPointGeometry_ = function(object) {
  * @return {ol.geom.Geometry} MultiPolygon.
  */
 ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
-  ol.DEBUG && console.assert(object.rings.length > 1,
-      'object.rings should have length larger than 1');
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.MultiPolygon(
       /** @type {Array.<Array.<Array.<Array.<number>>>>} */(object.rings),
@@ -243,7 +231,6 @@ ol.format.EsriJSON.readMultiPolygonGeometry_ = function(object) {
  * @return {ol.geom.Geometry} Polygon.
  */
 ol.format.EsriJSON.readPolygonGeometry_ = function(object) {
-  ol.DEBUG && console.assert(object.rings);
   var layout = ol.format.EsriJSON.getGeometryLayout_(object);
   return new ol.geom.Polygon(object.rings, layout);
 };
@@ -469,9 +456,6 @@ ol.format.EsriJSON.prototype.readFeatures;
 ol.format.EsriJSON.prototype.readFeatureFromObject = function(
     object, opt_options) {
   var esriJSONFeature = /** @type {EsriJSONFeature} */ (object);
-  ol.DEBUG && console.assert(esriJSONFeature.geometry ||
-      esriJSONFeature.attributes,
-      'geometry or attributes should be defined');
   var geometry = ol.format.EsriJSON.readGeometry_(esriJSONFeature.geometry,
       opt_options);
   var feature = new ol.Feature();
@@ -481,9 +465,6 @@ ol.format.EsriJSON.prototype.readFeatureFromObject = function(
   feature.setGeometry(geometry);
   if (opt_options && opt_options.idField &&
       esriJSONFeature.attributes[opt_options.idField]) {
-    ol.DEBUG && console.assert(
-        typeof esriJSONFeature.attributes[opt_options.idField] === 'number',
-        'objectIdFieldName value should be a number');
     feature.setId(/** @type {number} */(
         esriJSONFeature.attributes[opt_options.idField]));
   }

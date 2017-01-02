@@ -367,8 +367,6 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
  * @inheritDoc
  */
 ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options) {
-  ol.DEBUG && console.assert(features.length == 1,
-      'features array should have 1 item');
   return this.writeFeatureText(features[0], opt_options);
 };
 

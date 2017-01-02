@@ -51,10 +51,6 @@ ol.proj.transforms.remove = function(source, destination) {
   var sourceCode = source.getCode();
   var destinationCode = destination.getCode();
   var transforms = ol.proj.transforms.cache_;
-  ol.DEBUG && console.assert(sourceCode in transforms,
-      'sourceCode should be in transforms');
-  ol.DEBUG && console.assert(destinationCode in transforms[sourceCode],
-      'destinationCode should be in transforms of sourceCode');
   var transform = transforms[sourceCode][destinationCode];
   delete transforms[sourceCode][destinationCode];
   if (ol.obj.isEmpty(transforms[sourceCode])) {

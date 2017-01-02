@@ -143,7 +143,6 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
           } else if (altitudeMode == ol.format.IGCZ.BAROMETRIC) {
             z = parseInt(m[12], 10);
           } else {
-            ol.DEBUG && console.assert(false, 'Unknown altitude mode.');
             z = 0;
           }
           flatCoordinates.push(z);

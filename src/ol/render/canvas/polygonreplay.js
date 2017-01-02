@@ -108,8 +108,6 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
     this.instructions.push(fillInstruction);
   }
   if (stroke) {
-    ol.DEBUG && console.assert(state.lineWidth !== undefined,
-        'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
@@ -123,15 +121,10 @@ ol.render.canvas.PolygonReplay.prototype.drawFlatCoordinatess_ = function(flatCo
  */
 ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, feature) {
   var state = this.state_;
-  ol.DEBUG && console.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
   if (fillStyle === undefined && strokeStyle === undefined) {
     return;
-  }
-  if (strokeStyle !== undefined) {
-    ol.DEBUG && console.assert(state.lineWidth !== undefined,
-        'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_(circleGeometry);
   this.beginGeometry(circleGeometry, feature);
@@ -162,8 +155,6 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
     this.instructions.push(fillInstruction);
   }
   if (state.strokeStyle !== undefined) {
-    ol.DEBUG && console.assert(state.lineWidth !== undefined,
-        'state.lineWidth should be defined');
     var strokeInstruction = [ol.render.canvas.Instruction.STROKE];
     this.instructions.push(strokeInstruction);
     this.hitDetectionInstructions.push(strokeInstruction);
@@ -177,14 +168,6 @@ ol.render.canvas.PolygonReplay.prototype.drawCircle = function(circleGeometry, f
  */
 ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
   var state = this.state_;
-  ol.DEBUG && console.assert(state, 'state should not be null');
-  var strokeStyle = state.strokeStyle;
-  ol.DEBUG && console.assert(state.fillStyle !== undefined || strokeStyle !== undefined,
-      'fillStyle or strokeStyle should be defined');
-  if (strokeStyle !== undefined) {
-    ol.DEBUG && console.assert(state.lineWidth !== undefined,
-        'state.lineWidth should be defined');
-  }
   this.setFillStrokeStyles_(polygonGeometry);
   this.beginGeometry(polygonGeometry, feature);
   // always fill the polygon for hit detection
@@ -212,15 +195,10 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
  */
 ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
   var state = this.state_;
-  ol.DEBUG && console.assert(state, 'state should not be null');
   var fillStyle = state.fillStyle;
   var strokeStyle = state.strokeStyle;
   if (fillStyle === undefined && strokeStyle === undefined) {
     return;
-  }
-  if (strokeStyle !== undefined) {
-    ol.DEBUG && console.assert(state.lineWidth !== undefined,
-        'state.lineWidth should be defined');
   }
   this.setFillStrokeStyles_(multiPolygonGeometry);
   this.beginGeometry(multiPolygonGeometry, feature);
@@ -253,7 +231,6 @@ ol.render.canvas.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygo
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.finish = function() {
-  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
   this.reverseHitDetectionInstructions();
   this.state_ = null;
   // We want to preserve topology when drawing polygons.  Polygons are
@@ -290,9 +267,6 @@ ol.render.canvas.PolygonReplay.prototype.getBufferedMaxExtent = function() {
  * @inheritDoc
  */
 ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
-  ol.DEBUG && console.assert(this.state_, 'this.state_ should not be null');
-  ol.DEBUG && console.assert(fillStyle || strokeStyle,
-      'fillStyle or strokeStyle should not be null');
   var state = this.state_;
   if (fillStyle) {
     var fillStyleColor = fillStyle.getColor();
@@ -360,12 +334,6 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyles_ = function(geometr
     state.currentFillStyle = state.fillStyle;
   }
   if (strokeStyle !== undefined) {
-    ol.DEBUG && console.assert(lineCap !== undefined, 'lineCap should be defined');
-    ol.DEBUG && console.assert(lineDash, 'lineDash should not be null');
-    ol.DEBUG && console.assert(lineJoin !== undefined, 'lineJoin should be defined');
-    ol.DEBUG && console.assert(lineWidth !== undefined, 'lineWidth should be defined');
-    ol.DEBUG && console.assert(miterLimit !== undefined,
-        'miterLimit should be defined');
     if (state.currentStrokeStyle != strokeStyle ||
         state.currentLineCap != lineCap ||
         !ol.array.equals(state.currentLineDash, lineDash) ||

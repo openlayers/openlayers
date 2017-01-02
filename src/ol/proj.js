@@ -33,8 +33,6 @@ if (ol.ENABLE_PROJ4JS) {
    * @api
    */
   ol.proj.setProj4 = function(proj4) {
-    ol.DEBUG && console.assert(typeof proj4 == 'function',
-        'proj4 argument should be a function');
     ol.proj.proj4.set(proj4);
   };
 }
@@ -376,7 +374,6 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
     }
   }
   if (!transform) {
-    ol.DEBUG && console.assert(transform, 'transform should be defined');
     transform = ol.proj.identityTransform;
   }
   return transform;
@@ -391,8 +388,6 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
  */
 ol.proj.identityTransform = function(input, opt_output, opt_dimension) {
   if (opt_output !== undefined && input !== opt_output) {
-    // TODO: consider making this a warning instead
-    ol.DEBUG && console.assert(false, 'This should not be used internally.');
     for (var i = 0, ii = input.length; i < ii; ++i) {
       opt_output[i] = input[i];
     }

@@ -142,14 +142,6 @@ ol.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.Replay);
  * @inheritDoc
  */
 ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(context) {
-  // We only delete our stuff here. The shaders and the program may
-  // be used by other ImageReplay instances (for other layers). And
-  // they will be deleted when disposing of the ol.webgl.Context
-  // object.
-  ol.DEBUG && console.assert(this.verticesBuffer,
-      'verticesBuffer must not be null');
-  ol.DEBUG && console.assert(this.indicesBuffer,
-      'indicesBuffer must not be null');
   var verticesBuffer = this.verticesBuffer;
   var indicesBuffer = this.indicesBuffer;
   var textures = this.textures_;
@@ -180,20 +172,6 @@ ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(cont
  * @private
  */
 ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-  ol.DEBUG && console.assert(this.anchorX_ !== undefined, 'anchorX is defined');
-  ol.DEBUG && console.assert(this.anchorY_ !== undefined, 'anchorY is defined');
-  ol.DEBUG && console.assert(this.height_ !== undefined, 'height is defined');
-  ol.DEBUG && console.assert(this.imageHeight_ !== undefined,
-      'imageHeight is defined');
-  ol.DEBUG && console.assert(this.imageWidth_ !== undefined, 'imageWidth is defined');
-  ol.DEBUG && console.assert(this.opacity_ !== undefined, 'opacity is defined');
-  ol.DEBUG && console.assert(this.originX_ !== undefined, 'originX is defined');
-  ol.DEBUG && console.assert(this.originY_ !== undefined, 'originY is defined');
-  ol.DEBUG && console.assert(this.rotateWithView_ !== undefined,
-      'rotateWithView is defined');
-  ol.DEBUG && console.assert(this.rotation_ !== undefined, 'rotation is defined');
-  ol.DEBUG && console.assert(this.scale_ !== undefined, 'scale is defined');
-  ol.DEBUG && console.assert(this.width_ !== undefined, 'width is defined');
   var anchorX = /** @type {number} */ (this.anchorX_);
   var anchorY = /** @type {number} */ (this.anchorY_);
   var height = /** @type {number} */ (this.height_);
@@ -321,21 +299,12 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var gl = context.getGL();
 
   this.groupIndices_.push(this.indices.length);
-  ol.DEBUG && console.assert(this.images_.length === this.groupIndices_.length,
-      'number of images and groupIndices match');
   this.hitDetectionGroupIndices_.push(this.indices.length);
-  ol.DEBUG && console.assert(this.hitDetectionImages_.length ===
-      this.hitDetectionGroupIndices_.length,
-      'number of hitDetectionImages and hitDetectionGroupIndices match');
 
   // create, bind, and populate the vertices buffer
   this.verticesBuffer = new ol.webgl.Buffer(this.vertices);
 
   var indices = this.indices;
-  var bits = context.hasOESElementIndexUint ? 32 : 16;
-  ol.DEBUG && console.assert(indices[indices.length - 1] < Math.pow(2, bits),
-      'Too large element index detected [%s] (OES_element_index_uint "%s")',
-      indices[indices.length - 1], context.hasOESElementIndexUint);
 
   // create, bind, and populate the indices buffer
   this.indicesBuffer = new ol.webgl.Buffer(indices);
@@ -345,14 +314,9 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
   var texturePerImage = {};
 
   this.createTextures_(this.textures_, this.images_, texturePerImage, gl);
-  ol.DEBUG && console.assert(this.textures_.length === this.groupIndices_.length,
-      'number of textures and groupIndices match');
 
   this.createTextures_(this.hitDetectionTextures_, this.hitDetectionImages_,
       texturePerImage, gl);
-  ol.DEBUG && console.assert(this.hitDetectionTextures_.length ===
-      this.hitDetectionGroupIndices_.length,
-      'number of hitDetectionTextures and hitDetectionGroupIndices match');
 
   this.anchorX_ = undefined;
   this.anchorY_ = undefined;
@@ -382,9 +346,6 @@ ol.render.webgl.ImageReplay.prototype.finish = function(context) {
  * @param {WebGLRenderingContext} gl Gl.
  */
 ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, images, texturePerImage, gl) {
-  ol.DEBUG && console.assert(textures.length === 0,
-      'upon creation, textures is empty');
-
   var texture, image, uid, i;
   var ii = images.length;
   for (i = 0; i < ii; ++i) {
@@ -468,8 +429,6 @@ ol.render.webgl.ImageReplay.prototype.shutDownProgram = function(gl, locations) 
 ol.render.webgl.ImageReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
   var textures = hitDetection ? this.hitDetectionTextures_ : this.textures_;
   var groupIndices = hitDetection ? this.hitDetectionGroupIndices_ : this.groupIndices_;
-  ol.DEBUG && console.assert(textures.length === groupIndices.length,
-      'number of textures and groupIndeces match');
 
   if (!ol.obj.isEmpty(skippedFeaturesHash)) {
     this.drawReplaySkipping_(
@@ -561,10 +520,6 @@ ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, context
  */
 ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
     featureCallback, opt_hitExtent) {
-  ol.DEBUG && console.assert(this.hitDetectionTextures_.length ===
-      this.hitDetectionGroupIndices_.length,
-      'number of hitDetectionTextures and hitDetectionGroupIndices match');
-
   var i, groupStart, start, end, feature, featureUid;
   var featureIndex = this.startIndices.length - 1;
   for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
@@ -609,28 +564,12 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
   var image = imageStyle.getImage(1);
   var imageSize = imageStyle.getImageSize();
   var hitDetectionImage = imageStyle.getHitDetectionImage(1);
-  var hitDetectionImageSize = imageStyle.getHitDetectionImageSize();
   var opacity = imageStyle.getOpacity();
   var origin = imageStyle.getOrigin();
   var rotateWithView = imageStyle.getRotateWithView();
   var rotation = imageStyle.getRotation();
   var size = imageStyle.getSize();
   var scale = imageStyle.getScale();
-  ol.DEBUG && console.assert(anchor, 'imageStyle anchor is not null');
-  ol.DEBUG && console.assert(image, 'imageStyle image is not null');
-  ol.DEBUG && console.assert(imageSize,
-      'imageStyle imageSize is not null');
-  ol.DEBUG && console.assert(hitDetectionImage,
-      'imageStyle hitDetectionImage is not null');
-  ol.DEBUG && console.assert(hitDetectionImageSize,
-      'imageStyle hitDetectionImageSize is not null');
-  ol.DEBUG && console.assert(opacity !== undefined, 'imageStyle opacity is defined');
-  ol.DEBUG && console.assert(origin, 'imageStyle origin is not null');
-  ol.DEBUG && console.assert(rotateWithView !== undefined,
-      'imageStyle rotateWithView is defined');
-  ol.DEBUG && console.assert(rotation !== undefined, 'imageStyle rotation is defined');
-  ol.DEBUG && console.assert(size, 'imageStyle size is not null');
-  ol.DEBUG && console.assert(scale !== undefined, 'imageStyle scale is defined');
 
   var currentImage;
   if (this.images_.length === 0) {
@@ -639,8 +578,6 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
     currentImage = this.images_[this.images_.length - 1];
     if (ol.getUid(currentImage) != ol.getUid(image)) {
       this.groupIndices_.push(this.indices.length);
-      ol.DEBUG && console.assert(this.groupIndices_.length === this.images_.length,
-          'number of groupIndices and images match');
       this.images_.push(image);
     }
   }
@@ -652,9 +589,6 @@ ol.render.webgl.ImageReplay.prototype.setImageStyle = function(imageStyle) {
         this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
     if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
       this.hitDetectionGroupIndices_.push(this.indices.length);
-      ol.DEBUG && console.assert(this.hitDetectionGroupIndices_.length ===
-          this.hitDetectionImages_.length,
-          'number of hitDetectionGroupIndices and hitDetectionImages match');
       this.hitDetectionImages_.push(hitDetectionImage);
     }
   }

@@ -66,8 +66,6 @@ ol.inherits(ol.geom.LineString, ol.geom.SimpleGeometry);
  * @api stable
  */
 ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
-  ol.DEBUG && console.assert(coordinate.length == this.stride,
-      'length of coordinate array should match stride');
   if (!this.flatCoordinates) {
     this.flatCoordinates = coordinate.slice();
   } else {

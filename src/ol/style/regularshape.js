@@ -21,11 +21,6 @@ goog.require('ol.style.Image');
  * @api
  */
 ol.style.RegularShape = function(options) {
-
-  ol.DEBUG && console.assert(
-      options.radius !== undefined || options.radius1 !== undefined,
-      'must provide either "radius" or "radius1"');
-
   /**
    * @private
    * @type {Array.<string>}
@@ -139,7 +134,6 @@ ol.style.RegularShape = function(options) {
     scale: 1,
     snapToPixel: snapToPixel
   });
-
 };
 ol.inherits(ol.style.RegularShape, ol.style.Image);
 
@@ -392,7 +386,6 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     var info = atlasManager.add(
         id, size, size, this.draw_.bind(this, renderOptions),
         renderHitDetectionCallback);
-    ol.DEBUG && console.assert(info, 'shape size is too large');
 
     this.canvas_ = info.image;
     this.origin_ = [info.offsetX, info.offsetY];

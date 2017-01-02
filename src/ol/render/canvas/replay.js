@@ -2,7 +2,6 @@ goog.provide('ol.render.canvas.Replay');
 
 goog.require('ol');
 goog.require('ol.array');
-goog.require('ol.colorlike');
 goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
 goog.require('ol.geom.flat.transform');
@@ -237,8 +236,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         this.coordinates, 0, this.coordinates.length, 2,
         transform, this.pixelCoordinates_);
     ol.transform.setFromArray(this.renderedTransform_, transform);
-    ol.DEBUG && console.assert(pixelCoordinates === this.pixelCoordinates_,
-        'pixelCoordinates should be the same as this.pixelCoordinates_');
   }
   var skipFeatures = !ol.obj.isEmpty(skippedFeaturesHash);
   var i = 0; // instruction index
@@ -287,8 +284,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
-        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
-            'second instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
@@ -306,11 +301,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:
-        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
-            'second instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
-            'third instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
             (instruction[3]);
@@ -364,32 +355,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_TEXT:
-        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
-            '2nd instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
-            '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
-        ol.DEBUG && console.assert(typeof instruction[3] === 'string',
-            '4th instruction should be a string');
         text = /** @type {string} */ (instruction[3]);
-        ol.DEBUG && console.assert(typeof instruction[4] === 'number',
-            '5th instruction should be a number');
         var offsetX = /** @type {number} */ (instruction[4]) * pixelRatio;
-        ol.DEBUG && console.assert(typeof instruction[5] === 'number',
-            '6th instruction should be a number');
         var offsetY = /** @type {number} */ (instruction[5]) * pixelRatio;
-        ol.DEBUG && console.assert(typeof instruction[6] === 'number',
-            '7th instruction should be a number');
         rotation = /** @type {number} */ (instruction[6]);
-        ol.DEBUG && console.assert(typeof instruction[7] === 'number',
-            '8th instruction should be a number');
         scale = /** @type {number} */ (instruction[7]) * pixelRatio;
-        ol.DEBUG && console.assert(typeof instruction[8] === 'boolean',
-            '9th instruction should be a boolean');
         fill = /** @type {boolean} */ (instruction[8]);
-        ol.DEBUG && console.assert(typeof instruction[9] === 'boolean',
-            '10th instruction should be a boolean');
         stroke = /** @type {boolean} */ (instruction[9]);
         rotateWithView = /** @type {boolean} */ (instruction[10]);
         if (rotateWithView) {
@@ -456,11 +429,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
-        ol.DEBUG && console.assert(typeof instruction[1] === 'number',
-            '2nd instruction should be a number');
         d = /** @type {number} */ (instruction[1]);
-        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
-            '3rd instruction should be a number');
         dd = /** @type {number} */ (instruction[2]);
         x = pixelCoordinates[d];
         y = pixelCoordinates[d + 1];
@@ -485,10 +454,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_FILL_STYLE:
-        ol.DEBUG && console.assert(
-            ol.colorlike.isColorLike(instruction[1]),
-            '2nd instruction should be a string, ' +
-            'CanvasPattern, or CanvasGradient');
         this.fillOrigin_ = instruction[2];
 
         if (pendingFill) {
@@ -500,20 +465,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        ol.DEBUG && console.assert(ol.colorlike.isColorLike(instruction[1]),
-            '2nd instruction should be a string, CanvasPattern, or CanvasGradient');
-        ol.DEBUG && console.assert(typeof instruction[2] === 'number',
-            '3rd instruction should be a number');
-        ol.DEBUG && console.assert(typeof instruction[3] === 'string',
-            '4rd instruction should be a string');
-        ol.DEBUG && console.assert(typeof instruction[4] === 'string',
-            '5th instruction should be a string');
-        ol.DEBUG && console.assert(typeof instruction[5] === 'number',
-            '6th instruction should be a number');
-        ol.DEBUG && console.assert(instruction[6],
-            '7th instruction should not be null');
-        ol.DEBUG && console.assert(typeof instruction[8] === 'number',
-            '9th instruction should be a number');
         var usePixelRatio = instruction[7] !== undefined ?
             instruction[7] : true;
         var renderedPixelRatio = instruction[8];
@@ -544,12 +495,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_TEXT_STYLE:
-        ol.DEBUG && console.assert(typeof instruction[1] === 'string',
-            '2nd instruction should be a string');
-        ol.DEBUG && console.assert(typeof instruction[2] === 'string',
-            '3rd instruction should be a string');
-        ol.DEBUG && console.assert(typeof instruction[3] === 'string',
-            '4th instruction should be a string');
         context.font = /** @type {string} */ (instruction[1]);
         context.textAlign = /** @type {string} */ (instruction[2]);
         context.textBaseline = /** @type {string} */ (instruction[3]);
@@ -564,7 +509,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       default:
-        ol.DEBUG && console.assert(false, 'Unknown canvas render instruction');
         ++i; // consume the instruction anyway, to avoid an infinite loop
         break;
     }
@@ -575,9 +519,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   if (pendingStroke) {
     context.stroke();
   }
-  // assert that all instructions were consumed
-  ol.DEBUG && console.assert(i == instructions.length,
-      'all instructions should be consumed');
   return undefined;
 };
 
@@ -637,12 +578,9 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions = function() {
     instruction = hitDetectionInstructions[i];
     type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
     if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
-      ol.DEBUG && console.assert(begin == -1, 'begin should be -1');
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
       instruction[2] = i;
-      ol.DEBUG && console.assert(begin >= 0,
-          'begin should be larger than or equal to 0');
       ol.array.reverseSubArray(this.hitDetectionInstructions, begin, i);
       begin = -1;
     }
@@ -655,12 +593,8 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions = function() {
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.endGeometry = function(geometry, feature) {
-  ol.DEBUG && console.assert(this.beginGeometryInstruction1_,
-      'this.beginGeometryInstruction1_ should not be null');
   this.beginGeometryInstruction1_[2] = this.instructions.length;
   this.beginGeometryInstruction1_ = null;
-  ol.DEBUG && console.assert(this.beginGeometryInstruction2_,
-      'this.beginGeometryInstruction2_ should not be null');
   this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
   var endGeometryInstruction =

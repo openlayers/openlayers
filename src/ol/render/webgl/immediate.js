@@ -129,7 +129,7 @@ ol.render.webgl.Immediate.prototype.drawGeometry = function(geometry) {
       this.drawCircle(/** @type {ol.geom.Circle} */ (geometry), null);
       break;
     default:
-      ol.DEBUG && console.assert(false, 'Unsupported geometry type: ' + type);
+      // pass
   }
 };
 
@@ -145,7 +145,6 @@ ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
     return;
   }
   this.setStyle(style);
-  ol.DEBUG && console.assert(geometry, 'geometry must be truthy');
   this.drawGeometry(geometry);
 };
 

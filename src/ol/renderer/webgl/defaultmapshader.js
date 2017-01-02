@@ -35,9 +35,7 @@ ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE = 'precision medium
  * @const
  * @type {string}
  */
-ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.DEBUG ?
-    ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE :
-    ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
+ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
 
 
 ol.renderer.webgl.defaultmapshader.fragment = new ol.renderer.webgl.defaultmapshader.Fragment();
@@ -72,9 +70,7 @@ ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE = 'varying vec2 a;att
  * @const
  * @type {string}
  */
-ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.DEBUG ?
-    ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE :
-    ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
+ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
 
 
 ol.renderer.webgl.defaultmapshader.vertex = new ol.renderer.webgl.defaultmapshader.Vertex();
@@ -91,36 +87,30 @@ ol.renderer.webgl.defaultmapshader.Locations = function(gl, program) {
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_opacity = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_opacity' : 'f');
+  this.u_opacity = gl.getUniformLocation(program, 'f');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_projectionMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_projectionMatrix' : 'e');
+  this.u_projectionMatrix = gl.getUniformLocation(program, 'e');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_texCoordMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_texCoordMatrix' : 'd');
+  this.u_texCoordMatrix = gl.getUniformLocation(program, 'd');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_texture = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_texture' : 'g');
+  this.u_texture = gl.getUniformLocation(program, 'g');
 
   /**
    * @type {number}
    */
-  this.a_position = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_position' : 'b');
+  this.a_position = gl.getAttribLocation(program, 'b');
 
   /**
    * @type {number}
    */
-  this.a_texCoord = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_texCoord' : 'c');
+  this.a_texCoord = gl.getAttribLocation(program, 'c');
 };

@@ -194,9 +194,6 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  * @private
  */
 ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
-
-  ol.DEBUG && console.assert(this.url_ !== undefined, 'url is defined');
-
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
 
@@ -209,8 +206,8 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
   var url = this.url_;
 
   var modifiedUrl = url
-    .replace(/MapServer\/?$/, 'MapServer/export')
-    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+   .replace(/MapServer\/?$/, 'MapServer/export')
+   .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
     ol.asserts.assert(false, 50); // `options.featureTypes` should be an Array
   }

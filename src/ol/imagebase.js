@@ -96,7 +96,6 @@ ol.ImageBase.prototype.getPixelRatio = function() {
  * @return {number} Resolution.
  */
 ol.ImageBase.prototype.getResolution = function() {
-  ol.DEBUG && console.assert(this.resolution !== undefined, 'resolution not yet set');
   return /** @type {number} */ (this.resolution);
 };
 

@@ -116,9 +116,6 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
     extent = ol.extent.applyTransform(tileJSON.bounds, transform);
   }
 
-  if (tileJSON.scheme !== undefined) {
-    ol.DEBUG && console.assert(tileJSON.scheme == 'xyz', 'tileJSON-scheme is "xyz"');
-  }
   var minZoom = tileJSON.minzoom || 0;
   var maxZoom = tileJSON.maxzoom || 22;
   var tileGrid = ol.tilegrid.createXYZ({

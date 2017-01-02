@@ -26,27 +26,12 @@ describe('ol.structs.PriorityQueue', function() {
       console.assert = origAssert;
     });
 
-    it('is valid', function() {
-      expect(function() {
-        pq.assertValid();
-      }).not.to.throwException();
-    });
-
     it('is empty', function() {
       expect(pq.isEmpty()).to.be(true);
     });
 
-    it('dequeue raises an exception', function() {
-      expect(function() {
-        pq.dequeue();
-      }).to.throwException();
-    });
-
     it('enqueue adds an element', function() {
       var added = pq.enqueue(0);
-      expect(function() {
-        pq.assertValid();
-      }).not.to.throwException();
       expect(added).to.be(true);
       expect(pq.elements_).to.eql([0]);
       expect(pq.priorities_).to.eql([0]);
@@ -54,22 +39,9 @@ describe('ol.structs.PriorityQueue', function() {
 
     it('do not enqueue element with DROP priority', function() {
       var added = pq.enqueue(Infinity);
-      expect(function() {
-        pq.assertValid();
-      }).not.to.throwException();
       expect(added).to.be(false);
       expect(pq.elements_).to.eql([]);
       expect(pq.priorities_).to.eql([]);
-    });
-
-    it('maintains the pq property while elements are enqueued', function() {
-      var i;
-      for (i = 0; i < 32; ++i) {
-        pq.enqueue(Math.random());
-        expect(function() {
-          pq.assertValid();
-        }).not.to.throwException();
-      }
     });
 
   });

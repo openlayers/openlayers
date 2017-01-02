@@ -15,16 +15,10 @@ goog.require('ol.math');
  * @return {Array.<number>} Destination.
  */
 ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, stride, fraction, opt_dest) {
-  // FIXME does not work when vertices are repeated
-  // FIXME interpolate extra dimensions
-  ol.DEBUG && console.assert(0 <= fraction && fraction <= 1,
-      'fraction should be in between 0 and 1');
   var pointX = NaN;
   var pointY = NaN;
   var n = (end - offset) / stride;
-  if (n === 0) {
-    ol.DEBUG && console.assert(false, 'n cannot be 0');
-  } else if (n == 1) {
+  if (n === 1) {
     pointX = flatCoordinates[offset];
     pointY = flatCoordinates[offset + 1];
   } else if (n == 2) {
@@ -32,7 +26,7 @@ ol.geom.flat.interpolate.lineString = function(flatCoordinates, offset, end, str
         fraction * flatCoordinates[offset + stride];
     pointY = (1 - fraction) * flatCoordinates[offset + 1] +
         fraction * flatCoordinates[offset + stride + 1];
-  } else {
+  } else if (n !== 0) {
     var x1 = flatCoordinates[offset];
     var y1 = flatCoordinates[offset + 1];
     var length = 0;
@@ -121,8 +115,6 @@ ol.geom.flat.interpolate.lineStringCoordinateAtM = function(flatCoordinates, off
     return flatCoordinates.slice((lo - 1) * stride, (lo - 1) * stride + stride);
   }
   var m1 = flatCoordinates[(lo + 1) * stride - 1];
-  ol.DEBUG && console.assert(m0 < m, 'm0 should be less than m');
-  ol.DEBUG && console.assert(m <= m1, 'm should be less than or equal to m1');
   var t = (m - m0) / (m1 - m0);
   coordinate = [];
   var i;
@@ -131,8 +123,6 @@ ol.geom.flat.interpolate.lineStringCoordinateAtM = function(flatCoordinates, off
         flatCoordinates[lo * stride + i], t));
   }
   coordinate.push(m);
-  ol.DEBUG && console.assert(coordinate.length == stride,
-      'length of coordinate array should match stride');
   return coordinate;
 };
 
@@ -186,7 +176,5 @@ ol.geom.flat.interpolate.lineStringsCoordinateAtM = function(
     }
     offset = end;
   }
-  ol.DEBUG && console.assert(false,
-      'ol.geom.flat.interpolate.lineStringsCoordinateAtM should have returned');
   return null;
 };

@@ -70,10 +70,7 @@ ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
  * @private
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
-
   node.setAttribute('namespaceURI', this.featureNS_);
-  ol.DEBUG && console.assert(node.nodeType == Node.ELEMENT_NODE,
-      'node.nodeType should be ELEMENT');
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
   var features = [];
@@ -87,10 +84,6 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
         continue;
       }
       var context = objectStack[0];
-
-      ol.DEBUG && console.assert(layer.localName.indexOf(
-          ol.format.WMSGetFeatureInfo.layerIdentifier_) >= 0,
-          'localName of layer node should match layerIdentifier');
 
       var toRemove = ol.format.WMSGetFeatureInfo.layerIdentifier_;
       var layerName = layer.localName.replace(toRemove, '');

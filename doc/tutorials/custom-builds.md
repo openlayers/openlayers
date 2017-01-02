@@ -59,9 +59,6 @@ Creating a custom build requires writing a build configuration file. The format 
       "externs/tilejson.js",
       "externs/topojson.js"
     ],
-    "define": [
-      "ol.DEBUG=false"
-    ],
     "extra_annotation_name": [
       "api", "observable"
     ],
@@ -205,8 +202,7 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
     ],
     "define": [
       "ol.ENABLE_WEBGL=false",
-      "ol.ENABLE_PROJ4JS=false",
-      "ol.DEBUG=false"
+      "ol.ENABLE_PROJ4JS=false"
     ],
     "compilation_level": "ADVANCED",
     "manage_closure_dependencies": true

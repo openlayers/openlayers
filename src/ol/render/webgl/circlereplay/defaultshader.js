@@ -35,9 +35,7 @@ ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE = 'precisio
  * @const
  * @type {string}
  */
-ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE = ol.DEBUG ?
-    ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE :
-    ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE = ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
 ol.render.webgl.circlereplay.defaultshader.fragment = new ol.render.webgl.circlereplay.defaultshader.Fragment();
@@ -72,9 +70,7 @@ ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'varying ve
  * @const
  * @type {string}
  */
-ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE = ol.DEBUG ?
-    ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE :
-    ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE = ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
 ol.render.webgl.circlereplay.defaultshader.vertex = new ol.render.webgl.circlereplay.defaultshader.Vertex();
@@ -91,72 +87,60 @@ ol.render.webgl.circlereplay.defaultshader.Locations = function(gl, program) {
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_fillColor = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_fillColor' : 'n');
+  this.u_fillColor = gl.getUniformLocation(program, 'n');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_lineWidth = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_lineWidth' : 'k');
+  this.u_lineWidth = gl.getUniformLocation(program, 'k');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_offsetRotateMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_offsetRotateMatrix' : 'j');
+  this.u_offsetRotateMatrix = gl.getUniformLocation(program, 'j');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_offsetScaleMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_offsetScaleMatrix' : 'i');
+  this.u_offsetScaleMatrix = gl.getUniformLocation(program, 'i');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_opacity = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_opacity' : 'm');
+  this.u_opacity = gl.getUniformLocation(program, 'm');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_pixelRatio = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_pixelRatio' : 'l');
+  this.u_pixelRatio = gl.getUniformLocation(program, 'l');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_projectionMatrix = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_projectionMatrix' : 'h');
+  this.u_projectionMatrix = gl.getUniformLocation(program, 'h');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_size = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_size' : 'p');
+  this.u_size = gl.getUniformLocation(program, 'p');
 
   /**
    * @type {WebGLUniformLocation}
    */
-  this.u_strokeColor = gl.getUniformLocation(
-      program, ol.DEBUG ? 'u_strokeColor' : 'o');
+  this.u_strokeColor = gl.getUniformLocation(program, 'o');
 
   /**
    * @type {number}
    */
-  this.a_instruction = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_instruction' : 'f');
+  this.a_instruction = gl.getAttribLocation(program, 'f');
 
   /**
    * @type {number}
    */
-  this.a_position = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_position' : 'e');
+  this.a_position = gl.getAttribLocation(program, 'e');
 
   /**
    * @type {number}
    */
-  this.a_radius = gl.getAttribLocation(
-      program, ol.DEBUG ? 'a_radius' : 'g');
+  this.a_radius = gl.getAttribLocation(program, 'g');
 };

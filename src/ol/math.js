@@ -107,13 +107,6 @@ ol.math.squaredDistance = function(x1, y1, x2, y2) {
 ol.math.solveLinearSystem = function(mat) {
   var n = mat.length;
 
-  if (ol.DEBUG) {
-    for (var row = 0; row < n; row++) {
-      console.assert(mat[row].length == n + 1,
-                          'every row should have correct number of columns');
-    }
-  }
-
   for (var i = 0; i < n; i++) {
     // Find max in the i-th column (ignoring i - 1 first rows)
     var maxRow = i;

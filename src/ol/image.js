@@ -131,8 +131,6 @@ ol.Image.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE || this.state == ol.ImageState.ERROR) {
     this.state = ol.ImageState.LOADING;
     this.changed();
-    ol.DEBUG && console.assert(!this.imageListenerKeys_,
-        'this.imageListenerKeys_ should be null');
     this.imageListenerKeys_ = [
       ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
           this.handleImageError_, this),

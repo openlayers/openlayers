@@ -3,7 +3,6 @@ goog.provide('ol.renderer.canvas.ImageLayer');
 goog.require('ol');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
-goog.require('ol.proj');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
 goog.require('ol.transform');
 
@@ -78,8 +77,6 @@ ol.renderer.canvas.ImageLayer.prototype.prepareFrame = function(frameState, laye
     if (!ol.ENABLE_RASTER_REPROJECTION) {
       var sourceProjection = imageSource.getProjection();
       if (sourceProjection) {
-        ol.DEBUG && console.assert(ol.proj.equivalent(projection, sourceProjection),
-            'projection and sourceProjection are equivalent');
         projection = sourceProjection;
       }
     }

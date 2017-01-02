@@ -27,7 +27,6 @@ describe('ol.math.clamp', function() {
 
 });
 
-
 describe('ol.math.cosh', function() {
 
   it('returns the correct value at -Infinity', function() {
@@ -51,7 +50,6 @@ describe('ol.math.cosh', function() {
   });
 
 });
-
 
 describe('ol.math.roundUpToPowerOfTwo', function() {
 
@@ -92,8 +90,8 @@ describe('ol.math.roundUpToPowerOfTwo', function() {
 
 });
 
-
 describe('ol.math.solveLinearSystem', function() {
+
   it('calculates correctly', function() {
     var result = ol.math.solveLinearSystem([
       [2, 1, 3, 1],
@@ -104,6 +102,7 @@ describe('ol.math.solveLinearSystem', function() {
     expect(result[1]).to.roughlyEqual(0.4, 1e-9);
     expect(result[2]).to.roughlyEqual(0, 1e-9);
   });
+
   it('can handle singular matrix', function() {
     var result = ol.math.solveLinearSystem([
       [2, 1, 3, 1],
@@ -112,32 +111,8 @@ describe('ol.math.solveLinearSystem', function() {
     ]);
     expect(result).to.be(null);
   });
-  it('raises an exception when the matrix is malformed', function() {
-    var origAssert = console.assert;
-    console.assert = function(assertion, message) {
-      if (!assertion) {
-        throw new Error(message);
-      }
-    };
-    expect(function() {
-      ol.math.solveLinearSystem([
-        [2, 1, 3, 1],
-        [2, 6, 8, 3],
-        [6, 8, 18]
-      ]);
-    }).to.throwException();
 
-    expect(function() {
-      ol.math.solveLinearSystem([
-        [2, 1, 3, 1],
-        [2, 6, 8, 3],
-        [6, 8, 18, 5, 0]
-      ]);
-    }).to.throwException();
-    console.assert = origAssert;
-  });
 });
-
 
 describe('ol.math.toDegrees', function() {
   it('returns the correct value at -π', function() {
@@ -150,7 +125,6 @@ describe('ol.math.toDegrees', function() {
     expect(ol.math.toDegrees(Math.PI)).to.be(180);
   });
 });
-
 
 describe('ol.math.toRadians', function() {
   it('returns the correct value at -180', function() {
@@ -186,16 +160,16 @@ describe('ol.math.modulo', function() {
     expect(ol.math.modulo(1, -5)).to.be(-4);
     expect(ol.math.modulo(6, -5)).to.be(-4);
   });
+});
 
-  describe('ol.math.lerp', function() {
-    it('correctly interpolated numbers', function() {
-      expect(ol.math.lerp(0, 0, 0)).to.be(0);
-      expect(ol.math.lerp(0, 1, 0)).to.be(0);
-      expect(ol.math.lerp(1, 11, 5)).to.be(51);
-    });
-    it('correctly interpolates floats', function() {
-      expect(ol.math.lerp(0, 1, 0.5)).to.be(0.5);
-      expect(ol.math.lerp(0.25, 0.75, 0.5)).to.be(0.5);
-    });
+describe('ol.math.lerp', function() {
+  it('correctly interpolated numbers', function() {
+    expect(ol.math.lerp(0, 0, 0)).to.be(0);
+    expect(ol.math.lerp(0, 1, 0)).to.be(0);
+    expect(ol.math.lerp(1, 11, 5)).to.be(51);
+  });
+  it('correctly interpolates floats', function() {
+    expect(ol.math.lerp(0, 1, 0.5)).to.be(0.5);
+    expect(ol.math.lerp(0.25, 0.75, 0.5)).to.be(0.5);
   });
 });

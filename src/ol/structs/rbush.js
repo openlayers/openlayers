@@ -30,13 +30,6 @@ ol.structs.RBush = function(opt_maxEntries) {
    */
   this.items_ = {};
 
-  if (ol.DEBUG) {
-    /**
-     * @private
-     * @type {number}
-     */
-    this.readers_ = 0;
-  }
 };
 
 
@@ -46,9 +39,6 @@ ol.structs.RBush = function(opt_maxEntries) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.insert = function(extent, value) {
-  if (ol.DEBUG && this.readers_) {
-    throw new Error('Can not insert value while reading');
-  }
   /** @type {ol.RBushEntry} */
   var item = {
     minX: extent[0],
@@ -59,9 +49,6 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   };
 
   this.rbush_.insert(item);
-  // remember the object that was added to the internal rbush
-  ol.DEBUG && console.assert(!(ol.getUid(value) in this.items_),
-      'uid (%s) of value (%s) already exists', ol.getUid(value), value);
   this.items_[ol.getUid(value)] = item;
 };
 
@@ -72,13 +59,6 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
  * @param {Array.<T>} values Values.
  */
 ol.structs.RBush.prototype.load = function(extents, values) {
-  if (ol.DEBUG && this.readers_) {
-    throw new Error('Can not insert values while reading');
-  }
-  ol.DEBUG && console.assert(extents.length === values.length,
-      'extens and values must have same length (%s === %s)',
-      extents.length, values.length);
-
   var items = new Array(values.length);
   for (var i = 0, l = values.length; i < l; i++) {
     var extent = extents[i];
@@ -93,8 +73,6 @@ ol.structs.RBush.prototype.load = function(extents, values) {
       value: value
     };
     items[i] = item;
-    ol.DEBUG && console.assert(!(ol.getUid(value) in this.items_),
-        'uid (%s) of value (%s) already exists', ol.getUid(value), value);
     this.items_[ol.getUid(value)] = item;
   }
   this.rbush_.load(items);
@@ -107,12 +85,7 @@ ol.structs.RBush.prototype.load = function(extents, values) {
  * @return {boolean} Removed.
  */
 ol.structs.RBush.prototype.remove = function(value) {
-  if (ol.DEBUG && this.readers_) {
-    throw new Error('Can not remove value while reading');
-  }
   var uid = ol.getUid(value);
-  ol.DEBUG && console.assert(uid in this.items_,
-      'uid (%s) of value (%s) does not exist', uid, value);
 
   // get the object in which the value was wrapped when adding to the
   // internal rbush. then use that object to do the removal.
@@ -128,15 +101,9 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  ol.DEBUG && console.assert(ol.getUid(value) in this.items_,
-      'uid (%s) of value (%s) does not exist', ol.getUid(value), value);
-
   var item = this.items_[ol.getUid(value)];
   var bbox = [item.minX, item.minY, item.maxX, item.maxY];
   if (!ol.extent.equals(bbox, extent)) {
-    if (ol.DEBUG && this.readers_) {
-      throw new Error('Can not update extent while reading');
-    }
     this.remove(value);
     this.insert(extent, value);
   }
@@ -185,16 +152,7 @@ ol.structs.RBush.prototype.getInExtent = function(extent) {
  * @template S
  */
 ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
-  if (ol.DEBUG) {
-    ++this.readers_;
-    try {
-      return this.forEach_(this.getAll(), callback, opt_this);
-    } finally {
-      --this.readers_;
-    }
-  } else {
-    return this.forEach_(this.getAll(), callback, opt_this);
-  }
+  return this.forEach_(this.getAll(), callback, opt_this);
 };
 
 
@@ -207,16 +165,7 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
  * @template S
  */
 ol.structs.RBush.prototype.forEachInExtent = function(extent, callback, opt_this) {
-  if (ol.DEBUG) {
-    ++this.readers_;
-    try {
-      return this.forEach_(this.getInExtent(extent), callback, opt_this);
-    } finally {
-      --this.readers_;
-    }
-  } else {
-    return this.forEach_(this.getInExtent(extent), callback, opt_this);
-  }
+  return this.forEach_(this.getInExtent(extent), callback, opt_this);
 };
 
 

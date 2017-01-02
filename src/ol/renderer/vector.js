@@ -87,8 +87,6 @@ ol.renderer.vector.renderFeature = function(
         imageStyle.load();
       }
       imageState = imageStyle.getImageState();
-      ol.DEBUG && console.assert(imageState == ol.ImageState.LOADING,
-          'imageState should be LOADING');
       imageStyle.listenImageChange(listener, thisArg);
       loading = true;
     }

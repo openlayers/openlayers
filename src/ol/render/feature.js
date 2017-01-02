@@ -18,19 +18,11 @@ goog.require('ol.geom.GeometryType');
  * @param {Object.<string, *>} properties Properties.
  */
 ol.render.Feature = function(type, flatCoordinates, ends, properties) {
-
   /**
    * @private
    * @type {ol.Extent|undefined}
    */
   this.extent_;
-
-  ol.DEBUG && console.assert(type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTI_POINT ||
-      type === ol.geom.GeometryType.LINE_STRING ||
-      type === ol.geom.GeometryType.MULTI_LINE_STRING ||
-      type === ol.geom.GeometryType.POLYGON,
-      'Need a Point, MultiPoint, LineString, MultiLineString or Polygon type');
 
   /**
    * @private
@@ -55,7 +47,6 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties) {
    * @type {Object.<string, *>}
    */
   this.properties_ = properties;
-
 };
 
 
