@@ -6,111 +6,115 @@ goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
 
-/**
- * @constructor
- * @extends {ol.webgl.Fragment}
- * @struct
- */
-ol.render.webgl.polygonreplay.defaultshader.Fragment = function() {
-  ol.webgl.Fragment.call(this, ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE);
-};
-ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Fragment, ol.webgl.Fragment);
-
-
-/**
- * @const
- * @type {string}
- */
-ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n\n\n\nuniform vec4 u_color;\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
-
-
-/**
- * @const
- * @type {string}
- */
-ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
-
-
-/**
- * @const
- * @type {string}
- */
-ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE = ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
-
-
-ol.render.webgl.polygonreplay.defaultshader.fragment = new ol.render.webgl.polygonreplay.defaultshader.Fragment();
-
-
-/**
- * @constructor
- * @extends {ol.webgl.Vertex}
- * @struct
- */
-ol.render.webgl.polygonreplay.defaultshader.Vertex = function() {
-  ol.webgl.Vertex.call(this, ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE);
-};
-ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Vertex, ol.webgl.Vertex);
-
-
-/**
- * @const
- * @type {string}
- */
-ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE = '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n';
-
-
-/**
- * @const
- * @type {string}
- */
-ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}';
-
-
-/**
- * @const
- * @type {string}
- */
-ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE = ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
-
-
-ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.render.webgl.polygonreplay.defaultshader.Vertex();
-
-
-/**
- * @constructor
- * @param {WebGLRenderingContext} gl GL.
- * @param {WebGLProgram} program Program.
- * @struct
- */
-ol.render.webgl.polygonreplay.defaultshader.Locations = function(gl, program) {
+if (ol.ENABLE_WEBGL) {
 
   /**
-   * @type {WebGLUniformLocation}
+   * @constructor
+   * @extends {ol.webgl.Fragment}
+   * @struct
    */
-  this.u_color = gl.getUniformLocation(program, 'e');
+  ol.render.webgl.polygonreplay.defaultshader.Fragment = function() {
+    ol.webgl.Fragment.call(this, ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE);
+  };
+  ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Fragment, ol.webgl.Fragment);
+
 
   /**
-   * @type {WebGLUniformLocation}
+   * @const
+   * @type {string}
    */
-  this.u_offsetRotateMatrix = gl.getUniformLocation(program, 'd');
+  ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE = 'precision mediump float;\n\n\n\nuniform vec4 u_color;\nuniform float u_opacity;\n\nvoid main(void) {\n  gl_FragColor = u_color;\n  float alpha = u_color.a * u_opacity;\n  if (alpha == 0.0) {\n    discard;\n  }\n  gl_FragColor.a = alpha;\n}\n';
+
 
   /**
-   * @type {WebGLUniformLocation}
+   * @const
+   * @type {string}
    */
-  this.u_offsetScaleMatrix = gl.getUniformLocation(program, 'c');
+  ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE = 'precision mediump float;uniform vec4 e;uniform float f;void main(void){gl_FragColor=e;float alpha=e.a*f;if(alpha==0.0){discard;}gl_FragColor.a=alpha;}';
+
 
   /**
-   * @type {WebGLUniformLocation}
+   * @const
+   * @type {string}
    */
-  this.u_opacity = gl.getUniformLocation(program, 'f');
+  ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE = ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+
+
+  ol.render.webgl.polygonreplay.defaultshader.fragment = new ol.render.webgl.polygonreplay.defaultshader.Fragment();
+
 
   /**
-   * @type {WebGLUniformLocation}
+   * @constructor
+   * @extends {ol.webgl.Vertex}
+   * @struct
    */
-  this.u_projectionMatrix = gl.getUniformLocation(program, 'b');
+  ol.render.webgl.polygonreplay.defaultshader.Vertex = function() {
+    ol.webgl.Vertex.call(this, ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE);
+  };
+  ol.inherits(ol.render.webgl.polygonreplay.defaultshader.Vertex, ol.webgl.Vertex);
+
 
   /**
-   * @type {number}
+   * @const
+   * @type {string}
    */
-  this.a_position = gl.getAttribLocation(program, 'a');
-};
+  ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE = '\n\nattribute vec2 a_position;\n\nuniform mat4 u_projectionMatrix;\nuniform mat4 u_offsetScaleMatrix;\nuniform mat4 u_offsetRotateMatrix;\n\nvoid main(void) {\n  gl_Position = u_projectionMatrix * vec4(a_position, 0.0, 1.0);\n}\n\n\n';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE = 'attribute vec2 a;uniform mat4 b;uniform mat4 c;uniform mat4 d;void main(void){gl_Position=b*vec4(a,0.0,1.0);}';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE = ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+
+
+  ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.render.webgl.polygonreplay.defaultshader.Vertex();
+
+
+  /**
+   * @constructor
+   * @param {WebGLRenderingContext} gl GL.
+   * @param {WebGLProgram} program Program.
+   * @struct
+   */
+  ol.render.webgl.polygonreplay.defaultshader.Locations = function(gl, program) {
+
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_color = gl.getUniformLocation(program, 'e');
+
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_offsetRotateMatrix = gl.getUniformLocation(program, 'd');
+
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_offsetScaleMatrix = gl.getUniformLocation(program, 'c');
+
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_opacity = gl.getUniformLocation(program, 'f');
+
+    /**
+     * @type {WebGLUniformLocation}
+     */
+    this.u_projectionMatrix = gl.getUniformLocation(program, 'b');
+
+    /**
+     * @type {number}
+     */
+    this.a_position = gl.getAttribLocation(program, 'a');
+  };
+
+}
