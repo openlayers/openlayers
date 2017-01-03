@@ -30,6 +30,6 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 
 ## Community
 
-- Need help? Find it on [stackoverflow using the tag 'openlayers-3'](http://stackoverflow.com/questions/tagged/openlayers-3)
+- Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 - Discuss with openlayers users on IRC in `#openlayers` at `chat.freenode`
