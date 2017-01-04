@@ -26,7 +26,8 @@ goog.require('ol.math');
  *
  * @constructor
  * @extends {ol.geom.SimpleGeometry}
- * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
+ * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates of the
+ *     vertices of the polygon where the first coordinate and the last are equivalent.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @api stable
  */
