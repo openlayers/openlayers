@@ -27,8 +27,8 @@ var tileGrid = new ol.tilegrid.WMTS({
 var scalgoToken = 'CC5BF28A7D96B320C7DFBFD1236B5BEB';
 
 var wmtsSource = new ol.source.WMTS({
-  url: 'http://ts2.scalgo.com/global/wmts?token=' + scalgoToken,
-  layer: 'hydrosheds:sea-levels',
+  url: 'http://ts2.scalgo.com/olpatch/wmts?token=' + scalgoToken,
+  layer: 'SRTM_4_1:SRTM_4_1_flooded_sealevels',
   format: 'image/png',
   matrixSet: 'EPSG:3857',
   attributions: [
