@@ -114,8 +114,10 @@ ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
     var map = mapBrowserEvent.map;
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
-    if (this.constrainResolution_) {
-      var resolution = view.getResolution();
+    var resolution = view.getResolution();
+    if (this.constrainResolution_ ||
+        resolution < view.getMinResolution() ||
+        resolution > view.getMaxResolution()) {
       // Zoom to final resolution, with an animation, and provide a
       // direction not to zoom out/in if user was pinching in/out.
       // Direction is > 0 if pinching out, and < 0 if pinching in.
