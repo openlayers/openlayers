@@ -54,6 +54,7 @@ if (ol.ENABLE_WEBGL) {
      * @type {{fillColor: (Array.<number>|null),
      *         strokeColor: (Array.<number>|null),
      *         lineDash: Array.<number>,
+     *         lineDashOffset: (number|undefined),
      *         lineWidth: (number|undefined),
      *         changed: boolean}|null}
      */
@@ -61,6 +62,7 @@ if (ol.ENABLE_WEBGL) {
       fillColor: null,
       strokeColor: null,
       lineDash: null,
+      lineDashOffset: undefined,
       lineWidth: undefined,
       changed: false
     };
@@ -380,6 +382,9 @@ if (ol.ENABLE_WEBGL) {
       var strokeStyleLineDash = strokeStyle.getLineDash();
       this.state_.lineDash = strokeStyleLineDash ?
           strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+      var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+      this.state_.lineDashOffset = strokeStyleLineDashOffset ?
+          strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
       strokeStyleColor = strokeStyle.getColor();
       if (!(strokeStyleColor instanceof CanvasGradient) &&
           !(strokeStyleColor instanceof CanvasPattern)) {

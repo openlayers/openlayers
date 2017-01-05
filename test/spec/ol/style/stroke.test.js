@@ -19,6 +19,7 @@ describe('ol.style.Stroke', function() {
         lineCap: 'square',
         lineJoin: 'miter',
         lineDash: [1, 2, 3],
+        lineDashOffset: 2,
         miterLimit: 20,
         width: 5
       });
@@ -27,6 +28,7 @@ describe('ol.style.Stroke', function() {
       expect(original.getLineCap()).to.eql(clone.getLineCap());
       expect(original.getLineJoin()).to.eql(clone.getLineJoin());
       expect(original.getLineDash()).to.eql(clone.getLineDash());
+      expect(original.getLineDashOffset()).to.eql(clone.getLineDashOffset());
       expect(original.getMiterLimit()).to.eql(clone.getMiterLimit());
       expect(original.getWidth()).to.eql(clone.getWidth());
     });

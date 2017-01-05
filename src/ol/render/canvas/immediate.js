@@ -819,6 +819,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
     var strokeStyleColor = strokeStyle.getColor();
     var strokeStyleLineCap = strokeStyle.getLineCap();
     var strokeStyleLineDash = strokeStyle.getLineDash();
+    var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
     var strokeStyleWidth = strokeStyle.getWidth();
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
@@ -827,6 +828,8 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
           strokeStyleLineCap : ol.render.canvas.defaultLineCap,
       lineDash: strokeStyleLineDash ?
           strokeStyleLineDash : ol.render.canvas.defaultLineDash,
+      lineDashOffset: strokeStyleLineDashOffset ?
+          strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
       lineJoin: strokeStyleLineJoin !== undefined ?
           strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
       lineWidth: this.pixelRatio_ * (strokeStyleWidth !== undefined ?
@@ -898,6 +901,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       var textStrokeStyleColor = textStrokeStyle.getColor();
       var textStrokeStyleLineCap = textStrokeStyle.getLineCap();
       var textStrokeStyleLineDash = textStrokeStyle.getLineDash();
+      var textStrokeStyleLineDashOffset = textStrokeStyle.getLineDashOffset();
       var textStrokeStyleLineJoin = textStrokeStyle.getLineJoin();
       var textStrokeStyleWidth = textStrokeStyle.getWidth();
       var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
@@ -906,6 +910,8 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
             textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
         lineDash: textStrokeStyleLineDash ?
             textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
+        lineDashOffset: textStrokeStyleLineDashOffset ?
+            textStrokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
         lineJoin: textStrokeStyleLineJoin !== undefined ?
             textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
         lineWidth: textStrokeStyleWidth !== undefined ?

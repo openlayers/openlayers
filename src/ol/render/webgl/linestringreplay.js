@@ -50,6 +50,7 @@ if (ol.ENABLE_WEBGL) {
      * @type {{strokeColor: (Array.<number>|null),
      *         lineCap: (string|undefined),
      *         lineDash: Array.<number>,
+     *         lineDashOffset: (number|undefined),
      *         lineJoin: (string|undefined),
      *         lineWidth: (number|undefined),
      *         miterLimit: (number|undefined),
@@ -59,6 +60,7 @@ if (ol.ENABLE_WEBGL) {
       strokeColor: null,
       lineCap: undefined,
       lineDash: null,
+      lineDashOffset: undefined,
       lineJoin: undefined,
       lineWidth: undefined,
       miterLimit: undefined,
@@ -634,6 +636,9 @@ if (ol.ENABLE_WEBGL) {
     var strokeStyleLineDash = strokeStyle.getLineDash();
     this.state_.lineDash = strokeStyleLineDash ?
         strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+    var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+    this.state_.lineDashOffset = strokeStyleLineDashOffset ?
+        strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
     this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
         strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
