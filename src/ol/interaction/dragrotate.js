@@ -73,7 +73,7 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
     var view = map.getView();
     var rotation = view.getRotation();
     ol.interaction.Interaction.rotateWithoutConstraints(
-        map, view, rotation - delta);
+        view, rotation - delta);
   }
   this.lastAngle_ = theta;
 };
@@ -94,7 +94,7 @@ ol.interaction.DragRotate.handleUpEvent_ = function(mapBrowserEvent) {
   var view = map.getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
   var rotation = view.getRotation();
-  ol.interaction.Interaction.rotate(map, view, rotation,
+  ol.interaction.Interaction.rotate(view, rotation,
       undefined, this.duration_);
   return false;
 };

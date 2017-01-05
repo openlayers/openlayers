@@ -237,7 +237,7 @@ ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   }
   var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
   var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
-  ol.interaction.Interaction.zoomByDelta(map, view, -delta, this.lastAnchor_,
+  ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
       this.duration_);
   this.mode_ = undefined;
   this.delta_ = 0;
