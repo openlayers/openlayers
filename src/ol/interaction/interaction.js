@@ -180,6 +180,23 @@ ol.interaction.Interaction.zoom = function(view, resolution, opt_anchor, opt_dur
 ol.interaction.Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
   var currentResolution = view.getResolution();
   var resolution = view.constrainResolution(currentResolution, delta, 0);
+
+  // If we have a constraint on center, we need to change the anchor so that the
+  // new center is within the extent. We first calculate the new center, apply
+  // the constraint to it, and then calculate back the anchor
+  if (opt_anchor && resolution !== undefined && resolution !== currentResolution) {
+    var currentCenter = view.getCenter();
+    var center = view.calculateCenterZoom(resolution, opt_anchor);
+    center = view.constrainCenter(center);
+
+    opt_anchor = [
+      (resolution * currentCenter[0] - currentResolution * center[0]) /
+          (resolution - currentResolution),
+      (resolution * currentCenter[1] - currentResolution * center[1]) /
+          (resolution - currentResolution)
+    ];
+  }
+
   ol.interaction.Interaction.zoomWithoutConstraints(
       view, resolution, opt_anchor, opt_duration);
 };
