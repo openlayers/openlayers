@@ -33,6 +33,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, o
    * @type {{currentStrokeStyle: (ol.ColorLike|undefined),
    *         currentLineCap: (string|undefined),
    *         currentLineDash: Array.<number>,
+   *         currentLineDashOffset: (number|undefined),
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         currentMiterLimit: (number|undefined),
@@ -40,6 +41,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, o
    *         strokeStyle: (ol.ColorLike|undefined),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
+   *         lineDashOffset: (number|undefined),
    *         lineJoin: (string|undefined),
    *         lineWidth: (number|undefined),
    *         miterLimit: (number|undefined)}|null}
@@ -48,6 +50,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, o
     currentStrokeStyle: undefined,
     currentLineCap: undefined,
     currentLineDash: null,
+    currentLineDashOffset: undefined,
     currentLineJoin: undefined,
     currentLineWidth: undefined,
     currentMiterLimit: undefined,
@@ -55,6 +58,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, o
     strokeStyle: undefined,
     lineCap: undefined,
     lineDash: null,
+    lineDashOffset: undefined,
     lineJoin: undefined,
     lineWidth: undefined,
     miterLimit: undefined
@@ -107,12 +111,14 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
   var strokeStyle = state.strokeStyle;
   var lineCap = state.lineCap;
   var lineDash = state.lineDash;
+  var lineDashOffset = state.lineDashOffset;
   var lineJoin = state.lineJoin;
   var lineWidth = state.lineWidth;
   var miterLimit = state.miterLimit;
   if (state.currentStrokeStyle != strokeStyle ||
       state.currentLineCap != lineCap ||
       !ol.array.equals(state.currentLineDash, lineDash) ||
+      state.currentLineDashOffset != lineDashOffset ||
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
@@ -122,13 +128,14 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
     }
     this.instructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
-      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, true, 1
+      strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, lineDashOffset, true, 1
     ], [
       ol.render.canvas.Instruction.BEGIN_PATH
     ]);
     state.currentStrokeStyle = strokeStyle;
     state.currentLineCap = lineCap;
     state.currentLineDash = lineDash;
+    state.currentLineDashOffset = lineDashOffset;
     state.currentLineJoin = lineJoin;
     state.currentLineWidth = lineWidth;
     state.currentMiterLimit = miterLimit;
@@ -151,7 +158,7 @@ ol.render.canvas.LineStringReplay.prototype.drawLineString = function(lineString
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash, true, 1
+    state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
   ], [
     ol.render.canvas.Instruction.BEGIN_PATH
   ]);
@@ -178,7 +185,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_STROKE_STYLE,
     state.strokeStyle, state.lineWidth, state.lineCap, state.lineJoin,
-    state.miterLimit, state.lineDash, true, 1
+    state.miterLimit, state.lineDash, state.lineDashOffset, true, 1
   ], [
     ol.render.canvas.Instruction.BEGIN_PATH
   ]);
@@ -222,6 +229,9 @@ ol.render.canvas.LineStringReplay.prototype.setFillStrokeStyle = function(fillSt
   var strokeStyleLineDash = strokeStyle.getLineDash();
   this.state_.lineDash = strokeStyleLineDash ?
       strokeStyleLineDash : ol.render.canvas.defaultLineDash;
+  var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
+  this.state_.lineDashOffset = strokeStyleLineDashOffset ?
+      strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset;
   var strokeStyleLineJoin = strokeStyle.getLineJoin();
   this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
       strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
