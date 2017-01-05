@@ -100,7 +100,7 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
       }
       var delta = [deltaX, deltaY];
       ol.coordinate.rotate(delta, view.getRotation());
-      ol.interaction.Interaction.pan(map, view, delta, this.duration_);
+      ol.interaction.Interaction.pan(view, delta, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

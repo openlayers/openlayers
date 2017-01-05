@@ -55,7 +55,7 @@ ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
     ol.interaction.Interaction.zoomByDelta(
-        map, view, delta, anchor, this.duration_);
+        view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

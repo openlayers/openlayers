@@ -91,12 +91,11 @@ ol.interaction.Interaction.prototype.setMap = function(map) {
 
 
 /**
- * @param {ol.Map} map Map.
  * @param {ol.View} view View.
  * @param {ol.Coordinate} delta Delta.
  * @param {number=} opt_duration Duration.
  */
-ol.interaction.Interaction.pan = function(map, view, delta, opt_duration) {
+ol.interaction.Interaction.pan = function(view, delta, opt_duration) {
   var currentCenter = view.getCenter();
   if (currentCenter) {
     var center = view.constrainCenter(
@@ -115,27 +114,25 @@ ol.interaction.Interaction.pan = function(map, view, delta, opt_duration) {
 
 
 /**
- * @param {ol.Map} map Map.
  * @param {ol.View} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.interaction.Interaction.rotate = function(map, view, rotation, opt_anchor, opt_duration) {
+ol.interaction.Interaction.rotate = function(view, rotation, opt_anchor, opt_duration) {
   rotation = view.constrainRotation(rotation, 0);
   ol.interaction.Interaction.rotateWithoutConstraints(
-      map, view, rotation, opt_anchor, opt_duration);
+      view, rotation, opt_anchor, opt_duration);
 };
 
 
 /**
- * @param {ol.Map} map Map.
  * @param {ol.View} view View.
  * @param {number|undefined} rotation Rotation.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.interaction.Interaction.rotateWithoutConstraints = function(map, view, rotation, opt_anchor, opt_duration) {
+ol.interaction.Interaction.rotateWithoutConstraints = function(view, rotation, opt_anchor, opt_duration) {
   if (rotation !== undefined) {
     var currentRotation = view.getRotation();
     var currentCenter = view.getCenter();
@@ -154,7 +151,6 @@ ol.interaction.Interaction.rotateWithoutConstraints = function(map, view, rotati
 
 
 /**
- * @param {ol.Map} map Map.
  * @param {ol.View} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
@@ -168,36 +164,34 @@ ol.interaction.Interaction.rotateWithoutConstraints = function(map, view, rotati
  *     will select the nearest resolution. If not defined 0 is
  *     assumed.
  */
-ol.interaction.Interaction.zoom = function(map, view, resolution, opt_anchor, opt_duration, opt_direction) {
+ol.interaction.Interaction.zoom = function(view, resolution, opt_anchor, opt_duration, opt_direction) {
   resolution = view.constrainResolution(resolution, 0, opt_direction);
   ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, resolution, opt_anchor, opt_duration);
+      view, resolution, opt_anchor, opt_duration);
 };
 
 
 /**
- * @param {ol.Map} map Map.
  * @param {ol.View} view View.
  * @param {number} delta Delta from previous zoom level.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.interaction.Interaction.zoomByDelta = function(map, view, delta, opt_anchor, opt_duration) {
+ol.interaction.Interaction.zoomByDelta = function(view, delta, opt_anchor, opt_duration) {
   var currentResolution = view.getResolution();
   var resolution = view.constrainResolution(currentResolution, delta, 0);
   ol.interaction.Interaction.zoomWithoutConstraints(
-      map, view, resolution, opt_anchor, opt_duration);
+      view, resolution, opt_anchor, opt_duration);
 };
 
 
 /**
- * @param {ol.Map} map Map.
  * @param {ol.View} view View.
  * @param {number|undefined} resolution Resolution to go to.
  * @param {ol.Coordinate=} opt_anchor Anchor coordinate.
  * @param {number=} opt_duration Duration.
  */
-ol.interaction.Interaction.zoomWithoutConstraints = function(map, view, resolution, opt_anchor, opt_duration) {
+ol.interaction.Interaction.zoomWithoutConstraints = function(view, resolution, opt_anchor, opt_duration) {
   if (resolution) {
     var currentResolution = view.getResolution();
     var currentCenter = view.getCenter();

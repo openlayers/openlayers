@@ -110,7 +110,7 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
     var view = map.getView();
     var rotation = view.getRotation();
     map.render();
-    ol.interaction.Interaction.rotateWithoutConstraints(map, view,
+    ol.interaction.Interaction.rotateWithoutConstraints(view,
         rotation + rotationDelta, this.anchor_);
   }
 };
@@ -130,7 +130,7 @@ ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
     if (this.rotating_) {
       var rotation = view.getRotation();
       ol.interaction.Interaction.rotate(
-          map, view, rotation, this.anchor_, this.duration_);
+          view, rotation, this.anchor_, this.duration_);
     }
     return false;
   } else {

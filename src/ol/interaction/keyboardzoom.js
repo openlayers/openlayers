@@ -75,7 +75,7 @@ ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
       var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
       var view = map.getView();
       ol.interaction.Interaction.zoomByDelta(
-          map, view, delta, undefined, this.duration_);
+          view, delta, undefined, this.duration_);
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }
