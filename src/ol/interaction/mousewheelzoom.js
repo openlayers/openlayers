@@ -183,7 +183,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     }
     if (this.lastAnchor_) {
       var center = view.calculateCenterZoom(resolution, this.lastAnchor_);
-      view.setCenter(center);
+      view.setCenter(view.constrainCenter(center));
     }
     view.setResolution(resolution);
     if (rebound > 0) {
