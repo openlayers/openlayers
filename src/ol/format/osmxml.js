@@ -36,22 +36,6 @@ ol.inherits(ol.format.OSMXML, ol.format.XMLFeature);
 
 
 /**
- * @const
- * @type {Array.<string>}
- * @private
- */
-ol.format.OSMXML.EXTENSIONS_ = ['.osm'];
-
-
-/**
- * @inheritDoc
- */
-ol.format.OSMXML.prototype.getExtensions = function() {
-  return ol.format.OSMXML.EXTENSIONS_;
-};
-
-
-/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private

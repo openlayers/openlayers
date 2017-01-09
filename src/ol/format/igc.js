@@ -43,14 +43,6 @@ ol.inherits(ol.format.IGC, ol.format.TextFeature);
 
 /**
  * @const
- * @type {Array.<string>}
- * @private
- */
-ol.format.IGC.EXTENSIONS_ = ['.igc'];
-
-
-/**
- * @const
  * @type {RegExp}
  * @private
  */
@@ -82,14 +74,6 @@ ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
  * @private
  */
 ol.format.IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
-
-
-/**
- * @inheritDoc
- */
-ol.format.IGC.prototype.getExtensions = function() {
-  return ol.format.IGC.EXTENSIONS_;
-};
 
 
 /**

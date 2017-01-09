@@ -41,13 +41,6 @@ ol.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
 
 
 /**
- * @const {Array.<string>}
- * @private
- */
-ol.format.TopoJSON.EXTENSIONS_ = ['.topojson'];
-
-
-/**
  * Concatenate arcs into a coordinate array.
  * @param {Array.<number>} indices Indices of arcs to concatenate.  Negative
  *     values indicate arcs need to be reversed.
@@ -198,14 +191,6 @@ ol.format.TopoJSON.readMultiPolygonGeometry_ = function(object, arcs) {
     coordinates[i] = ringCoords;
   }
   return new ol.geom.MultiPolygon(coordinates);
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.TopoJSON.prototype.getExtensions = function() {
-  return ol.format.TopoJSON.EXTENSIONS_;
 };
 
 
