@@ -74,9 +74,12 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var resolution = view.constrainResolution(
       view.getResolutionForExtent(extent, size));
 
+  var center = ol.extent.getCenter(extent);
+  center = view.constrainCenter(center);
+
   view.animate({
     resolution: resolution,
-    center: ol.extent.getCenter(extent),
+    center: center,
     duration: this.duration_,
     easing: ol.easing.easeOut
   });
