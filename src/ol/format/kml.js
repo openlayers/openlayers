@@ -104,14 +104,6 @@ ol.inherits(ol.format.KML, ol.format.XMLFeature);
  * @type {Array.<string>}
  * @private
  */
-ol.format.KML.EXTENSIONS_ = ['.kml'];
-
-
-/**
- * @const
- * @type {Array.<string>}
- * @private
- */
 ol.format.KML.GX_NAMESPACE_URIS_ = [
   'http://www.google.com/kml/ext/2.2'
 ];
@@ -1644,14 +1636,6 @@ ol.format.KML.STYLE_MAP_PARSERS_ = ol.xml.makeStructureNS(
     ol.format.KML.NAMESPACE_URIS_, {
       'Pair': ol.format.KML.PairDataParser_
     });
-
-
-/**
- * @inheritDoc
- */
-ol.format.KML.prototype.getExtensions = function() {
-  return ol.format.KML.EXTENSIONS_;
-};
 
 
 /**

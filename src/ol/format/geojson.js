@@ -58,14 +58,6 @@ ol.inherits(ol.format.GeoJSON, ol.format.JSONFeature);
 
 
 /**
- * @const
- * @type {Array.<string>}
- * @private
- */
-ol.format.GeoJSON.EXTENSIONS_ = ['.geojson'];
-
-
-/**
  * @param {GeoJSONGeometry|GeoJSONGeometryCollection} object Object.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @private
@@ -331,14 +323,6 @@ ol.format.GeoJSON.GEOMETRY_WRITERS_ = {
   'MultiPolygon': ol.format.GeoJSON.writeMultiPolygonGeometry_,
   'GeometryCollection': ol.format.GeoJSON.writeGeometryCollectionGeometry_,
   'Circle': ol.format.GeoJSON.writeEmptyGeometryCollectionGeometry_
-};
-
-
-/**
- * @inheritDoc
- */
-ol.format.GeoJSON.prototype.getExtensions = function() {
-  return ol.format.GeoJSON.EXTENSIONS_;
 };
 
 

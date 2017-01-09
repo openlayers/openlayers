@@ -35,13 +35,6 @@ ol.format.Feature = function() {
 
 
 /**
- * @abstract
- * @return {Array.<string>} Extensions.
- */
-ol.format.Feature.prototype.getExtensions = function() {};
-
-
-/**
  * Adds the data projection to the read options.
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Options.
