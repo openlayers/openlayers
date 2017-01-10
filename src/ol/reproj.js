@@ -8,30 +8,6 @@ goog.require('ol.proj');
 
 
 /**
- * We need to employ more sophisticated solution
- * if the web browser antialiases clipping edges on canvas.
- *
- * Currently only Chrome does not antialias the edges, but this is probably
- * going to be "fixed" in the future: http://crbug.com/424291
- *
- * @type {boolean}
- * @private
- */
-ol.reproj.browserAntialiasesClip_ = (function() {
-  // Adapted from http://stackoverflow.com/questions/4565112/javascript-how-to-find-out-if-the-user-browser-is-chrome
-  var isOpera = navigator.userAgent.indexOf('OPR') > -1;
-  var isIEedge = navigator.userAgent.indexOf('Edge') > -1;
-  return !(
-    !navigator.userAgent.match('CriOS') &&  // Not Chrome on iOS
-    'chrome' in window && // Has chrome in window
-    navigator.vendor === 'Google Inc.' && // Vendor is Google.
-    isOpera == false && // Not Opera
-    isIEedge == false // Not Edge
-  );
-})();
-
-
-/**
  * Calculates ideal resolution to use from the source in order to achieve
  * pixel mapping as close as possible to 1:1 during reprojection.
  * The resolution is calculated regardless of what resolutions
@@ -211,20 +187,14 @@ ol.reproj.render = function(width, height, pixelRatio,
 
     context.save();
     context.beginPath();
-    if (ol.reproj.browserAntialiasesClip_) {
-      var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
-      var p0 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u0, v0);
-      var p1 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u1, v1);
-      var p2 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u2, v2);
+    var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
+    var p0 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u0, v0);
+    var p1 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u1, v1);
+    var p2 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u2, v2);
 
-      context.moveTo(p1[0], p1[1]);
-      context.lineTo(p0[0], p0[1]);
-      context.lineTo(p2[0], p2[1]);
-    } else {
-      context.moveTo(u1, v1);
-      context.lineTo(u0, v0);
-      context.lineTo(u2, v2);
-    }
+    context.moveTo(p1[0], p1[1]);
+    context.lineTo(p0[0], p0[1]);
+    context.lineTo(p2[0], p2[1]);
     context.clip();
 
     context.transform(
