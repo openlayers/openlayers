@@ -371,7 +371,13 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
  * @override
  * @api stable
  */
-ol.format.TopoJSON.prototype.readProjection = function(object) {
+ol.format.TopoJSON.prototype.readProjection;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.readProjectionFromObject = function(object) {
   return this.defaultDataProjection;
 };
 
