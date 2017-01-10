@@ -653,7 +653,7 @@ ol.View.prototype.getZoom = function() {
       max = this.maxResolution_;
       zoomFactor = this.zoomFactor_;
     }
-    zoom = offset + Math.log(max / resolution) / Math.log(zoomFactor);
+    zoom = Math.round(offset + Math.log(max / resolution) / Math.log(zoomFactor));
   }
   return zoom;
 };
