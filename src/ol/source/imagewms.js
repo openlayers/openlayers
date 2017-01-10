@@ -194,8 +194,16 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
   var centerY = (extent[1] + extent[3]) / 2;
 
   var imageResolution = resolution / pixelRatio;
-  var imageWidth = ol.extent.getWidth(extent) / imageResolution;
-  var imageHeight = ol.extent.getHeight(extent) / imageResolution;
+  var imageWidth = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
+  var imageHeight = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
+
+  var halfWidth = imageWidth * imageResolution / 2;
+  var halfHeight = imageHeight * imageResolution / 2;
+
+  extent[0] = centerX - halfWidth;
+  extent[1] = centerY - halfHeight;
+  extent[2] = centerX + halfWidth;
+  extent[3] = centerY + halfHeight;
 
   var image = this.image_;
   if (image &&
@@ -207,8 +215,9 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
   }
 
   if (this.ratio_ != 1) {
-    var halfWidth = this.ratio_ * ol.extent.getWidth(extent) / 2;
-    var halfHeight = this.ratio_ * ol.extent.getHeight(extent) / 2;
+    halfWidth *= this.ratio_;
+    halfHeight *= this.ratio_;
+
     extent[0] = centerX - halfWidth;
     extent[1] = centerY - halfHeight;
     extent[2] = centerX + halfWidth;
@@ -224,8 +233,8 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
   };
   ol.obj.assign(params, this.params_);
 
-  this.imageSize_[0] = Math.ceil(imageWidth * this.ratio_);
-  this.imageSize_[1] = Math.ceil(imageHeight * this.ratio_);
+  this.imageSize_[0] = imageWidth * this.ratio_;
+  this.imageSize_[1] = imageHeight * this.ratio_;
 
   var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
       projection, params);
