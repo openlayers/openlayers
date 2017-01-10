@@ -54,12 +54,6 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
-   * @type {ol.TileCoord}
-   */
-  this.tmpTileCoord_ = [0, 0, 0];
-
-  /**
-   * @private
    * @type {ol.TileRange}
    */
   this.tmpTileRange_ = new ol.TileRange(0, 0, 0, 0);
