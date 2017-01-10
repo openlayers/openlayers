@@ -217,7 +217,7 @@ ol.View.prototype.animate = function(var_args) {
   }
   var series = [];
   for (var i = 0; i < animationCount; ++i) {
-    var options = /** @type olx.AnimationOptions */ (arguments[i]);
+    var options = /** @type {olx.AnimationOptions} */ (arguments[i]);
 
     var animation = /** @type {ol.ViewAnimation} */ ({
       start: start,
