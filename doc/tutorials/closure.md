@@ -230,8 +230,7 @@ Here is a version of `config.json` with more compilation checks enabled:
     ],
     "jscomp_off": [
       "unknownDefines",
-      "lintChecks",
-      "analyzerChecks"
+      "lintChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"
