@@ -104,15 +104,6 @@ ol.Kinetic.prototype.end = function() {
 
 
 /**
- * @private
- * @return {number} Duration of animation (milliseconds).
- */
-ol.Kinetic.prototype.getDuration_ = function() {
-  return Math.log(this.minVelocity_ / this.initialVelocity_) / this.decay_;
-};
-
-
-/**
  * @return {number} Total distance travelled (pixels).
  */
 ol.Kinetic.prototype.getDistance = function() {
