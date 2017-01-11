@@ -459,6 +459,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         if (pendingFill) {
           this.fill_(context, viewRotation);
           pendingFill = 0;
+          if (pendingStroke) {
+            context.stroke();
+            pendingStroke = 0;
+          }
         }
 
         context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
