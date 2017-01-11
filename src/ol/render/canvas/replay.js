@@ -427,6 +427,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           this.fill_(context, viewRotation);
         }
         ++i;
+        prevX = NaN;
+        prevY = NaN;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
         d = /** @type {number} */ (instruction[1]);

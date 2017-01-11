@@ -16,18 +16,24 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
   describe('#replay', function() {
 
-    var context, replay, fillCount, strokeCount, beginPathCount;
-    var feature1, feature2, feature3, style1, style2, transform;
+    var context, replay, fillCount, transform;
+    var strokeCount, beginPathCount, moveToCount, lineToCount;
+    var feature0, feature1, feature2, feature3, style0, style1, style2;
 
     beforeEach(function() {
       transform = ol.transform.create();
       replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, false);
+      feature0 = new ol.Feature(new ol.geom.Polygon(
+          [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
       feature1 = new ol.Feature(new ol.geom.Polygon(
           [[[-90, -45], [-90, 0], [0, 0], [0, -45], [-90, -45]]]));
       feature2 = new ol.Feature(new ol.geom.Polygon(
           [[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]]));
       feature3 = new ol.Feature(new ol.geom.Polygon(
           [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
+      style0 = new ol.style.Style({
+        fill: new ol.style.Fill({color: 'black'})
+      });
       style1 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'black'}),
         stroke: new ol.style.Stroke({color: 'white', width: 1})
@@ -40,6 +46,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
       fillCount = 0;
       strokeCount = 0;
       beginPathCount = 0;
+      moveToCount = 0;
+      lineToCount = 0;
       context = {
         fill: function() {
           fillCount++;
@@ -51,16 +59,40 @@ describe('ol.render.canvas.ReplayGroup', function() {
           beginPathCount++;
         },
         clip: function() {
+          // remove beginPath, moveTo and lineTo counts for clipping
           beginPathCount--;
+          moveToCount--;
+          lineToCount -= 3;
         },
-        save: function() {},
-        moveTo: function() {},
-        lineTo: function() {},
+        moveTo: function() {
+          moveToCount++;
+        },
+        lineTo: function() {
+          lineToCount++;
+        },
         closePath: function() {},
         setLineDash: function() {},
+        save: function() {},
         restore: function() {}
       };
 
+    });
+
+    it('omits lineTo for repeated coordinates', function() {
+      ol.renderer.vector.renderFeature(replay, feature0, style0, 1);
+      replay.replay(context, 1, transform, 0, {});
+      expect(lineToCount).to.be(4);
+      lineToCount = 0;
+      ol.transform.scale(transform, 0.25, 0.25);
+      replay.replay(context, 1, transform, 0, {});
+      expect(lineToCount).to.be(3);
+    });
+
+    it('does not omit moveTo for repeated coordinates', function() {
+      ol.renderer.vector.renderFeature(replay, feature0, style0, 1);
+      ol.renderer.vector.renderFeature(replay, feature1, style0, 1);
+      replay.replay(context, 1, transform, 0, {});
+      expect(moveToCount).to.be(2);
     });
 
     it('batches fill and stroke instructions for same style', function() {
