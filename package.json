@@ -121,7 +121,7 @@
       "browserify": true
     },
     {
-      "module": "vector-tile",
+      "module": "@mapbox/vector-tile",
       "name": "vectortile",
       "browserify": true
     }
