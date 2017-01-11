@@ -114,4 +114,22 @@ $(function () {
     });
     stabilityToggle.prop('checked', search === '?stableonly=true');
     unstable.toggleClass('hidden', stabilityToggle[0].checked);
+
+
+    // Highlighting current anchor
+
+    var anchors = $('.anchor');
+    var _onHashChange = function () {
+        var activeHash = window.document.location.hash
+            .replace(/\./g, '\\.'); // Escape dot in element id
+
+        anchors.removeClass('highlighted');
+
+        if (activeHash.length > 0) {
+            anchors.filter(activeHash).addClass('highlighted');
+        }
+    };
+
+    $(window).on('hashchange', _onHashChange);
+    _onHashChange();
 });
