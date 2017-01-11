@@ -147,14 +147,17 @@ As a test, you can use the following HTML file to verify that your custom build 
 
 ### `define`'s
 
-Closure allows you to define constants that can be set at compile time. The `define` config property above sets four `goog` properties for the Closure library. The OpenLayers code also has defined values you can set.
+Closure allows you to define constants that can be set at compile time. The OpenLayers code defines several such values.
 
 Setting some of these to `false` means that the portions of the code relating to this setting become "dead", i.e. are never executed. As Closure Compiler's `ADVANCED` mode removes dead code, this makes the size of the advanced compiled file smaller.
 
-You might have noticed that the build file you've just created is considerably smaller than the full build, but it can be reduced further. This is because all three renderers and all layer types are included by default. We only need one renderer, and only need the tile layer, so can exclude the others by setting these properties with `define`s. So add the following to the define section of the config above:
+You might have noticed that the build file you've just created is considerably smaller than the full build, but it can be reduced further. This is because both renderers and other optional code are included by default. We only need one renderer, and we do not use the optional code, so can exclude what we don't use by setting properties with `define`s. So add a define section to the config above:
 ```
+    "define": [
       "ol.ENABLE_WEBGL=false",
       "ol.ENABLE_PROJ4JS=false",
+      "ol.ENABLE_RASTER_REPROJECTION=false"
+    ],
 ```
 
 and re-run the build script. The build size should now be smaller.
@@ -163,7 +166,7 @@ and re-run the build script. The build size should now be smaller.
 
 The Closure documentation explains that "externs" are for external names used in the code being compiled. The compiler includes externs for built-ins such as `document`. The `externs` directory of the OpenLayers code includes files for all those used in some part of the library. For example, if you use Bing Maps, you should include the Bing externs file in the `externs` section of the config file.
 
-`oli.js` and `olx.js` are externs files for the OpenLayers API. For examples `olx.js` includes extern definitions for OpenLayers's constructor options. You should always use these two files as externs when creating custom builds.
+`oli.js` and `olx.js` are externs files for the OpenLayers API. For example `olx.js` includes extern definitions for OpenLayers's constructor options. `closure-compiler.js` fixes any issues that may arise with a specific compiler version. You should always use these three files as externs when creating custom builds.
 
 ### Other compiler options
 
@@ -197,12 +200,14 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
   ],
   "compile": {
     "externs": [
+      "externs/closure-compiler.js",
       "externs/olx.js",
       "externs/oli.js"
     ],
     "define": [
       "ol.ENABLE_WEBGL=false",
-      "ol.ENABLE_PROJ4JS=false"
+      "ol.ENABLE_PROJ4JS=false",
+      "ol.ENABLE_RASTER_REPROJECTION=false"
     ],
     "compilation_level": "ADVANCED",
     "manage_closure_dependencies": true
@@ -211,8 +216,6 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
 ```
 
 The exports are given here in the order in which they occur in the `heatmaps-earthquakes` example's JavaScript code. In this example we not only use the `ol.` functions and constructors, but also `prototype` methods where the `ol` namespace is not directly used. In the code, we have for example `vector.getSource().on()`. This means we are using the `getSource` method of `layer.Heatmap` and the `on` method of `source.KML`, so this is what has to be exported. Similarly, `event.feature.get()` means we are using the `feature` property of `source.Vector.Event` and the `get` method of `Feature`. If any of these names are left out, the compile will complete successfully, but the missing names will be obfuscated and you will get a 'property undefined' error when you try and run the script.
-
-As this example uses a vector layer it is necessary to remove `"ol.ENABLE_VECTOR=false"` in the `define` section of the configuration.
 
 ## Maintaining the code
 
