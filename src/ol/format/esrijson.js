@@ -2,7 +2,6 @@ goog.provide('ol.format.EsriJSON');
 
 goog.require('ol');
 goog.require('ol.Feature');
-goog.require('ol.array');
 goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.format.Feature');
@@ -16,6 +15,7 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
+goog.require('ol.geom.flat.deflate');
 goog.require('ol.geom.flat.orient');
 goog.require('ol.obj');
 goog.require('ol.proj');
@@ -99,11 +99,13 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
  * @return {Array.<!Array.<!Array.<number>>>} Transformed rings.
  */
 ol.format.EsriJSON.convertRings_ = function(rings, layout) {
+  var flatRing = [];
   var outerRings = [];
   var holes = [];
   var i, ii;
   for (i = 0, ii = rings.length; i < ii; ++i) {
-    var flatRing = ol.array.flatten(rings[i]);
+    flatRing.length = 0;
+    ol.geom.flat.deflate.coordinates(flatRing, 0, rings[i], layout.length);
     // is this ring an outer ring? is it clockwise?
     var clockwise = ol.geom.flat.orient.linearRingIsClockwise(flatRing, 0,
         flatRing.length, layout.length);
