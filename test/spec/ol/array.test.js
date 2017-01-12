@@ -427,16 +427,6 @@ describe('ol.array', function() {
     });
   });
 
-  describe('flatten', function() {
-    it('flattens different kinds of nested arrays', function() {
-      expect(ol.array.flatten([1, 2])).to.eql([1, 2]);
-      expect(ol.array.flatten([1, [2, [3, [4, 5]]]])).to.eql([1, 2, 3, 4, 5]);
-      expect(ol.array.flatten([[[[1], 2], 3], 4])).to.eql([1, 2, 3, 4]);
-      expect(ol.array.flatten([[1]])).to.eql([1]);
-      expect(ol.array.flatten([])).to.eql([]);
-    });
-  });
-
   describe('isSorted', function() {
     it('works with just an array as argument', function() {
       expect(ol.array.isSorted([1, 2, 3])).to.be(true);

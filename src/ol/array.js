@@ -125,22 +125,6 @@ ol.array.reverseSubArray = function(arr, begin, end) {
 
 
 /**
- * @param {Array.<*>} arr Array.
- * @return {!Array.<?>} Flattened Array.
- */
-ol.array.flatten = function(arr) {
-  var data = arr.reduce(function(flattened, value) {
-    if (Array.isArray(value)) {
-      return flattened.concat(ol.array.flatten(value));
-    } else {
-      return flattened.concat(value);
-    }
-  }, []);
-  return data;
-};
-
-
-/**
  * @param {Array.<VALUE>} arr The array to modify.
  * @param {Array.<VALUE>|VALUE} data The elements or arrays of elements
  *     to add to arr.
