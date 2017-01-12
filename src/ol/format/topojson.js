@@ -395,3 +395,24 @@ ol.format.TopoJSON.GEOMETRY_READERS_ = {
   'MultiLineString': ol.format.TopoJSON.readMultiLineStringGeometry_,
   'MultiPolygon': ol.format.TopoJSON.readMultiPolygonGeometry_
 };
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeFeatureObject = function(feature, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeFeaturesObject = function(features, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeGeometryObject = function(geometry, opt_options) {};
