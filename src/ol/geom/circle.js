@@ -207,6 +207,18 @@ ol.geom.Circle.prototype.setCenterAndRadius = function(center, radius, opt_layou
 
 
 /**
+ * @inheritDoc
+ */
+ol.geom.Circle.prototype.getCoordinates = function() {};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Circle.prototype.setCoordinates = function(coordinates, opt_layout) {};
+
+
+/**
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  */
