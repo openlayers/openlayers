@@ -96,7 +96,7 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
  * @param {Array.<!Array.<!Array.<number>>>} rings Rings.
  * @param {ol.geom.GeometryLayout} layout Geometry layout.
  * @private
- * @return {Array.<!Array.<!Array.<number>>>} Transoformed rings.
+ * @return {Array.<!Array.<!Array.<number>>>} Transformed rings.
  */
 ol.format.EsriJSON.convertRings_ = function(rings, layout) {
   var outerRings = [];
