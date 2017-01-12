@@ -125,6 +125,12 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.intersectsExtent = function(extent) {};
+
+
+/**
  * Set the coordinates of the linear ring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
