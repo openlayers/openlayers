@@ -106,6 +106,7 @@ pre[class*="language-"] {
   cursor: pointer;
 }
 
+#codepen-button,
 #jsfiddle-button {
   text-decoration: none;
   cursor: pointer;
