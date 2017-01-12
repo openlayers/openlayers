@@ -89,7 +89,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {!ol.Transform}
    */
   this.renderedTransform_ = ol.transform.create();
 
@@ -103,17 +103,17 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
    * @private
    * @type {Array.<number>}
    */
-  this.pixelCoordinates_ = [];
+  this.pixelCoordinates_ = null;
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {!ol.Transform}
    */
   this.tmpLocalTransform_ = ol.transform.create();
 
   /**
    * @private
-   * @type {ol.Transform}
+   * @type {!ol.Transform}
    */
   this.resetTransform_ = ol.transform.create();
 };
@@ -229,9 +229,12 @@ ol.render.canvas.Replay.prototype.replay_ = function(
     instructions, featureCallback, opt_hitExtent) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
-  if (ol.array.equals(transform, this.renderedTransform_)) {
+  if (this.pixelCoordinates_ && ol.array.equals(transform, this.renderedTransform_)) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
+    if (!this.pixelCoordinates_) {
+      this.pixelCoordinates_ = [];
+    }
     pixelCoordinates = ol.geom.flat.transform.transform2D(
         this.coordinates, 0, this.coordinates.length, 2,
         transform, this.pixelCoordinates_);
@@ -427,6 +430,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           this.fill_(context, viewRotation);
         }
         ++i;
+        prevX = NaN;
+        prevY = NaN;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
         d = /** @type {number} */ (instruction[1]);
