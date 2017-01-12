@@ -208,3 +208,24 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @api stable
  */
 ol.format.OSMXML.prototype.readProjection;
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.OSMXML.prototype.writeFeatureNode = function(feature, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.OSMXML.prototype.writeFeaturesNode = function(features, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.OSMXML.prototype.writeGeometryNode = function(geometry, opt_options) {};
