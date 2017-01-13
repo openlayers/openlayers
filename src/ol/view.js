@@ -399,6 +399,23 @@ ol.View.prototype.calculateCenterZoom = function(resolution, anchor) {
 
 
 /**
+ * @private
+ * @return {ol.Size} Viewport size or `[100, 100]` when no viewport is found.
+ */
+ol.View.prototype.getSizeFromViewport_ = function() {
+  var size = [100, 100];
+  var selector = '.ol-viewport[data-view="' + ol.getUid(this) + '"]';
+  var element = document.querySelector(selector);
+  if (element) {
+    var metrics = getComputedStyle(element);
+    size[0] = parseInt(metrics.width, 10);
+    size[1] = parseInt(metrics.height, 10);
+  }
+  return size;
+};
+
+
+/**
  * Get the constrained center of this view.
  * @param {ol.Coordinate|undefined} center Center.
  * @return {ol.Coordinate|undefined} Constrained center.
@@ -470,11 +487,13 @@ ol.View.prototype.getHints = function(opt_hints) {
  * The size is the pixel dimensions of the box into which the calculated extent
  * should fit. In most cases you want to get the extent of the entire map,
  * that is `map.getSize()`.
- * @param {ol.Size} size Box pixel size.
+ * @param {ol.Size=} opt_size Box pixel size. If not provided, the size of the
+ * first map that uses this view will be used.
  * @return {ol.Extent} Extent.
  * @api stable
  */
-ol.View.prototype.calculateExtent = function(size) {
+ol.View.prototype.calculateExtent = function(opt_size) {
+  var size = opt_size || this.getSizeFromViewport_();
   var center = /** @type {!ol.Coordinate} */ (this.getCenter());
   ol.asserts.assert(center, 1); // The view center is not defined
   var resolution = /** @type {!number} */ (this.getResolution());
@@ -673,14 +692,7 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
   var options = opt_options || {};
   var size = options.size;
   if (!size) {
-    size = [100, 100];
-    var selector = '.ol-viewport[data-view="' + ol.getUid(this) + '"]';
-    var element = document.querySelector(selector);
-    if (element) {
-      var metrics = getComputedStyle(element);
-      size[0] = parseInt(metrics.width, 10);
-      size[1] = parseInt(metrics.height, 10);
-    }
+    size = this.getSizeFromViewport_();
   }
   /** @type {ol.geom.SimpleGeometry} */
   var geometry;

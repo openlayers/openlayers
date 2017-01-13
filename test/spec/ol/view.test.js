@@ -883,6 +883,27 @@ describe('ol.View', function() {
     });
   });
 
+  describe('#getSizeFromViewport_()', function() {
+    var map, target;
+    beforeEach(function() {
+      target = document.createElement('div');
+      target.style.width = '200px';
+      target.style.height = '150px';
+      map = new ol.Map({
+        target: target
+      });
+      document.body.appendChild(target);
+    });
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+    it('calculates the size correctly', function() {
+      var size = map.getView().getSizeFromViewport_();
+      expect(size).to.eql([200, 150]);
+    });
+  });
+
   describe('fit', function() {
 
     var originalRequestAnimationFrame = window.requestAnimationFrame;
