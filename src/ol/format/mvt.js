@@ -253,3 +253,43 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
 
   return geom;
 };
+
+
+/**
+ * @override
+ */
+ol.format.MVT.prototype.readFeature = function() {
+  throw new Error('Not implemented');
+};
+
+
+/**
+ * @override
+ */
+ol.format.MVT.prototype.readGeometry = function() {
+  throw new Error('Not implemented');
+};
+
+
+/**
+ * @override
+ */
+ol.format.MVT.prototype.writeFeature = function() {
+  throw new Error('Not implemented');
+};
+
+
+/**
+ * @override
+ */
+ol.format.MVT.prototype.writeGeometry = function() {
+  throw new Error('Not implemented');
+};
+
+
+/**
+ * @override
+ */
+ol.format.MVT.prototype.writeFeatures = function() {
+  throw new Error('Not implemented');
+};

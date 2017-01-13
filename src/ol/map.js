@@ -331,7 +331,7 @@ ol.Map = function(options) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ = new optionsInternal.rendererConstructor(this.viewport_, this);
+  this.renderer_ = new /** @type {Function} */ (optionsInternal.rendererConstructor)(this.viewport_, this);
 
   /**
    * @type {function(Event)|undefined}
