@@ -150,7 +150,6 @@ ol.Feature.prototype.getGeometry = function() {
  * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
  * @api stable
- * @observable
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -175,7 +174,6 @@ ol.Feature.prototype.getGeometryName = function() {
  * @return {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} The feature style.
  * @api stable
- * @observable
  */
 ol.Feature.prototype.getStyle = function() {
   return this.style_;
@@ -237,7 +235,7 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  * @param {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction} style Style for this feature.
  * @api stable
- * @observable
+ * @fires ol.events.Event#event:change
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
@@ -254,7 +252,7 @@ ol.Feature.prototype.setStyle = function(style) {
  * method.
  * @param {number|string|undefined} id The feature id.
  * @api stable
- * @observable
+ * @fires ol.events.Event#event:change
  */
 ol.Feature.prototype.setId = function(id) {
   this.id_ = id;
