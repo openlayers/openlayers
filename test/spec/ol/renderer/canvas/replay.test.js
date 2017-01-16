@@ -18,7 +18,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     var context, replay, fillCount, transform;
     var strokeCount, beginPathCount, moveToCount, lineToCount;
-    var feature0, feature1, feature2, feature3, style0, style1, style2;
+    var feature0, feature1, feature2, feature3;
+    var fill0, fill1, style1, style2;
 
     beforeEach(function() {
       transform = ol.transform.create();
@@ -31,8 +32,11 @@ describe('ol.render.canvas.ReplayGroup', function() {
           [[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]]));
       feature3 = new ol.Feature(new ol.geom.Polygon(
           [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
-      style0 = new ol.style.Style({
+      fill0 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'black'})
+      });
+      fill1 = new ol.style.Style({
+        fill: new ol.style.Fill({color: 'red'})
       });
       style1 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'black'}),
@@ -79,7 +83,7 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('omits lineTo for repeated coordinates', function() {
-      ol.renderer.vector.renderFeature(replay, feature0, style0, 1);
+      ol.renderer.vector.renderFeature(replay, feature0, fill0, 1);
       replay.replay(context, 1, transform, 0, {});
       expect(lineToCount).to.be(4);
       lineToCount = 0;
@@ -89,8 +93,8 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not omit moveTo for repeated coordinates', function() {
-      ol.renderer.vector.renderFeature(replay, feature0, style0, 1);
-      ol.renderer.vector.renderFeature(replay, feature1, style0, 1);
+      ol.renderer.vector.renderFeature(replay, feature0, fill0, 1);
+      ol.renderer.vector.renderFeature(replay, feature1, fill1, 1);
       replay.replay(context, 1, transform, 0, {});
       expect(moveToCount).to.be(2);
     });

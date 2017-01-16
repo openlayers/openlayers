@@ -283,6 +283,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         }
         if (!pendingFill && !pendingStroke) {
           context.beginPath();
+          prevX = prevY = NaN;
         }
         ++i;
         break;
@@ -430,8 +431,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           this.fill_(context, viewRotation);
         }
         ++i;
-        prevX = NaN;
-        prevY = NaN;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
         d = /** @type {number} */ (instruction[1]);
@@ -503,8 +502,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           context.lineDashOffset = lineDashOffset;
           context.setLineDash(lineDash);
         }
-        prevX = NaN;
-        prevY = NaN;
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_TEXT_STYLE:
