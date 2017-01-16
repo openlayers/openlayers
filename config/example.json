@@ -28,6 +28,7 @@
     ],
     "jscomp_off": [
       "lintChecks",
+      "analyzerChecks",
       "missingProvide",
       "unknownDefines"
     ],

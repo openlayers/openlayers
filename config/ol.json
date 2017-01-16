@@ -21,7 +21,8 @@
       "*"
     ],
     "jscomp_off": [
-      "lintChecks"
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"
