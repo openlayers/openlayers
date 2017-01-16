@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
-
 if (ol.ENABLE_WEBGL) {
 
   /**
@@ -37,7 +36,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.renderer.webgl.tilelayershader.Fragment.SOURCE = ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
+  ol.renderer.webgl.tilelayershader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
+      ol.renderer.webgl.tilelayershader.Fragment.DEBUG_SOURCE :
+      ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.tilelayershader.fragment = new ol.renderer.webgl.tilelayershader.Fragment();
@@ -72,7 +73,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.renderer.webgl.tilelayershader.Vertex.SOURCE = ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
+  ol.renderer.webgl.tilelayershader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
+      ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE :
+      ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.tilelayershader.vertex = new ol.renderer.webgl.tilelayershader.Vertex();
@@ -89,22 +92,26 @@ if (ol.ENABLE_WEBGL) {
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_texture = gl.getUniformLocation(program, 'e');
+    this.u_texture = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_texture' : 'e');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_tileOffset = gl.getUniformLocation(program, 'd');
+    this.u_tileOffset = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_tileOffset' : 'd');
 
     /**
      * @type {number}
      */
-    this.a_position = gl.getAttribLocation(program, 'b');
+    this.a_position = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_position' : 'b');
 
     /**
      * @type {number}
      */
-    this.a_texCoord = gl.getAttribLocation(program, 'c');
+    this.a_texCoord = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_texCoord' : 'c');
   };
 
 }

@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
-
 if (ol.ENABLE_WEBGL) {
 
   /**
@@ -37,7 +36,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE = ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+  ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
+      ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE :
+      ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.polygonreplay.defaultshader.fragment = new ol.render.webgl.polygonreplay.defaultshader.Fragment();
@@ -72,7 +73,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE = ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+  ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
+      ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE :
+      ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.render.webgl.polygonreplay.defaultshader.Vertex();
@@ -89,32 +92,38 @@ if (ol.ENABLE_WEBGL) {
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_color = gl.getUniformLocation(program, 'e');
+    this.u_color = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_color' : 'e');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, 'd');
+    this.u_offsetRotateMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'd');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, 'c');
+    this.u_offsetScaleMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'c');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_opacity = gl.getUniformLocation(program, 'f');
+    this.u_opacity = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_opacity' : 'f');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_projectionMatrix = gl.getUniformLocation(program, 'b');
+    this.u_projectionMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_projectionMatrix' : 'b');
 
     /**
      * @type {number}
      */
-    this.a_position = gl.getAttribLocation(program, 'a');
+    this.a_position = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_position' : 'a');
   };
 
 }
