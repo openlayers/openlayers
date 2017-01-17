@@ -599,23 +599,19 @@ ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
- * @param {ol.format.filter.LogicalBinary} filter Filter.
+ * @param {ol.format.filter.LogicalNary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
 ol.format.WFS.writeLogicalFilter_ = function(node, filter, objectStack) {
   /** @type {ol.XmlNodeStackItem} */
   var item = {node: node};
-  var conditionA = filter.conditionA;
-  ol.xml.pushSerializeAndPop(item,
-      ol.format.WFS.GETFEATURE_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory(conditionA.getTagName()),
-      [conditionA], objectStack);
-  var conditionB = filter.conditionB;
-  ol.xml.pushSerializeAndPop(item,
-      ol.format.WFS.GETFEATURE_SERIALIZERS_,
-      ol.xml.makeSimpleNodeFactory(conditionB.getTagName()),
-      [conditionB], objectStack);
+  filter.conditions.forEach(function(condition) {
+    ol.xml.pushSerializeAndPop(item,
+        ol.format.WFS.GETFEATURE_SERIALIZERS_,
+        ol.xml.makeSimpleNodeFactory(condition.getTagName()),
+        [condition], objectStack);
+  });
 };
 
 

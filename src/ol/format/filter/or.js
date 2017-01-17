@@ -1,20 +1,20 @@
 goog.provide('ol.format.filter.Or');
 
 goog.require('ol');
-goog.require('ol.format.filter.LogicalBinary');
+goog.require('ol.format.filter.LogicalNary');
 
 
 /**
  * @classdesc
- * Represents a logical `<Or>` operator between two filter conditions.
+ * Represents a logical `<Or>` operator between two ore more filter conditions.
  *
  * @constructor
- * @param {!ol.format.filter.Filter} conditionA First filter condition.
- * @param {!ol.format.filter.Filter} conditionB Second filter condition.
- * @extends {ol.format.filter.LogicalBinary}
+ * @param {...ol.format.filter.Filter} conditions Conditions.
+ * @extends {ol.format.filter.LogicalNary}
  * @api
  */
-ol.format.filter.Or = function(conditionA, conditionB) {
-  ol.format.filter.LogicalBinary.call(this, 'Or', conditionA, conditionB);
+ol.format.filter.Or = function(conditions) {
+  var params = ['Or'].concat(Array.prototype.slice.call(arguments));
+  ol.format.filter.LogicalNary.apply(this, params);
 };
-ol.inherits(ol.format.filter.Or, ol.format.filter.LogicalBinary);
+ol.inherits(ol.format.filter.Or, ol.format.filter.LogicalNary);

@@ -19,28 +19,28 @@ goog.require('ol.format.filter.Within');
 
 
 /**
- * Create a logical `<And>` operator between two filter conditions.
+ * Create a logical `<And>` operator between two or more filter conditions.
  *
- * @param {!ol.format.filter.Filter} conditionA First filter condition.
- * @param {!ol.format.filter.Filter} conditionB Second filter condition.
+ * @param {...ol.format.filter.Filter} conditions Filter conditions.
  * @returns {!ol.format.filter.And} `<And>` operator.
  * @api
  */
-ol.format.filter.and = function(conditionA, conditionB) {
-  return new ol.format.filter.And(conditionA, conditionB);
+ol.format.filter.and = function(conditions) {
+  var params = [null].concat(Array.prototype.slice.call(arguments));
+  return new (Function.prototype.bind.apply(ol.format.filter.And, params));
 };
 
 
 /**
- * Create a logical `<Or>` operator between two filter conditions.
+ * Create a logical `<Or>` operator between two or more filter conditions.
  *
- * @param {!ol.format.filter.Filter} conditionA First filter condition.
- * @param {!ol.format.filter.Filter} conditionB Second filter condition.
+ * @param {...ol.format.filter.Filter} conditions Filter conditions.
  * @returns {!ol.format.filter.Or} `<Or>` operator.
  * @api
  */
-ol.format.filter.or = function(conditionA, conditionB) {
-  return new ol.format.filter.Or(conditionA, conditionB);
+ol.format.filter.or = function(conditions) {
+  var params = [null].concat(Array.prototype.slice.call(arguments));
+  return new (Function.prototype.bind.apply(ol.format.filter.Or, params));
 };
 
 

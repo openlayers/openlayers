@@ -216,3 +216,7 @@ The `{-y}` placeholder requires a tile grid with extent.
 ### 56
 
 `mapBrowserEvent` must originate from a pointer event.
+
+### 57
+
+At least 2 conditions are required.
