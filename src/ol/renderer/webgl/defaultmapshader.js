@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
-
 if (ol.ENABLE_WEBGL) {
 
   /**
@@ -37,7 +36,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
+  ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
+      ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE :
+      ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.defaultmapshader.fragment = new ol.renderer.webgl.defaultmapshader.Fragment();
@@ -72,7 +73,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
+  ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
+      ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE :
+      ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.defaultmapshader.vertex = new ol.renderer.webgl.defaultmapshader.Vertex();
@@ -89,32 +92,38 @@ if (ol.ENABLE_WEBGL) {
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_opacity = gl.getUniformLocation(program, 'f');
+    this.u_opacity = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_opacity' : 'f');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_projectionMatrix = gl.getUniformLocation(program, 'e');
+    this.u_projectionMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_projectionMatrix' : 'e');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_texCoordMatrix = gl.getUniformLocation(program, 'd');
+    this.u_texCoordMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_texCoordMatrix' : 'd');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_texture = gl.getUniformLocation(program, 'g');
+    this.u_texture = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_texture' : 'g');
 
     /**
      * @type {number}
      */
-    this.a_position = gl.getAttribLocation(program, 'b');
+    this.a_position = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_position' : 'b');
 
     /**
      * @type {number}
      */
-    this.a_texCoord = gl.getAttribLocation(program, 'c');
+    this.a_texCoord = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_texCoord' : 'c');
   };
 
 }

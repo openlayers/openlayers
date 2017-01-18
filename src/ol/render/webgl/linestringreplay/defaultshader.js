@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
-
 if (ol.ENABLE_WEBGL) {
 
   /**
@@ -37,7 +36,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.render.webgl.linestringreplay.defaultshader.Fragment.SOURCE = ol.render.webgl.linestringreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+  ol.render.webgl.linestringreplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
+      ol.render.webgl.linestringreplay.defaultshader.Fragment.DEBUG_SOURCE :
+      ol.render.webgl.linestringreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.linestringreplay.defaultshader.fragment = new ol.render.webgl.linestringreplay.defaultshader.Fragment();
@@ -72,7 +73,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.render.webgl.linestringreplay.defaultshader.Vertex.SOURCE = ol.render.webgl.linestringreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+  ol.render.webgl.linestringreplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
+      ol.render.webgl.linestringreplay.defaultshader.Vertex.DEBUG_SOURCE :
+      ol.render.webgl.linestringreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.linestringreplay.defaultshader.vertex = new ol.render.webgl.linestringreplay.defaultshader.Vertex();
@@ -89,67 +92,80 @@ if (ol.ENABLE_WEBGL) {
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_color = gl.getUniformLocation(program, 'n');
+    this.u_color = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_color' : 'n');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_lineWidth = gl.getUniformLocation(program, 'k');
+    this.u_lineWidth = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_lineWidth' : 'k');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_miterLimit = gl.getUniformLocation(program, 'l');
+    this.u_miterLimit = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_miterLimit' : 'l');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, 'j');
+    this.u_offsetRotateMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'j');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, 'i');
+    this.u_offsetScaleMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'i');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_opacity = gl.getUniformLocation(program, 'm');
+    this.u_opacity = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_opacity' : 'm');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_pixelRatio = gl.getUniformLocation(program, 'p');
+    this.u_pixelRatio = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_pixelRatio' : 'p');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_projectionMatrix = gl.getUniformLocation(program, 'h');
+    this.u_projectionMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_projectionMatrix' : 'h');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_size = gl.getUniformLocation(program, 'o');
+    this.u_size = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_size' : 'o');
 
     /**
      * @type {number}
      */
-    this.a_direction = gl.getAttribLocation(program, 'g');
+    this.a_direction = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_direction' : 'g');
 
     /**
      * @type {number}
      */
-    this.a_lastPos = gl.getAttribLocation(program, 'd');
+    this.a_lastPos = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_lastPos' : 'd');
 
     /**
      * @type {number}
      */
-    this.a_nextPos = gl.getAttribLocation(program, 'f');
+    this.a_nextPos = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_nextPos' : 'f');
 
     /**
      * @type {number}
      */
-    this.a_position = gl.getAttribLocation(program, 'e');
+    this.a_position = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_position' : 'e');
   };
 
 }

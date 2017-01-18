@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
-
 if (ol.ENABLE_WEBGL) {
 
   /**
@@ -37,7 +36,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE = ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+  ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
+      ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE :
+      ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.circlereplay.defaultshader.fragment = new ol.render.webgl.circlereplay.defaultshader.Fragment();
@@ -72,7 +73,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE = ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+  ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
+      ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE :
+      ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.circlereplay.defaultshader.vertex = new ol.render.webgl.circlereplay.defaultshader.Vertex();
@@ -89,62 +92,74 @@ if (ol.ENABLE_WEBGL) {
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_fillColor = gl.getUniformLocation(program, 'n');
+    this.u_fillColor = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_fillColor' : 'n');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_lineWidth = gl.getUniformLocation(program, 'k');
+    this.u_lineWidth = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_lineWidth' : 'k');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_offsetRotateMatrix = gl.getUniformLocation(program, 'j');
+    this.u_offsetRotateMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_offsetRotateMatrix' : 'j');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_offsetScaleMatrix = gl.getUniformLocation(program, 'i');
+    this.u_offsetScaleMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_offsetScaleMatrix' : 'i');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_opacity = gl.getUniformLocation(program, 'm');
+    this.u_opacity = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_opacity' : 'm');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_pixelRatio = gl.getUniformLocation(program, 'l');
+    this.u_pixelRatio = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_pixelRatio' : 'l');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_projectionMatrix = gl.getUniformLocation(program, 'h');
+    this.u_projectionMatrix = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_projectionMatrix' : 'h');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_size = gl.getUniformLocation(program, 'p');
+    this.u_size = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_size' : 'p');
 
     /**
      * @type {WebGLUniformLocation}
      */
-    this.u_strokeColor = gl.getUniformLocation(program, 'o');
+    this.u_strokeColor = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? 'u_strokeColor' : 'o');
 
     /**
      * @type {number}
      */
-    this.a_instruction = gl.getAttribLocation(program, 'f');
+    this.a_instruction = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_instruction' : 'f');
 
     /**
      * @type {number}
      */
-    this.a_position = gl.getAttribLocation(program, 'e');
+    this.a_position = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_position' : 'e');
 
     /**
      * @type {number}
      */
-    this.a_radius = gl.getAttribLocation(program, 'g');
+    this.a_radius = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? 'a_radius' : 'g');
   };
 
 }

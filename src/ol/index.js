@@ -84,6 +84,14 @@ ol.ENABLE_WEBGL = true;
 
 
 /**
+ * @define {boolean} Include debuggable shader sources.  Default is `true`.
+ *     This should be set to `false` for production builds (if `ol.ENABLE_WEBGL`
+ *     is `true`).
+ */
+ol.DEBUG_WEBGL = true;
+
+
+/**
  * @define {number} The size in pixels of the first atlas image. Default is
  * `256`.
  */

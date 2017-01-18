@@ -5,7 +5,6 @@ goog.require('ol');
 goog.require('ol.webgl.Fragment');
 goog.require('ol.webgl.Vertex');
 
-
 if (ol.ENABLE_WEBGL) {
 
   /**
@@ -37,7 +36,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  {{className}}.Fragment.SOURCE = {{className}}.Fragment.OPTIMIZED_SOURCE;
+  {{className}}.Fragment.SOURCE = ol.DEBUG_WEBGL ?
+      {{className}}.Fragment.DEBUG_SOURCE :
+      {{className}}.Fragment.OPTIMIZED_SOURCE;
 
 
   {{className}}.fragment = new {{className}}.Fragment();
@@ -72,7 +73,9 @@ if (ol.ENABLE_WEBGL) {
    * @const
    * @type {string}
    */
-  {{className}}.Vertex.SOURCE = {{className}}.Vertex.OPTIMIZED_SOURCE;
+  {{className}}.Vertex.SOURCE = ol.DEBUG_WEBGL ?
+      {{className}}.Vertex.DEBUG_SOURCE :
+      {{className}}.Vertex.OPTIMIZED_SOURCE;
 
 
   {{className}}.vertex = new {{className}}.Vertex();
@@ -90,14 +93,16 @@ if (ol.ENABLE_WEBGL) {
     /**
      * @type {WebGLUniformLocation}
      */
-    this.{{originalName}} = gl.getUniformLocation(program, '{{shortName}}');
+    this.{{originalName}} = gl.getUniformLocation(
+        program, ol.DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
   {{/getUniforms}}
   {{#getAttributes}}
 
     /**
      * @type {number}
      */
-    this.{{originalName}} = gl.getAttribLocation(program, '{{shortName}}');
+    this.{{originalName}} = gl.getAttribLocation(
+        program, ol.DEBUG_WEBGL ? '{{originalName}}' : '{{shortName}}');
   {{/getAttributes}}
   };
 

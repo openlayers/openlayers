@@ -6,6 +6,8 @@
 
 The `ol.DEBUG`, `ol.ENABLE_TILE`, `ol.ENABLE_IMAGE`, `ol.ENABLE_VECTOR`, and `ol.ENABLE_VECTOR_TILE` build flags are no longer necessary and have been removed.  If you were using these in a `define` array for a custom build, you can remove them.
 
+If you leave `ol.ENABLE_WEBGL` set to `true` in your build, you should set `ol.DEBUG_WEBGL` to `false` to avoid including debuggable shader sources.
+
 #### Simplified `ol.View#fit()` API
 
 In most cases, it is no longer necessary to provide an `ol.Size` (previously the 2nd argument) to `ol.View#fit()`. By default, the size of the first map that uses the view will be used. If you want to specify a different size, it goes in the options now (previously the 3rd argument, now the 2nd).
