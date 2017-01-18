@@ -89,8 +89,12 @@ ol.control.OverviewMap = function(opt_options) {
   ol.events.listen(button, ol.events.EventType.CLICK,
       this.handleClick_, this);
 
-  var ovmapDiv = document.createElement('DIV');
-  ovmapDiv.className = 'ol-overviewmap-map';
+  /**
+   * @type {Element}
+   * @private
+   */
+  this.ovmapDiv_ = document.createElement('DIV');
+  this.ovmapDiv_.className = 'ol-overviewmap-map';
 
   /**
    * @type {ol.Map}
@@ -99,7 +103,6 @@ ol.control.OverviewMap = function(opt_options) {
   this.ovmap_ = new ol.Map({
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
-    target: ovmapDiv,
     view: options.view
   });
   var ovmap = this.ovmap_;
@@ -135,7 +138,7 @@ ol.control.OverviewMap = function(opt_options) {
       (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');
   element.className = cssClasses;
-  element.appendChild(ovmapDiv);
+  element.appendChild(this.ovmapDiv_);
   element.appendChild(button);
 
   var render = options.render ? options.render : ol.control.OverviewMap.render;
@@ -163,10 +166,12 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
     if (oldView) {
       this.unbindView_(oldView);
     }
+    this.ovmap_.setTarget(null);
   }
   ol.control.Control.prototype.setMap.call(this, map);
 
   if (map) {
+    this.ovmap_.setTarget(this.ovmapDiv_);
     this.listenerKeys.push(ol.events.listen(
         map, ol.ObjectEventType.PROPERTYCHANGE,
         this.handleMapPropertyChange_, this));
