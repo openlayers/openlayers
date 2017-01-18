@@ -6,6 +6,7 @@ goog.require('ol.events.Event');
 goog.require('ol.functions');
 goog.require('ol.array');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.interaction.TranslateEventType');
 
 
 /**
@@ -101,7 +102,7 @@ ol.interaction.Translate.handleDownEvent_ = function(event) {
 
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType_.TRANSLATESTART, features,
+            ol.interaction.TranslateEventType.TRANSLATESTART, features,
             event.coordinate));
     return true;
   }
@@ -124,7 +125,7 @@ ol.interaction.Translate.handleUpEvent_ = function(event) {
 
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType_.TRANSLATEEND, features,
+            ol.interaction.TranslateEventType.TRANSLATEEND, features,
             event.coordinate));
     return true;
   }
@@ -154,7 +155,7 @@ ol.interaction.Translate.handleDragEvent_ = function(event) {
     this.lastCoordinate_ = newCoordinate;
     this.dispatchEvent(
         new ol.interaction.Translate.Event(
-            ol.interaction.Translate.EventType_.TRANSLATING, features,
+            ol.interaction.TranslateEventType.TRANSLATING, features,
             newCoordinate));
   }
 };
@@ -240,7 +241,7 @@ ol.interaction.Translate.prototype.setHitTolerance = function(hitTolerance) {
  * @constructor
  * @extends {ol.events.Event}
  * @implements {oli.interaction.TranslateEvent}
- * @param {ol.interaction.Translate.EventType_} type Type.
+ * @param {ol.interaction.TranslateEventType} type Type.
  * @param {ol.Collection.<ol.Feature>} features The features translated.
  * @param {ol.Coordinate} coordinate The event coordinate.
  */
@@ -264,29 +265,3 @@ ol.interaction.Translate.Event = function(type, features, coordinate) {
   this.coordinate = coordinate;
 };
 ol.inherits(ol.interaction.Translate.Event, ol.events.Event);
-
-
-/**
- * @enum {string}
- * @private
- */
-ol.interaction.Translate.EventType_ = {
-  /**
-   * Triggered upon feature translation start.
-   * @event ol.interaction.Translate.Event#translatestart
-   * @api
-   */
-  TRANSLATESTART: 'translatestart',
-  /**
-   * Triggered upon feature translation.
-   * @event ol.interaction.Translate.Event#translating
-   * @api
-   */
-  TRANSLATING: 'translating',
-  /**
-   * Triggered upon feature translation end.
-   * @event ol.interaction.Translate.Event#translateend
-   * @api
-   */
-  TRANSLATEEND: 'translateend'
-};
