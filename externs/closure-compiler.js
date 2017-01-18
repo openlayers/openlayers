@@ -7,23 +7,3 @@
  *
  * @externs
  */
-
-
-// see https://github.com/google/closure-compiler/pull/1991
-
-/**
- * @param {*} arg
- * @return {boolean}
- * @nosideeffects
- * @see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer/isView
- */
-ArrayBuffer.isView = function(arg) {};
-
-
-// see https://github.com/google/closure-compiler/pull/1206
-
-/**
- * @type {string}
- * @see http://www.w3.org/TR/pointerevents/#the-touch-action-css-property
- */
-CSSProperties.prototype.touchAction;
