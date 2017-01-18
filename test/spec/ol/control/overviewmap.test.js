@@ -87,6 +87,18 @@ describe('ol.control.OverviewMap', function() {
       expect(ovView.getRotation()).to.be(Math.PI / 8);
     });
 
+    it('set target to null', function() {
+      var control = new ol.control.OverviewMap();
+
+      map.addControl(control);
+
+      expect(control.ovmap_.getTarget()).not.to.be(null);
+
+      map.removeControl(control);
+
+      expect(control.ovmap_.getTarget()).to.be(null);
+    });
+
   });
 
 });
