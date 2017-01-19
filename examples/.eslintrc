@@ -11,7 +11,8 @@
     "toastr": false,
     "saveAs": false,
     "topojson": false,
-    "turf": false
+    "turf": false,
+    "geojsonvt": false
   },
   "rules": {
     "no-unused-vars": [2, {"varsIgnorePattern": "^map"}]
