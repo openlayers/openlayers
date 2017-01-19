@@ -67,23 +67,22 @@ fetch(url).then(function(response) {
     format: new ol.format.GeoJSON(),
     tileGrid: ol.tilegrid.createXYZ(),
     tilePixelRatio: 16,
-    tileLoadFunction: function(tile, tileCoord) {
+    tileLoadFunction: function(tile) {
       var format = tile.getFormat();
-      var data = tileIndex.getTile.apply(tileIndex, tileCoord);
+      var tileCoord = tile.getTileCoord();
+      var data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
 
       var features = format.readFeatures(
         JSON.stringify({
           type: 'FeatureCollection',
-          features: data.features
+          features: data ? data.features : []
         }, replacer));
       tile.setLoader(function() {
         tile.setFeatures(features);
         tile.setProjection(tilePixels);
       });
     },
-    tileUrlFunction: function(tileCoord) {
-      return [tileCoord[0], tileCoord[1], -tileCoord[2] - 1];
-    }
+    url: 'data:' // arbitrary url, we don't use it in the tileLoadFunction
   });
   var vectorLayer = new ol.layer.VectorTile({
     source: vectorSource
