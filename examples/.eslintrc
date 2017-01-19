@@ -5,14 +5,14 @@
     "common": false,
     "createMapboxStreetsV6Style": false,
     "d3": false,
+    "geojsonvt": false,
     "jsPDF": false,
     "jsts": false,
-    "topolis": false,
-    "toastr": false,
     "saveAs": false,
+    "toastr": false,
     "topojson": false,
-    "turf": false,
-    "geojsonvt": false
+    "topolis": false,
+    "turf": false
   },
   "rules": {
     "no-unused-vars": [2, {"varsIgnorePattern": "^map"}]
