@@ -1,7 +1,7 @@
 goog.provide('ol.format.filter.Not');
 
 goog.require('ol');
-goog.require('ol.format.filter.Logical');
+goog.require('ol.format.filter.Filter');
 
 
 /**
@@ -10,12 +10,12 @@ goog.require('ol.format.filter.Logical');
  *
  * @constructor
  * @param {!ol.format.filter.Filter} condition Filter condition.
- * @extends {ol.format.filter.Logical}
+ * @extends {ol.format.filter.Filter}
  * @api
  */
 ol.format.filter.Not = function(condition) {
 
-  ol.format.filter.Logical.call(this, 'Not');
+  ol.format.filter.Filter.call(this, 'Not');
 
   /**
    * @public
@@ -23,4 +23,4 @@ ol.format.filter.Not = function(condition) {
    */
   this.condition = condition;
 };
-ol.inherits(ol.format.filter.Not, ol.format.filter.Logical);
+ol.inherits(ol.format.filter.Not, ol.format.filter.Filter);

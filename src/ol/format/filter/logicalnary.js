@@ -1,7 +1,7 @@
 goog.provide('ol.format.filter.LogicalNary');
 
 goog.require('ol');
-goog.require('ol.format.filter.Logical');
+goog.require('ol.format.filter.Filter');
 
 
 /**
@@ -12,11 +12,11 @@ goog.require('ol.format.filter.Logical');
  * @constructor
  * @param {!string} tagName The XML tag name for this filter.
  * @param {...ol.format.filter.Filter} conditions Conditions.
- * @extends {ol.format.filter.Logical}
+ * @extends {ol.format.filter.Filter}
  */
 ol.format.filter.LogicalNary = function(tagName, conditions) {
 
-  ol.format.filter.Logical.call(this, tagName);
+  ol.format.filter.Filter.call(this, tagName);
 
   /**
    * @public
@@ -25,4 +25,4 @@ ol.format.filter.LogicalNary = function(tagName, conditions) {
   this.conditions = Array.prototype.slice.call(arguments, 1);
   ol.asserts.assert(this.conditions.length >= 2, 57); // At least 2 conditions are required.
 };
-ol.inherits(ol.format.filter.LogicalNary, ol.format.filter.Logical);
+ol.inherits(ol.format.filter.LogicalNary, ol.format.filter.Filter);
