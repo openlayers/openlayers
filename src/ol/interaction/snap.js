@@ -3,8 +3,6 @@ goog.provide('ol.interaction.Snap');
 goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
-goog.require('ol.Object');
-goog.require('ol.Observable');
 goog.require('ol.coordinate');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
@@ -83,13 +81,7 @@ ol.interaction.Snap = function(opt_options) {
    * @type {Object.<number, ol.EventsKey>}
    * @private
    */
-  this.geometryChangeListenerKeys_ = {};
-
-  /**
-   * @type {Object.<number, ol.EventsKey>}
-   * @private
-   */
-  this.geometryModifyListenerKeys_ = {};
+  this.featureChangeListenerKeys_ = {};
 
   /**
    * Extents are preserved so indexed segment can be quickly removed
@@ -159,7 +151,7 @@ ol.inherits(ol.interaction.Snap, ol.interaction.Pointer);
 /**
  * Add a feature to the collection of features that we may snap to.
  * @param {ol.Feature} feature Feature.
- * @param {boolean=} opt_listen Whether to listen to the geometry change or not
+ * @param {boolean=} opt_listen Whether to listen to the feature change or not
  *     Defaults to `true`.
  * @api
  */
@@ -173,22 +165,14 @@ ol.interaction.Snap.prototype.addFeature = function(feature, opt_listen) {
       this.indexedFeaturesExtents_[feature_uid] = geometry.getExtent(
           ol.extent.createEmpty());
       segmentWriter.call(this, feature, geometry);
-
-      if (listen) {
-        this.geometryModifyListenerKeys_[feature_uid] = ol.events.listen(
-            geometry,
-            ol.events.EventType.CHANGE,
-            this.handleGeometryModify_.bind(this, feature),
-            this);
-      }
     }
   }
 
   if (listen) {
-    this.geometryChangeListenerKeys_[feature_uid] = ol.events.listen(
+    this.featureChangeListenerKeys_[feature_uid] = ol.events.listen(
         feature,
-        ol.Object.getChangeEventType(feature.getGeometryName()),
-        this.handleGeometryChange_, this);
+        ol.events.EventType.CHANGE,
+        this.handleFeatureChange_, this);
   }
 };
 
@@ -260,19 +244,8 @@ ol.interaction.Snap.prototype.handleFeatureRemove_ = function(evt) {
  * @param {ol.events.Event} evt Event.
  * @private
  */
-ol.interaction.Snap.prototype.handleGeometryChange_ = function(evt) {
+ol.interaction.Snap.prototype.handleFeatureChange_ = function(evt) {
   var feature = /** @type {ol.Feature} */ (evt.target);
-  this.removeFeature(feature, true);
-  this.addFeature(feature, true);
-};
-
-
-/**
- * @param {ol.Feature} feature Feature which geometry was modified.
- * @param {ol.events.Event} evt Event.
- * @private
- */
-ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
   if (this.handlingDownUpSequence) {
     var uid = ol.getUid(feature);
     if (!(uid in this.pendingFeatures_)) {
@@ -287,7 +260,7 @@ ol.interaction.Snap.prototype.handleGeometryModify_ = function(feature, evt) {
 /**
  * Remove a feature from the collection of features that we may snap to.
  * @param {ol.Feature} feature Feature
- * @param {boolean=} opt_unlisten Whether to unlisten to the geometry change
+ * @param {boolean=} opt_unlisten Whether to unlisten to the feature change
  *     or not. Defaults to `true`.
  * @api
  */
@@ -306,15 +279,11 @@ ol.interaction.Snap.prototype.removeFeature = function(feature, opt_unlisten) {
     for (i = nodesToRemove.length - 1; i >= 0; --i) {
       rBush.remove(nodesToRemove[i]);
     }
-    if (unlisten) {
-      ol.Observable.unByKey(this.geometryModifyListenerKeys_[feature_uid]);
-      delete this.geometryModifyListenerKeys_[feature_uid];
-    }
   }
 
   if (unlisten) {
-    ol.Observable.unByKey(this.geometryChangeListenerKeys_[feature_uid]);
-    delete this.geometryChangeListenerKeys_[feature_uid];
+    ol.events.unlistenByKey(this.featureChangeListenerKeys_[feature_uid]);
+    delete this.featureChangeListenerKeys_[feature_uid];
   }
 };
 
@@ -328,7 +297,7 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   var features = this.getFeatures_();
 
   if (currentMap) {
-    keys.forEach(ol.Observable.unByKey);
+    keys.forEach(ol.events.unlistenByKey);
     keys.length = 0;
     features.forEach(this.forEachFeatureRemove_, this);
   }
