@@ -113,6 +113,7 @@ ol.source.Zoomify = function(opt_options) {
     cacheSize: options.cacheSize,
     crossOrigin: options.crossOrigin,
     logo: options.logo,
+    projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
     tileClass: ol.source.Zoomify.Tile_,
     tileGrid: tileGrid,
