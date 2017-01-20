@@ -226,8 +226,7 @@ ol.format.IGC.prototype.writeGeometryText = function(geometry, opt_options) {};
 
 
 /**
- * @override
+ * Not implemented.
+ * @inheritDoc
  */
-ol.format.IGC.prototype.readGeometryFromText = function() {
-  throw new Error('Not implemented');
-};
+ol.format.IGC.prototype.readGeometryFromText = function(text, opt_options) {};
