@@ -6695,6 +6695,7 @@ olx.source.CartoDBOptions.prototype.account;
  *     cacheSize: (number|undefined),
  *     crossOrigin: (null|string|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     projection: (ol.ProjectionLike|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     url: !string,
  *     tierSizeCalculation: (string|undefined),
@@ -6737,6 +6738,14 @@ olx.source.ZoomifyOptions.prototype.crossOrigin;
  * @api stable
  */
 olx.source.ZoomifyOptions.prototype.logo;
+
+
+/**
+ * Projection.
+ * @type {ol.ProjectionLike|undefined}
+ * @api
+ */
+olx.source.ZoomifyOptions.prototype.projection;
 
 
 /**
