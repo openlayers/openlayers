@@ -521,11 +521,11 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Add functions to be called before rendering. This can be used for attaching
  * animations before updating the map's view.  The {@link ol.animation}
  * namespace provides several static methods for creating prerender functions.
  * @param {...ol.PreRenderFunction} var_args Any number of pre-render functions.
+ * @deprecated Use {@link ol.View#animate} instead.
  * @api
  */
 ol.Map.prototype.beforeRender = function(var_args) {
