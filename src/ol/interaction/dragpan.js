@@ -133,7 +133,9 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
       view.setHint(ol.ViewHint.INTERACTING, 1);
     }
     // stop any current animation
-    view.setCenter(mapBrowserEvent.frameState.viewState.center);
+    if (view.getHints()[ol.ViewHint.ANIMATING]) {
+      view.setCenter(mapBrowserEvent.frameState.viewState.center);
+    }
     if (this.kinetic_) {
       this.kinetic_.begin();
     }
