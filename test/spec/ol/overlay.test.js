@@ -75,4 +75,29 @@ describe('ol.Overlay', function() {
 
   });
 
+  describe('#setVisible()', function() {
+    var overlay, target;
+
+    beforeEach(function() {
+      target = document.createElement('div');
+    });
+    afterEach(function() {
+      map.removeOverlay(overlay);
+    });
+
+    it('changes the CSS display value', function() {
+      overlay = new ol.Overlay({
+        element: target,
+        position: [0, 0]
+      });
+      map.addOverlay(overlay);
+      expect(overlay.element_.style.display).to.be('none');
+      overlay.setVisible(true);
+      expect(overlay.element_.style.display).not.to.be('none');
+      overlay.setVisible(false);
+      expect(overlay.element_.style.display).to.be('none');
+    });
+
+  });
+
 });
