@@ -492,6 +492,10 @@ describe('ol.format.WFS', function() {
           '          <gml:upperCorner>3 4</gml:upperCorner>' +
           '        </gml:Envelope>' +
           '      </ogc:BBOX>' +
+          '      <ogc:PropertyIsGreaterThan>' +
+          '        <ogc:PropertyName>population</ogc:PropertyName>' +
+          '        <ogc:Literal>2000000</ogc:Literal>' +
+          '      </ogc:PropertyIsGreaterThan>' +
           '    </ogc:And>' +
           '  </ogc:Filter>' +
           '</wfs:Query>';
@@ -502,7 +506,8 @@ describe('ol.format.WFS', function() {
         featureTypes: ['states'],
         filter: ol.format.filter.and(
           ol.format.filter.equalTo('name', 'New York'),
-          ol.format.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326')
+          ol.format.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326'),
+          ol.format.filter.greaterThan('population', 2000000)
         )
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
