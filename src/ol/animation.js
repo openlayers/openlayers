@@ -7,11 +7,11 @@ goog.require('ol.easing');
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition that will "bounce" the resolution as it
  * approaches the final value.
  * @param {olx.animation.BounceOptions} options Bounce options.
  * @return {ol.PreRenderFunction} Pre-render function.
+ * @deprecated Use {@link ol.View#animate} instead.
  * @api
  */
 ol.animation.bounce = function(options) {
@@ -46,10 +46,10 @@ ol.animation.bounce = function(options) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view center.
  * @param {olx.animation.PanOptions} options Pan options.
  * @return {ol.PreRenderFunction} Pre-render function.
+ * @deprecated Use {@link ol.View#animate} instead.
  * @api
  */
 ol.animation.pan = function(options) {
@@ -88,10 +88,10 @@ ol.animation.pan = function(options) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view rotation.
  * @param {olx.animation.RotateOptions} options Rotate options.
  * @return {ol.PreRenderFunction} Pre-render function.
+ * @deprecated Use {@link ol.View#animate} instead.
  * @api
  */
 ol.animation.rotate = function(options) {
@@ -136,10 +136,10 @@ ol.animation.rotate = function(options) {
 
 
 /**
- * Deprecated (use {@link ol.View#animate} instead).
  * Generate an animated transition while updating the view resolution.
  * @param {olx.animation.ZoomOptions} options Zoom options.
  * @return {ol.PreRenderFunction} Pre-render function.
+ * @deprecated Use {@link ol.View#animate} instead.
  * @api
  */
 ol.animation.zoom = function(options) {
