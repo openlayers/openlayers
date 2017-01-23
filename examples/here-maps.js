@@ -61,7 +61,7 @@ for (i = 0, ii = hereLayers.length; i < ii; ++i) {
     preload: Infinity,
     source: new ol.source.XYZ({
       url: createUrl(urlTpl, layerDesc),
-      attributions: 'Map Tiles &copy; 2016 ' +
+      attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
         '<a href="http://developer.here.com">HERE</a>'
     })
   }));
