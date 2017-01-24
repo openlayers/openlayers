@@ -73,6 +73,10 @@ ol.format.GMLBase = function(opt_options) {
     'featureMembers': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readFeaturesInternal)
   };
+  this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS_3_2] = {
+    'member': ol.xml.makeArrayPusher(
+        ol.format.GMLBase.prototype.readFeaturesInternal)
+  };
 
   ol.format.XMLFeature.call(this);
 };
@@ -84,6 +88,13 @@ ol.inherits(ol.format.GMLBase, ol.format.XMLFeature);
  * @type {string}
  */
 ol.format.GMLBase.GMLNS = 'http://www.opengis.net/gml';
+
+
+/**
+ * @const
+ * @type {string}
+ */
+ol.format.GMLBase.GMLNS_3_2 = 'http://www.opengis.net/gml/3.2';
 
 
 /**
@@ -110,7 +121,8 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   var localName = node.localName;
   var features = null;
   if (localName == 'FeatureCollection') {
-    if (node.namespaceURI === 'http://www.opengis.net/wfs') {
+    if (node.namespaceURI === 'http://www.opengis.net/wfs' ||
+        node.namespaceURI === 'http://www.opengis.net/wfs/2.0') {
       features = ol.xml.pushParseAndPop([],
           this.FEATURE_COLLECTION_PARSERS, node,
           objectStack, this);
@@ -119,7 +131,8 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
           this.FEATURE_COLLECTION_PARSERS, node,
           objectStack, this);
     }
-  } else if (localName == 'featureMembers' || localName == 'featureMember') {
+  } else if (localName == 'featureMembers' || localName == 'featureMember' ||
+			 localName == 'member') {
     var context = objectStack[0];
     var featureType = context['featureType'];
     var featureNS = context['featureNS'];
@@ -149,7 +162,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
           }
         }
       }
-      if (localName != 'featureMember') {
+      if (localName != 'featureMember' && localName != "member") {
         // recheck featureType for each featureMember
         context['featureType'] = featureType;
         context['featureNS'] = featureNS;
@@ -176,7 +189,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
       }
       parsersNS[featureNS[p]] = parsers;
     }
-    if (localName == 'featureMember') {
+    if (localName == 'featureMember' || localName == 'member') {
       features = ol.xml.pushParseAndPop(undefined, parsersNS, node, objectStack);
     } else {
       features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
@@ -217,7 +230,8 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
 ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var n;
   var fid = node.getAttribute('fid') ||
-      ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
+      ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id') ||
+      ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS_3_2, 'id');
   var values = {}, geometryName;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var localName = n.localName;
