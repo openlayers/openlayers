@@ -132,7 +132,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
           objectStack, this);
     }
   } else if (localName == 'featureMembers' || localName == 'featureMember' ||
-			 localName == 'member') {
+             localName == 'member') {
     var context = objectStack[0];
     var featureType = context['featureType'];
     var featureNS = context['featureNS'];
@@ -162,7 +162,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
           }
         }
       }
-      if (localName != 'featureMember' && localName != "member") {
+      if (localName != 'featureMember' && localName != 'member') {
         // recheck featureType for each featureMember
         context['featureType'] = featureType;
         context['featureNS'] = featureNS;
