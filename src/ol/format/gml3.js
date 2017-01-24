@@ -120,6 +120,17 @@ ol.format.GML3.prototype.readMultiSurface_ = function(node, objectStack) {
   }
 };
 
+/**
+ * @param {object} obj An object to add to a map for all known nemspace URIs.
+ * @private
+ */
+ol.format.GML3.makeNamespaceMap_ = function(obj) {
+
+  var ret = {};
+  ret[ol.format.GMLBase.GMLNS] = obj;
+  ret[ol.format.GMLBase.GMLNS_3_2] = obj;
+  return ret;
+};
 
 /**
  * @param {Node} node Node.
@@ -384,16 +395,11 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'pos': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPos_),
     'posList': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPosList_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'pos': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPos_),
-    'posList': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPosList_)
-  }
-};
+  });
 
 
 /**
@@ -401,16 +407,11 @@ ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'interior': ol.format.GML3.prototype.interiorParser_,
     'exterior': ol.format.GML3.prototype.exteriorParser_
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'interior': ol.format.GML3.prototype.interiorParser_,
-    'exterior': ol.format.GML3.prototype.exteriorParser_
-  }
-};
+  });
 
 
 /**
@@ -418,8 +419,8 @@ ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.GEOMETRY_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.GEOMETRY_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
     'MultiPoint': ol.xml.makeReplacer(
         ol.format.GMLBase.prototype.readMultiPoint),
@@ -439,29 +440,7 @@ ol.format.GML3.prototype.GEOMETRY_PARSERS_ = {
     'MultiCurve': ol.xml.makeReplacer(
         ol.format.GML3.prototype.readMultiCurve_),
     'Envelope': ol.xml.makeReplacer(ol.format.GML3.prototype.readEnvelope_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
-    'MultiPoint': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readMultiPoint),
-    'LineString': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readLineString),
-    'MultiLineString': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readMultiLineString),
-    'LinearRing': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readLinearRing),
-    'Polygon': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPolygon),
-    'MultiPolygon': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readMultiPolygon),
-    'Surface': ol.xml.makeReplacer(ol.format.GML3.prototype.readSurface_),
-    'MultiSurface': ol.xml.makeReplacer(
-        ol.format.GML3.prototype.readMultiSurface_),
-    'Curve': ol.xml.makeReplacer(ol.format.GML3.prototype.readCurve_),
-    'MultiCurve': ol.xml.makeReplacer(
-        ol.format.GML3.prototype.readMultiCurve_),
-    'Envelope': ol.xml.makeReplacer(ol.format.GML3.prototype.readEnvelope_)
-  }
-};
+  });
 
 
 /**
@@ -469,20 +448,13 @@ ol.format.GML3.prototype.GEOMETRY_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.MULTICURVE_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.MULTICURVE_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'curveMember': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.curveMemberParser_),
     'curveMembers': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.curveMemberParser_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'curveMember': ol.xml.makeArrayPusher(
-        ol.format.GML3.prototype.curveMemberParser_),
-    'curveMembers': ol.xml.makeArrayPusher(
-        ol.format.GML3.prototype.curveMemberParser_)
-  }
-};
+  });
 
 
 /**
@@ -490,20 +462,13 @@ ol.format.GML3.prototype.MULTICURVE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.MULTISURFACE_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'surfaceMember': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.surfaceMemberParser_),
     'surfaceMembers': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.surfaceMemberParser_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'surfaceMember': ol.xml.makeArrayPusher(
-        ol.format.GML3.prototype.surfaceMemberParser_),
-    'surfaceMembers': ol.xml.makeArrayPusher(
-        ol.format.GML3.prototype.surfaceMemberParser_)
-  }
-};
+  });
 
 
 /**
@@ -511,18 +476,12 @@ ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'LineString': ol.xml.makeArrayPusher(
         ol.format.GMLBase.prototype.readLineString),
     'Curve': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readCurve_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'LineString': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readLineString),
-    'Curve': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readCurve_)
-  }
-};
+  });
 
 
 /**
@@ -530,16 +489,11 @@ ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'Polygon': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon),
     'Surface': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readSurface_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'Polygon': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon),
-    'Surface': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readSurface_)
-  }
-};
+  });
 
 
 /**
@@ -547,14 +501,10 @@ ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.SURFACE_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.SURFACE_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'patches': ol.xml.makeReplacer(ol.format.GML3.prototype.readPatch_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'patches': ol.xml.makeReplacer(ol.format.GML3.prototype.readPatch_)
-  }
-};
+  });
 
 
 /**
@@ -562,14 +512,10 @@ ol.format.GML3.prototype.SURFACE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.CURVE_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.CURVE_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'segments': ol.xml.makeReplacer(ol.format.GML3.prototype.readSegment_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'segments': ol.xml.makeReplacer(ol.format.GML3.prototype.readSegment_)
-  }
-};
+  });
 
 
 /**
@@ -577,20 +523,13 @@ ol.format.GML3.prototype.CURVE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.ENVELOPE_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.ENVELOPE_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'lowerCorner': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.readFlatPosList_),
     'upperCorner': ol.xml.makeArrayPusher(
         ol.format.GML3.prototype.readFlatPosList_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'lowerCorner': ol.xml.makeArrayPusher(
-        ol.format.GML3.prototype.readFlatPosList_),
-    'upperCorner': ol.xml.makeArrayPusher(
-        ol.format.GML3.prototype.readFlatPosList_)
-  }
-};
+  });
 
 
 /**
@@ -598,16 +537,11 @@ ol.format.GML3.prototype.ENVELOPE_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.PATCHES_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.PATCHES_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'PolygonPatch': ol.xml.makeReplacer(
         ol.format.GML3.prototype.readPolygonPatch_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'PolygonPatch': ol.xml.makeReplacer(
-        ol.format.GML3.prototype.readPolygonPatch_)
-  }
-};
+  });
 
 
 /**
@@ -615,16 +549,11 @@ ol.format.GML3.prototype.PATCHES_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GML3.prototype.SEGMENTS_PARSERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.prototype.SEGMENTS_PARSERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'LineStringSegment': ol.xml.makeReplacer(
         ol.format.GML3.prototype.readLineStringSegment_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'LineStringSegment': ol.xml.makeReplacer(
-        ol.format.GML3.prototype.readLineStringSegment_)
-  }
-};
+  });
 
 
 /**
@@ -713,16 +642,11 @@ ol.format.GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.GML3.ENVELOPE_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.ENVELOPE_SERIALIZERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'lowerCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
     'upperCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'lowerCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
-    'upperCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
-  }
-};
+  });
 
 
 /**
@@ -1087,80 +1011,56 @@ ol.format.GML3.prototype.writeFeatureMembers_ = function(node, features, objectS
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'surfaceMember': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writeSurfaceOrPolygonMember_),
     'polygonMember': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writeSurfaceOrPolygonMember_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'surfaceMember': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeSurfaceOrPolygonMember_),
-    'polygonMember': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeSurfaceOrPolygonMember_)
-  }
-};
+  });
 
 
 /**
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.GML3.POINTMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.POINTMEMBER_SERIALIZERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'pointMember': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writePointMember_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'pointMember': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writePointMember_)
-  }
-};
+  });
 
 
 /**
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'lineStringMember': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writeLineStringOrCurveMember_),
     'curveMember': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writeLineStringOrCurveMember_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'lineStringMember': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeLineStringOrCurveMember_),
-    'curveMember': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeLineStringOrCurveMember_)
-  }
-};
+  });
 
 
 /**
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.GML3.RING_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.RING_SERIALIZERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'exterior': ol.xml.makeChildAppender(ol.format.GML3.prototype.writeRing_),
     'interior': ol.xml.makeChildAppender(ol.format.GML3.prototype.writeRing_)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'exterior': ol.xml.makeChildAppender(ol.format.GML3.prototype.writeRing_),
-    'interior': ol.xml.makeChildAppender(ol.format.GML3.prototype.writeRing_)
-  }
-};
+  });
 
 
 /**
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
-ol.format.GML3.GEOMETRY_SERIALIZERS_ = {
-  'http://www.opengis.net/gml': {
+ol.format.GML3.GEOMETRY_SERIALIZERS_ =
+  ol.format.GML3.makeNamespaceMap_({
     'Curve': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writeCurveOrLineString_),
     'MultiCurve': ol.xml.makeChildAppender(
@@ -1184,33 +1084,7 @@ ol.format.GML3.GEOMETRY_SERIALIZERS_ = {
         ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_),
     'Envelope': ol.xml.makeChildAppender(
         ol.format.GML3.prototype.writeEnvelope)
-  },
-  'http://www.opengis.net/gml/3.2': {
-    'Curve': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeCurveOrLineString_),
-    'MultiCurve': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeMultiCurveOrLineString_),
-    'Point': ol.xml.makeChildAppender(ol.format.GML3.prototype.writePoint_),
-    'MultiPoint': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeMultiPoint_),
-    'LineString': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeCurveOrLineString_),
-    'MultiLineString': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeMultiCurveOrLineString_),
-    'LinearRing': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeLinearRing_),
-    'Polygon': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeSurfaceOrPolygon_),
-    'MultiPolygon': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_),
-    'Surface': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeSurfaceOrPolygon_),
-    'MultiSurface': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeMultiSurfaceOrPolygon_),
-    'Envelope': ol.xml.makeChildAppender(
-        ol.format.GML3.prototype.writeEnvelope)
-  }
-};
+  });
 
 
 /**
