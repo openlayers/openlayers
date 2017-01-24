@@ -123,7 +123,7 @@ ol.format.GML3.prototype.readMultiSurface_ = function(node, objectStack) {
 /**
  * @param {Object} obj An object to add to a map for all known nemspace URIs.
  * @private
- * @return {Object.<string, Object>} A map with known gml namespace URIs as keys. 
+ * @return {Object.<string, Object>} A map with known gml namespace URIs as keys.
  */
 ol.format.GML3.makeNamespaceMap_ = function(obj) {
 
