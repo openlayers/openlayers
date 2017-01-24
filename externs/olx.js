@@ -4048,7 +4048,8 @@ olx.layer.VectorTileOptions.prototype.renderBuffer;
  *    rendered as vectors and can stay upright on rotated views.
  *  * `'vector'`: Vector tiles are rendered as vectors. Most accurate rendering
  *    even during animations, but slower performance than the other options.
- *  The default is `'hybrid'`.
+ *
+ * The default is `'hybrid'`.
  * @type {ol.layer.VectorTileRenderType|string|undefined}
  * @api
  */
