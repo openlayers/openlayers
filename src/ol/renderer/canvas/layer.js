@@ -106,7 +106,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
  * @template S,T,U
  */
 ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  this.forEachLayerAtCoordinate(coordinate, frameState, callback, thisArg);
+  return this.forEachLayerAtCoordinate(coordinate, frameState, callback, thisArg);
 };
 
 
