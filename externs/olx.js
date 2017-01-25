@@ -6790,6 +6790,103 @@ olx.style;
 
 
 /**
+ * Specifies the extent of an arrow and the pointing direction.
+ * @typedef {{fill: (ol.style.Fill|undefined),
+ *     width: (number|undefined),
+ *     length: (number|undefined),
+ *     angle: (number|undefined),
+ *     snapToPixel: (boolean|undefined),
+ *     stroke: (ol.style.Stroke|undefined),
+ *     rotation: (number|undefined),
+ *     rotateWithView: (boolean|undefined),
+ *     atlasManager: (ol.style.AtlasManager|undefined)}}
+ */
+olx.style.ArrowShapeOptions;
+
+
+/**
+ * Fill style.
+ * @type {ol.style.Fill|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.fill;
+
+
+/**
+ * Width of the arrow, aka the extent normal to the pointing direction.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.width;
+
+
+/**
+ * Length of the arrow, aka the extent in pointing direction.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.length;
+
+
+/**
+ * Shape's angle in radians, aka the pointing direction.
+ * A value of 0 will set the arrow pointing to north.
+ * Default value is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.angle;
+
+
+/**
+ * If `true` integral numbers of pixels are used as the X and Y pixel
+ * coordinate when drawing the shape in the output canvas. If `false`
+ * fractional numbers may be used. Using `true` allows for "sharp"
+ * rendering (no blur), while using `false` allows for "accurate"
+ * rendering. Note that accuracy is important if the shape's
+ * position is animated. Without it, the shape may jitter noticeably.
+ * Default value is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.snapToPixel;
+
+
+/**
+ * Stroke style.
+ * @type {ol.style.Stroke|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.stroke;
+
+
+/**
+ * Rotation in radians (positive rotation clockwise). Default is `0`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.rotation;
+
+
+/**
+ * Whether to rotate the shape with the view. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.style.ArrowShapeOptions.prototype.rotateWithView;
+
+
+/**
+ * The atlas manager to use for this symbol. When using WebGL it is
+ * recommended to use an atlas manager to avoid texture switching.
+ * If an atlas manager is given, the symbol is added to an atlas.
+ * By default no atlas manager is used.
+ * @type {ol.style.AtlasManager|undefined}
+ */
+olx.style.ArrowShapeOptions.prototype.atlasManager;
+
+
+/**
  * @typedef {{fill: (ol.style.Fill|undefined),
  *     radius: number,
  *     snapToPixel: (boolean|undefined),

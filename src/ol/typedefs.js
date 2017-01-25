@@ -17,6 +17,20 @@
 
 
 /**
+ * @typedef {{
+ *   strokeStyle: (ol.ColorLike|undefined),
+ *   strokeWidth: number,
+ *   size: number,
+ *   lineCap: string,
+ *   lineDash: Array.<number>,
+ *   lineJoin: string,
+ *   miterLimit: number
+ * }}
+ */
+ol.ArrowShapeRenderOptions;
+
+
+/**
  * @typedef {{x: number, y: number, width: number, height: number}}
  */
 ol.AtlasBlock;
