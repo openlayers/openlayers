@@ -271,7 +271,7 @@ ol.Overlay.prototype.handleOffsetChanged = function() {
  */
 ol.Overlay.prototype.handlePositionChanged = function() {
   this.updatePixelPosition();
-  if (this.get(ol.Overlay.Property_.POSITION) !== undefined && this.autoPan) {
+  if (this.get(ol.Overlay.Property_.POSITION) && this.autoPan) {
     this.panIntoView_();
   }
 };
@@ -339,7 +339,7 @@ ol.Overlay.prototype.setPosition = function(position) {
 ol.Overlay.prototype.panIntoView_ = function() {
   var map = this.getMap();
 
-  if (map === undefined || !map.getTargetElement()) {
+  if (!map || !map.getTargetElement()) {
     return;
   }
 
@@ -442,7 +442,7 @@ ol.Overlay.prototype.setVisible = function(visible) {
 ol.Overlay.prototype.updatePixelPosition = function() {
   var map = this.getMap();
   var position = this.getPosition();
-  if (map === undefined || !map.isRendered() || position === undefined) {
+  if (!map || !map.isRendered() || !position) {
     this.setVisible(false);
     return;
   }
