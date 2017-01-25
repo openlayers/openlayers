@@ -2,7 +2,6 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.functions');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
