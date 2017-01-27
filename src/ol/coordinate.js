@@ -112,10 +112,25 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres, opt_fraction
   var normalizedDegrees = ol.math.modulo(degrees + 180, 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   var dflPrecision = opt_fractionDigits || 0;
-  return Math.floor(x / 3600) + '\u00b0 ' +
-      ol.string.padNumber(Math.floor((x / 60) % 60), 2) + '\u2032 ' +
-      ol.string.padNumber((x % 60), 2, dflPrecision) + '\u2033 ' +
-      hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
+
+  var deg = Math.floor(x / 3600);
+  var min = Math.floor((x / 60) % 60);
+  var precision = Math.pow(10, dflPrecision);
+  var sec = Math.ceil((x * precision) % 60) / precision;
+
+  if (60 === sec) {
+    sec = 0;
+    min += 1;
+  }
+
+  if (min >= 60) {
+    min -= 60;
+    deg = deg >= 0 ? deg + 1 : deg - 1;
+  }
+
+  return deg + '\u00b0 ' + ol.string.padNumber(min, 2) + '\u2032 ' +
+    ol.string.padNumber(sec, 2, dflPrecision) + '\u2033 ' +
+    hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0);
 };
 
 
