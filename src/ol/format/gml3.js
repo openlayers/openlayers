@@ -21,7 +21,8 @@ goog.require('ol.xml');
  * @classdesc
  * Feature format for reading and writing data in the GML format
  * version 3.1.1.
- * Currently only supports GML 3.1.1 Simple Features profile.
+ * Currently only supports GML 3.1.1 Simple Features profile upon writing.
+ * Basic read support for GML 3.2 is also provided.
  *
  * @constructor
  * @param {olx.format.GMLOptions=} opt_options
@@ -119,17 +120,6 @@ ol.format.GML3.prototype.readMultiSurface_ = function(node, objectStack) {
     return undefined;
   }
 };
-
-
-/**
- * @const
- * @type {Array.<string>}
- * @private
- */
-ol.format.GML3.NAMESPACE_URIS_ = [
-  ol.format.GMLBase.GMLNS,
-  ol.format.GMLBase.GMLNS_3_2
-];
 
 
 /**
@@ -396,7 +386,7 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
  * @private
  */
 ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'pos': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPos_),
       'posList': ol.xml.makeReplacer(ol.format.GML3.prototype.readFlatPosList_)
     });
@@ -408,7 +398,7 @@ ol.format.GML3.prototype.GEOMETRY_FLAT_COORDINATES_PARSERS_ = ol.xml.makeStructu
  * @private
  */
 ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'interior': ol.format.GML3.prototype.interiorParser_,
       'exterior': ol.format.GML3.prototype.exteriorParser_
     });
@@ -420,7 +410,7 @@ ol.format.GML3.prototype.FLAT_LINEAR_RINGS_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'Point': ol.xml.makeReplacer(ol.format.GMLBase.prototype.readPoint),
       'MultiPoint': ol.xml.makeReplacer(
           ol.format.GMLBase.prototype.readMultiPoint),
@@ -449,7 +439,7 @@ ol.format.GML3.prototype.GEOMETRY_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.MULTICURVE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'curveMember': ol.xml.makeArrayPusher(
           ol.format.GML3.prototype.curveMemberParser_),
       'curveMembers': ol.xml.makeArrayPusher(
@@ -463,7 +453,7 @@ ol.format.GML3.prototype.MULTICURVE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'surfaceMember': ol.xml.makeArrayPusher(
           ol.format.GML3.prototype.surfaceMemberParser_),
       'surfaceMembers': ol.xml.makeArrayPusher(
@@ -477,7 +467,7 @@ ol.format.GML3.prototype.MULTISURFACE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'LineString': ol.xml.makeArrayPusher(
           ol.format.GMLBase.prototype.readLineString),
       'Curve': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readCurve_)
@@ -490,7 +480,7 @@ ol.format.GML3.prototype.CURVEMEMBER_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'Polygon': ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon),
       'Surface': ol.xml.makeArrayPusher(ol.format.GML3.prototype.readSurface_)
     });
@@ -502,7 +492,7 @@ ol.format.GML3.prototype.SURFACEMEMBER_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.SURFACE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'patches': ol.xml.makeReplacer(ol.format.GML3.prototype.readPatch_)
     });
 
@@ -513,7 +503,7 @@ ol.format.GML3.prototype.SURFACE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.CURVE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'segments': ol.xml.makeReplacer(ol.format.GML3.prototype.readSegment_)
     });
 
@@ -524,7 +514,7 @@ ol.format.GML3.prototype.CURVE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.ENVELOPE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'lowerCorner': ol.xml.makeArrayPusher(
           ol.format.GML3.prototype.readFlatPosList_),
       'upperCorner': ol.xml.makeArrayPusher(
@@ -538,7 +528,7 @@ ol.format.GML3.prototype.ENVELOPE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.PATCHES_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'PolygonPatch': ol.xml.makeReplacer(
           ol.format.GML3.prototype.readPolygonPatch_)
     });
@@ -550,7 +540,7 @@ ol.format.GML3.prototype.PATCHES_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.prototype.SEGMENTS_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'LineStringSegment': ol.xml.makeReplacer(
           ol.format.GML3.prototype.readLineStringSegment_)
     });
@@ -643,7 +633,7 @@ ol.format.GML3.prototype.writePoint_ = function(node, geometry, objectStack) {
  * @private
  */
 ol.format.GML3.ENVELOPE_SERIALIZERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'lowerCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
       'upperCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
     });
@@ -1012,7 +1002,7 @@ ol.format.GML3.prototype.writeFeatureMembers_ = function(node, features, objectS
  * @private
  */
 ol.format.GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'surfaceMember': ol.xml.makeChildAppender(
           ol.format.GML3.prototype.writeSurfaceOrPolygonMember_),
       'polygonMember': ol.xml.makeChildAppender(
@@ -1025,7 +1015,7 @@ ol.format.GML3.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.POINTMEMBER_SERIALIZERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'pointMember': ol.xml.makeChildAppender(
           ol.format.GML3.prototype.writePointMember_)
     });
@@ -1036,7 +1026,7 @@ ol.format.GML3.POINTMEMBER_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'lineStringMember': ol.xml.makeChildAppender(
           ol.format.GML3.prototype.writeLineStringOrCurveMember_),
       'curveMember': ol.xml.makeChildAppender(
@@ -1049,7 +1039,7 @@ ol.format.GML3.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.RING_SERIALIZERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'exterior': ol.xml.makeChildAppender(ol.format.GML3.prototype.writeRing_),
       'interior': ol.xml.makeChildAppender(ol.format.GML3.prototype.writeRing_)
     });
@@ -1060,7 +1050,7 @@ ol.format.GML3.RING_SERIALIZERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.GML3.GEOMETRY_SERIALIZERS_ = ol.xml.makeStructureNS(
-    ol.format.GML3.NAMESPACE_URIS_, {
+    ol.format.GMLBase.NAMESPACE_URIS, {
       'Curve': ol.xml.makeChildAppender(
           ol.format.GML3.prototype.writeCurveOrLineString_),
       'MultiCurve': ol.xml.makeChildAppender(

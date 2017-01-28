@@ -98,6 +98,16 @@ ol.format.GMLBase.GMLNS_3_2 = 'http://www.opengis.net/gml/3.2';
 
 
 /**
+ * @const
+ * @type {Array.<string>}
+ */
+ol.format.GMLBase.NAMESPACE_URIS = [
+  ol.format.GMLBase.GMLNS,
+  ol.format.GMLBase.GMLNS_3_2
+];
+
+
+/**
  * A regular expression that matches if a string only contains whitespace
  * characters. It will e.g. match `''`, `' '`, `'\n'` etc. The non-breaking
  * space (0xa0) is explicitly included as IE doesn't include it in its
@@ -468,14 +478,13 @@ ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, object
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'pointMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.pointMemberParser_),
-    'pointMembers': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.pointMemberParser_)
-  }
-};
+ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'pointMember': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.pointMemberParser_),
+      'pointMembers': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.pointMemberParser_)
+    });
 
 
 /**
@@ -483,14 +492,13 @@ ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'lineStringMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.lineStringMemberParser_),
-    'lineStringMembers': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.lineStringMemberParser_)
-  }
-};
+ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'lineStringMember': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.lineStringMemberParser_),
+      'lineStringMembers': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.lineStringMemberParser_)
+    });
 
 
 /**
@@ -498,14 +506,13 @@ ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'polygonMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.polygonMemberParser_),
-    'polygonMembers': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.polygonMemberParser_)
-  }
-};
+ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'polygonMember': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.polygonMemberParser_),
+      'polygonMembers': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.polygonMemberParser_)
+    });
 
 
 /**
@@ -513,12 +520,11 @@ ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'Point': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_)
-  }
-};
+ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'Point': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_)
+    });
 
 
 /**
@@ -526,12 +532,11 @@ ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'LineString': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readLineString)
-  }
-};
+ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'LineString': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.readLineString)
+    });
 
 
 /**
@@ -539,12 +544,11 @@ ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
-  'http://www.opengis.net/gml': {
-    'Polygon': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readPolygon)
-  }
-};
+ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'Polygon': ol.xml.makeArrayPusher(
+          ol.format.GMLBase.prototype.readPolygon)
+    });
 
 
 /**
@@ -552,12 +556,11 @@ ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @protected
  */
-ol.format.GMLBase.prototype.RING_PARSERS = {
-  'http://www.opengis.net/gml': {
-    'LinearRing': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFlatLinearRing_)
-  }
-};
+ol.format.GMLBase.prototype.RING_PARSERS = ol.xml.makeStructureNS(
+    ol.format.GMLBase.NAMESPACE_URIS, {
+      'LinearRing': ol.xml.makeReplacer(
+          ol.format.GMLBase.prototype.readFlatLinearRing_)
+    });
 
 
 /**
