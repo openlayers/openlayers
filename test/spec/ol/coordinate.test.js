@@ -210,9 +210,9 @@ describe('ol.coordinate', function() {
       expect(got).to.be(expected);
     });
     it('formats with given fractional digits, if passed', function() {
-      var coord = [7.85, 47.983201];
+      var coord = [7.85, 47.983333];
       var got = ol.coordinate.toStringHDMS(coord, 3);
-      var expected = '47° 58′ 59.524″ N 7° 51′ 00.000″ E';
+      var expected = '47° 58′ 59.999″ N 7° 51′ 00.000″ E';
       expect(got).to.be(expected);
     });
   });
