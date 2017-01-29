@@ -172,7 +172,7 @@ ol.Feature.prototype.getGeometryName = function() {
  * Get the feature's style. Will return what was provided to the
  * {@link ol.Feature#setStyle} method.
  * @return {ol.style.Style|Array.<ol.style.Style>|
- *     ol.FeatureStyleFunction} The feature style.
+ *     ol.FeatureStyleFunction|ol.StyleFunction} The feature style.
  * @api stable
  */
 ol.Feature.prototype.getStyle = function() {
@@ -233,7 +233,7 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  * of styles, or a function that takes a resolution and returns an array of
  * styles. If it is `null` the feature has no style (a `null` style).
  * @param {ol.style.Style|Array.<ol.style.Style>|
- *     ol.FeatureStyleFunction} style Style for this feature.
+ *     ol.FeatureStyleFunction|ol.StyleFunction} style Style for this feature.
  * @api stable
  * @fires ol.events.Event#event:change
  */
@@ -291,7 +291,13 @@ ol.Feature.createStyleFunction = function(obj) {
   var styleFunction;
 
   if (typeof obj === 'function') {
-    styleFunction = obj;
+    if (obj.length == 2) {
+      styleFunction = function(resolution) {
+        return /** @type {ol.StyleFunction} */ (obj)(this, resolution);
+      };
+    } else {
+      styleFunction = obj;
+    }
   } else {
     /**
      * @type {Array.<ol.style.Style>}
