@@ -1,6 +1,7 @@
 goog.provide('ol.format.filter.LogicalNary');
 
 goog.require('ol');
+goog.require('ol.asserts');
 goog.require('ol.format.filter.Filter');
 
 
