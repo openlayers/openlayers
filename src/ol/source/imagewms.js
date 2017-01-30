@@ -189,39 +189,23 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
     pixelRatio = 1;
   }
 
-  extent = extent.slice();
-  var centerX = (extent[0] + extent[2]) / 2;
-  var centerY = (extent[1] + extent[3]) / 2;
-
   var imageResolution = resolution / pixelRatio;
-  var imageWidth = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
-  var imageHeight = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
 
-  var halfWidth = imageWidth * imageResolution / 2;
-  var halfHeight = imageHeight * imageResolution / 2;
-
-  extent[0] = centerX - halfWidth;
-  extent[1] = centerY - halfHeight;
-  extent[2] = centerX + halfWidth;
-  extent[3] = centerY + halfHeight;
+  var center = ol.extent.getCenter(extent);
+  var viewWidth = Math.ceil(ol.extent.getWidth(extent) / imageResolution);
+  var viewHeight = Math.ceil(ol.extent.getHeight(extent) / imageResolution);
+  var viewExtent = ol.extent.getForViewAndSize(center, resolution, 0,
+      [viewWidth, viewHeight]);
+  var requestExtent = ol.extent.getForViewAndSize(center, resolution, 0,
+      [viewWidth * this.ratio_, viewHeight * this.ratio_]);
 
   var image = this.image_;
   if (image &&
       this.renderedRevision_ == this.getRevision() &&
       image.getResolution() == resolution &&
       image.getPixelRatio() == pixelRatio &&
-      ol.extent.containsExtent(image.getExtent(), extent)) {
+      ol.extent.containsExtent(image.getExtent(), viewExtent)) {
     return image;
-  }
-
-  if (this.ratio_ != 1) {
-    halfWidth *= this.ratio_;
-    halfHeight *= this.ratio_;
-
-    extent[0] = centerX - halfWidth;
-    extent[1] = centerY - halfHeight;
-    extent[2] = centerX + halfWidth;
-    extent[3] = centerY + halfHeight;
   }
 
   var params = {
@@ -233,13 +217,13 @@ ol.source.ImageWMS.prototype.getImageInternal = function(extent, resolution, pix
   };
   ol.obj.assign(params, this.params_);
 
-  this.imageSize_[0] = imageWidth * this.ratio_;
-  this.imageSize_[1] = imageHeight * this.ratio_;
+  this.imageSize_[0] = Math.round(ol.extent.getWidth(requestExtent) / imageResolution);
+  this.imageSize_[1] = Math.round(ol.extent.getHeight(requestExtent) / imageResolution);
 
-  var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
+  var url = this.getRequestUrl_(requestExtent, this.imageSize_, pixelRatio,
       projection, params);
 
-  this.image_ = new ol.Image(extent, resolution, pixelRatio,
+  this.image_ = new ol.Image(requestExtent, resolution, pixelRatio,
       this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
 
   this.renderedRevision_ = this.getRevision();
