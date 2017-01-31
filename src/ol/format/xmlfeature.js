@@ -7,9 +7,6 @@ goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
 
-/* eslint-disable valid-jsdoc */
-
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -81,7 +78,7 @@ ol.format.XMLFeature.prototype.readFeatureFromDocument = function(
  * @return {ol.Feature} Feature.
  */
 ol.format.XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };
 
 
@@ -158,7 +155,7 @@ ol.format.XMLFeature.prototype.readGeometry = function(source, opt_options) {
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };
 
 
@@ -169,7 +166,7 @@ ol.format.XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_opti
  * @return {ol.geom.Geometry} Geometry.
  */
 ol.format.XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };
 
 
@@ -226,7 +223,7 @@ ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
  * @return {Node} Node.
  */
 ol.format.XMLFeature.prototype.writeFeatureNode = function(feature, opt_options) {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };
 
 
@@ -245,7 +242,7 @@ ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
  * @return {Node} Node.
  */
 ol.format.XMLFeature.prototype.writeFeaturesNode = function(features, opt_options) {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };
 
 
@@ -264,5 +261,5 @@ ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
  * @return {Node} Node.
  */
 ol.format.XMLFeature.prototype.writeGeometryNode = function(geometry, opt_options) {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };

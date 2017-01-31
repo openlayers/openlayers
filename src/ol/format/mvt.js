@@ -256,40 +256,35 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.readFeature = function() {
-  throw new Error('Not implemented');
-};
+ol.format.MVT.prototype.readFeature = function() {};
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.readGeometry = function() {
-  throw new Error('Not implemented');
-};
+ol.format.MVT.prototype.readGeometry = function() {};
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.writeFeature = function() {
-  throw new Error('Not implemented');
-};
+ol.format.MVT.prototype.writeFeature = function() {};
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.writeGeometry = function() {
-  throw new Error('Not implemented');
-};
+ol.format.MVT.prototype.writeGeometry = function() {};
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.MVT.prototype.writeFeatures = function() {
-  throw new Error('Not implemented');
-};
+ol.format.MVT.prototype.writeFeatures = function() {};

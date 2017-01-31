@@ -419,16 +419,14 @@ ol.format.TopoJSON.prototype.writeGeometryObject = function(geometry, opt_option
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.TopoJSON.prototype.readGeometryFromObject = function() {
-  throw new Error('Not implemented');
-};
+ol.format.TopoJSON.prototype.readGeometryFromObject = function() {};
 
 
 /**
+ * Not implemented.
  * @override
  */
-ol.format.TopoJSON.prototype.readFeatureFromObject = function() {
-  throw new Error('Not implemented');
-};
+ol.format.TopoJSON.prototype.readFeatureFromObject = function() {};

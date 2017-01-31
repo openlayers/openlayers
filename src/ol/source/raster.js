@@ -489,7 +489,7 @@ ol.inherits(ol.source.Raster.Event, ol.events.Event);
  * @override
  */
 ol.source.Raster.prototype.getImageInternal = function() {
-  throw new Error('Not implemented');
+  return null; // not implemented
 };
 
 
