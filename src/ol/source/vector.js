@@ -653,7 +653,7 @@ ol.source.Vector.prototype.getOverlaps = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.source.Vector.prototype.getResolutions = function() {};
 

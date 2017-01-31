@@ -284,7 +284,7 @@ ol.style.Icon.prototype.getImage = function(pixelRatio) {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.style.Icon.prototype.getImageSize = function() {
   return this.iconImage_.getSize();
@@ -292,7 +292,7 @@ ol.style.Icon.prototype.getImageSize = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.style.Icon.prototype.getHitDetectionImageSize = function() {
   return this.getImageSize();
@@ -300,7 +300,7 @@ ol.style.Icon.prototype.getHitDetectionImageSize = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.style.Icon.prototype.getImageState = function() {
   return this.iconImage_.getImageState();
@@ -308,7 +308,7 @@ ol.style.Icon.prototype.getImageState = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.iconImage_.getHitDetectionImage(pixelRatio);
@@ -366,7 +366,7 @@ ol.style.Icon.prototype.getSize = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
   return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE,
@@ -388,7 +388,7 @@ ol.style.Icon.prototype.load = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
   ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,

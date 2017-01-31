@@ -480,7 +480,7 @@ ol.source.TileUTFGrid.Tile_.prototype.onXHRError_ = function(event) {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.source.TileUTFGrid.Tile_.prototype.load = function() {
   if (this.preemptive_) {

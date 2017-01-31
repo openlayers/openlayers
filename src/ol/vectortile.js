@@ -88,7 +88,7 @@ ol.VectorTile.prototype.getContext = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.VectorTile.prototype.getImage = function() {
   return this.replayState_.renderedTileRevision == -1 ?
