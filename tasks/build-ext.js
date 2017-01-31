@@ -58,7 +58,7 @@ function wrapModule(mod, callback) {
         'constantProperty, deprecated, duplicate, es5Strict, ' +
         'fileoverviewTags, missingProperties, nonStandardJsDocs, ' +
         'strictModuleDepCheck, suspiciousCode, undefinedNames, ' +
-        'undefinedVars, unknownDefines, uselessCode, visibility}\n' +
+        'undefinedVars, unknownDefines, unusedLocalVariables, uselessCode, visibility}\n' +
         ' */\n' + code + '\n' +
         'ol.ext.' + mod.name + ' = module.exports;\n' +
         '})();\n';
