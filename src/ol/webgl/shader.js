@@ -8,6 +8,7 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @constructor
+   * @abstract
    * @param {string} source Source.
    * @struct
    */

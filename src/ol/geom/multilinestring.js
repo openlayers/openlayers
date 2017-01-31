@@ -73,6 +73,7 @@ ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.MultiLineString} Clone.
+ * @override
  * @api stable
  */
 ol.geom.MultiLineString.prototype.clone = function() {
@@ -140,6 +141,7 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate
 /**
  * Return the coordinates of the multilinestring.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
+ * @override
  * @api stable
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
@@ -257,6 +259,7 @@ ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
  * Set the coordinates of the multilinestring.
  * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @override
  * @api stable
  */
 ol.geom.MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {

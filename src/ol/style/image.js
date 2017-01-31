@@ -8,6 +8,7 @@ goog.provide('ol.style.Image');
  * {@link ol.style.RegularShape}.
  *
  * @constructor
+ * @abstract
  * @param {ol.StyleImageOptions} options Options.
  * @api
  */

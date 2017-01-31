@@ -178,6 +178,7 @@ The minimum config file looks like this:
     "extra_annotation_name": [
       "api", "observable"
     ],
+    "rewrite_polyfills": "false",
     "compilation_level": "ADVANCED",
     "warning_level": "VERBOSE",
     "output_wrapper": "(function(){%output%})();",
@@ -230,7 +231,8 @@ Here is a version of `config.json` with more compilation checks enabled:
     ],
     "jscomp_off": [
       "unknownDefines",
-      "lintChecks"
+      "lintChecks",
+      "analyzerChecks"
     ],
     "extra_annotation_name": [
       "api", "observable"

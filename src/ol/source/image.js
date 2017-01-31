@@ -17,6 +17,7 @@ goog.require('ol.source.Source');
  * Base class for sources providing a single image.
  *
  * @constructor
+ * @abstract
  * @extends {ol.source.Source}
  * @param {ol.SourceImageOptions} options Single image source options.
  * @api
@@ -56,6 +57,7 @@ ol.inherits(ol.source.Image, ol.source.Source);
 
 /**
  * @return {Array.<number>} Resolutions.
+ * @override
  */
 ol.source.Image.prototype.getResolutions = function() {
   return this.resolutions_;

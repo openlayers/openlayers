@@ -13,6 +13,7 @@ goog.require('ol.transform');
 
 /**
  * @constructor
+ * @abstract
  * @extends {ol.renderer.Layer}
  * @param {ol.layer.Layer} layer Layer.
  */

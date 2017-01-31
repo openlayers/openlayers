@@ -32,7 +32,7 @@
   "dependencies": {
     "async": "2.1.4",
     "browserify": "13.1.1",
-    "closure-util": "1.15.1",
+    "closure-util": "1.17.0",
     "derequire": "2.0.6",
     "fs-extra": "1.0.0",
     "glob": "7.1.1",

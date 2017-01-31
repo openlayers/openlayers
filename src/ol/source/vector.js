@@ -653,6 +653,12 @@ ol.source.Vector.prototype.getOverlaps = function() {
 
 
 /**
+ * @override
+ */
+ol.source.Vector.prototype.getResolutions = function() {};
+
+
+/**
  * Get the url associated with this source.
  *
  * @return {string|ol.FeatureUrlFunction|undefined} The url.

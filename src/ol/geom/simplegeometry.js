@@ -15,6 +15,7 @@ goog.require('ol.obj');
  * in apps, as cannot be rendered.
  *
  * @constructor
+ * @abstract
  * @extends {ol.geom.Geometry}
  * @api stable
  */

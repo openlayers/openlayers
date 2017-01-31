@@ -202,3 +202,31 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  * @api
  */
 ol.format.IGC.prototype.readProjection;
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.IGC.prototype.writeFeatureText = function(feature, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.IGC.prototype.writeFeaturesText = function(features, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.IGC.prototype.writeGeometryText = function(geometry, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.IGC.prototype.readGeometryFromText = function(text, opt_options) {};

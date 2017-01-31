@@ -17,6 +17,7 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @constructor
+   * @abstract
    * @extends {ol.renderer.Layer}
    * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
    * @param {ol.layer.Layer} layer Layer.

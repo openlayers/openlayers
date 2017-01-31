@@ -116,9 +116,7 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
 
 
 /**
- * Load the image or retry if loading previously failed.
- * Loading is taken care of by the tile queue, and calling this method is
- * only needed for preloading or for reloading in case of an error.
+ * @inheritDoc
  * @api
  */
 ol.ImageTile.prototype.load = function() {

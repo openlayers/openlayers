@@ -926,6 +926,7 @@ ol.format.GPX.prototype.writeFeatures;
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
+ * @override
  * @api
  */
 ol.format.GPX.prototype.writeFeaturesNode = function(features, opt_options) {

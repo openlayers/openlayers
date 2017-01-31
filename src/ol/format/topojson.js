@@ -366,12 +366,18 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
 /**
  * Read the projection from a TopoJSON source.
  *
- * @function
  * @param {Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
+ * @override
  * @api stable
  */
-ol.format.TopoJSON.prototype.readProjection = function(object) {
+ol.format.TopoJSON.prototype.readProjection;
+
+
+/**
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.readProjectionFromObject = function(object) {
   return this.defaultDataProjection;
 };
 
@@ -389,3 +395,38 @@ ol.format.TopoJSON.GEOMETRY_READERS_ = {
   'MultiLineString': ol.format.TopoJSON.readMultiLineStringGeometry_,
   'MultiPolygon': ol.format.TopoJSON.readMultiPolygonGeometry_
 };
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeFeatureObject = function(feature, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeFeaturesObject = function(features, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.TopoJSON.prototype.writeGeometryObject = function(geometry, opt_options) {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.TopoJSON.prototype.readGeometryFromObject = function() {};
+
+
+/**
+ * Not implemented.
+ * @override
+ */
+ol.format.TopoJSON.prototype.readFeatureFromObject = function() {};

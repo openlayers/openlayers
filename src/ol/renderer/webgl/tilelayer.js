@@ -97,15 +97,7 @@ if (ol.ENABLE_WEBGL) {
 
 
   /**
-   * Create a function that adds loaded tiles to the tile lookup.
-   * @param {ol.source.Tile} source Tile source.
-   * @param {ol.proj.Projection} projection Projection of the tiles.
-   * @param {Object.<number, Object.<string, ol.Tile>>} tiles Lookup of loaded
-   *     tiles by zoom level.
-   * @return {function(number, ol.TileRange):boolean} A function that can be
-   *     called with a zoom level and a tile range to add loaded tiles to the
-   *     lookup.
-   * @protected
+   * @inheritDoc
    */
   ol.renderer.webgl.TileLayer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
     var mapRenderer = this.mapRenderer;

@@ -7,6 +7,7 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @constructor
+   * @abstract
    * @param {number} tolerance Tolerance.
    * @param {ol.Extent} maxExtent Max extent.
    * @struct

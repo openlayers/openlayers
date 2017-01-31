@@ -30,6 +30,7 @@ ol.inherits(ol.geom.Circle, ol.geom.SimpleGeometry);
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.Circle} Clone.
+ * @override
  * @api
  */
 ol.geom.Circle.prototype.clone = function() {
@@ -203,6 +204,18 @@ ol.geom.Circle.prototype.setCenterAndRadius = function(center, radius, opt_layou
     this.changed();
   }
 };
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Circle.prototype.getCoordinates = function() {};
+
+
+/**
+ * @inheritDoc
+ */
+ol.geom.Circle.prototype.setCoordinates = function(coordinates, opt_layout) {};
 
 
 /**

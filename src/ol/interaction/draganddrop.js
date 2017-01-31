@@ -101,11 +101,19 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
     var view = map.getView();
     projection = view.getProjection();
   }
+
   var formatConstructors = this.formatConstructors_;
   var features = [];
   var i, ii;
   for (i = 0, ii = formatConstructors.length; i < ii; ++i) {
+    /**
+     * Avoid "cannot instantiate abstract class" error.
+     * @type {Function}
+     */
     var formatConstructor = formatConstructors[i];
+    /**
+     * @type {ol.format.Feature}
+     */
     var format = new formatConstructor();
     features = this.tryReadFeatures_(format, result, {
       featureProjection: projection

@@ -73,7 +73,7 @@ ol.ImageCanvas.prototype.handleLoad_ = function(err) {
 
 
 /**
- * Trigger drawing on canvas.
+ * @inheritDoc
  */
 ol.ImageCanvas.prototype.load = function() {
   if (this.state == ol.ImageState.IDLE) {

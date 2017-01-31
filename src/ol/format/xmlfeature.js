@@ -14,6 +14,7 @@ goog.require('ol.xml');
  * Base class for XML feature formats.
  *
  * @constructor
+ * @abstract
  * @extends {ol.format.Feature}
  */
 ol.format.XMLFeature = function() {
@@ -72,12 +73,13 @@ ol.format.XMLFeature.prototype.readFeatureFromDocument = function(
 
 
 /**
- * @abstract
  * @param {Node} node Node.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {ol.Feature} Feature.
  */
-ol.format.XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {};
+ol.format.XMLFeature.prototype.readFeatureFromNode = function(node, opt_options) {
+  return null; // not implemented
+};
 
 
 /**
@@ -147,23 +149,25 @@ ol.format.XMLFeature.prototype.readGeometry = function(source, opt_options) {
 
 
 /**
- * @abstract
  * @param {Document} doc Document.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {};
+ol.format.XMLFeature.prototype.readGeometryFromDocument = function(doc, opt_options) {
+  return null; // not implemented
+};
 
 
 /**
- * @abstract
  * @param {Node} node Node.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @protected
  * @return {ol.geom.Geometry} Geometry.
  */
-ol.format.XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {};
+ol.format.XMLFeature.prototype.readGeometryFromNode = function(node, opt_options) {
+  return null; // not implemented
+};
 
 
 /**
@@ -213,13 +217,14 @@ ol.format.XMLFeature.prototype.writeFeature = function(feature, opt_options) {
 
 
 /**
- * @abstract
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @protected
  * @return {Node} Node.
  */
-ol.format.XMLFeature.prototype.writeFeatureNode = function(feature, opt_options) {};
+ol.format.XMLFeature.prototype.writeFeatureNode = function(feature, opt_options) {
+  return null; // not implemented
+};
 
 
 /**
@@ -232,12 +237,13 @@ ol.format.XMLFeature.prototype.writeFeatures = function(features, opt_options) {
 
 
 /**
- * @abstract
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
-ol.format.XMLFeature.prototype.writeFeaturesNode = function(features, opt_options) {};
+ol.format.XMLFeature.prototype.writeFeaturesNode = function(features, opt_options) {
+  return null; // not implemented
+};
 
 
 /**
@@ -250,9 +256,10 @@ ol.format.XMLFeature.prototype.writeGeometry = function(geometry, opt_options) {
 
 
 /**
- * @abstract
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {Node} Node.
  */
-ol.format.XMLFeature.prototype.writeGeometryNode = function(geometry, opt_options) {};
+ol.format.XMLFeature.prototype.writeGeometryNode = function(geometry, opt_options) {
+  return null; // not implemented
+};

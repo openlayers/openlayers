@@ -9,6 +9,7 @@ goog.require('ol.transform');
 
 /**
  * @constructor
+ * @abstract
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.layer.Layer} layer Layer.
  */

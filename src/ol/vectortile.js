@@ -88,7 +88,7 @@ ol.VectorTile.prototype.getContext = function() {
 
 
 /**
- * @inheritDoc
+ * @override
  */
 ol.VectorTile.prototype.getImage = function() {
   return this.replayState_.renderedTileRevision == -1 ?
@@ -139,7 +139,7 @@ ol.VectorTile.prototype.getProjection = function() {
 
 
 /**
- * Load the tile.
+ * @inheritDoc
  */
 ol.VectorTile.prototype.load = function() {
   if (this.state == ol.TileState.IDLE) {

@@ -479,6 +479,7 @@ ol.format.GeoJSON.prototype.readProjectionFromObject = function(object) {
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} GeoJSON.
+ * @override
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeature;
@@ -490,6 +491,7 @@ ol.format.GeoJSON.prototype.writeFeature;
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeature} Object.
+ * @override
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeatureObject = function(feature, opt_options) {
@@ -538,6 +540,7 @@ ol.format.GeoJSON.prototype.writeFeatures;
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {GeoJSONFeatureCollection} GeoJSON Object.
+ * @override
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeFeaturesObject = function(features, opt_options) {
@@ -572,6 +575,7 @@ ol.format.GeoJSON.prototype.writeGeometry;
  * @param {ol.geom.Geometry} geometry Geometry.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {GeoJSONGeometry|GeoJSONGeometryCollection} Object.
+ * @override
  * @api stable
  */
 ol.format.GeoJSON.prototype.writeGeometryObject = function(geometry,

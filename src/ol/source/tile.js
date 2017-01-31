@@ -18,6 +18,7 @@ goog.require('ol.tilegrid');
  * Base class for sources providing images divided into a tile grid.
  *
  * @constructor
+ * @abstract
  * @extends {ol.source.Source}
  * @param {ol.SourceTileOptions} options Tile source options.
  * @api

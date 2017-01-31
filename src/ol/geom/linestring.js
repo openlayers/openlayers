@@ -78,6 +78,7 @@ ol.geom.LineString.prototype.appendCoordinate = function(coordinate) {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.LineString} Clone.
+ * @override
  * @api stable
  */
 ol.geom.LineString.prototype.clone = function() {
@@ -153,6 +154,7 @@ ol.geom.LineString.prototype.getCoordinateAtM = function(m, opt_extrapolate) {
 /**
  * Return the coordinates of the linestring.
  * @return {Array.<ol.Coordinate>} Coordinates.
+ * @override
  * @api stable
  */
 ol.geom.LineString.prototype.getCoordinates = function() {
@@ -240,6 +242,7 @@ ol.geom.LineString.prototype.intersectsExtent = function(extent) {
  * Set the coordinates of the linestring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @override
  * @api stable
  */
 ol.geom.LineString.prototype.setCoordinates = function(coordinates, opt_layout) {

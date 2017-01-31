@@ -88,6 +88,7 @@ if (ol.ENABLE_WEBGL) {
    * any `zIndex` on the provided style will be ignored.
    *
    * @param {ol.style.Style} style The rendering style.
+   * @override
    * @api
    */
   ol.render.webgl.Immediate.prototype.setStyle = function(style) {
@@ -101,6 +102,7 @@ if (ol.ENABLE_WEBGL) {
    * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
    *
    * @param {ol.geom.Geometry|ol.render.Feature} geometry The geometry to render.
+   * @override
    * @api
    */
   ol.render.webgl.Immediate.prototype.drawGeometry = function(geometry) {

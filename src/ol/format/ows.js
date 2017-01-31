@@ -18,8 +18,7 @@ ol.inherits(ol.format.OWS, ol.format.XML);
 
 
 /**
- * @param {Document} doc Document.
- * @return {Object} OWS object.
+ * @inheritDoc
  */
 ol.format.OWS.prototype.readFromDocument = function(doc) {
   for (var n = doc.firstChild; n; n = n.nextSibling) {
@@ -32,8 +31,7 @@ ol.format.OWS.prototype.readFromDocument = function(doc) {
 
 
 /**
- * @param {Node} node Node.
- * @return {Object} OWS object.
+ * @inheritDoc
  */
 ol.format.OWS.prototype.readFromNode = function(node) {
   var owsObject = ol.xml.pushParseAndPop({},

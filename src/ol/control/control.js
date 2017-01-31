@@ -101,6 +101,7 @@ ol.control.Control.prototype.getMap = function() {
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
  * @param {ol.Map} map Map.
+ * @override
  * @api stable
  */
 ol.control.Control.prototype.setMap = function(map) {

@@ -109,6 +109,9 @@ if (ol.ENABLE_WEBGL) {
     }
     var replay = replays[replayType];
     if (replay === undefined) {
+      /**
+       * @type {Function}
+       */
       var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
       replay = new Constructor(this.tolerance_, this.maxExtent_);
       replays[replayType] = replay;

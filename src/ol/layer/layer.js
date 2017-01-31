@@ -27,6 +27,7 @@ goog.require('ol.source.State');
  * A generic `change` event is fired when the state of the source changes.
  *
  * @constructor
+ * @abstract
  * @extends {ol.layer.Base}
  * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.

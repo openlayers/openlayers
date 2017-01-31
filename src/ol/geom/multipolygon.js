@@ -111,6 +111,7 @@ ol.geom.MultiPolygon.prototype.appendPolygon = function(polygon) {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.MultiPolygon} Clone.
+ * @override
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.clone = function() {
@@ -178,6 +179,7 @@ ol.geom.MultiPolygon.prototype.getArea = function() {
  *     By default, coordinate orientation will depend on how the geometry was
  *     constructed.
  * @return {Array.<Array.<Array.<ol.Coordinate>>>} Coordinates.
+ * @override
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.getCoordinates = function(opt_right) {
@@ -355,6 +357,7 @@ ol.geom.MultiPolygon.prototype.intersectsExtent = function(extent) {
  * Set the coordinates of the multipolygon.
  * @param {Array.<Array.<Array.<ol.Coordinate>>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @override
  * @api stable
  */
 ol.geom.MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout) {

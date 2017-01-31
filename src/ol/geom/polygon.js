@@ -106,6 +106,7 @@ ol.geom.Polygon.prototype.appendLinearRing = function(linearRing) {
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.Polygon} Clone.
+ * @override
  * @api stable
  */
 ol.geom.Polygon.prototype.clone = function() {
@@ -166,6 +167,7 @@ ol.geom.Polygon.prototype.getArea = function() {
  *     By default, coordinate orientation will depend on how the geometry was
  *     constructed.
  * @return {Array.<Array.<ol.Coordinate>>} Coordinates.
+ * @override
  * @api stable
  */
 ol.geom.Polygon.prototype.getCoordinates = function(opt_right) {
@@ -333,6 +335,7 @@ ol.geom.Polygon.prototype.intersectsExtent = function(extent) {
  * Set the coordinates of the polygon.
  * @param {Array.<Array.<ol.Coordinate>>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @override
  * @api stable
  */
 ol.geom.Polygon.prototype.setCoordinates = function(coordinates, opt_layout) {

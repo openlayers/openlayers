@@ -48,6 +48,7 @@ ol.inherits(ol.geom.LinearRing, ol.geom.SimpleGeometry);
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.LinearRing} Clone.
+ * @override
  * @api stable
  */
 ol.geom.LinearRing.prototype.clone = function() {
@@ -90,6 +91,7 @@ ol.geom.LinearRing.prototype.getArea = function() {
 /**
  * Return the coordinates of the linear ring.
  * @return {Array.<ol.Coordinate>} Coordinates.
+ * @override
  * @api stable
  */
 ol.geom.LinearRing.prototype.getCoordinates = function() {
@@ -123,9 +125,16 @@ ol.geom.LinearRing.prototype.getType = function() {
 
 
 /**
+ * @inheritDoc
+ */
+ol.geom.LinearRing.prototype.intersectsExtent = function(extent) {};
+
+
+/**
  * Set the coordinates of the linear ring.
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @override
  * @api stable
  */
 ol.geom.LinearRing.prototype.setCoordinates = function(coordinates, opt_layout) {

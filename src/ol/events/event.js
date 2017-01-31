@@ -42,6 +42,7 @@ ol.events.Event = function(type) {
 /**
  * Stop event propagation.
  * @function
+ * @override
  * @api stable
  */
 ol.events.Event.prototype.preventDefault =
@@ -49,6 +50,7 @@ ol.events.Event.prototype.preventDefault =
 /**
  * Stop event propagation.
  * @function
+ * @override
  * @api stable
  */
 ol.events.Event.prototype.stopPropagation = function() {
