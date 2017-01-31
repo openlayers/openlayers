@@ -28,7 +28,8 @@
     ],
     "jscomp_off": [
       "lintChecks",
-      "analyzerChecks"
+      "analyzerChecks",
+      "unusedLocalVariables"
     ],
     "extra_annotation_name": [
       "api", "observable"
