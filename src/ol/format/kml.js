@@ -2415,9 +2415,9 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
       if (this.writeStyles_) {
         properties['Style'] = style;
       }
-      // Unnecessary because this property is already filled !
+      // Unnecessary if this property is already filled !
       // So it's not necessary to overwrite it...
-      if (!properties.hasOwnProperty("name")) {
+      if (!properties.hasOwnProperty('name')) {
         var textStyle = style.getText();
         if (textStyle) {
           properties['name'] = textStyle.getText();

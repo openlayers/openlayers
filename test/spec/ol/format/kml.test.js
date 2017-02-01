@@ -2323,20 +2323,20 @@ describe('ol.format.KML', function() {
               })
             }),
             image: new ol.style.Icon({
-                anchor: [24, 48],
-                anchorOrigin: 'top-left',
-                anchorXUnits: 'pixels',
-                anchorYUnits: 'pixels',
-                crossOrigin: 'anonymous',
-                size: [48, 48],
-                src: 'http://foo.png'
+              anchor: [24, 48],
+              anchorOrigin: 'top-left',
+              anchorXUnits: 'pixels',
+              anchorYUnits: 'pixels',
+              crossOrigin: 'anonymous',
+              size: [48, 48],
+              src: 'http://foo.png'
             })
           });
           var feature = new ol.Feature();
           feature.setStyle([style]);
           feature.setProperties({
-              name: 'foo'
-          })
+            name: 'foo'
+          });
           var node = format.writeFeaturesNode([feature]);
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
