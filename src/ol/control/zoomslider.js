@@ -56,12 +56,6 @@ ol.control.ZoomSlider = function(opt_options) {
   this.dragging_;
 
   /**
-   * @type {!Array.<ol.EventsKey>}
-   * @private
-   */
-  this.dragListenerKeys_ = [];
-
-  /**
    * @type {number}
    * @private
    */
@@ -255,25 +249,11 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
-  if (!this.dragging_ &&
-      event.originalEvent.target === this.element.firstElementChild) {
+  if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
     this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;
     this.dragging_ = true;
-
-    if (this.dragListenerKeys_.length === 0) {
-      var drag = this.handleDraggerDrag_;
-      var end = this.handleDraggerEnd_;
-      this.dragListenerKeys_.push(
-        ol.events.listen(document, ol.events.EventType.MOUSEMOVE, drag, this),
-        ol.events.listen(document, ol.events.EventType.TOUCHMOVE, drag, this),
-        ol.events.listen(document, ol.pointer.EventType.POINTERMOVE, drag, this),
-        ol.events.listen(document, ol.events.EventType.MOUSEUP, end, this),
-        ol.events.listen(document, ol.events.EventType.TOUCHEND, end, this),
-        ol.events.listen(document, ol.pointer.EventType.POINTERUP, end, this)
-      );
-    }
   }
 };
 
@@ -318,8 +298,6 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
     this.dragging_ = false;
     this.previousX_ = undefined;
     this.previousY_ = undefined;
-    this.dragListenerKeys_.forEach(ol.events.unlistenByKey);
-    this.dragListenerKeys_.length = 0;
   }
 };
 
