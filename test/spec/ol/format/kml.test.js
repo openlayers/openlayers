@@ -1758,6 +1758,47 @@ describe('ol.format.KML', function() {
           expect(style.getZIndex()).to.be(undefined);
         });
 
+        it('can read an hotspot style when the anchor is equal of the image size', function() {
+          var text =
+              '<kml xmlns="http://earth.google.com/kml/2.2"' +
+              '     xmlns:gx="http://www.google.com/kml/ext/2.2">' +
+              '  <Placemark>' +
+              '    <Style>' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://foo.png</href>' +
+              '          <gx:w>48</gx:w>' +
+              '          <gx:h>48</gx:h>' +
+              '        </Icon>' +
+              '        <hotSpot x="0.5" y="0" xunits="fraction" ' +
+              '                 yunits="pixels"/>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '  </Placemark>' +
+              '</kml>';
+          var fs = format.readFeatures(text);
+          expect(fs).to.have.length(1);
+          var f = fs[0];
+          expect(f).to.be.an(ol.Feature);
+          var styleFunction = f.getStyleFunction();
+          expect(styleFunction).not.to.be(undefined);
+          var styleArray = styleFunction.call(f, 0);
+          expect(styleArray).to.be.an(Array);
+          expect(styleArray).to.have.length(1);
+          var style = styleArray[0];
+          expect(style).to.be.an(ol.style.Style);
+          expect(style.getFill()).to.be(ol.format.KML.DEFAULT_FILL_STYLE_);
+          expect(style.getStroke()).to.be(ol.format.KML.DEFAULT_STROKE_STYLE_);
+          var imageStyle = style.getImage();
+          imageStyle.iconImage_.size_ = [48, 48];
+          expect(imageStyle.getSize()).to.eql([48, 48]);
+          expect(imageStyle.getAnchor()).to.eql([24, 48]);
+          expect(imageStyle.getOrigin()).to.eql([0, 0]);
+          expect(imageStyle.getRotation()).to.eql(0);
+          expect(style.getText()).to.be(ol.format.KML.DEFAULT_TEXT_STYLE_);
+          expect(style.getZIndex()).to.be(undefined);
+        });
+
         it('can read a feature\'s LabelStyle', function() {
           var text =
               '<kml xmlns="http://earth.google.com/kml/2.2">' +
@@ -2144,6 +2185,46 @@ describe('ol.format.KML', function() {
               '          <gx:h>48</gx:h>' +
               '        </Icon>' +
               '        <hotSpot x="12" y="12" xunits="pixels" ' +
+              '                 yunits="pixels"/>' +
+              '      </IconStyle>' +
+              '    </Style>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
+        it('can write an hotspot style when the anchor is equal of the image size', function() {
+          var style = new ol.style.Style({
+            image: new ol.style.Icon({
+              anchor: [24, 48],
+              anchorOrigin: 'top-left',
+              anchorXUnits: 'pixels',
+              anchorYUnits: 'pixels',
+              crossOrigin: 'anonymous',
+              size: [48, 48],
+              src: 'http://foo.png'
+            })
+          });
+          var imageStyle = style.getImage();
+          imageStyle.iconImage_.size_ = [48, 48];
+          var feature = new ol.Feature();
+          feature.setStyle([style]);
+          var node = format.writeFeaturesNode([feature]);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <Style>' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://foo.png</href>' +
+              '          <gx:w>48</gx:w>' +
+              '          <gx:h>48</gx:h>' +
+              '        </Icon>' +
+              '        <hotSpot x="24" y="0" xunits="pixels" ' +
               '                 yunits="pixels"/>' +
               '      </IconStyle>' +
               '    </Style>' +
