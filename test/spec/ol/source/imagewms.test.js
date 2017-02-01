@@ -184,6 +184,15 @@ describe('ol.source.ImageWMS', function() {
       expect(source.imageSize_).to.eql([300, 600]);
     });
 
+    it('image ratio is roughly equal to extent ratio', function() {
+      var source = new ol.source.ImageWMS(options);
+      var extent = [10, 5, 30.1, 45];
+      source.getImage(extent, resolution, pixelRatio, projection);
+      var imageRatio = source.imageSize_[0] / source.imageSize_[1];
+      var extentRatio = ol.extent.getWidth(extent) / ol.extent.getHeight(extent);
+      expect(imageRatio).to.roughlyEqual(extentRatio, 1e-8);
+    });
+
   });
 
   describe('#getGetFeatureInfo', function() {
