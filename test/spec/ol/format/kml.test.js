@@ -2313,6 +2313,59 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(ol.xml.parse(text));
         });
 
+        it('can write both an feature\'s text and icon styles', function() {
+          var style = new ol.style.Style({
+            text: new ol.style.Text({
+              scale: 0.5,
+              text: 'foo',
+              fill: new ol.style.Fill({
+                color: 'rgb(12, 34, 223)'
+              })
+            }),
+            image: new ol.style.Icon({
+                anchor: [24, 48],
+                anchorOrigin: 'top-left',
+                anchorXUnits: 'pixels',
+                anchorYUnits: 'pixels',
+                crossOrigin: 'anonymous',
+                size: [48, 48],
+                src: 'http://foo.png'
+            })
+          });
+          var feature = new ol.Feature();
+          feature.setStyle([style]);
+          feature.setProperties({
+              name: 'foo'
+          })
+          var node = format.writeFeaturesNode([feature]);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <name>foo</name>' +
+              '    <Style>' +
+              '      <IconStyle>' +
+              '        <Icon>' +
+              '          <href>http://foo.png</href>' +
+              '          <gx:w>48</gx:w>' +
+              '          <gx:h>48</gx:h>' +
+              '        </Icon>' +
+              '        <hotSpot x="24" y="0" xunits="pixels" ' +
+              '                 yunits="pixels"/>' +
+              '      </IconStyle>' +
+              '      <LabelStyle>' +
+              '        <color>ffdf220c</color>' +
+              '        <scale>0.5</scale>' +
+              '      </LabelStyle>' +
+              '    </Style>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
         it('can write an feature\'s stroke style', function() {
           var style = new ol.style.Style({
             stroke: new ol.style.Stroke({
