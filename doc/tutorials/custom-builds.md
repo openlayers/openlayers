@@ -63,7 +63,8 @@ Creating a custom build requires writing a build configuration file. The format 
       "api", "observable"
     ],
     "compilation_level": "ADVANCED",
-    "manage_closure_dependencies": true
+    "manage_closure_dependencies": true,
+    "rewrite_polyfills": false
   }
 }
 ```
@@ -99,7 +100,7 @@ You are now ready to create your first OpenLayers build. Use the following comma
     $ cd node_modules/openlayers
     $ node tasks/build.js build/ol-custom.json build/ol-custom.js
 
-The build command may take some time, but it should end with the following output in the console:
+The build command may take some time, but it should end with an output in the console such as the following:
 
     info ol Parsing dependencies
     info ol Compiling 364 sources
@@ -170,7 +171,7 @@ The Closure documentation explains that "externs" are for external names used in
 
 ### Other compiler options
 
-There are a couple of other compiler options in the config file above. `manage_closure_dependencies` should always be used.
+There are a couple of other compiler options in the config file above. `manage_closure_dependencies` and `rewrite_polyfills` should always be used.
 
 You can specify any of the other compiler options here as needed, such as the renaming reports, output manifest, or source maps. There is a full list of available options in [closure-util](https://github.com/openlayers/closure-util/blob/master/compiler-options.txt).
 
@@ -210,7 +211,8 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
       "ol.ENABLE_RASTER_REPROJECTION=false"
     ],
     "compilation_level": "ADVANCED",
-    "manage_closure_dependencies": true
+    "manage_closure_dependencies": true,
+    "rewrite_polyfills": false
   }
 }
 ```
