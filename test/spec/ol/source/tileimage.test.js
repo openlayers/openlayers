@@ -147,7 +147,7 @@ describe('ol.source.TileImage', function() {
       var source = createSource();
       source.setTileGridForProjection(proj,
           ol.tilegrid.createXYZ({
-            extent: [-180, -90, 180, 90],
+            extent: [-180, -89.99, 180, 89.99],
             tileSize: [2, 2]
           }));
       var tile = source.getTile(0, 0, -1, 1, proj);
