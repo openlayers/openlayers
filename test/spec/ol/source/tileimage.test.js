@@ -4,6 +4,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.TileUrlFunction');
 goog.require('ol.events');
 goog.require('ol.proj');
+goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.Projection');
 goog.require('ol.reproj.Tile');
 goog.require('ol.source.TileImage');
@@ -147,7 +148,7 @@ describe('ol.source.TileImage', function() {
       var source = createSource();
       source.setTileGridForProjection(proj,
           ol.tilegrid.createXYZ({
-            extent: [-180, -89.99, 180, 89.99],
+            extent: ol.proj.EPSG3857.WORLD_EXTENT,
             tileSize: [2, 2]
           }));
       var tile = source.getTile(0, 0, -1, 1, proj);
