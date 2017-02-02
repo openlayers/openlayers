@@ -968,6 +968,21 @@ describe('ol.View', function() {
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
+      view.fit(
+          new ol.geom.Circle([6000, 46000], 1000),
+          {size: [200, 200], constrainResolution: false});
+      expect(view.getResolution()).to.be(10);
+      expect(view.getCenter()[0]).to.be(6000);
+      expect(view.getCenter()[1]).to.be(46000);
+
+      view.setRotation(Math.PI / 8);
+      view.fit(
+          new ol.geom.Circle([6000, 46000], 1000),
+          {size: [200, 200], constrainResolution: false});
+      expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
+      expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
+      expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
+
       view.setRotation(Math.PI / 4);
       view.fit(
           new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),

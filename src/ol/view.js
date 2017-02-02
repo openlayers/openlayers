@@ -702,6 +702,10 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
     ol.asserts.assert(!ol.extent.isEmpty(geometryOrExtent),
         25); // Cannot fit empty extent provided as `geometry`
     geometry = ol.geom.Polygon.fromExtent(geometryOrExtent);
+  } else if (geometryOrExtent.getType() === ol.geom.GeometryType.CIRCLE) {
+    geometryOrExtent = geometryOrExtent.getExtent();
+    geometry = ol.geom.Polygon.fromExtent(geometryOrExtent);
+    geometry.rotate(this.getRotation(), ol.extent.getCenter(geometryOrExtent));
   } else {
     geometry = geometryOrExtent;
   }
