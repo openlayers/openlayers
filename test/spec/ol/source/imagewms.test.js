@@ -24,6 +24,30 @@ describe('ol.source.ImageWMS', function() {
   describe('#getImage', function() {
 
     it('returns the expected image URL', function() {
+      options.ratio = 1.5;
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage([10, 20, 30.1, 39.9], resolution, pixelRatio, projection);
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
+      var extent = queryData.get('BBOX').split(',').map(Number);
+      var extentAspectRatio = (extent[3] - extent[1]) / (extent[2] - extent[0]);
+      var imageAspectRatio = Number(queryData.get('WIDTH') / Number(queryData.get('HEIGHT')));
+      expect(extentAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
+    });
+
+    it('requests integer WIDTH and HEIGHT', function() {
+      options.ratio = 1.5;
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage([10, 20, 30.1, 39.9], resolution, pixelRatio, projection);
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
+      var width = parseFloat(queryData.get('WIDTH'));
+      var height = parseFloat(queryData.get('HEIGHT'));
+      expect(width).to.be(Math.round(width));
+      expect(height).to.be(Math.round(height));
+    });
+
+    it('sets WIDTH and HEIGHT to match the aspect ratio of BBOX', function() {
       var source = new ol.source.ImageWMS(options);
       var image = source.getImage(extent, resolution, pixelRatio, projection);
       var uri = new URL(image.src_);
