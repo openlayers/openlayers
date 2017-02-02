@@ -174,7 +174,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 &&
       (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING])) &&
       (newTiles || !(this.renderedExtent_ &&
-      ol.extent.equals(this.renderedExtent_, imageExtent)) ||
+      ol.extent.containsExtent(this.renderedExtent_, extent)) ||
       this.renderedRevision != sourceRevision) ||
       oversampling != this.oversampling_) {
 
