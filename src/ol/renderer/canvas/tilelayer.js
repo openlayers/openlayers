@@ -30,6 +30,12 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
   /**
    * @private
+   * @type {number}
+   */
+  this.oversampling_;
+
+  /**
+   * @private
    * @type {ol.Extent}
    */
   this.renderedExtent_ = null;
@@ -105,6 +111,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   var tileGrid = tileSource.getTileGridForProjection(projection);
   var z = tileGrid.getZForResolution(viewResolution, this.zDirection);
   var tileResolution = tileGrid.getResolution(z);
+  var oversampling = Math.round(viewResolution / tileResolution) || 1;
   var extent = frameState.extent;
 
   if (layerState.extent !== undefined) {
@@ -168,19 +175,22 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING])) &&
       (newTiles || !(this.renderedExtent_ &&
       ol.extent.equals(this.renderedExtent_, imageExtent)) ||
-      this.renderedRevision != sourceRevision)) {
+      this.renderedRevision != sourceRevision) ||
+      oversampling != this.oversampling_) {
 
     var tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
-    var width = tileRange.getWidth() * tilePixelSize[0];
-    var height = tileRange.getHeight() * tilePixelSize[0];
+    var width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
+    var height = Math.round(tileRange.getHeight() * tilePixelSize[0] / oversampling);
     var context = this.context;
     var canvas = context.canvas;
     var opaque = tileSource.getOpaque(projection);
     if (canvas.width != width || canvas.height != height) {
+      this.oversampling_ = oversampling;
       canvas.width = width;
       canvas.height = height;
     } else {
       context.clearRect(0, 0, width, height);
+      oversampling = this.oversampling_;
     }
 
     this.renderedTiles.length = 0;
@@ -199,10 +209,10 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
       for (var tileCoordKey in tilesToDraw) {
         tile = tilesToDraw[tileCoordKey];
         tileExtent = tileGrid.getTileCoordExtent(tile.getTileCoord(), tmpExtent);
-        x = (tileExtent[0] - imageExtent[0]) / tileResolution * tilePixelRatio;
-        y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio;
-        w = currentTilePixelSize[0] * currentScale;
-        h = currentTilePixelSize[1] * currentScale;
+        x = (tileExtent[0] - imageExtent[0]) / tileResolution * tilePixelRatio / oversampling;
+        y = (imageExtent[3] - tileExtent[3]) / tileResolution * tilePixelRatio / oversampling;
+        w = currentTilePixelSize[0] * currentScale / oversampling;
+        h = currentTilePixelSize[1] * currentScale / oversampling;
         if (!opaque) {
           context.clearRect(x, y, w, h);
         }
@@ -212,7 +222,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     }
 
     this.renderedRevision = sourceRevision;
-    this.renderedResolution = tileResolution * pixelRatio / tilePixelRatio;
+    this.renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
     this.renderedExtent_ = imageExtent;
   }
 
