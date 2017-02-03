@@ -81,13 +81,25 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
     scaleDelta = this.lastDistance_ / distance;
   }
   this.lastDistance_ = distance;
-  if (scaleDelta != 1.0) {
-    this.lastScaleDelta_ = scaleDelta;
-  }
+
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
   var resolution = view.getResolution();
+  var maxResolution = view.getMaxResolution();
+  var minResolution = view.getMinResolution();
+  var newResolution = resolution * scaleDelta;
+  if (newResolution > maxResolution) {
+    scaleDelta = maxResolution / resolution;
+    newResolution = maxResolution;
+  } else if (newResolution < minResolution) {
+    scaleDelta = minResolution / resolution;
+    newResolution = minResolution;
+  }
+
+  if (scaleDelta != 1.0) {
+    this.lastScaleDelta_ = scaleDelta;
+  }
 
   // scale anchor point.
   var viewportPosition = map.getViewport().getBoundingClientRect();
@@ -98,8 +110,7 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   // scale, bypass the resolution constraint
   map.render();
-  ol.interaction.Interaction.zoomWithoutConstraints(
-      view, resolution * scaleDelta, this.anchor_);
+  ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
 };
 
 
