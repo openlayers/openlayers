@@ -8,7 +8,6 @@ goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.obj');
 goog.require('ol.render.VectorContext');
-goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.Instruction');
 goog.require('ol.transform');
 

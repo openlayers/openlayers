@@ -1,6 +1,5 @@
 goog.provide('ol.interaction');
 
-goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.Kinetic');
 goog.require('ol.interaction.DoubleClickZoom');

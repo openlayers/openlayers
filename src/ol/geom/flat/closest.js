@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.closest');
 
-goog.require('ol');
 goog.require('ol.math');
 
 

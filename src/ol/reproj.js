@@ -1,6 +1,5 @@
 goog.provide('ol.reproj');
 
-goog.require('ol');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.math');

@@ -1,6 +1,5 @@
 goog.provide('ol.extent');
 
-goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.extent.Corner');
 goog.require('ol.extent.Relationship');

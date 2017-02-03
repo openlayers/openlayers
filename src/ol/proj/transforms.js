@@ -1,6 +1,5 @@
 goog.provide('ol.proj.transforms');
 
-goog.require('ol');
 goog.require('ol.obj');
 
 

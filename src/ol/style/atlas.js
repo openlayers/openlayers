@@ -1,6 +1,5 @@
 goog.provide('ol.style.Atlas');
 
-goog.require('ol');
 goog.require('ol.dom');
 
 

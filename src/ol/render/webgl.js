@@ -1,5 +1,8 @@
 goog.provide('ol.render.webgl');
 
+goog.require('ol');
+
+
 if (ol.ENABLE_WEBGL) {
 
   /**

@@ -1,6 +1,5 @@
 goog.provide('ol.control');
 
-goog.require('ol');
 goog.require('ol.Collection');
 goog.require('ol.control.Attribution');
 goog.require('ol.control.Rotate');
