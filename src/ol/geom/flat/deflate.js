@@ -1,7 +1,5 @@
 goog.provide('ol.geom.flat.deflate');
 
-goog.require('ol');
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.

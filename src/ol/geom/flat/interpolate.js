@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.interpolate');
 
-goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.math');
 

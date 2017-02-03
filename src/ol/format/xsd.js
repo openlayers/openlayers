@@ -1,6 +1,5 @@
 goog.provide('ol.format.XSD');
 
-goog.require('ol');
 goog.require('ol.xml');
 goog.require('ol.string');
 

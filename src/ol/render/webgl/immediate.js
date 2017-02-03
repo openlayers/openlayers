@@ -6,7 +6,6 @@ goog.require('ol.geom.GeometryType');
 goog.require('ol.render.ReplayType');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.ReplayGroup');
-goog.require('ol.render.webgl');
 
 
 if (ol.ENABLE_WEBGL) {

@@ -5,7 +5,6 @@ goog.require('ol.extent');
 goog.require('ol.obj');
 goog.require('ol.render.webgl.imagereplay.defaultshader');
 goog.require('ol.render.webgl.Replay');
-goog.require('ol.render.webgl');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');

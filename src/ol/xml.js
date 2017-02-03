@@ -1,6 +1,5 @@
 goog.provide('ol.xml');
 
-goog.require('ol');
 goog.require('ol.array');
 
 

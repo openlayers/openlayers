@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.geodesic');
 
-goog.require('ol');
 goog.require('ol.math');
 goog.require('ol.proj');
 

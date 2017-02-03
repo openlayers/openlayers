@@ -1,6 +1,5 @@
 goog.provide('ol.style.IconImageCache');
 
-goog.require('ol');
 goog.require('ol.color');
 
 
@@ -87,8 +86,7 @@ ol.style.IconImageCache.prototype.get = function(src, crossOrigin, color) {
  * @param {ol.Color} color Color.
  * @param {ol.style.IconImage} iconImage Icon image.
  */
-ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color,
-                                                 iconImage) {
+ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color, iconImage) {
   var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;

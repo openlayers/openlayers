@@ -1,7 +1,5 @@
 goog.provide('ol.format.filter.Filter');
 
-goog.require('ol');
-
 
 /**
  * @classdesc

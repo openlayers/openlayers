@@ -1,6 +1,5 @@
 goog.provide('ol.format.filter');
 
-goog.require('ol');
 goog.require('ol.format.filter.And');
 goog.require('ol.format.filter.Bbox');
 goog.require('ol.format.filter.EqualTo');

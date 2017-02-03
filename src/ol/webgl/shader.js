@@ -1,7 +1,6 @@
 goog.provide('ol.webgl.Shader');
 
 goog.require('ol.functions');
-goog.require('ol.webgl');
 
 
 if (ol.ENABLE_WEBGL) {

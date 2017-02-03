@@ -1,6 +1,5 @@
 goog.provide('ol.math');
 
-goog.require('ol');
 goog.require('ol.asserts');
 
 

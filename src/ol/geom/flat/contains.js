@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.contains');
 
-goog.require('ol');
 goog.require('ol.extent');
 
 
