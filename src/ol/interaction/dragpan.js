@@ -112,6 +112,11 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
     view.setHint(ol.ViewHint.INTERACTING, -1);
     return false;
   } else {
+    if (this.kinetic_) {
+      // reset so we don't overestimate the kinetic energy after
+      // after one finger up, tiny drag, second finger up
+      this.kinetic_.begin();
+    }
     this.lastCentroid = null;
     return true;
   }
