@@ -13,6 +13,7 @@ goog.require('ol.asserts');
 goog.require('ol.coordinate');
 goog.require('ol.easing');
 goog.require('ol.extent');
+goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.proj');
