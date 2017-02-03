@@ -187,8 +187,8 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
     if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
-      this.handlingDownUpSequence = this.handleUpEvent_(mapBrowserEvent) &&
-          this.targetPointers.length > 0;
+      var handledUp = this.handleUpEvent_(mapBrowserEvent);
+      this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
     }
   } else {
     if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDOWN) {
