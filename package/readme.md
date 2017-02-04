@@ -34,7 +34,7 @@ new Map({
 });
 ```
 
-Note that the module identifiers above (e.g. `ol/map`) are like the `ol.Map` names in the [API documentation](http://openlayers.org/en/latest/apidoc/) with `/` instead of `.` and all lowercase.
+Note that the module identifiers above (e.g. `ol/map`) are like the `ol.Map` names in the [API documentation](http://openlayers.org/en/latest/apidoc/) with `/` instead of `.` and all lowercase.  Also note that the, WebGL renderer is not available in this package.
 
 See the following examples for more detail on bundling OpenLayers with your application:
 
