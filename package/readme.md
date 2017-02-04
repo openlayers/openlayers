@@ -2,13 +2,13 @@
 
 OpenLayers as ES2015 modules.
 
-**Note: This is still a work in progress.  Not yet ready for production.**
+**Note: This package is in beta and the API is subject to change before a final stable release.**
 
 ## Usage
 
 Add the `ol` package as a dependency to your project.
 
-    npm install ol@beta --save
+    npm install ol --save
 
 Import just what you need for your application:
 
@@ -34,8 +34,6 @@ new Map({
 });
 ```
 
-Note that the module identifiers above (e.g. `ol/map`) are like the `ol.Map` names in the [API documentation](http://openlayers.org/en/latest/apidoc/) with `/` instead of `.` and all lowercase.  Also note that the, WebGL renderer is not available in this package.
-
 See the following examples for more detail on bundling OpenLayers with your application:
 
  * Using [Rollup & Uglify](https://gist.github.com/tschaub/8beb328ea72b36446fc2198d008287de)
@@ -43,4 +41,15 @@ See the following examples for more detail on bundling OpenLayers with your appl
  * Using [Webpack & Uglify](https://gist.github.com/tschaub/79025aef325cd2837364400a105405b8)
  * Using [Browserify & Uglify](https://gist.github.com/tschaub/4bfb209a8f809823f1495b2e4436018e)
 
-This is still a work in progress.  See [openlayers/openlayers#6302](https://github.com/openlayers/openlayers/pull/6302) for ongoing discussion.
+## Module Identifiers
+
+The module identifiers above (e.g. `ol/map`) are like the `ol.Map` names in the [API documentation](http://openlayers.org/en/latest/apidoc/) with `/` instead of `.` and all lowercase.  Each module only has a `default` export (there are no other named exports).
+
+Constructors are exported from dedicated modules.  For example, the `ol/layer/tile` module exports the `Tile` layer constructor.
+
+Utility functions are available as properties of the default export from utility modules.  For example, the `getCenter` function is a property of the default export from the `ol/extent` utility module.
+
+## Caveats
+
+ * Module identifiers and the structure of the exports are subject to change while this package is in beta.
+ * The WebGL renderer is not available in this package.
