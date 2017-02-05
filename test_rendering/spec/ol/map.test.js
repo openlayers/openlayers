@@ -36,6 +36,51 @@ describe('ol.rendering.Map', function() {
     return map;
   }
 
+  describe('#updateSize()', function() {
+    var map, target;
+
+    function createMap(renderer) {
+      target = document.createElement('div');
+      document.body.appendChild(target);
+      map = new ol.Map({
+        renderer: renderer,
+        controls: [],
+        target: target,
+        view: new ol.View({
+          center: [0, 0],
+          zoom: 2
+        })
+      });
+      return map;
+    }
+
+    afterEach(function() {
+      map.setTarget(null);
+      document.body.removeChild(target);
+    });
+
+    it('tests the canvas renderer', function(done) {
+      map = createMap('canvas');
+      map.once('postrender', function() {
+        var initialSize = map.getSize();
+        map.updateSize();
+        expect(map.getSize()).to.eql(initialSize);
+        done();
+      });
+    });
+
+    it('tests the WebGL renderer', function(done) {
+      assertWebGL();
+      map = createMap('webgl');
+      map.once('postrender', function() {
+        var initialSize = map.getSize();
+        map.updateSize();
+        expect(map.getSize()).to.eql(initialSize);
+        done();
+      });
+    });
+  });
+
   describe('#render()', function() {
     afterEach(function() {
       disposeMap(map);

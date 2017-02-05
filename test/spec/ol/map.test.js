@@ -355,38 +355,6 @@ describe('ol.Map', function() {
 
   });
 
-  describe('#updateSize', function() {
-    var map, target;
-
-    beforeEach(function(done) {
-      target = document.createElement('div');
-      document.body.appendChild(target);
-      map = new ol.Map({
-        controls: [],
-        target: target,
-        view: new ol.View({
-          center: [0, 0],
-          zoom: 2
-        })
-      });
-      map.once('postrender', function() {
-        done();
-      });
-    });
-
-    afterEach(function() {
-      map.setTarget(null);
-      document.body.removeChild(target);
-    });
-
-    it('should always generate the same size', function() {
-      var initialSize = map.getSize();
-      map.updateSize();
-      expect(map.getSize()).to.eql(initialSize);
-    });
-
-  });
-
   describe('create interactions', function() {
 
     var options;
