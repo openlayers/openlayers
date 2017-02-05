@@ -103,6 +103,7 @@ clean:
 	rm -f build/test_rendering_requires.js
 	rm -rf build/examples
 	rm -rf build/compiled-examples
+	rm -rf build/package
 	rm -rf $(BUILD_HOSTED)
 
 .PHONY: cleanall
@@ -300,3 +301,11 @@ build/test_rendering_requires.js: $(SPEC_RENDERING_JS)
 
 %shader.js: %shader.glsl src/ol/webgl/shader.mustache bin/pyglslunit.py build/timestamps/node-modules-timestamp
 	@python bin/pyglslunit.py --input $< | ./node_modules/.bin/mustache - src/ol/webgl/shader.mustache > $@
+
+.PHONY: package
+package:
+	@rm -rf build/package
+	@cp -r package build
+	@cd ./src && cp -r ol/* ../build/package
+	@rm build/package/typedefs.js
+	./node_modules/.bin/jscodeshift --transform transforms/module.js build/package
