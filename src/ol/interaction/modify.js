@@ -191,6 +191,19 @@ ol.inherits(ol.interaction.Modify, ol.interaction.Pointer);
 
 
 /**
+ * @define {number} The segment index assigned to a circle's center when
+ * breaking up a cicrle into ModifySegmentDataType segments.
+ */
+ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CENTER_INDEX = 0;
+
+/**
+ * @define {number} The segment index assigned to a circle's circumference when
+ * breaking up a circle into ModifySegmentDataType segments.
+ */
+ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX = 1;
+
+
+/**
  * @param {ol.Feature} feature Feature.
  * @private
  */

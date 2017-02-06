@@ -251,20 +251,10 @@ ol.coordinate.squaredDistance = function(coord1, coord2) {
 
 
 /**
-* @param {ol.Coordinate} coord1 First coordinate.
-* @param {ol.Coordinate} coord2 Second coordinate.
-* @return {number} Distance between coord1 and coord2.
-*/
-ol.coordinate.distance = function(coord1, coord2) {
-  return Math.sqrt(ol.coordinate.squaredDistance(coord1, coord2));
-};
-
-
-/**
-* @param {ol.Coordinate} coord1 First coordinate.
-* @param {ol.Coordinate} coord2 Second coordinate.
-* @return {number} Distance between coord1 and coord2.
-*/
+ * @param {ol.Coordinate} coord1 First coordinate.
+ * @param {ol.Coordinate} coord2 Second coordinate.
+ * @return {number} Distance between coord1 and coord2.
+ */
 ol.coordinate.distance = function(coord1, coord2) {
   return Math.sqrt(ol.coordinate.squaredDistance(coord1, coord2));
 };
