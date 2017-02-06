@@ -2584,7 +2584,9 @@ olx.interaction.DragBoxOptions.prototype.boxEndCondition;
 
 /**
  * @typedef {{condition: (ol.EventsConditionType|undefined),
- *     kinetic: (ol.Kinetic|undefined)}}
+ *     kinetic: (ol.Kinetic|undefined),
+ *     horizontal: (boolean|undefined),
+ *     vertical: (boolean|undefined)}}
  */
 olx.interaction.DragPanOptions;
 
@@ -2606,6 +2608,19 @@ olx.interaction.DragPanOptions.prototype.condition;
  */
 olx.interaction.DragPanOptions.prototype.kinetic;
 
+/**
+ * Set false to disable horizontally pan.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DragPanOptions.prototype.horizontal;
+
+/**
+ * Set false to disable vertically pan.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DragPanOptions.prototype.vertical;
 
 /**
  * @typedef {{condition: (ol.EventsConditionType|undefined),
