@@ -2,11 +2,9 @@
 
 ### Next release
 
-#### Removed build flags (`@define`)
+#### Removal of deprecated methods
 
-The `ol.DEBUG`, `ol.ENABLE_TILE`, `ol.ENABLE_IMAGE`, `ol.ENABLE_VECTOR`, and `ol.ENABLE_VECTOR_TILE` build flags are no longer necessary and have been removed.  If you were using these in a `define` array for a custom build, you can remove them.
-
-If you leave `ol.ENABLE_WEBGL` set to `true` in your build, you should set `ol.DEBUG_WEBGL` to `false` to avoid including debuggable shader sources.
+The deprecated `ol.animation` functions and `map.beforeRender()` method have been removed.  Use `view.animate()` instead.
 
 #### Simplified `ol.View#fit()` API
 
@@ -28,6 +26,13 @@ Advanced use - new API:
 ```js
 map.getView().fit(extent, {size: [200, 100], padding 10});
 ```
+
+#### Removed build flags (`@define`)
+
+The `ol.DEBUG`, `ol.ENABLE_TILE`, `ol.ENABLE_IMAGE`, `ol.ENABLE_VECTOR`, and `ol.ENABLE_VECTOR_TILE` build flags are no longer necessary and have been removed.  If you were using these in a `define` array for a custom build, you can remove them.
+
+If you leave `ol.ENABLE_WEBGL` set to `true` in your build, you should set `ol.DEBUG_WEBGL` to `false` to avoid including debuggable shader sources.
+
 
 ### v3.20.0
 
