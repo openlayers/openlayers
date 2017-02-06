@@ -7,7 +7,7 @@ ol.source.VectorEventType = {
   /**
    * Triggered when a feature is added to the source.
    * @event ol.source.Vector.Event#addfeature
-   * @api stable
+   * @api
    */
   ADDFEATURE: 'addfeature',
 
@@ -29,7 +29,7 @@ ol.source.VectorEventType = {
    * Triggered when a feature is removed from the source.
    * See {@link ol.source.Vector#clear source.clear()} for exceptions.
    * @event ol.source.Vector.Event#removefeature
-   * @api stable
+   * @api
    */
   REMOVEFEATURE: 'removefeature'
 };

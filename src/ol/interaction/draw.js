@@ -34,7 +34,7 @@ goog.require('ol.style.Style');
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.Draw.Event
  * @param {olx.interaction.DrawOptions} options Options.
- * @api stable
+ * @api
  */
 ol.interaction.Draw = function(options) {
 
@@ -853,7 +853,7 @@ ol.interaction.Draw.Event = function(type, feature) {
   /**
    * The feature being drawn.
    * @type {ol.Feature}
-   * @api stable
+   * @api
    */
   this.feature = feature;
 

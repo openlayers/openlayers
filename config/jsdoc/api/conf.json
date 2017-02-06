@@ -26,9 +26,6 @@
     "markdown": {
         "parser": "gfm"
     },
-    "stability": {
-      "levels": ["deprecated","experimental","unstable","stable","frozen","locked"]
-    },
     "templates": {
         "cleverLinks": true,
         "monospaceLinks": true,

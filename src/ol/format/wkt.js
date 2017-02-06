@@ -24,7 +24,7 @@ goog.require('ol.geom.SimpleGeometry');
  * @constructor
  * @extends {ol.format.TextFeature}
  * @param {olx.format.WKTOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.format.WKT = function(opt_options) {
 
@@ -257,7 +257,7 @@ ol.format.WKT.prototype.parse_ = function(wkt) {
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.Feature} Feature.
- * @api stable
+ * @api
  */
 ol.format.WKT.prototype.readFeature;
 
@@ -283,7 +283,7 @@ ol.format.WKT.prototype.readFeatureFromText = function(text, opt_options) {
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.WKT.prototype.readFeatures;
 
@@ -318,7 +318,7 @@ ol.format.WKT.prototype.readFeaturesFromText = function(text, opt_options) {
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {ol.geom.Geometry} Geometry.
- * @api stable
+ * @api
  */
 ol.format.WKT.prototype.readGeometry;
 
@@ -344,7 +344,7 @@ ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
  * @param {ol.Feature} feature Feature.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
- * @api stable
+ * @api
  */
 ol.format.WKT.prototype.writeFeature;
 
@@ -368,7 +368,7 @@ ol.format.WKT.prototype.writeFeatureText = function(feature, opt_options) {
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Write options.
  * @return {string} WKT string.
- * @api stable
+ * @api
  */
 ol.format.WKT.prototype.writeFeatures;
 
@@ -395,7 +395,7 @@ ol.format.WKT.prototype.writeFeaturesText = function(features, opt_options) {
  * @function
  * @param {ol.geom.Geometry} geometry Geometry.
  * @return {string} WKT string.
- * @api stable
+ * @api
  */
 ol.format.WKT.prototype.writeGeometry;
 

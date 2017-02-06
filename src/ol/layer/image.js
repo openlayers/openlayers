@@ -19,7 +19,7 @@ goog.require('ol.renderer.webgl.ImageLayer');
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.ImageOptions=} opt_options Layer options.
- * @api stable
+ * @api
  */
 ol.layer.Image = function(opt_options) {
   var options = opt_options ? opt_options : {};
@@ -47,6 +47,6 @@ ol.layer.Image.prototype.createRenderer = function(mapRenderer) {
  * Return the associated {@link ol.source.Image source} of the image layer.
  * @function
  * @return {ol.source.Image} Source.
- * @api stable
+ * @api
  */
 ol.layer.Image.prototype.getSource;

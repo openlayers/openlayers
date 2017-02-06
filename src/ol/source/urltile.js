@@ -160,7 +160,7 @@ ol.source.UrlTile.prototype.setTileUrlFunction = function(tileUrlFunction, opt_k
 /**
  * Set the URL to use for requests.
  * @param {string} url URL.
- * @api stable
+ * @api
  */
 ol.source.UrlTile.prototype.setUrl = function(url) {
   var urls = this.urls = ol.TileUrlFunction.expandUrl(url);
@@ -173,7 +173,7 @@ ol.source.UrlTile.prototype.setUrl = function(url) {
 /**
  * Set the URLs to use for requests.
  * @param {Array.<string>} urls URLs.
- * @api stable
+ * @api
  */
 ol.source.UrlTile.prototype.setUrls = function(urls) {
   this.urls = urls;

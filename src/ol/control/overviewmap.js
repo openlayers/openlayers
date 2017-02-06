@@ -462,7 +462,7 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
 /**
  * Return `true` if the overview map is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
- * @api stable
+ * @api
  */
 ol.control.OverviewMap.prototype.getCollapsible = function() {
   return this.collapsible_;
@@ -472,7 +472,7 @@ ol.control.OverviewMap.prototype.getCollapsible = function() {
 /**
  * Set whether the overview map should be collapsible.
  * @param {boolean} collapsible True if the widget is collapsible.
- * @api stable
+ * @api
  */
 ol.control.OverviewMap.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
@@ -491,7 +491,7 @@ ol.control.OverviewMap.prototype.setCollapsible = function(collapsible) {
  * not do anything if the overview map isn't collapsible or if the current
  * collapsed state is already the one requested.
  * @param {boolean} collapsed True if the widget is collapsed.
- * @api stable
+ * @api
  */
 ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
@@ -504,7 +504,7 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 /**
  * Determine if the overview map is collapsed.
  * @return {boolean} The overview map is collapsed.
- * @api stable
+ * @api
  */
 ol.control.OverviewMap.prototype.getCollapsed = function() {
   return this.collapsed_;

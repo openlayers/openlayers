@@ -136,7 +136,7 @@ ol.geom.Circle.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.Circle.prototype.intersectsExtent = function(extent) {
   var circleExtent = this.getExtent();
@@ -259,6 +259,6 @@ ol.geom.Circle.prototype.setRadius = function(radius) {
  * @return {ol.geom.Circle} This geometry.  Note that original geometry is
  *     modified in place.
  * @function
- * @api stable
+ * @api
  */
 ol.geom.Circle.prototype.transform;

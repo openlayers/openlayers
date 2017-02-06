@@ -19,7 +19,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.DragRotateOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragRotate = function(opt_options) {
 

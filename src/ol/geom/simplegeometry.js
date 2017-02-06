@@ -17,7 +17,7 @@ goog.require('ol.obj');
  * @constructor
  * @abstract
  * @extends {ol.geom.Geometry}
- * @api stable
+ * @api
  */
 ol.geom.SimpleGeometry = function() {
 
@@ -106,7 +106,7 @@ ol.geom.SimpleGeometry.prototype.getCoordinates = function() {};
 /**
  * Return the first coordinate of the geometry.
  * @return {ol.Coordinate} First coordinate.
- * @api stable
+ * @api
  */
 ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
   return this.flatCoordinates.slice(0, this.stride);
@@ -124,7 +124,7 @@ ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
 /**
  * Return the last coordinate of the geometry.
  * @return {ol.Coordinate} Last point.
- * @api stable
+ * @api
  */
 ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
   return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
@@ -134,7 +134,7 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
 /**
  * Return the {@link ol.geom.GeometryLayout layout} of the geometry.
  * @return {ol.geom.GeometryLayout} Layout.
- * @api stable
+ * @api
  */
 ol.geom.SimpleGeometry.prototype.getLayout = function() {
   return this.layout;
@@ -251,7 +251,7 @@ ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesti
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   if (this.flatCoordinates) {
@@ -303,7 +303,7 @@ ol.geom.SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   var flatCoordinates = this.getFlatCoordinates();

@@ -20,7 +20,7 @@ goog.require('ol.style.Style');
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.VectorOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.layer.Vector = function(opt_options) {
   var options = opt_options ?
@@ -111,7 +111,7 @@ ol.layer.Vector.prototype.getRenderOrder = function() {
  * Return the associated {@link ol.source.Vector vectorsource} of the layer.
  * @function
  * @return {ol.source.Vector} Source.
- * @api stable
+ * @api
  */
 ol.layer.Vector.prototype.getSource;
 
@@ -121,7 +121,7 @@ ol.layer.Vector.prototype.getSource;
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
  *     Layer style.
- * @api stable
+ * @api
  */
 ol.layer.Vector.prototype.getStyle = function() {
   return this.style_;
@@ -131,7 +131,7 @@ ol.layer.Vector.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.StyleFunction|undefined} Layer style function.
- * @api stable
+ * @api
  */
 ol.layer.Vector.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -174,7 +174,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
  * {@link ol.style} for information on the default style.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|null|undefined}
  *     style Layer style.
- * @api stable
+ * @api
  */
 ol.layer.Vector.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;

@@ -103,7 +103,7 @@ ol.inherits(ol.source.ImageArcGISRest, ol.source.Image);
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.getParams = function() {
   return this.params_;
@@ -225,7 +225,7 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
 /**
  * Return the URL used for this ArcGIS source.
  * @return {string|undefined} URL.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.getUrl = function() {
   return this.url_;
@@ -247,7 +247,7 @@ ol.source.ImageArcGISRest.prototype.setImageLoadFunction = function(imageLoadFun
 /**
  * Set the URL to use for requests.
  * @param {string|undefined} url URL.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
   if (url != this.url_) {
@@ -261,7 +261,7 @@ ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.ImageArcGISRest.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);

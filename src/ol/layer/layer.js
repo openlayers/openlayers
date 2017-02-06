@@ -31,7 +31,7 @@ goog.require('ol.source.State');
  * @extends {ol.layer.Base}
  * @fires ol.render.Event
  * @param {olx.layer.LayerOptions} options Layer options.
- * @api stable
+ * @api
  */
 ol.layer.Layer = function(options) {
 
@@ -110,7 +110,7 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  * Get the layer source.
  * @return {ol.source.Source} The layer source (or `null` if not yet set).
  * @observable
- * @api stable
+ * @api
  */
 ol.layer.Layer.prototype.getSource = function() {
   var source = this.get(ol.layer.Property.SOURCE);
@@ -196,7 +196,7 @@ ol.layer.Layer.prototype.setMap = function(map) {
  * Set the layer source.
  * @param {ol.source.Source} source The layer source.
  * @observable
- * @api stable
+ * @api
  */
 ol.layer.Layer.prototype.setSource = function(source) {
   this.set(ol.layer.Property.SOURCE, source);

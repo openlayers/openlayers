@@ -7,7 +7,7 @@ ol.ObjectEventType = {
   /**
    * Triggered when a property is changed.
    * @event ol.Object.Event#propertychange
-   * @api stable
+   * @api
    */
   PROPERTYCHANGE: 'propertychange'
 };

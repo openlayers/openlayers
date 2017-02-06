@@ -16,7 +16,7 @@ goog.require('ol.math');
  * @constructor
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.MouseWheelZoomOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
 

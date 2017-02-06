@@ -24,7 +24,7 @@ goog.require('ol.proj.Units');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ScaleLineOptions=} opt_options Scale line options.
- * @api stable
+ * @api
  */
 ol.control.ScaleLine = function(opt_options) {
 
@@ -108,7 +108,7 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
  * @return {ol.control.ScaleLineUnits|undefined} The units to use in the scale
  *     line.
  * @observable
- * @api stable
+ * @api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
@@ -145,7 +145,7 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
  * Set the units to use in the scale line.
  * @param {ol.control.ScaleLineUnits} units The units to use in the scale line.
  * @observable
- * @api stable
+ * @api
  */
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLine.Property_.UNITS, units);

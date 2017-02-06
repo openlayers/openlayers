@@ -32,7 +32,7 @@ ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
  * @extends {ol.interaction.Pointer}
  * @fires ol.interaction.DragBox.Event
  * @param {olx.interaction.DragBoxOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragBox = function(opt_options) {
 
@@ -111,7 +111,7 @@ ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
 /**
  * Returns geometry of last drawn box.
  * @return {ol.geom.Polygon} Geometry.
- * @api stable
+ * @api
  */
 ol.interaction.DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();
@@ -183,7 +183,7 @@ ol.interaction.DragBox.EventType_ = {
   /**
    * Triggered upon drag box start.
    * @event ol.interaction.DragBox.Event#boxstart
-   * @api stable
+   * @api
    */
   BOXSTART: 'boxstart',
 
@@ -197,7 +197,7 @@ ol.interaction.DragBox.EventType_ = {
   /**
    * Triggered upon drag box end.
    * @event ol.interaction.DragBox.Event#boxend
-   * @api stable
+   * @api
    */
   BOXEND: 'boxend'
 };
@@ -222,7 +222,7 @@ ol.interaction.DragBox.Event = function(type, coordinate, mapBrowserEvent) {
    * The coordinate of the drag event.
    * @const
    * @type {ol.Coordinate}
-   * @api stable
+   * @api
    */
   this.coordinate = coordinate;
 

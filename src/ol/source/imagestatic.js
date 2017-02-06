@@ -18,7 +18,7 @@ goog.require('ol.source.Image');
  * @constructor
  * @extends {ol.source.Image}
  * @param {olx.source.ImageStaticOptions} options Options.
- * @api stable
+ * @api
  */
 ol.source.ImageStatic = function(options) {
   var imageExtent = options.imageExtent;

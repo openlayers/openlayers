@@ -21,7 +21,7 @@ goog.require('ol.proj');
  * @constructor
  * @extends {ol.format.JSONFeature}
  * @param {olx.format.TopoJSONOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.format.TopoJSON = function(opt_options) {
 
@@ -259,7 +259,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.TopoJSON.prototype.readFeatures;
 
@@ -369,7 +369,7 @@ ol.format.TopoJSON.transformVertex_ = function(vertex, scale, translate) {
  * @param {Document|Node|Object|string} object Source.
  * @return {ol.proj.Projection} Projection.
  * @override
- * @api stable
+ * @api
  */
 ol.format.TopoJSON.prototype.readProjection;
 

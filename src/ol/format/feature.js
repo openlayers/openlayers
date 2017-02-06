@@ -16,7 +16,7 @@ goog.require('ol.proj');
  *
  * @constructor
  * @abstract
- * @api stable
+ * @api
  */
 ol.format.Feature = function() {
 

@@ -19,7 +19,7 @@ goog.require('ol.source.State');
  * @abstract
  * @extends {ol.Object}
  * @param {ol.SourceSourceOptions} options Source options.
- * @api stable
+ * @api
  */
 ol.source.Source = function(options) {
 
@@ -108,7 +108,7 @@ ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 /**
  * Get the attributions of the source.
  * @return {Array.<ol.Attribution>} Attributions.
- * @api stable
+ * @api
  */
 ol.source.Source.prototype.getAttributions = function() {
   return this.attributions_;
@@ -118,7 +118,7 @@ ol.source.Source.prototype.getAttributions = function() {
 /**
  * Get the logo of the source.
  * @return {string|olx.LogoOptions|undefined} Logo.
- * @api stable
+ * @api
  */
 ol.source.Source.prototype.getLogo = function() {
   return this.logo_;

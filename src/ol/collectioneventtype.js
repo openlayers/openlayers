@@ -7,13 +7,13 @@ ol.CollectionEventType = {
   /**
    * Triggered when an item is added to the collection.
    * @event ol.Collection.Event#add
-   * @api stable
+   * @api
    */
   ADD: 'add',
   /**
    * Triggered when an item is removed from the collection.
    * @event ol.Collection.Event#remove
-   * @api stable
+   * @api
    */
   REMOVE: 'remove'
 };

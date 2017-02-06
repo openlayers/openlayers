@@ -22,7 +22,7 @@ ol.proj.Units = {
  * Meters per unit lookup table.
  * @const
  * @type {Object.<ol.proj.Units, number>}
- * @api stable
+ * @api
  */
 ol.proj.Units.METERS_PER_UNIT = {};
 ol.proj.Units.METERS_PER_UNIT[ol.proj.Units.DEGREES] =

@@ -27,21 +27,21 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
    * The original browser event.
    * @const
    * @type {Event}
-   * @api stable
+   * @api
    */
   this.originalEvent = browserEvent;
 
   /**
    * The map pixel relative to the viewport corresponding to the original browser event.
    * @type {ol.Pixel}
-   * @api stable
+   * @api
    */
   this.pixel = map.getEventPixel(browserEvent);
 
   /**
    * The coordinate in view projection corresponding to the original browser event.
    * @type {ol.Coordinate}
-   * @api stable
+   * @api
    */
   this.coordinate = map.getCoordinateFromPixel(this.pixel);
 
@@ -50,7 +50,7 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
    * `POINTERDRAG` and `POINTERMOVE` events. Default is `false`.
    *
    * @type {boolean}
-   * @api stable
+   * @api
    */
   this.dragging = opt_dragging !== undefined ? opt_dragging : false;
 
@@ -62,7 +62,7 @@ ol.inherits(ol.MapBrowserEvent, ol.MapEvent);
  * Prevents the default browser action.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.preventDefault
  * @override
- * @api stable
+ * @api
  */
 ol.MapBrowserEvent.prototype.preventDefault = function() {
   ol.MapEvent.prototype.preventDefault.call(this);
@@ -74,7 +74,7 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
  * Prevents further propagation of the current event.
  * @see https://developer.mozilla.org/en-US/docs/Web/API/event.stopPropagation
  * @override
- * @api stable
+ * @api
  */
 ol.MapBrowserEvent.prototype.stopPropagation = function() {
   ol.MapEvent.prototype.stopPropagation.call(this);
