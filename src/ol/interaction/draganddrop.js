@@ -19,7 +19,7 @@ goog.require('ol.proj');
  * @extends {ol.interaction.Interaction}
  * @fires ol.interaction.DragAndDrop.Event
  * @param {olx.interaction.DragAndDropOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragAndDrop = function(opt_options) {
 
@@ -189,7 +189,7 @@ ol.interaction.DragAndDrop.EventType_ = {
   /**
    * Triggered when features are added
    * @event ol.interaction.DragAndDrop.Event#addfeatures
-   * @api stable
+   * @api
    */
   ADD_FEATURES: 'addfeatures'
 };
@@ -215,14 +215,14 @@ ol.interaction.DragAndDrop.Event = function(type, file, opt_features, opt_projec
   /**
    * The features parsed from dropped data.
    * @type {Array.<ol.Feature>|undefined}
-   * @api stable
+   * @api
    */
   this.features = opt_features;
 
   /**
    * The dropped file.
    * @type {File}
-   * @api stable
+   * @api
    */
   this.file = file;
 

@@ -52,7 +52,7 @@ ol.size.scale = function(size, ratio, opt_size) {
  * @param {number|ol.Size} size Width and height.
  * @param {ol.Size=} opt_size Optional reusable size array.
  * @return {ol.Size} Size.
- * @api stable
+ * @api
  */
 ol.size.toSize = function(size, opt_size) {
   if (Array.isArray(size)) {

@@ -17,7 +17,7 @@ goog.require('ol.easing');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.RotateOptions=} opt_options Rotate options.
- * @api stable
+ * @api
  */
 ol.control.Rotate = function(opt_options) {
 

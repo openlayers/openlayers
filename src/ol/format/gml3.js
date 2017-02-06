@@ -1186,7 +1186,7 @@ ol.format.GML3.prototype.writeGeometryNode = function(geometry, opt_options) {
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {string} Result.
- * @api stable
+ * @api
  */
 ol.format.GML3.prototype.writeFeatures;
 

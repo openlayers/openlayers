@@ -25,14 +25,14 @@ ol.events.Event = function(type) {
   /**
    * The event type.
    * @type {string}
-   * @api stable
+   * @api
    */
   this.type = type;
 
   /**
    * The event target.
    * @type {Object}
-   * @api stable
+   * @api
    */
   this.target = null;
 
@@ -43,7 +43,7 @@ ol.events.Event = function(type) {
  * Stop event propagation.
  * @function
  * @override
- * @api stable
+ * @api
  */
 ol.events.Event.prototype.preventDefault =
 
@@ -51,7 +51,7 @@ ol.events.Event.prototype.preventDefault =
  * Stop event propagation.
  * @function
  * @override
- * @api stable
+ * @api
  */
 ol.events.Event.prototype.stopPropagation = function() {
   this.propagationStopped = true;

@@ -15,7 +15,7 @@ goog.require('ol.interaction.Pointer');
  * @constructor
  * @extends {ol.interaction.Pointer}
  * @param {olx.interaction.PinchRotateOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.PinchRotate = function(opt_options) {
 

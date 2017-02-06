@@ -36,7 +36,7 @@ ol.has.MAC = ua.indexOf('macintosh') !== -1;
  * (dips) on the device (`window.devicePixelRatio`).
  * @const
  * @type {number}
- * @api stable
+ * @api
  */
 ol.has.DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 
@@ -53,7 +53,7 @@ ol.has.CANVAS_LINE_DASH = false;
  * if `ol.ENABLE_CANVAS` is set to `false` at compile time.
  * @const
  * @type {boolean}
- * @api stable
+ * @api
  */
 ol.has.CANVAS = ol.ENABLE_CANVAS && (
     /**
@@ -83,7 +83,7 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  * Indicates if DeviceOrientation is supported in the user's browser.
  * @const
  * @type {boolean}
- * @api stable
+ * @api
  */
 ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
 
@@ -92,7 +92,7 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
  * Is HTML5 geolocation supported in the current browser?
  * @const
  * @type {boolean}
- * @api stable
+ * @api
  */
 ol.has.GEOLOCATION = 'geolocation' in navigator;
 
@@ -101,7 +101,7 @@ ol.has.GEOLOCATION = 'geolocation' in navigator;
  * True if browser supports touch events.
  * @const
  * @type {boolean}
- * @api stable
+ * @api
  */
 ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in window;
 
@@ -127,7 +127,7 @@ ol.has.MSPOINTER = !!(navigator.msPointerEnabled);
  * if `ol.ENABLE_WEBGL` is set to `false` at compile time.
  * @const
  * @type {boolean}
- * @api stable
+ * @api
  */
 ol.has.WEBGL;
 

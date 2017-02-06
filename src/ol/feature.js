@@ -52,7 +52,7 @@ goog.require('ol.style.Style');
  *     You may pass a Geometry object directly, or an object literal
  *     containing properties.  If you pass an object literal, you may
  *     include a Geometry associated with a `geometry` key.
- * @api stable
+ * @api
  */
 ol.Feature = function(opt_geometryOrProperties) {
 
@@ -113,7 +113,7 @@ ol.inherits(ol.Feature, ol.Object);
  * Clone this feature. If the original feature has a geometry it
  * is also cloned. The feature id is not set in the clone.
  * @return {ol.Feature} The clone.
- * @api stable
+ * @api
  */
 ol.Feature.prototype.clone = function() {
   var clone = new ol.Feature(this.getProperties());
@@ -135,7 +135,7 @@ ol.Feature.prototype.clone = function() {
  * geometries.  The "default" geometry (the one that is rendered by default) is
  * set when calling {@link ol.Feature#setGeometry}.
  * @return {ol.geom.Geometry|undefined} The default geometry for the feature.
- * @api stable
+ * @api
  * @observable
  */
 ol.Feature.prototype.getGeometry = function() {
@@ -149,7 +149,7 @@ ol.Feature.prototype.getGeometry = function() {
  * is either set when reading data from a remote source or set explicitly by
  * calling {@link ol.Feature#setId}.
  * @return {number|string|undefined} Id.
- * @api stable
+ * @api
  */
 ol.Feature.prototype.getId = function() {
   return this.id_;
@@ -161,7 +161,7 @@ ol.Feature.prototype.getId = function() {
  * geometry is named `geometry`.
  * @return {string} Get the property name associated with the default geometry
  *     for this feature.
- * @api stable
+ * @api
  */
 ol.Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
@@ -173,7 +173,7 @@ ol.Feature.prototype.getGeometryName = function() {
  * {@link ol.Feature#setStyle} method.
  * @return {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction|ol.StyleFunction} The feature style.
- * @api stable
+ * @api
  */
 ol.Feature.prototype.getStyle = function() {
   return this.style_;
@@ -184,7 +184,7 @@ ol.Feature.prototype.getStyle = function() {
  * Get the feature's style function.
  * @return {ol.FeatureStyleFunction|undefined} Return a function
  * representing the current style of this feature.
- * @api stable
+ * @api
  */
 ol.Feature.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -220,7 +220,7 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
  * Set the default geometry for the feature.  This will update the property
  * with the name returned by {@link ol.Feature#getGeometryName}.
  * @param {ol.geom.Geometry|undefined} geometry The new geometry.
- * @api stable
+ * @api
  * @observable
  */
 ol.Feature.prototype.setGeometry = function(geometry) {
@@ -234,7 +234,7 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  * styles. If it is `null` the feature has no style (a `null` style).
  * @param {ol.style.Style|Array.<ol.style.Style>|
  *     ol.FeatureStyleFunction|ol.StyleFunction} style Style for this feature.
- * @api stable
+ * @api
  * @fires ol.events.Event#event:change
  */
 ol.Feature.prototype.setStyle = function(style) {
@@ -251,7 +251,7 @@ ol.Feature.prototype.setStyle = function(style) {
  * The feature id can be used with the {@link ol.source.Vector#getFeatureById}
  * method.
  * @param {number|string|undefined} id The feature id.
- * @api stable
+ * @api
  * @fires ol.events.Event#event:change
  */
 ol.Feature.prototype.setId = function(id) {
@@ -265,7 +265,7 @@ ol.Feature.prototype.setId = function(id) {
  * When calling {@link ol.Feature#getGeometry}, the value of the property with
  * this name will be returned.
  * @param {string} name The property name of the default geometry.
- * @api stable
+ * @api
  */
 ol.Feature.prototype.setGeometryName = function(name) {
   ol.events.unlisten(

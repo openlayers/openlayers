@@ -206,7 +206,7 @@ ol.source.Tile.prototype.getTile = function(z, x, y, pixelRatio, projection) {};
 /**
  * Return the tile grid of the tile source.
  * @return {ol.tilegrid.TileGrid} Tile grid.
- * @api stable
+ * @api
  */
 ol.source.Tile.prototype.getTileGrid = function() {
   return this.tileGrid;

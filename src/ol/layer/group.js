@@ -23,7 +23,7 @@ goog.require('ol.source.State');
  * @constructor
  * @extends {ol.layer.Base}
  * @param {olx.layer.GroupOptions=} opt_options Layer options.
- * @api stable
+ * @api
  */
 ol.layer.Group = function(opt_options) {
 
@@ -158,7 +158,7 @@ ol.layer.Group.prototype.handleLayersRemove_ = function(collectionEvent) {
  * @return {!ol.Collection.<ol.layer.Base>} Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
- * @api stable
+ * @api
  */
 ol.layer.Group.prototype.getLayers = function() {
   return /** @type {!ol.Collection.<ol.layer.Base>} */ (this.get(
@@ -172,7 +172,7 @@ ol.layer.Group.prototype.getLayers = function() {
  * @param {!ol.Collection.<ol.layer.Base>} layers Collection of
  *   {@link ol.layer.Base layers} that are part of this group.
  * @observable
- * @api stable
+ * @api
  */
 ol.layer.Group.prototype.setLayers = function(layers) {
   this.set(ol.layer.Group.Property_.LAYERS, layers);

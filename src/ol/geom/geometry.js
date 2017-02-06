@@ -19,7 +19,7 @@ goog.require('ol.proj');
  * @constructor
  * @abstract
  * @extends {ol.Object}
- * @api stable
+ * @api
  */
 ol.geom.Geometry = function() {
 
@@ -84,7 +84,7 @@ ol.geom.Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSqua
  * @param {ol.Coordinate} point Point.
  * @param {ol.Coordinate=} opt_closestPoint Closest point.
  * @return {ol.Coordinate} Closest point.
- * @api stable
+ * @api
  */
 ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
   var closestPoint = opt_closestPoint ? opt_closestPoint : [NaN, NaN];
@@ -126,7 +126,7 @@ ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
  * Get the extent of the geometry.
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} extent Extent.
- * @api stable
+ * @api
  */
 ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
   if (this.extentRevision_ != this.getRevision()) {
@@ -241,7 +241,7 @@ ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
  *     string identifier or a {@link ol.proj.Projection} object.
  * @return {ol.geom.Geometry} This geometry.  Note that original geometry is
  *     modified in place.
- * @api stable
+ * @api
  */
 ol.geom.Geometry.prototype.transform = function(source, destination) {
   this.applyTransform(ol.proj.getTransform(source, destination));

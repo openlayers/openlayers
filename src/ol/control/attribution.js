@@ -21,7 +21,7 @@ goog.require('ol.obj');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.AttributionOptions=} opt_options Attribution options.
- * @api stable
+ * @api
  */
 ol.control.Attribution = function(opt_options) {
 
@@ -359,7 +359,7 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
 /**
  * Return `true` if the attribution is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.getCollapsible = function() {
   return this.collapsible_;
@@ -369,7 +369,7 @@ ol.control.Attribution.prototype.getCollapsible = function() {
 /**
  * Set whether the attribution should be collapsible.
  * @param {boolean} collapsible True if the widget is collapsible.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
   if (this.collapsible_ === collapsible) {
@@ -388,7 +388,7 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
  * not do anything if the attribution isn't collapsible or if the current
  * collapsed state is already the one requested.
  * @param {boolean} collapsed True if the widget is collapsed.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
   if (!this.collapsible_ || this.collapsed_ === collapsed) {
@@ -402,7 +402,7 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
  * Return `true` when the attribution is currently collapsed or `false`
  * otherwise.
  * @return {boolean} True if the widget is collapsed.
- * @api stable
+ * @api
  */
 ol.control.Attribution.prototype.getCollapsed = function() {
   return this.collapsed_;

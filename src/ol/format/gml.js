@@ -13,7 +13,7 @@ goog.require('ol.format.GML3');
  * @param {olx.format.GMLOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.GMLBase}
- * @api stable
+ * @api
  */
 ol.format.GML = ol.format.GML3;
 
@@ -25,7 +25,7 @@ ol.format.GML = ol.format.GML3;
  * @param {Array.<ol.Feature>} features Features.
  * @param {olx.format.WriteOptions=} opt_options Options.
  * @return {string} Result.
- * @api stable
+ * @api
  */
 ol.format.GML.prototype.writeFeatures;
 

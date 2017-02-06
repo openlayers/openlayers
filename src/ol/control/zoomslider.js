@@ -26,7 +26,7 @@ goog.require('ol.pointer.PointerEventHandler');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomSliderOptions=} opt_options Zoom slider options.
- * @api stable
+ * @api
  */
 ol.control.ZoomSlider = function(opt_options) {
 

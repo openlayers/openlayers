@@ -24,7 +24,7 @@ goog.require('ol.events.Event');
  * @fires ol.Collection.Event
  * @param {!Array.<T>=} opt_array Array.
  * @template T
- * @api stable
+ * @api
  */
 ol.Collection = function(opt_array) {
 
@@ -44,7 +44,7 @@ ol.inherits(ol.Collection, ol.Object);
 
 /**
  * Remove all elements from the collection.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.clear = function() {
   while (this.getLength() > 0) {
@@ -58,7 +58,7 @@ ol.Collection.prototype.clear = function() {
  * to the end of the collection.
  * @param {!Array.<T>} arr Array.
  * @return {ol.Collection.<T>} This collection.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.extend = function(arr) {
   var i, ii;
@@ -76,7 +76,7 @@ ol.Collection.prototype.extend = function(arr) {
  *     index and the array). The return value is ignored.
  * @param {S=} opt_this The object to use as `this` in `f`.
  * @template S
- * @api stable
+ * @api
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
   this.array_.forEach(f, opt_this);
@@ -89,7 +89,7 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
  * collection's "length" property won't be in sync with the actual length
  * of the array.
  * @return {!Array.<T>} Array.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.getArray = function() {
   return this.array_;
@@ -100,7 +100,7 @@ ol.Collection.prototype.getArray = function() {
  * Get the element at the provided index.
  * @param {number} index Index.
  * @return {T} Element.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.item = function(index) {
   return this.array_[index];
@@ -111,7 +111,7 @@ ol.Collection.prototype.item = function(index) {
  * Get the length of this collection.
  * @return {number} The length of the array.
  * @observable
- * @api stable
+ * @api
  */
 ol.Collection.prototype.getLength = function() {
   return /** @type {number} */ (this.get(ol.Collection.Property_.LENGTH));
@@ -122,7 +122,7 @@ ol.Collection.prototype.getLength = function() {
  * Insert an element at the provided index.
  * @param {number} index Index.
  * @param {T} elem Element.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
   this.array_.splice(index, 0, elem);
@@ -136,7 +136,7 @@ ol.Collection.prototype.insertAt = function(index, elem) {
  * Remove the last element of the collection and return it.
  * Return `undefined` if the collection is empty.
  * @return {T|undefined} Element.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
@@ -147,7 +147,7 @@ ol.Collection.prototype.pop = function() {
  * Insert the provided element at the end of the collection.
  * @param {T} elem Element.
  * @return {number} New length of the collection.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.push = function(elem) {
   var n = this.getLength();
@@ -160,7 +160,7 @@ ol.Collection.prototype.push = function(elem) {
  * Remove the first occurrence of an element from the collection.
  * @param {T} elem Element.
  * @return {T|undefined} The removed element or undefined if none found.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.remove = function(elem) {
   var arr = this.array_;
@@ -179,7 +179,7 @@ ol.Collection.prototype.remove = function(elem) {
  * Return `undefined` if the collection does not contain this index.
  * @param {number} index Index.
  * @return {T|undefined} Value.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.removeAt = function(index) {
   var prev = this.array_[index];
@@ -195,7 +195,7 @@ ol.Collection.prototype.removeAt = function(index) {
  * Set the element at the provided index.
  * @param {number} index Index.
  * @param {T} elem Element.
- * @api stable
+ * @api
  */
 ol.Collection.prototype.setAt = function(index, elem) {
   var n = this.getLength();
@@ -251,7 +251,7 @@ ol.Collection.Event = function(type, opt_element) {
   /**
    * The element that is added to or removed from the collection.
    * @type {*}
-   * @api stable
+   * @api
    */
   this.element = opt_element;
 

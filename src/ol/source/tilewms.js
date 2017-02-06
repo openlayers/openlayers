@@ -24,7 +24,7 @@ goog.require('ol.uri');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.TileWMSOptions=} opt_options Tile WMS options.
- * @api stable
+ * @api
  */
 ol.source.TileWMS = function(opt_options) {
 
@@ -112,7 +112,7 @@ ol.inherits(ol.source.TileWMS, ol.source.TileImage);
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @api stable
+ * @api
  */
 ol.source.TileWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
   var projectionObj = ol.proj.get(projection);
@@ -182,7 +182,7 @@ ol.source.TileWMS.prototype.getKeyZXY = function(z, x, y) {
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api stable
+ * @api
  */
 ol.source.TileWMS.prototype.getParams = function() {
   return this.params_;
@@ -363,7 +363,7 @@ ol.source.TileWMS.prototype.setUrls = function(urls) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.TileWMS.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);

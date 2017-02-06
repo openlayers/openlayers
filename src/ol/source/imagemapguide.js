@@ -18,7 +18,7 @@ goog.require('ol.uri');
  * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageMapGuideOptions} options Options.
- * @api stable
+ * @api
  */
 ol.source.ImageMapGuide = function(options) {
 
@@ -106,7 +106,7 @@ ol.inherits(ol.source.ImageMapGuide, ol.source.Image);
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api stable
+ * @api
  */
 ol.source.ImageMapGuide.prototype.getParams = function() {
   return this.params_;
@@ -189,7 +189,7 @@ ol.source.ImageMapGuide.getScale = function(extent, size, metersPerUnit, dpi) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.ImageMapGuide.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);

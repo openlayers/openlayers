@@ -25,7 +25,7 @@ goog.require('ol.tilegrid');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.XYZOptions=} opt_options XYZ options.
- * @api stable
+ * @api
  */
 ol.source.XYZ = function(opt_options) {
   var options = opt_options || {};

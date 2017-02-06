@@ -24,7 +24,7 @@ goog.require('ol.xml');
  * @param {olx.format.WFSOptions=} opt_options
  *     Optional configuration object.
  * @extends {ol.format.XMLFeature}
- * @api stable
+ * @api
  */
 ol.format.WFS = function(opt_options) {
   var options = opt_options ? opt_options : {};
@@ -103,7 +103,7 @@ ol.format.WFS.SCHEMA_LOCATION = 'http://www.opengis.net/wfs ' +
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.WFS.prototype.readFeatures;
 
@@ -137,7 +137,7 @@ ol.format.WFS.prototype.readFeaturesFromNode = function(node, opt_options) {
  *
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.WFSTransactionResponse|undefined} Transaction response.
- * @api stable
+ * @api
  */
 ol.format.WFS.prototype.readTransactionResponse = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -160,7 +160,7 @@ ol.format.WFS.prototype.readTransactionResponse = function(source) {
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.WFSFeatureCollectionMetadata|undefined}
  *     FeatureCollection metadata.
- * @api stable
+ * @api
  */
 ol.format.WFS.prototype.readFeatureCollectionMetadata = function(source) {
   if (ol.xml.isDocument(source)) {
@@ -778,7 +778,7 @@ ol.format.WFS.writeGetFeature_ = function(node, featureTypes, objectStack) {
  *
  * @param {olx.format.WFSWriteGetFeatureOptions} options Options.
  * @return {Node} Result.
- * @api stable
+ * @api
  */
 ol.format.WFS.prototype.writeGetFeature = function(options) {
   var node = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'GetFeature');
@@ -845,7 +845,7 @@ ol.format.WFS.prototype.writeGetFeature = function(options) {
  * @param {Array.<ol.Feature>} deletes The features to delete.
  * @param {olx.format.WFSWriteTransactionOptions} options Write options.
  * @return {Node} Result.
- * @api stable
+ * @api
  */
 ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
     options) {
@@ -910,7 +910,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @return {?ol.proj.Projection} Projection.
- * @api stable
+ * @api
  */
 ol.format.WFS.prototype.readProjection;
 

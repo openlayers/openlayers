@@ -21,7 +21,7 @@ goog.require('ol.renderer.webgl.TileLayer');
  * @extends {ol.layer.Layer}
  * @fires ol.render.Event
  * @param {olx.layer.TileOptions=} opt_options Tile layer options.
- * @api stable
+ * @api
  */
 ol.layer.Tile = function(opt_options) {
   var options = opt_options ? opt_options : {};
@@ -69,7 +69,7 @@ ol.layer.Tile.prototype.getPreload = function() {
  * Return the associated {@link ol.source.Tile tilesource} of the layer.
  * @function
  * @return {ol.source.Tile} Source.
- * @api stable
+ * @api
  */
 ol.layer.Tile.prototype.getSource;
 

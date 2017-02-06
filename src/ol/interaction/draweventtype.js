@@ -8,13 +8,13 @@ ol.interaction.DrawEventType = {
   /**
    * Triggered upon feature draw start
    * @event ol.interaction.Draw.Event#drawstart
-   * @api stable
+   * @api
    */
   DRAWSTART: 'drawstart',
   /**
    * Triggered upon feature draw end
    * @event ol.interaction.Draw.Event#drawend
-   * @api stable
+   * @api
    */
   DRAWEND: 'drawend'
 };

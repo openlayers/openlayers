@@ -12,7 +12,7 @@ goog.require('ol.source.XYZ');
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.OSMOptions=} opt_options Open Street Map options.
- * @api stable
+ * @api
  */
 ol.source.OSM = function(opt_options) {
 

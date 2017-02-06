@@ -28,7 +28,7 @@ goog.require('ol.extent');
  * @constructor
  * @extends {ol.Object}
  * @param {olx.OverlayOptions} options Overlay options.
- * @api stable
+ * @api
  */
 ol.Overlay = function(options) {
 
@@ -145,7 +145,7 @@ ol.inherits(ol.Overlay, ol.Object);
  * Get the DOM element of this overlay.
  * @return {Element|undefined} The Element containing the overlay.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
@@ -167,7 +167,7 @@ ol.Overlay.prototype.getId = function() {
  * Get the map associated with this overlay.
  * @return {ol.Map|undefined} The map that the overlay is part of.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
@@ -179,7 +179,7 @@ ol.Overlay.prototype.getMap = function() {
  * Get the offset of this overlay.
  * @return {Array.<number>} The offset.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
@@ -192,7 +192,7 @@ ol.Overlay.prototype.getOffset = function() {
  * @return {ol.Coordinate|undefined} The spatial point that the overlay is
  *     anchored at.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -205,7 +205,7 @@ ol.Overlay.prototype.getPosition = function() {
  * @return {ol.OverlayPositioning} How the overlay is positioned
  *     relative to its point on the map.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
@@ -289,7 +289,7 @@ ol.Overlay.prototype.handlePositioningChanged = function() {
  * Set the DOM element to be associated with this overlay.
  * @param {Element|undefined} element The Element containing the overlay.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.setElement = function(element) {
   this.set(ol.Overlay.Property_.ELEMENT, element);
@@ -300,7 +300,7 @@ ol.Overlay.prototype.setElement = function(element) {
  * Set the map to be associated with this overlay.
  * @param {ol.Map|undefined} map The map that the overlay is part of.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.setMap = function(map) {
   this.set(ol.Overlay.Property_.MAP, map);
@@ -311,7 +311,7 @@ ol.Overlay.prototype.setMap = function(map) {
  * Set the offset for this overlay.
  * @param {Array.<number>} offset Offset.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.setOffset = function(offset) {
   this.set(ol.Overlay.Property_.OFFSET, offset);
@@ -324,7 +324,7 @@ ol.Overlay.prototype.setOffset = function(offset) {
  * @param {ol.Coordinate|undefined} position The spatial point that the overlay
  *     is anchored at.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.setPosition = function(position) {
   this.set(ol.Overlay.Property_.POSITION, position);
@@ -415,7 +415,7 @@ ol.Overlay.prototype.getRect_ = function(element, size) {
  * @param {ol.OverlayPositioning} positioning how the overlay is
  *     positioned relative to its point on the map.
  * @observable
- * @api stable
+ * @api
  */
 ol.Overlay.prototype.setPositioning = function(positioning) {
   this.set(ol.Overlay.Property_.POSITIONING, positioning);

@@ -20,7 +20,7 @@ goog.require('ol.math');
  * @extends {ol.geom.SimpleGeometry}
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint = function(coordinates, opt_layout) {
   ol.geom.SimpleGeometry.call(this);
@@ -32,7 +32,7 @@ ol.inherits(ol.geom.MultiPoint, ol.geom.SimpleGeometry);
 /**
  * Append the passed point to this multipoint.
  * @param {ol.geom.Point} point Point.
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.appendPoint = function(point) {
   if (!this.flatCoordinates) {
@@ -48,7 +48,7 @@ ol.geom.MultiPoint.prototype.appendPoint = function(point) {
  * Make a complete copy of the geometry.
  * @return {!ol.geom.MultiPoint} Clone.
  * @override
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.clone = function() {
   var multiPoint = new ol.geom.MultiPoint(null);
@@ -87,7 +87,7 @@ ol.geom.MultiPoint.prototype.closestPointXY = function(x, y, closestPoint, minSq
  * Return the coordinates of the multipoint.
  * @return {Array.<ol.Coordinate>} Coordinates.
  * @override
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinates(
@@ -99,7 +99,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
  * Return the point at the specified index.
  * @param {number} index Index.
  * @return {ol.geom.Point} Point.
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.getPoint = function(index) {
   var n = !this.flatCoordinates ?
@@ -117,7 +117,7 @@ ol.geom.MultiPoint.prototype.getPoint = function(index) {
 /**
  * Return the points of this multipoint.
  * @return {Array.<ol.geom.Point>} Points.
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.getPoints = function() {
   var flatCoordinates = this.flatCoordinates;
@@ -137,7 +137,7 @@ ol.geom.MultiPoint.prototype.getPoints = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.getType = function() {
   return ol.geom.GeometryType.MULTI_POINT;
@@ -146,7 +146,7 @@ ol.geom.MultiPoint.prototype.getType = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.intersectsExtent = function(extent) {
   var flatCoordinates = this.flatCoordinates;
@@ -168,7 +168,7 @@ ol.geom.MultiPoint.prototype.intersectsExtent = function(extent) {
  * @param {Array.<ol.Coordinate>} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  * @override
- * @api stable
+ * @api
  */
 ol.geom.MultiPoint.prototype.setCoordinates = function(coordinates, opt_layout) {
   if (!coordinates) {

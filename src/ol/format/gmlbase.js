@@ -564,7 +564,7 @@ ol.format.GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.GMLBase.prototype.readFeatures;
 

@@ -19,7 +19,7 @@ goog.require('ol.uri');
  * @constructor
  * @extends {ol.source.TileImage}
  * @param {olx.source.WMTSOptions} options WMTS options.
- * @api stable
+ * @api
  */
 ol.source.WMTS = function(options) {
 

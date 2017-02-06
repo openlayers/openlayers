@@ -33,7 +33,7 @@ goog.require('ol.structs.RBush');
  * @extends {ol.source.Source}
  * @fires ol.source.Vector.Event
  * @param {olx.source.VectorOptions=} opt_options Vector source options.
- * @api stable
+ * @api
  */
 ol.source.Vector = function(opt_options) {
 
@@ -159,7 +159,7 @@ ol.inherits(ol.source.Vector, ol.source.Source);
  * at once, call {@link ol.source.Vector#addFeatures source.addFeatures()}
  * instead.
  * @param {ol.Feature} feature Feature to add.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.addFeature = function(feature) {
   this.addFeatureInternal(feature);
@@ -239,7 +239,7 @@ ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
 /**
  * Add a batch of features to the source.
  * @param {Array.<ol.Feature>} features Features to add.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.addFeatures = function(features) {
   this.addFeaturesInternal(features);
@@ -337,7 +337,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
 /**
  * Remove all features from the source.
  * @param {boolean=} opt_fast Skip dispatching of {@link removefeature} events.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.clear = function(opt_fast) {
   if (opt_fast) {
@@ -384,7 +384,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
  * @param {T=} opt_this The object to use as `this` in the callback.
  * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
   if (this.featuresRtree_) {
@@ -502,7 +502,7 @@ ol.source.Vector.prototype.getFeaturesCollection = function() {
 /**
  * Get all features on the source in random order.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.getFeatures = function() {
   var features;
@@ -523,7 +523,7 @@ ol.source.Vector.prototype.getFeatures = function() {
  * Get all features whose geometry intersects the provided coordinate.
  * @param {ol.Coordinate} coordinate Coordinate.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   var features = [];
@@ -560,7 +560,7 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
  *     The filter function will receive one argument, the {@link ol.Feature feature}
  *     and it should return a boolean value. By default, no filtering is made.
  * @return {ol.Feature} Closest feature.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate, opt_filter) {
   // Find the closest feature using branch and bound.  We start searching an
@@ -611,7 +611,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate, 
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
  * @return {!ol.Extent} Extent.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.getExtent = function() {
   return this.featuresRtree_.getExtent();
@@ -625,7 +625,7 @@ ol.source.Vector.prototype.getExtent = function() {
  *
  * @param {string|number} id Feature identifier.
  * @return {ol.Feature} The feature (or `null` if not found).
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.getFeatureById = function(id) {
   var feature = this.idIndex_[id.toString()];
@@ -763,7 +763,7 @@ ol.source.Vector.prototype.loadFeatures = function(
  * at once, use the {@link ol.source.Vector#clear source.clear()} method
  * instead.
  * @param {ol.Feature} feature Feature to remove.
- * @api stable
+ * @api
  */
 ol.source.Vector.prototype.removeFeature = function(feature) {
   var featureKey = ol.getUid(feature).toString();
@@ -837,7 +837,7 @@ ol.source.Vector.Event = function(type, opt_feature) {
   /**
    * The feature being added or removed.
    * @type {ol.Feature|undefined}
-   * @api stable
+   * @api
    */
   this.feature = opt_feature;
 

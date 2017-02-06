@@ -22,7 +22,7 @@ goog.require('ol.xml');
  *
  * @constructor
  * @extends {ol.format.XMLFeature}
- * @api stable
+ * @api
  */
 ol.format.OSMXML = function() {
   ol.format.XMLFeature.call(this);
@@ -176,7 +176,7 @@ ol.format.OSMXML.NODE_PARSERS_ = ol.xml.makeStructureNS(
  * @param {Document|Node|Object|string} source Source.
  * @param {olx.format.ReadOptions=} opt_options Read options.
  * @return {Array.<ol.Feature>} Features.
- * @api stable
+ * @api
  */
 ol.format.OSMXML.prototype.readFeatures;
 
@@ -205,7 +205,7 @@ ol.format.OSMXML.prototype.readFeaturesFromNode = function(node, opt_options) {
  * @function
  * @param {Document|Node|Object|string} source Source.
  * @return {ol.proj.Projection} Projection.
- * @api stable
+ * @api
  */
 ol.format.OSMXML.prototype.readProjection;
 

@@ -18,7 +18,7 @@ goog.require('ol.tilecoord');
  * @constructor
  * @param {olx.tilegrid.TileGridOptions} options Tile grid options.
  * @struct
- * @api stable
+ * @api
  */
 ol.tilegrid.TileGrid = function(options) {
 
@@ -208,7 +208,7 @@ ol.tilegrid.TileGrid.prototype.getMinZoom = function() {
  * Get the origin for the grid at the given zoom level.
  * @param {number} z Z.
  * @return {ol.Coordinate} Origin.
- * @api stable
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
   if (this.origin_) {
@@ -223,7 +223,7 @@ ol.tilegrid.TileGrid.prototype.getOrigin = function(z) {
  * Get the resolution for the given zoom level.
  * @param {number} z Z.
  * @return {number} Resolution.
- * @api stable
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
   return this.resolutions_[z];
@@ -233,7 +233,7 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
 /**
  * Get the list of resolutions for the tile grid.
  * @return {Array.<number>} Resolutions.
- * @api stable
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getResolutions = function() {
   return this.resolutions_;
@@ -426,7 +426,7 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
  * get an `ol.Size`, run the result through `ol.size.toSize()`.
  * @param {number} z Z.
  * @return {number|ol.Size} Tile size.
- * @api stable
+ * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
   if (this.tileSize_) {

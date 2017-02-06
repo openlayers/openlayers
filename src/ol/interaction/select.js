@@ -31,7 +31,7 @@ goog.require('ol.style.Style');
  * @extends {ol.interaction.Interaction}
  * @param {olx.interaction.SelectOptions=} opt_options Options.
  * @fires ol.interaction.Select.Event
- * @api stable
+ * @api
  */
 ol.interaction.Select = function(opt_options) {
 
@@ -159,7 +159,7 @@ ol.interaction.Select.prototype.addFeatureLayerAssociation_ = function(feature, 
 /**
  * Get the selected features.
  * @return {ol.Collection.<ol.Feature>} Features collection.
- * @api stable
+ * @api
  */
 ol.interaction.Select.prototype.getFeatures = function() {
   return this.featureOverlay_.getSource().getFeaturesCollection();
@@ -304,7 +304,7 @@ ol.interaction.Select.prototype.setHitTolerance = function(hitTolerance) {
  * map, if any. Pass `null` to just remove the interaction from the current map.
  * @param {ol.Map} map Map.
  * @override
- * @api stable
+ * @api
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();

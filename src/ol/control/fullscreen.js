@@ -23,7 +23,7 @@ goog.require('ol.events.EventType');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.FullScreenOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.control.FullScreen = function(opt_options) {
 
@@ -155,7 +155,7 @@ ol.control.FullScreen.prototype.handleFullScreenChange_ = function() {
 
 /**
  * @inheritDoc
- * @api stable
+ * @api
  */
 ol.control.FullScreen.prototype.setMap = function(map) {
   ol.control.Control.prototype.setMap.call(this, map);

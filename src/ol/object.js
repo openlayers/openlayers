@@ -96,7 +96,7 @@ ol.Object.getChangeEventType = function(key) {
  * Gets a value.
  * @param {string} key Key name.
  * @return {*} Value.
- * @api stable
+ * @api
  */
 ol.Object.prototype.get = function(key) {
   var value;
@@ -110,7 +110,7 @@ ol.Object.prototype.get = function(key) {
 /**
  * Get a list of object property names.
  * @return {Array.<string>} List of property names.
- * @api stable
+ * @api
  */
 ol.Object.prototype.getKeys = function() {
   return Object.keys(this.values_);
@@ -120,7 +120,7 @@ ol.Object.prototype.getKeys = function() {
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
- * @api stable
+ * @api
  */
 ol.Object.prototype.getProperties = function() {
   return ol.obj.assign({}, this.values_);
@@ -145,7 +145,7 @@ ol.Object.prototype.notify = function(key, oldValue) {
  * @param {string} key Key name.
  * @param {*} value Value.
  * @param {boolean=} opt_silent Update without triggering an event.
- * @api stable
+ * @api
  */
 ol.Object.prototype.set = function(key, value, opt_silent) {
   if (opt_silent) {
@@ -165,7 +165,7 @@ ol.Object.prototype.set = function(key, value, opt_silent) {
  * properties and adds new ones (it does not remove any existing properties).
  * @param {Object.<string, *>} values Values.
  * @param {boolean=} opt_silent Update without triggering an event.
- * @api stable
+ * @api
  */
 ol.Object.prototype.setProperties = function(values, opt_silent) {
   var key;
@@ -179,7 +179,7 @@ ol.Object.prototype.setProperties = function(values, opt_silent) {
  * Unsets a property.
  * @param {string} key Key name.
  * @param {boolean=} opt_silent Unset without triggering an event.
- * @api stable
+ * @api
  */
 ol.Object.prototype.unset = function(key, opt_silent) {
   if (key in this.values_) {
@@ -209,7 +209,7 @@ ol.Object.Event = function(type, key, oldValue) {
   /**
    * The name of the property whose value is changing.
    * @type {string}
-   * @api stable
+   * @api
    */
   this.key = key;
 
@@ -217,7 +217,7 @@ ol.Object.Event = function(type, key, oldValue) {
    * The old value. To get the new value use `e.target.get(e.key)` where
    * `e` is the event object.
    * @type {*}
-   * @api stable
+   * @api
    */
   this.oldValue = oldValue;
 

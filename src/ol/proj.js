@@ -14,7 +14,7 @@ goog.require('ol.sphere.NORMAL');
  * Meters per unit lookup table.
  * @const
  * @type {Object.<ol.proj.Units, number>}
- * @api stable
+ * @api
  */
 ol.proj.METERS_PER_UNIT = ol.proj.Units.METERS_PER_UNIT;
 
@@ -134,7 +134,7 @@ ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTr
  * looked up by their code.
  *
  * @param {ol.proj.Projection} projection Projection instance.
- * @api stable
+ * @api
  */
 ol.proj.addProjection = function(projection) {
   ol.proj.projections.add(projection.getCode(), projection);
@@ -195,7 +195,7 @@ ol.proj.createProjection = function(projection, defaultCode) {
  *     function (that is, from the destination projection to the source
  *     projection) that takes a {@link ol.Coordinate} as argument and returns
  *     the transformed {@link ol.Coordinate}.
- * @api stable
+ * @api
  */
 ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse) {
   var sourceProj = ol.proj.get(source);
@@ -247,7 +247,7 @@ ol.proj.createTransformFromCoordinateTransform = function(transform) {
  * @param {ol.ProjectionLike=} opt_projection Target projection. The
  *     default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {ol.Coordinate} Coordinate projected to the target projection.
- * @api stable
+ * @api
  */
 ol.proj.fromLonLat = function(coordinate, opt_projection) {
   return ol.proj.transform(coordinate, 'EPSG:4326',
@@ -262,7 +262,7 @@ ol.proj.fromLonLat = function(coordinate, opt_projection) {
  *     The default is Web Mercator, i.e. 'EPSG:3857'.
  * @return {ol.Coordinate} Coordinate as longitude and latitude, i.e. an array
  *     with longitude as 1st and latitude as 2nd element.
- * @api stable
+ * @api
  */
 ol.proj.toLonLat = function(coordinate, opt_projection) {
   return ol.proj.transform(coordinate,
@@ -277,7 +277,7 @@ ol.proj.toLonLat = function(coordinate, opt_projection) {
  *     a combination of authority and identifier such as "EPSG:4326", or an
  *     existing projection object, or undefined.
  * @return {ol.proj.Projection} Projection object, or null if not in list.
- * @api stable
+ * @api
  */
 ol.proj.get = function(projectionLike) {
   var projection = null;
@@ -332,7 +332,7 @@ ol.proj.equivalent = function(projection1, projection2) {
  * @param {ol.ProjectionLike} source Source.
  * @param {ol.ProjectionLike} destination Destination.
  * @return {ol.TransformFunction} Transform function.
- * @api stable
+ * @api
  */
 ol.proj.getTransform = function(source, destination) {
   var sourceProjection = ol.proj.get(source);
@@ -430,7 +430,7 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
  * @param {ol.ProjectionLike} source Source projection-like.
  * @param {ol.ProjectionLike} destination Destination projection-like.
  * @return {ol.Coordinate} Coordinate.
- * @api stable
+ * @api
  */
 ol.proj.transform = function(coordinate, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);
@@ -446,7 +446,7 @@ ol.proj.transform = function(coordinate, source, destination) {
  * @param {ol.ProjectionLike} source Source projection-like.
  * @param {ol.ProjectionLike} destination Destination projection-like.
  * @return {ol.Extent} The transformed extent.
- * @api stable
+ * @api
  */
 ol.proj.transformExtent = function(extent, source, destination) {
   var transformFn = ol.proj.getTransform(source, destination);

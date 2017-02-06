@@ -15,7 +15,7 @@ ol.MapEventType = {
   /**
    * Triggered after the map is moved.
    * @event ol.MapEvent#moveend
-   * @api stable
+   * @api
    */
   MOVEEND: 'moveend'
 

@@ -24,7 +24,7 @@ goog.require('ol.uri');
  * @fires ol.source.Image.Event
  * @extends {ol.source.Image}
  * @param {olx.source.ImageWMSOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.source.ImageWMS = function(opt_options) {
 
@@ -131,7 +131,7 @@ ol.source.ImageWMS.GETFEATUREINFO_IMAGE_SIZE_ = [101, 101];
  *     in the `LAYERS` parameter will be used. `VERSION` should not be
  *     specified here.
  * @return {string|undefined} GetFeatureInfo URL.
- * @api stable
+ * @api
  */
 ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolution, projection, params) {
   if (this.url_ === undefined) {
@@ -167,7 +167,7 @@ ol.source.ImageWMS.prototype.getGetFeatureInfoUrl = function(coordinate, resolut
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
  * @return {Object} Params.
- * @api stable
+ * @api
  */
 ol.source.ImageWMS.prototype.getParams = function() {
   return this.params_;
@@ -309,7 +309,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
 /**
  * Return the URL used for this WMS source.
  * @return {string|undefined} URL.
- * @api stable
+ * @api
  */
 ol.source.ImageWMS.prototype.getUrl = function() {
   return this.url_;
@@ -332,7 +332,7 @@ ol.source.ImageWMS.prototype.setImageLoadFunction = function(
 /**
  * Set the URL to use for requests.
  * @param {string|undefined} url URL.
- * @api stable
+ * @api
  */
 ol.source.ImageWMS.prototype.setUrl = function(url) {
   if (url != this.url_) {
@@ -346,7 +346,7 @@ ol.source.ImageWMS.prototype.setUrl = function(url) {
 /**
  * Update the user-provided params.
  * @param {Object} params Params.
- * @api stable
+ * @api
  */
 ol.source.ImageWMS.prototype.updateParams = function(params) {
   ol.obj.assign(this.params_, params);

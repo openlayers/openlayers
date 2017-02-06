@@ -13,7 +13,7 @@ goog.require('ol.source.XYZ');
  * @constructor
  * @extends {ol.source.XYZ}
  * @param {olx.source.StamenOptions} options Stamen options.
- * @api stable
+ * @api
  */
 ol.source.Stamen = function(options) {
   var i = options.layer.indexOf('-');

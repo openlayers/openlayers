@@ -17,7 +17,7 @@ goog.require('ol.easing');
  * @constructor
  * @extends {ol.control.Control}
  * @param {olx.control.ZoomOptions=} opt_options Zoom options.
- * @api stable
+ * @api
  */
 ol.control.Zoom = function(opt_options) {
 

@@ -75,7 +75,7 @@ goog.require('ol.proj.Units');
  * @constructor
  * @extends {ol.Object}
  * @param {olx.ViewOptions=} opt_options View options.
- * @api stable
+ * @api
  */
 ol.View = function(opt_options) {
   ol.Object.call(this);
@@ -460,7 +460,7 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
  * Get the view center.
  * @return {ol.Coordinate|undefined} The center of the view.
  * @observable
- * @api stable
+ * @api
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
@@ -491,7 +491,7 @@ ol.View.prototype.getHints = function(opt_hints) {
  * @param {ol.Size=} opt_size Box pixel size. If not provided, the size of the
  * first map that uses this view will be used.
  * @return {ol.Extent} Extent.
- * @api stable
+ * @api
  */
 ol.View.prototype.calculateExtent = function(opt_size) {
   var size = opt_size || this.getSizeFromViewport_();
@@ -529,7 +529,7 @@ ol.View.prototype.getMinResolution = function() {
 /**
  * Get the view projection.
  * @return {ol.proj.Projection} The projection of the view.
- * @api stable
+ * @api
  */
 ol.View.prototype.getProjection = function() {
   return this.projection_;
@@ -540,7 +540,7 @@ ol.View.prototype.getProjection = function() {
  * Get the view resolution.
  * @return {number|undefined} The resolution of the view.
  * @observable
- * @api stable
+ * @api
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
@@ -552,7 +552,7 @@ ol.View.prototype.getResolution = function() {
  * Get the resolutions for the view. This returns the array of resolutions
  * passed to the constructor of the {ol.View}, or undefined if none were given.
  * @return {Array.<number>|undefined} The resolutions of the view.
- * @api stable
+ * @api
  */
 ol.View.prototype.getResolutions = function() {
   return this.resolutions_;
@@ -600,7 +600,7 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
  * Get the view rotation.
  * @return {number} The rotation of the view in radians.
  * @observable
- * @api stable
+ * @api
  */
 ol.View.prototype.getRotation = function() {
   return /** @type {number} */ (this.get(ol.ViewProperty.ROTATION));
@@ -652,7 +652,7 @@ ol.View.prototype.getState = function() {
  * Get the current zoom level. Return undefined if the current
  * resolution is undefined or not within the "resolution constraints".
  * @return {number|undefined} Zoom.
- * @api stable
+ * @api
  */
 ol.View.prototype.getZoom = function() {
   var zoom;
@@ -687,7 +687,7 @@ ol.View.prototype.getZoom = function() {
  * @param {ol.geom.SimpleGeometry|ol.Extent} geometryOrExtent The geometry or
  *     extent to fit the view to.
  * @param {olx.view.FitOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
   var options = opt_options || {};
@@ -822,7 +822,7 @@ ol.View.prototype.isDef = function() {
  * Rotate the view around a given coordinate.
  * @param {number} rotation New rotation value for the view.
  * @param {ol.Coordinate=} opt_anchor The rotation center.
- * @api stable
+ * @api
  */
 ol.View.prototype.rotate = function(rotation, opt_anchor) {
   if (opt_anchor !== undefined) {
@@ -837,7 +837,7 @@ ol.View.prototype.rotate = function(rotation, opt_anchor) {
  * Set the center of the current view.
  * @param {ol.Coordinate|undefined} center The center of the view.
  * @observable
- * @api stable
+ * @api
  */
 ol.View.prototype.setCenter = function(center) {
   this.set(ol.ViewProperty.CENTER, center);
@@ -863,7 +863,7 @@ ol.View.prototype.setHint = function(hint, delta) {
  * Set the resolution for this view.
  * @param {number|undefined} resolution The resolution of the view.
  * @observable
- * @api stable
+ * @api
  */
 ol.View.prototype.setResolution = function(resolution) {
   this.set(ol.ViewProperty.RESOLUTION, resolution);
@@ -877,7 +877,7 @@ ol.View.prototype.setResolution = function(resolution) {
  * Set the rotation for this view.
  * @param {number} rotation The rotation of the view in radians.
  * @observable
- * @api stable
+ * @api
  */
 ol.View.prototype.setRotation = function(rotation) {
   this.set(ol.ViewProperty.ROTATION, rotation);
@@ -890,7 +890,7 @@ ol.View.prototype.setRotation = function(rotation) {
 /**
  * Zoom to a specific zoom level.
  * @param {number} zoom Zoom level.
- * @api stable
+ * @api
  */
 ol.View.prototype.setZoom = function(zoom) {
   var resolution = this.constrainResolution(

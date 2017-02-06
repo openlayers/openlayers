@@ -17,7 +17,7 @@ goog.require('ol.string');
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {ol.Coordinate} delta Delta.
  * @return {ol.Coordinate} The input coordinate adjusted by the given delta.
- * @api stable
+ * @api
  */
 ol.coordinate.add = function(coordinate, delta) {
   coordinate[0] += delta[0];
@@ -86,7 +86,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {ol.CoordinateFormatType} Coordinate format.
- * @api stable
+ * @api
  */
 ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
@@ -144,7 +144,7 @@ ol.coordinate.degreesToStringHDMS_ = function(degrees, hemispheres, opt_fraction
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Formatted coordinate.
- * @api stable
+ * @api
  */
 ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   if (coordinate) {
@@ -188,7 +188,7 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} angle Angle in radian.
  * @return {ol.Coordinate} Coordinate.
- * @api stable
+ * @api
  */
 ol.coordinate.rotate = function(coordinate, angle) {
   var cosAngle = Math.cos(angle);
@@ -283,7 +283,7 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} Hemisphere, degrees, minutes and seconds.
- * @api stable
+ * @api
  */
 ol.coordinate.toStringHDMS = function(coordinate, opt_fractionDigits) {
   if (coordinate) {
@@ -314,7 +314,7 @@ ol.coordinate.toStringHDMS = function(coordinate, opt_fractionDigits) {
  * @param {number=} opt_fractionDigits The number of digits to include
  *    after the decimal point. Default is `0`.
  * @return {string} XY.
- * @api stable
+ * @api
  */
 ol.coordinate.toStringXY = function(coordinate, opt_fractionDigits) {
   return ol.coordinate.format(coordinate, '{x}, {y}', opt_fractionDigits);

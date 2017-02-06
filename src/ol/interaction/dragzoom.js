@@ -19,7 +19,7 @@ goog.require('ol.interaction.DragBox');
  * @constructor
  * @extends {ol.interaction.DragBox}
  * @param {olx.interaction.DragZoomOptions=} opt_options Options.
- * @api stable
+ * @api
  */
 ol.interaction.DragZoom = function(opt_options) {
   var options = opt_options ? opt_options : {};

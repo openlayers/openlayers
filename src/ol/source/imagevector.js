@@ -193,7 +193,7 @@ ol.source.ImageVector.prototype.getSource = function() {
  * option at construction or to the `setStyle` method.
  * @return {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
  *     Layer style.
- * @api stable
+ * @api
  */
 ol.source.ImageVector.prototype.getStyle = function() {
   return this.style_;
@@ -203,7 +203,7 @@ ol.source.ImageVector.prototype.getStyle = function() {
 /**
  * Get the style function.
  * @return {ol.StyleFunction|undefined} Layer style function.
- * @api stable
+ * @api
  */
 ol.source.ImageVector.prototype.getStyleFunction = function() {
   return this.styleFunction_;
@@ -292,7 +292,7 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
  * {@link ol.style} for information on the default style.
  * @param {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined}
  *     style Layer style.
- * @api stable
+ * @api
  */
 ol.source.ImageVector.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
