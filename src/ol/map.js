@@ -347,12 +347,6 @@ ol.Map = function(options) {
 
   /**
    * @private
-   * @type {Array.<ol.PreRenderFunction>}
-   */
-  this.preRenderFunctions_ = [];
-
-  /**
-   * @private
    * @type {Array.<ol.PostRenderFunction>}
    */
   this.postRenderFunctions_ = [];
@@ -517,20 +511,6 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
     this.overlayIdIndex_[id.toString()] = overlay;
   }
   overlay.setMap(this);
-};
-
-
-/**
- * Add functions to be called before rendering. This can be used for attaching
- * animations before updating the map's view.  The {@link ol.animation}
- * namespace provides several static methods for creating prerender functions.
- * @param {...ol.PreRenderFunction} var_args Any number of pre-render functions.
- * @deprecated Use {@link ol.View#animate} instead.
- * @api
- */
-ol.Map.prototype.beforeRender = function(var_args) {
-  this.render();
-  Array.prototype.push.apply(this.preRenderFunctions_, arguments);
 };
 
 
@@ -1256,16 +1236,6 @@ ol.Map.prototype.renderFrame_ = function(time) {
   }
 
   if (frameState) {
-    var preRenderFunctions = this.preRenderFunctions_;
-    var n = 0, preRenderFunction;
-    for (i = 0, ii = preRenderFunctions.length; i < ii; ++i) {
-      preRenderFunction = preRenderFunctions[i];
-      if (preRenderFunction(this, frameState)) {
-        preRenderFunctions[n++] = preRenderFunction;
-      }
-    }
-    preRenderFunctions.length = n;
-
     frameState.extent = ol.extent.getForViewAndSize(viewState.center,
         viewState.resolution, viewState.rotation, frameState.size, extent);
   }
@@ -1280,8 +1250,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
-    var idle = this.preRenderFunctions_.length === 0 &&
-        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+    var idle = !frameState.viewHints[ol.ViewHint.ANIMATING] &&
         !frameState.viewHints[ol.ViewHint.INTERACTING] &&
         !ol.extent.equals(frameState.extent, this.previousExtent_);
 
