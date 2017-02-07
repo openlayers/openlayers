@@ -327,9 +327,7 @@ ol.interaction.Extent.prototype.snapToVertex_ = function(pixel, map) {
     var vertexPixel = map.getPixelFromCoordinate(vertex);
 
     //if the distance is within tolerance, snap to the segment
-    if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
-        this.pixelTolerance_) {
-
+    if (ol.coordinate.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
       //test if we should further snap to a vertex
       var pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       var pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
