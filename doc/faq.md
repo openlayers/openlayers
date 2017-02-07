@@ -7,7 +7,7 @@ layout: doc.hbs
 
 Certain questions arise more often than others when users ask for help. This 
 document tries to list some of the common questions that frequently get asked,
-e.g. on [Stack Overflow](http://stackoverflow.com/questions/tagged/openlayers-3).
+e.g. on [Stack Overflow](http://stackoverflow.com/questions/tagged/openlayers).
 
 If you think a question (and naturally its answer) should be added here, feel
 free to ping us or to send a pull request enhancing this document.
