@@ -371,8 +371,7 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
           closestSegment));
       vertexPixel = map.getPixelFromCoordinate(vertex);
-      if (Math.sqrt(ol.coordinate.squaredDistance(pixel, vertexPixel)) <=
-          this.pixelTolerance_) {
+      if (ol.coordinate.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
         snapped = true;
         if (this.vertex_) {
           pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
