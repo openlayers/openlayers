@@ -56,7 +56,7 @@ function getLinkToApiHtml(requires) {
  * example HTML file, this adds metadata for related js and css resources. When
  * these files are run through the example template, the extra metadata is used
  * to show the complete example source in the textarea and submit the parts to
- * jsFiddle.
+ * CodePen.
  *
  * @param {Object} files The file lookup provided by Metalsmith.  Property names
  *     are file paths relative to the source directory.  The file objects
@@ -111,13 +111,13 @@ function augmentExamples(files, metalsmith, done) {
       if (file.resources) {
         var resources = [];
         var remoteResources = [];
-        var fiddleResources = [];
+        var codePenResources = [];
         for (var i = 0, ii = file.resources.length; i < ii; ++i) {
           var resource = file.resources[i];
           var remoteResource = resource.indexOf('//') === -1 ?
               'https://openlayers.org/en/v' + pkg.version + '/examples/' +
                   resource : resource;
-          fiddleResources[i] = remoteResource;
+          codePenResources[i] = remoteResource;
           if (isJsRegEx.test(resource)) {
             resources[i] = '<script src="' + resource + '"></script>';
             remoteResources[i] = '<script src="' + remoteResource +
@@ -138,7 +138,7 @@ function augmentExamples(files, metalsmith, done) {
           remote: remoteResources.join('\n')
         };
         file.extraResources = file.resources.length ?
-            ',' + fiddleResources.join(',') : '';
+            ',' + codePenResources.join(',') : '';
       }
     }
   }
