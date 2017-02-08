@@ -11,19 +11,9 @@ describe('ol.structs.PriorityQueue', function() {
 
   describe('when empty', function() {
 
-    var pq, origAssert;
+    var pq;
     beforeEach(function() {
-      origAssert = console.assert;
-      console.assert = function(assertion, message) {
-        if (!assertion) {
-          throw new Error(message);
-        }
-      };
-      pq = new ol.structs.PriorityQueue(
-          identity, identity);
-    });
-    afterEach(function() {
-      console.assert = origAssert;
+      pq = new ol.structs.PriorityQueue(identity, identity);
     });
 
     it('is empty', function() {
