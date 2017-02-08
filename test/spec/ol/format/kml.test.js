@@ -1634,7 +1634,7 @@ describe('ol.format.KML', function() {
               '      <Data name="country">' +
               '        <displayName>Country</displayName>' +
               '        <value>United-Kingdom</value>' +
-              '      /Data>' +
+              '      </Data>' +
               '    </ExtendedData>' +
               '  </Placemark>' +
               '</kml>';
