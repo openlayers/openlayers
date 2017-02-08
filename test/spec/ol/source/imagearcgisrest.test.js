@@ -38,10 +38,10 @@ describe('ol.source.ImageArcGISRest', function() {
 
     it('returns a non floating point DPI value', function() {
       var source = new ol.source.ImageArcGISRest(options);
-      var image = source.getImage([3, 2, -7, 1.12], resolution, pixelRatio, proj3857);
+      var image = source.getImage([3, 2, -7, 1.12], resolution, 1.01, proj3857);
       var uri = new URL(image.src_);
       var queryData = uri.searchParams;
-      expect(queryData.get('DPI')).to.be('90');
+      expect(queryData.get('DPI')).to.be('91');
     });
 
     it('returns a image with the expected URL for ImageServer', function() {
