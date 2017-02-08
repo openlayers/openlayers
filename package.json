@@ -89,15 +89,6 @@
       "openlayers-internal"
     ],
     "rules": {
-      "no-console": [
-        2,
-        {
-          "allow": [
-            "assert",
-            "warn"
-          ]
-        }
-      ],
       "no-constant-condition": 0,
       "openlayers-internal/enum": 2,
       "openlayers-internal/no-duplicate-requires": 2,
