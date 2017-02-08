@@ -6,6 +6,17 @@
 
 The deprecated `ol.animation` functions and `map.beforeRender()` method have been removed.  Use `view.animate()` instead.
 
+The `unByKey()` method has been removed from `ol.Observable` instances.  Use the `ol.Observable.unByKey()` static function instead.
+```js
+var key = map.on('moveend', function() { ...});
+map.unByKey(key);
+```
+New code:
+```js
+var key = map.on('moveend', function() { ...});
+ol.Observable.unByKey(key);
+```
+
 #### Simplified `ol.View#fit()` API
 
 In most cases, it is no longer necessary to provide an `ol.Size` (previously the 2nd argument) to `ol.View#fit()`. By default, the size of the first map that uses the view will be used. If you want to specify a different size, it goes in the options now (previously the 3rd argument, now the 2nd).

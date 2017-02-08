@@ -154,15 +154,3 @@ ol.Observable.prototype.un = function(type, listener, opt_this) {
     ol.events.unlisten(this, /** @type {string} */ (type), listener, opt_this);
   }
 };
-
-
-/**
- * Removes an event listener using the key returned by `on()` or `once()`.
- * Note that using the {@link ol.Observable.unByKey} static function is to
- * be preferred.
- * @param {ol.EventsKey|Array.<ol.EventsKey>} key The key returned by `on()`
- *     or `once()` (or an array of keys).
- * @function
- * @api
- */
-ol.Observable.prototype.unByKey = ol.Observable.unByKey;
