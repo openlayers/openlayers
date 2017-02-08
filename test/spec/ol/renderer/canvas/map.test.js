@@ -36,6 +36,7 @@ describe('ol.renderer.canvas.Map', function() {
       target.style.height = '100px';
       document.body.appendChild(target);
       map = new ol.Map({
+        pixelRatio: 1,
         target: target,
         view: new ol.View({
           center: [0, 0],
