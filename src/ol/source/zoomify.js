@@ -3,6 +3,7 @@ goog.provide('ol.source.Zoomify');
 goog.require('ol');
 goog.require('ol.ImageTile');
 goog.require('ol.TileState');
+goog.require('ol.TileUrlFunction');
 goog.require('ol.asserts');
 goog.require('ol.dom');
 goog.require('ol.extent');
@@ -82,31 +83,47 @@ ol.source.Zoomify = function(opt_options) {
     resolutions: resolutions
   });
 
-  var url = options.url;
+  var urls = ol.TileUrlFunction.expandUrl(options.url);
 
   /**
-   * @this {ol.source.TileImage}
-   * @param {ol.TileCoord} tileCoord Tile Coordinate.
-   * @param {number} pixelRatio Pixel ratio.
-   * @param {ol.proj.Projection} projection Projection.
-   * @return {string|undefined} Tile URL.
+   * @param {string} template Template.
+   * @return {ol.TileUrlFunctionType} Tile URL function.
    */
-  function tileUrlFunction(tileCoord, pixelRatio, projection) {
-    if (!tileCoord) {
-      return undefined;
-    } else {
-      var tileCoordZ = tileCoord[0];
-      var tileCoordX = tileCoord[1];
-      var tileCoordY = -tileCoord[2] - 1;
-      var tileIndex =
-          tileCoordX +
-          tileCoordY * tierSizeInTiles[tileCoordZ][0] +
-          tileCountUpToTier[tileCoordZ];
-      var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
-      return url + 'TileGroup' + tileGroup + '/' +
-          tileCoordZ + '-' + tileCoordX + '-' + tileCoordY + '.jpg';
-    }
+  function createFromTemplate(template) {
+
+    return (
+      /**
+       * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
+       * @param {ol.proj.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, pixelRatio, projection) {
+        if (!tileCoord) {
+          return undefined;
+        } else {
+          var tileCoordZ = tileCoord[0];
+          var tileCoordX = tileCoord[1];
+          var tileCoordY = -tileCoord[2] - 1;
+          var tileIndex =
+              tileCoordX +
+              tileCoordY * tierSizeInTiles[tileCoordZ][0] +
+              tileCountUpToTier[tileCoordZ];
+          var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
+          var localContext = {
+            'z': tileCoordZ,
+            'x': tileCoordX,
+            'y': tileCoordY,
+            'TileGroup': 'TileGroup' + tileGroup
+          };
+          return template.replace(/\{(\w+?)\}/g, function(m, p) {
+            return localContext[p];
+          });
+        }
+      });
   }
+
+  var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(createFromTemplate));
 
   ol.source.TileImage.call(this, {
     attributions: options.attributions,

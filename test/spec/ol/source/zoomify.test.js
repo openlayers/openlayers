@@ -11,7 +11,7 @@ describe('ol.source.Zoomify', function() {
   var w = 1024;
   var h = 512;
   var size = [w, h];
-  var url = 'zoomify-url/';
+  var url = 'zoomify-url/{TileGroup}/{z}-{x}-{y}.jpg';
   var proj = new ol.proj.Projection({
     code: 'ZOOMIFY',
     units: 'pixels',

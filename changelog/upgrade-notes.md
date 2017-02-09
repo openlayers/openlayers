@@ -2,6 +2,32 @@
 
 ### Next release
 
+#### `ol.source.Zoomify` `url` is now a template
+
+The `url` for the `ol.source.Zoomify` source is now a template.  The `{x}`, `{y}`, `{z}` and `{TileGroup}` placeholders
+must be included in the `url`.
+
+If you had:
+```js
+new ol.source.Zoomify({
+  url: 'https://www.example.com/cgi-bin/iipsrv.fcgi?zoomify=/a/b/'
+});
+
+```
+It needs to be changed to:
+```js
+new ol.source.Zoomify({
+  url: 'https://www.example.com/cgi-bin/iipsrv.fcgi?zoomify=/a/b/{TileGroup}/{z}-{x}-{y}.jpg'
+});
+```
+
+And the `url` can now include subdomains:
+```js
+new ol.source.Zoomify({
+  url: 'https://{a-f}.example.com/cgi-bin/iipsrv.fcgi?zoomify=/a/b/{TileGroup}/{z}-{x}-{y}.jpg'
+});
+```
+
 #### Removal of deprecated methods
 
 The deprecated `ol.animation` functions and `map.beforeRender()` method have been removed.  Use `view.animate()` instead.

@@ -6759,7 +6759,9 @@ olx.source.ZoomifyOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
- * Prefix of URL template.
+ * URL template. Must include `{x}`, `{y}`, `{z}` and `{TileGroup}` placeholders.
+ * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
+ * used instead of defining each one separately in the `urls` option.
  * @type {!string}
  * @api
  */
