@@ -2,26 +2,9 @@
 
 ### Next release
 
-#### `ol.source.Zoomify` `url` is now a template
+#### Simpler `ol.source.Zoomify` `url` configuration
 
-The `url` for the `ol.source.Zoomify` source is now a template.  The `{x}`, `{y}`, `{z}` and `{TileGroup}` placeholders
-must be included in the `url`.
-
-If you had:
-```js
-new ol.source.Zoomify({
-  url: 'https://www.example.com/cgi-bin/iipsrv.fcgi?zoomify=/a/b/'
-});
-
-```
-It needs to be changed to:
-```js
-new ol.source.Zoomify({
-  url: 'https://www.example.com/cgi-bin/iipsrv.fcgi?zoomify=/a/b/{TileGroup}/{z}-{x}-{y}.jpg'
-});
-```
-
-And the `url` can now include subdomains:
+Instead specifying a base url, the `url` for the `ol.source.Zoomify` source can now be a template.  The `{TileGroup}`, `{x}`, `{y}`, `{z}` and placeholders must be included in the `url` in this case. the `url` can now also include subdomain placeholders:
 ```js
 new ol.source.Zoomify({
   url: 'https://{a-f}.example.com/cgi-bin/iipsrv.fcgi?zoomify=/a/b/{TileGroup}/{z}-{x}-{y}.jpg'

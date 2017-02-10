@@ -83,7 +83,11 @@ ol.source.Zoomify = function(opt_options) {
     resolutions: resolutions
   });
 
-  var urls = ol.TileUrlFunction.expandUrl(options.url);
+  var url = options.url;
+  if (url && url.indexOf('{TileGroup}') == -1) {
+    url += '{TileGroup}/{z}-{x}-{y}.jpg';
+  }
+  var urls = ol.TileUrlFunction.expandUrl(url);
 
   /**
    * @param {string} template Template.
