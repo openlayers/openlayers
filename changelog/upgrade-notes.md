@@ -2,6 +2,8 @@
 
 ### Next release
 
+### v4.0.0
+
 #### Simpler `ol.source.Zoomify` `url` configuration
 
 Instead specifying a base url, the `url` for the `ol.source.Zoomify` source can now be a template.  The `{TileGroup}`, `{x}`, `{y}`, `{z}` and placeholders must be included in the `url` in this case. the `url` can now also include subdomain placeholders:
