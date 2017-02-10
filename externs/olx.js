@@ -6759,7 +6759,13 @@ olx.source.ZoomifyOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
- * Prefix of URL template.
+ * URL template or base URL of the Zoomify service. A base URL is the fixed part
+ * of the URL, excluding the tile group, z, x, and y folder structure, e.g.
+ * `http://my.zoomify.info/IMAGE.TIF/`. A URL template must include
+ * `{TileGroup}`, `{x}`, `{y}`, and `{z}` placeholders, e.g.
+ * `http://my.zoomify.info/IMAGE.TIF/{TileGroup}/{z}-{x}-{y}.jpg`.
+ * A `{?-?}` template pattern, for example `subdomain{a-f}.domain.com`, may be
+ * used instead of defining each one separately in the `urls` option.
  * @type {!string}
  * @api
  */

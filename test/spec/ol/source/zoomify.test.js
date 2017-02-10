@@ -11,7 +11,7 @@ describe('ol.source.Zoomify', function() {
   var w = 1024;
   var h = 512;
   var size = [w, h];
-  var url = 'zoomify-url/';
+  var url = 'zoomify-url/{TileGroup}/{z}-{x}-{y}.jpg';
   var proj = new ol.proj.Projection({
     code: 'ZOOMIFY',
     units: 'pixels',
@@ -167,7 +167,7 @@ describe('ol.source.Zoomify', function() {
 
   describe('generated tileUrlFunction', function() {
 
-    it('creates an expected tileUrlFunction', function() {
+    it('creates an expected tileUrlFunction with template', function() {
       var source = getZoomifySource();
       var tileUrlFunction = source.getTileUrlFunction();
       // zoomlevel 0
@@ -179,6 +179,20 @@ describe('ol.source.Zoomify', function() {
       expect(tileUrlFunction([1, 1, -2])).to.eql('zoomify-url/TileGroup0/1-1-1.jpg');
     });
 
+    it('creates an expected tileUrlFunction without template', function() {
+      var source = new ol.source.Zoomify({
+        url: 'zoomify-url/',
+        size: size
+      });
+      var tileUrlFunction = source.getTileUrlFunction();
+      // zoomlevel 0
+      expect(tileUrlFunction([0, 0, -1])).to.eql('zoomify-url/TileGroup0/0-0-0.jpg');
+      // zoomlevel 1
+      expect(tileUrlFunction([1, 0, -1])).to.eql('zoomify-url/TileGroup0/1-0-0.jpg');
+      expect(tileUrlFunction([1, 1, -1])).to.eql('zoomify-url/TileGroup0/1-1-0.jpg');
+      expect(tileUrlFunction([1, 0, -2])).to.eql('zoomify-url/TileGroup0/1-0-1.jpg');
+      expect(tileUrlFunction([1, 1, -2])).to.eql('zoomify-url/TileGroup0/1-1-1.jpg');
+    });
     it('returns undefined if no tileCoord passed', function() {
       var source = getZoomifySource();
       var tileUrlFunction = source.getTileUrlFunction();
