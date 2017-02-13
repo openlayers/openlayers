@@ -40,6 +40,11 @@ ol.interaction.DragPan = function(opt_options) {
   this.lastCentroid = null;
 
   /**
+   * @type {number}
+   */
+  this.lastPointersCount_;
+
+  /**
    * @private
    * @type {ol.EventsConditionType}
    */
@@ -62,12 +67,13 @@ ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
  * @private
  */
 ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
+  var targetPointers = this.targetPointers;
   var centroid =
-      ol.interaction.Pointer.centroid(this.targetPointers);
+      ol.interaction.Pointer.centroid(targetPointers);
   if (this.kinetic_) {
     this.kinetic_.update(centroid[0], centroid[1]);
   }
-  if (this.lastCentroid) {
+  if (this.lastCentroid && targetPointers.length == this.lastPointersCount_) {
     var deltaX = this.lastCentroid[0] - centroid[0];
     var deltaY = centroid[1] - this.lastCentroid[1];
     var map = mapBrowserEvent.map;
@@ -81,6 +87,7 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
     view.setCenter(center);
   }
   this.lastCentroid = centroid;
+  this.lastPointersCount_ = targetPointers.length;
 };
 
 
