@@ -70,21 +70,23 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   var targetPointers = this.targetPointers;
   var centroid =
       ol.interaction.Pointer.centroid(targetPointers);
-  if (this.kinetic_) {
-    this.kinetic_.update(centroid[0], centroid[1]);
-  }
-  if (this.lastCentroid && targetPointers.length == this.lastPointersCount_) {
-    var deltaX = this.lastCentroid[0] - centroid[0];
-    var deltaY = centroid[1] - this.lastCentroid[1];
-    var map = mapBrowserEvent.map;
-    var view = map.getView();
-    var viewState = view.getState();
-    var center = [deltaX, deltaY];
-    ol.coordinate.scale(center, viewState.resolution);
-    ol.coordinate.rotate(center, viewState.rotation);
-    ol.coordinate.add(center, viewState.center);
-    center = view.constrainCenter(center);
-    view.setCenter(center);
+  if (targetPointers.length == this.lastPointersCount_) {
+    if (this.kinetic_) {
+      this.kinetic_.update(centroid[0], centroid[1]);
+    }
+    if (this.lastCentroid) {
+      var deltaX = this.lastCentroid[0] - centroid[0];
+      var deltaY = centroid[1] - this.lastCentroid[1];
+      var map = mapBrowserEvent.map;
+      var view = map.getView();
+      var viewState = view.getState();
+      var center = [deltaX, deltaY];
+      ol.coordinate.scale(center, viewState.resolution);
+      ol.coordinate.rotate(center, viewState.rotation);
+      ol.coordinate.add(center, viewState.center);
+      center = view.constrainCenter(center);
+      view.setCenter(center);
+    }
   }
   this.lastCentroid = centroid;
   this.lastPointersCount_ = targetPointers.length;
