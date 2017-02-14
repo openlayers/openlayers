@@ -374,8 +374,9 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       this.addToDrawing_(event);
     }
     pass = false;
-  } else if (circleMode) {
+  } else if (circleMode && this.freehand_) {
     this.finishCoordinate_ = null;
+    this.abortDrawing_();
   }
   return pass;
 };
