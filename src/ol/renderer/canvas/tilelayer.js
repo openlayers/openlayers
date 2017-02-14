@@ -180,7 +180,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
 
     var tilePixelSize = tileSource.getTilePixelSize(z, pixelRatio, projection);
     var width = Math.round(tileRange.getWidth() * tilePixelSize[0] / oversampling);
-    var height = Math.round(tileRange.getHeight() * tilePixelSize[0] / oversampling);
+    var height = Math.round(tileRange.getHeight() * tilePixelSize[1] / oversampling);
     var context = this.context;
     var canvas = context.canvas;
     var opaque = tileSource.getOpaque(projection);
