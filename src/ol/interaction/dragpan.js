@@ -87,6 +87,10 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
       center = view.constrainCenter(center);
       view.setCenter(center);
     }
+  } else if (this.kinetic_) {
+    // reset so we don't overestimate the kinetic energy after
+    // after one finger down, tiny drag, second finger down
+    this.kinetic_.begin();
   }
   this.lastCentroid = centroid;
   this.lastPointersCount_ = targetPointers.length;
