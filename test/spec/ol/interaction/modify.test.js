@@ -392,8 +392,8 @@ describe('ol.interaction.Modify', function() {
       expect(circleFeature.getGeometry().getCenter()).to.eql([5, 5]);
 
       // Increase radius
-      simulateEvent('pointermove', 25, -5, false, 0);
-      simulateEvent('pointerdown', 25, -5, false, 0);
+      simulateEvent('pointermove', 25, -4, false, 0);
+      simulateEvent('pointerdown', 25, -4, false, 0);
       simulateEvent('pointermove', 30, -5, false, 0);
       simulateEvent('pointerdrag', 30, -5, false, 0);
       simulateEvent('pointerup', 30, -5, false, 0);
