@@ -24,7 +24,7 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
    * @private
    * @type {CanvasRenderingContext2D}
    */
-  this.context_ = ol.dom.createCanvasContext2D();
+  this.context_ = null;
 
   /**
    * @private
@@ -83,6 +83,9 @@ ol.inherits(ol.VectorTile, ol.Tile);
  * @return {CanvasRenderingContext2D} The rendering context.
  */
 ol.VectorTile.prototype.getContext = function() {
+  if (!this.context_) {
+    this.context_ = ol.dom.createCanvasContext2D();
+  }
   return this.context_;
 };
 

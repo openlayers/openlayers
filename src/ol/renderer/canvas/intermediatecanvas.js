@@ -29,12 +29,6 @@ ol.renderer.canvas.IntermediateCanvas = function(layer) {
    */
   this.hitCanvasContext_ = null;
 
-  /**
-   * @protected
-   * @type {number}
-   */
-  this.renderedResolution;
-
 };
 ol.inherits(ol.renderer.canvas.IntermediateCanvas, ol.renderer.canvas.Layer);
 

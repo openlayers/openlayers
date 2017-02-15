@@ -1,6 +1,7 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('ol');
+goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
@@ -21,6 +22,8 @@ goog.require('ol.transform');
  * @param {ol.layer.VectorTile} layer VectorTile layer.
  */
 ol.renderer.canvas.VectorTileLayer = function(layer) {
+
+  this.context = null;
 
   ol.renderer.canvas.TileLayer.call(this, layer);
 
@@ -74,9 +77,17 @@ ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS = {
  * @inheritDoc
  */
 ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
-  var layerRevision = this.getLayer().getRevision();
+  var layer = this.getLayer();
+  var layerRevision = layer.getRevision();
   if (this.renderedLayerRevision_ != layerRevision) {
     this.renderedTiles.length = 0;
+    var renderMode = layer.getRenderMode();
+    if (!this.context && renderMode != ol.layer.VectorTileRenderType.VECTOR) {
+      this.context = ol.dom.createCanvasContext2D();
+    }
+    if (this.context && renderMode == ol.layer.VectorTileRenderType.VECTOR) {
+      this.context = null;
+    }
   }
   this.renderedLayerRevision_ = layerRevision;
   return ol.renderer.canvas.TileLayer.prototype.prepareFrame.apply(this, arguments);
@@ -184,11 +195,10 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
     tile, frameState, layerState, x, y, w, h, gutter) {
   var vectorTile = /** @type {ol.VectorTile} */ (tile);
   this.createReplayGroup_(vectorTile, frameState);
-  var layer = this.getLayer();
-  if (layer.getRenderMode() != ol.layer.VectorTileRenderType.VECTOR) {
+  if (this.context) {
     this.renderTileImage_(vectorTile, frameState, layerState);
+    ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
   }
-  ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
 };
 
 
