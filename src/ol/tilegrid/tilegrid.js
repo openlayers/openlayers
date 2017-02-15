@@ -73,6 +73,14 @@ ol.tilegrid.TileGrid = function(options) {
 
   /**
    * @private
+   * @type {Array.<number>}
+   */
+  this.loadZs_ = options.loadZooms ?
+      options.loadZooms.slice().sort(ol.array.numberSafeCompareFunction).reverse() :
+      null;
+
+  /**
+   * @private
    * @type {Array.<number|ol.Size>}
    */
   this.tileSizes_ = null;
@@ -132,6 +140,19 @@ ol.tilegrid.TileGrid = function(options) {
  * @type {ol.TileCoord}
  */
 ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
+
+
+/**
+ * Adjust tile pixel ratio for reused zoom levels.
+ * @param {number} tilePixelRatio Tile pixel ratio of the source.
+ * @param {number} z Zoom level.
+ * @return {number} Adjusted Tile pixel ratio.
+ */
+ol.tilegrid.TileGrid.prototype.adjustTilePixelRatio = function(tilePixelRatio, z) {
+  var zResolution = this.getResolution(z);
+  var useZResolution = this.getResolution(this.getLoadZ(z));
+  return tilePixelRatio * zResolution / useZResolution;
+};
 
 
 /**
@@ -237,6 +258,16 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
  */
 ol.tilegrid.TileGrid.prototype.getResolutions = function() {
   return this.resolutions_;
+};
+
+
+/**
+ * @param {number} z Zoom level.
+ * @return {number} Zoom level adjusted for the configured {@link #loadZs_}.
+ */
+ol.tilegrid.TileGrid.prototype.getLoadZ = function(z) {
+  return this.loadZs_ ?
+       this.loadZs_[ol.array.linearFindNearest(this.loadZs_, z, -1)] : z;
 };
 
 
@@ -429,11 +460,19 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
  * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
+  var tileSize;
   if (this.tileSize_) {
-    return this.tileSize_;
+    tileSize = this.tileSize_;
   } else {
-    return this.tileSizes_[z];
+    tileSize = this.tileSizes_[z];
   }
+  if (this.loadZs_) {
+    var sizeFactor = this.getResolution(this.getLoadZ(z)) / this.getResolution(z);
+    tileSize = ol.size.toSize(tileSize, this.tmpSize_);
+    tileSize[0] *= sizeFactor;
+    tileSize[1] *= sizeFactor;
+  }
+  return tileSize;
 };
 
 

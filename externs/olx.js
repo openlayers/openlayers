@@ -7421,6 +7421,7 @@ olx.tilegrid;
 
 /**
  * @typedef {{extent: (ol.Extent|undefined),
+ *     loadZooms: (Array.<number>|undefined),
  *     minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
@@ -7440,6 +7441,16 @@ olx.tilegrid.TileGridOptions;
  * @api
  */
 olx.tilegrid.TileGridOptions.prototype.extent;
+
+
+/**
+ * Zoom levels to load from a tile source. This array defines a subset of the
+ * available zoom levels. When configured, only tiles for the specified zoom
+ * levels will be requested from a tile source.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.TileGridOptions.prototype.loadZooms;
 
 
 /**
@@ -7609,6 +7620,7 @@ olx.tilegrid.WMTSOptions.prototype.widths;
 
 /**
  * @typedef {{extent: (ol.Extent|undefined),
+ *     loadZooms: (Array.<number>|undefined),
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
  *     tileSize: (number|ol.Size|undefined)}}
@@ -7625,6 +7637,16 @@ olx.tilegrid.XYZOptions;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.extent;
+
+
+/**
+ * Zoom levels to load from a tile source. This array defines a subset of the
+ * available zoom levels. When configured, only tiles for the specified zoom
+ * levels will be requested from a tile source. Example: `[0, 4, 8, 12]`.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.XYZOptions.prototype.loadZooms;
 
 
 /**
