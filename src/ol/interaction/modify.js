@@ -550,6 +550,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
     return false;
   }
   this.handlePointerAtPixel_(evt.pixel, evt.map);
+  var pixelCoordinate = evt.map.getCoordinateFromPixel(evt.pixel);
   this.dragSegments_.length = 0;
   this.modified_ = false;
   var vertexFeature = this.vertexFeature_;
@@ -575,7 +576,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
       if (segmentDataMatch.geometry.getType() === ol.geom.GeometryType.CIRCLE &&
       segmentDataMatch.index === ol.interaction.Modify.MODIFY_SEGMENT_CIRCLE_CIRCUMFERENCE_INDEX) {
 
-        var closestVertex = ol.interaction.Modify.closestOnSegmentData_(vertex, segmentDataMatch);
+        var closestVertex = ol.interaction.Modify.closestOnSegmentData_(pixelCoordinate, segmentDataMatch);
         if (ol.coordinate.equals(closestVertex, vertex) && !componentSegments[uid][0]) {
           this.dragSegments_.push([segmentDataMatch, 0]);
           componentSegments[uid][0] = segmentDataMatch;
