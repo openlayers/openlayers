@@ -45,6 +45,12 @@ ol.interaction.Draw = function(options) {
   });
 
   /**
+   * @type {boolean}
+   * @private
+   */
+  this.shouldHandle_ = false;
+
+  /**
    * @type {ol.Pixel}
    * @private
    */
@@ -325,6 +331,8 @@ ol.interaction.Draw.handleEvent = function(event) {
  * @private
  */
 ol.interaction.Draw.handleDownEvent_ = function(event) {
+  this.shouldHandle_ = !this.freehand_;
+
   if (this.freehand_) {
     this.downPx_ = event.pixel;
     if (!this.finishCoordinate_) {
@@ -347,18 +355,13 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.handleUpEvent_ = function(event) {
-  var downPx = this.downPx_;
-  var clickPx = event.pixel;
-  var dx = downPx[0] - clickPx[0];
-  var dy = downPx[1] - clickPx[1];
-  var squaredDistance = dx * dx + dy * dy;
   var pass = true;
-  var shouldHandle = this.freehand_ ?
-      squaredDistance > this.squaredClickTolerance_ :
-      squaredDistance <= this.squaredClickTolerance_;
+
+  this.handlePointerMove_(event);
+
   var circleMode = this.mode_ === ol.interaction.Draw.Mode_.CIRCLE;
-  if (shouldHandle) {
-    this.handlePointerMove_(event);
+
+  if (this.shouldHandle_) {
     if (!this.finishCoordinate_) {
       this.startDrawing_(event);
       if (this.mode_ === ol.interaction.Draw.Mode_.POINT) {
@@ -374,7 +377,7 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
       this.addToDrawing_(event);
     }
     pass = false;
-  } else if (circleMode && this.freehand_) {
+  } else if (this.freehand_) {
     this.finishCoordinate_ = null;
     this.abortDrawing_();
   }
@@ -389,6 +392,19 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
+  if (this.downPx_ &&
+      ((!this.freehand_ && this.shouldHandle_) ||
+      (this.freehand_ && !this.shouldHandle_))) {
+    var downPx = this.downPx_;
+    var clickPx = event.pixel;
+    var dx = downPx[0] - clickPx[0];
+    var dy = downPx[1] - clickPx[1];
+    var squaredDistance = dx * dx + dy * dy;
+    this.shouldHandle_ = this.freehand_ ?
+        squaredDistance > this.squaredClickTolerance_ :
+        squaredDistance <= this.squaredClickTolerance_;
+  }
+
   if (this.finishCoordinate_) {
     this.modifyDrawing_(event);
   } else {
