@@ -488,6 +488,17 @@ ol.format.GML2.prototype.getCoords_ = function(point, opt_srsName) {
  * @private
  */
 ol.format.GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  var curve = context['curve'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  var lines = geometry.getLineStrings();
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName, curve: curve},
+      ol.format.GML2.LINESTRINGORCURVEMEMBER_SERIALIZERS_,
+      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, lines,
+      objectStack, undefined, this);
 };
 
 
@@ -552,6 +563,11 @@ ol.format.GML2.prototype.writePointMember_ = function(node, point, objectStack) 
  * @private
  */
 ol.format.GML2.prototype.writeLineStringOrCurveMember_ = function(node, line, objectStack) {
+  var child = this.GEOMETRY_NODE_FACTORY_(line, objectStack);
+  if (child) {
+    node.appendChild(child);
+    this.writeCurveOrLineString_(child, line, objectStack);
+  }
 };
 
 
@@ -647,4 +663,45 @@ ol.format.GML2.POINTMEMBER_SERIALIZERS_ = {
     'pointMember': ol.xml.makeChildAppender(
         ol.format.GML2.prototype.writePointMember_)
   }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+ol.format.GML2.LINESTRINGORCURVEMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lineStringMember': ol.xml.makeChildAppender(
+        ol.format.GML2.prototype.writeLineStringOrCurveMember_),
+    'curveMember': ol.xml.makeChildAppender(
+        ol.format.GML2.prototype.writeLineStringOrCurveMember_)
+  }
+};
+
+
+/**
+ * @const
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node|undefined} Node.
+ * @private
+ */
+ol.format.GML2.prototype.MULTIGEOMETRY_MEMBER_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+  var parentNode = objectStack[objectStack.length - 1].node;
+  return ol.xml.createElementNS('http://www.opengis.net/gml',
+      ol.format.GML2.MULTIGEOMETRY_TO_MEMBER_NODENAME_[parentNode.nodeName]);
+};
+
+/**
+ * @const
+ * @type {Object.<string, string>}
+ * @private
+ */
+ol.format.GML2.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
+  'MultiLineString': 'lineStringMember',
+  'MultiCurve': 'curveMember',
+  'MultiPolygon': 'polygonMember',
+  'MultiSurface': 'surfaceMember'
 };
