@@ -328,10 +328,7 @@ ol.format.GML2.prototype.writeCurveOrLineString_ = function(node, geometry, obje
   }
   if (node.nodeName === 'LineString' ||
       node.nodeName === 'LineStringSegment') {
-    var coordinates = ol.xml.createElementNS(node.namespaceURI, 'coordinates');
-    coordinates.setAttribute('decimal', '.');
-    coordinates.setAttribute('cs', ',');
-    coordinates.setAttribute('ts', ' ');
+    var coordinates = this.createCoordinatesNode_(node.namespaceURI);
     node.appendChild(coordinates);
     this.writeCoordinates_(coordinates, geometry, objectStack);
   } else if (node.nodeName === 'Curve') {
@@ -340,6 +337,21 @@ ol.format.GML2.prototype.writeCurveOrLineString_ = function(node, geometry, obje
     this.writeCurveSegments_(segments,
         geometry, objectStack);
   }
+};
+
+
+/**
+ * @param {string} namespaceURI XML namespace.
+ * @returns {Node} coordinates node.
+ * @private
+ */
+ol.format.GML2.prototype.createCoordinatesNode_ = function(namespaceURI) {
+  var coordinates = ol.xml.createElementNS(namespaceURI, 'coordinates');
+  coordinates.setAttribute('decimal', '.');
+  coordinates.setAttribute('cs', ',');
+  coordinates.setAttribute('ts', ' ');
+
+  return coordinates;
 };
 
 
@@ -376,6 +388,79 @@ ol.format.GML2.prototype.writeCurveSegments_ = function(node, line, objectStack)
       'LineStringSegment');
   node.appendChild(child);
   this.writeCurveOrLineString_(child, line, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Polygon} geometry Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  if (node.nodeName !== 'PolygonPatch' && srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  if (node.nodeName === 'Polygon' || node.nodeName === 'PolygonPatch') {
+    var rings = geometry.getLinearRings();
+    ol.xml.pushSerializeAndPop(
+        {node: node, srsName: srsName},
+        ol.format.GML2.RING_SERIALIZERS_,
+        this.RING_NODE_FACTORY_,
+        rings, objectStack, undefined, this);
+  } else if (node.nodeName === 'Surface') {
+    var patches = ol.xml.createElementNS(node.namespaceURI, 'patches');
+    node.appendChild(patches);
+    this.writeSurfacePatches_(
+        patches, geometry, objectStack);
+  }
+};
+
+
+/**
+ * @param {*} value Value.
+ * @param {Array.<*>} objectStack Object stack.
+ * @param {string=} opt_nodeName Node name.
+ * @return {Node} Node.
+ * @private
+ */
+ol.format.GML2.prototype.RING_NODE_FACTORY_ = function(value, objectStack, opt_nodeName) {
+  var context = objectStack[objectStack.length - 1];
+  var parentNode = context.node;
+  var exteriorWritten = context['exteriorWritten'];
+  if (exteriorWritten === undefined) {
+    context['exteriorWritten'] = true;
+  }
+  return ol.xml.createElementNS(parentNode.namespaceURI,
+      exteriorWritten !== undefined ? 'innerBoundaryIs' : 'outerBoundaryIs');
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writeSurfacePatches_ = function(node, polygon, objectStack) {
+  var child = ol.xml.createElementNS(node.namespaceURI, 'PolygonPatch');
+  node.appendChild(child);
+  this.writeSurfaceOrPolygon_(child, polygon, objectStack);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LinearRing} ring LinearRing geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writeRing_ = function(node, ring, objectStack) {
+  var linearRing = ol.xml.createElementNS(node.namespaceURI, 'LinearRing');
+  node.appendChild(linearRing);
+  this.writeLinearRing_(linearRing, ring, objectStack);
 };
 
 
@@ -443,16 +528,14 @@ ol.format.GML2.prototype.writeLineStringOrCurveMember_ = function(node, line, ob
  * @private
  */
 ol.format.GML2.prototype.writeLinearRing_ = function(node, geometry, objectStack) {
-};
-
-
-/**
- * @param {Node} node Node.
- * @param {ol.geom.Polygon} geometry Polygon geometry.
- * @param {Array.<*>} objectStack Node stack.
- * @private
- */
-ol.format.GML2.prototype.writeSurfaceOrPolygon_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  var coordinates = this.createCoordinatesNode_(node.namespaceURI);
+  node.appendChild(coordinates);
+  this.writeCoordinates_(coordinates, geometry, objectStack);
 };
 
 
@@ -505,5 +588,17 @@ ol.format.GML2.GEOMETRY_SERIALIZERS_ = {
         ol.format.GML2.prototype.writeMultiSurfaceOrPolygon_),
     'Envelope': ol.xml.makeChildAppender(
         ol.format.GML2.prototype.writeEnvelope)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+ol.format.GML2.RING_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'outerBoundaryIs': ol.xml.makeChildAppender(ol.format.GML2.prototype.writeRing_),
+    'innerBoundaryIs': ol.xml.makeChildAppender(ol.format.GML2.prototype.writeRing_)
   }
 };

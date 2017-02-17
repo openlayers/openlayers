@@ -136,12 +136,12 @@ describe('ol.format.GML2', function() {
     var node;
     var featureNS = 'http://www.openlayers.org/';
     beforeEach(function() {
-      node = ol.xml.createElementNS(featureNS, 'lines');
+      node = ol.xml.createElementNS(featureNS, 'layer');
     });
 
     it('can serialize a LineString', function() {
       var expected =
-        '<lines xmlns="http://www.openlayers.org/" fid="1">' +
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
         '  <geometry>' +
         '     <LineString xmlns="http://www.opengis.net/gml" ' +
         '                  srsName="EPSG:4326">' +
@@ -155,6 +155,37 @@ describe('ol.format.GML2', function() {
 
       var feature = new ol.Feature({
         geometry: new ol.geom.LineString([[1.1, 2], [3, 4.2]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+
+    it('can serialize a Polygon', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <Polygon xmlns="http://www.opengis.net/gml" ' +
+        '                  srsName="EPSG:4326">' +
+        '       <outerBoundaryIs>' +
+        '         <LinearRing srsName="EPSG:4326">' +
+        '           <coordinates ' +
+        '                        decimal="." cs="," ts=" ">' +
+        '              2,1.1 4.2,3 6,5.2' +
+        '           </coordinates>' +
+        '         </LinearRing>' +
+        '       </outerBoundaryIs>' +
+        '      </Polygon>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Polygon([[[1.1, 2], [3, 4.2], [5.2, 6]]])
       });
       feature.setId(1);
       var objectStack = [{
