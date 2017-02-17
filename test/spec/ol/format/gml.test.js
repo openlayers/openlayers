@@ -285,6 +285,41 @@ describe('ol.format.GML2', function() {
 
       expect(node).to.xmleql(ol.xml.parse(expected));
     });
+
+    it('can serialize a Multi Polygon', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <MultiPolygon xmlns="http://www.opengis.net/gml" ' +
+        '                 srsName="EPSG:4326">' +
+        '       <polygonMember>' +
+        '         <Polygon srsName="EPSG:4326">' +
+        '           <outerBoundaryIs>' +
+        '             <LinearRing srsName="EPSG:4326">' +
+        '               <coordinates ' +
+        '                        decimal="." cs="," ts=" ">' +
+        '                  2,1.1 4.2,3 6,5.2' +
+        '               </coordinates>' +
+        '             </LinearRing>' +
+        '           </outerBoundaryIs>' +
+        '         </Polygon>' +
+        '       </polygonMember>' +
+        '      </MultiPolygon>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.MultiPolygon([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
   });
 });
 

@@ -596,6 +596,33 @@ ol.format.GML2.prototype.writeLinearRing_ = function(node, geometry, objectStack
  * @private
  */
 ol.format.GML2.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  var surface = context['surface'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  var polygons = geometry.getPolygons();
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName, surface: surface},
+      ol.format.GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_,
+      this.MULTIGEOMETRY_MEMBER_NODE_FACTORY_, polygons,
+      objectStack, undefined, this);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Polygon} polygon Polygon geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, objectStack) {
+  var child = this.GEOMETRY_NODE_FACTORY_(
+      polygon, objectStack);
+  if (child) {
+    node.appendChild(child);
+    this.writeSurfaceOrPolygon_(child, polygon, objectStack);
+  }
 };
 
 
@@ -603,6 +630,7 @@ ol.format.GML2.prototype.writeMultiSurfaceOrPolygon_ = function(node, geometry, 
  * @param {Node} node Node.
  * @param {ol.Extent} extent Extent.
  * @param {Array.<*>} objectStack Node stack.
+ * @private
  */
 ol.format.GML2.prototype.writeEnvelope = function(node, extent, objectStack) {
 };
@@ -704,4 +732,19 @@ ol.format.GML2.MULTIGEOMETRY_TO_MEMBER_NODENAME_ = {
   'MultiCurve': 'curveMember',
   'MultiPolygon': 'polygonMember',
   'MultiSurface': 'surfaceMember'
+};
+
+
+/**
+ * @const
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+ol.format.GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'surfaceMember': ol.xml.makeChildAppender(
+        ol.format.GML2.prototype.writeSurfaceOrPolygonMember_),
+    'polygonMember': ol.xml.makeChildAppender(
+        ol.format.GML2.prototype.writeSurfaceOrPolygonMember_)
+  }
 };
