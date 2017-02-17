@@ -220,7 +220,6 @@ ol.format.GML2.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, o
   var context = objectStack[objectStack.length - 1];
   var multiSurface = context['multiSurface'];
   var surface = context['surface'];
-  var curve = context['curve'];
   var multiCurve = context['multiCurve'];
   var nodeName;
   if (!Array.isArray(value)) {
@@ -229,8 +228,6 @@ ol.format.GML2.prototype.GEOMETRY_NODE_FACTORY_ = function(value, objectStack, o
       nodeName = 'MultiSurface';
     } else if (nodeName === 'Polygon' && surface === true) {
       nodeName = 'Surface';
-    } else if (nodeName === 'LineString' && curve === true) {
-      nodeName = 'Curve';
     } else if (nodeName === 'MultiLineString' && multiCurve === true) {
       nodeName = 'MultiCurve';
     }
@@ -324,6 +321,78 @@ ol.format.GML2.prototype.writeGeometryElement = function(node, geometry, objectS
  * @private
  */
 ol.format.GML2.prototype.writeCurveOrLineString_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  if (node.nodeName !== 'LineStringSegment' && srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  if (node.nodeName === 'LineString' ||
+      node.nodeName === 'LineStringSegment') {
+    var coordinates = ol.xml.createElementNS(node.namespaceURI, 'coordinates');
+    coordinates.setAttribute('decimal', '.');
+    coordinates.setAttribute('cs', ',');
+    coordinates.setAttribute('ts', ' ');
+    node.appendChild(coordinates);
+    this.writeCoordinates_(coordinates, geometry, objectStack);
+  } else if (node.nodeName === 'Curve') {
+    var segments = ol.xml.createElementNS(node.namespaceURI, 'segments');
+    node.appendChild(segments);
+    this.writeCurveSegments_(segments,
+        geometry, objectStack);
+  }
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LineString|ol.geom.LinearRing} value Geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writeCoordinates_ = function(node, value, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  // only 2d for simple features profile
+  var points = value.getCoordinates();
+  var len = points.length;
+  var parts = new Array(len);
+  var point;
+  for (var i = 0; i < len; ++i) {
+    point = points[i];
+    parts[i] = this.getCoords_(point, srsName);
+  }
+  ol.format.XSD.writeStringTextNode(node, parts.join(' '));
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.LineString} line LineString geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writeCurveSegments_ = function(node, line, objectStack) {
+  var child = ol.xml.createElementNS(node.namespaceURI,
+      'LineStringSegment');
+  node.appendChild(child);
+  this.writeCurveOrLineString_(child, line, objectStack);
+};
+
+
+/**
+ * @param {Array.<number>} point Point geometry.
+ * @param {string=} opt_srsName Optional srsName
+ * @return {string} The coords string.
+ * @private
+ */
+ol.format.GML2.prototype.getCoords_ = function(point, opt_srsName) {
+  var axisOrientation = 'enu';
+  if (opt_srsName) {
+    axisOrientation = ol.proj.get(opt_srsName).getAxisOrientation();
+  }
+  return ((axisOrientation.substr(0, 2) === 'en') ?
+      point[0] + ',' + point[1] :
+      point[1] + ',' + point[0]);
 };
 
 

@@ -131,6 +131,41 @@ describe('ol.format.GML2', function() {
       });
     });
   });
+
+  describe('#writeFeatureElement', function() {
+    var node;
+    var featureNS = 'http://www.openlayers.org/';
+    beforeEach(function() {
+      node = ol.xml.createElementNS(featureNS, 'lines');
+    });
+
+    it('can serialize a LineString', function() {
+      var expected =
+        '<lines xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <LineString xmlns="http://www.opengis.net/gml" ' +
+        '                  srsName="EPSG:4326">' +
+        '       <coordinates ' +
+        '                     decimal="." cs="," ts=" ">' +
+        '         2,1.1 4.2,3' +
+        '       </coordinates>' +
+        '      </LineString>' +
+        '    </geometry>' +
+        '  </lines>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.LineString([[1.1, 2], [3, 4.2]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+  });
 });
 
 describe('ol.format.GML3', function() {
