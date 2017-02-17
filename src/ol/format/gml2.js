@@ -498,6 +498,16 @@ ol.format.GML2.prototype.writeMultiCurveOrLineString_ = function(node, geometry,
  * @private
  */
 ol.format.GML2.prototype.writePoint_ = function(node, geometry, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  var coordinates = this.createCoordinatesNode_(node.namespaceURI);
+  node.appendChild(coordinates);
+  var point = geometry.getCoordinates();
+  var coord = this.getCoords_(point, srsName);
+  ol.format.XSD.writeStringTextNode(coordinates, coord);
 };
 
 

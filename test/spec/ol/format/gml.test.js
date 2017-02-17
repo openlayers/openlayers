@@ -196,6 +196,33 @@ describe('ol.format.GML2', function() {
 
       expect(node).to.xmleql(ol.xml.parse(expected));
     });
+
+    it('can serialize a Point', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <Point xmlns="http://www.opengis.net/gml" ' +
+        '            srsName="EPSG:4326">' +
+        '       <coordinates ' +
+        '                    decimal="." cs="," ts=" ">' +
+        '              2,1.1' +
+        '       </coordinates>' +
+        '      </Point>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point([1.1, 2])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
   });
 });
 
