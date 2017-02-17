@@ -839,6 +839,47 @@ describe('ol.format.WFS', function() {
     });
   });
 
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('do not add feature prefx twice', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2]]),
+        foo: 'bar',
+        nul: null
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var updateFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2]]),
+        foo: 'bar',
+        // null value gets Property element with no Value
+        nul: null,
+        // undefined value means don't create a Property element
+        unwritten: undefined
+      });
+      updateFeature.setId('fid.42');
+      var updates = [updateFeature];
+
+      var deleteFeature = new ol.Feature();
+      deleteFeature.setId('fid.37');
+      var deletes = [deleteFeature];
+      var serialized = format.writeTransaction(inserts, updates, deletes, {
+        featureNS: 'http://www.openplans.org/topp',
+        featureType: 'topp:states',
+        featurePrefix: 'topp'
+      });
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+  });
+
 
   describe('when writing out a GetFeature request', function() {
     var text;
