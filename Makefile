@@ -308,4 +308,5 @@ package:
 	@cp -r package build
 	@cd ./src && cp -r ol/* ../build/package
 	@rm build/package/typedefs.js
+	@cp css/ol.css build/package
 	./node_modules/.bin/jscodeshift --transform transforms/module.js build/package
