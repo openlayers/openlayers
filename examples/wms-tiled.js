@@ -3,7 +3,6 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileWMS');
-goog.require('ol.tilegrid');
 
 
 var layers = [
@@ -15,11 +14,7 @@ var layers = [
     source: new ol.source.TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
-      serverType: 'geoserver',
-      tileGrid: ol.tilegrid.createXYZ({tileSize: [192, 256]}),
-      tileLoadFunction: function(tile, src) {
-        tile.getImage().src = src + '&tc=' + tile.getTileCoord().toString();
-      }
+      serverType: 'geoserver'
     })
   })
 ];
@@ -28,7 +23,6 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     center: [-10997148, 4569099],
-    zoom: 5,
-    resolutions: layers[1].getSource().getTileGrid().getResolutions()
+    zoom: 4
   })
 });
