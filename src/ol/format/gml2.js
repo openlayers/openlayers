@@ -517,7 +517,31 @@ ol.format.GML2.prototype.writePoint_ = function(node, geometry, objectStack) {
  * @param {Array.<*>} objectStack Node stack.
  * @private
  */
-ol.format.GML2.prototype.writeMultiPoint_ = function(node, geometry, objectStack) {
+ol.format.GML2.prototype.writeMultiPoint_ = function(node, geometry,
+    objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  var points = geometry.getPoints();
+  ol.xml.pushSerializeAndPop({node: node, srsName: srsName},
+      ol.format.GML2.POINTMEMBER_SERIALIZERS_,
+      ol.xml.makeSimpleNodeFactory('pointMember'), points,
+      objectStack, undefined, this);
+};
+
+
+/**
+ * @param {Node} node Node.
+ * @param {ol.geom.Point} point Point geometry.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.GML2.prototype.writePointMember_ = function(node, point, objectStack) {
+  var child = ol.xml.createElementNS(node.namespaceURI, 'Point');
+  node.appendChild(child);
+  this.writePoint_(child, point, objectStack);
 };
 
 
@@ -610,5 +634,17 @@ ol.format.GML2.RING_SERIALIZERS_ = {
   'http://www.opengis.net/gml': {
     'outerBoundaryIs': ol.xml.makeChildAppender(ol.format.GML2.prototype.writeRing_),
     'innerBoundaryIs': ol.xml.makeChildAppender(ol.format.GML2.prototype.writeRing_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+ol.format.GML2.POINTMEMBER_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'pointMember': ol.xml.makeChildAppender(
+        ol.format.GML2.prototype.writePointMember_)
   }
 };
