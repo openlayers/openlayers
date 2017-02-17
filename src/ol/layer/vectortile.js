@@ -43,9 +43,10 @@ ol.layer.VectorTile = function(opt_options) {
 
   /**
    * @private
-   * @type {ol.layer.VectorTileRenderType|string}
+   * @type {ol.layer.VectorTileRenderType}
    */
-  this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
+  this.renderMode_ = /** @type {ol.layer.VectorTileRenderType} */ (options.renderMode) ||
+      ol.layer.VectorTileRenderType.HYBRID;
 
 };
 ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
@@ -76,7 +77,7 @@ ol.layer.VectorTile.prototype.getPreload = function() {
 
 
 /**
- * @return {ol.layer.VectorTileRenderType|string} The render mode.
+ * @return {ol.layer.VectorTileRenderType} The render mode.
  */
 ol.layer.VectorTile.prototype.getRenderMode = function() {
   return this.renderMode_;
