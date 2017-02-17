@@ -1,7 +1,6 @@
 const pkg = require('../package.json');
 
 const defines = {
-  'ol.DEBUG': false,
   'ol.ENABLE_WEBGL': false
 };
 
