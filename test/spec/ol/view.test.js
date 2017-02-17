@@ -406,6 +406,26 @@ describe('ol.View', function() {
       });
     });
 
+    it('avoids going under minResolution', function(done) {
+      var maxZoom = 14;
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        maxZoom: maxZoom
+      });
+
+      var minResolution = view.getMinResolution();
+      view.animate({
+        resolution: minResolution,
+        duration: 10
+      }, function(complete) {
+        expect(complete).to.be(true);
+        expect(view.getResolution()).to.be(minResolution);
+        expect(view.getZoom()).to.be(maxZoom);
+        done();
+      });
+    });
+
     it('calls a callback when animation completes', function(done) {
       var view = new ol.View({
         center: [0, 0],
@@ -558,7 +578,7 @@ describe('ol.View', function() {
           duration: 25
         }, function() {
           expect(calls).to.be(1);
-          expect(view.getZoom()).to.roughlyEqual(2, 1e-8);
+          expect(view.getZoom()).to.be(2);
           expect(view.getAnimating()).to.be(false);
           done();
         });
@@ -599,7 +619,7 @@ describe('ol.View', function() {
         duration: 25
       }, function() {
         ++calls;
-        expect(view.getResolution()).to.roughlyEqual(2, 1e-8);
+        expect(view.getResolution()).to.be(2);
         onAnimateEnd();
       });
 
