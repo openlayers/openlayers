@@ -633,6 +633,18 @@ ol.format.GML2.prototype.writeSurfaceOrPolygonMember_ = function(node, polygon, 
  * @private
  */
 ol.format.GML2.prototype.writeEnvelope = function(node, extent, objectStack) {
+  var context = objectStack[objectStack.length - 1];
+  var srsName = context['srsName'];
+  if (srsName) {
+    node.setAttribute('srsName', srsName);
+  }
+  var keys = ['lowerCorner', 'upperCorner'];
+  var values = [extent[0] + ' ' + extent[1], extent[2] + ' ' + extent[3]];
+  ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
+      ({node: node}), ol.format.GML2.ENVELOPE_SERIALIZERS_,
+      ol.xml.OBJECT_PROPERTY_NODE_FACTORY,
+      values,
+      objectStack, keys, this);
 };
 
 
@@ -746,5 +758,17 @@ ol.format.GML2.SURFACEORPOLYGONMEMBER_SERIALIZERS_ = {
         ol.format.GML2.prototype.writeSurfaceOrPolygonMember_),
     'polygonMember': ol.xml.makeChildAppender(
         ol.format.GML2.prototype.writeSurfaceOrPolygonMember_)
+  }
+};
+
+
+/**
+ * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
+ * @private
+ */
+ol.format.GML2.ENVELOPE_SERIALIZERS_ = {
+  'http://www.opengis.net/gml': {
+    'lowerCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode),
+    'upperCorner': ol.xml.makeChildAppender(ol.format.XSD.writeStringTextNode)
   }
 };
