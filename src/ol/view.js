@@ -323,18 +323,20 @@ ol.View.prototype.updateAnimations_ = function() {
         var y = y0 + progress * (y1 - y0);
         this.set(ol.ViewProperty.CENTER, [x, y]);
       }
-      if (animation.sourceResolution) {
-        var resolution = animation.sourceResolution +
-            progress * (animation.targetResolution - animation.sourceResolution);
+      if (animation.sourceResolution && animation.targetResolution) {
+        var resolution = progress === 1 ?
+            animation.targetResolution :
+            animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
         if (animation.anchor) {
           this.set(ol.ViewProperty.CENTER,
               this.calculateCenterZoom(resolution, animation.anchor));
         }
         this.set(ol.ViewProperty.RESOLUTION, resolution);
       }
-      if (animation.sourceRotation !== undefined) {
-        var rotation = animation.sourceRotation +
-            progress * (animation.targetRotation - animation.sourceRotation);
+      if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
+        var rotation = progress === 1 ?
+            animation.targetRotation :
+            animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
         if (animation.anchor) {
           this.set(ol.ViewProperty.CENTER,
               this.calculateCenterRotate(rotation, animation.anchor));
