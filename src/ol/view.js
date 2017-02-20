@@ -529,6 +529,26 @@ ol.View.prototype.getMinResolution = function() {
 
 
 /**
+ * Get the maximum zoom level for the view.
+ * @return {number} The maximum zoom level.
+ * @api
+ */
+ol.View.prototype.getMaxZoom = function() {
+  return /** @type {number} */ (this.getZoomForResolution(this.minResolution_));
+};
+
+
+/**
+ * Get the minimum zoom level for the view.
+ * @return {number} The minimum zoom level.
+ * @api
+ */
+ol.View.prototype.getMinZoom = function() {
+  return /** @type {number} */ (this.getZoomForResolution(this.maxResolution_));
+};
+
+
+/**
  * Get the view projection.
  * @return {ol.proj.Projection} The projection of the view.
  * @api
@@ -659,8 +679,22 @@ ol.View.prototype.getState = function() {
 ol.View.prototype.getZoom = function() {
   var zoom;
   var resolution = this.getResolution();
-  if (resolution !== undefined &&
-      resolution >= this.minResolution_ && resolution <= this.maxResolution_) {
+  if (resolution !== undefined) {
+    zoom = this.getZoomForResolution(resolution);
+  }
+  return zoom;
+};
+
+
+/**
+ * Get the zoom level for a resolution.
+ * @param {number} resolution The resolution.
+ * @return {number|undefined} The zoom level for the provided resolution.
+ * @api
+ */
+ol.View.prototype.getZoomForResolution = function(resolution) {
+  var zoom;
+  if (resolution >= this.minResolution_ && resolution <= this.maxResolution_) {
     var offset = this.minZoom_ || 0;
     var max, zoomFactor;
     if (this.resolutions_) {

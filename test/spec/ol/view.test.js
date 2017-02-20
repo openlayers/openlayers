@@ -7,7 +7,6 @@ goog.require('ol.extent');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 
-
 describe('ol.View', function() {
 
   describe('constructor (defaults)', function() {
@@ -872,6 +871,69 @@ describe('ol.View', function() {
       view.setZoom(0);
       expect(view.getResolution()).to.be(100);
     });
+  });
+
+  describe('#getZoomForResolution', function() {
+
+    it('returns correct zoom levels', function() {
+      var view = new ol.View();
+      var max = view.getMaxResolution();
+
+      expect(view.getZoomForResolution(max)).to.be(0);
+
+      expect(view.getZoomForResolution(max / 2)).to.be(1);
+
+      expect(view.getZoomForResolution(max / 4)).to.be(2);
+    });
+
+    it('returns correct zoom levels for specifically configured resolutions', function() {
+      var view = new ol.View({
+        resolutions: [10, 8, 6, 4, 2]
+      });
+
+      expect(view.getZoomForResolution(10)).to.be(0);
+
+      expect(view.getZoomForResolution(8)).to.be(1);
+
+      expect(view.getZoomForResolution(6)).to.be(2);
+
+      expect(view.getZoomForResolution(4)).to.be(3);
+
+      expect(view.getZoomForResolution(2)).to.be(4);
+    });
+
+  });
+
+  describe('#getMaxZoom', function() {
+
+    it('returns the zoom level for the min resolution', function() {
+      var view = new ol.View();
+      expect(view.getMaxZoom()).to.be(view.getZoomForResolution(view.getMinResolution()));
+    });
+
+    it('works for a view configured with a maxZoom', function() {
+      var view = new ol.View({
+        maxZoom: 10
+      });
+      expect(view.getMaxZoom()).to.be(10);
+    });
+
+  });
+
+  describe('#getMinZoom', function() {
+
+    it('returns the zoom level for the max resolution', function() {
+      var view = new ol.View();
+      expect(view.getMinZoom()).to.be(view.getZoomForResolution(view.getMaxResolution()));
+    });
+
+    it('works for views configured with a minZoom', function() {
+      var view = new ol.View({
+        minZoom: 3
+      });
+      expect(view.getMinZoom()).to.be(3);
+    });
+
   });
 
   describe('#calculateExtent', function() {
