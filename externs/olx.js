@@ -6986,7 +6986,7 @@ olx.style.IconOptions.prototype.opacity;
 
 
 /**
- * Scale.
+ * Scale. Default is `1`.
  * @type {number|undefined}
  * @api
  */
@@ -7044,7 +7044,7 @@ olx.style.IconOptions.prototype.imgSize;
 
 /**
  * Image source URI.
- * @type {string}
+ * @type {string|undefined}
  * @api
  */
 olx.style.IconOptions.prototype.src;
