@@ -904,6 +904,38 @@ describe('ol.View', function() {
 
   });
 
+  describe('#getMaxZoom', function() {
+
+    it('returns the zoom level for the min resolution', function() {
+      var view = new ol.View();
+      expect(view.getMaxZoom()).to.be(view.getZoomForResolution(view.getMinResolution()));
+    });
+
+    it('works for a view configured with a maxZoom', function() {
+      var view = new ol.View({
+        maxZoom: 10
+      });
+      expect(view.getMaxZoom()).to.be(10);
+    });
+
+  });
+
+  describe('#getMinZoom', function() {
+
+    it('returns the zoom level for the max resolution', function() {
+      var view = new ol.View();
+      expect(view.getMinZoom()).to.be(view.getZoomForResolution(view.getMaxResolution()));
+    });
+
+    it('works for views configured with a minZoom', function() {
+      var view = new ol.View({
+        minZoom: 3
+      });
+      expect(view.getMinZoom()).to.be(3);
+    });
+
+  });
+
   describe('#calculateExtent', function() {
     it('returns the expected extent', function() {
       var view = new ol.View({
