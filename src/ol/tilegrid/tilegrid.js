@@ -23,12 +23,6 @@ goog.require('ol.tilecoord');
 ol.tilegrid.TileGrid = function(options) {
 
   /**
-   * @protected
-   * @type {number}
-   */
-  this.minZoom = options.minZoom !== undefined ? options.minZoom : 0;
-
-  /**
    * @private
    * @type {!Array.<number>}
    */
@@ -38,10 +32,33 @@ ol.tilegrid.TileGrid = function(options) {
   }, true), 17); // `resolutions` must be sorted in descending order
 
   /**
+   * @private
+   * @type {Array.<number>}
+   */
+  this.levels_ = null;
+
+  if (options.levels) {
+    this.levels_ = options.levels;
+  } else {
+    var minZoom = options.minZoom == undefined ? 0 : options.minZoom;
+    var maxZoom = this.resolutions_.length - 1;
+    this.levels_ = [];
+    for (var i = minZoom; i <= maxZoom; ++i) {
+      this.levels_.push(i);
+    }
+  }
+
+  /**
    * @protected
    * @type {number}
    */
-  this.maxZoom = this.resolutions_.length - 1;
+  this.minZoom = this.levels_[0];
+
+  /**
+   * @protected
+   * @type {number}
+   */
+  this.maxZoom = this.levels_[this.levels_.length - 1];
 
   /**
    * @private
@@ -70,14 +87,6 @@ ol.tilegrid.TileGrid = function(options) {
   ol.asserts.assert(
       (!this.origin_ && this.origins_) || (this.origin_ && !this.origins_),
       18); // Either `origin` or `origins` must be configured, never both
-
-  /**
-   * @private
-   * @type {Array.<number>}
-   */
-  this.loadZs_ = options.loadZooms ?
-      options.loadZooms.slice().sort(ol.array.numberSafeCompareFunction).reverse() :
-      null;
 
   /**
    * @private
@@ -143,19 +152,6 @@ ol.tilegrid.TileGrid.tmpTileCoord_ = [0, 0, 0];
 
 
 /**
- * Adjust tile pixel ratio for reused zoom levels.
- * @param {number} tilePixelRatio Tile pixel ratio of the source.
- * @param {number} z Zoom level.
- * @return {number} Adjusted Tile pixel ratio.
- */
-ol.tilegrid.TileGrid.prototype.adjustTilePixelRatio = function(tilePixelRatio, z) {
-  var zResolution = this.getResolution(z);
-  var useZResolution = this.getResolution(this.getLoadZ(z));
-  return tilePixelRatio * zResolution / useZResolution;
-};
-
-
-/**
  * Call a function with each tile coordinate for a given extent and zoom level.
  *
  * @param {ol.Extent} extent Extent.
@@ -184,13 +180,12 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoord = function(extent, zoom, callbac
  */
 ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCoord, callback, opt_this, opt_tileRange, opt_extent) {
   var tileCoordExtent = this.getTileCoordExtent(tileCoord, opt_extent);
-  var z = tileCoord[0] - 1;
-  while (z >= this.minZoom) {
+  for (var i = this.getLevelIndex_(tileCoord[0]) - 1; i >= 0; --i) {
+    var z = this.levels_[i];
     if (callback.call(opt_this, z,
         this.getTileRangeForExtentAndZ(tileCoordExtent, z, opt_tileRange))) {
       return true;
     }
-    --z;
   }
   return false;
 };
@@ -202,6 +197,14 @@ ol.tilegrid.TileGrid.prototype.forEachTileCoordParentTileRange = function(tileCo
  */
 ol.tilegrid.TileGrid.prototype.getExtent = function() {
   return this.extent_;
+};
+
+
+/**
+ * @return {Array.<number>} Zoom levels.
+ */
+ol.tilegrid.TileGrid.prototype.getLevels = function() {
+  return this.levels_;
 };
 
 
@@ -258,16 +261,6 @@ ol.tilegrid.TileGrid.prototype.getResolution = function(z) {
  */
 ol.tilegrid.TileGrid.prototype.getResolutions = function() {
   return this.resolutions_;
-};
-
-
-/**
- * @param {number} z Zoom level.
- * @return {number} Zoom level adjusted for the configured {@link #loadZs_}.
- */
-ol.tilegrid.TileGrid.prototype.getLoadZ = function(z) {
-  return this.loadZs_ ?
-       this.loadZs_[ol.array.linearFindNearest(this.loadZs_, z, -1)] : z;
 };
 
 
@@ -460,19 +453,11 @@ ol.tilegrid.TileGrid.prototype.getTileCoordResolution = function(tileCoord) {
  * @api
  */
 ol.tilegrid.TileGrid.prototype.getTileSize = function(z) {
-  var tileSize;
   if (this.tileSize_) {
-    tileSize = this.tileSize_;
+    return this.tileSize_;
   } else {
-    tileSize = this.tileSizes_[z];
+    return this.tileSizes_[z];
   }
-  if (this.loadZs_) {
-    var sizeFactor = this.getResolution(this.getLoadZ(z)) / this.getResolution(z);
-    tileSize = ol.size.toSize(tileSize, this.tmpSize_);
-    tileSize[0] *= sizeFactor;
-    tileSize[1] *= sizeFactor;
-  }
-  return tileSize;
 };
 
 
@@ -490,6 +475,24 @@ ol.tilegrid.TileGrid.prototype.getFullTileRange = function(z) {
 
 
 /**
+ * @param {number} z Z.
+ * @return {number} Closest lower available zoom level for the given `z`.
+ */
+ol.tilegrid.TileGrid.prototype.getLevel = function(z) {
+  return this.levels_[this.getLevelIndex_(z)];
+};
+
+
+ol.tilegrid.TileGrid.prototype.getLevelIndex_ = function(z) {
+  var index = ol.array.binarySearch(this.levels_, z);
+  if (index < 0) {
+    index = ol.math.clamp(~index - 1, 0, this.levels_.length - 1);
+  }
+  return index;
+};
+
+
+/**
  * @param {number} resolution Resolution.
  * @param {number=} opt_direction If 0, the nearest resolution will be used.
  *     If 1, the nearest lower resolution will be used. If -1, the nearest
@@ -501,7 +504,7 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(
     resolution, opt_direction) {
   var z = ol.array.linearFindNearest(this.resolutions_, resolution,
       opt_direction || 0);
-  return ol.math.clamp(z, this.minZoom, this.maxZoom);
+  return this.getLevel(z);
 };
 
 
@@ -510,9 +513,9 @@ ol.tilegrid.TileGrid.prototype.getZForResolution = function(
  * @private
  */
 ol.tilegrid.TileGrid.prototype.calculateTileRanges_ = function(extent) {
-  var length = this.resolutions_.length;
-  var fullTileRanges = new Array(length);
-  for (var z = this.minZoom; z < length; ++z) {
+  var fullTileRanges = new Array(this.resolutions_.length);
+  for (var i = 0, ii = this.levels_.length; i < ii; ++i) {
+    var z = this.levels_[i];
     fullTileRanges[z] = this.getTileRangeForExtentAndZ(extent, z);
   }
   this.fullTileRanges_ = fullTileRanges;

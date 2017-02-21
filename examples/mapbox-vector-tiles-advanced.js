@@ -25,8 +25,7 @@ var map = new ol.Map({
           'OpenStreetMap contributors</a>',
         format: new ol.format.MVT(),
         tileGrid: ol.tilegrid.createXYZ({
-          maxZoom: 19,
-          loadZooms: [0, 4, 8, 12, 16]
+          levels: [0, 3, 6, 9, 12, 15]
         }),
         url: 'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
               '{z}/{x}/{y}.vector.pbf?access_token=' + key,

@@ -26,8 +26,7 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
         if (!tileCoord) {
           return undefined;
         } else {
-          var z = tileGrid.getLoadZ(tileCoord[0]);
-          return template.replace(zRegEx, z.toString())
+          return template.replace(zRegEx, tileCoord[0].toString())
               .replace(xRegEx, tileCoord[1].toString())
               .replace(yRegEx, function() {
                 var y = -tileCoord[2] - 1;

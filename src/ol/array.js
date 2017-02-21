@@ -8,7 +8,8 @@ goog.provide('ol.array');
  * @param {Array.<*>} haystack Items to search through.
  * @param {*} needle The item to look for.
  * @param {Function=} opt_comparator Comparator function.
- * @return {number} The index of the item if found, -1 if not.
+ * @return {number} The index of the item if found, or the bitwise NOT (i.e. a
+ *     negative value) of the closest lower index.
  */
 ol.array.binarySearch = function(haystack, needle, opt_comparator) {
   var mid, cmp;
