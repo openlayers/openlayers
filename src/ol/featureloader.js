@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.format.FormatType');
 goog.require('ol.xml');
 
-
 /**
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
@@ -22,8 +21,9 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
        * @param {ol.Extent} extent Extent.
        * @param {number} resolution Resolution.
        * @param {ol.proj.Projection} projection Projection.
-       * @this {ol.source.Vector|ol.VectorTile} Openlayers object
+       * @this {ol.source.Vector|ol.VectorTile}
        */
+
       function(extent, resolution, projection) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET',
