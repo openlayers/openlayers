@@ -19,7 +19,7 @@ ol.source.VectorEventType = {
   CHANGEFEATURE: 'changefeature',
 
   /**
-   * Triggered when the source not be loaded.
+   * Triggered if the XHR data source fails to load.
    * @event ol.source.Vector.Event#loaderror
    * @api
    */
