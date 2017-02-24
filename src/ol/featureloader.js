@@ -22,7 +22,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
        * @param {ol.Extent} extent Extent.
        * @param {number} resolution Resolution.
        * @param {ol.proj.Projection} projection Projection.
-       * @this {ol.source.Vector|ol.VectorTile}
+       * @this {ol.source.Vector|ol.VectorTile} Openlayers object
        */
       function(extent, resolution, projection) {
         var xhr = new XMLHttpRequest();
