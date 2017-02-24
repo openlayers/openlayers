@@ -80,6 +80,9 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
  * vector source.
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
+ * @param {function(this:ol.VectorTile)|function(this:ol.source.Vector)} failure
+ *     Function called when loading failed. Called with the vector tile or
+ *     source as `this`.
  * @return {ol.FeatureLoader} The feature loader.
  * @api
  */
