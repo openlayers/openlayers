@@ -76,7 +76,7 @@ ol.source.Vector = function(opt_options) {
   } else if (this.url_ !== undefined) {
     ol.asserts.assert(this.format_, 7); // `format` must be set when `url` is set
     // create a XHR feature loader for "url" and "format"
-    this.loader_ = ol.featureloader.xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_));
+    this.loader_ = ol.featureloader.xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_), this.featureLoadFailure);
   }
 
   /**
@@ -246,6 +246,14 @@ ol.source.Vector.prototype.addFeatures = function(features) {
   this.changed();
 };
 
+/**
+ * Fire a loaderror event if feature fails to load.
+ * @api
+ */
+ol.source.Vector.prototype.featureLoadFailure = function() {
+  this.dispatchEvent(new ol.source.Vector.Event(
+      ol.source.VectorEventType.LOADERROR, undefined));
+};
 
 /**
  * Add features without firing a `change` event.

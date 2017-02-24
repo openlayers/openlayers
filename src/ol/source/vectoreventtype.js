@@ -19,6 +19,13 @@ ol.source.VectorEventType = {
   CHANGEFEATURE: 'changefeature',
 
   /**
+   * Triggered when the source not be loaded.
+   * @event ol.source.Vector.Event#loaderror
+   * @api
+   */
+  LOADERROR: 'loaderror',
+
+  /**
    * Triggered when the clear method is called on the source.
    * @event ol.source.Vector.Event#clear
    * @api

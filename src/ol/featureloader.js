@@ -64,6 +64,11 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
             failure.call(this);
           }
         }.bind(this);
+
+        xhr.onerror = function() {
+          failure.call(this);
+        }.bind(this);
+
         xhr.send();
       });
 };
@@ -78,7 +83,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
  * @return {ol.FeatureLoader} The feature loader.
  * @api
  */
-ol.featureloader.xhr = function(url, format) {
+ol.featureloader.xhr = function(url, format, failure) {
   return ol.featureloader.loadFeaturesXhr(url, format,
       /**
        * @param {Array.<ol.Feature>} features The loaded features.
@@ -87,5 +92,5 @@ ol.featureloader.xhr = function(url, format) {
        */
       function(features, dataProjection) {
         this.addFeatures(features);
-      }, /* FIXME handle error */ ol.nullFunction);
+      }, failure);
 };
