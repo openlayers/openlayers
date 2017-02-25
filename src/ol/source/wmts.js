@@ -292,6 +292,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  *  - style - {string} The name of the style
  *  - format - {string} Image format for the layer. Default is the first
  *       format returned in the GetCapabilities response.
+ *  - crossOrigin - {string|null|undefined} Cross origin. Default is `undefined`.
  * @return {?olx.source.WMTSOptions} WMTS source options object or `null` if the layer was not found.
  * @api
  */
@@ -447,6 +448,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     tileGrid: tileGrid,
     style: style,
     dimensions: dimensions,
-    wrapX: wrapX
+    wrapX: wrapX,
+    crossOrigin: config['crossOrigin']
   };
 };

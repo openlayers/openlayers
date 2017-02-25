@@ -31,6 +31,16 @@ describe('ol.source.WMTS', function() {
       expect(options).to.be(null);
     });
 
+    it('passes the crossOrigin option', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+        layer: 'BlueMarbleNextGeneration',
+        matrixSet: 'google3857',
+        crossOrigin: ''
+      });
+
+      expect(options.crossOrigin).to.be.eql('');
+    });
+
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml',
         function() {
           var options = ol.source.WMTS.optionsFromCapabilities(
@@ -58,6 +68,8 @@ describe('ol.source.WMTS', function() {
           expect(options.style).to.be.eql('DarkBlue');
 
           expect(options.dimensions).to.eql({Time: '20110805'});
+
+          expect(options.crossOrigin).to.be(undefined);
 
         });
 
