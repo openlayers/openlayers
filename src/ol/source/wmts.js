@@ -292,6 +292,7 @@ ol.source.WMTS.prototype.updateDimensions = function(dimensions) {
  *  - style - {string} The name of the style
  *  - format - {string} Image format for the layer. Default is the first
  *       format returned in the GetCapabilities response.
+ *  - crossOrigin - {string} Cross origin.
  * @return {olx.source.WMTSOptions} WMTS source options object.
  * @api
  */
@@ -433,6 +434,10 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
       }
     });
   }
+  var crossOrigin = /** @type {string} */ "";
+  if ('crossOrigin' in config) {
+    crossOrigin = config['crossOrigin'];
+  }
 
   return {
     urls: urls,
@@ -444,6 +449,7 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     tileGrid: tileGrid,
     style: style,
     dimensions: dimensions,
-    wrapX: wrapX
+    wrapX: wrapX,
+    crossOrigin: crossOrigin
   };
 };
