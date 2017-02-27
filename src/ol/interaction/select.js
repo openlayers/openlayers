@@ -282,6 +282,10 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     this.dispatchEvent(
         new ol.interaction.Select.Event(ol.interaction.Select.EventType_.SELECT,
             selected, deselected, mapBrowserEvent));
+  } else {
+    this.dispatchEvent(
+        new ol.interaction.Select.Event(ol.interaction.Select.EventType_.EMPTY,
+            selected, deselected, mapBrowserEvent));
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
 };
@@ -425,5 +429,11 @@ ol.interaction.Select.EventType_ = {
    * @event ol.interaction.Select.Event#select
    * @api
    */
-  SELECT: 'select'
+  SELECT: 'select',
+  /**
+   * Triggered when no feature has been (de)selected.
+   * @event ol.interaction.Select.Event#empty
+   * @api
+   */
+  empty: 'empty'
 };
