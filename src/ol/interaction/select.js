@@ -435,5 +435,5 @@ ol.interaction.Select.EventType_ = {
    * @event ol.interaction.Select.Event#empty
    * @api
    */
-  empty: 'empty'
+  EMPTY: 'empty'
 };
