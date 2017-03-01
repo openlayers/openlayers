@@ -342,6 +342,45 @@ describe('ol.interaction.Select', function() {
     });
   });
 
+  describe('with alwaysDispatchSelect set to true', function() {
+    var select;
+
+    beforeEach(function() {
+      select = new ol.interaction.Select({
+        alwaysDispatchSelect: true
+      });
+      map.addInteraction(select);
+    });
+
+    it('select with single-click', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        expect(e.selected).to.have.length(1);
+      });
+      select.on('select', listenerSpy);
+
+      simulateEvent('singleclick', 10, -20);
+
+      expect(listenerSpy.callCount).to.be(1);
+
+      var features = select.getFeatures();
+      expect(features.getLength()).to.equal(1);
+    });
+
+    it('single-click outside the geometry', function() {
+      var listenerSpy = sinon.spy(function(e) {
+        expect(e.selected).to.have.length(1);
+      });
+      select.on('select', listenerSpy);
+
+      simulateEvent(ol.MapBrowserEventType.SINGLECLICK, -10, -10);
+
+      expect(listenerSpy.callCount).to.be(1);
+
+      var features = select.getFeatures();
+      expect(features.getLength()).to.equal(0);
+    });
+  });
+
   describe('#getLayer(feature)', function() {
     var interaction;
 
