@@ -73,6 +73,12 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {boolean}
    */
+  this.alwaysDispatchSelect_ = !!options.alwaysDispatchSelect;
+
+  /**
+   * @private
+   * @type {boolean}
+   */
   this.multi_ = options.multi ? options.multi : false;
 
   /**
@@ -278,7 +284,7 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     }
     features.extend(selected);
   }
-  if (selected.length > 0 || deselected.length > 0) {
+  if (this.alwaysDispatchSelect_ || selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
         new ol.interaction.Select.Event(ol.interaction.Select.EventType_.SELECT,
             selected, deselected, mapBrowserEvent));
