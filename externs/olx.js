@@ -3301,6 +3301,15 @@ olx.interaction.SelectOptions.prototype.toggleCondition;
 
 
 /**
+ * A boolean that determines if the default behaviour should dispatch
+ * SELECT even if no features have been selected or deleted
+ * Default is false i.e only dispatch features are selected or deleted
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.SelectOptions.prototype.alwaysDispatchSelect;
+
+/**
  * A boolean that determines if the default behaviour should select only
  * single features or all (overlapping) features at the clicked map
  * position. Default is false i.e single select
