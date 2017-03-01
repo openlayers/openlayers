@@ -73,7 +73,8 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.alwaysDispatchSelect_ = !!options.alwaysDispatchSelect;
+  this.alwaysDispatchSelect_ = options.alwaysDispatchSelect ?
+      options.alwaysDispatchSelect : false;
 
   /**
    * @private
