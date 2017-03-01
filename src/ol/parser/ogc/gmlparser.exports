@@ -1,6 +1,0 @@
-@exportSymbol ol.parser.ogc.GML_v2
-@exportProperty ol.parser.ogc.GML_v2.prototype.read
-@exportProperty ol.parser.ogc.GML_v2.prototype.write
-@exportSymbol ol.parser.ogc.GML_v3
-@exportProperty ol.parser.ogc.GML_v3.prototype.read
-@exportProperty ol.parser.ogc.GML_v3.prototype.write

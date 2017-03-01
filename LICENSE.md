@@ -1,5 +1,4 @@
-Copyright 2005-2013 OpenLayers Contributors. All rights reserved. See
-AUTHORS.md for full list.
+Copyright 2005-present OpenLayers Contributors. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
 are permitted provided that the following conditions are met:

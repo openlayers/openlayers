@@ -3,51 +3,51 @@
 <head>
   <title>OL Spec Runner</title>
   <meta charset="utf-8">
-  <link rel="stylesheet" type="text/css" href="mocha-1.8.1/mocha.css">
+  <link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css">
 </head>
 
 <body>
   <div id="mocha"></div>
 
-  <script type="text/javascript" src="jquery-1.9.1/jquery.min.js"></script>
-  <!-- Extended expect.js w/ various methods, see #374 for the differences to 0.2.0 -->
-  <script type="text/javascript" src="expect-0.2.0-ol3/expect.js"></script>
-  <script type="text/javascript" src="sinon-1.6.0/sinon.js"></script>
-  <script type="text/javascript" src="mocha-1.8.1/mocha.js"></script>
+  <script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="../node_modules/expect.js/index.js"></script>
+  <script type="text/javascript" src="../node_modules/sinon/pkg/sinon.js"></script>
+  <script type="text/javascript" src="../node_modules/mocha/mocha.js"></script>
+  <script type="text/javascript" src="../node_modules/proj4/dist/proj4.js"></script>
   <script type="text/javascript" src="test-extensions.js"></script>
+  <!-- load polyfills: Always load the URL polyfill in a gated form so that
+       MS Edge has it -->
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL|always|gated"></script>
   <script>
+    if (typeof initMochaPhantomJS === 'function') {
+      initMochaPhantomJS()
+    }
     mocha.setup({
       ui: 'bdd',
       bail: false
     });
   </script>
-  <script type="text/javascript" src="../build/proj4js/lib/proj4js-combined.js"></script>
 
-  <!-- This script is provided by the debug server (start with `npm start`) -->
+  <!-- This script is provided by the debug server (started with `make serve`) -->
   <script type="text/javascript" src="loader.js"></script>
 
   <script type="text/javascript">
 
-    /**
-     * The goog.dom.ViewportSizeMonitor (used in map.js) creates a global leak
-     * by setting goog.UID_PROPERTY_ on the monitored window.  In order to test
-     * that we don't have other global leaks, we preemptively set the property
-     * so Mocha can compare the global before and after our tests.
-     *
-     * In addition, calling goog.events.listen on the global object (as done
-     * in deviceorientation.js) creates a second leak by setting
-     * goog.events.LISTENER_MAP_PROP_ on the global object.
-     *
-     * We preemptively set both of these properties so Mocha can compare the
-     * global before and after tests.  The call to goog.events.listen also
-     * calls goog.getUid.
-     */
-    goog.events.listen(this, 'test', function() {});
-
-    if (window.mochaPhantomJS) {
-      mochaPhantomJS.run();
-    } else {
-      mocha.run();
+    var runner = mocha.run();
+    if (window.console && console.log) {
+      // write stacks to the console for failed tests
+      runner.on('fail', function(test, err) {
+        if (test.duration > test._timeout) {
+          var titles = [];
+          for (var p = test; p; p = p.parent) {
+            if (p.title) {
+              titles.unshift(p.title);
+            }
+          }
+          console.log('Test timed out:', titles.join(' > '));
+        }
+        console.error(test.err.stack);
+      });
     }
   </script>
   <!--

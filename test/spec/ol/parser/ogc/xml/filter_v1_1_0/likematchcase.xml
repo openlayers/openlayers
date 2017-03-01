@@ -1,6 +1,0 @@
-<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.1.0/filter.xsd">
-    <ogc:PropertyIsLike wildCard="*" singleChar="." escapeChar="!" matchCase="false">
-        <ogc:PropertyName>person</ogc:PropertyName>
-        <ogc:Literal>*me*</ogc:Literal>
-    </ogc:PropertyIsLike>
-</ogc:Filter>

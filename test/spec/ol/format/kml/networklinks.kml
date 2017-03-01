@@ -1,0 +1,17 @@
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <NetworkLink>
+      <name>bar</name>
+      <Link>
+        <href>/bar/bar.kml</href>
+      </Link>
+    </NetworkLink>
+  </Document>
+  <Folder>
+    <NetworkLink>
+      <Link>
+        <href>http://foo.com/foo.kml</href>
+      </Link>
+    </NetworkLink>
+  </Folder>
+</kml>

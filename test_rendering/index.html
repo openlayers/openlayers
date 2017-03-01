@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>OL Rendering Test Runner</title>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="../node_modules/mocha/mocha.css">
+</head>
+
+<body>
+  <div id="mocha"></div>
+
+  <script type="text/javascript" src="../node_modules/jquery/dist/jquery.min.js"></script>
+  <script type="text/javascript" src="../node_modules/expect.js/index.js"></script>
+  <script type="text/javascript" src="../node_modules/sinon/pkg/sinon.js"></script>
+  <script type="text/javascript" src="../node_modules/mocha/mocha.js"></script>
+  <script type="text/javascript" src="../node_modules/proj4/dist/proj4.js"></script>
+  <script type="text/javascript" src="../node_modules/resemblejs/resemble.js"></script>
+  <script type="text/javascript" src="../test/test-extensions.js"></script>
+  <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList"></script>
+  <script>
+    mocha.setup({
+      ui: 'bdd',
+      bail: false
+    });
+  </script>
+
+  <!-- This script is provided by the debug server (started with `make serve`) -->
+  <script type="text/javascript" src="loader.js"></script>
+
+  <script type="text/javascript">
+
+    var errors = [];
+    var runner = mocha.run(function(evt) {
+      if (window.callPhantom) {
+        window.callPhantom(errors);
+      }
+    });
+
+    if (window.console && console.log) {
+      // write stacks to the console for failed tests
+      runner.on('fail', function(test, err) {
+        if (test.duration > test._timeout) {
+          var titles = [];
+          for (var p = test; p; p = p.parent) {
+            if (p.title) {
+              titles.unshift(p.title);
+            }
+          }
+          console.log('Test timed out:', titles.join(' > '));
+        }
+        errors.push({
+          title: test.fullTitle(),
+          errorStack: test.err
+        });
+        console.log(test.fullTitle());
+        console.error(test.err.stack);
+      });
+    }
+  </script>
+  <!--
+    Tests should not depend on any specific markup and should instead create
+    whatever elements are needed (cleaning up when done).
+  -->
+</body>
+</html>

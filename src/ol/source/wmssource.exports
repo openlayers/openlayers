@@ -1,3 +1,0 @@
-@exportSymbol ol.source.WMSGetFeatureInfoMethod
-@exportProperty ol.source.WMSGetFeatureInfoMethod.IFRAME
-@exportProperty ol.source.WMSGetFeatureInfoMethod.XHR_GET

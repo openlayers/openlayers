@@ -1,0 +1,51 @@
+<?js
+var version = obj.packageInfo.version;
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>OpenLayers v<?js= version ?> API - <?js= title ?></title>
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch"></script>
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <script src="scripts/jquery.min.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="styles/jaguar.css">
+</head>
+<body>
+
+<div class="navbar navbar-inverse navbar-fixed-top">
+  <div class="navbar-inner">
+    <div class="container">
+      <a class="brand" href="/"><img src="logo-70x70.png"> OpenLayers</a>
+      <ul class="nav navbar-nav pull-right">
+        <li><a href="../doc">Docs</a></li>
+        <li><a href="../examples">Examples</a></li>
+        <li><a href="index.html" class="active">API</a></li>
+        <li><a href="https://github.com/openlayers/openlayers">Code</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="wrap" class="clearfix">
+    <?js= this.partial('navigation.tmpl', this) ?>
+    <div class="main">
+        <h1 class="page-title" data-filename="<?js= filename ?>"><?js= title ?></h1>
+        <div id="latest-check" class="alert alert-warning alert-dismissible" role="alert" style="display:none">
+          <button id="latest-dismiss" type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          This documentation is for OpenLayers v<span id="package-version"><?js= version ?></span>. The <a id="latest-link" href="#" class="alert-link">latest</a> is v<span id="latest-version"></span>.
+        </div>
+        <?js= content ?>
+    </div>
+</div>
+<script>prettyPrint();</script>
+<script src="scripts/linenumber.js"></script>
+<script src="scripts/main.js"></script>
+</body>
+</html>

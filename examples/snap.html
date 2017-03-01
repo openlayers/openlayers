@@ -1,0 +1,34 @@
+---
+layout: example.html
+title: Snap Interaction
+shortdesc: Example of using the snap interaction together with draw and modify interactions.
+docs: >
+  Example of using the snap interaction together with
+  draw and modify interactions. The snap interaction must be added
+  last, as it needs to be the first to handle the
+  <code>pointermove</code> event.</p>
+tags: "draw, edit, modify, vector, snap"
+---
+<div id="map" class="map"></div>
+<form id="options-form" automplete="off">
+  <div class="radio">
+    <label>
+      <input type="radio" name="interaction" value="draw" id="draw" checked>
+      Draw &nbsp;
+    </label>
+  </div>
+  <div class="radio">
+    <label>
+      <input type="radio" name="interaction" value="modify">
+      Modify &nbsp;
+    </label>
+  </div>
+  <div class="form-group">
+    <label>Draw type &nbsp;</label>
+    <select name="draw-type" id="draw-type">
+      <option value="Point">Point</option>
+      <option value="LineString">LineString</option>
+      <option value="Polygon">Polygon</option>
+    </select>
+  </div>
+</form>

@@ -20,7 +20,7 @@ TopoJSONTopology.prototype.type;
 
 
 /**
- * @type {TopoJSONTransform}
+ * @type {TopoJSONTransform|undefined}
  */
 TopoJSONTopology.prototype.transform;
 

@@ -1,20 +1,10 @@
-goog.require('ol.parser.ogc.WMSCapabilities');
+goog.require('ol.format.WMSCapabilities');
 
-var parser = new ol.parser.ogc.WMSCapabilities(), result;
-var url = 'data/ogcsample.xml';
+var parser = new ol.format.WMSCapabilities();
 
-var xhr = new XMLHttpRequest();
-xhr.open('GET', url, true);
-
-
-/**
- * onload handler for the XHR request.
- */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    result = parser.read(xhr.responseXML);
-    document.getElementById('log').innerHTML =
-        window.JSON.stringify(result, undefined, 2);
-  }
-};
-xhr.send();
+fetch('data/ogcsample.xml').then(function(response) {
+  return response.text();
+}).then(function(text) {
+  var result = parser.read(text);
+  document.getElementById('log').innerText = JSON.stringify(result, null, 2);
+});

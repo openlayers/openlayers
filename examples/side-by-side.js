@@ -1,32 +1,31 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.has');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
-goog.require('ol.webgl');
+goog.require('ol.source.OSM');
 
-
-var domMap = new ol.Map({
-  layers: [
-    new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
-    })
-  ],
-  renderer: ol.RendererHint.DOM,
-  target: 'domMap',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 1
-  })
+var layer = new ol.layer.Tile({
+  source: new ol.source.OSM()
 });
 
-if (ol.webgl.SUPPORTED) {
-  var webglMap = new ol.Map({
-    renderer: ol.RendererHint.WEBGL,
-    target: 'webglMap'
+var view = new ol.View({
+  center: [0, 0],
+  zoom: 1
+});
+
+var map1 = new ol.Map({
+  target: 'canvasMap',
+  layers: [layer],
+  view: view
+});
+
+if (ol.has.WEBGL) {
+  var map2 = new ol.Map({
+    target: 'webglMap',
+    renderer: /** @type {ol.renderer.Type} */ ('webgl'),
+    layers: [layer],
+    view: view
   });
-  webglMap.bindTo('layergroup', domMap);
-  webglMap.bindTo('view', domMap);
 } else {
   var info = document.getElementById('no-webgl');
   /**
@@ -34,10 +33,3 @@ if (ol.webgl.SUPPORTED) {
    */
   info.style.display = '';
 }
-
-var canvasMap = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
-  target: 'canvasMap'
-});
-canvasMap.bindTo('layergroup', domMap);
-canvasMap.bindTo('view', domMap);

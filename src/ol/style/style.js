@@ -1,328 +1,399 @@
-goog.provide('ol.style');
 goog.provide('ol.style.Style');
 
-goog.require('goog.object');
-goog.require('ol.Feature');
-goog.require('ol.expr.Call');
-goog.require('ol.expr.Identifier');
-goog.require('ol.expr.Literal');
-goog.require('ol.expr.functions');
+goog.require('ol.asserts');
 goog.require('ol.geom.GeometryType');
+goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
-goog.require('ol.style.Literal');
-goog.require('ol.style.PolygonLiteral');
-goog.require('ol.style.Rule');
-goog.require('ol.style.Shape');
 goog.require('ol.style.Stroke');
-goog.require('ol.style.Symbolizer');
-goog.require('ol.style.TextLiteral');
-
 
 
 /**
+ * @classdesc
+ * Container for vector feature rendering styles. Any changes made to the style
+ * or its children through `set*()` methods will not take effect until the
+ * feature or layer that uses the style is re-rendered.
+ *
  * @constructor
- * @param {ol.style.StyleOptions} options Style options.
- * @todo stability experimental
+ * @struct
+ * @param {olx.style.StyleOptions=} opt_options Style options.
+ * @api
  */
-ol.style.Style = function(options) {
+ol.style.Style = function(opt_options) {
+
+  var options = opt_options || {};
 
   /**
-   * @type {Array.<ol.style.Rule>}
    * @private
+   * @type {string|ol.geom.Geometry|ol.StyleGeometryFunction}
    */
-  this.rules_ = goog.isDef(options.rules) ? options.rules : [];
+  this.geometry_ = null;
 
   /**
-   * Symbolizers that apply if no rules are given or where none of the given
-   * rules apply (these are the "else" symbolizers).
-   * @type {Array.<ol.style.Symbolizer>}
    * @private
+   * @type {!ol.StyleGeometryFunction}
    */
-  this.symbolizers_ = goog.isDef(options.symbolizers) ?
-      options.symbolizers : [];
+  this.geometryFunction_ = ol.style.Style.defaultGeometryFunction;
 
-  /**
-   * @type {string|undefined}
-   * @private
-   */
-  this.name_ = goog.isDef(options.name) ?
-      options.name : undefined;
-
-  /**
-   * @type {string|undefined}
-   * @private
-   */
-  this.title_ = goog.isDef(options.title) ?
-      options.title : undefined;
-};
-
-
-/**
- * Create an array of symbolizer literals for a feature.
- * @param {ol.Feature} feature Feature.
- * @param {number} resolution Map resolution.
- * @return {Array.<ol.style.Literal>} Symbolizer literals for the
- *     feature.
- */
-ol.style.Style.prototype.createLiterals = function(feature, resolution) {
-  var rules = this.rules_,
-      symbolizers = [],
-      applies = false,
-      rule;
-  for (var i = 0, ii = rules.length; i < ii; ++i) {
-    rule = rules[i];
-    if (rule.applies(feature, resolution)) {
-      applies = true;
-      symbolizers.push.apply(symbolizers, rule.getSymbolizers());
-    }
-  } if (!applies) {
-    // these are the "else" symbolizers
-    symbolizers = this.symbolizers_;
+  if (options.geometry !== undefined) {
+    this.setGeometry(options.geometry);
   }
-  return ol.style.Style.createLiterals(symbolizers, feature);
+
+  /**
+   * @private
+   * @type {ol.style.Fill}
+   */
+  this.fill_ = options.fill !== undefined ? options.fill : null;
+
+  /**
+   * @private
+   * @type {ol.style.Image}
+   */
+  this.image_ = options.image !== undefined ? options.image : null;
+
+  /**
+   * @private
+   * @type {ol.style.Stroke}
+   */
+  this.stroke_ = options.stroke !== undefined ? options.stroke : null;
+
+  /**
+   * @private
+   * @type {ol.style.Text}
+   */
+  this.text_ = options.text !== undefined ? options.text : null;
+
+  /**
+   * @private
+   * @type {number|undefined}
+   */
+  this.zIndex_ = options.zIndex;
+
 };
 
 
 /**
- * @param {Object.<string, ol.Feature>} features Features.
- * @param {number} resolution Map resolution.
- * @return {Array.<Array>} symbolizers for features. Each array in this array
- *     contains 3 items: an array of features, the symbolizer literal, and
- *     an array with optional additional data for each feature.
+ * Clones the style.
+ * @return {ol.style.Style} The cloned style.
+ * @api
  */
-ol.style.Style.prototype.groupFeaturesBySymbolizerLiteral =
-    function(features, resolution) {
-  var uniqueLiterals = {},
-      featuresBySymbolizer = [],
-      i, j, l, feature, symbolizers, literals, numLiterals, literal,
-      uniqueLiteral, key, item;
-  for (i in features) {
-    feature = features[i];
-    // feature level symbolizers take precedence
-    symbolizers = feature.getSymbolizers();
-    if (!goog.isNull(symbolizers)) {
-      literals = ol.style.Style.createLiterals(symbolizers, feature);
+ol.style.Style.prototype.clone = function() {
+  var geometry = this.getGeometry();
+  if (geometry && geometry.clone) {
+    geometry = geometry.clone();
+  }
+  return new ol.style.Style({
+    geometry: geometry,
+    fill: this.getFill() ? this.getFill().clone() : undefined,
+    image: this.getImage() ? this.getImage().clone() : undefined,
+    stroke: this.getStroke() ? this.getStroke().clone() : undefined,
+    text: this.getText() ? this.getText().clone() : undefined,
+    zIndex: this.getZIndex()
+  });
+};
+
+
+/**
+ * Get the geometry to be rendered.
+ * @return {string|ol.geom.Geometry|ol.StyleGeometryFunction}
+ * Feature property or geometry or function that returns the geometry that will
+ * be rendered with this style.
+ * @api
+ */
+ol.style.Style.prototype.getGeometry = function() {
+  return this.geometry_;
+};
+
+
+/**
+ * Get the function used to generate a geometry for rendering.
+ * @return {!ol.StyleGeometryFunction} Function that is called with a feature
+ * and returns the geometry to render instead of the feature's geometry.
+ * @api
+ */
+ol.style.Style.prototype.getGeometryFunction = function() {
+  return this.geometryFunction_;
+};
+
+
+/**
+ * Get the fill style.
+ * @return {ol.style.Fill} Fill style.
+ * @api
+ */
+ol.style.Style.prototype.getFill = function() {
+  return this.fill_;
+};
+
+
+/**
+ * Set the fill style.
+ * @param {ol.style.Fill} fill Fill style.
+ * @api
+ */
+ol.style.Style.prototype.setFill = function(fill) {
+  this.fill_ = fill;
+};
+
+
+/**
+ * Get the image style.
+ * @return {ol.style.Image} Image style.
+ * @api
+ */
+ol.style.Style.prototype.getImage = function() {
+  return this.image_;
+};
+
+
+/**
+ * Set the image style.
+ * @param {ol.style.Image} image Image style.
+ * @api
+ */
+ol.style.Style.prototype.setImage = function(image) {
+  this.image_ = image;
+};
+
+
+/**
+ * Get the stroke style.
+ * @return {ol.style.Stroke} Stroke style.
+ * @api
+ */
+ol.style.Style.prototype.getStroke = function() {
+  return this.stroke_;
+};
+
+
+/**
+ * Set the stroke style.
+ * @param {ol.style.Stroke} stroke Stroke style.
+ * @api
+ */
+ol.style.Style.prototype.setStroke = function(stroke) {
+  this.stroke_ = stroke;
+};
+
+
+/**
+ * Get the text style.
+ * @return {ol.style.Text} Text style.
+ * @api
+ */
+ol.style.Style.prototype.getText = function() {
+  return this.text_;
+};
+
+
+/**
+ * Set the text style.
+ * @param {ol.style.Text} text Text style.
+ * @api
+ */
+ol.style.Style.prototype.setText = function(text) {
+  this.text_ = text;
+};
+
+
+/**
+ * Get the z-index for the style.
+ * @return {number|undefined} ZIndex.
+ * @api
+ */
+ol.style.Style.prototype.getZIndex = function() {
+  return this.zIndex_;
+};
+
+
+/**
+ * Set a geometry that is rendered instead of the feature's geometry.
+ *
+ * @param {string|ol.geom.Geometry|ol.StyleGeometryFunction} geometry
+ *     Feature property or geometry or function returning a geometry to render
+ *     for this style.
+ * @api
+ */
+ol.style.Style.prototype.setGeometry = function(geometry) {
+  if (typeof geometry === 'function') {
+    this.geometryFunction_ = geometry;
+  } else if (typeof geometry === 'string') {
+    this.geometryFunction_ = function(feature) {
+      return /** @type {ol.geom.Geometry} */ (feature.get(geometry));
+    };
+  } else if (!geometry) {
+    this.geometryFunction_ = ol.style.Style.defaultGeometryFunction;
+  } else if (geometry !== undefined) {
+    this.geometryFunction_ = function() {
+      return /** @type {ol.geom.Geometry} */ (geometry);
+    };
+  }
+  this.geometry_ = geometry;
+};
+
+
+/**
+ * Set the z-index.
+ *
+ * @param {number|undefined} zIndex ZIndex.
+ * @api
+ */
+ol.style.Style.prototype.setZIndex = function(zIndex) {
+  this.zIndex_ = zIndex;
+};
+
+
+/**
+ * Convert the provided object into a style function.  Functions passed through
+ * unchanged.  Arrays of ol.style.Style or single style objects wrapped in a
+ * new style function.
+ * @param {ol.StyleFunction|Array.<ol.style.Style>|ol.style.Style} obj
+ *     A style function, a single style, or an array of styles.
+ * @return {ol.StyleFunction} A style function.
+ */
+ol.style.Style.createFunction = function(obj) {
+  var styleFunction;
+
+  if (typeof obj === 'function') {
+    styleFunction = obj;
+  } else {
+    /**
+     * @type {Array.<ol.style.Style>}
+     */
+    var styles;
+    if (Array.isArray(obj)) {
+      styles = obj;
     } else {
-      literals = this.createLiterals(feature, resolution);
+      ol.asserts.assert(obj instanceof ol.style.Style,
+          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+      styles = [obj];
     }
-    numLiterals = literals.length;
-    for (j = 0; j < numLiterals; ++j) {
-      literal = literals[j];
-      for (l in uniqueLiterals) {
-        uniqueLiteral = featuresBySymbolizer[uniqueLiterals[l]][1];
-        if (literal.equals(uniqueLiteral)) {
-          literal = uniqueLiteral;
-          break;
-        }
-      }
-      key = goog.getUid(literal);
-      if (!goog.object.containsKey(uniqueLiterals, key)) {
-        uniqueLiterals[key] = featuresBySymbolizer.length;
-        featuresBySymbolizer.push([
-          /** @type {Array.<ol.Feature>} */ ([]),
-          /** @type {ol.style.Literal} */ (literal),
-          /** @type {Array} */ ([])
-        ]);
-      }
-      item = featuresBySymbolizer[uniqueLiterals[key]];
-      item[0].push(feature);
-      if (literal instanceof ol.style.TextLiteral) {
-        item[2].push(literals[j].text);
-      }
-    }
+    styleFunction = function() {
+      return styles;
+    };
   }
-  featuresBySymbolizer.sort(this.sortByZIndex_);
-  return featuresBySymbolizer;
+  return styleFunction;
 };
 
 
 /**
- * Sort function for `groupFeaturesBySymbolizerLiteral`.
+ * @type {Array.<ol.style.Style>}
  * @private
- * @param {Array} a 1st item for the sort comparison.
- * @param {Array} b 2nd item for the sort comparison.
- * @return {number} Comparison result.
  */
-ol.style.Style.prototype.sortByZIndex_ = function(a, b) {
-  return a[1].zIndex - b[1].zIndex;
-};
+ol.style.Style.default_ = null;
 
 
 /**
- * The default style.
- * @type {ol.style.Style}
- * @private
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {number} resolution Resolution.
+ * @return {Array.<ol.style.Style>} Style.
  */
-ol.style.default_ = null;
-
-
-/**
- * Get the default style.
- * @return {ol.style.Style} The default style.
- */
-ol.style.getDefault = function() {
-  if (goog.isNull(ol.style.default_)) {
-    ol.style.default_ = new ol.style.Style({
-      rules: [
-        new ol.style.Rule({
-          filter: new ol.expr.Call(
-              new ol.expr.Identifier(ol.expr.functions.RENDER_INTENT),
-              [new ol.expr.Literal('select')]),
-          symbolizers: [
-            new ol.style.Shape({
-              fill: new ol.style.Fill({
-                color: '#ffffff',
-                opacity: 0.7
-              }),
-              stroke: new ol.style.Stroke({
-                color: '#696969',
-                opacity: 0.9,
-                width: 2.0
-              })
-            }),
-            new ol.style.Fill({
-              color: '#ffffff',
-              opacity: 0.7
-            }),
-            new ol.style.Stroke({
-              color: '#696969',
-              opacity: 0.9,
-              width: 2.0
-            })
-          ]
-        })
-      ],
-      symbolizers: [
-        new ol.style.Shape({
-          fill: new ol.style.Fill(),
-          stroke: new ol.style.Stroke()
-        }),
-        new ol.style.Fill(),
-        new ol.style.Stroke()
-      ]
+ol.style.Style.defaultFunction = function(feature, resolution) {
+  // We don't use an immediately-invoked function
+  // and a closure so we don't get an error at script evaluation time in
+  // browsers that do not support Canvas. (ol.style.Circle does
+  // canvas.getContext('2d') at construction time, which will cause an.error
+  // in such browsers.)
+  if (!ol.style.Style.default_) {
+    var fill = new ol.style.Fill({
+      color: 'rgba(255,255,255,0.4)'
     });
+    var stroke = new ol.style.Stroke({
+      color: '#3399CC',
+      width: 1.25
+    });
+    ol.style.Style.default_ = [
+      new ol.style.Style({
+        image: new ol.style.Circle({
+          fill: fill,
+          stroke: stroke,
+          radius: 5
+        }),
+        fill: fill,
+        stroke: stroke
+      })
+    ];
   }
-  return ol.style.default_;
+  return ol.style.Style.default_;
 };
 
 
 /**
- * Set the default style.
- * @param {ol.style.Style} style The new default style.
- * @return {ol.style.Style} The default style.
+ * Default styles for editing features.
+ * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
  */
-ol.style.setDefault = function(style) {
-  ol.style.default_ = style;
-  return style;
+ol.style.Style.createDefaultEditing = function() {
+  /** @type {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} */
+  var styles = {};
+  var white = [255, 255, 255, 1];
+  var blue = [0, 153, 255, 1];
+  var width = 3;
+  styles[ol.geom.GeometryType.POLYGON] = [
+    new ol.style.Style({
+      fill: new ol.style.Fill({
+        color: [255, 255, 255, 0.5]
+      })
+    })
+  ];
+  styles[ol.geom.GeometryType.MULTI_POLYGON] =
+      styles[ol.geom.GeometryType.POLYGON];
+
+  styles[ol.geom.GeometryType.LINE_STRING] = [
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: white,
+        width: width + 2
+      })
+    }),
+    new ol.style.Style({
+      stroke: new ol.style.Stroke({
+        color: blue,
+        width: width
+      })
+    })
+  ];
+  styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
+      styles[ol.geom.GeometryType.LINE_STRING];
+
+  styles[ol.geom.GeometryType.CIRCLE] =
+      styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.LINE_STRING]
+      );
+
+
+  styles[ol.geom.GeometryType.POINT] = [
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: width * 2,
+        fill: new ol.style.Fill({
+          color: blue
+        }),
+        stroke: new ol.style.Stroke({
+          color: white,
+          width: width / 2
+        })
+      }),
+      zIndex: Infinity
+    })
+  ];
+  styles[ol.geom.GeometryType.MULTI_POINT] =
+      styles[ol.geom.GeometryType.POINT];
+
+  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
+      styles[ol.geom.GeometryType.POLYGON].concat(
+          styles[ol.geom.GeometryType.LINE_STRING],
+          styles[ol.geom.GeometryType.POINT]
+      );
+
+  return styles;
 };
 
 
 /**
- * Given an array of symbolizers, generate an array of literals.
- * @param {Array.<ol.style.Symbolizer>} symbolizers List of symbolizers.
- * @param {ol.Feature|ol.geom.GeometryType} featureOrType Feature or geometry
- *     type.
- * @return {Array.<ol.style.Literal>} Array of literals.
+ * Function that is called with a feature and returns its default geometry.
+ * @param {ol.Feature|ol.render.Feature} feature Feature to get the geometry
+ *     for.
+ * @return {ol.geom.Geometry|ol.render.Feature|undefined} Geometry to render.
  */
-ol.style.Style.createLiterals = function(symbolizers, featureOrType) {
-  var length = symbolizers.length;
-  var literals = new Array(length);
-  for (var i = 0; i < length; ++i) {
-    literals[i] = symbolizers[i].createLiteral(featureOrType);
-  }
-  return ol.style.Style.reduceLiterals_(literals);
-};
-
-
-/**
- * Collapse partial polygon symbolizers and remove null symbolizers.
- * @param {Array.<ol.style.Literal>} literals Input literals.
- * @return {Array.<ol.style.Literal>} Reduced literals.
- * @private
- */
-ol.style.Style.reduceLiterals_ = function(literals) {
-  var reduced = [];
-  var literal, stroke, fill, key, value;
-  for (var i = 0, ii = literals.length; i < ii; ++i) {
-    literal = literals[i];
-    if (literal instanceof ol.style.PolygonLiteral) {
-      if (goog.isDef(literal.strokeColor) &&
-          !goog.isDef(literal.fillColor)) {
-        // stroke only, check for previous fill only
-        if (fill) {
-          for (key in literal) {
-            value = literal[key];
-            if (goog.isDef(value)) {
-              fill[key] = value;
-            }
-          }
-          fill = null;
-        } else {
-          stroke = literal;
-          reduced.push(stroke);
-        }
-      } else if (goog.isDef(literal.fillColor) &&
-          !goog.isDef(literal.strokeColor)) {
-        // fill only, check for previous stroke only
-        if (stroke) {
-          for (key in literal) {
-            value = literal[key];
-            if (goog.isDef(value)) {
-              stroke[key] = value;
-            }
-          }
-          stroke = null;
-        } else {
-          fill = literal;
-          reduced.push(fill);
-        }
-      } else {
-        // both stroke and fill, proceed
-        reduced.push(literal);
-      }
-    } else if (literal) {
-      reduced.push(literal);
-    }
-  }
-  return reduced;
-};
-
-
-/**
- * @return {Array.<ol.style.Rule>}
- */
-ol.style.Style.prototype.getRules = function() {
-  return this.rules_;
-};
-
-
-/**
- * @param {Array.<ol.style.Rule>} rules The rules to set.
- */
-ol.style.Style.prototype.setRules = function(rules) {
-  this.rules_ = rules;
-};
-
-
-/**
- * @return {Array.<ol.style.Symbolizer>}
- */
-ol.style.Style.prototype.getSymbolizers = function() {
-  return this.symbolizers_;
-};
-
-
-/**
- * @return {string|undefined}
- */
-ol.style.Style.prototype.getName = function() {
-  return this.name_;
-};
-
-
-/**
- * @return {string|undefined}
- */
-ol.style.Style.prototype.getTitle = function() {
-  return this.title_;
+ol.style.Style.defaultGeometryFunction = function(feature) {
+  return feature.getGeometry();
 };

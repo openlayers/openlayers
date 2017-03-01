@@ -1,0 +1,87 @@
+<?js
+var self = this;
+?>
+<div class="navigation">
+    <div class="search">
+        <input id="search" type="text" class="form-control input-sm" placeholder="Search Documentation">
+    </div>
+    <ul class="list">
+    <?js
+    this.nav.forEach(function (item) {
+    ?>
+        <li class="item" data-name="<?js= item.longname ?>">
+            <span class="title">
+                <?js= self.linkto(item.longname, item.longname) ?>
+                <?js if (item.type === 'namespace' &&
+                        (item.members.length + item.typedefs.length + item.methods.length +
+                         item.events.length > 0)) { ?>
+                <?js } ?>
+            </span>
+            <ul class="members itemMembers">
+            <?js
+            if (item.members.length) {
+            ?>
+            <span class="subtitle">Members</span>
+            <?js
+                item.members.forEach(function (v) {
+            ?>
+                <li data-name="<?js= v.longname ?>"><?js= self.linkto(v.longname, v.name) ?></li>
+            <?js
+                });
+            }
+            ?>
+            </ul>
+            <ul class="typedefs itemMembers">
+            <?js
+            if (item.typedefs.length) {
+            ?>
+            <span class="subtitle">Typedefs</span>
+            <?js
+                item.typedefs.forEach(function (v) {
+            ?>
+                <li data-name="<?js= v.longname ?>" class="<?js= (v.stability && v.stability !== 'stable') ? 'unstable' : ''?>">
+                    <?js= self.linkto(v.longname, v.name) ?>
+                </li>
+            <?js
+                });
+            }
+            ?>
+            </ul>
+            <ul class="methods itemMembers">
+            <?js
+            if (item.methods.length) {
+            ?>
+            <span class="subtitle">Methods</span>
+            <?js
+
+                item.methods.forEach(function (v) {
+            ?>
+                <li data-name="<?js= v.longname ?>" class="<?js= (v.stability && v.stability !== 'stable') ? 'unstable' : ''?>">
+                    <?js= self.linkto(v.longname, v.name) ?>
+                </li>
+            <?js
+                });
+            }
+            ?>
+            </ul>
+            <ul class="fires itemMembers">
+            <?js
+            if (item.fires && item.fires.length) {
+            ?>
+            <span class="subtitle">Fires</span>
+            <?js
+                item.fires.forEach(function (v) {
+                    v = self.find({longname: v})[0] || {longname: v, name: v.split(/#?event:/)[1]};
+            ?>
+                <li data-name="<?js= v.longname ?>" class="<?js= (v.stability && v.stability != 'stable') ? 'unstable' : '' ?>">
+                    <?js= self.linkto(v.longname, v.name) ?>
+                </li>
+            <?js
+                });
+            }
+            ?>
+            </ul>
+        </li>
+    <?js }); ?>
+    </ul>
+</div>

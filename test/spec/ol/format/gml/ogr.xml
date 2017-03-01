@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wfs:FeatureCollection
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 xmlns:wfs="http://www.opengis.net/wfs"
+     xsi:schemaLocation="http://ogr.maptools.org/ test.xsd"
+     xmlns:ogr="http://ogr.maptools.org/"
+     xmlns:gml="http://www.opengis.net/gml">
+
+                                                                                                                       
+  <gml:featureMember>
+    <ogr:Plaatsbepalingspunt fid="Plaatsbepalingspunt.0">
+		<ogr:geometryProperty>
+			<gml:Point>
+				<gml:pos srsDimension="2">115512.666 479836.28</gml:pos>
+			</gml:Point>
+		</ogr:geometryProperty>
+		<ogr:gml_id>x2</ogr:gml_id>
+		<ogr:namespace>NL.IMGEO</ogr:namespace>
+		<ogr:lokaalID>L0001.A3C177B4105A4FFD82EB80084C8CA732</ogr:lokaalID>
+		<ogr:nauwkeurigheid>60</ogr:nauwkeurigheid>
+		<ogr:datumInwinning>2014-02-14</ogr:datumInwinning>
+		<ogr:inwinnendeInstantie>L0001</ogr:inwinnendeInstantie>
+		<ogr:inwinningsmethode>fotogrammetrisch</ogr:inwinningsmethode>
+    </ogr:Plaatsbepalingspunt>
+  </gml:featureMember>
+</wfs:FeatureCollection>

@@ -1,143 +1,166 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
-goog.require('ol.animation');
-goog.require('ol.easing');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
+var london = ol.proj.fromLonLat([-0.12755, 51.507222]);
+var moscow = ol.proj.fromLonLat([37.6178, 55.7517]);
+var istanbul = ol.proj.fromLonLat([28.9744, 41.0128]);
+var rome = ol.proj.fromLonLat([12.5, 41.9]);
+var bern = ol.proj.fromLonLat([7.4458, 46.95]);
 
-var london = ol.proj.transform([-0.12755, 51.507222], 'EPSG:4326', 'EPSG:3857');
-var moscow = ol.proj.transform([37.6178, 55.7517], 'EPSG:4326', 'EPSG:3857');
-var istanbul = ol.proj.transform([28.9744, 41.0128], 'EPSG:4326', 'EPSG:3857');
-var rome = ol.proj.transform([12.5, 41.9], 'EPSG:4326', 'EPSG:3857');
-var bern = ol.proj.transform([7.4458, 46.95], 'EPSG:4326', 'EPSG:3857');
-var madrid = ol.proj.transform([-3.683333, 40.4], 'EPSG:4326', 'EPSG:3857');
-
-var view = new ol.View2D({
-  // the view's initial state
+var view = new ol.View({
   center: istanbul,
   zoom: 6
 });
 
 var map = new ol.Map({
+  target: 'map',
   layers: [
     new ol.layer.Tile({
       preload: 4,
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
-  target: 'map',
+  // Improve user experience by loading tiles while animating. Will make
+  // animations stutter on mobile or slow devices.
+  loadTilesWhileAnimating: true,
   view: view
 });
 
-var rotateLeft = document.getElementById('rotate-left');
-rotateLeft.addEventListener('click', function() {
-  var rotateLeft = ol.animation.rotate({
-    duration: 2000,
-    rotation: -4 * Math.PI
-  });
-  map.beforeRender(rotateLeft);
-}, false);
-var rotateRight = document.getElementById('rotate-right');
-rotateRight.addEventListener('click', function() {
-  var rotateRight = ol.animation.rotate({
-    duration: 2000,
-    rotation: 4 * Math.PI
-  });
-  map.beforeRender(rotateRight);
-}, false);
+// A bounce easing method (from https://github.com/DmitryBaranovskiy/raphael).
+function bounce(t) {
+  var s = 7.5625, p = 2.75, l;
+  if (t < (1 / p)) {
+    l = s * t * t;
+  } else {
+    if (t < (2 / p)) {
+      t -= (1.5 / p);
+      l = s * t * t + 0.75;
+    } else {
+      if (t < (2.5 / p)) {
+        t -= (2.25 / p);
+        l = s * t * t + 0.9375;
+      } else {
+        t -= (2.625 / p);
+        l = s * t * t + 0.984375;
+      }
+    }
+  }
+  return l;
+}
 
+// An elastic easing method (from https://github.com/DmitryBaranovskiy/raphael).
+function elastic(t) {
+  return Math.pow(2, -10 * t) * Math.sin((t - 0.075) * (2 * Math.PI) / 0.3) + 1;
+}
 
-var panToLondon = document.getElementById('pan-to-london');
-panToLondon.addEventListener('click', function() {
-  var pan = ol.animation.pan({
+function onClick(id, callback) {
+  document.getElementById(id).addEventListener('click', callback);
+}
+
+onClick('rotate-left', function() {
+  view.animate({
+    rotation: view.getRotation() + Math.PI / 2
+  });
+});
+
+onClick('rotate-right', function() {
+  view.animate({
+    rotation: view.getRotation() - Math.PI / 2
+  });
+});
+
+onClick('rotate-around-rome', function() {
+  view.animate({
+    rotation: view.getRotation() + 2 * Math.PI,
+    anchor: rome
+  });
+});
+
+onClick('pan-to-london', function() {
+  view.animate({
+    center: london,
+    duration: 2000
+  });
+});
+
+onClick('elastic-to-moscow', function() {
+  view.animate({
+    center: moscow,
     duration: 2000,
-    source: /** @type {ol.Coordinate} */ (view.getCenter())
+    easing: elastic
   });
-  map.beforeRender(pan);
-  view.setCenter(london);
-}, false);
+});
 
-var elasticToMoscow = document.getElementById('elastic-to-moscow');
-elasticToMoscow.addEventListener('click', function() {
-  var pan = ol.animation.pan({
+onClick('bounce-to-istanbul', function() {
+  view.animate({
+    center: istanbul,
     duration: 2000,
-    easing: ol.easing.elastic,
-    source: /** @type {ol.Coordinate} */ (view.getCenter())
+    easing: bounce
   });
-  map.beforeRender(pan);
-  view.setCenter(moscow);
-}, false);
+});
 
-var bounceToIstanbul = document.getElementById('bounce-to-istanbul');
-bounceToIstanbul.addEventListener('click', function() {
-  var pan = ol.animation.pan({
-    duration: 2000,
-    easing: ol.easing.bounce,
-    source: /** @type {ol.Coordinate} */ (view.getCenter())
-  });
-  map.beforeRender(pan);
-  view.setCenter(istanbul);
-}, false);
-
-var spinToRome = document.getElementById('spin-to-rome');
-spinToRome.addEventListener('click', function() {
-  var duration = 2000;
-  var start = +new Date();
-  var pan = ol.animation.pan({
-    duration: duration,
-    source: /** @type {ol.Coordinate} */ (view.getCenter()),
-    start: start
-  });
-  var rotate = ol.animation.rotate({
-    duration: duration,
+onClick('spin-to-rome', function() {
+  view.animate({
+    center: rome,
     rotation: 2 * Math.PI,
-    start: start
+    duration: 2000
   });
-  map.beforeRender(pan, rotate);
-  view.setCenter(rome);
-}, false);
+});
 
-var flyToBern = document.getElementById('fly-to-bern');
-flyToBern.addEventListener('click', function() {
+function flyTo(location, done) {
   var duration = 2000;
-  var start = +new Date();
-  var pan = ol.animation.pan({
-    duration: duration,
-    source: /** @type {ol.Coordinate} */ (view.getCenter()),
-    start: start
-  });
-  var bounce = ol.animation.bounce({
-    duration: duration,
-    resolution: 4 * view.getResolution(),
-    start: start
-  });
-  map.beforeRender(pan, bounce);
-  view.setCenter(bern);
-}, false);
+  var zoom = view.getZoom();
+  var parts = 2;
+  var called = false;
+  function callback(complete) {
+    --parts;
+    if (called) {
+      return;
+    }
+    if (parts === 0 || !complete) {
+      called = true;
+      done(complete);
+    }
+  }
+  view.animate({
+    center: location,
+    duration: duration
+  }, callback);
+  view.animate({
+    zoom: zoom - 1,
+    duration: duration / 2
+  }, {
+    zoom: zoom,
+    duration: duration / 2
+  }, callback);
+}
 
-var spiralToMadrid = document.getElementById('spiral-to-madrid');
-spiralToMadrid.addEventListener('click', function() {
-  var duration = 2000;
-  var start = +new Date();
-  var pan = ol.animation.pan({
-    duration: duration,
-    source: /** @type {ol.Coordinate} */ (view.getCenter()),
-    start: start
-  });
-  var bounce = ol.animation.bounce({
-    duration: duration,
-    resolution: 2 * view.getResolution(),
-    start: start
-  });
-  var rotate = ol.animation.rotate({
-    duration: duration,
-    rotation: -4 * Math.PI,
-    start: start
-  });
-  map.beforeRender(pan, bounce, rotate);
-  view.setCenter(madrid);
-}, false);
+onClick('fly-to-bern', function() {
+  flyTo(bern, function() {});
+});
+
+function tour() {
+  var locations = [london, bern, rome, moscow, istanbul];
+  var index = -1;
+  function next(more) {
+    if (more) {
+      ++index;
+      if (index < locations.length) {
+        var delay = index === 0 ? 0 : 750;
+        setTimeout(function() {
+          flyTo(locations[index], next);
+        }, delay);
+      } else {
+        alert('Tour complete');
+      }
+    } else {
+      alert('Tour cancelled');
+    }
+  }
+  next(true);
+}
+
+onClick('tour', tour);

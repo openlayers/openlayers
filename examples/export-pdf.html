@@ -1,0 +1,33 @@
+---
+layout: example.html
+title: Export PDF example
+shortdesc: Example of exporting a map as a PDF.
+docs: >
+  Example of exporting a map as a PDF using the <a href="https://github.com/MrRio/jsPDF" target="_blank">jsPDF</a> library.
+tags: "export, pdf, openstreetmap"
+resources:
+  - https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.2.61/jspdf.min.js
+---
+<div class="row-fluid">
+  <div class="span12">
+    <div id="map" class="map"></div>
+  </div>
+</div>
+<form class="form">
+  <label>Page size </label>
+  <select id="format">
+    <option value="a0">A0 (slow)</option>
+    <option value="a1">A1</option>
+    <option value="a2">A2</option>
+    <option value="a3">A3</option>
+    <option value="a4" selected>A4</option>
+    <option value="a5">A5 (fast)</option>
+  </select>
+  <label>Resolution </label>
+  <select id="resolution">
+    <option value="72">72 dpi (fast)</option>
+    <option value="150">150 dpi</option>
+    <option value="300">300 dpi (slow)</option>
+  </select>
+</form>
+<button id="export-pdf">Export PDF</button>

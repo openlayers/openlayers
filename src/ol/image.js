@@ -1,52 +1,30 @@
 goog.provide('ol.Image');
-goog.provide('ol.ImageState');
 
-goog.require('goog.array');
-goog.require('goog.asserts');
-goog.require('goog.events');
-goog.require('goog.events.EventTarget');
-goog.require('goog.events.EventType');
-goog.require('goog.object');
-goog.require('ol.Attribution');
-goog.require('ol.Extent');
-
-
-/**
- * @enum {number}
- */
-ol.ImageState = {
-  IDLE: 0,
-  LOADING: 1,
-  LOADED: 2,
-  ERROR: 3
-};
-
+goog.require('ol');
+goog.require('ol.ImageBase');
+goog.require('ol.ImageState');
+goog.require('ol.events');
+goog.require('ol.events.EventType');
+goog.require('ol.extent');
+goog.require('ol.obj');
 
 
 /**
  * @constructor
- * @extends {goog.events.EventTarget}
+ * @extends {ol.ImageBase}
  * @param {ol.Extent} extent Extent.
- * @param {number} resolution Resolution.
+ * @param {number|undefined} resolution Resolution.
+ * @param {number} pixelRatio Pixel ratio.
+ * @param {Array.<ol.Attribution>} attributions Attributions.
  * @param {string} src Image source URI.
  * @param {?string} crossOrigin Cross origin.
- * @param {Array.<ol.Attribution>} attributions Attributions.
+ * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
+ol.Image = function(extent, resolution, pixelRatio, attributions, src,
+    crossOrigin, imageLoadFunction) {
 
-  goog.base(this);
-
-  /**
-   * @private
-   * @type {Array.<ol.Attribution>}
-   */
-  this.attributions_ = attributions;
-
-  /**
-   * @private
-   * @type {ol.Extent}
-   */
-  this.extent_ = extent;
+  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
+      attributions);
 
   /**
    * @private
@@ -56,28 +34,22 @@ ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
 
   /**
    * @private
-   * @type {number}
-   */
-  this.resolution_ = resolution;
-
-  /**
-   * @private
-   * @type {Image}
+   * @type {HTMLCanvasElement|Image|HTMLVideoElement}
    */
   this.image_ = new Image();
-  if (!goog.isNull(crossOrigin)) {
+  if (crossOrigin !== null) {
     this.image_.crossOrigin = crossOrigin;
   }
 
   /**
    * @private
-   * @type {Object.<number, Image>}
+   * @type {Object.<number, (HTMLCanvasElement|Image|HTMLVideoElement)>}
    */
   this.imageByContext_ = {};
 
   /**
    * @private
-   * @type {Array.<number>}
+   * @type {Array.<ol.EventsKey>}
    */
   this.imageListenerKeys_ = null;
 
@@ -86,45 +58,28 @@ ol.Image = function(extent, resolution, src, crossOrigin, attributions) {
    * @type {ol.ImageState}
    */
   this.state = ol.ImageState.IDLE;
+
+  /**
+   * @private
+   * @type {ol.ImageLoadFunctionType}
+   */
+  this.imageLoadFunction_ = imageLoadFunction;
+
 };
-goog.inherits(ol.Image, goog.events.EventTarget);
+ol.inherits(ol.Image, ol.ImageBase);
 
 
 /**
- * @protected
+ * @inheritDoc
+ * @api
  */
-ol.Image.prototype.dispatchChangeEvent = function() {
-  this.dispatchEvent(goog.events.EventType.CHANGE);
-};
-
-
-/**
- * @return {Array.<ol.Attribution>} Attributions.
- */
-ol.Image.prototype.getAttributions = function() {
-  return this.attributions_;
-};
-
-
-/**
- * @return {ol.Extent} Extent.
- */
-ol.Image.prototype.getExtent = function() {
-  return this.extent_;
-};
-
-
-/**
- * @param {Object=} opt_context Object.
- * @return {HTMLCanvasElement|Image|HTMLVideoElement} Image.
- */
-ol.Image.prototype.getImageElement = function(opt_context) {
-  if (goog.isDef(opt_context)) {
+ol.Image.prototype.getImage = function(opt_context) {
+  if (opt_context !== undefined) {
     var image;
-    var key = goog.getUid(opt_context);
+    var key = ol.getUid(opt_context);
     if (key in this.imageByContext_) {
       return this.imageByContext_[key];
-    } else if (goog.object.isEmpty(this.imageByContext_)) {
+    } else if (ol.obj.isEmpty(this.imageByContext_)) {
       image = this.image_;
     } else {
       image = /** @type {Image} */ (this.image_.cloneNode(false));
@@ -138,22 +93,6 @@ ol.Image.prototype.getImageElement = function(opt_context) {
 
 
 /**
- * @return {number} Resolution.
- */
-ol.Image.prototype.getResolution = function() {
-  return this.resolution_;
-};
-
-
-/**
- * @return {ol.ImageState} State.
- */
-ol.Image.prototype.getState = function() {
-  return this.state;
-};
-
-
-/**
  * Tracks loading or read errors.
  *
  * @private
@@ -161,7 +100,7 @@ ol.Image.prototype.getState = function() {
 ol.Image.prototype.handleImageError_ = function() {
   this.state = ol.ImageState.ERROR;
   this.unlistenImage_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
@@ -171,27 +110,42 @@ ol.Image.prototype.handleImageError_ = function() {
  * @private
  */
 ol.Image.prototype.handleImageLoad_ = function() {
+  if (this.resolution === undefined) {
+    this.resolution = ol.extent.getHeight(this.extent) / this.image_.height;
+  }
   this.state = ol.ImageState.LOADED;
   this.unlistenImage_();
-  this.dispatchChangeEvent();
+  this.changed();
 };
 
 
 /**
- * Load not yet loaded URI.
+ * Load the image or retry if loading previously failed.
+ * Loading is taken care of by the tile queue, and calling this method is
+ * only needed for preloading or for reloading in case of an error.
+ * @override
+ * @api
  */
 ol.Image.prototype.load = function() {
-  if (this.state == ol.ImageState.IDLE) {
+  if (this.state == ol.ImageState.IDLE || this.state == ol.ImageState.ERROR) {
     this.state = ol.ImageState.LOADING;
-    goog.asserts.assert(goog.isNull(this.imageListenerKeys_));
+    this.changed();
     this.imageListenerKeys_ = [
-      goog.events.listenOnce(this.image_, goog.events.EventType.ERROR,
-          this.handleImageError_, false, this),
-      goog.events.listenOnce(this.image_, goog.events.EventType.LOAD,
-          this.handleImageLoad_, false, this)
+      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
+          this.handleImageError_, this),
+      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
+          this.handleImageLoad_, this)
     ];
-    this.image_.src = this.src_;
+    this.imageLoadFunction_(this, this.src_);
   }
+};
+
+
+/**
+ * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
+ */
+ol.Image.prototype.setImage = function(image) {
+  this.image_ = image;
 };
 
 
@@ -201,7 +155,6 @@ ol.Image.prototype.load = function() {
  * @private
  */
 ol.Image.prototype.unlistenImage_ = function() {
-  goog.asserts.assert(!goog.isNull(this.imageListenerKeys_));
-  goog.array.forEach(this.imageListenerKeys_, goog.events.unlistenByKey);
+  this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };

@@ -1,7 +1,0 @@
-<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-  <ogc:PropertyIsBetween>
-    <ogc:PropertyName>number</ogc:PropertyName>
-    <ogc:LowerBoundary>0</ogc:LowerBoundary>
-    <ogc:UpperBoundary>100</ogc:UpperBoundary>
-  </ogc:PropertyIsBetween>
-</ogc:Filter>

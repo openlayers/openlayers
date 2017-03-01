@@ -1,35 +1,48 @@
 goog.require('ol.DeviceOrientation');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
-goog.require('ol.dom.Input');
+goog.require('ol.View');
+goog.require('ol.control');
 goog.require('ol.layer.Tile');
+goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
+var projection = ol.proj.get('EPSG:3857');
+var view = new ol.View({
+  center: [0, 0],
+  projection: projection,
+  extent: projection.getExtent(),
+  zoom: 2
+});
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
-    center: [0, 0],
-    zoom: 2
-  })
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: view
 });
-var view = map.getView();
 
 var deviceOrientation = new ol.DeviceOrientation();
-var track = new ol.dom.Input(document.getElementById('track'));
-track.bindTo('checked', deviceOrientation, 'tracking');
 
-deviceOrientation.on('change', function(event) {
-  document.getElementById('alpha').innerHTML = event.target.getAlpha();
-  document.getElementById('beta').innerHTML = event.target.getBeta();
-  document.getElementById('gamma').innerHTML = event.target.getGamma();
-  document.getElementById('heading').innerHTML = event.target.getHeading();
+function el(id) {
+  return document.getElementById(id);
+}
+
+el('track').addEventListener('change', function() {
+  deviceOrientation.setTracking(this.checked);
+});
+
+deviceOrientation.on('change', function() {
+  el('alpha').innerText = deviceOrientation.getAlpha() + ' [rad]';
+  el('beta').innerText = deviceOrientation.getBeta() + ' [rad]';
+  el('gamma').innerText = deviceOrientation.getGamma() + ' [rad]';
+  el('heading').innerText = deviceOrientation.getHeading() + ' [rad]';
 });
 
 // tilt the map
@@ -42,5 +55,5 @@ deviceOrientation.on(['change:beta', 'change:gamma'], function(event) {
   center[0] -= resolution * gamma * 25;
   center[1] += resolution * beta * 25;
 
-  view.setCenter(center);
+  view.setCenter(view.constrainCenter(center));
 });

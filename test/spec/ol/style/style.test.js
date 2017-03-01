@@ -1,413 +1,272 @@
 goog.provide('ol.test.style.Style');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.style.Style');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Text');
+
+
 describe('ol.style.Style', function() {
 
-  describe('constructor', function() {
-
-    it('creates a style instance given rules', function() {
-      var style = new ol.style.Style({
-        rules: [
-          new ol.style.Rule({
-            filter: 'foo == "bar"',
-            symbolizers: [
-              new ol.style.Fill({
-                color: '#ff0000'
-              })
-            ]
-          })
-        ]
-      });
-      expect(style).to.be.a(ol.style.Style);
-    });
-
-    it('creates a style instance given only "else" symbolizers', function() {
-      var style = new ol.style.Style({
-        symbolizers: [
-          new ol.style.Fill({
-            color: '#ff0000'
-          })
-        ]
-      });
-      expect(style).to.be.a(ol.style.Style);
-    });
-
+  var testFill = new ol.style.Fill({
+    color: 'rgba(255, 255, 255, 0.6)'
   });
 
-  describe('#createLiterals()', function() {
-
-    it('creates symbolizer literals for a feature', function() {
-      var style = new ol.style.Style({
-        rules: [
-          new ol.style.Rule({
-            filter: 'foo == "bar"',
-            symbolizers: [
-              new ol.style.Shape({
-                size: 4,
-                fill: new ol.style.Fill({
-                  color: ol.expr.parse('fillColor')
-                })
-              })
-            ]
-          })
-        ]
-      });
-      var feature = new ol.Feature({
-        fillColor: '#BADA55',
-        geometry: new ol.geom.Point([1, 2])
-      });
-      feature.set('foo', 'bar');
-
-      var literals = style.createLiterals(feature, 1);
-      expect(literals).to.have.length(1);
-      expect(literals[0].fillColor).to.be('#BADA55');
-
-      feature.set('foo', 'baz');
-      expect(style.createLiterals(feature, 1)).to.have.length(0);
-    });
-
-    it('uses the "else" symbolizers when no rules are provided', function() {
-      var style = new ol.style.Style({
-        symbolizers: [
-          new ol.style.Stroke({
-            color: '#ff0000'
-          })
-        ]
-      });
-
-      var feature = new ol.Feature({
-        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
-      });
-
-      var literals = style.createLiterals(feature, 1);
-      expect(literals).to.have.length(1);
-      expect(literals[0].color).to.be('#ff0000');
-    });
-
-    it('uses the "else" symbolizers when no rules apply', function() {
-      var style = new ol.style.Style({
-        rules: [
-          new ol.style.Rule({
-            filter: 'name == "match"',
-            symbolizers: [
-              new ol.style.Stroke({
-                color: '#ff00ff'
-              })
-            ]
-          })
-        ],
-        // these are the "else" symbolizers
-        symbolizers: [
-          new ol.style.Stroke({
-            color: '#00ff00'
-          })
-        ]
-      });
-
-      var feature = new ol.Feature({
-        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
-      });
-
-      var literals = style.createLiterals(feature, 1);
-      expect(literals).to.have.length(1);
-      expect(literals[0].color).to.be('#00ff00');
-
-      feature = new ol.Feature({
-        name: 'match',
-        geometry: new ol.geom.LineString([[1, 2], [3, 4]])
-      });
-      literals = style.createLiterals(feature, 1);
-      expect(literals).to.have.length(1);
-      expect(literals[0].color).to.be('#ff00ff');
-    });
-
+  var testStroke = new ol.style.Stroke({
+    color: '#319FD3',
+    width: 1
   });
 
-  describe('#groupFeaturesBySymbolizerLiteral()', function() {
+  var testText = new ol.style.Text({
+    font: '12px Calibri,sans-serif',
+    fill: new ol.style.Fill({
+      color: '#000'
+    }),
+    stroke: new ol.style.Stroke({
+      color: '#fff',
+      width: 3
+    })
+  });
 
+  var testImage = new ol.style.Circle({
+    radius: 5
+  });
+
+  describe('#clone', function() {
+
+    it('creates a new ol.style.Style', function() {
+      var original = new ol.style.Style();
+      var clone = original.clone();
+      expect(clone).to.be.an(ol.style.Style);
+      expect(clone).to.not.be(original);
+    });
+
+    it('copies all values', function() {
+      var original = new ol.style.Style({
+        geometry: new ol.geom.Point([0, 0, 0]),
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        image: new ol.style.Circle({
+          radius: 5
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        }),
+        text: new ol.style.Text({
+          text: 'test'
+        }),
+        zIndex: 2
+      });
+      var clone = original.clone();
+      expect(original.getGeometry().getCoordinates()).to.eql(clone.getGeometry().getCoordinates());
+      expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
+      expect(original.getImage().getRadius()).to.eql(clone.getImage().getRadius());
+      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getText().getText()).to.eql(clone.getText().getText());
+      expect(original.getZIndex()).to.eql(clone.getZIndex());
+    });
+
+    it('the clone does not reference the same objects as the original', function() {
+      var original = new ol.style.Style({
+        geometry: new ol.geom .Point([0, 0, 0]),
+        fill: new ol.style.Fill({
+          color: '#319FD3'
+        }),
+        image: new ol.style.Circle({
+          radius: 5
+        }),
+        stroke: new ol.style.Stroke({
+          color: '#319FD3'
+        }),
+        text: new ol.style.Text({
+          text: 'test'
+        })
+      });
+      var clone = original.clone();
+      expect(original.getGeometry()).not.to.be(clone.getGeometry());
+      expect(original.getFill()).not.to.be(clone.getFill());
+      expect(original.getImage()).not.to.be(clone.getImage());
+      expect(original.getStroke()).not.to.be(clone.getStroke());
+      expect(original.getText()).not.to.be(clone.getText());
+
+      clone.getGeometry().setCoordinates([1, 1, 1]);
+      clone.getFill().setColor('#012345');
+      clone.getImage().setScale(2);
+      clone.getStroke().setColor('#012345');
+      clone.getText().setText('other');
+      expect(original.getGeometry().getCoordinates()).not.to.eql(clone.getGeometry().getCoordinates());
+      expect(original.getFill().getColor()).not.to.eql(clone.getFill().getColor());
+      expect(original.getImage().getScale()).not.to.eql(clone.getImage().getScale());
+      expect(original.getStroke().getColor()).not.to.eql(clone.getStroke().getColor());
+      expect(original.getText().getText()).not.to.eql(clone.getText().getText());
+    });
+  });
+
+  describe('#setZIndex', function() {
+
+    it('sets the zIndex', function() {
+      var style = new ol.style.Style();
+
+      style.setZIndex(0.7);
+      expect(style.getZIndex()).to.be(0.7);
+    });
+  });
+
+  describe('#getFill', function() {
     var style = new ol.style.Style({
-      symbolizers: [
-        new ol.style.Stroke({
-          width: 2,
-          color: ol.expr.parse('colorProperty'),
-          opacity: 1
-        })
-      ]
-    });
-    var features;
-
-    it('groups equal symbolizers', function() {
-      features = [
-        new ol.Feature({
-          g: new ol.geom.LineString([[-10, -10], [10, 10]]),
-          colorProperty: '#BADA55'
-        }),
-        new ol.Feature({
-          g: new ol.geom.LineString([[-10, 10], [10, -10]]),
-          colorProperty: '#013'
-        }),
-        new ol.Feature({
-          g: new ol.geom.LineString([[10, -10], [-10, -10]]),
-          colorProperty: '#013'
-        })
-      ];
-
-      var groups = style.groupFeaturesBySymbolizerLiteral(features, 1);
-      expect(groups.length).to.be(2);
-      expect(groups[0][0].length).to.be(1);
-      expect(groups[0][1].color).to.be('#BADA55');
-      expect(groups[1][0].length).to.be(2);
-      expect(groups[1][1].color).to.be('#013');
+      fill: testFill
     });
 
-    it('groups equal symbolizers also when defined on features', function() {
-      var symbolizer = new ol.style.Stroke({
-        width: 3,
-        color: ol.expr.parse('colorProperty'),
-        opacity: 1
-      });
-      var anotherSymbolizer = new ol.style.Stroke({
-        width: 3,
-        color: '#BADA55',
-        opacity: 1
-      });
-      var featureWithSymbolizers = new ol.Feature({
-        g: new ol.geom.LineString([[-10, -10], [-10, 10]]),
-        colorProperty: '#BADA55'
-      });
-      featureWithSymbolizers.setSymbolizers([symbolizer]);
-      var anotherFeatureWithSymbolizers = new ol.Feature({
-        g: new ol.geom.LineString([[-10, 10], [-10, -10]])
-      });
-      anotherFeatureWithSymbolizers.setSymbolizers([anotherSymbolizer]);
-      features.push(featureWithSymbolizers, anotherFeatureWithSymbolizers);
-
-      var groups = style.groupFeaturesBySymbolizerLiteral(features, 1);
-      expect(groups).to.have.length(3);
-      expect(groups[2][0].length).to.be(2);
-      expect(groups[2][1].width).to.be(3);
-
+    it('returns the fill style of a style', function() {
+      expect(style.getFill()).to.eql(testFill);
     });
-
-    it('sorts groups by zIndex', function() {
-      var symbolizer = new ol.style.Stroke({
-        width: 3,
-        color: '#BADA55',
-        opacity: 1,
-        zIndex: 1
-      });
-      var anotherSymbolizer = new ol.style.Stroke({
-        width: 3,
-        color: '#BADA55',
-        opacity: 1
-      });
-      var featureWithSymbolizers = new ol.Feature({
-        g: new ol.geom.LineString([[-10, -10], [-10, 10]])
-      });
-      featureWithSymbolizers.setSymbolizers([symbolizer]);
-      var anotherFeatureWithSymbolizers = new ol.Feature({
-        g: new ol.geom.LineString([[-10, 10], [-10, -10]])
-      });
-      anotherFeatureWithSymbolizers.setSymbolizers([anotherSymbolizer]);
-      features = [featureWithSymbolizers, anotherFeatureWithSymbolizers];
-
-      var groups = style.groupFeaturesBySymbolizerLiteral(features, 1);
-      expect(groups).to.have.length(2);
-      expect(groups[0][1].zIndex).to.be(0);
-      expect(groups[1][1].zIndex).to.be(1);
-    });
-
   });
 
-  describe('ol.style.getDefault()', function() {
-    var style = ol.style.getDefault();
+  describe('#setFill', function() {
+    var style = new ol.style.Style();
 
-    it('is a ol.style.Style instance', function() {
-      expect(style).to.be.a(ol.style.Style);
+    it('sets the fill style of a style', function() {
+      style.setFill(testFill);
+      expect(style.getFill()).to.eql(testFill);
     });
-
-    describe('#createLiterals()', function() {
-
-      it('returns an empty array for features without geometry', function() {
-        var feature = new ol.Feature();
-        expect(style.createLiterals(feature, 1))
-            .to.have.length(0);
-      });
-
-      it('returns an array with the Shape default for points', function() {
-        var feature = new ol.Feature();
-        feature.setGeometry(new ol.geom.Point([0, 0]));
-
-        var literals = style.createLiterals(feature, 1);
-        expect(literals).to.have.length(1);
-
-        var literal = literals[0];
-        expect(literal).to.be.a(ol.style.ShapeLiteral);
-        expect(literal.type).to.be(ol.style.ShapeDefaults.type);
-        expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
-        expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
-        expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
-        expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
-        expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
-      });
-
-      it('returns an array with the Line default for lines', function() {
-        var feature = new ol.Feature();
-        feature.setGeometry(new ol.geom.LineString([[0, 0], [1, 1]]));
-
-        var literals = style.createLiterals(feature, 1);
-        expect(literals).to.have.length(1);
-
-        var literal = literals[0];
-        expect(literal).to.be.a(ol.style.LineLiteral);
-        expect(literal.color).to.be(ol.style.StrokeDefaults.color);
-        expect(literal.opacity).to.be(ol.style.StrokeDefaults.opacity);
-        expect(literal.width).to.be(ol.style.StrokeDefaults.width);
-      });
-
-      it('returns an array with the Polygon default for polygons', function() {
-        var feature = new ol.Feature();
-        feature.setGeometry(new ol.geom.Polygon([[[0, 0], [1, 1], [0, 0]]]));
-
-        var literals = style.createLiterals(feature, 1);
-        expect(literals).to.have.length(1);
-
-        var literal = literals[0];
-        expect(literal).to.be.a(ol.style.PolygonLiteral);
-        expect(literal.fillColor).to.be(ol.style.FillDefaults.color);
-        expect(literal.fillOpacity).to.be(ol.style.FillDefaults.opacity);
-        expect(literal.strokeColor).to.be(ol.style.StrokeDefaults.color);
-        expect(literal.strokeOpacity).to.be(ol.style.StrokeDefaults.opacity);
-        expect(literal.strokeWidth).to.be(ol.style.StrokeDefaults.width);
-      });
-
-    });
-
   });
 
-  describe('#reduceLiterals_', function() {
-
-    it('collapses stroke or fill only literals where possible', function() {
-      var literals = [
-        new ol.style.PolygonLiteral({
-          fillColor: '#ff0000',
-          fillOpacity: 0.5,
-          zIndex: 0
-        }),
-        new ol.style.PolygonLiteral({
-          strokeColor: '#00ff00',
-          strokeOpacity: 0.6,
-          strokeWidth: 3,
-          zIndex: 0
-        })
-      ];
-
-      var reduced = ol.style.Style.reduceLiterals_(literals);
-      expect(reduced).to.have.length(1);
-
-      var poly = reduced[0];
-      expect(poly.fillColor).to.be('#ff0000');
-      expect(poly.fillOpacity).to.be(0.5);
-      expect(poly.strokeColor).to.be('#00ff00');
-      expect(poly.strokeOpacity).to.be(0.6);
-      expect(poly.strokeWidth).to.be(3);
+  describe('#getImage', function() {
+    var style = new ol.style.Style({
+      image: testImage
     });
 
-    it('leaves complete polygon literals alone', function() {
-      var literals = [
-        new ol.style.PolygonLiteral({
-          fillColor: '#ff0000',
-          fillOpacity: 0.5,
-          strokeColor: '#00ff00',
-          strokeOpacity: 0.6,
-          strokeWidth: 3,
-          zIndex: 0
-        }),
-        new ol.style.PolygonLiteral({
-          strokeColor: '#0000ff',
-          strokeOpacity: 0.7,
-          strokeWidth: 1,
-          zIndex: 0
-        })
-      ];
+    it('returns the image style of a style', function() {
+      expect(style.getImage()).to.eql(testImage);
+    });
+  });
 
-      var reduced = ol.style.Style.reduceLiterals_(literals);
-      expect(reduced).to.have.length(2);
+  describe('#setImage', function() {
+    var style = new ol.style.Style();
 
-      var first = reduced[0];
-      expect(first.fillColor).to.be('#ff0000');
-      expect(first.fillOpacity).to.be(0.5);
-      expect(first.strokeColor).to.be('#00ff00');
-      expect(first.strokeOpacity).to.be(0.6);
-      expect(first.strokeWidth).to.be(3);
+    it('sets the image style of a style', function() {
+      style.setImage(testImage);
+      expect(style.getImage()).to.eql(testImage);
+    });
+  });
 
-      var second = reduced[1];
-      expect(second.fillColor).to.be(undefined);
-      expect(second.fillOpacity).to.be(undefined);
-      expect(second.strokeColor).to.be('#0000ff');
-      expect(second.strokeOpacity).to.be(0.7);
-      expect(second.strokeWidth).to.be(1);
+  describe('#getStroke', function() {
+    var style = new ol.style.Style({
+      stroke: testStroke
     });
 
-    it('leaves other literals alone', function() {
-      var literals = [
-        new ol.style.PolygonLiteral({
-          strokeColor: '#00ff00',
-          strokeOpacity: 0.6,
-          strokeWidth: 3,
-          zIndex: 0
-        }),
-        new ol.style.PolygonLiteral({
-          fillColor: '#ff0000',
-          fillOpacity: 0.5,
-          zIndex: 0
-        }),
-        new ol.style.TextLiteral({
-          color: '#ffffff',
-          fontFamily: 'Arial',
-          fontSize: 11,
-          fontWeight: 'normal',
-          text: 'Test',
-          opacity: 0.5,
-          zIndex: 0
-        })
-      ];
+    it('returns the stroke style of a style', function() {
+      expect(style.getStroke()).to.eql(testStroke);
+    });
+  });
 
-      var reduced = ol.style.Style.reduceLiterals_(literals);
-      expect(reduced).to.have.length(2);
+  describe('#setStroke', function() {
+    var style = new ol.style.Style();
 
-      var first = reduced[0];
-      expect(first.fillColor).to.be('#ff0000');
-      expect(first.fillOpacity).to.be(0.5);
-      expect(first.strokeColor).to.be('#00ff00');
-      expect(first.strokeOpacity).to.be(0.6);
-      expect(first.strokeWidth).to.be(3);
+    it('sets the stroke style of a style', function() {
+      style.setStroke(testStroke);
+      expect(style.getStroke()).to.eql(testStroke);
+    });
+  });
 
-      var second = reduced[1];
-      expect(second.color).to.be('#ffffff');
-      expect(second.fontFamily).to.be('Arial');
-      expect(second.fontSize).to.be(11);
-      expect(second.text).to.be('Test');
-      expect(second.opacity).to.be(0.5);
+  describe('#getText', function() {
+    var style = new ol.style.Style({
+      text: testText
     });
 
+    it('returns the text style of a style', function() {
+      expect(style.getText()).to.eql(testText);
+    });
+  });
+
+  describe('#setText', function() {
+    var style = new ol.style.Style();
+
+    it('sets the text style of a style', function() {
+      style.setText(testText);
+      expect(style.getText()).to.eql(testText);
+    });
+  });
+
+  describe('#setGeometry', function() {
+    var style = new ol.style.Style();
+
+    it('creates a geometry function from a string', function() {
+      var feature = new ol.Feature();
+      feature.set('myGeom', new ol.geom.Point([0, 0]));
+      style.setGeometry('myGeom');
+      expect(style.getGeometryFunction()(feature))
+          .to.eql(feature.get('myGeom'));
+    });
+
+    it('creates a geometry function from a geometry', function() {
+      var geom = new ol.geom.Point([0, 0]);
+      style.setGeometry(geom);
+      expect(style.getGeometryFunction()())
+          .to.eql(geom);
+    });
+
+    it('returns the configured geometry function', function() {
+      var geom = new ol.geom.Point([0, 0]);
+      style.setGeometry(function() {
+        return geom;
+      });
+      expect(style.getGeometryFunction()())
+          .to.eql(geom);
+    });
+  });
+
+  describe('#getGeometry', function() {
+
+    it('returns whatever was passed to setGeometry', function() {
+      var style = new ol.style.Style();
+      style.setGeometry('foo');
+      expect(style.getGeometry()).to.eql('foo');
+      var geom = new ol.geom.Point([1, 2]);
+      style.setGeometry(geom);
+      expect(style.getGeometry()).to.eql(geom);
+      var fn = function() {
+        return geom;
+      };
+      style.setGeometry(fn);
+      expect(style.getGeometry()).to.eql(fn);
+      style.setGeometry(null);
+      expect(style.getGeometry()).to.eql(null);
+    });
 
   });
 
 });
 
-goog.require('ol.Feature');
-goog.require('ol.expr');
-goog.require('ol.geom.LineString');
-goog.require('ol.geom.Point');
-goog.require('ol.geom.Polygon');
-goog.require('ol.style');
-goog.require('ol.style.Fill');
-goog.require('ol.style.LineLiteral');
-goog.require('ol.style.PolygonLiteral');
-goog.require('ol.style.Rule');
-goog.require('ol.style.Shape');
-goog.require('ol.style.ShapeLiteral');
-goog.require('ol.style.Stroke');
-goog.require('ol.style.StrokeDefaults');
-goog.require('ol.style.Style');
-goog.require('ol.style.TextLiteral');
+describe('ol.style.Style.createFunction()', function() {
+  var style = new ol.style.Style();
+
+  it('creates a style function from a single style', function() {
+    var styleFunction = ol.style.Style.createFunction(style);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('creates a style function from an array of styles', function() {
+    var styleFunction = ol.style.Style.createFunction([style]);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('passes through a function', function() {
+    var original = function() {
+      return [style];
+    };
+    var styleFunction = ol.style.Style.createFunction(original);
+    expect(styleFunction).to.be(original);
+  });
+
+  it('throws on (some) unexpected input', function() {
+    expect(function() {
+      ol.style.Style.createFunction({bogus: 'input'});
+    }).to.throwException();
+  });
+
+});

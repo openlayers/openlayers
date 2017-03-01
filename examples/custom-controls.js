@@ -1,7 +1,6 @@
 goog.require('ol');
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.Control');
 goog.require('ol.layer.Tile');
@@ -20,7 +19,6 @@ var app = window.app;
 //
 
 
-
 /**
  * @constructor
  * @extends {ol.control.Control}
@@ -30,23 +28,20 @@ app.RotateNorthControl = function(opt_options) {
 
   var options = opt_options || {};
 
-  var anchor = document.createElement('a');
-  anchor.href = '#rotate-north';
-  anchor.innerHTML = 'N';
+  var button = document.createElement('button');
+  button.innerHTML = 'N';
 
   var this_ = this;
-  var handleRotateNorth = function(e) {
-    // prevent #rotate-north anchor from getting appended to the url
-    e.preventDefault();
-    this_.getMap().getView().getView2D().setRotation(0);
+  var handleRotateNorth = function() {
+    this_.getMap().getView().setRotation(0);
   };
 
-  anchor.addEventListener('click', handleRotateNorth, false);
-  anchor.addEventListener('touchstart', handleRotateNorth, false);
+  button.addEventListener('click', handleRotateNorth, false);
+  button.addEventListener('touchstart', handleRotateNorth, false);
 
   var element = document.createElement('div');
-  element.className = 'rotate-north ol-unselectable';
-  element.appendChild(anchor);
+  element.className = 'rotate-north ol-unselectable ol-control';
+  element.appendChild(button);
 
   ol.control.Control.call(this, {
     element: element,
@@ -63,7 +58,11 @@ ol.inherits(app.RotateNorthControl, ol.control.Control);
 
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }).extend([
     new app.RotateNorthControl()
   ]),
   layers: [
@@ -71,11 +70,10 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
-    zoom: 2,
+    zoom: 3,
     rotation: 1
   })
 });

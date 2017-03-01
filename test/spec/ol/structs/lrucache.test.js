@@ -1,5 +1,7 @@
 goog.provide('ol.test.LRUCache');
 
+goog.require('ol.structs.LRUCache');
+
 
 describe('ol.structs.LRUCache', function() {
 
@@ -78,6 +80,16 @@ describe('ol.structs.LRUCache', function() {
       expect(lruCache.getCount()).to.eql(4);
       expect(lruCache.getKeys()).to.eql(['d', 'c', 'b', 'a']);
       expect(lruCache.getValues()).to.eql([3, 2, 1, 0]);
+    });
+  });
+
+  describe('replacing value of a key', function() {
+    it('moves the key to newest position', function() {
+      fillLRUCache(lruCache);
+      lruCache.replace('b', 4);
+      expect(lruCache.getCount()).to.eql(4);
+      expect(lruCache.getKeys()).to.eql(['b', 'd', 'c', 'a']);
+      expect(lruCache.getValues()).to.eql([4, 3, 2, 0]);
     });
   });
 
@@ -187,5 +199,3 @@ describe('ol.structs.LRUCache', function() {
   });
 
 });
-
-goog.require('ol.structs.LRUCache');

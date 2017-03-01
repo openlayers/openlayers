@@ -1,10 +1,5 @@
 goog.provide('ol.TileRange');
 
-goog.require('goog.asserts');
-goog.require('ol.Size');
-goog.require('ol.TileCoord');
-
-
 
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
@@ -15,6 +10,7 @@ goog.require('ol.TileCoord');
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
  * @param {number} maxY Maximum Y.
+ * @struct
  */
 ol.TileRange = function(minX, maxX, minY, maxY) {
 
@@ -42,27 +38,6 @@ ol.TileRange = function(minX, maxX, minY, maxY) {
 
 
 /**
- * @param {...ol.TileCoord} var_args Tile coordinates.
- * @return {!ol.TileRange} Bounding tile box.
- */
-ol.TileRange.boundingTileRange = function(var_args) {
-  var tileCoord0 = arguments[0];
-  var tileRange = new ol.TileRange(tileCoord0.x, tileCoord0.x,
-                                   tileCoord0.y, tileCoord0.y);
-  var i, ii, tileCoord;
-  for (i = 1, ii = arguments.length; i < ii; ++i) {
-    tileCoord = arguments[i];
-    goog.asserts.assert(tileCoord.z == tileCoord0.z);
-    tileRange.minX = Math.min(tileRange.minX, tileCoord.x);
-    tileRange.maxX = Math.max(tileRange.maxX, tileCoord.x);
-    tileRange.minY = Math.min(tileRange.minY, tileCoord.y);
-    tileRange.maxY = Math.max(tileRange.maxY, tileCoord.y);
-  }
-  return tileRange;
-};
-
-
-/**
  * @param {number} minX Minimum X.
  * @param {number} maxX Maximum X.
  * @param {number} minY Minimum Y.
@@ -71,7 +46,7 @@ ol.TileRange.boundingTileRange = function(var_args) {
  * @return {ol.TileRange} Tile range.
  */
 ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
-  if (goog.isDef(tileRange)) {
+  if (tileRange !== undefined) {
     tileRange.minX = minX;
     tileRange.maxX = maxX;
     tileRange.minY = minY;
@@ -88,8 +63,7 @@ ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
  * @return {boolean} Contains tile coordinate.
  */
 ol.TileRange.prototype.contains = function(tileCoord) {
-  return this.minX <= tileCoord.x && tileCoord.x <= this.maxX &&
-      this.minY <= tileCoord.y && tileCoord.y <= this.maxY;
+  return this.containsXY(tileCoord[1], tileCoord[2]);
 };
 
 
@@ -100,6 +74,16 @@ ol.TileRange.prototype.contains = function(tileCoord) {
 ol.TileRange.prototype.containsTileRange = function(tileRange) {
   return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
       this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
+};
+
+
+/**
+ * @param {number} x Tile coordinate x.
+ * @param {number} y Tile coordinate y.
+ * @return {boolean} Contains coordinate.
+ */
+ol.TileRange.prototype.containsXY = function(x, y) {
+  return this.minX <= x && x <= this.maxX && this.minY <= y && y <= this.maxY;
 };
 
 

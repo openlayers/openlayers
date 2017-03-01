@@ -1,0 +1,25 @@
+---
+layout: example.html
+title: Draw Shapes
+shortdesc: Using the ol.interaction.Draw to create regular shapes
+docs: >
+  This demonstrates the use of the `geometryFunction` option for the
+  `ol.interaction.Draw`. Select a shape type from the dropdown above to start
+  drawing. To activate freehand drawing, hold the `Shift` key. Square drawing is
+  achieved by using `type: 'Circle'` type with a `geometryFunction` that creates
+  a 4-sided regular polygon instead of a circle. Box drawing uses `type: 'Circle'`
+  with a `geometryFunction` that creates a box-shaped polygon instead of a
+  circle.  Star drawing uses a custom geometry function that coverts a circle
+  into a start using the center and radius provided by the draw interaction.
+tags: "draw, edit, freehand, vector"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label>Shape type &nbsp;</label>
+  <select id="type">
+    <option value="Square">Square</option>
+    <option value="Box">Box</option>
+    <option value="Star">Star</option>
+    <option value="None">None</option>
+  </select>
+</form>

@@ -1,5 +1,0 @@
-<ogc:Filter xmlns:ogc="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.0.0/filter.xsd">
-  <ogc:PropertyIsNull>
-    <ogc:PropertyName>prop</ogc:PropertyName>
-  </ogc:PropertyIsNull>
-</ogc:Filter>

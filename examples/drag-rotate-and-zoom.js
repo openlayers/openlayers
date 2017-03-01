@@ -1,10 +1,9 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DragRotateAndZoom');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.OSM');
 
 
 var map = new ol.Map({
@@ -13,12 +12,11 @@ var map = new ol.Map({
   ]),
   layers: [
     new ol.layer.Tile({
-      source: new ol.source.MapQuestOpenAerial()
+      source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })

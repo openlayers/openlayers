@@ -1,45 +1,44 @@
 goog.provide('ol.TileUrlFunction');
-goog.provide('ol.TileUrlFunctionType');
 
-goog.require('goog.array');
-goog.require('goog.math');
-goog.require('ol.TileCoord');
-goog.require('ol.extent');
-
-
-/**
- * @typedef {function(this: ol.source.TileImage, ol.TileCoord,
- *     ol.proj.Projection): (string|undefined)}
- */
-ol.TileUrlFunctionType;
-
-
-/**
- * @typedef {function(ol.TileCoord, ol.proj.Projection, ol.TileCoord=):
- *     ol.TileCoord}
- */
-ol.TileCoordTransformType;
+goog.require('ol.asserts');
+goog.require('ol.math');
+goog.require('ol.tilecoord');
 
 
 /**
  * @param {string} template Template.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTemplate = function(template) {
+ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
+  var zRegEx = /\{z\}/g;
+  var xRegEx = /\{x\}/g;
+  var yRegEx = /\{y\}/g;
+  var dashYRegEx = /\{-y\}/g;
   return (
       /**
-       * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
-      function(tileCoord, projection) {
-        if (goog.isNull(tileCoord)) {
+      function(tileCoord, pixelRatio, projection) {
+        if (!tileCoord) {
           return undefined;
         } else {
-          return template.replace('{z}', '' + tileCoord.z)
-                         .replace('{x}', '' + tileCoord.x)
-                         .replace('{y}', '' + tileCoord.y);
+          return template.replace(zRegEx, tileCoord[0].toString())
+              .replace(xRegEx, tileCoord[1].toString())
+              .replace(yRegEx, function() {
+                var y = -tileCoord[2] - 1;
+                return y.toString();
+              })
+              .replace(dashYRegEx, function() {
+                var z = tileCoord[0];
+                var range = tileGrid.getFullTileRange(z);
+                ol.asserts.assert(range, 55); // The {-y} placeholder requires a tile grid with extent
+                var y = range.getHeight() + tileCoord[2];
+                return y.toString();
+              });
         }
       });
 };
@@ -47,11 +46,17 @@ ol.TileUrlFunction.createFromTemplate = function(template) {
 
 /**
  * @param {Array.<string>} templates Templates.
+ * @param {ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @return {ol.TileUrlFunctionType} Tile URL function.
  */
-ol.TileUrlFunction.createFromTemplates = function(templates) {
-  return ol.TileUrlFunction.createFromTileUrlFunctions(
-      goog.array.map(templates, ol.TileUrlFunction.createFromTemplate));
+ol.TileUrlFunction.createFromTemplates = function(templates, tileGrid) {
+  var len = templates.length;
+  var tileUrlFunctions = new Array(len);
+  for (var i = 0; i < len; ++i) {
+    tileUrlFunctions[i] = ol.TileUrlFunction.createFromTemplate(
+        templates[i], tileGrid);
+  }
+  return ol.TileUrlFunction.createFromTileUrlFunctions(tileUrlFunctions);
 };
 
 
@@ -65,93 +70,31 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
   }
   return (
       /**
-       * @this {ol.source.TileImage}
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
+       * @param {number} pixelRatio Pixel ratio.
        * @param {ol.proj.Projection} projection Projection.
        * @return {string|undefined} Tile URL.
        */
-      function(tileCoord, projection) {
-        if (goog.isNull(tileCoord)) {
+      function(tileCoord, pixelRatio, projection) {
+        if (!tileCoord) {
           return undefined;
         } else {
-          var index =
-              goog.math.modulo(tileCoord.hash(), tileUrlFunctions.length);
-          return tileUrlFunctions[index].call(this, tileCoord, projection);
+          var h = ol.tilecoord.hash(tileCoord);
+          var index = ol.math.modulo(h, tileUrlFunctions.length);
+          return tileUrlFunctions[index](tileCoord, pixelRatio, projection);
         }
       });
 };
 
 
 /**
- * @param {string} baseUrl Base URL (may have query data).
- * @param {Object.<string,*>} params to encode in the URL.
- * @param {function(this: ol.source.TileImage, string, Object.<string,*>,
- *     ol.Extent, ol.Size, ol.proj.Projection)} paramsFunction params function.
- * @return {ol.TileUrlFunctionType} Tile URL function.
- */
-ol.TileUrlFunction.createFromParamsFunction =
-    function(baseUrl, params, paramsFunction) {
-  var tmpExtent = ol.extent.createEmpty();
-  return (
-      /**
-       * @this {ol.source.TileImage}
-       * @param {ol.TileCoord} tileCoord Tile Coordinate.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} Tile URL.
-       */
-      function(tileCoord, projection) {
-        if (goog.isNull(tileCoord)) {
-          return undefined;
-        } else {
-          var tileGrid = this.getTileGrid();
-          if (goog.isNull(tileGrid)) {
-            tileGrid = ol.tilegrid.getForProjection(projection);
-          }
-          var size = tileGrid.getTileSize(tileCoord.z);
-          var extent = tileGrid.getTileCoordExtent(tileCoord, tmpExtent);
-          return paramsFunction.call(this, baseUrl, params,
-              extent, size, projection);
-        }
-      });
-};
-
-
-/**
- * @this {ol.source.TileImage}
  * @param {ol.TileCoord} tileCoord Tile coordinate.
+ * @param {number} pixelRatio Pixel ratio.
  * @param {ol.proj.Projection} projection Projection.
  * @return {string|undefined} Tile URL.
  */
-ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, projection) {
+ol.TileUrlFunction.nullTileUrlFunction = function(tileCoord, pixelRatio, projection) {
   return undefined;
-};
-
-
-/**
- * @param {ol.TileCoordTransformType} transformFn Transform function.
- * @param {ol.TileUrlFunctionType} tileUrlFunction Tile URL function.
- * @return {ol.TileUrlFunctionType} Tile URL function.
- */
-ol.TileUrlFunction.withTileCoordTransform =
-    function(transformFn, tileUrlFunction) {
-  var tmpTileCoord = new ol.TileCoord(0, 0, 0);
-  return (
-      /**
-       * @this {ol.source.TileImage}
-       * @param {ol.TileCoord} tileCoord Tile Coordinate.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} Tile URL.
-       */
-      function(tileCoord, projection) {
-        if (goog.isNull(tileCoord)) {
-          return undefined;
-        } else {
-          return tileUrlFunction.call(
-              this,
-              transformFn.call(this, tileCoord, projection, tmpTileCoord),
-              projection);
-        }
-      });
 };
 
 
@@ -161,16 +104,26 @@ ol.TileUrlFunction.withTileCoordTransform =
  */
 ol.TileUrlFunction.expandUrl = function(url) {
   var urls = [];
-  var match = /\{(\d)-(\d)\}/.exec(url) || /\{([a-z])-([a-z])\}/.exec(url);
+  var match = /\{([a-z])-([a-z])\}/.exec(url);
   if (match) {
+    // char range
     var startCharCode = match[1].charCodeAt(0);
     var stopCharCode = match[2].charCodeAt(0);
     var charCode;
     for (charCode = startCharCode; charCode <= stopCharCode; ++charCode) {
       urls.push(url.replace(match[0], String.fromCharCode(charCode)));
     }
-  } else {
-    urls.push(url);
+    return urls;
   }
+  match = match = /\{(\d+)-(\d+)\}/.exec(url);
+  if (match) {
+    // number range
+    var stop = parseInt(match[2], 10);
+    for (var i = parseInt(match[1], 10); i <= stop; i++) {
+      urls.push(url.replace(match[0], i.toString()));
+    }
+    return urls;
+  }
+  urls.push(url);
   return urls;
 };

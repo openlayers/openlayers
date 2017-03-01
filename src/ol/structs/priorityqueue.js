@@ -1,8 +1,7 @@
 goog.provide('ol.structs.PriorityQueue');
 
-goog.require('goog.asserts');
-goog.require('goog.object');
-
+goog.require('ol.asserts');
+goog.require('ol.obj');
 
 
 /**
@@ -17,6 +16,7 @@ goog.require('goog.object');
  * @constructor
  * @param {function(T): number} priorityFunction Priority function.
  * @param {function(T): string} keyFunction Key function.
+ * @struct
  * @template T
  */
 ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
@@ -55,26 +55,10 @@ ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
 
 
 /**
- * @const {number}
+ * @const
+ * @type {number}
  */
 ol.structs.PriorityQueue.DROP = Infinity;
-
-
-/**
- * FIXME empty desciption for jsdoc
- */
-ol.structs.PriorityQueue.prototype.assertValid = function() {
-  var elements = this.elements_;
-  var priorities = this.priorities_;
-  var n = elements.length;
-  goog.asserts.assert(priorities.length == n);
-  var i, priority;
-  for (i = 0; i < (n >> 1) - 1; ++i) {
-    priority = priorities[i];
-    goog.asserts.assert(priority <= priorities[this.getLeftChildIndex_(i)]);
-    goog.asserts.assert(priority <= priorities[this.getRightChildIndex_(i)]);
-  }
-};
 
 
 /**
@@ -83,7 +67,7 @@ ol.structs.PriorityQueue.prototype.assertValid = function() {
 ol.structs.PriorityQueue.prototype.clear = function() {
   this.elements_.length = 0;
   this.priorities_.length = 0;
-  goog.object.clear(this.queuedElements_);
+  ol.obj.clear(this.queuedElements_);
 };
 
 
@@ -93,7 +77,6 @@ ol.structs.PriorityQueue.prototype.clear = function() {
  */
 ol.structs.PriorityQueue.prototype.dequeue = function() {
   var elements = this.elements_;
-  goog.asserts.assert(elements.length > 0);
   var priorities = this.priorities_;
   var element = elements[0];
   if (elements.length == 1) {
@@ -105,7 +88,6 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
     this.siftUp_(0);
   }
   var elementKey = this.keyFunction_(element);
-  goog.asserts.assert(elementKey in this.queuedElements_);
   delete this.queuedElements_[elementKey];
   return element;
 };
@@ -114,16 +96,20 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
 /**
  * Enqueue an element. O(log N).
  * @param {T} element Element.
+ * @return {boolean} The element was added to the queue.
  */
 ol.structs.PriorityQueue.prototype.enqueue = function(element) {
-  goog.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_));
+  ol.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_),
+      31); // Tried to enqueue an `element` that was already added to the queue
   var priority = this.priorityFunction_(element);
   if (priority != ol.structs.PriorityQueue.DROP) {
     this.elements_.push(element);
     this.priorities_.push(priority);
     this.queuedElements_[this.keyFunction_(element)] = true;
     this.siftDown_(0, this.elements_.length - 1);
+    return true;
   }
+  return false;
 };
 
 

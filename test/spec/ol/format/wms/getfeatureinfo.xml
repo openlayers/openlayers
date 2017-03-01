@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<msGMLOutput xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <ADCP_2001_layer>
+        <gml:name>ADCP de coque 2001</gml:name>
+        <ADCP_2001_feature>
+            <gml:boundedBy>
+                <gml:Box srsName="EPSG:3857">
+                    <gml:coordinates>-531138.686422,5386348.414671 -117252.819653,6144475.186022</gml:coordinates>
+                </gml:Box>
+            </gml:boundedBy>
+            <FID>1071</FID>
+            <NO_CAMPAGNE>1020050</NO_CAMPAGNE>
+            <NOM_CAMPAGNE>ITSAS II</NOM_CAMPAGNE>
+            <NAUTILUS_CAMPAGNE>http://www.ifremer.fr/sismerData/jsp/visualisationMetadata2.jsp?strPortail=ifremer&amp;langue=FR&amp;pageOrigine=CAM&amp;cle1=FI352001020050</NAUTILUS_CAMPAGNE>
+            <FICHIER>ITSASII_BB150_0_osite.nc</FICHIER>
+            <NAUTILUS_DATA>http://www.ifremer.fr/sismerData/jsp/visualisationMetadata3.jsp?strPortail=ifremer&amp;langue=FR&amp;pageOrigine=CS&amp;cle1=71053_1&amp;cle2=ADCP01</NAUTILUS_DATA>
+        </ADCP_2001_feature>
+        <ADCP_2001_feature>
+            <gml:boundedBy>
+                <gml:Box srsName="EPSG:3857">
+                    <gml:coordinates>-531138.686422,5386348.414671 -117252.819653,6144475.186022</gml:coordinates>
+                </gml:Box>
+            </gml:boundedBy>
+            <FID>22431</FID>
+            <NO_CAMPAGNE>1020050</NO_CAMPAGNE>
+            <NOM_CAMPAGNE>ITSAS II</NOM_CAMPAGNE>
+            <NAUTILUS_CAMPAGNE>http://www.ifremer.fr/sismerData/jsp/visualisationMetadata2.jsp?strPortail=ifremer&amp;langue=FR&amp;pageOrigine=CAM&amp;cle1=FI352001020050</NAUTILUS_CAMPAGNE>
+            <FICHIER>ITSASII_BB150_figures.tar</FICHIER>
+            <NAUTILUS_DATA>http://www.ifremer.fr/sismerData/jsp/visualisationMetadata3.jsp?strPortail=ifremer&amp;langue=FR&amp;pageOrigine=CS&amp;cle1=108842_2&amp;cle2=ADCP01</NAUTILUS_DATA>
+        </ADCP_2001_feature>
+        <ADCP_2001_feature>
+            <gml:boundedBy>
+                <gml:Box srsName="EPSG:3857">
+                    <gml:coordinates>-531138.686422,5386348.414671 -117252.819653,6144475.186022</gml:coordinates>
+                </gml:Box>
+            </gml:boundedBy>
+            <FID>22432</FID>
+            <NO_CAMPAGNE>1020050</NO_CAMPAGNE>
+            <NOM_CAMPAGNE>ITSAS II</NOM_CAMPAGNE>
+            <NAUTILUS_CAMPAGNE>http://www.ifremer.fr/sismerData/jsp/visualisationMetadata2.jsp?strPortail=ifremer&amp;langue=FR&amp;pageOrigine=CAM&amp;cle1=FI352001020050</NAUTILUS_CAMPAGNE>
+            <FICHIER>ITSASII_BB150_0_fhv12.nc</FICHIER>
+            <NAUTILUS_DATA>http://www.ifremer.fr/sismerData/jsp/visualisationMetadata3.jsp?strPortail=ifremer&amp;langue=FR&amp;pageOrigine=CS&amp;cle1=108842_3&amp;cle2=ADCP01</NAUTILUS_DATA>
+        </ADCP_2001_feature>
+    </ADCP_2001_layer>
+</msGMLOutput>

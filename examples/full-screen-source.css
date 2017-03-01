@@ -1,0 +1,44 @@
+.fullscreen:-moz-full-screen {
+  height: 100%;
+}
+.fullscreen:-webkit-full-screen {
+  height: 100%;
+}
+.fullscreen:-ms-fullscreen {
+  height: 100%;
+}
+
+.fullscreen:fullscreen {
+  height: 100%;
+}
+
+.fullscreen {
+  margin-bottom: 10px;
+  width: 100%;
+  height: 400px;
+}
+
+.ol-rotate {
+  top: 3em;
+}
+
+.map {
+  width: 80%;
+  height: 100%;
+  float: left;
+}
+
+.sidepanel {
+  background: #1F6B75;
+  width: 20%;
+  height: 100%;
+  float: left;
+}
+
+.sidepanel-title {
+  width: 100%;
+  font-size: 3em;
+  color: #ffffff;
+  display: block;
+  text-align: center;
+}

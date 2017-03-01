@@ -1,73 +1,87 @@
 goog.provide('ol.geom.Point');
 
-goog.require('goog.asserts');
-goog.require('goog.events.EventType');
-goog.require('ol.Coordinate');
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.GeometryEvent');
+goog.require('ol');
+goog.require('ol.extent');
+goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.GeometryType');
-
+goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.geom.flat.deflate');
+goog.require('ol.math');
 
 
 /**
+ * @classdesc
+ * Point geometry.
+ *
  * @constructor
- * @extends {ol.geom.Geometry}
- * @param {ol.Coordinate} coordinates Coordinate values (e.g. `[x, y]`).
- * @todo stability experimental
+ * @extends {ol.geom.SimpleGeometry}
+ * @param {ol.Coordinate} coordinates Coordinates.
+ * @param {ol.geom.GeometryLayout=} opt_layout Layout.
+ * @api
  */
-ol.geom.Point = function(coordinates) {
-  goog.base(this);
-
-  /**
-   * Point coordinate values.
-   * @type {ol.Coordinate}
-   * @private
-   */
-  this.coordinates_ = coordinates;
-
-  /**
-   * @type {ol.Extent}
-   * @private
-   */
-  this.bounds_ = null;
-
+ol.geom.Point = function(coordinates, opt_layout) {
+  ol.geom.SimpleGeometry.call(this);
+  this.setCoordinates(coordinates, opt_layout);
 };
-goog.inherits(ol.geom.Point, ol.geom.Geometry);
+ol.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 
 
 /**
- * @param {number} dim Coordinate dimension.
- * @return {number} The coordinate value.
+ * Make a complete copy of the geometry.
+ * @return {!ol.geom.Point} Clone.
+ * @override
+ * @api
  */
-ol.geom.Point.prototype.get = function(dim) {
-  return this.getCoordinates()[dim];
+ol.geom.Point.prototype.clone = function() {
+  var point = new ol.geom.Point(null);
+  point.setFlatCoordinates(this.layout, this.flatCoordinates.slice());
+  return point;
 };
 
 
 /**
  * @inheritDoc
  */
-ol.geom.Point.prototype.getBounds = function() {
-  if (goog.isNull(this.bounds_)) {
-    var x = this.get(0),
-        y = this.get(1);
-    this.bounds_ = [x, y, x, y];
+ol.geom.Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+  var flatCoordinates = this.flatCoordinates;
+  var squaredDistance = ol.math.squaredDistance(
+      x, y, flatCoordinates[0], flatCoordinates[1]);
+  if (squaredDistance < minSquaredDistance) {
+    var stride = this.stride;
+    var i;
+    for (i = 0; i < stride; ++i) {
+      closestPoint[i] = flatCoordinates[i];
+    }
+    closestPoint.length = stride;
+    return squaredDistance;
+  } else {
+    return minSquaredDistance;
   }
-  return this.bounds_;
 };
 
 
 /**
- * @inheritDoc
- * @return {ol.Coordinate} Coordinates array.
+ * Return the coordinate of the point.
+ * @return {ol.Coordinate} Coordinates.
+ * @override
+ * @api
  */
 ol.geom.Point.prototype.getCoordinates = function() {
-  return this.coordinates_;
+  return !this.flatCoordinates ? [] : this.flatCoordinates.slice();
 };
 
 
 /**
  * @inheritDoc
+ */
+ol.geom.Point.prototype.computeExtent = function(extent) {
+  return ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates, extent);
+};
+
+
+/**
+ * @inheritDoc
+ * @api
  */
 ol.geom.Point.prototype.getType = function() {
   return ol.geom.GeometryType.POINT;
@@ -75,23 +89,39 @@ ol.geom.Point.prototype.getType = function() {
 
 
 /**
- * Update the point coordinates.
- * @param {ol.Coordinate} coordinates Coordinates array.
+ * @inheritDoc
+ * @api
  */
-ol.geom.Point.prototype.setCoordinates = function(coordinates) {
-  var oldBounds = this.bounds_;
-  this.bounds_ = null;
-  this.coordinates_ = coordinates;
-  this.dispatchEvent(new ol.geom.GeometryEvent(goog.events.EventType.CHANGE,
-      this, oldBounds));
+ol.geom.Point.prototype.intersectsExtent = function(extent) {
+  return ol.extent.containsXY(extent,
+      this.flatCoordinates[0], this.flatCoordinates[1]);
 };
 
 
 /**
  * @inheritDoc
+ * @api
  */
-ol.geom.Point.prototype.transform = function(transform) {
-  var coordinates = this.getCoordinates();
-  transform(coordinates, coordinates, coordinates.length);
-  this.setCoordinates(coordinates); // for change event
+ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
+  if (!coordinates) {
+    this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null);
+  } else {
+    this.setLayout(opt_layout, coordinates, 0);
+    if (!this.flatCoordinates) {
+      this.flatCoordinates = [];
+    }
+    this.flatCoordinates.length = ol.geom.flat.deflate.coordinate(
+        this.flatCoordinates, 0, coordinates, this.stride);
+    this.changed();
+  }
+};
+
+
+/**
+ * @param {ol.geom.GeometryLayout} layout Layout.
+ * @param {Array.<number>} flatCoordinates Flat coordinates.
+ */
+ol.geom.Point.prototype.setFlatCoordinates = function(layout, flatCoordinates) {
+  this.setFlatCoordinatesInternal(layout, flatCoordinates);
+  this.changed();
 };

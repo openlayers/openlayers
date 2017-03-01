@@ -1,0 +1,45 @@
+h2 {
+  font-size: 1.5em;
+  line-height: 15px;
+}
+
+.scale-cnt {
+  margin: 5px;
+}
+
+.edit-form-ctn {
+}
+
+.edit-form {
+  float: left;
+  margin: 5px;
+  width: 230px;
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.edit-form input[type="button"] {
+  float: right;
+}
+
+.edit-form-elem label {
+  display: block;
+  float: left;
+  width: 85px;
+}
+
+.edit-form-elem input[type="text"] {
+  width: 60px;
+}
+
+.edit-form-elem select {
+  width: 130px;
+}
+
+.edit-form br {
+  clear: left;
+}
+
+.clearall {
+  clear: both;
+}

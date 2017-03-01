@@ -1,92 +1,220 @@
 goog.provide('ol.test.geom.Point');
 
+goog.require('ol.geom.Point');
+
+
 describe('ol.geom.Point', function() {
 
-  describe('constructor', function() {
+  it('can be constructed with a null geometry', function() {
+    expect(function() {
+      return new ol.geom.Point(null);
+    }).not.to.throwException();
+  });
 
-    it('creates a point from an array', function() {
-      var point = new ol.geom.Point([10, 20]);
-      expect(point).to.be.a(ol.geom.Point);
-      expect(point).to.be.a(ol.geom.Geometry);
+  describe('construct with 2D coordinates', function() {
+
+    var point;
+    beforeEach(function() {
+      point = new ol.geom.Point([1, 2]);
+    });
+
+    it('has the expected layout', function() {
+      expect(point.getLayout()).to.be('XY');
+    });
+
+    it('has the expected coordinates', function() {
+      expect(point.getCoordinates()).to.eql([1, 2]);
+    });
+
+    it('has the expected extent', function() {
+      expect(point.getExtent()).to.eql([1, 2, 1, 2]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(point.getFlatCoordinates()).to.eql([1, 2]);
+    });
+
+    it('has stride the expected stride', function() {
+      expect(point.getStride()).to.be(2);
+    });
+
+    it('does not intersect non matching extent', function() {
+      expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
+    });
+
+    it('does intersect it\'s extent', function() {
+      expect(point.intersectsExtent(point.getExtent())).to.be(true);
     });
 
   });
 
-  describe('#getBounds()', function() {
+  describe('construct with 3D coordinates and layout XYM', function() {
 
-    it('returns the bounding extent', function() {
-      var point = new ol.geom.Point([10, 20]);
-      var bounds = point.getBounds();
-      expect(bounds[0]).to.be(10);
-      expect(bounds[2]).to.be(10);
-      expect(bounds[1]).to.be(20);
-      expect(bounds[3]).to.be(20);
+    var point;
+    beforeEach(function() {
+      point = new ol.geom.Point([1, 2, 3], 'XYM');
+    });
+
+    it('has the expected layout', function() {
+      expect(point.getLayout()).to.be('XYM');
+    });
+
+    it('has the expected coordinates', function() {
+      expect(point.getCoordinates()).to.eql([1, 2, 3]);
+    });
+
+    it('has the expected extent', function() {
+      expect(point.getExtent()).to.eql([1, 2, 1, 2]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(point.getFlatCoordinates()).to.eql([1, 2, 3]);
+    });
+
+    it('has the expected stride', function() {
+      expect(point.getStride()).to.be(3);
+    });
+
+    it('does not intersect non matching extent', function() {
+      expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
+    });
+
+    it('does intersect it\'s extent', function() {
+      expect(point.intersectsExtent(point.getExtent())).to.be(true);
     });
 
   });
 
-  describe('#getCoordinates()', function() {
+  describe('construct with 4D coordinates', function() {
 
-    it('returns an array', function() {
-      var point = new ol.geom.Point([10, 20]);
-      expect(point.getCoordinates()).to.eql([10, 20]);
+    var point;
+    beforeEach(function() {
+      point = new ol.geom.Point([1, 2, 3, 4]);
     });
 
-  });
-
-  describe('#setCoordinates()', function() {
-
-    it('updates the coordinates', function() {
-      var point = new ol.geom.Point([10, 20]);
-      point.setCoordinates([30, 40]);
-      expect(point.getCoordinates()).to.eql([30, 40]);
+    it('has the expected layout', function() {
+      expect(point.getLayout()).to.be('XYZM');
     });
 
-    it('invalidates bounds', function() {
-      var point = new ol.geom.Point([10, 20]);
-      point.setCoordinates([30, 40]);
-      expect(point.getBounds()).to.eql([30, 40, 30, 40]);
+    it('has the expected coordinates', function() {
+      expect(point.getCoordinates()).to.eql([1, 2, 3, 4]);
     });
 
-    it('triggers a change event', function(done) {
-      var point = new ol.geom.Point([10, 20]);
-      expect(point.getBounds()).to.eql([10, 20, 10, 20]);
-      goog.events.listen(point, 'change', function(evt) {
-        expect(evt.target).to.equal(point);
-        expect(evt.oldExtent).to.eql([10, 20, 10, 20]);
-        expect(evt.target.getBounds()).to.eql([30, 40, 30, 40]);
-        expect(evt.target.getCoordinates()).to.eql([30, 40]);
-        done();
+    it('has the expected extent', function() {
+      expect(point.getExtent()).to.eql([1, 2, 1, 2]);
+    });
+
+    it('has the expected flat coordinates', function() {
+      expect(point.getFlatCoordinates()).to.eql([1, 2, 3, 4]);
+    });
+
+    it('has the expected stride', function() {
+      expect(point.getStride()).to.be(4);
+    });
+
+    it('does not intersect non matching extent', function() {
+      expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
+    });
+
+    it('does intersect it\'s extent', function() {
+      expect(point.intersectsExtent(point.getExtent())).to.be(true);
+    });
+
+    describe('#getClosestPoint', function() {
+
+      it('preseves extra dimensions', function() {
+        var closestPoint = point.getClosestPoint([0, 0]);
+        expect(closestPoint).to.eql([1, 2, 3, 4]);
       });
-      point.setCoordinates([30, 40]);
+
+    });
+
+  });
+
+  describe('#scale()', function() {
+
+    it('scales a point', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(10e6);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([1, 2]);
+    });
+
+    it('accepts sx and sy', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(1e6, -42);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([1, 2]);
+    });
+
+    it('accepts an anchor', function() {
+      var geom = new ol.geom.Point([1, 2]);
+      geom.scale(10, 15, [0, 0]);
+      var coordinates = geom.getCoordinates();
+      expect(coordinates).to.eql([10, 30]);
+    });
+
+  });
+
+  describe('#applyTransform()', function() {
+
+    var point, transform;
+    beforeEach(function() {
+      point = new ol.geom.Point([1, 2]);
+      transform = sinon.spy();
+    });
+
+    it('calls a transform function', function() {
+      point.applyTransform(transform);
+      expect(transform.calledOnce).to.be(true);
+      var args = transform.firstCall.args;
+      expect(args).to.have.length(3);
+
+      expect(args[0]).to.be(point.getFlatCoordinates()); // input coords
+      expect(args[1]).to.be(point.getFlatCoordinates()); // output coords
+      expect(args[2]).to.be(2); // dimension
+    });
+
+    it('allows for modification of coordinates', function() {
+      var mod = function(input, output, dimension) {
+        var copy = input.slice();
+        output[1] = copy[0];
+        output[0] = copy[1];
+      };
+      point.applyTransform(mod);
+      expect(point.getCoordinates()).to.eql([2, 1]);
+    });
+
+    it('returns undefined', function() {
+      var got = point.applyTransform(transform);
+      expect(got).to.be(undefined);
     });
 
   });
 
   describe('#transform()', function() {
 
-    var forward = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
-    var inverse = ol.proj.getTransform('EPSG:3857', 'EPSG:4326');
+    it('transforms a geometry given CRS identifiers', function() {
+      var point = new ol.geom.Point([-111, 45]).transform(
+          'EPSG:4326', 'EPSG:3857');
 
-    it('forward transforms a point in place', function() {
-      var point = new ol.geom.Point([10, 20]);
-      point.transform(forward);
-      expect(point.get(0)).to.roughlyEqual(1113195, 1);
-      expect(point.get(1)).to.roughlyEqual(2273031, 1);
+      expect(point).to.be.a(ol.geom.Point);
+
+      var coords = point.getCoordinates();
+
+      expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
     });
 
-    it('inverse transforms a point in place', function() {
-      var point = new ol.geom.Point([1113195, 2273031]);
-      point.transform(inverse);
-      expect(point.get(0)).to.roughlyEqual(10, 0.001);
-      expect(point.get(1)).to.roughlyEqual(20, 0.001);
+    it('modifies the original', function() {
+      var point = new ol.geom.Point([-111, 45]);
+      point.transform('EPSG:4326', 'EPSG:3857');
+      var coords = point.getCoordinates();
+
+      expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
+      expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
     });
 
   });
 
 });
-
-goog.require('goog.events');
-goog.require('ol.geom.Geometry');
-goog.require('ol.geom.Point');
-goog.require('ol.proj');

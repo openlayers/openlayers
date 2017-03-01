@@ -14,6 +14,12 @@ var GeoJSONObject = function() {};
 
 
 /**
+ * @type {!Array.<number>|undefined}
+ */
+GeoJSONObject.prototype.bbox;
+
+
+/**
  * @type {string}
  */
 GeoJSONObject.prototype.type;
@@ -28,15 +34,42 @@ GeoJSONObject.prototype.crs;
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONCRS = function() {};
 
 
 /**
- * @type {!GeoJSONCRSName|!GeoJSONLink}
+ * CRS type. One of `link` or `name`.
+ * @type {string}
+ */
+GeoJSONCRS.prototype.type;
+
+
+/**
+ * TODO: remove GeoJSONCRSCode when http://jira.codehaus.org/browse/GEOS-5996
+ * is fixed and widely deployed.
+ * @type {!GeoJSONCRSCode|!GeoJSONCRSName|!GeoJSONLink}
  */
 GeoJSONCRS.prototype.properties;
+
+
+
+/**
+ * `GeoJSONCRSCode` is not part of the GeoJSON specification, but is generated
+ * by GeoServer.
+ * TODO: remove GeoJSONCRSCode when http://jira.codehaus.org/browse/GEOS-5996
+ * is fixed and widely deployed.
+ * @constructor
+ */
+var GeoJSONCRSCode = function() {};
+
+
+/**
+ * TODO: remove this when http://jira.codehaus.org/browse/GEOS-5996 is fixed
+ * and widely deployed.
+ * @type {string}
+ */
+GeoJSONCRSCode.prototype.code;
 
 
 
@@ -90,9 +123,15 @@ var GeoJSONFeature = function() {};
 
 
 /**
- * @type {GeoJSONGeometry}
+ * @type {GeoJSONGeometry|GeoJSONGeometryCollection}
  */
 GeoJSONFeature.prototype.geometry;
+
+
+/**
+ * @type {number|string|undefined}
+ */
+GeoJSONFeature.prototype.id;
 
 
 /**
@@ -115,16 +154,9 @@ var GeoJSONFeatureCollection = function() {};
 GeoJSONFeatureCollection.prototype.features;
 
 
-/**
- * @type {!Array.<number>|undefined}
- */
-GeoJSONFeatureCollection.prototype.bbox;
-
-
 
 /**
  * @constructor
- * @extends {GeoJSONObject}
  */
 var GeoJSONLink = function() {};
 
@@ -133,3 +165,8 @@ var GeoJSONLink = function() {};
  * @type {string}
  */
 GeoJSONLink.prototype.href;
+
+/**
+ * @type {string}
+ */
+GeoJSONLink.prototype.type;

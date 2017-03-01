@@ -1,0 +1,31 @@
+.rel {
+  position: relative
+}
+
+#plot {
+  pointer-events: none;
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+}
+
+.bar {
+  pointer-events: auto;
+  fill: #AFAFB9;
+}
+
+.bar.selected {
+  fill: green;
+}
+
+.tip {
+  position: absolute;
+  background: black;
+  color: white;
+  padding: 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  display: none;
+  opacity: 0;
+}

@@ -1,0 +1,60 @@
+/**
+ * The zoomslider in the second map shall be placed between the zoom-in and
+ * zoom-out buttons.
+ */
+#map2 .ol-zoom .ol-zoom-out {
+  margin-top: 204px;
+}
+#map2 .ol-zoomslider {
+  background-color: transparent;
+  top: 2.3em;
+}
+
+#map2 .ol-touch .ol-zoom .ol-zoom-out {
+  margin-top: 212px;
+}
+#map2 .ol-touch .ol-zoomslider {
+  top: 2.75em;
+}
+
+#map2 .ol-zoom-in.ol-has-tooltip:hover [role=tooltip],
+#map2 .ol-zoom-in.ol-has-tooltip:focus [role=tooltip] {
+  top: 3px;
+}
+
+#map2 .ol-zoom-out.ol-has-tooltip:hover [role=tooltip],
+#map2 .ol-zoom-out.ol-has-tooltip:focus [role=tooltip] {
+  top: 232px;
+}
+
+/**
+ * The zoomslider in the third map shall be horizontal, placed in the top-right
+ * corner, smaller and orange.
+ */
+#map3 .ol-zoomslider {
+  top: 8px;
+  left: auto;
+  right: 8px;
+  background-color: rgba(255,69,0,0.2);
+  width: 200px;
+  height: 15px;
+  padding: 0;
+  box-shadow: 0 0 5px rgb(255,69,0);
+  border-radius: 20px;
+}
+
+#map3 .ol-zoomslider:hover {
+  background-color: rgba(255,69,0,0.3);
+}
+
+#map3 .ol-zoomslider-thumb {
+  height: 15px;
+  width: 15px;
+  margin: 0;
+  filter: none;
+  background-color: rgba(255,69,0,0.6);
+  border-radius: 20px;
+}
+#map3 a.ol-zoomslider-handle:hover {
+  background-color: rgba(255,69,0,0.7);
+}

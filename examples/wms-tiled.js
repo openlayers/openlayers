@@ -1,28 +1,27 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.layer.Tile');
-goog.require('ol.source.MapQuestOpenAerial');
+goog.require('ol.source.OSM');
 goog.require('ol.source.TileWMS');
 
 
 var layers = [
   new ol.layer.Tile({
-    source: new ol.source.MapQuestOpenAerial()
+    source: new ol.source.OSM()
   }),
   new ol.layer.Tile({
+    extent: [-13884991, 2870341, -7455066, 6338219],
     source: new ol.source.TileWMS({
-      url: 'http://demo.opengeo.org/geoserver/wms',
+      url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states', 'TILED': true},
-      extent: [-13884991, 2870341, -7455066, 6338219]
+      serverType: 'geoserver'
     })
   })
 ];
 var map = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
   layers: layers,
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [-10997148, 4569099],
     zoom: 4
   })

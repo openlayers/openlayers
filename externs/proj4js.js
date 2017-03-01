@@ -1,92 +1,31 @@
 /**
  * @externs
- * @see http://trac.osgeo.org/proj4js/
+ * @see http://proj4js.org/
  */
-
-
-/**
- * @type {Object}
- */
-var Proj4js = {};
-
-
-/**
- * @type {Object.<string, string>}
- */
-Proj4js.defs;
-
-
-/**
- * @type {function(string)}
- */
-Proj4js.reportError;
-
 
 
 /**
  * @constructor
- * @param {number} x
- * @param {number} y
  */
-Proj4js.Point = function(x, y) {};
+var proj4 = function() {};
 
 
 /**
- * @type {number}
+ * @type {function(Array.<number>): Array.<number>}
  */
-Proj4js.Point.prototype.x;
+proj4.prototype.forward;
 
 
 /**
- * @type {number}
+ * @type {function(Array.<number>): Array.<number>}
  */
-Proj4js.Point.prototype.y;
-
+proj4.prototype.inverse;
 
 
 /**
- * @constructor
- * @param {string} srsCode
- * @param {Function=} opt_callback
+ * @param {string} name
+ * @param {(string|Object)=} opt_def
+ * @return {undefined|Object.<string, Object.<{axis: string, units: string,
+ *     to_meter: number}>>}
  */
-Proj4js.Proj = function(srsCode, opt_callback) {};
-
-
-/**
- * @type {string}
- */
-Proj4js.Proj.prototype.axis;
-
-
-/**
- * @type {string}
- */
-Proj4js.Proj.prototype.title;
-
-
-/**
- * @type {string}
- */
-Proj4js.Proj.prototype.units;
-
-
-/**
- * @type {string}
- */
-Proj4js.Proj.prototype.srsCode;
-
-
-/**
- * @type {number}
- */
-Proj4js.Proj.prototype.to_meter;
-
-
-/**
- * @nosideeffects
- * @param {Proj4js.Proj} source
- * @param {Proj4js.Proj} dest
- * @param {Proj4js.Point|{x:number, y:number}} point
- * @return {Proj4js.Point}
- */
-Proj4js.transform = function(source, dest, point) {};
+proj4.defs = function(name, opt_def) {};

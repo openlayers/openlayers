@@ -1,5 +1,11 @@
 goog.provide('ol.test.Feature');
 
+goog.require('ol.Feature');
+goog.require('ol.geom.Point');
+goog.require('ol.obj');
+goog.require('ol.style.Style');
+
+
 describe('ol.Feature', function() {
 
   describe('constructor', function() {
@@ -9,7 +15,7 @@ describe('ol.Feature', function() {
       expect(feature).to.be.a(ol.Feature);
     });
 
-    it('takes attribute values', function() {
+    it('takes properties', function() {
       var feature = new ol.Feature({
         foo: 'bar'
       });
@@ -24,12 +30,12 @@ describe('ol.Feature', function() {
 
     it('will set the default geometry', function() {
       var feature = new ol.Feature({
-        loc: new ol.geom.Point([10, 20]),
+        geometry: new ol.geom.Point([10, 20]),
         foo: 'bar'
       });
       var geometry = feature.getGeometry();
       expect(geometry).to.be.a(ol.geom.Point);
-      expect(feature.get('loc')).to.be(geometry);
+      expect(feature.get('geometry')).to.be(geometry);
     });
 
   });
@@ -58,41 +64,30 @@ describe('ol.Feature', function() {
 
   });
 
-  describe('#getAttributes()', function() {
+  describe('#getProperties()', function() {
 
     it('returns an object with all attributes', function() {
       var point = new ol.geom.Point([15, 30]);
       var feature = new ol.Feature({
         foo: 'bar',
         ten: 10,
-        loc: point
+        geometry: point
       });
 
-      var attributes = feature.getAttributes();
+      var attributes = feature.getProperties();
 
-      var keys = goog.object.getKeys(attributes);
-      expect(keys.sort()).to.eql(['foo', 'loc', 'ten']);
+      var keys = Object.keys(attributes);
+      expect(keys.sort()).to.eql(['foo', 'geometry', 'ten']);
 
       expect(attributes.foo).to.be('bar');
-      expect(attributes.loc).to.be(point);
+      expect(attributes.geometry).to.be(point);
       expect(attributes.ten).to.be(10);
     });
 
-    it('returns an object with all attributes except geometry', function() {
-      var point = new ol.geom.Point([15, 30]);
-      var feature = new ol.Feature({
-        foo: 'bar',
-        ten: 10,
-        loc: point
-      });
-
-      var attributes = feature.getAttributes(true);
-
-      var keys = goog.object.getKeys(attributes);
-      expect(keys.sort()).to.eql(['foo', 'ten']);
-
-      expect(attributes.foo).to.be('bar');
-      expect(attributes.ten).to.be(10);
+    it('is empty by default', function() {
+      var feature = new ol.Feature();
+      var properties = feature.getProperties();
+      expect(ol.obj.isEmpty(properties)).to.be(true);
     });
 
   });
@@ -102,14 +97,25 @@ describe('ol.Feature', function() {
 
     var point = new ol.geom.Point([15, 30]);
 
-    it('returns null for no geometry', function() {
+    it('returns undefined for unset geometry', function() {
       var feature = new ol.Feature();
+      expect(feature.getGeometry()).to.be(undefined);
+    });
+
+    it('returns null for null geometry (constructor)', function() {
+      var feature = new ol.Feature(null);
+      expect(feature.getGeometry()).to.be(null);
+    });
+
+    it('returns null for null geometry (setGeometry())', function() {
+      var feature = new ol.Feature();
+      feature.setGeometry(null);
       expect(feature.getGeometry()).to.be(null);
     });
 
     it('gets the geometry set at construction', function() {
       var feature = new ol.Feature({
-        geom: point
+        geometry: point
       });
       expect(feature.getGeometry()).to.be(point);
     });
@@ -122,15 +128,6 @@ describe('ol.Feature', function() {
       var point2 = new ol.geom.Point([1, 2]);
       feature.setGeometry(point2);
       expect(feature.getGeometry()).to.be(point2);
-    });
-
-    it('gets the first geometry set by set', function() {
-      var feature = new ol.Feature();
-      feature.set('foo', point);
-      expect(feature.getGeometry()).to.be(point);
-
-      feature.set('bar', new ol.geom.Point([1, 2]));
-      expect(feature.getGeometry()).to.be(point);
     });
 
   });
@@ -149,10 +146,10 @@ describe('ol.Feature', function() {
     it('can be used to set the geometry', function() {
       var point = new ol.geom.Point([3, 4]);
       var feature = new ol.Feature({
-        loc: new ol.geom.Point([1, 2])
+        geometry: new ol.geom.Point([1, 2])
       });
-      feature.set('loc', point);
-      expect(feature.get('loc')).to.be(point);
+      feature.set('geometry', point);
+      expect(feature.get('geometry')).to.be(point);
       expect(feature.getGeometry()).to.be(point);
     });
 
@@ -167,31 +164,9 @@ describe('ol.Feature', function() {
       feature.set('getGeometry', 'x');
       expect(feature.get('getGeometry')).to.be('x');
 
-      feature.set('geom', new ol.geom.Point([1, 2]));
+      feature.set('geometry', new ol.geom.Point([1, 2]));
       expect(feature.getGeometry()).to.be.a(ol.geom.Point);
 
-    });
-
-    it('triggers a featurechange event', function(done) {
-      var feature = new ol.Feature();
-      goog.events.listen(feature, 'featurechange', function(evt) {
-        expect(evt.target).to.be(feature);
-        expect(evt.oldExtent).to.be(null);
-        done();
-      });
-      feature.set('foo', 'bar');
-    });
-
-    it('triggers a featurechange event with oldExtent', function(done) {
-      var feature = new ol.Feature({
-        geom: new ol.geom.Point([15, 30])
-      });
-      goog.events.listen(feature, 'featurechange', function(evt) {
-        expect(evt.target).to.be(feature);
-        expect(evt.oldExtent).to.eql([15, 30, 15, 30]);
-        done();
-      });
-      feature.setGeometry(new ol.geom.Point([1, 2]));
     });
 
   });
@@ -203,12 +178,12 @@ describe('ol.Feature', function() {
     it('sets the default geometry', function() {
       var feature = new ol.Feature();
       feature.setGeometry(point);
-      expect(feature.get(ol.Feature.DEFAULT_GEOMETRY)).to.be(point);
+      expect(feature.get('geometry')).to.be(point);
     });
 
     it('replaces previous default geometry', function() {
       var feature = new ol.Feature({
-        geom: point
+        geometry: point
       });
       expect(feature.getGeometry()).to.be(point);
 
@@ -217,53 +192,288 @@ describe('ol.Feature', function() {
       expect(feature.getGeometry()).to.be(point2);
     });
 
-    it('gets any geometry set by setGeometry', function() {
+  });
+
+  describe('#setGeometryName()', function() {
+
+    var point = new ol.geom.Point([15, 30]);
+
+    it('sets property where to to look at geometry', function() {
       var feature = new ol.Feature();
       feature.setGeometry(point);
       expect(feature.getGeometry()).to.be(point);
 
       var point2 = new ol.geom.Point([1, 2]);
-      feature.setGeometry(point2);
+      feature.set('altGeometry', point2);
+      expect(feature.getGeometry()).to.be(point);
+      feature.setGeometryName('altGeometry');
       expect(feature.getGeometry()).to.be(point2);
-    });
 
-    it('gets the first geometry set by set', function() {
-      var feature = new ol.Feature();
-      feature.set('foo', point);
-      expect(feature.getGeometry()).to.be(point);
-
-      feature.set('bar', new ol.geom.Point([1, 2]));
-      expect(feature.getGeometry()).to.be(point);
-    });
-
-    it('triggers a featurechange event', function(done) {
-      var feature = new ol.Feature();
-      goog.events.listen(feature, 'featurechange', function(evt) {
-        expect(evt.target).to.be(feature);
-        done();
+      feature.on('change', function() {
+        expect.fail();
       });
-      feature.setGeometry('foo', point);
+      point.setCoordinates([0, 2]);
     });
 
-    it('triggers a featurechange event with old extent', function(done) {
-      var first = new ol.geom.Point([10, 20]);
-      var feature = new ol.Feature({geom: first});
-      var second = new ol.geom.Point([20, 30]);
-      goog.events.listen(feature, 'featurechange', function(evt) {
-        expect(evt.target).to.be(feature);
-        expect(evt.target.getGeometry()).to.be(second);
-        expect(evt.oldExtent).to.eql(first.getBounds());
-        done();
-      });
-      feature.setGeometry(second);
+    it('changes property listener', function() {
+      var feature = new ol.Feature();
+      feature.setGeometry(point);
+      var point2 = new ol.geom.Point([1, 2]);
+      feature.set('altGeometry', point2);
+      feature.setGeometryName('altGeometry');
+
+      var spy = sinon.spy();
+      feature.on('change', spy);
+      point2.setCoordinates([0, 2]);
+      expect(spy.callCount).to.be(1);
+    });
+
+    it('can use a different geometry name', function() {
+      var feature = new ol.Feature();
+      feature.setGeometryName('foo');
+      var point = new ol.geom.Point([10, 20]);
+      feature.setGeometry(point);
+      expect(feature.getGeometry()).to.be(point);
     });
 
   });
 
+  describe('#setId()', function() {
+
+    it('sets the feature identifier', function() {
+      var feature = new ol.Feature();
+      expect(feature.getId()).to.be(undefined);
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
+    });
+
+    it('accepts a string or number', function() {
+      var feature = new ol.Feature();
+      feature.setId('foo');
+      expect(feature.getId()).to.be('foo');
+      feature.setId(2);
+      expect(feature.getId()).to.be(2);
+    });
+
+    it('dispatches the "change" event', function(done) {
+      var feature = new ol.Feature();
+      feature.on('change', function() {
+        expect(feature.getId()).to.be('foo');
+        done();
+      });
+      feature.setId('foo');
+    });
+
+  });
+
+  describe('#getStyleFunction()', function() {
+
+    var styleFunction = function(resolution) {
+      return null;
+    };
+
+    it('returns undefined after construction', function() {
+      var feature = new ol.Feature();
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    it('returns the function passed to setStyle', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(styleFunction);
+      expect(feature.getStyleFunction()).to.be(styleFunction);
+    });
+
+    it('does not get confused with user "styleFunction" property', function() {
+      var feature = new ol.Feature();
+      feature.set('styleFunction', 'foo');
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    it('does not get confused with "styleFunction" option', function() {
+      var feature = new ol.Feature({
+        styleFunction: 'foo'
+      });
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+  });
+
+  describe('#setStyle()', function() {
+
+    var style = new ol.style.Style();
+
+    var styleFunction = function(feature, resolution) {
+      return resolution;
+    };
+
+    it('accepts a single style', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(style);
+      var func = feature.getStyleFunction();
+      expect(func()).to.eql([style]);
+    });
+
+    it('accepts an array of styles', function() {
+      var feature = new ol.Feature();
+      feature.setStyle([style]);
+      var func = feature.getStyleFunction();
+      expect(func()).to.eql([style]);
+    });
+
+    it('accepts a style function', function() {
+      var feature = new ol.Feature();
+      function featureStyleFunction(resolution) {
+        return styleFunction(this, resolution);
+      }
+      feature.setStyle(featureStyleFunction);
+      expect(feature.getStyleFunction()).to.be(featureStyleFunction);
+      expect(feature.getStyleFunction()(42)).to.be(42);
+    });
+
+    it('accepts a layer style function', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(styleFunction);
+      expect(feature.getStyleFunction()).to.not.be(styleFunction);
+      expect(feature.getStyleFunction()(42)).to.be(42);
+    });
+
+    it('accepts null', function() {
+      var feature = new ol.Feature();
+      feature.setStyle(style);
+      feature.setStyle(null);
+      expect(feature.getStyle()).to.be(null);
+      expect(feature.getStyleFunction()).to.be(undefined);
+    });
+
+    it('dispatches a change event', function() {
+      var feature = new ol.Feature();
+      var spy = sinon.spy();
+      feature.on('change', spy);
+      feature.setStyle(style);
+      expect(spy.callCount).to.be(1);
+    });
+
+  });
+
+  describe('#getStyle()', function() {
+
+    var style = new ol.style.Style();
+
+    var styleFunction = function(resolution) {
+      return null;
+    };
+
+    it('returns what is passed to setStyle', function() {
+      var feature = new ol.Feature();
+
+      expect(feature.getStyle()).to.be(null);
+
+      feature.setStyle(style);
+      expect(feature.getStyle()).to.be(style);
+
+      feature.setStyle([style]);
+      expect(feature.getStyle()).to.eql([style]);
+
+      feature.setStyle(styleFunction);
+      expect(feature.getStyle()).to.be(styleFunction);
+
+    });
+
+    it('does not get confused with "style" option to constructor', function() {
+      var feature = new ol.Feature({
+        style: 'foo'
+      });
+
+      expect(feature.getStyle()).to.be(null);
+    });
+
+    it('does not get confused with user set "style" property', function() {
+      var feature = new ol.Feature();
+      feature.set('style', 'foo');
+
+      expect(feature.getStyle()).to.be(null);
+    });
+
+  });
+
+  describe('#clone', function() {
+
+    it('correctly clones features', function() {
+      var feature = new ol.Feature();
+      feature.setProperties({'fookey': 'fooval'});
+      feature.setId(1);
+      feature.setGeometryName('geom');
+      var geometry = new ol.geom.Point([1, 2]);
+      feature.setGeometry(geometry);
+      var style = new ol.style.Style({});
+      feature.setStyle(style);
+      feature.set('barkey', 'barval');
+
+      var clone = feature.clone();
+      expect(clone.get('fookey')).to.be('fooval');
+      expect(clone.getId()).to.be(undefined);
+      expect(clone.getGeometryName()).to.be('geom');
+      var geometryClone = clone.getGeometry();
+      expect(geometryClone).not.to.be(geometry);
+      var coordinates = geometryClone.getFlatCoordinates();
+      expect(coordinates[0]).to.be(1);
+      expect(coordinates[1]).to.be(2);
+      expect(clone.getStyle()).to.be(style);
+      expect(clone.get('barkey')).to.be('barval');
+    });
+
+    it('correctly clones features with no geometry and no style', function() {
+      var feature = new ol.Feature();
+      feature.set('fookey', 'fooval');
+
+      var clone = feature.clone();
+      expect(clone.get('fookey')).to.be('fooval');
+      expect(clone.getGeometry()).to.be(undefined);
+      expect(clone.getStyle()).to.be(null);
+    });
+  });
+
+  describe('#setGeometry()', function() {
+
+    it('dispatches a change event when geometry is set to null',
+        function() {
+          var feature = new ol.Feature({
+            geometry: new ol.geom.Point([0, 0])
+          });
+          var spy = sinon.spy();
+          feature.on('change', spy);
+          feature.setGeometry(null);
+          expect(spy.callCount).to.be(1);
+        });
+  });
+
 });
 
+describe('ol.Feature.createStyleFunction()', function() {
+  var style = new ol.style.Style();
 
-goog.require('goog.events');
-goog.require('goog.object');
-goog.require('ol.Feature');
-goog.require('ol.geom.Point');
+  it('creates a feature style function from a single style', function() {
+    var styleFunction = ol.Feature.createStyleFunction(style);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('creates a feature style function from an array of styles', function() {
+    var styleFunction = ol.Feature.createStyleFunction([style]);
+    expect(styleFunction()).to.eql([style]);
+  });
+
+  it('passes through a function', function() {
+    var original = function() {
+      return [style];
+    };
+    var styleFunction = ol.Feature.createStyleFunction(original);
+    expect(styleFunction).to.be(original);
+  });
+
+  it('throws on (some) unexpected input', function() {
+    expect(function() {
+      ol.Feature.createStyleFunction({bogus: 'input'});
+    }).to.throwException();
+  });
+
+});

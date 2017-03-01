@@ -1,0 +1,21 @@
+---
+layout: example.html
+title: HERE Map Tile API
+shortdesc: Example of a map with map tiles from HERE.
+docs: >
+  <p><a href="https://developer.here.com/rest-apis/documentation/enterprise-map-tile">HERE Map Tile API</a> used with <code>ol.source.XYZ</code>.</p>
+  <p>Be sure to respect the <a href="https://legal.here.com/en/terms/serviceterms/us/">HERE Service Terms</a> when using their tile API.</p>
+tags: "here, here-maps, here-tile-api"
+cloak:
+  a2qhegvZZFIuJDkkqjhQ: Your HERE Maps appId from https://developer.here.com/
+  lPJ3iaFLJDhD8fIAyU582A: Your HERE Maps appCode from https://developer.here.com/
+---
+<div id="map" class="map"></div>
+<select id="layer-select">
+  <option value="normal.day" selected>Normal Day</option>
+  <option value="normal.day.transit">Normal Day Transit</option>
+  <option value="pedestrian.day">Pedestrian Day</option>
+  <option value="terrain.day">Terrain Day</option>
+  <option value="satellite.day">Satellite Day</option>
+  <option value="hybrid.day">Hybrid Day</option>
+</select>

@@ -1,0 +1,19 @@
+---
+layout: example.html
+title: Tiled UTFGrid
+shortdesc: This example shows how to read data from a TileUTFGrid layer.
+docs: >
+  <p>Point to a country to see its name and flag.</p>
+  Tiles made with [TileMill](http://tilemill.com). Hosting on MapBox.com or with open-source [TileServer](https://github.com/klokantech/tileserver-php/).
+tags: "utfgrid, tileutfgrid, tilejson"
+cloak:
+  pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg: Your Mapbox access token from http://mapbox.com/ here
+---
+<div id="map" class="map"></div>
+<div style="display: none;">
+  <!-- Overlay with the country info -->
+  <div id="country-info">
+    <div id="country-name">&nbsp;</div>
+    <img id="country-flag" src="" />
+  </div>
+</div>

@@ -1,0 +1,25 @@
+---
+layout: example.html
+title: Hit Tolerance
+shortdesc: Example using the hitTolerance parameter.
+docs: >
+  By default, the map.forEachFeatureAtPixel() function only considers features that are directly under the provided
+  pixel. This can make it difficult to interact with features on touch devices. To consider features within some
+  distance of the provided pixel, use the hitTolerance option. For example,
+  map.forEachFeatureAtPixel(pixel, callback, {hitTolerance: 3}) will call the callback with all features that are
+  within three pixels of the provided pixel.
+tags: "hitTolerance"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <span id="status">&nbsp;No feature got hit.</span>
+  <br />
+  <label>Hit tolerance for selecting features </label>
+  <select id="hitTolerance" class="form-control">
+    <option value="0" selected>0 Pixels</option>
+    <option value="5">5 Pixels</option>
+    <option value="10">10 Pixels</option>
+  </select>
+  <br />
+  Area: &nbsp;<canvas id="circle" style="vertical-align: middle"/>
+</form>

@@ -1,0 +1,17 @@
+---
+layout: example.html
+title: Flight Animation
+shortdesc: Demonstrates how to animate flights with ´postcompose´.
+docs: >
+  This example shows how to use <b>postcompose</b> and <b>vectorContext</b> to
+  animate flights. A great circle arc between two airports is calculated using
+  <a href="https://github.com/springmeyer/arc.js">arc.js</a> and then the flight
+  paths are animated with <b>postcompose</b>. The flight data is provided by
+  <a href="http://openflights.org/data.html">OpenFlights</a> (a simplified data
+  set from the <a href="https://www.mapbox.com/mapbox.js/example/v1.0.0/animating-flight-paths/">
+  Mapbox.js documentation</a> is used).
+tags: "animation, vector, feature, flights, arc"
+resources:
+  - https://api.mapbox.com/mapbox.js/plugins/arc.js/v0.1.0/arc.js
+---
+<div id="map" class="map"></div>

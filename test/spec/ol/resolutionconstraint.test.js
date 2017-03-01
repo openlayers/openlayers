@@ -1,5 +1,8 @@
 goog.provide('ol.test.ResolutionConstraint');
 
+goog.require('ol.ResolutionConstraint');
+
+
 describe('ol.ResolutionConstraint', function() {
 
   describe('SnapToResolution', function() {
@@ -238,5 +241,3 @@ describe('ol.ResolutionConstraint', function() {
     });
   });
 });
-
-goog.require('ol.ResolutionConstraint');

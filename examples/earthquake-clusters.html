@@ -1,0 +1,12 @@
+---
+layout: example.html
+title: Earthquake Clusters
+shortdesc: Demonstrates the use of style geometries to render source features of a cluster.
+docs: >
+  <p>This example parses a KML file and renders the features as clusters on a vector layer.  The styling in this example is quite involved. Single earthquake locations
+  (rendered as stars) have a size relative to their magnitude. Clusters have an opacity relative to the number of features in the cluster, and a size that represents
+  the extent of the features that make up the cluster. When clicking or hovering on a cluster, the individual features that make up the cluster will be shown.</p>
+  <p>To achieve this, we make heavy use of style functions and <code>ol.style.Style#geometry</code>.</p>
+tags: "KML, vector, style, geometry, cluster"
+---
+<div id="map" class="map"></div>

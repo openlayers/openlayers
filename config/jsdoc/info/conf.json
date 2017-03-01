@@ -1,0 +1,17 @@
+{
+    "opts": {
+        "recurse": true,
+        "template": "config/jsdoc/info"
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "source": {
+        "includePattern": "\\.js$"
+    },
+    "plugins": [
+        "config/jsdoc/info/api-plugin",
+        "config/jsdoc/info/define-plugin",
+        "config/jsdoc/info/virtual-plugin"
+    ]
+}

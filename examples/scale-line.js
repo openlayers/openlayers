@@ -1,9 +1,7 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.ScaleLine');
-goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
@@ -11,7 +9,11 @@ goog.require('ol.source.OSM');
 var scaleLineControl = new ol.control.ScaleLine();
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }).extend([
     scaleLineControl
   ]),
   layers: [
@@ -19,14 +21,17 @@ var map = new ol.Map({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })
 });
 
 
-var unitsSelect = new ol.dom.Input(document.getElementById('units'));
-unitsSelect.bindTo('value', scaleLineControl, 'units');
+var unitsSelect = document.getElementById('units');
+function onChange() {
+  scaleLineControl.setUnits(unitsSelect.value);
+}
+unitsSelect.addEventListener('change', onChange);
+onChange();

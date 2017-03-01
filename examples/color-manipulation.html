@@ -1,0 +1,26 @@
+---
+layout: example.html
+title: Color Manipulation
+shortdesc: Demonstrates color manipulation with a raster source.
+docs: >
+  A raster source allows arbitrary manipulation of pixel values.  In this example, RGB values on the input tile source are adjusted in a pixel-wise operation before being rendered with a second raster source.  The raster operation takes pixels in in RGB space, converts them to HCL color space, adjusts the values based on the controls above, and then converts them back to RGB space for rendering.
+tags: "color, hue, lightness, chroma"
+---
+<div id="map" class="map"></div>
+<table class="controls">
+  <tr>
+    <td>hue</td>
+    <td><span id="hueOut"></span>°</td>
+    <td><input id="hue" type="range" min="-180" max="180" value="0"/></td>
+  </tr>
+  <tr>
+    <td>chroma</td>
+    <td><span id="chromaOut"></span> %</td>
+    <td><input id="chroma" type="range" min="0" max="100" value="100"/></td>
+  </tr>
+  <tr>
+    <td>lightness</td>
+    <td><span id="lightnessOut"></span> %</td>
+    <td><input id="lightness" type="range" min="0" max="100" value="100"/></td>
+  </tr>
+</table>

@@ -1,54 +1,95 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.format.GPX');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
-goog.require('ol.parser.GPX');
-goog.require('ol.source.OSM');
+goog.require('ol.source.BingMaps');
 goog.require('ol.source.Vector');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Stroke');
+goog.require('ol.style.Style');
 
 var raster = new ol.layer.Tile({
-  source: new ol.source.OSM()
+  source: new ol.source.BingMaps({
+    imagerySet: 'Aerial',
+    key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5'
+  })
 });
+
+var style = {
+  'Point': new ol.style.Style({
+    image: new ol.style.Circle({
+      fill: new ol.style.Fill({
+        color: 'rgba(255,255,0,0.4)'
+      }),
+      radius: 5,
+      stroke: new ol.style.Stroke({
+        color: '#ff0',
+        width: 1
+      })
+    })
+  }),
+  'LineString': new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#f00',
+      width: 3
+    })
+  }),
+  'MultiLineString': new ol.style.Style({
+    stroke: new ol.style.Stroke({
+      color: '#0f0',
+      width: 3
+    })
+  })
+};
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
-    parser: new ol.parser.GPX(),
-    url: 'data/gpx/yahoo.xml'
-  })
+    url: 'data/gpx/fells_loop.gpx',
+    format: new ol.format.GPX()
+  }),
+  style: function(feature) {
+    return style[feature.getGeometry().getType()];
+  }
 });
 
 var map = new ol.Map({
   layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
-  target: 'map',
-  view: new ol.View2D({
-    center: [-7916461.9312699, 5226343.9091441],
-    zoom: 11
+  target: document.getElementById('map'),
+  view: new ol.View({
+    center: [-7916041.528716288, 5228379.045749711],
+    zoom: 12
   })
 });
 
 var displayFeatureInfo = function(pixel) {
-  map.getFeatures({
-    pixel: pixel,
-    layers: [vector],
-    success: function(featuresByLayer) {
-      var features = featuresByLayer[0];
-      var info = [];
-      for (var i = 0, ii = features.length; i < ii; ++i) {
-        info.push(features[i].get('name') + ': ' + features[i].get('type'));
-      }
-      document.getElementById('info').innerHTML = info.join(', ') || '&nbsp;';
-    }
+  var features = [];
+  map.forEachFeatureAtPixel(pixel, function(feature) {
+    features.push(feature);
   });
+  if (features.length > 0) {
+    var info = [];
+    var i, ii;
+    for (i = 0, ii = features.length; i < ii; ++i) {
+      info.push(features[i].get('desc'));
+    }
+    document.getElementById('info').innerHTML = info.join(', ') || '(unknown)';
+    map.getTarget().style.cursor = 'pointer';
+  } else {
+    document.getElementById('info').innerHTML = '&nbsp;';
+    map.getTarget().style.cursor = '';
+  }
 };
 
-$(map.getViewport()).on('mousemove', function(evt) {
+map.on('pointermove', function(evt) {
+  if (evt.dragging) {
+    return;
+  }
   var pixel = map.getEventPixel(evt.originalEvent);
   displayFeatureInfo(pixel);
 });
 
-map.on('singleclick', function(evt) {
-  var pixel = evt.getPixel();
-  displayFeatureInfo(pixel);
+map.on('click', function(evt) {
+  displayFeatureInfo(evt.pixel);
 });

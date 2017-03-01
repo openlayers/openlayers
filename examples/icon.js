@@ -1,9 +1,7 @@
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.Overlay');
-goog.require('ol.OverlayPositioning');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.Vector');
@@ -13,40 +11,43 @@ goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
 
-var raster = new ol.layer.Tile({
+var iconFeature = new ol.Feature({
+  geometry: new ol.geom.Point([0, 0]),
+  name: 'Null Island',
+  population: 4000,
+  rainfall: 500
+});
+
+var iconStyle = new ol.style.Style({
+  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+    anchor: [0.5, 46],
+    anchorXUnits: 'fraction',
+    anchorYUnits: 'pixels',
+    src: 'data/icon.png'
+  }))
+});
+
+iconFeature.setStyle(iconStyle);
+
+var vectorSource = new ol.source.Vector({
+  features: [iconFeature]
+});
+
+var vectorLayer = new ol.layer.Vector({
+  source: vectorSource
+});
+
+var rasterLayer = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'http://api.tiles.mapbox.com/v3/mapbox.geography-class.jsonp'
+    url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure',
+    crossOrigin: ''
   })
 });
 
-var style = new ol.style.Style({
-  symbolizers: [
-    new ol.style.Icon({
-      url: 'data/icon.png',
-      yOffset: -22
-    })
-  ]
-});
-
-var vector = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    features: [
-      new ol.Feature({
-        name: 'Null Island',
-        population: 4000,
-        rainfall: 500,
-        geometry: new ol.geom.Point([0, 0])
-      })
-    ]
-  }),
-  style: style
-});
-
 var map = new ol.Map({
-  layers: [raster, vector],
-  renderer: ol.RendererHint.CANVAS,
-  target: 'map',
-  view: new ol.View2D({
+  layers: [rasterLayer, vectorLayer],
+  target: document.getElementById('map'),
+  view: new ol.View({
     center: [0, 0],
     zoom: 3
   })
@@ -56,31 +57,39 @@ var element = document.getElementById('popup');
 
 var popup = new ol.Overlay({
   element: element,
-  positioning: ol.OverlayPositioning.BOTTOM_CENTER,
-  stopEvent: false
+  positioning: 'bottom-center',
+  stopEvent: false,
+  offset: [0, -50]
 });
 map.addOverlay(popup);
 
+// display popup on click
+map.on('click', function(evt) {
+  var feature = map.forEachFeatureAtPixel(evt.pixel,
+      function(feature) {
+        return feature;
+      });
+  if (feature) {
+    var coordinates = feature.getGeometry().getCoordinates();
+    popup.setPosition(coordinates);
+    $(element).popover({
+      'placement': 'top',
+      'html': true,
+      'content': feature.get('name')
+    });
+    $(element).popover('show');
+  } else {
+    $(element).popover('destroy');
+  }
+});
 
-map.on('singleclick', function(evt) {
-  map.getFeatures({
-    pixel: evt.getPixel(),
-    layers: [vector],
-    success: function(layerFeatures) {
-      var feature = layerFeatures[0][0];
-      if (feature) {
-        var geometry = feature.getGeometry();
-        var coord = geometry.getCoordinates();
-        popup.setPosition(coord);
-        $(element).popover({
-          'placement': 'top',
-          'html': true,
-          'content': feature.get('name')
-        });
-        $(element).popover('show');
-      } else {
-        $(element).popover('destroy');
-      }
-    }
-  });
+// change mouse cursor when over marker
+map.on('pointermove', function(e) {
+  if (e.dragging) {
+    $(element).popover('destroy');
+    return;
+  }
+  var pixel = map.getEventPixel(e.originalEvent);
+  var hit = map.hasFeatureAtPixel(pixel);
+  map.getTarget().style.cursor = hit ? 'pointer' : '';
 });

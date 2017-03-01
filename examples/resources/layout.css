@@ -1,0 +1,128 @@
+@import url(https://fonts.googleapis.com/css?family=Quattrocento+Sans:400,400italic,700);
+
+body {
+  font-family: 'Quattrocento Sans', sans-serif;
+  font-size: 16px;
+}
+.navbar {
+  background-color: #1F6B75;
+  color: white;
+  border: 0;
+  border-radius: 0;
+}
+.navbar-brand {
+  color: white;
+  font-weight: bold;
+  font-size: 160%;
+  padding: 8px 0;
+}
+.navbar-brand:hover,
+.navbar-brand:focus {
+  color: #aae1e9;
+}
+.navbar-brand img {
+  height: 35px;
+  vertical-align: middle;
+  margin-right: 5px;
+  display: inline-block;
+}
+.nav>li>a:hover, .nav>li>a:focus, .nav>li>a.active {
+  background-color: #268591;
+}
+.navbar-nav>li>a {
+  color: white;
+}
+.display-table {
+  display: table;
+}
+.version-form, .navbar-form {
+  display: table-cell;
+  vertical-align: middle;
+}
+.version-form {
+  color: #333;
+}
+
+#title {
+  margin-top: 0;
+}
+
+#docs {
+  margin-top: 1em;
+}
+
+ul.inline,
+ol.inline {
+  margin-left: 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+ul.inline>li,
+ol.inline>li {
+  display: inline-block;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.map {
+  height: 400px;
+  width: 100%;
+  background: url(map-background.jpg) repeat;
+  margin-bottom: 10px;
+}
+.ol-attribution.ol-logo-only,
+.ol-attribution.ol-uncollapsible {
+  max-width: calc(100% - 3em);
+  height: 1.5em;
+}
+.ol-attribution ul {
+  font-size: 1rem;
+}
+.ol-control button, .ol-attribution, .ol-scale-line-inner {
+  font-family: 'Lucida Grande',Verdana,Geneva,Lucida,Arial,Helvetica,sans-serif;
+}
+.iframe-info iframe {
+  width: 100%;
+}
+
+pre[class*="language-"] {
+  margin-top: 20px;
+  background: #FFFFFF;
+}
+
+#source-controls {
+  position: absolute;
+  margin-top: 20px;
+  right: 40px;
+}
+
+#source-controls a {
+  margin-left: 15px;
+}
+
+#copy-button {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#codepen-button {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+pre {
+  border: 1px solid #eee;
+  border-radius: 0;
+}
+
+#tags, #shortdesc, .hidden {
+  display: none;
+}
+#api-links ul {
+  display: inline;
+}
+#latest-check {
+  margin-top: -10px;
+  margin-bottom: 10px;
+}

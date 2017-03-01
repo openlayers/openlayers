@@ -1,3 +1,0 @@
-@exportClass ol.source.TileWMS ol.source.TileWMSOptions
-@exportProperty ol.source.TileWMS.prototype.getParams
-@exportProperty ol.source.TileWMS.prototype.updateParams

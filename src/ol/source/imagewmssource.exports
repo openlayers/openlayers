@@ -1,3 +1,0 @@
-@exportClass ol.source.ImageWMS ol.source.ImageWMSOptions
-@exportProperty ol.source.ImageWMS.prototype.getParams
-@exportProperty ol.source.ImageWMS.prototype.updateParams

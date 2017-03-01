@@ -1,9 +1,0 @@
-<Filter xmlns="http://www.opengis.net/ogc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/ogc http://schemas.opengis.net/filter/1.1.0/filter.xsd">
-  <Intersects>
-    <PropertyName>Geometry</PropertyName>
-    <gml:Envelope xmlns:gml="http://www.opengis.net/gml" srsName="EPSG:4326">
-      <gml:lowerCorner>-180 -90</gml:lowerCorner>
-      <gml:upperCorner>180 90</gml:upperCorner>
-    </gml:Envelope>
-  </Intersects>
-</Filter>

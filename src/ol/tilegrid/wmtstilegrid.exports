@@ -1,2 +1,0 @@
-@exportClass ol.tilegrid.WMTS ol.tilegrid.WMTSOptions
-@exportProperty ol.tilegrid.WMTS.prototype.getMatrixIds

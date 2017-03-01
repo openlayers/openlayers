@@ -1,0 +1,20 @@
+---
+layout: example.html
+title: Measure
+shortdesc: Example of using the ol.interaction.Draw interaction to create a simple measuring application.
+docs: >
+  <p><i>NOTE: By default, length and area are calculated using the projected coordinates. This is not accurate for projections like Mercator where the projected meters do not correspond to meters on the ground. To get a standarized measurement across all projections, use the geodesic measures.</i></p>
+tags: "draw, edit, measure, vector"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label>Measurement type &nbsp;</label>
+    <select id="type">
+      <option value="length">Length (LineString)</option>
+      <option value="area">Area (Polygon)</option>
+    </select>
+    <label class="checkbox">
+      <input type="checkbox" id="geodesic">
+      use geodesic measures
+    </label>
+</form>

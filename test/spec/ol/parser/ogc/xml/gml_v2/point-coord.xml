@@ -1,6 +1,0 @@
-<gml:Point xmlns:gml="http://www.opengis.net/gml" srsName="FOO">
-  <gml:coord>
-    <gml:X>1</gml:X>
-    <gml:Y>2</gml:Y>
-  </gml:coord>
-</gml:Point>

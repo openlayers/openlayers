@@ -6,16 +6,15 @@
  */
 
 
-
 /**
- * @param {string|Object.<string,*>=} option
+ * @param {string|Object.<string,*>=} opt_option
  * @return {!jQuery}
  */
-jQuery.prototype.popover = function(option) {};
+jQuery.prototype.popover = function(opt_option) {};
 
 
 /**
- * @param {string|Object.<string,*>=} option
+ * @param {string|Object.<string,*>=} opt_option
  * @return {!jQuery}
  */
-jQuery.prototype.tooltip = function(option) {};
+jQuery.prototype.tooltip = function(opt_option) {};

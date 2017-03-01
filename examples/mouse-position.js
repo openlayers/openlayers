@@ -1,10 +1,8 @@
 goog.require('ol.Map');
-goog.require('ol.RendererHints');
-goog.require('ol.View2D');
+goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.control.MousePosition');
 goog.require('ol.coordinate');
-goog.require('ol.dom.Input');
 goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
@@ -20,34 +18,30 @@ var mousePositionControl = new ol.control.MousePosition({
 });
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([mousePositionControl]),
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }).extend([mousePositionControl]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
     })
   ],
-  renderers: ol.RendererHints.createFromQueryData(),
   target: 'map',
-  view: new ol.View2D({
+  view: new ol.View({
     center: [0, 0],
     zoom: 2
   })
 });
 
-var projectionSelect = new ol.dom.Input(document.getElementById('projection'));
-projectionSelect.bindTo('value', mousePositionControl, 'projection')
-  .transform(
-    function(code) {
-      // projectionSelect.value -> mousePositionControl.projection
-      return ol.proj.get(/** @type {string} */ (code));
-    },
-    function(projection) {
-      // mousePositionControl.projection -> projectionSelect.value
-      return projection.getCode();
-    });
+var projectionSelect = document.getElementById('projection');
+projectionSelect.addEventListener('change', function(event) {
+  mousePositionControl.setProjection(ol.proj.get(event.target.value));
+});
 
 var precisionInput = document.getElementById('precision');
-precisionInput.addEventListener('change', function() {
-  var format = ol.coordinate.createStringXY(precisionInput.valueAsNumber);
+precisionInput.addEventListener('change', function(event) {
+  var format = ol.coordinate.createStringXY(event.target.valueAsNumber);
   mousePositionControl.setCoordinateFormat(format);
-}, false);
+});

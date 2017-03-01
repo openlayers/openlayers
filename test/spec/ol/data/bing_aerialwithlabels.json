@@ -1,0 +1,842 @@
+{
+    "authenticationResultCode": "ValidCredentials",
+    "brandLogoUri": "http:\/\/dev.virtualearth.net\/Branding\/logo_powered_by.png",
+    "copyright": "Copyright © 2015 Microsoft and its suppliers. All rights reserved. This API cannot be accessed and the content and any results may not be used, reproduced or transmitted in any manner without express written permission from Microsoft Corporation.",
+    "resourceSets": [{
+        "estimatedTotal": 1,
+        "resources": [{
+            "__type": "ImageryMetadata:http:\/\/schemas.microsoft.com\/search\/local\/ws\/rest\/v1",
+            "imageHeight": 256,
+            "imageUrl": "https:\/\/ecn.{subdomain}.tiles.virtualearth.net\/tiles\/h{quadkey}.jpeg?g=3542&mkt={culture}",
+            "imageUrlSubdomains": ["t0", "t1", "t2", "t3"],
+            "imageWidth": 256,
+            "imageryProviders": [{
+                "attribution": "© 2015 DigitalGlobe",
+                "coverageAreas": [{
+                    "bbox": [ -67, -179.99, 27, 0],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [27, -179.99, 87, -126.5],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [48.4, -126.5, 87, -5.75],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [ -67, 28, 86.5, 179.99],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [ -67, 0, 37.8, 28],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [37.7, 18.5, 59.8, 28],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [43, -81.6, 48.4, -10],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [27, -70, 43, -10],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [27, -10, 35.8, 0],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [27, -120, 32.3, -105.8],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [43.4, 13.78, 54.9, 18.5],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "Image courtesy of NASA",
+                "coverageAreas": [{
+                    "bbox": [ -90, -180, 90, 180],
+                    "zoomMax": 8,
+                    "zoomMin": 1
+                }
+                ]
+            }, {
+                "attribution": "© Harris Corp, Earthstar Geographics LLC",
+                "coverageAreas": [{
+                    "bbox": [ -90, -180, 90, 180],
+                    "zoomMax": 13,
+                    "zoomMin": 9
+                }
+                ]
+            }, {
+                "attribution": "Image courtesy of USGS",
+                "coverageAreas": [{
+                    "bbox": [17.99, -150.11, 61.39, -65.57],
+                    "zoomMax": 17,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© Getmapping plc",
+                "coverageAreas": [{
+                    "bbox": [49.94, -6.82, 60.17, 1.78],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 GeoEye",
+                "coverageAreas": [{
+                    "bbox": [48.95, -152, 65.5, -95.4],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [45.15, -73.2, 48.9, -70.2],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [31.87, -67.56, 49, -50.46],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [ -23, -180, 30, -145],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [ -37.7, -110, 26.5, -33],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [ -46, -20, 67, 180],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Pasco",
+                "coverageAreas": [{
+                    "bbox": [23.5, 122.5, 46.65, 151.66],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© GeoContent \/ (p) Intergraph",
+                "coverageAreas": [{
+                    "bbox": [47, 5, 55.5, 16],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [46.25, 9.4, 49.2, 17.3],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Intermap",
+                "coverageAreas": [{
+                    "bbox": [49, -11, 60, 2],
+                    "zoomMax": 21,
+                    "zoomMin": 1
+                }
+                ]
+            }, {
+                "attribution": "Image courtesy of the IndianaMap",
+                "coverageAreas": [{
+                    "bbox": [37.7, -88.2, 41.9, -84.7],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "Image courtesy of the Nevada State Mapping Advisory Committee",
+                "coverageAreas": [{
+                    "bbox": [34.85, -120.2, 42.12, -113.91],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 InterAtlas",
+                "coverageAreas": [{
+                    "bbox": [48.37, 1.4, 49.28, 3.37],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [47.72, 1.67, 48.05, 2.18],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [45.55, 4.57, 45.95, 5.33],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [43.18, 4.92, 43.77, 5.82],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Eurosense",
+                "coverageAreas": [{
+                    "bbox": [51, 3, 53.65, 7.67],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [50.58, 5.42, 51, 5.47],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 IGP",
+                "coverageAreas": [{
+                    "bbox": [36.88, -9.6, 42.27, -6],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 IGN",
+                "coverageAreas": [{
+                    "bbox": [42, -5, 51.25, 8.5],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [41.25, 8.3, 43.1, 9.65],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [17.85, -63.17, 18.15, -62.77],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [15.75, -61.9, 16.55, -60.9],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [14.35, -61.25, 14.95, -60.75],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [2.25, -54.65, 6, -51.4],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [ -21.5, 55, -20.75, 56],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [46.7, -56.5, 47.2, -56.1],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© Province of British Columbia",
+                "coverageAreas": [{
+                    "bbox": [48.99, -139.05, 60, -114.05],
+                    "zoomMax": 18,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Blom",
+                "coverageAreas": [{
+                    "bbox": [36.1, -9.51, 51.04, 11.67],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [55.69, 9.8, 61.17, 13.23],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [62.2, 25.82, 62.24, 25.89],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Aerials Express",
+                "coverageAreas": [{
+                    "bbox": [34.63, -90.41, 35.52, -89.48],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "Image courtesy of LAR-IAC",
+                "coverageAreas": [{
+                    "bbox": [33.27, -119.02, 34.9, -117.59],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "Image courtesy of ImagePatch.com",
+                "coverageAreas": [{
+                    "bbox": [25.74, -106.76, 36.63, -93.97],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }, {
+                    "bbox": [34.36, -93.14, 35.44, -92],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "State of Michigan",
+                "coverageAreas": [{
+                    "bbox": [41.68, -86.87, 45.89, -82.91],
+                    "zoomMax": 21,
+                    "zoomMin": 14
+                }
+                ]
+            }, {
+                "attribution": "Earthstar Geographics  SIO",
+                "coverageAreas": [{
+                    "bbox": [ -90, -180, 90, 180],
+                    "zoomMax": 8,
+                    "zoomMin": 1
+                }, {
+                    "bbox": [70.61, 78.75, 71.52, 81.56],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [68.66, 135, 69.66, 137.81],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [67.61, 171.56, 68.66, 174.38],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [67.61, 70.31, 68.66, 73.13],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [66.51, -180, 67.61, -177.19],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [65.37, 36.56, 66.51, 39.38],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [64.17, -171.56, 65.37, -168.75],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [54.16, -70.31, 55.78, -67.5],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [52.48, -180, 65.37, -163.13],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [47.04, 140.63, 58.81, 154.69],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [36.6, 132.19, 40.98, 137.81],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [31.95, 64.69, 34.31, 67.5],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [31.95, 28.13, 34.31, 33.75],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [31.95, 16.88, 38.82, 19.69],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [29.54, 61.88, 31.95, 64.69],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [27.06, 123.75, 31.95, 129.38],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [24.53, 2.81, 27.06, 5.63],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [19.31, 16.88, 27.06, 22.5],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [19.31, -8.44, 27.06, -2.81],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [19.31, -95.63, 29.54, -84.38],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [16.64, -87.19, 19.31, -81.56],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [11.18, -81.56, 16.64, -61.88],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [5.62, 106.88, 21.94, 118.13],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -11.18, 143.44, -8.41, 146.25],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -13.92, 177.19, -11.18, 180],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -13.92, 137.81, -11.18, 140.63],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -85.05, -180, 85.05, 180],
+                    "zoomMax": 13,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [76.18, 67.5, 77.47, 70.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [74.02, 59.06, 75.5, 61.88],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [71.52, 118.13, 73.23, 120.94],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [70.61, 154.69, 71.52, 157.5],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [70.61, 146.25, 72.4, 151.88],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [70.61, 50.63, 74.78, 56.25],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [70.61, -11.25, 71.52, -5.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [70.61, -180, 72.4, -177.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [67.61, -180, 69.66, -177.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [62.92, -25.31, 67.61, -11.25],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [62.92, -56.25, 70.61, -50.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [62.92, -70.31, 64.17, -67.5],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [58.81, -47.81, 61.61, -42.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [52.48, 171.56, 54.16, 174.38],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [50.74, 0, 54.16, 5.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [47.04, -11.25, 61.61, 0],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [38.82, -33.75, 40.98, -30.94],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [38.82, -73.13, 40.98, -70.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [36.6, -11.25, 45.09, -2.81],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [36.6, -30.94, 40.98, -22.5],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [34.31, -75.94, 38.82, -73.13],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [34.31, -123.75, 36.6, -120.94],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [31.95, -67.5, 34.31, -64.69],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [31.95, -78.75, 34.31, -75.94],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [31.95, -120.94, 34.31, -118.13],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [27.06, -95.63, 29.54, -87.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [27.06, -180, 29.54, -177.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [24.53, -174.38, 27.06, -171.56],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [16.64, -163.13, 24.53, -154.69],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [13.92, -25.31, 19.31, -22.5],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [13.92, -171.56, 19.31, -168.75],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [11.18, 143.44, 21.94, 146.25],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [8.41, 137.81, 11.18, 140.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [8.41, -109.69, 11.18, -106.88],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [5.62, 157.5, 8.41, 160.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [5.62, 149.06, 11.18, 154.69],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [5.62, 132.19, 8.41, 135],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [0, -177.19, 2.81, -174.38],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -2.81, 165.94, 0, 168.75],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -2.81, -92.81, 2.81, -87.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -2.81, -163.13, 8.41, -154.69],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -5.62, 53.44, -2.81, 56.25],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -8.41, 70.31, -5.62, 73.13],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -11.18, 160.31, 21.94, 180],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -11.18, -140.63, -5.62, -137.81],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -13.92, 174.38, -11.18, 177.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -13.92, 95.63, -11.18, 98.44],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -16.64, -8.44, -13.92, -5.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -19.31, -154.69, -13.92, -140.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -21.94, 174.38, -13.92, 180],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -21.94, 61.88, -19.31, 64.69],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -21.94, 53.44, -19.31, 59.06],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -24.53, -140.63, -19.31, -132.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [38.82, -180, 71.52, -50.63],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -24.53, -151.88, -21.94, -146.25],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -24.53, -160.31, -16.64, -157.5],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -24.53, -180, 0, -160.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -27.06, -81.56, -24.53, -78.75],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -27.06, -132.19, -21.94, -126.56],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -29.54, 165.94, -27.06, 168.75],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -29.54, -109.69, -24.53, -106.88],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -29.54, -146.25, -27.06, -143.44],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -31.95, 157.5, -29.54, 160.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -34.31, -81.56, -31.95, -78.75],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -45.09, -19.69, 74.02, 180],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -45.09, -177.19, -43.07, -174.38],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -47.04, 50.63, -45.09, 53.44],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -47.04, 36.56, -45.09, 39.38],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -48.92, 177.19, -47.04, 180],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -50.74, 67.5, -47.04, 73.13],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -54.16, 165.94, -34.31, 180],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -54.16, 73.13, -52.48, 75.94],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -54.16, -61.88, -50.74, -56.25],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -55.78, 157.5, -54.16, 160.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -55.78, -39.38, -52.48, -33.75],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -57.33, -120.94, 31.95, -30.94],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -58.81, -28.13, -57.33, -25.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -61.61, -47.81, -60.24, -42.19],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }
+                ]
+            }, {
+                "attribution": "© 2012 DigitalGlobe",
+                "coverageAreas": [{
+                    "bbox": [47.04, 67.5, 48.92, 70.31],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [21.94, 45, 24.53, 47.81],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -19.31, 14.06, -16.64, 16.88],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -38.82, -64.69, -36.6, -61.88],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [ -47.04, -70.31, -45.09, -67.5],
+                    "zoomMax": 17,
+                    "zoomMin": 10
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Microsoft Corporation",
+                "coverageAreas": [{
+                    "bbox": [ -90, -180, 90, 180],
+                    "zoomMax": 21,
+                    "zoomMin": 1
+                }
+                ]
+            }, {
+                "attribution": "© 2015 HERE",
+                "coverageAreas": [{
+                    "bbox": [ -90, -180, 90, 180],
+                    "zoomMax": 9,
+                    "zoomMin": 1
+                }, {
+                    "bbox": [14, -180, 90, -50],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [27, -32, 40, -13],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [35, -11, 72, 20],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [21, 20, 72, 32],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [21.92, 113.14, 22.79, 114.52],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [21.73, 119.7, 25.65, 122.39],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [0, 98.7, 8, 120.17],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }, {
+                    "bbox": [0.86, 103.2, 1.92, 104.45],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }
+                ]
+            }, {
+                "attribution": "© AND",
+                "coverageAreas": [{
+                    "bbox": [ -90, -180, 90, 180],
+                    "zoomMax": 21,
+                    "zoomMin": 10
+                }
+                ]
+            }, {
+                "attribution": "© 2015 MapData Sciences Pty Ltd, PSMA",
+                "coverageAreas": [{
+                    "bbox": [ -45, 111, -9, 156],
+                    "zoomMax": 21,
+                    "zoomMin": 5
+                }, {
+                    "bbox": [ -49.7, 164.42, -30.82, 180],
+                    "zoomMax": 21,
+                    "zoomMin": 5
+                }
+                ]
+            }, {
+                "attribution": "© 2015 Zenrin",
+                "coverageAreas": [{
+                    "bbox": [23.5, 122.5, 46.65, 151.66],
+                    "zoomMax": 21,
+                    "zoomMin": 4
+                }
+                ]
+            }
+            ],
+            "vintageEnd": null,
+            "vintageStart": null,
+            "zoomMax": 21,
+            "zoomMin": 1
+        }
+        ]
+    }
+    ],
+    "statusCode": 200,
+    "statusDescription": "OK",
+    "traceId": "510519adad2f4977a0ce328eafbf702c|DB40190745|02.00.163.2700|"
+}

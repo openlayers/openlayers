@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding="UTF-8" ?>
+<wfs:FeatureCollection
+   xmlns:ms="http://mapserver.gis.umn.edu/mapserver"
+   xmlns:gml="http://www.opengis.net/gml"
+   xmlns:wfs="http://www.opengis.net/wfs"
+   xmlns:ogc="http://www.opengis.net/ogc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://mapserver.gis.umn.edu/mapserver http://localhost/cgi-bin/mtbows?SERVICE=WFS&amp;VERSION=1.1.0&amp;REQUEST=DescribeFeatureType&amp;TYPENAME=ms:Historische_Messtischblaetter_WFS&amp;OUTPUTFORMAT=text/xml;%20subtype=gml/3.1.1  http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.1.0/wfs.xsd">
+      <gml:boundedBy>
+      	<gml:Envelope srsName="EPSG:900913">
+      		<gml:lowerCorner>10.499999 50.599998</gml:lowerCorner>
+      		<gml:upperCorner>11.500001 51.000004</gml:upperCorner>
+      	</gml:Envelope>
+      </gml:boundedBy>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71055885">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1205816.630831 6585772.755548</gml:lowerCorner>
+        		<gml:upperCorner>1224367.576331 6603402.922801</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1205816.939380 6585772.755548 1205816.630831 6603402.592694 1224367.261890 6603402.922801 1224367.576331 6585773.084486 1205816.939380 6585772.755548 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71055885</ms:mtbid>
+        <ms:blattnr>51_31</ms:blattnr>
+        <ms:time>1936</ms:time>
+        <ms:titel>Arnstadt</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335959709</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5131.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5131</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71055703">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1224366.733352 6603402.922797</gml:lowerCorner>
+        		<gml:upperCorner>1242917.681900 6621070.996395</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1224367.049596 6603402.922797 1224366.733352 6621070.658850 1242917.359733 6621070.996395 1242917.681900 6603403.259147 1224367.049596 6603402.922797 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71055703</ms:mtbid>
+        <ms:blattnr>50_32</ms:blattnr>
+        <ms:time>1878</ms:time>
+        <ms:titel>Erfurt</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335958907</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5032_1878.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5032_1878</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71055704">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1224366.733352 6603402.922797</gml:lowerCorner>
+        		<gml:upperCorner>1242917.681900 6621070.996395</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1224367.049596 6603402.922797 1224366.733352 6621070.658850 1242917.359733 6621070.996395 1242917.681900 6603403.259147 1224367.049596 6603402.922797 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71055704</ms:mtbid>
+        <ms:blattnr>50_32</ms:blattnr>
+        <ms:time>1905</ms:time>
+        <ms:titel>Erfurt</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335958915</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5032_1905.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5032_1905</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71055696">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1168715.286189 6603401.951223</gml:lowerCorner>
+        		<gml:upperCorner>1187266.213287 6621070.002563</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1168715.584649 6603401.951223 1168715.286189 6621069.683820 1187265.908897 6621070.002563 1187266.213287 6603402.268837 1168715.584649 6603401.951223 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71055696</ms:mtbid>
+        <ms:blattnr>50_29</ms:blattnr>
+        <ms:time>1918</ms:time>
+        <ms:titel>Fröttstädt</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335969488</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5029_1918.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5029_1918</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71055699">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1187265.802750 6603402.268835</gml:lowerCorner>
+        		<gml:upperCorner>1205816.736977 6621070.327575</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1187266.107140 6603402.268835 1187265.802750 6621070.002561 1205816.426659 6621070.327575 1205816.736977 6603402.592696 1187266.107140 6603402.268835 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71055699</ms:mtbid>
+        <ms:blattnr>50_30</ms:blattnr>
+        <ms:time>1936</ms:time>
+        <ms:titel>Gotha</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335958877</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5030_1929.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5030_1929</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71056242">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1205817.246161 6550626.582163</gml:lowerCorner>
+        		<gml:upperCorner>1224368.199845 6568181.598557</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1205817.551211 6550626.582163 1205817.246161 6568181.270783 1224367.888970 6568181.598557 1224368.199845 6550626.908779 1205817.551211 6550626.582163 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71056242</ms:mtbid>
+        <ms:blattnr>53_31</ms:blattnr>
+        <ms:time>1905</ms:time>
+        <ms:titel>Ilmenau</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335961355</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5331_1905.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5331_1905</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+    <gml:featureMember>
+      <ms:Historische_Messtischblaetter_WFS gml:id="Historische_Messtischblaetter_WFS.71055889">
+        <gml:boundedBy>
+        	<gml:Envelope srsName="EPSG:900913">
+        		<gml:lowerCorner>1242917.575754 6585773.419639</gml:lowerCorner>
+        		<gml:upperCorner>1261468.535543 6603403.601734</gml:upperCorner>
+        	</gml:Envelope>
+        </gml:boundedBy>
+        <ms:msGeometry>
+          <gml:Polygon srsName="EPSG:900913">
+            <gml:exterior>
+              <gml:LinearRing>
+                <gml:posList srsDimension="2">1242917.896084 6585773.419639 1242917.575754 6603403.259145 1261468.209327 6603403.601734 1261468.535543 6585773.761014 1242917.896084 6585773.419639 </gml:posList>
+              </gml:LinearRing>
+            </gml:exterior>
+          </gml:Polygon>
+        </ms:msGeometry>
+        <ms:mtbid>71055889</ms:mtbid>
+        <ms:blattnr>51_33</ms:blattnr>
+        <ms:time>1888</ms:time>
+        <ms:titel>Kranichfeld</ms:titel>
+        <ms:permalink>http://digital.slub-dresden.de/id335959733</ms:permalink>
+        <ms:original>http://fotothek.slub-dresden.de/fotos/df/dk/0010000/df_dk_0010001_5133_1873.jpg</ms:original>
+        <ms:dateiname>df_dk_0010001_5133_1873</ms:dateiname>
+      </ms:Historische_Messtischblaetter_WFS>
+    </gml:featureMember>
+</wfs:FeatureCollection>

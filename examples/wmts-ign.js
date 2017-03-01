@@ -1,86 +1,64 @@
 goog.require('ol.Attribution');
 goog.require('ol.Map');
-goog.require('ol.RendererHint');
-goog.require('ol.View2D');
+goog.require('ol.View');
+goog.require('ol.control');
+goog.require('ol.extent');
 goog.require('ol.layer.Tile');
-goog.require('ol.parser.ogc.WMTSCapabilities');
+goog.require('ol.proj');
 goog.require('ol.source.WMTS');
+goog.require('ol.tilegrid.WMTS');
 
-
-// The WMTS Capabilities document includes IGNF:WGS84G as a supported
-// CRS. We include the Proj4js definition of that projection to prevent
-// Proj4js from requesting that definition from spatialreference.org.
-
-Proj4js.defs['IGNF:WGS84G'] = '+title=World Geodetic System 1984 ' +
-    '+proj=longlat +towgs84=0.0000,0.0000,0.0000,0.0000,0.0000,0.0000,' +
-    '0.000000 +a=6378137.0000 +rf=298.2572221010000 +units=m +no_defs <>';
-
-// API key valid for "localhost" and "ol3js.org". Expiration date
-// is 21/06/2014.
-var key = 'crrypaoz7j1ifbalcobnumb0';
 
 var map = new ol.Map({
-  renderer: ol.RendererHint.CANVAS,
-  target: 'map'
+  target: 'map',
+  controls: ol.control.defaults({
+    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      collapsible: false
+    })
+  }),
+  view: new ol.View({
+    zoom: 5,
+    center: ol.proj.transform([5, 45], 'EPSG:4326', 'EPSG:3857')
+  })
 });
 
-var xhr = new XMLHttpRequest();
+var resolutions = [];
+var matrixIds = [];
+var proj3857 = ol.proj.get('EPSG:3857');
+var maxResolution = ol.extent.getWidth(proj3857.getExtent()) / 256;
 
-// data/IGNWMTSCapabilities.xml downloaded from
-// http://wxs.ign.fr/cle/geoportail/wmts?SERVICE=WMTS&REQUEST=GetCapabilities
-// Stored locally because of the Same Origin Policy.
-xhr.open('GET', 'data/IGNWMTSCapabilities.xml', true);
+for (var i = 0; i < 18; i++) {
+  matrixIds[i] = i.toString();
+  resolutions[i] = maxResolution / Math.pow(2, i);
+}
 
+var tileGrid = new ol.tilegrid.WMTS({
+  origin: [-20037508, 20037508],
+  resolutions: resolutions,
+  matrixIds: matrixIds
+});
 
-/**
- * onload handler for the XHR request.
- */
-xhr.onload = function() {
-  if (xhr.status == 200) {
-    var parser = new ol.parser.ogc.WMTSCapabilities();
-    var capabilities = parser.read(xhr.responseXML);
+// API key valid for 'openlayers.org' and 'localhost'.
+// Expiration date is 06/29/2018.
+var key = '2mqbg0z6cx7ube8gsou10nrt';
 
-    var wmtsUrl = 'http://wxs.ign.fr/' + key + '/geoportail/wmts';
+var ign_source = new ol.source.WMTS({
+  url: 'https://wxs.ign.fr/' + key + '/wmts',
+  layer: 'GEOGRAPHICALGRIDSYSTEMS.MAPS',
+  matrixSet: 'PM',
+  format: 'image/jpeg',
+  projection: 'EPSG:3857',
+  tileGrid: tileGrid,
+  style: 'normal',
+  attributions: [new ol.Attribution({
+    html: '<a href="http://www.geoportail.fr/" target="_blank">' +
+        '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
+        'theme/geoportal/img/logo_gp.gif"></a>'
+  })]
+});
 
-    var layerIdentifiers = [
-      'ORTHOIMAGERY.ORTHOPHOTOS',
-      'CADASTRALPARCELS.PARCELS'
-    ];
-    var layerLogos = [
-      'http://gpp3-wxs.ign.fr/static/logos/PLANETOBSERVER/PLANETOBSERVER.gif',
-      'http://gpp3-wxs.ign.fr/static/logos/IGN/IGN.gif'
-    ];
+var ign = new ol.layer.Tile({
+  source: ign_source
+});
 
-    var attribution = new ol.Attribution({
-      html: '<a href="http://www.geoportail.fr/" target="_blank">' +
-          '<img src="http://api.ign.fr/geoportail/api/js/latest/' +
-          'theme/geoportal/img/logo_gp.gif"></a>'
-    });
-
-    var sourceOptions;
-    var source;
-    var layer;
-    var i;
-
-    for (i = 0; i < layerIdentifiers.length; ++i) {
-      sourceOptions = ol.source.WMTS.optionsFromCapabilities(
-          capabilities, layerIdentifiers[i]);
-      // we need to set the URL because it must include the key.
-      sourceOptions.urls = [wmtsUrl];
-      sourceOptions.attributions = [attribution];
-      sourceOptions.logo = layerLogos[i];
-      source = new ol.source.WMTS(sourceOptions);
-      layer = new ol.layer.Tile({source: source});
-      map.addLayer(layer);
-    }
-
-    var view = new ol.View2D();
-    view.fitExtent(
-        [257596.65942095537, 6250898.984085131,
-         262082.55751844167, 6251854.446938695],
-        /** @type {ol.Size} */ (map.getSize()));
-    map.setView(view);
-  }
-};
-
-xhr.send();
+map.addLayer(ign);
