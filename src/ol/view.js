@@ -264,6 +264,7 @@ ol.View.prototype.animate = function(var_args) {
 /**
  * Determine if the view is being animated.
  * @return {boolean} The view is being animated.
+ * @api
  */
 ol.View.prototype.getAnimating = function() {
   return this.getHints()[ol.ViewHint.ANIMATING] > 0;
@@ -272,6 +273,7 @@ ol.View.prototype.getAnimating = function() {
 
 /**
  * Cancel any ongoing animations.
+ * @api
  */
 ol.View.prototype.cancelAnimations = function() {
   this.setHint(ol.ViewHint.ANIMATING, -this.getHints()[ol.ViewHint.ANIMATING]);
