@@ -45,7 +45,7 @@ The easiest way to use a custom projection is to add the [Proj4js](http://proj4j
 Following example shows definition of a [British National Grid](https://epsg.io/27700):
 
 ``` html
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.14/proj4.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.4.3/proj4.js"></script>
 ```
 
 ``` javascript
