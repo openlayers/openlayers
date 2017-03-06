@@ -64,6 +64,12 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
             failure.call(this);
           }
         }.bind(this);
+        /**
+         * @private
+         */
+        xhr.onerror = function() {
+          failure.call(this);
+        }.bind(this);
         xhr.send();
       });
 };
