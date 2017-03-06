@@ -53,7 +53,7 @@
     "clean-css-cli": "4.0.8",
     "coveralls": "2.11.16",
     "debounce": "^1.0.0",
-    "eslint": "3.16.1",
+    "eslint": "3.17.0",
     "eslint-config-openlayers": "7.0.0",
     "eslint-plugin-openlayers-internal": "^3.1.0",
     "esprima": "2.x",
