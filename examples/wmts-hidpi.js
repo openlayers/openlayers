@@ -34,6 +34,6 @@ fetch(capabilitiesUrl).then(function(response) {
   });
   options.tilePixelRatio = tilePixelRatio;
   map.addLayer(new ol.layer.Tile({
-    source: new ol.source.WMTS(options)
+    source: new ol.source.WMTS(/** @type {!olx.source.WMTSOptions} */ (options))
   }));
 });

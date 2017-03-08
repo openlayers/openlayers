@@ -23,6 +23,14 @@ describe('ol.source.WMTS', function() {
       });
     });
 
+    it('returns null if the layer was not found in the capabilities', function() {
+      var options = ol.source.WMTS.optionsFromCapabilities(capabilities, {
+        layer: 'invalid'
+      });
+
+      expect(options).to.be(null);
+    });
+
     it('can create KVP options from spec/ol/format/wmts/ogcsample.xml',
         function() {
           var options = ol.source.WMTS.optionsFromCapabilities(

@@ -99,13 +99,15 @@ fetch(url).then(function(response) {
   return response.text();
 }).then(function(text) {
   var result = parser.read(text);
-  var options = ol.source.WMTS.optionsFromCapabilities(result,
-      {layer: 'OSM_Land_Mask', matrixSet: 'EPSG3413_250m'});
+  var options = ol.source.WMTS.optionsFromCapabilities(result, {
+    layer: 'OSM_Land_Mask',
+    matrixSet: 'EPSG3413_250m'
+  });
   options.crossOrigin = '';
   options.projection = 'EPSG:3413';
   options.wrapX = false;
   layers['wmts3413'] = new ol.layer.Tile({
-    source: new ol.source.WMTS(options)
+    source: new ol.source.WMTS(/** @type {!olx.source.WMTSOptions} */ (options))
   });
 });
 
