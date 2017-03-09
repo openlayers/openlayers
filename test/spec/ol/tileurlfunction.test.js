@@ -93,19 +93,19 @@ describe('ol.TileUrlFunction', function() {
       var tileCoord = [3, 2, -2];
 
       /* eslint-disable openlayers-internal/no-missing-requires */
-      sinon.stub(ol.tilecoord, 'hash', function() {
+      sinon.stub(ol.tilecoord, 'hash').callsFake(function() {
         return 3;
       });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-1/3/2/1');
       ol.tilecoord.hash.restore();
 
-      sinon.stub(ol.tilecoord, 'hash', function() {
+      sinon.stub(ol.tilecoord, 'hash').callsFake(function() {
         return 2;
       });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-3/3/2/1');
       ol.tilecoord.hash.restore();
 
-      sinon.stub(ol.tilecoord, 'hash', function() {
+      sinon.stub(ol.tilecoord, 'hash').callsFake(function() {
         return 1;
       });
       expect(tileUrlFunction(tileCoord)).to.eql('http://tile-2/3/2/1');
