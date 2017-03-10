@@ -6787,6 +6787,94 @@ olx.source.ZoomifyOptions.prototype.tierSizeCalculation;
  */
 olx.source.ZoomifyOptions.prototype.size;
 
+/**
+ * @typedef {{attributions: (ol.AttributionLike|undefined),
+ *     cacheSize: (number|undefined),
+ *     crossOrigin: (null|string|undefined),
+ *     logo: (string|olx.LogoOptions|undefined),
+ *     reprojectionErrorThreshold: (number|undefined),
+ *     url: !string,
+ *     size: ol.Size}}
+ */
+olx.source.IIPOptions;
+
+
+/**
+ * Attributions.
+ * @type {ol.AttributionLike|undefined}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.attributions;
+
+
+/**
+ * Cache size. Default is `2048`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.IIPOptions.prototype.cacheSize;
+
+
+/**
+ * The `crossOrigin` attribute for loaded images.  Note that you must provide a
+ * `crossOrigin` value if you are using the WebGL renderer or if you want to
+ * access pixel data with the Canvas renderer.  See
+ * {@link https://developer.mozilla.org/en-US/docs/Web/HTML/CORS_enabled_image}
+ * for more detail.
+ * @type {null|string|undefined}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.crossOrigin;
+
+
+/**
+ * Logo.
+ * @type {string|olx.LogoOptions|undefined}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.logo;
+
+
+/**
+ * Maximum allowed reprojection error (in pixels). Default is `0.5`.
+ * Higher values can increase reprojection performance, but decrease precision.
+ * @type {number|undefined}
+ * @api
+ */
+olx.source.IIPOptions.prototype.reprojectionErrorThreshold;
+
+
+/**
+ * Prefix of URL template.
+ * @type {!string}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.url;
+
+
+/**
+ * Size of the image.
+ * @type {ol.Size}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.size;
+
+
+/**
+ * Number of resolutions available.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.nbResolutions;
+
+
+/**
+ * Size of tiles.
+ * @type {number|undefined}
+ * @api stable
+ */
+olx.source.IIPOptions.prototype.tileSize;
+
 
 /**
  * Namespace.
