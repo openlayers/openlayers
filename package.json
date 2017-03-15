@@ -34,7 +34,7 @@
     "browserify": "14.0.0",
     "closure-util": "1.18.0",
     "derequire": "2.0.6",
-    "fs-extra": "2.0.0",
+    "fs-extra": "2.1.0",
     "glob": "7.1.1",
     "handlebars": "4.0.6",
     "jsdoc": "3.4.3",
