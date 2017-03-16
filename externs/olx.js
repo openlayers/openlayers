@@ -3881,7 +3881,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
 
 
 /**
- * @typedef {{renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
+ * @typedef {{renderOrder: (ol.RenderOrderFunction|null|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
@@ -3900,7 +3900,7 @@ olx.layer.VectorOptions;
  * Render order. Function to be used when sorting features before rendering. By
  * default features are drawn in the order that they are created. Use `null` to
  * avoid the sort, but get an undefined draw order.
- * @type {function(ol.Feature, ol.Feature):number|null|undefined}
+ * @type {ol.RenderOrderFunction|null|undefined}
  * @api
  */
 olx.layer.VectorOptions.prototype.renderOrder;
@@ -4015,7 +4015,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     preload: (number|undefined),
  *     renderBuffer: (number|undefined),
  *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
- *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
+ *     renderOrder: (ol.RenderOrderFunction|undefined),
  *     source: (ol.source.VectorTile|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
@@ -4058,7 +4058,7 @@ olx.layer.VectorTileOptions.prototype.renderMode;
 /**
  * Render order. Function to be used when sorting features before rendering. By
  * default features are drawn in the order that they are created.
- * @type {function(ol.Feature, ol.Feature):number|undefined}
+ * @type {ol.RenderOrderFunction|undefined}
  * @api
  */
 olx.layer.VectorTileOptions.prototype.renderOrder;
