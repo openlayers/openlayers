@@ -7093,7 +7093,7 @@ olx.style.RegularShapeOptions.prototype.radius;
 
 
 /**
- * Inner radius of a star.
+ * Outer radius of a star.
  * @type {number|undefined}
  * @api
  */
@@ -7101,7 +7101,7 @@ olx.style.RegularShapeOptions.prototype.radius1;
 
 
 /**
- * Outer radius of a star.
+ * Inner radius of a star.
  * @type {number|undefined}
  * @api
  */
