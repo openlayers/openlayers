@@ -104,9 +104,9 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   try {
     var item = this.items_[ol.getUid(value)];
     if (item == undefined) {
-      console.error('Can not update undefined item.' + 'Args: [value:' + value + ', extent: ' + JSON.stringify(extent) + ']');
-      console.error('ol.getUid(value)',ol.getUid(value));
-      console.error('this.items_',this.items_);
+      console.error('Can not update undefined item.' + 'Args: [value:' + JSON.stringify(value) + ', extent: ' + JSON.stringify(extent) + ']');
+      console.error('ol.getUid(value)' + ol.getUid(value));
+      console.error('this.items_' + JSON.stringify(this.items_));
     }
     var bbox = [item.minX, item.minY, item.maxX, item.maxY];
     if (!ol.extent.equals(bbox, extent)) {
