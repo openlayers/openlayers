@@ -101,11 +101,20 @@ ol.structs.RBush.prototype.remove = function(value) {
  * @param {T} value Value.
  */
 ol.structs.RBush.prototype.update = function(extent, value) {
-  var item = this.items_[ol.getUid(value)];
-  var bbox = [item.minX, item.minY, item.maxX, item.maxY];
-  if (!ol.extent.equals(bbox, extent)) {
-    this.remove(value);
-    this.insert(extent, value);
+  try {
+    var item = this.items_[ol.getUid(value)];
+    if (item == undefined) {
+      console.error('Can not update undefined item.' + 'Args: [value:' + value + ', extent: ' + JSON.stringify(extent) + ']');
+      console.error('ol.getUid(value)',ol.getUid(value));
+      console.error('this.items_',this.items_);
+    }
+    var bbox = [item.minX, item.minY, item.maxX, item.maxY];
+    if (!ol.extent.equals(bbox, extent)) {
+      this.remove(value);
+      this.insert(extent, value);
+    }
+  } catch (e) {
+    console.error('PATCH - Catch Exception', e);
   }
 };
 
