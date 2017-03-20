@@ -69,7 +69,7 @@
     "resemblejs": "2.2.3",
     "serve-files": "1.0.1",
     "sinon": "2.0.0",
-    "slimerjs": "0.906.2"
+    "slimerjs": "0.10.3"
   },
   "eslintConfig": {
     "extends": "openlayers",

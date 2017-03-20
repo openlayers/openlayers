@@ -5,6 +5,9 @@ language: node_js
 node_js:
   - "6.1"
 
+addons:
+  firefox: "latest"
+
 cache:
   directories:
     - node_modules
