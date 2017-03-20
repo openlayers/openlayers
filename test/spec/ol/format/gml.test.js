@@ -131,6 +131,196 @@ describe('ol.format.GML2', function() {
       });
     });
   });
+
+  describe('#writeFeatureElement', function() {
+    var node;
+    var featureNS = 'http://www.openlayers.org/';
+    beforeEach(function() {
+      node = ol.xml.createElementNS(featureNS, 'layer');
+    });
+
+    it('can serialize a LineString', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <LineString xmlns="http://www.opengis.net/gml" ' +
+        '                  srsName="EPSG:4326">' +
+        '       <coordinates ' +
+        '                     decimal="." cs="," ts=" ">' +
+        '         2,1.1 4.2,3' +
+        '       </coordinates>' +
+        '      </LineString>' +
+        '    </geometry>' +
+        '  </lines>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.LineString([[1.1, 2], [3, 4.2]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+
+    it('can serialize a Polygon', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <Polygon xmlns="http://www.opengis.net/gml" ' +
+        '                  srsName="EPSG:4326">' +
+        '       <outerBoundaryIs>' +
+        '         <LinearRing srsName="EPSG:4326">' +
+        '           <coordinates ' +
+        '                        decimal="." cs="," ts=" ">' +
+        '              2,1.1 4.2,3 6,5.2' +
+        '           </coordinates>' +
+        '         </LinearRing>' +
+        '       </outerBoundaryIs>' +
+        '      </Polygon>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Polygon([[[1.1, 2], [3, 4.2], [5.2, 6]]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+
+    it('can serialize a Point', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <Point xmlns="http://www.opengis.net/gml" ' +
+        '            srsName="EPSG:4326">' +
+        '       <coordinates ' +
+        '                    decimal="." cs="," ts=" ">' +
+        '              2,1.1' +
+        '       </coordinates>' +
+        '      </Point>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.Point([1.1, 2])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+
+    it('can serialize a Multi Point', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <MultiPoint xmlns="http://www.opengis.net/gml" ' +
+        '                 srsName="EPSG:4326">' +
+        '       <pointMember>' +
+        '         <Point srsName="EPSG:4326">' +
+        '           <coordinates ' +
+        '                    decimal="." cs="," ts=" ">' +
+        '              2,1.1' +
+        '           </coordinates>' +
+        '         </Point>' +
+        '       </pointMember>' +
+        '      </MultiPoint>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.MultiPoint([[1.1, 2]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+
+    it('can serialize a Multi Line String', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <MultiLineString xmlns="http://www.opengis.net/gml" ' +
+        '                 srsName="EPSG:4326">' +
+        '       <lineStringMember>' +
+        '         <LineString srsName="EPSG:4326">' +
+        '           <coordinates ' +
+        '                    decimal="." cs="," ts=" ">' +
+        '              2,1.1 4.2,3' +
+        '           </coordinates>' +
+        '         </LineString>' +
+        '       </lineStringMember>' +
+        '      </MultiLineString>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.MultiLineString([[[1.1, 2], [3, 4.2]]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+
+    it('can serialize a Multi Polygon', function() {
+      var expected =
+        '<layer xmlns="http://www.openlayers.org/" fid="1">' +
+        '  <geometry>' +
+        '     <MultiPolygon xmlns="http://www.opengis.net/gml" ' +
+        '                 srsName="EPSG:4326">' +
+        '       <polygonMember>' +
+        '         <Polygon srsName="EPSG:4326">' +
+        '           <outerBoundaryIs>' +
+        '             <LinearRing srsName="EPSG:4326">' +
+        '               <coordinates ' +
+        '                        decimal="." cs="," ts=" ">' +
+        '                  2,1.1 4.2,3 6,5.2' +
+        '               </coordinates>' +
+        '             </LinearRing>' +
+        '           </outerBoundaryIs>' +
+        '         </Polygon>' +
+        '       </polygonMember>' +
+        '      </MultiPolygon>' +
+        '    </geometry>' +
+        '  </layer>';
+
+      var feature = new ol.Feature({
+        geometry: new ol.geom.MultiPolygon([[[[1.1, 2], [3, 4.2], [5.2, 6]]]])
+      });
+      feature.setId(1);
+      var objectStack = [{
+        featureNS: featureNS,
+        srsName: 'EPSG:4326'
+      }];
+      format.writeFeatureElement(node, feature, objectStack);
+
+      expect(node).to.xmleql(ol.xml.parse(expected));
+    });
+  });
 });
 
 describe('ol.format.GML3', function() {
