@@ -1201,13 +1201,6 @@ olx.control.OverviewMapOptions.prototype.collapseLabel;
  */
 olx.control.OverviewMapOptions.prototype.collapsible;
 
-/**
- * Whether the control is interactive or not. Default to `false`.
- * @type {boolean|undefined}
- * @api
- */
-olx.control.OverviewMapOptions.prototype.interactive;
-
 
 /**
  * Text label to use for the collapsed overviewmap button. Default is `»`.

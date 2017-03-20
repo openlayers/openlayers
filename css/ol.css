@@ -240,6 +240,6 @@
   border: 2px dotted rgba(0,60,136,0.7);
 }
 
-.ol-overviewmap-interactive .ol-overviewmap-box:hover {
+.ol-overviewmap .ol-overviewmap-box:hover {
   cursor: move;
 }

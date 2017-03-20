@@ -20,8 +20,7 @@ var overviewMapControl = new ol.control.OverviewMap({
   ],
   collapseLabel: '\u00BB',
   label: '\u00AB',
-  collapsed: false,
-  interactive: true
+  collapsed: false
 });
 
 var map = new ol.Map({

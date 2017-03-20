@@ -42,19 +42,11 @@ ol.control.OverviewMap = function(opt_options) {
   this.collapsible_ = options.collapsible !== undefined ?
       options.collapsible : true;
 
-  /**
-   * @type {boolean}
-   * @private
-   */
-  this.interactive_ = options.interactive !== undefined ? options.interactive : false;
-
   if (!this.collapsible_) {
     this.collapsed_ = false;
   }
 
   var className = options.className !== undefined ? options.className : 'ol-overviewmap';
-
-  if (this.interactive_) className += ' ol-overviewmap-interactive';
 
   var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
 
@@ -154,43 +146,41 @@ ol.control.OverviewMap = function(opt_options) {
 
   /* Interactive map */
 
-  if (this.interactive_) {
-    var scope = this;
+  var scope = this;
 
-    var overlay = this.boxOverlay_;
-    var overlayBox = this.boxOverlay_.getElement();
+  var overlay = this.boxOverlay_;
+  var overlayBox = this.boxOverlay_.getElement();
 
-    /* Functions definition */
+  /* Functions definition */
 
-    var computeDesiredMousePosition = function(mousePosition) {
-      return {
-        clientX: mousePosition.clientX - (overlayBox.offsetWidth / 2),
-        clientY: mousePosition.clientY + (overlayBox.offsetHeight / 2)
-      };
+  var computeDesiredMousePosition = function(mousePosition) {
+    return {
+      clientX: mousePosition.clientX - (overlayBox.offsetWidth / 2),
+      clientY: mousePosition.clientY + (overlayBox.offsetHeight / 2)
     };
+  };
 
-    var move = function(event) {
-      var coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+  var move = function(event) {
+    var coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
 
-      overlay.setPosition(coordinates);
-    };
+    overlay.setPosition(coordinates);
+  };
 
-    var endMoving = function(event) {
-      var coordinates = ovmap.getEventCoordinate(event);
+  var endMoving = function(event) {
+    var coordinates = ovmap.getEventCoordinate(event);
 
-      scope.getMap().getView().setCenter(coordinates);
+    scope.getMap().getView().setCenter(coordinates);
 
-      window.removeEventListener('mousemove', move);
-      window.removeEventListener('mouseup', endMoving);
-    };
+    window.removeEventListener('mousemove', move);
+    window.removeEventListener('mouseup', endMoving);
+  };
 
-    /* Binding */
+  /* Binding */
 
-    overlayBox.addEventListener('mousedown', function() {
-      window.addEventListener('mousemove', move);
-      window.addEventListener('mouseup', endMoving);
-    });
-  }
+  overlayBox.addEventListener('mousedown', function() {
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', endMoving);
+  });
 };
 ol.inherits(ol.control.OverviewMap, ol.control.Control);
 
