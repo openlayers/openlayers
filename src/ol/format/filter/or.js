@@ -9,12 +9,17 @@ goog.require('ol.format.filter.LogicalNary');
  * Represents a logical `<Or>` operator between two ore more filter conditions.
  *
  * @constructor
- * @param {...ol.format.filter.Filter} conditions Conditions.
+ * @param {...ol.format.filter.Filter|Array.<ol.format.filter.Filter>} conditions Conditions.
  * @extends {ol.format.filter.LogicalNary}
  * @api
  */
 ol.format.filter.Or = function(conditions) {
-  var params = ['Or'].concat(Array.prototype.slice.call(arguments));
+  var params = ['Or'];
+  if (Array.isArray(arguments[0])) {
+    params = params.concat(Array.prototype.slice.call(arguments)[0]);
+  } else {
+    params = params.concat(Array.prototype.slice.call(arguments));
+  }
   ol.format.filter.LogicalNary.apply(this, params);
 };
 ol.inherits(ol.format.filter.Or, ol.format.filter.LogicalNary);
