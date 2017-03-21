@@ -72,7 +72,8 @@ layers['wms4326'] = new ol.layer.Tile({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
     params: {
-      'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+      'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
+      'TILED': true
     },
     projection: 'EPSG:4326'
   })
@@ -133,7 +134,7 @@ layers['states'] = new ol.layer.Tile({
   source: new ol.source.TileWMS({
     url: 'https://ahocevar.com/geoserver/wms',
     crossOrigin: '',
-    params: {'LAYERS': 'topp:states', 'TILED': true},
+    params: {'LAYERS': 'topp:states'},
     serverType: 'geoserver',
     tileGrid: new ol.tilegrid.TileGrid({
       extent: [-13884991, 2870341, -7455066, 6338219],
