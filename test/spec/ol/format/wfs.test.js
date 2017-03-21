@@ -1014,4 +1014,29 @@ describe('ol.format.WFS', function() {
 
   });
 
+  describe('when writing out a WFS Filter', function() {
+    it('creates a filter', function() {
+      var text =
+          '<Filter>' +
+          '  <And>' +
+          '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
+          '      <PropertyName>name</PropertyName>' +
+          '      <Literal>Mississippi*</Literal>' +
+          '    </PropertyIsLike>' +
+          '    <PropertyIsEqualTo>' +
+          '      <PropertyName>waterway</PropertyName>' +
+          '      <Literal>riverbank</Literal>' +
+          '    </PropertyIsEqualTo>' +
+          '  </And>' +
+          '</Filter>';
+      var serialized = ol.format.WFS.writeFilter(
+        ol.format.filter.and(
+          ol.format.filter.like('name', 'Mississippi*'),
+          ol.format.filter.equalTo('waterway', 'riverbank')
+        )
+      );
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+  });
+
 });
