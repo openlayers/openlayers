@@ -783,6 +783,21 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
 
 
 /**
+ * Encode filter as WFS `Filter` and return the Node.
+ *
+ * @param {ol.format.filter.Filter} filter Filter.
+ * @return {Node} Result.
+ * @api
+ */
+ol.format.WFS.writeFilter = function(filter) {
+  var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
+  var objectStack = [];
+  ol.format.WFS.writeFilterCondition_(child, filter, objectStack);
+  return child;
+};
+
+
+/**
  * @param {Node} node Node.
  * @param {Array.<string>} featureTypes Feature types.
  * @param {Array.<*>} objectStack Node stack.
