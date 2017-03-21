@@ -791,8 +791,7 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
  */
 ol.format.WFS.writeFilter = function(filter) {
   var child = ol.xml.createElementNS(ol.format.WFS.OGCNS, 'Filter');
-  var objectStack = [];
-  ol.format.WFS.writeFilterCondition_(child, filter, objectStack);
+  ol.format.WFS.writeFilterCondition_(child, filter, []);
   return child;
 };
 

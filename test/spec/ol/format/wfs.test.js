@@ -1017,7 +1017,7 @@ describe('ol.format.WFS', function() {
   describe('when writing out a WFS Filter', function() {
     it('creates a filter', function() {
       var text =
-          '<Filter>' +
+          '<Filter xmlns="http://www.opengis.net/ogc">' +
           '  <And>' +
           '    <PropertyIsLike wildCard="*" singleChar="." escapeChar="!">' +
           '      <PropertyName>name</PropertyName>' +
