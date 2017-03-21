@@ -151,7 +151,7 @@ describe('ol.format.GML2', function() {
         '       </coordinates>' +
         '      </LineString>' +
         '    </geometry>' +
-        '  </lines>';
+        '  </layer>';
 
       var feature = new ol.Feature({
         geometry: new ol.geom.LineString([[1.1, 2], [3, 4.2]])
