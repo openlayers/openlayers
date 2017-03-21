@@ -2285,7 +2285,8 @@ olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
  *     nativeElements: Array.<Object>,
- *     gmlOptions: (olx.format.GMLOptions|undefined)}}
+ *     gmlOptions: (olx.format.GMLOptions|undefined),
+ *     version: (string|undefined)}}
  */
 olx.format.WFSWriteTransactionOptions;
 
@@ -2345,6 +2346,15 @@ olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
  * @api
  */
 olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
+
+
+/**
+ * WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
+ * Default is `1.1.0`.
+ * @type {string|undefined}
+ * @api
+ */
+olx.format.WFSWriteTransactionOptions.prototype.version;
 
 
 /**
