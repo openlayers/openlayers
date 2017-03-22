@@ -34,7 +34,7 @@
 .ol-unsupported {
   display: none;
 }
-.ol-viewport .ol-unselectable {
+.ol-viewport, .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
