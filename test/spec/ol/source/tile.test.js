@@ -20,6 +20,14 @@ describe('ol.source.Tile', function() {
       expect(source).to.be.a(ol.source.Source);
       expect(source).to.be.a(ol.source.Tile);
     });
+    it('sets a custom cache size', function() {
+      var projection = ol.proj.get('EPSG:4326');
+      var source = new ol.source.Tile({
+        projection: projection,
+        cacheSize: 42
+      });
+      expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(42);
+    });
   });
 
   describe('#setKey()', function() {
