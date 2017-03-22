@@ -15,10 +15,9 @@ ol.TileCache = function(opt_highWaterMark) {
   ol.structs.LRUCache.call(this);
 
   /**
-   * @private
    * @type {number}
    */
-  this.highWaterMark_ = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
+  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
 
 };
 ol.inherits(ol.TileCache, ol.structs.LRUCache);
@@ -28,7 +27,7 @@ ol.inherits(ol.TileCache, ol.structs.LRUCache);
  * @return {boolean} Can expire cache.
  */
 ol.TileCache.prototype.canExpireCache = function() {
-  return this.getCount() > this.highWaterMark_;
+  return this.getCount() > this.highWaterMark;
 };
 
 
