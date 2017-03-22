@@ -29,7 +29,7 @@ if (ol.ENABLE_PROJ4JS) {
    *     import proj4 from 'proj4';
    *     ol.proj.setProj4(proj4);
    *
-   * @param {proj4} proj4 Proj4.
+   * @param {Proj4} proj4 Proj4.
    * @api
    */
   ol.proj.setProj4 = function(proj4) {
