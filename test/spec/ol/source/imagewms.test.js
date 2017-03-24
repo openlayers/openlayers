@@ -35,6 +35,19 @@ describe('ol.source.ImageWMS', function() {
       expect(extentAspectRatio).to.roughlyEqual(imageAspectRatio, 1e-12);
     });
 
+    it('uses correct WIDTH and HEIGHT for HiDPI devices', function() {
+      pixelRatio = 2;
+      options.serverType = 'geoserver';
+      var source = new ol.source.ImageWMS(options);
+      var image = source.getImage(extent, resolution, pixelRatio, projection);
+      var uri = new URL(image.src_);
+      var queryData = uri.searchParams;
+      var width = Number(queryData.get('WIDTH'));
+      var height = Number(queryData.get('HEIGHT'));
+      expect(width).to.be(400);
+      expect(height).to.be(400);
+    });
+
     it('requests integer WIDTH and HEIGHT', function() {
       options.ratio = 1.5;
       var source = new ol.source.ImageWMS(options);
