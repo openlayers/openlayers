@@ -17,6 +17,7 @@ var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 /**
  * Get checked path of a binary.
  * @param {string} binaryName Binary name of the binary path to find.
+ * @return {string} Path.
  */
 function getBinaryPath(binaryName) {
   if (isWindows) {
