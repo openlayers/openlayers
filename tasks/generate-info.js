@@ -20,14 +20,14 @@ var infoPath = path.join(__dirname, '..', 'build', 'info.json');
  */
 function getBinaryPath(binaryName) {
   if (isWindows) {
-    binaryName += '.cmd'
+    binaryName += '.cmd';
   }
 
   var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
   var expectedPaths = [
     path.join(__dirname, '..', 'node_modules', '.bin', binaryName),
     path.resolve(path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName))
-  ]
+  ];
 
   for (var i = 0; i < expectedPaths.length; i++) {
     var expectedPath = expectedPaths[i];
@@ -36,7 +36,7 @@ function getBinaryPath(binaryName) {
     }
   }
 
-  throw Error("JsDoc binary was not found in any of the expected paths: " + expectedPaths);
+  throw Error('JsDoc binary was not found in any of the expected paths: ' + expectedPaths);
 }
 
 var jsdoc = getBinaryPath('jsdoc');
