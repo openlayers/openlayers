@@ -16,6 +16,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
 
@@ -79,7 +80,8 @@ goog.require('ol.proj.Units');
  */
 ol.View = function(opt_options) {
   ol.Object.call(this);
-  var options = opt_options || {};
+
+  var options = ol.obj.assign({}, opt_options);
 
   /**
    * @private
@@ -102,18 +104,29 @@ ol.View = function(opt_options) {
   this.updateAnimations_ = this.updateAnimations_.bind(this);
 
   /**
-   * @type {Object.<string, *>}
-   */
-  var properties = {};
-  properties[ol.ViewProperty.CENTER] = options.center !== undefined ?
-      options.center : null;
-
-  /**
    * @private
    * @const
    * @type {ol.proj.Projection}
    */
   this.projection_ = ol.proj.createProjection(options.projection, 'EPSG:3857');
+
+  this.applyOptions_(options);
+};
+ol.inherits(ol.View, ol.Object);
+
+
+/**
+ * Set up the view with the given options.
+ * @param {olx.ViewOptions} options View options.
+ */
+ol.View.prototype.applyOptions_ = function(options) {
+
+  /**
+   * @type {Object.<string, *>}
+   */
+  var properties = {};
+  properties[ol.ViewProperty.CENTER] = options.center !== undefined ?
+      options.center : null;
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
       options);
@@ -168,8 +181,14 @@ ol.View = function(opt_options) {
   properties[ol.ViewProperty.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
   this.setProperties(properties);
+
+  /**
+   * @private
+   * @type {olx.ViewOptions}
+   */
+  this.options_ = options;
+
 };
-ol.inherits(ol.View, ol.Object);
 
 
 /**
