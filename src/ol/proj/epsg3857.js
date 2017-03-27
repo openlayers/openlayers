@@ -2,7 +2,6 @@ goog.provide('ol.proj.EPSG3857');
 
 goog.require('ol');
 goog.require('ol.math');
-goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 
@@ -16,7 +15,7 @@ goog.require('ol.proj.Units');
  * @param {string} code Code.
  * @private
  */
-ol.proj.EPSG3857_ = function(code) {
+ol.proj.EPSG3857.Projection_ = function(code) {
   ol.proj.Projection.call(this, {
     code: code,
     units: ol.proj.Units.METERS,
@@ -28,7 +27,7 @@ ol.proj.EPSG3857_ = function(code) {
     }
   });
 };
-ol.inherits(ol.proj.EPSG3857_, ol.proj.Projection);
+ol.inherits(ol.proj.EPSG3857.Projection_, ol.proj.Projection);
 
 
 /**
@@ -85,7 +84,7 @@ ol.proj.EPSG3857.CODES = [
  * @type {Array.<ol.proj.Projection>}
  */
 ol.proj.EPSG3857.PROJECTIONS = ol.proj.EPSG3857.CODES.map(function(code) {
-  return new ol.proj.EPSG3857_(code);
+  return new ol.proj.EPSG3857.Projection_(code);
 });
 
 
