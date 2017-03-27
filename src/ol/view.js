@@ -190,6 +190,33 @@ ol.View.prototype.applyOptions_ = function(options) {
 
 };
 
+/**
+ * Get an updated version of the view options used to construct the view.  The
+ * current resolution (or zoom), center, and rotation are applied to any stored
+ * options.  The provided options can be uesd to apply new min/max zoom or
+ * resolution limits.
+ * @param {olx.ViewOptions} newOptions New options to be applied.
+ * @return {olx.ViewOptions} New options updated with the current view state.
+ */
+ol.View.prototype.getUpdatedOptions_ = function(newOptions) {
+  var options = ol.obj.assign({}, this.options_);
+
+  // preserve resolution (or zoom)
+  if (options.resolution !== undefined) {
+    options.resolution = this.getResolution();
+  } else {
+    options.zoom = this.getZoom();
+  }
+
+  // preserve center
+  options.center = this.getCenter();
+
+  // preserve rotation
+  options.rotation = this.getRotation();
+
+  return ol.obj.assign({}, options, newOptions);
+};
+
 
 /**
  * Animate the view.  The view's center, zoom (or resolution), and rotation
@@ -560,12 +587,32 @@ ol.View.prototype.getMaxZoom = function() {
 
 
 /**
+ * Set a new maximum zoom level for the view.
+ * @param {number} zoom The maximum zoom level.
+ * @api
+ */
+ol.View.prototype.setMaxZoom = function(zoom) {
+  this.applyOptions_(this.getUpdatedOptions_({maxZoom: zoom}));
+};
+
+
+/**
  * Get the minimum zoom level for the view.
  * @return {number} The minimum zoom level.
  * @api
  */
 ol.View.prototype.getMinZoom = function() {
   return /** @type {number} */ (this.getZoomForResolution(this.maxResolution_));
+};
+
+
+/**
+ * Set a new minimum zoom level for the view.
+ * @param {number} zoom The minimum zoom level.
+ * @api
+ */
+ol.View.prototype.setMinZoom = function(zoom) {
+  this.applyOptions_(this.getUpdatedOptions_({minZoom: zoom}));
 };
 
 
