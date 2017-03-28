@@ -203,7 +203,10 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     pointResolution /= 1852;
     suffix = 'nm';
   } else if (units == ol.control.ScaleLineUnits.METRIC) {
-    if (nominalCount < 1) {
+    if (nominalCount < 0.001) {
+      suffix = 'μm';
+      pointResolution *= 1000000;
+    } else if (nominalCount < 1) {
       suffix = 'mm';
       pointResolution *= 1000;
     } else if (nominalCount < 1000) {
