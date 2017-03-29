@@ -42,5 +42,5 @@ ol.inherits(ol.source.DhivehiMaps, ol.source.XYZ);
  * @api
  */
 ol.source.DhivehiMaps.ATTRIBUTION = new ol.Attribution({
-  html: '<a href="https://dhivehi.mv.maps/">Dhivehi Maps</a>'
+  html: '<a href="https://dhivehi.mv/maps/">Dhivehi Maps</a>'
 });
