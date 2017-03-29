@@ -298,8 +298,9 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
     this.dispatchEvent(new ol.source.Raster.Event(
         ol.source.Raster.EventType_.BEFOREOPERATIONS, frameState, data));
 
+    var imageCanvasUid = ol.getUid(this.renderedImageCanvas_);
     this.worker_.process(imageDatas, data,
-        this.onWorkerComplete_.bind(this, frameState, callback));
+        this.onWorkerComplete_.bind(this, frameState, imageCanvasUid, callback));
   }
 
   frameState.tileQueue.loadMoreTiles(16, 16);
@@ -309,13 +310,15 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
 /**
  * Called when pixel processing is complete.
  * @param {olx.FrameState} frameState The frame state.
+ * @param {number} imageCanvasUid Uid of the associated ol.ImageCanvas.
  * @param {function(Error)} callback Called when rendering is complete.
  * @param {Error} err Any error during processing.
  * @param {ImageData} output The output image data.
  * @param {Object} data The user data.
  * @private
  */
-ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, err, output, data) {
+ol.source.Raster.prototype.onWorkerComplete_ = function(frameState,
+    imageCanvasUid, callback, err, output, data) {
   if (err) {
     callback(err);
     return;
@@ -328,8 +331,7 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, er
   this.dispatchEvent(new ol.source.Raster.Event(
       ol.source.Raster.EventType_.AFTEROPERATIONS, frameState, data));
 
-  var resolution = frameState.viewState.resolution / frameState.pixelRatio;
-  if (!this.isDirty_(frameState.extent, resolution)) {
+  if (ol.getUid(this.renderedImageCanvas_) == imageCanvasUid) {
     this.canvasContext_.putImageData(output, 0, 0);
   }
 
