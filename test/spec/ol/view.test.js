@@ -330,6 +330,72 @@ describe('ol.View', function() {
 
   });
 
+  describe('#getUpdatedOptions_()', function() {
+
+    it('applies minZoom to constructor options', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        minZoom: 2,
+        zoom: 10
+      });
+      var options = view.getUpdatedOptions_({minZoom: 3});
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.minZoom).to.eql(3);
+      expect(options.zoom).to.eql(10);
+    });
+
+    it('applies the current zoom', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 10
+      });
+      view.setZoom(8);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.zoom).to.eql(8);
+    });
+
+    it('applies the current resolution if resolution was originally supplied', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        resolution: 1000
+      });
+      view.setResolution(500);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.resolution).to.eql(500);
+    });
+
+    it('applies the current center', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 10
+      });
+      view.setCenter([1, 2]);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([1, 2]);
+      expect(options.zoom).to.eql(10);
+    });
+
+    it('applies the current rotation', function() {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 10
+      });
+      view.setRotation(Math.PI / 6);
+      var options = view.getUpdatedOptions_();
+
+      expect(options.center).to.eql([0, 0]);
+      expect(options.zoom).to.eql(10);
+      expect(options.rotation).to.eql(Math.PI / 6);
+    });
+
+  });
+
   describe('#animate()', function() {
 
     var originalRequestAnimationFrame = window.requestAnimationFrame;

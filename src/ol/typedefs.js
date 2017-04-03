@@ -443,6 +443,15 @@ ol.RegularShapeRenderOptions;
 
 
 /**
+ * A function to be used when sorting features before rendering.
+ * It takes two instances of {@link ol.Feature} and returns a `{number}`.
+ *
+ * @typedef {function(ol.Feature, ol.Feature):number}
+ */
+ol.RenderOrderFunction;
+
+
+/**
  * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
  */
 ol.ReprojImageFunctionType;
@@ -631,7 +640,7 @@ ol.TilePriorityFunction;
 /**
  * @typedef {{
  *     dirty: boolean,
- *     renderedRenderOrder: (null|function(ol.Feature, ol.Feature):number),
+ *     renderedRenderOrder: (null|ol.RenderOrderFunction),
  *     renderedTileRevision: number,
  *     renderedRevision: number,
  *     replayGroup: ol.render.ReplayGroup}}

@@ -30,7 +30,6 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.obj');
-goog.require('ol.proj.common');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.Map');
@@ -1501,5 +1500,3 @@ ol.Map.createOptionsInternal = function(options) {
   };
 
 };
-
-ol.proj.common.add();

@@ -3,14 +3,13 @@ goog.provide('ol.test.proj');
 goog.require('ol.proj');
 goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
-goog.require('ol.proj.common');
 
 
 describe('ol.proj', function() {
 
   afterEach(function() {
     ol.proj.clearAllProjections();
-    ol.proj.common.add();
+    ol.proj.addCommon();
   });
 
   describe('projection equivalence', function() {

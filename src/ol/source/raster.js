@@ -67,12 +67,6 @@ ol.source.Raster = function(options) {
 
   /**
    * @private
-   * @type {CanvasRenderingContext2D}
-   */
-  this.canvasContext_ = ol.dom.createCanvasContext2D();
-
-  /**
-   * @private
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
@@ -88,11 +82,11 @@ ol.source.Raster = function(options) {
   }
 
   /**
-   * The most recently rendered state.
-   * @type {?ol.SourceRasterRenderedState}
+   * The most recently requested frame state.
+   * @type {olx.FrameState}
    * @private
    */
-  this.renderedState_ = null;
+  this.requestedFrameState_;
 
   /**
    * The most recently rendered image canvas.
@@ -100,6 +94,12 @@ ol.source.Raster = function(options) {
    * @private
    */
   this.renderedImageCanvas_ = null;
+
+  /**
+   * The most recently rendered revision.
+   * @type {number}
+   */
+  this.renderedRevision_;
 
   /**
    * @private
@@ -176,79 +176,17 @@ ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, proj
       ol.obj.assign({}, frameState.viewState));
 
   var center = ol.extent.getCenter(extent);
-  var width = Math.round(ol.extent.getWidth(extent) / resolution);
-  var height = Math.round(ol.extent.getHeight(extent) / resolution);
 
-  frameState.extent = extent;
-  frameState.focus = ol.extent.getCenter(extent);
-  frameState.size[0] = width;
-  frameState.size[1] = height;
+  frameState.extent = extent.slice();
+  frameState.focus = center;
+  frameState.size[0] = Math.round(ol.extent.getWidth(extent) / resolution);
+  frameState.size[1] = Math.round(ol.extent.getHeight(extent) / resolution);
 
   var viewState = frameState.viewState;
   viewState.center = center;
   viewState.projection = projection;
   viewState.resolution = resolution;
   return frameState;
-};
-
-
-/**
- * Determine if the most recently rendered image canvas is dirty.
- * @param {ol.Extent} extent The requested extent.
- * @param {number} resolution The requested resolution.
- * @return {boolean} The image is dirty.
- * @private
- */
-ol.source.Raster.prototype.isDirty_ = function(extent, resolution) {
-  var state = this.renderedState_;
-  return !state ||
-      this.getRevision() !== state.revision ||
-      resolution !== state.resolution ||
-      !ol.extent.equals(extent, state.extent);
-};
-
-
-/**
- * @inheritDoc
- */
-ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
-
-  if (!this.allSourcesReady_()) {
-    return null;
-  }
-
-  var currentExtent = extent.slice();
-  if (!this.isDirty_(currentExtent, resolution)) {
-    return this.renderedImageCanvas_;
-  }
-
-  var context = this.canvasContext_;
-  var canvas = context.canvas;
-
-  var width = Math.round(ol.extent.getWidth(currentExtent) / resolution);
-  var height = Math.round(ol.extent.getHeight(currentExtent) / resolution);
-
-  if (width !== canvas.width ||
-      height !== canvas.height) {
-    canvas.width = width;
-    canvas.height = height;
-  }
-
-  var frameState = this.updateFrameState_(currentExtent, resolution, projection);
-
-  var imageCanvas = new ol.ImageCanvas(
-      currentExtent, resolution, 1, this.getAttributions(), canvas,
-      this.composeFrame_.bind(this, frameState));
-
-  this.renderedImageCanvas_ = imageCanvas;
-
-  this.renderedState_ = {
-    extent: currentExtent,
-    resolution: resolution,
-    revision: this.getRevision()
-  };
-
-  return imageCanvas;
 };
 
 
@@ -272,13 +210,41 @@ ol.source.Raster.prototype.allSourcesReady_ = function() {
 
 
 /**
- * Compose the frame.  This renders data from all sources, runs pixel-wise
- * operations, and renders the result to the stored canvas context.
- * @param {olx.FrameState} frameState The frame state.
- * @param {function(Error)} callback Called when composition is complete.
+ * @inheritDoc
+ */
+ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+  if (!this.allSourcesReady_()) {
+    return null;
+  }
+
+  var frameState = this.updateFrameState_(extent, resolution, projection);
+  this.requestedFrameState_ = frameState;
+
+  frameState.tileQueue.loadMoreTiles(16, 16);
+
+  // check if we can't reuse the existing ol.ImageCanvas
+  if (this.renderedImageCanvas_) {
+    var renderedResolution = this.renderedImageCanvas_.getResolution();
+    var renderedExtent = this.renderedImageCanvas_.getExtent();
+    if (resolution !== renderedResolution || !ol.extent.equals(extent, renderedExtent)) {
+      this.renderedImageCanvas_ = null;
+    }
+  }
+
+  if (!this.renderedImageCanvas_ || this.getRevision() !== this.renderedRevision_) {
+    this.processSources_();
+  }
+
+  return this.renderedImageCanvas_;
+};
+
+
+/**
+ * Start processing source data.
  * @private
  */
-ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
+ol.source.Raster.prototype.processSources_ = function() {
+  var frameState = this.requestedFrameState_;
   var len = this.renderers_.length;
   var imageDatas = new Array(len);
   for (var i = 0; i < len; ++i) {
@@ -287,53 +253,56 @@ ol.source.Raster.prototype.composeFrame_ = function(frameState, callback) {
     if (imageData) {
       imageDatas[i] = imageData;
     } else {
-      // image not yet ready
-      imageDatas = null;
-      break;
+      return;
     }
   }
 
-  if (imageDatas) {
-    var data = {};
-    this.dispatchEvent(new ol.source.Raster.Event(
-        ol.source.Raster.EventType_.BEFOREOPERATIONS, frameState, data));
-
-    this.worker_.process(imageDatas, data,
-        this.onWorkerComplete_.bind(this, frameState, callback));
-  }
-
-  frameState.tileQueue.loadMoreTiles(16, 16);
+  var data = {};
+  this.dispatchEvent(new ol.source.Raster.Event(
+      ol.source.Raster.EventType_.BEFOREOPERATIONS, frameState, data));
+  this.worker_.process(imageDatas, data,
+      this.onWorkerComplete_.bind(this, frameState));
 };
 
 
 /**
  * Called when pixel processing is complete.
  * @param {olx.FrameState} frameState The frame state.
- * @param {function(Error)} callback Called when rendering is complete.
  * @param {Error} err Any error during processing.
  * @param {ImageData} output The output image data.
  * @param {Object} data The user data.
  * @private
  */
-ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, callback, err, output, data) {
-  if (err) {
-    callback(err);
+ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, err, output, data) {
+  if (err || !output) {
     return;
   }
-  if (!output) {
-    // job aborted
+
+  // do nothing if extent or resolution changed
+  var extent = frameState.extent;
+  var resolution = frameState.viewState.resolution;
+  if (resolution !== this.requestedFrameState_.viewState.resolution ||
+      !ol.extent.equals(extent, this.requestedFrameState_.extent)) {
     return;
   }
+
+  var context;
+  if (this.renderedImageCanvas_) {
+    context = this.renderedImageCanvas_.getImage().getContext('2d');
+  } else {
+    var width = Math.round(ol.extent.getWidth(extent) / resolution);
+    var height = Math.round(ol.extent.getHeight(extent) / resolution);
+    context = ol.dom.createCanvasContext2D(width, height);
+    this.renderedImageCanvas_ = new ol.ImageCanvas(
+        extent, resolution, 1, this.getAttributions(), context.canvas);
+  }
+  context.putImageData(output, 0, 0);
+
+  this.changed();
+  this.renderedRevision_ = this.getRevision();
 
   this.dispatchEvent(new ol.source.Raster.Event(
       ol.source.Raster.EventType_.AFTEROPERATIONS, frameState, data));
-
-  var resolution = frameState.viewState.resolution / frameState.pixelRatio;
-  if (!this.isDirty_(frameState.extent, resolution)) {
-    this.canvasContext_.putImageData(output, 0, 0);
-  }
-
-  callback(null);
 };
 
 

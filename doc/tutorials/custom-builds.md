@@ -51,7 +51,9 @@ Creating a custom build requires writing a build configuration file. The format 
   "compile": {
     "externs": [
       "externs/bingmaps.js",
+      "externs/cartodb.js",
       "externs/closure-compiler.js",
+      "externs/esrijson.js",
       "externs/geojson.js",
       "externs/oli.js",
       "externs/olx.js",
@@ -201,9 +203,16 @@ Now let's try a more complicated example: [`heatmaps-earthquakes`](https://openl
   ],
   "compile": {
     "externs": [
+      "externs/bingmaps.js",
+      "externs/cartodb.js",
       "externs/closure-compiler.js",
+      "externs/esrijson.js",
+      "externs/geojson.js",
       "externs/olx.js",
-      "externs/oli.js"
+      "externs/oli.js",
+      "externs/proj4js.js",
+      "externs/tilejson.js",
+      "externs/topojson.js"
     ],
     "define": [
       "ol.ENABLE_WEBGL=false",

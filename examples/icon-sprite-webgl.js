@@ -51,6 +51,7 @@ for (i = 0; i < iconCount; ++i) {
     rotation: info.rotation,
     scale: info.scale,
     size: info.size,
+    crossOrigin: 'anonymous',
     src: 'data/Butterfly.png'
   });
 }

@@ -2,6 +2,8 @@ goog.provide('ol.proj');
 
 goog.require('ol');
 goog.require('ol.extent');
+goog.require('ol.proj.EPSG3857');
+goog.require('ol.proj.EPSG4326');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.proj.proj4');
@@ -29,7 +31,7 @@ if (ol.ENABLE_PROJ4JS) {
    *     import proj4 from 'proj4';
    *     ol.proj.setProj4(proj4);
    *
-   * @param {proj4} proj4 Proj4.
+   * @param {Proj4} proj4 Proj4.
    * @api
    */
   ol.proj.setProj4 = function(proj4) {
@@ -467,3 +469,24 @@ ol.proj.transformWithProjections = function(point, sourceProjection, destination
       sourceProjection, destinationProjection);
   return transformFn(point);
 };
+
+/**
+ * Add transforms to and from EPSG:4326 and EPSG:3857.  This function is called
+ * by when this module is executed and should only need to be called again after
+ * `ol.proj.clearAllProjections()` is called (e.g. in tests).
+ */
+ol.proj.addCommon = function() {
+  // Add transformations that don't alter coordinates to convert within set of
+  // projections with equal meaning.
+  ol.proj.addEquivalentProjections(ol.proj.EPSG3857.PROJECTIONS);
+  ol.proj.addEquivalentProjections(ol.proj.EPSG4326.PROJECTIONS);
+  // Add transformations to convert EPSG:4326 like coordinates to EPSG:3857 like
+  // coordinates and back.
+  ol.proj.addEquivalentTransforms(
+      ol.proj.EPSG4326.PROJECTIONS,
+      ol.proj.EPSG3857.PROJECTIONS,
+      ol.proj.EPSG3857.fromEPSG4326,
+      ol.proj.EPSG3857.toEPSG4326);
+};
+
+ol.proj.addCommon();

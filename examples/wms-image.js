@@ -15,6 +15,7 @@ var layers = [
     source: new ol.source.ImageWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {'LAYERS': 'topp:states'},
+      ratio: 1,
       serverType: 'geoserver'
     })
   })

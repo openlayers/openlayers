@@ -30,11 +30,11 @@
     "css/ol.css"
   ],
   "dependencies": {
-    "async": "2.1.5",
+    "async": "2.3.0",
     "browserify": "14.0.0",
     "closure-util": "1.18.0",
     "derequire": "2.0.6",
-    "fs-extra": "2.0.0",
+    "fs-extra": "2.1.2",
     "glob": "7.1.1",
     "handlebars": "4.0.6",
     "jsdoc": "3.4.3",
@@ -50,17 +50,16 @@
     "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css-cli": "4.0.8",
-    "coveralls": "2.12.0",
+    "clean-css-cli": "4.0.10",
+    "coveralls": "2.13.0",
     "debounce": "^1.0.0",
-    "eslint": "3.17.0",
+    "eslint": "3.18.0",
     "eslint-config-openlayers": "7.0.0",
     "eslint-plugin-openlayers-internal": "^3.1.0",
-    "esprima": "2.x",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",
     "istanbul": "0.4.5",
-    "jquery": "3.1.1",
+    "jquery": "3.2.1",
     "jscodeshift": "^0.3.30",
     "mocha": "3.2.0",
     "mocha-phantomjs-core": "^2.1.0",
@@ -69,8 +68,8 @@
     "proj4": "2.4.3",
     "resemblejs": "2.2.3",
     "serve-files": "1.0.1",
-    "sinon": "2.0.0-pre.6",
-    "slimerjs": "0.906.2"
+    "sinon": "2.1.0",
+    "slimerjs": "0.10.3"
   },
   "eslintConfig": {
     "extends": "openlayers",

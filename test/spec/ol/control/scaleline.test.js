@@ -268,14 +268,29 @@ describe('ol.control.ScaleLine', function() {
     var renderedHtmls;
     var mapView;
 
+    var getMetricUnit = function(zoom) {
+      if (zoom > 30) {
+        return 'μm';
+      } else if (zoom > 20) {
+        return 'mm';
+      } else if (zoom > 10) {
+        return 'm';
+      } else {
+        return 'km';
+      }
+    };
+
     beforeEach(function() {
-      currentZoom = 28;
+      currentZoom = 33;
       renderedHtmls = {};
-      ctrl = new ol.control.ScaleLine();
+      ctrl = new ol.control.ScaleLine({
+        minWidth: 10
+      });
       ctrl.setMap(map);
       map.setView(new ol.View({
         center: [0, 0],
-        zoom: currentZoom
+        zoom: currentZoom,
+        maxZoom: currentZoom
       }));
       mapView = map.getView();
       map.renderSync();
@@ -296,6 +311,9 @@ describe('ol.control.ScaleLine', function() {
         var currentHtml = ctrl.element_.innerHTML;
         expect(currentHtml in renderedHtmls).to.be(false);
         renderedHtmls[currentHtml] = true;
+
+        var unit = ctrl.innerElement_.textContent.match(/\d+ (.+)/)[1];
+        expect(unit).to.eql(getMetricUnit(currentZoom));
       }
     });
     it('degrees: is rendered differently for different zoomlevels', function() {

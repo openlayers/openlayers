@@ -2285,7 +2285,8 @@ olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
  *     nativeElements: Array.<Object>,
- *     gmlOptions: (olx.format.GMLOptions|undefined)}}
+ *     gmlOptions: (olx.format.GMLOptions|undefined),
+ *     version: (string|undefined)}}
  */
 olx.format.WFSWriteTransactionOptions;
 
@@ -2345,6 +2346,15 @@ olx.format.WFSWriteTransactionOptions.prototype.nativeElements;
  * @api
  */
 olx.format.WFSWriteTransactionOptions.prototype.gmlOptions;
+
+
+/**
+ * WFS version to use for the transaction. Can be either `1.0.0` or `1.1.0`.
+ * Default is `1.1.0`.
+ * @type {string|undefined}
+ * @api
+ */
+olx.format.WFSWriteTransactionOptions.prototype.version;
 
 
 /**
@@ -3881,7 +3891,7 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
 
 
 /**
- * @typedef {{renderOrder: (function(ol.Feature, ol.Feature):number|null|undefined),
+ * @typedef {{renderOrder: (ol.RenderOrderFunction|null|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
@@ -3900,7 +3910,7 @@ olx.layer.VectorOptions;
  * Render order. Function to be used when sorting features before rendering. By
  * default features are drawn in the order that they are created. Use `null` to
  * avoid the sort, but get an undefined draw order.
- * @type {function(ol.Feature, ol.Feature):number|null|undefined}
+ * @type {ol.RenderOrderFunction|null|undefined}
  * @api
  */
 olx.layer.VectorOptions.prototype.renderOrder;
@@ -4015,7 +4025,7 @@ olx.layer.VectorOptions.prototype.visible;
  *     preload: (number|undefined),
  *     renderBuffer: (number|undefined),
  *     renderMode: (ol.layer.VectorTileRenderType|string|undefined),
- *     renderOrder: (function(ol.Feature, ol.Feature):number|undefined),
+ *     renderOrder: (ol.RenderOrderFunction|undefined),
  *     source: (ol.source.VectorTile|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
@@ -4058,7 +4068,7 @@ olx.layer.VectorTileOptions.prototype.renderMode;
 /**
  * Render order. Function to be used when sorting features before rendering. By
  * default features are drawn in the order that they are created.
- * @type {function(ol.Feature, ol.Feature):number|undefined}
+ * @type {ol.RenderOrderFunction|undefined}
  * @api
  */
 olx.layer.VectorTileOptions.prototype.renderOrder;
@@ -7181,7 +7191,7 @@ olx.style.RegularShapeOptions.prototype.radius;
 
 
 /**
- * Inner radius of a star.
+ * Outer radius of a star.
  * @type {number|undefined}
  * @api
  */
@@ -7189,7 +7199,7 @@ olx.style.RegularShapeOptions.prototype.radius1;
 
 
 /**
- * Outer radius of a star.
+ * Inner radius of a star.
  * @type {number|undefined}
  * @api
  */

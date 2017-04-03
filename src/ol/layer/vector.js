@@ -102,7 +102,7 @@ ol.layer.Vector.prototype.getRenderBuffer = function() {
  *     order.
  */
 ol.layer.Vector.prototype.getRenderOrder = function() {
-  return /** @type {function(ol.Feature, ol.Feature):number|null|undefined} */ (
+  return /** @type {ol.RenderOrderFunction|null|undefined} */ (
       this.get(ol.layer.Vector.Property_.RENDER_ORDER));
 };
 
@@ -157,7 +157,7 @@ ol.layer.Vector.prototype.getUpdateWhileInteracting = function() {
 
 
 /**
- * @param {function(ol.Feature, ol.Feature):number|null|undefined} renderOrder
+ * @param {ol.RenderOrderFunction|null|undefined} renderOrder
  *     Render order.
  */
 ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {

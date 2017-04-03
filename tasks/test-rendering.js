@@ -38,23 +38,12 @@ serve.createServer(function(err, server) {
       url + '/test_rendering/index.html'
     ];
 
-    // TODO
-    // Workaround for https://github.com/laurentj/slimerjs/issues/333. When a
-    // version with the fix is released, replace block below with:
-    // var child = spawn(slimerjs.path, args, {stdio: 'pipe'});
-    // child.on('exit', function(code) {
-    //   process.exit(code);
-    // }
-
     var child = spawn(slimerjs.path, args, {stdio: 'pipe'});
     child.stdout.on('data', function(data) {
       process.stdout.write(data);
-      if (data == 'All tests passed.\n') {
-        process.exit(0);
-      }
     });
-    child.on('exit', function() {
-      process.exit(1);
+    child.on('exit', function(code) {
+      process.exit(code);
     });
   });
 

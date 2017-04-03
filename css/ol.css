@@ -34,7 +34,7 @@
 .ol-unsupported {
   display: none;
 }
-.ol-viewport .ol-unselectable {
+.ol-viewport, .ol-unselectable {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -238,4 +238,8 @@
 }
 .ol-overviewmap-box {
   border: 2px dotted rgba(0,60,136,0.7);
+}
+
+.ol-overviewmap .ol-overviewmap-box:hover {
+  cursor: move;
 }

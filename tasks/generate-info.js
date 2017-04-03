@@ -14,13 +14,33 @@ var externsPaths = [
 ];
 var infoPath = path.join(__dirname, '..', 'build', 'info.json');
 
-var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
-var jsdoc = path.resolve(path.dirname(jsdocResolved), '../.bin/jsdoc');
+/**
+ * Get checked path of a binary.
+ * @param {string} binaryName Binary name of the binary path to find.
+ * @return {string} Path.
+ */
+function getBinaryPath(binaryName) {
+  if (isWindows) {
+    binaryName += '.cmd';
+  }
 
-// on Windows, use jsdoc.cmd
-if (isWindows) {
-  jsdoc += '.cmd';
+  var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
+  var expectedPaths = [
+    path.join(__dirname, '..', 'node_modules', '.bin', binaryName),
+    path.resolve(path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName))
+  ];
+
+  for (var i = 0; i < expectedPaths.length; i++) {
+    var expectedPath = expectedPaths[i];
+    if (fs.existsSync(expectedPath)) {
+      return expectedPath;
+    }
+  }
+
+  throw Error('JsDoc binary was not found in any of the expected paths: ' + expectedPaths);
 }
+
+var jsdoc = getBinaryPath('jsdoc');
 
 var jsdocConfig = path.join(
     __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
