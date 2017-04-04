@@ -19,6 +19,7 @@ describe('ol.rendering.style.LineString', function() {
 
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
+      zIndex: 0,
       source: vectorSource
     });
 

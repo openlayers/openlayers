@@ -16,6 +16,7 @@ describe('ol.rendering.Map', function() {
     target = createMapDiv(50, 50);
 
     var vectorLayer = new ol.layer.Vector({
+      zIndex: 0,
       source: new ol.source.Vector({
         features: [new ol.Feature({
           geometry: new ol.geom.Point([0, 0])
