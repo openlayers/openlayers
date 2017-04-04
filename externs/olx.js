@@ -3110,6 +3110,14 @@ olx.interaction.MouseWheelZoomOptions.prototype.timeout;
 
 
 /**
+ * Zoom to the closest integer zoom level after trackpad zoom ends. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.constrainResolution;
+
+
+/**
  * Enable zooming using the mouse's location as the anchor. Default is `true`.
  * When set to false, zooming in and out will zoom to the center of the screen
  * instead of zooming on the mouse's location.
