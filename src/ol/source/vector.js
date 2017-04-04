@@ -610,11 +610,12 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate, 
  *
  * This method is not available when the source is configured with
  * `useSpatialIndex` set to `false`.
+ * @param {ol.Extent=} opt_extent Destination extent.
  * @return {!ol.Extent} Extent.
  * @api
  */
-ol.source.Vector.prototype.getExtent = function() {
-  return this.featuresRtree_.getExtent();
+ol.source.Vector.prototype.getExtent = function(opt_extent) {
+  return this.featuresRtree_.getExtent(opt_extent);
 };
 
 
