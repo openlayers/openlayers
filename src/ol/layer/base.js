@@ -33,8 +33,7 @@ ol.layer.Base = function(options) {
       options.opacity !== undefined ? options.opacity : 1;
   properties[ol.layer.Property.VISIBLE] =
       options.visible !== undefined ? options.visible : true;
-  properties[ol.layer.Property.Z_INDEX] =
-      options.zIndex !== undefined ? options.zIndex : 0;
+  properties[ol.layer.Property.Z_INDEX] = options.zIndex;
   properties[ol.layer.Property.MAX_RESOLUTION] =
       options.maxResolution !== undefined ? options.maxResolution : Infinity;
   properties[ol.layer.Property.MIN_RESOLUTION] =
@@ -72,7 +71,7 @@ ol.layer.Base.prototype.getLayerState = function() {
   this.state_.sourceState = this.getSourceState();
   this.state_.visible = this.getVisible();
   this.state_.extent = this.getExtent();
-  this.state_.zIndex = this.getZIndex();
+  this.state_.zIndex = this.getZIndex() || 0;
   this.state_.maxResolution = this.getMaxResolution();
   this.state_.minResolution = Math.max(this.getMinResolution(), 0);
 

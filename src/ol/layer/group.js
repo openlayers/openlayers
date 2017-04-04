@@ -221,8 +221,9 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
         layerState.extent = ownLayerState.extent;
       }
     }
-    if (layerState.zIndex === 0 && ownLayerState.zIndex !== 0) {
+    if (layerState.layer.getZIndex() === undefined) {
       layerState.zIndex = ownLayerState.zIndex;
+      layerState.layer.setZIndex(ownLayerState.zIndex);
     }
   }
 
