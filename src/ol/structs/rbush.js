@@ -213,5 +213,5 @@ ol.structs.RBush.prototype.clear = function() {
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
   var data = this.rbush_.data;
-  return [data.minX, data.minY, data.maxX, data.maxY];
+  return ol.extent.createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
 };
