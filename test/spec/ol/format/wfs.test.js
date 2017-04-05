@@ -587,6 +587,37 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
+    it('creates During property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="states" srsName="EPSG:4326">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:During>' +
+          '      <fes:ValueReference xmlns:fes="http://www.opengis.net/fes">date_prop</fes:ValueReference>' +
+          '      <gml:TimePeriod xmlns:gml="http://www.opengis.net/gml">' +
+          '        <gml:begin>' +
+          '          <gml:TimeInstant>' +
+          '            <gml:timePosition>2010-01-20T00:00:00Z</gml:timePosition>' +
+          '          </gml:TimeInstant>' +
+          '        </gml:begin>' +
+          '        <gml:end>' +
+          '          <gml:TimeInstant>' +
+          '            <gml:timePosition>2012-12-31T00:00:00Z</gml:timePosition>' +
+          '          </gml:TimeInstant>' +
+          '        </gml:end>' +
+          '      </gml:TimePeriod>' +
+          '    </ogc:During>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['states'],
+        filter: ol.format.filter.during('date_prop', '2010-01-20T00:00:00Z', '2012-12-31T00:00:00Z')
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
   });
 
   describe('when writing out a Transaction request', function() {

@@ -92,6 +92,13 @@ ol.format.WFS.WFSNS = 'http://www.opengis.net/wfs';
 
 /**
  * @const
+ * @type {string}
+ */
+ol.format.WFS.FESNS = 'http://www.opengis.net/fes';
+
+
+/**
+ * @const
  * @type {Object.<string, string>}
  */
 ol.format.WFS.SCHEMA_LOCATIONS = {
@@ -648,6 +655,32 @@ ol.format.WFS.writeWithinFilter_ = function(node, filter, objectStack) {
 
 /**
  * @param {Node} node Node.
+ * @param {ol.format.filter.During} filter Filter.
+ * @param {Array.<*>} objectStack Node stack.
+ * @private
+ */
+ol.format.WFS.writeDuringFilter_ = function(node, filter, objectStack) {
+
+  var valueReference = ol.xml.createElementNS(ol.format.WFS.FESNS, 'ValueReference');
+  ol.format.XSD.writeStringTextNode(valueReference, filter.propertyName);
+  node.appendChild(valueReference);
+
+  var timePeriod = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'TimePeriod');
+
+  node.appendChild(timePeriod);
+
+  var begin = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'begin');
+  timePeriod.appendChild(begin);
+  ol.format.WFS.writeTimeInstant_(begin, filter.begin);
+
+  var end = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'end');
+  timePeriod.appendChild(end);
+  ol.format.WFS.writeTimeInstant_(end, filter.end);
+};
+
+
+/**
+ * @param {Node} node Node.
  * @param {ol.format.filter.LogicalNary} filter Filter.
  * @param {Array.<*>} objectStack Node stack.
  * @private
@@ -778,6 +811,21 @@ ol.format.WFS.writeOgcLiteral_ = function(node, value) {
 
 
 /**
+ * @param {Node} node Node.
+ * @param {string} time PropertyName value.
+ * @private
+ */
+ol.format.WFS.writeTimeInstant_ = function(node, time) {
+  var timeInstant = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'TimeInstant');
+  node.appendChild(timeInstant);
+
+  var timePosition = ol.xml.createElementNS(ol.format.GMLBase.GMLNS, 'timePosition');
+  timeInstant.appendChild(timePosition);
+  ol.format.XSD.writeStringTextNode(timePosition, time);
+};
+
+
+/**
  * @type {Object.<string, Object.<string, ol.XmlSerializer>>}
  * @private
  */
@@ -786,6 +834,7 @@ ol.format.WFS.GETFEATURE_SERIALIZERS_ = {
     'Query': ol.xml.makeChildAppender(ol.format.WFS.writeQuery_)
   },
   'http://www.opengis.net/ogc': {
+    'During': ol.xml.makeChildAppender(ol.format.WFS.writeDuringFilter_),
     'And': ol.xml.makeChildAppender(ol.format.WFS.writeLogicalFilter_),
     'Or': ol.xml.makeChildAppender(ol.format.WFS.writeLogicalFilter_),
     'Not': ol.xml.makeChildAppender(ol.format.WFS.writeNotFilter_),
