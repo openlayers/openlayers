@@ -2299,6 +2299,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
  *     featureType: string,
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
+ *     is3D: (boolean|undefined),
  *     nativeElements: Array.<Object>,
  *     gmlOptions: (olx.format.GMLOptions|undefined),
  *     version: (string|undefined)}}
@@ -2345,6 +2346,15 @@ olx.format.WFSWriteTransactionOptions.prototype.srsName;
  * @api
  */
 olx.format.WFSWriteTransactionOptions.prototype.handle;
+
+
+/**
+ * Must be set to true if the transaction is for a 3D layer. This will allow
+ * the Z coordinate to be included in the transaction.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.format.WFSWriteTransactionOptions.prototype.is3D;
 
 
 /**
