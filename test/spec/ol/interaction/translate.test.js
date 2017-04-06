@@ -224,10 +224,22 @@ describe('ol.interaction.Translate', function() {
 
       simulateEvent('pointerup', 10, 20);
       expect(element.style.cursor).to.match(/grab$/);
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('');
     });
 
     it('respects existing cursor value', function() {
       element.style.cursor = 'pointer';
+
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      simulateEvent('pointerdown', 10, 20);
+      expect(element.style.cursor).to.match(/grabbing$/);
+
+      simulateEvent('pointerup', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
 
       simulateEvent('pointermove', 0, 0);
       expect(element.style.cursor).to.eql('pointer');
