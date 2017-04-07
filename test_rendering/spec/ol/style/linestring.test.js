@@ -130,7 +130,7 @@ describe('ol.rendering.style.LineString', function() {
       createFeatures();
       expectResemble(
           map, 'spec/ol/style/expected/linestring-strokes-canvas-hidpi.png',
-          100, done);
+          3.0, done);
     });
   });
 });
