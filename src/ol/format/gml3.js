@@ -580,7 +580,9 @@ ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
     coords = (point[1] + ' ' + point[0]);
   }
   if (is3D) {
-    coords += ' ' + point[2];
+    // For newly created points, Z can be undefined.
+    var z = point[2] || 0;
+    coords += ' ' + z;
   }
   ol.format.XSD.writeStringTextNode(node, coords);
 };
@@ -602,7 +604,9 @@ ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName, opt_is3D) {
       point[0] + ' ' + point[1] :
       point[1] + ' ' + point[0]);
   if (opt_is3D) {
-    coords += ' ' + point[2];
+    // For newly created points, Z can be undefined.
+    var z = point[2] || 0;
+    coords += ' ' + z;
   }
 
   return coords;
