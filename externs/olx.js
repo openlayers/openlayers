@@ -2550,6 +2550,7 @@ olx.interaction.DragAndDropOptions.prototype.target;
 /**
  * @typedef {{className: (string|undefined),
  *     condition: (ol.EventsConditionType|undefined),
+ *     minArea: (number|undefined),
  *     boxEndCondition: (ol.DragBoxEndConditionType|undefined)}}
  */
 olx.interaction.DragBoxOptions;
@@ -2574,18 +2575,18 @@ olx.interaction.DragBoxOptions.prototype.condition;
 
 
 /**
+ * The minimum area of the box in pixel, this value is used by the default
+ * `boxEndCondition` function. Default is `64`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DragBoxOptions.prototype.minArea;
+
+
+/**
  * A function that takes a {@link ol.MapBrowserEvent} and two
- * {@link ol.Pixel}s to indicate whether a boxend event should be fired.
- * Default is:
- * ```js
- * function(mapBrowserEvent,
- *     startPixel, endPixel) {
- *   var width = endPixel[0] - startPixel[0];
- *   var height = endPixel[1] - startPixel[1];
- *   return width * width + height * height >=
- *     ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED;
- * }
- * ```
+ * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
+ * Default is `true` if the area of the box is bigger than the `minArea` option.
  * @type {ol.DragBoxEndConditionType|undefined}
  * @api
  */
