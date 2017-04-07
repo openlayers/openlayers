@@ -115,14 +115,14 @@ describe('ol.rendering.style.LineString', function() {
       createFeatures();
       expectResemble(
           map, 'spec/ol/style/expected/linestring-strokes-canvas.png',
-          100, done);
+          3.0, done);
     });
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/linestring-strokes-webgl.png',
-          17.3, done);
+          14.6, done);
     });
 
     it('tests the canvas renderer (HiDPI)', function(done) {
