@@ -223,7 +223,6 @@ ol.layer.Group.prototype.getLayerStatesArray = function(opt_states) {
     }
     if (layerState.layer.getZIndex() === undefined) {
       layerState.zIndex = ownLayerState.zIndex;
-      layerState.layer.setZIndex(ownLayerState.zIndex);
     }
   }
 

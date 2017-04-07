@@ -47,6 +47,7 @@ ol.layer.Base = function(options) {
    */
   this.state_ = /** @type {ol.LayerState} */ ({
     layer: /** @type {ol.layer.Layer} */ (this),
+    zIndex: 0,
     managed: true
   });
 

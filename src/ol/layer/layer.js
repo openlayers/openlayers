@@ -101,6 +101,9 @@ ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
  */
 ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
   var states = opt_states ? opt_states : [];
+  states.forEach(function(state) {
+    state.zIndex = state.layer.getZIndex() || 0;
+  });
   states.push(this.getLayerState());
   return states;
 };

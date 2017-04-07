@@ -76,7 +76,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map = createMap('canvas');
       waitForTiles(source, {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas.png',
-            11.7, done);
+            21.4, done);
       });
     });
 
@@ -85,7 +85,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
         expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-rotated.png',
-            13.4, done);
+            13.8, done);
       });
     });
 

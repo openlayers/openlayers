@@ -19,7 +19,6 @@ describe('ol.rendering.style.LineString', function() {
 
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
-      zIndex: 0,
       source: vectorSource
     });
 
@@ -116,14 +115,14 @@ describe('ol.rendering.style.LineString', function() {
       createFeatures();
       expectResemble(
           map, 'spec/ol/style/expected/linestring-strokes-canvas.png',
-          3.0, done);
+          100, done);
     });
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'spec/ol/style/expected/linestring-strokes-webgl.png',
-          14.6, done);
+          17.3, done);
     });
 
     it('tests the canvas renderer (HiDPI)', function(done) {
@@ -131,7 +130,7 @@ describe('ol.rendering.style.LineString', function() {
       createFeatures();
       expectResemble(
           map, 'spec/ol/style/expected/linestring-strokes-canvas-hidpi.png',
-          3.0, done);
+          100, done);
     });
   });
 });
