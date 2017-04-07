@@ -76,10 +76,10 @@ ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
 /**
  * The default condition for determining whether the boxend event
  * should fire.
- * @param  {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
- *  leading to the box end.
- * @param  {ol.Pixel} startPixel      The starting pixel of the box.
- * @param  {ol.Pixel} endPixel        The end pixel of the box.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
+ *     leading to the box end.
+ * @param {ol.Pixel} startPixel The starting pixel of the box.
+ * @param {ol.Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
  */
 ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent,
