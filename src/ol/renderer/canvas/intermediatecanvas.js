@@ -3,6 +3,7 @@ goog.provide('ol.renderer.canvas.IntermediateCanvas');
 goog.require('ol');
 goog.require('ol.coordinate');
 goog.require('ol.dom');
+goog.require('ol.extent');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.transform');
 
@@ -45,7 +46,9 @@ ol.renderer.canvas.IntermediateCanvas.prototype.composeFrame = function(frameSta
 
     // clipped rendering if layer extent is set
     var extent = layerState.extent;
-    var clipped = extent !== undefined;
+    var clipped = extent !== undefined &&
+        !ol.extent.containsExtent(extent, frameState.extent) &&
+        ol.extent.intersects(extent, frameState.extent);
     if (clipped) {
       this.clip(context, frameState, /** @type {ol.Extent} */ (extent));
     }
