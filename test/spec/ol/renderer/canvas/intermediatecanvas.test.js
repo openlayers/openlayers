@@ -9,18 +9,19 @@ goog.require('ol.renderer.canvas.IntermediateCanvas');
 describe('ol.renderer.canvas.IntermediateCanvas', function() {
 
   describe('#composeFrame()', function() {
-    it('clips to layer extent and draws image', function() {
+    var renderer, frameState, layerState, context;
+    beforeEach(function() {
       var layer = new ol.layer.Image({
         extent: [1, 2, 3, 4]
       });
-      var renderer = new ol.renderer.canvas.IntermediateCanvas(layer);
+      renderer = new ol.renderer.canvas.IntermediateCanvas(layer);
       var image = new Image();
       image.width = 3;
       image.height = 3;
       renderer.getImage = function() {
         return image;
       };
-      var frameState = {
+      frameState = {
         viewState: {
           center: [2, 3],
           resolution: 1,
@@ -35,8 +36,8 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
         return ol.transform.create();
       };
       ol.renderer.Map.prototype.calculateMatrices2D(frameState);
-      var layerState = layer.getLayerState();
-      var context = {
+      layerState = layer.getLayerState();
+      context = {
         save: sinon.spy(),
         restore: sinon.spy(),
         translate: sinon.spy(),
@@ -47,6 +48,11 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
         clip: sinon.spy(),
         drawImage: sinon.spy()
       };
+    });
+
+    it('clips to layer extent and draws image', function() {
+      frameState.extent = [0, 1, 4, 5];
+
       renderer.composeFrame(frameState, layerState, context);
       expect(context.save.callCount).to.be(1);
       expect(context.translate.callCount).to.be(0);
@@ -61,6 +67,35 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
           [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
       expect(context.restore.callCount).to.be(1);
     });
+
+    it('does not clip if frame extent does not intersect layer extent', function() {
+      frameState.extent = [1.1, 2.1, 2.9, 3.9];
+
+      renderer.composeFrame(frameState, layerState, context);
+      expect(context.save.callCount).to.be(0);
+      expect(context.translate.callCount).to.be(0);
+      expect(context.rotate.callCount).to.be(0);
+      expect(context.beginPath.callCount).to.be(0);
+      expect(context.clip.callCount).to.be(0);
+      expect(context.drawImage.firstCall.args).to.eql(
+          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+      expect(context.restore.callCount).to.be(0);
+    });
+
+    it('does not clip if frame extent is outside of layer extent', function() {
+      frameState.extent = [10, 20, 30, 40];
+
+      renderer.composeFrame(frameState, layerState, context);
+      expect(context.save.callCount).to.be(0);
+      expect(context.translate.callCount).to.be(0);
+      expect(context.rotate.callCount).to.be(0);
+      expect(context.beginPath.callCount).to.be(0);
+      expect(context.clip.callCount).to.be(0);
+      expect(context.drawImage.firstCall.args).to.eql(
+          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+      expect(context.restore.callCount).to.be(0);
+    });
+
   });
 
 });
