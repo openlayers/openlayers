@@ -603,12 +603,18 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
  * @api
  */
 ol.interaction.Draw.prototype.removeLastPoint = function() {
+  if (!this.sketchFeature_) {
+    return;
+  }
   var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
   var coordinates, sketchLineGeom;
   if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
     coordinates = this.sketchCoords_;
     coordinates.splice(-2, 1);
     this.geometryFunction_(coordinates, geometry);
+    if (coordinates.length >= 2) {
+      this.finishCoordinate_ = coordinates[coordinates.length - 2].slice();
+    }
   } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
