@@ -3087,7 +3087,8 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{duration: (number|undefined),
+ * @typedef {{constrainResolution: (boolean|undefined),
+ *     duration: (number|undefined),
  *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  */
@@ -3111,7 +3112,8 @@ olx.interaction.MouseWheelZoomOptions.prototype.timeout;
 
 
 /**
- * Zoom to the closest integer zoom level after trackpad zoom ends. Default is `false`.
+ * Zoom to the closest integer zoom level after the wheel/trackpad gesture ends.
+ * Default is `false`.
  * @type {boolean|undefined}
  * @api
  */
