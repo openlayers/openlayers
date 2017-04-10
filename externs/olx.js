@@ -3087,7 +3087,8 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{duration: (number|undefined),
+ * @typedef {{constrainResolution: (boolean|undefined),
+ *     duration: (number|undefined),
  *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  */
