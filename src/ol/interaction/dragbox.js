@@ -78,6 +78,7 @@ ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
  * @param {ol.Pixel} startPixel The starting pixel of the box.
  * @param {ol.Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
+ * @this {ol.interaction.DragBox}
  */
 ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
   var width = endPixel[0] - startPixel[0];
