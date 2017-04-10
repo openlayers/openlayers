@@ -3144,7 +3144,10 @@ olx.interaction.PinchRotateOptions.prototype.threshold;
 
 
 /**
- * @typedef {{duration: (number|undefined)}}
+ * @typedef {{
+ *     duration: (number|undefined),
+ *     constrainResolution: (boolean|undefined)
+ * }}
  */
 olx.interaction.PinchZoomOptions;
 
