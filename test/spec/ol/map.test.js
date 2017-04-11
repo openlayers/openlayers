@@ -378,9 +378,34 @@ describe('ol.Map', function() {
         var interactions = ol.interaction.defaults(options);
         expect(interactions.getLength()).to.eql(1);
         expect(interactions.item(0)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(0).constrainResolution_).to.eql(false);
         expect(interactions.item(0).useAnchor_).to.eql(true);
         interactions.item(0).setMouseAnchor(false);
         expect(interactions.item(0).useAnchor_).to.eql(false);
+      });
+    });
+
+    describe('create pinchZoom interaction', function() {
+      it('creates pinchZoom interaction', function() {
+        options.pinchZoom = true;
+        var interactions = ol.interaction.defaults(options);
+        expect(interactions.getLength()).to.eql(1);
+        expect(interactions.item(0)).to.be.a(ol.interaction.PinchZoom);
+        expect(interactions.item(0).constrainResolution_).to.eql(false);
+      });
+    });
+
+    describe('set constrainResolution option', function() {
+      it('set constrainResolution option', function() {
+        options.pinchZoom = true;
+        options.mouseWheelZoom = true;
+        options.constrainResolution = true;
+        var interactions = ol.interaction.defaults(options);
+        expect(interactions.getLength()).to.eql(2);
+        expect(interactions.item(0)).to.be.a(ol.interaction.PinchZoom);
+        expect(interactions.item(0).constrainResolution_).to.eql(true);
+        expect(interactions.item(1)).to.be.a(ol.interaction.MouseWheelZoom);
+        expect(interactions.item(1).constrainResolution_).to.eql(true);
       });
     });
 

@@ -2,6 +2,16 @@
 
 ### Next release
 
+#### Simpler `constrainResolution` configuration
+
+The `constrainResolution` configuration for `ol.interaction.PinchZoom` and `ol.interaction.MouseWheelZoom`
+can now be set directly with an option in `ol.interaction.defaults`:
+```js
+ol.interaction.defaults({
+  constrainResolution: true
+});
+```
+
 ### v4.0.0
 
 #### Simpler `ol.source.Zoomify` `url` configuration
