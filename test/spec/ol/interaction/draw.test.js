@@ -289,6 +289,31 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getCoordinates()).to.eql([[10, -20], [30, -20]]);
     });
 
+    it('supports removeLastPoint while drawing', function() {
+
+      draw.removeLastPoint();
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 40, 30);
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+
+      simulateEvent('pointermove', 100, 100);
+      draw.removeLastPoint();
+
+      // click near the removed point
+      simulateEvent('pointermove', 39, 31);
+      simulateEvent('pointerdown', 38, 31);
+      simulateEvent('pointerup', 38, 31);
+
+      expect(source.getFeatures()).to.have.length(0);
+    });
+
     it('supports freehand drawing for linestrings', function() {
       // freehand sequence
       simulateEvent('pointermove', 10, 20);
@@ -532,6 +557,31 @@ describe('ol.interaction.Draw', function() {
       expect(geometry.getCoordinates()).to.eql([
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
+    });
+
+    it('supports removeLastPoint while drawing', function() {
+
+      draw.removeLastPoint();
+
+      // first point
+      simulateEvent('pointermove', 10, 20);
+      simulateEvent('pointerdown', 10, 20);
+      simulateEvent('pointerup', 10, 20);
+
+      // second point
+      simulateEvent('pointermove', 40, 30);
+      simulateEvent('pointerdown', 40, 30);
+      simulateEvent('pointerup', 40, 30);
+
+      simulateEvent('pointermove', 100, 100);
+      draw.removeLastPoint();
+
+      // click near the removed point
+      simulateEvent('pointermove', 39, 31);
+      simulateEvent('pointerdown', 39, 31);
+      simulateEvent('pointerup', 39, 31);
+
+      expect(source.getFeatures()).to.have.length(0);
     });
 
     it('draws polygon with clicks, finishing on last point', function() {
