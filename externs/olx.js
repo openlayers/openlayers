@@ -3124,7 +3124,8 @@ olx.interaction.MouseWheelZoomOptions.prototype.timeout;
 
 
 /**
- * Zoom to the closest integer zoom level after the wheel/trackpad gesture ends.
+ * When using a trackpad or magic mouse, zoom to the closest integer zoom level
+ * after the scroll gesture ends.
  * Default is `false`.
  * @type {boolean|undefined}
  * @api
