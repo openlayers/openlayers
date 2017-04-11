@@ -1,4 +1,3 @@
-/*global createMapDiv, disposeMap*/
 goog.provide('ol.test.control.ZoomSlider');
 
 goog.require('ol.Map');
