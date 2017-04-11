@@ -2398,7 +2398,9 @@ olx.interaction;
 
 /**
  * Interactions for the map. Default is `true` for all options.
- * @typedef {{altShiftDragRotate: (boolean|undefined),
+ * @typedef {{
+ *     altShiftDragRotate: (boolean|undefined),
+ *     constrainResolution: (boolean|undefined),
  *     doubleClickZoom: (boolean|undefined),
  *     keyboard: (boolean|undefined),
  *     mouseWheelZoom: (boolean|undefined),
@@ -2407,7 +2409,8 @@ olx.interaction;
  *     pinchRotate: (boolean|undefined),
  *     pinchZoom: (boolean|undefined),
  *     zoomDelta: (number|undefined),
- *     zoomDuration: (number|undefined)}}
+ *     zoomDuration: (number|undefined)
+ * }}
  */
 olx.interaction.DefaultsOptions;
 
@@ -2418,6 +2421,15 @@ olx.interaction.DefaultsOptions;
  * @api
  */
 olx.interaction.DefaultsOptions.prototype.altShiftDragRotate;
+
+
+/**
+ * Zoom to the closest integer zoom level after the wheel/trackpad or
+ * pinch gesture ends. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DefaultsOptions.prototype.constrainResolution;
 
 
 /**
