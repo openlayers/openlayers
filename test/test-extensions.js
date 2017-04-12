@@ -1,6 +1,3 @@
-/* global resemble:false */
-/* eslint-disable openlayers-internal/no-missing-requires */
-
 // FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
 
 // helper functions for async testing and other utility functions.
