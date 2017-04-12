@@ -9,6 +9,21 @@ var olx;
 
 
 /**
+ * @typedef {{unique: (boolean|undefined)}}
+ */
+olx.CollectionOptions;
+
+
+/**
+ * Disallow the same item from being added to the collection twice.  Default is
+ * false.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.CollectionOptions.prototype.unique;
+
+
+/**
  * @typedef {{html: string,
  *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
  */
