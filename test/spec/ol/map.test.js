@@ -50,6 +50,27 @@ describe('ol.Map', function() {
 
   });
 
+  describe('#addLayer()', function() {
+    it('adds a layer to the map', function() {
+      var map = new ol.Map({});
+      var layer = new ol.layer.Tile();
+      map.addLayer(layer);
+
+      expect(map.getLayers().item(0)).to.be(layer);
+    });
+
+    it('throws if a layer is added twice', function() {
+      var map = new ol.Map({});
+      var layer = new ol.layer.Tile();
+      map.addLayer(layer);
+
+      var call = function() {
+        map.addLayer(layer);
+      };
+      expect(call).to.throwException();
+    });
+  });
+
   describe('#addInteraction()', function() {
     it('adds an interaction to the map', function() {
       var map = new ol.Map({});
