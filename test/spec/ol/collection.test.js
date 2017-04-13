@@ -303,7 +303,7 @@ describe('ol.collection', function() {
       new ol.Collection([{}, {}, {}], {unique: true});
     });
 
-    it('throws if duplicate items are passed to the contructor', function() {
+    it('throws if duplicate items are passed to the constructor', function() {
       var item = {};
       var call = function() {
         new ol.Collection([item, item], {unique: true});
@@ -347,6 +347,13 @@ describe('ol.collection', function() {
       var unique = new ol.Collection(undefined, {unique: true});
       unique.setAt(0, {});
       unique.setAt(1, {});
+    });
+
+    it('allows items to be reset via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.setAt(0, item);
+      unique.setAt(0, item);
     });
 
     it('throws if duplicate items are added via setAt', function() {
