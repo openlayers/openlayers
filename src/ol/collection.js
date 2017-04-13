@@ -23,18 +23,33 @@ goog.require('ol.events.Event');
  * @extends {ol.Object}
  * @fires ol.Collection.Event
  * @param {!Array.<T>=} opt_array Array.
+ * @param {olx.CollectionOptions=} opt_options Collection options.
  * @template T
  * @api
  */
-ol.Collection = function(opt_array) {
+ol.Collection = function(opt_array, opt_options) {
 
   ol.Object.call(this);
+
+  var options = opt_options || {};
+
+  /**
+   * @private
+   * @type {boolean}
+   */
+  this.unique_ = !!options.unique;
 
   /**
    * @private
    * @type {!Array.<T>}
    */
   this.array_ = opt_array ? opt_array : [];
+
+  if (this.unique_) {
+    for (var i = 0, ii = this.array_.length; i < ii; ++i) {
+      this.assertUnique_(this.array_[i], i);
+    }
+  }
 
   this.updateLength_();
 
@@ -125,6 +140,9 @@ ol.Collection.prototype.getLength = function() {
  * @api
  */
 ol.Collection.prototype.insertAt = function(index, elem) {
+  if (this.unique_) {
+    this.assertUnique_(elem);
+  }
   this.array_.splice(index, 0, elem);
   this.updateLength_();
   this.dispatchEvent(
@@ -150,6 +168,9 @@ ol.Collection.prototype.pop = function() {
  * @api
  */
 ol.Collection.prototype.push = function(elem) {
+  if (this.unique_) {
+    this.assertUnique_(elem);
+  }
   var n = this.getLength();
   this.insertAt(n, elem);
   return this.getLength();
@@ -200,6 +221,9 @@ ol.Collection.prototype.removeAt = function(index) {
 ol.Collection.prototype.setAt = function(index, elem) {
   var n = this.getLength();
   if (index < n) {
+    if (this.unique_) {
+      this.assertUnique_(elem, index);
+    }
     var prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
@@ -221,6 +245,20 @@ ol.Collection.prototype.setAt = function(index, elem) {
  */
 ol.Collection.prototype.updateLength_ = function() {
   this.set(ol.Collection.Property_.LENGTH, this.array_.length);
+};
+
+
+/**
+ * @private
+ * @param {T} elem Element.
+ * @param {number=} opt_except Optional index to ignore.
+ */
+ol.Collection.prototype.assertUnique_ = function(elem, opt_except) {
+  for (var i = 0, ii = this.array_.length; i < ii; ++i) {
+    if (this.array_[i] === elem && i !== opt_except) {
+      throw new Error('Duplicate item added to a unique collection');
+    }
+  }
 };
 
 
