@@ -2,6 +2,18 @@
 
 ### Next release
 
+#### Adding duplicate layers to a map throws
+
+Previously, you could do this:
+```js
+map.addLayer(layer);
+map.addLayer(layer);
+```
+
+However, after adding a duplicate layer, things failed if you tried to remove that layer.
+
+Now, `map.addLayer()` throws if you try adding a layer that has already been added to the map.
+
 #### Simpler `constrainResolution` configuration
 
 The `constrainResolution` configuration for `ol.interaction.PinchZoom` and `ol.interaction.MouseWheelZoom`
