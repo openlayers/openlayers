@@ -1,4 +1,5 @@
 const pkg = require('../package.json');
+const version = require('../package/package.json').version;
 
 const defines = {
   'ol.ENABLE_WEBGL': false
@@ -117,6 +118,12 @@ module.exports = function(info, api) {
 
   // store any initial comments
   const {comments} = root.find(j.Program).get('body', 0).node;
+
+  // replace `ol.VERSION = ''` with correct version
+  root.find(j.ExpressionStatement, getMemberExpressionAssignment('ol.VERSION'))
+    .forEach(path => {
+      path.value.expression.right = j.literal(version);
+    });
 
   const replacements = {};
 
