@@ -75,6 +75,16 @@ ol.inherits(ol.source.Cluster, ol.source.Vector);
 
 
 /**
+ * Get the distance in pixels between clusters.
+ * @return {number} Distance.
+ * @api
+ */
+ol.source.Cluster.prototype.getDistance = function() {
+  return this.distance_;
+};
+
+
+/**
  * Get a reference to the wrapped source.
  * @return {ol.source.Vector} Source.
  * @api
