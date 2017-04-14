@@ -2,8 +2,6 @@
 
 OpenLayers as ES2015 modules.
 
-**Note: This package is in beta and the API is subject to change before a final stable release.**
-
 ## Usage
 
 Add the `ol` package as a dependency to your project.
@@ -51,5 +49,4 @@ Utility functions are available as properties of the default export from utility
 
 ## Caveats
 
- * Module identifiers and the structure of the exports are subject to change while this package is in beta.
  * The WebGL renderer is not available in this package.
