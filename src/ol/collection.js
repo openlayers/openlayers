@@ -6,6 +6,7 @@
 goog.provide('ol.Collection');
 
 goog.require('ol');
+goog.require('ol.AssertionError');
 goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.events.Event');
@@ -256,7 +257,7 @@ ol.Collection.prototype.updateLength_ = function() {
 ol.Collection.prototype.assertUnique_ = function(elem, opt_except) {
   for (var i = 0, ii = this.array_.length; i < ii; ++i) {
     if (this.array_[i] === elem && i !== opt_except) {
-      throw new Error('Duplicate item added to a unique collection');
+      throw new ol.AssertionError(58);
     }
   }
 };
