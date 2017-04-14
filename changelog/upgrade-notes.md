@@ -2,6 +2,8 @@
 
 ### Next release
 
+### v4.1.0
+
 #### Adding duplicate layers to a map throws
 
 Previously, you could do this:
