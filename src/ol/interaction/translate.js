@@ -2,6 +2,7 @@ goog.provide('ol.interaction.Translate');
 
 goog.require('ol');
 goog.require('ol.Collection');
+goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.functions');
 goog.require('ol.array');
@@ -82,6 +83,11 @@ ol.interaction.Translate = function(opt_options) {
    * @private
    */
   this.lastFeature_ = null;
+
+  ol.events.listen(this,
+      ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
+      this.handleActiveChanged_, this);
+
 };
 ol.inherits(ol.interaction.Translate, ol.interaction.Pointer);
 
@@ -230,6 +236,43 @@ ol.interaction.Translate.prototype.getHitTolerance = function() {
  */
 ol.interaction.Translate.prototype.setHitTolerance = function(hitTolerance) {
   this.hitTolerance_ = hitTolerance;
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.Translate.prototype.setMap = function(map) {
+  var oldMap = this.getMap();
+  ol.interaction.Pointer.prototype.setMap.call(this, map);
+  this.updateState_(oldMap);
+};
+
+
+/**
+ * @private
+ */
+ol.interaction.Translate.prototype.handleActiveChanged_ = function() {
+  this.updateState_(null);
+};
+
+
+/**
+ * @param {ol.Map} oldMap Old map.
+ * @private
+ */
+ol.interaction.Translate.prototype.updateState_ = function(oldMap) {
+  var map = this.getMap();
+  var active = this.getActive();
+  if ((!map || !active) && this.previousCursor_ !== undefined) {
+    if (!map) {
+      map = oldMap;
+    }
+
+    var elem = map.getTargetElement();
+    elem.style.cursor = this.previousCursor_;
+    this.previousCursor_ = undefined;
+  }
 };
 
 
