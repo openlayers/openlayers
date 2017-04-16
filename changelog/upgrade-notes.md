@@ -773,12 +773,13 @@ now specify an `extent` instead of `widths`. These settings are used to restrict
 * The `ol.source.ServerVector` class has been removed. If you used it, for example as follows:
 
   ```js
+  var format = new ol.format.GeoJSON();
   var source = new ol.source.ServerVector({
-    format: new ol.format.GeoJSON(),
+    format: format,
     loader: function(extent, resolution, projection) {
       var url = …;
       $.ajax(url).then(function(response) {
-        source.addFeatures(source.readFeatures(response));
+        source.addFeatures(format.readFeatures(response));
       });
     },
     strategy: ol.loadingstrategy.bbox,
