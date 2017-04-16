@@ -82,6 +82,8 @@ To export the `ol` symbol to somewhere other than the global namespace, a `names
 
 The `defines` section of `build.json` above lists common settings for the Closure library in production code. The OpenLayers library also defines constants that can be set in this section at compile time. These are all defined in the `ol.js` source file; see the comments in this file to see what effect setting these would have. Some of them can reduce the size of the build in advanced mode.
 
+__Note__: if this script fails with undefined symbol/property errors, try deleting `build/info.json` (see below) and re-running.
+
 ## `generate-exports.js`
 
 Called internally to generate a `build/exports.js` file optionally with a limited set of exports.
