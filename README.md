@@ -7,6 +7,9 @@
 
 [OpenLayers](https://openlayers.org/) is a high-performance, feature-packed library for creating interactive maps on the web. It can display map tiles, vector data and markers loaded from any source on any web page. OpenLayers has been developed to further the use of geographic information of all kinds. It is completely free, Open Source JavaScript, released under the 2-clause BSD License (also known as the FreeBSD).
 
+
+[![The OpenLayers logo](./resources/img/openlayers-logo.svg)](http://openlayers.org/)
+
 ## Getting Started
 
 - Download the [latest release](https://openlayers.org/download/)
@@ -34,3 +37,5 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 - Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
 - Discuss with openlayers users on IRC in `#openlayers` at `chat.freenode`
+
+<img src="./resources/img/OSGeo_project.svg" width="150" alt="OpenLayers is a proud OSGeo project" />
