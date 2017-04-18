@@ -5558,14 +5558,17 @@ olx.source.ImageWMSOptions.prototype.url;
 
 
 /**
- * @typedef {{cacheSize: (number|undefined),
+ * @typedef {{
+ *     cacheSize: (number|undefined),
  *     layer: string,
  *     minZoom: (number|undefined),
  *     maxZoom: (number|undefined),
  *     opaque: (boolean|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
+ *     url: (string|undefined),
+ *     wrapX: (boolean|undefined)
+ * }}
  */
 olx.source.StamenOptions;
 
@@ -5637,6 +5640,14 @@ olx.source.StamenOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.StamenOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.StamenOptions.prototype.wrapX;
 
 
 /**
