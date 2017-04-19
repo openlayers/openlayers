@@ -32,7 +32,7 @@
   "dependencies": {
     "async": "2.3.0",
     "browserify": "14.3.0",
-    "closure-util": "1.18.0",
+    "closure-util": "1.19.0",
     "derequire": "2.0.6",
     "fs-extra": "2.1.2",
     "glob": "7.1.1",
@@ -53,7 +53,7 @@
     "clean-css-cli": "4.0.12",
     "coveralls": "2.13.0",
     "debounce": "^1.0.0",
-    "eslint": "3.18.0",
+    "eslint": "3.19.0",
     "eslint-config-openlayers": "7.0.0",
     "eslint-plugin-openlayers-internal": "^3.1.0",
     "expect.js": "0.3.1",
