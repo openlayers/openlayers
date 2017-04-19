@@ -2970,7 +2970,7 @@ olx.interaction.TranslateOptions.prototype.layers;
 /**
  * Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
- * not for WebGL.
+ * not for WebGL. Default is `0`.
  * @type {number|undefined}
  * @api
  */
@@ -3391,7 +3391,7 @@ olx.interaction.SelectOptions.prototype.wrapX;
 /**
  * Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
- * not for WebGL.
+ * not for WebGL. Default is `0`.
  * @type {number|undefined}
  * @api
  */
