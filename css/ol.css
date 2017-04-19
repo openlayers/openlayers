@@ -29,6 +29,12 @@
 }
 .ol-overlay-container {
   will-change: left,right,top,bottom;
+  -webkit-touch-callout: default;
+  -webkit-user-select: text;
+  -khtml-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 .ol-unsupported {
