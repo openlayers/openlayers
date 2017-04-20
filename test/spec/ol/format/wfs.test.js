@@ -914,7 +914,7 @@ describe('ol.format.WFS', function() {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'states',
         featurePrefix: 'topp',
-        is3D: true,
+        hasZ: true,
         version: '1.0.0'
       });
 
@@ -954,7 +954,7 @@ describe('ol.format.WFS', function() {
       var serialized = format.writeTransaction(inserts, updates, null, {
         featureNS: 'http://www.openplans.org/topp',
         featureType: 'states',
-        is3D: true,
+        hasZ: true,
         featurePrefix: 'topp'
       });
       expect(serialized).to.xmleql(ol.xml.parse(text));
