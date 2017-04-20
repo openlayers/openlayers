@@ -2299,7 +2299,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
  *     featureType: string,
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
- *     is3D: (boolean|undefined),
+ *     hasZ: (boolean|undefined),
  *     nativeElements: Array.<Object>,
  *     gmlOptions: (olx.format.GMLOptions|undefined),
  *     version: (string|undefined)}}
@@ -2354,7 +2354,7 @@ olx.format.WFSWriteTransactionOptions.prototype.handle;
  * @type {boolean|undefined}
  * @api
  */
-olx.format.WFSWriteTransactionOptions.prototype.is3D;
+olx.format.WFSWriteTransactionOptions.prototype.hasZ;
 
 
 /**
