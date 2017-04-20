@@ -1,0 +1,21 @@
+---
+layout: example.html
+title: Rotate Features
+shortdesc: Example of a rotate features interaction.
+docs: >
+  This example demonstrates how the rotate and select interactions can be used
+  together. Zoom in to an area of interest and click to select a feature. Then
+  drag the feature around to rotate it.
+  By default, it rotates from the center of the extent of the geometry. To
+  rotate from the cursor position, hold <code>Shift</code> key. To limit the
+  rotation by multiple of 8th of PI, or 22.5°, hold <code>Ctrl</code>
+  (<code>Command</code> on Mac)
+tags: "drag, rotate, feature, vector, editing"
+---
+<div id="map" class="map"></div>
+<form class="form-inline">
+  <label class="checkbox">
+    <input type="checkbox" id="useHandle">
+    show handle
+  </label>
+</form>

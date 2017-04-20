@@ -273,6 +273,24 @@ oli.interaction.TranslateEvent.prototype.coordinate;
 
 
 /**
+ * @interface
+ */
+oli.interaction.RotateEvent = function() {};
+
+
+/**
+ * @type {ol.Collection.<ol.Feature>}
+ */
+oli.interaction.RotateEvent.prototype.features;
+
+
+/**
+ * @type {ol.Coordinate}
+ */
+oli.interaction.RotateEvent.prototype.coordinate;
+
+
+/**
  * @type {Object}
  */
 oli.render;
