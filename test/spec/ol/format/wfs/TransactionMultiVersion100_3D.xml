@@ -1,0 +1,32 @@
+<Transaction xmlns="http://www.opengis.net/wfs" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" service="WFS" version="1.0.0" xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/wfs.xsd">
+    <Insert>
+        <states xmlns="http://www.openplans.org/topp">
+            <the_geom>
+                <LineString xmlns="http://www.opengis.net/gml">
+                    <coordinates decimal="." cs="," ts=" ">1.1,2,4 3,4.2,5</coordinates>
+                </LineString>
+            </the_geom>
+            <foo>bar</foo>
+        </states>
+    </Insert>
+    <Update xmlns:wfs="http://www.opengis.net/wfs" typeName="topp:states" xmlns:topp="http://www.openplans.org/topp">
+        <Property>
+            <Name>the_geom</Name>
+            <Value>
+                <LineString xmlns="http://www.opengis.net/gml">
+                    <coordinates decimal="." cs="," ts=" ">1.1,2,6 3,4.2,7</coordinates>
+                </LineString>
+            </Value>
+        </Property>
+        <Property>
+            <Name>foo</Name>
+            <Value>bar</Value>
+        </Property>
+        <Property>
+            <Name>nul</Name>
+        </Property>
+        <Filter xmlns="http://www.opengis.net/ogc">
+            <FeatureId fid="fid.42"/>
+        </Filter>
+    </Update>
+</Transaction>
