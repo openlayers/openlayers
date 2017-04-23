@@ -112,7 +112,14 @@ olx.LogoOptions.prototype.src;
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
- *     targetSize: (number|undefined)}}
+ *     targetSize: (number|undefined),
+ *     showLabels: (boolean|undefined),
+ *     lonLabelFormatter: (undefined|function(number):string),
+ *     latLabelFormatter: (undefined|function(number):string),
+ *     lonLabelPosition: (number|undefined),
+ *     latLabelPosition: (number|undefined),
+ *     lonLabelStyle: (ol.style.Text|undefined),
+ *     latLabelStyle: (ol.style.Text|undefined)}}
  */
 olx.GraticuleOptions;
 
@@ -155,6 +162,106 @@ olx.GraticuleOptions.prototype.strokeStyle;
  * @api
  */
 olx.GraticuleOptions.prototype.targetSize;
+
+
+/**
+ * Render a label with the respective latitude/longitude for each graticule
+ * line. Default is false.
+ *
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.showLabels;
+
+
+/**
+ * Label formatter for longitudes. This function is called with the longitude as
+ * argument, and should return a formatted string representing the longitude.
+ * By default, labels are formatted as degrees, minutes, seconds and hemisphere.
+ *
+ * @type {undefined|function(number):string}
+ * @api
+ */
+olx.GraticuleOptions.prototype.lonLabelFormatter;
+
+
+/**
+ * Label formatter for latitudes. This function is called with the latitude as
+ * argument, and should return a formatted string representing the latitude.
+ * By default, labels are formatted as degrees, minutes, seconds and hemisphere.
+ *
+ * @type {undefined|function(number):string}
+ * @api
+ */
+olx.GraticuleOptions.prototype.latLabelFormatter;
+
+
+/**
+ * Longitude label position in fractions (0..1) of view extent. 0 means at the
+ * bottom of the viewport, 1 means at the top. Default is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.lonLabelPosition;
+
+
+/**
+ * Latitude label position in fractions (0..1) of view extent. 0 means at the
+ * left of the viewport, 1 means at the right. Default is 1.
+ * @type {number|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.latLabelPosition;
+
+
+/**
+ * Longitude label text style. The default is
+ * ```js
+ * new ol.style.Text({
+ *   font: '12px Calibri,sans-serif',
+ *   textBaseline: 'bottom',
+ *   fill: new ol.style.Fill({
+ *     color: 'rgba(0,0,0,1)'
+ *   }),
+ *   stroke: new ol.style.Stroke({
+ *     color: 'rgba(255,255,255,1)',
+ *     width: 3
+ *   })
+ * });
+ * ```
+ * Note that the default's `textBaseline` configuration will not work well for
+ * `lonLabelPosition` configurations that position labels close to the top of
+ * the viewport.
+ *
+ * @type {ol.style.Text|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.lonLabelStyle;
+
+
+/**
+ * Latitude label text style. The default is
+ * ```js
+ * new ol.style.Text({
+ *   font: '12px Calibri,sans-serif',
+ *   textAlign: 'end',
+ *   fill: new ol.style.Fill({
+ *     color: 'rgba(0,0,0,1)'
+ *   }),
+ *   stroke: new ol.style.Stroke({
+ *     color: 'rgba(255,255,255,1)',
+ *     width: 3
+ *   })
+ * });
+ * ```
+ * Note that the default's `textAlign` configuration will not work well for
+ * `latLabelPosition` configurations that position labels close to the left of
+ * the viewport.
+ *
+ * @type {ol.style.Text|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.latLabelStyle;
 
 
 /**
