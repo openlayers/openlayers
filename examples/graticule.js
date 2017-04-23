@@ -27,6 +27,8 @@ var graticule = new ol.Graticule({
     color: 'rgba(255,120,0,0.9)',
     width: 2,
     lineDash: [0.5, 4]
-  })
+  }),
+  showLabels: true
 });
+
 graticule.setMap(map);
