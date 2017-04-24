@@ -117,7 +117,7 @@ ol.interaction.Draw = function(options) {
   this.maxPoints_ = options.maxPoints ? options.maxPoints : Infinity;
 
   /**
-   * A function to decide if a potential finish coordinate is permissable
+   * A function to decide if a potential finish coordinate is permissible
    * @private
    * @type {ol.EventsConditionType}
    */

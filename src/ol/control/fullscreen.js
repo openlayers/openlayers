@@ -12,7 +12,7 @@ goog.require('ol.events.EventType');
  * @classdesc
  * Provides a button that when clicked fills up the full screen with the map.
  * The full screen source element is by default the element containing the map viewport unless
- * overriden by providing the `source` option. In which case, the dom
+ * overridden by providing the `source` option. In which case, the dom
  * element introduced using this parameter will be displayed in full screen.
  *
  * When in full screen mode, a close button is shown to exit full screen mode.

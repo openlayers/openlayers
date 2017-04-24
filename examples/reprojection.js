@@ -177,7 +177,7 @@ function updateViewProjection() {
   });
   map.setView(newView);
 
-  // Example how to prevent double occurence of map by limiting layer extent
+  // Example how to prevent double occurrence of map by limiting layer extent
   if (newProj == ol.proj.get('EPSG:3857')) {
     layers['bng'].setExtent([-1057216, 6405988, 404315, 8759696]);
   } else {
