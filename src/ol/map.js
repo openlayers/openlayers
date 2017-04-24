@@ -579,7 +579,7 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) 
  * detection can be configured through `opt_layerFilter`.
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, ol.layer.Layer, (Uint8ClampedArray|Uint8Array)): T} callback
- *     Layer callback. This callback will recieve two arguments: first is the
+ *     Layer callback. This callback will receive two arguments: first is the
  *     {@link ol.layer.Layer layer}, second argument is an array representing
  *     [R, G, B, A] pixel values (0 - 255) and will be `null` for layer types
  *     that do not currently support this argument. To stop detection, callback

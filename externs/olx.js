@@ -2915,7 +2915,7 @@ olx.interaction.DrawOptions.prototype.wrapX;
 olx.interaction.ExtentOptions;
 
 /**
- * Initial extent. Defaults to no inital extent
+ * Initial extent. Defaults to no initial extent
  * @type {ol.Extent|undefined}
  * @api
  */
