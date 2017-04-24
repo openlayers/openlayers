@@ -848,7 +848,7 @@ describe('ol.format.WFS', function() {
       });
     });
 
-    it('do not add feature prefx twice', function() {
+    it('do not add feature prefix twice', function() {
       var format = new ol.format.WFS();
       var insertFeature = new ol.Feature({
         the_geom: new ol.geom.MultiPoint([[1, 2]]),

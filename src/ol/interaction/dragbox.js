@@ -115,8 +115,8 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
 
 
 /**
- * To be overriden by child classes.
- * FIXME: use constructor option instead of relying on overridding.
+ * To be overridden by child classes.
+ * FIXME: use constructor option instead of relying on overriding.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */

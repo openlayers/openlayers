@@ -14,7 +14,7 @@ var glob = require('glob');
 
 var runTestsuite = require('./test').runTests;
 
-// setup some pathes
+// setup some paths
 var dir = path.join(__dirname, '../src');
 var backupDir = path.join(__dirname, '../src-backup');
 var instrumentedDir = path.join(__dirname, '../src-instrumented');
@@ -124,7 +124,7 @@ var runRenderingTestsuite = function(callback) {
 
 /**
  * Derive output file name from input file name, by replacing the *last*
- * occurence of `/src/` by `/src-instrumented/`
+ * occurrence of `/src/` by `/src-instrumented/`
  *
  * @param {String} file The input filename.
  * @return {String} file The output filename.
