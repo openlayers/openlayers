@@ -4,6 +4,7 @@ goog.require('ol');
 goog.require('ol.MapEventType');
 goog.require('ol.Object');
 goog.require('ol.OverlayPositioning');
+goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.extent');
@@ -58,7 +59,7 @@ ol.Overlay = function(options) {
    * @type {Element}
    */
   this.element_ = document.createElement('DIV');
-  this.element_.className = 'ol-overlay-container';
+  this.element_.className = 'ol-overlay-container ' + ol.css.CLASS_SELECTABLE;
   this.element_.style.position = 'absolute';
 
   /**
