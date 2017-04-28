@@ -5,6 +5,7 @@ goog.require('ol.extent');
 goog.require('ol.format.Feature');
 goog.require('ol.format.GMLBase');
 goog.require('ol.format.XSD');
+goog.require('ol.geom.Geometry');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.xml');
