@@ -419,7 +419,7 @@ ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ = function(featur
   var i, geometries = geometry.getGeometriesArray();
   for (i = 0; i < geometries.length; ++i) {
     var segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
-    if(segmentWriter) {
+    if (segmentWriter) {
       segmentWriter.call(this, feature, geometries[i]);
     }
   }
