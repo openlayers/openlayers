@@ -331,7 +331,7 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameSta
  * @return {number} The zIndex difference.
  */
 ol.renderer.Map.sortByZIndex = function(state1, state2) {
-  var z1 = state1.zIndex || 0;
-  var z2 = state2.zIndex || 0;
+  var z1 = state1.zIndex;
+  var z2 = state2.zIndex;
   return z1 - z2;
 };
