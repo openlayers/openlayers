@@ -66,10 +66,9 @@ ol.style.RegularShape = function(options) {
 
   /**
    * @private
-   * @type {number}
+   * @type {number|undefined}
    */
-  this.radius2_ =
-      options.radius2 !== undefined ? options.radius2 : this.radius_;
+  this.radius2_ = options.radius2;
 
   /**
    * @private
@@ -263,7 +262,7 @@ ol.style.RegularShape.prototype.getRadius = function() {
 
 /**
  * Get the secondary radius for the shape.
- * @return {number} Radius2.
+ * @return {number|undefined} Radius2.
  * @api
  */
 ol.style.RegularShape.prototype.getRadius2 = function() {
@@ -430,12 +429,14 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
         renderOptions.size / 2, renderOptions.size / 2,
         this.radius_, 0, 2 * Math.PI, true);
   } else {
-    if (this.radius2_ !== this.radius_) {
+    var radius2 = (this.radius2_ !== undefined) ? this.radius2_
+      : this.radius_;
+    if (radius2 !== this.radius_) {
       points = 2 * points;
     }
     for (i = 0; i <= points; i++) {
       angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
-      radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
+      radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
                      renderOptions.size / 2 + radiusC * Math.sin(angle0));
     }
@@ -503,13 +504,15 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
         renderOptions.size / 2, renderOptions.size / 2,
         this.radius_, 0, 2 * Math.PI, true);
   } else {
-    if (this.radius2_ !== this.radius_) {
+    var radius2 = (this.radius2_ !== undefined) ? this.radius2_
+      : this.radius_;
+    if (radius2 !== this.radius_) {
       points = 2 * points;
     }
     var i, radiusC, angle0;
     for (i = 0; i <= points; i++) {
       angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
-      radiusC = i % 2 === 0 ? this.radius_ : this.radius2_;
+      radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
                      renderOptions.size / 2 + radiusC * Math.sin(angle0));
     }
