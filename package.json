@@ -30,7 +30,7 @@
     "css/ol.css"
   ],
   "dependencies": {
-    "async": "2.3.0",
+    "async": "2.4.0",
     "browserify": "14.3.0",
     "closure-util": "1.19.0",
     "derequire": "2.0.6",
