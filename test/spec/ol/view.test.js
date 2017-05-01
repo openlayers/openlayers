@@ -310,9 +310,11 @@ describe('ol.View', function() {
       });
 
       expect(view.getHints()).to.eql([0, 0]);
+      expect(view.getInteracting()).to.eql(0);
 
       view.setHint(ol.ViewHint.INTERACTING, 1);
       expect(view.getHints()).to.eql([0, 1]);
+      expect(view.getInteracting()).to.eql(1);
     });
 
     it('triggers the change event', function(done) {
@@ -323,6 +325,7 @@ describe('ol.View', function() {
 
       view.on('change', function() {
         expect(view.getHints()).to.eql([0, 1]);
+        expect(view.getInteracting()).to.eql(1);
         done();
       });
       view.setHint(ol.ViewHint.INTERACTING, 1);

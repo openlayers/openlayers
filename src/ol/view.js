@@ -318,6 +318,16 @@ ol.View.prototype.getAnimating = function() {
 
 
 /**
+ * Determine if the user is interacting with the view, such as panning or zooming.
+ * @return {boolean} The view is being interacted with.
+ * @api
+ */
+ol.View.prototype.getInteracting = function() {
+  return this.getHints()[ol.ViewHint.INTERACTING] > 0;
+};
+
+
+/**
  * Cancel any ongoing animations.
  * @api
  */
