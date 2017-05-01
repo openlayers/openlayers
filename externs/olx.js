@@ -7849,7 +7849,8 @@ olx.view;
  *     maxZoom: (number|undefined),
  *     minResolution: (number|undefined),
  *     duration: (number|undefined),
- *     easing: (undefined|function(number):number)
+ *     easing: (undefined|function(number):number),
+ *     callback: (undefined|function(boolean))
  * }}
  */
 olx.view.FitOptions;
@@ -7925,6 +7926,16 @@ olx.view.FitOptions.prototype.duration;
  * @api
  */
 olx.view.FitOptions.prototype.easing;
+
+
+/**
+ * Optional function called when the view is in it's final position. The callback will be
+ * called with `true` if the animation series completed on its own or `false`
+ * if it was cancelled.
+ * @type {undefined|function(boolean)}
+ * @api
+ */
+olx.view.FitOptions.prototype.callback;
 
 
 /* typedefs for object literals exposed by the library */

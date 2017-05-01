@@ -1179,6 +1179,24 @@ describe('ol.View', function() {
       }, 50);
 
     });
+    it('calls a callback when duration is not defined', function(done) {
+      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+        callback: function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      });
+    });
+    it('calls a callback when animation completes', function(done) {
+      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+        duration: 25,
+        callback: function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      });
+    });
+
   });
 
   describe('centerOn', function() {
