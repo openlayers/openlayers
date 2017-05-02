@@ -29,6 +29,7 @@ function getExternalModules() {
         module: item.module,
         name: item.name !== undefined ? item.name : item.module,
         main: require.resolve(item.module),
+        import: item.import,
         browserify: item.browserify !== undefined ? item.browserify : false
       };
     }
@@ -43,10 +44,16 @@ function getExternalModules() {
  *     wrapped module.
  */
 function wrapModule(mod, callback) {
+  var name = 'ol.ext.' + mod.name;
+  var member = 'module.exports';
+  if (mod.import) {
+    name += '.' + mod.import;
+    member += '.' + mod.import;
+  }
   var wrap = function(code) {
-    return 'goog.provide(\'ol.ext.' + mod.name + '\');\n' +
+    return 'goog.provide(\'' + name + '\');\n' +
         '/** @typedef {function(*)} */\n' +
-        'ol.ext.' + mod.name + ';\n' +
+        name + ';\n' +
         '(function() {\n' +
         'var exports = {};\n' +
         'var module = {exports: exports};\n' +
@@ -60,7 +67,7 @@ function wrapModule(mod, callback) {
         'strictModuleDepCheck, suspiciousCode, undefinedNames, ' +
         'undefinedVars, unknownDefines, unusedLocalVariables, uselessCode, visibility}\n' +
         ' */\n' + code + '\n' +
-        'ol.ext.' + mod.name + ' = module.exports;\n' +
+        name + ' = ' + member + ';\n' +
         '})();\n';
   };
 
