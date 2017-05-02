@@ -156,8 +156,8 @@ if (ol.ENABLE_WEBGL) {
 
     var locations;
     if (!this.defaultLocations_) {
-      locations =
-          new ol.renderer.webgl.defaultmapshader.Locations(gl, program);
+      // eslint-disable-next-line openlayers-internal/no-missing-requires
+      locations = new ol.renderer.webgl.defaultmapshader.Locations(gl, program);
       this.defaultLocations_ = locations;
     } else {
       locations = this.defaultLocations_;
