@@ -91,7 +91,7 @@
       "no-constant-condition": 0,
       "openlayers-internal/enum": 2,
       "openlayers-internal/no-duplicate-requires": 2,
-      "openlayers-internal/no-missing-requires": 1,
+      "openlayers-internal/no-missing-requires": 2,
       "openlayers-internal/no-unused-requires": 2,
       "openlayers-internal/one-provide": 2,
       "openlayers-internal/requires-first": 2,
