@@ -1,5 +1,5 @@
-const pkg = require('../package.json');
-const version = require('../package/package.json').version;
+const parentPackage = require('../package.json');
+const thisPackage = require('../package/package.json');
 
 const defines = {
   'ol.ENABLE_WEBGL': false
@@ -17,14 +17,18 @@ function resolve(fromName, toName) {
     let name = toParts[2];
     let packageName;
     let imported;
-    for (let i = 0, ii = pkg.ext.length; i < ii; ++i) {
-      const dependency = pkg.ext[i];
+    for (let i = 0, ii = parentPackage.ext.length; i < ii; ++i) {
+      const dependency = parentPackage.ext[i];
       imported = dependency.import;
-      if (dependency.module === name) {
-        packageName = name;
-        break;
-      } else if (dependency.name === name) {
+      if (dependency.module === name || dependency.name === name) {
         packageName = dependency.module;
+        // ensure dependency is listed on both package.json
+        if (
+          !thisPackage.dependencies[packageName] ||
+          thisPackage.dependencies[packageName] !== parentPackage.dependencies[packageName]
+        ) {
+          throw new Error(`Package ${packageName} must appear in all package.json at the same version`);
+        }
         break;
       }
     }
@@ -128,7 +132,7 @@ module.exports = function(info, api) {
   // replace `ol.VERSION = ''` with correct version
   root.find(j.ExpressionStatement, getMemberExpressionAssignment('ol.VERSION'))
     .forEach(path => {
-      path.value.expression.right = j.literal(version);
+      path.value.expression.right = j.literal(thisPackage.version);
     });
 
   const replacements = {};
