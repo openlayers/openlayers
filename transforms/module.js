@@ -16,8 +16,10 @@ function resolve(fromName, toName) {
   if (toParts[0] === 'ol' && toParts[1] === 'ext') {
     let name = toParts[2];
     let packageName;
+    let imported;
     for (let i = 0, ii = pkg.ext.length; i < ii; ++i) {
       const dependency = pkg.ext[i];
+      imported = dependency.import;
       if (dependency.module === name) {
         packageName = name;
         break;
@@ -29,7 +31,11 @@ function resolve(fromName, toName) {
     if (!packageName) {
       throw new Error(`Can't find package name for ${toName}`);
     }
-    return packageName;
+    if (imported) {
+      return [packageName, imported];
+    } else {
+      return packageName;
+    }
   }
   const fromLength = fromParts.length;
   let commonDepth = 1;
@@ -186,12 +192,18 @@ module.exports = function(info, api) {
       }
       const renamed = rename(name);
       replacements[name] = renamed;
-      imports.push(
-        j.importDeclaration(
-          [j.importDefaultSpecifier(j.identifier(renamed))],
-          j.literal(resolve(provide, name))
-        )
-      );
+      const resolved = resolve(provide, name);
+      let specifier, source;
+      if (Array.isArray(resolved)) {
+        // import {imported as renamed} from 'source';
+        specifier = j.importSpecifier(j.identifier(resolved[1]), j.identifier(renamed));
+        source = resolved[0];
+      } else {
+        // import renamed from 'source';
+        specifier = j.importDefaultSpecifier(j.identifier(renamed));
+        source = resolved;
+      }
+      imports.push(j.importDeclaration([specifier], j.literal(source)));
     })
     .remove();
 

@@ -4,7 +4,7 @@ goog.provide('ol.format.MVT');
 
 goog.require('ol');
 goog.require('ol.ext.PBF');
-goog.require('ol.ext.vectortile');
+goog.require('ol.ext.vectortile.VectorTile');
 goog.require('ol.format.Feature');
 goog.require('ol.format.FormatType');
 goog.require('ol.geom.GeometryLayout');

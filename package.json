@@ -111,11 +111,13 @@
     },
     {
       "module": "pixelworks",
+      "import": "Processor",
       "browserify": true
     },
     {
       "module": "vector-tile",
       "name": "vectortile",
+      "import": "VectorTile",
       "browserify": true
     }
   ]

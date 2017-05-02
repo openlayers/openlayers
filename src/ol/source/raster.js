@@ -7,7 +7,7 @@ goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventType');
-goog.require('ol.ext.pixelworks');
+goog.require('ol.ext.pixelworks.Processor');
 goog.require('ol.extent');
 goog.require('ol.layer.Image');
 goog.require('ol.layer.Tile');

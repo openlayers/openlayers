@@ -2,7 +2,7 @@ goog.provide('ol.test.format.MVT');
 
 goog.require('ol.Feature');
 goog.require('ol.ext.PBF');
-goog.require('ol.ext.vectortile');
+goog.require('ol.ext.vectortile.VectorTile');
 goog.require('ol.format.MVT');
 goog.require('ol.geom.Point');
 goog.require('ol.render.Feature');
