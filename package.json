@@ -106,6 +106,7 @@
     },
     {
       "module": "pbf",
+      "name": "PBF",
       "browserify": true
     },
     {
