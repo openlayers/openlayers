@@ -36,7 +36,7 @@
     "derequire": "2.0.6",
     "fs-extra": "3.0.0",
     "glob": "7.1.1",
-    "handlebars": "4.0.7",
+    "handlebars": "4.0.8",
     "jsdoc": "3.4.3",
     "marked": "0.3.6",
     "metalsmith": "2.3.0",
