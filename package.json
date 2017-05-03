@@ -13,6 +13,7 @@
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
     "pretest": "eslint tasks test test_rendering src examples",
+    "lint-package": "eslint --fix build/package",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
   },
@@ -31,7 +32,6 @@
   ],
   "dependencies": {
     "async": "2.4.0",
-    "browserify": "14.3.0",
     "closure-util": "1.19.0",
     "derequire": "2.0.6",
     "fs-extra": "3.0.0",
@@ -45,8 +45,12 @@
     "pbf": "3.0.5",
     "pixelworks": "1.1.0",
     "rbush": "2.0.1",
+    "rollup": "^0.41.6",
+    "rollup-plugin-cleanup": "^1.0.0",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "temp": "0.8.3",
-    "vector-tile": "1.3.0",
+    "@mapbox/vector-tile": "1.3.0",
     "walk": "2.3.9"
   },
   "devDependencies": {
@@ -91,7 +95,7 @@
       "no-constant-condition": 0,
       "openlayers-internal/enum": 2,
       "openlayers-internal/no-duplicate-requires": 2,
-      "openlayers-internal/no-missing-requires": 1,
+      "openlayers-internal/no-missing-requires": 2,
       "openlayers-internal/no-unused-requires": 2,
       "openlayers-internal/one-provide": 2,
       "openlayers-internal/requires-first": 2,
@@ -101,21 +105,20 @@
   },
   "ext": [
     {
-      "module": "rbush",
-      "browserify": true
+      "module": "rbush"
     },
     {
       "module": "pbf",
-      "browserify": true
+      "name": "PBF"
     },
     {
       "module": "pixelworks",
-      "browserify": true
+      "import": "Processor"
     },
     {
-      "module": "vector-tile",
+      "module": "@mapbox/vector-tile",
       "name": "vectortile",
-      "browserify": true
+      "import": "VectorTile"
     }
   ]
 }

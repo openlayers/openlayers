@@ -1,8 +1,8 @@
 goog.provide('ol.test.format.MVT');
 
 goog.require('ol.Feature');
-goog.require('ol.ext.pbf');
-goog.require('ol.ext.vectortile');
+goog.require('ol.ext.PBF');
+goog.require('ol.ext.vectortile.VectorTile');
 goog.require('ol.format.MVT');
 goog.require('ol.geom.Point');
 goog.require('ol.render.Feature');
@@ -40,7 +40,7 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
         featureClass: ol.Feature,
         layers: ['poi_label']
       });
-      var pbf = new ol.ext.pbf(data);
+      var pbf = new ol.ext.PBF(data);
       var tile = new ol.ext.vectortile.VectorTile(pbf);
       var geometry, rawGeometry;
 

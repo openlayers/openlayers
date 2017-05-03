@@ -86,7 +86,7 @@ check-deps:
 	done ;\
 
 .PHONY: ci
-ci: lint build test test-rendering compile-examples check-examples apidoc
+ci: lint build test test-rendering package compile-examples check-examples apidoc
 
 .PHONY: compile-examples
 compile-examples: build/compiled-examples/all.combined.js
@@ -253,7 +253,7 @@ build/timestamps/eslint-timestamp: $(SRC_JS) $(SPEC_JS) $(SPEC_RENDERING_JS) \
                                    build/timestamps/node-modules-timestamp
 	@mkdir -p $(@D)
 	@echo "Running eslint..."
-	@./node_modules/.bin/eslint --quiet tasks test test_rendering src examples
+	@./node_modules/.bin/eslint tasks test test_rendering src examples
 	@touch $@
 
 build/timestamps/node-modules-timestamp: package.json
@@ -310,3 +310,4 @@ package:
 	@rm build/package/typedefs.js
 	@cp css/ol.css build/package
 	./node_modules/.bin/jscodeshift --transform transforms/module.js build/package
+	npm run lint-package

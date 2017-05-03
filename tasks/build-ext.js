@@ -1,122 +1,69 @@
-var fs = require('fs-extra');
-var path = require('path');
-
-var async = require('async');
-var browserify = require('browserify');
-var derequire = require('derequire');
-
-var pkg = require('../package.json');
-
-var root = path.join(__dirname, '..');
-var buildDir = path.join(root, 'build', 'ol.ext');
-
+const cleanup = require('rollup-plugin-cleanup');
+const common = require('rollup-plugin-commonjs');
+const node = require('rollup-plugin-node-resolve');
+const path = require('path');
+const pkg = require('../package.json');
+const rollup = require('rollup').rollup;
 
 /**
- * Get external module metadata.
- * @return {Array.<Object>} Array of objects representing external modules.
+ * Wrap a bundled dependency for consumption by the Compiler.
+ * @param {Object} ext Details from the `ext` object in package.json.
+ * @return {Object} A rollup plugin.
  */
-function getExternalModules() {
-  return pkg.ext.map(function(item) {
-    if (typeof item === 'string') {
-      return {
-        name: item,
-        module: item,
-        main: require.resolve(item),
-        browserify: false
-      };
-    } else {
-      return {
-        module: item.module,
-        name: item.name !== undefined ? item.name : item.module,
-        main: require.resolve(item.module),
-        browserify: item.browserify !== undefined ? item.browserify : false
-      };
+function wrap(ext) {
+  return {
+    name: 'googup',
+    transformBundle: function(source) {
+      let name = `ol.ext.${ext.name || ext.module}`;
+      let postamble = '';
+      if (ext.import) {
+        name += '.' + ext.import;
+      } else {
+        postamble = `${name} = ${name}.default;\n`;
+      }
+      return `
+/**
+ * @fileoverview
+ * @suppress {accessControls, ambiguousFunctionDecl, checkDebuggerStatement, checkRegExp, checkTypes, checkVars, const, constantProperty, deprecated, duplicate, es5Strict, fileoverviewTags, missingProperties, nonStandardJsDocs, strictModuleDepCheck, suspiciousCode, undefinedNames, undefinedVars, unknownDefines, unusedLocalVariables, uselessCode, visibility}
+ */
+goog.provide('${name}');
+
+/** @typedef {function(*)} */
+${name} = function() {};
+
+(function() {${source}}).call(ol.ext);
+${postamble}`;
     }
-  });
-}
-
-
-/**
- * Wrap a CommonJS module in Closure Library accessible code.
- * @param {Object} mod Module metadata.
- * @param {function(Error, string)} callback Called with any error and the
- *     wrapped module.
- */
-function wrapModule(mod, callback) {
-  var wrap = function(code) {
-    return 'goog.provide(\'ol.ext.' + mod.name + '\');\n' +
-        '/** @typedef {function(*)} */\n' +
-        'ol.ext.' + mod.name + ';\n' +
-        '(function() {\n' +
-        'var exports = {};\n' +
-        'var module = {exports: exports};\n' +
-        'var define;\n' +
-        '/**\n' +
-        ' * @fileoverview\n' +
-        ' * @suppress {accessControls, ambiguousFunctionDecl, ' +
-        'checkDebuggerStatement, checkRegExp, checkTypes, checkVars, const, ' +
-        'constantProperty, deprecated, duplicate, es5Strict, ' +
-        'fileoverviewTags, missingProperties, nonStandardJsDocs, ' +
-        'strictModuleDepCheck, suspiciousCode, undefinedNames, ' +
-        'undefinedVars, unknownDefines, unusedLocalVariables, uselessCode, visibility}\n' +
-        ' */\n' + code + '\n' +
-        'ol.ext.' + mod.name + ' = module.exports;\n' +
-        '})();\n';
   };
-
-  if (mod.browserify) {
-    browserify(mod.main, {standalone: mod.name}).bundle(function(err, buf) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      callback(null, wrap(derequire(buf.toString())));
-    });
-  } else {
-    fs.readFile(mod.main, function(err, data) {
-      if (err) {
-        callback(err);
-        return;
-      }
-      callback(null, wrap(data.toString()));
-    });
-  }
 }
-
-
-/**
- * Build external modules.
- * @param {Array.<Object>} modules External modules.
- * @param {function(Error)} callback Called with any error.
- */
-function buildModules(modules, callback) {
-  async.each(modules, function(mod, done) {
-    var output = path.join(buildDir, mod.name) + '.js';
-    async.waterfall([
-      wrapModule.bind(null, mod),
-      fs.outputFile.bind(fs, output)
-    ], done);
-  }, callback);
-}
-
 
 /**
  * Build all external modules.
- * @param {function(Error)} callback Called with any error.
+ * @return {Promise} Resolves on successful completion.
  */
-function main(callback) {
-  var modules = getExternalModules();
-  buildModules(modules, callback);
+function main() {
+  return Promise.all(pkg.ext.map(ext => {
+    const moduleName = ext.name || ext.module;
+    const options = {
+      entry: require.resolve(ext.module),
+      dest: `${path.join(__dirname, '..', 'build', 'ol.ext', moduleName.toLowerCase())}.js`,
+      format: 'iife',
+      moduleName: moduleName,
+      exports: 'named',
+      plugins: [
+        node(),
+        common(),
+        cleanup(),
+        wrap(ext)
+      ]
+    };
+    return rollup(options).then(bundle => bundle.write(options));
+  }));
 }
 
 if (require.main === module) {
-  main(function(err) {
-    if (err) {
-      process.stderr.write(err.message + '\n');
-      process.exit(1);
-    } else {
-      process.exit(0);
-    }
+  main().catch(err => {
+    process.stderr.write(`${err.message}\n`, () => process.exit(1));
   });
 }
 

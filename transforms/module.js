@@ -1,5 +1,5 @@
-const pkg = require('../package.json');
-const version = require('../package/package.json').version;
+const parentPackage = require('../package.json');
+const thisPackage = require('../package/package.json');
 
 const defines = {
   'ol.ENABLE_WEBGL': false
@@ -16,20 +16,30 @@ function resolve(fromName, toName) {
   if (toParts[0] === 'ol' && toParts[1] === 'ext') {
     let name = toParts[2];
     let packageName;
-    for (let i = 0, ii = pkg.ext.length; i < ii; ++i) {
-      const dependency = pkg.ext[i];
-      if (dependency.module === name) {
-        packageName = name;
-        break;
-      } else if (dependency.name === name) {
+    let imported;
+    for (let i = 0, ii = parentPackage.ext.length; i < ii; ++i) {
+      const dependency = parentPackage.ext[i];
+      imported = dependency.import;
+      if (dependency.module === name || dependency.name === name) {
         packageName = dependency.module;
+        // ensure dependency is listed on both package.json
+        if (
+          !thisPackage.dependencies[packageName] ||
+          thisPackage.dependencies[packageName] !== parentPackage.dependencies[packageName]
+        ) {
+          throw new Error(`Package ${packageName} must appear in all package.json at the same version`);
+        }
         break;
       }
     }
     if (!packageName) {
       throw new Error(`Can't find package name for ${toName}`);
     }
-    return packageName;
+    if (imported) {
+      return [packageName, imported];
+    } else {
+      return packageName;
+    }
   }
   const fromLength = fromParts.length;
   let commonDepth = 1;
@@ -122,7 +132,7 @@ module.exports = function(info, api) {
   // replace `ol.VERSION = ''` with correct version
   root.find(j.ExpressionStatement, getMemberExpressionAssignment('ol.VERSION'))
     .forEach(path => {
-      path.value.expression.right = j.literal(version);
+      path.value.expression.right = j.literal(thisPackage.version);
     });
 
   const replacements = {};
@@ -186,12 +196,18 @@ module.exports = function(info, api) {
       }
       const renamed = rename(name);
       replacements[name] = renamed;
-      imports.push(
-        j.importDeclaration(
-          [j.importDefaultSpecifier(j.identifier(renamed))],
-          j.literal(resolve(provide, name))
-        )
-      );
+      const resolved = resolve(provide, name);
+      let specifier, source;
+      if (Array.isArray(resolved)) {
+        // import {imported as renamed} from 'source';
+        specifier = j.importSpecifier(j.identifier(resolved[1]), j.identifier(renamed));
+        source = resolved[0];
+      } else {
+        // import renamed from 'source';
+        specifier = j.importDefaultSpecifier(j.identifier(renamed));
+        source = resolved;
+      }
+      imports.push(j.importDeclaration([specifier], j.literal(source)));
     })
     .remove();
 
