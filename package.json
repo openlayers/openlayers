@@ -34,7 +34,7 @@
     "async": "2.4.0",
     "closure-util": "1.19.0",
     "derequire": "2.0.6",
-    "fs-extra": "3.0.0",
+    "fs-extra": "3.0.1",
     "glob": "7.1.1",
     "handlebars": "4.0.8",
     "jsdoc": "3.4.3",
