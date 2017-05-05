@@ -204,8 +204,8 @@ if (ol.ENABLE_WEBGL) {
     // get the locations
     var locations;
     if (!this.defaultLocations_) {
-      locations =
-          new ol.render.webgl.circlereplay.defaultshader.Locations(gl, program);
+      // eslint-disable-next-line openlayers-internal/no-missing-requires
+      locations = new ol.render.webgl.circlereplay.defaultshader.Locations(gl, program);
       this.defaultLocations_ = locations;
     } else {
       locations = this.defaultLocations_;

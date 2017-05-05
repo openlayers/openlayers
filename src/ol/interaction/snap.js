@@ -418,8 +418,10 @@ ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
 ol.interaction.Snap.prototype.writeGeometryCollectionGeometry_ = function(feature, geometry) {
   var i, geometries = geometry.getGeometriesArray();
   for (i = 0; i < geometries.length; ++i) {
-    this.SEGMENT_WRITERS_[geometries[i].getType()].call(
-        this, feature, geometries[i]);
+    var segmentWriter = this.SEGMENT_WRITERS_[geometries[i].getType()];
+    if (segmentWriter) {
+      segmentWriter.call(this, feature, geometries[i]);
+    }
   }
 };
 

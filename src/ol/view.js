@@ -318,6 +318,16 @@ ol.View.prototype.getAnimating = function() {
 
 
 /**
+ * Determine if the user is interacting with the view, such as panning or zooming.
+ * @return {boolean} The view is being interacted with.
+ * @api
+ */
+ol.View.prototype.getInteracting = function() {
+  return this.getHints()[ol.ViewHint.INTERACTING] > 0;
+};
+
+
+/**
  * Cancel any ongoing animations.
  * @api
  */
@@ -872,6 +882,7 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
   var centerX = centerRotX * cosAngle - centerRotY * sinAngle;
   var centerY = centerRotY * cosAngle + centerRotX * sinAngle;
   var center = [centerX, centerY];
+  var callback = options.callback ? options.callback : ol.nullFunction;
 
   if (options.duration !== undefined) {
     this.animate({
@@ -879,10 +890,11 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
       center: center,
       duration: options.duration,
       easing: options.easing
-    });
+    }, callback);
   } else {
     this.setResolution(resolution);
     this.setCenter(center);
+    setTimeout(callback.bind(undefined, true), 0);
   }
 };
 

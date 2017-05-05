@@ -9,6 +9,21 @@ var olx;
 
 
 /**
+ * @typedef {{unique: (boolean|undefined)}}
+ */
+olx.CollectionOptions;
+
+
+/**
+ * Disallow the same item from being added to the collection twice.  Default is
+ * false.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.CollectionOptions.prototype.unique;
+
+
+/**
  * @typedef {{html: string,
  *     tileRanges: (Object.<string, Array.<ol.TileRange>>|undefined)}}
  */
@@ -97,7 +112,14 @@ olx.LogoOptions.prototype.src;
  * @typedef {{map: (ol.Map|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
- *     targetSize: (number|undefined)}}
+ *     targetSize: (number|undefined),
+ *     showLabels: (boolean|undefined),
+ *     lonLabelFormatter: (undefined|function(number):string),
+ *     latLabelFormatter: (undefined|function(number):string),
+ *     lonLabelPosition: (number|undefined),
+ *     latLabelPosition: (number|undefined),
+ *     lonLabelStyle: (ol.style.Text|undefined),
+ *     latLabelStyle: (ol.style.Text|undefined)}}
  */
 olx.GraticuleOptions;
 
@@ -140,6 +162,106 @@ olx.GraticuleOptions.prototype.strokeStyle;
  * @api
  */
 olx.GraticuleOptions.prototype.targetSize;
+
+
+/**
+ * Render a label with the respective latitude/longitude for each graticule
+ * line. Default is false.
+ *
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.showLabels;
+
+
+/**
+ * Label formatter for longitudes. This function is called with the longitude as
+ * argument, and should return a formatted string representing the longitude.
+ * By default, labels are formatted as degrees, minutes, seconds and hemisphere.
+ *
+ * @type {undefined|function(number):string}
+ * @api
+ */
+olx.GraticuleOptions.prototype.lonLabelFormatter;
+
+
+/**
+ * Label formatter for latitudes. This function is called with the latitude as
+ * argument, and should return a formatted string representing the latitude.
+ * By default, labels are formatted as degrees, minutes, seconds and hemisphere.
+ *
+ * @type {undefined|function(number):string}
+ * @api
+ */
+olx.GraticuleOptions.prototype.latLabelFormatter;
+
+
+/**
+ * Longitude label position in fractions (0..1) of view extent. 0 means at the
+ * bottom of the viewport, 1 means at the top. Default is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.lonLabelPosition;
+
+
+/**
+ * Latitude label position in fractions (0..1) of view extent. 0 means at the
+ * left of the viewport, 1 means at the right. Default is 1.
+ * @type {number|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.latLabelPosition;
+
+
+/**
+ * Longitude label text style. The default is
+ * ```js
+ * new ol.style.Text({
+ *   font: '12px Calibri,sans-serif',
+ *   textBaseline: 'bottom',
+ *   fill: new ol.style.Fill({
+ *     color: 'rgba(0,0,0,1)'
+ *   }),
+ *   stroke: new ol.style.Stroke({
+ *     color: 'rgba(255,255,255,1)',
+ *     width: 3
+ *   })
+ * });
+ * ```
+ * Note that the default's `textBaseline` configuration will not work well for
+ * `lonLabelPosition` configurations that position labels close to the top of
+ * the viewport.
+ *
+ * @type {ol.style.Text|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.lonLabelStyle;
+
+
+/**
+ * Latitude label text style. The default is
+ * ```js
+ * new ol.style.Text({
+ *   font: '12px Calibri,sans-serif',
+ *   textAlign: 'end',
+ *   fill: new ol.style.Fill({
+ *     color: 'rgba(0,0,0,1)'
+ *   }),
+ *   stroke: new ol.style.Stroke({
+ *     color: 'rgba(255,255,255,1)',
+ *     width: 3
+ *   })
+ * });
+ * ```
+ * Note that the default's `textAlign` configuration will not work well for
+ * `latLabelPosition` configurations that position labels close to the left of
+ * the viewport.
+ *
+ * @type {ol.style.Text|undefined}
+ * @api
+ */
+olx.GraticuleOptions.prototype.latLabelStyle;
 
 
 /**
@@ -2284,6 +2406,7 @@ olx.format.WFSWriteGetFeatureOptions.prototype.resultType;
  *     featureType: string,
  *     srsName: (string|undefined),
  *     handle: (string|undefined),
+ *     hasZ: (boolean|undefined),
  *     nativeElements: Array.<Object>,
  *     gmlOptions: (olx.format.GMLOptions|undefined),
  *     version: (string|undefined)}}
@@ -2330,6 +2453,15 @@ olx.format.WFSWriteTransactionOptions.prototype.srsName;
  * @api
  */
 olx.format.WFSWriteTransactionOptions.prototype.handle;
+
+
+/**
+ * Must be set to true if the transaction is for a 3D layer. This will allow
+ * the Z coordinate to be included in the transaction.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.format.WFSWriteTransactionOptions.prototype.hasZ;
 
 
 /**
@@ -2398,7 +2530,9 @@ olx.interaction;
 
 /**
  * Interactions for the map. Default is `true` for all options.
- * @typedef {{altShiftDragRotate: (boolean|undefined),
+ * @typedef {{
+ *     altShiftDragRotate: (boolean|undefined),
+ *     constrainResolution: (boolean|undefined),
  *     doubleClickZoom: (boolean|undefined),
  *     keyboard: (boolean|undefined),
  *     mouseWheelZoom: (boolean|undefined),
@@ -2407,7 +2541,8 @@ olx.interaction;
  *     pinchRotate: (boolean|undefined),
  *     pinchZoom: (boolean|undefined),
  *     zoomDelta: (number|undefined),
- *     zoomDuration: (number|undefined)}}
+ *     zoomDuration: (number|undefined)
+ * }}
  */
 olx.interaction.DefaultsOptions;
 
@@ -2418,6 +2553,15 @@ olx.interaction.DefaultsOptions;
  * @api
  */
 olx.interaction.DefaultsOptions.prototype.altShiftDragRotate;
+
+
+/**
+ * Zoom to the closest integer zoom level after the wheel/trackpad or
+ * pinch gesture ends. Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.DefaultsOptions.prototype.constrainResolution;
 
 
 /**
@@ -2550,6 +2694,7 @@ olx.interaction.DragAndDropOptions.prototype.target;
 /**
  * @typedef {{className: (string|undefined),
  *     condition: (ol.EventsConditionType|undefined),
+ *     minArea: (number|undefined),
  *     boxEndCondition: (ol.DragBoxEndConditionType|undefined)}}
  */
 olx.interaction.DragBoxOptions;
@@ -2574,18 +2719,18 @@ olx.interaction.DragBoxOptions.prototype.condition;
 
 
 /**
+ * The minimum area of the box in pixel, this value is used by the default
+ * `boxEndCondition` function. Default is `64`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.interaction.DragBoxOptions.prototype.minArea;
+
+
+/**
  * A function that takes a {@link ol.MapBrowserEvent} and two
- * {@link ol.Pixel}s to indicate whether a boxend event should be fired.
- * Default is:
- * ```js
- * function(mapBrowserEvent,
- *     startPixel, endPixel) {
- *   var width = endPixel[0] - startPixel[0];
- *   var height = endPixel[1] - startPixel[1];
- *   return width * width + height * height >=
- *     ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED;
- * }
- * ```
+ * {@link ol.Pixel}s to indicate whether a `boxend` event should be fired.
+ * Default is `true` if the area of the box is bigger than the `minArea` option.
  * @type {ol.DragBoxEndConditionType|undefined}
  * @api
  */
@@ -2877,7 +3022,7 @@ olx.interaction.DrawOptions.prototype.wrapX;
 olx.interaction.ExtentOptions;
 
 /**
- * Initial extent. Defaults to no inital extent
+ * Initial extent. Defaults to no initial extent
  * @type {ol.Extent|undefined}
  * @api
  */
@@ -2942,7 +3087,7 @@ olx.interaction.TranslateOptions.prototype.layers;
 /**
  * Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
- * not for WebGL.
+ * not for WebGL. Default is `0`.
  * @type {number|undefined}
  * @api
  */
@@ -3086,7 +3231,8 @@ olx.interaction.ModifyOptions.prototype.wrapX;
 
 
 /**
- * @typedef {{duration: (number|undefined),
+ * @typedef {{constrainResolution: (boolean|undefined),
+ *     duration: (number|undefined),
  *     timeout: (number|undefined),
  *     useAnchor: (boolean|undefined)}}
  */
@@ -3107,6 +3253,16 @@ olx.interaction.MouseWheelZoomOptions.prototype.duration;
  * @api
  */
 olx.interaction.MouseWheelZoomOptions.prototype.timeout;
+
+
+/**
+ * When using a trackpad or magic mouse, zoom to the closest integer zoom level
+ * after the scroll gesture ends.
+ * Default is `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.interaction.MouseWheelZoomOptions.prototype.constrainResolution;
 
 
 /**
@@ -3143,7 +3299,10 @@ olx.interaction.PinchRotateOptions.prototype.threshold;
 
 
 /**
- * @typedef {{duration: (number|undefined)}}
+ * @typedef {{
+ *     duration: (number|undefined),
+ *     constrainResolution: (boolean|undefined)
+ * }}
  */
 olx.interaction.PinchZoomOptions;
 
@@ -3349,7 +3508,7 @@ olx.interaction.SelectOptions.prototype.wrapX;
 /**
  * Hit-detection tolerance. Pixels inside the radius around the given position
  * will be checked for features. This only works for the canvas renderer and
- * not for WebGL.
+ * not for WebGL. Default is `0`.
  * @type {number|undefined}
  * @api
  */
@@ -5516,14 +5675,17 @@ olx.source.ImageWMSOptions.prototype.url;
 
 
 /**
- * @typedef {{cacheSize: (number|undefined),
+ * @typedef {{
+ *     cacheSize: (number|undefined),
  *     layer: string,
  *     minZoom: (number|undefined),
  *     maxZoom: (number|undefined),
  *     opaque: (boolean|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: (string|undefined)}}
+ *     url: (string|undefined),
+ *     wrapX: (boolean|undefined)
+ * }}
  */
 olx.source.StamenOptions;
 
@@ -5595,6 +5757,14 @@ olx.source.StamenOptions.prototype.tileLoadFunction;
  * @api
  */
 olx.source.StamenOptions.prototype.url;
+
+
+/**
+ * Whether to wrap the world horizontally. Default is `true`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.source.StamenOptions.prototype.wrapX;
 
 
 /**
@@ -7767,7 +7937,8 @@ olx.view;
  *     maxZoom: (number|undefined),
  *     minResolution: (number|undefined),
  *     duration: (number|undefined),
- *     easing: (undefined|function(number):number)
+ *     easing: (undefined|function(number):number),
+ *     callback: (undefined|function(boolean))
  * }}
  */
 olx.view.FitOptions;
@@ -7843,6 +8014,16 @@ olx.view.FitOptions.prototype.duration;
  * @api
  */
 olx.view.FitOptions.prototype.easing;
+
+
+/**
+ * Optional function called when the view is in it's final position. The callback will be
+ * called with `true` if the animation series completed on its own or `false`
+ * if it was cancelled.
+ * @type {undefined|function(boolean)}
+ * @api
+ */
+olx.view.FitOptions.prototype.callback;
 
 
 /* typedefs for object literals exposed by the library */

@@ -6,7 +6,7 @@ node_js:
   - "6.1"
 
 addons:
-  firefox: "latest"
+  firefox: "52.0"
 
 cache:
   directories:

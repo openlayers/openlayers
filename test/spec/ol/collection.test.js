@@ -298,4 +298,74 @@ describe('ol.collection', function() {
     });
   });
 
+  describe('unique collection', function() {
+    it('allows unique items in the constructor', function() {
+      new ol.Collection([{}, {}, {}], {unique: true});
+    });
+
+    it('throws if duplicate items are passed to the constructor', function() {
+      var item = {};
+      var call = function() {
+        new ol.Collection([item, item], {unique: true});
+      };
+      expect(call).to.throwException();
+    });
+
+    it('allows unique items to be added via push', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      unique.push({});
+      unique.push({});
+    });
+
+    it('throws if duplicate items are added via push', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.push(item);
+      var call = function() {
+        unique.push(item);
+      };
+      expect(call).to.throwException();
+    });
+
+    it('allows unique items to be added via insertAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      unique.insertAt(0, {});
+      unique.insertAt(0, {});
+    });
+
+    it('throws if duplicate items are added via insertAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.insertAt(0, item);
+      var call = function() {
+        unique.insertAt(0, item);
+      };
+      expect(call).to.throwException();
+    });
+
+    it('allows unique items to be added via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      unique.setAt(0, {});
+      unique.setAt(1, {});
+    });
+
+    it('allows items to be reset via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.setAt(0, item);
+      unique.setAt(0, item);
+    });
+
+    it('throws if duplicate items are added via setAt', function() {
+      var unique = new ol.Collection(undefined, {unique: true});
+      var item = {};
+      unique.setAt(0, item);
+      var call = function() {
+        unique.setAt(1, item);
+      };
+      expect(call).to.throwException();
+    });
+
+  });
+
 });
