@@ -8,6 +8,7 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.proj');
 goog.require('ol.size');
+goog.require('ol.tilegrid');
 goog.require('ol.source.UrlTile');
 
 
@@ -37,6 +38,7 @@ ol.source.VectorTile = function(options) {
     opaque: false,
     projection: options.projection,
     state: options.state,
+    tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
         options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
@@ -59,12 +61,6 @@ ol.source.VectorTile = function(options) {
   this.sourceTiles_ = {};
 
   /**
-   * @type {ol.tilegrid.TileGrid}
-   */
-  this.sourceTileGrid_ = options.tileGrid ||
-      this.getTileGridForProjection(ol.proj.get(options.projection || 'EPSG:3857'));
-
-  /**
    * @private
    * @type {boolean}
    */
@@ -76,6 +72,16 @@ ol.source.VectorTile = function(options) {
    *        ol.format.Feature, ol.TileLoadFunctionType)}
    */
   this.tileClass = options.tileClass ? options.tileClass : ol.VectorTile;
+
+  /**
+   * @private
+   * @type {Object.<string,ol.tilegrid.TileGrid>}
+   */
+  this.tileGrids_ = {};
+
+  if (!this.tileGrid) {
+    this.tileGrid = this.getTileGridForProjection(ol.proj.get(options.projection || 'EPSG:3857'));
+  }
 
 };
 ol.inherits(ol.source.VectorTile, ol.source.UrlTile);
@@ -107,7 +113,7 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
-        this.sourceTileGrid_, this.getTileGridForProjection(projection),
+        this.tileGrid, this.getTileGridForProjection(projection),
         this.sourceTiles_, pixelRatio, projection, this.tileClass);
     ol.events.listen(tile, ol.events.EventType.CHANGE,
         this.handleTileChange, this);
@@ -121,8 +127,17 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTileGrid = function() {
-  return this.sourceTileGrid_;
+ol.source.VectorTile.prototype.getTileGridForProjection = function(projection) {
+  var code = projection.getCode();
+  var tileGrid = this.tileGrids_[code];
+  if (!tileGrid) {
+    // A tile grid that matches the tile size of the source tile grid is more
+    // likely to have 1:1 relationships between source tiles and rendered tiles.
+    var sourceTileGrid = this.tileGrid;
+    tileGrid = this.tileGrids_[code] = ol.tilegrid.createForProjection(projection, undefined,
+        sourceTileGrid ? sourceTileGrid.getTileSize(sourceTileGrid.getMinZoom()) : undefined);
+  }
+  return tileGrid;
 };
 
 
