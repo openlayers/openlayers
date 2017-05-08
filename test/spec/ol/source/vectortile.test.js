@@ -1,6 +1,6 @@
 goog.provide('ol.test.source.VectorTile');
 
-goog.require('ol.VectorTile');
+goog.require('ol.VectorImageTile');
 goog.require('ol.format.MVT');
 goog.require('ol.proj');
 goog.require('ol.source.VectorTile');
@@ -29,7 +29,7 @@ describe('ol.source.VectorTile', function() {
   describe('#getTile()', function() {
     it('creates a tile with the correct tile class', function() {
       tile = source.getTile(0, 0, 0, 1, ol.proj.get('EPSG:3857'));
-      expect(tile).to.be.a(ol.VectorTile);
+      expect(tile).to.be.a(ol.VectorImageTile);
     });
     it('sets the correct tileCoord on the created tile', function() {
       expect(tile.getTileCoord()).to.eql([0, 0, 0]);

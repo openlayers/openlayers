@@ -652,8 +652,7 @@ ol.TilePriorityFunction;
  *     dirty: boolean,
  *     renderedRenderOrder: (null|ol.RenderOrderFunction),
  *     renderedTileRevision: number,
- *     renderedRevision: number,
- *     replayGroup: ol.render.ReplayGroup}}
+ *     renderedRevision: number}}
  */
 ol.TileReplayState;
 
