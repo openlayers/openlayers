@@ -105,10 +105,11 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
         var sourceTileKey = sourceTileCoord.toString();
         var sourceTile = sourceTiles[sourceTileKey];
         if (!sourceTile) {
-          var tileUrl = /** @type {string} */
-              (tileUrlFunction(sourceTileCoord, pixelRatio, projection));
-          sourceTile = sourceTiles[sourceTileKey] = new tileClass(
-              sourceTileCoord, ol.TileState.IDLE, tileUrl, format, tileLoadFunction);
+          var tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
+          sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
+              tileUrl == undefined ? ol.TileState.EMPTY : ol.TileState.IDLE,
+              tileUrl == undefined ? '' : tileUrl,
+              format, tileLoadFunction);
         }
         sourceTile.consumers++;
         this.usedSourceTileKeys_.push(sourceTileKey);
@@ -219,6 +220,7 @@ ol.VectorImageTile.prototype.getSourceTiles = function() {
  */
 ol.VectorImageTile.prototype.load = function() {
   var leftToLoad = 0;
+  var errors = false;
   if (this.state == ol.TileState.IDLE) {
     this.setState(ol.TileState.LOADING);
   }
@@ -228,18 +230,26 @@ ol.VectorImageTile.prototype.load = function() {
       if (sourceTile.state == ol.TileState.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
+      } else if (sourceTile.state == ol.TileState.ERROR) {
+        errors = true;
+      } else if (sourceTile.state == ol.TileState.EMPTY) {
+        ol.array.remove(this.usedSourceTileKeys_, sourceTileKey);
       }
       if (sourceTile.state == ol.TileState.LOADING) {
         var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function(e) {
           var state = sourceTile.getState();
           if (state == ol.TileState.LOADED ||
-              state == ol.TileState.ERROR ||
-              state == ol.TileState.EMPTY) {
+              state == ol.TileState.ERROR) {
             --leftToLoad;
             ol.events.unlistenByKey(key);
             ol.array.remove(this.loadListenerKeys_, key);
+            if (state == ol.TileState.ERROR) {
+              ol.array.remove(this.usedSourceTileKeys_, sourceTileKey);
+              errors = true;
+            }
             if (leftToLoad == 0) {
-              this.setState(ol.TileState.LOADED);
+              this.setState(this.usedSourceTileKeys_.length > 0 ?
+                  ol.TileState.LOADED : ol.TileState.ERROR);
             }
           }
         }.bind(this));
@@ -250,7 +260,9 @@ ol.VectorImageTile.prototype.load = function() {
   }
   if (leftToLoad == 0) {
     setTimeout(function() {
-      this.setState(ol.TileState.LOADED);
+      this.setState(this.usedSourceTileKeys_.length > 0 ?
+          ol.TileState.LOADED :
+          (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
     }.bind(this), 0);
   }
 };
