@@ -91,7 +91,6 @@ ol.inherits(ol.source.TileDebug.Tile_, ol.Tile);
 /**
  * Get the image element for this tile.
  * @return {HTMLCanvasElement} Image.
- * @override
  */
 ol.source.TileDebug.Tile_.prototype.getImage = function() {
   if (this.canvas_) {

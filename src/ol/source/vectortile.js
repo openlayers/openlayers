@@ -2,9 +2,11 @@ goog.provide('ol.source.VectorTile');
 
 goog.require('ol');
 goog.require('ol.TileState');
+goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
+goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.source.UrlTile');
 
@@ -35,9 +37,8 @@ ol.source.VectorTile = function(options) {
     opaque: false,
     projection: options.projection,
     state: options.state,
-    tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : ol.VectorTile.defaultLoadFunction,
+        options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
     url: options.url,
@@ -50,6 +51,18 @@ ol.source.VectorTile = function(options) {
    * @type {ol.format.Feature}
    */
   this.format_ = options.format ? options.format : null;
+
+  /**
+   * @private
+   * @type {Object.<string,ol.VectorTile>}
+   */
+  this.sourceTiles_ = {};
+
+  /**
+   * @type {ol.tilegrid.TileGrid}
+   */
+  this.sourceTileGrid_ = options.tileGrid ||
+      this.getTileGridForProjection(ol.proj.get(options.projection || 'EPSG:3857'));
 
   /**
    * @private
@@ -89,17 +102,27 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileCoord, projection);
     var tileUrl = urlTileCoord ?
         this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
-    var tile = new this.tileClass(
+    var tile = new ol.VectorImageTile(
         tileCoord,
         tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
         tileUrl !== undefined ? tileUrl : '',
-        this.format_, this.tileLoadFunction);
+        this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
+        this.sourceTileGrid_, this.getTileGridForProjection(projection),
+        this.sourceTiles_, pixelRatio, projection, this.tileClass);
     ol.events.listen(tile, ol.events.EventType.CHANGE,
         this.handleTileChange, this);
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.source.VectorTile.prototype.getTileGrid = function() {
+  return this.sourceTileGrid_;
 };
 
 
@@ -117,6 +140,6 @@ ol.source.VectorTile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
  * @inheritDoc
  */
 ol.source.VectorTile.prototype.getTilePixelSize = function(z, pixelRatio, projection) {
-  var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
+  var tileSize = ol.size.toSize(this.getTileGridForProjection(projection).getTileSize(z));
   return [Math.round(tileSize[0] * pixelRatio), Math.round(tileSize[1] * pixelRatio)];
 };
