@@ -1,6 +1,7 @@
 goog.provide('ol.MapBrowserEventHandler');
 
 goog.require('ol');
+goog.require('ol.has');
 goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.events');
@@ -42,6 +43,12 @@ ol.MapBrowserEventHandler = function(map) {
    * @private
    */
   this.dragListenerKeys_ = [];
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.moveTolerance_ = ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * The most recent "down" type event (or null if none have occurred).
@@ -241,11 +248,9 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
-  // Fix IE10 on windows Surface : When you tap the tablet, it triggers
-  // multiple pointermove events between pointerdown and pointerup with
-  // the exact same coordinates of the pointerdown event. To avoid a
-  // 'false' touchmove event to be dispatched , we test if the pointer
-  // effectively moved.
+  // Between pointerdown and pointerup, pointermove events are triggered.
+  // To avoid a 'false' touchmove event to be dispatched, we test if the pointer
+  // moved a significant distance.
   if (this.isMoving_(pointerEvent)) {
     this.dragging_ = true;
     var newEvent = new ol.MapBrowserPointerEvent(
@@ -281,8 +286,8 @@ ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
-  return pointerEvent.clientX != this.down_.clientX ||
-      pointerEvent.clientY != this.down_.clientY;
+  return Math.abs(pointerEvent.clientX - this.down_.clientX) > this.moveTolerance_ ||
+      Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_;
 };
 
 
