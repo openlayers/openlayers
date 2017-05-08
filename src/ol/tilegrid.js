@@ -126,7 +126,8 @@ ol.tilegrid.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize) 
  * @param {ol.ProjectionLike} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     ol.DEFAULT_MAX_ZOOM).
- * @param {ol.Size=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ *     ol.DEFAULT_TILE_SIZE).
  * @param {ol.extent.Corner=} opt_corner Extent corner (default is
  *     ol.extent.Corner.BOTTOM_LEFT).
  * @return {!ol.tilegrid.TileGrid} TileGrid instance.
