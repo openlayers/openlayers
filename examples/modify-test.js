@@ -222,7 +222,13 @@ var select = new ol.interaction.Select({
 
 var modify = new ol.interaction.Modify({
   features: select.getFeatures(),
-  style: overlayStyle
+  style: overlayStyle,
+  insertVertexCondition: function() {
+    // prevent new vertices to be added to the polygons
+    return !this.features_.getArray().every(function(feature) {
+      return feature.getGeometry().getType().match(/Polygon/);
+    });
+  }
 });
 
 var map = new ol.Map({

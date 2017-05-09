@@ -3164,12 +3164,15 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
 
 
 /**
- * @typedef {{condition: (ol.EventsConditionType|undefined),
+ * @typedef {{
+ *     condition: (ol.EventsConditionType|undefined),
  *     deleteCondition: (ol.EventsConditionType|undefined),
+ *     insertVertexCondition: (ol.EventsConditionType|undefined),
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     features: ol.Collection.<ol.Feature>,
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined)
+ * }}
  */
 olx.interaction.ModifyOptions;
 
@@ -3194,6 +3197,16 @@ olx.interaction.ModifyOptions.prototype.condition;
  * @api
  */
 olx.interaction.ModifyOptions.prototype.deleteCondition;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether a new vertex can be added to the sketch features.
+ * Default is {@link ol.events.condition.always}
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.ModifyOptions.prototype.insertVertexCondition;
 
 
 /**
