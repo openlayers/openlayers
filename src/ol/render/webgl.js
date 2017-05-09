@@ -7,9 +7,17 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @const
+   * @type {string}
+   */
+  ol.render.webgl.defaultFont = '10px sans-serif';
+
+
+  /**
+   * @const
    * @type {ol.Color}
    */
   ol.render.webgl.defaultFillStyle = [0.0, 0.0, 0.0, 1.0];
+
 
   /**
    * @const
@@ -50,6 +58,21 @@ if (ol.ENABLE_WEBGL) {
    * @type {ol.Color}
    */
   ol.render.webgl.defaultStrokeStyle = [0.0, 0.0, 0.0, 1.0];
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  ol.render.webgl.defaultTextAlign = 'center';
+
+
+  /**
+   * @const
+   * @type {string}
+   */
+  ol.render.webgl.defaultTextBaseline = 'middle';
+
 
   /**
    * @const
