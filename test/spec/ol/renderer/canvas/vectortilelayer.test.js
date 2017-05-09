@@ -170,8 +170,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var tile = new ol.VectorImageTile([0, 0, 0]);
       tile.wrappedTileCoord = [0, 0, 0];
       tile.setState(ol.TileState.LOADED);
-      tile.getSourceTiles = function() {
-        return [sourceTile];
+      tile.getSourceTile = function() {
+        return sourceTile;
       };
       layer.getSource().getTile = function() {
         return tile;
@@ -205,14 +205,15 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     var TileClass = function() {
       ol.VectorImageTile.apply(this, arguments);
       this.setState('loaded');
-      var sourceTile = new ol.VectorTile();
+      var sourceTile = new ol.VectorTile([0, 0, 0]);
       sourceTile.setProjection(ol.proj.get('EPSG:3857'));
       sourceTile.getReplayGroup = function() {
         return replayGroup;
       };
-      this.getSourceTiles = function() {
-        return [sourceTile];
-      };
+      var key = sourceTile.tileCoord.toString();
+      this.tileKeys = [key];
+      this.sourceTiles_ = {};
+      this.sourceTiles_[key] = sourceTile;
     };
     ol.inherits(TileClass, ol.VectorImageTile);
 

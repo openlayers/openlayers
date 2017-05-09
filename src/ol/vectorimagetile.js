@@ -72,10 +72,10 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
   this.sourceTiles_ = sourceTiles;
 
   /**
-   * @private
+   * Keys of source tiles used by this tile. Use with {@link #getTile}.
    * @type {Array.<string>}
    */
-  this.usedSourceTileKeys_ = [];
+  this.tileKeys = [];
 
   /**
    * @type {string}
@@ -112,7 +112,7 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
               format, tileLoadFunction);
         }
         sourceTile.consumers++;
-        this.usedSourceTileKeys_.push(sourceTileKey);
+        this.tileKeys.push(sourceTileKey);
       }
     }.bind(this));
   }
@@ -125,12 +125,12 @@ ol.inherits(ol.VectorImageTile, ol.Tile);
  * @inheritDoc
  */
 ol.VectorImageTile.prototype.disposeInternal = function() {
-  var sourceTiles = this.getSourceTiles();
-  for (var i = 0, ii = sourceTiles.length; i < ii; ++i) {
-    var sourceTile = sourceTiles[i];
+  for (var i = 0, ii = this.tileKeys.length; i < ii; ++i) {
+    var sourceTileKey = this.tileKeys[i];
+    var sourceTile = this.getTile(sourceTileKey);
     sourceTile.consumers--;
     if (sourceTile.consumers == 0) {
-      delete this.sourceTiles_[sourceTile.tileCoord.toString()];
+      delete this.sourceTiles_[sourceTileKey];
       sourceTile.dispose();
     }
   }
@@ -182,14 +182,6 @@ ol.VectorImageTile.prototype.getFormat = function() {
 
 
 /**
- * @return {Array.<ol.Feature>} Features.
- */
-ol.VectorImageTile.prototype.getFeatures = function() {
-  return this.features_;
-};
-
-
-/**
  * @return {ol.TileReplayState} The replay state.
  */
 ol.VectorImageTile.prototype.getReplayState = function() {
@@ -201,17 +193,16 @@ ol.VectorImageTile.prototype.getReplayState = function() {
  * @inheritDoc
  */
 ol.VectorImageTile.prototype.getKey = function() {
-  return this.usedSourceTileKeys_.join('/') + '/' + this.src_;
+  return this.tileKeys.join('/') + '/' + this.src_;
 };
 
 
 /**
- * @return {Array.<ol.VectorTile>} Source tiles for this tile.
+ * @param {string} tileKey Key (tileCoord) of the source tile.
+ * @return {ol.VectorTile} Source tile.
  */
-ol.VectorImageTile.prototype.getSourceTiles = function() {
-  return this.usedSourceTileKeys_.map(function(sourceTileKey) {
-    return this.sourceTiles_[sourceTileKey];
-  }.bind(this));
+ol.VectorImageTile.prototype.getTile = function(tileKey) {
+  return this.sourceTiles_[tileKey];
 };
 
 
@@ -225,15 +216,15 @@ ol.VectorImageTile.prototype.load = function() {
     this.setState(ol.TileState.LOADING);
   }
   if (this.state == ol.TileState.LOADING) {
-    this.usedSourceTileKeys_.forEach(function(sourceTileKey) {
-      var sourceTile = this.sourceTiles_[sourceTileKey];
+    this.tileKeys.forEach(function(sourceTileKey) {
+      var sourceTile = this.getTile(sourceTileKey);
       if (sourceTile.state == ol.TileState.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
       } else if (sourceTile.state == ol.TileState.ERROR) {
         errors = true;
       } else if (sourceTile.state == ol.TileState.EMPTY) {
-        ol.array.remove(this.usedSourceTileKeys_, sourceTileKey);
+        ol.array.remove(this.tileKeys, sourceTileKey);
       }
       if (sourceTile.state == ol.TileState.LOADING) {
         var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function(e) {
@@ -244,11 +235,11 @@ ol.VectorImageTile.prototype.load = function() {
             ol.events.unlistenByKey(key);
             ol.array.remove(this.loadListenerKeys_, key);
             if (state == ol.TileState.ERROR) {
-              ol.array.remove(this.usedSourceTileKeys_, sourceTileKey);
+              ol.array.remove(this.tileKeys, sourceTileKey);
               errors = true;
             }
             if (leftToLoad == 0) {
-              this.setState(this.usedSourceTileKeys_.length > 0 ?
+              this.setState(this.tileKeys.length > 0 ?
                   ol.TileState.LOADED : ol.TileState.ERROR);
             }
           }
@@ -260,7 +251,7 @@ ol.VectorImageTile.prototype.load = function() {
   }
   if (leftToLoad == 0) {
     setTimeout(function() {
-      this.setState(this.usedSourceTileKeys_.length > 0 ?
+      this.setState(this.tileKeys.length > 0 ?
           ol.TileState.LOADED :
           (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
     }.bind(this), 0);

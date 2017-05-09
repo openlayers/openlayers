@@ -116,9 +116,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
     return;
   }
 
-  var sourceTiles = tile.getSourceTiles();
-  for (var t = 0, tt = sourceTiles.length; t < tt; ++t) {
-    var sourceTile = sourceTiles[t];
+  for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
+    var sourceTile = tile.getTile(tile.tileKeys[t]);
     sourceTile.replayGroup = null;
     replayState.dirty = false;
 
@@ -244,9 +243,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     if (!ol.extent.containsCoordinate(bufferedExtent, coordinate)) {
       continue;
     }
-    var sourceTiles = tile.getSourceTiles();
-    for (var t = 0, tt = sourceTiles.length; t < tt; ++t) {
-      var sourceTile = sourceTiles[t];
+    for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
+      var sourceTile = tile.getTile(tile.tileKeys[t]);
       if (sourceTile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {
         var sourceTileCoord = sourceTile.tileCoord;
         var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord, this.tmpExtent);
@@ -354,9 +352,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
       var tileCoord = tile.tileCoord;
       var worldOffset = tileGrid.getTileCoordExtent(tileCoord)[0] -
           tileGrid.getTileCoordExtent(tile.wrappedTileCoord)[0];
-      var sourceTiles = tile.getSourceTiles();
-      for (var t = 0, tt = sourceTiles.length; t < tt; ++t) {
-        var sourceTile = sourceTiles[t];
+      for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
+        var sourceTile = tile.getTile(tile.tileKeys[t]);
         var currentZ = sourceTile.tileCoord[0];
         var sourceResolution = sourceTileGrid.getResolution(currentZ);
         var transform = this.getReplayTransform_(sourceTile, frameState);
@@ -451,9 +448,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
     context.canvas.width = size[0];
     context.canvas.height = size[1];
     var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
-    var sourceTiles = tile.getSourceTiles();
-    for (var i = 0, ii = sourceTiles.length; i < ii; ++i) {
-      var sourceTile = sourceTiles[i];
+    for (var i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
+      var sourceTile = tile.getTile(tile.tileKeys[i]);
       var sourceTileCoord = sourceTile.tileCoord;
       var pixelScale = pixelRatio / resolution;
       var transform = ol.transform.reset(this.tmpTransform_);
