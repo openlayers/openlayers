@@ -19,7 +19,7 @@ describe('ol.VectorImageTile', function() {
         1, ol.proj.get('EPSG:3857'), ol.VectorTile);
 
     tile.load();
-    var sourceTile = tile.getSourceTiles()[0];
+    var sourceTile = tile.getTile(tile.tileKeys[0]);
     var loader = sourceTile.loader_;
     expect(typeof loader).to.be('function');
 
