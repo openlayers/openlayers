@@ -79,6 +79,8 @@ describe('ol.renderer.canvas.TileLayer', function() {
       var renderer = new ol.renderer.canvas.TileLayer(layer);
       renderer.renderedTiles = [];
       var frameState = {
+        viewHints: [],
+        time: Date.now(),
         viewState: {
           center: [10, 5],
           projection: ol.proj.get('EPSG:3857'),
