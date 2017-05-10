@@ -7614,6 +7614,7 @@ olx.tilegrid;
 
 /**
  * @typedef {{extent: (ol.Extent|undefined),
+ *     levels: (Array.<number>|undefined),
  *     minZoom: (number|undefined),
  *     origin: (ol.Coordinate|undefined),
  *     origins: (Array.<ol.Coordinate>|undefined),
@@ -7633,6 +7634,15 @@ olx.tilegrid.TileGridOptions;
  * @api
  */
 olx.tilegrid.TileGridOptions.prototype.extent;
+
+
+/**
+ * Sorted array with the zoom levels that will be used. Overrides
+ * {@link olx.tilegrid.TileGridOptions.prototype.minZoom}.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.TileGridOptions.prototype.levels;
 
 
 /**
@@ -7802,6 +7812,7 @@ olx.tilegrid.WMTSOptions.prototype.widths;
 
 /**
  * @typedef {{extent: (ol.Extent|undefined),
+ *     levels: (Array.<number>|undefined),
  *     maxZoom: (number|undefined),
  *     minZoom: (number|undefined),
  *     tileSize: (number|ol.Size|undefined)}}
@@ -7818,6 +7829,16 @@ olx.tilegrid.XYZOptions;
  * @api
  */
 olx.tilegrid.XYZOptions.prototype.extent;
+
+
+/**
+ * Sorted array with the zoom levels that will be used. Overrides
+ * {@link olx.tilegrid.XYZOptions.prototype.minZoom} and
+ * {@link olx.tilegrid.XYZOptions.prototype.maxZoom}.
+ * @type {Array.<number>|undefined}
+ * @api
+ */
+olx.tilegrid.XYZOptions.prototype.levels;
 
 
 /**

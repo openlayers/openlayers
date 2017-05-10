@@ -45,9 +45,14 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
    */
   this.tmpTransform_ = ol.transform.create();
 
+  /**
+   * @private
+   * @type {ol.layer.VectorTileRenderType}
+   */
+  this.renderMode_ = layer.getRenderMode();
+
   // Use lower resolution for pure vector rendering. Closest resolution otherwise.
-  this.zDirection =
-      layer.getRenderMode() == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
+  this.zDirection = this.renderMode_ == ol.layer.VectorTileRenderType.VECTOR ? 1 : 0;
 
 };
 ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
@@ -79,17 +84,30 @@ ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS = {
 ol.renderer.canvas.VectorTileLayer.prototype.prepareFrame = function(frameState, layerState) {
   var layer = this.getLayer();
   var layerRevision = layer.getRevision();
-  if (this.renderedLayerRevision_ != layerRevision) {
+  var renderMode = this.renderMode_;
+  if (layer.getRenderMode() == ol.layer.VectorTileRenderType.HYBRID) {
+    var tileGrid = layer.getSource().getTileGrid();
+    var minResolution = tileGrid.getResolution(tileGrid.getMaxZoom());
+    var maxResolution = tileGrid.getResolution(tileGrid.getMinZoom());
+    var resolution = frameState.viewState.resolution;
+    renderMode = resolution < minResolution || resolution > maxResolution ?
+        ol.layer.VectorTileRenderType.VECTOR :
+        layer.getRenderMode();
+  }
+  if (!this.context && renderMode != ol.layer.VectorTileRenderType.VECTOR) {
+    this.context = ol.dom.createCanvasContext2D();
+  }
+  if (this.context && renderMode == ol.layer.VectorTileRenderType.VECTOR) {
+    this.context = null;
+  }
+  if (this.renderedLayerRevision_ != layerRevision || this.renderMode_ != renderMode) {
     this.renderedTiles.length = 0;
-    var renderMode = layer.getRenderMode();
-    if (!this.context && renderMode != ol.layer.VectorTileRenderType.VECTOR) {
-      this.context = ol.dom.createCanvasContext2D();
-    }
-    if (this.context && renderMode == ol.layer.VectorTileRenderType.VECTOR) {
-      this.context = null;
+    if (this.context) {
+      this.context.canvas.width = this.context.canvas.width;
     }
   }
   this.renderedLayerRevision_ = layerRevision;
+  this.renderMode_ = renderMode;
   return ol.renderer.canvas.TileLayer.prototype.prepareFrame.apply(this, arguments);
 };
 
@@ -195,7 +213,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.drawTileImage = function(
     tile, frameState, layerState, x, y, w, h, gutter) {
   var vectorTile = /** @type {ol.VectorTile} */ (tile);
   this.createReplayGroup_(vectorTile, frameState);
-  if (this.context) {
+  if (this.renderMode_ != ol.layer.VectorTileRenderType.VECTOR) {
     this.renderTileImage_(vectorTile, frameState, layerState);
     ol.renderer.canvas.TileLayer.prototype.drawTileImage.apply(this, arguments);
   }
@@ -271,8 +289,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.getReplayTransform_ = function(tile
     var source = /** @type {ol.source.VectorTile} */ (layer.getSource());
     var tileGrid = source.getTileGrid();
     var tileCoord = tile.tileCoord;
-    var tileResolution =
-        tileGrid.getResolution(tileCoord[0]) / source.getTilePixelRatio();
+    var tileResolution = tileGrid.getResolution(tileCoord[0]) / source.getTilePixelRatio();
     var viewState = frameState.viewState;
     var pixelRatio = frameState.pixelRatio;
     var renderResolution = viewState.resolution / pixelRatio;
@@ -308,8 +325,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.handleStyleImageChange_ = function(
  * @inheritDoc
  */
 ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, frameState, layerState) {
-  var renderMode = this.getLayer().getRenderMode();
-  var replays = ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS[renderMode];
+  var replays = ol.renderer.canvas.VectorTileLayer.VECTOR_REPLAYS[this.renderMode_];
   if (replays) {
     var pixelRatio = frameState.pixelRatio;
     var rotation = frameState.viewState.rotation;
@@ -396,7 +412,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
   var layer = this.getLayer();
   var replayState = tile.getReplayState();
   var revision = layer.getRevision();
-  var replays = ol.renderer.canvas.VectorTileLayer.IMAGE_REPLAYS[layer.getRenderMode()];
+  var replays = ol.renderer.canvas.VectorTileLayer.IMAGE_REPLAYS[this.renderMode_];
   if (replays && replayState.renderedTileRevision !== revision) {
     replayState.renderedTileRevision = revision;
     var tileCoord = tile.tileCoord;

@@ -14,13 +14,15 @@ goog.require('ol.tilegrid');
 describe('ol.source.TileImage', function() {
   function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
     var proj = opt_proj || 'EPSG:3857';
+    var tileGrid = opt_tileGrid ||
+        ol.tilegrid.createForProjection(proj, undefined, [2, 2]);
     return new ol.source.TileImage({
       cacheSize: opt_cacheSize,
       projection: proj,
-      tileGrid: opt_tileGrid ||
-          ol.tilegrid.createForProjection(proj, undefined, [2, 2]),
+      tileGrid: tileGrid,
       tileUrlFunction: ol.TileUrlFunction.createFromTemplate(
-          'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
+          'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=',
+          tileGrid)
     });
   }
 

@@ -252,9 +252,10 @@ ol.renderer.Layer.prototype.manageTilePyramid = function(
   }
   var wantedTiles = frameState.wantedTiles[tileSourceKey];
   var tileQueue = frameState.tileQueue;
-  var minZoom = tileGrid.getMinZoom();
+  var levels = tileGrid.getLevels();
   var tile, tileRange, tileResolution, x, y, z;
-  for (z = currentZ; z >= minZoom; --z) {
+  for (var i = levels.indexOf(currentZ); i >= 0; --i) {
+    z = levels[i];
     tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z, tileRange);
     tileResolution = tileGrid.getResolution(z);
     for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
