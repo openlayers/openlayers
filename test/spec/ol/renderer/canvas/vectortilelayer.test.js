@@ -170,6 +170,9 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       var proj = ol.proj.get('EPSG:3857');
       var frameState = {
         extent: proj.getExtent(),
+        pixelRatio: 1,
+        time: Date.now(),
+        viewHints: [],
         viewState: {
           center: [0, 0],
           resolution: 156543.03392804097,
