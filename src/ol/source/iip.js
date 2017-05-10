@@ -2,6 +2,7 @@ goog.provide('ol.source.IIP');
 
 goog.require('ol');
 goog.require('ol.ImageTile');
+goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.source.TileImage');
