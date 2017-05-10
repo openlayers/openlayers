@@ -142,7 +142,8 @@ if (ol.ENABLE_WEBGL) {
    * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
               ol.render.webgl.imagereplay.defaultshader.Locations|
               ol.render.webgl.linestringreplay.defaultshader.Locations|
-              ol.render.webgl.polygonreplay.defaultshader.Locations} Locations.
+              ol.render.webgl.polygonreplay.defaultshader.Locations|
+              ol.render.webgl.textreplay.defaultshader.Locations} Locations.
    */
   ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
@@ -154,7 +155,8 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.render.webgl.circlereplay.defaultshader.Locations|
              ol.render.webgl.imagereplay.defaultshader.Locations|
              ol.render.webgl.linestringreplay.defaultshader.Locations|
-             ol.render.webgl.polygonreplay.defaultshader.Locations} locations Locations.
+             ol.render.webgl.polygonreplay.defaultshader.Locations|
+             ol.render.webgl.textreplay.defaultshader.Locations} locations Locations.
    */
   ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {};
 
