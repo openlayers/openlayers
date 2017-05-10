@@ -156,12 +156,11 @@ ol.DragBoxEndConditionType;
 
 
 /**
- * Function that takes coordinates and an optional existing geometry as
+ * Function that takes an array of coordinates and an optional existing geometry as
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
+ * @typedef {function(!Array.<ol.Coordinate>, ol.geom.SimpleGeometry=):
  *     ol.geom.SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
