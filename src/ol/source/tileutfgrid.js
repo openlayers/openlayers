@@ -320,7 +320,6 @@ ol.inherits(ol.source.TileUTFGrid.Tile_, ol.Tile);
 /**
  * Get the image element for this tile.
  * @return {Image} Image.
- * @override
  */
 ol.source.TileUTFGrid.Tile_.prototype.getImage = function() {
   return null;

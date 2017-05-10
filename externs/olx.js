@@ -4877,7 +4877,7 @@ olx.source.VectorTileOptions.prototype.state;
 
 
 /**
- * Class used to instantiate image tiles. Default is {@link ol.VectorTile}.
+ * Class used to instantiate vector tiles. Default is {@link ol.VectorTile}.
  * @type {function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined}

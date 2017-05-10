@@ -62,6 +62,11 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileClass: TileClass,
         tileGrid: ol.tilegrid.createXYZ()
       });
+      source.getTile = function() {
+        var tile = ol.source.VectorTile.prototype.getTile.apply(source, arguments);
+        tile.setState(ol.TileState.LOADED);
+        return tile;
+      };
       layer = new ol.layer.VectorTile({
         source: source,
         style: layerStyle
@@ -156,11 +161,17 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
           tileGrid: ol.tilegrid.createXYZ()
         })
       });
-      var tile = new ol.VectorTile([0, 0, 0], 2);
-      tile.projection_ = ol.proj.get('EPSG:3857');
-      tile.features_ = [];
-      tile.getImage = function() {
+      var sourceTile = new ol.VectorTile([0, 0, 0], 2);
+      sourceTile.setProjection(ol.proj.get('EPSG:3857'));
+      sourceTile.features_ = [];
+      sourceTile.getImage = function() {
         return document.createElement('canvas');
+      };
+      var tile = new ol.VectorImageTile([0, 0, 0]);
+      tile.wrappedTileCoord = [0, 0, 0];
+      tile.setState(ol.TileState.LOADED);
+      tile.getSourceTile = function() {
+        return sourceTile;
       };
       layer.getSource().getTile = function() {
         return tile;
@@ -195,12 +206,19 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
   describe('#forEachFeatureAtCoordinate', function() {
     var layer, renderer, replayGroup;
     var TileClass = function() {
-      ol.VectorTile.apply(this, arguments);
+      ol.VectorImageTile.apply(this, arguments);
       this.setState('loaded');
-      this.setProjection(ol.proj.get('EPSG:3857'));
-      this.replayState_.replayGroup = replayGroup;
+      var sourceTile = new ol.VectorTile([0, 0, 0]);
+      sourceTile.setProjection(ol.proj.get('EPSG:3857'));
+      sourceTile.getReplayGroup = function() {
+        return replayGroup;
+      };
+      var key = sourceTile.tileCoord.toString();
+      this.tileKeys = [key];
+      this.sourceTiles_ = {};
+      this.sourceTiles_[key] = sourceTile;
     };
-    ol.inherits(TileClass, ol.VectorTile);
+    ol.inherits(TileClass, ol.VectorImageTile);
 
     beforeEach(function() {
       replayGroup = {};
@@ -226,6 +244,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         layerStates: {},
         skippedFeatureUids: {},
         viewState: {
+          projection: ol.proj.get('EPSG:3857'),
           resolution: 1,
           rotation: 0
         }

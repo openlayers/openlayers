@@ -15,25 +15,16 @@ goog.require('ol.tilegrid.TileGrid');
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
-// For how many zoom levels do we want to use the same vector tiles?
-// 1 means "use tiles from all zoom levels". 2 means "use the same tiles for 2
-// subsequent zoom levels".
-var reuseZoomLevels = 2;
-
-// Offset of loaded tiles from web mercator zoom level 0.
-// 0 means "At map zoom level 0, use tiles from zoom level 0". 1 means "At map
-// zoom level 0, use tiles from zoom level 1".
-var zoomOffset = 1;
-
-// Calculation of tile urls
+// Calculation of resolutions that match zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 var resolutions = [];
-for (var z = zoomOffset / reuseZoomLevels; z <= 22 / reuseZoomLevels; ++z) {
-  resolutions.push(156543.03392804097 / Math.pow(2, z * reuseZoomLevels));
+for (var i = 0; i <= 7; ++i) {
+  resolutions.push(156543.03392804097 / Math.pow(2, i * 2));
 }
+// Calculation of tile urls for zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 function tileUrlFunction(tileCoord) {
   return ('https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
       '{z}/{x}/{y}.vector.pbf?access_token=' + key)
-      .replace('{z}', String(tileCoord[0] * reuseZoomLevels + zoomOffset))
+      .replace('{z}', String(tileCoord[0] * 2 - 1))
       .replace('{x}', String(tileCoord[1]))
       .replace('{y}', String(-tileCoord[2] - 1))
       .replace('{a-d}', 'abcd'.substr(
@@ -43,8 +34,6 @@ function tileUrlFunction(tileCoord) {
 var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
-      renderMode: 'vector',
-      preload: Infinity,
       source: new ol.source.VectorTile({
         attributions: '© <a href="https://www.mapbox.com/map-feedback/">Mapbox</a> ' +
           '© <a href="https://www.openstreetmap.org/copyright">' +
@@ -52,9 +41,10 @@ var map = new ol.Map({
         format: new ol.format.MVT(),
         tileGrid: new ol.tilegrid.TileGrid({
           extent: ol.proj.get('EPSG:3857').getExtent(),
-          resolutions: resolutions
+          resolutions: resolutions,
+          tileSize: 512
         }),
-        tilePixelRatio: 16,
+        tilePixelRatio: 8,
         tileUrlFunction: tileUrlFunction
       }),
       style: createMapboxStreetsV6Style()
