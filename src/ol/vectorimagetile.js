@@ -44,12 +44,6 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
 
   /**
    * @private
-   * @type {ol.format.Feature}
-   */
-  this.format_ = format;
-
-  /**
-   * @private
    * @type {ol.FeatureLoader}
    */
   this.loader_;
@@ -168,16 +162,6 @@ ol.VectorImageTile.prototype.getContext = function() {
 ol.VectorImageTile.prototype.getImage = function() {
   return this.replayState_.renderedTileRevision == -1 ?
       null : this.context_.canvas;
-};
-
-
-/**
- * Get the feature format assigned for reading this tile's features.
- * @return {ol.format.Feature} Feature format.
- * @api
- */
-ol.VectorImageTile.prototype.getFormat = function() {
-  return this.format_;
 };
 
 
