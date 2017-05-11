@@ -260,16 +260,6 @@ ol.VectorImageTile.prototype.load = function() {
 
 
 /**
- * @param {Array.<ol.Feature>} features Features.
- * @api
- */
-ol.VectorImageTile.prototype.setFeatures = function(features) {
-  this.features_ = features;
-  this.setState(ol.TileState.LOADED);
-};
-
-
-/**
  * @param {ol.TileState} tileState Tile state.
  */
 ol.VectorImageTile.prototype.setState = function(tileState) {
