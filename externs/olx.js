@@ -1981,9 +1981,9 @@ olx.format.MVTOptions;
  * {@link ol.Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link ol.render.Feature},
  * which is optimized for rendering and hit detection.
- * @type {undefined|function((ol.geom.Geometry|Object.<string, *>)=)|
+ * @type {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|
  *     function(ol.geom.GeometryType,Array.<number>,
- *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
+ *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
  * @api
  */
 olx.format.MVTOptions.prototype.featureClass;

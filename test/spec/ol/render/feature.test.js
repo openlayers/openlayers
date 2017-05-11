@@ -14,7 +14,7 @@ describe('ol.render.Feature', function() {
   describe('Constructor', function() {
     it('creates an instance', function() {
       renderFeature =
-          new ol.render.Feature(type, flatCoordinates, ends, properties);
+          new ol.render.Feature(type, flatCoordinates, ends, properties, 'foo');
       expect(renderFeature).to.be.a(ol.render.Feature);
     });
   });
@@ -54,6 +54,12 @@ describe('ol.render.Feature', function() {
   describe('#getGeometry()', function() {
     it('returns itself as geometry', function() {
       expect(renderFeature.getGeometry()).to.equal(renderFeature);
+    });
+  });
+
+  describe('#getId()', function() {
+    it('returns the feature id', function() {
+      expect(renderFeature.getId()).to.be('foo');
     });
   });
 
