@@ -73,11 +73,18 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
     });
 
     it('parses id property', function() {
+      // ol.Feature
       var format = new ol.format.MVT({
         featureClass: ol.Feature,
         layers: ['building']
       });
       var features = format.readFeatures(data);
+      expect(features[0].getId()).to.be(2);
+      // ol.render.Feature
+      format = new ol.format.MVT({
+        layers: ['building']
+      });
+      features = format.readFeatures(data);
       expect(features[0].getId()).to.be(2);
     });
 

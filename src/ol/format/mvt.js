@@ -44,9 +44,9 @@ ol.format.MVT = function(opt_options) {
 
   /**
    * @private
-   * @type {function((ol.geom.Geometry|Object.<string, *>)=)|
+   * @type {function((ol.geom.Geometry|Object.<string,*>)=)|
    *     function(ol.geom.GeometryType,Array.<number>,
-   *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
+   *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
       options.featureClass : ol.render.Feature;
@@ -137,8 +137,9 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
 
   var values = rawFeature.properties;
   values[this.layerName_] = layer;
+  var id = rawFeature.id;
 
-  return new this.featureClass_(geometryType, flatCoordinates, ends, values);
+  return new this.featureClass_(geometryType, flatCoordinates, ends, values, id);
 };
 
 
