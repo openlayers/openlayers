@@ -2,6 +2,10 @@
 
 ### Next release
 
+#### Removal of `ol.render.Feature#getGeometry()`
+
+The `ol.render.Feature#getGeometry()` function simply returns the feature itself. Users who relied on this function can use the `ol.render.Feature` instance directly instead.
+
 ### v4.1.0
 
 #### Adding duplicate layers to a map throws
