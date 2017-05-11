@@ -104,7 +104,6 @@ ol.render.Feature.prototype.getFlatCoordinates =
 /**
  * Get the feature for working with its geometry.
  * @return {ol.render.Feature} Feature.
- * @api
  */
 ol.render.Feature.prototype.getGeometry = function() {
   return this;
