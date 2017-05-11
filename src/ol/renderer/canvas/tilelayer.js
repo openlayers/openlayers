@@ -173,7 +173,7 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   var renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
   var hints = frameState.viewHints;
   var animatingOrInteracting = hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING];
-  if (!(Date.now() - frameState.time > 16 && animatingOrInteracting) && (
+  if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
         newTiles ||
         !(this.renderedExtent_ && ol.extent.containsExtent(this.renderedExtent_, extent)) ||
         this.renderedRevision != sourceRevision ||
