@@ -2,6 +2,7 @@ goog.provide('ol.format.filter');
 
 goog.require('ol.format.filter.And');
 goog.require('ol.format.filter.Bbox');
+goog.require('ol.format.filter.During');
 goog.require('ol.format.filter.EqualTo');
 goog.require('ol.format.filter.GreaterThan');
 goog.require('ol.format.filter.GreaterThanOrEqualTo');
@@ -229,4 +230,18 @@ ol.format.filter.like = function(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
   return new ol.format.filter.IsLike(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
+};
+
+
+/**
+ * Create a `<During>` temporal operator.
+ *
+ * @param {!string} propertyName Name of the context property to compare.
+ * @param {!string} begin The begin date in ISO-8601 format.
+ * @param {!string} end The end date in ISO-8601 format.
+ * @returns {!ol.format.filter.During} `<During>` operator.
+ * @api
+ */
+ol.format.filter.during = function(propertyName, begin, end) {
+  return new ol.format.filter.During(propertyName, begin, end);
 };
