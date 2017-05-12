@@ -44,12 +44,6 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
 
   /**
    * @private
-   * @type {ol.format.Feature}
-   */
-  this.format_ = format;
-
-  /**
-   * @private
    * @type {ol.FeatureLoader}
    */
   this.loader_;
@@ -172,16 +166,6 @@ ol.VectorImageTile.prototype.getImage = function() {
 
 
 /**
- * Get the feature format assigned for reading this tile's features.
- * @return {ol.format.Feature} Feature format.
- * @api
- */
-ol.VectorImageTile.prototype.getFormat = function() {
-  return this.format_;
-};
-
-
-/**
  * @return {ol.TileReplayState} The replay state.
  */
 ol.VectorImageTile.prototype.getReplayState = function() {
@@ -256,16 +240,6 @@ ol.VectorImageTile.prototype.load = function() {
           (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
     }.bind(this), 0);
   }
-};
-
-
-/**
- * @param {Array.<ol.Feature>} features Features.
- * @api
- */
-ol.VectorImageTile.prototype.setFeatures = function(features) {
-  this.features_ = features;
-  this.setState(ol.TileState.LOADED);
 };
 
 
