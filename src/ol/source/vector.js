@@ -157,7 +157,9 @@ ol.inherits(ol.source.Vector, ol.source.Source);
 /**
  * Add a single feature to the source.  If you want to add a batch of features
  * at once, call {@link ol.source.Vector#addFeatures source.addFeatures()}
- * instead.
+ * instead. A feature will not be added to the source if feature with
+ * the same id is already there. The reason for this behavior is to avoid
+ * feature duplication when using bbox or tile loading strategies.
  * @param {ol.Feature} feature Feature to add.
  * @api
  */
