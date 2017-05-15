@@ -324,16 +324,19 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
     var indexCount = this.indices.length;
-    var lineStringGeometries = multiLineStringGeometry.getLineStrings();
+    var ends = multiLineStringGeometry.getEnds();
+    ends.unshift(0);
+    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+    var stride = multiLineStringGeometry.getStride();
     var i, ii;
-    for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
-      var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
-      var stride = lineStringGeometries[i].getStride();
-      if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-        flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-            stride, -this.origin[0], -this.origin[1]);
-        this.drawCoordinates_(
-            flatCoordinates, 0, flatCoordinates.length, stride);
+    if (ends.length > 1) {
+      for (i = 1, ii = ends.length; i < ii; ++i) {
+        if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
+          var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
+              stride, -this.origin[0], -this.origin[1]);
+          this.drawCoordinates_(
+              lineString, 0, lineString.length, stride);
+        }
       }
     }
     if (this.indices.length > indexCount) {

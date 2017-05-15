@@ -712,28 +712,33 @@ if (ol.ENABLE_WEBGL) {
    * @inheritDoc
    */
   ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
-    var polygons = multiPolygonGeometry.getPolygons();
+    var endss = multiPolygonGeometry.getEndss();
     var stride = multiPolygonGeometry.getStride();
     var currIndex = this.indices.length;
     var currLineIndex = this.lineStringReplay.getCurrentIndex();
+    var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
     var i, ii, j, jj;
-    for (i = 0, ii = polygons.length; i < ii; ++i) {
-      var linearRings = polygons[i].getLinearRings();
-      if (linearRings.length > 0) {
-        var flatCoordinates = linearRings[0].getFlatCoordinates();
-        flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+    var start = 0;
+    for (i = 0, ii = endss.length; i < ii; ++i) {
+      var ends = endss[i];
+      if (ends.length > 0) {
+        var outerRing = ol.geom.flat.transform.translate(flatCoordinates, start, ends[0],
             stride, -this.origin[0], -this.origin[1]);
-        var holes = [];
-        var holeFlatCoords;
-        for (j = 1, jj = linearRings.length; j < jj; ++j) {
-          holeFlatCoords = linearRings[j].getFlatCoordinates();
-          holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
-              stride, -this.origin[0], -this.origin[1]);
-          holes.push(holeFlatCoords);
+        if (outerRing.length) {
+          var holes = [];
+          var holeFlatCoords;
+          for (j = 1, jj = ends.length; j < jj; ++j) {
+            if (ends[j] !== ends[j - 1]) {
+              holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[j - 1],
+                  ends[j], stride, -this.origin[0], -this.origin[1]);
+              holes.push(holeFlatCoords);
+            }
+          }
+          this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+          this.drawCoordinates_(outerRing, holes, stride);
         }
-        this.lineStringReplay.drawPolygonCoordinates(flatCoordinates, holes, stride);
-        this.drawCoordinates_(flatCoordinates, holes, stride);
       }
+      start = ends[ends.length - 1];
     }
     if (this.indices.length > currIndex) {
       this.startIndices.push(currIndex);
@@ -753,30 +758,34 @@ if (ol.ENABLE_WEBGL) {
    * @inheritDoc
    */
   ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
-    var linearRings = polygonGeometry.getLinearRings();
+    var ends = polygonGeometry.getEnds();
     var stride = polygonGeometry.getStride();
-    if (linearRings.length > 0) {
-      this.startIndices.push(this.indices.length);
-      this.startIndicesFeature.push(feature);
-      if (this.state_.changed) {
-        this.styleIndices_.push(this.indices.length);
-        this.state_.changed = false;
-      }
-      this.lineStringReplay.setPolygonStyle(feature);
-
-      var flatCoordinates = linearRings[0].getFlatCoordinates();
-      flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+    if (ends.length > 0) {
+      var flatCoordinates = polygonGeometry.getFlatCoordinates();
+      var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
           stride, -this.origin[0], -this.origin[1]);
-      var holes = [];
-      var i, ii, holeFlatCoords;
-      for (i = 1, ii = linearRings.length; i < ii; ++i) {
-        holeFlatCoords = linearRings[i].getFlatCoordinates();
-        holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
-            stride, -this.origin[0], -this.origin[1]);
-        holes.push(holeFlatCoords);
+      if (outerRing.length) {
+        var holes = [];
+        var i, ii, holeFlatCoords;
+        for (i = 1, ii = ends.length; i < ii; ++i) {
+          if (ends[i] !== ends[i - 1]) {
+            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+                ends[i], stride, -this.origin[0], -this.origin[1]);
+            holes.push(holeFlatCoords);
+          }
+        }
+
+        this.startIndices.push(this.indices.length);
+        this.startIndicesFeature.push(feature);
+        if (this.state_.changed) {
+          this.styleIndices_.push(this.indices.length);
+          this.state_.changed = false;
+        }
+        this.lineStringReplay.setPolygonStyle(feature);
+
+        this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+        this.drawCoordinates_(outerRing, holes, stride);
       }
-      this.lineStringReplay.drawPolygonCoordinates(flatCoordinates, holes, stride);
-      this.drawCoordinates_(flatCoordinates, holes, stride);
     }
   };
 
