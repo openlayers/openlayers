@@ -108,7 +108,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
   var pixelRatio = frameState.pixelRatio;
   var projection = frameState.viewState.projection;
   var revision = layer.getRevision();
-  var renderOrder = layer.getRenderOrder() || null;
+  var renderOrder = /** @type {ol.RenderOrderFunction} */
+      (layer.getRenderOrder()) || null;
 
   var replayState = tile.getReplayState();
   if (!replayState.dirty && replayState.renderedRevision == revision &&

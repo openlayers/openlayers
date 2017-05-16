@@ -453,9 +453,11 @@ ol.RegularShapeRenderOptions;
 
 /**
  * A function to be used when sorting features before rendering.
- * It takes two instances of {@link ol.Feature} and returns a `{number}`.
+ * It takes two instances of {@link ol.Feature} or {@link ol.render.Feature} and
+ * returns a `{number}`.
  *
- * @typedef {function(ol.Feature, ol.Feature):number}
+ * @typedef {function((ol.Feature|ol.render.Feature), (ol.Feature|ol.render.Feature)):
+ *     number}
  */
 ol.RenderOrderFunction;
 
