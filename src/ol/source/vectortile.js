@@ -4,8 +4,6 @@ goog.require('ol');
 goog.require('ol.TileState');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
-goog.require('ol.events');
-goog.require('ol.events.EventType');
 goog.require('ol.proj');
 goog.require('ol.size');
 goog.require('ol.tilegrid');
@@ -114,9 +112,8 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
         tileUrl !== undefined ? tileUrl : '',
         this.format_, this.tileLoadFunction, urlTileCoord, this.tileUrlFunction,
         this.tileGrid, this.getTileGridForProjection(projection),
-        this.sourceTiles_, pixelRatio, projection, this.tileClass);
-    ol.events.listen(tile, ol.events.EventType.CHANGE,
-        this.handleTileChange, this);
+        this.sourceTiles_, pixelRatio, projection, this.tileClass,
+        this.handleTileChange.bind(this));
 
     this.tileCache.set(tileCoordKey, tile);
     return tile;

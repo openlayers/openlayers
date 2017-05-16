@@ -29,10 +29,12 @@ goog.require('ol.featureloader');
  * @param {function(new: ol.VectorTile, ol.TileCoord, ol.TileState, string,
  *     ol.format.Feature, ol.TileLoadFunctionType)} tileClass Class to
  *     instantiate for source tiles.
+ * @param {function(this: ol.source.VectorTile, ol.events.Event)} handleTileChange
+ *     Function to call when a source tile's state changes.
  */
 ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
     urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
-    pixelRatio, projection, tileClass) {
+    pixelRatio, projection, tileClass, handleTileChange) {
 
   ol.Tile.call(this, tileCoord, state);
 
@@ -86,6 +88,11 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
    */
   this.loadListenerKeys_ = [];
 
+  /**
+   * @type {Array.<ol.EventsKey>}
+   */
+  this.sourceTileListenerKeys_ = [];
+
   if (urlTileCoord) {
     var extent = tileGrid.getTileCoordExtent(urlTileCoord);
     var resolution = tileGrid.getResolution(tileCoord[0]);
@@ -104,6 +111,8 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
               tileUrl == undefined ? ol.TileState.EMPTY : ol.TileState.IDLE,
               tileUrl == undefined ? '' : tileUrl,
               format, tileLoadFunction);
+          this.sourceTileListenerKeys_.push(
+              ol.events.listen(sourceTile, ol.events.EventType.CHANGE, handleTileChange));
         }
         sourceTile.consumers++;
         this.tileKeys.push(sourceTileKey);
@@ -139,6 +148,8 @@ ol.VectorImageTile.prototype.disposeInternal = function() {
   }
   this.state = ol.TileState.ABORT;
   this.changed();
+  this.sourceTileListenerKeys_.forEach(ol.events.unlistenByKey);
+  this.sourceTileListenerKeys_.length = 0;
   ol.Tile.prototype.disposeInternal.call(this);
 };
 
