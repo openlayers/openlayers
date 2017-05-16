@@ -67,6 +67,18 @@ ol.inherits(ol.VectorTile, ol.Tile);
 
 
 /**
+ * @inheritDoc
+ */
+ol.VectorTile.prototype.disposeInternal = function() {
+  this.features_ = null;
+  this.replayGroups_ = {};
+  this.state = ol.TileState.ABORT;
+  this.changed();
+  ol.Tile.prototype.disposeInternal.call(this);
+};
+
+
+/**
  * Get the feature format assigned for reading this tile's features.
  * @return {ol.format.Feature} Feature format.
  * @api
