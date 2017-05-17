@@ -192,6 +192,33 @@ describe('ol.format.KML', function() {
           expect(node).to.xmleql(ol.xml.parse(text));
         });
 
+
+        it('can write properties', function() {
+          var lineString = new ol.geom.LineString([[1, 2], [3, 4]]);
+          lineString.set('extrude', false);
+          lineString.set('tessellate', true);
+          lineString.set('altitudeMode', 'clampToGround');
+          lineString.set('unsupportedProperty', 'foo');
+          var features = [new ol.Feature(lineString)];
+          var node = format.writeFeaturesNode(features);
+          var text =
+              '<kml xmlns="http://www.opengis.net/kml/2.2"' +
+              ' xmlns:gx="http://www.google.com/kml/ext/2.2"' +
+              ' xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"' +
+              ' xsi:schemaLocation="http://www.opengis.net/kml/2.2' +
+              ' https://developers.google.com/kml/schema/kml22gx.xsd">' +
+              '  <Placemark>' +
+              '    <LineString>' +
+              '      <extrude>0</extrude>' +
+              '      <tessellate>1</tessellate>' +
+              '      <altitudeMode>clampToGround</altitudeMode>' +
+              '      <coordinates>1,2 3,4</coordinates>' +
+              '    </LineString>' +
+              '  </Placemark>' +
+              '</kml>';
+          expect(node).to.xmleql(ol.xml.parse(text));
+        });
+
         it('can read Point geometries', function() {
           var text =
               '<kml xmlns="http://www.opengis.net/kml/2.2"' +
