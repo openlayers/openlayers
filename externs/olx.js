@@ -6004,8 +6004,9 @@ olx.source.TileArcGISRestOptions.prototype.urls;
  *     crossOrigin: (null|string|undefined),
  *     jsonp: (boolean|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
+ *     tileJSON: (TileJSON|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: string,
+ *     url: (string|undefined),
  *     wrapX: (boolean|undefined)}}
  */
 olx.source.TileJSONOptions;
@@ -6060,6 +6061,15 @@ olx.source.TileJSONOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
+ * TileJSON configuration for this source. If not provided, `url` must be
+ * configured.
+ * @type {TileJSON|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.tileJSON;
+
+
+/**
  * Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -6073,8 +6083,8 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
 
 
 /**
- * URL to the TileJSON file.
- * @type {string}
+ * URL to the TileJSON file. If not provided, `tileJSON` must be configured.
+ * @type {string|undefined}
  * @api
  */
 olx.source.TileJSONOptions.prototype.url;

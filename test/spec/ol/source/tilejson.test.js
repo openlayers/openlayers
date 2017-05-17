@@ -32,6 +32,45 @@ describe('ol.source.TileJSON', function() {
         }
       });
     });
+
+    it ('parses inline TileJSON', function() {
+      var tileJSON = {
+        bounds: [
+          -180,
+          -85.05112877980659,
+          180,
+          85.05112877980659
+        ],
+        center: [
+          0,
+          0,
+          4
+        ],
+        created: 1322764050886,
+        description: 'One of the example maps that comes with TileMill - a bright & colorful world map that blends retro and high-tech with its folded paper texture and interactive flag tooltips. ',
+        download: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class.mbtiles',
+        embed: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class.html',
+        id: 'mapbox.geography-class',
+        mapbox_logo: true,
+        maxzoom: 8,
+        minzoom: 0,
+        name: 'Geography Class',
+        private: false,
+        scheme: 'xyz',
+        tilejson: '2.2.0',
+        tiles: [
+          'https://a.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png',
+          'https://b.tiles.mapbox.com/v3/mapbox.geography-class/{z}/{x}/{y}.png'
+        ],
+        version: '1.0.0',
+        webpage: 'https://a.tiles.mapbox.com/v3/mapbox.geography-class/page.html'
+      };
+      var source = new ol.source.TileJSON({
+        tileJSON: tileJSON
+      });
+      expect(source.getState()).to.be('ready');
+      expect(source.getTileUrlFunction()([0, 0, -1])).to.be('https://b.tiles.mapbox.com/v3/mapbox.geography-class/0/0/0.png');
+    });
   });
 
   describe('#getState', function() {
