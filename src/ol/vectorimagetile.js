@@ -168,7 +168,6 @@ ol.VectorImageTile.prototype.getContext = function() {
 /**
  * Get the Canvas for this tile.
  * @return {HTMLCanvasElement} Canvas.
- * @api
  */
 ol.VectorImageTile.prototype.getImage = function() {
   return this.replayState_.renderedTileRevision == -1 ?
