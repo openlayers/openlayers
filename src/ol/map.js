@@ -278,7 +278,7 @@ ol.Map = function(options) {
    * @private
    * @type {ol.MapBrowserEventHandler}
    */
-  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this);
+  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this, options.moveTolerance);
   for (var key in ol.MapBrowserEventType) {
     ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEventType[key],
         this.handleMapBrowserEvent, this);

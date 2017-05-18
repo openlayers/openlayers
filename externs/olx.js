@@ -292,6 +292,7 @@ olx.interaction.InteractionOptions.prototype.handleEvent;
  *     loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined),
  *     logo: (boolean|string|olx.LogoOptions|Element|undefined),
+ *     moveTolerance: (number|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.renderer.Type|Array.<ol.renderer.Type>|undefined),
  *     target: (Element|string|undefined),
@@ -383,6 +384,17 @@ olx.MapOptions.prototype.loadTilesWhileInteracting;
  * @api
  */
 olx.MapOptions.prototype.logo;
+
+
+/**
+ * The minimum distance in pixels the cursor must move to be detected
+ * as a map move event instead of a click. Increasing this value can make it
+ * easier to click on the map.
+ * Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.MapOptions.prototype.moveTolerance;
 
 
 /**
