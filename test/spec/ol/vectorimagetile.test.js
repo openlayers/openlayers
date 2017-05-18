@@ -16,7 +16,7 @@ describe('ol.VectorImageTile', function() {
         ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile);
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
 
     tile.load();
     var sourceTile = tile.getTile(tile.tileKeys[0]);
@@ -36,7 +36,7 @@ describe('ol.VectorImageTile', function() {
         ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile);
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
 
     tile.load();
 
@@ -52,7 +52,7 @@ describe('ol.VectorImageTile', function() {
     var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
         ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {},
         ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile);
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
 
     tile.load();
 
@@ -69,7 +69,7 @@ describe('ol.VectorImageTile', function() {
         ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ({tileSize: 512}), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile);
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
 
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
@@ -89,7 +89,7 @@ describe('ol.VectorImageTile', function() {
         ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
           return url;
         }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ({tileSize: 512}), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile);
+        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
 
     tile.load();
     ol.events.listenOnce(tile, 'change', function() {

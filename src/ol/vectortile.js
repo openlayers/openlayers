@@ -67,6 +67,18 @@ ol.inherits(ol.VectorTile, ol.Tile);
 
 
 /**
+ * @inheritDoc
+ */
+ol.VectorTile.prototype.disposeInternal = function() {
+  this.features_ = null;
+  this.replayGroups_ = {};
+  this.state = ol.TileState.ABORT;
+  this.changed();
+  ol.Tile.prototype.disposeInternal.call(this);
+};
+
+
+/**
  * Get the feature format assigned for reading this tile's features.
  * @return {ol.format.Feature} Feature format.
  * @api
@@ -77,7 +89,10 @@ ol.VectorTile.prototype.getFormat = function() {
 
 
 /**
- * @return {Array.<ol.Feature>} Features.
+ * Get the features for this tile. Geometries will be in the projection returned
+ * by {@link #getProjection}.
+ * @return {Array.<ol.Feature|ol.render.Feature>} Features.
+ * @api
  */
 ol.VectorTile.prototype.getFeatures = function() {
   return this.features_;
@@ -93,7 +108,9 @@ ol.VectorTile.prototype.getKey = function() {
 
 
 /**
+ * Get the feature projection of features returned by {@link #getFeatures}.
  * @return {ol.proj.Projection} Feature projection.
+ * @api
  */
 ol.VectorTile.prototype.getProjection = function() {
   return this.projection_;

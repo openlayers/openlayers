@@ -13,7 +13,8 @@ describe('ol.source.VectorTile', function() {
   var source = new ol.source.VectorTile({
     format: format,
     tileGrid: ol.tilegrid.createXYZ({tileSize: 512}),
-    url: '{z}/{x}/{y}.pbf'
+    tilePixelRatio: 8,
+    url: 'spec/ol/data/{z}-{x}-{y}.vector.pbf'
   });
   var tile;
 
@@ -44,6 +45,23 @@ describe('ol.source.VectorTile', function() {
     it('creates a tile grid with the source tile grid\'s tile size', function() {
       var tileGrid = source.getTileGridForProjection(ol.proj.get('EPSG:3857'));
       expect(tileGrid.getTileSize(0)).to.be(512);
+    });
+  });
+
+  describe('Tile load events', function() {
+    it('triggers tileloadstart and tileloadend with ol.VectorTile', function(done) {
+      tile = source.getTile(14, 8938, -5681, 1, ol.proj.get('EPSG:3857'));
+      var started = false;
+      source.on('tileloadstart', function() {
+        started = true;
+      });
+      source.on('tileloadend', function(e) {
+        expect(started).to.be(true);
+        expect(e.tile).to.be.a(ol.VectorTile);
+        expect(e.tile.getFeatures().length).to.be(1327);
+        done();
+      });
+      tile.load();
     });
   });
 
