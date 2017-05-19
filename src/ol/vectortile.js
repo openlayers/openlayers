@@ -162,15 +162,6 @@ ol.VectorTile.prototype.setReplayGroup = function(key, replayGroup) {
 
 
 /**
- * @param {ol.TileState} tileState Tile state.
- */
-ol.VectorTile.prototype.setState = function(tileState) {
-  this.state = tileState;
-  this.changed();
-};
-
-
-/**
  * Set the feature loader for reading this tile's features.
  * @param {ol.FeatureLoader} loader Feature loader.
  * @api

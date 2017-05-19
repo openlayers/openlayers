@@ -61,6 +61,25 @@ describe('ol.ImageTile', function() {
       tile.load();
     });
 
+    it('loads an empty image on error ', function(done) {
+      var tileCoord = [0, 0, 0];
+      var state = ol.TileState.IDLE;
+      var src = 'spec/ol/data/osm-0-0-99.png';
+      var tileLoadFunction = ol.source.Image.defaultImageLoadFunction;
+      var tile = new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
+
+      ol.events.listen(tile, ol.events.EventType.CHANGE, function(event) {
+        var state = tile.getState();
+        if (state == ol.TileState.ERROR) {
+          expect(state).to.be(ol.TileState.ERROR);
+          expect(tile.image_).to.be(ol.ImageTile.blankImage);
+          done();
+        }
+      });
+
+      tile.load();
+    });
+
   });
 
 });

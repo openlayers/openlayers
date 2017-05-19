@@ -244,15 +244,6 @@ ol.VectorImageTile.prototype.load = function() {
 
 
 /**
- * @param {ol.TileState} tileState Tile state.
- */
-ol.VectorImageTile.prototype.setState = function(tileState) {
-  this.state = tileState;
-  this.changed();
-};
-
-
-/**
  * Sets the loader for a tile.
  * @param {ol.VectorTile} tile Vector tile.
  * @param {string} url URL.
