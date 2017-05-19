@@ -94,6 +94,7 @@ ol.ImageTile.prototype.getKey = function() {
  */
 ol.ImageTile.prototype.handleImageError_ = function() {
   this.state = ol.TileState.ERROR;
+  this.image_ = ol.ImageTile.blankImage;
   this.unlistenImage_();
   this.changed();
 };
@@ -143,3 +144,11 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
+
+
+/**
+ * A blank image.
+ * @type {Image}
+ */
+ol.ImageTile.blankImage = new Image();
+ol.ImageTile.blankImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
