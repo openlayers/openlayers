@@ -176,6 +176,29 @@ describe('ol.format.TopoJSON', function() {
       });
     });
 
+    it('sets the topology\'s child names as feature property', function(done) {
+      afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
+        var format = new ol.format.TopoJSON({
+          layerName: 'layer'
+        });
+        var features = format.readFeatures(text);
+        expect(features[0].get('layer')).to.be('land');
+        expect(features[177].get('layer')).to.be('countries');
+        done();
+      });
+    });
+
+    it('only parses features from specified topology\'s children', function(done) {
+      afterLoadText('spec/ol/format/topojson/world-110m.json', function(text) {
+        var format = new ol.format.TopoJSON({
+          layers: ['land']
+        });
+        var features = format.readFeatures(text);
+        expect(features.length).to.be(1);
+        done();
+      });
+    });
+
   });
 
 });
