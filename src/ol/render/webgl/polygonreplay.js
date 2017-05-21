@@ -88,17 +88,33 @@ if (ol.ENABLE_WEBGL) {
       for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
         var holeList = {
           list: new ol.structs.LinkedList(),
-          maxX: undefined
+          maxX: undefined,
+          rtree: new ol.structs.RBush()
         };
         holeLists.push(holeList);
         holeList.maxX = this.processFlatCoordinates_(holeFlatCoordinates[i],
-            stride, holeList.list, rtree, false);
+            stride, holeList.list, holeList.rtree, false);
       }
       holeLists.sort(function(a, b) {
         return b.maxX - a.maxX;
       });
       for (i = 0; i < holeLists.length; ++i) {
-        this.bridgeHole_(holeLists[i].list, holeLists[i].maxX, outerRing, maxX, rtree);
+        var currList = holeLists[i].list;
+        var start = currList.firstItem();
+        var currItem = start;
+        var intersection;
+        do {
+          if (this.getIntersections_(currItem, rtree).length) {
+            intersection = true;
+            break;
+          }
+          currItem = currList.nextItem();
+        } while (start !== currItem);
+        if (!intersection) {
+          this.classifyPoints_(currList, holeLists[i].rtree, true);
+          this.bridgeHole_(currList, holeLists[i].maxX, outerRing, maxX, rtree);
+          rtree.concat(holeLists[i].rtree);
+        }
       }
     }
     this.classifyPoints_(outerRing, rtree, false);
@@ -215,7 +231,6 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
       list, listMaxX, rtree) {
-    this.classifyPoints_(hole, rtree, true);
     var seg = hole.firstItem();
     while (seg.p1.x !== holeMaxX) {
       seg = hole.nextItem();
@@ -761,7 +776,7 @@ if (ol.ENABLE_WEBGL) {
     var ends = polygonGeometry.getEnds();
     var stride = polygonGeometry.getStride();
     if (ends.length > 0) {
-      var flatCoordinates = polygonGeometry.getFlatCoordinates();
+      var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
       var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
           stride, -this.origin[0], -this.origin[1]);
       if (outerRing.length) {
