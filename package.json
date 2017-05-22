@@ -31,7 +31,7 @@
     "css/ol.css"
   ],
   "dependencies": {
-    "async": "2.4.0",
+    "async": "2.4.1",
     "closure-util": "1.20.0",
     "derequire": "2.0.6",
     "fs-extra": "3.0.1",
