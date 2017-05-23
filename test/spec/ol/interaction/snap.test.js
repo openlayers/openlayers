@@ -4,6 +4,7 @@ goog.require('ol.Collection');
 goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.View');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
 goog.require('ol.interaction.Snap');
@@ -107,6 +108,27 @@ describe('ol.interaction.Snap', function() {
       };
       ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
+    });
+
+    it('snaps to circle', function() {
+      var circle = new ol.Feature(new ol.geom.Circle([0, 0], 10));
+      var snapInteraction = new ol.interaction.Snap({
+        features: new ol.Collection([circle]),
+        pixelTolerance: 5
+      });
+      snapInteraction.setMap(map);
+
+      var event = {
+        pixel: [5 + width / 2,  height / 2 - 5],
+        coordinate: [5, 5],
+        map: map
+      };
+      ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
+
+      expect(event.coordinate).to.eql([
+        Math.sin(Math.PI / 4) * 10,
+        Math.sin(Math.PI / 4) * 10
+      ]);
     });
 
     it('handle feature without geometry', function() {
