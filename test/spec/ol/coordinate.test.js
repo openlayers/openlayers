@@ -1,6 +1,7 @@
 goog.provide('ol.test.coordinate');
 
 goog.require('ol.coordinate');
+goog.require('ol.geom.Circle');
 
 
 describe('ol.coordinate', function() {
@@ -86,6 +87,19 @@ describe('ol.coordinate', function() {
       formatted = created(coordinate);
       expect(formatted).to.be.a('string');
       expect(formatted).to.eql('6.612, 46.792');
+    });
+  });
+
+  describe('#closestOnCircle', function() {
+    var center = [5, 10];
+    var circle = new ol.geom.Circle(center, 10);
+    it('can find the closest point on circle', function() {
+      expect(ol.coordinate.closestOnCircle([-20, 10], circle))
+          .to.eql([-5, 10]);
+    });
+    it('can handle coordinate equal circle center', function() {
+      expect(ol.coordinate.closestOnCircle(center, circle))
+          .to.eql([15, 10]);
     });
   });
 
