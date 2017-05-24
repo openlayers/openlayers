@@ -488,7 +488,7 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false).trim();
-  if (node.baseURI) {
+  if (node.baseURI && node.baseURI !== 'about:blank') {
     var url = new URL(s, node.baseURI);
     return url.href;
   } else {
