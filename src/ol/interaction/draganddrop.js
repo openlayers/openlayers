@@ -65,17 +65,14 @@ ol.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
  * @private
  */
 ol.interaction.DragAndDrop.handleDrop_ = function(event) {
-  var active = this.getActive();
-  if (active) {
-    var files = event.dataTransfer.files;
-    var i, ii, file;
-    for (i = 0, ii = files.length; i < ii; ++i) {
-      file = files.item(i);
-      var reader = new FileReader();
-      reader.addEventListener(ol.events.EventType.LOAD,
-          this.handleResult_.bind(this, file));
-      reader.readAsText(file);
-    }
+  var files = event.dataTransfer.files;
+  var i, ii, file;
+  for (i = 0, ii = files.length; i < ii; ++i) {
+    file = files.item(i);
+    var reader = new FileReader();
+    reader.addEventListener(ol.events.EventType.LOAD,
+        this.handleResult_.bind(this, file));
+    reader.readAsText(file);
   }
 };
 
@@ -85,12 +82,9 @@ ol.interaction.DragAndDrop.handleDrop_ = function(event) {
  * @private
  */
 ol.interaction.DragAndDrop.handleStop_ = function(event) {
-  var active = this.getActive();
-  if (active) {
-    event.stopPropagation();
-    event.preventDefault();
-    event.dataTransfer.dropEffect = 'copy';
-  }
+  event.stopPropagation();
+  event.preventDefault();
+  event.dataTransfer.dropEffect = 'copy';
 };
 
 
@@ -147,14 +141,10 @@ ol.interaction.DragAndDrop.handleEvent = ol.functions.TRUE;
 
 
 /**
- * @inheritDoc
+ * @private
  */
-ol.interaction.DragAndDrop.prototype.setMap = function(map) {
-  if (this.dropListenKeys_) {
-    this.dropListenKeys_.forEach(ol.events.unlistenByKey);
-    this.dropListenKeys_ = null;
-  }
-  ol.interaction.Interaction.prototype.setMap.call(this, map);
+ol.interaction.DragAndDrop.prototype.registerListeners_ = function() {
+  var map = this.getMap();
   if (map) {
     var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
@@ -172,6 +162,31 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.interaction.DragAndDrop.prototype.setActive = function(active) {
+  ol.interaction.Interaction.prototype.setActive.call(this, active);
+  if (active) {
+    this.registerListeners_();
+  } else {
+    this.unregisterListeners_();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragAndDrop.prototype.setMap = function(map) {
+  this.unregisterListeners_();
+  ol.interaction.Interaction.prototype.setMap.call(this, map);
+  if (this.getActive()) {
+    this.registerListeners_();
+  }
+};
+
+
+/**
  * @param {ol.format.Feature} format Format.
  * @param {string} text Text.
  * @param {olx.format.ReadOptions} options Read options.
@@ -183,6 +198,17 @@ ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text, o
     return format.readFeatures(text, options);
   } catch (e) {
     return null;
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.interaction.DragAndDrop.prototype.unregisterListeners_ = function() {
+  if (this.dropListenKeys_) {
+    this.dropListenKeys_.forEach(ol.events.unlistenByKey);
+    this.dropListenKeys_ = null;
   }
 };
 
