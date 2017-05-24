@@ -65,14 +65,17 @@ ol.inherits(ol.interaction.DragAndDrop, ol.interaction.Interaction);
  * @private
  */
 ol.interaction.DragAndDrop.handleDrop_ = function(event) {
-  var files = event.dataTransfer.files;
-  var i, ii, file;
-  for (i = 0, ii = files.length; i < ii; ++i) {
-    file = files.item(i);
-    var reader = new FileReader();
-    reader.addEventListener(ol.events.EventType.LOAD,
-        this.handleResult_.bind(this, file));
-    reader.readAsText(file);
+  var active = this.getActive();
+  if (active) {
+    var files = event.dataTransfer.files;
+    var i, ii, file;
+    for (i = 0, ii = files.length; i < ii; ++i) {
+      file = files.item(i);
+      var reader = new FileReader();
+      reader.addEventListener(ol.events.EventType.LOAD,
+          this.handleResult_.bind(this, file));
+      reader.readAsText(file);
+    }
   }
 };
 
@@ -82,9 +85,12 @@ ol.interaction.DragAndDrop.handleDrop_ = function(event) {
  * @private
  */
 ol.interaction.DragAndDrop.handleStop_ = function(event) {
-  event.stopPropagation();
-  event.preventDefault();
-  event.dataTransfer.dropEffect = 'copy';
+  var active = this.getActive();
+  if (active) {
+    event.stopPropagation();
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+  }
 };
 
 
