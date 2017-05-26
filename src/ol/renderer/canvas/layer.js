@@ -2,7 +2,6 @@ goog.provide('ol.renderer.canvas.Layer');
 
 goog.require('ol');
 goog.require('ol.extent');
-goog.require('ol.functions');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
@@ -107,14 +106,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
  * @template S,T,U
  */
 ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
-  var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, ol.functions.TRUE, this);
-
-  if (hasFeature) {
-    return callback.call(thisArg, this.getLayer(), null);
-  } else {
-    return undefined;
-  }
+  return this.forEachLayerAtCoordinate(coordinate, frameState, callback, thisArg);
 };
 
 
