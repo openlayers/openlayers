@@ -786,8 +786,9 @@ ol.View.prototype.getZoomForResolution = function(resolution) {
       var nearest = ol.array.linearFindNearest(this.resolutions_, resolution, 1);
       offset += nearest;
       if (nearest == this.resolutions_.length - 1) {
-        return offset;
+        return nearest;
       }
+      offset = nearest;
       max = this.resolutions_[nearest];
       zoomFactor = max / this.resolutions_[nearest + 1];
     } else {
