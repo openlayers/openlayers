@@ -1048,7 +1048,7 @@ describe('ol.View', function() {
         var view = new ol.View({
           zoom: 4
         });
-      
+
         view.setMinZoom(5);
         expect(view.getZoom()).to.be(5);
       });
