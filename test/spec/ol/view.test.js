@@ -1005,6 +1005,56 @@ describe('ol.View', function() {
 
   });
 
+  describe('#setMaxZoom', function() {
+    describe('with resolutions property in view', function() {
+      it('changes the zoom level when the level is over max zoom', function() {
+        var view = new ol.View({
+          resolutions: [100000, 50000, 25000, 12500, 6250, 3125],
+          zoom: 4
+        });
+
+        view.setMaxZoom(2);
+        expect(view.getZoom()).to.be(2);
+      });
+    });
+
+    describe('with no resolutions property in view', function() {
+      it('changes the zoom level when the level is over max zoom', function() {
+        var view = new ol.View({
+          zoom: 4
+        });
+
+        view.setMaxZoom(2);
+        expect(view.getZoom()).to.be(2);
+      });
+    });
+  });
+
+  describe('#setMinZoom', function() {
+    describe('with resolutions property in view', function() {
+      it('changes the zoom level when the level is under min zoom', function() {
+        var view = new ol.View({
+          resolutions: [100000, 50000, 25000, 12500, 6250, 3125],
+          zoom: 4
+        });
+
+        view.setMinZoom(5);
+        expect(view.getZoom()).to.be(5);
+      });
+    });
+
+    describe('with no resolutions property in view', function() {
+      it('changes the zoom level when the level is under min zoom', function() {
+        var view = new ol.View({
+          zoom: 4
+        });
+      
+        view.setMinZoom(5);
+        expect(view.getZoom()).to.be(5);
+      });
+    });
+  });
+
   describe('#calculateExtent', function() {
     it('returns the expected extent', function() {
       var view = new ol.View({
