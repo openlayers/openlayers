@@ -19,6 +19,7 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
+goog.require('ol.math');
 
 
 /**
@@ -177,6 +178,20 @@ ol.View.prototype.applyOptions_ = function(options) {
   } else if (options.zoom !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
+
+    var nextResolution = this.getResolution();
+    if (isNaN(nextResolution)) {
+      nextResolution = properties[ol.ViewProperty.RESOLUTION];
+      if (isNaN(nextResolution)) {
+        nextResolution = undefined;
+      }
+    }
+
+    if (this.resolutions_ && nextResolution) {
+      properties[ol.ViewProperty.RESOLUTION] = ol.math.clamp(
+        nextResolution,
+        this.minResolution_, this.maxResolution_);
+    }
   }
   properties[ol.ViewProperty.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
@@ -1039,10 +1054,11 @@ ol.View.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
   var maxResolution;
   var minResolution;
+  var resolutions = options.resolutions;
 
   // TODO: move these to be ol constants
   // see https://github.com/openlayers/openlayers/issues/2076
-  var defaultMaxZoom = 28;
+  var defaultMaxZoom = resolutions ? resolutions.length - 1 : 28;
   var defaultZoomFactor = 2;
 
   var minZoom = options.minZoom !== undefined ?
@@ -1055,9 +1071,8 @@ ol.View.createResolutionConstraint_ = function(options) {
       options.zoomFactor : defaultZoomFactor;
 
   if (options.resolutions !== undefined) {
-    var resolutions = options.resolutions;
-    maxResolution = resolutions[0];
-    minResolution = resolutions[resolutions.length - 1];
+    maxResolution = minZoom !== undefined ? resolutions[minZoom] : resolutions[0];
+    minResolution = maxZoom !== undefined ? resolutions[maxZoom] : resolutions[defaultMaxZoom];
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
