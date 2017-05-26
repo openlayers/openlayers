@@ -179,17 +179,9 @@ ol.View.prototype.applyOptions_ = function(options) {
     properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
 
-    var nextResolution = this.getResolution();
-    if (isNaN(nextResolution)) {
-      nextResolution = properties[ol.ViewProperty.RESOLUTION];
-      if (isNaN(nextResolution)) {
-        nextResolution = undefined;
-      }
-    }
-
-    if (this.resolutions_ && nextResolution) {
+    if (this.resolutions_) {
       properties[ol.ViewProperty.RESOLUTION] = ol.math.clamp(
-        nextResolution,
+        Number(this.getResolution() || properties[ol.ViewProperty.RESOLUTION]),
         this.minResolution_, this.maxResolution_);
     }
   }
@@ -1070,7 +1062,7 @@ ol.View.createResolutionConstraint_ = function(options) {
   var zoomFactor = options.zoomFactor !== undefined ?
       options.zoomFactor : defaultZoomFactor;
 
-  if (options.resolutions !== undefined) {
+  if (resolutions !== undefined) {
     maxResolution = minZoom !== undefined ? resolutions[minZoom] : resolutions[0];
     minResolution = maxZoom !== undefined ? resolutions[maxZoom] : resolutions[defaultMaxZoom];
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
