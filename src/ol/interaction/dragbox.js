@@ -9,15 +9,6 @@ goog.require('ol.render.Box');
 
 
 /**
- * @const
- * @type {number}
- */
-ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED =
-    ol.DRAG_BOX_HYSTERESIS_PIXELS *
-    ol.DRAG_BOX_HYSTERESIS_PIXELS;
-
-
-/**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
  * normally combined with an {@link ol.events.condition} that limits
@@ -51,6 +42,12 @@ ol.interaction.DragBox = function(opt_options) {
   this.box_ = new ol.render.Box(options.className || 'ol-dragbox');
 
   /**
+   * @type {number}
+   * @private
+   */
+  this.minArea_ = options.minArea !== undefined ? options.minArea : 64;
+
+  /**
    * @type {ol.Pixel}
    * @private
    */
@@ -76,18 +73,17 @@ ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
 /**
  * The default condition for determining whether the boxend event
  * should fire.
- * @param  {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
- *  leading to the box end.
- * @param  {ol.Pixel} startPixel      The starting pixel of the box.
- * @param  {ol.Pixel} endPixel        The end pixel of the box.
+ * @param {ol.MapBrowserEvent} mapBrowserEvent The originating MapBrowserEvent
+ *     leading to the box end.
+ * @param {ol.Pixel} startPixel The starting pixel of the box.
+ * @param {ol.Pixel} endPixel The end pixel of the box.
  * @return {boolean} Whether or not the boxend condition should be fired.
+ * @this {ol.interaction.DragBox}
  */
-ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent,
-    startPixel, endPixel) {
+ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
   var width = endPixel[0] - startPixel[0];
   var height = endPixel[1] - startPixel[1];
-  return width * width + height * height >=
-      ol.DRAG_BOX_HYSTERESIS_PIXELS_SQUARED;
+  return width * width + height * height >= this.minArea_;
 };
 
 
@@ -119,8 +115,8 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
 
 
 /**
- * To be overriden by child classes.
- * FIXME: use constructor option instead of relying on overridding.
+ * To be overridden by child classes.
+ * FIXME: use constructor option instead of relying on overriding.
  * @param {ol.MapBrowserEvent} mapBrowserEvent Map browser event.
  * @protected
  */

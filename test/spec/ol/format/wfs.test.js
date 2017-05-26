@@ -587,6 +587,37 @@ describe('ol.format.WFS', function() {
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
 
+    it('creates During property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="states" srsName="EPSG:4326">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:During>' +
+          '      <fes:ValueReference xmlns:fes="http://www.opengis.net/fes">date_prop</fes:ValueReference>' +
+          '      <gml:TimePeriod xmlns:gml="http://www.opengis.net/gml">' +
+          '        <gml:begin>' +
+          '          <gml:TimeInstant>' +
+          '            <gml:timePosition>2010-01-20T00:00:00Z</gml:timePosition>' +
+          '          </gml:TimeInstant>' +
+          '        </gml:begin>' +
+          '        <gml:end>' +
+          '          <gml:TimeInstant>' +
+          '            <gml:timePosition>2012-12-31T00:00:00Z</gml:timePosition>' +
+          '          </gml:TimeInstant>' +
+          '        </gml:end>' +
+          '      </gml:TimePeriod>' +
+          '    </ogc:During>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['states'],
+        filter: ol.format.filter.during('date_prop', '2010-01-20T00:00:00Z', '2012-12-31T00:00:00Z')
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
   });
 
   describe('when writing out a Transaction request', function() {
@@ -839,6 +870,127 @@ describe('ol.format.WFS', function() {
     });
   });
 
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionMulti.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('do not add feature prefix twice', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2]]),
+        foo: 'bar',
+        nul: null
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var updateFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2]]),
+        foo: 'bar',
+        // null value gets Property element with no Value
+        nul: null,
+        // undefined value means don't create a Property element
+        unwritten: undefined
+      });
+      updateFeature.setId('fid.42');
+      var updates = [updateFeature];
+
+      var deleteFeature = new ol.Feature();
+      deleteFeature.setId('fid.37');
+      var deletes = [deleteFeature];
+      var serialized = format.writeTransaction(inserts, updates, deletes, {
+        featureNS: 'http://www.openplans.org/topp',
+        featureType: 'topp:states',
+        featurePrefix: 'topp'
+      });
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+  });
+
+  describe('when writing out a transaction request', function() {
+    var text;
+    var filename = 'spec/ol/format/wfs/TransactionMultiVersion100_3D.xml';
+    before(function(done) {
+      afterLoadText(filename, function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('handles 3D in WFS 1.0.0', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.LineString([[1.1, 2, 4], [3, 4.2, 5]]),
+        foo: 'bar',
+        nul: null
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var updateFeature = new ol.Feature({
+        the_geom: new ol.geom.LineString([[1.1, 2, 6], [3, 4.2, 7]]),
+        foo: 'bar',
+        // null value gets Property element with no Value
+        nul: null,
+        // undefined value means don't create a Property element
+        unwritten: undefined
+      });
+      updateFeature.setId('fid.42');
+      var updates = [updateFeature];
+
+      var serialized = format.writeTransaction(inserts, updates, null, {
+        featureNS: 'http://www.openplans.org/topp',
+        featureType: 'states',
+        featurePrefix: 'topp',
+        hasZ: true,
+        version: '1.0.0'
+      });
+
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+    var text;
+    before(function(done) {
+      afterLoadText('spec/ol/format/wfs/TransactionMulti_3D.xml', function(xml) {
+        text = xml;
+        done();
+      });
+    });
+
+    it('handles 3D in WFS 1.1.0', function() {
+      var format = new ol.format.WFS();
+      var insertFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2, 3]]),
+        foo: 'bar',
+        nul: null
+      });
+      insertFeature.setGeometryName('the_geom');
+      var inserts = [insertFeature];
+      var updateFeature = new ol.Feature({
+        the_geom: new ol.geom.MultiPoint([[1, 2, 3]]),
+        foo: 'bar',
+        // null value gets Property element with no Value
+        nul: null,
+        // undefined value means don't create a Property element
+        unwritten: undefined
+      });
+      updateFeature.setId('fid.42');
+      var updates = [updateFeature];
+
+      var serialized = format.writeTransaction(inserts, updates, null, {
+        featureNS: 'http://www.openplans.org/topp',
+        featureType: 'states',
+        hasZ: true,
+        featurePrefix: 'topp'
+      });
+      expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+  });
 
   describe('when writing out a GetFeature request', function() {
     var text;

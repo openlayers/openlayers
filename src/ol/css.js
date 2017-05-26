@@ -11,6 +11,14 @@ ol.css.CLASS_HIDDEN = 'ol-hidden';
 
 
 /**
+ * The CSS class that we'll give the DOM elements to have them selectable.
+ *
+ * @const
+ * @type {string}
+ */
+ol.css.CLASS_SELECTABLE = 'ol-selectable';
+
+/**
  * The CSS class that we'll give the DOM elements to have them unselectable.
  *
  * @const

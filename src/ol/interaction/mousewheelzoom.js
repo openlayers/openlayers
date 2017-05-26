@@ -52,6 +52,12 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
 
   /**
    * @private
+   * @type {boolean}
+   */
+  this.constrainResolution_ = options.constrainResolution || false;
+
+  /**
+   * @private
    * @type {?ol.Coordinate}
    */
   this.lastAnchor_ = null;
@@ -186,6 +192,16 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
       view.setCenter(view.constrainCenter(center));
     }
     view.setResolution(resolution);
+
+    if (rebound === 0 && this.constrainResolution_) {
+      view.animate({
+        resolution: view.constrainResolution(resolution, delta > 0 ? -1 : 1),
+        easing: ol.easing.easeOut,
+        anchor: this.lastAnchor_,
+        duration: this.duration_
+      });
+    }
+
     if (rebound > 0) {
       view.animate({
         resolution: minResolution,

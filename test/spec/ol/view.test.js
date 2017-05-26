@@ -310,9 +310,11 @@ describe('ol.View', function() {
       });
 
       expect(view.getHints()).to.eql([0, 0]);
+      expect(view.getInteracting()).to.eql(false);
 
       view.setHint(ol.ViewHint.INTERACTING, 1);
       expect(view.getHints()).to.eql([0, 1]);
+      expect(view.getInteracting()).to.eql(true);
     });
 
     it('triggers the change event', function(done) {
@@ -323,6 +325,7 @@ describe('ol.View', function() {
 
       view.on('change', function() {
         expect(view.getHints()).to.eql([0, 1]);
+        expect(view.getInteracting()).to.eql(true);
         done();
       });
       view.setHint(ol.ViewHint.INTERACTING, 1);
@@ -1176,6 +1179,24 @@ describe('ol.View', function() {
       }, 50);
 
     });
+    it('calls a callback when duration is not defined', function(done) {
+      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+        callback: function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      });
+    });
+    it('calls a callback when animation completes', function(done) {
+      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
+        duration: 25,
+        callback: function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      });
+    });
+
   });
 
   describe('centerOn', function() {

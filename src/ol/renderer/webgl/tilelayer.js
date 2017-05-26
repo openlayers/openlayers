@@ -196,8 +196,8 @@ if (ol.ENABLE_WEBGL) {
       var program = context.getProgram(this.fragmentShader_, this.vertexShader_);
       context.useProgram(program);
       if (!this.locations_) {
-        this.locations_ =
-            new ol.renderer.webgl.tilelayershader.Locations(gl, program);
+        // eslint-disable-next-line openlayers-internal/no-missing-requires
+        this.locations_ = new ol.renderer.webgl.tilelayershader.Locations(gl, program);
       }
 
       context.bindBuffer(ol.webgl.ARRAY_BUFFER, this.renderArrayBuffer_);

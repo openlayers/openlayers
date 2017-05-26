@@ -224,10 +224,66 @@ describe('ol.interaction.Translate', function() {
 
       simulateEvent('pointerup', 10, 20);
       expect(element.style.cursor).to.match(/grab$/);
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('');
     });
 
     it('respects existing cursor value', function() {
       element.style.cursor = 'pointer';
+
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      simulateEvent('pointerdown', 10, 20);
+      expect(element.style.cursor).to.match(/grabbing$/);
+
+      simulateEvent('pointerup', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('pointer');
+    });
+
+    it('resets css cursor when interaction is deactivated while pointer is on feature', function() {
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      translate.setActive(false);
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('');
+    });
+
+    it('resets css cursor to existing cursor when interaction is deactivated while pointer is on feature', function() {
+      element.style.cursor = 'pointer';
+
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      translate.setActive(false);
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('pointer');
+    });
+
+    it('resets css cursor interaction is removed while pointer is on feature', function() {
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      map.removeInteraction(translate);
+
+      simulateEvent('pointermove', 0, 0);
+      expect(element.style.cursor).to.eql('');
+    });
+
+    it('resets css cursor to existing cursor interaction is removed while pointer is on feature', function() {
+      element.style.cursor = 'pointer';
+
+      simulateEvent('pointermove', 10, 20);
+      expect(element.style.cursor).to.match(/grab$/);
+
+      map.removeInteraction(translate);
 
       simulateEvent('pointermove', 0, 0);
       expect(element.style.cursor).to.eql('pointer');

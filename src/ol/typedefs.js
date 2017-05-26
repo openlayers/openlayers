@@ -156,12 +156,11 @@ ol.DragBoxEndConditionType;
 
 
 /**
- * Function that takes coordinates and an optional existing geometry as
+ * Function that takes an array of coordinates and an optional existing geometry as
  * arguments, and returns a geometry. The optional existing geometry is the
  * geometry that is returned when the function is called without a second
  * argument.
- * @typedef {function(!(ol.Coordinate|Array.<ol.Coordinate>|
- *     Array.<Array.<ol.Coordinate>>), ol.geom.SimpleGeometry=):
+ * @typedef {function(!Array.<ol.Coordinate>, ol.geom.SimpleGeometry=):
  *     ol.geom.SimpleGeometry}
  */
 ol.DrawGeometryFunctionType;
@@ -254,6 +253,15 @@ ol.FeatureUrlFunction;
 
 
 /**
+ * @typedef {{
+ *     geom: ol.geom.Point,
+ *     text: string
+ * }}
+ */
+ol.GraticuleLabelDataType;
+
+
+/**
  * A function that is called to trigger asynchronous canvas drawing.  It is
  * called with a "done" callback that should be called when drawing is done.
  * If any error occurs during drawing, the "done" callback should be called with
@@ -285,7 +293,8 @@ ol.ImageLoadFunctionType;
 
 /**
  * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
- *            y: number, yunits: (ol.style.IconAnchorUnits|undefined)}}
+ *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
+ *            origin: (ol.style.IconOrigin|undefined)}}
  */
 ol.KMLVec2_;
 
@@ -444,9 +453,11 @@ ol.RegularShapeRenderOptions;
 
 /**
  * A function to be used when sorting features before rendering.
- * It takes two instances of {@link ol.Feature} and returns a `{number}`.
+ * It takes two instances of {@link ol.Feature} or {@link ol.render.Feature} and
+ * returns a `{number}`.
  *
- * @typedef {function(ol.Feature, ol.Feature):number}
+ * @typedef {function((ol.Feature|ol.render.Feature), (ol.Feature|ol.render.Feature)):
+ *     number}
  */
 ol.RenderOrderFunction;
 
@@ -642,8 +653,7 @@ ol.TilePriorityFunction;
  *     dirty: boolean,
  *     renderedRenderOrder: (null|ol.RenderOrderFunction),
  *     renderedTileRevision: number,
- *     renderedRevision: number,
- *     replayGroup: ol.render.ReplayGroup}}
+ *     renderedRevision: number}}
  */
 ol.TileReplayState;
 

@@ -37,7 +37,20 @@ describe('ol.interaction.DragAndDrop', function() {
       expect(interaction.formatConstructors_).to.have.length(1);
     });
 
+  });
 
+  describe('#setActive()', function() {
+    it('registers and unregisters listeners', function() {
+      interaction.setMap(map);
+      interaction.setActive(true);
+      expect(viewport.hasListener('dragenter')).to.be(true);
+      expect(viewport.hasListener('dragover')).to.be(true);
+      expect(viewport.hasListener('drop')).to.be(true);
+      interaction.setActive(false);
+      expect(viewport.hasListener('dragenter')).to.be(false);
+      expect(viewport.hasListener('dragover')).to.be(false);
+      expect(viewport.hasListener('drop')).to.be(false);
+    });
   });
 
   describe('#setMap()', function() {

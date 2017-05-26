@@ -285,7 +285,8 @@ ol.format.KML.createStyleDefaults_ = function() {
  */
 ol.format.KML.ICON_ANCHOR_UNITS_MAP_ = {
   'fraction': ol.style.IconAnchorUnits.FRACTION,
-  'pixels': ol.style.IconAnchorUnits.PIXELS
+  'pixels': ol.style.IconAnchorUnits.PIXELS,
+  'insetPixels': ol.style.IconAnchorUnits.PIXELS
 };
 
 
@@ -487,7 +488,7 @@ ol.format.KML.readFlatCoordinates_ = function(node) {
  */
 ol.format.KML.readURI_ = function(node) {
   var s = ol.xml.getAllTextContent(node, false).trim();
-  if (node.baseURI) {
+  if (node.baseURI && node.baseURI !== 'about:blank') {
     var url = new URL(s, node.baseURI);
     return url.href;
   } else {
@@ -504,11 +505,26 @@ ol.format.KML.readURI_ = function(node) {
 ol.format.KML.readVec2_ = function(node) {
   var xunits = node.getAttribute('xunits');
   var yunits = node.getAttribute('yunits');
+  var origin;
+  if (xunits !== 'insetPixels') {
+    if (yunits !== 'insetPixels') {
+      origin = ol.style.IconOrigin.BOTTOM_LEFT;
+    } else {
+      origin = ol.style.IconOrigin.TOP_LEFT;
+    }
+  } else {
+    if (yunits !== 'insetPixels') {
+      origin = ol.style.IconOrigin.BOTTOM_RIGHT;
+    } else {
+      origin = ol.style.IconOrigin.TOP_RIGHT;
+    }
+  }
   return {
     x: parseFloat(node.getAttribute('x')),
     xunits: ol.format.KML.ICON_ANCHOR_UNITS_MAP_[xunits],
     y: parseFloat(node.getAttribute('y')),
-    yunits: ol.format.KML.ICON_ANCHOR_UNITS_MAP_[yunits]
+    yunits: ol.format.KML.ICON_ANCHOR_UNITS_MAP_[yunits],
+    origin: origin
   };
 };
 
@@ -562,12 +578,14 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
     src = ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_;
   }
   var anchor, anchorXUnits, anchorYUnits;
+  var anchorOrigin = ol.style.IconOrigin.BOTTOM_LEFT;
   var hotSpot = /** @type {ol.KMLVec2_|undefined} */
       (object['hotSpot']);
   if (hotSpot) {
     anchor = [hotSpot.x, hotSpot.y];
     anchorXUnits = hotSpot.xunits;
     anchorYUnits = hotSpot.yunits;
+    anchorOrigin = hotSpot.origin;
   } else if (src === ol.format.KML.DEFAULT_IMAGE_STYLE_SRC_) {
     anchor = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_;
     anchorXUnits = ol.format.KML.DEFAULT_IMAGE_STYLE_ANCHOR_X_UNITS_;
@@ -616,7 +634,7 @@ ol.format.KML.IconStyleParser_ = function(node, objectStack) {
 
     var imageStyle = new ol.style.Icon({
       anchor: anchor,
-      anchorOrigin: ol.style.IconOrigin.BOTTOM_LEFT,
+      anchorOrigin: anchorOrigin,
       anchorXUnits: anchorXUnits,
       anchorYUnits: anchorYUnits,
       crossOrigin: 'anonymous', // FIXME should this be configurable?

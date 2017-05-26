@@ -68,6 +68,13 @@ ol.interaction.Modify = function(options) {
       options.deleteCondition : this.defaultDeleteCondition_;
 
   /**
+   * @type {ol.EventsConditionType}
+   * @private
+   */
+  this.insertVertexCondition_ = options.insertVertexCondition ?
+      options.insertVertexCondition : ol.events.condition.always;
+
+  /**
    * Editing vertex.
    * @type {ol.Feature}
    * @private
@@ -600,7 +607,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
 
         this.dragSegments_.push([segmentDataMatch, 1]);
         componentSegments[uid][1] = segmentDataMatch;
-      } else if (ol.getUid(segment) in this.vertexSegments_ &&
+      } else if (this.insertVertexCondition_(evt) && ol.getUid(segment) in this.vertexSegments_ &&
           (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
