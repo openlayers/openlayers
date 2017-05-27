@@ -28,6 +28,7 @@ if (ol.ENABLE_WEBGL) {
    * @extends {ol.renderer.Map}
    * @param {Element} container Container.
    * @param {ol.Map} map Map.
+   * @api
    */
   ol.renderer.webgl.Map = function(container, map) {
     ol.renderer.Map.call(this, container, map);
@@ -160,6 +161,27 @@ if (ol.ENABLE_WEBGL) {
     this.initializeGL_();
   };
   ol.inherits(ol.renderer.webgl.Map, ol.renderer.Map);
+
+
+  /**
+   * Determine if this renderer handles the provided layer.
+   * @param {ol.renderer.Type} type The renderer type.
+   * @return {boolean} The renderer can render the layer.
+   */
+  ol.renderer.webgl.Map['handles'] = function(type) {
+    return type === ol.renderer.Type.WEBGL;
+  };
+
+
+  /**
+   * Create the map renderer.
+   * @param {Element} container Container.
+   * @param {ol.Map} map Map.
+   * @return {ol.renderer.webgl.Map} The map renderer.
+   */
+  ol.renderer.webgl.Map['create'] = function(container, map) {
+    return new ol.renderer.webgl.Map(container, map);
+  };
 
 
   /**

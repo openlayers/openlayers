@@ -15,6 +15,7 @@ goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
 goog.require('ol.ObjectEventType');
+goog.require('ol.PluginType');
 goog.require('ol.TileQueue');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
@@ -30,13 +31,40 @@ goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.layer.Group');
 goog.require('ol.obj');
-goog.require('ol.renderer.Map');
+goog.require('ol.plugins');
 goog.require('ol.renderer.Type');
+goog.require('ol.renderer.canvas.ImageLayer');
 goog.require('ol.renderer.canvas.Map');
+goog.require('ol.renderer.canvas.TileLayer');
+goog.require('ol.renderer.canvas.VectorLayer');
+goog.require('ol.renderer.canvas.VectorTileLayer');
+goog.require('ol.renderer.webgl.ImageLayer');
 goog.require('ol.renderer.webgl.Map');
+goog.require('ol.renderer.webgl.TileLayer');
+goog.require('ol.renderer.webgl.VectorLayer');
 goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.transform');
+
+
+if (ol.ENABLE_CANVAS) {
+  ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.canvas.Map);
+  ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
+    ol.renderer.canvas.ImageLayer,
+    ol.renderer.canvas.TileLayer,
+    ol.renderer.canvas.VectorLayer,
+    ol.renderer.canvas.VectorTileLayer
+  ]);
+}
+
+if (ol.ENABLE_WEBGL) {
+  ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.webgl.Map);
+  ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
+    ol.renderer.webgl.ImageLayer,
+    ol.renderer.webgl.TileLayer,
+    ol.renderer.webgl.VectorLayer
+  ]);
+}
 
 
 /**
@@ -330,7 +358,7 @@ ol.Map = function(options) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ = new /** @type {Function} */ (optionsInternal.rendererConstructor)(this.viewport_, this);
+  this.renderer_ = optionsInternal.mapRendererPlugin.create(this.viewport_, this);
 
   /**
    * @type {function(Event)|undefined}
@@ -1442,11 +1470,6 @@ ol.Map.createOptionsInternal = function(options) {
     options.view : new ol.View();
 
   /**
-   * @type {function(new: ol.renderer.Map, Element, ol.Map)}
-   */
-  var rendererConstructor = ol.renderer.Map;
-
-  /**
    * @type {Array.<ol.renderer.Type>}
    */
   var rendererTypes;
@@ -1465,21 +1488,25 @@ ol.Map.createOptionsInternal = function(options) {
     rendererTypes = ol.DEFAULT_RENDERER_TYPES;
   }
 
-  var i, ii;
-  for (i = 0, ii = rendererTypes.length; i < ii; ++i) {
-    /** @type {ol.renderer.Type} */
+  /**
+   * @type {olx.MapRendererPlugin}
+   */
+  var mapRendererPlugin;
+
+  var mapRendererPlugins = ol.plugins.getMapRendererPlugins();
+  outer: for (var i = 0, ii = rendererTypes.length; i < ii; ++i) {
     var rendererType = rendererTypes[i];
-    if (ol.ENABLE_CANVAS && rendererType == ol.renderer.Type.CANVAS) {
-      if (ol.has.CANVAS) {
-        rendererConstructor = ol.renderer.canvas.Map;
-        break;
-      }
-    } else if (ol.ENABLE_WEBGL && rendererType == ol.renderer.Type.WEBGL) {
-      if (ol.has.WEBGL) {
-        rendererConstructor = ol.renderer.webgl.Map;
-        break;
+    for (var j = 0, jj = mapRendererPlugins.length; j < jj; ++j) {
+      var candidate = mapRendererPlugins[j];
+      if (candidate.handles(rendererType)) {
+        mapRendererPlugin = candidate;
+        break outer;
       }
     }
+  }
+
+  if (!mapRendererPlugin) {
+    throw new Error('Unable to create a map renderer for types: ' +  rendererTypes.join(', '));
   }
 
   var controls;
@@ -1527,7 +1554,7 @@ ol.Map.createOptionsInternal = function(options) {
     keyboardEventTarget: keyboardEventTarget,
     logos: logos,
     overlays: overlays,
-    rendererConstructor: rendererConstructor,
+    mapRendererPlugin: mapRendererPlugin,
     values: values
   };
 

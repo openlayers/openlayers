@@ -370,8 +370,7 @@ ol.LRUCacheEntry;
  *            keyboardEventTarget: (Element|Document),
  *            logos: (Object.<string, (string|Element)>),
  *            overlays: ol.Collection.<ol.Overlay>,
- *            rendererConstructor:
- *                function(new: ol.renderer.Map, Element, ol.Map),
+ *            mapRendererPlugin: olx.MapRendererPlugin,
  *            values: Object.<string, *>}}
  */
 ol.MapOptionsInternal;

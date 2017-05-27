@@ -4,11 +4,13 @@
 goog.provide('ol.renderer.webgl.TileLayer');
 
 goog.require('ol');
-goog.require('ol.TileState');
+goog.require('ol.LayerType');
 goog.require('ol.TileRange');
+goog.require('ol.TileState');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.math');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.renderer.webgl.tilelayershader');
 goog.require('ol.size');
@@ -24,6 +26,7 @@ if (ol.ENABLE_WEBGL) {
    * @extends {ol.renderer.webgl.Layer}
    * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
    * @param {ol.layer.Tile} tileLayer Tile layer.
+   * @api
    */
   ol.renderer.webgl.TileLayer = function(mapRenderer, tileLayer) {
 
@@ -84,6 +87,31 @@ if (ol.ENABLE_WEBGL) {
 
   };
   ol.inherits(ol.renderer.webgl.TileLayer, ol.renderer.webgl.Layer);
+
+
+  /**
+   * Determine if this renderer handles the provided layer.
+   * @param {ol.renderer.Type} type The renderer type.
+   * @param {ol.layer.Layer} layer The candidate layer.
+   * @return {boolean} The renderer can render the layer.
+   */
+  ol.renderer.webgl.TileLayer['handles'] = function(type, layer) {
+    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.TILE;
+  };
+
+
+  /**
+   * Create a layer renderer.
+   * @param {ol.renderer.Map} mapRenderer The map renderer.
+   * @param {ol.layer.Layer} layer The layer to be rendererd.
+   * @return {ol.renderer.webgl.TileLayer} The layer renderer.
+   */
+  ol.renderer.webgl.TileLayer['create'] = function(mapRenderer, layer) {
+    return new ol.renderer.webgl.TileLayer(
+      /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+      /** @type {ol.layer.Tile} */ (layer)
+    );
+  };
 
 
   /**

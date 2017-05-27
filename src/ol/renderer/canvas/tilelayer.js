@@ -3,12 +3,14 @@
 goog.provide('ol.renderer.canvas.TileLayer');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.TileRange');
 goog.require('ol.TileState');
 goog.require('ol.ViewHint');
 goog.require('ol.array');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
 goog.require('ol.transform');
 
@@ -17,6 +19,7 @@ goog.require('ol.transform');
  * @constructor
  * @extends {ol.renderer.canvas.IntermediateCanvas}
  * @param {ol.layer.Tile|ol.layer.VectorTile} tileLayer Tile layer.
+ * @api
  */
 ol.renderer.canvas.TileLayer = function(tileLayer) {
 
@@ -78,6 +81,28 @@ ol.renderer.canvas.TileLayer = function(tileLayer) {
 
 };
 ol.inherits(ol.renderer.canvas.TileLayer, ol.renderer.canvas.IntermediateCanvas);
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @param {ol.renderer.Type} type The renderer type.
+ * @param {ol.layer.Layer} layer The candidate layer.
+ * @return {boolean} The renderer can render the layer.
+ */
+ol.renderer.canvas.TileLayer['handles'] = function(type, layer) {
+  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.TILE;
+};
+
+
+/**
+ * Create a layer renderer.
+ * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @return {ol.renderer.canvas.TileLayer} The layer renderer.
+ */
+ol.renderer.canvas.TileLayer['create'] = function(mapRenderer, layer) {
+  return new ol.renderer.canvas.TileLayer(/** @type {ol.layer.Tile} */ (layer));
+};
 
 
 /**

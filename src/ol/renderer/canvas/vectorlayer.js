@@ -1,12 +1,14 @@
 goog.provide('ol.renderer.canvas.VectorLayer');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.render.EventType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.vector');
 
@@ -15,6 +17,7 @@ goog.require('ol.renderer.vector');
  * @constructor
  * @extends {ol.renderer.canvas.Layer}
  * @param {ol.layer.Vector} vectorLayer Vector layer.
+ * @api
  */
 ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
@@ -64,6 +67,28 @@ ol.renderer.canvas.VectorLayer = function(vectorLayer) {
 
 };
 ol.inherits(ol.renderer.canvas.VectorLayer, ol.renderer.canvas.Layer);
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @param {ol.renderer.Type} type The renderer type.
+ * @param {ol.layer.Layer} layer The candidate layer.
+ * @return {boolean} The renderer can render the layer.
+ */
+ol.renderer.canvas.VectorLayer['handles'] = function(type, layer) {
+  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.VECTOR;
+};
+
+
+/**
+ * Create a layer renderer.
+ * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @return {ol.renderer.canvas.VectorLayer} The layer renderer.
+ */
+ol.renderer.canvas.VectorLayer['create'] = function(mapRenderer, layer) {
+  return new ol.renderer.canvas.VectorLayer(/** @type {ol.layer.Vector} */ (layer));
+};
 
 
 /**

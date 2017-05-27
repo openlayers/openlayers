@@ -8290,3 +8290,49 @@ olx.style.AtlasManagerOptions.prototype.maxSize;
  * @api
  */
 olx.style.AtlasManagerOptions.prototype.space;
+
+
+/**
+ * @typedef {{handles: function(ol.renderer.Type):boolean,
+ *     create: function(Element, ol.Map):ol.renderer.Map}}
+ */
+olx.MapRendererPlugin;
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @type {function(ol.renderer.Type):boolean}
+ * @api
+ */
+olx.MapRendererPlugin.prototype.handles;
+
+
+/**
+ * Create the map renderer.
+ * @type {function(Element, ol.Map):ol.renderer.Map}
+ * @api
+ */
+olx.MapRendererPlugin.prototype.create;
+
+
+/**
+ * @typedef {{handles: function(ol.renderer.Type, ol.layer.Layer):boolean,
+ *     create: function(ol.renderer.Map, ol.layer.Layer):ol.renderer.Layer}}
+ */
+olx.LayerRendererPlugin;
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @type {function(ol.renderer.Type, ol.layer.Layer):boolean}
+ * @api
+ */
+olx.LayerRendererPlugin.prototype.handles;
+
+
+/**
+ * Create a layer renderer.
+ * @type {function(ol.renderer.Map, ol.layer.Layer):ol.renderer.Layer}
+ * @api
+ */
+olx.LayerRendererPlugin.prototype.create;
