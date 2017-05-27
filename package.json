@@ -15,6 +15,7 @@
     "pretest": "eslint tasks test test_rendering src examples",
     "lint-package": "eslint --fix build/package",
     "test": "node tasks/test.js",
+    "check:compile-standalone": "node test_compilation/run.js",
     "debug-server": "node tasks/serve-lib.js"
   },
   "main": "dist/ol.js",
