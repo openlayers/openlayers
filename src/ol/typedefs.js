@@ -365,8 +365,8 @@ ol.LRUCacheEntry;
 
 
 /**
- * @typedef {{controls: ol.Collection.<ol.control.Control>,
- *            interactions: ol.Collection.<ol.interaction.Interaction>,
+ * @typedef {{controls: (ol.Collection.<ol.control.Control>|undefined),
+ *            interactions: (ol.Collection.<ol.interaction.Interaction>|undefined),
  *            keyboardEventTarget: (Element|Document),
  *            logos: (Object.<string, (string|Element)>),
  *            overlays: ol.Collection.<ol.Overlay>,
