@@ -1737,7 +1737,7 @@ ol.format.KML.prototype.readSharedStyle_ = function(node, objectStack) {
     var style = ol.format.KML.readStyle_(node, objectStack);
     if (style) {
       var styleUri;
-      if (node.baseURI) {
+      if (node.baseURI && node.baseURI !== 'about:blank') {
         var url = new URL('#' + id, node.baseURI);
         styleUri = url.href;
       } else {
@@ -1764,7 +1764,7 @@ ol.format.KML.prototype.readSharedStyleMap_ = function(node, objectStack) {
     return;
   }
   var styleUri;
-  if (node.baseURI) {
+  if (node.baseURI && node.baseURI !== 'about:blank') {
     var url = new URL('#' + id, node.baseURI);
     styleUri = url.href;
   } else {
