@@ -7,6 +7,7 @@ goog.require('ol.array');
 goog.require('ol.css');
 goog.require('ol.dom');
 goog.require('ol.events');
+goog.require('ol.has');
 goog.require('ol.layer.Layer');
 goog.require('ol.render.Event');
 goog.require('ol.render.EventType');
@@ -169,7 +170,7 @@ if (ol.ENABLE_WEBGL) {
    * @return {boolean} The renderer can render the layer.
    */
   ol.renderer.webgl.Map['handles'] = function(type) {
-    return type === ol.renderer.Type.WEBGL;
+    return ol.has.WEBGL && type === ol.renderer.Type.WEBGL;
   };
 
 
