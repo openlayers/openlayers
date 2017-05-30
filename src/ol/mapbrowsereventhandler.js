@@ -12,10 +12,11 @@ goog.require('ol.pointer.PointerEventHandler');
 
 /**
  * @param {ol.Map} map The map with the viewport to listen to events on.
+ * @param {number|undefined} moveTolerance The minimal distance the pointer must travel to trigger a move.
  * @constructor
  * @extends {ol.events.EventTarget}
  */
-ol.MapBrowserEventHandler = function(map) {
+ol.MapBrowserEventHandler = function(map, moveTolerance) {
 
   ol.events.EventTarget.call(this);
 
@@ -48,7 +49,8 @@ ol.MapBrowserEventHandler = function(map) {
    * @type {number}
    * @private
    */
-  this.moveTolerance_ = ol.has.DEVICE_PIXEL_RATIO;
+  this.moveTolerance_ = moveTolerance ?
+      moveTolerance * ol.has.DEVICE_PIXEL_RATIO : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * The most recent "down" type event (or null if none have occurred).
