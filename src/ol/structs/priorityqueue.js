@@ -168,6 +168,7 @@ ol.structs.PriorityQueue.prototype.heapify_ = function() {
 
 /**
  * @return {boolean} Is empty.
+ * @api
  */
 ol.structs.PriorityQueue.prototype.isEmpty = function() {
   return this.elements_.length === 0;

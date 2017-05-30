@@ -73,6 +73,7 @@ ol.TileQueue.prototype.enqueue = function(element) {
 
 /**
  * @return {number} Number of tiles loading.
+ * @api
  */
 ol.TileQueue.prototype.getTilesLoading = function() {
   return this.tilesLoading_;
