@@ -183,7 +183,11 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
 
   var stopEvent = false;
   this.updateTrackedPointers_(mapBrowserEvent);
-  if (this.handlingDownUpSequence) {
+  if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDOWN) {
+    var handled = this.handleDownEvent_(mapBrowserEvent);
+    this.handlingDownUpSequence = this.handlingDownUpSequence || handled;
+    stopEvent = this.shouldStopEvent(handled);
+  } else if (this.handlingDownUpSequence) {
     if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDRAG) {
       this.handleDragEvent_(mapBrowserEvent);
     } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERUP) {
@@ -191,11 +195,7 @@ ol.interaction.Pointer.handleEvent = function(mapBrowserEvent) {
       this.handlingDownUpSequence = handledUp && this.targetPointers.length > 0;
     }
   } else {
-    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERDOWN) {
-      var handled = this.handleDownEvent_(mapBrowserEvent);
-      this.handlingDownUpSequence = handled;
-      stopEvent = this.shouldStopEvent(handled);
-    } else if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE) {
+    if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE) {
       this.handleMoveEvent_(mapBrowserEvent);
     }
   }

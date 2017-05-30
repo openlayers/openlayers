@@ -52,6 +52,12 @@ ol.interaction.DragBox = function(opt_options) {
   this.startPixel_ = null;
 
   /**
+   * @type {ol.Pixel}
+   * @private
+   */
+  this.endPixel_ = null;
+
+  /**
    * @private
    * @type {ol.EventsConditionType}
    */
@@ -91,7 +97,21 @@ ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startP
  * @private
  */
 ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
-  this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
+  var startPixel = this.startPixel_;
+  var endPixel = mapBrowserEvent.pixel;
+  if (this.targetPointers.length > 1) {
+    startPixel = [this.targetPointers[0].clientX, this.targetPointers[0].clientY];
+    endPixel = [this.targetPointers[1].clientX, this.targetPointers[1].clientY];
+    var viewportPosition = mapBrowserEvent.map.getViewport().getBoundingClientRect();
+
+    startPixel[0] -= viewportPosition.left;
+    startPixel[1] -= viewportPosition.top;
+    endPixel[0] -= viewportPosition.left;
+    endPixel[1] -= viewportPosition.top;
+  }
+  this.box_.setPixels(startPixel, endPixel);
+  this.startPixel_ = startPixel;
+  this.endPixel_ = endPixel;
 
   this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXDRAG,
     mapBrowserEvent.coordinate, mapBrowserEvent));
@@ -124,15 +144,19 @@ ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
  * @private
  */
 ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
-  this.box_.setMap(null);
-
-  if (this.boxEndCondition_(mapBrowserEvent,
+  if (this.targetPointers.length === 0 &&
+      this.boxEndCondition_(mapBrowserEvent,
       this.startPixel_, mapBrowserEvent.pixel)) {
+    this.startPixel_ = null;
+    this.box_.setMap(null);
     this.onBoxEnd(mapBrowserEvent);
     this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXEND,
         mapBrowserEvent.coordinate, mapBrowserEvent));
+    return false;
+  } else if (this.targetPointers.length === 1) {
+    this.startPixel_ = mapBrowserEvent.pixel;
   }
-  return false;
+  return true;
 };
 
 
@@ -145,10 +169,19 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
 ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
   if (ol.events.condition.primaryAction(mapBrowserEvent) && this.condition_(mapBrowserEvent)) {
     this.startPixel_ = mapBrowserEvent.pixel;
+    this.endPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
     this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXSTART,
         mapBrowserEvent.coordinate, mapBrowserEvent));
+    return true;
+  } else if (this.startPixel_ && this.condition_(mapBrowserEvent)) {
+    if (this.targetPointers.length === 2) {
+      this.startPixel_ = this.endPixel_;
+      this.endPixel_ = mapBrowserEvent.pixel;
+      this.box_.setPixels(this.startPixel_, this.endPixel_);
+    }
+
     return true;
   } else {
     return false;
