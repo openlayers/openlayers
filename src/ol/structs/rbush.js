@@ -202,7 +202,7 @@ ol.structs.RBush.prototype.isEmpty = function() {
  */
 ol.structs.RBush.prototype.clear = function() {
   this.rbush_.clear();
-  this.items_ = {};
+  ol.obj.clear(this.items_);
 };
 
 

@@ -339,6 +339,7 @@ ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
 /**
  * Remove all features from the source.
  * @param {boolean=} opt_fast Skip dispatching of {@link removefeature} events.
+ *     Default is `false`.
  * @api
  */
 ol.source.Vector.prototype.clear = function(opt_fast) {
@@ -348,9 +349,9 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
       keys.forEach(ol.events.unlistenByKey);
     }
     if (!this.featuresCollection_) {
-      this.featureChangeKeys_ = {};
-      this.idIndex_ = {};
-      this.undefIdIndex_ = {};
+      ol.obj.clear(this.featureChangeKeys_);
+      ol.obj.clear(this.idIndex_);
+      ol.obj.clear(this.undefIdIndex_);
     }
   } else {
     if (this.featuresRtree_) {
@@ -368,7 +369,7 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
     this.featuresRtree_.clear();
   }
   this.loadedExtentsRtree_.clear();
-  this.nullGeometryFeatures_ = {};
+  ol.obj.clear(this.nullGeometryFeatures_);
 
   var clearEvent = new ol.source.Vector.Event(ol.source.VectorEventType.CLEAR);
   this.dispatchEvent(clearEvent);
