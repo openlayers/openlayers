@@ -18,7 +18,7 @@ var map = new ol.Map({
     })
   }),
   view: new ol.View({
-    center: [-25860000, 4130000],
+    center: [[14200000, 4130000],
     rotation: Math.PI / 6,
     zoom: 10
   })
