@@ -10,9 +10,13 @@ div.ol-zoom {
   top: 178px;
   left: 158px;
 }
+div.ol-rotate {
+  top: 178px;
+  right: 58px;
+}
 div.ol-attribution {
-  bottom: 30px;
-  right: 50px;
+  bottom: 30px !important;
+  right: 50px !important;
 }
 .padding-top {
   position: absolute;
