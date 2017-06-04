@@ -75,7 +75,7 @@ ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
 ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   var evt = typeof event === 'string' ? new ol.events.Event(event) : event;
   var type = evt.type;
-  evt.target = this;
+  evt.target = evt.target || this;
   var listeners = this.listeners_[type];
   var propagate;
   if (listeners) {
