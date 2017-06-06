@@ -462,8 +462,9 @@
   };
 
   var features = {
-    ArrayBuffer: typeof ArrayBuffer === 'function',
-    'ArrayBuffer.isView': typeof ArrayBuffer === 'function' && ArrayBuffer.isView,
+    ArrayBuffer: 'ArrayBuffer' in global,
+    'ArrayBuffer.isView': 'ArrayBuffer' in global && !!ArrayBuffer.isView,
+    FileReader: 'FileReader' in global,
     Uint8ClampedArray: ('Uint8ClampedArray' in global)
   };
 
