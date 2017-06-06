@@ -8,7 +8,7 @@ goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.DragAndDrop');
 
 
-describe('ol.interaction.DragAndDrop', function() {
+where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
 
   beforeEach(function() {
@@ -83,9 +83,11 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('#handleDrop_', function() {
-    var OrigFileReader = FileReader;
+    var OrigFileReader;
 
     beforeEach(function() {
+      OrigFileReader = FileReader;
+
       FileReader = function() {
         ol.events.EventTarget.apply(this, arguments);
         this.readAsText = function(file) {
