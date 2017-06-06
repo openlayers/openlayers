@@ -237,12 +237,14 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
  * @api
  */
 ol.coordinate.rotate = function(coordinate, angle) {
-  var cosAngle = Math.cos(angle);
-  var sinAngle = Math.sin(angle);
-  var x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
-  var y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
-  coordinate[0] = x;
-  coordinate[1] = y;
+  if (angle != 0) {
+    var cosAngle = Math.cos(angle);
+    var sinAngle = Math.sin(angle);
+    var x = coordinate[0] * cosAngle - coordinate[1] * sinAngle;
+    var y = coordinate[1] * cosAngle + coordinate[0] * sinAngle;
+    coordinate[0] = x;
+    coordinate[1] = y;
+  }
   return coordinate;
 };
 
