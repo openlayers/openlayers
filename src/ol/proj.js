@@ -148,10 +148,7 @@ ol.proj.addProjection = function(projection) {
  * @param {Array.<ol.proj.Projection>} projections Projections.
  */
 ol.proj.addProjections = function(projections) {
-  var addedProjections = [];
-  projections.forEach(function(projection) {
-    addedProjections.push(ol.proj.addProjection(projection));
-  });
+  projections.forEach(ol.proj.addProjection);
 };
 
 
