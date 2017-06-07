@@ -62,16 +62,16 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @const
-   * @type {string}
+   * @type {number}
    */
-  ol.render.webgl.defaultTextAlign = 'center';
+  ol.render.webgl.defaultTextAlign = 0.5;
 
 
   /**
    * @const
-   * @type {string}
+   * @type {number}
    */
-  ol.render.webgl.defaultTextBaseline = 'middle';
+  ol.render.webgl.defaultTextBaseline = 0.5;
 
 
   /**
