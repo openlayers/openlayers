@@ -206,6 +206,9 @@ ol.format.Feature.transformWithOptions = function(
     if (Array.isArray(transformed)) {
       transform(transformed);
     } else {
+      if (transformed === geometry) {
+        transformed = transformed.clone();
+      }
       transformed.applyTransform(transform);
     }
   }

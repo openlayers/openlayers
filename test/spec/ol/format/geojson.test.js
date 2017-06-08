@@ -826,6 +826,8 @@ describe('ol.format.GeoJSON', function() {
       });
       expect(format.readGeometry(geojson).getCoordinates()).to.eql(
           [[42.123457, 38.987654], [43, 39]]);
+      expect(linestring.getCoordinates()).to.eql(
+          [[42.123456789, 38.987654321], [43, 39]]);
     });
   });
 
