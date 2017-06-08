@@ -44,9 +44,14 @@ if (ol.ENABLE_PROJ4JS) {
  * Get the resolution of the point in degrees or distance units.
  * For projections with degrees as the unit this will simply return the
  * provided resolution. For other projections the point resolution is
- * estimated by transforming the 'point' pixel to EPSG:4326,
+ * by default estimated by transforming the 'point' pixel to EPSG:4326,
  * measuring its width and height on the normal sphere,
  * and taking the average of the width and height.
+ * A custom function can be provided for a specific projection, either
+ * by setting the `getPointResolution` option in the
+ * {@link ol.proj.Projection} constructor or by using
+ * {@link ol.proj.Projection#setGetPointResolution} to change an existing
+ * projection object.
  * @param {ol.proj.Projection} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {ol.Coordinate} point Point to find adjusted resolution at.

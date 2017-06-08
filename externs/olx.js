@@ -680,7 +680,8 @@ olx.ProjectionOptions.prototype.worldExtent;
 /**
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
- * the `{number}` resolution at the passed coordinate.
+ * the `{number}` resolution at the passed coordinate. If this is `undefined`,
+ * the default {@link ol.proj#getPointResolution} function will be used.
  * @type {(function(number, ol.Coordinate):number|undefined)}
  * @api
  */
