@@ -82,4 +82,21 @@ describe('ol.ImageTile', function() {
 
   });
 
+  describe('dispose', function() {
+
+    it('sets image src to a blank image data uri', function() {
+      var tileCoord = [0, 0, 0];
+      var state = ol.TileState.IDLE;
+      var src = 'spec/ol/data/osm-0-0-0.png';
+      var tileLoadFunction = ol.source.Image.defaultImageLoadFunction;
+      var tile = new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
+      tile.load();
+      expect(tile.getState()).to.be(ol.TileState.LOADING);
+      tile.dispose();
+      expect(tile.getState()).to.be(ol.TileState.ABORT);
+      expect(tile.getImage().src).to.be(ol.ImageTile.blankImage.toDataURL('image/png'));
+    });
+
+  });
+
 });
