@@ -2,6 +2,9 @@ sudo: false
 
 language: node_js
 
+addons:
+  firefox: "latest"
+
 node_js:
   - "6.1"
 
