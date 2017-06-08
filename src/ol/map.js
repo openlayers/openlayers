@@ -210,7 +210,7 @@ ol.Map = function(options) {
    * @private
    * @type {ol.Extent}
    */
-  this.previousExtent_ = ol.extent.createEmpty();
+  this.previousExtent_ = null;
 
   /**
    * @private
@@ -1200,6 +1200,7 @@ ol.Map.prototype.renderFrame_ = function(time) {
   var size = this.getSize();
   var view = this.getView();
   var extent = ol.extent.createEmpty();
+  var previousFrameState = this.frameState_;
   /** @type {?olx.FrameState} */
   var frameState = null;
   if (size !== undefined && ol.size.hasArea(size) && view && view.isDef()) {
@@ -1249,7 +1250,19 @@ ol.Map.prototype.renderFrame_ = function(time) {
     Array.prototype.push.apply(
         this.postRenderFunctions_, frameState.postRenderFunctions);
 
-    var idle = !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+    if (previousFrameState) {
+      var moveStart = !this.previousExtent_ ||
+          (!ol.extent.isEmpty(this.previousExtent_) &&
+          !ol.extent.equals(frameState.extent, this.previousExtent_));
+      if (moveStart) {
+        this.dispatchEvent(
+            new ol.MapEvent(ol.MapEventType.MOVESTART, this, previousFrameState));
+        this.previousExtent_ = ol.extent.createOrUpdateEmpty(this.previousExtent_);
+      }
+    }
+
+    var idle = this.previousExtent_ &&
+        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
         !frameState.viewHints[ol.ViewHint.INTERACTING] &&
         !ol.extent.equals(frameState.extent, this.previousExtent_);
 
