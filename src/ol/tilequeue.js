@@ -106,16 +106,25 @@ ol.TileQueue.prototype.handleTileChange = function(event) {
  */
 ol.TileQueue.prototype.loadMoreTiles = function(maxTotalLoading, maxNewLoads) {
   var newLoads = 0;
-  var tile, tileKey;
+  var abortedTiles = false;
+  var state, tile, tileKey;
   while (this.tilesLoading_ < maxTotalLoading && newLoads < maxNewLoads &&
          this.getCount() > 0) {
     tile = /** @type {ol.Tile} */ (this.dequeue()[0]);
     tileKey = tile.getKey();
-    if (tile.getState() === ol.TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
+    state = tile.getState();
+    if (state === ol.TileState.ABORT) {
+      abortedTiles = true;
+    } else if (state === ol.TileState.IDLE && !(tileKey in this.tilesLoadingKeys_)) {
       this.tilesLoadingKeys_[tileKey] = true;
       ++this.tilesLoading_;
       ++newLoads;
       tile.load();
     }
+  }
+  if (newLoads === 0 && abortedTiles) {
+    // Do not stop the render loop when all wanted tiles were aborted due to
+    // a small, saturated tile cache.
+    this.tileChangeCallback_();
   }
 };
