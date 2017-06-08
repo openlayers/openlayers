@@ -96,6 +96,7 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
 
   return {
     'crs': node.getAttribute('CRS'),
+    'srs': node.getAttribute('SRS'),
     'extent': extent,
     'res': resolutions
   };
