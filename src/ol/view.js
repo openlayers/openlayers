@@ -2,7 +2,6 @@ goog.provide('ol.View');
 
 goog.require('ol');
 goog.require('ol.CenterConstraint');
-goog.require('ol.Constraints');
 goog.require('ol.Object');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
@@ -169,8 +168,11 @@ ol.View.prototype.applyOptions_ = function(options) {
    * @private
    * @type {ol.Constraints}
    */
-  this.constraints_ = new ol.Constraints(
-      centerConstraint, resolutionConstraint, rotationConstraint);
+  this.constraints_ = {
+    center: centerConstraint,
+    resolution: resolutionConstraint,
+    rotation: rotationConstraint
+  };
 
   if (options.resolution !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = options.resolution;
@@ -525,6 +527,14 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
       this.get(ol.ViewProperty.CENTER));
+};
+
+
+/**
+ * @return {ol.Constraints} Constraints.
+ */
+ol.View.prototype.getConstraints = function() {
+  return this.constraints_;
 };
 
 

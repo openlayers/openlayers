@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragRotateAndZoom');
 
 goog.require('ol');
+goog.require('ol.RotationConstraint');
 goog.require('ol.ViewHint');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
@@ -85,7 +86,7 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var theta = Math.atan2(deltaY, deltaX);
   var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var view = map.getView();
-  if (this.lastAngle_ !== undefined) {
+  if (view.getConstraints().rotation !== ol.RotationConstraint.disable && this.lastAngle_ !== undefined) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
         view, view.getRotation() - angleDelta);

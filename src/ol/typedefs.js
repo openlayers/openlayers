@@ -131,6 +131,16 @@ ol.ColorLike;
 
 
 /**
+ * @typedef {{
+ *   center: ol.CenterConstraintType,
+ *   resolution: ol.ResolutionConstraintType,
+ *   rotation: ol.RotationConstraintType
+ * }}
+ */
+ol.Constraints;
+
+
+/**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
  * @typedef {Array.<number>}
  */
