@@ -1066,7 +1066,6 @@ ol.View.createResolutionConstraint_ = function(options) {
       options.zoomFactor : defaultZoomFactor;
 
   if (resolutions !== undefined) {
-    var resolutions = options.resolutions;
     maxResolution = minZoom !== undefined ? resolutions[minZoom] : resolutions[0];
     minResolution = maxZoom !== undefined ? resolutions[maxZoom] : resolutions[resolutions.length - 1];
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
