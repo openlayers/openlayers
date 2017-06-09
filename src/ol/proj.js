@@ -52,13 +52,14 @@ if (ol.ENABLE_PROJ4JS) {
  * {@link ol.proj.Projection} constructor or by using
  * {@link ol.proj.Projection#setGetPointResolution} to change an existing
  * projection object.
- * @param {ol.proj.Projection} projection The projection.
+ * @param {ol.ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {ol.Coordinate} point Point to find adjusted resolution at.
  * @return {number} Point resolution at point in projection units.
  * @api
  */
 ol.proj.getPointResolution = function(projection, resolution, point) {
+  projection = ol.proj.get(projection);
   var pointResolution;
   var getter = projection.getPointResolutionFunc();
   if (getter) {
