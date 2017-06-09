@@ -19,6 +19,7 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
+goog.require('ol.math');
 
 
 /**
@@ -177,6 +178,12 @@ ol.View.prototype.applyOptions_ = function(options) {
   } else if (options.zoom !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = this.constrainResolution(
         this.maxResolution_, options.zoom - this.minZoom_);
+
+    if (this.resolutions_) {
+      properties[ol.ViewProperty.RESOLUTION] = ol.math.clamp(
+        Number(this.getResolution() || properties[ol.ViewProperty.RESOLUTION]),
+        this.minResolution_, this.maxResolution_);
+    }
   }
   properties[ol.ViewProperty.ROTATION] =
       options.rotation !== undefined ? options.rotation : 0;
@@ -781,8 +788,9 @@ ol.View.prototype.getZoomForResolution = function(resolution) {
       var nearest = ol.array.linearFindNearest(this.resolutions_, resolution, 1);
       offset += nearest;
       if (nearest == this.resolutions_.length - 1) {
-        return offset;
+        return nearest;
       }
+      offset = nearest;
       max = this.resolutions_[nearest];
       zoomFactor = max / this.resolutions_[nearest + 1];
     } else {
@@ -1041,10 +1049,11 @@ ol.View.createResolutionConstraint_ = function(options) {
   var resolutionConstraint;
   var maxResolution;
   var minResolution;
+  var resolutions = options.resolutions;
 
   // TODO: move these to be ol constants
   // see https://github.com/openlayers/openlayers/issues/2076
-  var defaultMaxZoom = 28;
+  var defaultMaxZoom = resolutions ? resolutions.length - 1 : 28;
   var defaultZoomFactor = 2;
 
   var minZoom = options.minZoom !== undefined ?
@@ -1056,10 +1065,9 @@ ol.View.createResolutionConstraint_ = function(options) {
   var zoomFactor = options.zoomFactor !== undefined ?
       options.zoomFactor : defaultZoomFactor;
 
-  if (options.resolutions !== undefined) {
-    var resolutions = options.resolutions;
-    maxResolution = resolutions[0];
-    minResolution = resolutions[resolutions.length - 1];
+  if (resolutions !== undefined) {
+    maxResolution = minZoom !== undefined ? resolutions[minZoom] : resolutions[0];
+    minResolution = maxZoom !== undefined ? resolutions[maxZoom] : resolutions[defaultMaxZoom];
     resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
         resolutions);
   } else {
