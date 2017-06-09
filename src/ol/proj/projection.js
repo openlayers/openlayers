@@ -254,7 +254,8 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
 
 
 /**
- * Set the getPointResolution function for this projection.
+ * Set the getPointResolution function (see {@link ol.proj#getPointResolution}
+ * for this projection.
  * @param {function(number, ol.Coordinate):number} func Function
  * @api
  */
