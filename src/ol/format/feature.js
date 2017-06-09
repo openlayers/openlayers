@@ -183,14 +183,14 @@ ol.format.Feature.transformWithOptions = function(
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
       transformed = ol.proj.transformExtent(
-          write ? geometry.slice() : geometry,
-          write ? featureProjection : dataProjection,
-          write ? dataProjection : featureProjection);
+          geometry,
+          dataProjection,
+          featureProjection);
     }
   } else {
     transformed = geometry;
   }
-  if (write && opt_options && opt_options.decimals) {
+  if (write && opt_options && opt_options.decimals !== undefined) {
     var power = Math.pow(10, opt_options.decimals);
     // if decimals option on write, round each coordinate appropriately
     /**
@@ -203,11 +203,10 @@ ol.format.Feature.transformWithOptions = function(
       }
       return coordinates;
     };
-    if (Array.isArray(transformed)) {
-      transform(transformed);
-    } else {
-      transformed.applyTransform(transform);
+    if (transformed === geometry) {
+      transformed = transformed.clone();
     }
+    transformed.applyTransform(transform);
   }
   return transformed;
 };
