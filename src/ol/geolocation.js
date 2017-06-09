@@ -73,7 +73,7 @@ ol.Geolocation = function(opt_options) {
       this.handleTrackingChanged_, this);
 
   if (options.projection !== undefined) {
-    this.setProjection(ol.proj.get(options.projection));
+    this.setProjection(options.projection);
   }
   if (options.trackingOptions !== undefined) {
     this.setTrackingOptions(options.trackingOptions);
@@ -308,13 +308,13 @@ ol.Geolocation.prototype.getTrackingOptions = function() {
 
 /**
  * Set the projection to use for transforming the coordinates.
- * @param {ol.proj.Projection} projection The projection the position is
+ * @param {ol.ProjectionLike} projection The projection the position is
  *     reported in.
  * @observable
  * @api
  */
 ol.Geolocation.prototype.setProjection = function(projection) {
-  this.set(ol.GeolocationProperty.PROJECTION, projection);
+  this.set(ol.GeolocationProperty.PROJECTION, ol.proj.get(projection));
 };
 
 
