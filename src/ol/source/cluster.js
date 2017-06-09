@@ -35,27 +35,28 @@ ol.source.Cluster = function(options) {
 
   /**
    * @type {number|undefined}
-   * @private
+   * @protected
    */
-  this.resolution_ = undefined;
+  this.resolution = undefined;
 
   /**
    * @type {number}
-   * @private
+   * @protected
    */
-  this.distance_ = options.distance !== undefined ? options.distance : 20;
+  this.distance = options.distance !== undefined ? options.distance : 20;
 
   /**
    * @type {Array.<ol.Feature>}
-   * @private
+   * @protected
    */
-  this.features_ = [];
+  this.features = [];
 
   /**
    * @param {ol.Feature} feature Feature.
    * @return {ol.geom.Point} Cluster calculation point.
+   * @protected
    */
-  this.geometryFunction_ = options.geometryFunction || function(feature) {
+  this.geometryFunction = options.geometryFunction || function(feature) {
     var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
     ol.asserts.assert(geometry instanceof ol.geom.Point,
         10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
@@ -64,12 +65,12 @@ ol.source.Cluster = function(options) {
 
   /**
    * @type {ol.source.Vector}
-   * @private
+   * @protected
    */
-  this.source_ = options.source;
+  this.source = options.source;
 
-  this.source_.on(ol.events.EventType.CHANGE,
-      ol.source.Cluster.prototype.refresh_, this);
+  this.source.on(ol.events.EventType.CHANGE,
+      ol.source.Cluster.prototype.refresh, this);
 };
 ol.inherits(ol.source.Cluster, ol.source.Vector);
 
@@ -80,7 +81,7 @@ ol.inherits(ol.source.Cluster, ol.source.Vector);
  * @api
  */
 ol.source.Cluster.prototype.getDistance = function() {
-  return this.distance_;
+  return this.distance;
 };
 
 
@@ -90,7 +91,7 @@ ol.source.Cluster.prototype.getDistance = function() {
  * @api
  */
 ol.source.Cluster.prototype.getSource = function() {
-  return this.source_;
+  return this.source;
 };
 
 
@@ -99,12 +100,12 @@ ol.source.Cluster.prototype.getSource = function() {
  */
 ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
     projection) {
-  this.source_.loadFeatures(extent, resolution, projection);
-  if (resolution !== this.resolution_) {
+  this.source.loadFeatures(extent, resolution, projection);
+  if (resolution !== this.resolution) {
     this.clear();
-    this.resolution_ = resolution;
-    this.cluster_();
-    this.addFeatures(this.features_);
+    this.resolution = resolution;
+    this.cluster();
+    this.addFeatures(this.features);
   }
 };
 
@@ -115,34 +116,34 @@ ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
  * @api
  */
 ol.source.Cluster.prototype.setDistance = function(distance) {
-  this.distance_ = distance;
-  this.refresh_();
+  this.distance = distance;
+  this.refresh();
 };
 
 
 /**
  * handle the source changing
- * @private
+ * @override
  */
-ol.source.Cluster.prototype.refresh_ = function() {
+ol.source.Cluster.prototype.refresh = function() {
   this.clear();
-  this.cluster_();
-  this.addFeatures(this.features_);
-  this.changed();
+  this.cluster();
+  this.addFeatures(this.features);
+  ol.source.Vector.prototype.refresh.call(this);
 };
 
 
 /**
- * @private
+ * @protected
  */
-ol.source.Cluster.prototype.cluster_ = function() {
-  if (this.resolution_ === undefined) {
+ol.source.Cluster.prototype.cluster = function() {
+  if (this.resolution === undefined) {
     return;
   }
-  this.features_.length = 0;
+  this.features.length = 0;
   var extent = ol.extent.createEmpty();
-  var mapDistance = this.distance_ * this.resolution_;
-  var features = this.source_.getFeatures();
+  var mapDistance = this.distance * this.resolution;
+  var features = this.source.getFeatures();
 
   /**
    * @type {!Object.<string, boolean>}
@@ -152,13 +153,13 @@ ol.source.Cluster.prototype.cluster_ = function() {
   for (var i = 0, ii = features.length; i < ii; i++) {
     var feature = features[i];
     if (!(ol.getUid(feature).toString() in clustered)) {
-      var geometry = this.geometryFunction_(feature);
+      var geometry = this.geometryFunction(feature);
       if (geometry) {
         var coordinates = geometry.getCoordinates();
         ol.extent.createOrUpdateFromCoordinate(coordinates, extent);
         ol.extent.buffer(extent, mapDistance, extent);
 
-        var neighbors = this.source_.getFeaturesInExtent(extent);
+        var neighbors = this.source.getFeaturesInExtent(extent);
         neighbors = neighbors.filter(function(neighbor) {
           var uid = ol.getUid(neighbor).toString();
           if (!(uid in clustered)) {
@@ -168,7 +169,7 @@ ol.source.Cluster.prototype.cluster_ = function() {
             return false;
           }
         });
-        this.features_.push(this.createCluster_(neighbors));
+        this.features.push(this.createCluster(neighbors));
       }
     }
   }
@@ -178,12 +179,12 @@ ol.source.Cluster.prototype.cluster_ = function() {
 /**
  * @param {Array.<ol.Feature>} features Features
  * @return {ol.Feature} The cluster feature.
- * @private
+ * @protected
  */
-ol.source.Cluster.prototype.createCluster_ = function(features) {
+ol.source.Cluster.prototype.createCluster = function(features) {
   var centroid = [0, 0];
   for (var i = features.length - 1; i >= 0; --i) {
-    var geometry = this.geometryFunction_(features[i]);
+    var geometry = this.geometryFunction(features[i]);
     if (geometry) {
       ol.coordinate.add(centroid, geometry.getCoordinates());
     } else {
