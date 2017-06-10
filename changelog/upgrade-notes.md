@@ -2,6 +2,14 @@
 
 ### Next release
 
+#### Return values of two `ol.style.RegularShape` getters have changed
+
+To provide a more consistent behaviour the following getters now return the same value that was given to constructor:
+
+`ol.style.RegularShape#getPoints` does not return the double amount of points anymore if a radius2 is set.
+
+`ol.style.RegularShape#getRadius2` will return `undefined` if no radius2 is set.
+
 ### v4.1.0
 
 #### Adding duplicate layers to a map throws
