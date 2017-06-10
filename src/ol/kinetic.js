@@ -94,7 +94,15 @@ ol.Kinetic.prototype.end = function() {
   while (firstIndex > 0 && this.points_[firstIndex + 2] > delay) {
     firstIndex -= 3;
   }
+
   var duration = this.points_[lastIndex + 2] - this.points_[firstIndex + 2];
+  // we don't want a duration of 0 (divide by zero)
+  // we also make sure the user panned for a duration of at least one frame
+  // (1/60s) to compute sane displacement values
+  if (duration < 1000 / 60) {
+    return false;
+  }
+
   var dx = this.points_[lastIndex] - this.points_[firstIndex];
   var dy = this.points_[lastIndex + 1] - this.points_[firstIndex + 1];
   this.angle_ = Math.atan2(dy, dx);
