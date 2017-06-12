@@ -49,6 +49,17 @@
   -ms-user-select: auto;
   user-select: auto;
 }
+.ol-grabbing {
+  cursor: -webkit-grabbing;
+  cursor: -moz-grabbing;
+  cursor: grabbing;
+}
+.ol-grab {
+  cursor: move;
+  cursor: -webkit-grab;
+  cursor: -moz-grab;
+  cursor: grab;
+}
 .ol-control {
   position: absolute;
   background-color: rgba(255,255,255,0.4);
