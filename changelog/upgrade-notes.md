@@ -2,6 +2,8 @@
 
 ### Next release
 
+### v4.2.0
+
 #### Return values of two `ol.style.RegularShape` getters have changed
 
 To provide a more consistent behaviour the following getters now return the same value that was given to constructor:
