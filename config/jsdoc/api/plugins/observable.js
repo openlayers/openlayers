@@ -41,7 +41,7 @@ exports.handlers = {
           cls.observables = [];
         }
         observable = observables[doclet.observable];
-        if (cls.observables.indexOf(observable) == -1) {
+        if (observable.type && cls.observables.indexOf(observable) == -1) {
           cls.observables.push(observable);
         }
         if (!cls.fires) {
