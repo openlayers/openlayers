@@ -1,3 +1,5 @@
+'use strict';
+
 const cleanup = require('rollup-plugin-cleanup');
 const common = require('rollup-plugin-commonjs');
 const node = require('rollup-plugin-node-resolve');
