@@ -528,7 +528,7 @@ ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
 
 
 /**
- * Get the list of parallels.  Pallels are lines of equal latitude.
+ * Get the list of parallels.  Parallels are lines of equal latitude.
  * @return {Array.<ol.geom.LineString>} The parallels.
  * @api
  */
