@@ -101,7 +101,6 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
           ol.proj.equivalent(
               this.reprojectedImage_.getProjection(), projection) &&
           this.reprojectedImage_.getResolution() == resolution &&
-          this.reprojectedImage_.getPixelRatio() == pixelRatio &&
           ol.extent.equals(this.reprojectedImage_.getExtent(), extent)) {
         return this.reprojectedImage_;
       }
