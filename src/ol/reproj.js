@@ -40,12 +40,14 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
   // coordinates may be slightly different. We need to reverse-compensate this
   // in order to achieve optimal results.
 
-  var compensationFactor =
-      ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
-      sourceResolution;
-
-  if (isFinite(compensationFactor) && compensationFactor > 0) {
-    sourceResolution /= compensationFactor;
+  var sourceExtent = sourceProj.getExtent();
+  if (!sourceExtent || ol.extent.containsCoordinate(sourceExtent, sourceCenter)) {
+    var compensationFactor =
+        ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
+        sourceResolution;
+    if (isFinite(compensationFactor) && compensationFactor > 0) {
+      sourceResolution /= compensationFactor;
+    }
   }
 
   return sourceResolution;
