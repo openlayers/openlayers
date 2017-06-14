@@ -143,6 +143,19 @@ describe('ol.interaction.Translate', function() {
 
   });
 
+  describe('setActive', function() {
+
+    it('works when the map is not set', function() {
+      var translate = new ol.interaction.Translate({
+        features: features
+      });
+      expect(translate.getActive()).to.be(true);
+      translate.setActive(false);
+      expect(translate.getActive()).to.be(false);
+    });
+
+  });
+
   describe('moving features, with features option', function() {
     var translate;
 

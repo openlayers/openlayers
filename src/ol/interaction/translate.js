@@ -251,13 +251,12 @@ ol.interaction.Translate.prototype.handleActiveChanged_ = function() {
 ol.interaction.Translate.prototype.updateState_ = function(oldMap) {
   var map = this.getMap();
   var active = this.getActive();
-  if ((!map || !active)) {
-    if (!map) {
-      map = oldMap;
+  if (!map || !active) {
+    map = map || oldMap;
+    if (map) {
+      var elem = map.getViewport();
+      elem.classList.remove('ol-grab', 'ol-grabbing');
     }
-
-    var elem = map.getViewport();
-    elem.classList.remove('ol-grab', 'ol-grabbing');
   }
 };
 
