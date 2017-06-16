@@ -724,6 +724,14 @@ ol.WebglBufferCacheEntry;
 
 
 /**
+ * @typedef {{atlas: ol.style.AtlasManager,
+ *            width: Object.<string, number>,
+ *            height: number}}
+ */
+ol.WebglGlyphAtlas;
+
+
+/**
  * @typedef {{p0: ol.WebglPolygonVertex,
  *            p1: ol.WebglPolygonVertex}}
  */
