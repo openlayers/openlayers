@@ -3,6 +3,7 @@ goog.provide('ol.ImageTile');
 goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
+goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 
@@ -150,5 +151,9 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
  * A blank image.
  * @type {Image}
  */
-ol.ImageTile.blankImage = new Image();
-ol.ImageTile.blankImage.src = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+ol.ImageTile.blankImage = (function() {
+  var ctx = ol.dom.createCanvasContext2D(1, 1);
+  ctx.fillStyle = 'rgba(0,0,0,0)';
+  ctx.fillRect(0, 0, 1, 1);
+  return ctx.canvas;
+})();
