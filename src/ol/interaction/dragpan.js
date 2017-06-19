@@ -49,7 +49,7 @@ ol.interaction.DragPan = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.noModifierKeys;
+    options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private

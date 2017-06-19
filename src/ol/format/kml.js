@@ -66,21 +66,21 @@ ol.format.KML = function(opt_options) {
    * @type {Array.<ol.style.Style>}
    */
   this.defaultStyle_ = options.defaultStyle ?
-      options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
+    options.defaultStyle : ol.format.KML.DEFAULT_STYLE_ARRAY_;
 
   /**
    * @private
    * @type {boolean}
    */
   this.extractStyles_ = options.extractStyles !== undefined ?
-      options.extractStyles : true;
+    options.extractStyles : true;
 
   /**
    * @private
    * @type {boolean}
    */
   this.writeStyles_ = options.writeStyles !== undefined ?
-      options.writeStyles : true;
+    options.writeStyles : true;
 
   /**
    * @private
@@ -93,7 +93,7 @@ ol.format.KML = function(opt_options) {
    * @type {boolean}
    */
   this.showPointNames_ = options.showPointNames !== undefined ?
-      options.showPointNames : true;
+    options.showPointNames : true;
 
 };
 ol.inherits(ol.format.KML, ol.format.XMLFeature);
@@ -353,53 +353,53 @@ ol.format.KML.createFeatureStyleFunction_ = function(style, styleUrl,
     defaultStyle, sharedStyles, showPointNames) {
 
   return (
-      /**
+  /**
        * @param {number} resolution Resolution.
        * @return {Array.<ol.style.Style>} Style.
        * @this {ol.Feature}
        */
-      function(resolution) {
-        var drawName = showPointNames;
-        /** @type {ol.style.Style|undefined} */
-        var nameStyle;
-        var name = '';
-        if (drawName) {
-          if (this.getGeometry()) {
-            drawName = (this.getGeometry().getType() ===
+    function(resolution) {
+      var drawName = showPointNames;
+      /** @type {ol.style.Style|undefined} */
+      var nameStyle;
+      var name = '';
+      if (drawName) {
+        if (this.getGeometry()) {
+          drawName = (this.getGeometry().getType() ===
                         ol.geom.GeometryType.POINT);
-          }
         }
+      }
 
-        if (drawName) {
-          name = /** @type {string} */ (this.get('name'));
-          drawName = drawName && name;
-        }
+      if (drawName) {
+        name = /** @type {string} */ (this.get('name'));
+        drawName = drawName && name;
+      }
 
-        if (style) {
-          if (drawName) {
-            nameStyle = ol.format.KML.createNameStyleFunction_(style[0],
-                name);
-            return style.concat(nameStyle);
-          }
-          return style;
-        }
-        if (styleUrl) {
-          var foundStyle = ol.format.KML.findStyle_(styleUrl, defaultStyle,
-              sharedStyles);
-          if (drawName) {
-            nameStyle = ol.format.KML.createNameStyleFunction_(foundStyle[0],
-                name);
-            return foundStyle.concat(nameStyle);
-          }
-          return foundStyle;
-        }
+      if (style) {
         if (drawName) {
-          nameStyle = ol.format.KML.createNameStyleFunction_(defaultStyle[0],
+          nameStyle = ol.format.KML.createNameStyleFunction_(style[0],
               name);
-          return defaultStyle.concat(nameStyle);
+          return style.concat(nameStyle);
         }
-        return defaultStyle;
-      });
+        return style;
+      }
+      if (styleUrl) {
+        var foundStyle = ol.format.KML.findStyle_(styleUrl, defaultStyle,
+            sharedStyles);
+        if (drawName) {
+          nameStyle = ol.format.KML.createNameStyleFunction_(foundStyle[0],
+              name);
+          return foundStyle.concat(nameStyle);
+        }
+        return foundStyle;
+      }
+      if (drawName) {
+        nameStyle = ol.format.KML.createNameStyleFunction_(defaultStyle[0],
+            name);
+        return defaultStyle.concat(nameStyle);
+      }
+      return defaultStyle;
+    });
 };
 
 
@@ -549,7 +549,7 @@ ol.format.KML.readStyleMapValue_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(undefined,
       ol.format.KML.STYLE_MAP_PARSERS_, node, objectStack);
 };
- /**
+/**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
@@ -807,7 +807,7 @@ ol.format.KML.readGxTrack_ = function(node, objectStack) {
   var whens = gxTrackObject.whens;
   var i, ii;
   for (i = 0, ii = Math.min(flatCoordinates.length, whens.length); i < ii;
-       ++i) {
+    ++i) {
     flatCoordinates[4 * i + 3] = whens[i];
   }
   var lineString = new ol.geom.LineString(null);
@@ -1021,23 +1021,23 @@ ol.format.KML.readStyle_ = function(node, objectStack) {
   }
   var fillStyle = /** @type {ol.style.Fill} */
       ('fillStyle' in styleObject ?
-          styleObject['fillStyle'] : ol.format.KML.DEFAULT_FILL_STYLE_);
+        styleObject['fillStyle'] : ol.format.KML.DEFAULT_FILL_STYLE_);
   var fill = /** @type {boolean|undefined} */ (styleObject['fill']);
   if (fill !== undefined && !fill) {
     fillStyle = null;
   }
   var imageStyle = /** @type {ol.style.Image} */
       ('imageStyle' in styleObject ?
-          styleObject['imageStyle'] : ol.format.KML.DEFAULT_IMAGE_STYLE_);
+        styleObject['imageStyle'] : ol.format.KML.DEFAULT_IMAGE_STYLE_);
   if (imageStyle == ol.format.KML.DEFAULT_NO_IMAGE_STYLE_) {
     imageStyle = undefined;
   }
   var textStyle = /** @type {ol.style.Text} */
       ('textStyle' in styleObject ?
-          styleObject['textStyle'] : ol.format.KML.DEFAULT_TEXT_STYLE_);
+        styleObject['textStyle'] : ol.format.KML.DEFAULT_TEXT_STYLE_);
   var strokeStyle = /** @type {ol.style.Stroke} */
       ('strokeStyle' in styleObject ?
-          styleObject['strokeStyle'] : ol.format.KML.DEFAULT_STROKE_STYLE_);
+        styleObject['strokeStyle'] : ol.format.KML.DEFAULT_STROKE_STYLE_);
   var outline = /** @type {boolean|undefined} */
       (styleObject['outline']);
   if (outline !== undefined && !outline) {
@@ -1093,7 +1093,7 @@ ol.format.KML.DataParser_ = function(node, objectStack) {
   var name = node.getAttribute('name');
   ol.xml.parseNode(ol.format.KML.DATA_PARSERS_, node, objectStack);
   var featureObject =
-    /** @type {Object} */ (objectStack[objectStack.length - 1]);
+      /** @type {Object} */ (objectStack[objectStack.length - 1]);
   if (name !== null) {
     featureObject[name] = featureObject.value;
   } else if (featureObject.displayName !== null) {
@@ -2144,16 +2144,16 @@ ol.format.KML.writeDataNode_ = function(node, pair, objectStack) {
   if (typeof value == 'object') {
     if (value !== null && value.displayName) {
       ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-        ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value.displayName], objectStack, ['displayName']);
+          ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value.displayName], objectStack, ['displayName']);
     }
 
     if (value !== null && value.value) {
       ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-        ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value.value], objectStack, ['value']);
+          ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value.value], objectStack, ['value']);
     }
   } else {
     ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-     ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value], objectStack, ['value']);
+        ol.xml.OBJECT_PROPERTY_NODE_FACTORY, [value], objectStack, ['value']);
   }
 };
 
@@ -2206,7 +2206,7 @@ ol.format.KML.writeExtendedData_ = function(node, namesAndValues, objectStack) {
 
   for (var i = 0; i < length; i++) {
     ol.xml.pushSerializeAndPop(context, ol.format.KML.EXTENDEDDATA_NODE_SERIALIZERS_,
-      ol.format.KML.DATA_NODE_FACTORY_, [{name: names[i], value: values[i]}], objectStack);
+        ol.format.KML.DATA_NODE_FACTORY_, [{name: names[i], value: values[i]}], objectStack);
   }
 };
 
@@ -2420,7 +2420,7 @@ ol.format.KML.writePlacemark_ = function(node, feature, objectStack) {
     var sequence = ol.xml.makeSequence(properties, keys);
     var namesAndValues = {names: keys, values: sequence};
     ol.xml.pushSerializeAndPop(context, ol.format.KML.PLACEMARK_SERIALIZERS_,
-      ol.format.KML.EXTENDEDDATA_NODE_FACTORY_, [namesAndValues], objectStack);
+        ol.format.KML.EXTENDEDDATA_NODE_FACTORY_, [namesAndValues], objectStack);
   }
 
   var styleFunction = feature.getStyleFunction();

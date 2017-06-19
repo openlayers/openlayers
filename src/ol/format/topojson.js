@@ -45,7 +45,7 @@ ol.format.TopoJSON = function(opt_options) {
    */
   this.defaultDataProjection = ol.proj.get(
       options.defaultDataProjection ?
-          options.defaultDataProjection : 'EPSG:4326');
+        options.defaultDataProjection : 'EPSG:4326');
 
 };
 ol.inherits(ol.format.TopoJSON, ol.format.JSONFeature);
@@ -259,7 +259,7 @@ ol.format.TopoJSON.readFeatureFromGeometry_ = function(object, arcs,
   }
   var feature = new ol.Feature();
   feature.setGeometry(/** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
+    ol.format.Feature.transformWithOptions(geometry, false, opt_options)));
   if (object.id !== undefined) {
     feature.setId(object.id);
   }
@@ -316,13 +316,13 @@ ol.format.TopoJSON.prototype.readFeaturesFromObject = function(
       }
       if (topoJSONFeatures[objectName].type === 'GeometryCollection') {
         feature = /** @type {TopoJSONGeometryCollection} */
-            (topoJSONFeatures[objectName]);
+          (topoJSONFeatures[objectName]);
         features.push.apply(features,
             ol.format.TopoJSON.readFeaturesFromGeometryCollection_(
                 feature, arcs, scale, translate, property, objectName, opt_options));
       } else {
         feature = /** @type {TopoJSONGeometry} */
-            (topoJSONFeatures[objectName]);
+          (topoJSONFeatures[objectName]);
         features.push(ol.format.TopoJSON.readFeatureFromGeometry_(
             feature, arcs, scale, translate, property, objectName, opt_options));
       }

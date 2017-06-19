@@ -113,7 +113,7 @@ if (ol.ENABLE_WEBGL) {
       }.bind(null, gl, this.framebuffer, this.texture);
 
       frameState.postRenderFunctions.push(
-        /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+          /** @type {ol.PostRenderFunction} */ (postRenderFunction)
       );
 
       var texture = ol.webgl.Context.createEmptyTexture(

@@ -34,25 +34,25 @@ ol.loadingstrategy.bbox = function(extent, resolution) {
  */
 ol.loadingstrategy.tile = function(tileGrid) {
   return (
-      /**
+  /**
        * @param {ol.Extent} extent Extent.
        * @param {number} resolution Resolution.
        * @return {Array.<ol.Extent>} Extents.
        */
-      function(extent, resolution) {
-        var z = tileGrid.getZForResolution(resolution);
-        var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
-        /** @type {Array.<ol.Extent>} */
-        var extents = [];
-        /** @type {ol.TileCoord} */
-        var tileCoord = [z, 0, 0];
-        for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX;
-             ++tileCoord[1]) {
-          for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY;
-               ++tileCoord[2]) {
-            extents.push(tileGrid.getTileCoordExtent(tileCoord));
-          }
+    function(extent, resolution) {
+      var z = tileGrid.getZForResolution(resolution);
+      var tileRange = tileGrid.getTileRangeForExtentAndZ(extent, z);
+      /** @type {Array.<ol.Extent>} */
+      var extents = [];
+      /** @type {ol.TileCoord} */
+      var tileCoord = [z, 0, 0];
+      for (tileCoord[1] = tileRange.minX; tileCoord[1] <= tileRange.maxX;
+        ++tileCoord[1]) {
+        for (tileCoord[2] = tileRange.minY; tileCoord[2] <= tileRange.maxY;
+          ++tileCoord[2]) {
+          extents.push(tileGrid.getTileCoordExtent(tileCoord));
         }
-        return extents;
-      });
+      }
+      return extents;
+    });
 };

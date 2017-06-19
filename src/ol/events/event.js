@@ -53,9 +53,9 @@ ol.events.Event.prototype.preventDefault =
  * @override
  * @api
  */
-ol.events.Event.prototype.stopPropagation = function() {
-  this.propagationStopped = true;
-};
+  ol.events.Event.prototype.stopPropagation = function() {
+    this.propagationStopped = true;
+  };
 
 
 /**

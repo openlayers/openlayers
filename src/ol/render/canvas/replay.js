@@ -473,7 +473,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
         var usePixelRatio = instruction[8] !== undefined ?
-            instruction[8] : true;
+          instruction[8] : true;
         var renderedPixelRatio = instruction[9];
 
         var lineWidth = /** @type {number} */ (instruction[2]);

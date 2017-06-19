@@ -47,20 +47,20 @@ describe('ol.array', function() {
         expect(pos < 0).to.be.ok();
       });
       it('should have an insertion point of ' + (a.length) + ' for \'zzz0\'',
-        function() {
-          var pos = ol.array.binarySearch(a, 'zzz0');
-          expect(insertionPoint(pos)).to.be(a.length);
-        }
+          function() {
+            var pos = ol.array.binarySearch(a, 'zzz0');
+            expect(insertionPoint(pos)).to.be(a.length);
+          }
       );
       it('should not find \'BA\'', function() {
         var pos = ol.array.binarySearch(a, 'zzz0');
         expect(pos < 0).to.be.ok();
       });
       it('should have an insertion point of 10 for \'BA\'',
-        function() {
-          var pos = ol.array.binarySearch(a, 'BA');
-          expect(insertionPoint(pos)).to.be(10);
-        }
+          function() {
+            var pos = ol.array.binarySearch(a, 'BA');
+            expect(insertionPoint(pos)).to.be(10);
+          }
       );
     });
 
@@ -70,38 +70,38 @@ describe('ol.array', function() {
         expect(ol.array.binarySearch(b, 'a') < 0).to.be.ok();
       });
       it('should have an insertion point of 0 for \'a\'',
-        function() {
-          var pos = ol.array.binarySearch(b, 'a');
-          expect(insertionPoint(pos)).to.be(0);
-        }
+          function() {
+            var pos = ol.array.binarySearch(b, 'a');
+            expect(insertionPoint(pos)).to.be(0);
+          }
       );
     });
 
     describe('single element array with default lexiographical comparison',
-      function() {
-        var c = ['only item'];
-        it('should find \'only item\' at index 0', function() {
-          expect(ol.array.binarySearch(c, 'only item')).to.be(0);
-        });
-        it('should not find \'a\'', function() {
-          expect(ol.array.binarySearch(c, 'a') < 0).to.be.ok();
-        });
-        it('should have an insertion point of 0 for \'a\'',
-          function() {
-            var pos = ol.array.binarySearch(c, 'a');
-            expect(insertionPoint(pos)).to.be(0);
-          }
-        );
-        it('should not find \'z\'', function() {
-          expect(ol.array.binarySearch(c, 'z') < 0).to.be.ok();
-        });
-        it('should have an insertion point of 1 for \'z\'',
-          function() {
-            var pos = ol.array.binarySearch(c, 'z');
-            expect(insertionPoint(pos)).to.be(1);
-          }
-        );
-      }
+        function() {
+          var c = ['only item'];
+          it('should find \'only item\' at index 0', function() {
+            expect(ol.array.binarySearch(c, 'only item')).to.be(0);
+          });
+          it('should not find \'a\'', function() {
+            expect(ol.array.binarySearch(c, 'a') < 0).to.be.ok();
+          });
+          it('should have an insertion point of 0 for \'a\'',
+              function() {
+                var pos = ol.array.binarySearch(c, 'a');
+                expect(insertionPoint(pos)).to.be(0);
+              }
+          );
+          it('should not find \'z\'', function() {
+            expect(ol.array.binarySearch(c, 'z') < 0).to.be.ok();
+          });
+          it('should have an insertion point of 1 for \'z\'',
+              function() {
+                var pos = ol.array.binarySearch(c, 'z');
+                expect(insertionPoint(pos)).to.be(1);
+              }
+          );
+        }
     );
 
     describe('default comparison on array of Number(s)', function() {
@@ -135,10 +135,10 @@ describe('ol.array', function() {
         expect(pos < 0).to.be(true);
       });
       it('should have an insertion point of ' + (d.length) + ' for 54255',
-        function() {
-          var pos = ol.array.binarySearch(d, 54255);
-          expect(insertionPoint(pos)).to.be(d.length);
-        }
+          function() {
+            var pos = ol.array.binarySearch(d, 54255);
+            expect(insertionPoint(pos)).to.be(d.length);
+          }
       );
       it('should not find 1.1', function() {
         var pos = ol.array.binarySearch(d, 1.1);
@@ -151,54 +151,54 @@ describe('ol.array', function() {
     });
 
     describe('custom comparison function, which reverse orders numbers',
-      function() {
-        var e = [
-          54254, 453, 342, 334, 142.88888708, 5, 0.31255, 0, 0, 0, -3,
-          -9, -324, -1321.3124, -321434.58758, -897123.9
-        ];
-        it('should find 54254 at index 0', function() {
-          var pos = ol.array.binarySearch(e, 54254, revNumCompare);
-          expect(pos).to.be(0);
-        });
-        it('should find -897123.9 at index ' + (e.length - 1), function() {
-          var pos = ol.array.binarySearch(e, -897123.9, revNumCompare);
-          expect(pos).to.be(e.length - 1);
-        });
-        it('should find -3 at index 10', function() {
-          var pos = ol.array.binarySearch(e, -3, revNumCompare);
-          expect(pos).to.be(10);
-        });
-        it('should find 0 at index 7 || 8 || 9', function() {
-          var pos = ol.array.binarySearch(e, 0, revNumCompare);
-          expect(pos == 7 || pos == 8 || pos == 9).to.be(true);
-        });
-        it('should not find 54254.1', function() {
-          var pos = ol.array.binarySearch(e, 54254.1, revNumCompare);
-          expect(pos < 0).to.be(true);
-        });
-        it('should have an insertion point of 0 for 54254.1', function() {
-          var pos = ol.array.binarySearch(e, 54254.1, revNumCompare);
-          expect(insertionPoint(pos)).to.be(0);
-        });
-        it('should not find -897124', function() {
-          var pos = ol.array.binarySearch(e, -897124, revNumCompare);
-          expect(pos < 0).to.be(true);
-        });
-        it('should have an insertion point of ' + e.length + ' for -897124',
-          function() {
+        function() {
+          var e = [
+            54254, 453, 342, 334, 142.88888708, 5, 0.31255, 0, 0, 0, -3,
+            -9, -324, -1321.3124, -321434.58758, -897123.9
+          ];
+          it('should find 54254 at index 0', function() {
+            var pos = ol.array.binarySearch(e, 54254, revNumCompare);
+            expect(pos).to.be(0);
+          });
+          it('should find -897123.9 at index ' + (e.length - 1), function() {
+            var pos = ol.array.binarySearch(e, -897123.9, revNumCompare);
+            expect(pos).to.be(e.length - 1);
+          });
+          it('should find -3 at index 10', function() {
+            var pos = ol.array.binarySearch(e, -3, revNumCompare);
+            expect(pos).to.be(10);
+          });
+          it('should find 0 at index 7 || 8 || 9', function() {
+            var pos = ol.array.binarySearch(e, 0, revNumCompare);
+            expect(pos == 7 || pos == 8 || pos == 9).to.be(true);
+          });
+          it('should not find 54254.1', function() {
+            var pos = ol.array.binarySearch(e, 54254.1, revNumCompare);
+            expect(pos < 0).to.be(true);
+          });
+          it('should have an insertion point of 0 for 54254.1', function() {
+            var pos = ol.array.binarySearch(e, 54254.1, revNumCompare);
+            expect(insertionPoint(pos)).to.be(0);
+          });
+          it('should not find -897124', function() {
             var pos = ol.array.binarySearch(e, -897124, revNumCompare);
-            expect(insertionPoint(pos)).to.be(e.length);
-          }
-        );
-        it('should not find 1.1', function() {
-          var pos = ol.array.binarySearch(e, 1.1, revNumCompare);
-          expect(pos < 0).to.be(true);
-        });
-        it('should have an insertion point of 0 for 1.1', function() {
-          var pos = ol.array.binarySearch(e, 1.1, revNumCompare);
-          expect(insertionPoint(pos)).to.be(6);
-        });
-      }
+            expect(pos < 0).to.be(true);
+          });
+          it('should have an insertion point of ' + e.length + ' for -897124',
+              function() {
+                var pos = ol.array.binarySearch(e, -897124, revNumCompare);
+                expect(insertionPoint(pos)).to.be(e.length);
+              }
+          );
+          it('should not find 1.1', function() {
+            var pos = ol.array.binarySearch(e, 1.1, revNumCompare);
+            expect(pos < 0).to.be(true);
+          });
+          it('should have an insertion point of 0 for 1.1', function() {
+            var pos = ol.array.binarySearch(e, 1.1, revNumCompare);
+            expect(insertionPoint(pos)).to.be(6);
+          });
+        }
     );
 
     describe('0 length array with custom comparison function', function() {
@@ -214,29 +214,29 @@ describe('ol.array', function() {
     });
 
     describe('single element array with custom comparison function',
-      function() {
-        var g = [1];
-        it('should find 1 at index 0', function() {
-          var pos = ol.array.binarySearch(g, 1, revNumCompare);
-          expect(pos).to.be(0);
-        });
-        it('should not find 2', function() {
-          var pos = ol.array.binarySearch(g, 2, revNumCompare);
-          expect(pos < 0).to.be(true);
-        });
-        it('should have an insertion point of 0 for 2', function() {
-          var pos = ol.array.binarySearch(g, 2, revNumCompare);
-          expect(insertionPoint(pos)).to.be(0);
-        });
-        it('should not find 0', function() {
-          var pos = ol.array.binarySearch(g, 0, revNumCompare);
-          expect(pos < 0).to.be(true);
-        });
-        it('should have an insertion point of 1 for 0', function() {
-          var pos = ol.array.binarySearch(g, 0, revNumCompare);
-          expect(insertionPoint(pos)).to.be(1);
-        });
-      }
+        function() {
+          var g = [1];
+          it('should find 1 at index 0', function() {
+            var pos = ol.array.binarySearch(g, 1, revNumCompare);
+            expect(pos).to.be(0);
+          });
+          it('should not find 2', function() {
+            var pos = ol.array.binarySearch(g, 2, revNumCompare);
+            expect(pos < 0).to.be(true);
+          });
+          it('should have an insertion point of 0 for 2', function() {
+            var pos = ol.array.binarySearch(g, 2, revNumCompare);
+            expect(insertionPoint(pos)).to.be(0);
+          });
+          it('should not find 0', function() {
+            var pos = ol.array.binarySearch(g, 0, revNumCompare);
+            expect(pos < 0).to.be(true);
+          });
+          it('should have an insertion point of 1 for 0', function() {
+            var pos = ol.array.binarySearch(g, 0, revNumCompare);
+            expect(insertionPoint(pos)).to.be(1);
+          });
+        }
     );
 
     describe('finding first index when multiple candidates', function() {
@@ -249,51 +249,51 @@ describe('ol.array', function() {
     });
 
     describe('Don\'t use Array#slice, Function#apply and Function#call',
-      function() {
-        var a = [1, 5, 7, 11, 13, 16, 19, 24, 28, 31, 33, 36, 40, 50, 52, 55];
-        var calls = {
-          'Array#slice': false,
-          'Function#apply': false,
-          'Function#call': false
-        };
-        var origArraySlice;
-        var origFunctionApply;
-        var origFunctionCall;
+        function() {
+          var a = [1, 5, 7, 11, 13, 16, 19, 24, 28, 31, 33, 36, 40, 50, 52, 55];
+          var calls = {
+            'Array#slice': false,
+            'Function#apply': false,
+            'Function#call': false
+          };
+          var origArraySlice;
+          var origFunctionApply;
+          var origFunctionCall;
 
-        it('does not use potentially slow methods (default & custom compare)',
-          function() {
-            // Mockup (I failed to use sinon.spy and beforeEach-hooks)
-            origArraySlice = Array.prototype.slice;
-            origFunctionApply = Function.prototype.apply;
-            origFunctionCall = Function.prototype.call;
-            Array.prototype.slice = function() {
-              calls['Array#slice'] = true;
-            };
-            Function.prototype.apply = function() {
-              calls['Function#apply'] = true;
-            };
-            Function.prototype.call = function() {
-              calls['Function#call'] = true;
-            };
+          it('does not use potentially slow methods (default & custom compare)',
+              function() {
+                // Mockup (I failed to use sinon.spy and beforeEach-hooks)
+                origArraySlice = Array.prototype.slice;
+                origFunctionApply = Function.prototype.apply;
+                origFunctionCall = Function.prototype.call;
+                Array.prototype.slice = function() {
+                  calls['Array#slice'] = true;
+                };
+                Function.prototype.apply = function() {
+                  calls['Function#apply'] = true;
+                };
+                Function.prototype.call = function() {
+                  calls['Function#call'] = true;
+                };
 
-            // Now actually call and test the method twice
-            ol.array.binarySearch(a, 48);
-            ol.array.binarySearch(a, 13, function(a, b) {
-              return a > b ? 1 : a < b ? -1 : 0;
-            });
+                // Now actually call and test the method twice
+                ol.array.binarySearch(a, 48);
+                ol.array.binarySearch(a, 13, function(a, b) {
+                  return a > b ? 1 : a < b ? -1 : 0;
+                });
 
-            // Restore mocked up methods
-            Array.prototype.slice = origArraySlice;
-            Function.prototype.apply = origFunctionApply;
-            Function.prototype.call = origFunctionCall;
+                // Restore mocked up methods
+                Array.prototype.slice = origArraySlice;
+                Function.prototype.apply = origFunctionApply;
+                Function.prototype.call = origFunctionCall;
 
-            // Expectations
-            expect(calls['Array#slice']).to.be(false);
-            expect(calls['Function#apply']).to.be(false);
-            expect(calls['Function#call']).to.be(false);
-          }
-        );
-      }
+                // Expectations
+                expect(calls['Array#slice']).to.be(false);
+                expect(calls['Function#apply']).to.be(false);
+                expect(calls['Function#call']).to.be(false);
+              }
+          );
+        }
     );
 
     describe('when items are not found', function() {
@@ -546,7 +546,7 @@ describe('ol.array', function() {
 
     beforeEach(function() {
       arr = [{key: 3, val: 'a'}, {key: 2, val: 'b'}, {key: 3, val: 'c'},
-                 {key: 4, val: 'd'}, {key: 3, val: 'e'}];
+        {key: 4, val: 'd'}, {key: 3, val: 'e'}];
       wantedSortedValues = ['b', 'a', 'c', 'e', 'd'];
     });
 

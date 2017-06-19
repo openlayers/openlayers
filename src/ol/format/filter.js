@@ -229,7 +229,7 @@ ol.format.filter.between = function(propertyName, lowerBoundary, upperBoundary) 
 ol.format.filter.like = function(propertyName, pattern,
     opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
   return new ol.format.filter.IsLike(propertyName, pattern,
-    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
+      opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
 };
 
 

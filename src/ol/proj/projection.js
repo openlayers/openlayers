@@ -36,63 +36,63 @@ goog.require('ol.proj.proj4');
  * @api
  */
 ol.proj.Projection = function(options) {
- /**
+  /**
   * @private
   * @type {string}
   */
   this.code_ = options.code;
 
- /**
+  /**
   * @private
   * @type {ol.proj.Units}
   */
   this.units_ = /** @type {ol.proj.Units} */ (options.units);
 
- /**
+  /**
   * @private
   * @type {ol.Extent}
   */
   this.extent_ = options.extent !== undefined ? options.extent : null;
 
- /**
+  /**
   * @private
   * @type {ol.Extent}
   */
   this.worldExtent_ = options.worldExtent !== undefined ?
-     options.worldExtent : null;
+    options.worldExtent : null;
 
- /**
+  /**
   * @private
   * @type {string}
   */
   this.axisOrientation_ = options.axisOrientation !== undefined ?
-     options.axisOrientation : 'enu';
+    options.axisOrientation : 'enu';
 
- /**
+  /**
   * @private
   * @type {boolean}
   */
   this.global_ = options.global !== undefined ? options.global : false;
 
- /**
+  /**
   * @private
   * @type {boolean}
   */
   this.canWrapX_ = !!(this.global_ && this.extent_);
 
- /**
+  /**
  * @private
  * @type {function(number, ol.Coordinate):number|undefined}
  */
   this.getPointResolutionFunc_ = options.getPointResolution;
 
- /**
+  /**
   * @private
   * @type {ol.tilegrid.TileGrid}
   */
   this.defaultTileGrid_ = null;
 
- /**
+  /**
   * @private
   * @type {number|undefined}
   */

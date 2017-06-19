@@ -264,17 +264,17 @@ ol.style.Stroke.prototype.getChecksum = function() {
     }
     this.checksum_ += ',' +
         (this.lineCap_ !== undefined ?
-            this.lineCap_.toString() : '-') + ',' +
+          this.lineCap_.toString() : '-') + ',' +
         (this.lineDash_ ?
-            this.lineDash_.toString() : '-') + ',' +
+          this.lineDash_.toString() : '-') + ',' +
         (this.lineDashOffset_ !== undefined ?
-            this.lineDashOffset_ : '-') + ',' +
+          this.lineDashOffset_ : '-') + ',' +
         (this.lineJoin_ !== undefined ?
-            this.lineJoin_ : '-') + ',' +
+          this.lineJoin_ : '-') + ',' +
         (this.miterLimit_ !== undefined ?
-            this.miterLimit_.toString() : '-') + ',' +
+          this.miterLimit_.toString() : '-') + ',' +
         (this.width_ !== undefined ?
-            this.width_.toString() : '-');
+          this.width_.toString() : '-');
   }
 
   return this.checksum_;

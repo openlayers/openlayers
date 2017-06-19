@@ -84,9 +84,9 @@ ol.render.Feature.prototype.getEnds = function() {
 ol.render.Feature.prototype.getExtent = function() {
   if (!this.extent_) {
     this.extent_ = this.type_ === ol.geom.GeometryType.POINT ?
-        ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
-        ol.extent.createOrUpdateFromFlatCoordinates(
-            this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
+      ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
+      ol.extent.createOrUpdateFromFlatCoordinates(
+          this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
 
   }
   return this.extent_;

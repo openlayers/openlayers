@@ -131,8 +131,8 @@ ol.events.EventTarget.prototype.getListeners = function(type) {
  */
 ol.events.EventTarget.prototype.hasListener = function(opt_type) {
   return opt_type ?
-      opt_type in this.listeners_ :
-      Object.keys(this.listeners_).length > 0;
+    opt_type in this.listeners_ :
+    Object.keys(this.listeners_).length > 0;
 };
 
 

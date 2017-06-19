@@ -171,7 +171,7 @@ ol.VectorImageTile.prototype.getContext = function() {
  */
 ol.VectorImageTile.prototype.getImage = function() {
   return this.replayState_.renderedTileRevision == -1 ?
-      null : this.context_.canvas;
+    null : this.context_.canvas;
 };
 
 
@@ -234,7 +234,7 @@ ol.VectorImageTile.prototype.load = function() {
             }
             if (leftToLoad == 0) {
               this.setState(this.tileKeys.length > 0 ?
-                  ol.TileState.LOADED : ol.TileState.ERROR);
+                ol.TileState.LOADED : ol.TileState.ERROR);
             }
           }
         }.bind(this));
@@ -246,8 +246,8 @@ ol.VectorImageTile.prototype.load = function() {
   if (leftToLoad == 0) {
     setTimeout(function() {
       this.setState(this.tileKeys.length > 0 ?
-          ol.TileState.LOADED :
-          (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
+        ol.TileState.LOADED :
+        (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
     }.bind(this), 0);
   }
 };

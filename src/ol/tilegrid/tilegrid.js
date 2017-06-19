@@ -87,8 +87,8 @@ ol.tilegrid.TileGrid = function(options) {
    * @type {number|ol.Size}
    */
   this.tileSize_ = options.tileSize !== undefined ?
-      options.tileSize :
-      !this.tileSizes_ ? ol.DEFAULT_TILE_SIZE : null;
+    options.tileSize :
+    !this.tileSizes_ ? ol.DEFAULT_TILE_SIZE : null;
   ol.asserts.assert(
       (!this.tileSize_ && this.tileSizes_) ||
       (this.tileSize_ && !this.tileSizes_),

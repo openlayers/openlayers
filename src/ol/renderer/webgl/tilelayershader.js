@@ -38,8 +38,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.renderer.webgl.tilelayershader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
-      ol.renderer.webgl.tilelayershader.Fragment.DEBUG_SOURCE :
-      ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
+    ol.renderer.webgl.tilelayershader.Fragment.DEBUG_SOURCE :
+    ol.renderer.webgl.tilelayershader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.tilelayershader.fragment = new ol.renderer.webgl.tilelayershader.Fragment();
@@ -75,8 +75,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.renderer.webgl.tilelayershader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
-      ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE :
-      ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
+    ol.renderer.webgl.tilelayershader.Vertex.DEBUG_SOURCE :
+    ol.renderer.webgl.tilelayershader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.tilelayershader.vertex = new ol.renderer.webgl.tilelayershader.Vertex();

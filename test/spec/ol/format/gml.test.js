@@ -494,18 +494,18 @@ describe('ol.format.GML3', function() {
 
       it('can read and write a linestring geometry with ' +
           'correct axis order',
-          function() {
-            var text =
+      function() {
+        var text =
                 '<gml:LineString xmlns:gml="http://www.opengis.net/gml" ' +
                 '    srsName="urn:x-ogc:def:crs:EPSG:4326">' +
                 '  <gml:posList>-90 -180 90 180</gml:posList>' +
                 '</gml:LineString>';
-            var g = readGeometry(format, text);
-            expect(g).to.be.an(ol.geom.LineString);
-            expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
-            var serialized = formatWGS84.writeGeometryNode(g);
-            expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
-          });
+        var g = readGeometry(format, text);
+        expect(g).to.be.an(ol.geom.LineString);
+        expect(g.getCoordinates()).to.eql([[-180, -90, 0], [180, 90, 0]]);
+        var serialized = formatWGS84.writeGeometryNode(g);
+        expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+      });
 
       it('can read and write a point geometry with correct axis order',
           function() {
@@ -612,8 +612,8 @@ describe('ol.format.GML3', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
-                [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-              [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+          [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+        [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
       });
@@ -649,8 +649,8 @@ describe('ol.format.GML3', function() {
         var g = readGeometry(format, text);
         expect(g).to.be.an(ol.geom.Polygon);
         expect(g.getCoordinates()).to.eql([[[1, 2, 0], [3, 2, 0], [3, 4, 0],
-                [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-              [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
+          [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
+        [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]]);
         format = new ol.format.GML({srsName: 'CRS:84', surface: true});
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
@@ -834,7 +834,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
         format = new ol.format.GML({srsName: 'CRS:84', multiSurface: false});
         var serialized = format.writeGeometryNode(g);
@@ -877,7 +877,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
       });
 
@@ -983,7 +983,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
         var serialized = format.writeGeometryNode(g);
         expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
@@ -1027,7 +1027,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
       });
 
@@ -1077,7 +1077,7 @@ describe('ol.format.GML3', function() {
         expect(g.getCoordinates()).to.eql([
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0],
             [1, 2, 0]], [[2, 3, 0], [2, 5, 0], [4, 5, 0], [2, 3, 0]],
-            [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
+          [[3, 4, 0], [3, 6, 0], [5, 6, 0], [3, 4, 0]]],
           [[[1, 2, 0], [3, 2, 0], [3, 4, 0], [1, 2, 0]]]]);
         format = new ol.format.GML({srsName: 'CRS:84', surface: true});
         var serialized = format.writeGeometryNode(g);

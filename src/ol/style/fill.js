@@ -71,13 +71,13 @@ ol.style.Fill.prototype.setColor = function(color) {
 ol.style.Fill.prototype.getChecksum = function() {
   if (this.checksum_ === undefined) {
     if (
-        this.color_ instanceof CanvasPattern ||
+      this.color_ instanceof CanvasPattern ||
         this.color_ instanceof CanvasGradient
     ) {
       this.checksum_ = ol.getUid(this.color_).toString();
     } else {
       this.checksum_ = 'f' + (this.color_ ?
-          ol.color.asString(this.color_) : '-');
+        ol.color.asString(this.color_) : '-');
     }
   }
 

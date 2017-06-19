@@ -208,7 +208,7 @@ describe('ol.source.WMTS', function() {
           expect(options.urls).to.be.an('array');
           expect(options.urls).to.have.length(1);
           expect(options.urls[0]).to.be.eql(
-             'https://services.arcgisonline.com/arcgis/rest/services/' +
+              'https://services.arcgisonline.com/arcgis/rest/services/' +
              'Demographics/USA_Population_Density/MapServer/WMTS?');
         });
 
@@ -223,7 +223,7 @@ describe('ol.source.WMTS', function() {
           expect(options.urls).to.be.an('array');
           expect(options.urls).to.have.length(1);
           expect(options.urls[0]).to.be.eql(
-             'https://services.arcgisonline.com/arcgis/rest/services/' +
+              'https://services.arcgisonline.com/arcgis/rest/services/' +
              'Demographics/USA_Population_Density/MapServer/WMTS/' +
              'tile/1.0.0/Demographics_USA_Population_Density/' +
              '{Style}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png');

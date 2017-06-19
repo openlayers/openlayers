@@ -386,13 +386,13 @@ ol.format.OWS.REQUEST_METHOD_PARSERS_ = ol.xml.makeStructureNS(
  */
 ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
     ol.xml.makeStructureNS(
-    ol.format.OWS.NAMESPACE_URIS_, {
-      'IndividualName': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'ContactInfo': ol.xml.makeObjectPropertySetter(
-          ol.format.OWS.readContactInfo_)
-    });
+        ol.format.OWS.NAMESPACE_URIS_, {
+          'IndividualName': ol.xml.makeObjectPropertySetter(
+              ol.format.XSD.readString),
+          'PositionName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'ContactInfo': ol.xml.makeObjectPropertySetter(
+              ol.format.OWS.readContactInfo_)
+        });
 
 
 /**
@@ -402,12 +402,12 @@ ol.format.OWS.SERVICE_CONTACT_PARSERS_ =
  */
 ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
     ol.xml.makeStructureNS(
-    ol.format.OWS.NAMESPACE_URIS_, {
-      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
+        ol.format.OWS.NAMESPACE_URIS_, {
+          'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'ServiceTypeVersion': ol.xml.makeObjectPropertySetter(
+              ol.format.XSD.readString),
+          'ServiceType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+        });
 
 
 /**
@@ -417,9 +417,9 @@ ol.format.OWS.SERVICE_IDENTIFICATION_PARSERS_ =
  */
 ol.format.OWS.SERVICE_PROVIDER_PARSERS_ =
     ol.xml.makeStructureNS(
-    ol.format.OWS.NAMESPACE_URIS_, {
-      'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
-      'ServiceContact': ol.xml.makeObjectPropertySetter(
-          ol.format.OWS.readServiceContact_)
-    });
+        ol.format.OWS.NAMESPACE_URIS_, {
+          'ProviderName': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+          'ProviderSite': ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
+          'ServiceContact': ol.xml.makeObjectPropertySetter(
+              ol.format.OWS.readServiceContact_)
+        });

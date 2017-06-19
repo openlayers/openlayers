@@ -9,20 +9,20 @@ goog.require('ol.math');
  */
 ol.CenterConstraint.createExtent = function(extent) {
   return (
-      /**
+  /**
        * @param {ol.Coordinate|undefined} center Center.
        * @return {ol.Coordinate|undefined} Center.
        */
-      function(center) {
-        if (center) {
-          return [
-            ol.math.clamp(center[0], extent[0], extent[2]),
-            ol.math.clamp(center[1], extent[1], extent[3])
-          ];
-        } else {
-          return undefined;
-        }
-      });
+    function(center) {
+      if (center) {
+        return [
+          ol.math.clamp(center[0], extent[0], extent[2]),
+          ol.math.clamp(center[1], extent[1], extent[3])
+        ];
+      } else {
+        return undefined;
+      }
+    });
 };
 
 

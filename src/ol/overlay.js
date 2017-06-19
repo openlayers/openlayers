@@ -46,7 +46,7 @@ ol.Overlay = function(options) {
    * @type {boolean}
    */
   this.insertFirst_ = options.insertFirst !== undefined ?
-      options.insertFirst : true;
+    options.insertFirst : true;
 
   /**
    * @private
@@ -73,14 +73,14 @@ ol.Overlay = function(options) {
    * @type {olx.OverlayPanOptions}
    */
   this.autoPanAnimation_ = options.autoPanAnimation ||
-      /** @type {olx.OverlayPanOptions} */ ({});
+    /** @type {olx.OverlayPanOptions} */ ({});
 
   /**
    * @private
    * @type {number}
    */
   this.autoPanMargin_ = options.autoPanMargin !== undefined ?
-      options.autoPanMargin : 20;
+    options.autoPanMargin : 20;
 
   /**
    * @private
@@ -131,8 +131,8 @@ ol.Overlay = function(options) {
   this.setOffset(options.offset !== undefined ? options.offset : [0, 0]);
 
   this.setPositioning(options.positioning !== undefined ?
-      /** @type {ol.OverlayPositioning} */ (options.positioning) :
-      ol.OverlayPositioning.TOP_LEFT);
+    /** @type {ol.OverlayPositioning} */ (options.positioning) :
+    ol.OverlayPositioning.TOP_LEFT);
 
   if (options.position !== undefined) {
     this.setPosition(options.position);
@@ -150,7 +150,7 @@ ol.inherits(ol.Overlay, ol.Object);
  */
 ol.Overlay.prototype.getElement = function() {
   return /** @type {Element|undefined} */ (
-      this.get(ol.Overlay.Property_.ELEMENT));
+    this.get(ol.Overlay.Property_.ELEMENT));
 };
 
 
@@ -172,7 +172,7 @@ ol.Overlay.prototype.getId = function() {
  */
 ol.Overlay.prototype.getMap = function() {
   return /** @type {ol.Map|undefined} */ (
-      this.get(ol.Overlay.Property_.MAP));
+    this.get(ol.Overlay.Property_.MAP));
 };
 
 
@@ -184,7 +184,7 @@ ol.Overlay.prototype.getMap = function() {
  */
 ol.Overlay.prototype.getOffset = function() {
   return /** @type {Array.<number>} */ (
-      this.get(ol.Overlay.Property_.OFFSET));
+    this.get(ol.Overlay.Property_.OFFSET));
 };
 
 
@@ -197,7 +197,7 @@ ol.Overlay.prototype.getOffset = function() {
  */
 ol.Overlay.prototype.getPosition = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.Overlay.Property_.POSITION));
+    this.get(ol.Overlay.Property_.POSITION));
 };
 
 
@@ -210,7 +210,7 @@ ol.Overlay.prototype.getPosition = function() {
  */
 ol.Overlay.prototype.getPositioning = function() {
   return /** @type {ol.OverlayPositioning} */ (
-      this.get(ol.Overlay.Property_.POSITIONING));
+    this.get(ol.Overlay.Property_.POSITIONING));
 };
 
 
@@ -241,7 +241,7 @@ ol.Overlay.prototype.handleMapChanged = function() {
         ol.MapEventType.POSTRENDER, this.render, this);
     this.updatePixelPosition();
     var container = this.stopEvent_ ?
-        map.getOverlayContainerStopEvent() : map.getOverlayContainer();
+      map.getOverlayContainerStopEvent() : map.getOverlayContainer();
     if (this.insertFirst_) {
       container.insertBefore(this.element_, container.childNodes[0] || null);
     } else {

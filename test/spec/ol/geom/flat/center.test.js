@@ -13,10 +13,10 @@ describe('ol.geom.flat.center', function() {
         [[0, 0], [0, 1], [1, 1], [1, 0], [0, 0]]
       ]]);
       var got = ol.geom.flat.center.linearRingss(
-        squareMultiPoly.flatCoordinates,
-        0,
-        squareMultiPoly.endss_,
-        2
+          squareMultiPoly.flatCoordinates,
+          0,
+          squareMultiPoly.endss_,
+          2
       );
       expect(got).to.eql([0.5, 0.5]);
     });
@@ -31,24 +31,24 @@ describe('ol.geom.flat.center', function() {
         ]
       ]);
       var got = ol.geom.flat.center.linearRingss(
-        squareMultiPoly.flatCoordinates,
-        0,
-        squareMultiPoly.endss_,
-        2
+          squareMultiPoly.flatCoordinates,
+          0,
+          squareMultiPoly.endss_,
+          2
       );
       expect(got).to.eql([0.5, 0.5, 3.5, 0.5]);
     });
 
     it('does not care about holes', function() {
       var polywithHole = new ol.geom.MultiPolygon([[
-          [[0, 0], [0, 5], [5, 5], [5, 0], [0, 0]],
-          [[1, 1], [1, 4], [4, 4], [4, 1], [1, 1]]
+        [[0, 0], [0, 5], [5, 5], [5, 0], [0, 0]],
+        [[1, 1], [1, 4], [4, 4], [4, 1], [1, 1]]
       ]]);
       var got = ol.geom.flat.center.linearRingss(
-        polywithHole.flatCoordinates,
-        0,
-        polywithHole.endss_,
-        2
+          polywithHole.flatCoordinates,
+          0,
+          polywithHole.endss_,
+          2
       );
       expect(got).to.eql([2.5, 2.5]);
     });

@@ -38,7 +38,7 @@ ol.source.VectorTile = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
+      options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
     tilePixelRatio: options.tilePixelRatio,
     url: options.url,
@@ -105,7 +105,7 @@ ol.source.VectorTile.prototype.getTile = function(z, x, y, pixelRatio, projectio
     var urlTileCoord = this.getTileCoordForTileUrlFunction(
         tileCoord, projection);
     var tileUrl = urlTileCoord ?
-        this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
+      this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
     var tile = new ol.VectorImageTile(
         tileCoord,
         tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
@@ -143,8 +143,8 @@ ol.source.VectorTile.prototype.getTileGridForProjection = function(projection) {
  */
 ol.source.VectorTile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
   return opt_pixelRatio == undefined ?
-      ol.source.UrlTile.prototype.getTilePixelRatio.call(this, opt_pixelRatio) :
-      opt_pixelRatio;
+    ol.source.UrlTile.prototype.getTilePixelRatio.call(this, opt_pixelRatio) :
+    opt_pixelRatio;
 };
 
 

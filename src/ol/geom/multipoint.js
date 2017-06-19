@@ -103,7 +103,7 @@ ol.geom.MultiPoint.prototype.getCoordinates = function() {
  */
 ol.geom.MultiPoint.prototype.getPoint = function(index) {
   var n = !this.flatCoordinates ?
-      0 : this.flatCoordinates.length / this.stride;
+    0 : this.flatCoordinates.length / this.stride;
   if (index < 0 || n <= index) {
     return null;
   }

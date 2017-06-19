@@ -69,7 +69,7 @@ ol.tilegrid.WMTS.prototype.getMatrixIds = function() {
  * @api
  */
 ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_extent,
- opt_matrixLimits) {
+    opt_matrixLimits) {
 
   /** @type {!Array.<number>} */
   var resolutions = [];
@@ -130,7 +130,7 @@ ol.tilegrid.WMTS.createFromCapabilitiesMatrixSet = function(matrixSet, opt_exten
       }
       resolutions.push(resolution);
       tileSizes.push(tileWidth == tileHeight ?
-          tileWidth : [tileWidth, tileHeight]);
+        tileWidth : [tileWidth, tileHeight]);
       // top-left origin, so height is negative
       sizes.push([elt['MatrixWidth'], -elt['MatrixHeight']]);
     }

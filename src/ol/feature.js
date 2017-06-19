@@ -140,7 +140,7 @@ ol.Feature.prototype.clone = function() {
  */
 ol.Feature.prototype.getGeometry = function() {
   return /** @type {ol.geom.Geometry|undefined} */ (
-      this.get(this.geometryName_));
+    this.get(this.geometryName_));
 };
 
 
@@ -240,7 +240,7 @@ ol.Feature.prototype.setGeometry = function(geometry) {
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
   this.styleFunction_ = !style ?
-      undefined : ol.Feature.createStyleFunction(style);
+    undefined : ol.Feature.createStyleFunction(style);
   this.changed();
 };
 

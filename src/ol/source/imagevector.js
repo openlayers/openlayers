@@ -297,6 +297,6 @@ ol.source.ImageVector.prototype.renderFeature_ = function(feature, resolution, p
 ol.source.ImageVector.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
   this.styleFunction_ = !style ?
-      undefined : ol.style.Style.createFunction(this.style_);
+    undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
 };

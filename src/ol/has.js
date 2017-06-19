@@ -4,7 +4,7 @@ goog.require('ol');
 goog.require('ol.webgl');
 
 var ua = typeof navigator !== 'undefined' ?
-    navigator.userAgent.toLowerCase() : '';
+  navigator.userAgent.toLowerCase() : '';
 
 /**
  * User agent string says we are dealing with Firefox as browser.
@@ -56,27 +56,27 @@ ol.has.CANVAS_LINE_DASH = false;
  * @api
  */
 ol.has.CANVAS = ol.ENABLE_CANVAS && (
-    /**
+  /**
      * @return {boolean} Canvas supported.
      */
-    function() {
-      if (!('HTMLCanvasElement' in window)) {
+  function() {
+    if (!('HTMLCanvasElement' in window)) {
+      return false;
+    }
+    try {
+      var context = document.createElement('CANVAS').getContext('2d');
+      if (!context) {
         return false;
-      }
-      try {
-        var context = document.createElement('CANVAS').getContext('2d');
-        if (!context) {
-          return false;
-        } else {
-          if (context.setLineDash !== undefined) {
-            ol.has.CANVAS_LINE_DASH = true;
-          }
-          return true;
+      } else {
+        if (context.setLineDash !== undefined) {
+          ol.has.CANVAS_LINE_DASH = true;
         }
-      } catch (e) {
-        return false;
+        return true;
       }
-    })();
+    } catch (e) {
+      return false;
+    }
+  })();
 
 
 /**
@@ -148,7 +148,7 @@ ol.has.WEBGL;
         if (gl) {
           hasWebGL = true;
           textureSize = /** @type {number} */
-              (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+            (gl.getParameter(gl.MAX_TEXTURE_SIZE));
           extensions = gl.getSupportedExtensions();
         }
       } catch (e) {

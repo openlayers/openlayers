@@ -29,7 +29,7 @@ describe('ol.TileQueue', function() {
         'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' + tileId;
 
     var tileLoadFunction = opt_tileLoadFunction ?
-        opt_tileLoadFunction : ol.source.Image.defaultImageLoadFunction;
+      opt_tileLoadFunction : ol.source.Image.defaultImageLoadFunction;
     return new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
 

@@ -119,7 +119,7 @@ ol.geom.flat.geodesic.greatCircleArc = function(
         var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
         var lon = ol.math.toRadians(lon1) +
             Math.atan2(Math.sin(theta) * sinD * cosLat1,
-                       cosD - sinLat1 * Math.sin(lat));
+                cosD - sinLat1 * Math.sin(lat));
         return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
       }, ol.proj.getTransform(geoProjection, projection), squaredTolerance);
 };

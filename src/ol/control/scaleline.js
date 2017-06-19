@@ -112,7 +112,7 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
   return /** @type {ol.control.ScaleLineUnits|undefined} */ (
-      this.get(ol.control.ScaleLine.Property_.UNITS));
+    this.get(ol.control.ScaleLine.Property_.UNITS));
 };
 
 

@@ -164,16 +164,16 @@ describe('ol.source.ImageWMS', function() {
     });
 
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
-       function() {
-         options.serverType = 'geoserver';
-         var source = new ol.source.ImageWMS(options);
-         pixelRatio = 1.325;
-         var image =
+        function() {
+          options.serverType = 'geoserver';
+          var source = new ol.source.ImageWMS(options);
+          pixelRatio = 1.325;
+          var image =
              source.getImage(extent, resolution, pixelRatio, projection);
-         var uri = new URL(image.src_);
-         var queryData = uri.searchParams;
-         expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
-       });
+          var uri = new URL(image.src_);
+          var queryData = uri.searchParams;
+          expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+        });
 
     it('sets DPI when the server is QGIS', function() {
       options.serverType = 'qgis';

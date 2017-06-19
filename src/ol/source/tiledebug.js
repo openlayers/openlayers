@@ -46,7 +46,7 @@ ol.source.TileDebug.prototype.getTile = function(z, x, y) {
     var tileCoord = [z, x, y];
     var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
     var text = !textTileCoord ? '' :
-        this.getTileCoordForTileUrlFunction(textTileCoord).toString();
+      this.getTileCoordForTileUrlFunction(textTileCoord).toString();
     var tile = new ol.source.TileDebug.Tile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);
     return tile;

@@ -24,7 +24,7 @@ goog.require('ol.style.Style');
  */
 ol.layer.Vector = function(opt_options) {
   var options = opt_options ?
-     opt_options : /** @type {olx.layer.VectorOptions} */ ({});
+    opt_options : /** @type {olx.layer.VectorOptions} */ ({});
 
   var baseOptions = ol.obj.assign({}, options);
 
@@ -34,21 +34,21 @@ ol.layer.Vector = function(opt_options) {
   delete baseOptions.updateWhileInteracting;
   ol.layer.Layer.call(this, /** @type {olx.layer.LayerOptions} */ (baseOptions));
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.renderBuffer_ = options.renderBuffer !== undefined ?
-     options.renderBuffer : 100;
+    options.renderBuffer : 100;
 
- /**
+  /**
   * User provided style.
   * @type {ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction}
   * @private
   */
   this.style_ = null;
 
- /**
+  /**
   * Style function for use within the library.
   * @type {ol.StyleFunction|undefined}
   * @private
@@ -57,19 +57,19 @@ ol.layer.Vector = function(opt_options) {
 
   this.setStyle(options.style);
 
- /**
+  /**
   * @type {boolean}
   * @private
   */
   this.updateWhileAnimating_ = options.updateWhileAnimating !== undefined ?
-     options.updateWhileAnimating : false;
+    options.updateWhileAnimating : false;
 
- /**
+  /**
   * @type {boolean}
   * @private
   */
   this.updateWhileInteracting_ = options.updateWhileInteracting !== undefined ?
-     options.updateWhileInteracting : false;
+    options.updateWhileInteracting : false;
 };
 ol.inherits(ol.layer.Vector, ol.layer.Layer);
 
@@ -103,7 +103,7 @@ ol.layer.Vector.prototype.getRenderBuffer = function() {
  */
 ol.layer.Vector.prototype.getRenderOrder = function() {
   return /** @type {ol.RenderOrderFunction|null|undefined} */ (
-      this.get(ol.layer.Vector.Property_.RENDER_ORDER));
+    this.get(ol.layer.Vector.Property_.RENDER_ORDER));
 };
 
 
@@ -179,7 +179,7 @@ ol.layer.Vector.prototype.setRenderOrder = function(renderOrder) {
 ol.layer.Vector.prototype.setStyle = function(style) {
   this.style_ = style !== undefined ? style : ol.style.Style.defaultFunction;
   this.styleFunction_ = style === null ?
-      undefined : ol.style.Style.createFunction(this.style_);
+    undefined : ol.style.Style.createFunction(this.style_);
   this.changed();
 };
 

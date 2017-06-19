@@ -26,8 +26,8 @@ ol.source.Zoomify = function(opt_options) {
 
   var size = options.size;
   var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
-      options.tierSizeCalculation :
-      ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
+    options.tierSizeCalculation :
+    ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];

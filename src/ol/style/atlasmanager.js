@@ -31,7 +31,7 @@ ol.style.AtlasManager = function(opt_options) {
    * @type {number}
    */
   this.currentSize_ = options.initialSize !== undefined ?
-      options.initialSize : ol.INITIAL_ATLAS_SIZE;
+    options.initialSize : ol.INITIAL_ATLAS_SIZE;
 
   /**
    * The maximum size in pixels of atlas images.
@@ -39,9 +39,9 @@ ol.style.AtlasManager = function(opt_options) {
    * @type {number}
    */
   this.maxSize_ = options.maxSize !== undefined ?
-      options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
-          ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
-              ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
+    options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
+      ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
+        ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
 
   /**
    * The size in pixels between images.
@@ -150,7 +150,7 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  *    entry, or `null` if the image is too big.
  */
 ol.style.AtlasManager.prototype.add = function(id, width, height,
-        renderCallback, opt_renderHitCallback, opt_this) {
+    renderCallback, opt_renderHitCallback, opt_this) {
   if (width + this.space_ > this.maxSize_ ||
       height + this.space_ > this.maxSize_) {
     return null;
@@ -167,7 +167,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
   var renderHitCallback = opt_renderHitCallback !== undefined ?
-      opt_renderHitCallback : ol.nullFunction;
+    opt_renderHitCallback : ol.nullFunction;
 
   var hitInfo = /** @type {ol.AtlasInfo} */ (this.add_(true,
       id, width, height, renderHitCallback, opt_this));
@@ -190,7 +190,7 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
  *    or `null` if the image is too big.
  */
 ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
-        renderCallback, opt_this) {
+    renderCallback, opt_this) {
   var atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
   var atlas, info, i, ii;
   for (i = 0, ii = atlases.length; i < ii; ++i) {

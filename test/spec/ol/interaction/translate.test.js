@@ -32,8 +32,8 @@ describe('ol.interaction.Translate', function() {
     features = [new ol.Feature({
       geometry: new ol.geom.Point([10, -20])
     }), new ol.Feature({
-      geometry: new ol.geom.Point([20, -30])
-    })];
+        geometry: new ol.geom.Point([20, -30])
+      })];
     source.addFeatures(features);
     var layer = new ol.layer.Vector({source: source});
     map = new ol.Map({

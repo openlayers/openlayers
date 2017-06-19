@@ -49,7 +49,7 @@ ol.format.MVT = function(opt_options) {
    *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
    */
   this.featureClass_ = options.featureClass ?
-      options.featureClass : ol.render.Feature;
+    options.featureClass : ol.render.Feature;
 
   /**
    * @private
@@ -124,7 +124,7 @@ ol.format.MVT.prototype.readRenderFeature_ = function(rawFeature, layer) {
   var geometryType;
   if (type === 1) {
     geometryType = coords.length === 1 ?
-        ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
+      ol.geom.GeometryType.POINT : ol.geom.GeometryType.MULTI_POINT;
   } else if (type === 2) {
     if (coords.length === 1) {
       geometryType = ol.geom.GeometryType.LINE_STRING;
@@ -238,7 +238,7 @@ ol.format.MVT.readGeometry_ = function(rawFeature) {
   var geom;
   if (type === 1) {
     geom = coords.length === 1 ?
-        new ol.geom.Point(null) : new ol.geom.MultiPoint(null);
+      new ol.geom.Point(null) : new ol.geom.MultiPoint(null);
   } else if (type === 2) {
     if (coords.length === 1) {
       geom = new ol.geom.LineString(null);

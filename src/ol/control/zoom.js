@@ -31,16 +31,16 @@ ol.control.Zoom = function(opt_options) {
   var zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
 
   var zoomInTipLabel = options.zoomInTipLabel !== undefined ?
-      options.zoomInTipLabel : 'Zoom in';
+    options.zoomInTipLabel : 'Zoom in';
   var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
-      options.zoomOutTipLabel : 'Zoom out';
+    options.zoomOutTipLabel : 'Zoom out';
 
   var inElement = document.createElement('button');
   inElement.className = className + '-in';
   inElement.setAttribute('type', 'button');
   inElement.title = zoomInTipLabel;
   inElement.appendChild(
-    typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
+      typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
   );
 
   ol.events.listen(inElement, ol.events.EventType.CLICK,
@@ -51,7 +51,7 @@ ol.control.Zoom = function(opt_options) {
   outElement.setAttribute('type', 'button');
   outElement.title = zoomOutTipLabel;
   outElement.appendChild(
-    typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
+      typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
   );
 
   ol.events.listen(outElement, ol.events.EventType.CLICK,

@@ -103,7 +103,7 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @template S,T,U
  */
 ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
-        layerFilter, thisArg2) {
+    layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
@@ -173,7 +173,7 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
  * @template S,T,U
  */
 ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-        layerFilter, thisArg2) {};
+    layerFilter, thisArg2) {};
 
 
 /**
@@ -303,7 +303,7 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
-    /** @type {ol.PostRenderFunction} */ (ol.renderer.Map.expireIconCache_)
+      /** @type {ol.PostRenderFunction} */ (ol.renderer.Map.expireIconCache_)
   );
 };
 
@@ -317,7 +317,7 @@ ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameSta
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-        /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
+          /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
       );
       return;
     }

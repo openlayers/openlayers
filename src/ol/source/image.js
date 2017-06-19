@@ -36,7 +36,7 @@ ol.source.Image = function(options) {
    * @type {Array.<number>}
    */
   this.resolutions_ = options.resolutions !== undefined ?
-      options.resolutions : null;
+    options.resolutions : null;
 
 
   /**
