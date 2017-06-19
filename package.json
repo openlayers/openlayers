@@ -100,7 +100,23 @@
       "openlayers-internal/one-provide": 2,
       "openlayers-internal/requires-first": 2,
       "openlayers-internal/valid-provide": 2,
-      "openlayers-internal/valid-requires": 2
+      "openlayers-internal/valid-requires": 2,
+      "indent": [2, 2, {
+        "VariableDeclarator": 2,
+        "SwitchCase": 1,
+        "MemberExpression": 2,
+        "FunctionDeclaration": {
+          "parameters": 2,
+          "body": 1
+        },
+        "FunctionExpression": {
+          "parameters": 2,
+          "body": 1
+        },
+        "CallExpression": {
+          "arguments": 2
+        }
+      }]
     }
   },
   "ext": [
