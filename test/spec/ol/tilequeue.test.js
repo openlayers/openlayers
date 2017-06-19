@@ -86,6 +86,20 @@ describe('ol.TileQueue', function() {
 
     });
 
+    it('calls #tileChangeCallback_ when all wanted tiles are aborted', function() {
+      var tileChangeCallback = sinon.spy();
+      var queue = new ol.TileQueue(noop, tileChangeCallback);
+      var numTiles = 20;
+      for (var i = 0; i < numTiles; ++i) {
+        var tile = createImageTile();
+        tile.state = ol.TileState.ABORT;
+        queue.enqueue([tile]);
+      }
+      var maxLoading = numTiles / 2;
+      queue.loadMoreTiles(maxLoading, maxLoading);
+      expect(tileChangeCallback.callCount).to.be(1);
+    });
+
   });
 
   describe('heapify', function() {
