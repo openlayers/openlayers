@@ -31,7 +31,7 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
 
   /**
    * @private
-   * @type {Image}
+   * @type {Image|HTMLCanvasElement}
    */
   this.image_ = new Image();
   if (crossOrigin !== null) {
@@ -60,6 +60,7 @@ ol.inherits(ol.ImageTile, ol.Tile);
 ol.ImageTile.prototype.disposeInternal = function() {
   if (this.state == ol.TileState.LOADING) {
     this.unlistenImage_();
+    this.image_.src = ol.ImageTile.blankImage.toDataURL('image/png');
   }
   if (this.interimTile) {
     this.interimTile.dispose();
@@ -95,8 +96,8 @@ ol.ImageTile.prototype.getKey = function() {
  */
 ol.ImageTile.prototype.handleImageError_ = function() {
   this.state = ol.TileState.ERROR;
-  this.image_ = ol.ImageTile.blankImage;
   this.unlistenImage_();
+  this.image_ = ol.ImageTile.blankImage;
   this.changed();
 };
 
@@ -149,7 +150,7 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
 
 /**
  * A blank image.
- * @type {Image}
+ * @type {HTMLCanvasElement}
  */
 ol.ImageTile.blankImage = (function() {
   var ctx = ol.dom.createCanvasContext2D(1, 1);
