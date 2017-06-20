@@ -66,11 +66,11 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = ol.functions.FALSE;
  */
 ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   return (
-  /**
-       * @param {number} zoom Zoom level.
-       * @param {ol.TileRange} tileRange Tile range.
-       * @return {boolean} The tile range is fully loaded.
-       */
+    /**
+     * @param {number} zoom Zoom level.
+     * @param {ol.TileRange} tileRange Tile range.
+     * @return {boolean} The tile range is fully loaded.
+     */
     function(zoom, tileRange) {
       function callback(tile) {
         if (!tiles[zoom]) {

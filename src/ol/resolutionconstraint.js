@@ -10,12 +10,12 @@ goog.require('ol.math');
  */
 ol.ResolutionConstraint.createSnapToResolutions = function(resolutions) {
   return (
-  /**
-       * @param {number|undefined} resolution Resolution.
-       * @param {number} delta Delta.
-       * @param {number} direction Direction.
-       * @return {number|undefined} Resolution.
-       */
+    /**
+     * @param {number|undefined} resolution Resolution.
+     * @param {number} delta Delta.
+     * @param {number} direction Direction.
+     * @return {number|undefined} Resolution.
+     */
     function(resolution, delta, direction) {
       if (resolution !== undefined) {
         var z =
@@ -43,12 +43,12 @@ ol.ResolutionConstraint.createSnapToResolutions = function(resolutions) {
  */
 ol.ResolutionConstraint.createSnapToPower = function(power, maxResolution, opt_maxLevel) {
   return (
-  /**
-       * @param {number|undefined} resolution Resolution.
-       * @param {number} delta Delta.
-       * @param {number} direction Direction.
-       * @return {number|undefined} Resolution.
-       */
+    /**
+     * @param {number|undefined} resolution Resolution.
+     * @param {number} delta Delta.
+     * @param {number} direction Direction.
+     * @return {number|undefined} Resolution.
+     */
     function(resolution, delta, direction) {
       if (resolution !== undefined) {
         var offset = -direction / 2 + 0.5;

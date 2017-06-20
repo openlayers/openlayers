@@ -125,10 +125,10 @@ ol.xml.parse = function(xml) {
  */
 ol.xml.makeArrayExtender = function(valueReader, opt_this) {
   return (
-  /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
     function(node, objectStack) {
       var value = valueReader.call(opt_this, node, objectStack);
       if (value !== undefined) {
@@ -150,10 +150,10 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
  */
 ol.xml.makeArrayPusher = function(valueReader, opt_this) {
   return (
-  /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
     function(node, objectStack) {
       var value = valueReader.call(opt_this !== undefined ? opt_this : this,
           node, objectStack);
@@ -175,10 +175,10 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
  */
 ol.xml.makeReplacer = function(valueReader, opt_this) {
   return (
-  /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
     function(node, objectStack) {
       var value = valueReader.call(opt_this !== undefined ? opt_this : this,
           node, objectStack);
@@ -200,10 +200,10 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  */
 ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
   return (
-  /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
     function(node, objectStack) {
       var value = valueReader.call(opt_this !== undefined ? opt_this : this,
           node, objectStack);
@@ -234,10 +234,10 @@ ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) 
  */
 ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
   return (
-  /**
-       * @param {Node} node Node.
-       * @param {Array.<*>} objectStack Object stack.
-       */
+    /**
+     * @param {Node} node Node.
+     * @param {Array.<*>} objectStack Object stack.
+     */
     function(node, objectStack) {
       var value = valueReader.call(opt_this !== undefined ? opt_this : this,
           node, objectStack);
@@ -317,12 +317,12 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
 ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
   var fixedNodeName = opt_nodeName;
   return (
-  /**
-       * @param {*} value Value.
-       * @param {Array.<*>} objectStack Object stack.
-       * @param {string=} opt_nodeName Node name.
-       * @return {Node} Node.
-       */
+    /**
+     * @param {*} value Value.
+     * @param {Array.<*>} objectStack Object stack.
+     * @param {string=} opt_nodeName Node name.
+     * @return {Node} Node.
+     */
     function(value, objectStack, opt_nodeName) {
       var context = objectStack[objectStack.length - 1];
       var node = context.node;

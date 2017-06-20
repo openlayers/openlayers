@@ -38,8 +38,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.render.webgl.circlereplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
-    ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE :
-    ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+      ol.render.webgl.circlereplay.defaultshader.Fragment.DEBUG_SOURCE :
+      ol.render.webgl.circlereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.circlereplay.defaultshader.fragment = new ol.render.webgl.circlereplay.defaultshader.Fragment();
@@ -75,8 +75,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.render.webgl.circlereplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
-    ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE :
-    ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+      ol.render.webgl.circlereplay.defaultshader.Vertex.DEBUG_SOURCE :
+      ol.render.webgl.circlereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.circlereplay.defaultshader.vertex = new ol.render.webgl.circlereplay.defaultshader.Vertex();

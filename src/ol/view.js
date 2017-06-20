@@ -697,10 +697,10 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
   var minResolution = this.minResolution_;
   var max = Math.log(maxResolution / minResolution) / Math.log(power);
   return (
-  /**
-       * @param {number} value Value.
-       * @return {number} Resolution.
-       */
+    /**
+     * @param {number} value Value.
+     * @return {number} Resolution.
+     */
     function(value) {
       var resolution = maxResolution / Math.pow(power, value * max);
       return resolution;
@@ -731,10 +731,10 @@ ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
   var minResolution = this.minResolution_;
   var max = Math.log(maxResolution / minResolution) / Math.log(power);
   return (
-  /**
-       * @param {number} resolution Resolution.
-       * @return {number} Value.
-       */
+    /**
+     * @param {number} resolution Resolution.
+     * @return {number} Value.
+     */
     function(resolution) {
       var value =
             (Math.log(maxResolution / resolution) / Math.log(power)) / max;

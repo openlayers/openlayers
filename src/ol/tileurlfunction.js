@@ -16,12 +16,12 @@ ol.TileUrlFunction.createFromTemplate = function(template, tileGrid) {
   var yRegEx = /\{y\}/g;
   var dashYRegEx = /\{-y\}/g;
   return (
-  /**
-       * @param {ol.TileCoord} tileCoord Tile Coordinate.
-       * @param {number} pixelRatio Pixel ratio.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} Tile URL.
-       */
+    /**
+     * @param {ol.TileCoord} tileCoord Tile Coordinate.
+     * @param {number} pixelRatio Pixel ratio.
+     * @param {ol.proj.Projection} projection Projection.
+     * @return {string|undefined} Tile URL.
+     */
     function(tileCoord, pixelRatio, projection) {
       if (!tileCoord) {
         return undefined;
@@ -69,12 +69,12 @@ ol.TileUrlFunction.createFromTileUrlFunctions = function(tileUrlFunctions) {
     return tileUrlFunctions[0];
   }
   return (
-  /**
-       * @param {ol.TileCoord} tileCoord Tile Coordinate.
-       * @param {number} pixelRatio Pixel ratio.
-       * @param {ol.proj.Projection} projection Projection.
-       * @return {string|undefined} Tile URL.
-       */
+    /**
+     * @param {ol.TileCoord} tileCoord Tile Coordinate.
+     * @param {number} pixelRatio Pixel ratio.
+     * @param {ol.proj.Projection} projection Projection.
+     * @return {string|undefined} Tile URL.
+     */
     function(tileCoord, pixelRatio, projection) {
       if (!tileCoord) {
         return undefined;

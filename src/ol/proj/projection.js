@@ -37,65 +37,65 @@ goog.require('ol.proj.proj4');
  */
 ol.proj.Projection = function(options) {
   /**
-  * @private
-  * @type {string}
-  */
+   * @private
+   * @type {string}
+   */
   this.code_ = options.code;
 
   /**
-  * @private
-  * @type {ol.proj.Units}
-  */
+   * @private
+   * @type {ol.proj.Units}
+   */
   this.units_ = /** @type {ol.proj.Units} */ (options.units);
 
   /**
-  * @private
-  * @type {ol.Extent}
-  */
+   * @private
+   * @type {ol.Extent}
+   */
   this.extent_ = options.extent !== undefined ? options.extent : null;
 
   /**
-  * @private
-  * @type {ol.Extent}
-  */
+   * @private
+   * @type {ol.Extent}
+   */
   this.worldExtent_ = options.worldExtent !== undefined ?
     options.worldExtent : null;
 
   /**
-  * @private
-  * @type {string}
-  */
+   * @private
+   * @type {string}
+   */
   this.axisOrientation_ = options.axisOrientation !== undefined ?
     options.axisOrientation : 'enu';
 
   /**
-  * @private
-  * @type {boolean}
-  */
+   * @private
+   * @type {boolean}
+   */
   this.global_ = options.global !== undefined ? options.global : false;
 
   /**
-  * @private
-  * @type {boolean}
-  */
+   * @private
+   * @type {boolean}
+   */
   this.canWrapX_ = !!(this.global_ && this.extent_);
 
   /**
- * @private
- * @type {function(number, ol.Coordinate):number|undefined}
- */
+   * @private
+   * @type {function(number, ol.Coordinate):number|undefined}
+   */
   this.getPointResolutionFunc_ = options.getPointResolution;
 
   /**
-  * @private
-  * @type {ol.tilegrid.TileGrid}
-  */
+   * @private
+   * @type {ol.tilegrid.TileGrid}
+   */
   this.defaultTileGrid_ = null;
 
   /**
-  * @private
-  * @type {number|undefined}
-  */
+   * @private
+   * @type {number|undefined}
+   */
   this.metersPerUnit_ = options.metersPerUnit;
 
   var code = options.code;

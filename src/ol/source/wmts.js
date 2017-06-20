@@ -119,12 +119,12 @@ ol.source.WMTS = function(options) {
       });
 
     return (
-    /**
-         * @param {ol.TileCoord} tileCoord Tile coordinate.
-         * @param {number} pixelRatio Pixel ratio.
-         * @param {ol.proj.Projection} projection Projection.
-         * @return {string|undefined} Tile URL.
-         */
+      /**
+       * @param {ol.TileCoord} tileCoord Tile coordinate.
+       * @param {number} pixelRatio Pixel ratio.
+       * @param {ol.proj.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
       function(tileCoord, pixelRatio, projection) {
         if (!tileCoord) {
           return undefined;

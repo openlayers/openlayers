@@ -121,10 +121,10 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
  */
 ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
-  /**
-       * @param {ol.Coordinate|undefined} coordinate Coordinate.
-       * @return {string} String XY.
-       */
+    /**
+     * @param {ol.Coordinate|undefined} coordinate Coordinate.
+     * @return {string} String XY.
+     */
     function(coordinate) {
       return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
     });

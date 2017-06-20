@@ -79,26 +79,26 @@ ol.color.fromString = (
     // arbitrary 25% of the entries.
 
     /**
-       * @const
-       * @type {number}
-       */
+     * @const
+     * @type {number}
+     */
     var MAX_CACHE_SIZE = 1024;
 
     /**
-       * @type {Object.<string, ol.Color>}
-       */
+     * @type {Object.<string, ol.Color>}
+     */
     var cache = {};
 
     /**
-       * @type {number}
-       */
+     * @type {number}
+     */
     var cacheSize = 0;
 
     return (
-    /**
-           * @param {string} s String.
-           * @return {ol.Color} Color.
-           */
+      /**
+       * @param {string} s String.
+       * @return {ol.Color} Color.
+       */
       function(s) {
         var color;
         if (cache.hasOwnProperty(s)) {

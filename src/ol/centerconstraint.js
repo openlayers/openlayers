@@ -9,10 +9,10 @@ goog.require('ol.math');
  */
 ol.CenterConstraint.createExtent = function(extent) {
   return (
-  /**
-       * @param {ol.Coordinate|undefined} center Center.
-       * @return {ol.Coordinate|undefined} Center.
-       */
+    /**
+     * @param {ol.Coordinate|undefined} center Center.
+     * @return {ol.Coordinate|undefined} Center.
+     */
     function(center) {
       if (center) {
         return [

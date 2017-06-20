@@ -121,9 +121,11 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
     // loop over all outer rings and see if they contain our hole.
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
-      if (ol.extent.containsExtent(new ol.geom.LinearRing(
-          outerRing).getExtent(),
-      new ol.geom.LinearRing(hole).getExtent())) {
+      var containsHole = ol.extent.containsExtent(
+          new ol.geom.LinearRing(outerRing).getExtent(),
+          new ol.geom.LinearRing(hole).getExtent()
+      );
+      if (containsHole) {
         // the hole is contained push it into our polygon
         outerRings[i].push(hole);
         matched = true;

@@ -221,12 +221,12 @@ ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse
  */
 ol.proj.createTransformFromCoordinateTransform = function(transform) {
   return (
-  /**
-       * @param {Array.<number>} input Input.
-       * @param {Array.<number>=} opt_output Output.
-       * @param {number=} opt_dimension Dimension.
-       * @return {Array.<number>} Output.
-       */
+    /**
+     * @param {Array.<number>} input Input.
+     * @param {Array.<number>=} opt_output Output.
+     * @param {number=} opt_dimension Dimension.
+     * @return {Array.<number>} Output.
+     */
     function(input, opt_output, opt_dimension) {
       var length = input.length;
       var dimension = opt_dimension !== undefined ? opt_dimension : 2;

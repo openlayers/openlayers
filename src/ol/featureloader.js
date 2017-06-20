@@ -18,12 +18,12 @@ goog.require('ol.xml');
  */
 ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
   return (
-  /**
-       * @param {ol.Extent} extent Extent.
-       * @param {number} resolution Resolution.
-       * @param {ol.proj.Projection} projection Projection.
-       * @this {ol.source.Vector|ol.VectorTile}
-       */
+    /**
+     * @param {ol.Extent} extent Extent.
+     * @param {number} resolution Resolution.
+     * @param {ol.proj.Projection} projection Projection.
+     * @this {ol.source.Vector|ol.VectorTile}
+     */
     function(extent, resolution, projection) {
       var xhr = new XMLHttpRequest();
       xhr.open('GET',
@@ -33,9 +33,9 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
         xhr.responseType = 'arraybuffer';
       }
       /**
-         * @param {Event} event Event.
-         * @private
-         */
+       * @param {Event} event Event.
+       * @private
+       */
       xhr.onload = function(event) {
         // status will be 0 for file:// urls
         if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
@@ -65,8 +65,8 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
         }
       }.bind(this);
       /**
-         * @private
-         */
+       * @private
+       */
       xhr.onerror = function() {
         failure.call(this);
       }.bind(this);

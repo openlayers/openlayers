@@ -57,8 +57,8 @@ ol.has.CANVAS_LINE_DASH = false;
  */
 ol.has.CANVAS = ol.ENABLE_CANVAS && (
   /**
-     * @return {boolean} Canvas supported.
-     */
+   * @return {boolean} Canvas supported.
+   */
   function() {
     if (!('HTMLCanvasElement' in window)) {
       return false;

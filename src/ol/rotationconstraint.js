@@ -38,11 +38,11 @@ ol.RotationConstraint.none = function(rotation, delta) {
 ol.RotationConstraint.createSnapToN = function(n) {
   var theta = 2 * Math.PI / n;
   return (
-  /**
-       * @param {number|undefined} rotation Rotation.
-       * @param {number} delta Delta.
-       * @return {number|undefined} Rotation.
-       */
+    /**
+     * @param {number|undefined} rotation Rotation.
+     * @param {number} delta Delta.
+     * @return {number|undefined} Rotation.
+     */
     function(rotation, delta) {
       if (rotation !== undefined) {
         rotation = Math.floor((rotation + delta) / theta + 0.5) * theta;
@@ -61,11 +61,11 @@ ol.RotationConstraint.createSnapToN = function(n) {
 ol.RotationConstraint.createSnapToZero = function(opt_tolerance) {
   var tolerance = opt_tolerance || ol.math.toRadians(5);
   return (
-  /**
-       * @param {number|undefined} rotation Rotation.
-       * @param {number} delta Delta.
-       * @return {number|undefined} Rotation.
-       */
+    /**
+     * @param {number|undefined} rotation Rotation.
+     * @param {number} delta Delta.
+     * @return {number|undefined} Rotation.
+     */
     function(rotation, delta) {
       if (rotation !== undefined) {
         if (Math.abs(rotation + delta) <= tolerance) {

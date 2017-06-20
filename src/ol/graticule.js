@@ -24,88 +24,88 @@ ol.Graticule = function(opt_options) {
   var options = opt_options || {};
 
   /**
-  * @type {ol.Map}
-  * @private
-  */
+   * @type {ol.Map}
+   * @private
+   */
   this.map_ = null;
 
   /**
-  * @type {ol.proj.Projection}
-  * @private
-  */
+   * @type {ol.proj.Projection}
+   * @private
+   */
   this.projection_ = null;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.maxLat_ = Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.maxLon_ = Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.minLat_ = -Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.minLon_ = -Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.maxLatP_ = Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.maxLonP_ = Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.minLatP_ = -Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.minLonP_ = -Infinity;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.targetSize_ = options.targetSize !== undefined ?
     options.targetSize : 100;
 
   /**
-  * @type {number}
-  * @private
-  */
+   * @type {number}
+   * @private
+   */
   this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
 
   /**
-  * @type {Array.<ol.geom.LineString>}
-  * @private
-  */
+   * @type {Array.<ol.geom.LineString>}
+   * @private
+   */
   this.meridians_ = [];
 
   /**
-  * @type {Array.<ol.geom.LineString>}
-  * @private
-  */
+   * @type {Array.<ol.geom.LineString>}
+   * @private
+   */
   this.parallels_ = [];
 
   /**
