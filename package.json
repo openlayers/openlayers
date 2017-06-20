@@ -72,7 +72,7 @@
     "proj4": "2.4.3",
     "resemblejs": "2.2.4",
     "serve-files": "1.0.1",
-    "sinon": "2.3.4",
+    "sinon": "2.3.5",
     "slimerjs": "0.10.3"
   },
   "eslintConfig": {
