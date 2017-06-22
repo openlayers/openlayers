@@ -67,13 +67,12 @@ function addInteraction() {
     }
     draw = new ol.interaction.Draw({
       source: source,
-      type: /** @type {ol.geom.GeometryType} */ (value),
+      type /** @type {ol.geom.GeometryType} */: value,
       geometryFunction: geometryFunction
     });
     map.addInteraction(draw);
   }
 }
-
 
 /**
  * Handle change event.

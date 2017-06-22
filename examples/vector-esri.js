@@ -12,15 +12,15 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.tilegrid');
 
-
-var serviceUrl = 'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
-    'Petroleum/KSFields/FeatureServer/';
+var serviceUrl =
+  'https://sampleserver3.arcgisonline.com/ArcGIS/rest/services/' +
+  'Petroleum/KSFields/FeatureServer/';
 var layer = '0';
 
 var esrijsonFormat = new ol.format.EsriJSON();
 
 var styleCache = {
-  'ABANDONED': new ol.style.Style({
+  ABANDONED: new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(225, 225, 225, 255)'
     }),
@@ -29,7 +29,7 @@ var styleCache = {
       width: 0.4
     })
   }),
-  'GAS': new ol.style.Style({
+  GAS: new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(255, 0, 0, 255)'
     }),
@@ -38,7 +38,7 @@ var styleCache = {
       width: 0.4
     })
   }),
-  'OIL': new ol.style.Style({
+  OIL: new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(56, 168, 0, 255)'
     }),
@@ -47,7 +47,7 @@ var styleCache = {
       width: 0
     })
   }),
-  'OILGAS': new ol.style.Style({
+  OILGAS: new ol.style.Style({
     fill: new ol.style.Fill({
       color: 'rgba(168, 112, 0, 255)'
     }),
@@ -60,31 +60,49 @@ var styleCache = {
 
 var vectorSource = new ol.source.Vector({
   loader: function(extent, resolution, projection) {
-    var url = serviceUrl + layer + '/query/?f=json&' +
-        'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
-        encodeURIComponent('{"xmin":' + extent[0] + ',"ymin":' +
-            extent[1] + ',"xmax":' + extent[2] + ',"ymax":' + extent[3] +
-            ',"spatialReference":{"wkid":102100}}') +
-        '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
-        '&outSR=102100';
-    $.ajax({url: url, dataType: 'jsonp', success: function(response) {
-      if (response.error) {
-        alert(response.error.message + '\n' +
-            response.error.details.join('\n'));
-      } else {
-        // dataProjection will be read from document
-        var features = esrijsonFormat.readFeatures(response, {
-          featureProjection: projection
-        });
-        if (features.length > 0) {
-          vectorSource.addFeatures(features);
+    var url =
+      serviceUrl +
+      layer +
+      '/query/?f=json&' +
+      'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
+      encodeURIComponent(
+        '{"xmin":' +
+          extent[0] +
+          ',"ymin":' +
+          extent[1] +
+          ',"xmax":' +
+          extent[2] +
+          ',"ymax":' +
+          extent[3] +
+          ',"spatialReference":{"wkid":102100}}'
+      ) +
+      '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
+      '&outSR=102100';
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      success: function(response) {
+        if (response.error) {
+          alert(
+            response.error.message + '\n' + response.error.details.join('\n')
+          );
+        } else {
+          // dataProjection will be read from document
+          var features = esrijsonFormat.readFeatures(response, {
+            featureProjection: projection
+          });
+          if (features.length > 0) {
+            vectorSource.addFeatures(features);
+          }
         }
       }
-    }});
+    });
   },
-  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-    tileSize: 512
-  }))
+  strategy: ol.loadingstrategy.tile(
+    ol.tilegrid.createXYZ({
+      tileSize: 512
+    })
+  )
 });
 
 var vector = new ol.layer.Vector({
@@ -97,9 +115,11 @@ var vector = new ol.layer.Vector({
 
 var raster = new ol.layer.Tile({
   source: new ol.source.XYZ({
-    attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+    attributions:
+      'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+    url:
+      'https://server.arcgisonline.com/ArcGIS/rest/services/' +
         'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
   })
 });

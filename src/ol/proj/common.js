@@ -2,7 +2,6 @@ goog.provide('ol.proj.common');
 
 goog.require('ol.proj');
 
-
 /**
  * Deprecated.  Transforms between EPSG:4326 and EPSG:3857 are now included by
  * default.  There is no need to call this function in application code and it

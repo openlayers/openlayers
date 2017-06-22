@@ -1,6 +1,5 @@
 goog.provide('ol.array');
 
-
 /**
  * Performs a binary search on the provided sorted list and returns the index of the item if found. If it can't be found it'll return -1.
  * https://github.com/darkskyapp/binary-search
@@ -20,13 +19,14 @@ ol.array.binarySearch = function(haystack, needle, opt_comparator) {
   while (low < high) {
     /* Note that "(low + high) >>> 1" may overflow, and results in a typecast
      * to double (which gives the wrong results). */
-    mid = low + (high - low >> 1);
+    mid = low + ((high - low) >> 1);
     cmp = +comparator(haystack[mid], needle);
 
-    if (cmp < 0.0) { /* Too low. */
-      low  = mid + 1;
-
-    } else { /* Key found or too high */
+    if (cmp < 0.0) {
+      /* Too low. */
+      low = mid + 1;
+    } else {
+      /* Key found or too high */
       high = mid;
       found = !cmp;
     }
@@ -35,7 +35,6 @@ ol.array.binarySearch = function(haystack, needle, opt_comparator) {
   /* Key not found. */
   return found ? low : ~low;
 };
-
 
 /**
  * Compare function for array sort that is safe for numbers.
@@ -48,7 +47,6 @@ ol.array.numberSafeCompareFunction = function(a, b) {
   return a > b ? 1 : a < b ? -1 : 0;
 };
 
-
 /**
  * Whether the array contains the given object.
  * @param {Array.<*>} arr The array to test for the presence of the element.
@@ -58,7 +56,6 @@ ol.array.numberSafeCompareFunction = function(a, b) {
 ol.array.includes = function(arr, obj) {
   return arr.indexOf(obj) >= 0;
 };
-
 
 /**
  * @param {Array.<number>} arr Array.
@@ -105,7 +102,6 @@ ol.array.linearFindNearest = function(arr, target, direction) {
   }
 };
 
-
 /**
  * @param {Array.<*>} arr Array.
  * @param {number} begin Begin index.
@@ -120,7 +116,6 @@ ol.array.reverseSubArray = function(arr, begin, end) {
     --end;
   }
 };
-
 
 /**
  * @param {Array.<VALUE>} arr The array to modify.
@@ -137,7 +132,6 @@ ol.array.extend = function(arr, data) {
   }
 };
 
-
 /**
  * @param {Array.<VALUE>} arr The array to modify.
  * @param {VALUE} obj The element to remove.
@@ -152,7 +146,6 @@ ol.array.remove = function(arr, obj) {
   }
   return found;
 };
-
 
 /**
  * @param {Array.<VALUE>} arr The array to search in.
@@ -173,7 +166,6 @@ ol.array.find = function(arr, func) {
   return null;
 };
 
-
 /**
  * @param {Array|Uint8ClampedArray} arr1 The first array to compare.
  * @param {Array|Uint8ClampedArray} arr2 The second array to compare.
@@ -191,7 +183,6 @@ ol.array.equals = function(arr1, arr2) {
   }
   return true;
 };
-
 
 /**
  * @param {Array.<*>} arr The array to sort (modifies original).
@@ -212,7 +203,6 @@ ol.array.stableSort = function(arr, compareFnc) {
   }
 };
 
-
 /**
  * @param {Array.<*>} arr The array to search in.
  * @param {Function} func Comparison function.
@@ -227,7 +217,6 @@ ol.array.findIndex = function(arr, func) {
   return found ? index : -1;
 };
 
-
 /**
  * @param {Array.<*>} arr The array to test.
  * @param {Function=} opt_func Comparison function.
@@ -241,6 +230,6 @@ ol.array.isSorted = function(arr, opt_func, opt_strict) {
       return true;
     }
     var res = compare(arr[index - 1], currentVal);
-    return !(res > 0 || opt_strict && res === 0);
+    return !(res > 0 || (opt_strict && res === 0));
   });
 };

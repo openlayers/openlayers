@@ -13,9 +13,7 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 describe('ol.rendering.layer.Vector', function() {
-
   var center, target, map;
 
   function createMap(renderer) {
@@ -40,29 +38,36 @@ describe('ol.rendering.layer.Vector', function() {
   }
 
   function addPolygon(r) {
-    source.addFeature(new ol.Feature(new ol.geom.Polygon([
-      [
-        [center[0] - r, center[1] - r],
-        [center[0] + r, center[1] - r],
-        [center[0] + r, center[1] + r],
-        [center[0] - r, center[1] + r],
-        [center[0] - r, center[1] - r]
-      ]
-    ])));
+    source.addFeature(
+      new ol.Feature(
+        new ol.geom.Polygon([
+          [
+            [center[0] - r, center[1] - r],
+            [center[0] + r, center[1] - r],
+            [center[0] + r, center[1] + r],
+            [center[0] - r, center[1] + r],
+            [center[0] - r, center[1] - r]
+          ]
+        ])
+      )
+    );
   }
 
   function addLineString(r) {
-    source.addFeature(new ol.Feature(new ol.geom.LineString([
-      [center[0] - r, center[1] - r],
-      [center[0] + r, center[1] - r],
-      [center[0] + r, center[1] + r],
-      [center[0] - r, center[1] + r],
-      [center[0] - r, center[1] - r]
-    ])));
+    source.addFeature(
+      new ol.Feature(
+        new ol.geom.LineString([
+          [center[0] - r, center[1] - r],
+          [center[0] + r, center[1] - r],
+          [center[0] + r, center[1] + r],
+          [center[0] - r, center[1] + r],
+          [center[0] - r, center[1] - r]
+        ])
+      )
+    );
   }
 
   describe('vector layer', function() {
-
     beforeEach(function() {
       source = new ol.source.Vector();
     });
@@ -73,14 +78,18 @@ describe('ol.rendering.layer.Vector', function() {
 
     it('renders opacity correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
-      var smallLine = new ol.Feature(new ol.geom.LineString([
-        [center[0], center[1] - 1],
-        [center[0], center[1] + 1]
-      ]));
-      smallLine.setStyle(new ol.style.Style({
-        zIndex: -99,
-        stroke: new ol.style.Stroke({width: 75, color: 'red'})
-      }));
+      var smallLine = new ol.Feature(
+        new ol.geom.LineString([
+          [center[0], center[1] - 1],
+          [center[0], center[1] + 1]
+        ])
+      );
+      smallLine.setStyle(
+        new ol.style.Style({
+          zIndex: -99,
+          stroke: new ol.style.Stroke({width: 75, color: 'red'})
+        })
+      );
       source.addFeature(smallLine);
       addPolygon(100);
       addCircle(200);
@@ -88,12 +97,18 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new ol.layer.Vector({
-        source: source
-      }));
+      map.addLayer(
+        new ol.layer.Vector({
+          source: source
+        })
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas.png',
-            17, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas.png',
+          17,
+          done
+        );
       });
     });
 
@@ -102,22 +117,30 @@ describe('ol.rendering.layer.Vector', function() {
       map.getView().setRotation(Math.PI + Math.PI / 4);
       addPolygon(300);
       addCircle(500);
-      map.addLayer(new ol.layer.Vector({
-        source: source,
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
-            width: 2,
-            color: 'black'
+      map.addLayer(
+        new ol.layer.Vector({
+          source: source,
+          style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              width: 2,
+              color: 'black'
+            })
           })
         })
-      }));
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-rotated.png',
-            1.7, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas-rotated.png',
+          1.7,
+          done
+        );
       });
     });
 
-    it('renders fill/stroke batches correctly with the canvas renderer', function(done) {
+    it('renders fill/stroke batches correctly with the canvas renderer', function(
+      done
+    ) {
       map = createMap('canvas');
       source = new ol.source.Vector({
         overlaps: false
@@ -128,22 +151,30 @@ describe('ol.rendering.layer.Vector', function() {
       addCircle(500);
       addPolygon(600);
       addPolygon(720);
-      map.addLayer(new ol.layer.Vector({
-        source: source,
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
-            color: '#3399CC',
-            width: 1.25
+      map.addLayer(
+        new ol.layer.Vector({
+          source: source,
+          style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: '#3399CC',
+              width: 1.25
+            })
           })
         })
-      }));
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-opaque.png',
-            24.34, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas-opaque.png',
+          24.34,
+          done
+        );
       });
     });
 
-    it('renders stroke batches correctly with the canvas renderer', function(done) {
+    it('renders stroke batches correctly with the canvas renderer', function(
+      done
+    ) {
       map = createMap('canvas');
       source = new ol.source.Vector({
         overlaps: false
@@ -152,22 +183,30 @@ describe('ol.rendering.layer.Vector', function() {
       addLineString(250);
       addLineString(600);
       addLineString(720);
-      map.addLayer(new ol.layer.Vector({
-        source: source,
-        style: new ol.style.Style({
-          stroke: new ol.style.Stroke({
-            color: '#3399CC',
-            width: 1.25
+      map.addLayer(
+        new ol.layer.Vector({
+          source: source,
+          style: new ol.style.Style({
+            stroke: new ol.style.Stroke({
+              color: '#3399CC',
+              width: 1.25
+            })
           })
         })
-      }));
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-stroke.png',
-            7, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas-stroke.png',
+          7,
+          done
+        );
       });
     });
 
-    it('interrupts fill/stroke batches correctly with the canvas renderer', function(done) {
+    it('interrupts fill/stroke batches correctly with the canvas renderer', function(
+      done
+    ) {
       map = createMap('canvas');
       var color;
       function createSource(overlaps) {
@@ -210,7 +249,9 @@ describe('ol.rendering.layer.Vector', function() {
       map.once('postrender', function() {
         var canvas = map.getRenderer().canvas_;
         // take a snapshot of this `overlaps: true` image
-        var referenceImage = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+        var referenceImage = canvas
+          .getContext('2d')
+          .getImageData(0, 0, canvas.width, canvas.height);
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
         // result should be exactly the same as with `overlaps: true`
@@ -220,7 +261,9 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
-    it('interrupts stroke batches correctly with the canvas renderer', function(done) {
+    it('interrupts stroke batches correctly with the canvas renderer', function(
+      done
+    ) {
       map = createMap('canvas');
       var color;
       function createSource(overlaps) {
@@ -261,7 +304,9 @@ describe('ol.rendering.layer.Vector', function() {
       map.once('postrender', function() {
         var canvas = map.getRenderer().canvas_;
         // take a snapshot of this `overlaps: true` image
-        var referenceImage = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+        var referenceImage = canvas
+          .getContext('2d')
+          .getImageData(0, 0, canvas.width, canvas.height);
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
         // result should be exactly the same as with `overlaps: true`
@@ -273,7 +318,6 @@ describe('ol.rendering.layer.Vector', function() {
   });
 
   describe('polygon rendering', function() {
-
     var map;
     beforeEach(function() {
       map = new ol.Map({
@@ -295,11 +339,19 @@ describe('ol.rendering.layer.Vector', function() {
         geometry: {
           type: 'Polygon',
           coordinates: [
+            [[-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]],
             [
-              [-180, -90], [180, -90], [180, 90], [-180, 90], [-180, -90]
-            ],
-            [
-              [0, 60], [-17.6336, 24.2705], [-57.0634, 18.5410], [-28.5317, -9.2705], [-35.2671, -48.5410], [0, -30], [35.2671, -48.5410], [28.5317, -9.2705], [57.0634, 18.5410], [17.6336, 24.2705], [0, 60]
+              [0, 60],
+              [-17.6336, 24.2705],
+              [-57.0634, 18.541],
+              [-28.5317, -9.2705],
+              [-35.2671, -48.541],
+              [0, -30],
+              [35.2671, -48.541],
+              [28.5317, -9.2705],
+              [57.0634, 18.541],
+              [17.6336, 24.2705],
+              [0, 60]
             ]
           ]
         },
@@ -323,34 +375,32 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/inverted-star.png', 1, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/inverted-star.png',
+          1,
+          done
+        );
       });
-
     });
-
   });
 
   describe('Polygon simplification', function() {
-
     var layer, map;
 
     beforeEach(function() {
       var src = new ol.source.Vector({
         features: [
-          new ol.Feature(new ol.geom.Polygon([[
-            [-22, 58],
-            [-22, 78],
-            [-9, 78],
-            [-9, 58],
-            [-22, 58]
-          ]])),
-          new ol.Feature(new ol.geom.Polygon([[
-            [-9, 58],
-            [-9, 78],
-            [4, 78],
-            [4, 58],
-            [-9, 58]
-          ]]))
+          new ol.Feature(
+            new ol.geom.Polygon([
+              [[-22, 58], [-22, 78], [-9, 78], [-9, 58], [-22, 58]]
+            ])
+          ),
+          new ol.Feature(
+            new ol.geom.Polygon([
+              [[-9, 58], [-9, 78], [4, 78], [4, 58], [-9, 58]]
+            ])
+          )
         ]
       });
       layer = new ol.layer.Vector({
@@ -374,47 +424,65 @@ describe('ol.rendering.layer.Vector', function() {
       disposeMap(map);
     });
 
-    it('renders partially out-of-view polygons with a fill and stroke', function(done) {
-      layer.setStyle(new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: [0, 0, 0, 1],
-          width: 2
-        }),
-        fill: new ol.style.Fill({
-          color: [255, 0, 0, 1]
+    it('renders partially out-of-view polygons with a fill and stroke', function(
+      done
+    ) {
+      layer.setStyle(
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: [0, 0, 0, 1],
+            width: 2
+          }),
+          fill: new ol.style.Fill({
+            color: [255, 0, 0, 1]
+          })
         })
-      }));
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas-simplified.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
 
     it('renders partially out-of-view polygons with a fill', function(done) {
-      layer.setStyle(new ol.style.Style({
-        fill: new ol.style.Fill({
-          color: [0, 0, 0, 1]
+      layer.setStyle(
+        new ol.style.Style({
+          fill: new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          })
         })
-      }));
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-fill.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas-simplified-fill.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
 
     it('renders partially out-of-view polygons with a stroke', function(done) {
-      layer.setStyle(new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          color: [0, 0, 0, 1],
-          width: 2
+      layer.setStyle(
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({
+            color: [0, 0, 0, 1],
+            width: 2
+          })
         })
-      }));
+      );
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-stroke.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/vector-canvas-simplified-stroke.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
-
   });
-
 });

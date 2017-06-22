@@ -18,9 +18,25 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 describe('ol.render.webgl.Immediate', function() {
-  var context, style, circle, line, multiLine, point, multiPoint, polygon, multiPolygon;
+  var context,
+    style,
+    circle,
+    line,
+    multiLine,
+    point,
+    multiPoint,
+    polygon,
+    multiPolygon;
   beforeEach(function() {
-    context = new ol.render.webgl.Immediate({}, [0, 0], 0, 0, [0, 0], [-180, -90, 180, 90], 1);
+    context = new ol.render.webgl.Immediate(
+      {},
+      [0, 0],
+      0,
+      0,
+      [0, 0],
+      [-180, -90, 180, 90],
+      1
+    );
     style = new ol.style.Style({
       image: new ol.style.Circle(),
       fill: new ol.style.Fill(),
@@ -32,7 +48,9 @@ describe('ol.render.webgl.Immediate', function() {
     point = new ol.geom.Point([0, 0]);
     multiPoint = new ol.geom.MultiPoint([[0, 0]]);
     polygon = new ol.geom.Polygon([[[0, 0], [5, 5], [5, 0], [0, 0]]]);
-    multiPolygon = new ol.geom.MultiPolygon([[[[0, 0], [5, 5], [5, 0], [0, 0]]]]);
+    multiPolygon = new ol.geom.MultiPolygon([
+      [[[0, 0], [5, 5], [5, 0], [0, 0]]]
+    ]);
   });
 
   describe('#setStyle', function() {
@@ -86,8 +104,15 @@ describe('ol.render.webgl.Immediate', function() {
   describe('#drawGeometryCollection', function() {
     var geomColl;
     beforeEach(function() {
-      geomColl = new ol.geom.GeometryCollection([circle, point, multiPoint,
-        line, multiLine, polygon, multiPolygon]);
+      geomColl = new ol.geom.GeometryCollection([
+        circle,
+        point,
+        multiPoint,
+        line,
+        multiLine,
+        polygon,
+        multiPolygon
+      ]);
     });
 
     it('draws every geometry in the collection', function() {
@@ -106,7 +131,8 @@ describe('ol.render.webgl.Immediate', function() {
       ctor.prototype.replay = sinon.spy();
       tmpObj.finish = ctor.prototype.finish;
       ctor.prototype.finish = sinon.spy();
-      tmpObj.getDeleteResourcesFunction = ctor.prototype.getDeleteResourcesFunction;
+      tmpObj.getDeleteResourcesFunction =
+        ctor.prototype.getDeleteResourcesFunction;
       ctor.prototype.getDeleteResourcesFunction = sinon.spy(function() {
         return function() {};
       });
@@ -137,11 +163,22 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a point', function() {
         context.drawGeometry(point);
-        expect(ol.render.webgl.ImageReplay.prototype.setImageStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.drawPoint.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.ImageReplay.prototype.setImageStyle.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.ImageReplay.prototype.drawPoint.calledOnce
+        ).to.be(true);
+        expect(ol.render.webgl.ImageReplay.prototype.finish.calledOnce).to.be(
+          true
+        );
+        expect(ol.render.webgl.ImageReplay.prototype.replay.calledOnce).to.be(
+          true
+        );
+        expect(
+          ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {
@@ -157,11 +194,22 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a multi point', function() {
         context.drawGeometry(multiPoint);
-        expect(ol.render.webgl.ImageReplay.prototype.setImageStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.drawMultiPoint.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.ImageReplay.prototype.setImageStyle.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.ImageReplay.prototype.drawMultiPoint.calledOnce
+        ).to.be(true);
+        expect(ol.render.webgl.ImageReplay.prototype.finish.calledOnce).to.be(
+          true
+        );
+        expect(ol.render.webgl.ImageReplay.prototype.replay.calledOnce).to.be(
+          true
+        );
+        expect(
+          ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {
@@ -177,11 +225,23 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a line string', function() {
         context.drawGeometry(line);
-        expect(ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.drawLineString.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle
+            .calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.drawLineString.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.finish.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.replay.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {
@@ -197,11 +257,24 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a multi line string', function() {
         context.drawGeometry(multiLine);
-        expect(ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.drawMultiLineString.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle
+            .calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.drawMultiLineString
+            .calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.finish.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.replay.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.LineStringReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {
@@ -217,11 +290,22 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a polygon', function() {
         context.drawGeometry(polygon);
-        expect(ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.drawPolygon.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.PolygonReplay.prototype.drawPolygon.calledOnce
+        ).to.be(true);
+        expect(ol.render.webgl.PolygonReplay.prototype.finish.calledOnce).to.be(
+          true
+        );
+        expect(ol.render.webgl.PolygonReplay.prototype.replay.calledOnce).to.be(
+          true
+        );
+        expect(
+          ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {
@@ -237,11 +321,22 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a multi polygon', function() {
         context.drawGeometry(multiPolygon);
-        expect(ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.PolygonReplay.prototype.setFillStrokeStyle.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon.calledOnce
+        ).to.be(true);
+        expect(ol.render.webgl.PolygonReplay.prototype.finish.calledOnce).to.be(
+          true
+        );
+        expect(ol.render.webgl.PolygonReplay.prototype.replay.calledOnce).to.be(
+          true
+        );
+        expect(
+          ol.render.webgl.PolygonReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {
@@ -257,11 +352,22 @@ describe('ol.render.webgl.Immediate', function() {
 
       it('draws a circle', function() {
         context.drawGeometry(circle);
-        expect(ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.drawCircle.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.finish.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.replay.calledOnce).to.be(true);
-        expect(ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction.calledOnce).to.be(true);
+        expect(
+          ol.render.webgl.CircleReplay.prototype.setFillStrokeStyle.calledOnce
+        ).to.be(true);
+        expect(
+          ol.render.webgl.CircleReplay.prototype.drawCircle.calledOnce
+        ).to.be(true);
+        expect(ol.render.webgl.CircleReplay.prototype.finish.calledOnce).to.be(
+          true
+        );
+        expect(ol.render.webgl.CircleReplay.prototype.replay.calledOnce).to.be(
+          true
+        );
+        expect(
+          ol.render.webgl.CircleReplay.prototype.getDeleteResourcesFunction
+            .calledOnce
+        ).to.be(true);
       });
 
       after(function() {

@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.Bbox');
 goog.require('ol');
 goog.require('ol.format.filter.Filter');
 
-
 /**
  * @classdesc
  * Represents a `<BBOX>` operator to test whether a geometry-valued property
@@ -18,7 +17,6 @@ goog.require('ol.format.filter.Filter');
  * @api
  */
 ol.format.filter.Bbox = function(geometryName, extent, opt_srsName) {
-
   ol.format.filter.Filter.call(this, 'BBOX');
 
   /**

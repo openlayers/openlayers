@@ -73,40 +73,44 @@ var animateFlights = function(event) {
 
 flightsSource = new ol.source.Vector({
   wrapX: false,
-  attributions: 'Flight data by ' +
-        '<a href="http://openflights.org/data.html">OpenFlights</a>,',
+  attributions:
+    'Flight data by ' +
+      '<a href="http://openflights.org/data.html">OpenFlights</a>,',
   loader: function() {
     var url = 'data/openflights/flights.json';
-    fetch(url).then(function(response) {
-      return response.json();
-    }).then(function(json) {
-      var flightsData = json.flights;
-      for (var i = 0; i < flightsData.length; i++) {
-        var flight = flightsData[i];
-        var from = flight[0];
-        var to = flight[1];
+    fetch(url)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(json) {
+        var flightsData = json.flights;
+        for (var i = 0; i < flightsData.length; i++) {
+          var flight = flightsData[i];
+          var from = flight[0];
+          var to = flight[1];
 
-        // create an arc circle between the two locations
-        var arcGenerator = new arc.GreatCircle(
+          // create an arc circle between the two locations
+          var arcGenerator = new arc.GreatCircle(
             {x: from[1], y: from[0]},
-            {x: to[1], y: to[0]});
+            {x: to[1], y: to[0]}
+          );
 
-        var arcLine = arcGenerator.Arc(100, {offset: 10});
-        if (arcLine.geometries.length === 1) {
-          var line = new ol.geom.LineString(arcLine.geometries[0].coords);
-          line.transform(ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
+          var arcLine = arcGenerator.Arc(100, {offset: 10});
+          if (arcLine.geometries.length === 1) {
+            var line = new ol.geom.LineString(arcLine.geometries[0].coords);
+            line.transform(ol.proj.get('EPSG:4326'), ol.proj.get('EPSG:3857'));
 
-          var feature = new ol.Feature({
-            geometry: line,
-            finished: false
-          });
-          // add the feature with a delay so that the animation
-          // for all features does not start at the same time
-          addLater(feature, i * 50);
+            var feature = new ol.Feature({
+              geometry: line,
+              finished: false
+            });
+            // add the feature with a delay so that the animation
+            // for all features does not start at the same time
+            addLater(feature, i * 50);
+          }
         }
-      }
-      map.on('postcompose', animateFlights);
-    });
+        map.on('postcompose', animateFlights);
+      });
   }
 });
 

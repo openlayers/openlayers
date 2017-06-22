@@ -4,7 +4,6 @@ goog.require('ol.TileRange');
 goog.require('ol.math');
 goog.require('ol.tilegrid');
 
-
 /**
  * @classdesc
  * An attribution for a layer source.
@@ -27,7 +26,6 @@ goog.require('ol.tilegrid');
  * @api
  */
 ol.Attribution = function(options) {
-
   /**
    * @private
    * @type {string}
@@ -39,9 +37,7 @@ ol.Attribution = function(options) {
    * @type {Object.<string, Array.<ol.TileRange>>}
    */
   this.tileRanges_ = options.tileRanges ? options.tileRanges : null;
-
 };
-
 
 /**
  * Get the attribution markup.
@@ -52,14 +48,17 @@ ol.Attribution.prototype.getHTML = function() {
   return this.html_;
 };
 
-
 /**
  * @param {Object.<string, ol.TileRange>} tileRanges Tile ranges.
  * @param {!ol.tilegrid.TileGrid} tileGrid Tile grid.
  * @param {!ol.proj.Projection} projection Projection.
  * @return {boolean} Intersects any tile range.
  */
-ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid, projection) {
+ol.Attribution.prototype.intersectsAnyTileRange = function(
+  tileRanges,
+  tileGrid,
+  projection
+) {
   if (!this.tileRanges_) {
     return true;
   }
@@ -76,18 +75,30 @@ ol.Attribution.prototype.intersectsAnyTileRange = function(tileRanges, tileGrid,
         return true;
       }
       var extentTileRange = tileGrid.getTileRangeForExtentAndZ(
-          ol.tilegrid.extentFromProjection(projection), parseInt(zKey, 10));
+        ol.tilegrid.extentFromProjection(projection),
+        parseInt(zKey, 10)
+      );
       var width = extentTileRange.getWidth();
-      if (tileRange.minX < extentTileRange.minX ||
-          tileRange.maxX > extentTileRange.maxX) {
-        if (testTileRange.intersects(new ol.TileRange(
-            ol.math.modulo(tileRange.minX, width),
-            ol.math.modulo(tileRange.maxX, width),
-            tileRange.minY, tileRange.maxY))) {
+      if (
+        tileRange.minX < extentTileRange.minX ||
+        tileRange.maxX > extentTileRange.maxX
+      ) {
+        if (
+          testTileRange.intersects(
+            new ol.TileRange(
+              ol.math.modulo(tileRange.minX, width),
+              ol.math.modulo(tileRange.maxX, width),
+              tileRange.minY,
+              tileRange.maxY
+            )
+          )
+        ) {
           return true;
         }
-        if (tileRange.getWidth() > width &&
-            testTileRange.intersects(extentTileRange)) {
+        if (
+          tileRange.getWidth() > width &&
+          testTileRange.intersects(extentTileRange)
+        ) {
           return true;
         }
       }

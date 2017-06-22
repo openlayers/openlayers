@@ -8,7 +8,6 @@ goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.deflate');
 goog.require('ol.math');
 
-
 /**
  * @classdesc
  * Point geometry.
@@ -25,7 +24,6 @@ ol.geom.Point = function(coordinates, opt_layout) {
 };
 ol.inherits(ol.geom.Point, ol.geom.SimpleGeometry);
 
-
 /**
  * Make a complete copy of the geometry.
  * @return {!ol.geom.Point} Clone.
@@ -38,14 +36,22 @@ ol.geom.Point.prototype.clone = function() {
   return point;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.geom.Point.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
+ol.geom.Point.prototype.closestPointXY = function(
+  x,
+  y,
+  closestPoint,
+  minSquaredDistance
+) {
   var flatCoordinates = this.flatCoordinates;
   var squaredDistance = ol.math.squaredDistance(
-      x, y, flatCoordinates[0], flatCoordinates[1]);
+    x,
+    y,
+    flatCoordinates[0],
+    flatCoordinates[1]
+  );
   if (squaredDistance < minSquaredDistance) {
     var stride = this.stride;
     var i;
@@ -59,7 +65,6 @@ ol.geom.Point.prototype.closestPointXY = function(x, y, closestPoint, minSquared
   }
 };
 
-
 /**
  * Return the coordinate of the point.
  * @return {ol.Coordinate} Coordinates.
@@ -70,14 +75,12 @@ ol.geom.Point.prototype.getCoordinates = function() {
   return !this.flatCoordinates ? [] : this.flatCoordinates.slice();
 };
 
-
 /**
  * @inheritDoc
  */
 ol.geom.Point.prototype.computeExtent = function(extent) {
   return ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates, extent);
 };
-
 
 /**
  * @inheritDoc
@@ -87,16 +90,17 @@ ol.geom.Point.prototype.getType = function() {
   return ol.geom.GeometryType.POINT;
 };
 
-
 /**
  * @inheritDoc
  * @api
  */
 ol.geom.Point.prototype.intersectsExtent = function(extent) {
-  return ol.extent.containsXY(extent,
-      this.flatCoordinates[0], this.flatCoordinates[1]);
+  return ol.extent.containsXY(
+    extent,
+    this.flatCoordinates[0],
+    this.flatCoordinates[1]
+  );
 };
-
 
 /**
  * @inheritDoc
@@ -111,11 +115,14 @@ ol.geom.Point.prototype.setCoordinates = function(coordinates, opt_layout) {
       this.flatCoordinates = [];
     }
     this.flatCoordinates.length = ol.geom.flat.deflate.coordinate(
-        this.flatCoordinates, 0, coordinates, this.stride);
+      this.flatCoordinates,
+      0,
+      coordinates,
+      this.stride
+    );
     this.changed();
   }
 };
-
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.

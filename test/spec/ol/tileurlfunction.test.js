@@ -4,9 +4,7 @@ goog.require('ol.TileUrlFunction');
 goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');
 
-
 describe('ol.TileUrlFunction', function() {
-
   describe('expandUrl', function() {
     describe('with number range', function() {
       it('creates expected URLs', function() {
@@ -43,9 +41,7 @@ describe('ol.TileUrlFunction', function() {
       it('creates expected URLs', function() {
         var template = 'http://tiles.example.com/{z}/{x}/{y}';
         var urls = ol.TileUrlFunction.expandUrl(template);
-        expect(urls).to.eql([
-          'http://tiles.example.com/{z}/{x}/{y}'
-        ]);
+        expect(urls).to.eql(['http://tiles.example.com/{z}/{x}/{y}']);
       });
     });
   });
@@ -54,13 +50,17 @@ describe('ol.TileUrlFunction', function() {
     var tileGrid = ol.tilegrid.createXYZ();
     it('creates expected URL', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate(
-          '{z}/{x}/{y}', tileGrid);
+        '{z}/{x}/{y}',
+        tileGrid
+      );
       expect(tileUrl([3, 2, -2])).to.eql('3/2/1');
       expect(tileUrl(null)).to.be(undefined);
     });
     it('accepts {-y} placeholder', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate(
-          '{z}/{x}/{-y}', tileGrid);
+        '{z}/{x}/{-y}',
+        tileGrid
+      );
       expect(tileUrl([3, 2, -3])).to.eql('3/2/5');
     });
     it('returns correct value for {-y} with custom tile grids', function() {
@@ -70,12 +70,16 @@ describe('ol.TileUrlFunction', function() {
         resolutions: [360 / 256, 360 / 512, 360 / 1024, 360 / 2048]
       });
       var tileUrl = ol.TileUrlFunction.createFromTemplate(
-          '{z}/{x}/{-y}', customTileGrid);
+        '{z}/{x}/{-y}',
+        customTileGrid
+      );
       expect(tileUrl([3, 2, -3])).to.eql('3/2/1');
     });
     it('replaces multiple placeholder occurrences', function() {
       var tileUrl = ol.TileUrlFunction.createFromTemplate(
-          '{z}/{z}{x}{y}', tileGrid);
+        '{z}/{z}{x}{y}',
+        tileGrid
+      );
       expect(tileUrl([3, 2, -2])).to.eql('3/321');
     });
   });
@@ -89,7 +93,9 @@ describe('ol.TileUrlFunction', function() {
         'http://tile-3/{z}/{x}/{y}'
       ];
       var tileUrlFunction = ol.TileUrlFunction.createFromTemplates(
-          templates, tileGrid);
+        templates,
+        tileGrid
+      );
       var tileCoord = [3, 2, -2];
 
       /* eslint-disable openlayers-internal/no-missing-requires */
@@ -127,5 +133,4 @@ describe('ol.TileUrlFunction', function() {
       expect(tileUrl(null)).to.be(undefined);
     });
   });
-
 });

@@ -2,11 +2,8 @@ goog.provide('ol.test.RotationConstraint');
 
 goog.require('ol.RotationConstraint');
 
-
 describe('ol.RotationConstraint', function() {
-
   describe('SnapToZero', function() {
-
     it('returns expected rotation value', function() {
       var rotationConstraint = ol.RotationConstraint.createSnapToZero(0.3);
 
@@ -32,6 +29,5 @@ describe('ol.RotationConstraint', function() {
       expect(rotationConstraint(-1, 0.7)).not.to.eql(0);
       expect(rotationConstraint(-1, 0.6)).to.eql(-0.4);
     });
-
   });
 });

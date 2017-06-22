@@ -6,7 +6,6 @@ goog.require('ol.events.condition');
 goog.require('ol.extent');
 goog.require('ol.interaction.DragBox');
 
-
 /**
  * @classdesc
  * Allows the user to zoom the map by clicking and dragging on the map,
@@ -24,8 +23,9 @@ goog.require('ol.interaction.DragBox');
 ol.interaction.DragZoom = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
-  var condition = options.condition ?
-      options.condition : ol.events.condition.shiftKeyOnly;
+  var condition = options.condition
+    ? options.condition
+    : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -43,10 +43,8 @@ ol.interaction.DragZoom = function(opt_options) {
     condition: condition,
     className: options.className || 'ol-dragzoom'
   });
-
 };
 ol.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
-
 
 /**
  * @inheritDoc
@@ -54,9 +52,9 @@ ol.inherits(ol.interaction.DragZoom, ol.interaction.DragBox);
 ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   var map = this.getMap();
 
-  var view = /** @type {!ol.View} */ (map.getView());
+  var view /** @type {!ol.View} */ = map.getView();
 
-  var size = /** @type {!ol.Size} */ (map.getSize());
+  var size /** @type {!ol.Size} */ = map.getSize();
 
   var extent = this.getGeometry().getExtent();
 
@@ -64,7 +62,8 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
     var mapExtent = view.calculateExtent(size);
     var boxPixelExtent = ol.extent.createOrUpdateFromCoordinates([
       map.getPixelFromCoordinate(ol.extent.getBottomLeft(extent)),
-      map.getPixelFromCoordinate(ol.extent.getTopRight(extent))]);
+      map.getPixelFromCoordinate(ol.extent.getTopRight(extent))
+    ]);
     var factor = view.getResolutionForExtent(boxPixelExtent, size);
 
     ol.extent.scaleFromCenter(mapExtent, 1 / factor);
@@ -72,7 +71,8 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
   }
 
   var resolution = view.constrainResolution(
-      view.getResolutionForExtent(extent, size));
+    view.getResolutionForExtent(extent, size)
+  );
 
   var center = ol.extent.getCenter(extent);
   center = view.constrainCenter(center);
@@ -83,5 +83,4 @@ ol.interaction.DragZoom.prototype.onBoxEnd = function() {
     duration: this.duration_,
     easing: ol.easing.easeOut
   });
-
 };

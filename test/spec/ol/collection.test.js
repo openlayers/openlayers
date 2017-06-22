@@ -4,7 +4,6 @@ goog.require('ol.events');
 goog.require('ol.Collection');
 goog.require('ol.CollectionEventType');
 
-
 describe('ol.collection', function() {
   var collection;
 
@@ -157,10 +156,9 @@ describe('ol.collection', function() {
       ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
         added = e.element;
       });
-      ol.events.listen(
-          collection, ol.CollectionEventType.REMOVE, function(e) {
-            removed = e.element;
-          });
+      ol.events.listen(collection, ol.CollectionEventType.REMOVE, function(e) {
+        removed = e.element;
+      });
       collection.setAt(1, 1);
       expect(added).to.eql(1);
       expect(removed).to.eql('b');
@@ -171,10 +169,9 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection(['a']);
       var removed;
-      ol.events.listen(
-          collection, ol.CollectionEventType.REMOVE, function(e) {
-            removed = e.element;
-          });
+      ol.events.listen(collection, ol.CollectionEventType.REMOVE, function(e) {
+        removed = e.element;
+      });
       collection.pop();
       expect(removed).to.eql('a');
     });
@@ -184,10 +181,9 @@ describe('ol.collection', function() {
     it('does dispatch events', function() {
       var collection = new ol.Collection([0, 2]);
       var added;
-      ol.events.listen(
-          collection, ol.CollectionEventType.ADD, function(e) {
-            added = e.element;
-          });
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+        added = e.element;
+      });
       collection.insertAt(1, 1);
       expect(added).to.eql(1);
     });
@@ -196,10 +192,9 @@ describe('ol.collection', function() {
   describe('setAt beyond end', function() {
     it('triggers events properly', function() {
       var added = [];
-      ol.events.listen(
-          collection, ol.CollectionEventType.ADD, function(e) {
-            added.push(e.element);
-          });
+      ol.events.listen(collection, ol.CollectionEventType.ADD, function(e) {
+        added.push(e.element);
+      });
       collection.setAt(2, 0);
       expect(collection.getLength()).to.eql(3);
       expect(collection.item(0)).to.be(undefined);
@@ -365,7 +360,5 @@ describe('ol.collection', function() {
       };
       expect(call).to.throwException();
     });
-
   });
-
 });

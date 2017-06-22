@@ -7,7 +7,6 @@ goog.require('ol.interaction.Extent');
 goog.require('ol.pointer.PointerEvent');
 
 describe('ol.interaction.Extent', function() {
-
   var target, map, interaction;
 
   var width = 360;
@@ -89,7 +88,6 @@ describe('ol.interaction.Extent', function() {
   });
 
   describe('draw extent', function() {
-
     it('drawing extent works', function() {
       simulateEvent('pointerdown', -50, -50, false, 0);
       simulateEvent('pointerdrag', 50, 50, false, 0);

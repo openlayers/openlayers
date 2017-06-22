@@ -4,7 +4,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.Stamen');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -21,7 +20,10 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     center: ol.proj.transform(
-        [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
+      [-122.416667, 37.783333],
+      'EPSG:4326',
+      'EPSG:3857'
+    ),
     zoom: 12
   })
 });

@@ -14,7 +14,6 @@ goog.require('ol.math');
 goog.require('ol.pointer.EventType');
 goog.require('ol.pointer.PointerEventHandler');
 
-
 /**
  * @classdesc
  * A slider type of control for zooming.
@@ -29,7 +28,6 @@ goog.require('ol.pointer.PointerEventHandler');
  * @api
  */
 ol.control.ZoomSlider = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   /**
@@ -100,12 +98,15 @@ ol.control.ZoomSlider = function(opt_options) {
    */
   this.duration_ = options.duration !== undefined ? options.duration : 200;
 
-  var className = options.className !== undefined ? options.className : 'ol-zoomslider';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-zoomslider';
   var thumbElement = document.createElement('button');
   thumbElement.setAttribute('type', 'button');
   thumbElement.className = className + '-thumb ' + ol.css.CLASS_UNSELECTABLE;
   var containerElement = document.createElement('div');
-  containerElement.className = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
+  containerElement.className =
+    className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
   containerElement.appendChild(thumbElement);
   /**
    * @type {ol.pointer.PointerEventHandler}
@@ -113,17 +114,36 @@ ol.control.ZoomSlider = function(opt_options) {
    */
   this.dragger_ = new ol.pointer.PointerEventHandler(containerElement);
 
-  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERDOWN,
-      this.handleDraggerStart_, this);
-  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERMOVE,
-      this.handleDraggerDrag_, this);
-  ol.events.listen(this.dragger_, ol.pointer.EventType.POINTERUP,
-      this.handleDraggerEnd_, this);
+  ol.events.listen(
+    this.dragger_,
+    ol.pointer.EventType.POINTERDOWN,
+    this.handleDraggerStart_,
+    this
+  );
+  ol.events.listen(
+    this.dragger_,
+    ol.pointer.EventType.POINTERMOVE,
+    this.handleDraggerDrag_,
+    this
+  );
+  ol.events.listen(
+    this.dragger_,
+    ol.pointer.EventType.POINTERUP,
+    this.handleDraggerEnd_,
+    this
+  );
 
-  ol.events.listen(containerElement, ol.events.EventType.CLICK,
-      this.handleContainerClick_, this);
-  ol.events.listen(thumbElement, ol.events.EventType.CLICK,
-      ol.events.Event.stopPropagation);
+  ol.events.listen(
+    containerElement,
+    ol.events.EventType.CLICK,
+    this.handleContainerClick_,
+    this
+  );
+  ol.events.listen(
+    thumbElement,
+    ol.events.EventType.CLICK,
+    ol.events.Event.stopPropagation
+  );
 
   var render = options.render ? options.render : ol.control.ZoomSlider.render;
 
@@ -134,7 +154,6 @@ ol.control.ZoomSlider = function(opt_options) {
 };
 ol.inherits(ol.control.ZoomSlider, ol.control.Control);
 
-
 /**
  * @inheritDoc
  */
@@ -142,7 +161,6 @@ ol.control.ZoomSlider.prototype.disposeInternal = function() {
   this.dragger_.dispose();
   ol.control.Control.prototype.disposeInternal.call(this);
 };
-
 
 /**
  * The enum for available directions.
@@ -155,7 +173,6 @@ ol.control.ZoomSlider.Direction_ = {
   HORIZONTAL: 1
 };
 
-
 /**
  * @inheritDoc
  */
@@ -165,7 +182,6 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
     map.render();
   }
 };
-
 
 /**
  * Initializes the slider element. This will determine and set this controls
@@ -177,17 +193,20 @@ ol.control.ZoomSlider.prototype.setMap = function(map) {
 ol.control.ZoomSlider.prototype.initSlider_ = function() {
   var container = this.element;
   var containerSize = {
-    width: container.offsetWidth, height: container.offsetHeight
+    width: container.offsetWidth,
+    height: container.offsetHeight
   };
 
   var thumb = container.firstElementChild;
   var computedStyle = getComputedStyle(thumb);
-  var thumbWidth = thumb.offsetWidth +
-      parseFloat(computedStyle['marginRight']) +
-      parseFloat(computedStyle['marginLeft']);
-  var thumbHeight = thumb.offsetHeight +
-      parseFloat(computedStyle['marginTop']) +
-      parseFloat(computedStyle['marginBottom']);
+  var thumbWidth =
+    thumb.offsetWidth +
+    parseFloat(computedStyle['marginRight']) +
+    parseFloat(computedStyle['marginLeft']);
+  var thumbHeight =
+    thumb.offsetHeight +
+    parseFloat(computedStyle['marginTop']) +
+    parseFloat(computedStyle['marginBottom']);
   this.thumbSize_ = [thumbWidth, thumbHeight];
 
   if (containerSize.width > containerSize.height) {
@@ -199,7 +218,6 @@ ol.control.ZoomSlider.prototype.initSlider_ = function() {
   }
   this.sliderInitialized_ = true;
 };
-
 
 /**
  * Update the zoomslider element.
@@ -221,7 +239,6 @@ ol.control.ZoomSlider.render = function(mapEvent) {
   }
 };
 
-
 /**
  * @param {Event} event The browser event to handle.
  * @private
@@ -230,8 +247,9 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
   var view = this.getMap().getView();
 
   var relativePosition = this.getRelativePosition_(
-      event.offsetX - this.thumbSize_[0] / 2,
-      event.offsetY - this.thumbSize_[1] / 2);
+    event.offsetX - this.thumbSize_[0] / 2,
+    event.offsetY - this.thumbSize_[1] / 2
+  );
 
   var resolution = this.getResolutionForPosition_(relativePosition);
 
@@ -242,21 +260,22 @@ ol.control.ZoomSlider.prototype.handleContainerClick_ = function(event) {
   });
 };
 
-
 /**
  * Handle dragger start events.
  * @param {ol.pointer.PointerEvent} event The drag event.
  * @private
  */
 ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
-  if (!this.dragging_ && event.originalEvent.target === this.element.firstElementChild) {
+  if (
+    !this.dragging_ &&
+    event.originalEvent.target === this.element.firstElementChild
+  ) {
     this.getMap().getView().setHint(ol.ViewHint.INTERACTING, 1);
     this.previousX_ = event.clientX;
     this.previousY_ = event.clientY;
     this.dragging_ = true;
   }
 };
-
 
 /**
  * Handle dragger drag events.
@@ -267,8 +286,10 @@ ol.control.ZoomSlider.prototype.handleDraggerStart_ = function(event) {
 ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
   if (this.dragging_) {
     var element = this.element.firstElementChild;
-    var deltaX = event.clientX - this.previousX_ + parseInt(element.style.left, 10);
-    var deltaY = event.clientY - this.previousY_ + parseInt(element.style.top, 10);
+    var deltaX =
+      event.clientX - this.previousX_ + parseInt(element.style.left, 10);
+    var deltaY =
+      event.clientY - this.previousY_ + parseInt(element.style.top, 10);
     var relativePosition = this.getRelativePosition_(deltaX, deltaY);
     this.currentResolution_ = this.getResolutionForPosition_(relativePosition);
     this.getMap().getView().setResolution(this.currentResolution_);
@@ -277,7 +298,6 @@ ol.control.ZoomSlider.prototype.handleDraggerDrag_ = function(event) {
     this.previousY_ = event.clientY;
   }
 };
-
 
 /**
  * Handle dragger end events.
@@ -301,7 +321,6 @@ ol.control.ZoomSlider.prototype.handleDraggerEnd_ = function(event) {
   }
 };
 
-
 /**
  * Positions the thumb inside its container according to the given resolution.
  *
@@ -318,7 +337,6 @@ ol.control.ZoomSlider.prototype.setThumbPosition_ = function(res) {
     thumb.style.top = this.heightLimit_ * position + 'px';
   }
 };
-
 
 /**
  * Calculates the relative position of the thumb given x and y offsets.  The
@@ -340,7 +358,6 @@ ol.control.ZoomSlider.prototype.getRelativePosition_ = function(x, y) {
   return ol.math.clamp(amount, 0, 1);
 };
 
-
 /**
  * Calculates the corresponding resolution of the thumb given its relative
  * position (where 0 is the minimum and 1 is the maximum).
@@ -353,7 +370,6 @@ ol.control.ZoomSlider.prototype.getResolutionForPosition_ = function(position) {
   var fn = this.getMap().getView().getResolutionForValueFunction();
   return fn(1 - position);
 };
-
 
 /**
  * Determines the relative position of the slider for the given resolution.  A

@@ -5,7 +5,6 @@ goog.require('ol.Disposable');
 goog.require('ol.events');
 goog.require('ol.events.Event');
 
-
 /**
  * @classdesc
  * A simplified implementation of the W3C DOM Level 2 EventTarget interface.
@@ -25,7 +24,6 @@ goog.require('ol.events.Event');
  * @extends {ol.Disposable}
  */
 ol.events.EventTarget = function() {
-
   ol.Disposable.call(this);
 
   /**
@@ -45,10 +43,8 @@ ol.events.EventTarget = function() {
    * @type {!Object.<string, Array.<ol.EventsListenerFunctionType>>}
    */
   this.listeners_ = {};
-
 };
 ol.inherits(ol.events.EventTarget, ol.Disposable);
-
 
 /**
  * @param {string} type Type.
@@ -63,7 +59,6 @@ ol.events.EventTarget.prototype.addEventListener = function(type, listener) {
     listeners.push(listener);
   }
 };
-
 
 /**
  * @param {{type: string,
@@ -103,14 +98,12 @@ ol.events.EventTarget.prototype.dispatchEvent = function(event) {
   }
 };
 
-
 /**
  * @inheritDoc
  */
 ol.events.EventTarget.prototype.disposeInternal = function() {
   ol.events.unlistenAll(this);
 };
-
 
 /**
  * Get the listeners for a specified event type. Listeners are returned in the
@@ -123,18 +116,16 @@ ol.events.EventTarget.prototype.getListeners = function(type) {
   return this.listeners_[type];
 };
 
-
 /**
  * @param {string=} opt_type Type. If not provided,
  *     `true` will be returned if this EventTarget has any listeners.
  * @return {boolean} Has listeners.
  */
 ol.events.EventTarget.prototype.hasListener = function(opt_type) {
-  return opt_type ?
-      opt_type in this.listeners_ :
-      Object.keys(this.listeners_).length > 0;
+  return opt_type
+    ? opt_type in this.listeners_
+    : Object.keys(this.listeners_).length > 0;
 };
-
 
 /**
  * @param {string} type Type.

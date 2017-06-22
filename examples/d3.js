@@ -9,7 +9,6 @@ goog.require('ol.proj');
 goog.require('ol.source.ImageCanvas');
 goog.require('ol.source.Stamen');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -24,7 +23,6 @@ var map = new ol.Map({
     zoom: 4
   })
 });
-
 
 /**
  * Load the topojson data and create an ol.layer.Image for that data.
@@ -41,8 +39,13 @@ d3.json('data/topojson/us.json', function(error, us) {
    * @param {ol.proj.Projection} projection Projection.
    * @return {HTMLCanvasElement} A canvas element.
    */
-  var canvasFunction = function(extent, resolution, pixelRatio,
-      size, projection) {
+  var canvasFunction = function(
+    extent,
+    resolution,
+    pixelRatio,
+    size,
+    projection
+  ) {
     var canvasWidth = size[0];
     var canvasHeight = size[1];
 
@@ -60,9 +63,15 @@ d3.json('data/topojson/us.json', function(error, us) {
 
     var geoBounds = d3.geo.bounds(features);
     var geoBoundsLeftBottom = ol.proj.transform(
-        geoBounds[0], 'EPSG:4326', projection);
+      geoBounds[0],
+      'EPSG:4326',
+      projection
+    );
     var geoBoundsRightTop = ol.proj.transform(
-        geoBounds[1], 'EPSG:4326', projection);
+      geoBounds[1],
+      'EPSG:4326',
+      projection
+    );
     var geoBoundsWidth = geoBoundsRightTop[0] - geoBoundsLeftBottom[0];
     if (geoBoundsWidth < 0) {
       geoBoundsWidth += ol.extent.getWidth(projection.getExtent());
@@ -74,10 +83,15 @@ d3.json('data/topojson/us.json', function(error, us) {
     var r = Math.max(widthResolution, heightResolution);
     var scale = r / (resolution / pixelRatio);
 
-    var center = ol.proj.transform(ol.extent.getCenter(extent),
-        projection, 'EPSG:4326');
-    d3Projection.scale(scale).center(center)
-        .translate([canvasWidth / 2, canvasHeight / 2]);
+    var center = ol.proj.transform(
+      ol.extent.getCenter(extent),
+      projection,
+      'EPSG:4326'
+    );
+    d3Projection
+      .scale(scale)
+      .center(center)
+      .translate([canvasWidth / 2, canvasHeight / 2]);
     d3Path = d3Path.projection(d3Projection).context(context);
     d3Path(features);
     context.stroke();

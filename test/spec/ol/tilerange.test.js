@@ -2,9 +2,7 @@ goog.provide('ol.test.TileRange');
 
 goog.require('ol.TileRange');
 
-
 describe('ol.TileRange', function() {
-
   describe('constructor', function() {
     it('creates a range', function() {
       var range = new ol.TileRange(1, 3, 2, 4);
@@ -76,7 +74,6 @@ describe('ol.TileRange', function() {
       expect(one.maxX).to.be(2);
       expect(one.minY).to.be(1);
       expect(one.maxY).to.be(12);
-
     });
   });
 
@@ -110,5 +107,4 @@ describe('ol.TileRange', function() {
       expect(one.intersects(below)).to.be(false);
     });
   });
-
 });

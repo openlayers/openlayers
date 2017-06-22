@@ -86,19 +86,19 @@ var Draw = {
   },
   Point: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('Point')
+    type /** @type {ol.geom.GeometryType} */: 'Point'
   }),
   LineString: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('LineString')
+    type /** @type {ol.geom.GeometryType} */: 'LineString'
   }),
   Polygon: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('Polygon')
+    type /** @type {ol.geom.GeometryType} */: 'Polygon'
   }),
   Circle: new ol.interaction.Draw({
     source: vector.getSource(),
-    type: /** @type {ol.geom.GeometryType} */ ('Circle')
+    type /** @type {ol.geom.GeometryType} */: 'Circle'
   }),
   getActive: function() {
     return this.activeType ? this[this.activeType].getActive() : false;
@@ -116,7 +116,6 @@ var Draw = {
   }
 };
 Draw.init();
-
 
 /**
  * Let user change the geometry type.

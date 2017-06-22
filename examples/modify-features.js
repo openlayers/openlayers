@@ -9,7 +9,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
-
 var raster = new ol.layer.Tile({
   source: new ol.source.OSM()
 });

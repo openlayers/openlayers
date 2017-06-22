@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.MapBrowserEventType');
 goog.require('ol.interaction.Interaction');
 
-
 /**
  * @classdesc
  * Allows the user to zoom by double-clicking on the map.
@@ -15,7 +14,6 @@ goog.require('ol.interaction.Interaction');
  * @api
  */
 ol.interaction.DoubleClickZoom = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   /**
@@ -33,10 +31,8 @@ ol.interaction.DoubleClickZoom = function(opt_options) {
    * @type {number}
    */
   this.duration_ = options.duration !== undefined ? options.duration : 250;
-
 };
 ol.inherits(ol.interaction.DoubleClickZoom, ol.interaction.Interaction);
-
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
@@ -54,8 +50,7 @@ ol.interaction.DoubleClickZoom.handleEvent = function(mapBrowserEvent) {
     var anchor = mapBrowserEvent.coordinate;
     var delta = browserEvent.shiftKey ? -this.delta_ : this.delta_;
     var view = map.getView();
-    ol.interaction.Interaction.zoomByDelta(
-        view, delta, anchor, this.duration_);
+    ol.interaction.Interaction.zoomByDelta(view, delta, anchor, this.duration_);
     mapBrowserEvent.preventDefault();
     stopEvent = true;
   }

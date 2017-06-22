@@ -4,7 +4,6 @@ goog.provide('ol.source.TileEventType');
  * @enum {string}
  */
 ol.source.TileEventType = {
-
   /**
    * Triggered when a tile starts loading.
    * @event ol.source.Tile.Event#tileloadstart
@@ -25,5 +24,4 @@ ol.source.TileEventType = {
    * @api
    */
   TILELOADERROR: 'tileloaderror'
-
 };

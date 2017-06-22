@@ -10,7 +10,6 @@ goog.require('ol.extent');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid.TileGrid');
 
-
 /**
  * @classdesc
  * Layer source for tile data in Zoomify format.
@@ -21,13 +20,12 @@ goog.require('ol.tilegrid.TileGrid');
  * @api
  */
 ol.source.Zoomify = function(opt_options) {
-
   var options = opt_options || {};
 
   var size = options.size;
-  var tierSizeCalculation = options.tierSizeCalculation !== undefined ?
-      options.tierSizeCalculation :
-      ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
+  var tierSizeCalculation = options.tierSizeCalculation !== undefined
+    ? options.tierSizeCalculation
+    : ol.source.Zoomify.TierSizeCalculation_.DEFAULT;
 
   var imageWidth = size[0];
   var imageHeight = size[1];
@@ -70,7 +68,7 @@ ol.source.Zoomify = function(opt_options) {
   for (i = 1, ii = tierSizeInTiles.length; i < ii; i++) {
     resolutions.push(1 << i);
     tileCountUpToTier.push(
-        tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
+      tierSizeInTiles[i - 1][0] * tierSizeInTiles[i - 1][1] +
         tileCountUpToTier[i - 1]
     );
   }
@@ -94,7 +92,6 @@ ol.source.Zoomify = function(opt_options) {
    * @return {ol.TileUrlFunctionType} Tile URL function.
    */
   function createFromTemplate(template) {
-
     return (
       /**
        * @param {ol.TileCoord} tileCoord Tile Coordinate.
@@ -110,24 +107,27 @@ ol.source.Zoomify = function(opt_options) {
           var tileCoordX = tileCoord[1];
           var tileCoordY = -tileCoord[2] - 1;
           var tileIndex =
-              tileCoordX +
-              tileCoordY * tierSizeInTiles[tileCoordZ][0] +
-              tileCountUpToTier[tileCoordZ];
+            tileCoordX +
+            tileCoordY * tierSizeInTiles[tileCoordZ][0] +
+            tileCountUpToTier[tileCoordZ];
           var tileGroup = (tileIndex / ol.DEFAULT_TILE_SIZE) | 0;
           var localContext = {
-            'z': tileCoordZ,
-            'x': tileCoordX,
-            'y': tileCoordY,
-            'TileGroup': 'TileGroup' + tileGroup
+            z: tileCoordZ,
+            x: tileCoordX,
+            y: tileCoordY,
+            TileGroup: 'TileGroup' + tileGroup
           };
           return template.replace(/\{(\w+?)\}/g, function(m, p) {
             return localContext[p];
           });
         }
-      });
+      }
+    );
   }
 
-  var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(urls.map(createFromTemplate));
+  var tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
+    urls.map(createFromTemplate)
+  );
 
   ol.source.TileImage.call(this, {
     attributions: options.attributions,
@@ -140,10 +140,8 @@ ol.source.Zoomify = function(opt_options) {
     tileGrid: tileGrid,
     tileUrlFunction: tileUrlFunction
   });
-
 };
 ol.inherits(ol.source.Zoomify, ol.source.TileImage);
-
 
 /**
  * @constructor
@@ -156,8 +154,12 @@ ol.inherits(ol.source.Zoomify, ol.source.TileImage);
  * @private
  */
 ol.source.Zoomify.Tile_ = function(
-    tileCoord, state, src, crossOrigin, tileLoadFunction) {
-
+  tileCoord,
+  state,
+  src,
+  crossOrigin,
+  tileLoadFunction
+) {
   ol.ImageTile.call(this, tileCoord, state, src, crossOrigin, tileLoadFunction);
 
   /**
@@ -165,10 +167,8 @@ ol.source.Zoomify.Tile_ = function(
    * @type {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement}
    */
   this.zoomifyImage_ = null;
-
 };
 ol.inherits(ol.source.Zoomify.Tile_, ol.ImageTile);
-
 
 /**
  * @inheritDoc
@@ -193,7 +193,6 @@ ol.source.Zoomify.Tile_.prototype.getImage = function() {
     return image;
   }
 };
-
 
 /**
  * @enum {string}

@@ -1,6 +1,5 @@
 goog.provide('ol.geom.GeometryType');
 
-
 /**
  * The geometry type. One of `'Point'`, `'LineString'`, `'LinearRing'`,
  * `'Polygon'`, `'MultiPoint'`, `'MultiLineString'`, `'MultiPolygon'`,

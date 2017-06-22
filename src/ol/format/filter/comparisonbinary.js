@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.ComparisonBinary');
 goog.require('ol');
 goog.require('ol.format.filter.Comparison');
 
-
 /**
  * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
@@ -18,8 +17,11 @@ goog.require('ol.format.filter.Comparison');
  * @api
  */
 ol.format.filter.ComparisonBinary = function(
-    tagName, propertyName, expression, opt_matchCase) {
-
+  tagName,
+  propertyName,
+  expression,
+  opt_matchCase
+) {
   ol.format.filter.Comparison.call(this, tagName, propertyName);
 
   /**

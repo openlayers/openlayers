@@ -9,9 +9,7 @@ goog.require('ol.webgl');
 goog.require('ol.webgl.Buffer');
 goog.require('ol.webgl.Context');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @extends {ol.render.webgl.Replay}
@@ -138,11 +136,12 @@ if (ol.ENABLE_WEBGL) {
   };
   ol.inherits(ol.render.webgl.ImageReplay, ol.render.webgl.Replay);
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(context) {
+  ol.render.webgl.ImageReplay.prototype.getDeleteResourcesFunction = function(
+    context
+  ) {
     var verticesBuffer = this.verticesBuffer;
     var indicesBuffer = this.indicesBuffer;
     var textures = this.textures_;
@@ -163,7 +162,6 @@ if (ol.ENABLE_WEBGL) {
     };
   };
 
-
   /**
    * @param {Array.<number>} flatCoordinates Flat coordinates.
    * @param {number} offset Offset.
@@ -172,20 +170,25 @@ if (ol.ENABLE_WEBGL) {
    * @return {number} My end.
    * @private
    */
-  ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(flatCoordinates, offset, end, stride) {
-    var anchorX = /** @type {number} */ (this.anchorX_);
-    var anchorY = /** @type {number} */ (this.anchorY_);
-    var height = /** @type {number} */ (this.height_);
-    var imageHeight = /** @type {number} */ (this.imageHeight_);
-    var imageWidth = /** @type {number} */ (this.imageWidth_);
-    var opacity = /** @type {number} */ (this.opacity_);
-    var originX = /** @type {number} */ (this.originX_);
-    var originY = /** @type {number} */ (this.originY_);
+  ol.render.webgl.ImageReplay.prototype.drawCoordinates_ = function(
+    flatCoordinates,
+    offset,
+    end,
+    stride
+  ) {
+    var anchorX /** @type {number} */ = this.anchorX_;
+    var anchorY /** @type {number} */ = this.anchorY_;
+    var height /** @type {number} */ = this.height_;
+    var imageHeight /** @type {number} */ = this.imageHeight_;
+    var imageWidth /** @type {number} */ = this.imageWidth_;
+    var opacity /** @type {number} */ = this.opacity_;
+    var originX /** @type {number} */ = this.originX_;
+    var originY /** @type {number} */ = this.originY_;
     var rotateWithView = this.rotateWithView_ ? 1.0 : 0.0;
     // this.rotation_ is anti-clockwise, but rotation is clockwise
-    var rotation = /** @type {number} */ (-this.rotation_);
-    var scale = /** @type {number} */ (this.scale_);
-    var width = /** @type {number} */ (this.width_);
+    var rotation /** @type {number} */ = -this.rotation_;
+    var scale /** @type {number} */ = this.scale_;
+    var width /** @type {number} */ = this.width_;
     var cos = Math.cos(rotation);
     var sin = Math.sin(rotation);
     var numIndices = this.indices.length;
@@ -266,32 +269,33 @@ if (ol.ENABLE_WEBGL) {
     return numVertices;
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(multiPointGeometry, feature) {
+  ol.render.webgl.ImageReplay.prototype.drawMultiPoint = function(
+    multiPointGeometry,
+    feature
+  ) {
     this.startIndices.push(this.indices.length);
     this.startIndicesFeature.push(feature);
     var flatCoordinates = multiPointGeometry.getFlatCoordinates();
     var stride = multiPointGeometry.getStride();
-    this.drawCoordinates_(
-        flatCoordinates, 0, flatCoordinates.length, stride);
+    this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.drawPoint = function(pointGeometry, feature) {
+  ol.render.webgl.ImageReplay.prototype.drawPoint = function(
+    pointGeometry,
+    feature
+  ) {
     this.startIndices.push(this.indices.length);
     this.startIndicesFeature.push(feature);
     var flatCoordinates = pointGeometry.getFlatCoordinates();
     var stride = pointGeometry.getStride();
-    this.drawCoordinates_(
-        flatCoordinates, 0, flatCoordinates.length, stride);
+    this.drawCoordinates_(flatCoordinates, 0, flatCoordinates.length, stride);
   };
-
 
   /**
    * @inheritDoc
@@ -316,8 +320,12 @@ if (ol.ENABLE_WEBGL) {
 
     this.createTextures_(this.textures_, this.images_, texturePerImage, gl);
 
-    this.createTextures_(this.hitDetectionTextures_, this.hitDetectionImages_,
-        texturePerImage, gl);
+    this.createTextures_(
+      this.hitDetectionTextures_,
+      this.hitDetectionImages_,
+      texturePerImage,
+      gl
+    );
 
     this.anchorX_ = undefined;
     this.anchorY_ = undefined;
@@ -337,7 +345,6 @@ if (ol.ENABLE_WEBGL) {
     this.width_ = undefined;
   };
 
-
   /**
    * @private
    * @param {Array.<WebGLTexture>} textures Textures.
@@ -346,7 +353,12 @@ if (ol.ENABLE_WEBGL) {
    * @param {Object.<string, WebGLTexture>} texturePerImage Texture cache.
    * @param {WebGLRenderingContext} gl Gl.
    */
-  ol.render.webgl.ImageReplay.prototype.createTextures_ = function(textures, images, texturePerImage, gl) {
+  ol.render.webgl.ImageReplay.prototype.createTextures_ = function(
+    textures,
+    images,
+    texturePerImage,
+    gl
+  ) {
     var texture, image, uid, i;
     var ii = images.length;
     for (i = 0; i < ii; ++i) {
@@ -357,18 +369,26 @@ if (ol.ENABLE_WEBGL) {
         texture = texturePerImage[uid];
       } else {
         texture = ol.webgl.Context.createTexture(
-            gl, image, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
+          gl,
+          image,
+          ol.webgl.CLAMP_TO_EDGE,
+          ol.webgl.CLAMP_TO_EDGE
+        );
         texturePerImage[uid] = texture;
       }
       textures[i] = texture;
     }
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {
+  ol.render.webgl.ImageReplay.prototype.setUpProgram = function(
+    gl,
+    context,
+    size,
+    pixelRatio
+  ) {
     // get the program
     var fragmentShader = ol.render.webgl.imagereplay.defaultshader.fragment;
     var vertexShader = ol.render.webgl.imagereplay.defaultshader.vertex;
@@ -378,7 +398,10 @@ if (ol.ENABLE_WEBGL) {
     var locations;
     if (!this.defaultLocations_) {
       // eslint-disable-next-line openlayers-internal/no-missing-requires
-      locations = new ol.render.webgl.imagereplay.defaultshader.Locations(gl, program);
+      locations = new ol.render.webgl.imagereplay.defaultshader.Locations(
+        gl,
+        program
+      );
       this.defaultLocations_ = locations;
     } else {
       locations = this.defaultLocations_;
@@ -389,33 +412,65 @@ if (ol.ENABLE_WEBGL) {
 
     // enable the vertex attrib arrays
     gl.enableVertexAttribArray(locations.a_position);
-    gl.vertexAttribPointer(locations.a_position, 2, ol.webgl.FLOAT,
-        false, 32, 0);
+    gl.vertexAttribPointer(
+      locations.a_position,
+      2,
+      ol.webgl.FLOAT,
+      false,
+      32,
+      0
+    );
 
     gl.enableVertexAttribArray(locations.a_offsets);
-    gl.vertexAttribPointer(locations.a_offsets, 2, ol.webgl.FLOAT,
-        false, 32, 8);
+    gl.vertexAttribPointer(
+      locations.a_offsets,
+      2,
+      ol.webgl.FLOAT,
+      false,
+      32,
+      8
+    );
 
     gl.enableVertexAttribArray(locations.a_texCoord);
-    gl.vertexAttribPointer(locations.a_texCoord, 2, ol.webgl.FLOAT,
-        false, 32, 16);
+    gl.vertexAttribPointer(
+      locations.a_texCoord,
+      2,
+      ol.webgl.FLOAT,
+      false,
+      32,
+      16
+    );
 
     gl.enableVertexAttribArray(locations.a_opacity);
-    gl.vertexAttribPointer(locations.a_opacity, 1, ol.webgl.FLOAT,
-        false, 32, 24);
+    gl.vertexAttribPointer(
+      locations.a_opacity,
+      1,
+      ol.webgl.FLOAT,
+      false,
+      32,
+      24
+    );
 
     gl.enableVertexAttribArray(locations.a_rotateWithView);
-    gl.vertexAttribPointer(locations.a_rotateWithView, 1, ol.webgl.FLOAT,
-        false, 32, 28);
+    gl.vertexAttribPointer(
+      locations.a_rotateWithView,
+      1,
+      ol.webgl.FLOAT,
+      false,
+      32,
+      28
+    );
 
     return locations;
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.shutDownProgram = function(gl, locations) {
+  ol.render.webgl.ImageReplay.prototype.shutDownProgram = function(
+    gl,
+    locations
+  ) {
     gl.disableVertexAttribArray(locations.a_position);
     gl.disableVertexAttribArray(locations.a_offsets);
     gl.disableVertexAttribArray(locations.a_texCoord);
@@ -423,17 +478,28 @@ if (ol.ENABLE_WEBGL) {
     gl.disableVertexAttribArray(locations.a_rotateWithView);
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {
+  ol.render.webgl.ImageReplay.prototype.drawReplay = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    hitDetection
+  ) {
     var textures = hitDetection ? this.hitDetectionTextures_ : this.textures_;
-    var groupIndices = hitDetection ? this.hitDetectionGroupIndices_ : this.groupIndices_;
+    var groupIndices = hitDetection
+      ? this.hitDetectionGroupIndices_
+      : this.groupIndices_;
 
     if (!ol.obj.isEmpty(skippedFeaturesHash)) {
       this.drawReplaySkipping_(
-          gl, context, skippedFeaturesHash, textures, groupIndices);
+        gl,
+        context,
+        skippedFeaturesHash,
+        textures,
+        groupIndices
+      );
     } else {
       var i, ii, start;
       for (i = 0, ii = textures.length, start = 0; i < ii; ++i) {
@@ -444,7 +510,6 @@ if (ol.ENABLE_WEBGL) {
       }
     }
   };
-
 
   /**
    * Draw the replay while paying attention to skipped features.
@@ -472,20 +537,27 @@ if (ol.ENABLE_WEBGL) {
    * @param {Array.<WebGLTexture>} textures Textures.
    * @param {Array.<number>} groupIndices Texture group indices.
    */
-  ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(gl, context, skippedFeaturesHash, textures,
-      groupIndices) {
+  ol.render.webgl.ImageReplay.prototype.drawReplaySkipping_ = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    textures,
+    groupIndices
+  ) {
     var featureIndex = 0;
 
     var i, ii;
     for (i = 0, ii = textures.length; i < ii; ++i) {
       gl.bindTexture(ol.webgl.TEXTURE_2D, textures[i]);
-      var groupStart = (i > 0) ? groupIndices[i - 1] : 0;
+      var groupStart = i > 0 ? groupIndices[i - 1] : 0;
       var groupEnd = groupIndices[i];
 
       var start = groupStart;
       var end = groupStart;
-      while (featureIndex < this.startIndices.length &&
-          this.startIndices[featureIndex] <= groupEnd) {
+      while (
+        featureIndex < this.startIndices.length &&
+        this.startIndices[featureIndex] <= groupEnd
+      ) {
         var feature = this.startIndicesFeature[featureIndex];
 
         var featureUid = ol.getUid(feature).toString();
@@ -496,13 +568,15 @@ if (ol.ENABLE_WEBGL) {
             this.drawElements(gl, context, start, end);
           }
           // continue with the next feature
-          start = (featureIndex === this.startIndices.length - 1) ?
-              groupEnd : this.startIndices[featureIndex + 1];
+          start = featureIndex === this.startIndices.length - 1
+            ? groupEnd
+            : this.startIndices[featureIndex + 1];
           end = start;
         } else {
           // the feature is not skipped, augment the end index
-          end = (featureIndex === this.startIndices.length - 1) ?
-              groupEnd : this.startIndices[featureIndex + 1];
+          end = featureIndex === this.startIndices.length - 1
+            ? groupEnd
+            : this.startIndices[featureIndex + 1];
         }
         featureIndex++;
       }
@@ -515,31 +589,41 @@ if (ol.ENABLE_WEBGL) {
     }
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash,
-      featureCallback, opt_hitExtent) {
+  ol.render.webgl.ImageReplay.prototype.drawHitDetectionReplayOneByOne = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    featureCallback,
+    opt_hitExtent
+  ) {
     var i, groupStart, start, end, feature, featureUid;
     var featureIndex = this.startIndices.length - 1;
     for (i = this.hitDetectionTextures_.length - 1; i >= 0; --i) {
       gl.bindTexture(ol.webgl.TEXTURE_2D, this.hitDetectionTextures_[i]);
-      groupStart = (i > 0) ? this.hitDetectionGroupIndices_[i - 1] : 0;
+      groupStart = i > 0 ? this.hitDetectionGroupIndices_[i - 1] : 0;
       end = this.hitDetectionGroupIndices_[i];
 
       // draw all features for this texture group
-      while (featureIndex >= 0 &&
-          this.startIndices[featureIndex] >= groupStart) {
+      while (
+        featureIndex >= 0 &&
+        this.startIndices[featureIndex] >= groupStart
+      ) {
         start = this.startIndices[featureIndex];
         feature = this.startIndicesFeature[featureIndex];
         featureUid = ol.getUid(feature).toString();
 
-        if (skippedFeaturesHash[featureUid] === undefined &&
-            feature.getGeometry() &&
-            (opt_hitExtent === undefined || ol.extent.intersects(
-                /** @type {Array<number>} */ (opt_hitExtent),
-                feature.getGeometry().getExtent()))) {
+        if (
+          skippedFeaturesHash[featureUid] === undefined &&
+          feature.getGeometry() &&
+          (opt_hitExtent === undefined ||
+            ol.extent.intersects(
+              /** @type {Array<number>} */ opt_hitExtent,
+              feature.getGeometry().getExtent()
+            ))
+        ) {
           gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
           this.drawElements(gl, context, start, end);
 
@@ -555,7 +639,6 @@ if (ol.ENABLE_WEBGL) {
     }
     return undefined;
   };
-
 
   /**
    * @inheritDoc
@@ -586,8 +669,9 @@ if (ol.ENABLE_WEBGL) {
     if (this.hitDetectionImages_.length === 0) {
       this.hitDetectionImages_.push(hitDetectionImage);
     } else {
-      currentImage =
-          this.hitDetectionImages_[this.hitDetectionImages_.length - 1];
+      currentImage = this.hitDetectionImages_[
+        this.hitDetectionImages_.length - 1
+      ];
       if (ol.getUid(currentImage) != ol.getUid(hitDetectionImage)) {
         this.hitDetectionGroupIndices_.push(this.indices.length);
         this.hitDetectionImages_.push(hitDetectionImage);
@@ -607,5 +691,4 @@ if (ol.ENABLE_WEBGL) {
     this.scale_ = scale;
     this.width_ = size[0];
   };
-
 }

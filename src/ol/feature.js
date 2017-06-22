@@ -8,7 +8,6 @@ goog.require('ol.Object');
 goog.require('ol.geom.Geometry');
 goog.require('ol.style.Style');
 
-
 /**
  * @classdesc
  * A vector object for geographic features with a geometry and other
@@ -55,7 +54,6 @@ goog.require('ol.style.Style');
  * @api
  */
 ol.Feature = function(opt_geometryOrProperties) {
-
   ol.Object.call(this);
 
   /**
@@ -91,12 +89,17 @@ ol.Feature = function(opt_geometryOrProperties) {
   this.geometryChangeKey_ = null;
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this,
+    ol.Object.getChangeEventType(this.geometryName_),
+    this.handleGeometryChanged_,
+    this
+  );
 
   if (opt_geometryOrProperties !== undefined) {
-    if (opt_geometryOrProperties instanceof ol.geom.Geometry ||
-        !opt_geometryOrProperties) {
+    if (
+      opt_geometryOrProperties instanceof ol.geom.Geometry ||
+      !opt_geometryOrProperties
+    ) {
       var geometry = opt_geometryOrProperties;
       this.setGeometry(geometry);
     } else {
@@ -107,7 +110,6 @@ ol.Feature = function(opt_geometryOrProperties) {
   }
 };
 ol.inherits(ol.Feature, ol.Object);
-
 
 /**
  * Clone this feature. If the original feature has a geometry it
@@ -129,7 +131,6 @@ ol.Feature.prototype.clone = function() {
   return clone;
 };
 
-
 /**
  * Get the feature's default geometry.  A feature may have any number of named
  * geometries.  The "default" geometry (the one that is rendered by default) is
@@ -139,10 +140,8 @@ ol.Feature.prototype.clone = function() {
  * @observable
  */
 ol.Feature.prototype.getGeometry = function() {
-  return /** @type {ol.geom.Geometry|undefined} */ (
-      this.get(this.geometryName_));
+  return /** @type {ol.geom.Geometry|undefined} */ this.get(this.geometryName_);
 };
-
 
 /**
  * Get the feature identifier.  This is a stable identifier for the feature and
@@ -155,7 +154,6 @@ ol.Feature.prototype.getId = function() {
   return this.id_;
 };
 
-
 /**
  * Get the name of the feature's default geometry.  By default, the default
  * geometry is named `geometry`.
@@ -166,7 +164,6 @@ ol.Feature.prototype.getId = function() {
 ol.Feature.prototype.getGeometryName = function() {
   return this.geometryName_;
 };
-
 
 /**
  * Get the feature's style. Will return what was provided to the
@@ -179,7 +176,6 @@ ol.Feature.prototype.getStyle = function() {
   return this.style_;
 };
 
-
 /**
  * Get the feature's style function.
  * @return {ol.FeatureStyleFunction|undefined} Return a function
@@ -190,14 +186,12 @@ ol.Feature.prototype.getStyleFunction = function() {
   return this.styleFunction_;
 };
 
-
 /**
  * @private
  */
 ol.Feature.prototype.handleGeometryChange_ = function() {
   this.changed();
 };
-
 
 /**
  * @private
@@ -209,12 +203,15 @@ ol.Feature.prototype.handleGeometryChanged_ = function() {
   }
   var geometry = this.getGeometry();
   if (geometry) {
-    this.geometryChangeKey_ = ol.events.listen(geometry,
-        ol.events.EventType.CHANGE, this.handleGeometryChange_, this);
+    this.geometryChangeKey_ = ol.events.listen(
+      geometry,
+      ol.events.EventType.CHANGE,
+      this.handleGeometryChange_,
+      this
+    );
   }
   this.changed();
 };
-
 
 /**
  * Set the default geometry for the feature.  This will update the property
@@ -227,7 +224,6 @@ ol.Feature.prototype.setGeometry = function(geometry) {
   this.set(this.geometryName_, geometry);
 };
 
-
 /**
  * Set the style for the feature.  This can be a single style object, an array
  * of styles, or a function that takes a resolution and returns an array of
@@ -239,11 +235,11 @@ ol.Feature.prototype.setGeometry = function(geometry) {
  */
 ol.Feature.prototype.setStyle = function(style) {
   this.style_ = style;
-  this.styleFunction_ = !style ?
-      undefined : ol.Feature.createStyleFunction(style);
+  this.styleFunction_ = !style
+    ? undefined
+    : ol.Feature.createStyleFunction(style);
   this.changed();
 };
-
 
 /**
  * Set the feature id.  The feature id is considered stable and may be used when
@@ -259,7 +255,6 @@ ol.Feature.prototype.setId = function(id) {
   this.changed();
 };
 
-
 /**
  * Set the property name to be used when getting the feature's default geometry.
  * When calling {@link ol.Feature#getGeometry}, the value of the property with
@@ -269,15 +264,20 @@ ol.Feature.prototype.setId = function(id) {
  */
 ol.Feature.prototype.setGeometryName = function(name) {
   ol.events.unlisten(
-      this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this,
+    ol.Object.getChangeEventType(this.geometryName_),
+    this.handleGeometryChanged_,
+    this
+  );
   this.geometryName_ = name;
   ol.events.listen(
-      this, ol.Object.getChangeEventType(this.geometryName_),
-      this.handleGeometryChanged_, this);
+    this,
+    ol.Object.getChangeEventType(this.geometryName_),
+    this.handleGeometryChanged_,
+    this
+  );
   this.handleGeometryChanged_();
 };
-
 
 /**
  * Convert the provided object into a feature style function.  Functions passed
@@ -293,7 +293,7 @@ ol.Feature.createStyleFunction = function(obj) {
   if (typeof obj === 'function') {
     if (obj.length == 2) {
       styleFunction = function(resolution) {
-        return /** @type {ol.StyleFunction} */ (obj)(this, resolution);
+        return /** @type {ol.StyleFunction} */ obj(this, resolution);
       };
     } else {
       styleFunction = obj;
@@ -306,8 +306,7 @@ ol.Feature.createStyleFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      ol.asserts.assert(obj instanceof ol.style.Style,
-          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+      ol.asserts.assert(obj instanceof ol.style.Style, 41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
     styleFunction = function() {

@@ -4,7 +4,6 @@ goog.provide('ol.MapEventType');
  * @enum {string}
  */
 ol.MapEventType = {
-
   /**
    * Triggered after a map frame is rendered.
    * @event ol.MapEvent#postrender
@@ -25,5 +24,4 @@ ol.MapEventType = {
    * @api
    */
   MOVEEND: 'moveend'
-
 };

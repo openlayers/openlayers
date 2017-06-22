@@ -2,9 +2,7 @@ goog.provide('ol.render.webgl.TextReplay');
 
 goog.require('ol');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @abstract
@@ -36,10 +34,19 @@ if (ol.ENABLE_WEBGL) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  ol.render.webgl.TextReplay.prototype.replay = function(context,
-      center, resolution, rotation, size, pixelRatio,
-      opacity, skippedFeaturesHash,
-      featureCallback, oneByOne, opt_hitExtent) {
+  ol.render.webgl.TextReplay.prototype.replay = function(
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    pixelRatio,
+    opacity,
+    skippedFeaturesHash,
+    featureCallback,
+    oneByOne,
+    opt_hitExtent
+  ) {
     return undefined;
   };
 
@@ -51,8 +58,14 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
    * @param {ol.Feature|ol.render.Feature} feature Feature.
    */
-  ol.render.webgl.TextReplay.prototype.drawText = function(flatCoordinates, offset,
-      end, stride, geometry, feature) {};
+  ol.render.webgl.TextReplay.prototype.drawText = function(
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    geometry,
+    feature
+  ) {};
 
   /**
    * @abstract
@@ -64,8 +77,9 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.webgl.Context} context WebGL context.
    * @return {function()} Delete resources function.
    */
-  ol.render.webgl.TextReplay.prototype.getDeleteResourcesFunction = function(context) {
+  ol.render.webgl.TextReplay.prototype.getDeleteResourcesFunction = function(
+    context
+  ) {
     return ol.nullFunction;
   };
-
 }

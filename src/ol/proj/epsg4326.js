@@ -5,7 +5,6 @@ goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
 goog.require('ol.sphere.WGS84');
 
-
 /**
  * @classdesc
  * Projection object for WGS84 geographic coordinates (EPSG:4326).
@@ -33,7 +32,6 @@ ol.proj.EPSG4326.Projection_ = function(code, opt_axisOrientation) {
 };
 ol.inherits(ol.proj.EPSG4326.Projection_, ol.proj.Projection);
 
-
 /**
  * Extent of the EPSG:4326 projection which is the whole world.
  *
@@ -42,13 +40,11 @@ ol.inherits(ol.proj.EPSG4326.Projection_, ol.proj.Projection);
  */
 ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
 
-
 /**
  * @const
  * @type {number}
  */
 ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.sphere.WGS84.radius / 180;
-
 
 /**
  * Projections equal to EPSG:4326.
@@ -63,6 +59,9 @@ ol.proj.EPSG4326.PROJECTIONS = [
   new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:EPSG:6.6:4326', 'neu'),
   new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:OGC:1.3:CRS84'),
   new ol.proj.EPSG4326.Projection_('urn:ogc:def:crs:OGC:2:84'),
-  new ol.proj.EPSG4326.Projection_('http://www.opengis.net/gml/srs/epsg.xml#4326', 'neu'),
+  new ol.proj.EPSG4326.Projection_(
+    'http://www.opengis.net/gml/srs/epsg.xml#4326',
+    'neu'
+  ),
   new ol.proj.EPSG4326.Projection_('urn:x-ogc:def:crs:EPSG:4326', 'neu')
 ];

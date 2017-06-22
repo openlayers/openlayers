@@ -1,13 +1,11 @@
 goog.provide('ol.vec.Mat4');
 
-
 /**
  * @return {Array.<number>} 4x4 matrix representing a 3D identity transform.
  */
 ol.vec.Mat4.create = function() {
   return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 };
-
 
 /**
  * @param {Array.<number>} mat4 Flattened 4x4 matrix receiving the result.

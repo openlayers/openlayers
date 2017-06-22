@@ -7,7 +7,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.Tile');
 
 describe('ol.control.Attribution', function() {
-
   var map, target;
   beforeEach(function() {
     target = document.createElement('div');
@@ -15,10 +14,12 @@ describe('ol.control.Attribution', function() {
     document.body.appendChild(target);
     map = new ol.Map({
       target: target,
-      controls: [new ol.control.Attribution({
-        collapsed: false,
-        collapsible: false
-      })],
+      controls: [
+        new ol.control.Attribution({
+          collapsed: false,
+          collapsible: false
+        })
+      ],
       layers: [
         new ol.layer.Tile({
           source: new ol.source.Tile({
@@ -72,5 +73,4 @@ describe('ol.control.Attribution', function() {
     var attribution = document.querySelectorAll('.ol-attribution li');
     expect(attribution.length).to.be(3); // first <li> is the logo
   });
-
 });

@@ -2,9 +2,7 @@ goog.provide('ol.test.uri');
 
 goog.require('ol.uri');
 
-
 describe('ol.uri.appendParams()', function() {
-
   it('should append empty STYLES with =', function() {
     var url = ol.uri.appendParams('http://example.com/foo', {
       SERVICE: 'WMS',
@@ -56,9 +54,12 @@ describe('ol.uri.appendParams()', function() {
   });
 
   it('should append to base URL with three existing params last one empty', function() {
-    var url = ol.uri.appendParams('http://example.com/foo?bar=bam&baz=bat&bop=', {
-      k: 'v'
-    });
+    var url = ol.uri.appendParams(
+      'http://example.com/foo?bar=bam&baz=bat&bop=',
+      {
+        k: 'v'
+      }
+    );
     expect(url).to.equal('http://example.com/foo?bar=bam&baz=bat&bop=&k=v');
   });
 
@@ -70,5 +71,4 @@ describe('ol.uri.appendParams()', function() {
     });
     expect(url).to.equal('http://example.com/foo?a=1');
   });
-
 });

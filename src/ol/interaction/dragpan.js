@@ -8,7 +8,6 @@ goog.require('ol.events.condition');
 goog.require('ol.functions');
 goog.require('ol.interaction.Pointer');
 
-
 /**
  * @classdesc
  * Allows the user to pan the map by dragging the map.
@@ -19,7 +18,6 @@ goog.require('ol.interaction.Pointer');
  * @api
  */
 ol.interaction.DragPan = function(opt_options) {
-
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.DragPan.handleDownEvent_,
     handleDragEvent: ol.interaction.DragPan.handleDragEvent_,
@@ -48,18 +46,17 @@ ol.interaction.DragPan = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-      options.condition : ol.events.condition.noModifierKeys;
+  this.condition_ = options.condition
+    ? options.condition
+    : ol.events.condition.noModifierKeys;
 
   /**
    * @private
    * @type {boolean}
    */
   this.noKinetic_ = false;
-
 };
 ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -68,8 +65,7 @@ ol.inherits(ol.interaction.DragPan, ol.interaction.Pointer);
  */
 ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   var targetPointers = this.targetPointers;
-  var centroid =
-      ol.interaction.Pointer.centroid(targetPointers);
+  var centroid = ol.interaction.Pointer.centroid(targetPointers);
   if (targetPointers.length == this.lastPointersCount_) {
     if (this.kinetic_) {
       this.kinetic_.update(centroid[0], centroid[1]);
@@ -96,7 +92,6 @@ ol.interaction.DragPan.handleDragEvent_ = function(mapBrowserEvent) {
   this.lastPointersCount_ = targetPointers.length;
 };
 
-
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
  * @return {boolean} Stop drag sequence?
@@ -110,7 +105,7 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
     if (!this.noKinetic_ && this.kinetic_ && this.kinetic_.end()) {
       var distance = this.kinetic_.getDistance();
       var angle = this.kinetic_.getAngle();
-      var center = /** @type {!ol.Coordinate} */ (view.getCenter());
+      var center /** @type {!ol.Coordinate} */ = view.getCenter();
       var centerpx = map.getPixelFromCoordinate(center);
       var dest = map.getCoordinateFromPixel([
         centerpx[0] - distance * Math.cos(angle),
@@ -134,7 +129,6 @@ ol.interaction.DragPan.handleUpEvent_ = function(mapBrowserEvent) {
     return true;
   }
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -165,7 +159,6 @@ ol.interaction.DragPan.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
-
 
 /**
  * @inheritDoc

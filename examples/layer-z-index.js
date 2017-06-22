@@ -9,11 +9,10 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var stroke = new ol.style.Stroke({color: 'black', width: 1});
 
 var styles = {
-  'square': new ol.style.Style({
+  square: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: new ol.style.Fill({color: 'blue'}),
       stroke: stroke,
@@ -22,7 +21,7 @@ var styles = {
       angle: Math.PI / 4
     })
   }),
-  'triangle': new ol.style.Style({
+  triangle: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: new ol.style.Fill({color: 'red'}),
       stroke: stroke,
@@ -32,7 +31,7 @@ var styles = {
       angle: 0
     })
   }),
-  'star': new ol.style.Style({
+  star: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: new ol.style.Fill({color: 'green'}),
       stroke: stroke,
@@ -43,7 +42,6 @@ var styles = {
     })
   })
 };
-
 
 function createLayer(coordinates, style, zIndex) {
   var feature = new ol.Feature(new ol.geom.Point(coordinates));
@@ -79,7 +77,6 @@ var map = new ol.Map({
 });
 
 layer0.setMap(map);
-
 
 function bindInputs(id, layer) {
   var idxInput = document.getElementById('idx' + id);

@@ -4,7 +4,6 @@ goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -12,9 +11,9 @@ var map = new ol.Map({
     })
   ],
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     center: [0, 0],
@@ -26,7 +25,11 @@ map.setTarget('map1');
 
 var teleportButton = document.getElementById('teleport');
 
-teleportButton.addEventListener('click', function() {
-  var target = map.getTarget() === 'map1' ? 'map2' : 'map1';
-  map.setTarget(target);
-}, false);
+teleportButton.addEventListener(
+  'click',
+  function() {
+    var target = map.getTarget() === 'map1' ? 'map2' : 'map1';
+    map.setTarget(target);
+  },
+  false
+);

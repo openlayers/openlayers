@@ -36,19 +36,24 @@ describe('ol.control.ZoomSlider', function() {
       var zoomSliderContainer = zoomSliderContainers[0];
       expect(zoomSliderContainer instanceof HTMLDivElement).to.be(true);
 
-      var hasUnselectableCls = zoomSliderContainer.classList.contains('ol-unselectable');
+      var hasUnselectableCls = zoomSliderContainer.classList.contains(
+        'ol-unselectable'
+      );
       expect(hasUnselectableCls).to.be(true);
 
-      var zoomSliderThumbs = zoomSliderContainer.querySelectorAll('.ol-zoomslider-thumb');
+      var zoomSliderThumbs = zoomSliderContainer.querySelectorAll(
+        '.ol-zoomslider-thumb'
+      );
       expect(zoomSliderThumbs.length).to.be(1);
 
       var zoomSliderThumb = zoomSliderThumbs[0];
       expect(zoomSliderThumb instanceof HTMLButtonElement).to.be(true);
 
-      hasUnselectableCls = zoomSliderThumb.classList.contains('ol-unselectable');
+      hasUnselectableCls = zoomSliderThumb.classList.contains(
+        'ol-unselectable'
+      );
       expect(hasUnselectableCls).to.be(true);
     });
-
   });
 
   describe('#initSlider_', function() {
@@ -168,5 +173,4 @@ describe('ol.control.ZoomSlider', function() {
       expect(control.dragging_).to.be(false);
     });
   });
-
 });

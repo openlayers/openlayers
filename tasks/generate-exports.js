@@ -5,7 +5,6 @@ var nomnom = require('nomnom');
 
 var generateInfo = require('./generate-info');
 
-
 /**
  * Get the configuration from the config file.  If configPath is provided
  * it is assumed to be a JSON file with an 'exports' member that is a list
@@ -35,8 +34,7 @@ function getConfig(configPath, callback) {
       }
       var namespace = obj.namespace;
       if (namespace && typeof namespace !== 'string') {
-        callback(new Error('Expected an namespace string, got: ' +
-            namespace));
+        callback(new Error('Expected an namespace string, got: ' + namespace));
         return;
       }
       callback(null, obj);
@@ -47,7 +45,6 @@ function getConfig(configPath, callback) {
     });
   }
 }
-
 
 /**
  * Read the symbols from info file.
@@ -65,7 +62,6 @@ function getSymbols(patterns, callback) {
     callback(null, patterns, symbols);
   });
 }
-
 
 /**
  * Generate a list of symbol names given a list of patterns.  Patterns may
@@ -93,7 +89,7 @@ function filterSymbols(patterns, symbols, callback) {
 
   patterns.forEach(function(name) {
     var match = false;
-    var pattern = (name.substr(-1) === '*');
+    var pattern = name.substr(-1) === '*';
     if (pattern) {
       name = name.substr(0, name.length - 1);
       symbols.forEach(function(symbol) {
@@ -118,7 +114,6 @@ function filterSymbols(patterns, symbols, callback) {
   callback(null, matches, Object.keys(provides).sort());
 }
 
-
 /**
  * Generate goog code to export a named symbol.
  * @param {string} name Symbol name.
@@ -127,12 +122,17 @@ function filterSymbols(patterns, symbols, callback) {
  * @return {string} Export code.
  */
 function formatSymbolExport(name, namespace) {
-  return 'goog.exportSymbol(\n' +
-      '    \'' + name + '\',\n' +
-      '    ' + name +
-      (namespace ? ',\n    ' + namespace : '') + ');\n';
+  return (
+    'goog.exportSymbol(\n' +
+    "    '" +
+    name +
+    "',\n" +
+    '    ' +
+    name +
+    (namespace ? ',\n    ' + namespace : '') +
+    ');\n'
+  );
 }
-
 
 /**
  * Generate goog code to export a property.
@@ -143,12 +143,21 @@ function formatPropertyExport(name) {
   var parts = name.split('#');
   var prototype = parts[0] + '.prototype';
   var property = parts[1];
-  return 'goog.exportProperty(\n' +
-      '    ' + prototype + ',\n' +
-      '    \'' + property + '\',\n' +
-      '    ' + prototype + '.' + property + ');\n';
+  return (
+    'goog.exportProperty(\n' +
+    '    ' +
+    prototype +
+    ',\n' +
+    "    '" +
+    property +
+    "',\n" +
+    '    ' +
+    prototype +
+    '.' +
+    property +
+    ');\n'
+  );
 }
-
 
 /**
  * Generate export code given a list symbol names.
@@ -160,7 +169,7 @@ function formatPropertyExport(name) {
 function generateExports(symbols, namespace, provides) {
   var blocks = [];
   provides.forEach(function(provide) {
-    blocks.push('goog.require(\'' + provide + '\');');
+    blocks.push("goog.require('" + provide + "');");
   });
   blocks.push('\n\n');
   symbols.forEach(function(symbol) {
@@ -172,13 +181,13 @@ function generateExports(symbols, namespace, provides) {
     }
   });
   blocks.unshift(
-      '/**\n' +
+    '/**\n' +
       ' * @fileoverview Custom exports file.\n' +
       ' * @suppress {checkVars,extraRequire}\n' +
-      ' */\n');
+      ' */\n'
+  );
   return blocks.join('\n');
 }
-
 
 /**
  * Generate the exports code.
@@ -188,54 +197,60 @@ function generateExports(symbols, namespace, provides) {
  *     error generating it.
  */
 function main(config, callback) {
-  async.waterfall([
-    getSymbols.bind(null, config.exports),
-    filterSymbols,
-    function(symbols, provides, done) {
-      var code, err;
-      try {
-        code = generateExports(symbols, config.namespace, provides);
-      } catch (e) {
-        err = e;
+  async.waterfall(
+    [
+      getSymbols.bind(null, config.exports),
+      filterSymbols,
+      function(symbols, provides, done) {
+        var code, err;
+        try {
+          code = generateExports(symbols, config.namespace, provides);
+        } catch (e) {
+          err = e;
+        }
+        done(err, code);
       }
-      done(err, code);
-    }
-  ], callback);
+    ],
+    callback
+  );
 }
-
 
 /**
  * If running this module directly, read the config file, call the main
  * function, and write the output file.
  */
 if (require.main === module) {
-  var options = nomnom.options({
-    output: {
-      position: 0,
-      required: true,
-      help: 'Output file path'
-    },
-    config: {
-      abbr: 'c',
-      help: 'Path to JSON config file',
-      metavar: 'CONFIG'
-    }
-  }).parse();
+  var options = nomnom
+    .options({
+      output: {
+        position: 0,
+        required: true,
+        help: 'Output file path'
+      },
+      config: {
+        abbr: 'c',
+        help: 'Path to JSON config file',
+        metavar: 'CONFIG'
+      }
+    })
+    .parse();
 
-  async.waterfall([
-    getConfig.bind(null, options.config),
-    main,
-    fs.outputFile.bind(fs, options.output)
-  ], function(err) {
-    if (err) {
-      process.stderr.write(err.message + '\n');
-      process.exit(1);
-    } else {
-      process.exit(0);
+  async.waterfall(
+    [
+      getConfig.bind(null, options.config),
+      main,
+      fs.outputFile.bind(fs, options.output)
+    ],
+    function(err) {
+      if (err) {
+        process.stderr.write(err.message + '\n');
+        process.exit(1);
+      } else {
+        process.exit(0);
+      }
     }
-  });
+  );
 }
-
 
 /**
  * Export main function.

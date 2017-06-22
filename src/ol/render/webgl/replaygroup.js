@@ -12,9 +12,7 @@ goog.require('ol.render.webgl.LineStringReplay');
 goog.require('ol.render.webgl.PolygonReplay');
 goog.require('ol.render.webgl.TextReplay');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @extends {ol.render.ReplayGroup}
@@ -23,7 +21,11 @@ if (ol.ENABLE_WEBGL) {
    * @param {number=} opt_renderBuffer Render buffer.
    * @struct
    */
-  ol.render.webgl.ReplayGroup = function(tolerance, maxExtent, opt_renderBuffer) {
+  ol.render.webgl.ReplayGroup = function(
+    tolerance,
+    maxExtent,
+    opt_renderBuffer
+  ) {
     ol.render.ReplayGroup.call(this);
 
     /**
@@ -50,24 +52,23 @@ if (ol.ENABLE_WEBGL) {
      *        Object.<ol.render.ReplayType, ol.render.webgl.Replay>>}
      */
     this.replaysByZIndex_ = {};
-
   };
   ol.inherits(ol.render.webgl.ReplayGroup, ol.render.ReplayGroup);
-
 
   /**
    * @param {ol.webgl.Context} context WebGL context.
    * @return {function()} Delete resources function.
    */
-  ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(context) {
+  ol.render.webgl.ReplayGroup.prototype.getDeleteResourcesFunction = function(
+    context
+  ) {
     var functions = [];
     var zKey;
     for (zKey in this.replaysByZIndex_) {
       var replays = this.replaysByZIndex_[zKey];
       var replayKey;
       for (replayKey in replays) {
-        functions.push(
-            replays[replayKey].getDeleteResourcesFunction(context));
+        functions.push(replays[replayKey].getDeleteResourcesFunction(context));
       }
     }
     return function() {
@@ -79,7 +80,6 @@ if (ol.ENABLE_WEBGL) {
       return result;
     };
   };
-
 
   /**
    * @param {ol.webgl.Context} context Context.
@@ -95,11 +95,13 @@ if (ol.ENABLE_WEBGL) {
     }
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
+  ol.render.webgl.ReplayGroup.prototype.getReplay = function(
+    zIndex,
+    replayType
+  ) {
     var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
     var replays = this.replaysByZIndex_[zIndexKey];
     if (replays === undefined) {
@@ -111,13 +113,13 @@ if (ol.ENABLE_WEBGL) {
       /**
        * @type {Function}
        */
-      var Constructor = ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
+      var Constructor =
+        ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
       replay = new Constructor(this.tolerance_, this.maxExtent_);
       replays[replayType] = replay;
     }
     return replay;
   };
-
 
   /**
    * @inheritDoc
@@ -125,7 +127,6 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.ReplayGroup.prototype.isEmpty = function() {
     return ol.obj.isEmpty(this.replaysByZIndex_);
   };
-
 
   /**
    * @param {ol.webgl.Context} context Context.
@@ -138,9 +139,16 @@ if (ol.ENABLE_WEBGL) {
    * @param {Object.<string, boolean>} skippedFeaturesHash Ids of features
    *  to skip.
    */
-  ol.render.webgl.ReplayGroup.prototype.replay = function(context,
-      center, resolution, rotation, size, pixelRatio,
-      opacity, skippedFeaturesHash) {
+  ol.render.webgl.ReplayGroup.prototype.replay = function(
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    pixelRatio,
+    opacity,
+    skippedFeaturesHash
+  ) {
     /** @type {Array.<number>} */
     var zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(ol.array.numberSafeCompareFunction);
@@ -151,15 +159,22 @@ if (ol.ENABLE_WEBGL) {
       for (j = 0, jj = ol.render.replay.ORDER.length; j < jj; ++j) {
         replay = replays[ol.render.replay.ORDER[j]];
         if (replay !== undefined) {
-          replay.replay(context,
-              center, resolution, rotation, size, pixelRatio,
-              opacity, skippedFeaturesHash,
-              undefined, false);
+          replay.replay(
+            context,
+            center,
+            resolution,
+            rotation,
+            size,
+            pixelRatio,
+            opacity,
+            skippedFeaturesHash,
+            undefined,
+            false
+          );
         }
       }
     }
   };
-
 
   /**
    * @private
@@ -179,9 +194,19 @@ if (ol.ENABLE_WEBGL) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(context,
-      center, resolution, rotation, size, pixelRatio, opacity,
-      skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent) {
+  ol.render.webgl.ReplayGroup.prototype.replayHitDetection_ = function(
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    pixelRatio,
+    opacity,
+    skippedFeaturesHash,
+    featureCallback,
+    oneByOne,
+    opt_hitExtent
+  ) {
     /** @type {Array.<number>} */
     var zs = Object.keys(this.replaysByZIndex_).map(Number);
     zs.sort(function(a, b) {
@@ -194,9 +219,19 @@ if (ol.ENABLE_WEBGL) {
       for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
         replay = replays[ol.render.replay.ORDER[j]];
         if (replay !== undefined) {
-          result = replay.replay(context,
-              center, resolution, rotation, size, pixelRatio, opacity,
-              skippedFeaturesHash, featureCallback, oneByOne, opt_hitExtent);
+          result = replay.replay(
+            context,
+            center,
+            resolution,
+            rotation,
+            size,
+            pixelRatio,
+            opacity,
+            skippedFeaturesHash,
+            featureCallback,
+            oneByOne,
+            opt_hitExtent
+          );
           if (result) {
             return result;
           }
@@ -205,7 +240,6 @@ if (ol.ENABLE_WEBGL) {
     }
     return undefined;
   };
-
 
   /**
    * @param {ol.Coordinate} coordinate Coordinate.
@@ -223,13 +257,19 @@ if (ol.ENABLE_WEBGL) {
    * @template T
    */
   ol.render.webgl.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
-      coordinate, context, center, resolution, rotation, size, pixelRatio,
-      opacity, skippedFeaturesHash,
-      callback) {
+    coordinate,
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    pixelRatio,
+    opacity,
+    skippedFeaturesHash,
+    callback
+  ) {
     var gl = context.getGL();
-    gl.bindFramebuffer(
-        gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
-
+    gl.bindFramebuffer(gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
     /**
      * @type {ol.Extent}
@@ -239,30 +279,39 @@ if (ol.ENABLE_WEBGL) {
       // build an extent around the coordinate, so that only features that
       // intersect this extent are checked
       hitExtent = ol.extent.buffer(
-          ol.extent.createOrUpdateFromCoordinate(coordinate),
-          resolution * this.renderBuffer_);
+        ol.extent.createOrUpdateFromCoordinate(coordinate),
+        resolution * this.renderBuffer_
+      );
     }
 
-    return this.replayHitDetection_(context,
-        coordinate, resolution, rotation, ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_,
-        pixelRatio, opacity, skippedFeaturesHash,
-        /**
+    return this.replayHitDetection_(
+      context,
+      coordinate,
+      resolution,
+      rotation,
+      ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_,
+      pixelRatio,
+      opacity,
+      skippedFeaturesHash,
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(feature) {
-          var imageData = new Uint8Array(4);
-          gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+      function(feature) {
+        var imageData = new Uint8Array(4);
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
 
-          if (imageData[3] > 0) {
-            var result = callback(feature);
-            if (result) {
-              return result;
-            }
+        if (imageData[3] > 0) {
+          var result = callback(feature);
+          if (result) {
+            return result;
           }
-        }, true, hitExtent);
+        }
+      },
+      true,
+      hitExtent
+    );
   };
-
 
   /**
    * @param {ol.Coordinate} coordinate Coordinate.
@@ -278,24 +327,39 @@ if (ol.ENABLE_WEBGL) {
    * @return {boolean} Is there a feature at the given coordinate?
    */
   ol.render.webgl.ReplayGroup.prototype.hasFeatureAtCoordinate = function(
-      coordinate, context, center, resolution, rotation, size, pixelRatio,
-      opacity, skippedFeaturesHash) {
+    coordinate,
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    pixelRatio,
+    opacity,
+    skippedFeaturesHash
+  ) {
     var gl = context.getGL();
-    gl.bindFramebuffer(
-        gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
+    gl.bindFramebuffer(gl.FRAMEBUFFER, context.getHitDetectionFramebuffer());
 
-    var hasFeature = this.replayHitDetection_(context,
-        coordinate, resolution, rotation, ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_,
-        pixelRatio, opacity, skippedFeaturesHash,
-        /**
+    var hasFeature = this.replayHitDetection_(
+      context,
+      coordinate,
+      resolution,
+      rotation,
+      ol.render.webgl.ReplayGroup.HIT_DETECTION_SIZE_,
+      pixelRatio,
+      opacity,
+      skippedFeaturesHash,
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {boolean} Is there a feature?
          */
-        function(feature) {
-          var imageData = new Uint8Array(4);
-          gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
-          return imageData[3] > 0;
-        }, false);
+      function(feature) {
+        var imageData = new Uint8Array(4);
+        gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, imageData);
+        return imageData[3] > 0;
+      },
+      false
+    );
 
     return hasFeature !== undefined;
   };
@@ -315,11 +379,10 @@ if (ol.ENABLE_WEBGL) {
    *                ol.Extent)>}
    */
   ol.render.webgl.ReplayGroup.BATCH_CONSTRUCTORS_ = {
-    'Circle': ol.render.webgl.CircleReplay,
-    'Image': ol.render.webgl.ImageReplay,
-    'LineString': ol.render.webgl.LineStringReplay,
-    'Polygon': ol.render.webgl.PolygonReplay,
-    'Text': ol.render.webgl.TextReplay
+    Circle: ol.render.webgl.CircleReplay,
+    Image: ol.render.webgl.ImageReplay,
+    LineString: ol.render.webgl.LineStringReplay,
+    Polygon: ol.render.webgl.PolygonReplay,
+    Text: ol.render.webgl.TextReplay
   };
-
 }

@@ -2,7 +2,6 @@ goog.provide('ol.sphere.NORMAL');
 
 goog.require('ol.Sphere');
 
-
 /**
  * The normal sphere.
  * @const

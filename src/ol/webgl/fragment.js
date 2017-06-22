@@ -4,9 +4,7 @@ goog.require('ol');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Shader');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @extends {ol.webgl.Shader}
@@ -18,12 +16,10 @@ if (ol.ENABLE_WEBGL) {
   };
   ol.inherits(ol.webgl.Fragment, ol.webgl.Shader);
 
-
   /**
    * @inheritDoc
    */
   ol.webgl.Fragment.prototype.getType = function() {
     return ol.webgl.FRAGMENT_SHADER;
   };
-
 }

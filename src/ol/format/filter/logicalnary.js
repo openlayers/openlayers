@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.asserts');
 goog.require('ol.format.filter.Filter');
 
-
 /**
  * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
@@ -16,7 +15,6 @@ goog.require('ol.format.filter.Filter');
  * @extends {ol.format.filter.Filter}
  */
 ol.format.filter.LogicalNary = function(tagName, conditions) {
-
   ol.format.filter.Filter.call(this, tagName);
 
   /**

@@ -13,7 +13,6 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
-
 var distance = document.getElementById('distance');
 
 var count = 20000;

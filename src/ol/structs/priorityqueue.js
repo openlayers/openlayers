@@ -3,7 +3,6 @@ goog.provide('ol.structs.PriorityQueue');
 goog.require('ol.asserts');
 goog.require('ol.obj');
 
-
 /**
  * Priority queue.
  *
@@ -20,7 +19,6 @@ goog.require('ol.obj');
  * @template T
  */
 ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
-
   /**
    * @type {function(T): number}
    * @private
@@ -50,16 +48,13 @@ ol.structs.PriorityQueue = function(priorityFunction, keyFunction) {
    * @private
    */
   this.queuedElements_ = {};
-
 };
-
 
 /**
  * @const
  * @type {number}
  */
 ol.structs.PriorityQueue.DROP = Infinity;
-
 
 /**
  * FIXME empty description for jsdoc
@@ -69,7 +64,6 @@ ol.structs.PriorityQueue.prototype.clear = function() {
   this.priorities_.length = 0;
   ol.obj.clear(this.queuedElements_);
 };
-
 
 /**
  * Remove and return the highest-priority element. O(log N).
@@ -92,15 +86,13 @@ ol.structs.PriorityQueue.prototype.dequeue = function() {
   return element;
 };
 
-
 /**
  * Enqueue an element. O(log N).
  * @param {T} element Element.
  * @return {boolean} The element was added to the queue.
  */
 ol.structs.PriorityQueue.prototype.enqueue = function(element) {
-  ol.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_),
-      31); // Tried to enqueue an `element` that was already added to the queue
+  ol.asserts.assert(!(this.keyFunction_(element) in this.queuedElements_), 31); // Tried to enqueue an `element` that was already added to the queue
   var priority = this.priorityFunction_(element);
   if (priority != ol.structs.PriorityQueue.DROP) {
     this.elements_.push(element);
@@ -112,14 +104,12 @@ ol.structs.PriorityQueue.prototype.enqueue = function(element) {
   return false;
 };
 
-
 /**
  * @return {number} Count.
  */
 ol.structs.PriorityQueue.prototype.getCount = function() {
   return this.elements_.length;
 };
-
 
 /**
  * Gets the index of the left child of the node at the given index.
@@ -131,7 +121,6 @@ ol.structs.PriorityQueue.prototype.getLeftChildIndex_ = function(index) {
   return index * 2 + 1;
 };
 
-
 /**
  * Gets the index of the right child of the node at the given index.
  * @param {number} index The index of the node to get the right child for.
@@ -142,7 +131,6 @@ ol.structs.PriorityQueue.prototype.getRightChildIndex_ = function(index) {
   return index * 2 + 2;
 };
 
-
 /**
  * Gets the index of the parent of the node at the given index.
  * @param {number} index The index of the node to get the parent for.
@@ -152,7 +140,6 @@ ol.structs.PriorityQueue.prototype.getRightChildIndex_ = function(index) {
 ol.structs.PriorityQueue.prototype.getParentIndex_ = function(index) {
   return (index - 1) >> 1;
 };
-
 
 /**
  * Make this a heap. O(N).
@@ -165,14 +152,12 @@ ol.structs.PriorityQueue.prototype.heapify_ = function() {
   }
 };
 
-
 /**
  * @return {boolean} Is empty.
  */
 ol.structs.PriorityQueue.prototype.isEmpty = function() {
   return this.elements_.length === 0;
 };
-
 
 /**
  * @param {string} key Key.
@@ -182,7 +167,6 @@ ol.structs.PriorityQueue.prototype.isKeyQueued = function(key) {
   return key in this.queuedElements_;
 };
 
-
 /**
  * @param {T} element Element.
  * @return {boolean} Is queued.
@@ -190,7 +174,6 @@ ol.structs.PriorityQueue.prototype.isKeyQueued = function(key) {
 ol.structs.PriorityQueue.prototype.isQueued = function(element) {
   return this.isKeyQueued(this.keyFunction_(element));
 };
-
 
 /**
  * @param {number} index The index of the node to move down.
@@ -204,13 +187,14 @@ ol.structs.PriorityQueue.prototype.siftUp_ = function(index) {
   var priority = priorities[index];
   var startIndex = index;
 
-  while (index < (count >> 1)) {
+  while (index < count >> 1) {
     var lIndex = this.getLeftChildIndex_(index);
     var rIndex = this.getRightChildIndex_(index);
 
     var smallerChildIndex = rIndex < count &&
-        priorities[rIndex] < priorities[lIndex] ?
-        rIndex : lIndex;
+      priorities[rIndex] < priorities[lIndex]
+      ? rIndex
+      : lIndex;
 
     elements[index] = elements[smallerChildIndex];
     priorities[index] = priorities[smallerChildIndex];
@@ -221,7 +205,6 @@ ol.structs.PriorityQueue.prototype.siftUp_ = function(index) {
   priorities[index] = priority;
   this.siftDown_(startIndex, index);
 };
-
 
 /**
  * @param {number} startIndex The index of the root.
@@ -247,7 +230,6 @@ ol.structs.PriorityQueue.prototype.siftDown_ = function(startIndex, index) {
   elements[index] = element;
   priorities[index] = priority;
 };
-
 
 /**
  * FIXME empty description for jsdoc

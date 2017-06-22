@@ -10,7 +10,6 @@ var numFiles = process.argv.length - 1;
 var requires = {};
 
 process.argv.forEach(function(val, index, array) {
-
   if (index === 0) {
     return;
   }
@@ -20,7 +19,7 @@ process.argv.forEach(function(val, index, array) {
       return;
     }
 
-    var re = new RegExp('goog\\.provide\\(\'(.*)\'\\);');
+    var re = new RegExp("goog\\.provide\\('(.*)'\\);");
 
     data.toString().split('\n').forEach(function(line) {
       var match = line.match(re);
@@ -31,10 +30,8 @@ process.argv.forEach(function(val, index, array) {
 
     if (--numFiles === 0) {
       Object.keys(requires).sort().forEach(function(key) {
-        process.stdout.write('goog.require(\'' + key + '\');\n');
+        process.stdout.write("goog.require('" + key + "');\n");
       });
     }
-
   });
-
 });

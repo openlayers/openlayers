@@ -5,9 +5,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
-
 describe('ol.layer.Vector', function() {
-
   describe('constructor', function() {
     var source = new ol.source.Vector();
     var style = new ol.style.Style();
@@ -49,11 +47,9 @@ describe('ol.layer.Vector', function() {
       var styleFunction = layer.getStyleFunction();
       expect(styleFunction()).to.eql([style]);
     });
-
   });
 
   describe('#setStyle()', function() {
-
     var layer, style;
 
     beforeEach(function() {
@@ -79,7 +75,8 @@ describe('ol.layer.Vector', function() {
       expect(layer.getStyleFunction()).to.be(ol.style.Style.defaultFunction);
       layer.setStyle(style);
       expect(layer.getStyleFunction()).not.to.be(
-          ol.style.Style.defaultFunction);
+        ol.style.Style.defaultFunction
+      );
     });
 
     it('allows setting an null style', function() {
@@ -94,11 +91,9 @@ describe('ol.layer.Vector', function() {
       expect(layer.getStyle()).to.be(ol.style.Style.defaultFunction);
       expect(layer.getStyleFunction()).to.be(ol.style.Style.defaultFunction);
     });
-
   });
 
   describe('#getStyle()', function() {
-
     var source = new ol.source.Vector();
     var style = new ol.style.Style();
 
@@ -120,9 +115,6 @@ describe('ol.layer.Vector', function() {
       };
       layer.setStyle(styleFunction);
       expect(layer.getStyle()).to.be(styleFunction);
-
     });
-
   });
-
 });

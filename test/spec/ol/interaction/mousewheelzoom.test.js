@@ -8,7 +8,6 @@ goog.require('ol.has');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.MouseWheelZoom');
 
-
 describe('ol.interaction.MouseWheelZoom', function() {
   var map, interaction;
 
@@ -59,16 +58,16 @@ describe('ol.interaction.MouseWheelZoom', function() {
       ol.interaction.Interaction.zoomByDelta.restore();
       done();
     });
-
   });
 
   describe('handleEvent()', function() {
-
     it('works on Firefox in DOM_DELTA_PIXEL mode (trackpad)', function(done) {
       var origHasFirefox = ol.has.FIREFOX;
       ol.has.FIREFOX = true;
       map.once('postrender', function() {
-        expect(interaction.mode_).to.be(ol.interaction.MouseWheelZoom.Mode_.TRACKPAD);
+        expect(interaction.mode_).to.be(
+          ol.interaction.MouseWheelZoom.Mode_.TRACKPAD
+        );
         ol.has.FIREFOX = origHasFirefox;
         done();
       });
@@ -87,7 +86,9 @@ describe('ol.interaction.MouseWheelZoom', function() {
       var origHasFirefox = ol.has.FIREFOX;
       ol.has.FIREFOX = false;
       map.once('postrender', function() {
-        expect(interaction.mode_).to.be(ol.interaction.MouseWheelZoom.Mode_.TRACKPAD);
+        expect(interaction.mode_).to.be(
+          ol.interaction.MouseWheelZoom.Mode_.TRACKPAD
+        );
         ol.has.FIREFOX = origHasFirefox;
         done();
       });
@@ -163,5 +164,4 @@ describe('ol.interaction.MouseWheelZoom', function() {
       map.handleMapBrowserEvent(event);
     });
   });
-
 });

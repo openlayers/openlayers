@@ -20,7 +20,9 @@ var style = new ol.style.Style({
   })
 });
 
-var feature = new ol.Feature(new ol.geom.LineString([[-4000000, 0], [4000000, 0]]));
+var feature = new ol.Feature(
+  new ol.geom.LineString([[-4000000, 0], [4000000, 0]])
+);
 
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
@@ -44,11 +46,15 @@ var statusElement = document.getElementById('status');
 
 map.on('singleclick', function(e) {
   var hit = false;
-  map.forEachFeatureAtPixel(e.pixel, function() {
-    hit = true;
-  }, {
-    hitTolerance: hitTolerance
-  });
+  map.forEachFeatureAtPixel(
+    e.pixel,
+    function() {
+      hit = true;
+    },
+    {
+      hitTolerance: hitTolerance
+    }
+  );
   if (hit) {
     style.getStroke().setColor('green');
     statusElement.innerHTML = '&nbsp;A feature got hit!';
@@ -71,7 +77,13 @@ var changeHitTolerance = function() {
   var ctx = circleCanvas.getContext('2d');
   ctx.clearRect(0, 0, size, size);
   ctx.beginPath();
-  ctx.arc(hitTolerance + 1, hitTolerance + 1, hitTolerance + 0.5, 0, 2 * Math.PI);
+  ctx.arc(
+    hitTolerance + 1,
+    hitTolerance + 1,
+    hitTolerance + 0.5,
+    0,
+    2 * Math.PI
+  );
   ctx.fill();
   ctx.stroke();
 };

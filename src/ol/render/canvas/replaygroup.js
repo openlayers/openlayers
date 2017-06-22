@@ -14,7 +14,6 @@ goog.require('ol.render.canvas.TextReplay');
 goog.require('ol.render.replay');
 goog.require('ol.transform');
 
-
 /**
  * @constructor
  * @extends {ol.render.ReplayGroup}
@@ -26,7 +25,12 @@ goog.require('ol.transform');
  * @struct
  */
 ol.render.canvas.ReplayGroup = function(
-    tolerance, maxExtent, resolution, overlaps, opt_renderBuffer) {
+  tolerance,
+  maxExtent,
+  resolution,
+  overlaps,
+  opt_renderBuffer
+) {
   ol.render.ReplayGroup.call(this);
 
   /**
@@ -80,7 +84,6 @@ ol.render.canvas.ReplayGroup = function(
 };
 ol.inherits(ol.render.canvas.ReplayGroup, ol.render.ReplayGroup);
 
-
 /**
  * This cache is used for storing calculated pixel circles for increasing performance.
  * It is a static property to allow each Replaygroup to access it.
@@ -91,7 +94,6 @@ ol.render.canvas.ReplayGroup.circleArrayCache_ = {
   0: [[true]]
 };
 
-
 /**
  * This method fills a row in the array from the given coordinate to the
  * middle with `true`.
@@ -100,7 +102,11 @@ ol.render.canvas.ReplayGroup.circleArrayCache_ = {
  * @param {number} y Y coordinate.
  * @private
  */
-ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y) {
+ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_ = function(
+  array,
+  x,
+  y
+) {
   var i;
   var radius = Math.floor(array.length / 2);
   if (x >= radius) {
@@ -113,7 +119,6 @@ ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_ = function(array, x, y)
     }
   }
 };
-
 
 /**
  * This methods creates a circle inside a fitting array. Points inside the
@@ -140,14 +145,46 @@ ol.render.canvas.ReplayGroup.getCircleArray_ = function(radius) {
   var error = 0;
 
   while (x >= y) {
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + x, radius + y);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + y, radius + x);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - y, radius + x);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - x, radius + y);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - x, radius - y);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius - y, radius - x);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + y, radius - x);
-    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(arr, radius + x, radius - y);
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius + x,
+      radius + y
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius + y,
+      radius + x
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius - y,
+      radius + x
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius - x,
+      radius + y
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius - x,
+      radius - y
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius - y,
+      radius - x
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius + y,
+      radius - x
+    );
+    ol.render.canvas.ReplayGroup.fillCircleArrayRowToMiddle_(
+      arr,
+      radius + x,
+      radius - y
+    );
 
     y++;
     error += 1 + 2 * y;
@@ -175,7 +212,6 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
   }
 };
 
-
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
@@ -189,18 +225,31 @@ ol.render.canvas.ReplayGroup.prototype.finish = function() {
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
-    coordinate, resolution, rotation, hitTolerance, skippedFeaturesHash, callback) {
-
+  coordinate,
+  resolution,
+  rotation,
+  hitTolerance,
+  skippedFeaturesHash,
+  callback
+) {
   hitTolerance = Math.round(hitTolerance);
   var contextSize = hitTolerance * 2 + 1;
-  var transform = ol.transform.compose(this.hitDetectionTransform_,
-      hitTolerance + 0.5, hitTolerance + 0.5,
-      1 / resolution, -1 / resolution,
-      -rotation,
-      -coordinate[0], -coordinate[1]);
+  var transform = ol.transform.compose(
+    this.hitDetectionTransform_,
+    hitTolerance + 0.5,
+    hitTolerance + 0.5,
+    1 / resolution,
+    -1 / resolution,
+    -rotation,
+    -coordinate[0],
+    -coordinate[1]
+  );
   var context = this.hitDetectionContext_;
 
-  if (context.canvas.width !== contextSize || context.canvas.height !== contextSize) {
+  if (
+    context.canvas.width !== contextSize ||
+    context.canvas.height !== contextSize
+  ) {
     context.canvas.width = contextSize;
     context.canvas.height = contextSize;
   } else {
@@ -214,37 +263,45 @@ ol.render.canvas.ReplayGroup.prototype.forEachFeatureAtCoordinate = function(
   if (this.renderBuffer_ !== undefined) {
     hitExtent = ol.extent.createEmpty();
     ol.extent.extendCoordinate(hitExtent, coordinate);
-    ol.extent.buffer(hitExtent, resolution * (this.renderBuffer_ + hitTolerance), hitExtent);
+    ol.extent.buffer(
+      hitExtent,
+      resolution * (this.renderBuffer_ + hitTolerance),
+      hitExtent
+    );
   }
 
   var mask = ol.render.canvas.ReplayGroup.getCircleArray_(hitTolerance);
 
-  return this.replayHitDetection_(context, transform, rotation,
-      skippedFeaturesHash,
-      /**
+  return this.replayHitDetection_(
+    context,
+    transform,
+    rotation,
+    skippedFeaturesHash,
+    /**
        * @param {ol.Feature|ol.render.Feature} feature Feature.
        * @return {?} Callback result.
        */
-      function(feature) {
-        var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
-        for (var i = 0; i < contextSize; i++) {
-          for (var j = 0; j < contextSize; j++) {
-            if (mask[i][j]) {
-              if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
-                var result = callback(feature);
-                if (result) {
-                  return result;
-                } else {
-                  context.clearRect(0, 0, contextSize, contextSize);
-                  return undefined;
-                }
+    function(feature) {
+      var imageData = context.getImageData(0, 0, contextSize, contextSize).data;
+      for (var i = 0; i < contextSize; i++) {
+        for (var j = 0; j < contextSize; j++) {
+          if (mask[i][j]) {
+            if (imageData[(j * contextSize + i) * 4 + 3] > 0) {
+              var result = callback(feature);
+              if (result) {
+                return result;
+              } else {
+                context.clearRect(0, 0, contextSize, contextSize);
+                return undefined;
               }
             }
           }
         }
-      }, hitExtent);
+      }
+    },
+    hitExtent
+  );
 };
-
 
 /**
  * @param {ol.Transform} transform Transform.
@@ -258,15 +315,23 @@ ol.render.canvas.ReplayGroup.prototype.getClipCoords = function(transform) {
   var maxY = maxExtent[3];
   var flatClipCoords = [minX, minY, minX, maxY, maxX, maxY, maxX, minY];
   ol.geom.flat.transform.transform2D(
-      flatClipCoords, 0, 8, 2, transform, flatClipCoords);
+    flatClipCoords,
+    0,
+    8,
+    2,
+    transform,
+    flatClipCoords
+  );
   return flatClipCoords;
 };
-
 
 /**
  * @inheritDoc
  */
-ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {
+ol.render.canvas.ReplayGroup.prototype.getReplay = function(
+  zIndex,
+  replayType
+) {
   var zIndexKey = zIndex !== undefined ? zIndex.toString() : '0';
   var replays = this.replaysByZIndex_[zIndexKey];
   if (replays === undefined) {
@@ -275,14 +340,18 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
   }
   var replay = replays[replayType];
   if (replay === undefined) {
-    var Constructor = ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
-    replay = new Constructor(this.tolerance_, this.maxExtent_,
-        this.resolution_, this.overlaps_);
+    var Constructor =
+      ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_[replayType];
+    replay = new Constructor(
+      this.tolerance_,
+      this.maxExtent_,
+      this.resolution_,
+      this.overlaps_
+    );
     replays[replayType] = replay;
   }
   return replay;
 };
-
 
 /**
  * @inheritDoc
@@ -290,7 +359,6 @@ ol.render.canvas.ReplayGroup.prototype.getReplay = function(zIndex, replayType) 
 ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
   return ol.obj.isEmpty(this.replaysByZIndex_);
 };
-
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -302,9 +370,14 @@ ol.render.canvas.ReplayGroup.prototype.isEmpty = function() {
  * @param {Array.<ol.render.ReplayType>=} opt_replayTypes Ordered replay types
  *     to replay. Default is {@link ol.render.replay.ORDER}
  */
-ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
-    transform, viewRotation, skippedFeaturesHash, opt_replayTypes) {
-
+ol.render.canvas.ReplayGroup.prototype.replay = function(
+  context,
+  pixelRatio,
+  transform,
+  viewRotation,
+  skippedFeaturesHash,
+  opt_replayTypes
+) {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(ol.array.numberSafeCompareFunction);
@@ -327,15 +400,19 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
     for (j = 0, jj = replayTypes.length; j < jj; ++j) {
       replay = replays[replayTypes[j]];
       if (replay !== undefined) {
-        replay.replay(context, pixelRatio, transform, viewRotation,
-            skippedFeaturesHash);
+        replay.replay(
+          context,
+          pixelRatio,
+          transform,
+          viewRotation,
+          skippedFeaturesHash
+        );
       }
     }
   }
 
   context.restore();
 };
-
 
 /**
  * @private
@@ -352,8 +429,13 @@ ol.render.canvas.ReplayGroup.prototype.replay = function(context, pixelRatio,
  * @template T
  */
 ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
-    context, transform, viewRotation, skippedFeaturesHash,
-    featureCallback, opt_hitExtent) {
+  context,
+  transform,
+  viewRotation,
+  skippedFeaturesHash,
+  featureCallback,
+  opt_hitExtent
+) {
   /** @type {Array.<number>} */
   var zs = Object.keys(this.replaysByZIndex_).map(Number);
   zs.sort(function(a, b) {
@@ -366,8 +448,14 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
     for (j = ol.render.replay.ORDER.length - 1; j >= 0; --j) {
       replay = replays[ol.render.replay.ORDER[j]];
       if (replay !== undefined) {
-        result = replay.replayHitDetection(context, transform, viewRotation,
-            skippedFeaturesHash, featureCallback, opt_hitExtent);
+        result = replay.replayHitDetection(
+          context,
+          transform,
+          viewRotation,
+          skippedFeaturesHash,
+          featureCallback,
+          opt_hitExtent
+        );
         if (result) {
           return result;
         }
@@ -377,7 +465,6 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
   return undefined;
 };
 
-
 /**
  * @const
  * @private
@@ -386,9 +473,9 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  *                number, boolean)>}
  */
 ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_ = {
-  'Circle': ol.render.canvas.PolygonReplay,
-  'Image': ol.render.canvas.ImageReplay,
-  'LineString': ol.render.canvas.LineStringReplay,
-  'Polygon': ol.render.canvas.PolygonReplay,
-  'Text': ol.render.canvas.TextReplay
+  Circle: ol.render.canvas.PolygonReplay,
+  Image: ol.render.canvas.ImageReplay,
+  LineString: ol.render.canvas.LineStringReplay,
+  Polygon: ol.render.canvas.PolygonReplay,
+  Text: ol.render.canvas.TextReplay
 };

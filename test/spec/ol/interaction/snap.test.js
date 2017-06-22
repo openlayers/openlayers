@@ -9,16 +9,12 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.LineString');
 goog.require('ol.interaction.Snap');
 
-
 describe('ol.interaction.Snap', function() {
-
   describe('constructor', function() {
-
     it('can be constructed without arguments', function() {
       var instance = new ol.interaction.Snap();
       expect(instance).to.be.an(ol.interaction.Snap);
     });
-
   });
 
   describe('handleEvent_', function() {
@@ -84,7 +80,7 @@ describe('ol.interaction.Snap', function() {
       snapInteraction.setMap(map);
 
       var event = {
-        pixel: [7 + width / 2,  height / 2 - 4],
+        pixel: [7 + width / 2, height / 2 - 4],
         coordinate: [7, 4],
         map: map
       };
@@ -102,7 +98,7 @@ describe('ol.interaction.Snap', function() {
       snapInteraction.setMap(map);
 
       var event = {
-        pixel: [7 + width / 2,  height / 2 - 4],
+        pixel: [7 + width / 2, height / 2 - 4],
         coordinate: [7, 4],
         map: map
       };
@@ -119,7 +115,7 @@ describe('ol.interaction.Snap', function() {
       snapInteraction.setMap(map);
 
       var event = {
-        pixel: [5 + width / 2,  height / 2 - 5],
+        pixel: [5 + width / 2, height / 2 - 5],
         coordinate: [5, 5],
         map: map
       };
@@ -193,8 +189,5 @@ describe('ol.interaction.Snap', function() {
       ol.interaction.Snap.handleEvent_.call(snapInteraction, event);
       expect(event.coordinate).to.eql([10, 0]);
     });
-
-
   });
-
 });

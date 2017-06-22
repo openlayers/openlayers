@@ -1,6 +1,5 @@
 goog.provide('ol.GeolocationProperty');
 
-
 /**
  * @enum {string}
  */

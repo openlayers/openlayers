@@ -6,7 +6,6 @@ goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileDebug');
 
-
 var osmSource = new ol.source.OSM();
 var map = new ol.Map({
   layers: [
@@ -22,13 +21,12 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
-    center: ol.proj.transform(
-        [-0.1275, 51.507222], 'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.transform([-0.1275, 51.507222], 'EPSG:4326', 'EPSG:3857'),
     zoom: 10
   })
 });

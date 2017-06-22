@@ -1,6 +1,5 @@
 goog.provide('ol.TileRange');
 
-
 /**
  * A representation of a contiguous block of tiles.  A tile range is specified
  * by its min/max tile coordinates and is inclusive of coordinates.
@@ -13,7 +12,6 @@ goog.provide('ol.TileRange');
  * @struct
  */
 ol.TileRange = function(minX, maxX, minY, maxY) {
-
   /**
    * @type {number}
    */
@@ -33,9 +31,7 @@ ol.TileRange = function(minX, maxX, minY, maxY) {
    * @type {number}
    */
   this.maxY = maxY;
-
 };
-
 
 /**
  * @param {number} minX Minimum X.
@@ -57,7 +53,6 @@ ol.TileRange.createOrUpdate = function(minX, maxX, minY, maxY, tileRange) {
   }
 };
 
-
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
  * @return {boolean} Contains tile coordinate.
@@ -66,16 +61,18 @@ ol.TileRange.prototype.contains = function(tileCoord) {
   return this.containsXY(tileCoord[1], tileCoord[2]);
 };
 
-
 /**
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Contains.
  */
 ol.TileRange.prototype.containsTileRange = function(tileRange) {
-  return this.minX <= tileRange.minX && tileRange.maxX <= this.maxX &&
-      this.minY <= tileRange.minY && tileRange.maxY <= this.maxY;
+  return (
+    this.minX <= tileRange.minX &&
+    tileRange.maxX <= this.maxX &&
+    this.minY <= tileRange.minY &&
+    tileRange.maxY <= this.maxY
+  );
 };
-
 
 /**
  * @param {number} x Tile coordinate x.
@@ -86,16 +83,18 @@ ol.TileRange.prototype.containsXY = function(x, y) {
   return this.minX <= x && x <= this.maxX && this.minY <= y && y <= this.maxY;
 };
 
-
 /**
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Equals.
  */
 ol.TileRange.prototype.equals = function(tileRange) {
-  return this.minX == tileRange.minX && this.minY == tileRange.minY &&
-      this.maxX == tileRange.maxX && this.maxY == tileRange.maxY;
+  return (
+    this.minX == tileRange.minX &&
+    this.minY == tileRange.minY &&
+    this.maxX == tileRange.maxX &&
+    this.maxY == tileRange.maxY
+  );
 };
-
 
 /**
  * @param {ol.TileRange} tileRange Tile range.
@@ -115,14 +114,12 @@ ol.TileRange.prototype.extend = function(tileRange) {
   }
 };
 
-
 /**
  * @return {number} Height.
  */
 ol.TileRange.prototype.getHeight = function() {
   return this.maxY - this.minY + 1;
 };
-
 
 /**
  * @return {ol.Size} Size.
@@ -131,7 +128,6 @@ ol.TileRange.prototype.getSize = function() {
   return [this.getWidth(), this.getHeight()];
 };
 
-
 /**
  * @return {number} Width.
  */
@@ -139,14 +135,15 @@ ol.TileRange.prototype.getWidth = function() {
   return this.maxX - this.minX + 1;
 };
 
-
 /**
  * @param {ol.TileRange} tileRange Tile range.
  * @return {boolean} Intersects.
  */
 ol.TileRange.prototype.intersects = function(tileRange) {
-  return this.minX <= tileRange.maxX &&
-      this.maxX >= tileRange.minX &&
-      this.minY <= tileRange.maxY &&
-      this.maxY >= tileRange.minY;
+  return (
+    this.minX <= tileRange.maxX &&
+    this.maxX >= tileRange.minX &&
+    this.minY <= tileRange.maxY &&
+    this.maxY >= tileRange.minY
+  );
 };

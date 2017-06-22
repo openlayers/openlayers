@@ -8,9 +8,7 @@ goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 goog.require('ol.source.Vector');
 
-
 describe('ol.source.Vector', function() {
-
   var pointFeature;
   var infiniteExtent;
   beforeEach(function() {
@@ -19,42 +17,34 @@ describe('ol.source.Vector', function() {
   });
 
   describe('when empty', function() {
-
     var vectorSource;
     beforeEach(function() {
       vectorSource = new ol.source.Vector();
     });
 
     describe('#forEachFeatureInExtent', function() {
-
       it('does not call the callback', function() {
         var f = sinon.spy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
         expect(f).not.to.be.called();
       });
-
     });
 
     describe('#getFeaturesInExtent', function() {
-
       it('returns an empty array', function() {
         var features = vectorSource.getFeaturesInExtent(infiniteExtent);
         expect(features).to.be.an(Array);
         expect(features).to.be.empty();
       });
-
     });
 
     describe('#isEmpty', function() {
-
       it('returns true', function() {
         expect(vectorSource.isEmpty()).to.be(true);
       });
-
     });
 
     describe('#addFeature', function() {
-
       it('can add a single point feature', function() {
         vectorSource.addFeature(pointFeature);
         var features = vectorSource.getFeaturesInExtent(infiniteExtent);
@@ -80,13 +70,10 @@ describe('ol.source.Vector', function() {
         source.addFeature(feature2);
         expect(source.getFeatures().length).to.be(1);
       });
-
     });
-
   });
 
   describe('when populated with 3 features', function() {
-
     var features = [];
     var vectorSource;
     beforeEach(function() {
@@ -99,33 +86,33 @@ describe('ol.source.Vector', function() {
     });
 
     describe('#getClosestFeatureToCoordinate', function() {
-
       it('returns the expected feature', function() {
         var feature = vectorSource.getClosestFeatureToCoordinate([1, 9]);
         expect(feature).to.be(features[1]);
       });
 
       it('returns the expected feature when a filter is used', function() {
-        var feature = vectorSource.getClosestFeatureToCoordinate([1, 9], function(feature) {
-          return feature.getGeometry().getType() == 'LineString';
-        });
+        var feature = vectorSource.getClosestFeatureToCoordinate(
+          [1, 9],
+          function(feature) {
+            return feature.getGeometry().getType() == 'LineString';
+          }
+        );
         expect(feature).to.be(features[0]);
       });
-
     });
-
   });
 
   describe('when populated with 10 random points and a null', function() {
-
     var features;
     var vectorSource;
     beforeEach(function() {
       features = [];
       var i;
       for (i = 0; i < 10; ++i) {
-        features[i] =
-            new ol.Feature(new ol.geom.Point([Math.random(), Math.random()]));
+        features[i] = new ol.Feature(
+          new ol.geom.Point([Math.random(), Math.random()])
+        );
       }
       features.push(new ol.Feature(null));
       vectorSource = new ol.source.Vector({
@@ -134,7 +121,6 @@ describe('ol.source.Vector', function() {
     });
 
     describe('#clear', function() {
-
       it('removes all features using fast path', function() {
         var changeSpy = sinon.spy();
         ol.events.listen(vectorSource, 'change', changeSpy);
@@ -170,11 +156,9 @@ describe('ol.source.Vector', function() {
         expect(clearSourceSpy).to.be.called();
         expect(clearSourceSpy.callCount).to.be(1);
       });
-
     });
 
     describe('#forEachFeatureInExtent', function() {
-
       it('is called the expected number of times', function() {
         var f = sinon.spy();
         vectorSource.forEachFeatureInExtent(infiniteExtent, f);
@@ -183,41 +167,39 @@ describe('ol.source.Vector', function() {
 
       it('allows breaking out', function() {
         var count = 0;
-        var result = vectorSource.forEachFeatureInExtent(infiniteExtent,
-            function(f) {
-              return ++count == 5;
-            });
+        var result = vectorSource.forEachFeatureInExtent(
+          infiniteExtent,
+          function(f) {
+            return ++count == 5;
+          }
+        );
         expect(result).to.be(true);
         expect(count).to.be(5);
       });
-
     });
 
     describe('#getFeaturesInExtent', function() {
-
       it('returns the expected number of features', function() {
-        expect(vectorSource.getFeaturesInExtent(infiniteExtent)).
-            to.have.length(10);
+        expect(vectorSource.getFeaturesInExtent(infiniteExtent)).to.have.length(
+          10
+        );
       });
-
     });
 
     describe('#isEmpty', function() {
-
       it('returns false', function() {
         expect(vectorSource.isEmpty()).to.be(false);
       });
-
     });
 
     describe('#removeFeature', function() {
-
       it('works as expected', function() {
         var i;
         for (i = features.length - 1; i >= 0; --i) {
           vectorSource.removeFeature(features[i]);
-          expect(vectorSource.getFeaturesInExtent(infiniteExtent)).
-              have.length(i);
+          expect(vectorSource.getFeaturesInExtent(infiniteExtent)).have.length(
+            i
+          );
         }
       });
 
@@ -227,40 +209,38 @@ describe('ol.source.Vector', function() {
         vectorSource.removeFeature(features[0]);
         expect(listener).to.be.called();
       });
-
     });
 
-    describe('modifying a feature\'s geometry', function() {
-
+    describe("modifying a feature's geometry", function() {
       it('keeps the R-Tree index up to date', function() {
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-            to.have.length(10);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
+          10
+        );
         features[0].getGeometry().setCoordinates([100, 100]);
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-            to.have.length(9);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
+          9
+        );
         features[0].getGeometry().setCoordinates([0.5, 0.5]);
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-            to.have.length(10);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
+          10
+        );
       });
-
     });
 
     describe('setting a features geometry', function() {
-
       it('keeps the R-Tree index up to date', function() {
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-            to.have.length(10);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
+          10
+        );
         features[0].setGeometry(new ol.geom.Point([100, 100]));
-        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).
-            to.have.length(9);
+        expect(vectorSource.getFeaturesInExtent([0, 0, 1, 1])).to.have.length(
+          9
+        );
       });
-
     });
-
   });
 
   describe('tracking changes to features', function() {
-
     var vectorSource;
     beforeEach(function() {
       vectorSource = new ol.source.Vector();
@@ -269,13 +249,10 @@ describe('ol.source.Vector', function() {
     it('keeps its index up-to-date', function() {
       var feature = new ol.Feature(new ol.geom.Point([1, 1]));
       vectorSource.addFeature(feature);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-          to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.eql([feature]);
       feature.getGeometry().setCoordinates([3, 3]);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-          to.be.empty();
-      expect(vectorSource.getFeaturesInExtent([2, 2, 4, 4])).
-          to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
+      expect(vectorSource.getFeaturesInExtent([2, 2, 4, 4])).to.eql([feature]);
     });
 
     it('handles features with null geometries', function() {
@@ -289,8 +266,7 @@ describe('ol.source.Vector', function() {
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
       feature.setGeometry(new ol.geom.Point([1, 1]));
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-          to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.eql([feature]);
       expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
@@ -298,14 +274,13 @@ describe('ol.source.Vector', function() {
       var feature = new ol.Feature(new ol.geom.Point([1, 1]));
       vectorSource.addFeature(feature);
       expect(vectorSource.getFeatures()).to.eql([feature]);
-      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).
-          to.eql([feature]);
+      expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.eql([feature]);
       feature.setGeometry(null);
       expect(vectorSource.getFeaturesInExtent([0, 0, 2, 2])).to.be.empty();
       expect(vectorSource.getFeatures()).to.eql([feature]);
     });
 
-    it('fires a change event when setting a feature\'s property', function() {
+    it("fires a change event when setting a feature's property", function() {
       var feature = new ol.Feature(new ol.geom.Point([1, 1]));
       vectorSource.addFeature(feature);
       var listener = sinon.spy();
@@ -324,7 +299,6 @@ describe('ol.source.Vector', function() {
       feature.setStyle(null);
       expect(listener).to.be.called();
     });
-
   });
 
   describe('#getFeatureById()', function() {
@@ -412,24 +386,27 @@ describe('ol.source.Vector', function() {
       expect(source.getFeatureById('foo')).to.be(null);
       expect(source.getFeatureById('bar')).to.be(feature);
     });
-
   });
 
   describe('#loadFeatures', function() {
-
     describe('with no loader and the "all" strategy', function() {
-
       it('stores the infinity extent in the Rtree', function() {
         var source = new ol.source.Vector();
-        source.loadFeatures([-10000, -10000, 10000, 10000], 1,
-            ol.proj.get('EPSG:3857'));
+        source.loadFeatures(
+          [-10000, -10000, 10000, 10000],
+          1,
+          ol.proj.get('EPSG:3857')
+        );
         var loadedExtents = source.loadedExtentsRtree_.getAll();
         expect(loadedExtents).to.have.length(1);
-        expect(loadedExtents[0].extent).to.eql(
-            [-Infinity, -Infinity, Infinity, Infinity]);
+        expect(loadedExtents[0].extent).to.eql([
+          -Infinity,
+          -Infinity,
+          Infinity,
+          Infinity
+        ]);
       });
     });
-
   });
 
   describe('the feature id index', function() {
@@ -459,7 +436,6 @@ describe('ol.source.Vector', function() {
       bar.setId('foo');
       expect(source.getFeatureById('foo')).to.be(bar);
     });
-
   });
 
   describe('the undefined feature id index', function() {
@@ -493,7 +469,6 @@ describe('ol.source.Vector', function() {
       source.forEachFeatureInExtent([0, 0, 0, 0], spy);
       expect(spy.callCount).to.be(2);
     });
-
   });
 
   describe('with a collection of features', function() {
@@ -529,7 +504,7 @@ describe('ol.source.Vector', function() {
       expect(collection.getLength()).to.be(0);
     });
 
-    it('keeps the source\'s features in sync with the collection', function() {
+    it("keeps the source's features in sync with the collection", function() {
       var feature = new ol.Feature();
       collection.push(feature);
       expect(source.getFeatures().length).to.be(1);
@@ -540,7 +515,6 @@ describe('ol.source.Vector', function() {
       collection.clear();
       expect(source.getFeatures().length).to.be(0);
     });
-
   });
 
   describe('with a collection of features plus spatial index', function() {
@@ -576,7 +550,7 @@ describe('ol.source.Vector', function() {
       expect(collection.getLength()).to.be(0);
     });
 
-    it('keeps the source\'s features in sync with the collection', function() {
+    it("keeps the source's features in sync with the collection", function() {
       var feature = new ol.Feature();
       collection.push(feature);
       expect(source.getFeatures().length).to.be(1);
@@ -587,7 +561,5 @@ describe('ol.source.Vector', function() {
       collection.clear();
       expect(source.getFeatures().length).to.be(0);
     });
-
   });
-
 });

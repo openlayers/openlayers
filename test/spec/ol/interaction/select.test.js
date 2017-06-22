@@ -13,7 +13,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
 
-
 describe('ol.interaction.Select', function() {
   var target, map, layer, source;
 
@@ -38,22 +37,23 @@ describe('ol.interaction.Select', function() {
     // -> foo -> bar.
     var features = [];
     features.push(
-        new ol.Feature({
-          geometry: geometry,
-          type: 'bar'
-        }),
-        new ol.Feature({
-          geometry: geometry,
-          type: 'foo'
-        }),
-        new ol.Feature({
-          geometry: geometry,
-          type: 'bar'
-        }),
-        new ol.Feature({
-          geometry: geometry,
-          type: 'foo'
-        }));
+      new ol.Feature({
+        geometry: geometry,
+        type: 'bar'
+      }),
+      new ol.Feature({
+        geometry: geometry,
+        type: 'foo'
+      }),
+      new ol.Feature({
+        geometry: geometry,
+        type: 'bar'
+      }),
+      new ol.Feature({
+        geometry: geometry,
+        type: 'foo'
+      })
+    );
 
     source = new ol.source.Vector({
       features: features
@@ -103,7 +103,6 @@ describe('ol.interaction.Select', function() {
   }
 
   describe('constructor', function() {
-
     it('creates a new interaction', function() {
       var select = new ol.interaction.Select();
       expect(select).to.be.a(ol.interaction.Select);
@@ -111,15 +110,12 @@ describe('ol.interaction.Select', function() {
     });
 
     describe('user-provided collection', function() {
-
       it('uses the user-provided collection', function() {
         var features = new ol.Collection();
         var select = new ol.interaction.Select({features: features});
         expect(select.getFeatures()).to.be(features);
       });
-
     });
-
   });
 
   describe('selecting a polygon', function() {
@@ -270,9 +266,7 @@ describe('ol.interaction.Select', function() {
   });
 
   describe('filter features using the filter option', function() {
-
     describe('with multi set to true', function() {
-
       it('only selects features that pass the filter', function() {
         var select = new ol.interaction.Select({
           multi: true,
@@ -289,27 +283,28 @@ describe('ol.interaction.Select', function() {
         expect(features.item(1).get('type')).to.be('bar');
       });
 
-      it('only selects features that pass the filter ' +
-         'using shift single-click', function() {
-        var select = new ol.interaction.Select({
-          multi: true,
-          filter: function(feature, layer) {
-            return feature.get('type') === 'bar';
-          }
-        });
-        map.addInteraction(select);
+      it(
+        'only selects features that pass the filter ' +
+          'using shift single-click',
+        function() {
+          var select = new ol.interaction.Select({
+            multi: true,
+            filter: function(feature, layer) {
+              return feature.get('type') === 'bar';
+            }
+          });
+          map.addInteraction(select);
 
-        simulateEvent('singleclick', 10, -20,
-            true);
-        var features = select.getFeatures();
-        expect(features.getLength()).to.equal(2);
-        expect(features.item(0).get('type')).to.be('bar');
-        expect(features.item(1).get('type')).to.be('bar');
-      });
+          simulateEvent('singleclick', 10, -20, true);
+          var features = select.getFeatures();
+          expect(features.getLength()).to.equal(2);
+          expect(features.item(0).get('type')).to.be('bar');
+          expect(features.item(1).get('type')).to.be('bar');
+        }
+      );
     });
 
     describe('with multi set to false', function() {
-
       it('only selects the first feature that passes the filter', function() {
         var select = new ol.interaction.Select({
           multi: false,
@@ -324,21 +319,23 @@ describe('ol.interaction.Select', function() {
         expect(features.item(0).get('type')).to.be('bar');
       });
 
-      it('only selects the first feature that passes the filter ' +
-         'using shift single-click', function() {
-        var select = new ol.interaction.Select({
-          multi: false,
-          filter: function(feature, layer) {
-            return feature.get('type') === 'bar';
-          }
-        });
-        map.addInteraction(select);
-        simulateEvent('singleclick', 10, -20,
-            true);
-        var features = select.getFeatures();
-        expect(features.getLength()).to.equal(1);
-        expect(features.item(0).get('type')).to.be('bar');
-      });
+      it(
+        'only selects the first feature that passes the filter ' +
+          'using shift single-click',
+        function() {
+          var select = new ol.interaction.Select({
+            multi: false,
+            filter: function(feature, layer) {
+              return feature.get('type') === 'bar';
+            }
+          });
+          map.addInteraction(select);
+          simulateEvent('singleclick', 10, -20, true);
+          var features = select.getFeatures();
+          expect(features.getLength()).to.equal(1);
+          expect(features.item(0).get('type')).to.be('bar');
+        }
+      );
     });
   });
 
@@ -407,7 +404,6 @@ describe('ol.interaction.Select', function() {
         expect(listenerSpy.callCount).to.be(1);
       });
     });
-
   });
 
   describe('#setMap()', function() {

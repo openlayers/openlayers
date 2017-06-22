@@ -8,7 +8,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
-
 var projection = ol.proj.get('EPSG:3857');
 var projectionExtent = projection.getExtent();
 var size = ol.extent.getWidth(projectionExtent) / 256;
@@ -29,9 +28,11 @@ var map = new ol.Map({
     new ol.layer.Tile({
       opacity: 0.7,
       source: new ol.source.WMTS({
-        attributions: 'Tiles © <a href="https://services.arcgisonline.com/arcgis/rest/' +
+        attributions:
+          'Tiles © <a href="https://services.arcgisonline.com/arcgis/rest/' +
             'services/Demographics/USA_Population_Density/MapServer/">ArcGIS</a>',
-        url: 'https://services.arcgisonline.com/arcgis/rest/' +
+        url:
+          'https://services.arcgisonline.com/arcgis/rest/' +
             'services/Demographics/USA_Population_Density/MapServer/WMTS/',
         layer: '0',
         matrixSet: 'EPSG:3857',
@@ -49,9 +50,9 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     center: [-11158582, 4813697],

@@ -4,9 +4,7 @@ goog.require('ol.ImageTile');
 goog.require('ol.source.TileArcGISRest');
 goog.require('ol.proj');
 
-
 describe('ol.source.TileArcGISRest', function() {
-
   var options;
   beforeEach(function() {
     options = {
@@ -16,7 +14,6 @@ describe('ol.source.TileArcGISRest', function() {
   });
 
   describe('#getTile', function() {
-
     it('returns a tile with the expected URL', function() {
       var source = new ol.source.TileArcGISRest(options);
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
@@ -36,7 +33,6 @@ describe('ol.source.TileArcGISRest', function() {
       expect(queryData.get('IMAGESR')).to.be('3857');
       expect(queryData.get('BBOXSR')).to.be('3857');
       expect(queryData.get('TRANSPARENT')).to.be('true');
-
     });
 
     it('returns a non floating point DPI value', function() {
@@ -58,8 +54,10 @@ describe('ol.source.TileArcGISRest', function() {
     });
 
     it('returns a tile with the expected URL with url list', function() {
-
-      options.urls = ['http://test1.com/MapServer', 'http://test2.com/MapServer'];
+      options.urls = [
+        'http://test1.com/MapServer',
+        'http://test2.com/MapServer'
+      ];
       var source = new ol.source.TileArcGISRest(options);
 
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
@@ -79,7 +77,6 @@ describe('ol.source.TileArcGISRest', function() {
       expect(queryData.get('IMAGESR')).to.be('3857');
       expect(queryData.get('BBOXSR')).to.be('3857');
       expect(queryData.get('TRANSPARENT')).to.be('true');
-
     });
 
     it('returns a tile with the expected URL for ImageServer', function() {
@@ -126,10 +123,9 @@ describe('ol.source.TileArcGISRest', function() {
   });
 
   describe('#updateParams', function() {
-
     it('add a new param', function() {
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({'TEST': 'value'});
+      source.updateParams({TEST: 'value'});
 
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       var uri = new URL(tile.src_);
@@ -141,18 +137,16 @@ describe('ol.source.TileArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({'TEST': 'newValue'});
+      source.updateParams({TEST: 'newValue'});
 
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       expect(queryData.get('TEST')).to.be('newValue');
     });
-
   });
 
   describe('#getParams', function() {
-
     it('verify getting a param', function() {
       options.params.TEST = 'value';
       var source = new ol.source.TileArcGISRest(options);
@@ -166,7 +160,7 @@ describe('ol.source.TileArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({'TEST2': 'newValue'});
+      source.updateParams({TEST2: 'newValue'});
 
       var setParams = source.getParams();
 
@@ -177,58 +171,71 @@ describe('ol.source.TileArcGISRest', function() {
       options.params.TEST = 'value';
 
       var source = new ol.source.TileArcGISRest(options);
-      source.updateParams({'TEST': 'newValue'});
+      source.updateParams({TEST: 'newValue'});
 
       var setParams = source.getParams();
 
       expect(setParams).to.eql({TEST: 'newValue'});
     });
-
   });
 
   describe('#getUrls', function() {
-
     it('verify getting array of urls', function() {
-      options.urls = ['http://test.com/MapServer', 'http://test2.com/MapServer'];
+      options.urls = [
+        'http://test.com/MapServer',
+        'http://test2.com/MapServer'
+      ];
 
       var source = new ol.source.TileArcGISRest(options);
 
       var urls = source.getUrls();
 
-      expect(urls).to.eql(['http://test.com/MapServer', 'http://test2.com/MapServer']);
+      expect(urls).to.eql([
+        'http://test.com/MapServer',
+        'http://test2.com/MapServer'
+      ]);
     });
-
-
   });
 
   describe('#setUrls', function() {
-
     it('verify setting urls when not set yet', function() {
-
       var source = new ol.source.TileArcGISRest(options);
-      source.setUrls(['http://test.com/MapServer', 'http://test2.com/MapServer']);
+      source.setUrls([
+        'http://test.com/MapServer',
+        'http://test2.com/MapServer'
+      ]);
 
       var urls = source.getUrls();
 
-      expect(urls).to.eql(['http://test.com/MapServer', 'http://test2.com/MapServer']);
+      expect(urls).to.eql([
+        'http://test.com/MapServer',
+        'http://test2.com/MapServer'
+      ]);
     });
 
     it('verify setting urls with existing list', function() {
-      options.urls = ['http://test.com/MapServer', 'http://test2.com/MapServer'];
+      options.urls = [
+        'http://test.com/MapServer',
+        'http://test2.com/MapServer'
+      ];
 
       var source = new ol.source.TileArcGISRest(options);
-      source.setUrls(['http://test3.com/MapServer', 'http://test4.com/MapServer']);
+      source.setUrls([
+        'http://test3.com/MapServer',
+        'http://test4.com/MapServer'
+      ]);
 
       var urls = source.getUrls();
 
-      expect(urls).to.eql(['http://test3.com/MapServer', 'http://test4.com/MapServer']);
+      expect(urls).to.eql([
+        'http://test3.com/MapServer',
+        'http://test4.com/MapServer'
+      ]);
     });
   });
 
   describe('#setUrl', function() {
-
     it('verify setting url with no urls', function() {
-
       var source = new ol.source.TileArcGISRest(options);
       source.setUrl('http://test.com/MapServer');
 
@@ -238,7 +245,10 @@ describe('ol.source.TileArcGISRest', function() {
     });
 
     it('verify setting url with list of urls', function() {
-      options.urls = ['http://test.com/MapServer', 'http://test2.com/MapServer'];
+      options.urls = [
+        'http://test.com/MapServer',
+        'http://test2.com/MapServer'
+      ];
 
       var source = new ol.source.TileArcGISRest(options);
       source.setUrl('http://test3.com/MapServer');
@@ -247,11 +257,12 @@ describe('ol.source.TileArcGISRest', function() {
 
       expect(urls).to.eql(['http://test3.com/MapServer']);
 
-      var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
+      var tileUrl = source.tileUrlFunction(
+        [0, 0, 0],
+        1,
+        ol.proj.get('EPSG:4326')
+      );
       expect(tileUrl.indexOf(urls[0])).to.be(0);
     });
-
-
   });
-
 });

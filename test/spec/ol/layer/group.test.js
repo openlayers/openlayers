@@ -10,11 +10,8 @@ goog.require('ol.obj');
 goog.require('ol.renderer.Map');
 goog.require('ol.source.Source');
 
-
 describe('ol.layer.Group', function() {
-
   describe('constructor (defaults)', function() {
-
     var layerGroup;
 
     beforeEach(function() {
@@ -55,11 +52,9 @@ describe('ol.layer.Group', function() {
       expect(layerGroup.getLayers()).to.be.a(ol.Collection);
       expect(layerGroup.getLayers().getLength()).to.be(0);
     });
-
   });
 
   describe('generic change event', function() {
-
     var layer, group, listener;
     beforeEach(function() {
       layer = new ol.layer.Layer({
@@ -94,11 +89,9 @@ describe('ol.layer.Group', function() {
       layer.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
-
   });
 
   describe('property change event', function() {
-
     var layer, group, listener;
     beforeEach(function() {
       layer = new ol.layer.Layer({
@@ -133,11 +126,9 @@ describe('ol.layer.Group', function() {
       group.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
-
   });
 
   describe('constructor (options)', function() {
-
     it('accepts options', function() {
       var layer = new ol.layer.Layer({
         source: new ol.source.Source({
@@ -219,7 +210,6 @@ describe('ol.layer.Group', function() {
   });
 
   describe('#getLayerState', function() {
-
     var layerGroup;
 
     beforeEach(function() {
@@ -280,11 +270,9 @@ describe('ol.layer.Group', function() {
         minResolution: 0
       });
     });
-
   });
 
   describe('layers events', function() {
-
     it('listen / unlisten for layers added to the collection', function() {
       var layers = new ol.Collection();
       var layerGroup = new ol.layer.Group({
@@ -306,11 +294,9 @@ describe('ol.layer.Group', function() {
       expect(listeners[0].listener).to.be(undefined);
       expect(listeners[1].listener).to.be(undefined);
     });
-
   });
 
   describe('#setLayers', function() {
-
     it('sets layers property', function() {
       var layer = new ol.layer.Layer({
         source: new ol.source.Source({
@@ -327,12 +313,9 @@ describe('ol.layer.Group', function() {
       layer.dispose();
       layers.dispose();
     });
-
   });
 
-
   describe('#getLayerStatesArray', function() {
-
     it('returns an empty array if no layer', function() {
       var layerGroup = new ol.layer.Group();
 
@@ -405,7 +388,8 @@ describe('ol.layer.Group', function() {
       });
       var layerStatesArray = layerGroup.getLayerStatesArray();
       expect(layerStatesArray[0].extent).to.eql(
-          ol.extent.getIntersection(layer3.getExtent(), groupExtent));
+        ol.extent.getIntersection(layer3.getExtent(), groupExtent)
+      );
       layerGroup.dispose();
     });
 
@@ -497,5 +481,4 @@ describe('ol.layer.Group', function() {
     layer2.dispose();
     layer3.dispose();
   });
-
 });

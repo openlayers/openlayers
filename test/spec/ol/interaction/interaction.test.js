@@ -4,9 +4,7 @@ goog.require('ol.events.EventTarget');
 goog.require('ol.Map');
 goog.require('ol.interaction.Interaction');
 
-
 describe('ol.interaction.Interaction', function() {
-
   describe('constructor', function() {
     var interaction;
 
@@ -22,11 +20,9 @@ describe('ol.interaction.Interaction', function() {
     it('creates an active interaction', function() {
       expect(interaction.getActive()).to.be(true);
     });
-
   });
 
   describe('#getMap()', function() {
-
     it('retrieves the associated map', function() {
       var map = new ol.Map({});
       var interaction = new ol.interaction.Interaction({});
@@ -38,11 +34,9 @@ describe('ol.interaction.Interaction', function() {
       var interaction = new ol.interaction.Interaction({});
       expect(interaction.getMap()).to.be(null);
     });
-
   });
 
   describe('#setMap()', function() {
-
     it('allows a map to be set', function() {
       var map = new ol.Map({});
       var interaction = new ol.interaction.Interaction({});
@@ -55,11 +49,9 @@ describe('ol.interaction.Interaction', function() {
       interaction.setMap(null);
       expect(interaction.getMap()).to.be(null);
     });
-
   });
 
   describe('zoomByDelta()', function() {
-
     it('changes view resolution', function() {
       var view = new ol.View({
         resolution: 1,
@@ -120,5 +112,4 @@ describe('ol.interaction.Interaction', function() {
       expect(view.getCenter()).to.eql([2.5, 2.5]);
     });
   });
-
 });

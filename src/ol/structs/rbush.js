@@ -5,7 +5,6 @@ goog.require('ol.ext.rbush');
 goog.require('ol.extent');
 goog.require('ol.obj');
 
-
 /**
  * Wrapper around the RBush by Vladimir Agafonkin.
  *
@@ -16,7 +15,6 @@ goog.require('ol.obj');
  * @template T
  */
 ol.structs.RBush = function(opt_maxEntries) {
-
   /**
    * @private
    */
@@ -29,9 +27,7 @@ ol.structs.RBush = function(opt_maxEntries) {
    * @type {Object.<number, ol.RBushEntry>}
    */
   this.items_ = {};
-
 };
-
 
 /**
  * Insert a value into the RBush.
@@ -51,7 +47,6 @@ ol.structs.RBush.prototype.insert = function(extent, value) {
   this.rbush_.insert(item);
   this.items_[ol.getUid(value)] = item;
 };
-
 
 /**
  * Bulk-insert values into the RBush.
@@ -78,7 +73,6 @@ ol.structs.RBush.prototype.load = function(extents, values) {
   this.rbush_.load(items);
 };
 
-
 /**
  * Remove a value from the RBush.
  * @param {T} value Value.
@@ -94,7 +88,6 @@ ol.structs.RBush.prototype.remove = function(value) {
   return this.rbush_.remove(item) !== null;
 };
 
-
 /**
  * Update the extent of a value in the RBush.
  * @param {ol.Extent} extent Extent.
@@ -109,7 +102,6 @@ ol.structs.RBush.prototype.update = function(extent, value) {
   }
 };
 
-
 /**
  * Return all values in the RBush.
  * @return {Array.<T>} All.
@@ -120,7 +112,6 @@ ol.structs.RBush.prototype.getAll = function() {
     return item.value;
   });
 };
-
 
 /**
  * Return all values in the given extent.
@@ -141,7 +132,6 @@ ol.structs.RBush.prototype.getInExtent = function(extent) {
   });
 };
 
-
 /**
  * Calls a callback function with each value in the tree.
  * If the callback returns a truthy value, this value is returned without
@@ -155,7 +145,6 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
   return this.forEach_(this.getAll(), callback, opt_this);
 };
 
-
 /**
  * Calls a callback function with each value in the provided extent.
  * @param {ol.Extent} extent Extent.
@@ -164,10 +153,13 @@ ol.structs.RBush.prototype.forEach = function(callback, opt_this) {
  * @return {*} Callback return value.
  * @template S
  */
-ol.structs.RBush.prototype.forEachInExtent = function(extent, callback, opt_this) {
+ol.structs.RBush.prototype.forEachInExtent = function(
+  extent,
+  callback,
+  opt_this
+) {
   return this.forEach_(this.getInExtent(extent), callback, opt_this);
 };
-
 
 /**
  * @param {Array.<T>} values Values.
@@ -188,14 +180,12 @@ ol.structs.RBush.prototype.forEach_ = function(values, callback, opt_this) {
   return result;
 };
 
-
 /**
  * @return {boolean} Is empty.
  */
 ol.structs.RBush.prototype.isEmpty = function() {
   return ol.obj.isEmpty(this.items_);
 };
-
 
 /**
  * Remove all values from the RBush.
@@ -205,7 +195,6 @@ ol.structs.RBush.prototype.clear = function() {
   this.items_ = {};
 };
 
-
 /**
  * @param {ol.Extent=} opt_extent Extent.
  * @return {ol.Extent} Extent.
@@ -213,9 +202,14 @@ ol.structs.RBush.prototype.clear = function() {
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
   var data = this.rbush_.data;
-  return ol.extent.createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
+  return ol.extent.createOrUpdate(
+    data.minX,
+    data.minY,
+    data.maxX,
+    data.maxY,
+    opt_extent
+  );
 };
-
 
 /**
  * @param {ol.structs.RBush} rbush R-Tree.

@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.IsNull');
 goog.require('ol');
 goog.require('ol.format.filter.Comparison');
 
-
 /**
  * @classdesc
  * Represents a `<PropertyIsNull>` comparison operator.

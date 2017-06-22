@@ -10,17 +10,20 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
-    }), new ol.layer.Group({
+    }),
+    new ol.layer.Group({
       layers: [
         new ol.layer.Tile({
           source: new ol.source.TileJSON({
-            url: 'https://api.tiles.mapbox.com/v3/mapbox.20110804-hoa-foodinsecurity-3month.json?secure',
+            url:
+              'https://api.tiles.mapbox.com/v3/mapbox.20110804-hoa-foodinsecurity-3month.json?secure',
             crossOrigin: 'anonymous'
           })
         }),
         new ol.layer.Tile({
           source: new ol.source.TileJSON({
-            url: 'https://api.tiles.mapbox.com/v3/mapbox.world-borders-light.json?secure',
+            url:
+              'https://api.tiles.mapbox.com/v3/mapbox.world-borders-light.json?secure',
             crossOrigin: 'anonymous'
           })
         })
@@ -29,7 +32,7 @@ var map = new ol.Map({
   ],
   target: 'map',
   view: new ol.View({
-    center: ol.proj.fromLonLat([37.40570, 8.81566]),
+    center: ol.proj.fromLonLat([37.4057, 8.81566]),
     zoom: 4
   })
 });
@@ -56,6 +59,9 @@ map.getLayers().forEach(function(layer, i) {
   }
 });
 
-$('#layertree li > span').click(function() {
-  $(this).siblings('fieldset').toggle();
-}).siblings('fieldset').hide();
+$('#layertree li > span')
+  .click(function() {
+    $(this).siblings('fieldset').toggle();
+  })
+  .siblings('fieldset')
+  .hide();

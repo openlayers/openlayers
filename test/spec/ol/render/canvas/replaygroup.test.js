@@ -2,9 +2,7 @@ goog.provide('ol.test.render.canvas.ReplayGroup');
 
 goog.require('ol.render.canvas.ReplayGroup');
 
-
 describe('ol.render.canvas.ReplayGroup', function() {
-
   describe('#getCircleArray_', function() {
     it('creates an array with a pixelated circle marked with true', function() {
       var radius = 10;
@@ -29,5 +27,4 @@ describe('ol.render.canvas.ReplayGroup', function() {
       }
     });
   });
-
 });

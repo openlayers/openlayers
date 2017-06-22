@@ -15,22 +15,22 @@ var generateExports = require('./generate-exports');
 var log = closure.log;
 var root = path.join(__dirname, '..');
 
-var umdWrapper = ';(function (root, factory) {\n' +
-    '  if (typeof exports === "object") {\n' +
-    '    module.exports = factory();\n' +
-    '  } else if (typeof define === "function" && define.amd) {\n' +
-    '    define([], factory);\n' +
-    '  } else {\n' +
-    '    root.ol = factory();\n' +
-    '  }\n' +
-    '}(this, function () {\n' +
-    '  var OPENLAYERS = {};\n' +
-    '  %output%\n' +
-    '  return OPENLAYERS.ol;\n' +
-    '}));\n';
+var umdWrapper =
+  ';(function (root, factory) {\n' +
+  '  if (typeof exports === "object") {\n' +
+  '    module.exports = factory();\n' +
+  '  } else if (typeof define === "function" && define.amd) {\n' +
+  '    define([], factory);\n' +
+  '  } else {\n' +
+  '    root.ol = factory();\n' +
+  '  }\n' +
+  '}(this, function () {\n' +
+  '  var OPENLAYERS = {};\n' +
+  '  %output%\n' +
+  '  return OPENLAYERS.ol;\n' +
+  '}));\n';
 
 var version;
-
 
 /**
  * Apply defaults and assert that a provided config object is valid.
@@ -67,14 +67,13 @@ function assertValidConfig(config, callback) {
           if (!config.compile.define) {
             config.compile.define = [];
           }
-          config.compile.define.push('ol.VERSION=\'' + version + '\'');
+          config.compile.define.push("ol.VERSION='" + version + "'");
         }
       }
     }
     callback(null);
   });
 }
-
 
 /**
  * Read the build configuration file.
@@ -100,7 +99,6 @@ function readConfig(configPath, callback) {
     callback(null, config);
   });
 }
-
 
 /**
  * Write the exports code to a temporary file.
@@ -130,7 +128,6 @@ function writeExports(exports, callback) {
     });
   });
 }
-
 
 /**
  * Get the list of sources sorted in dependency order.
@@ -169,7 +166,6 @@ function getDependencies(config, exports, callback) {
   });
 }
 
-
 /**
  * Concatenate all sources.
  * @param {Array.<string>} paths List of paths to source files.
@@ -183,18 +179,20 @@ function concatenate(paths, callback) {
       callback(new Error(msg));
     } else {
       var parts = umdWrapper.split('%output%');
-      var src = parts[0] +
-          'var goog = this.goog = {};\n' +
-          'this.CLOSURE_NO_DEPS = true;\n' +
-          results.join('\n') +
-          'ol.VERSION = \'' + version + '\';\n' +
-          'OPENLAYERS.ol = ol;\n' +
-          parts[1];
+      var src =
+        parts[0] +
+        'var goog = this.goog = {};\n' +
+        'this.CLOSURE_NO_DEPS = true;\n' +
+        results.join('\n') +
+        "ol.VERSION = '" +
+        version +
+        "';\n" +
+        'OPENLAYERS.ol = ol;\n' +
+        parts[1];
       callback(null, src);
     }
   });
 }
-
 
 /**
  * Run the compiler.
@@ -210,8 +208,10 @@ function build(config, paths, callback) {
     jvm: config.jvm
   };
   if (!options.compile) {
-    log.info('ol', 'No compile options found.  Concatenating ' +
-        paths.length + ' sources');
+    log.info(
+      'ol',
+      'No compile options found.  Concatenating ' + paths.length + ' sources'
+    );
     concatenate(paths, callback);
   } else {
     log.info('ol', 'Compiling ' + paths.length + ' sources');
@@ -220,7 +220,6 @@ function build(config, paths, callback) {
     closure.compile(options, callback);
   }
 }
-
 
 /**
  * Gets the version from the Git tag.
@@ -234,7 +233,6 @@ function getVersion(callback) {
   });
 }
 
-
 /**
  * Adds a file header with the most recent Git tag.
  * @param {string} compiledSource The compiled library.
@@ -243,14 +241,14 @@ function getVersion(callback) {
  */
 function addHeader(compiledSource, callback) {
   var header = '// OpenLayers. See https://openlayers.org/\n';
-  header += '// License: https://raw.githubusercontent.com/openlayers/' +
-      'openlayers/master/LICENSE.md\n';
+  header +=
+    '// License: https://raw.githubusercontent.com/openlayers/' +
+    'openlayers/master/LICENSE.md\n';
   if (version !== '') {
     header += '// Version: ' + version + '\n';
   }
   callback(null, header + compiledSource);
 }
-
 
 /**
  * Generate a build of the library.
@@ -260,41 +258,45 @@ function addHeader(compiledSource, callback) {
  *     or any error.
  */
 function main(config, callback) {
-  async.waterfall([
-    getVersion,
-    assertValidConfig.bind(null, config),
-    generateExports.bind(null, config),
-    getDependencies.bind(null, config),
-    build.bind(null, config),
-    addHeader
-  ], callback);
+  async.waterfall(
+    [
+      getVersion,
+      assertValidConfig.bind(null, config),
+      generateExports.bind(null, config),
+      getDependencies.bind(null, config),
+      build.bind(null, config),
+      addHeader
+    ],
+    callback
+  );
 }
-
 
 /**
  * If running this module directly, read the config file and call the main
  * function.
  */
 if (require.main === module) {
-  var options = nomnom.options({
-    config: {
-      position: 0,
-      required: true,
-      help: 'Path to JSON config file'
-    },
-    output: {
-      position: 1,
-      required: true,
-      help: 'Output file path'
-    },
-    loglevel: {
-      abbr: 'l',
-      choices: ['silly', 'verbose', 'info', 'warn', 'error'],
-      default: 'info',
-      help: 'Log level',
-      metavar: 'LEVEL'
-    }
-  }).parse();
+  var options = nomnom
+    .options({
+      config: {
+        position: 0,
+        required: true,
+        help: 'Path to JSON config file'
+      },
+      output: {
+        position: 1,
+        required: true,
+        help: 'Output file path'
+      },
+      loglevel: {
+        abbr: 'l',
+        choices: ['silly', 'verbose', 'info', 'warn', 'error'],
+        default: 'info',
+        help: 'Log level',
+        metavar: 'LEVEL'
+      }
+    })
+    .parse();
 
   /**
    * Set the log level.
@@ -303,20 +305,22 @@ if (require.main === module) {
   log.level = options.loglevel;
 
   // read the config, run the main function, and write the output file
-  async.waterfall([
-    readConfig.bind(null, options.config),
-    main,
-    fs.outputFile.bind(fs, options.output)
-  ], function(err) {
-    if (err) {
-      log.error(err.message);
-      process.exit(1);
-    } else {
-      process.exit(0);
+  async.waterfall(
+    [
+      readConfig.bind(null, options.config),
+      main,
+      fs.outputFile.bind(fs, options.output)
+    ],
+    function(err) {
+      if (err) {
+        log.error(err.message);
+        process.exit(1);
+      } else {
+        process.exit(0);
+      }
     }
-  });
+  );
 }
-
 
 /**
  * Export main function.

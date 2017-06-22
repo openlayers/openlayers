@@ -6,7 +6,6 @@ goog.require('ol.Object');
 goog.require('ol.proj');
 goog.require('ol.source.State');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -22,7 +21,6 @@ goog.require('ol.source.State');
  * @api
  */
 ol.source.Source = function(options) {
-
   ol.Object.call(this);
 
   /**
@@ -35,7 +33,9 @@ ol.source.Source = function(options) {
    * @private
    * @type {Array.<ol.Attribution>}
    */
-  this.attributions_ = ol.source.Source.toAttributionsArray_(options.attributions);
+  this.attributions_ = ol.source.Source.toAttributionsArray_(
+    options.attributions
+  );
 
   /**
    * @private
@@ -47,15 +47,15 @@ ol.source.Source = function(options) {
    * @private
    * @type {ol.source.State}
    */
-  this.state_ = options.state !== undefined ?
-      options.state : ol.source.State.READY;
+  this.state_ = options.state !== undefined
+    ? options.state
+    : ol.source.State.READY;
 
   /**
    * @private
    * @type {boolean}
    */
   this.wrapX_ = options.wrapX !== undefined ? options.wrapX : false;
-
 };
 ol.inherits(ol.source.Source, ol.Object);
 
@@ -90,7 +90,6 @@ ol.source.Source.toAttributionsArray_ = function(attributionLike) {
   }
 };
 
-
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
  * @param {number} resolution Resolution.
@@ -104,7 +103,6 @@ ol.source.Source.toAttributionsArray_ = function(attributionLike) {
  */
 ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 
-
 /**
  * Get the attributions of the source.
  * @return {Array.<ol.Attribution>} Attributions.
@@ -113,7 +111,6 @@ ol.source.Source.prototype.forEachFeatureAtCoordinate = ol.nullFunction;
 ol.source.Source.prototype.getAttributions = function() {
   return this.attributions_;
 };
-
 
 /**
  * Get the logo of the source.
@@ -124,7 +121,6 @@ ol.source.Source.prototype.getLogo = function() {
   return this.logo_;
 };
 
-
 /**
  * Get the projection of the source.
  * @return {ol.proj.Projection} Projection.
@@ -134,13 +130,11 @@ ol.source.Source.prototype.getProjection = function() {
   return this.projection_;
 };
 
-
 /**
  * @abstract
  * @return {Array.<number>|undefined} Resolutions.
  */
 ol.source.Source.prototype.getResolutions = function() {};
-
 
 /**
  * Get the state of the source, see {@link ol.source.State} for possible states.
@@ -151,14 +145,12 @@ ol.source.Source.prototype.getState = function() {
   return this.state_;
 };
 
-
 /**
  * @return {boolean|undefined} Wrap X.
  */
 ol.source.Source.prototype.getWrapX = function() {
   return this.wrapX_;
 };
-
 
 /**
  * Refreshes the source and finally dispatches a 'change' event.
@@ -167,7 +159,6 @@ ol.source.Source.prototype.getWrapX = function() {
 ol.source.Source.prototype.refresh = function() {
   this.changed();
 };
-
 
 /**
  * Set the attributions of the source.
@@ -181,7 +172,6 @@ ol.source.Source.prototype.setAttributions = function(attributions) {
   this.changed();
 };
 
-
 /**
  * Set the logo of the source.
  * @param {string|olx.LogoOptions|undefined} logo Logo.
@@ -189,7 +179,6 @@ ol.source.Source.prototype.setAttributions = function(attributions) {
 ol.source.Source.prototype.setLogo = function(logo) {
   this.logo_ = logo;
 };
-
 
 /**
  * Set the state of the source.

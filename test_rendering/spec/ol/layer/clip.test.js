@@ -8,9 +8,7 @@ goog.require('ol.source.XYZ');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 describe('layer clipping', function() {
-
   function onLoad(source, callback) {
     var loading = 0;
     var loaded = 0;
@@ -35,9 +33,7 @@ describe('layer clipping', function() {
     });
   }
 
-
   describe('MultiPolygon clipping', function() {
-
     var map = null;
     beforeEach(function() {
       map = new ol.Map({
@@ -55,7 +51,6 @@ describe('layer clipping', function() {
     });
 
     it('clips to all parts of the MultiPolygon', function(done) {
-
       var source = new ol.source.XYZ({
         url: 'spec/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
@@ -100,11 +95,15 @@ describe('layer clipping', function() {
         if (err) {
           return done(err);
         }
-        expectResemble(map, 'spec/ol/layer/expected/multipolygon-clip.png', IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/multipolygon-clip.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
 
       map.addLayer(layer);
-
     });
   });
 });

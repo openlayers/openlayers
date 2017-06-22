@@ -7,36 +7,40 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
-
-var iconInfo = [{
-  offset: [0, 0],
-  opacity: 1.0,
-  rotateWithView: true,
-  rotation: 0.0,
-  scale: 1.0,
-  size: [55, 55]
-}, {
-  offset: [110, 86],
-  opacity: 0.75,
-  rotateWithView: false,
-  rotation: Math.PI / 2.0,
-  scale: 1.25,
-  size: [55, 55]
-}, {
-  offset: [55, 0],
-  opacity: 0.5,
-  rotateWithView: true,
-  rotation: Math.PI / 3.0,
-  scale: 1.5,
-  size: [55, 86]
-}, {
-  offset: [212, 0],
-  opacity: 1.0,
-  rotateWithView: true,
-  rotation: 0.0,
-  scale: 1.0,
-  size: [44, 44]
-}];
+var iconInfo = [
+  {
+    offset: [0, 0],
+    opacity: 1.0,
+    rotateWithView: true,
+    rotation: 0.0,
+    scale: 1.0,
+    size: [55, 55]
+  },
+  {
+    offset: [110, 86],
+    opacity: 0.75,
+    rotateWithView: false,
+    rotation: Math.PI / 2.0,
+    scale: 1.25,
+    size: [55, 55]
+  },
+  {
+    offset: [55, 0],
+    opacity: 0.5,
+    rotateWithView: true,
+    rotation: Math.PI / 3.0,
+    scale: 1.5,
+    size: [55, 86]
+  },
+  {
+    offset: [212, 0],
+    opacity: 1.0,
+    rotateWithView: true,
+    rotation: 0.0,
+    scale: 1.0,
+    size: [44, 44]
+  }
+];
 
 var i;
 
@@ -61,13 +65,15 @@ var features = new Array(featureCount);
 var feature, geometry;
 var e = 25000000;
 for (i = 0; i < featureCount; ++i) {
-  geometry = new ol.geom.Point(
-      [2 * e * Math.random() - e, 2 * e * Math.random() - e]);
+  geometry = new ol.geom.Point([
+    2 * e * Math.random() - e,
+    2 * e * Math.random() - e
+  ]);
   feature = new ol.Feature(geometry);
   feature.setStyle(
-      new ol.style.Style({
-        image: icons[i % (iconCount - 1)]
-      })
+    new ol.style.Style({
+      image: icons[i % (iconCount - 1)]
+    })
   );
   features[i] = feature;
 }
@@ -80,7 +86,7 @@ var vector = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
-  renderer: /** @type {ol.renderer.Type} */ ('webgl'),
+  renderer /** @type {ol.renderer.Type} */: 'webgl',
   layers: [vector],
   target: document.getElementById('map'),
   view: new ol.View({
@@ -109,7 +115,7 @@ new ol.layer.Vector({
 map.on('click', function(evt) {
   var info = document.getElementById('info');
   info.innerHTML =
-      'Hold on a second, while I catch those butterflies for you ...';
+    'Hold on a second, while I catch those butterflies for you ...';
 
   window.setTimeout(function() {
     var features = [];
@@ -123,7 +129,7 @@ map.on('click', function(evt) {
     } else if (features.length > 1) {
       info.innerHTML = 'Got ' + features.length + ' butterflies';
     } else {
-      info.innerHTML = 'Couldn\'t catch a single butterfly';
+      info.innerHTML = "Couldn't catch a single butterfly";
     }
   }, 1);
 });

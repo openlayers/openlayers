@@ -1,6 +1,5 @@
 goog.provide('ol.size');
 
-
 /**
  * Returns a buffered size.
  * @param {ol.Size} size Size.
@@ -17,7 +16,6 @@ ol.size.buffer = function(size, buffer, opt_size) {
   return opt_size;
 };
 
-
 /**
  * Determines if a size has a positive area.
  * @param {ol.Size} size The size to test.
@@ -26,7 +24,6 @@ ol.size.buffer = function(size, buffer, opt_size) {
 ol.size.hasArea = function(size) {
   return size[0] > 0 && size[1] > 0;
 };
-
 
 /**
  * Returns a size scaled by a ratio. The result will be an array of integers.
@@ -44,7 +41,6 @@ ol.size.scale = function(size, ratio, opt_size) {
   return opt_size;
 };
 
-
 /**
  * Returns an `ol.Size` array for the passed in number (meaning: square) or
  * `ol.Size` array.
@@ -61,7 +57,7 @@ ol.size.toSize = function(size, opt_size) {
     if (opt_size === undefined) {
       opt_size = [size, size];
     } else {
-      opt_size[0] = opt_size[1] = /** @type {number} */ (size);
+      opt_size[0] = opt_size[1] /** @type {number} */ = size;
     }
     return opt_size;
   }

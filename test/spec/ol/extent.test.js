@@ -3,20 +3,15 @@ goog.provide('ol.test.extent');
 goog.require('ol.extent');
 goog.require('ol.proj');
 
-
 describe('ol.extent', function() {
-
   describe('buffer', function() {
-
     it('buffers an extent by some value', function() {
       var extent = [-10, -20, 10, 20];
       expect(ol.extent.buffer(extent, 15)).to.eql([-25, -35, 25, 35]);
     });
-
   });
 
   describe('clone', function() {
-
     it('creates a copy of an extent', function() {
       var extent = ol.extent.createOrUpdate(1, 2, 3, 4);
       var clone = ol.extent.clone(extent);
@@ -25,11 +20,9 @@ describe('ol.extent', function() {
       ol.extent.extendCoordinate(extent, [10, 20]);
       expect(ol.extent.equals(extent, clone)).to.be(false);
     });
-
   });
 
   describe('closestSquaredDistanceXY', function() {
-
     it('returns correct result when x left of extent', function() {
       var extent = ol.extent.createOrUpdate(0, 0, 1, 1);
       var x = -2;
@@ -71,11 +64,9 @@ describe('ol.extent', function() {
       var y = 0.5;
       expect(ol.extent.closestSquaredDistanceXY(extent, x, y)).to.be(4);
     });
-
   });
 
   describe('createOrUpdateFromCoordinate', function() {
-
     it('works when no extent passed', function() {
       var coords = [0, 1];
       var expected = [0, 1, 0, 1];
@@ -90,11 +81,9 @@ describe('ol.extent', function() {
       ol.extent.createOrUpdateFromCoordinate(coords, extent);
       expect(extent).to.eql(expected);
     });
-
   });
 
   describe('createOrUpdateFromCoordinates', function() {
-
     it('works when single coordinate and no extent passed', function() {
       var coords = [[0, 1]];
       var expected = [0, 1, 0, 1];
@@ -124,11 +113,9 @@ describe('ol.extent', function() {
       ol.extent.createOrUpdateFromCoordinates(coords, extent);
       expect(extent).to.eql(expected);
     });
-
   });
 
   describe('createOrUpdateFromRings', function() {
-
     it('works when single ring and no extent passed', function() {
       var ring = [[0, 0], [0, 2], [2, 2], [2, 0], [0, 0]];
       var rings = [ring];
@@ -164,11 +151,9 @@ describe('ol.extent', function() {
       ol.extent.createOrUpdateFromRings(rings, extent);
       expect(extent).to.eql(expected);
     });
-
   });
 
   describe('forEachCorner', function() {
-
     var callbackFalse;
     var callbackTrue;
     beforeEach(function() {
@@ -208,16 +193,16 @@ describe('ol.extent', function() {
     it('ensures that any corner can cancel the callback execution', function() {
       var extent = [1, 2, 3, 4];
       var bottomLeftSpy = sinon.spy(function(corner) {
-        return (corner[0] === 1 && corner[1] === 2) ? true : false;
+        return corner[0] === 1 && corner[1] === 2 ? true : false;
       });
       var bottomRightSpy = sinon.spy(function(corner) {
-        return (corner[0] === 3 && corner[1] === 2) ? true : false;
+        return corner[0] === 3 && corner[1] === 2 ? true : false;
       });
       var topRightSpy = sinon.spy(function(corner) {
-        return (corner[0] === 3 && corner[1] === 4) ? true : false;
+        return corner[0] === 3 && corner[1] === 4 ? true : false;
       });
       var topLeftSpy = sinon.spy(function(corner) {
-        return (corner[0] === 1 && corner[1] === 4) ? true : false;
+        return corner[0] === 1 && corner[1] === 4 ? true : false;
       });
 
       ol.extent.forEachCorner(extent, bottomLeftSpy);
@@ -231,15 +216,13 @@ describe('ol.extent', function() {
       expect(topLeftSpy.callCount).to.be(4);
     });
 
-    it('returns false eventually, if no invocation returned a truthy value',
-        function() {
-          var extent = [1, 2, 3, 4];
-          var spy = sinon.spy(); // will return undefined for each corner
-          var got = ol.extent.forEachCorner(extent, spy);
-          expect(spy.callCount).to.be(4);
-          expect(got).to.be(false);
-        }
-    );
+    it('returns false eventually, if no invocation returned a truthy value', function() {
+      var extent = [1, 2, 3, 4];
+      var spy = sinon.spy(); // will return undefined for each corner
+      var got = ol.extent.forEachCorner(extent, spy);
+      expect(spy.callCount).to.be(4);
+      expect(got).to.be(false);
+    });
 
     it('calls the callback with given scope', function() {
       var extent = [1, 2, 3, 4];
@@ -247,7 +230,6 @@ describe('ol.extent', function() {
       ol.extent.forEachCorner(extent, callbackTrue, scope);
       expect(callbackTrue.calledOn(scope)).to.be(true);
     });
-
   });
 
   describe('getArea', function() {
@@ -296,7 +278,6 @@ describe('ol.extent', function() {
   });
 
   describe('containsCoordinate', function() {
-
     describe('positive', function() {
       it('returns true', function() {
         var extent = [1, 2, 3, 4];
@@ -336,7 +317,6 @@ describe('ol.extent', function() {
   });
 
   describe('coordinateRelationship()', function() {
-
     var extent = [-180, -90, 180, 90];
     var INTERSECTING = 1;
     var ABOVE = 2;
@@ -412,7 +392,6 @@ describe('ol.extent', function() {
       expect(rel & ABOVE).to.be(ABOVE);
       expect(rel & LEFT).to.be(LEFT);
     });
-
   });
 
   describe('getCenter', function() {
@@ -458,7 +437,6 @@ describe('ol.extent', function() {
         ol.extent.getCorner(extent, 'foobar');
       }).to.throwException();
     });
-
   });
 
   describe('getEnlargedArea', function() {
@@ -471,10 +449,8 @@ describe('ol.extent', function() {
   });
 
   describe('getForViewAndSize', function() {
-
     it('works for a unit square', function() {
-      var extent = ol.extent.getForViewAndSize(
-          [0, 0], 1, 0, [1, 1]);
+      var extent = ol.extent.getForViewAndSize([0, 0], 1, 0, [1, 1]);
       expect(extent[0]).to.be(-0.5);
       expect(extent[2]).to.be(0.5);
       expect(extent[1]).to.be(-0.5);
@@ -482,8 +458,7 @@ describe('ol.extent', function() {
     });
 
     it('works for center', function() {
-      var extent = ol.extent.getForViewAndSize(
-          [5, 10], 1, 0, [1, 1]);
+      var extent = ol.extent.getForViewAndSize([5, 10], 1, 0, [1, 1]);
       expect(extent[0]).to.be(4.5);
       expect(extent[2]).to.be(5.5);
       expect(extent[1]).to.be(9.5);
@@ -491,8 +466,7 @@ describe('ol.extent', function() {
     });
 
     it('works for rotation', function() {
-      var extent = ol.extent.getForViewAndSize(
-          [0, 0], 1, Math.PI / 4, [1, 1]);
+      var extent = ol.extent.getForViewAndSize([0, 0], 1, Math.PI / 4, [1, 1]);
       expect(extent[0]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
       expect(extent[2]).to.roughlyEqual(Math.sqrt(0.5), 1e-9);
       expect(extent[1]).to.roughlyEqual(-Math.sqrt(0.5), 1e-9);
@@ -500,8 +474,7 @@ describe('ol.extent', function() {
     });
 
     it('works for resolution', function() {
-      var extent = ol.extent.getForViewAndSize(
-          [0, 0], 2, 0, [1, 1]);
+      var extent = ol.extent.getForViewAndSize([0, 0], 2, 0, [1, 1]);
       expect(extent[0]).to.be(-1);
       expect(extent[2]).to.be(1);
       expect(extent[1]).to.be(-1);
@@ -509,14 +482,12 @@ describe('ol.extent', function() {
     });
 
     it('works for size', function() {
-      var extent = ol.extent.getForViewAndSize(
-          [0, 0], 1, 0, [10, 5]);
+      var extent = ol.extent.getForViewAndSize([0, 0], 1, 0, [10, 5]);
       expect(extent[0]).to.be(-5);
       expect(extent[2]).to.be(5);
       expect(extent[1]).to.be(-2.5);
       expect(extent[3]).to.be(2.5);
     });
-
   });
 
   describe('getSize', function() {
@@ -550,7 +521,6 @@ describe('ol.extent', function() {
   });
 
   describe('intersects', function() {
-
     it('returns the expected value', function() {
       var intersects = ol.extent.intersects;
       var extent = [50, 50, 100, 100];
@@ -596,7 +566,6 @@ describe('ol.extent', function() {
   });
 
   describe('intersectsSegment()', function() {
-
     var extent = [-180, -90, 180, 90];
     var north = [0, 100];
     var northeast = [190, 100];
@@ -733,21 +702,20 @@ describe('ol.extent', function() {
       expect(ol.extent.intersectsSegment(extent, start, end)).to.be(true);
       expect(ol.extent.intersectsSegment(extent, end, start)).to.be(true);
     });
-
   });
 
   describe('#applyTransform()', function() {
-
     it('does transform', function() {
       var transformFn = ol.proj.getTransform('EPSG:4326', 'EPSG:3857');
       var sourceExtent = [-15, -30, 45, 60];
       var destinationExtent = ol.extent.applyTransform(
-          sourceExtent, transformFn);
+        sourceExtent,
+        transformFn
+      );
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
       // FIXME check values with third-party tool
-      expect(destinationExtent[0])
-          .to.roughlyEqual(-1669792.3618991037, 1e-9);
+      expect(destinationExtent[0]).to.roughlyEqual(-1669792.3618991037, 1e-9);
       expect(destinationExtent[2]).to.roughlyEqual(5009377.085697311, 1e-9);
       expect(destinationExtent[1]).to.roughlyEqual(-3503549.843504376, 1e-8);
       expect(destinationExtent[3]).to.roughlyEqual(8399737.889818361, 1e-8);
@@ -769,7 +737,9 @@ describe('ol.extent', function() {
       };
       var sourceExtent = [-15, -30, 45, 60];
       var destinationExtent = ol.extent.applyTransform(
-          sourceExtent, transformFn);
+        sourceExtent,
+        transformFn
+      );
       expect(destinationExtent).not.to.be(undefined);
       expect(destinationExtent).not.to.be(null);
       expect(destinationExtent[0]).to.be(-45);
@@ -777,7 +747,5 @@ describe('ol.extent', function() {
       expect(destinationExtent[1]).to.be(-60);
       expect(destinationExtent[3]).to.be(30);
     });
-
   });
-
 });

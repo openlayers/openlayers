@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.Or');
 goog.require('ol');
 goog.require('ol.format.filter.LogicalNary');
 
-
 /**
  * @classdesc
  * Represents a logical `<Or>` operator between two ore more filter conditions.

@@ -5,7 +5,6 @@ goog.require('ol.ImageCanvas');
 goog.require('ol.extent');
 goog.require('ol.source.Image');
 
-
 /**
  * @classdesc
  * Base class for image sources where a canvas element is the image.
@@ -16,7 +15,6 @@ goog.require('ol.source.Image');
  * @api
  */
 ol.source.ImageCanvas = function(options) {
-
   ol.source.Image.call(this, {
     attributions: options.attributions,
     logo: options.logo,
@@ -47,25 +45,29 @@ ol.source.ImageCanvas = function(options) {
    * @private
    * @type {number}
    */
-  this.ratio_ = options.ratio !== undefined ?
-      options.ratio : 1.5;
-
+  this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 };
 ol.inherits(ol.source.ImageCanvas, ol.source.Image);
-
 
 /**
  * @inheritDoc
  */
-ol.source.ImageCanvas.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageCanvas.prototype.getImageInternal = function(
+  extent,
+  resolution,
+  pixelRatio,
+  projection
+) {
   resolution = this.findNearestResolution(resolution);
 
   var canvas = this.canvas_;
-  if (canvas &&
-      this.renderedRevision_ == this.getRevision() &&
-      canvas.getResolution() == resolution &&
-      canvas.getPixelRatio() == pixelRatio &&
-      ol.extent.containsExtent(canvas.getExtent(), extent)) {
+  if (
+    canvas &&
+    this.renderedRevision_ == this.getRevision() &&
+    canvas.getResolution() == resolution &&
+    canvas.getPixelRatio() == pixelRatio &&
+    ol.extent.containsExtent(canvas.getExtent(), extent)
+  ) {
     return canvas;
   }
 
@@ -76,10 +78,20 @@ ol.source.ImageCanvas.prototype.getImageInternal = function(extent, resolution, 
   var size = [width * pixelRatio, height * pixelRatio];
 
   var canvasElement = this.canvasFunction_(
-      extent, resolution, pixelRatio, size, projection);
+    extent,
+    resolution,
+    pixelRatio,
+    size,
+    projection
+  );
   if (canvasElement) {
-    canvas = new ol.ImageCanvas(extent, resolution, pixelRatio,
-        this.getAttributions(), canvasElement);
+    canvas = new ol.ImageCanvas(
+      extent,
+      resolution,
+      pixelRatio,
+      this.getAttributions(),
+      canvasElement
+    );
   }
   this.canvas_ = canvas;
   this.renderedRevision_ = this.getRevision();

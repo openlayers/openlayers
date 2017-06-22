@@ -33,27 +33,49 @@ describe('ol.render.webgl.PolygonReplay', function() {
     });
 
     it('sets the buffer data', function() {
-      var polygon1 = new ol.geom.Polygon(
-          [[[1000, 2000], [1200, 2000], [1200, 3000]]]
-          );
+      var polygon1 = new ol.geom.Polygon([
+        [[1000, 2000], [1200, 2000], [1200, 3000]]
+      ]);
       replay.drawPolygon(polygon1, null);
       expect(replay.vertices).to.have.length(8);
       expect(replay.indices).to.have.length(3);
 
       expect(replay.vertices).to.eql([
-        1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000]);
+        1000,
+        2000,
+        1200,
+        3000,
+        1200,
+        2000,
+        1000,
+        2000
+      ]);
       expect(replay.indices).to.eql([2, 0, 1]);
 
-      var polygon2 = new ol.geom.Polygon(
-          [[[4000, 2000], [4200, 2000], [4200, 3000]]]
-          );
+      var polygon2 = new ol.geom.Polygon([
+        [[4000, 2000], [4200, 2000], [4200, 3000]]
+      ]);
       replay.drawPolygon(polygon2, null);
       expect(replay.vertices).to.have.length(16);
       expect(replay.indices).to.have.length(6);
 
       expect(replay.vertices).to.eql([
-        1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000,
-        4000, 2000, 4200, 3000, 4200, 2000, 4000, 2000
+        1000,
+        2000,
+        1200,
+        3000,
+        1200,
+        2000,
+        1000,
+        2000,
+        4000,
+        2000,
+        4200,
+        3000,
+        4200,
+        2000,
+        4000,
+        2000
       ]);
       expect(replay.indices).to.eql([2, 0, 1, 6, 4, 5]);
     });
@@ -74,8 +96,22 @@ describe('ol.render.webgl.PolygonReplay', function() {
       expect(replay.indices).to.have.length(6);
 
       expect(replay.vertices).to.eql([
-        1000, 2000, 1200, 3000, 1200, 2000, 1000, 2000,
-        4000, 2000, 4200, 3000, 4200, 2000, 4000, 2000
+        1000,
+        2000,
+        1200,
+        3000,
+        1200,
+        2000,
+        1000,
+        2000,
+        4000,
+        2000,
+        4200,
+        3000,
+        4200,
+        2000,
+        4000,
+        2000
       ]);
       expect(replay.indices).to.eql([2, 0, 1, 6, 4, 5]);
     });
@@ -135,10 +171,8 @@ describe('ol.render.webgl.PolygonReplay', function() {
       var s0, s1;
       beforeEach(function() {
         var p = replay.createPoint_(2, 2, 2);
-        s0 = replay.insertItem_(replay.createPoint_(1, 1, 1),
-            p, list, rtree);
-        s1 = replay.insertItem_(p,
-            replay.createPoint_(5, 2, 3), list, rtree);
+        s0 = replay.insertItem_(replay.createPoint_(1, 1, 1), p, list, rtree);
+        s1 = replay.insertItem_(p, replay.createPoint_(5, 2, 3), list, rtree);
       });
 
       it('removes the current item', function() {
@@ -170,14 +204,23 @@ describe('ol.render.webgl.PolygonReplay', function() {
       });
 
       it('gets every point in a triangle', function() {
-        var points = replay.getPointsInTriangle_({x: -3, y: 6}, {x: 7, y: 6},
-            {x: 2, y: 2}, rtree);
+        var points = replay.getPointsInTriangle_(
+          {x: -3, y: 6},
+          {x: 7, y: 6},
+          {x: 2, y: 2},
+          rtree
+        );
         expect(points).to.eql([p1, p2, p3]);
       });
 
       it('gets only reflex points in a triangle', function() {
-        var points = replay.getPointsInTriangle_({x: -3, y: 6}, {x: 7, y: 6},
-            {x: 2, y: 2}, rtree, true);
+        var points = replay.getPointsInTriangle_(
+          {x: -3, y: 6},
+          {x: 7, y: 6},
+          {x: 2, y: 2},
+          rtree,
+          true
+        );
         expect(points).to.eql([p2]);
       });
     });
@@ -196,14 +239,19 @@ describe('ol.render.webgl.PolygonReplay', function() {
       });
 
       it('gets intersecting, but non touching segments', function() {
-        var segments = replay.getIntersections_({p0: {x: 0, y: 3}, p1: {x: 4, y: 5}},
-            rtree);
+        var segments = replay.getIntersections_(
+          {p0: {x: 0, y: 3}, p1: {x: 4, y: 5}},
+          rtree
+        );
         expect(segments).to.eql([s0, s1]);
       });
 
       it('gets intersecting and touching segments', function() {
-        var segments = replay.getIntersections_({p0: {x: 0, y: 3}, p1: {x: 4, y: 5}},
-            rtree, true);
+        var segments = replay.getIntersections_(
+          {p0: {x: 0, y: 3}, p1: {x: 4, y: 5}},
+          rtree,
+          true
+        );
         expect(segments).to.eql([s0, s1, s2, s3]);
       });
     });
@@ -339,7 +387,8 @@ describe('ol.render.webgl.PolygonReplay', function() {
     it('returns the locations used by the shaders', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          ol.render.webgl.polygonreplay.defaultshader.Locations);
+        ol.render.webgl.polygonreplay.defaultshader.Locations
+      );
     });
 
     it('gets and compiles the shaders', function() {
@@ -347,9 +396,12 @@ describe('ol.render.webgl.PolygonReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
+      expect(
+        context.getProgram.calledWithExactly(
           ol.render.webgl.polygonreplay.defaultshader.fragment,
-          ol.render.webgl.polygonreplay.defaultshader.vertex)).to.be(true);
+          ol.render.webgl.polygonreplay.defaultshader.vertex
+        )
+      ).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -359,9 +411,12 @@ describe('ol.render.webgl.PolygonReplay', function() {
       sinon.spy(gl, 'enableVertexAttribArray');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
+      expect(gl.vertexAttribPointer.callCount).to.be(
+        gl.getAttribLocation.callCount
+      );
       expect(gl.enableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount
+      );
     });
   });
 
@@ -390,7 +445,8 @@ describe('ol.render.webgl.PolygonReplay', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       replay.shutDownProgram(gl, locations);
       expect(gl.disableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount
+      );
     });
   });
 

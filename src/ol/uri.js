@@ -1,6 +1,5 @@
 goog.provide('ol.uri');
 
-
 /**
  * Appends query parameters to a URI.
  *

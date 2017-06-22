@@ -8,13 +8,12 @@ goog.require('ol.proj');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
-
 var map = new ol.Map({
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     zoom: 5,
@@ -50,11 +49,14 @@ var ign_source = new ol.source.WMTS({
   projection: 'EPSG:3857',
   tileGrid: tileGrid,
   style: 'normal',
-  attributions: [new ol.Attribution({
-    html: '<a href="http://www.geoportail.fr/" target="_blank">' +
-        '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
-        'theme/geoportal/img/logo_gp.gif"></a>'
-  })]
+  attributions: [
+    new ol.Attribution({
+      html:
+        '<a href="http://www.geoportail.fr/" target="_blank">' +
+          '<img src="https://api.ign.fr/geoportail/api/js/latest/' +
+          'theme/geoportal/img/logo_gp.gif"></a>'
+    })
+  ]
 });
 
 var ign = new ol.layer.Tile({

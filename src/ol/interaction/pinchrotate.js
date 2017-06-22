@@ -7,7 +7,6 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.RotationConstraint');
 
-
 /**
  * @classdesc
  * Allows the user to rotate the map by twisting with two fingers
@@ -19,7 +18,6 @@ goog.require('ol.RotationConstraint');
  * @api
  */
 ol.interaction.PinchRotate = function(opt_options) {
-
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.PinchRotate.handleDownEvent_,
     handleDragEvent: ol.interaction.PinchRotate.handleDragEvent_,
@@ -63,10 +61,8 @@ ol.interaction.PinchRotate = function(opt_options) {
    * @type {number}
    */
   this.duration_ = options.duration !== undefined ? options.duration : 250;
-
 };
 ol.inherits(ol.interaction.PinchRotate, ol.interaction.Pointer);
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -81,14 +77,14 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
 
   // angle between touches
   var angle = Math.atan2(
-      touch1.clientY - touch0.clientY,
-      touch1.clientX - touch0.clientX);
+    touch1.clientY - touch0.clientY,
+    touch1.clientX - touch0.clientX
+  );
 
   if (this.lastAngle_ !== undefined) {
     var delta = angle - this.lastAngle_;
     this.rotationDelta_ += delta;
-    if (!this.rotating_ &&
-        Math.abs(this.rotationDelta_) > this.threshold_) {
+    if (!this.rotating_ && Math.abs(this.rotationDelta_) > this.threshold_) {
       this.rotating_ = true;
     }
     rotationDelta = delta;
@@ -114,11 +110,13 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   if (this.rotating_) {
     var rotation = view.getRotation();
     map.render();
-    ol.interaction.Interaction.rotateWithoutConstraints(view,
-        rotation + rotationDelta, this.anchor_);
+    ol.interaction.Interaction.rotateWithoutConstraints(
+      view,
+      rotation + rotationDelta,
+      this.anchor_
+    );
   }
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -134,14 +132,17 @@ ol.interaction.PinchRotate.handleUpEvent_ = function(mapBrowserEvent) {
     if (this.rotating_) {
       var rotation = view.getRotation();
       ol.interaction.Interaction.rotate(
-          view, rotation, this.anchor_, this.duration_);
+        view,
+        rotation,
+        this.anchor_,
+        this.duration_
+      );
     }
     return false;
   } else {
     return true;
   }
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -164,7 +165,6 @@ ol.interaction.PinchRotate.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
-
 
 /**
  * @inheritDoc

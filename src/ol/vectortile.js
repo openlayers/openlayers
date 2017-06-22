@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
 
-
 /**
  * @constructor
  * @extends {ol.Tile}
@@ -15,7 +14,6 @@ goog.require('ol.TileState');
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  */
 ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
-
   ol.Tile.call(this, tileCoord, state);
 
   /**
@@ -61,10 +59,8 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
    * @type {string}
    */
   this.url_ = src;
-
 };
 ol.inherits(ol.VectorTile, ol.Tile);
-
 
 /**
  * @inheritDoc
@@ -77,7 +73,6 @@ ol.VectorTile.prototype.disposeInternal = function() {
   ol.Tile.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * Get the feature format assigned for reading this tile's features.
  * @return {ol.format.Feature} Feature format.
@@ -86,7 +81,6 @@ ol.VectorTile.prototype.disposeInternal = function() {
 ol.VectorTile.prototype.getFormat = function() {
   return this.format_;
 };
-
 
 /**
  * Get the features for this tile. Geometries will be in the projection returned
@@ -98,14 +92,12 @@ ol.VectorTile.prototype.getFeatures = function() {
   return this.features_;
 };
 
-
 /**
  * @inheritDoc
  */
 ol.VectorTile.prototype.getKey = function() {
   return this.url_;
 };
-
 
 /**
  * Get the feature projection of features returned by {@link #getFeatures}.
@@ -116,11 +108,9 @@ ol.VectorTile.prototype.getProjection = function() {
   return this.projection_;
 };
 
-
 ol.VectorTile.prototype.getReplayGroup = function(key) {
   return this.replayGroups_[key];
 };
-
 
 /**
  * @inheritDoc
@@ -133,7 +123,6 @@ ol.VectorTile.prototype.load = function() {
   }
 };
 
-
 /**
  * Handler for successful tile load.
  * @param {Array.<ol.Feature>} features The loaded features.
@@ -144,14 +133,12 @@ ol.VectorTile.prototype.onLoad_ = function(features, dataProjection) {
   this.setFeatures(features);
 };
 
-
 /**
  * Handler for tile load errors.
  */
 ol.VectorTile.prototype.onError_ = function() {
   this.setState(ol.TileState.ERROR);
 };
-
 
 /**
  * @param {Array.<ol.Feature>} features Features.
@@ -162,7 +149,6 @@ ol.VectorTile.prototype.setFeatures = function(features) {
   this.setState(ol.TileState.LOADED);
 };
 
-
 /**
  * Set the projection of the features that were added with {@link #setFeatures}.
  * @param {ol.proj.Projection} projection Feature projection.
@@ -172,11 +158,9 @@ ol.VectorTile.prototype.setProjection = function(projection) {
   this.projection_ = projection;
 };
 
-
 ol.VectorTile.prototype.setReplayGroup = function(key, replayGroup) {
   this.replayGroups_[key] = replayGroup;
 };
-
 
 /**
  * Set the feature loader for reading this tile's features.

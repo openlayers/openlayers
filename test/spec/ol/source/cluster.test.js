@@ -10,7 +10,6 @@ goog.require('ol.source.Source');
 goog.require('ol.source.Vector');
 
 describe('ol.source.Cluster', function() {
-
   describe('constructor', function() {
     it('returns a cluster source', function() {
       var source = new ol.source.Cluster({
@@ -54,8 +53,11 @@ describe('ol.source.Cluster', function() {
           features: [
             new ol.Feature(new ol.geom.Point([0, 0])),
             new ol.Feature(new ol.geom.LineString([[0, 0], [1, 1]])),
-            new ol.Feature(new ol.geom.Polygon(
-                [[[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]]))
+            new ol.Feature(
+              new ol.geom.Polygon([
+                [[-1, -1], [-1, 1], [1, 1], [1, -1], [-1, -1]]
+              ])
+            )
           ]
         })
       });
@@ -76,5 +78,4 @@ describe('ol.source.Cluster', function() {
       expect(source.getDistance()).to.be(10);
     });
   });
-
 });

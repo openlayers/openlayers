@@ -3,17 +3,13 @@ goog.provide('ol.test.Observable');
 goog.require('ol.events.EventTarget');
 goog.require('ol.Observable');
 
-
 describe('ol.Observable', function() {
-
   describe('constructor', function() {
-
     it('creates a new observable', function() {
       var observable = new ol.Observable();
       expect(observable).to.be.a(ol.Observable);
       expect(observable).to.be.a(ol.events.EventTarget);
     });
-
   });
 
   describe('#on()', function() {
@@ -57,7 +53,6 @@ describe('ol.Observable', function() {
 
       expect(typeof key).to.be('object');
     });
-
   });
 
   describe('#once()', function() {
@@ -122,7 +117,6 @@ describe('ol.Observable', function() {
 
       expect(typeof key).to.be('object');
     });
-
   });
 
   describe('#un()', function() {
@@ -160,7 +154,6 @@ describe('ol.Observable', function() {
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(2);
     });
-
   });
 
   describe('ol.Observable.unByKey()', function() {
@@ -180,7 +173,5 @@ describe('ol.Observable', function() {
       observable.dispatchEvent('foo');
       expect(listener.callCount).to.be(1);
     });
-
   });
-
 });

@@ -11,7 +11,6 @@ var slimerjs = require('slimerjs');
 var serve = require('./serve');
 var listen = require('./test').listen;
 
-
 /**
  * Create the debug server and run tests.
  */
@@ -33,8 +32,7 @@ serve.createServer(function(err, server) {
     var args = [
       '-profile',
       profile,
-      path.join(__dirname,
-          '../test_rendering/test.js'),
+      path.join(__dirname, '../test_rendering/test.js'),
       url + '/test_rendering/index.html'
     ];
 
@@ -46,5 +44,4 @@ serve.createServer(function(err, server) {
       process.exit(code);
     });
   });
-
 });

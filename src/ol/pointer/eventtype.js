@@ -1,6 +1,5 @@
 goog.provide('ol.pointer.EventType');
 
-
 /**
  * Constants for event names.
  * @enum {string}

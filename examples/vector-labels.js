@@ -11,7 +11,6 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
-
 var myDom = {
   points: {
     text: document.getElementById('points-text'),
@@ -78,7 +77,6 @@ var getText = function(feature, resolution, dom) {
   return text;
 };
 
-
 var createTextStyle = function(feature, resolution, dom) {
   var align = dom.align.value;
   var baseline = dom.baseline.value;
@@ -105,7 +103,6 @@ var createTextStyle = function(feature, resolution, dom) {
   });
 };
 
-
 // Polygons
 function polygonStyleFunction(feature, resolution) {
   return new ol.style.Style({
@@ -128,7 +125,6 @@ var vectorPolygons = new ol.layer.Vector({
   style: polygonStyleFunction
 });
 
-
 // Lines
 function lineStyleFunction(feature, resolution) {
   return new ol.style.Style({
@@ -147,7 +143,6 @@ var vectorLines = new ol.layer.Vector({
   }),
   style: lineStyleFunction
 });
-
 
 // Points
 function pointStyleFunction(feature, resolution) {
@@ -185,31 +180,29 @@ var map = new ol.Map({
   })
 });
 
-document.getElementById('refresh-points')
-    .addEventListener('click', function() {
-      vectorPoints.setStyle(pointStyleFunction);
-    });
+document.getElementById('refresh-points').addEventListener('click', function() {
+  vectorPoints.setStyle(pointStyleFunction);
+});
 
-document.getElementById('refresh-lines')
-    .addEventListener('click', function() {
-      vectorLines.setStyle(lineStyleFunction);
-    });
+document.getElementById('refresh-lines').addEventListener('click', function() {
+  vectorLines.setStyle(lineStyleFunction);
+});
 
-document.getElementById('refresh-polygons')
-    .addEventListener('click', function() {
-      vectorPolygons.setStyle(polygonStyleFunction);
-    });
-
+document
+  .getElementById('refresh-polygons')
+  .addEventListener('click', function() {
+    vectorPolygons.setStyle(polygonStyleFunction);
+  });
 
 /**
  * @param {number} n The max number of characters to keep.
  * @return {string} Truncated string.
  */
-String.prototype.trunc = String.prototype.trunc ||
-    function(n) {
-      return this.length > n ? this.substr(0, n - 1) + '...' : this.substr(0);
-    };
-
+String.prototype.trunc =
+  String.prototype.trunc ||
+  function(n) {
+    return this.length > n ? this.substr(0, n - 1) + '...' : this.substr(0);
+  };
 
 // http://stackoverflow.com/questions/14484787/wrap-text-in-javascript
 function stringDivider(str, width, spaceReplacer) {

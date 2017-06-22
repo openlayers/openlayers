@@ -39,7 +39,6 @@ function listen(min, max, server, callback) {
   _listen(min);
 }
 
-
 function runTests(conf, callback) {
   var coverage = 'coverage' in conf ? conf.coverage : false;
   var reporter = 'reporter' in conf ? conf.reporter : 'spec';

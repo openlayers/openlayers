@@ -7,14 +7,14 @@ goog.require('ol.interaction.DragRotateAndZoom');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-
 var overviewMapControl = new ol.control.OverviewMap({
   // see in overviewmap-custom.html to see the custom CSS used
   className: 'ol-overviewmap ol-custom-overviewmap',
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM({
-        'url': 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
+        url:
+          'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
       })
     })
@@ -25,12 +25,10 @@ var overviewMapControl = new ol.control.OverviewMap({
 });
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
-    overviewMapControl
-  ]),
-  interactions: ol.interaction.defaults().extend([
-    new ol.interaction.DragRotateAndZoom()
-  ]),
+  controls: ol.control.defaults().extend([overviewMapControl]),
+  interactions: ol.interaction
+    .defaults()
+    .extend([new ol.interaction.DragRotateAndZoom()]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()

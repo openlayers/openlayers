@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.proj.Units');
 goog.require('ol.proj.proj4');
 
-
 /**
  * @classdesc
  * Projection definition class. One of these is created for each projection
@@ -36,63 +35,65 @@ goog.require('ol.proj.proj4');
  * @api
  */
 ol.proj.Projection = function(options) {
- /**
+  /**
   * @private
   * @type {string}
   */
   this.code_ = options.code;
 
- /**
+  /**
   * @private
   * @type {ol.proj.Units}
   */
-  this.units_ = /** @type {ol.proj.Units} */ (options.units);
+  this.units_ /** @type {ol.proj.Units} */ = options.units;
 
- /**
+  /**
   * @private
   * @type {ol.Extent}
   */
   this.extent_ = options.extent !== undefined ? options.extent : null;
 
- /**
+  /**
   * @private
   * @type {ol.Extent}
   */
-  this.worldExtent_ = options.worldExtent !== undefined ?
-     options.worldExtent : null;
+  this.worldExtent_ = options.worldExtent !== undefined
+    ? options.worldExtent
+    : null;
 
- /**
+  /**
   * @private
   * @type {string}
   */
-  this.axisOrientation_ = options.axisOrientation !== undefined ?
-     options.axisOrientation : 'enu';
+  this.axisOrientation_ = options.axisOrientation !== undefined
+    ? options.axisOrientation
+    : 'enu';
 
- /**
+  /**
   * @private
   * @type {boolean}
   */
   this.global_ = options.global !== undefined ? options.global : false;
 
- /**
+  /**
   * @private
   * @type {boolean}
   */
   this.canWrapX_ = !!(this.global_ && this.extent_);
 
- /**
+  /**
  * @private
  * @type {function(number, ol.Coordinate):number|undefined}
  */
   this.getPointResolutionFunc_ = options.getPointResolution;
 
- /**
+  /**
   * @private
   * @type {ol.tilegrid.TileGrid}
   */
   this.defaultTileGrid_ = null;
 
- /**
+  /**
   * @private
   * @type {number|undefined}
   */
@@ -118,14 +119,12 @@ ol.proj.Projection = function(options) {
   }
 };
 
-
 /**
  * @return {boolean} The projection is suitable for wrapping the x-axis
  */
 ol.proj.Projection.prototype.canWrapX = function() {
   return this.canWrapX_;
 };
-
 
 /**
  * Get the code for this projection, e.g. 'EPSG:4326'.
@@ -136,7 +135,6 @@ ol.proj.Projection.prototype.getCode = function() {
   return this.code_;
 };
 
-
 /**
  * Get the validity extent for this projection.
  * @return {ol.Extent} Extent.
@@ -146,7 +144,6 @@ ol.proj.Projection.prototype.getExtent = function() {
   return this.extent_;
 };
 
-
 /**
  * Get the units of this projection.
  * @return {ol.proj.Units} Units.
@@ -155,7 +152,6 @@ ol.proj.Projection.prototype.getExtent = function() {
 ol.proj.Projection.prototype.getUnits = function() {
   return this.units_;
 };
-
 
 /**
  * Get the amount of meters per unit of this projection.  If the projection is
@@ -168,7 +164,6 @@ ol.proj.Projection.prototype.getMetersPerUnit = function() {
   return this.metersPerUnit_ || ol.proj.Units.METERS_PER_UNIT[this.units_];
 };
 
-
 /**
  * Get the world extent for this projection.
  * @return {ol.Extent} Extent.
@@ -177,7 +172,6 @@ ol.proj.Projection.prototype.getMetersPerUnit = function() {
 ol.proj.Projection.prototype.getWorldExtent = function() {
   return this.worldExtent_;
 };
-
 
 /**
  * Get the axis orientation of this projection.
@@ -193,7 +187,6 @@ ol.proj.Projection.prototype.getAxisOrientation = function() {
   return this.axisOrientation_;
 };
 
-
 /**
  * Is this projection a global projection which spans the whole world?
  * @return {boolean} Whether the projection is global.
@@ -202,7 +195,6 @@ ol.proj.Projection.prototype.getAxisOrientation = function() {
 ol.proj.Projection.prototype.isGlobal = function() {
   return this.global_;
 };
-
 
 /**
 * Set if the projection is a global projection which spans the whole world
@@ -214,7 +206,6 @@ ol.proj.Projection.prototype.setGlobal = function(global) {
   this.canWrapX_ = !!(global && this.extent_);
 };
 
-
 /**
  * @return {ol.tilegrid.TileGrid} The default tile grid.
  */
@@ -222,14 +213,12 @@ ol.proj.Projection.prototype.getDefaultTileGrid = function() {
   return this.defaultTileGrid_;
 };
 
-
 /**
  * @param {ol.tilegrid.TileGrid} tileGrid The default tile grid.
  */
 ol.proj.Projection.prototype.setDefaultTileGrid = function(tileGrid) {
   this.defaultTileGrid_ = tileGrid;
 };
-
 
 /**
  * Set the validity extent for this projection.
@@ -241,7 +230,6 @@ ol.proj.Projection.prototype.setExtent = function(extent) {
   this.canWrapX_ = !!(this.global_ && extent);
 };
 
-
 /**
  * Set the world extent for this projection.
  * @param {ol.Extent} worldExtent World extent
@@ -252,7 +240,6 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
   this.worldExtent_ = worldExtent;
 };
 
-
 /**
  * Set the getPointResolution function (see {@link ol.proj#getPointResolution}
  * for this projection.
@@ -262,7 +249,6 @@ ol.proj.Projection.prototype.setWorldExtent = function(worldExtent) {
 ol.proj.Projection.prototype.setGetPointResolution = function(func) {
   this.getPointResolutionFunc_ = func;
 };
-
 
 /**
  * Get the custom point resolution function for this projection (if set).

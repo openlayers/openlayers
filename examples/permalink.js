@@ -15,10 +15,7 @@ if (window.location.hash !== '') {
   var parts = hash.split('/');
   if (parts.length === 4) {
     zoom = parseInt(parts[0], 10);
-    center = [
-      parseFloat(parts[1]),
-      parseFloat(parts[2])
-    ];
+    center = [parseFloat(parts[1]), parseFloat(parts[2])];
     rotation = parseFloat(parts[3]);
   }
 }
@@ -30,9 +27,9 @@ var map = new ol.Map({
     })
   ],
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   target: 'map',
   view: new ol.View({
@@ -52,11 +49,15 @@ var updatePermalink = function() {
   }
 
   var center = view.getCenter();
-  var hash = '#map=' +
-      view.getZoom() + '/' +
-      Math.round(center[0] * 100) / 100 + '/' +
-      Math.round(center[1] * 100) / 100 + '/' +
-      view.getRotation();
+  var hash =
+    '#map=' +
+    view.getZoom() +
+    '/' +
+    Math.round(center[0] * 100) / 100 +
+    '/' +
+    Math.round(center[1] * 100) / 100 +
+    '/' +
+    view.getRotation();
   var state = {
     zoom: view.getZoom(),
     center: view.getCenter(),

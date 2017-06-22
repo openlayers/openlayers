@@ -3,16 +3,13 @@ goog.provide('ol.test.Object');
 goog.require('ol.Object');
 goog.require('ol.events');
 
-
 describe('ol.Object', function() {
-
   var o;
   beforeEach(function() {
     o = new ol.Object();
   });
 
   describe('get, set and unset', function() {
-
     describe('get an unset property', function() {
       var v;
       beforeEach(function() {
@@ -49,7 +46,6 @@ describe('ol.Object', function() {
   });
 
   describe('#get()', function() {
-
     it('does not return values that are not explicitly set', function() {
       var o = new ol.Object();
       expect(o.get('constructor')).to.be(undefined);
@@ -60,7 +56,6 @@ describe('ol.Object', function() {
       expect(o.get('toString')).to.be(undefined);
       expect(o.get('valueOf')).to.be(undefined);
     });
-
   });
 
   describe('#set()', function() {
@@ -80,7 +75,6 @@ describe('ol.Object', function() {
   });
 
   describe('#getKeys()', function() {
-
     it('returns property names set at construction', function() {
       var o = new ol.Object({
         prop1: 'val1',
@@ -93,11 +87,9 @@ describe('ol.Object', function() {
       expect(keys.length).to.be(4);
       expect(keys.sort()).to.eql(['get', 'prop1', 'prop2', 'toString']);
     });
-
   });
 
   describe('setProperties', function() {
-
     it('sets multiple values at once', function() {
       o.setProperties({
         k1: 1,
@@ -112,7 +104,6 @@ describe('ol.Object', function() {
   });
 
   describe('notify', function() {
-
     var listener1, listener2;
 
     beforeEach(function() {
@@ -145,7 +136,6 @@ describe('ol.Object', function() {
   });
 
   describe('set', function() {
-
     var listener1, listener2;
 
     beforeEach(function() {
@@ -178,7 +168,6 @@ describe('ol.Object', function() {
       expect(listener1.calledOnce).to.be(true);
       expect(listener2.calledOnce).to.be(true);
     });
-
   });
 
   describe('setter', function() {
@@ -239,5 +228,4 @@ describe('ol.Object', function() {
       expect(o.getKeys()).to.eql(['K']);
     });
   });
-
 });

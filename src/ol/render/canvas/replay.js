@@ -11,7 +11,6 @@ goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas.Instruction');
 goog.require('ol.transform');
 
-
 /**
  * @constructor
  * @extends {ol.render.VectorContext}
@@ -118,7 +117,6 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 };
 ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -129,8 +127,14 @@ ol.inherits(ol.render.canvas.Replay, ol.render.VectorContext);
  * @protected
  * @return {number} My end.
  */
-ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinates, offset, end, stride, closed, skipFirst) {
-
+ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  closed,
+  skipFirst
+) {
   var myEnd = this.coordinates.length;
   var extent = this.getBufferedMaxExtent();
   if (skipFirst) {
@@ -173,21 +177,25 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinat
   return myEnd;
 };
 
-
 /**
  * @protected
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  */
 ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
-  this.beginGeometryInstruction1_ =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
+  this.beginGeometryInstruction1_ = [
+    ol.render.canvas.Instruction.BEGIN_GEOMETRY,
+    feature,
+    0
+  ];
   this.instructions.push(this.beginGeometryInstruction1_);
-  this.beginGeometryInstruction2_ =
-      [ol.render.canvas.Instruction.BEGIN_GEOMETRY, feature, 0];
+  this.beginGeometryInstruction2_ = [
+    ol.render.canvas.Instruction.BEGIN_GEOMETRY,
+    feature,
+    0
+  ];
   this.hitDetectionInstructions.push(this.beginGeometryInstruction2_);
 };
-
 
 /**
  * @private
@@ -196,7 +204,10 @@ ol.render.canvas.Replay.prototype.beginGeometry = function(geometry, feature) {
  */
 ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
   if (this.fillOrigin_) {
-    var origin = ol.transform.apply(this.renderedTransform_, this.fillOrigin_.slice());
+    var origin = ol.transform.apply(
+      this.renderedTransform_,
+      this.fillOrigin_.slice()
+    );
     context.translate(origin[0], origin[1]);
     context.rotate(rotation);
   }
@@ -205,7 +216,6 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
     context.setTransform.apply(context, this.resetTransform_);
   }
 };
-
 
 /**
  * @private
@@ -224,19 +234,34 @@ ol.render.canvas.Replay.prototype.fill_ = function(context, rotation) {
  * @template T
  */
 ol.render.canvas.Replay.prototype.replay_ = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesHash,
-    instructions, featureCallback, opt_hitExtent) {
+  context,
+  pixelRatio,
+  transform,
+  viewRotation,
+  skippedFeaturesHash,
+  instructions,
+  featureCallback,
+  opt_hitExtent
+) {
   /** @type {Array.<number>} */
   var pixelCoordinates;
-  if (this.pixelCoordinates_ && ol.array.equals(transform, this.renderedTransform_)) {
+  if (
+    this.pixelCoordinates_ &&
+    ol.array.equals(transform, this.renderedTransform_)
+  ) {
     pixelCoordinates = this.pixelCoordinates_;
   } else {
     if (!this.pixelCoordinates_) {
       this.pixelCoordinates_ = [];
     }
     pixelCoordinates = ol.geom.flat.transform.transform2D(
-        this.coordinates, 0, this.coordinates.length, 2,
-        transform, this.pixelCoordinates_);
+      this.coordinates,
+      0,
+      this.coordinates.length,
+      2,
+      transform,
+      this.pixelCoordinates_
+    );
     ol.transform.setFromArray(this.renderedTransform_, transform);
   }
   var skipFeatures = !ol.obj.isEmpty(skippedFeaturesHash);
@@ -251,22 +276,28 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var pendingStroke = 0;
   // When the batch size gets too big, performance decreases. 200 is a good
   // balance between batch size and number of fill/stroke instructions.
-  var batchSize =
-      this.instructions != instructions || this.overlaps ? 0 : 200;
+  var batchSize = this.instructions != instructions || this.overlaps ? 0 : 200;
   while (i < ii) {
     var instruction = instructions[i];
-    var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
+    var type /** @type {ol.render.canvas.Instruction} */ = instruction[0];
     var feature, fill, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
-        feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
-        if ((skipFeatures &&
+        feature /** @type {ol.Feature|ol.render.Feature} */ = instruction[1];
+        if (
+          (skipFeatures &&
             skippedFeaturesHash[ol.getUid(feature).toString()]) ||
-            !feature.getGeometry()) {
-          i = /** @type {number} */ (instruction[2]);
-        } else if (opt_hitExtent !== undefined && !ol.extent.intersects(
-            opt_hitExtent, feature.getGeometry().getExtent())) {
-          i = /** @type {number} */ (instruction[2]) + 1;
+          !feature.getGeometry()
+        ) {
+          i /** @type {number} */ = instruction[2];
+        } else if (
+          opt_hitExtent !== undefined &&
+          !ol.extent.intersects(
+            opt_hitExtent,
+            feature.getGeometry().getExtent()
+          )
+        ) {
+          i = /** @type {number} */ instruction[2] + 1;
         } else {
           ++i;
         }
@@ -287,7 +318,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.CIRCLE:
-        d = /** @type {number} */ (instruction[1]);
+        d /** @type {number} */ = instruction[1];
         var x1 = pixelCoordinates[d];
         var y1 = pixelCoordinates[d + 1];
         var x2 = pixelCoordinates[d + 2];
@@ -304,22 +335,22 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:
-        d = /** @type {number} */ (instruction[1]);
-        dd = /** @type {number} */ (instruction[2]);
-        var image =  /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */
-            (instruction[3]);
+        d /** @type {number} */ = instruction[1];
+        dd /** @type {number} */ = instruction[2];
+        var image /** @type {HTMLCanvasElement|HTMLVideoElement|Image} */ =
+          instruction[3];
         // Remaining arguments in DRAW_IMAGE are in alphabetical order
-        var anchorX = /** @type {number} */ (instruction[4]) * pixelRatio;
-        var anchorY = /** @type {number} */ (instruction[5]) * pixelRatio;
-        var height = /** @type {number} */ (instruction[6]);
-        var opacity = /** @type {number} */ (instruction[7]);
-        var originX = /** @type {number} */ (instruction[8]);
-        var originY = /** @type {number} */ (instruction[9]);
-        var rotateWithView = /** @type {boolean} */ (instruction[10]);
-        var rotation = /** @type {number} */ (instruction[11]);
-        var scale = /** @type {number} */ (instruction[12]);
-        var snapToPixel = /** @type {boolean} */ (instruction[13]);
-        var width = /** @type {number} */ (instruction[14]);
+        var anchorX = /** @type {number} */ instruction[4] * pixelRatio;
+        var anchorY = /** @type {number} */ instruction[5] * pixelRatio;
+        var height /** @type {number} */ = instruction[6];
+        var opacity /** @type {number} */ = instruction[7];
+        var originX /** @type {number} */ = instruction[8];
+        var originY /** @type {number} */ = instruction[9];
+        var rotateWithView /** @type {boolean} */ = instruction[10];
+        var rotation /** @type {number} */ = instruction[11];
+        var scale /** @type {number} */ = instruction[12];
+        var snapToPixel /** @type {boolean} */ = instruction[13];
+        var width /** @type {number} */ = instruction[14];
         if (rotateWithView) {
           rotation += viewRotation;
         }
@@ -333,8 +364,16 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (scale != 1 || rotation !== 0) {
             var centerX = x + anchorX;
             var centerY = y + anchorY;
-            ol.transform.compose(localTransform,
-                centerX, centerY, scale, scale, rotation, -centerX, -centerY);
+            ol.transform.compose(
+              localTransform,
+              centerX,
+              centerY,
+              scale,
+              scale,
+              rotation,
+              -centerX,
+              -centerY
+            );
             context.setTransform.apply(context, localTransform);
           }
           var alpha = context.globalAlpha;
@@ -342,11 +381,22 @@ ol.render.canvas.Replay.prototype.replay_ = function(
             context.globalAlpha = alpha * opacity;
           }
 
-          var w = (width + originX > image.width) ? image.width - originX : width;
-          var h = (height + originY > image.height) ? image.height - originY : height;
+          var w = width + originX > image.width ? image.width - originX : width;
+          var h = height + originY > image.height
+            ? image.height - originY
+            : height;
 
-          context.drawImage(image, originX, originY, w, h,
-              x, y, w * pixelRatio, h * pixelRatio);
+          context.drawImage(
+            image,
+            originX,
+            originY,
+            w,
+            h,
+            x,
+            y,
+            w * pixelRatio,
+            h * pixelRatio
+          );
 
           if (opacity != 1) {
             context.globalAlpha = alpha;
@@ -358,16 +408,16 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_TEXT:
-        d = /** @type {number} */ (instruction[1]);
-        dd = /** @type {number} */ (instruction[2]);
-        text = /** @type {string} */ (instruction[3]);
-        var offsetX = /** @type {number} */ (instruction[4]) * pixelRatio;
-        var offsetY = /** @type {number} */ (instruction[5]) * pixelRatio;
-        rotation = /** @type {number} */ (instruction[6]);
-        scale = /** @type {number} */ (instruction[7]) * pixelRatio;
-        fill = /** @type {boolean} */ (instruction[8]);
-        stroke = /** @type {boolean} */ (instruction[9]);
-        rotateWithView = /** @type {boolean} */ (instruction[10]);
+        d /** @type {number} */ = instruction[1];
+        dd /** @type {number} */ = instruction[2];
+        text /** @type {string} */ = instruction[3];
+        var offsetX = /** @type {number} */ instruction[4] * pixelRatio;
+        var offsetY = /** @type {number} */ instruction[5] * pixelRatio;
+        rotation /** @type {number} */ = instruction[6];
+        scale = /** @type {number} */ instruction[7] * pixelRatio;
+        fill /** @type {boolean} */ = instruction[8];
+        stroke /** @type {boolean} */ = instruction[9];
+        rotateWithView /** @type {boolean} */ = instruction[10];
         if (rotateWithView) {
           rotation += viewRotation;
         }
@@ -375,7 +425,16 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           x = pixelCoordinates[d] + offsetX;
           y = pixelCoordinates[d + 1] + offsetY;
           if (scale != 1 || rotation !== 0) {
-            ol.transform.compose(localTransform, x, y, scale, scale, rotation, -x, -y);
+            ol.transform.compose(
+              localTransform,
+              x,
+              y,
+              scale,
+              scale,
+              rotation,
+              -x,
+              -y
+            );
             context.setTransform.apply(context, localTransform);
           }
 
@@ -386,7 +445,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           if (numLines > 1) {
             // Estimate line height using width of capital M, and add padding
             fontSize = Math.round(context.measureText('M').width * 1.5);
-            lineY = y - (((numLines - 1) / 2) * fontSize);
+            lineY = y - (numLines - 1) / 2 * fontSize;
           } else {
             // No need to calculate line height/offset for a single line
             fontSize = 0;
@@ -414,8 +473,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (featureCallback !== undefined) {
-          feature =
-              /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+          feature = /** @type {ol.Feature|ol.render.Feature} */ instruction[1];
           var result = featureCallback(feature);
           if (result) {
             return result;
@@ -432,8 +490,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.MOVE_TO_LINE_TO:
-        d = /** @type {number} */ (instruction[1]);
-        dd = /** @type {number} */ (instruction[2]);
+        d /** @type {number} */ = instruction[1];
+        dd /** @type {number} */ = instruction[2];
         x = pixelCoordinates[d];
         y = pixelCoordinates[d + 1];
         roundX = (x + 0.5) | 0;
@@ -468,27 +526,28 @@ ol.render.canvas.Replay.prototype.replay_ = function(
           }
         }
 
-        context.fillStyle = /** @type {ol.ColorLike} */ (instruction[1]);
+        context.fillStyle /** @type {ol.ColorLike} */ = instruction[1];
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_STROKE_STYLE:
-        var usePixelRatio = instruction[8] !== undefined ?
-            instruction[8] : true;
+        var usePixelRatio = instruction[8] !== undefined
+          ? instruction[8]
+          : true;
         var renderedPixelRatio = instruction[9];
 
-        var lineWidth = /** @type {number} */ (instruction[2]);
+        var lineWidth /** @type {number} */ = instruction[2];
         if (pendingStroke) {
           context.stroke();
           pendingStroke = 0;
         }
-        context.strokeStyle = /** @type {ol.ColorLike} */ (instruction[1]);
+        context.strokeStyle /** @type {ol.ColorLike} */ = instruction[1];
         context.lineWidth = usePixelRatio ? lineWidth * pixelRatio : lineWidth;
-        context.lineCap = /** @type {string} */ (instruction[3]);
-        context.lineJoin = /** @type {string} */ (instruction[4]);
-        context.miterLimit = /** @type {number} */ (instruction[5]);
+        context.lineCap /** @type {string} */ = instruction[3];
+        context.lineJoin /** @type {string} */ = instruction[4];
+        context.miterLimit /** @type {number} */ = instruction[5];
         if (ol.has.CANVAS_LINE_DASH) {
-          var lineDash = /** @type {Array.<number>} */ (instruction[6]);
-          var lineDashOffset = /** @type {number} */ (instruction[7]);
+          var lineDash /** @type {Array.<number>} */ = instruction[6];
+          var lineDashOffset /** @type {number} */ = instruction[7];
           if (usePixelRatio && pixelRatio !== renderedPixelRatio) {
             lineDash = lineDash.map(function(dash) {
               return dash * pixelRatio / renderedPixelRatio;
@@ -504,9 +563,9 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         ++i;
         break;
       case ol.render.canvas.Instruction.SET_TEXT_STYLE:
-        context.font = /** @type {string} */ (instruction[1]);
-        context.textAlign = /** @type {string} */ (instruction[2]);
-        context.textBaseline = /** @type {string} */ (instruction[3]);
+        context.font /** @type {string} */ = instruction[1];
+        context.textAlign /** @type {string} */ = instruction[2];
+        context.textBaseline /** @type {string} */ = instruction[3];
         ++i;
         break;
       case ol.render.canvas.Instruction.STROKE:
@@ -531,7 +590,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   return undefined;
 };
 
-
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {number} pixelRatio Pixel ratio.
@@ -541,12 +599,24 @@ ol.render.canvas.Replay.prototype.replay_ = function(
  *     to skip.
  */
 ol.render.canvas.Replay.prototype.replay = function(
-    context, pixelRatio, transform, viewRotation, skippedFeaturesHash) {
+  context,
+  pixelRatio,
+  transform,
+  viewRotation,
+  skippedFeaturesHash
+) {
   var instructions = this.instructions;
-  this.replay_(context, pixelRatio, transform, viewRotation,
-      skippedFeaturesHash, instructions, undefined, undefined);
+  this.replay_(
+    context,
+    pixelRatio,
+    transform,
+    viewRotation,
+    skippedFeaturesHash,
+    instructions,
+    undefined,
+    undefined
+  );
 };
-
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -562,13 +632,25 @@ ol.render.canvas.Replay.prototype.replay = function(
  * @template T
  */
 ol.render.canvas.Replay.prototype.replayHitDetection = function(
-    context, transform, viewRotation, skippedFeaturesHash,
-    opt_featureCallback, opt_hitExtent) {
+  context,
+  transform,
+  viewRotation,
+  skippedFeaturesHash,
+  opt_featureCallback,
+  opt_hitExtent
+) {
   var instructions = this.hitDetectionInstructions;
-  return this.replay_(context, 1, transform, viewRotation,
-      skippedFeaturesHash, instructions, opt_featureCallback, opt_hitExtent);
+  return this.replay_(
+    context,
+    1,
+    transform,
+    viewRotation,
+    skippedFeaturesHash,
+    instructions,
+    opt_featureCallback,
+    opt_hitExtent
+  );
 };
-
 
 /**
  * Reverse the hit detection instructions.
@@ -585,7 +667,7 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions = function() {
   var begin = -1;
   for (i = 0; i < n; ++i) {
     instruction = hitDetectionInstructions[i];
-    type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
+    type /** @type {ol.render.canvas.Instruction} */ = instruction[0];
     if (type == ol.render.canvas.Instruction.END_GEOMETRY) {
       begin = i;
     } else if (type == ol.render.canvas.Instruction.BEGIN_GEOMETRY) {
@@ -596,7 +678,6 @@ ol.render.canvas.Replay.prototype.reverseHitDetectionInstructions = function() {
   }
 };
 
-
 /**
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -606,18 +687,18 @@ ol.render.canvas.Replay.prototype.endGeometry = function(geometry, feature) {
   this.beginGeometryInstruction1_ = null;
   this.beginGeometryInstruction2_[2] = this.hitDetectionInstructions.length;
   this.beginGeometryInstruction2_ = null;
-  var endGeometryInstruction =
-      [ol.render.canvas.Instruction.END_GEOMETRY, feature];
+  var endGeometryInstruction = [
+    ol.render.canvas.Instruction.END_GEOMETRY,
+    feature
+  ];
   this.instructions.push(endGeometryInstruction);
   this.hitDetectionInstructions.push(endGeometryInstruction);
 };
-
 
 /**
  * FIXME empty description for jsdoc
  */
 ol.render.canvas.Replay.prototype.finish = ol.nullFunction;
-
 
 /**
  * Get the buffered rendering extent.  Rendering will be clipped to the extent

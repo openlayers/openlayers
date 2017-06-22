@@ -3,7 +3,6 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
-
 var map = new ol.Map({
   target: 'map',
   layers: [

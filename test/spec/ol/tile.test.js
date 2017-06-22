@@ -21,11 +21,10 @@ describe('ol.Tile', function() {
       tail = addToChain(tail, ol.TileState.IDLE); //discard, deprecated by head
       tail = addToChain(tail, ol.TileState.LOADED); //keep, use for rendering
       renderTile = tail; //store this tile for later tests
-      tail = addToChain(tail, ol.TileState.IDLE);  //rest of list outdated by tile above
+      tail = addToChain(tail, ol.TileState.IDLE); //rest of list outdated by tile above
       tail = addToChain(tail, ol.TileState.LOADED);
       tail = addToChain(tail, ol.TileState.LOADING);
       tail = addToChain(tail, ol.TileState.LOADED);
-
     });
 
     it('shrinks tile chain correctly', function(done) {
@@ -67,5 +66,4 @@ describe('ol.Tile', function() {
       done();
     });
   });
-
 });

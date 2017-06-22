@@ -12,7 +12,8 @@
     "install": "node tasks/install.js",
     "postinstall": "closure-util update",
     "start": "node tasks/serve.js",
-    "pretest": "eslint tasks test test_rendering src examples",
+    "lint": "eslint tasks test test_rendering src examples",
+    "pretest": "npm run lint",
     "lint-package": "eslint --fix build/package",
     "test": "node tasks/test.js",
     "debug-server": "node tasks/serve-lib.js"
@@ -58,7 +59,7 @@
     "coveralls": "2.13.1",
     "debounce": "^1.0.0",
     "eslint": "3.19.0",
-    "eslint-config-openlayers": "7.0.0",
+    "eslint-config-openlayers": "8.0.0-beta.1",
     "eslint-plugin-openlayers-internal": "^3.1.0",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",

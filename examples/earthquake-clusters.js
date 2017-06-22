@@ -16,7 +16,6 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
-
 var earthquakeFill = new ol.style.Fill({
   color: 'rgba(255, 153, 0, 0.8)'
 });
@@ -70,8 +69,10 @@ function calculateClusterInfo(resolution) {
       ol.extent.extend(extent, originalFeatures[j].getGeometry().getExtent());
     }
     maxFeatureCount = Math.max(maxFeatureCount, jj);
-    radius = 0.25 * (ol.extent.getWidth(extent) + ol.extent.getHeight(extent)) /
-        resolution;
+    radius =
+      0.25 *
+      (ol.extent.getWidth(extent) + ol.extent.getHeight(extent)) /
+      resolution;
     feature.set('radius', radius);
   }
 }
@@ -89,7 +90,7 @@ function styleFunction(feature, resolution) {
       image: new ol.style.Circle({
         radius: feature.get('radius'),
         fill: new ol.style.Fill({
-          color: [255, 153, 0, Math.min(0.8, 0.4 + (size / maxFeatureCount))]
+          color: [255, 153, 0, Math.min(0.8, 0.4 + size / maxFeatureCount)]
         })
       }),
       text: new ol.style.Text({
@@ -106,12 +107,14 @@ function styleFunction(feature, resolution) {
 }
 
 function selectStyleFunction(feature) {
-  var styles = [new ol.style.Style({
-    image: new ol.style.Circle({
-      radius: feature.get('radius'),
-      fill: invisibleFill
+  var styles = [
+    new ol.style.Style({
+      image: new ol.style.Circle({
+        radius: feature.get('radius'),
+        fill: invisibleFill
+      })
     })
-  })];
+  ];
   var originalFeatures = feature.get('features');
   var originalFeature;
   for (var i = originalFeatures.length - 1; i >= 0; --i) {
@@ -142,13 +145,16 @@ var raster = new ol.layer.Tile({
 
 var map = new ol.Map({
   layers: [raster, vector],
-  interactions: ol.interaction.defaults().extend([new ol.interaction.Select({
-    condition: function(evt) {
-      return evt.originalEvent.type == 'mousemove' ||
-          evt.type == 'singleclick';
-    },
-    style: selectStyleFunction
-  })]),
+  interactions: ol.interaction.defaults().extend([
+    new ol.interaction.Select({
+      condition: function(evt) {
+        return (
+          evt.originalEvent.type == 'mousemove' || evt.type == 'singleclick'
+        );
+      },
+      style: selectStyleFunction
+    })
+  ]),
   target: 'map',
   view: new ol.View({
     center: [0, 0],

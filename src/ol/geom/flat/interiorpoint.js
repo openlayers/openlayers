@@ -3,7 +3,6 @@ goog.provide('ol.geom.flat.interiorpoint');
 goog.require('ol.array');
 goog.require('ol.geom.flat.contains');
 
-
 /**
  * Calculates a point that is likely to lie in the interior of the linear rings.
  * Inspired by JTS's com.vividsolutions.jts.geom.Geometry#getInteriorPoint.
@@ -16,8 +15,15 @@ goog.require('ol.geom.flat.contains');
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Destination.
  */
-ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
-    ends, stride, flatCenters, flatCentersOffset, opt_dest) {
+ol.geom.flat.interiorpoint.linearRings = function(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  flatCenters,
+  flatCentersOffset,
+  opt_dest
+) {
   var i, ii, x, x1, x2, y1, y2;
   var y = flatCenters[flatCentersOffset + 1];
   /** @type {Array.<number>} */
@@ -47,8 +53,16 @@ ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
     var segmentLength = Math.abs(x2 - x1);
     if (segmentLength > maxSegmentLength) {
       x = (x1 + x2) / 2;
-      if (ol.geom.flat.contains.linearRingsContainsXY(
-          flatCoordinates, offset, ends, stride, x, y)) {
+      if (
+        ol.geom.flat.contains.linearRingsContainsXY(
+          flatCoordinates,
+          offset,
+          ends,
+          stride,
+          x,
+          y
+        )
+      ) {
         pointX = x;
         maxSegmentLength = segmentLength;
       }
@@ -68,7 +82,6 @@ ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
   }
 };
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -77,13 +90,26 @@ ol.geom.flat.interiorpoint.linearRings = function(flatCoordinates, offset,
  * @param {Array.<number>} flatCenters Flat centers.
  * @return {Array.<number>} Interior points.
  */
-ol.geom.flat.interiorpoint.linearRingss = function(flatCoordinates, offset, endss, stride, flatCenters) {
+ol.geom.flat.interiorpoint.linearRingss = function(
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  flatCenters
+) {
   var interiorPoints = [];
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    interiorPoints = ol.geom.flat.interiorpoint.linearRings(flatCoordinates,
-        offset, ends, stride, flatCenters, 2 * i, interiorPoints);
+    interiorPoints = ol.geom.flat.interiorpoint.linearRings(
+      flatCoordinates,
+      offset,
+      ends,
+      stride,
+      flatCenters,
+      2 * i,
+      interiorPoints
+    );
     offset = ends[ends.length - 1];
   }
   return interiorPoints;

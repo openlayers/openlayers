@@ -6,14 +6,12 @@ goog.require('ol');
 goog.require('ol.Disposable');
 goog.require('ol.geom.Polygon');
 
-
 /**
  * @constructor
  * @extends {ol.Disposable}
  * @param {string} className CSS class name.
  */
 ol.render.Box = function(className) {
-
   /**
    * @type {ol.geom.Polygon}
    * @private
@@ -24,7 +22,7 @@ ol.render.Box = function(className) {
    * @type {HTMLDivElement}
    * @private
    */
-  this.element_ = /** @type {HTMLDivElement} */ (document.createElement('div'));
+  this.element_ /** @type {HTMLDivElement} */ = document.createElement('div');
   this.element_.style.position = 'absolute';
   this.element_.className = 'ol-box ' + className;
 
@@ -45,10 +43,8 @@ ol.render.Box = function(className) {
    * @type {ol.Pixel}
    */
   this.endPixel_ = null;
-
 };
 ol.inherits(ol.render.Box, ol.Disposable);
-
 
 /**
  * @inheritDoc
@@ -56,7 +52,6 @@ ol.inherits(ol.render.Box, ol.Disposable);
 ol.render.Box.prototype.disposeInternal = function() {
   this.setMap(null);
 };
-
 
 /**
  * @private
@@ -71,7 +66,6 @@ ol.render.Box.prototype.render_ = function() {
   style.width = Math.abs(endPixel[0] - startPixel[0]) + px;
   style.height = Math.abs(endPixel[1] - startPixel[1]) + px;
 };
-
 
 /**
  * @param {ol.Map} map Map.
@@ -88,7 +82,6 @@ ol.render.Box.prototype.setMap = function(map) {
   }
 };
 
-
 /**
  * @param {ol.Pixel} startPixel Start pixel.
  * @param {ol.Pixel} endPixel End pixel.
@@ -99,7 +92,6 @@ ol.render.Box.prototype.setPixels = function(startPixel, endPixel) {
   this.createOrUpdateGeometry();
   this.render_();
 };
-
 
 /**
  * Creates or updates the cached geometry.
@@ -122,7 +114,6 @@ ol.render.Box.prototype.createOrUpdateGeometry = function() {
     this.geometry_.setCoordinates([coordinates]);
   }
 };
-
 
 /**
  * @return {ol.geom.Polygon} Geometry.

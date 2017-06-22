@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.DrawEventType');
 
-
 /**
  * @enum {string}
  */

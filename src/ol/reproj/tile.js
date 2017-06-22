@@ -10,7 +10,6 @@ goog.require('ol.math');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
 
-
 /**
  * @classdesc
  * Class encapsulating single reprojected tile.
@@ -31,11 +30,19 @@ goog.require('ol.reproj.Triangulation');
  * @param {number=} opt_errorThreshold Acceptable reprojection error (in px).
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  */
-ol.reproj.Tile = function(sourceProj, sourceTileGrid,
-    targetProj, targetTileGrid, tileCoord, wrappedTileCoord,
-    pixelRatio, gutter, getTileFunction,
-    opt_errorThreshold,
-    opt_renderEdges) {
+ol.reproj.Tile = function(
+  sourceProj,
+  sourceTileGrid,
+  targetProj,
+  targetTileGrid,
+  tileCoord,
+  wrappedTileCoord,
+  pixelRatio,
+  gutter,
+  getTileFunction,
+  opt_errorThreshold,
+  opt_renderEdges
+) {
   ol.Tile.call(this, tileCoord, ol.TileState.IDLE);
 
   /**
@@ -102,8 +109,9 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   var maxTargetExtent = this.targetTileGrid_.getExtent();
   var maxSourceExtent = this.sourceTileGrid_.getExtent();
 
-  var limitedTargetExtent = maxTargetExtent ?
-      ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+  var limitedTargetExtent = maxTargetExtent
+    ? ol.extent.getIntersection(targetExtent, maxTargetExtent)
+    : targetExtent;
 
   if (ol.extent.getArea(limitedTargetExtent) === 0) {
     // Tile is completely outside range -> EMPTY
@@ -118,16 +126,23 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
       maxSourceExtent = sourceProjExtent;
     } else {
       maxSourceExtent = ol.extent.getIntersection(
-          maxSourceExtent, sourceProjExtent);
+        maxSourceExtent,
+        sourceProjExtent
+      );
     }
   }
 
   var targetResolution = targetTileGrid.getResolution(
-      this.wrappedTileCoord_[0]);
+    this.wrappedTileCoord_[0]
+  );
 
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
-      sourceProj, targetProj, targetCenter, targetResolution);
+    sourceProj,
+    targetProj,
+    targetCenter,
+    targetResolution
+  );
 
   if (!isFinite(sourceResolution) || sourceResolution <= 0) {
     // invalid sourceResolution -> EMPTY
@@ -136,16 +151,21 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     return;
   }
 
-  var errorThresholdInPixels = opt_errorThreshold !== undefined ?
-      opt_errorThreshold : ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
+  var errorThresholdInPixels = opt_errorThreshold !== undefined
+    ? opt_errorThreshold
+    : ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
   /**
    * @private
    * @type {!ol.reproj.Triangulation}
    */
   this.triangulation_ = new ol.reproj.Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, maxSourceExtent,
-      sourceResolution * errorThresholdInPixels);
+    sourceProj,
+    targetProj,
+    limitedTargetExtent,
+    maxSourceExtent,
+    sourceResolution * errorThresholdInPixels
+  );
 
   if (this.triangulation_.getTriangles().length === 0) {
     // no valid triangles -> EMPTY
@@ -159,9 +179,15 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
   if (maxSourceExtent) {
     if (sourceProj.canWrapX()) {
       sourceExtent[1] = ol.math.clamp(
-          sourceExtent[1], maxSourceExtent[1], maxSourceExtent[3]);
+        sourceExtent[1],
+        maxSourceExtent[1],
+        maxSourceExtent[3]
+      );
       sourceExtent[3] = ol.math.clamp(
-          sourceExtent[3], maxSourceExtent[1], maxSourceExtent[3]);
+        sourceExtent[3],
+        maxSourceExtent[1],
+        maxSourceExtent[3]
+      );
     } else {
       sourceExtent = ol.extent.getIntersection(sourceExtent, maxSourceExtent);
     }
@@ -171,7 +197,9 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
     this.state = ol.TileState.EMPTY;
   } else {
     var sourceRange = sourceTileGrid.getTileRangeForExtentAndZ(
-        sourceExtent, this.sourceZ_);
+      sourceExtent,
+      this.sourceZ_
+    );
 
     for (var srcX = sourceRange.minX; srcX <= sourceRange.maxX; srcX++) {
       for (var srcY = sourceRange.minY; srcY <= sourceRange.maxY; srcY++) {
@@ -189,7 +217,6 @@ ol.reproj.Tile = function(sourceProj, sourceTileGrid,
 };
 ol.inherits(ol.reproj.Tile, ol.Tile);
 
-
 /**
  * @inheritDoc
  */
@@ -200,7 +227,6 @@ ol.reproj.Tile.prototype.disposeInternal = function() {
   ol.Tile.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * Get the HTML Canvas element for this tile.
  * @return {HTMLCanvasElement} Canvas.
@@ -208,7 +234,6 @@ ol.reproj.Tile.prototype.disposeInternal = function() {
 ol.reproj.Tile.prototype.getImage = function() {
   return this.canvas_;
 };
-
 
 /**
  * @private
@@ -236,17 +261,26 @@ ol.reproj.Tile.prototype.reproject_ = function() {
     var sourceResolution = this.sourceTileGrid_.getResolution(this.sourceZ_);
 
     var targetExtent = this.targetTileGrid_.getTileCoordExtent(
-        this.wrappedTileCoord_);
-    this.canvas_ = ol.reproj.render(width, height, this.pixelRatio_,
-        sourceResolution, this.sourceTileGrid_.getExtent(),
-        targetResolution, targetExtent, this.triangulation_, sources,
-        this.gutter_, this.renderEdges_);
+      this.wrappedTileCoord_
+    );
+    this.canvas_ = ol.reproj.render(
+      width,
+      height,
+      this.pixelRatio_,
+      sourceResolution,
+      this.sourceTileGrid_.getExtent(),
+      targetResolution,
+      targetExtent,
+      this.triangulation_,
+      sources,
+      this.gutter_,
+      this.renderEdges_
+    );
 
     this.state = ol.TileState.LOADED;
   }
   this.changed();
 };
-
 
 /**
  * @inheritDoc
@@ -265,20 +299,26 @@ ol.reproj.Tile.prototype.load = function() {
         leftToLoad++;
 
         var sourceListenKey;
-        sourceListenKey = ol.events.listen(tile, ol.events.EventType.CHANGE,
-            function(e) {
-              var state = tile.getState();
-              if (state == ol.TileState.LOADED ||
-                  state == ol.TileState.ERROR ||
-                  state == ol.TileState.EMPTY) {
-                ol.events.unlistenByKey(sourceListenKey);
-                leftToLoad--;
-                if (leftToLoad === 0) {
-                  this.unlistenSources_();
-                  this.reproject_();
-                }
+        sourceListenKey = ol.events.listen(
+          tile,
+          ol.events.EventType.CHANGE,
+          function(e) {
+            var state = tile.getState();
+            if (
+              state == ol.TileState.LOADED ||
+              state == ol.TileState.ERROR ||
+              state == ol.TileState.EMPTY
+            ) {
+              ol.events.unlistenByKey(sourceListenKey);
+              leftToLoad--;
+              if (leftToLoad === 0) {
+                this.unlistenSources_();
+                this.reproject_();
               }
-            }, this);
+            }
+          },
+          this
+        );
         this.sourcesListenerKeys_.push(sourceListenKey);
       }
     }, this);
@@ -295,7 +335,6 @@ ol.reproj.Tile.prototype.load = function() {
     }
   }
 };
-
 
 /**
  * @private

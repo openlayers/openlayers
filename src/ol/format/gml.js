@@ -2,7 +2,6 @@ goog.provide('ol.format.GML');
 
 goog.require('ol.format.GML3');
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the GML format
@@ -17,7 +16,6 @@ goog.require('ol.format.GML3');
  */
 ol.format.GML = ol.format.GML3;
 
-
 /**
  * Encode an array of features in GML 3.1.1 Simple Features.
  *
@@ -28,7 +26,6 @@ ol.format.GML = ol.format.GML3;
  * @api
  */
 ol.format.GML.prototype.writeFeatures;
-
 
 /**
  * Encode an array of features in the GML 3.1.1 format as an XML node.

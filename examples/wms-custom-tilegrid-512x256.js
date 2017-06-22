@@ -7,7 +7,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.TileWMS');
 goog.require('ol.tilegrid.TileGrid');
 
-
 var projExtent = ol.proj.get('EPSG:3857').getExtent();
 var startResolution = ol.extent.getWidth(projExtent) / 256;
 var resolutions = new Array(22);
@@ -27,7 +26,7 @@ var layers = [
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
-      params: {'LAYERS': 'topp:states', 'TILED': true},
+      params: {LAYERS: 'topp:states', TILED: true},
       serverType: 'geoserver',
       tileGrid: tileGrid
     })

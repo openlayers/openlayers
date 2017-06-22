@@ -33,7 +33,8 @@ function growRegion(inputs, data) {
       // provided using the `lib` option.
       var next = next4Edges(edge[i]);
       for (var j = 0, jj = next.length; j < jj; j++) {
-        var s = next[j][0], t = next[j][1];
+        var s = next[j][0],
+          t = next[j][1];
         if (s >= 0 && s < width && t >= 0 && t < height) {
           var ci = (t * width + s) * 4;
           var cr = inputData[ci];
@@ -44,8 +45,11 @@ function growRegion(inputs, data) {
           if (ca === 0) {
             continue;
           }
-          if (Math.abs(seedR - cr) < delta && Math.abs(seedG - cg) < delta &&
-              Math.abs(seedB - cb) < delta) {
+          if (
+            Math.abs(seedR - cr) < delta &&
+            Math.abs(seedG - cg) < delta &&
+            Math.abs(seedB - cb) < delta
+          ) {
             outputData[ci] = 255;
             outputData[ci + 1] = 0;
             outputData[ci + 2] = 0;
@@ -63,13 +67,9 @@ function growRegion(inputs, data) {
 }
 
 function next4Edges(edge) {
-  var x = edge[0], y = edge[1];
-  return [
-    [x + 1, y],
-    [x - 1, y],
-    [x, y + 1],
-    [x, y - 1]
-  ];
+  var x = edge[0],
+    y = edge[1];
+  return [[x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]];
 }
 
 var key = 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5';

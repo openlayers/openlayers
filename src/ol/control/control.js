@@ -6,7 +6,6 @@ goog.require('ol.Object');
 goog.require('ol.dom');
 goog.require('ol.events');
 
-
 /**
  * @classdesc
  * A control is a visible widget with a DOM element in a fixed position on the
@@ -37,7 +36,6 @@ goog.require('ol.events');
  * @api
  */
 ol.control.Control = function(options) {
-
   ol.Object.call(this);
 
   /**
@@ -72,10 +70,8 @@ ol.control.Control = function(options) {
   if (options.target) {
     this.setTarget(options.target);
   }
-
 };
 ol.inherits(ol.control.Control, ol.Object);
-
 
 /**
  * @inheritDoc
@@ -85,7 +81,6 @@ ol.control.Control.prototype.disposeInternal = function() {
   ol.Object.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * Get the map associated with this control.
  * @return {ol.Map} Map.
@@ -94,7 +89,6 @@ ol.control.Control.prototype.disposeInternal = function() {
 ol.control.Control.prototype.getMap = function() {
   return this.map_;
 };
-
 
 /**
  * Remove the control from its current map and attach it to the new map.
@@ -114,17 +108,18 @@ ol.control.Control.prototype.setMap = function(map) {
   this.listenerKeys.length = 0;
   this.map_ = map;
   if (this.map_) {
-    var target = this.target_ ?
-        this.target_ : map.getOverlayContainerStopEvent();
+    var target = this.target_
+      ? this.target_
+      : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
-      this.listenerKeys.push(ol.events.listen(map,
-          ol.MapEventType.POSTRENDER, this.render, this));
+      this.listenerKeys.push(
+        ol.events.listen(map, ol.MapEventType.POSTRENDER, this.render, this)
+      );
     }
     map.render();
   }
 };
-
 
 /**
  * This function is used to set a target element for the control. It has no
@@ -136,7 +131,7 @@ ol.control.Control.prototype.setMap = function(map) {
  * @api
  */
 ol.control.Control.prototype.setTarget = function(target) {
-  this.target_ = typeof target === 'string' ?
-    document.getElementById(target) :
-    target;
+  this.target_ = typeof target === 'string'
+    ? document.getElementById(target)
+    : target;
 };

@@ -10,7 +10,6 @@ goog.require('ol.events');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
 
-
 /**
  * @classdesc
  * A control displaying rough y-axis distances, calculated for the center of the
@@ -27,10 +26,11 @@ goog.require('ol.proj.Units');
  * @api
  */
 ol.control.ScaleLine = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
-  var className = options.className !== undefined ? options.className : 'ol-scale-line';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-scale-line';
 
   /**
    * @private
@@ -86,22 +86,24 @@ ol.control.ScaleLine = function(opt_options) {
   });
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.control.ScaleLine.Property_.UNITS),
-      this.handleUnitsChanged_, this);
+    this,
+    ol.Object.getChangeEventType(ol.control.ScaleLine.Property_.UNITS),
+    this.handleUnitsChanged_,
+    this
+  );
 
-  this.setUnits(/** @type {ol.control.ScaleLineUnits} */ (options.units) ||
-      ol.control.ScaleLineUnits.METRIC);
-
+  this.setUnits(
+    /** @type {ol.control.ScaleLineUnits} */ options.units ||
+      ol.control.ScaleLineUnits.METRIC
+  );
 };
 ol.inherits(ol.control.ScaleLine, ol.control.Control);
-
 
 /**
  * @const
  * @type {Array.<number>}
  */
 ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
-
 
 /**
  * Return the units to use in the scale line.
@@ -111,10 +113,10 @@ ol.control.ScaleLine.LEADING_DIGITS = [1, 2, 5];
  * @api
  */
 ol.control.ScaleLine.prototype.getUnits = function() {
-  return /** @type {ol.control.ScaleLineUnits|undefined} */ (
-      this.get(ol.control.ScaleLine.Property_.UNITS));
+  return /** @type {ol.control.ScaleLineUnits|undefined} */ this.get(
+    ol.control.ScaleLine.Property_.UNITS
+  );
 };
-
 
 /**
  * Update the scale line element.
@@ -132,14 +134,12 @@ ol.control.ScaleLine.render = function(mapEvent) {
   this.updateElement_();
 };
 
-
 /**
  * @private
  */
 ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
   this.updateElement_();
 };
-
 
 /**
  * Set the units to use in the scale line.
@@ -150,7 +150,6 @@ ol.control.ScaleLine.prototype.handleUnitsChanged_ = function() {
 ol.control.ScaleLine.prototype.setUnits = function(units) {
   this.set(ol.control.ScaleLine.Property_.UNITS, units);
 };
-
 
 /**
  * @private
@@ -170,8 +169,8 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
   var projection = viewState.projection;
   var metersPerUnit = projection.getMetersPerUnit();
   var pointResolution =
-      ol.proj.getPointResolution(projection, viewState.resolution, center) *
-      metersPerUnit;
+    ol.proj.getPointResolution(projection, viewState.resolution, center) *
+    metersPerUnit;
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
@@ -230,12 +229,13 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     ol.asserts.assert(false, 33); // Invalid units
   }
 
-  var i = 3 * Math.floor(
-      Math.log(this.minWidth_ * pointResolution) / Math.log(10));
+  var i =
+    3 * Math.floor(Math.log(this.minWidth_ * pointResolution) / Math.log(10));
   var count, width;
   while (true) {
-    count = ol.control.ScaleLine.LEADING_DIGITS[((i % 3) + 3) % 3] *
-        Math.pow(10, Math.floor(i / 3));
+    count =
+      ol.control.ScaleLine.LEADING_DIGITS[(i % 3 + 3) % 3] *
+      Math.pow(10, Math.floor(i / 3));
     width = Math.round(count / pointResolution);
     if (isNaN(width)) {
       this.element_.style.display = 'none';
@@ -262,9 +262,7 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
     this.element_.style.display = '';
     this.renderedVisible_ = true;
   }
-
 };
-
 
 /**
  * @enum {string}

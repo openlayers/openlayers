@@ -10,7 +10,6 @@ goog.require('ol.obj');
 goog.require('ol.source.Image');
 goog.require('ol.uri');
 
-
 /**
  * @classdesc
  * Source for data from ArcGIS Rest services providing single, untiled images.
@@ -27,7 +26,6 @@ goog.require('ol.uri');
  * @api
  */
 ol.source.ImageArcGISRest = function(opt_options) {
-
   var options = opt_options || {};
 
   ol.source.Image.call(this, {
@@ -41,8 +39,9 @@ ol.source.ImageArcGISRest = function(opt_options) {
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+  this.crossOrigin_ = options.crossOrigin !== undefined
+    ? options.crossOrigin
+    : null;
 
   /**
    * @private
@@ -60,9 +59,9 @@ ol.source.ImageArcGISRest = function(opt_options) {
    * @private
    * @type {ol.ImageLoadFunctionType}
    */
-  this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
-
+  this.imageLoadFunction_ = options.imageLoadFunction !== undefined
+    ? options.imageLoadFunction
+    : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private
@@ -82,7 +81,6 @@ ol.source.ImageArcGISRest = function(opt_options) {
    */
   this.imageSize_ = [0, 0];
 
-
   /**
    * @private
    * @type {number}
@@ -94,10 +92,8 @@ ol.source.ImageArcGISRest = function(opt_options) {
    * @type {number}
    */
   this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
-
 };
 ol.inherits(ol.source.ImageArcGISRest, ol.source.Image);
-
 
 /**
  * Get the user-provided params, i.e. those passed to the constructor through
@@ -109,12 +105,15 @@ ol.source.ImageArcGISRest.prototype.getParams = function() {
   return this.params_;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
-
+ol.source.ImageArcGISRest.prototype.getImageInternal = function(
+  extent,
+  resolution,
+  pixelRatio,
+  projection
+) {
   if (this.url_ === undefined) {
     return null;
   }
@@ -123,18 +122,20 @@ ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resoluti
   pixelRatio = this.hidpi_ ? pixelRatio : 1;
 
   var image = this.image_;
-  if (image &&
-      this.renderedRevision_ == this.getRevision() &&
-      image.getResolution() == resolution &&
-      image.getPixelRatio() == pixelRatio &&
-      ol.extent.containsExtent(image.getExtent(), extent)) {
+  if (
+    image &&
+    this.renderedRevision_ == this.getRevision() &&
+    image.getResolution() == resolution &&
+    image.getPixelRatio() == pixelRatio &&
+    ol.extent.containsExtent(image.getExtent(), extent)
+  ) {
     return image;
   }
 
   var params = {
-    'F': 'image',
-    'FORMAT': 'PNG32',
-    'TRANSPARENT': true
+    F: 'image',
+    FORMAT: 'PNG32',
+    TRANSPARENT: true
   };
   ol.obj.assign(params, this.params_);
 
@@ -165,21 +166,35 @@ ol.source.ImageArcGISRest.prototype.getImageInternal = function(extent, resoluti
   this.imageSize_[0] = width;
   this.imageSize_[1] = height;
 
-  var url = this.getRequestUrl_(extent, this.imageSize_, pixelRatio,
-      projection, params);
+  var url = this.getRequestUrl_(
+    extent,
+    this.imageSize_,
+    pixelRatio,
+    projection,
+    params
+  );
 
-  this.image_ = new ol.Image(extent, resolution, pixelRatio,
-      this.getAttributions(), url, this.crossOrigin_, this.imageLoadFunction_);
+  this.image_ = new ol.Image(
+    extent,
+    resolution,
+    pixelRatio,
+    this.getAttributions(),
+    url,
+    this.crossOrigin_,
+    this.imageLoadFunction_
+  );
 
   this.renderedRevision_ = this.getRevision();
 
-  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
-      this.handleImageChange, this);
+  ol.events.listen(
+    this.image_,
+    ol.events.EventType.CHANGE,
+    this.handleImageChange,
+    this
+  );
 
   return this.image_;
-
 };
-
 
 /**
  * Return the image load function of the source.
@@ -190,7 +205,6 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
   return this.imageLoadFunction_;
 };
 
-
 /**
  * @param {ol.Extent} extent Extent.
  * @param {ol.Size} size Size.
@@ -200,7 +214,13 @@ ol.source.ImageArcGISRest.prototype.getImageLoadFunction = function() {
  * @return {string} Request URL.
  * @private
  */
-ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
+ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(
+  extent,
+  size,
+  pixelRatio,
+  projection,
+  params
+) {
   // ArcGIS Server only wants the numeric portion of the projection ID.
   var srid = projection.getCode().split(':').pop();
 
@@ -213,14 +233,13 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
   var url = this.url_;
 
   var modifiedUrl = url
-   .replace(/MapServer\/?$/, 'MapServer/export')
-   .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+    .replace(/MapServer\/?$/, 'MapServer/export')
+    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
     ol.asserts.assert(false, 50); // `options.featureTypes` should be an Array
   }
   return ol.uri.appendParams(modifiedUrl, params);
 };
-
 
 /**
  * Return the URL used for this ArcGIS source.
@@ -231,18 +250,18 @@ ol.source.ImageArcGISRest.prototype.getUrl = function() {
   return this.url_;
 };
 
-
 /**
  * Set the image load function of the source.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  * @api
  */
-ol.source.ImageArcGISRest.prototype.setImageLoadFunction = function(imageLoadFunction) {
+ol.source.ImageArcGISRest.prototype.setImageLoadFunction = function(
+  imageLoadFunction
+) {
   this.image_ = null;
   this.imageLoadFunction_ = imageLoadFunction;
   this.changed();
 };
-
 
 /**
  * Set the URL to use for requests.
@@ -256,7 +275,6 @@ ol.source.ImageArcGISRest.prototype.setUrl = function(url) {
     this.changed();
   }
 };
-
 
 /**
  * Update the user-provided params.

@@ -4,37 +4,47 @@ goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.SimpleGeometry');
 goog.require('ol.geom.flat.transform');
 
-
 describe('ol.geom.flat.transform', function() {
-
   describe('ol.geom.flat.transform.transform2D', function() {
-
     it('transforms a Simple Geometry to 2D', function() {
-
       var multiPolygonGeometry = new ol.geom.MultiPolygon([
-        [[[-80.736061, 28.788576000000006, 0],
-          [-80.763557, 28.821799999999996, 0],
-          [-80.817406, 28.895123999999996, 0],
-          [-80.891304, 29.013130000000004, 0],
-          [-80.916512, 29.071560000000005, 0],
-          [-80.899323, 29.061249000000004, 0],
-          [-80.862663, 28.991361999999995, 0],
-          [-80.736061, 28.788576000000006, 0]]], [[
-          [-82.102127, 26.585724, 0],
-          [-82.067139, 26.497208, 0],
-          [-82.097641, 26.493585999999993, 0],
-          [-82.135895, 26.642279000000002, 0],
-          [-82.183495, 26.683082999999996, 0],
-          [-82.128838, 26.693342, 0],
-          [-82.102127, 26.585724, 0]]]
+        [
+          [
+            [-80.736061, 28.788576000000006, 0],
+            [-80.763557, 28.821799999999996, 0],
+            [-80.817406, 28.895123999999996, 0],
+            [-80.891304, 29.013130000000004, 0],
+            [-80.916512, 29.071560000000005, 0],
+            [-80.899323, 29.061249000000004, 0],
+            [-80.862663, 28.991361999999995, 0],
+            [-80.736061, 28.788576000000006, 0]
+          ]
+        ],
+        [
+          [
+            [-82.102127, 26.585724, 0],
+            [-82.067139, 26.497208, 0],
+            [-82.097641, 26.493585999999993, 0],
+            [-82.135895, 26.642279000000002, 0],
+            [-82.183495, 26.683082999999996, 0],
+            [-82.128838, 26.693342, 0],
+            [-82.102127, 26.585724, 0]
+          ]
+        ]
       ]).transform('EPSG:4326', 'EPSG:3857');
       var transform = [
-        0.0004088332670837288, 0,
-        0, -0.0004088332670837288,
-        4480.991370439071, 1529.5752568707105
+        0.0004088332670837288,
+        0,
+        0,
+        -0.0004088332670837288,
+        4480.991370439071,
+        1529.5752568707105
       ];
       var pixelCoordinates = ol.geom.SimpleGeometry.transform2D(
-          multiPolygonGeometry, transform, []);
+        multiPolygonGeometry,
+        transform,
+        []
+      );
       expect(pixelCoordinates[0]).to.roughlyEqual(806.6035275946265, 1e-9);
       expect(pixelCoordinates[1]).to.roughlyEqual(160.48916296287916, 1e-9);
       expect(pixelCoordinates[2]).to.roughlyEqual(805.3521540835154, 1e-9);
@@ -66,23 +76,58 @@ describe('ol.geom.flat.transform', function() {
       expect(pixelCoordinates[28]).to.roughlyEqual(744.4323460835158, 1e-9);
       expect(pixelCoordinates[29]).to.roughlyEqual(273.7179168205373, 1e-9);
     });
-
   });
 
   describe('ol.geom.flat.transform.translate', function() {
     it('translates the coordinates array', function() {
       var multiPolygon = new ol.geom.MultiPolygon([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
-        [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
+        [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]
+      ]);
       var flatCoordinates = multiPolygon.getFlatCoordinates();
       var deltaX = 1;
       var deltaY = 2;
-      ol.geom.flat.transform.translate(flatCoordinates, 0,
-          flatCoordinates.length, multiPolygon.getStride(),
-          deltaX, deltaY, flatCoordinates);
+      ol.geom.flat.transform.translate(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        multiPolygon.getStride(),
+        deltaX,
+        deltaY,
+        flatCoordinates
+      );
       expect(flatCoordinates).to.eql([
-        1, 2, 2, 1, 3, 2, 2, 3, 2, 2, 2, 2, 1, 2, 2,
-        3, 4, 3, 3, 5, 3, 4, 5, 3, 4, 4, 3, 3, 4, 3]);
+        1,
+        2,
+        2,
+        1,
+        3,
+        2,
+        2,
+        3,
+        2,
+        2,
+        2,
+        2,
+        1,
+        2,
+        2,
+        3,
+        4,
+        3,
+        3,
+        5,
+        3,
+        4,
+        5,
+        3,
+        4,
+        4,
+        3,
+        3,
+        4,
+        3
+      ]);
     });
   });
 
@@ -90,13 +135,20 @@ describe('ol.geom.flat.transform', function() {
     it('rotates the coordinates array', function() {
       var multiPolygon = new ol.geom.MultiPolygon([
         [[[0, 0, 2], [0, 1, 2], [1, 1, 2], [1, 0, 2], [0, 0, 2]]],
-        [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]]);
+        [[[2, 2, 3], [2, 3, 3], [3, 3, 3], [3, 2, 3], [2, 2, 3]]]
+      ]);
       var flatCoordinates = multiPolygon.getFlatCoordinates();
       var angle = Math.PI / 2;
       var anchor = [0, 1];
-      ol.geom.flat.transform.rotate(flatCoordinates, 0,
-          flatCoordinates.length, multiPolygon.getStride(),
-          angle, anchor, flatCoordinates);
+      ol.geom.flat.transform.rotate(
+        flatCoordinates,
+        0,
+        flatCoordinates.length,
+        multiPolygon.getStride(),
+        angle,
+        anchor,
+        flatCoordinates
+      );
       expect(flatCoordinates[0]).to.roughlyEqual(1, 1e-9);
       expect(flatCoordinates[1]).to.roughlyEqual(1, 1e-9);
       expect(flatCoordinates[2]).to.roughlyEqual(2, 1e-9);
@@ -128,7 +180,5 @@ describe('ol.geom.flat.transform', function() {
       expect(flatCoordinates[28]).to.roughlyEqual(3, 1e-9);
       expect(flatCoordinates[29]).to.roughlyEqual(3, 1e-9);
     });
-
   });
-
 });

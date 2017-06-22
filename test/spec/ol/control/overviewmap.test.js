@@ -32,7 +32,6 @@ describe('ol.control.OverviewMap', function() {
   });
 
   describe('setMap()', function() {
-
     it('keeps ovmap view rotation in sync with map view rotation', function() {
       var view = new ol.View({
         center: [0, 0],
@@ -98,7 +97,5 @@ describe('ol.control.OverviewMap', function() {
 
       expect(control.ovmap_.getTarget()).to.be(null);
     });
-
   });
-
 });

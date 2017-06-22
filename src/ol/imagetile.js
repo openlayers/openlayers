@@ -7,7 +7,6 @@ goog.require('ol.dom');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 
-
 /**
  * @constructor
  * @extends {ol.Tile}
@@ -18,7 +17,6 @@ goog.require('ol.events.EventType');
  * @param {ol.TileLoadFunctionType} tileLoadFunction Tile load function.
  */
 ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
-
   ol.Tile.call(this, tileCoord, state);
 
   /**
@@ -49,10 +47,8 @@ ol.ImageTile = function(tileCoord, state, src, crossOrigin, tileLoadFunction) {
    * @type {ol.TileLoadFunctionType}
    */
   this.tileLoadFunction_ = tileLoadFunction;
-
 };
 ol.inherits(ol.ImageTile, ol.Tile);
-
 
 /**
  * @inheritDoc
@@ -70,7 +66,6 @@ ol.ImageTile.prototype.disposeInternal = function() {
   ol.Tile.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * Get the HTML image element for this tile (may be a Canvas, Image, or Video).
  * @return {HTMLCanvasElement|HTMLImageElement|HTMLVideoElement} Image.
@@ -80,14 +75,12 @@ ol.ImageTile.prototype.getImage = function() {
   return this.image_;
 };
 
-
 /**
  * @inheritDoc
  */
 ol.ImageTile.prototype.getKey = function() {
   return this.src_;
 };
-
 
 /**
  * Tracks loading or read errors.
@@ -100,7 +93,6 @@ ol.ImageTile.prototype.handleImageError_ = function() {
   this.image_ = ol.ImageTile.blankImage;
   this.changed();
 };
-
 
 /**
  * Tracks successful image load.
@@ -117,7 +109,6 @@ ol.ImageTile.prototype.handleImageLoad_ = function() {
   this.changed();
 };
 
-
 /**
  * @inheritDoc
  * @api
@@ -127,15 +118,22 @@ ol.ImageTile.prototype.load = function() {
     this.state = ol.TileState.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, this),
-      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, this)
+      ol.events.listenOnce(
+        this.image_,
+        ol.events.EventType.ERROR,
+        this.handleImageError_,
+        this
+      ),
+      ol.events.listenOnce(
+        this.image_,
+        ol.events.EventType.LOAD,
+        this.handleImageLoad_,
+        this
+      )
     ];
     this.tileLoadFunction_(this, this.src_);
   }
 };
-
 
 /**
  * Discards event handlers which listen for load completion or errors.
@@ -146,7 +144,6 @@ ol.ImageTile.prototype.unlistenImage_ = function() {
   this.imageListenerKeys_.forEach(ol.events.unlistenByKey);
   this.imageListenerKeys_ = null;
 };
-
 
 /**
  * A blank image.

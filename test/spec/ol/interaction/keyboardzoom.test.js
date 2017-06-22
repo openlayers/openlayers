@@ -40,5 +40,4 @@ describe('ol.interaction.KeyboardZoom', function() {
       ol.interaction.Interaction.zoomByDelta.restore();
     });
   });
-
 });

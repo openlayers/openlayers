@@ -3,9 +3,7 @@ goog.provide('ol.test.TileCoord');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid.TileGrid');
 
-
 describe('ol.TileCoord', function() {
-
   describe('create', function() {
     it('sets x y z properties as expected', function() {
       var tileCoord = [1, 2, 3];
@@ -28,12 +26,12 @@ describe('ol.TileCoord', function() {
       var tileCoord1 = [3, 2, 1];
       var tileCoord2 = [3, 1, 1];
       expect(ol.tilecoord.hash(tileCoord1)).not.to.eql(
-          ol.tilecoord.hash(tileCoord2));
+        ol.tilecoord.hash(tileCoord2)
+      );
     });
   });
 
   describe('withinExtentAndZ', function() {
-
     it('restricts by z', function() {
       var tileGrid = new ol.tilegrid.TileGrid({
         extent: [10, 20, 30, 40],
@@ -94,15 +92,18 @@ describe('ol.TileCoord', function() {
         tileSize: 10,
         resolutions: [1]
       });
-      expect(ol.tilecoord.withinExtentAndZ([0, Infinity, 0], tileGrid))
-          .to.be(true);
-      expect(ol.tilecoord.withinExtentAndZ([0, 0, Infinity], tileGrid))
-          .to.be(true);
-      expect(ol.tilecoord.withinExtentAndZ([0, -Infinity, 0], tileGrid))
-          .to.be(true);
-      expect(ol.tilecoord.withinExtentAndZ([0, 0, Infinity], tileGrid))
-          .to.be(true);
+      expect(ol.tilecoord.withinExtentAndZ([0, Infinity, 0], tileGrid)).to.be(
+        true
+      );
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, Infinity], tileGrid)).to.be(
+        true
+      );
+      expect(ol.tilecoord.withinExtentAndZ([0, -Infinity, 0], tileGrid)).to.be(
+        true
+      );
+      expect(ol.tilecoord.withinExtentAndZ([0, 0, Infinity], tileGrid)).to.be(
+        true
+      );
     });
   });
-
 });

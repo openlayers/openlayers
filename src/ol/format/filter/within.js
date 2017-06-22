@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.Within');
 goog.require('ol');
 goog.require('ol.format.filter.Spatial');
 
-
 /**
  * @classdesc
  * Represents a `<Within>` operator to test whether a geometry-valued property
@@ -18,8 +17,12 @@ goog.require('ol.format.filter.Spatial');
  * @api
  */
 ol.format.filter.Within = function(geometryName, geometry, opt_srsName) {
-
-  ol.format.filter.Spatial.call(this, 'Within', geometryName, geometry, opt_srsName);
-
+  ol.format.filter.Spatial.call(
+    this,
+    'Within',
+    geometryName,
+    geometry,
+    opt_srsName
+  );
 };
 ol.inherits(ol.format.filter.Within, ol.format.filter.Spatial);

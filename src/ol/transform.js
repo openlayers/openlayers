@@ -2,7 +2,6 @@ goog.provide('ol.transform');
 
 goog.require('ol.asserts');
 
-
 /**
  * Collection of affine 2d transformation functions. The functions work on an
  * array of 6 elements. The element order is compatible with the [SVGMatrix
@@ -15,13 +14,11 @@ goog.require('ol.asserts');
  * ```
  */
 
-
 /**
  * @private
  * @type {ol.Transform}
  */
 ol.transform.tmp_ = new Array(6);
-
 
 /**
  * Create an identity transform.
@@ -31,7 +28,6 @@ ol.transform.create = function() {
   return [1, 0, 0, 1, 0, 0];
 };
 
-
 /**
  * Resets the given transform to an identity transform.
  * @param {!ol.Transform} transform Transform.
@@ -40,7 +36,6 @@ ol.transform.create = function() {
 ol.transform.reset = function(transform) {
   return ol.transform.set(transform, 1, 0, 0, 1, 0, 0);
 };
-
 
 /**
  * Multiply the underlying matrices of two transforms and return the result in
@@ -94,7 +89,6 @@ ol.transform.set = function(transform, a, b, c, d, e, f) {
   return transform;
 };
 
-
 /**
  * Set transform on one matrix from another matrix.
  * @param {!ol.Transform} transform1 Matrix to set transform to.
@@ -111,7 +105,6 @@ ol.transform.setFromArray = function(transform1, transform2) {
   return transform1;
 };
 
-
 /**
  * Transforms the given coordinate with the given transform returning the
  * resulting, transformed coordinate. The coordinate will be modified in-place.
@@ -122,12 +115,12 @@ ol.transform.setFromArray = function(transform1, transform2) {
  *     chained together.
  */
 ol.transform.apply = function(transform, coordinate) {
-  var x = coordinate[0], y = coordinate[1];
+  var x = coordinate[0],
+    y = coordinate[1];
   coordinate[0] = transform[0] * x + transform[2] * y + transform[4];
   coordinate[1] = transform[1] * x + transform[3] * y + transform[5];
   return coordinate;
 };
-
 
 /**
  * Applies rotation to the given transform.
@@ -138,10 +131,11 @@ ol.transform.apply = function(transform, coordinate) {
 ol.transform.rotate = function(transform, angle) {
   var cos = Math.cos(angle);
   var sin = Math.sin(angle);
-  return ol.transform.multiply(transform,
-      ol.transform.set(ol.transform.tmp_, cos, sin, -sin, cos, 0, 0));
+  return ol.transform.multiply(
+    transform,
+    ol.transform.set(ol.transform.tmp_, cos, sin, -sin, cos, 0, 0)
+  );
 };
-
 
 /**
  * Applies scale to a given transform.
@@ -151,10 +145,11 @@ ol.transform.rotate = function(transform, angle) {
  * @return {!ol.Transform} The scaled transform.
  */
 ol.transform.scale = function(transform, x, y) {
-  return ol.transform.multiply(transform,
-      ol.transform.set(ol.transform.tmp_, x, 0, 0, y, 0, 0));
+  return ol.transform.multiply(
+    transform,
+    ol.transform.set(ol.transform.tmp_, x, 0, 0, y, 0, 0)
+  );
 };
-
 
 /**
  * Applies translation to the given transform.
@@ -164,10 +159,11 @@ ol.transform.scale = function(transform, x, y) {
  * @return {!ol.Transform} The translated transform.
  */
 ol.transform.translate = function(transform, dx, dy) {
-  return ol.transform.multiply(transform,
-      ol.transform.set(ol.transform.tmp_, 1, 0, 0, 1, dx, dy));
+  return ol.transform.multiply(
+    transform,
+    ol.transform.set(ol.transform.tmp_, 1, 0, 0, 1, dx, dy)
+  );
 };
-
 
 /**
  * Creates a composite transform given an initial translation, scale, rotation, and
@@ -194,7 +190,6 @@ ol.transform.compose = function(transform, dx1, dy1, sx, sy, angle, dx2, dy2) {
   return transform;
 };
 
-
 /**
  * Invert the given transform.
  * @param {!ol.Transform} transform Transform.
@@ -220,7 +215,6 @@ ol.transform.invert = function(transform) {
 
   return transform;
 };
-
 
 /**
  * Returns the determinant of the given matrix.

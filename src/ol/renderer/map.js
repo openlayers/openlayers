@@ -10,7 +10,6 @@ goog.require('ol.layer.Layer');
 goog.require('ol.style');
 goog.require('ol.transform');
 
-
 /**
  * @constructor
  * @abstract
@@ -20,9 +19,7 @@ goog.require('ol.transform');
  * @struct
  */
 ol.renderer.Map = function(container, map) {
-
   ol.Disposable.call(this);
-
 
   /**
    * @private
@@ -41,10 +38,8 @@ ol.renderer.Map = function(container, map) {
    * @type {Object.<string, ol.EventsKey>}
    */
   this.layerRendererListeners_ = {};
-
 };
 ol.inherits(ol.renderer.Map, ol.Disposable);
-
 
 /**
  * @param {olx.FrameState} frameState FrameState.
@@ -55,16 +50,24 @@ ol.renderer.Map.prototype.calculateMatrices2D = function(frameState) {
   var coordinateToPixelTransform = frameState.coordinateToPixelTransform;
   var pixelToCoordinateTransform = frameState.pixelToCoordinateTransform;
 
-  ol.transform.compose(coordinateToPixelTransform,
-      frameState.size[0] / 2, frameState.size[1] / 2,
-      1 / viewState.resolution, -1 / viewState.resolution,
-      -viewState.rotation,
-      -viewState.center[0], -viewState.center[1]);
+  ol.transform.compose(
+    coordinateToPixelTransform,
+    frameState.size[0] / 2,
+    frameState.size[1] / 2,
+    1 / viewState.resolution,
+    -1 / viewState.resolution,
+    -viewState.rotation,
+    -viewState.center[0],
+    -viewState.center[1]
+  );
 
   ol.transform.invert(
-      ol.transform.setFromArray(pixelToCoordinateTransform, coordinateToPixelTransform));
+    ol.transform.setFromArray(
+      pixelToCoordinateTransform,
+      coordinateToPixelTransform
+    )
+  );
 };
-
 
 /**
  * @inheritDoc
@@ -75,7 +78,6 @@ ol.renderer.Map.prototype.disposeInternal = function() {
   }
 };
 
-
 /**
  * @param {ol.Map} map Map.
  * @param {olx.FrameState} frameState Frame state.
@@ -85,7 +87,6 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
   var cache = ol.style.iconImageCache;
   cache.expire();
 };
-
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
@@ -102,8 +103,15 @@ ol.renderer.Map.expireIconCache_ = function(map, frameState) {
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
-        layerFilter, thisArg2) {
+ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(
+  coordinate,
+  frameState,
+  hitTolerance,
+  callback,
+  thisArg,
+  layerFilter,
+  thisArg2
+) {
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
@@ -140,13 +148,19 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
+    if (
+      ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+      layerFilter.call(thisArg2, layer)
+    ) {
       var layerRenderer = this.getLayerRenderer(layer);
       if (layer.getSource()) {
         result = layerRenderer.forEachFeatureAtCoordinate(
-            layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
-            frameState, hitTolerance, forEachFeatureAtCoordinate, thisArg);
+          layer.getSource().getWrapX() ? translatedCoordinate : coordinate,
+          frameState,
+          hitTolerance,
+          forEachFeatureAtCoordinate,
+          thisArg
+        );
       }
       if (result) {
         return result;
@@ -155,7 +169,6 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
   }
   return undefined;
 };
-
 
 /**
  * @abstract
@@ -172,9 +185,14 @@ ol.renderer.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, fram
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-        layerFilter, thisArg2) {};
-
+ol.renderer.Map.prototype.forEachLayerAtPixel = function(
+  pixel,
+  frameState,
+  callback,
+  thisArg,
+  layerFilter,
+  thisArg2
+) {};
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
@@ -188,13 +206,25 @@ ol.renderer.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, call
  * @return {boolean} Is there a feature at the given coordinate?
  * @template U
  */
-ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, layerFilter, thisArg) {
+ol.renderer.Map.prototype.hasFeatureAtCoordinate = function(
+  coordinate,
+  frameState,
+  hitTolerance,
+  layerFilter,
+  thisArg
+) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, hitTolerance, ol.functions.TRUE, this, layerFilter, thisArg);
+    coordinate,
+    frameState,
+    hitTolerance,
+    ol.functions.TRUE,
+    this,
+    layerFilter,
+    thisArg
+  );
 
   return hasFeature !== undefined;
 };
-
 
 /**
  * @param {ol.layer.Layer} layer Layer.
@@ -208,13 +238,16 @@ ol.renderer.Map.prototype.getLayerRenderer = function(layer) {
   } else {
     var layerRenderer = layer.createRenderer(this);
     this.layerRenderers_[layerKey] = layerRenderer;
-    this.layerRendererListeners_[layerKey] = ol.events.listen(layerRenderer,
-        ol.events.EventType.CHANGE, this.handleLayerRendererChange_, this);
+    this.layerRendererListeners_[layerKey] = ol.events.listen(
+      layerRenderer,
+      ol.events.EventType.CHANGE,
+      this.handleLayerRendererChange_,
+      this
+    );
 
     return layerRenderer;
   }
 };
-
 
 /**
  * @param {string} layerKey Layer key.
@@ -225,7 +258,6 @@ ol.renderer.Map.prototype.getLayerRendererByKey = function(layerKey) {
   return this.layerRenderers_[layerKey];
 };
 
-
 /**
  * @protected
  * @return {Object.<string, ol.renderer.Layer>} Layer renderers.
@@ -234,7 +266,6 @@ ol.renderer.Map.prototype.getLayerRenderers = function() {
   return this.layerRenderers_;
 };
 
-
 /**
  * @return {ol.Map} Map.
  */
@@ -242,13 +273,11 @@ ol.renderer.Map.prototype.getMap = function() {
   return this.map_;
 };
 
-
 /**
  * @abstract
  * @return {string} Type
  */
 ol.renderer.Map.prototype.getType = function() {};
-
 
 /**
  * Handle changes in a layer renderer.
@@ -257,7 +286,6 @@ ol.renderer.Map.prototype.getType = function() {};
 ol.renderer.Map.prototype.handleLayerRendererChange_ = function() {
   this.map_.render();
 };
-
 
 /**
  * @param {string} layerKey Layer key.
@@ -274,20 +302,21 @@ ol.renderer.Map.prototype.removeLayerRendererByKey_ = function(layerKey) {
   return layerRenderer;
 };
 
-
 /**
  * Render.
  * @param {?olx.FrameState} frameState Frame state.
  */
 ol.renderer.Map.prototype.renderFrame = ol.nullFunction;
 
-
 /**
  * @param {ol.Map} map Map.
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState) {
+ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(
+  map,
+  frameState
+) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!frameState || !(layerKey in frameState.layerStates)) {
@@ -296,34 +325,35 @@ ol.renderer.Map.prototype.removeUnusedLayerRenderers_ = function(map, frameState
   }
 };
 
-
 /**
  * @param {olx.FrameState} frameState Frame state.
  * @protected
  */
 ol.renderer.Map.prototype.scheduleExpireIconCache = function(frameState) {
   frameState.postRenderFunctions.push(
-    /** @type {ol.PostRenderFunction} */ (ol.renderer.Map.expireIconCache_)
+    /** @type {ol.PostRenderFunction} */ ol.renderer.Map.expireIconCache_
   );
 };
-
 
 /**
  * @param {!olx.FrameState} frameState Frame state.
  * @protected
  */
-ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(frameState) {
+ol.renderer.Map.prototype.scheduleRemoveUnusedLayerRenderers = function(
+  frameState
+) {
   var layerKey;
   for (layerKey in this.layerRenderers_) {
     if (!(layerKey in frameState.layerStates)) {
       frameState.postRenderFunctions.push(
-        /** @type {ol.PostRenderFunction} */ (this.removeUnusedLayerRenderers_.bind(this))
+        /** @type {ol.PostRenderFunction} */ this.removeUnusedLayerRenderers_.bind(
+          this
+        )
       );
       return;
     }
   }
 };
-
 
 /**
  * @param {ol.LayerState} state1 First layer state.

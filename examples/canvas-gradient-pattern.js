@@ -24,8 +24,12 @@ function gradient(feature, resolution) {
   // Coordinate origin is the top-left corner of the extent of the geometry, so
   // we just divide the geometry's extent width by resolution and multiply with
   // pixelRatio to match the renderer's pixel coordinate system.
-  var grad = context.createLinearGradient(0, 0,
-      ol.extent.getWidth(extent) / resolution * pixelRatio, 0);
+  var grad = context.createLinearGradient(
+    0,
+    0,
+    ol.extent.getWidth(extent) / resolution * pixelRatio,
+    0
+  );
   grad.addColorStop(0, 'red');
   grad.addColorStop(1 / 6, 'orange');
   grad.addColorStop(2 / 6, 'yellow');
@@ -54,7 +58,7 @@ var pattern = (function() {
   context.arc(5 * pixelRatio, 5 * pixelRatio, 2 * pixelRatio, 0, 2 * Math.PI);
   context.fill();
   return context.createPattern(canvas, 'repeat');
-}());
+})();
 
 // Generate style for gradient or pattern fill
 var fill = new ol.style.Fill();
@@ -91,9 +95,7 @@ var vectorLayer = new ol.layer.Vector({
 
 // … finally create a map with that layer.
 var map = new ol.Map({
-  layers: [
-    vectorLayer
-  ],
+  layers: [vectorLayer],
   target: 'map',
   view: new ol.View({
     center: ol.proj.fromLonLat([7, 52]),

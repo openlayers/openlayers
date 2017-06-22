@@ -7,11 +7,13 @@ goog.require('ol.proj');
 goog.require('ol.source.ImageStatic');
 goog.require('ol.source.OSM');
 
-
-proj4.defs('EPSG:27700', '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
+proj4.defs(
+  'EPSG:27700',
+  '+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 ' +
     '+x_0=400000 +y_0=-100000 +ellps=airy ' +
     '+towgs84=446.448,-125.157,542.06,0.15,0.247,0.842,-20.489 ' +
-    '+units=m +no_defs');
+    '+units=m +no_defs'
+);
 var imageExtent = [0, 0, 700000, 1300000];
 
 var map = new ol.Map({
@@ -21,8 +23,9 @@ var map = new ol.Map({
     }),
     new ol.layer.Image({
       source: new ol.source.ImageStatic({
-        url: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
-               'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
+        url:
+          'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/' +
+            'British_National_Grid.svg/2000px-British_National_Grid.svg.png',
         crossOrigin: '',
         projection: 'EPSG:27700',
         imageExtent: imageExtent
@@ -32,7 +35,10 @@ var map = new ol.Map({
   target: 'map',
   view: new ol.View({
     center: ol.proj.transform(
-        ol.extent.getCenter(imageExtent), 'EPSG:27700', 'EPSG:3857'),
+      ol.extent.getCenter(imageExtent),
+      'EPSG:27700',
+      'EPSG:3857'
+    ),
     zoom: 4
   })
 });

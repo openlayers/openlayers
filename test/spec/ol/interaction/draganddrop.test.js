@@ -7,7 +7,6 @@ goog.require('ol.events.EventTarget');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.DragAndDrop');
 
-
 where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
 
@@ -27,7 +26,6 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('constructor', function() {
-
     it('can be constructed without arguments', function() {
       var interaction = new ol.interaction.DragAndDrop();
       expect(interaction).to.be.an(ol.interaction.DragAndDrop);
@@ -36,7 +34,6 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
     it('sets formatConstructors on the instance', function() {
       expect(interaction.formatConstructors_).to.have.length(1);
     });
-
   });
 
   describe('#setActive()', function() {
@@ -129,5 +126,4 @@ where('FileReader').describe('ol.interaction.DragAndDrop', function() {
       expect(event.propagationStopped).to.be(true);
     });
   });
-
 });

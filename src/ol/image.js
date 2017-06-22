@@ -8,7 +8,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.obj');
 
-
 /**
  * @constructor
  * @extends {ol.ImageBase}
@@ -20,11 +19,23 @@ goog.require('ol.obj');
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.ImageLoadFunctionType} imageLoadFunction Image load function.
  */
-ol.Image = function(extent, resolution, pixelRatio, attributions, src,
-    crossOrigin, imageLoadFunction) {
-
-  ol.ImageBase.call(this, extent, resolution, pixelRatio, ol.ImageState.IDLE,
-      attributions);
+ol.Image = function(
+  extent,
+  resolution,
+  pixelRatio,
+  attributions,
+  src,
+  crossOrigin,
+  imageLoadFunction
+) {
+  ol.ImageBase.call(
+    this,
+    extent,
+    resolution,
+    pixelRatio,
+    ol.ImageState.IDLE,
+    attributions
+  );
 
   /**
    * @private
@@ -64,10 +75,8 @@ ol.Image = function(extent, resolution, pixelRatio, attributions, src,
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = imageLoadFunction;
-
 };
 ol.inherits(ol.Image, ol.ImageBase);
-
 
 /**
  * @inheritDoc
@@ -82,7 +91,7 @@ ol.Image.prototype.getImage = function(opt_context) {
     } else if (ol.obj.isEmpty(this.imageByContext_)) {
       image = this.image_;
     } else {
-      image = /** @type {Image} */ (this.image_.cloneNode(false));
+      image /** @type {Image} */ = this.image_.cloneNode(false);
     }
     this.imageByContext_[key] = image;
     return image;
@@ -90,7 +99,6 @@ ol.Image.prototype.getImage = function(opt_context) {
     return this.image_;
   }
 };
-
 
 /**
  * Tracks loading or read errors.
@@ -102,7 +110,6 @@ ol.Image.prototype.handleImageError_ = function() {
   this.unlistenImage_();
   this.changed();
 };
-
 
 /**
  * Tracks successful image load.
@@ -118,7 +125,6 @@ ol.Image.prototype.handleImageLoad_ = function() {
   this.changed();
 };
 
-
 /**
  * Load the image or retry if loading previously failed.
  * Loading is taken care of by the tile queue, and calling this method is
@@ -131,15 +137,22 @@ ol.Image.prototype.load = function() {
     this.state = ol.ImageState.LOADING;
     this.changed();
     this.imageListenerKeys_ = [
-      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, this),
-      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, this)
+      ol.events.listenOnce(
+        this.image_,
+        ol.events.EventType.ERROR,
+        this.handleImageError_,
+        this
+      ),
+      ol.events.listenOnce(
+        this.image_,
+        ol.events.EventType.LOAD,
+        this.handleImageLoad_,
+        this
+      )
     ];
     this.imageLoadFunction_(this, this.src_);
   }
 };
-
 
 /**
  * @param {HTMLCanvasElement|Image|HTMLVideoElement} image Image.
@@ -147,7 +160,6 @@ ol.Image.prototype.load = function() {
 ol.Image.prototype.setImage = function(image) {
   this.image_ = image;
 };
-
 
 /**
  * Discards event handlers which listen for load completion or errors.

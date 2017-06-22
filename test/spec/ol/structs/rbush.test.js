@@ -2,36 +2,27 @@ goog.provide('ol.test.structs.RBush');
 
 goog.require('ol.structs.RBush');
 
-
 describe('ol.structs.RBush', function() {
-
   var rBush;
   beforeEach(function() {
     rBush = new ol.structs.RBush();
   });
 
   describe('when empty', function() {
-
     describe('#getAll', function() {
-
       it('returns the expected number of objects', function() {
         expect(rBush.getAll()).to.be.empty();
       });
-
     });
 
     describe('#isEmpty', function() {
-
       it('returns true', function() {
         expect(rBush.isEmpty()).to.be(true);
       });
-
     });
-
   });
 
   describe('with a single object', function() {
-
     var obj;
     beforeEach(function() {
       obj = {};
@@ -46,18 +37,16 @@ describe('ol.structs.RBush', function() {
       expect(rBush.getInExtent([2, 2, 3, 3])).to.eql([obj]);
     });
 
-    it('don\'t throws an exception if the extent is not modified', function() {
+    it("don't throws an exception if the extent is not modified", function() {
       expect(function() {
         rBush.forEach(function(value) {
           rBush.update([0, 0, 1, 1], obj);
         });
       }).not.to.throwException();
     });
-
   });
 
   describe('with a few objects', function() {
-
     var objs;
     beforeEach(function() {
       objs = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
@@ -75,7 +64,6 @@ describe('ol.structs.RBush', function() {
     });
 
     describe('#forEach', function() {
-
       it('called for all the objects', function() {
         var i = 0;
         rBush.forEach(function() {
@@ -92,11 +80,9 @@ describe('ol.structs.RBush', function() {
         expect(i).to.be(4);
         expect(result).to.be(true);
       });
-
     });
 
     describe('#getInExtent', function() {
-
       it('returns the expected objects', function() {
         var result;
         result = rBush.getInExtent([2, 2, 3, 3]);
@@ -114,19 +100,15 @@ describe('ol.structs.RBush', function() {
       it('returns an empty array when given a disjoint extent', function() {
         expect(rBush.getInExtent([5, 5, 6, 6]).length).to.be(0);
       });
-
     });
 
     describe('#isEmpty', function() {
-
       it('returns false', function() {
         expect(rBush.isEmpty()).to.be(false);
       });
-
     });
 
     describe('#remove', function() {
-
       it('can remove each object', function() {
         var i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
@@ -135,13 +117,10 @@ describe('ol.structs.RBush', function() {
           expect(rBush.getAll()).not.to.contain(objs[i]);
         }
       });
-
     });
-
   });
 
   describe('with 100 objects', function() {
-
     var extents, objs;
     beforeEach(function() {
       extents = [];
@@ -155,26 +134,21 @@ describe('ol.structs.RBush', function() {
     });
 
     describe('#getInExtent', function() {
-
       it('returns the expected objects', function() {
         var i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
           expect(rBush.getInExtent(extents[i])).to.eql([objs[i]]);
         }
       });
-
     });
 
     describe('#isEmpty', function() {
-
       it('returns false', function() {
         expect(rBush.isEmpty()).to.be(false);
       });
-
     });
 
     describe('#remove', function() {
-
       it('can remove each object in turn', function() {
         var i, ii;
         for (i = 0, ii = objs.length; i < ii; ++i) {
@@ -204,13 +178,10 @@ describe('ol.structs.RBush', function() {
         expect(rBush.getAll()).to.be.empty();
         expect(rBush.isEmpty()).to.be(true);
       });
-
     });
-
   });
 
   describe('with 1000 objects', function() {
-
     beforeEach(function() {
       var i;
       for (i = 0; i < 1000; ++i) {
@@ -222,15 +193,12 @@ describe('ol.structs.RBush', function() {
     });
 
     describe('#getAll', function() {
-
       it('returns the expected number of objects', function() {
         expect(rBush.getAll().length).to.be(1000);
       });
-
     });
 
     describe('#getInExtent', function() {
-
       it('returns the expected number of objects', function() {
         expect(rBush.getInExtent([0, 0, 10600, 10600]).length).to.be(1000);
       });
@@ -254,41 +222,44 @@ describe('ol.structs.RBush', function() {
         var n = 0;
         var i;
         for (i = 0; i < 1000; ++i) {
-          var min = [-(Math.random() * 10000 + 501), -(Math.random() * 10000 + 501)];
-          var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+          var min = [
+            -(Math.random() * 10000 + 501),
+            -(Math.random() * 10000 + 501)
+          ];
+          var max = [
+            min[0] + Math.random() * 500,
+            min[1] + Math.random() * 500
+          ];
           var extent = [min[0], min[1], max[0], max[1]];
           n += rBush.getInExtent(extent).length;
         }
         expect(n).to.be(0);
       });
-
     });
 
     describe('#insert', function() {
-
       it('can insert another 1000 objects', function() {
         var i;
         for (i = 1000; i < 2000; ++i) {
           var min = [Math.random() * 10000, Math.random() * 10000];
-          var max = [min[0] + Math.random() * 500, min[1] + Math.random() * 500];
+          var max = [
+            min[0] + Math.random() * 500,
+            min[1] + Math.random() * 500
+          ];
           var extent = [min[0], min[1], max[0], max[1]];
           rBush.insert(extent, {id: i});
         }
         expect(rBush.getInExtent([0, 0, 10600, 10600]).length).to.be(2000);
       });
-
     });
 
     describe('#isEmpty', function() {
-
       it('returns false', function() {
         expect(rBush.isEmpty()).to.be(false);
       });
-
     });
 
     describe('#remove', function() {
-
       it('can remove all 1000 objects', function() {
         var objs = rBush.getAll();
         var i, value;
@@ -298,23 +269,18 @@ describe('ol.structs.RBush', function() {
         }
         expect(rBush.isEmpty()).to.be(true);
       });
-
     });
-
   });
 
   describe('#getExtent', function() {
-
     it('gets the extent', function() {
       var obj = {};
       rBush.insert([0, 0, 1, 1], obj);
       expect(rBush.getExtent()).to.eql([0, 0, 1, 1]);
     });
-
   });
 
   describe('#concat', function() {
-
     it('concatenates two RBush objects', function() {
       var obj1 = {};
       var obj2 = {};
@@ -326,7 +292,7 @@ describe('ol.structs.RBush', function() {
       expect(rBush.getAll().length).to.be(2);
     });
 
-    it('preserves the concatenated object\'s references', function() {
+    it("preserves the concatenated object's references", function() {
       var obj1 = {};
       var obj2 = {};
       var rBush2 = new ol.structs.RBush();
@@ -337,5 +303,4 @@ describe('ol.structs.RBush', function() {
       expect(rBush.getExtent()).to.eql([0, 0, 3, 3]);
     });
   });
-
 });

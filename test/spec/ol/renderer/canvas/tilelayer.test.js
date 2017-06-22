@@ -9,11 +9,8 @@ goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.source.TileWMS');
 goog.require('ol.source.XYZ');
 
-
 describe('ol.renderer.canvas.TileLayer', function() {
-
   describe('#prepareFrame', function() {
-
     var map, target, source, tile;
     beforeEach(function(done) {
       target = document.createElement('div');
@@ -30,9 +27,11 @@ describe('ol.renderer.canvas.TileLayer', function() {
       });
       map = new ol.Map({
         target: target,
-        layers: [new ol.layer.Tile({
-          source: source
-        })],
+        layers: [
+          new ol.layer.Tile({
+            source: source
+          })
+        ],
         view: new ol.View({
           zoom: 0,
           center: [0, 0]
@@ -56,14 +55,14 @@ describe('ol.renderer.canvas.TileLayer', function() {
   });
 
   describe('#composeFrame()', function() {
-
     var img = null;
     beforeEach(function(done) {
       img = new Image(1, 1);
       img.onload = function() {
         done();
       };
-      img.src = 'data:image/gif;base64,' +
+      img.src =
+        'data:image/gif;base64,' +
         'R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==';
     });
     afterEach(function() {
@@ -107,18 +106,19 @@ describe('ol.renderer.canvas.TileLayer', function() {
         canvas: canvas,
         drawImage: sinon.spy()
       };
-      renderer.renderedTiles = [{
-        getTileCoord: function() {
-          return [0, 0, 0];
-        },
-        getImage: function() {
-          return img;
+      renderer.renderedTiles = [
+        {
+          getTileCoord: function() {
+            return [0, 0, 0];
+          },
+          getImage: function() {
+            return img;
+          }
         }
-      }];
+      ];
       renderer.prepareFrame(frameState, layerState);
       renderer.composeFrame(frameState, layerState, context);
       expect(context.drawImage.firstCall.args[0].width).to.be(17);
     });
   });
-
 });

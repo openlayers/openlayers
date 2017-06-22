@@ -6,9 +6,7 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
-    new ol.control.OverviewMap()
-  ]),
+  controls: ol.control.defaults().extend([new ol.control.OverviewMap()]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()

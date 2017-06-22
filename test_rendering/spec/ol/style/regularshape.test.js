@@ -11,9 +11,7 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Style');
 goog.require('ol.style.Stroke');
 
-
 describe('ol.rendering.style.RegularShape', function() {
-
   var target, map, vectorSource;
 
   function createMap(renderer) {
@@ -38,72 +36,78 @@ describe('ol.rendering.style.RegularShape', function() {
   }
 
   function createFeatures(stroke, fill) {
-
     var feature;
     feature = new ol.Feature({
       geometry: new ol.geom.Point([-15, 15])
     });
     // square
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
-        fill: fill,
-        stroke: stroke,
-        points: 4,
-        radius: 10,
-        angle: Math.PI / 4
+    feature.setStyle(
+      new ol.style.Style({
+        image: new ol.style.RegularShape({
+          fill: fill,
+          stroke: stroke,
+          points: 4,
+          radius: 10,
+          angle: Math.PI / 4
+        })
       })
-    }));
+    );
     vectorSource.addFeature(feature);
 
     feature = new ol.Feature({
       geometry: new ol.geom.Point([8, 15])
     });
     // triangle
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
-        fill: fill,
-        stroke: stroke,
-        points: 3,
-        radius: 10,
-        rotation: Math.PI / 4,
-        angle: 0
+    feature.setStyle(
+      new ol.style.Style({
+        image: new ol.style.RegularShape({
+          fill: fill,
+          stroke: stroke,
+          points: 3,
+          radius: 10,
+          rotation: Math.PI / 4,
+          angle: 0
+        })
       })
-    }));
+    );
     vectorSource.addFeature(feature);
 
     feature = new ol.Feature({
       geometry: new ol.geom.Point([-10, -8])
     });
     // star
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
-        fill: fill,
-        stroke: stroke,
-        points: 5,
-        radius: 10,
-        radius2: 4,
-        angle: 0
+    feature.setStyle(
+      new ol.style.Style({
+        image: new ol.style.RegularShape({
+          fill: fill,
+          stroke: stroke,
+          points: 5,
+          radius: 10,
+          radius2: 4,
+          angle: 0
+        })
       })
-    }));
+    );
     vectorSource.addFeature(feature);
 
     feature = new ol.Feature({
       geometry: new ol.geom.Point([12, -8])
     });
     // cross
-    feature.setStyle(new ol.style.Style({
-      image: new ol.style.RegularShape({
-        fill: fill,
-        stroke: stroke,
-        points: 4,
-        radius: 10,
-        radius2: 0,
-        angle: 0
+    feature.setStyle(
+      new ol.style.Style({
+        image: new ol.style.RegularShape({
+          fill: fill,
+          stroke: stroke,
+          points: 4,
+          radius: 10,
+          radius2: 0,
+          angle: 0
+        })
       })
-    }));
+    );
     vectorSource.addFeature(feature);
   }
-
 
   describe('#render', function() {
     var stroke = new ol.style.Stroke({width: 2});
@@ -116,14 +120,24 @@ describe('ol.rendering.style.RegularShape', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas.png', 9.4, done);
+      expectResemble(
+        map,
+        'spec/ol/style/expected/regularshape-canvas.png',
+        9.4,
+        done
+      );
     });
 
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-webgl.png', 8.2, done);
+      expectResemble(
+        map,
+        'spec/ol/style/expected/regularshape-webgl.png',
+        8.2,
+        done
+      );
     });
   });
 
@@ -138,14 +152,24 @@ describe('ol.rendering.style.RegularShape', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
+      expectResemble(
+        map,
+        'spec/ol/style/expected/regularshape-canvas-default-style.png',
+        3.0,
+        done
+      );
     });
 
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-webgl-default-style.png', 3.0, done);
+      expectResemble(
+        map,
+        'spec/ol/style/expected/regularshape-webgl-default-style.png',
+        3.0,
+        done
+      );
     });
   });
 });

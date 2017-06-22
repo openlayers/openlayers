@@ -3,9 +3,7 @@ goog.provide('ol.test.style.Fill');
 goog.require('ol.style.Fill');
 
 describe('ol.style.Fill', function() {
-
   describe('#clone', function() {
-
     it('creates a new ol.style.Fill', function() {
       var original = new ol.style.Fill();
       var clone = original.clone();
@@ -31,6 +29,5 @@ describe('ol.style.Fill', function() {
       clone.getColor()[2] = 0;
       expect(original.getColor()).to.not.eql(clone.getColor());
     });
-
   });
 });

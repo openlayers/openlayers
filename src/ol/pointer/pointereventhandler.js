@@ -42,7 +42,6 @@ goog.require('ol.pointer.NativeSource');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.TouchSource');
 
-
 /**
  * @constructor
  * @extends {ol.events.EventTarget}
@@ -80,7 +79,6 @@ ol.pointer.PointerEventHandler = function(element) {
 };
 ol.inherits(ol.pointer.PointerEventHandler, ol.events.EventTarget);
 
-
 /**
  * Set up the event sources (mouse, touch and native pointers)
  * that generate pointer events.
@@ -95,8 +93,10 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
     this.registerSource('mouse', mouseSource);
 
     if (ol.has.TOUCH) {
-      this.registerSource('touch',
-          new ol.pointer.TouchSource(this, mouseSource));
+      this.registerSource(
+        'touch',
+        new ol.pointer.TouchSource(this, mouseSource)
+      );
     }
   }
 
@@ -104,14 +104,16 @@ ol.pointer.PointerEventHandler.prototype.registerSources = function() {
   this.register_();
 };
 
-
 /**
  * Add a new event source that will generate pointer events.
  *
  * @param {string} name A name for the event source
  * @param {ol.pointer.EventSource} source The source event.
  */
-ol.pointer.PointerEventHandler.prototype.registerSource = function(name, source) {
+ol.pointer.PointerEventHandler.prototype.registerSource = function(
+  name,
+  source
+) {
   var s = source;
   var newEvents = s.getEvents();
 
@@ -127,7 +129,6 @@ ol.pointer.PointerEventHandler.prototype.registerSource = function(name, source)
   }
 };
 
-
 /**
  * Set up the events for all registered event sources.
  * @private
@@ -140,7 +141,6 @@ ol.pointer.PointerEventHandler.prototype.register_ = function() {
     this.addEvents_(eventSource.getEvents());
   }
 };
-
 
 /**
  * Remove all registered events.
@@ -155,7 +155,6 @@ ol.pointer.PointerEventHandler.prototype.unregister_ = function() {
   }
 };
 
-
 /**
  * Calls the right handler for a new event.
  * @private
@@ -169,7 +168,6 @@ ol.pointer.PointerEventHandler.prototype.eventHandler_ = function(inEvent) {
   }
 };
 
-
 /**
  * Setup listeners for the given events.
  * @private
@@ -180,7 +178,6 @@ ol.pointer.PointerEventHandler.prototype.addEvents_ = function(events) {
     ol.events.listen(this.element_, eventName, this.eventHandler_, this);
   }, this);
 };
-
 
 /**
  * Unregister listeners for the given events.
@@ -193,7 +190,6 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
   }, this);
 };
 
-
 /**
  * Returns a snapshot of inEvent, with writable properties.
  *
@@ -204,18 +200,24 @@ ol.pointer.PointerEventHandler.prototype.removeEvents_ = function(events) {
  *    `inEvent`'s properties.
  */
 ol.pointer.PointerEventHandler.prototype.cloneEvent = function(event, inEvent) {
-  var eventCopy = {}, p;
-  for (var i = 0, ii = ol.pointer.PointerEventHandler.CLONE_PROPS.length; i < ii; i++) {
+  var eventCopy = {},
+    p;
+  for (
+    var i = 0, ii = ol.pointer.PointerEventHandler.CLONE_PROPS.length;
+    i < ii;
+    i++
+  ) {
     p = ol.pointer.PointerEventHandler.CLONE_PROPS[i][0];
-    eventCopy[p] = event[p] || inEvent[p] || ol.pointer.PointerEventHandler.CLONE_PROPS[i][1];
+    eventCopy[p] =
+      event[p] ||
+      inEvent[p] ||
+      ol.pointer.PointerEventHandler.CLONE_PROPS[i][1];
   }
 
   return eventCopy;
 };
 
-
 // EVENTS
-
 
 /**
  * Triggers a 'pointerdown' event.
@@ -226,7 +228,6 @@ ol.pointer.PointerEventHandler.prototype.down = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTERDOWN, data, event);
 };
 
-
 /**
  * Triggers a 'pointermove' event.
  * @param {Object} data Pointer event data.
@@ -236,7 +237,6 @@ ol.pointer.PointerEventHandler.prototype.move = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTERMOVE, data, event);
 };
 
-
 /**
  * Triggers a 'pointerup' event.
  * @param {Object} data Pointer event data.
@@ -245,7 +245,6 @@ ol.pointer.PointerEventHandler.prototype.move = function(data, event) {
 ol.pointer.PointerEventHandler.prototype.up = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTERUP, data, event);
 };
-
 
 /**
  * Triggers a 'pointerenter' event.
@@ -257,7 +256,6 @@ ol.pointer.PointerEventHandler.prototype.enter = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTERENTER, data, event);
 };
 
-
 /**
  * Triggers a 'pointerleave' event.
  * @param {Object} data Pointer event data.
@@ -267,7 +265,6 @@ ol.pointer.PointerEventHandler.prototype.leave = function(data, event) {
   data.bubbles = false;
   this.fireEvent(ol.pointer.EventType.POINTERLEAVE, data, event);
 };
-
 
 /**
  * Triggers a 'pointerover' event.
@@ -279,7 +276,6 @@ ol.pointer.PointerEventHandler.prototype.over = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTEROVER, data, event);
 };
 
-
 /**
  * Triggers a 'pointerout' event.
  * @param {Object} data Pointer event data.
@@ -290,7 +286,6 @@ ol.pointer.PointerEventHandler.prototype.out = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTEROUT, data, event);
 };
 
-
 /**
  * Triggers a 'pointercancel' event.
  * @param {Object} data Pointer event data.
@@ -299,7 +294,6 @@ ol.pointer.PointerEventHandler.prototype.out = function(data, event) {
 ol.pointer.PointerEventHandler.prototype.cancel = function(data, event) {
   this.fireEvent(ol.pointer.EventType.POINTERCANCEL, data, event);
 };
-
 
 /**
  * Triggers a combination of 'pointerout' and 'pointerleave' events.
@@ -313,7 +307,6 @@ ol.pointer.PointerEventHandler.prototype.leaveOut = function(data, event) {
   }
 };
 
-
 /**
  * Triggers a combination of 'pointerover' and 'pointerevents' events.
  * @param {Object} data Pointer event data.
@@ -326,7 +319,6 @@ ol.pointer.PointerEventHandler.prototype.enterOver = function(data, event) {
   }
 };
 
-
 /**
  * @private
  * @param {Element} container The container element.
@@ -334,13 +326,15 @@ ol.pointer.PointerEventHandler.prototype.enterOver = function(data, event) {
  * @return {boolean} Returns true if the container element
  *   contains the other element.
  */
-ol.pointer.PointerEventHandler.prototype.contains_ = function(container, contained) {
+ol.pointer.PointerEventHandler.prototype.contains_ = function(
+  container,
+  contained
+) {
   if (!container || !contained) {
     return false;
   }
   return container.contains(contained);
 };
-
 
 // EVENT CREATION AND TRACKING
 /**
@@ -352,10 +346,13 @@ ol.pointer.PointerEventHandler.prototype.contains_ = function(container, contain
  * @param {Event} event The event.
  * @return {ol.pointer.PointerEvent} A PointerEvent of type `inType`.
  */
-ol.pointer.PointerEventHandler.prototype.makeEvent = function(inType, data, event) {
+ol.pointer.PointerEventHandler.prototype.makeEvent = function(
+  inType,
+  data,
+  event
+) {
   return new ol.pointer.PointerEvent(inType, event, data);
 };
-
 
 /**
  * Make and dispatch an event in one call.
@@ -363,11 +360,14 @@ ol.pointer.PointerEventHandler.prototype.makeEvent = function(inType, data, even
  * @param {Object} data Pointer event data.
  * @param {Event} event The event.
  */
-ol.pointer.PointerEventHandler.prototype.fireEvent = function(inType, data, event) {
+ol.pointer.PointerEventHandler.prototype.fireEvent = function(
+  inType,
+  data,
+  event
+) {
   var e = this.makeEvent(inType, data, event);
   this.dispatchEvent(e);
 };
-
 
 /**
  * Creates a pointer event from a native pointer event
@@ -379,7 +379,6 @@ ol.pointer.PointerEventHandler.prototype.fireNativeEvent = function(event) {
   this.dispatchEvent(e);
 };
 
-
 /**
  * Wrap a native mouse event into a pointer event.
  * This proxy method is required for the legacy IE support.
@@ -387,12 +386,17 @@ ol.pointer.PointerEventHandler.prototype.fireNativeEvent = function(event) {
  * @param {Event} event The event.
  * @return {ol.pointer.PointerEvent} The wrapped event.
  */
-ol.pointer.PointerEventHandler.prototype.wrapMouseEvent = function(eventType, event) {
+ol.pointer.PointerEventHandler.prototype.wrapMouseEvent = function(
+  eventType,
+  event
+) {
   var pointerEvent = this.makeEvent(
-      eventType, ol.pointer.MouseSource.prepareEvent(event, this), event);
+    eventType,
+    ol.pointer.MouseSource.prepareEvent(event, this),
+    event
+  );
   return pointerEvent;
 };
-
 
 /**
  * @inheritDoc
@@ -401,7 +405,6 @@ ol.pointer.PointerEventHandler.prototype.disposeInternal = function() {
   this.unregister_();
   ol.events.EventTarget.prototype.disposeInternal.call(this);
 };
-
 
 /**
  * Properties to copy when cloning an event, with default values.

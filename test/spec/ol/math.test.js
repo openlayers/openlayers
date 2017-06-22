@@ -2,9 +2,7 @@ goog.provide('ol.test.math');
 
 goog.require('ol.math');
 
-
 describe('ol.math.clamp', function() {
-
   it('returns the correct value at -Infinity', function() {
     expect(ol.math.clamp(-Infinity, 10, 20)).to.eql(10);
   });
@@ -24,11 +22,9 @@ describe('ol.math.clamp', function() {
   it('returns the correct value at Infinity', function() {
     expect(ol.math.clamp(Infinity, 10, 20)).to.eql(20);
   });
-
 });
 
 describe('ol.math.cosh', function() {
-
   it('returns the correct value at -Infinity', function() {
     expect(ol.math.cosh(-Infinity)).to.eql(Infinity);
   });
@@ -48,11 +44,9 @@ describe('ol.math.cosh', function() {
   it('returns the correct value at Infinity', function() {
     expect(ol.math.cosh(Infinity)).to.eql(Infinity);
   });
-
 });
 
 describe('ol.math.roundUpToPowerOfTwo', function() {
-
   it('raises an exception when x is negative', function() {
     expect(function() {
       ol.math.roundUpToPowerOfTwo(-1);
@@ -87,11 +81,9 @@ describe('ol.math.roundUpToPowerOfTwo', function() {
     expect(ol.math.roundUpToPowerOfTwo(1000000)).to.be(1048576);
     expect(ol.math.roundUpToPowerOfTwo(10000000)).to.be(16777216);
   });
-
 });
 
 describe('ol.math.solveLinearSystem', function() {
-
   it('calculates correctly', function() {
     var result = ol.math.solveLinearSystem([
       [2, 1, 3, 1],
@@ -111,7 +103,6 @@ describe('ol.math.solveLinearSystem', function() {
     ]);
     expect(result).to.be(null);
   });
-
 });
 
 describe('ol.math.toDegrees', function() {

@@ -7,7 +7,6 @@ goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
-
 /**
  * @classdesc
  * Allows the user to zoom and rotate the map by clicking and dragging
@@ -24,7 +23,6 @@ goog.require('ol.interaction.Pointer');
  * @api
  */
 ol.interaction.DragRotateAndZoom = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   ol.interaction.Pointer.call(this, {
@@ -37,8 +35,9 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-      options.condition : ol.events.condition.shiftKeyOnly;
+  this.condition_ = options.condition
+    ? options.condition
+    : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -63,10 +62,8 @@ ol.interaction.DragRotateAndZoom = function(opt_options) {
    * @type {number}
    */
   this.duration_ = options.duration !== undefined ? options.duration : 400;
-
 };
 ol.inherits(ol.interaction.DragRotateAndZoom, ol.interaction.Pointer);
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -86,10 +83,15 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   var theta = Math.atan2(deltaY, deltaX);
   var magnitude = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
   var view = map.getView();
-  if (view.getConstraints().rotation !== ol.RotationConstraint.disable && this.lastAngle_ !== undefined) {
+  if (
+    view.getConstraints().rotation !== ol.RotationConstraint.disable &&
+    this.lastAngle_ !== undefined
+  ) {
     var angleDelta = theta - this.lastAngle_;
     ol.interaction.Interaction.rotateWithoutConstraints(
-        view, view.getRotation() - angleDelta);
+      view,
+      view.getRotation() - angleDelta
+    );
   }
   this.lastAngle_ = theta;
   if (this.lastMagnitude_ !== undefined) {
@@ -101,7 +103,6 @@ ol.interaction.DragRotateAndZoom.handleDragEvent_ = function(mapBrowserEvent) {
   }
   this.lastMagnitude_ = magnitude;
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -119,12 +120,16 @@ ol.interaction.DragRotateAndZoom.handleUpEvent_ = function(mapBrowserEvent) {
   view.setHint(ol.ViewHint.INTERACTING, -1);
   var direction = this.lastScaleDelta_ - 1;
   ol.interaction.Interaction.rotate(view, view.getRotation());
-  ol.interaction.Interaction.zoom(view, view.getResolution(),
-      undefined, this.duration_, direction);
+  ol.interaction.Interaction.zoom(
+    view,
+    view.getResolution(),
+    undefined,
+    this.duration_,
+    direction
+  );
   this.lastScaleDelta_ = 0;
   return false;
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.

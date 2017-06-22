@@ -7,10 +7,14 @@ goog.provide('ol.string');
  * @returns {string} Formatted string
 */
 ol.string.padNumber = function(number, width, opt_precision) {
-  var numberString = opt_precision !== undefined ? number.toFixed(opt_precision) : '' + number;
+  var numberString = opt_precision !== undefined
+    ? number.toFixed(opt_precision)
+    : '' + number;
   var decimal = numberString.indexOf('.');
   decimal = decimal === -1 ? numberString.length : decimal;
-  return decimal > width ? numberString : new Array(1 + width - decimal).join('0') + numberString;
+  return decimal > width
+    ? numberString
+    : new Array(1 + width - decimal).join('0') + numberString;
 };
 
 /**

@@ -48,15 +48,13 @@ describe('ol.style.IconImageCache', function() {
 
       src = '0';
       iconImage = new ol.style.IconImage(src, null);
-      ol.events.listen(iconImage, 'change',
-          ol.nullFunction, false);
+      ol.events.listen(iconImage, 'change', ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(4);
 
       src = '4';
       iconImage = new ol.style.IconImage(src, null);
-      ol.events.listen(iconImage, 'change',
-          ol.nullFunction, false);
+      ol.events.listen(iconImage, 'change', ol.nullFunction, false);
       cache.set(src, null, null, iconImage);
       expect(cache.cacheSize_).to.eql(5);
 

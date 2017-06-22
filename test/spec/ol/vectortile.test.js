@@ -7,9 +7,7 @@ goog.require('ol.Feature');
 goog.require('ol.format.TextFeature');
 goog.require('ol.proj');
 
-
 describe('ol.VectorTile', function() {
-
   it('loader sets features on the tile and updates proj units', function(done) {
     // mock format that return a tile-pixels feature
     var format = new ol.format.TextFeature();
@@ -35,5 +33,4 @@ describe('ol.VectorTile', function() {
     });
     loader.call(tile, [], 1, ol.proj.get('EPSG:3857'));
   });
-
 });

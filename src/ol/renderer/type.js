@@ -1,6 +1,5 @@
 goog.provide('ol.renderer.Type');
 
-
 /**
  * Available renderers: `'canvas'` or `'webgl'`.
  * @enum {string}

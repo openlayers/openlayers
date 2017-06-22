@@ -59,8 +59,13 @@ imagery.on('precompose', function(event) {
   ctx.beginPath();
   if (mousePosition) {
     // only show a circle around the mouse
-    ctx.arc(mousePosition[0] * pixelRatio, mousePosition[1] * pixelRatio,
-        radius * pixelRatio, 0, 2 * Math.PI);
+    ctx.arc(
+      mousePosition[0] * pixelRatio,
+      mousePosition[1] * pixelRatio,
+      radius * pixelRatio,
+      0,
+      2 * Math.PI
+    );
     ctx.lineWidth = 5 * pixelRatio;
     ctx.strokeStyle = 'rgba(0,0,0,0.5)';
     ctx.stroke();

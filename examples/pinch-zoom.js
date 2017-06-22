@@ -5,7 +5,6 @@ goog.require('ol.interaction.PinchZoom');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-
 var map = new ol.Map({
   interactions: ol.interaction.defaults({pinchZoom: false}).extend([
     new ol.interaction.PinchZoom({

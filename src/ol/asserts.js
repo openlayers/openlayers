@@ -2,7 +2,6 @@ goog.provide('ol.asserts');
 
 goog.require('ol.AssertionError');
 
-
 /**
  * @param {*} assertion Assertion we expected to be truthy.
  * @param {number} errorCode Error code.

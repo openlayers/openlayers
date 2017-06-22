@@ -9,9 +9,7 @@ goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 
-
 describe('ol.source.Tile', function() {
-
   describe('constructor', function() {
     it('returns a tile source', function() {
       var source = new ol.source.Tile({
@@ -26,7 +24,9 @@ describe('ol.source.Tile', function() {
         projection: projection,
         cacheSize: 42
       });
-      expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(42);
+      expect(source.getTileCacheForProjection(projection).highWaterMark).to.be(
+        42
+      );
     });
   });
 
@@ -68,11 +68,9 @@ describe('ol.source.Tile', function() {
 
       source.setKey(key); // this should result in a change event
     });
-
   });
 
   describe('#forEachLoadedTile()', function() {
-
     var callback;
     beforeEach(function() {
       callback = sinon.spy();
@@ -102,7 +100,6 @@ describe('ol.source.Tile', function() {
       source.getTile.restore();
     });
 
-
     it('calls callback for each loaded tile', function() {
       var source = new ol.test.source.TileMock({
         '1/0/0': 2, // LOADED
@@ -131,10 +128,13 @@ describe('ol.source.Tile', function() {
       var range = new ol.TileRange(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
-          source.getProjection(), zoom, range,
-          function() {
-            return true;
-          });
+        source.getProjection(),
+        zoom,
+        range,
+        function() {
+          return true;
+        }
+      );
       expect(covered).to.be(true);
     });
 
@@ -151,10 +151,13 @@ describe('ol.source.Tile', function() {
       var range = new ol.TileRange(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
-          source.getProjection(), zoom,
-          range, function() {
-            return true;
-          });
+        source.getProjection(),
+        zoom,
+        range,
+        function() {
+          return true;
+        }
+      );
       expect(covered).to.be(false);
     });
 
@@ -171,17 +174,18 @@ describe('ol.source.Tile', function() {
       var range = new ol.TileRange(0, 1, 0, 1);
 
       var covered = source.forEachLoadedTile(
-          source.getProjection(), zoom, range,
-          function() {
-            return false;
-          });
+        source.getProjection(),
+        zoom,
+        range,
+        function() {
+          return false;
+        }
+      );
       expect(covered).to.be(false);
     });
-
   });
 
   describe('#getTileCoordForTileUrlFunction()', function() {
-
     it('returns the expected tile coordinate - {wrapX: true}', function() {
       var tileSource = new ol.source.Tile({
         projection: 'EPSG:3857',
@@ -246,9 +250,7 @@ describe('ol.source.Tile', function() {
       expect(source.tileCache.getCount()).to.eql(0);
     });
   });
-
 });
-
 
 /**
  * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
@@ -274,10 +276,8 @@ ol.test.source.TileMock = function(tileStates) {
   for (var key in tileStates) {
     this.tileCache.set(key, new ol.Tile(key.split('/'), tileStates[key]));
   }
-
 };
 ol.inherits(ol.test.source.TileMock, ol.source.Tile);
-
 
 /**
  * @inheritDoc
@@ -285,7 +285,7 @@ ol.inherits(ol.test.source.TileMock, ol.source.Tile);
 ol.test.source.TileMock.prototype.getTile = function(z, x, y) {
   var key = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(key)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(key));
+    return /** @type {!ol.Tile} */ this.tileCache.get(key);
   } else {
     var tile = new ol.Tile(key, 0); // IDLE
     this.tileCache.set(key, tile);
@@ -293,9 +293,7 @@ ol.test.source.TileMock.prototype.getTile = function(z, x, y) {
   }
 };
 
-
 describe('ol.test.source.TileMock', function() {
-
   describe('constructor', function() {
     it('creates a tile source', function() {
       var source = new ol.test.source.TileMock({});
@@ -326,8 +324,6 @@ describe('ol.test.source.TileMock', function() {
       tile = source.getTile(1, 0, 0);
       expect(tile).to.be.a(ol.Tile);
       expect(tile.state).to.be(2); // LOADED
-
     });
   });
-
 });

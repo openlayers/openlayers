@@ -9,7 +9,6 @@ goog.provide('ol.Sphere');
 
 goog.require('ol.math');
 
-
 /**
  * @classdesc
  * Class to create objects that can be used with {@link
@@ -27,14 +26,11 @@ goog.require('ol.math');
  * @api
  */
 ol.Sphere = function(radius) {
-
   /**
    * @type {number}
    */
   this.radius = radius;
-
 };
-
 
 /**
  * Returns the geodesic area for a list of coordinates.
@@ -51,20 +47,21 @@ ol.Sphere = function(radius) {
  * @api
  */
 ol.Sphere.prototype.geodesicArea = function(coordinates) {
-  var area = 0, len = coordinates.length;
+  var area = 0,
+    len = coordinates.length;
   var x1 = coordinates[len - 1][0];
   var y1 = coordinates[len - 1][1];
   for (var i = 0; i < len; i++) {
-    var x2 = coordinates[i][0], y2 = coordinates[i][1];
-    area += ol.math.toRadians(x2 - x1) *
-        (2 + Math.sin(ol.math.toRadians(y1)) +
-        Math.sin(ol.math.toRadians(y2)));
+    var x2 = coordinates[i][0],
+      y2 = coordinates[i][1];
+    area +=
+      ol.math.toRadians(x2 - x1) *
+      (2 + Math.sin(ol.math.toRadians(y1)) + Math.sin(ol.math.toRadians(y2)));
     x1 = x2;
     y1 = y2;
   }
   return area * this.radius * this.radius / 2.0;
 };
-
 
 /**
  * Returns the distance from c1 to c2 using the haversine formula.
@@ -79,12 +76,14 @@ ol.Sphere.prototype.haversineDistance = function(c1, c2) {
   var lat2 = ol.math.toRadians(c2[1]);
   var deltaLatBy2 = (lat2 - lat1) / 2;
   var deltaLonBy2 = ol.math.toRadians(c2[0] - c1[0]) / 2;
-  var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
-      Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
-      Math.cos(lat1) * Math.cos(lat2);
+  var a =
+    Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
+    Math.sin(deltaLonBy2) *
+      Math.sin(deltaLonBy2) *
+      Math.cos(lat1) *
+      Math.cos(lat2);
   return 2 * this.radius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
-
 
 /**
  * Returns the coordinate at the given distance and bearing from `c1`.
@@ -100,10 +99,14 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
   var lon1 = ol.math.toRadians(c1[0]);
   var dByR = distance / this.radius;
   var lat = Math.asin(
-      Math.sin(lat1) * Math.cos(dByR) +
-      Math.cos(lat1) * Math.sin(dByR) * Math.cos(bearing));
-  var lon = lon1 + Math.atan2(
+    Math.sin(lat1) * Math.cos(dByR) +
+      Math.cos(lat1) * Math.sin(dByR) * Math.cos(bearing)
+  );
+  var lon =
+    lon1 +
+    Math.atan2(
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
-      Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
+      Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat)
+    );
   return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
 };

@@ -7,13 +7,11 @@ goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 
 describe('ol.geom.GeometryCollection', function() {
-
   var outer = [[0, 0], [0, 10], [10, 10], [10, 0], [0, 0]];
   var inner1 = [[1, 1], [2, 1], [2, 2], [1, 2], [1, 1]];
   var inner2 = [[8, 8], [9, 8], [9, 9], [8, 9], [8, 8]];
 
   describe('constructor', function() {
-
     var line, multi, point, poly;
     beforeEach(function() {
       point = new ol.geom.Point([10, 20]);
@@ -27,14 +25,14 @@ describe('ol.geom.GeometryCollection', function() {
       expect(multi).to.be.a(ol.geom.Geometry);
     });
 
-    it('fires a change event when one of its component changes',
-        function(done) {
-          multi.on('change', function() {
-            done();
-          });
-          point.setCoordinates([10, 10]);
-        }
-    );
+    it('fires a change event when one of its component changes', function(
+      done
+    ) {
+      multi.on('change', function() {
+        done();
+      });
+      point.setCoordinates([10, 10]);
+    });
 
     it('deregister old components', function() {
       multi.setGeometries([poly]);
@@ -52,11 +50,9 @@ describe('ol.geom.GeometryCollection', function() {
       });
       point2.setCoordinates([10, 10]);
     });
-
   });
 
   describe('#getGeometries', function() {
-
     it('returns a collection of geometries', function() {
       var point = new ol.geom.Point([10, 20]);
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
@@ -70,11 +66,9 @@ describe('ol.geom.GeometryCollection', function() {
       expect(geometries[1]).to.be.a(ol.geom.LineString);
       expect(geometries[2]).to.be.a(ol.geom.Polygon);
     });
-
   });
 
   describe('#clone()', function() {
-
     it('has a working clone method', function() {
       var point = new ol.geom.Point([10, 20]);
       var line = new ol.geom.LineString([[10, 20], [30, 40]]);
@@ -98,14 +92,13 @@ describe('ol.geom.GeometryCollection', function() {
       expect(clonedGeometries).to.have.length(originalGeometries.length);
       expect(clonedGeometries).to.have.length(1);
       expect(clonedGeometries[0]).not.to.be(originalGeometries[0]);
-      expect(clonedGeometries[0].getCoordinates()).
-          to.eql(originalGeometries[0].getCoordinates());
+      expect(clonedGeometries[0].getCoordinates()).to.eql(
+        originalGeometries[0].getCoordinates()
+      );
     });
-
   });
 
   describe('#getExtent()', function() {
-
     it('returns the bounding extent', function() {
       var point = new ol.geom.Point([10, 2]);
       var line = new ol.geom.LineString([[1, 20], [30, 40]]);
@@ -116,11 +109,9 @@ describe('ol.geom.GeometryCollection', function() {
       expect(extent[1]).to.be(2);
       expect(extent[3]).to.be(40);
     });
-
   });
 
   describe('#intersectsExtent()', function() {
-
     var point, line, poly, multi;
 
     beforeEach(function() {
@@ -146,11 +137,9 @@ describe('ol.geom.GeometryCollection', function() {
       var extent = [0, 35, 5, 40];
       expect(poly.intersectsExtent(extent)).to.be(false);
     });
-
   });
 
   describe('#setGeometries', function() {
-
     var line, multi, point, poly;
     beforeEach(function() {
       point = new ol.geom.Point([10, 20]);
@@ -171,11 +160,9 @@ describe('ol.geom.GeometryCollection', function() {
       line.setCoordinates([[10, 20], [300, 400]]);
       expect(multi.getExtent()).to.eql([0, 0, 300, 400]);
     });
-
   });
 
   describe('#scale()', function() {
-
     it('scales a collection', function() {
       var geom = new ol.geom.GeometryCollection([
         new ol.geom.Point([-1, -2]),
@@ -208,11 +195,9 @@ describe('ol.geom.GeometryCollection', function() {
       expect(geometries[0].getCoordinates()).to.eql([-1, -2]);
       expect(geometries[1].getCoordinates()).to.eql([[9, 28], [19, 58]]);
     });
-
   });
 
   describe('#transform()', function() {
-
     var line, multi, point;
     beforeEach(function() {
       point = new ol.geom.Point([10, 20]);
@@ -228,16 +213,14 @@ describe('ol.geom.GeometryCollection', function() {
       expect(geometries[1]).to.be.a(ol.geom.LineString);
 
       var coords = geometries[0].getCoordinates();
-      expect(coords[0]).to.roughlyEqual(1113194.90, 1e-2);
+      expect(coords[0]).to.roughlyEqual(1113194.9, 1e-2);
       expect(coords[1]).to.roughlyEqual(2273030.92, 1e-2);
 
       coords = geometries[1].getCoordinates();
-      expect(coords[0][0]).to.roughlyEqual(1113194.90, 1e-2);
+      expect(coords[0][0]).to.roughlyEqual(1113194.9, 1e-2);
       expect(coords[0][1]).to.roughlyEqual(2273030.92, 1e-2);
       expect(coords[1][0]).to.roughlyEqual(3339584.72, 1e-2);
       expect(coords[1][1]).to.roughlyEqual(4865942.27, 1e-2);
     });
-
   });
-
 });

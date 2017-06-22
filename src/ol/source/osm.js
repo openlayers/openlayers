@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.source.XYZ');
 
-
 /**
  * @classdesc
  * Layer source for the OpenStreetMap tile server.
@@ -15,7 +14,6 @@ goog.require('ol.source.XYZ');
  * @api
  */
 ol.source.OSM = function(opt_options) {
-
   var options = opt_options || {};
 
   var attributions;
@@ -25,11 +23,13 @@ ol.source.OSM = function(opt_options) {
     attributions = [ol.source.OSM.ATTRIBUTION];
   }
 
-  var crossOrigin = options.crossOrigin !== undefined ?
-      options.crossOrigin : 'anonymous';
+  var crossOrigin = options.crossOrigin !== undefined
+    ? options.crossOrigin
+    : 'anonymous';
 
-  var url = options.url !== undefined ?
-      options.url : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+  var url = options.url !== undefined
+    ? options.url
+    : 'https://{a-c}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   ol.source.XYZ.call(this, {
     attributions: attributions,
@@ -42,10 +42,8 @@ ol.source.OSM = function(opt_options) {
     url: url,
     wrapX: options.wrapX
   });
-
 };
 ol.inherits(ol.source.OSM, ol.source.XYZ);
-
 
 /**
  * The attribution containing a link to the OpenStreetMap Copyright and License
@@ -55,7 +53,8 @@ ol.inherits(ol.source.OSM, ol.source.XYZ);
  * @api
  */
 ol.source.OSM.ATTRIBUTION = new ol.Attribution({
-  html: '&copy; ' +
+  html:
+    '&copy; ' +
       '<a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> ' +
       'contributors.'
 });

@@ -12,14 +12,17 @@ goog.require('ol');
  * @param {number} code Error code.
  */
 ol.AssertionError = function(code) {
-
   var path = ol.VERSION ? ol.VERSION.split('-')[0] : 'latest';
 
   /**
    * @type {string}
    */
-  this.message = 'Assertion failed. See https://openlayers.org/en/' + path +
-      '/doc/errors/#' + code + ' for details.';
+  this.message =
+    'Assertion failed. See https://openlayers.org/en/' +
+    path +
+    '/doc/errors/#' +
+    code +
+    ' for details.';
 
   /**
    * Error code. The meaning of the code can be found on
@@ -32,6 +35,5 @@ ol.AssertionError = function(code) {
   this.code = code;
 
   this.name = 'AssertionError';
-
 };
 ol.inherits(ol.AssertionError, Error);

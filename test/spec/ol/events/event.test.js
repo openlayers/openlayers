@@ -3,7 +3,6 @@ goog.provide('ol.test.events.Event');
 goog.require('ol.events.Event');
 
 describe('ol.events.Event', function() {
-
   describe('constructor', function() {
     it('takes a type as argument', function() {
       var event = new ol.events.Event('foo');
@@ -46,5 +45,4 @@ describe('ol.events.Event', function() {
       expect(event.stopPropagation.called).to.be(true);
     });
   });
-
 });

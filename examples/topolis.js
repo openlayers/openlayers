@@ -178,7 +178,13 @@ function onDrawend(e) {
     var edgesAtStart = topo.getEdgeByPoint(startCoord, 5);
     var edgesAtEnd = topo.getEdgeByPoint(endCoord, 5);
     var crossing = topo.getEdgesByLine(edgeGeom);
-    if (crossing.length === 1 && !start && !end && edgesAtStart.length === 0 && edgesAtEnd.length === 0) {
+    if (
+      crossing.length === 1 &&
+      !start &&
+      !end &&
+      edgesAtStart.length === 0 &&
+      edgesAtEnd.length === 0
+    ) {
       topo.remEdgeNewFace(crossing[0]);
       start = crossing[0].start;
       if (start.face) {

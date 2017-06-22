@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid');
 
-
 /**
  * @classdesc
  * Layer source for tile data with URLs in a set XYZ format that are
@@ -29,11 +28,13 @@ goog.require('ol.tilegrid');
  */
 ol.source.XYZ = function(opt_options) {
   var options = opt_options || {};
-  var projection = options.projection !== undefined ?
-      options.projection : 'EPSG:3857';
+  var projection = options.projection !== undefined
+    ? options.projection
+    : 'EPSG:3857';
 
-  var tileGrid = options.tileGrid !== undefined ? options.tileGrid :
-      ol.tilegrid.createXYZ({
+  var tileGrid = options.tileGrid !== undefined
+    ? options.tileGrid
+    : ol.tilegrid.createXYZ({
         extent: ol.tilegrid.extentFromProjection(projection),
         maxZoom: options.maxZoom,
         minZoom: options.minZoom,
@@ -56,6 +57,5 @@ ol.source.XYZ = function(opt_options) {
     urls: options.urls,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
-
 };
 ol.inherits(ol.source.XYZ, ol.source.TileImage);

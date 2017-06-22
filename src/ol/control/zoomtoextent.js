@@ -6,7 +6,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.control.Control');
 goog.require('ol.css');
 
-
 /**
  * @classdesc
  * A button control which, when pressed, changes the map view to a specific
@@ -26,12 +25,14 @@ ol.control.ZoomToExtent = function(opt_options) {
    */
   this.extent_ = options.extent ? options.extent : null;
 
-  var className = options.className !== undefined ? options.className :
-      'ol-zoom-extent';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-zoom-extent';
 
   var label = options.label !== undefined ? options.label : 'E';
-  var tipLabel = options.tipLabel !== undefined ?
-      options.tipLabel : 'Fit to extent';
+  var tipLabel = options.tipLabel !== undefined
+    ? options.tipLabel
+    : 'Fit to extent';
   var button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
@@ -39,11 +40,10 @@ ol.control.ZoomToExtent = function(opt_options) {
     typeof label === 'string' ? document.createTextNode(label) : label
   );
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, this);
+  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL;
+  var cssClasses =
+    className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
@@ -55,7 +55,6 @@ ol.control.ZoomToExtent = function(opt_options) {
 };
 ol.inherits(ol.control.ZoomToExtent, ol.control.Control);
 
-
 /**
  * @param {Event} event The event to handle
  * @private
@@ -64,7 +63,6 @@ ol.control.ZoomToExtent.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleZoomToExtent_();
 };
-
 
 /**
  * @private

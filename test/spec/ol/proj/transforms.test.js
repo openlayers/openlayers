@@ -3,9 +3,7 @@ goog.provide('ol.test.proj.transforms');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.transforms');
 
-
 describe('ol.proj.transforms.remove()', function() {
-
   var extent = [180, -90, 180, 90];
   var units = 'degrees';
 
@@ -32,5 +30,4 @@ describe('ol.proj.transforms.remove()', function() {
     expect(removed).to.be(transform);
     expect(ol.proj.transforms.cache_.foo).to.be(undefined);
   });
-
 });

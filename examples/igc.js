@@ -14,7 +14,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var colors = {
   'Clement Latour': 'rgba(0, 0, 255, 0.7)',
   'Damien de Baesnt': 'rgba(0, 215, 255, 0.7)',
@@ -61,8 +60,9 @@ function get(url, callback) {
 var igcFormat = new ol.format.IGC();
 for (var i = 0; i < igcUrls.length; ++i) {
   get(igcUrls[i], function(data) {
-    var features = igcFormat.readFeatures(data,
-        {featureProjection: 'EPSG:3857'});
+    var features = igcFormat.readFeatures(data, {
+      featureProjection: 'EPSG:3857'
+    });
     vectorSource.addFeatures(features);
   });
 }
@@ -79,7 +79,6 @@ vectorSource.on('addfeature', function(event) {
   time.duration = time.stop - time.start;
 });
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -88,7 +87,8 @@ var map = new ol.Map({
           'All maps © <a href="https://www.opencyclemap.org/">OpenCycleMap</a>',
           ol.source.OSM.ATTRIBUTION
         ],
-        url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
+        url:
+          'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
             '?apikey=0e6fc415256d4fbb9b5166a718591d71'
       })
     }),
@@ -99,16 +99,15 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     center: [703365.7089403362, 5714629.865071137],
     zoom: 9
   })
 });
-
 
 var point = null;
 var line = null;
@@ -129,7 +128,7 @@ var displaySnap = function(coordinate) {
     }
     var date = new Date(closestPoint[2] * 1000);
     info.innerHTML =
-        closestFeature.get('PLT') + ' (' + date.toUTCString() + ')';
+      closestFeature.get('PLT') + ' (' + date.toUTCString() + ')';
     var coordinates = [coordinate, [closestPoint[0], closestPoint[1]]];
     if (line === null) {
       line = new ol.geom.LineString(coordinates);
@@ -190,9 +189,9 @@ var featureOverlay = new ol.layer.Vector({
 
 document.getElementById('time').addEventListener('input', function() {
   var value = parseInt(this.value, 10) / 100;
-  var m = time.start + (time.duration * value);
+  var m = time.start + time.duration * value;
   vectorSource.forEachFeature(function(feature) {
-    var geometry = /** @type {ol.geom.LineString} */ (feature.getGeometry());
+    var geometry /** @type {ol.geom.LineString} */ = feature.getGeometry();
     var coordinate = geometry.getCoordinateAtM(m, true);
     var highlight = feature.get('highlight');
     if (highlight === undefined) {

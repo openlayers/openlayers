@@ -2,12 +2,10 @@ goog.provide('ol.style.IconImageCache');
 
 goog.require('ol.color');
 
-
 /**
  * @constructor
  */
 ol.style.IconImageCache = function() {
-
   /**
    * @type {Object.<string, ol.style.IconImage>}
    * @private
@@ -28,7 +26,6 @@ ol.style.IconImageCache = function() {
   this.maxCacheSize_ = 32;
 };
 
-
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
@@ -40,7 +37,6 @@ ol.style.IconImageCache.getKey = function(src, crossOrigin, color) {
   return crossOrigin + ':' + src + ':' + colorString;
 };
 
-
 /**
  * FIXME empty description for jsdoc
  */
@@ -48,7 +44,6 @@ ol.style.IconImageCache.prototype.clear = function() {
   this.cache_ = {};
   this.cacheSize_ = 0;
 };
-
 
 /**
  * FIXME empty description for jsdoc
@@ -67,7 +62,6 @@ ol.style.IconImageCache.prototype.expire = function() {
   }
 };
 
-
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
@@ -79,14 +73,18 @@ ol.style.IconImageCache.prototype.get = function(src, crossOrigin, color) {
   return key in this.cache_ ? this.cache_[key] : null;
 };
 
-
 /**
  * @param {string} src Src.
  * @param {?string} crossOrigin Cross origin.
  * @param {ol.Color} color Color.
  * @param {ol.style.IconImage} iconImage Icon image.
  */
-ol.style.IconImageCache.prototype.set = function(src, crossOrigin, color, iconImage) {
+ol.style.IconImageCache.prototype.set = function(
+  src,
+  crossOrigin,
+  color,
+  iconImage
+) {
   var key = ol.style.IconImageCache.getKey(src, crossOrigin, color);
   this.cache_[key] = iconImage;
   ++this.cacheSize_;

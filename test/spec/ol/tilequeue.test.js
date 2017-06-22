@@ -6,9 +6,7 @@ goog.require('ol.TileQueue');
 goog.require('ol.source.Image');
 goog.require('ol.structs.PriorityQueue');
 
-
 describe('ol.TileQueue', function() {
-
   function addRandomPriorityTiles(tq, num) {
     var i, tile, priority;
     for (i = 0; i < num; i++) {
@@ -25,11 +23,14 @@ describe('ol.TileQueue', function() {
     ++tileId;
     var tileCoord = [tileId, tileId, tileId];
     var state = 0; // IDLE
-    var src = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///' +
-        'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' + tileId;
+    var src =
+      'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///' +
+      'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' +
+      tileId;
 
-    var tileLoadFunction = opt_tileLoadFunction ?
-        opt_tileLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    var tileLoadFunction = opt_tileLoadFunction
+      ? opt_tileLoadFunction
+      : ol.source.Image.defaultImageLoadFunction;
     return new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
 
@@ -83,7 +84,6 @@ describe('ol.TileQueue', function() {
 
         done();
       }, 20);
-
     });
 
     it('calls #tileChangeCallback_ when all wanted tiles are aborted', function() {
@@ -99,12 +99,10 @@ describe('ol.TileQueue', function() {
       queue.loadMoreTiles(maxLoading, maxLoading);
       expect(tileChangeCallback.callCount).to.be(1);
     });
-
   });
 
   describe('heapify', function() {
     it('does convert an arbitrary array into a heap', function() {
-
       var tq = new ol.TileQueue(function() {});
       addRandomPriorityTiles(tq, 100);
 
@@ -114,7 +112,6 @@ describe('ol.TileQueue', function() {
 
   describe('reprioritize', function() {
     it('does reprioritize the array', function() {
-
       var tq = new ol.TileQueue(function() {});
       addRandomPriorityTiles(tq, 100);
 
@@ -125,7 +122,7 @@ describe('ol.TileQueue', function() {
 
       var i = 0;
       tq.priorityFunction_ = function() {
-        if ((i++) % 2 === 0) {
+        if (i++ % 2 === 0) {
           return ol.structs.PriorityQueue.DROP;
         }
         return Math.floor(Math.random() * 100);
@@ -134,7 +131,6 @@ describe('ol.TileQueue', function() {
       tq.reprioritize();
       expect(tq.elements_.length).to.eql(50);
       expect(tq.priorities_.length).to.eql(50);
-
     });
   });
 
@@ -167,9 +163,6 @@ describe('ol.TileQueue', function() {
       expect(tq.getTilesLoading()).to.eql(0);
       expect(tile.hasListener('change')).to.be(false);
       expect(tile.getState()).to.eql(5); // ABORT
-
     });
-
   });
-
 });

@@ -13,7 +13,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Text');
 
-
 /**
  * Render a grid for a coordinate system on a map.
  * @constructor
@@ -23,86 +22,87 @@ goog.require('ol.style.Text');
 ol.Graticule = function(opt_options) {
   var options = opt_options || {};
 
- /**
+  /**
   * @type {ol.Map}
   * @private
   */
   this.map_ = null;
 
- /**
+  /**
   * @type {ol.proj.Projection}
   * @private
   */
   this.projection_ = null;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.maxLat_ = Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.maxLon_ = Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.minLat_ = -Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.minLon_ = -Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.maxLatP_ = Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.maxLonP_ = Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.minLatP_ = -Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.minLonP_ = -Infinity;
 
- /**
+  /**
   * @type {number}
   * @private
   */
-  this.targetSize_ = options.targetSize !== undefined ?
-     options.targetSize : 100;
+  this.targetSize_ = options.targetSize !== undefined
+    ? options.targetSize
+    : 100;
 
- /**
+  /**
   * @type {number}
   * @private
   */
   this.maxLines_ = options.maxLines !== undefined ? options.maxLines : 100;
 
- /**
+  /**
   * @type {Array.<ol.geom.LineString>}
   * @private
   */
   this.meridians_ = [];
 
- /**
+  /**
   * @type {Array.<ol.geom.LineString>}
   * @private
   */
@@ -112,8 +112,9 @@ ol.Graticule = function(opt_options) {
    * @type {ol.style.Stroke}
    * @private
    */
-  this.strokeStyle_ = options.strokeStyle !== undefined ?
-     options.strokeStyle : ol.Graticule.DEFAULT_STROKE_STYLE_;
+  this.strokeStyle_ = options.strokeStyle !== undefined
+    ? options.strokeStyle
+    : ol.Graticule.DEFAULT_STROKE_STYLE_;
 
   /**
    * @type {ol.TransformFunction|undefined}
@@ -152,15 +153,17 @@ ol.Graticule = function(opt_options) {
      * @type {null|function(number):string}
      * @private
      */
-    this.lonLabelFormatter_ = options.lonLabelFormatter == undefined ?
-        degreesToString.bind(this, 'EW') : options.lonLabelFormatter;
+    this.lonLabelFormatter_ = options.lonLabelFormatter == undefined
+      ? degreesToString.bind(this, 'EW')
+      : options.lonLabelFormatter;
 
     /**
      * @type {function(number):string}
      * @private
      */
-    this.latLabelFormatter_ = options.latLabelFormatter == undefined ?
-        degreesToString.bind(this, 'NS') : options.latLabelFormatter;
+    this.latLabelFormatter_ = options.latLabelFormatter == undefined
+      ? degreesToString.bind(this, 'NS')
+      : options.latLabelFormatter;
 
     /**
      * Longitude label position in fractions (0..1) of view extent. 0 means
@@ -168,8 +171,9 @@ ol.Graticule = function(opt_options) {
      * @type {number}
      * @private
      */
-    this.lonLabelPosition_ = options.lonLabelPosition == undefined ? 0 :
-        options.lonLabelPosition;
+    this.lonLabelPosition_ = options.lonLabelPosition == undefined
+      ? 0
+      : options.lonLabelPosition;
 
     /**
      * Latitude Label position in fractions (0..1) of view extent. 0 means left, 1
@@ -177,15 +181,17 @@ ol.Graticule = function(opt_options) {
      * @type {number}
      * @private
      */
-    this.latLabelPosition_ = options.latLabelPosition == undefined ? 1 :
-        options.latLabelPosition;
+    this.latLabelPosition_ = options.latLabelPosition == undefined
+      ? 1
+      : options.latLabelPosition;
 
     /**
      * @type {ol.style.Text}
      * @private
      */
-    this.lonLabelStyle_ = options.lonLabelStyle !== undefined ? options.lonLabelStyle :
-        new ol.style.Text({
+    this.lonLabelStyle_ = options.lonLabelStyle !== undefined
+      ? options.lonLabelStyle
+      : new ol.style.Text({
           font: '12px Calibri,sans-serif',
           textBaseline: 'bottom',
           fill: new ol.style.Fill({
@@ -201,8 +207,9 @@ ol.Graticule = function(opt_options) {
      * @type {ol.style.Text}
      * @private
      */
-    this.latLabelStyle_ = options.latLabelStyle !== undefined ? options.latLabelStyle :
-        new ol.style.Text({
+    this.latLabelStyle_ = options.latLabelStyle !== undefined
+      ? options.latLabelStyle
+      : new ol.style.Text({
           font: '12px Calibri,sans-serif',
           textAlign: 'end',
           fill: new ol.style.Fill({
@@ -221,7 +228,6 @@ ol.Graticule = function(opt_options) {
   this.setMap(options.map !== undefined ? options.map : null);
 };
 
-
 /**
  * @type {ol.style.Stroke}
  * @private
@@ -231,15 +237,29 @@ ol.Graticule.DEFAULT_STROKE_STYLE_ = new ol.style.Stroke({
   color: 'rgba(0,0,0,0.2)'
 });
 
-
 /**
  * TODO can be configurable
  * @type {Array.<number>}
  * @private
  */
-ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
-  0.01, 0.005, 0.002, 0.001];
-
+ol.Graticule.intervals_ = [
+  90,
+  45,
+  30,
+  20,
+  10,
+  5,
+  2,
+  1,
+  0.5,
+  0.2,
+  0.1,
+  0.05,
+  0.01,
+  0.005,
+  0.002,
+  0.001
+];
 
 /**
  * @param {number} lon Longitude.
@@ -251,9 +271,21 @@ ol.Graticule.intervals_ = [90, 45, 30, 20, 10, 5, 2, 1, 0.5, 0.2, 0.1, 0.05,
  * @return {number} Index.
  * @private
  */
-ol.Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredTolerance, extent, index) {
-  var lineString = this.getMeridian_(lon, minLat, maxLat,
-      squaredTolerance, index);
+ol.Graticule.prototype.addMeridian_ = function(
+  lon,
+  minLat,
+  maxLat,
+  squaredTolerance,
+  extent,
+  index
+) {
+  var lineString = this.getMeridian_(
+    lon,
+    minLat,
+    maxLat,
+    squaredTolerance,
+    index
+  );
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     if (this.meridiansLabels_) {
       var textPoint = this.getMeridianPoint_(lineString, extent, index);
@@ -277,17 +309,22 @@ ol.Graticule.prototype.addMeridian_ = function(lon, minLat, maxLat, squaredToler
 ol.Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
   var flatCoordinates = lineString.getFlatCoordinates();
   var clampedBottom = Math.max(extent[1], flatCoordinates[1]);
-  var clampedTop = Math.min(extent[3], flatCoordinates[flatCoordinates.length - 1]);
+  var clampedTop = Math.min(
+    extent[3],
+    flatCoordinates[flatCoordinates.length - 1]
+  );
   var lat = ol.math.clamp(
-      extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
-      clampedBottom, clampedTop);
+    extent[1] + Math.abs(extent[1] - extent[3]) * this.lonLabelPosition_,
+    clampedBottom,
+    clampedTop
+  );
   var coordinate = [flatCoordinates[0], lat];
-  var point = this.meridiansLabels_[index] !== undefined ?
-      this.meridiansLabels_[index].geom : new ol.geom.Point(null);
+  var point = this.meridiansLabels_[index] !== undefined
+    ? this.meridiansLabels_[index].geom
+    : new ol.geom.Point(null);
   point.setCoordinates(coordinate);
   return point;
 };
-
 
 /**
  * @param {number} lat Latitude.
@@ -299,9 +336,21 @@ ol.Graticule.prototype.getMeridianPoint_ = function(lineString, extent, index) {
  * @return {number} Index.
  * @private
  */
-ol.Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredTolerance, extent, index) {
-  var lineString = this.getParallel_(lat, minLon, maxLon, squaredTolerance,
-      index);
+ol.Graticule.prototype.addParallel_ = function(
+  lat,
+  minLon,
+  maxLon,
+  squaredTolerance,
+  extent,
+  index
+) {
+  var lineString = this.getParallel_(
+    lat,
+    minLon,
+    maxLon,
+    squaredTolerance,
+    index
+  );
   if (ol.extent.intersects(lineString.getExtent(), extent)) {
     if (this.parallelsLabels_) {
       var textPoint = this.getParallelPoint_(lineString, extent, index);
@@ -315,7 +364,6 @@ ol.Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredToler
   return index;
 };
 
-
 /**
  * @param {ol.geom.LineString} lineString Parallels.
  * @param {ol.Extent} extent Extent.
@@ -326,17 +374,22 @@ ol.Graticule.prototype.addParallel_ = function(lat, minLon, maxLon, squaredToler
 ol.Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
   var flatCoordinates = lineString.getFlatCoordinates();
   var clampedLeft = Math.max(extent[0], flatCoordinates[0]);
-  var clampedRight = Math.min(extent[2], flatCoordinates[flatCoordinates.length - 2]);
+  var clampedRight = Math.min(
+    extent[2],
+    flatCoordinates[flatCoordinates.length - 2]
+  );
   var lon = ol.math.clamp(
-      extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
-      clampedLeft, clampedRight);
+    extent[0] + Math.abs(extent[0] - extent[2]) * this.latLabelPosition_,
+    clampedLeft,
+    clampedRight
+  );
   var coordinate = [lon, flatCoordinates[1]];
-  var point = this.parallelsLabels_[index] !== undefined ?
-      this.parallelsLabels_[index].geom : new ol.geom.Point(null);
+  var point = this.parallelsLabels_[index] !== undefined
+    ? this.parallelsLabels_[index].geom
+    : new ol.geom.Point(null);
   point.setCoordinates(coordinate);
   return point;
 };
-
 
 /**
  * @param {ol.Extent} extent Extent.
@@ -345,8 +398,12 @@ ol.Graticule.prototype.getParallelPoint_ = function(lineString, extent, index) {
  * @param {number} squaredTolerance Squared tolerance.
  * @private
  */
-ol.Graticule.prototype.createGraticule_ = function(extent, center, resolution, squaredTolerance) {
-
+ol.Graticule.prototype.createGraticule_ = function(
+  extent,
+  center,
+  resolution,
+  squaredTolerance
+) {
   var interval = this.getInterval_(resolution);
   if (interval == -1) {
     this.meridians_.length = this.parallels_.length = 0;
@@ -372,8 +429,11 @@ ol.Graticule.prototype.createGraticule_ = function(extent, center, resolution, s
     Math.min(extent[3], this.maxLatP_)
   ];
 
-  validExtent = ol.proj.transformExtent(validExtent, this.projection_,
-      'EPSG:4326');
+  validExtent = ol.proj.transformExtent(
+    validExtent,
+    this.projection_,
+    'EPSG:4326'
+  );
   var maxLat = validExtent[3];
   var maxLon = validExtent[2];
   var minLat = validExtent[1];
@@ -430,9 +490,7 @@ ol.Graticule.prototype.createGraticule_ = function(extent, center, resolution, s
   if (this.parallelsLabels_) {
     this.parallelsLabels_.length = idx;
   }
-
 };
-
 
 /**
  * @param {number} resolution Resolution.
@@ -466,7 +524,6 @@ ol.Graticule.prototype.getInterval_ = function(resolution) {
   return interval;
 };
 
-
 /**
  * Get the map associated with this graticule.
  * @return {ol.Map} The map.
@@ -475,7 +532,6 @@ ol.Graticule.prototype.getInterval_ = function(resolution) {
 ol.Graticule.prototype.getMap = function() {
   return this.map_;
 };
-
 
 /**
  * @param {number} lon Longitude.
@@ -486,16 +542,26 @@ ol.Graticule.prototype.getMap = function() {
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getMeridian_ = function(lon, minLat, maxLat,
-                                               squaredTolerance, index) {
-  var flatCoordinates = ol.geom.flat.geodesic.meridian(lon,
-     minLat, maxLat, this.projection_, squaredTolerance);
-  var lineString = this.meridians_[index] !== undefined ?
-     this.meridians_[index] : new ol.geom.LineString(null);
+ol.Graticule.prototype.getMeridian_ = function(
+  lon,
+  minLat,
+  maxLat,
+  squaredTolerance,
+  index
+) {
+  var flatCoordinates = ol.geom.flat.geodesic.meridian(
+    lon,
+    minLat,
+    maxLat,
+    this.projection_,
+    squaredTolerance
+  );
+  var lineString = this.meridians_[index] !== undefined
+    ? this.meridians_[index]
+    : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
-
 
 /**
  * Get the list of meridians.  Meridians are lines of equal longitude.
@@ -506,7 +572,6 @@ ol.Graticule.prototype.getMeridians = function() {
   return this.meridians_;
 };
 
-
 /**
  * @param {number} lat Latitude.
  * @param {number} minLon Minimal longitude.
@@ -516,16 +581,26 @@ ol.Graticule.prototype.getMeridians = function() {
  * @param {number} index Index.
  * @private
  */
-ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
-                                               squaredTolerance, index) {
-  var flatCoordinates = ol.geom.flat.geodesic.parallel(lat,
-     this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
-  var lineString = this.parallels_[index] !== undefined ?
-     this.parallels_[index] : new ol.geom.LineString(null);
+ol.Graticule.prototype.getParallel_ = function(
+  lat,
+  minLon,
+  maxLon,
+  squaredTolerance,
+  index
+) {
+  var flatCoordinates = ol.geom.flat.geodesic.parallel(
+    lat,
+    this.minLon_,
+    this.maxLon_,
+    this.projection_,
+    squaredTolerance
+  );
+  var lineString = this.parallels_[index] !== undefined
+    ? this.parallels_[index]
+    : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);
   return lineString;
 };
-
 
 /**
  * Get the list of parallels.  Parallels are lines of equal latitude.
@@ -535,7 +610,6 @@ ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
 ol.Graticule.prototype.getParallels = function() {
   return this.parallels_;
 };
-
 
 /**
  * @param {ol.render.Event} e Event.
@@ -551,10 +625,10 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
   var resolution = viewState.resolution;
   var pixelRatio = frameState.pixelRatio;
   var squaredTolerance =
-      resolution * resolution / (4 * pixelRatio * pixelRatio);
+    resolution * resolution / (4 * pixelRatio * pixelRatio);
 
-  var updateProjectionInfo = !this.projection_ ||
-      !ol.proj.equivalent(this.projection_, projection);
+  var updateProjectionInfo =
+    !this.projection_ || !ol.proj.equivalent(this.projection_, projection);
 
   if (updateProjectionInfo) {
     this.updateProjectionInfo_(projection);
@@ -570,10 +644,7 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
     if (x < projectionExtent[0] || x > projectionExtent[2]) {
       var worldsAway = Math.ceil((projectionExtent[0] - x) / worldWidth);
       offsetX = worldWidth * worldsAway;
-      extent = [
-        extent[0] + offsetX, extent[1],
-        extent[2] + offsetX, extent[3]
-      ];
+      extent = [extent[0] + offsetX, extent[1], extent[2] + offsetX, extent[3]];
     }
   }
 
@@ -609,7 +680,6 @@ ol.Graticule.prototype.handlePostCompose_ = function(e) {
   }
 };
 
-
 /**
  * @param {ol.proj.Projection} projection Projection.
  * @private
@@ -619,8 +689,11 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
 
   var extent = projection.getExtent();
   var worldExtent = projection.getWorldExtent();
-  var worldExtentP = ol.proj.transformExtent(worldExtent,
-     epsg4326Projection, projection);
+  var worldExtentP = ol.proj.transformExtent(
+    worldExtent,
+    epsg4326Projection,
+    projection
+  );
 
   var maxLat = worldExtent[3];
   var maxLon = worldExtent[2];
@@ -642,19 +715,22 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
   this.minLatP_ = minLatP;
   this.minLonP_ = minLonP;
 
-
   this.fromLonLatTransform_ = ol.proj.getTransform(
-     epsg4326Projection, projection);
+    epsg4326Projection,
+    projection
+  );
 
   this.toLonLatTransform_ = ol.proj.getTransform(
-     projection, epsg4326Projection);
+    projection,
+    epsg4326Projection
+  );
 
   this.projectionCenterLonLat_ = this.toLonLatTransform_(
-     ol.extent.getCenter(extent));
+    ol.extent.getCenter(extent)
+  );
 
   this.projection_ = projection;
 };
-
 
 /**
  * Set the map for this graticule.  The graticule will be rendered on the
@@ -664,13 +740,15 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
  */
 ol.Graticule.prototype.setMap = function(map) {
   if (this.map_) {
-    this.map_.un(ol.render.EventType.POSTCOMPOSE,
-        this.handlePostCompose_, this);
+    this.map_.un(
+      ol.render.EventType.POSTCOMPOSE,
+      this.handlePostCompose_,
+      this
+    );
     this.map_.render();
   }
   if (map) {
-    map.on(ol.render.EventType.POSTCOMPOSE,
-        this.handlePostCompose_, this);
+    map.on(ol.render.EventType.POSTCOMPOSE, this.handlePostCompose_, this);
     map.render();
   }
   this.map_ = map;

@@ -12,7 +12,6 @@ goog.require('ol.geom.flat.flip');
 goog.require('ol.geom.flat.inflate');
 goog.require('ol.proj');
 
-
 /**
  * @classdesc
  * Feature format for reading and writing data in the Encoded
@@ -25,7 +24,6 @@ goog.require('ol.proj');
  * @api
  */
 ol.format.Polyline = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   ol.format.TextFeature.call(this);
@@ -45,11 +43,11 @@ ol.format.Polyline = function(opt_options) {
    * @private
    * @type {ol.geom.GeometryLayout}
    */
-  this.geometryLayout_ = options.geometryLayout ?
-      options.geometryLayout : ol.geom.GeometryLayout.XY;
+  this.geometryLayout_ = options.geometryLayout
+    ? options.geometryLayout
+    : ol.geom.GeometryLayout.XY;
 };
 ol.inherits(ol.format.Polyline, ol.format.TextFeature);
-
 
 /**
  * Encode a list of n-dimensional points and return an encoded string
@@ -74,7 +72,7 @@ ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
   }
 
   var i, ii;
-  for (i = 0, ii = numbers.length; i < ii;) {
+  for (i = 0, ii = numbers.length; i < ii; ) {
     for (d = 0; d < stride; ++d, ++i) {
       var num = numbers[i];
       var delta = num - lastNumbers[d];
@@ -86,7 +84,6 @@ ol.format.Polyline.encodeDeltas = function(numbers, stride, opt_factor) {
 
   return ol.format.Polyline.encodeFloats(numbers, factor);
 };
-
 
 /**
  * Decode a list of n-dimensional points from an encoded string
@@ -112,7 +109,7 @@ ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
   var numbers = ol.format.Polyline.decodeFloats(encoded, factor);
 
   var i, ii;
-  for (i = 0, ii = numbers.length; i < ii;) {
+  for (i = 0, ii = numbers.length; i < ii; ) {
     for (d = 0; d < stride; ++d, ++i) {
       lastNumbers[d] += numbers[i];
 
@@ -122,7 +119,6 @@ ol.format.Polyline.decodeDeltas = function(encoded, stride, opt_factor) {
 
   return numbers;
 };
-
 
 /**
  * Encode a list of floating point numbers and return an encoded string
@@ -146,7 +142,6 @@ ol.format.Polyline.encodeFloats = function(numbers, opt_factor) {
   return ol.format.Polyline.encodeSignedIntegers(numbers);
 };
 
-
 /**
  * Decode a list of floating point numbers from an encoded string
  *
@@ -166,7 +161,6 @@ ol.format.Polyline.decodeFloats = function(encoded, opt_factor) {
   return numbers;
 };
 
-
 /**
  * Encode a list of signed integers and return an encoded string
  *
@@ -179,11 +173,10 @@ ol.format.Polyline.encodeSignedIntegers = function(numbers) {
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     var num = numbers[i];
-    numbers[i] = (num < 0) ? ~(num << 1) : (num << 1);
+    numbers[i] = num < 0 ? ~(num << 1) : num << 1;
   }
   return ol.format.Polyline.encodeUnsignedIntegers(numbers);
 };
-
 
 /**
  * Decode a list of signed integers from an encoded string
@@ -196,11 +189,10 @@ ol.format.Polyline.decodeSignedIntegers = function(encoded) {
   var i, ii;
   for (i = 0, ii = numbers.length; i < ii; ++i) {
     var num = numbers[i];
-    numbers[i] = (num & 1) ? ~(num >> 1) : (num >> 1);
+    numbers[i] = num & 1 ? ~(num >> 1) : num >> 1;
   }
   return numbers;
 };
-
 
 /**
  * Encode a list of unsigned integers and return an encoded string
@@ -216,7 +208,6 @@ ol.format.Polyline.encodeUnsignedIntegers = function(numbers) {
   }
   return encoded;
 };
-
 
 /**
  * Decode a list of unsigned integers from an encoded string
@@ -243,7 +234,6 @@ ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
   return numbers;
 };
 
-
 /**
  * Encode one single unsigned integer and return an encoded string
  *
@@ -251,7 +241,8 @@ ol.format.Polyline.decodeUnsignedIntegers = function(encoded) {
  * @return {string} The encoded string.
  */
 ol.format.Polyline.encodeUnsignedInteger = function(num) {
-  var value, encoded = '';
+  var value,
+    encoded = '';
   while (num >= 0x20) {
     value = (0x20 | (num & 0x1f)) + 63;
     encoded += String.fromCharCode(value);
@@ -261,7 +252,6 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
   encoded += String.fromCharCode(value);
   return encoded;
 };
-
 
 /**
  * Read the feature from the Polyline source. The coordinates are assumed to be
@@ -275,7 +265,6 @@ ol.format.Polyline.encodeUnsignedInteger = function(num) {
  */
 ol.format.Polyline.prototype.readFeature;
 
-
 /**
  * @inheritDoc
  */
@@ -283,7 +272,6 @@ ol.format.Polyline.prototype.readFeatureFromText = function(text, opt_options) {
   var geometry = this.readGeometryFromText(text, opt_options);
   return new ol.Feature(geometry);
 };
-
 
 /**
  * Read the feature from the source. As Polyline sources contain a single
@@ -297,15 +285,16 @@ ol.format.Polyline.prototype.readFeatureFromText = function(text, opt_options) {
  */
 ol.format.Polyline.prototype.readFeatures;
 
-
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.readFeaturesFromText = function(text, opt_options) {
+ol.format.Polyline.prototype.readFeaturesFromText = function(
+  text,
+  opt_options
+) {
   var feature = this.readFeatureFromText(text, opt_options);
   return [feature];
 };
-
 
 /**
  * Read the geometry from the source.
@@ -318,25 +307,39 @@ ol.format.Polyline.prototype.readFeaturesFromText = function(text, opt_options) 
  */
 ol.format.Polyline.prototype.readGeometry;
 
-
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.readGeometryFromText = function(text, opt_options) {
+ol.format.Polyline.prototype.readGeometryFromText = function(
+  text,
+  opt_options
+) {
   var stride = ol.geom.SimpleGeometry.getStrideForLayout(this.geometryLayout_);
   var flatCoordinates = ol.format.Polyline.decodeDeltas(
-      text, stride, this.factor_);
+    text,
+    stride,
+    this.factor_
+  );
   ol.geom.flat.flip.flipXY(
-      flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+    flatCoordinates,
+    0,
+    flatCoordinates.length,
+    stride,
+    flatCoordinates
+  );
   var coordinates = ol.geom.flat.inflate.coordinates(
-      flatCoordinates, 0, flatCoordinates.length, stride);
+    flatCoordinates,
+    0,
+    flatCoordinates.length,
+    stride
+  );
 
-  return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(
-          new ol.geom.LineString(coordinates, this.geometryLayout_), false,
-          this.adaptOptions(opt_options)));
+  return /** @type {ol.geom.Geometry} */ ol.format.Feature.transformWithOptions(
+    new ol.geom.LineString(coordinates, this.geometryLayout_),
+    false,
+    this.adaptOptions(opt_options)
+  );
 };
-
 
 /**
  * Read the projection from a Polyline source.
@@ -347,7 +350,6 @@ ol.format.Polyline.prototype.readGeometryFromText = function(text, opt_options) 
  * @api
  */
 ol.format.Polyline.prototype.readProjection;
-
 
 /**
  * @inheritDoc
@@ -362,14 +364,15 @@ ol.format.Polyline.prototype.writeFeatureText = function(feature, opt_options) {
   }
 };
 
-
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options) {
+ol.format.Polyline.prototype.writeFeaturesText = function(
+  features,
+  opt_options
+) {
   return this.writeFeatureText(features[0], opt_options);
 };
-
 
 /**
  * Write a single geometry in Polyline format.
@@ -382,17 +385,26 @@ ol.format.Polyline.prototype.writeFeaturesText = function(features, opt_options)
  */
 ol.format.Polyline.prototype.writeGeometry;
 
-
 /**
  * @inheritDoc
  */
-ol.format.Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
-  geometry = /** @type {ol.geom.LineString} */
-      (ol.format.Feature.transformWithOptions(
-          geometry, true, this.adaptOptions(opt_options)));
+ol.format.Polyline.prototype.writeGeometryText = function(
+  geometry,
+  opt_options
+) {
+  geometry /** @type {ol.geom.LineString} */ = ol.format.Feature.transformWithOptions(
+    geometry,
+    true,
+    this.adaptOptions(opt_options)
+  );
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   ol.geom.flat.flip.flipXY(
-      flatCoordinates, 0, flatCoordinates.length, stride, flatCoordinates);
+    flatCoordinates,
+    0,
+    flatCoordinates.length,
+    stride,
+    flatCoordinates
+  );
   return ol.format.Polyline.encodeDeltas(flatCoordinates, stride, this.factor_);
 };

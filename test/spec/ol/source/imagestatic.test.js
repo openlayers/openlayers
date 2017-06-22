@@ -3,27 +3,30 @@ goog.provide('ol.test.source.ImageStatic');
 goog.require('ol.source.ImageStatic');
 goog.require('ol.proj');
 
-
 describe('ol.source.ImageStatic', function() {
-
   var extent, pixelRatio, projection, resolution;
   beforeEach(function() {
     extent = [
-      -13637278.73946974, 4543799.13271362,
-      -13617443.330629736, 4553927.038961405];
+      -13637278.73946974,
+      4543799.13271362,
+      -13617443.330629736,
+      4553927.038961405
+    ];
     pixelRatio = 1;
     projection = ol.proj.get('EPSG:3857');
     resolution = 38;
   });
 
   describe('#getImage', function() {
-
     it('scales image to fit imageExtent', function(done) {
       var source = new ol.source.ImageStatic({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067, 4539747.983913189,
-          -13619243.951739565, 4559315.863154193],
+          -13629027.891360067,
+          4539747.983913189,
+          -13619243.951739565,
+          4559315.863154193
+        ],
         projection: projection
       });
 
@@ -42,8 +45,11 @@ describe('ol.source.ImageStatic', function() {
       var source = new ol.source.ImageStatic({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067, 4539747.983913189,
-          -13619243.951739565, 4559315.863154193],
+          -13629027.891360067,
+          4539747.983913189,
+          -13619243.951739565,
+          4559315.863154193
+        ],
         imageSize: [254, 254],
         projection: projection
       });
@@ -63,8 +69,11 @@ describe('ol.source.ImageStatic', function() {
       var source = new ol.source.ImageStatic({
         url: 'spec/ol/source/images/12-655-1583.png',
         imageExtent: [
-          -13629027.891360067, 4539747.983913189,
-          -13619243.951739565, 4549531.923533691],
+          -13629027.891360067,
+          4539747.983913189,
+          -13619243.951739565,
+          4549531.923533691
+        ],
         projection: projection
       });
 

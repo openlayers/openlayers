@@ -5,7 +5,6 @@ goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -21,7 +20,6 @@ goog.require('ol.events.EventType');
  * @api
  */
 ol.Observable = function() {
-
   ol.events.EventTarget.call(this);
 
   /**
@@ -29,10 +27,8 @@ ol.Observable = function() {
    * @type {number}
    */
   this.revision_ = 0;
-
 };
 ol.inherits(ol.Observable, ol.events.EventTarget);
-
 
 /**
  * Removes an event listener using the key returned by `on()` or `once()`.
@@ -46,10 +42,9 @@ ol.Observable.unByKey = function(key) {
       ol.events.unlistenByKey(key[i]);
     }
   } else {
-    ol.events.unlistenByKey(/** @type {ol.EventsKey} */ (key));
+    ol.events.unlistenByKey /** @type {ol.EventsKey} */(key);
   }
 };
-
 
 /**
  * Increases the revision counter and dispatches a 'change' event.
@@ -59,7 +54,6 @@ ol.Observable.prototype.changed = function() {
   ++this.revision_;
   this.dispatchEvent(ol.events.EventType.CHANGE);
 };
-
 
 /**
  * Dispatches an event and calls all listeners listening for events
@@ -74,7 +68,6 @@ ol.Observable.prototype.changed = function() {
  */
 ol.Observable.prototype.dispatchEvent;
 
-
 /**
  * Get the version number for this object.  Each time the object is modified,
  * its version number will be incremented.
@@ -84,7 +77,6 @@ ol.Observable.prototype.dispatchEvent;
 ol.Observable.prototype.getRevision = function() {
   return this.revision_;
 };
-
 
 /**
  * Listen for a certain type of event.
@@ -106,10 +98,13 @@ ol.Observable.prototype.on = function(type, listener, opt_this) {
     return keys;
   } else {
     return ol.events.listen(
-        this, /** @type {string} */ (type), listener, opt_this);
+      this /** @type {string} */,
+      type,
+      listener,
+      opt_this
+    );
   }
 };
-
 
 /**
  * Listen once for a certain type of event.
@@ -131,10 +126,13 @@ ol.Observable.prototype.once = function(type, listener, opt_this) {
     return keys;
   } else {
     return ol.events.listenOnce(
-        this, /** @type {string} */ (type), listener, opt_this);
+      this /** @type {string} */,
+      type,
+      listener,
+      opt_this
+    );
   }
 };
-
 
 /**
  * Unlisten for a certain type of event.
@@ -151,6 +149,6 @@ ol.Observable.prototype.un = function(type, listener, opt_this) {
     }
     return;
   } else {
-    ol.events.unlisten(this, /** @type {string} */ (type), listener, opt_this);
+    ol.events.unlisten(this /** @type {string} */, type, listener, opt_this);
   }
 };

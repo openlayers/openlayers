@@ -16,19 +16,16 @@ goog.require('ol.style.Icon');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 /**
  * Define a namespace for the application.
  */
 var app = {};
-
 
 /**
  * @constructor
  * @extends {ol.interaction.Pointer}
  */
 app.Drag = function() {
-
   ol.interaction.Pointer.call(this, {
     handleDownEvent: app.Drag.prototype.handleDownEvent,
     handleDragEvent: app.Drag.prototype.handleDragEvent,
@@ -59,10 +56,8 @@ app.Drag = function() {
    * @private
    */
   this.previousCursor_ = undefined;
-
 };
 ol.inherits(app.Drag, ol.interaction.Pointer);
-
 
 /**
  * @param {ol.MapBrowserEvent} evt Map browser event.
@@ -71,10 +66,9 @@ ol.inherits(app.Drag, ol.interaction.Pointer);
 app.Drag.prototype.handleDownEvent = function(evt) {
   var map = evt.map;
 
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature) {
-        return feature;
-      });
+  var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+    return feature;
+  });
 
   if (feature) {
     this.coordinate_ = evt.coordinate;
@@ -84,7 +78,6 @@ app.Drag.prototype.handleDownEvent = function(evt) {
   return !!feature;
 };
 
-
 /**
  * @param {ol.MapBrowserEvent} evt Map browser event.
  */
@@ -92,14 +85,12 @@ app.Drag.prototype.handleDragEvent = function(evt) {
   var deltaX = evt.coordinate[0] - this.coordinate_[0];
   var deltaY = evt.coordinate[1] - this.coordinate_[1];
 
-  var geometry = /** @type {ol.geom.SimpleGeometry} */
-      (this.feature_.getGeometry());
+  var geometry /** @type {ol.geom.SimpleGeometry} */ = this.feature_.getGeometry();
   geometry.translate(deltaX, deltaY);
 
   this.coordinate_[0] = evt.coordinate[0];
   this.coordinate_[1] = evt.coordinate[1];
 };
-
 
 /**
  * @param {ol.MapBrowserEvent} evt Event.
@@ -107,10 +98,9 @@ app.Drag.prototype.handleDragEvent = function(evt) {
 app.Drag.prototype.handleMoveEvent = function(evt) {
   if (this.cursor_) {
     var map = evt.map;
-    var feature = map.forEachFeatureAtPixel(evt.pixel,
-        function(feature) {
-          return feature;
-        });
+    var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+      return feature;
+    });
     var element = evt.map.getTargetElement();
     if (feature) {
       if (element.style.cursor != this.cursor_) {
@@ -124,7 +114,6 @@ app.Drag.prototype.handleMoveEvent = function(evt) {
   }
 };
 
-
 /**
  * @return {boolean} `false` to stop the drag sequence.
  */
@@ -134,23 +123,25 @@ app.Drag.prototype.handleUpEvent = function() {
   return false;
 };
 
-
 var pointFeature = new ol.Feature(new ol.geom.Point([0, 0]));
 
 var lineFeature = new ol.Feature(
-    new ol.geom.LineString([[-1e7, 1e6], [-1e6, 3e6]]));
+  new ol.geom.LineString([[-1e7, 1e6], [-1e6, 3e6]])
+);
 
 var polygonFeature = new ol.Feature(
-    new ol.geom.Polygon([[[-3e6, -1e6], [-3e6, 1e6],
-        [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
-
+  new ol.geom.Polygon([
+    [[-3e6, -1e6], [-3e6, 1e6], [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]
+  ])
+);
 
 var map = new ol.Map({
   interactions: ol.interaction.defaults().extend([new app.Drag()]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.TileJSON({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure'
+        url:
+          'https://api.tiles.mapbox.com/v3/mapbox.geography-class.json?secure'
       })
     }),
     new ol.layer.Vector({
@@ -158,13 +149,13 @@ var map = new ol.Map({
         features: [pointFeature, lineFeature, polygonFeature]
       }),
       style: new ol.style.Style({
-        image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+        image: new ol.style.Icon /** @type {olx.style.IconOptions} */({
           anchor: [0.5, 46],
           anchorXUnits: 'fraction',
           anchorYUnits: 'pixels',
           opacity: 0.95,
           src: 'data/icon.png'
-        })),
+        }),
         stroke: new ol.style.Stroke({
           width: 3,
           color: [255, 0, 0, 1]

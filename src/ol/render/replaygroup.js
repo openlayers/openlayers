@@ -1,13 +1,11 @@
 goog.provide('ol.render.ReplayGroup');
 
-
 /**
  * Base class for replay groups.
  * @constructor
  * @abstract
  */
 ol.render.ReplayGroup = function() {};
-
 
 /**
  * @abstract
@@ -16,7 +14,6 @@ ol.render.ReplayGroup = function() {};
  * @return {ol.render.VectorContext} Replay.
  */
 ol.render.ReplayGroup.prototype.getReplay = function(zIndex, replayType) {};
-
 
 /**
  * @abstract

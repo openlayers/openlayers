@@ -6,14 +6,12 @@ goog.require('ol.source.TileWMS');
 goog.require('ol.tilegrid');
 goog.require('ol.tilegrid.TileGrid');
 
-
 describe('ol.source.TileWMS', function() {
-
   var options;
   beforeEach(function() {
     options = {
       params: {
-        'LAYERS': 'layer'
+        LAYERS: 'layer'
       },
       url: 'http://example.com/wms'
     };
@@ -30,7 +28,6 @@ describe('ol.source.TileWMS', function() {
   });
 
   describe('#getTile', function() {
-
     it('returns a tile with the expected URL', function() {
       var source = new ol.source.TileWMS(options);
       var tile = source.getTile(3, 2, -7, 1, ol.proj.get('EPSG:3857'));
@@ -67,8 +64,12 @@ describe('ol.source.TileWMS', function() {
       var uri = new URL(tile.src_);
       var queryData = uri.searchParams;
       var bbox = queryData.get('BBOX').split(',');
-      var expected = [-10331840.239250705, -15341217.324948018,
-        -4696291.017841229, -9705668.103538541];
+      var expected = [
+        -10331840.239250705,
+        -15341217.324948018,
+        -4696291.017841229,
+        -9705668.103538541
+      ];
       for (var i = 0, ii = bbox.length; i < ii; ++i) {
         expect(parseFloat(bbox[i])).to.roughlyEqual(expected[i], 1e-9);
       }
@@ -142,20 +143,17 @@ describe('ol.source.TileWMS', function() {
       expect(queryData.get('FORMAT_OPTIONS')).to.be('param1:value1;dpi:180');
     });
 
-    it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
-       function() {
-         options.serverType = 'geoserver';
-         var source = new ol.source.TileWMS(options);
-         var tile = source.getTile(3, 2, -3, 1.325, ol.proj.get('CRS:84'));
-         var uri = new URL(tile.src_);
-         var queryData = uri.searchParams;
-         expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
-       });
-
+    it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer', function() {
+      options.serverType = 'geoserver';
+      var source = new ol.source.TileWMS(options);
+      var tile = source.getTile(3, 2, -3, 1.325, ol.proj.get('CRS:84'));
+      var uri = new URL(tile.src_);
+      var queryData = uri.searchParams;
+      expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+    });
   });
 
   describe('#tileUrlFunction', function() {
-
     it('returns a tile if it is contained within layers extent', function() {
       options.extent = [-80, -40, -50, -10];
       var source = new ol.source.TileWMS(options);
@@ -190,18 +188,18 @@ describe('ol.source.TileWMS', function() {
       expect(queryData.get('WIDTH')).to.be('640');
       expect(queryData.get('HEIGHT')).to.be('320');
     });
-
   });
 
   describe('#getGetFeatureInfo', function() {
-
     it('returns the expected GetFeatureInfo URL', function() {
       var source = new ol.source.TileWMS(options);
       source.pixelRatio_ = 1;
       var url = source.getGetFeatureInfoUrl(
-          [-7000000, -12000000],
-          19567.87924100512, ol.proj.get('EPSG:3857'),
-          {INFO_FORMAT: 'text/plain'});
+        [-7000000, -12000000],
+        19567.87924100512,
+        ol.proj.get('EPSG:3857'),
+        {INFO_FORMAT: 'text/plain'}
+      );
       var uri = new URL(url);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.be('example.com');
@@ -233,9 +231,11 @@ describe('ol.source.TileWMS', function() {
       var source = new ol.source.TileWMS(options);
       source.pixelRatio_ = 1;
       var url = source.getGetFeatureInfoUrl(
-          [-7000000, -12000000],
-          19567.87924100512, ol.proj.get('EPSG:3857'),
-          {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'});
+        [-7000000, -12000000],
+        19567.87924100512,
+        ol.proj.get('EPSG:3857'),
+        {INFO_FORMAT: 'text/plain', QUERY_LAYERS: 'foo,bar'}
+      );
       var uri = new URL(url);
       expect(uri.protocol).to.be('http:');
       expect(uri.hostname).to.be('example.com');
@@ -269,13 +269,17 @@ describe('ol.source.TileWMS', function() {
       var source = new ol.source.TileWMS(options);
       var url = 'http://foo/';
       source.setUrl(url);
-      var tileUrl = source.tileUrlFunction([0, 0, 0], 1, ol.proj.get('EPSG:4326'));
+      var tileUrl = source.tileUrlFunction(
+        [0, 0, 0],
+        1,
+        ol.proj.get('EPSG:4326')
+      );
       expect(tileUrl.indexOf(url)).to.be(0);
     });
   });
 
   describe('#setUrls()', function() {
-    it ('resets coordKeyPrefix_', function() {
+    it('resets coordKeyPrefix_', function() {
       var urls = ['u1', 'u2'];
       var source1 = new ol.source.TileWMS({
         urls: urls

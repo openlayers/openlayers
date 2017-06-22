@@ -16,11 +16,8 @@ goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 goog.require('ol.tilegrid');
 
-
 describe('ol.renderer.canvas.VectorTileLayer', function() {
-
   describe('constructor', function() {
-
     var map, layer, feature1, feature2, target, tileCallback;
 
     beforeEach(function() {
@@ -36,16 +33,20 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         }),
         target: target
       });
-      var layerStyle = [new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'layer'
+      var layerStyle = [
+        new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'layer'
+          })
         })
-      })];
-      var featureStyle = [new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'feature'
+      ];
+      var featureStyle = [
+        new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'feature'
+          })
         })
-      })];
+      ];
       feature1 = new ol.Feature(new ol.geom.Point([1, -1]));
       feature2 = new ol.Feature(new ol.geom.Point([0, 0]));
       feature2.setStyle(featureStyle);
@@ -63,7 +64,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileGrid: ol.tilegrid.createXYZ()
       });
       source.getTile = function() {
-        var tile = ol.source.VectorTile.prototype.getTile.apply(source, arguments);
+        var tile = ol.source.VectorTile.prototype.getTile.apply(
+          source,
+          arguments
+        );
         tile.setState(ol.TileState.LOADED);
         return tile;
       };
@@ -93,8 +97,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not render images for pure vector rendering', function() {
       layer.renderMode_ = 'vector';
-      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'renderTileImage_');
+      var spy = sinon.spy(
+        ol.renderer.canvas.VectorTileLayer.prototype,
+        'renderTileImage_'
+      );
       map.renderSync();
       expect(spy.callCount).to.be(0);
       spy.restore();
@@ -102,18 +108,24 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
     it('does not render replays for pure image rendering', function() {
       layer.renderMode_ = 'image';
-      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'getReplayTransform_');
+      var spy = sinon.spy(
+        ol.renderer.canvas.VectorTileLayer.prototype,
+        'getReplayTransform_'
+      );
       map.renderSync();
       expect(spy.callCount).to.be(0);
       spy.restore();
     });
 
     it('renders both replays and images for hybrid rendering', function() {
-      var spy1 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'getReplayTransform_');
-      var spy2 = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
-          'renderTileImage_');
+      var spy1 = sinon.spy(
+        ol.renderer.canvas.VectorTileLayer.prototype,
+        'getReplayTransform_'
+      );
+      var spy2 = sinon.spy(
+        ol.renderer.canvas.VectorTileLayer.prototype,
+        'renderTileImage_'
+      );
       map.renderSync();
       expect(spy1.callCount).to.be(1);
       expect(spy2.callCount).to.be(1);
@@ -122,8 +134,10 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
     });
 
     it('gives precedence to feature styles over layer styles', function() {
-      var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
-          'renderFeature');
+      var spy = sinon.spy(
+        map.getRenderer().getLayerRenderer(layer),
+        'renderFeature'
+      );
       map.renderSync();
       expect(spy.getCall(0).args[2]).to.be(layer.getStyle());
       expect(spy.getCall(1).args[2]).to.be(feature2.getStyle());
@@ -137,7 +151,8 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       map.renderSync();
       expect(tile.getProjection()).to.equal(ol.proj.get('EPSG:3857'));
       expect(feature1.getGeometry().getCoordinates()).to.eql(
-          ol.proj.fromLonLat([1, -1]));
+        ol.proj.fromLonLat([1, -1])
+      );
     });
 
     it('leaves geometries untouched when units are tile-pixels', function() {
@@ -151,7 +166,6 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(tile.getProjection()).to.equal(proj);
       expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);
     });
-
   });
 
   describe('#prepareFrame', function() {
@@ -229,8 +243,14 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         })
       });
       renderer = new ol.renderer.canvas.VectorTileLayer(layer);
-      replayGroup.forEachFeatureAtCoordinate = function(coordinate,
-          resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
+      replayGroup.forEachFeatureAtCoordinate = function(
+        coordinate,
+        resolution,
+        rotation,
+        hitTolerance,
+        skippedFeaturesUids,
+        callback
+      ) {
         var feature = new ol.Feature();
         callback(feature);
         callback(feature);
@@ -252,10 +272,14 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       frameState.layerStates[ol.getUid(layer)] = {};
       renderer.renderedTiles = [new TileClass([0, 0, -1])];
       renderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, 0, spy, undefined);
+        coordinate,
+        frameState,
+        0,
+        spy,
+        undefined
+      );
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });
   });
-
 });

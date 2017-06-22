@@ -20,7 +20,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.Tile');
 goog.require('ol.transform');
 
-
 /**
  * @classdesc
  * A source that transforms data from any number of input sources using an array
@@ -34,7 +33,6 @@ goog.require('ol.transform');
  * @api
  */
 ol.source.Raster = function(options) {
-
   /**
    * @private
    * @type {*}
@@ -45,8 +43,9 @@ ol.source.Raster = function(options) {
    * @private
    * @type {ol.source.RasterOperationType}
    */
-  this.operationType_ = options.operationType !== undefined ?
-      options.operationType : ol.source.RasterOperationType.PIXEL;
+  this.operationType_ = options.operationType !== undefined
+    ? options.operationType
+    : ol.source.RasterOperationType.PIXEL;
 
   /**
    * @private
@@ -61,19 +60,21 @@ ol.source.Raster = function(options) {
   this.renderers_ = ol.source.Raster.createRenderers_(options.sources);
 
   for (var r = 0, rr = this.renderers_.length; r < rr; ++r) {
-    ol.events.listen(this.renderers_[r], ol.events.EventType.CHANGE,
-        this.changed, this);
+    ol.events.listen(
+      this.renderers_[r],
+      ol.events.EventType.CHANGE,
+      this.changed,
+      this
+    );
   }
 
   /**
    * @private
    * @type {ol.TileQueue}
    */
-  this.tileQueue_ = new ol.TileQueue(
-      function() {
-        return 1;
-      },
-      this.changed.bind(this));
+  this.tileQueue_ = new ol.TileQueue(function() {
+    return 1;
+  }, this.changed.bind(this));
 
   var layerStatesArray = ol.source.Raster.getLayerStatesArray_(this.renderers_);
   var layerStates = {};
@@ -123,9 +124,9 @@ ol.source.Raster = function(options) {
     tileQueue: this.tileQueue_,
     time: Date.now(),
     usedTiles: {},
-    viewState: /** @type {olx.ViewState} */ ({
+    viewState /** @type {olx.ViewState} */: {
       rotation: 0
-    }),
+    },
     viewHints: [],
     wantedTiles: {}
   };
@@ -135,10 +136,8 @@ ol.source.Raster = function(options) {
   if (options.operation !== undefined) {
     this.setOperation(options.operation, options.lib);
   }
-
 };
 ol.inherits(ol.source.Raster, ol.source.Image);
-
 
 /**
  * Set the operation.
@@ -158,7 +157,6 @@ ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
   this.changed();
 };
 
-
 /**
  * Update the stored frame state.
  * @param {ol.Extent} extent The view extent (in map units).
@@ -167,13 +165,20 @@ ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
  * @return {olx.FrameState} The updated frame state.
  * @private
  */
-ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, projection) {
+ol.source.Raster.prototype.updateFrameState_ = function(
+  extent,
+  resolution,
+  projection
+) {
+  var frameState /** @type {olx.FrameState} */ = ol.obj.assign(
+    {},
+    this.frameState_
+  );
 
-  var frameState = /** @type {olx.FrameState} */ (
-      ol.obj.assign({}, this.frameState_));
-
-  frameState.viewState = /** @type {olx.ViewState} */ (
-      ol.obj.assign({}, frameState.viewState));
+  frameState.viewState /** @type {olx.ViewState} */ = ol.obj.assign(
+    {},
+    frameState.viewState
+  );
 
   var center = ol.extent.getCenter(extent);
 
@@ -188,7 +193,6 @@ ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, proj
   viewState.resolution = resolution;
   return frameState;
 };
-
 
 /**
  * Determine if all sources are ready.
@@ -208,11 +212,15 @@ ol.source.Raster.prototype.allSourcesReady_ = function() {
   return ready;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+ol.source.Raster.prototype.getImage = function(
+  extent,
+  resolution,
+  pixelRatio,
+  projection
+) {
   if (!this.allSourcesReady_()) {
     return null;
   }
@@ -226,18 +234,23 @@ ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, p
   if (this.renderedImageCanvas_) {
     var renderedResolution = this.renderedImageCanvas_.getResolution();
     var renderedExtent = this.renderedImageCanvas_.getExtent();
-    if (resolution !== renderedResolution || !ol.extent.equals(extent, renderedExtent)) {
+    if (
+      resolution !== renderedResolution ||
+      !ol.extent.equals(extent, renderedExtent)
+    ) {
       this.renderedImageCanvas_ = null;
     }
   }
 
-  if (!this.renderedImageCanvas_ || this.getRevision() !== this.renderedRevision_) {
+  if (
+    !this.renderedImageCanvas_ ||
+    this.getRevision() !== this.renderedRevision_
+  ) {
     this.processSources_();
   }
 
   return this.renderedImageCanvas_;
 };
-
 
 /**
  * Start processing source data.
@@ -249,7 +262,10 @@ ol.source.Raster.prototype.processSources_ = function() {
   var imageDatas = new Array(len);
   for (var i = 0; i < len; ++i) {
     var imageData = ol.source.Raster.getImageData_(
-        this.renderers_[i], frameState, frameState.layerStatesArray[i]);
+      this.renderers_[i],
+      frameState,
+      frameState.layerStatesArray[i]
+    );
     if (imageData) {
       imageDatas[i] = imageData;
     } else {
@@ -258,12 +274,19 @@ ol.source.Raster.prototype.processSources_ = function() {
   }
 
   var data = {};
-  this.dispatchEvent(new ol.source.Raster.Event(
-      ol.source.Raster.EventType_.BEFOREOPERATIONS, frameState, data));
-  this.worker_.process(imageDatas, data,
-      this.onWorkerComplete_.bind(this, frameState));
+  this.dispatchEvent(
+    new ol.source.Raster.Event(
+      ol.source.Raster.EventType_.BEFOREOPERATIONS,
+      frameState,
+      data
+    )
+  );
+  this.worker_.process(
+    imageDatas,
+    data,
+    this.onWorkerComplete_.bind(this, frameState)
+  );
 };
-
 
 /**
  * Called when pixel processing is complete.
@@ -273,7 +296,12 @@ ol.source.Raster.prototype.processSources_ = function() {
  * @param {Object} data The user data.
  * @private
  */
-ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, err, output, data) {
+ol.source.Raster.prototype.onWorkerComplete_ = function(
+  frameState,
+  err,
+  output,
+  data
+) {
   if (err || !output) {
     return;
   }
@@ -281,8 +309,10 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, err, output,
   // do nothing if extent or resolution changed
   var extent = frameState.extent;
   var resolution = frameState.viewState.resolution;
-  if (resolution !== this.requestedFrameState_.viewState.resolution ||
-      !ol.extent.equals(extent, this.requestedFrameState_.extent)) {
+  if (
+    resolution !== this.requestedFrameState_.viewState.resolution ||
+    !ol.extent.equals(extent, this.requestedFrameState_.extent)
+  ) {
     return;
   }
 
@@ -294,17 +324,26 @@ ol.source.Raster.prototype.onWorkerComplete_ = function(frameState, err, output,
     var height = Math.round(ol.extent.getHeight(extent) / resolution);
     context = ol.dom.createCanvasContext2D(width, height);
     this.renderedImageCanvas_ = new ol.ImageCanvas(
-        extent, resolution, 1, this.getAttributions(), context.canvas);
+      extent,
+      resolution,
+      1,
+      this.getAttributions(),
+      context.canvas
+    );
   }
   context.putImageData(output, 0, 0);
 
   this.changed();
   this.renderedRevision_ = this.getRevision();
 
-  this.dispatchEvent(new ol.source.Raster.Event(
-      ol.source.Raster.EventType_.AFTEROPERATIONS, frameState, data));
+  this.dispatchEvent(
+    new ol.source.Raster.Event(
+      ol.source.Raster.EventType_.AFTEROPERATIONS,
+      frameState,
+      data
+    )
+  );
 };
-
 
 /**
  * Get image data from a renderer.
@@ -334,14 +373,12 @@ ol.source.Raster.getImageData_ = function(renderer, frameState, layerState) {
   return ol.source.Raster.context_.getImageData(0, 0, width, height);
 };
 
-
 /**
  * A reusable canvas context.
  * @type {CanvasRenderingContext2D}
  * @private
  */
 ol.source.Raster.context_ = null;
-
 
 /**
  * Get a list of layer states from a list of renderers.
@@ -354,7 +391,6 @@ ol.source.Raster.getLayerStatesArray_ = function(renderers) {
     return renderer.getLayer().getLayerState();
   });
 };
-
 
 /**
  * Create renderers for all sources.
@@ -370,7 +406,6 @@ ol.source.Raster.createRenderers_ = function(sources) {
   }
   return renderers;
 };
-
 
 /**
  * Create a renderer for the provided source.
@@ -388,7 +423,6 @@ ol.source.Raster.createRenderer_ = function(source) {
   return renderer;
 };
 
-
 /**
  * Create an image renderer for the provided source.
  * @param {ol.source.Image} source The source.
@@ -400,7 +434,6 @@ ol.source.Raster.createImageRenderer_ = function(source) {
   return new ol.renderer.canvas.ImageLayer(layer);
 };
 
-
 /**
  * Create a tile renderer for the provided source.
  * @param {ol.source.Tile} source The source.
@@ -411,7 +444,6 @@ ol.source.Raster.createTileRenderer_ = function(source) {
   var layer = new ol.layer.Tile({source: source});
   return new ol.renderer.canvas.TileLayer(layer);
 };
-
 
 /**
  * @classdesc
@@ -449,10 +481,8 @@ ol.source.Raster.Event = function(type, frameState, data) {
    * @api
    */
   this.data = data;
-
 };
 ol.inherits(ol.source.Raster.Event, ol.events.Event);
-
 
 /**
  * @override
@@ -460,7 +490,6 @@ ol.inherits(ol.source.Raster.Event, ol.events.Event);
 ol.source.Raster.prototype.getImageInternal = function() {
   return null; // not implemented
 };
-
 
 /**
  * @enum {string}

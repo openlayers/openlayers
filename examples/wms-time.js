@@ -10,7 +10,11 @@ function threeHoursAgo() {
   return new Date(Math.round(Date.now() / 3600000) * 3600000 - 3600000 * 3);
 }
 
-var extent = ol.proj.transformExtent([-126, 24, -66, 50], 'EPSG:4326', 'EPSG:3857');
+var extent = ol.proj.transformExtent(
+  [-126, 24, -66, 50],
+  'EPSG:4326',
+  'EPSG:3857'
+);
 var startDate = threeHoursAgo();
 var frameRate = 0.5; // frames per second
 var animationId = null;
@@ -23,11 +27,11 @@ var layers = [
   }),
   new ol.layer.Tile({
     extent: extent,
-    source: new ol.source.TileWMS(/** @type {olx.source.TileWMSOptions} */ ({
+    source: new ol.source.TileWMS /** @type {olx.source.TileWMSOptions} */({
       attributions: ['Iowa State University'],
       url: 'https://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r-t.cgi',
-      params: {'LAYERS': 'nexrad-n0r-wmst'}
-    }))
+      params: {LAYERS: 'nexrad-n0r-wmst'}
+    })
   })
 ];
 var map = new ol.Map({
@@ -49,7 +53,7 @@ function setTime() {
   if (startDate > Date.now()) {
     startDate = threeHoursAgo();
   }
-  layers[1].getSource().updateParams({'TIME': startDate.toISOString()});
+  layers[1].getSource().updateParams({TIME: startDate.toISOString()});
   updateInfo();
 }
 setTime();

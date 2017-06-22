@@ -13,9 +13,7 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
 describe('ol.render.canvas.ReplayGroup', function() {
-
   describe('#replay', function() {
-
     var context, replay, fillCount, transform;
     var strokeCount, beginPathCount, moveToCount, lineToCount;
     var feature0, feature1, feature2, feature3;
@@ -23,15 +21,30 @@ describe('ol.render.canvas.ReplayGroup', function() {
 
     beforeEach(function() {
       transform = ol.transform.create();
-      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, false);
-      feature0 = new ol.Feature(new ol.geom.Polygon(
-          [[[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]]));
-      feature1 = new ol.Feature(new ol.geom.Polygon(
-          [[[-90, -45], [-90, 0], [0, 0], [0, -45], [-90, -45]]]));
-      feature2 = new ol.Feature(new ol.geom.Polygon(
-          [[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]]));
-      feature3 = new ol.Feature(new ol.geom.Polygon(
-          [[[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]]));
+      replay = new ol.render.canvas.ReplayGroup(
+        1,
+        [-180, -90, 180, 90],
+        1,
+        false
+      );
+      feature0 = new ol.Feature(
+        new ol.geom.Polygon([
+          [[-90, 0], [-45, 45], [0, 0], [1, 1], [0, -45], [-90, 0]]
+        ])
+      );
+      feature1 = new ol.Feature(
+        new ol.geom.Polygon([
+          [[-90, -45], [-90, 0], [0, 0], [0, -45], [-90, -45]]
+        ])
+      );
+      feature2 = new ol.Feature(
+        new ol.geom.Polygon([[[90, 45], [90, 0], [0, 0], [0, 45], [90, 45]]])
+      );
+      feature3 = new ol.Feature(
+        new ol.geom.Polygon([
+          [[-90, -45], [-90, 45], [90, 45], [90, -45], [-90, -45]]
+        ])
+      );
       fill0 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'black'})
       });
@@ -44,8 +57,12 @@ describe('ol.render.canvas.ReplayGroup', function() {
       });
       style2 = new ol.style.Style({
         fill: new ol.style.Fill({color: 'white'}),
-        stroke: new ol.style.Stroke({color: 'black', width: 1, lineDash: [3, 6],
-          lineDashOffset: 2})
+        stroke: new ol.style.Stroke({
+          color: 'black',
+          width: 1,
+          lineDash: [3, 6],
+          lineDashOffset: 2
+        })
       });
       fillCount = 0;
       strokeCount = 0;
@@ -79,7 +96,6 @@ describe('ol.render.canvas.ReplayGroup', function() {
         save: function() {},
         restore: function() {}
       };
-
     });
 
     it('omits lineTo for repeated coordinates', function() {
@@ -167,7 +183,12 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('does not batch when overlaps is set to true', function() {
-      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, true);
+      replay = new ol.render.canvas.ReplayGroup(
+        1,
+        [-180, -90, 180, 90],
+        1,
+        true
+      );
       ol.renderer.vector.renderFeature(replay, feature1, style1, 1);
       ol.renderer.vector.renderFeature(replay, feature2, style1, 1);
       ol.renderer.vector.renderFeature(replay, feature3, style1, 1);
@@ -178,8 +199,10 @@ describe('ol.render.canvas.ReplayGroup', function() {
     });
 
     it('applies the pixelRatio to the linedash array and offset', function() {
-      var lineDash, lineDashCount = 0,
-          lineDashOffset, lineDashOffsetCount = 0;
+      var lineDash,
+        lineDashCount = 0,
+        lineDashOffset,
+        lineDashOffsetCount = 0;
 
       context.setLineDash = function(lineDash_) {
         lineDashCount++;
@@ -206,24 +229,19 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(lineDashOffset).to.be(4);
     });
   });
-
 });
 
 describe('ol.render.canvas.Replay', function() {
-
   describe('constructor', function() {
-
     it('creates a new replay batch', function() {
       var tolerance = 10;
       var extent = [-180, -90, 180, 90];
       var replay = new ol.render.canvas.Replay(tolerance, extent, 1, true);
       expect(replay).to.be.a(ol.render.canvas.Replay);
     });
-
   });
 
   describe('#appendFlatCoordinates()', function() {
-
     var replay;
     beforeEach(function() {
       replay = new ol.render.canvas.Replay(1, [-180, -90, 180, 90], 1, true);
@@ -244,7 +262,16 @@ describe('ol.render.canvas.Replay', function() {
     it('appends polygon coordinates that are within the max extent (skipping first)', function() {
       var flat = [-110, 45, 110, 45, 110, -45, -110, -45, -110, 45];
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
-      expect(replay.coordinates).to.eql([110, 45, 110, -45, -110, -45, -110, 45]);
+      expect(replay.coordinates).to.eql([
+        110,
+        45,
+        110,
+        -45,
+        -110,
+        -45,
+        -110,
+        45
+      ]);
     });
 
     it('works with a single coordinate (inside)', function() {
@@ -364,21 +391,20 @@ describe('ol.render.canvas.Replay', function() {
       replay.appendFlatCoordinates(flat, 0, flat.length, 2, true, true);
       expect(replay.coordinates).to.eql([0, 200, 200, 200, 250, 200, 0, 0]);
     });
-
   });
-
 });
 
 describe('ol.render.canvas.LineStringReplay', function() {
-
   describe('#getBufferedMaxExtent()', function() {
-
     it('buffers the max extent to accommodate stroke width', function() {
       var tolerance = 1;
       var extent = [-180, -90, 180, 90];
       var resolution = 10;
-      var replay = new ol.render.canvas.LineStringReplay(tolerance, extent,
-          resolution);
+      var replay = new ol.render.canvas.LineStringReplay(
+        tolerance,
+        extent,
+        resolution
+      );
       var stroke = new ol.style.Stroke({
         width: 2
       });
@@ -386,21 +412,17 @@ describe('ol.render.canvas.LineStringReplay', function() {
       var buffered = replay.getBufferedMaxExtent();
       expect(buffered).to.eql([-195, -105, 195, 105]);
     });
-
   });
-
 });
 
 describe('ol.render.canvas.PolygonReplay', function() {
-
   var replay;
 
   beforeEach(function() {
     var tolerance = 1;
     var extent = [-180, -90, 180, 90];
     var resolution = 10;
-    replay = new ol.render.canvas.PolygonReplay(tolerance, extent,
-        resolution);
+    replay = new ol.render.canvas.PolygonReplay(tolerance, extent, resolution);
   });
 
   describe('#drawFlatCoordinatess_()', function() {
@@ -420,7 +442,6 @@ describe('ol.render.canvas.PolygonReplay', function() {
   });
 
   describe('#getBufferedMaxExtent()', function() {
-
     it('buffers the max extent to accommodate stroke width', function() {
       var stroke = new ol.style.Stroke({
         width: 5
@@ -429,7 +450,5 @@ describe('ol.render.canvas.PolygonReplay', function() {
       var buffered = replay.getBufferedMaxExtent();
       expect(buffered).to.eql([-210, -120, 210, 120]);
     });
-
   });
-
 });

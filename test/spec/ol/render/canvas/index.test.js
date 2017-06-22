@@ -2,9 +2,7 @@ goog.provide('ol.test.render.canvas');
 
 goog.require('ol.render.canvas');
 
-
 describe('ol.render.canvas', function() {
-
   describe('rotateAtOffset', function() {
     it('rotates a canvas at an offset point', function() {
       var context = {
@@ -19,5 +17,4 @@ describe('ol.render.canvas', function() {
       expect(context.rotate.firstCall.args).to.eql([Math.PI]);
     });
   });
-
 });

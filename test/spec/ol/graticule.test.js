@@ -5,7 +5,6 @@ goog.require('ol.Map');
 goog.require('ol.proj');
 goog.require('ol.style.Stroke');
 
-
 describe('ol.Graticule', function() {
   var graticule;
 
@@ -18,8 +17,12 @@ describe('ol.Graticule', function() {
   describe('#createGraticule', function() {
     it('creates a graticule without labels', function() {
       createGraticule();
-      var extent = [-25614353.926475704, -7827151.696402049,
-        25614353.926475704, 7827151.696402049];
+      var extent = [
+        -25614353.926475704,
+        -7827151.696402049,
+        25614353.926475704,
+        7827151.696402049
+      ];
       var projection = ol.proj.get('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
@@ -36,8 +39,12 @@ describe('ol.Graticule', function() {
         map: new ol.Map({}),
         showLabels: true
       });
-      var extent = [-25614353.926475704, -7827151.696402049,
-        25614353.926475704, 7827151.696402049];
+      var extent = [
+        -25614353.926475704,
+        -7827151.696402049,
+        25614353.926475704,
+        7827151.696402049
+      ];
       var projection = ol.proj.get('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
@@ -45,10 +52,14 @@ describe('ol.Graticule', function() {
       graticule.createGraticule_(extent, [0, 0], resolution, squaredTolerance);
       expect(graticule.meridiansLabels_.length).to.be(13);
       expect(graticule.meridiansLabels_[0].text).to.be('0° 00′ 00″');
-      expect(graticule.meridiansLabels_[0].geom.getCoordinates()[0]).to.roughlyEqual(0, 1e-9);
+      expect(
+        graticule.meridiansLabels_[0].geom.getCoordinates()[0]
+      ).to.roughlyEqual(0, 1e-9);
       expect(graticule.parallelsLabels_.length).to.be(3);
       expect(graticule.parallelsLabels_[0].text).to.be('0° 00′ 00″');
-      expect(graticule.parallelsLabels_[0].geom.getCoordinates()[1]).to.roughlyEqual(0, 1e-9);
+      expect(
+        graticule.parallelsLabels_[0].geom.getCoordinates()[1]
+      ).to.roughlyEqual(0, 1e-9);
     });
 
     it('has a default stroke style', function() {
@@ -91,8 +102,12 @@ describe('ol.Graticule', function() {
         lonLabelStyle: lonLabelStyle,
         latLabelStyle: latLabelStyle
       });
-      var extent = [-25614353.926475704, -7827151.696402049,
-        25614353.926475704, 7827151.696402049];
+      var extent = [
+        -25614353.926475704,
+        -7827151.696402049,
+        25614353.926475704,
+        7827151.696402049
+      ];
       var projection = ol.proj.get('EPSG:3857');
       var resolution = 39135.75848201024;
       var squaredTolerance = resolution * resolution / 4.0;
@@ -105,7 +120,5 @@ describe('ol.Graticule', function() {
       expect(graticule.lonLabelPosition_).to.be(0.9);
       expect(graticule.latLabelPosition_).to.be(0.1);
     });
-
   });
-
 });

@@ -9,7 +9,6 @@ goog.require('ol.obj');
 goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.VectorTileLayer');
 
-
 /**
  * @classdesc
  * Layer for vector tile data that is rendered client-side.
@@ -29,27 +28,31 @@ ol.layer.VectorTile = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  ol.layer.Vector.call(this,  /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  ol.layer.Vector.call(
+    this /** @type {olx.layer.VectorOptions} */,
+    baseOptions
+  );
 
   this.setPreload(options.preload ? options.preload : 0);
-  this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
-      options.useInterimTilesOnError : true);
+  this.setUseInterimTilesOnError(
+    options.useInterimTilesOnError ? options.useInterimTilesOnError : true
+  );
 
-  ol.asserts.assert(options.renderMode == undefined ||
+  ol.asserts.assert(
+    options.renderMode == undefined ||
       options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
       options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
       options.renderMode == ol.layer.VectorTileRenderType.VECTOR,
-      28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+    28
+  ); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
 
   /**
    * @private
    * @type {ol.layer.VectorTileRenderType|string}
    */
   this.renderMode_ = options.renderMode || ol.layer.VectorTileRenderType.HYBRID;
-
 };
 ol.inherits(ol.layer.VectorTile, ol.layer.Vector);
-
 
 /**
  * @inheritDoc
@@ -63,7 +66,6 @@ ol.layer.VectorTile.prototype.createRenderer = function(mapRenderer) {
   return renderer;
 };
 
-
 /**
  * Return the level as number to which we will preload tiles up to.
  * @return {number} The level to preload tiles up to.
@@ -71,9 +73,8 @@ ol.layer.VectorTile.prototype.createRenderer = function(mapRenderer) {
  * @api
  */
 ol.layer.VectorTile.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
+  return /** @type {number} */ this.get(ol.layer.TileProperty.PRELOAD);
 };
-
 
 /**
  * @return {ol.layer.VectorTileRenderType|string} The render mode.
@@ -82,7 +83,6 @@ ol.layer.VectorTile.prototype.getRenderMode = function() {
   return this.renderMode_;
 };
 
-
 /**
  * Whether we use interim tiles on error.
  * @return {boolean} Use interim tiles on error.
@@ -90,10 +90,10 @@ ol.layer.VectorTile.prototype.getRenderMode = function() {
  * @api
  */
 ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean} */ (
-      this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
+  return /** @type {boolean} */ this.get(
+    ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR
+  );
 };
-
 
 /**
  * Set the level as number to which we will preload tiles up to.
@@ -105,14 +105,17 @@ ol.layer.VectorTile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);
 };
 
-
 /**
  * Set whether we use interim tiles on error.
  * @param {boolean} useInterimTilesOnError Use interim tiles on error.
  * @observable
  * @api
  */
-ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
+ol.layer.VectorTile.prototype.setUseInterimTilesOnError = function(
+  useInterimTilesOnError
+) {
   this.set(
-      ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+    ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR,
+    useInterimTilesOnError
+  );
 };

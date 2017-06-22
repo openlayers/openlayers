@@ -7,7 +7,8 @@ var imgWidth = 9911;
 var imgHeight = 6100;
 
 var source = new ol.source.Zoomify({
-  url: 'http://vips.vtech.fr/cgi-bin/iipsrv.fcgi?zoomify=' +
+  url:
+    'http://vips.vtech.fr/cgi-bin/iipsrv.fcgi?zoomify=' +
       '/mnt/MD1/AD00/plan_CHU-4HD-01/FOND.TIF/',
   size: [imgWidth, imgHeight],
   crossOrigin: 'anonymous'

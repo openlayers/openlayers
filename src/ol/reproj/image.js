@@ -9,7 +9,6 @@ goog.require('ol.extent');
 goog.require('ol.reproj');
 goog.require('ol.reproj.Triangulation');
 
-
 /**
  * @classdesc
  * Class encapsulating single reprojected image.
@@ -25,9 +24,14 @@ goog.require('ol.reproj.Triangulation');
  * @param {ol.ReprojImageFunctionType} getImageFunction
  *     Function returning source images (extent, resolution, pixelRatio).
  */
-ol.reproj.Image = function(sourceProj, targetProj,
-    targetExtent, targetResolution, pixelRatio, getImageFunction) {
-
+ol.reproj.Image = function(
+  sourceProj,
+  targetProj,
+  targetExtent,
+  targetResolution,
+  pixelRatio,
+  getImageFunction
+) {
   /**
    * @private
    * @type {ol.proj.Projection}
@@ -41,12 +45,17 @@ ol.reproj.Image = function(sourceProj, targetProj,
   this.maxSourceExtent_ = sourceProj.getExtent();
   var maxTargetExtent = targetProj.getExtent();
 
-  var limitedTargetExtent = maxTargetExtent ?
-      ol.extent.getIntersection(targetExtent, maxTargetExtent) : targetExtent;
+  var limitedTargetExtent = maxTargetExtent
+    ? ol.extent.getIntersection(targetExtent, maxTargetExtent)
+    : targetExtent;
 
   var targetCenter = ol.extent.getCenter(limitedTargetExtent);
   var sourceResolution = ol.reproj.calculateSourceResolution(
-      sourceProj, targetProj, targetCenter, targetResolution);
+    sourceProj,
+    targetProj,
+    targetCenter,
+    targetResolution
+  );
 
   var errorThresholdInPixels = ol.DEFAULT_RASTER_REPROJECTION_ERROR_THRESHOLD;
 
@@ -55,8 +64,12 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @type {!ol.reproj.Triangulation}
    */
   this.triangulation_ = new ol.reproj.Triangulation(
-      sourceProj, targetProj, limitedTargetExtent, this.maxSourceExtent_,
-      sourceResolution * errorThresholdInPixels);
+    sourceProj,
+    targetProj,
+    limitedTargetExtent,
+    this.maxSourceExtent_,
+    sourceResolution * errorThresholdInPixels
+  );
 
   /**
    * @private
@@ -76,15 +89,19 @@ ol.reproj.Image = function(sourceProj, targetProj,
    * @private
    * @type {ol.ImageBase}
    */
-  this.sourceImage_ =
-      getImageFunction(sourceExtent, sourceResolution, pixelRatio);
+  this.sourceImage_ = getImageFunction(
+    sourceExtent,
+    sourceResolution,
+    pixelRatio
+  );
 
   /**
    * @private
    * @type {number}
    */
-  this.sourcePixelRatio_ =
-      this.sourceImage_ ? this.sourceImage_.getPixelRatio() : 1;
+  this.sourcePixelRatio_ = this.sourceImage_
+    ? this.sourceImage_.getPixelRatio()
+    : 1;
 
   /**
    * @private
@@ -98,7 +115,6 @@ ol.reproj.Image = function(sourceProj, targetProj,
    */
   this.sourceListenerKey_ = null;
 
-
   var state = ol.ImageState.LOADED;
   var attributions = [];
 
@@ -107,11 +123,16 @@ ol.reproj.Image = function(sourceProj, targetProj,
     attributions = this.sourceImage_.getAttributions();
   }
 
-  ol.ImageBase.call(this, targetExtent, targetResolution, this.sourcePixelRatio_,
-            state, attributions);
+  ol.ImageBase.call(
+    this,
+    targetExtent,
+    targetResolution,
+    this.sourcePixelRatio_,
+    state,
+    attributions
+  );
 };
 ol.inherits(ol.reproj.Image, ol.ImageBase);
-
 
 /**
  * @inheritDoc
@@ -123,7 +144,6 @@ ol.reproj.Image.prototype.disposeInternal = function() {
   ol.ImageBase.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * @inheritDoc
  */
@@ -131,14 +151,12 @@ ol.reproj.Image.prototype.getImage = function(opt_context) {
   return this.canvas_;
 };
 
-
 /**
  * @return {ol.proj.Projection} Projection.
  */
 ol.reproj.Image.prototype.getProjection = function() {
   return this.targetProj_;
 };
-
 
 /**
  * @private
@@ -148,19 +166,29 @@ ol.reproj.Image.prototype.reproject_ = function() {
   if (sourceState == ol.ImageState.LOADED) {
     var width = ol.extent.getWidth(this.targetExtent_) / this.targetResolution_;
     var height =
-        ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
+      ol.extent.getHeight(this.targetExtent_) / this.targetResolution_;
 
-    this.canvas_ = ol.reproj.render(width, height, this.sourcePixelRatio_,
-        this.sourceImage_.getResolution(), this.maxSourceExtent_,
-        this.targetResolution_, this.targetExtent_, this.triangulation_, [{
+    this.canvas_ = ol.reproj.render(
+      width,
+      height,
+      this.sourcePixelRatio_,
+      this.sourceImage_.getResolution(),
+      this.maxSourceExtent_,
+      this.targetResolution_,
+      this.targetExtent_,
+      this.triangulation_,
+      [
+        {
           extent: this.sourceImage_.getExtent(),
           image: this.sourceImage_.getImage()
-        }], 0);
+        }
+      ],
+      0
+    );
   }
   this.state = sourceState;
   this.changed();
 };
-
 
 /**
  * @inheritDoc
@@ -171,29 +199,36 @@ ol.reproj.Image.prototype.load = function() {
     this.changed();
 
     var sourceState = this.sourceImage_.getState();
-    if (sourceState == ol.ImageState.LOADED ||
-        sourceState == ol.ImageState.ERROR) {
+    if (
+      sourceState == ol.ImageState.LOADED ||
+      sourceState == ol.ImageState.ERROR
+    ) {
       this.reproject_();
     } else {
-      this.sourceListenerKey_ = ol.events.listen(this.sourceImage_,
-          ol.events.EventType.CHANGE, function(e) {
-            var sourceState = this.sourceImage_.getState();
-            if (sourceState == ol.ImageState.LOADED ||
-                sourceState == ol.ImageState.ERROR) {
-              this.unlistenSource_();
-              this.reproject_();
-            }
-          }, this);
+      this.sourceListenerKey_ = ol.events.listen(
+        this.sourceImage_,
+        ol.events.EventType.CHANGE,
+        function(e) {
+          var sourceState = this.sourceImage_.getState();
+          if (
+            sourceState == ol.ImageState.LOADED ||
+            sourceState == ol.ImageState.ERROR
+          ) {
+            this.unlistenSource_();
+            this.reproject_();
+          }
+        },
+        this
+      );
       this.sourceImage_.load();
     }
   }
 };
 
-
 /**
  * @private
  */
 ol.reproj.Image.prototype.unlistenSource_ = function() {
-  ol.events.unlistenByKey(/** @type {!ol.EventsKey} */ (this.sourceListenerKey_));
+  ol.events.unlistenByKey /** @type {!ol.EventsKey} */(this.sourceListenerKey_);
   this.sourceListenerKey_ = null;
 };

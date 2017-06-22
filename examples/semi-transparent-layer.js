@@ -5,7 +5,6 @@ goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileJSON');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({

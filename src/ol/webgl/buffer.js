@@ -3,9 +3,7 @@ goog.provide('ol.webgl.Buffer');
 goog.require('ol');
 goog.require('ol.webgl');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @param {Array.<number>=} opt_arr Array.
@@ -13,7 +11,6 @@ if (ol.ENABLE_WEBGL) {
    * @struct
    */
   ol.webgl.Buffer = function(opt_arr, opt_usage) {
-
     /**
      * @private
      * @type {Array.<number>}
@@ -24,11 +21,10 @@ if (ol.ENABLE_WEBGL) {
      * @private
      * @type {number}
      */
-    this.usage_ = opt_usage !== undefined ?
-        opt_usage : ol.webgl.Buffer.Usage_.STATIC_DRAW;
-
+    this.usage_ = opt_usage !== undefined
+      ? opt_usage
+      : ol.webgl.Buffer.Usage_.STATIC_DRAW;
   };
-
 
   /**
    * @return {Array.<number>} Array.
@@ -37,14 +33,12 @@ if (ol.ENABLE_WEBGL) {
     return this.arr_;
   };
 
-
   /**
    * @return {number} Usage.
    */
   ol.webgl.Buffer.prototype.getUsage = function() {
     return this.usage_;
   };
-
 
   /**
    * @enum {number}
@@ -55,5 +49,4 @@ if (ol.ENABLE_WEBGL) {
     STREAM_DRAW: ol.webgl.STREAM_DRAW,
     DYNAMIC_DRAW: ol.webgl.DYNAMIC_DRAW
   };
-
 }

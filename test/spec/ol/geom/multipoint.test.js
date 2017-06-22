@@ -4,9 +4,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
 
-
 describe('ol.geom.MultiPoint', function() {
-
   it('can be constructed with a null geometry', function() {
     expect(function() {
       return new ol.geom.MultiPoint(null);
@@ -14,7 +12,6 @@ describe('ol.geom.MultiPoint', function() {
   });
 
   describe('construct empty', function() {
-
     var multiPoint;
     beforeEach(function() {
       multiPoint = new ol.geom.MultiPoint([]);
@@ -46,11 +43,9 @@ describe('ol.geom.MultiPoint', function() {
       multiPoint.appendPoint(new ol.geom.Point([3, 4]));
       expect(multiPoint.getCoordinates()).to.eql([[1, 2], [3, 4]]);
     });
-
   });
 
   describe('construct with 2D coordinates', function() {
-
     var multiPoint;
     beforeEach(function() {
       multiPoint = new ol.geom.MultiPoint([[1, 2], [3, 4]]);
@@ -77,7 +72,6 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     describe('#intersectsExtent()', function() {
-
       it('returns true for extent covering a point', function() {
         expect(multiPoint.intersectsExtent([1, 2, 2, 2])).to.be(true);
       });
@@ -85,13 +79,10 @@ describe('ol.geom.MultiPoint', function() {
       it('returns false for non-matching extent within own extent', function() {
         expect(multiPoint.intersectsExtent([2, 3, 2, 4])).to.be(false);
       });
-
     });
-
   });
 
   describe('construct with 3D coordinates', function() {
-
     var multiPoint;
     beforeEach(function() {
       multiPoint = new ol.geom.MultiPoint([[1, 2, 3], [4, 5, 6]]);
@@ -116,15 +107,12 @@ describe('ol.geom.MultiPoint', function() {
     it('has the expected stride', function() {
       expect(multiPoint.getStride()).to.be(3);
     });
-
   });
 
   describe('construct with 3D coordinates and layout XYM', function() {
-
     var multiPoint;
     beforeEach(function() {
-      multiPoint = new ol.geom.MultiPoint(
-          [[1, 2, 3], [4, 5, 6]], 'XYM');
+      multiPoint = new ol.geom.MultiPoint([[1, 2, 3], [4, 5, 6]], 'XYM');
     });
 
     it('has the expected layout', function() {
@@ -166,11 +154,9 @@ describe('ol.geom.MultiPoint', function() {
       expect(points[1].getLayout()).to.be('XYM');
       expect(points[1].getCoordinates()).to.eql([4, 5, 6]);
     });
-
   });
 
   describe('construct with 4D coordinates', function() {
-
     var multiPoint;
     beforeEach(function() {
       multiPoint = new ol.geom.MultiPoint([[1, 2, 3, 4], [5, 6, 7, 8]]);
@@ -197,18 +183,14 @@ describe('ol.geom.MultiPoint', function() {
     });
 
     describe('#getClosestPoint', function() {
-
       it('preserves extra dimensions', function() {
         var closestPoint = multiPoint.getClosestPoint([6, 6]);
         expect(closestPoint).to.eql([5, 6, 7, 8]);
       });
-
     });
-
   });
 
   describe('#scale()', function() {
-
     it('scales a multi-point', function() {
       var geom = new ol.geom.MultiPoint([[-10, -20], [10, 20]]);
       geom.scale(10);
@@ -229,11 +211,9 @@ describe('ol.geom.MultiPoint', function() {
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([[-10, -20], [50, 60]]);
     });
-
   });
 
   describe('#applyTransform()', function() {
-
     var multi, transform;
     beforeEach(function() {
       multi = new ol.geom.MultiPoint([[1, 2], [3, 4]]);
@@ -267,14 +247,14 @@ describe('ol.geom.MultiPoint', function() {
       var got = multi.applyTransform(transform);
       expect(got).to.be(undefined);
     });
-
   });
 
   describe('#transform()', function() {
-
     it('transforms a geometry given CRS identifiers', function() {
       var multi = new ol.geom.MultiPoint([[-111, 45], [111, -45]]).transform(
-          'EPSG:4326', 'EPSG:3857');
+        'EPSG:4326',
+        'EPSG:3857'
+      );
 
       expect(multi).to.be.a(ol.geom.MultiPoint);
 
@@ -286,7 +266,5 @@ describe('ol.geom.MultiPoint', function() {
       expect(coords[1][0]).to.roughlyEqual(12356463.47, 1e-2);
       expect(coords[1][1]).to.roughlyEqual(-5621521.48, 1e-2);
     });
-
   });
-
 });

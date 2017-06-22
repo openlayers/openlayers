@@ -10,7 +10,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var styleCache = {};
 var styleFunction = function(feature) {
   // 2012_Earthquakes_Mag5.kml stores the magnitude of each earthquake in a
@@ -72,16 +71,17 @@ info.tooltip({
 var displayFeatureInfo = function(pixel) {
   info.css({
     left: pixel[0] + 'px',
-    top: (pixel[1] - 15) + 'px'
+    top: pixel[1] - 15 + 'px'
   });
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
   if (feature) {
-    info.tooltip('hide')
-        .attr('data-original-title', feature.get('name'))
-        .tooltip('fixTitle')
-        .tooltip('show');
+    info
+      .tooltip('hide')
+      .attr('data-original-title', feature.get('name'))
+      .tooltip('fixTitle')
+      .tooltip('show');
   } else {
     info.tooltip('hide');
   }

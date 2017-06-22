@@ -2,9 +2,7 @@ goog.provide('ol.render.webgl');
 
 goog.require('ol');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @const
    * @type {ol.Color}
@@ -17,13 +15,11 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.defaultLineCap = 'round';
 
-
   /**
    * @const
    * @type {Array.<number>}
    */
   ol.render.webgl.defaultLineDash = [];
-
 
   /**
    * @const
@@ -31,13 +27,11 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.defaultLineDashOffset = 0;
 
-
   /**
    * @const
    * @type {string}
    */
   ol.render.webgl.defaultLineJoin = 'round';
-
 
   /**
    * @const
@@ -67,10 +61,18 @@ if (ol.ENABLE_WEBGL) {
    * @param {number} y3 Third Y coordinate.
    * @return {boolean|undefined} Triangle is clockwise.
    */
-  ol.render.webgl.triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
+  ol.render.webgl.triangleIsCounterClockwise = function(
+    x1,
+    y1,
+    x2,
+    y2,
+    x3,
+    y3
+  ) {
     var area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
-    return (area <= ol.render.webgl.EPSILON && area >= -ol.render.webgl.EPSILON) ?
-        undefined : area > 0;
+    return area <= ol.render.webgl.EPSILON && area >= -ol.render.webgl.EPSILON
+      ? undefined
+      : area > 0;
   };
 
   /**
@@ -78,5 +80,4 @@ if (ol.ENABLE_WEBGL) {
    * @type {number}
    */
   ol.render.webgl.EPSILON = Number.EPSILON || 2.220446049250313e-16;
-
 }

@@ -3,7 +3,6 @@ goog.provide('ol.geom.flat.geodesic');
 goog.require('ol.math');
 goog.require('ol.proj');
 
-
 /**
  * @private
  * @param {function(number): ol.Coordinate} interpolate Interpolate function.
@@ -12,7 +11,11 @@ goog.require('ol.proj');
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance) {
+ol.geom.flat.geodesic.line_ = function(
+  interpolate,
+  transform,
+  squaredTolerance
+) {
   // FIXME reduce garbage generation
   // FIXME optimize stack operations
 
@@ -57,8 +60,10 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
     fracM = (fracA + fracB) / 2;
     geoM = interpolate(fracM);
     m = transform(geoM);
-    if (ol.math.squaredSegmentDistance(m[0], m[1], a[0], a[1],
-        b[0], b[1]) < squaredTolerance) {
+    if (
+      ol.math.squaredSegmentDistance(m[0], m[1], a[0], a[1], b[0], b[1]) <
+      squaredTolerance
+    ) {
       // If the m point is sufficiently close to the straight line, then we
       // discard it.  Just use the b coordinate and move on to the next line
       // segment.
@@ -77,7 +82,6 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
   return flatCoordinates;
 };
 
-
 /**
 * Generate a great-circle arcs between two lat/lon points.
 * @param {number} lon1 Longitude 1 in degrees.
@@ -89,8 +93,13 @@ ol.geom.flat.geodesic.line_ = function(interpolate, transform, squaredTolerance)
 * @return {Array.<number>} Flat coordinates.
 */
 ol.geom.flat.geodesic.greatCircleArc = function(
-    lon1, lat1, lon2, lat2, projection, squaredTolerance) {
-
+  lon1,
+  lat1,
+  lon2,
+  lat2,
+  projection,
+  squaredTolerance
+) {
   var geoProjection = ol.proj.get('EPSG:4326');
 
   var cosLat1 = Math.cos(ol.math.toRadians(lat1));
@@ -102,28 +111,33 @@ ol.geom.flat.geodesic.greatCircleArc = function(
   var d = sinLat1 * sinLat2 + cosLat1 * cosLat2 * cosDeltaLon;
 
   return ol.geom.flat.geodesic.line_(
-      /**
+    /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
        */
-      function(frac) {
-        if (1 <= d) {
-          return [lon2, lat2];
-        }
-        var D = frac * Math.acos(d);
-        var cosD = Math.cos(D);
-        var sinD = Math.sin(D);
-        var y = sinDeltaLon * cosLat2;
-        var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
-        var theta = Math.atan2(y, x);
-        var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
-        var lon = ol.math.toRadians(lon1) +
-            Math.atan2(Math.sin(theta) * sinD * cosLat1,
-                       cosD - sinLat1 * Math.sin(lat));
-        return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
-      }, ol.proj.getTransform(geoProjection, projection), squaredTolerance);
+    function(frac) {
+      if (1 <= d) {
+        return [lon2, lat2];
+      }
+      var D = frac * Math.acos(d);
+      var cosD = Math.cos(D);
+      var sinD = Math.sin(D);
+      var y = sinDeltaLon * cosLat2;
+      var x = cosLat1 * sinLat2 - sinLat1 * cosLat2 * cosDeltaLon;
+      var theta = Math.atan2(y, x);
+      var lat = Math.asin(sinLat1 * cosD + cosLat1 * sinD * Math.cos(theta));
+      var lon =
+        ol.math.toRadians(lon1) +
+        Math.atan2(
+          Math.sin(theta) * sinD * cosLat1,
+          cosD - sinLat1 * Math.sin(lat)
+        );
+      return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
+    },
+    ol.proj.getTransform(geoProjection, projection),
+    squaredTolerance
+  );
 };
-
 
 /**
  * Generate a meridian (line at constant longitude).
@@ -134,19 +148,26 @@ ol.geom.flat.geodesic.greatCircleArc = function(
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.meridian = function(lon, lat1, lat2, projection, squaredTolerance) {
+ol.geom.flat.geodesic.meridian = function(
+  lon,
+  lat1,
+  lat2,
+  projection,
+  squaredTolerance
+) {
   var epsg4326Projection = ol.proj.get('EPSG:4326');
   return ol.geom.flat.geodesic.line_(
-      /**
+    /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
        */
-      function(frac) {
-        return [lon, lat1 + ((lat2 - lat1) * frac)];
-      },
-      ol.proj.getTransform(epsg4326Projection, projection), squaredTolerance);
+    function(frac) {
+      return [lon, lat1 + (lat2 - lat1) * frac];
+    },
+    ol.proj.getTransform(epsg4326Projection, projection),
+    squaredTolerance
+  );
 };
-
 
 /**
  * Generate a parallel (line at constant latitude).
@@ -157,15 +178,23 @@ ol.geom.flat.geodesic.meridian = function(lon, lat1, lat2, projection, squaredTo
  * @param {number} squaredTolerance Squared tolerance.
  * @return {Array.<number>} Flat coordinates.
  */
-ol.geom.flat.geodesic.parallel = function(lat, lon1, lon2, projection, squaredTolerance) {
+ol.geom.flat.geodesic.parallel = function(
+  lat,
+  lon1,
+  lon2,
+  projection,
+  squaredTolerance
+) {
   var epsg4326Projection = ol.proj.get('EPSG:4326');
   return ol.geom.flat.geodesic.line_(
-      /**
+    /**
        * @param {number} frac Fraction.
        * @return {ol.Coordinate} Coordinate.
        */
-      function(frac) {
-        return [lon1 + ((lon2 - lon1) * frac), lat];
-      },
-      ol.proj.getTransform(epsg4326Projection, projection), squaredTolerance);
+    function(frac) {
+      return [lon1 + (lon2 - lon1) * frac, lat];
+    },
+    ol.proj.getTransform(epsg4326Projection, projection),
+    squaredTolerance
+  );
 };

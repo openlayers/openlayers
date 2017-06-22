@@ -7,7 +7,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.WMTS');
 goog.require('ol.tilegrid.WMTS');
 
-
 // create the WMTS tile grid in the google projection
 var projection = ol.proj.get('EPSG:3857');
 var tileSizePixels = 256;
@@ -34,12 +33,12 @@ var wmtsSource = new ol.source.WMTS({
   attributions: [
     '<a href="http://scalgo.com">SCALGO</a>',
     '<a href="http://www.cgiar-csi.org/data/' +
-        'srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>'
+      'srtm-90m-digital-elevation-database-v4-1">CGIAR-CSI SRTM</a>'
   ],
   tileGrid: tileGrid,
   style: 'default',
   dimensions: {
-    'threshold': 100
+    threshold: 100
   }
 });
 
@@ -62,7 +61,7 @@ var map = new ol.Map({
 });
 
 var updateSourceDimension = function(source, sliderVal) {
-  source.updateDimensions({'threshold': sliderVal});
+  source.updateDimensions({threshold: sliderVal});
   document.getElementById('theinfo').innerHTML = sliderVal + ' meters';
 };
 

@@ -3,7 +3,6 @@ goog.provide('ol.MapBrowserEvent');
 goog.require('ol');
 goog.require('ol.MapEvent');
 
-
 /**
  * @classdesc
  * Events emitted as map browser events are instances of this type.
@@ -18,9 +17,13 @@ goog.require('ol.MapEvent');
  * @param {boolean=} opt_dragging Is the map currently being dragged?
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
-ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
-    opt_frameState) {
-
+ol.MapBrowserEvent = function(
+  type,
+  map,
+  browserEvent,
+  opt_dragging,
+  opt_frameState
+) {
   ol.MapEvent.call(this, type, map, opt_frameState);
 
   /**
@@ -53,10 +56,8 @@ ol.MapBrowserEvent = function(type, map, browserEvent, opt_dragging,
    * @api
    */
   this.dragging = opt_dragging !== undefined ? opt_dragging : false;
-
 };
 ol.inherits(ol.MapBrowserEvent, ol.MapEvent);
-
 
 /**
  * Prevents the default browser action.
@@ -68,7 +69,6 @@ ol.MapBrowserEvent.prototype.preventDefault = function() {
   ol.MapEvent.prototype.preventDefault.call(this);
   this.originalEvent.preventDefault();
 };
-
 
 /**
  * Prevents further propagation of the current event.

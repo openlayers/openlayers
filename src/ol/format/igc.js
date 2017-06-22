@@ -9,7 +9,6 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.LineString');
 goog.require('ol.proj');
 
-
 /**
  * @classdesc
  * Feature format for `*.igc` flight recording files.
@@ -20,7 +19,6 @@ goog.require('ol.proj');
  * @api
  */
 ol.format.IGC = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   ol.format.TextFeature.call(this);
@@ -34,21 +32,18 @@ ol.format.IGC = function(opt_options) {
    * @private
    * @type {ol.format.IGCZ}
    */
-  this.altitudeMode_ = options.altitudeMode ?
-      options.altitudeMode : ol.format.IGCZ.NONE;
-
+  this.altitudeMode_ = options.altitudeMode
+    ? options.altitudeMode
+    : ol.format.IGCZ.NONE;
 };
 ol.inherits(ol.format.IGC, ol.format.TextFeature);
-
 
 /**
  * @const
  * @type {RegExp}
  * @private
  */
-ol.format.IGC.B_RECORD_RE_ =
-    /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
-
+ol.format.IGC.B_RECORD_RE_ = /^B(\d{2})(\d{2})(\d{2})(\d{2})(\d{5})([NS])(\d{3})(\d{5})([EW])([AV])(\d{5})(\d{5})/;
 
 /**
  * @const
@@ -57,14 +52,12 @@ ol.format.IGC.B_RECORD_RE_ =
  */
 ol.format.IGC.H_RECORD_RE_ = /^H.([A-Z]{3}).*?:(.*)/;
 
-
 /**
  * @const
  * @type {RegExp}
  * @private
  */
 ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
-
 
 /**
  * A regular expression matching the newline characters `\r\n`, `\r` and `\n`.
@@ -74,7 +67,6 @@ ol.format.IGC.HFDTE_RECORD_RE_ = /^HFDTE(\d{2})(\d{2})(\d{2})/;
  * @private
  */
 ol.format.IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
-
 
 /**
  * Read the feature from the IGC source.
@@ -86,7 +78,6 @@ ol.format.IGC.NEWLINE_RE_ = /\r\n|\r|\n/;
  * @api
  */
 ol.format.IGC.prototype.readFeature;
-
 
 /**
  * @inheritDoc
@@ -157,15 +148,16 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
     return null;
   }
   var lineString = new ol.geom.LineString(null);
-  var layout = altitudeMode == ol.format.IGCZ.NONE ?
-      ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
+  var layout = altitudeMode == ol.format.IGCZ.NONE
+    ? ol.geom.GeometryLayout.XYM
+    : ol.geom.GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
-  var feature = new ol.Feature(ol.format.Feature.transformWithOptions(
-      lineString, false, opt_options));
+  var feature = new ol.Feature(
+    ol.format.Feature.transformWithOptions(lineString, false, opt_options)
+  );
   feature.setProperties(properties);
   return feature;
 };
-
 
 /**
  * Read the feature from the source. As IGC sources contain a single
@@ -179,7 +171,6 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
  */
 ol.format.IGC.prototype.readFeatures;
 
-
 /**
  * @inheritDoc
  */
@@ -192,7 +183,6 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
   }
 };
 
-
 /**
  * Read the projection from the IGC source.
  *
@@ -203,13 +193,11 @@ ol.format.IGC.prototype.readFeaturesFromText = function(text, opt_options) {
  */
 ol.format.IGC.prototype.readProjection;
 
-
 /**
  * Not implemented.
  * @inheritDoc
  */
 ol.format.IGC.prototype.writeFeatureText = function(feature, opt_options) {};
-
 
 /**
  * Not implemented.
@@ -217,13 +205,11 @@ ol.format.IGC.prototype.writeFeatureText = function(feature, opt_options) {};
  */
 ol.format.IGC.prototype.writeFeaturesText = function(features, opt_options) {};
 
-
 /**
  * Not implemented.
  * @inheritDoc
  */
 ol.format.IGC.prototype.writeGeometryText = function(geometry, opt_options) {};
-
 
 /**
  * Not implemented.

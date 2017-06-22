@@ -2,9 +2,7 @@ goog.provide('ol.test.LRUCache');
 
 goog.require('ol.structs.LRUCache');
 
-
 describe('ol.structs.LRUCache', function() {
-
   var lruCache;
 
   function fillLRUCache(lruCache) {
@@ -197,5 +195,4 @@ describe('ol.structs.LRUCache', function() {
       expect(lruCache.getValues()).to.eql([]);
     });
   });
-
 });

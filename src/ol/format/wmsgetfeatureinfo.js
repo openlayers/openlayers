@@ -7,7 +7,6 @@ goog.require('ol.format.XMLFeature');
 goog.require('ol.obj');
 goog.require('ol.xml');
 
-
 /**
  * @classdesc
  * Format for reading WMSGetFeatureInfo format. It uses
@@ -19,7 +18,6 @@ goog.require('ol.xml');
  * @api
  */
 ol.format.WMSGetFeatureInfo = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   /**
@@ -28,13 +26,11 @@ ol.format.WMSGetFeatureInfo = function(opt_options) {
    */
   this.featureNS_ = 'http://mapserver.gis.umn.edu/mapserver';
 
-
   /**
    * @private
    * @type {ol.format.GML2}
    */
   this.gmlFormat_ = new ol.format.GML2();
-
 
   /**
    * @private
@@ -46,14 +42,12 @@ ol.format.WMSGetFeatureInfo = function(opt_options) {
 };
 ol.inherits(ol.format.WMSGetFeatureInfo, ol.format.XMLFeature);
 
-
 /**
  * @const
  * @type {string}
  * @private
  */
 ol.format.WMSGetFeatureInfo.featureIdentifier_ = '_feature';
-
 
 /**
  * @const
@@ -62,14 +56,16 @@ ol.format.WMSGetFeatureInfo.featureIdentifier_ = '_feature';
  */
 ol.format.WMSGetFeatureInfo.layerIdentifier_ = '_layer';
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {Array.<ol.Feature>} Features.
  * @private
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack) {
+ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(
+  node,
+  objectStack
+) {
   node.setAttribute('namespaceURI', this.featureNS_);
   var localName = node.localName;
   /** @type {Array.<ol.Feature>} */
@@ -92,36 +88,48 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
         continue;
       }
 
-      var featureType = layerName +
-          ol.format.WMSGetFeatureInfo.featureIdentifier_;
+      var featureType =
+        layerName + ol.format.WMSGetFeatureInfo.featureIdentifier_;
 
       context['featureType'] = featureType;
       context['featureNS'] = this.featureNS_;
 
       var parsers = {};
       parsers[featureType] = ol.xml.makeArrayPusher(
-          this.gmlFormat_.readFeatureElement, this.gmlFormat_);
+        this.gmlFormat_.readFeatureElement,
+        this.gmlFormat_
+      );
       var parsersNS = ol.xml.makeStructureNS(
-          [context['featureNS'], null], parsers);
+        [context['featureNS'], null],
+        parsers
+      );
       layer.setAttribute('namespaceURI', this.featureNS_);
       var layerFeatures = ol.xml.pushParseAndPop(
-          [], parsersNS, layer, objectStack, this.gmlFormat_);
+        [],
+        parsersNS,
+        layer,
+        objectStack,
+        this.gmlFormat_
+      );
       if (layerFeatures) {
         ol.array.extend(features, layerFeatures);
       }
     }
   }
   if (localName == 'FeatureCollection') {
-    var gmlFeatures = ol.xml.pushParseAndPop([],
-        this.gmlFormat_.FEATURE_COLLECTION_PARSERS, node,
-        [{}], this.gmlFormat_);
+    var gmlFeatures = ol.xml.pushParseAndPop(
+      [],
+      this.gmlFormat_.FEATURE_COLLECTION_PARSERS,
+      node,
+      [{}],
+      this.gmlFormat_
+    );
     if (gmlFeatures) {
       features = gmlFeatures;
     }
   }
   return features;
 };
-
 
 /**
  * Read all features from a WMSGetFeatureInfo response.
@@ -134,11 +142,13 @@ ol.format.WMSGetFeatureInfo.prototype.readFeatures_ = function(node, objectStack
  */
 ol.format.WMSGetFeatureInfo.prototype.readFeatures;
 
-
 /**
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_options) {
+ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(
+  node,
+  opt_options
+) {
   var options = {};
   if (opt_options) {
     ol.obj.assign(options, this.getReadOptions(node, opt_options));
@@ -146,23 +156,29 @@ ol.format.WMSGetFeatureInfo.prototype.readFeaturesFromNode = function(node, opt_
   return this.readFeatures_(node, [options]);
 };
 
+/**
+ * Not implemented.
+ * @inheritDoc
+ */
+ol.format.WMSGetFeatureInfo.prototype.writeFeatureNode = function(
+  feature,
+  opt_options
+) {};
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.writeFeatureNode = function(feature, opt_options) {};
-
-
-/**
- * Not implemented.
- * @inheritDoc
- */
-ol.format.WMSGetFeatureInfo.prototype.writeFeaturesNode = function(features, opt_options) {};
-
+ol.format.WMSGetFeatureInfo.prototype.writeFeaturesNode = function(
+  features,
+  opt_options
+) {};
 
 /**
  * Not implemented.
  * @inheritDoc
  */
-ol.format.WMSGetFeatureInfo.prototype.writeGeometryNode = function(geometry, opt_options) {};
+ol.format.WMSGetFeatureInfo.prototype.writeGeometryNode = function(
+  geometry,
+  opt_options
+) {};

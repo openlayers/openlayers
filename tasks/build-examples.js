@@ -45,8 +45,15 @@ function getRequires(src) {
 function getLinkToApiHtml(requires) {
   var lis = requires.map(function(symb) {
     var href = '../apidoc/' + symb + '.html';
-    return '<li><a href="' + href + '" title="API documentation for ' +
-        symb + '">' + symb + '</a></li>';
+    return (
+      '<li><a href="' +
+      href +
+      '" title="API documentation for ' +
+      symb +
+      '">' +
+      symb +
+      '</a></li>'
+    );
   });
   return '<ul class="inline">' + lis.join() + '</ul>';
 }
@@ -82,9 +89,13 @@ function augmentExamples(files, metalsmith, done) {
       if (!(jsFilename in files)) {
         throw new Error('No .js file found for ' + filename);
       }
-      var jsSource = files[jsFilename].contents.toString()
-          // Change data paths to absolute urls
-          .replace(/'data\//g, '\'https://openlayers.org/en/v' + pkg.version + '/examples/data/');
+      var jsSource = files[jsFilename].contents
+        .toString()
+        // Change data paths to absolute urls
+        .replace(
+          /'data\//g,
+          "'https://openlayers.org/en/v" + pkg.version + '/examples/data/'
+        );
       if (file.cloak) {
         for (var key in file.cloak) {
           jsSource = jsSource.replace(new RegExp(key, 'g'), file.cloak[key]);
@@ -114,31 +125,39 @@ function augmentExamples(files, metalsmith, done) {
         var codePenResources = [];
         for (var i = 0, ii = file.resources.length; i < ii; ++i) {
           var resource = file.resources[i];
-          var remoteResource = resource.indexOf('//') === -1 ?
-              'https://openlayers.org/en/v' + pkg.version + '/examples/' +
-                  resource : resource;
+          var remoteResource = resource.indexOf('//') === -1
+            ? 'https://openlayers.org/en/v' +
+                pkg.version +
+                '/examples/' +
+                resource
+            : resource;
           codePenResources[i] = remoteResource;
           if (isJsRegEx.test(resource)) {
             resources[i] = '<script src="' + resource + '"></script>';
-            remoteResources[i] = '<script src="' + remoteResource +
-                '"></script>';
+            remoteResources[i] =
+              '<script src="' + remoteResource + '"></script>';
           } else if (isCssRegEx.test(resource)) {
             if (resource.indexOf('bootstrap.min.css') === -1) {
               resources[i] = '<link rel="stylesheet" href="' + resource + '">';
             }
-            remoteResources[i] = '<link rel="stylesheet" href="' +
-                remoteResource + '">';
+            remoteResources[i] =
+              '<link rel="stylesheet" href="' + remoteResource + '">';
           } else {
-            throw new Error('Invalid value for resource: ' +
-                resource + ' is not .js or .css: ' + filename);
+            throw new Error(
+              'Invalid value for resource: ' +
+                resource +
+                ' is not .js or .css: ' +
+                filename
+            );
           }
         }
         file.extraHead = {
           local: resources.join('\n'),
           remote: remoteResources.join('\n')
         };
-        file.extraResources = file.resources.length ?
-            ',' + codePenResources.join(',') : '';
+        file.extraResources = file.resources.length
+          ? ',' + codePenResources.join(',')
+          : '';
       }
     }
   }
@@ -223,15 +242,16 @@ function createIndex(files, metalsmith, done) {
 
 function main(callback) {
   var smith = new Metalsmith('.')
-      .source(srcDir)
-      .destination(destDir)
-      .concurrency(25)
-      .metadata({
-        olVersion: pkg.version
-      })
-      .use(augmentExamples)
-      .use(createIndex)
-      .use(templates({
+    .source(srcDir)
+    .destination(destDir)
+    .concurrency(25)
+    .metadata({
+      olVersion: pkg.version
+    })
+    .use(augmentExamples)
+    .use(createIndex)
+    .use(
+      templates({
         engine: 'handlebars',
         directory: templatesDir,
         helpers: {
@@ -244,15 +264,19 @@ function main(callback) {
             }
             var count = options.hash.spaces || 2;
             var spaces = new Array(count + 1).join(' ');
-            return text.split('\n').map(function(line) {
-              return line ? spaces + line : '';
-            }).join('\n');
+            return text
+              .split('\n')
+              .map(function(line) {
+                return line ? spaces + line : '';
+              })
+              .join('\n');
           }
         }
-      }))
-      .build(function(err) {
-        callback(err);
-      });
+      })
+    )
+    .build(function(err) {
+      callback(err);
+    });
   return smith;
 }
 
@@ -260,8 +284,10 @@ if (require.main === module) {
   main(function(err) {
     if (err) {
       process.stderr.write(
-          'Building examples failed.  See the full trace below.\n\n' +
-          err.stack + '\n');
+        'Building examples failed.  See the full trace below.\n\n' +
+          err.stack +
+          '\n'
+      );
       process.exit(1);
     } else {
       process.exit(0);

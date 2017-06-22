@@ -6,7 +6,6 @@ goog.require('ol.format.XML');
 goog.require('ol.format.XSD');
 goog.require('ol.xml');
 
-
 /**
  * @classdesc
  * Format for reading WMS capabilities data
@@ -16,7 +15,6 @@ goog.require('ol.xml');
  * @api
  */
 ol.format.WMSCapabilities = function() {
-
   ol.format.XML.call(this);
 
   /**
@@ -25,7 +23,6 @@ ol.format.WMSCapabilities = function() {
   this.version = undefined;
 };
 ol.inherits(ol.format.WMSCapabilities, ol.format.XML);
-
 
 /**
  * Read a WMS capabilities document.
@@ -36,7 +33,6 @@ ol.inherits(ol.format.WMSCapabilities, ol.format.XML);
  * @api
  */
 ol.format.WMSCapabilities.prototype.read;
-
 
 /**
  * @inheritDoc
@@ -50,18 +46,21 @@ ol.format.WMSCapabilities.prototype.readFromDocument = function(doc) {
   return null;
 };
 
-
 /**
  * @inheritDoc
  */
 ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
   this.version = node.getAttribute('version').trim();
-  var wmsCapabilityObject = ol.xml.pushParseAndPop({
-    'version': this.version
-  }, ol.format.WMSCapabilities.PARSERS_, node, []);
+  var wmsCapabilityObject = ol.xml.pushParseAndPop(
+    {
+      version: this.version
+    },
+    ol.format.WMSCapabilities.PARSERS_,
+    node,
+    []
+  );
   return wmsCapabilityObject ? wmsCapabilityObject : null;
 };
-
 
 /**
  * @private
@@ -71,9 +70,12 @@ ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
  */
 ol.format.WMSCapabilities.readAttribution_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -95,12 +97,11 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
   ];
 
   return {
-    'crs': node.getAttribute('CRS'),
-    'extent': extent,
-    'res': resolutions
+    crs: node.getAttribute('CRS'),
+    extent: extent,
+    res: resolutions
   };
 };
-
 
 /**
  * @private
@@ -108,32 +109,42 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.Extent|undefined} Bounding box object.
  */
-ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
+ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(
+  node,
+  objectStack
+) {
   var geographicBoundingBox = ol.xml.pushParseAndPop(
-        {},
-        ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
-        node, objectStack);
+    {},
+    ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
+    node,
+    objectStack
+  );
   if (!geographicBoundingBox) {
     return undefined;
   }
-  var westBoundLongitude = /** @type {number|undefined} */
-        (geographicBoundingBox['westBoundLongitude']);
-  var southBoundLatitude = /** @type {number|undefined} */
-        (geographicBoundingBox['southBoundLatitude']);
-  var eastBoundLongitude = /** @type {number|undefined} */
-        (geographicBoundingBox['eastBoundLongitude']);
-  var northBoundLatitude = /** @type {number|undefined} */
-        (geographicBoundingBox['northBoundLatitude']);
-  if (westBoundLongitude === undefined || southBoundLatitude === undefined ||
-        eastBoundLongitude === undefined || northBoundLatitude === undefined) {
+  var westBoundLongitude /** @type {number|undefined} */ =
+    geographicBoundingBox['westBoundLongitude'];
+  var southBoundLatitude /** @type {number|undefined} */ =
+    geographicBoundingBox['southBoundLatitude'];
+  var eastBoundLongitude /** @type {number|undefined} */ =
+    geographicBoundingBox['eastBoundLongitude'];
+  var northBoundLatitude /** @type {number|undefined} */ =
+    geographicBoundingBox['northBoundLatitude'];
+  if (
+    westBoundLongitude === undefined ||
+    southBoundLatitude === undefined ||
+    eastBoundLongitude === undefined ||
+    northBoundLatitude === undefined
+  ) {
     return undefined;
   }
   return [
-    westBoundLongitude, southBoundLatitude,
-    eastBoundLongitude, northBoundLatitude
+    westBoundLongitude,
+    southBoundLatitude,
+    eastBoundLongitude,
+    northBoundLatitude
   ];
 };
-
 
 /**
  * @param {Node} node Node.
@@ -143,9 +154,12 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectSt
  */
 ol.format.WMSCapabilities.readCapability_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.CAPABILITY_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @param {Node} node Node.
@@ -155,9 +169,12 @@ ol.format.WMSCapabilities.readCapability_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.SERVICE_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @param {Node} node Node.
@@ -165,12 +182,17 @@ ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
  * @private
  * @return {Object|undefined} Contact information object.
  */
-ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) {
+ol.format.WMSCapabilities.readContactInformation_ = function(
+  node,
+  objectStack
+) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
-        node, objectStack);
+    {},
+    ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @param {Node} node Node.
@@ -178,12 +200,17 @@ ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) 
  * @private
  * @return {Object|undefined} Contact person object.
  */
-ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
+ol.format.WMSCapabilities.readContactPersonPrimary_ = function(
+  node,
+  objectStack
+) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_,
-        node, objectStack);
+    {},
+    ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @param {Node} node Node.
@@ -193,10 +220,12 @@ ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack
  */
 ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
-        node, objectStack);
+    {},
+    ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @param {Node} node Node.
@@ -206,9 +235,12 @@ ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readException_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        [], ol.format.WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
+    [],
+    ol.format.WMSCapabilities.EXCEPTION_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @param {Node} node Node.
@@ -218,9 +250,12 @@ ol.format.WMSCapabilities.readException_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.LAYER_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -229,24 +264,30 @@ ol.format.WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
  * @return {Object|undefined} Layer object.
  */
 ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
-  var parentLayerObject = /**  @type {Object.<string,*>} */
-        (objectStack[objectStack.length - 1]);
+  var parentLayerObject /**  @type {Object.<string,*>} */ =
+    objectStack[objectStack.length - 1];
 
   var layerObject = ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.LAYER_PARSERS_,
+    node,
+    objectStack
+  );
 
   if (!layerObject) {
     return undefined;
   }
-  var queryable =
-        ol.format.XSD.readBooleanString(node.getAttribute('queryable'));
+  var queryable = ol.format.XSD.readBooleanString(
+    node.getAttribute('queryable')
+  );
   if (queryable === undefined) {
     queryable = parentLayerObject['queryable'];
   }
   layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
   var cascaded = ol.format.XSD.readNonNegativeIntegerString(
-        node.getAttribute('cascaded'));
+    node.getAttribute('cascaded')
+  );
   if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
@@ -258,28 +299,31 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   }
   layerObject['opaque'] = opaque !== undefined ? opaque : false;
 
-  var noSubsets =
-        ol.format.XSD.readBooleanString(node.getAttribute('noSubsets'));
+  var noSubsets = ol.format.XSD.readBooleanString(
+    node.getAttribute('noSubsets')
+  );
   if (noSubsets === undefined) {
     noSubsets = parentLayerObject['noSubsets'];
   }
   layerObject['noSubsets'] = noSubsets !== undefined ? noSubsets : false;
 
-  var fixedWidth =
-        ol.format.XSD.readDecimalString(node.getAttribute('fixedWidth'));
+  var fixedWidth = ol.format.XSD.readDecimalString(
+    node.getAttribute('fixedWidth')
+  );
   if (!fixedWidth) {
     fixedWidth = parentLayerObject['fixedWidth'];
   }
   layerObject['fixedWidth'] = fixedWidth;
 
-  var fixedHeight =
-        ol.format.XSD.readDecimalString(node.getAttribute('fixedHeight'));
+  var fixedHeight = ol.format.XSD.readDecimalString(
+    node.getAttribute('fixedHeight')
+  );
   if (!fixedHeight) {
     fixedHeight = parentLayerObject['fixedHeight'];
   }
   layerObject['fixedHeight'] = fixedHeight;
 
-    // See 7.2.4.8
+  // See 7.2.4.8
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
   addKeys.forEach(function(key) {
     if (key in parentLayerObject) {
@@ -288,8 +332,14 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
     }
   });
 
-  var replaceKeys = ['EX_GeographicBoundingBox', 'BoundingBox', 'Dimension',
-    'Attribution', 'MinScaleDenominator', 'MaxScaleDenominator'];
+  var replaceKeys = [
+    'EX_GeographicBoundingBox',
+    'BoundingBox',
+    'Dimension',
+    'Attribution',
+    'MinScaleDenominator',
+    'MaxScaleDenominator'
+  ];
   replaceKeys.forEach(function(key) {
     if (!(key in layerObject)) {
       var parentValue = parentLayerObject[key];
@@ -300,7 +350,6 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   return layerObject;
 };
 
-
 /**
  * @private
  * @param {Node} node Node.
@@ -309,20 +358,21 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
   var dimensionObject = {
-    'name': node.getAttribute('name'),
-    'units': node.getAttribute('units'),
-    'unitSymbol': node.getAttribute('unitSymbol'),
-    'default': node.getAttribute('default'),
-    'multipleValues': ol.format.XSD.readBooleanString(
-          node.getAttribute('multipleValues')),
-    'nearestValue': ol.format.XSD.readBooleanString(
-          node.getAttribute('nearestValue')),
-    'current': ol.format.XSD.readBooleanString(node.getAttribute('current')),
-    'values': ol.format.XSD.readString(node)
+    name: node.getAttribute('name'),
+    units: node.getAttribute('units'),
+    unitSymbol: node.getAttribute('unitSymbol'),
+    default: node.getAttribute('default'),
+    multipleValues: ol.format.XSD.readBooleanString(
+      node.getAttribute('multipleValues')
+    ),
+    nearestValue: ol.format.XSD.readBooleanString(
+      node.getAttribute('nearestValue')
+    ),
+    current: ol.format.XSD.readBooleanString(node.getAttribute('current')),
+    values: ol.format.XSD.readString(node)
   };
   return dimensionObject;
 };
-
 
 /**
  * @private
@@ -330,12 +380,17 @@ ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
-ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
+ol.format.WMSCapabilities.readFormatOnlineresource_ = function(
+  node,
+  objectStack
+) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
-        node, objectStack);
+    {},
+    ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -345,9 +400,12 @@ ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack
  */
 ol.format.WMSCapabilities.readRequest_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.REQUEST_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -357,9 +415,12 @@ ol.format.WMSCapabilities.readRequest_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readDCPType_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.DCPTYPE_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -369,9 +430,12 @@ ol.format.WMSCapabilities.readDCPType_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readHTTP_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.HTTP_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.HTTP_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -381,9 +445,12 @@ ol.format.WMSCapabilities.readHTTP_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readOperationType_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -391,9 +458,14 @@ ol.format.WMSCapabilities.readOperationType_ = function(node, objectStack) {
  * @param {Array.<*>} objectStack Object stack.
  * @return {Object|undefined} Online resource object.
  */
-ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(node, objectStack) {
-  var formatOnlineresource =
-        ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
+ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(
+  node,
+  objectStack
+) {
+  var formatOnlineresource = ol.format.WMSCapabilities.readFormatOnlineresource_(
+    node,
+    objectStack
+  );
   if (formatOnlineresource) {
     var size = [
       ol.format.XSD.readNonNegativeIntegerString(node.getAttribute('width')),
@@ -405,7 +477,6 @@ ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(node, object
   return undefined;
 };
 
-
 /**
  * @private
  * @param {Node} node Node.
@@ -413,15 +484,16 @@ ol.format.WMSCapabilities.readSizedFormatOnlineresource_ = function(node, object
  * @return {Object|undefined} Authority URL object.
  */
 ol.format.WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
-  var authorityObject =
-        ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
+  var authorityObject = ol.format.WMSCapabilities.readFormatOnlineresource_(
+    node,
+    objectStack
+  );
   if (authorityObject) {
     authorityObject['name'] = node.getAttribute('name');
     return authorityObject;
   }
   return undefined;
 };
-
 
 /**
  * @private
@@ -430,15 +502,16 @@ ol.format.WMSCapabilities.readAuthorityURL_ = function(node, objectStack) {
  * @return {Object|undefined} Metadata URL object.
  */
 ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
-  var metadataObject =
-        ol.format.WMSCapabilities.readFormatOnlineresource_(node, objectStack);
+  var metadataObject = ol.format.WMSCapabilities.readFormatOnlineresource_(
+    node,
+    objectStack
+  );
   if (metadataObject) {
     metadataObject['type'] = node.getAttribute('type');
     return metadataObject;
   }
   return undefined;
 };
-
 
 /**
  * @private
@@ -448,9 +521,12 @@ ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readStyle_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.STYLE_PARSERS_, node, objectStack);
+    {},
+    ol.format.WMSCapabilities.STYLE_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @private
@@ -460,9 +536,12 @@ ol.format.WMSCapabilities.readStyle_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readKeywordList_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        [], ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
+    [],
+    ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_,
+    node,
+    objectStack
+  );
 };
-
 
 /**
  * @const
@@ -474,20 +553,22 @@ ol.format.WMSCapabilities.NAMESPACE_URIS_ = [
   'http://www.opengis.net/wms'
 ];
 
-
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
 ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Service': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readService_),
-      'Capability': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readCapability_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Service: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readService_
+    ),
+    Capability: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readCapability_
+    )
+  }
+);
 
 /**
  * @const
@@ -495,15 +576,19 @@ ol.format.WMSCapabilities.PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Request': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readRequest_),
-      'Exception': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readException_),
-      'Layer': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readCapabilityLayer_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Request: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readRequest_
+    ),
+    Exception: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readException_
+    ),
+    Layer: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readCapabilityLayer_
+    )
+  }
+);
 
 /**
  * @const
@@ -511,27 +596,33 @@ ol.format.WMSCapabilities.CAPABILITY_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'KeywordList': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readKeywordList_),
-      'OnlineResource': ol.xml.makeObjectPropertySetter(
-          ol.format.XLink.readHref),
-      'ContactInformation': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readContactInformation_),
-      'Fees': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'AccessConstraints': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'LayerLimit': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readNonNegativeInteger),
-      'MaxWidth': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readNonNegativeInteger),
-      'MaxHeight': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readNonNegativeInteger)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Name: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Title: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Abstract: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    KeywordList: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readKeywordList_
+    ),
+    OnlineResource: ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
+    ContactInformation: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readContactInformation_
+    ),
+    Fees: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    AccessConstraints: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readString
+    ),
+    LayerLimit: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readNonNegativeInteger
+    ),
+    MaxWidth: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readNonNegativeInteger
+    ),
+    MaxHeight: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readNonNegativeInteger
+    )
+  }
+);
 
 /**
  * @const
@@ -539,21 +630,26 @@ ol.format.WMSCapabilities.SERVICE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'ContactPersonPrimary': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readContactPersonPrimary_),
-      'ContactPosition': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'ContactAddress': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readContactAddress_),
-      'ContactVoiceTelephone': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'ContactFacsimileTelephone': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'ContactElectronicMailAddress': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    ContactPersonPrimary: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readContactPersonPrimary_
+    ),
+    ContactPosition: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    ContactAddress: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readContactAddress_
+    ),
+    ContactVoiceTelephone: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readString
+    ),
+    ContactFacsimileTelephone: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readString
+    ),
+    ContactElectronicMailAddress: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readString
+    )
+  }
+);
 
 /**
  * @const
@@ -561,13 +657,14 @@ ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'ContactPerson': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'ContactOrganization': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    ContactPerson: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    ContactOrganization: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readString
+    )
+  }
+);
 
 /**
  * @const
@@ -575,16 +672,16 @@ ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'AddressType': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Address': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'City': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'StateOrProvince': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readString),
-      'PostCode': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Country': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    AddressType: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Address: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    City: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    StateOrProvince: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    PostCode: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Country: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString)
+  }
+);
 
 /**
  * @const
@@ -592,10 +689,11 @@ ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': ol.xml.makeArrayPusher(ol.format.XSD.readString)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Format: ol.xml.makeArrayPusher(ol.format.XSD.readString)
+  }
+);
 
 /**
  * @const
@@ -603,40 +701,52 @@ ol.format.WMSCapabilities.EXCEPTION_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'KeywordList': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readKeywordList_),
-      'CRS': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-      'EX_GeographicBoundingBox': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readEXGeographicBoundingBox_),
-      'BoundingBox': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readBoundingBox_),
-      'Dimension': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readDimension_),
-      'Attribution': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readAttribution_),
-      'AuthorityURL': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readAuthorityURL_),
-      'Identifier': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-      'MetadataURL': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readMetadataURL_),
-      'DataURL': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readFormatOnlineresource_),
-      'FeatureListURL': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readFormatOnlineresource_),
-      'Style': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readStyle_),
-      'MinScaleDenominator': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readDecimal),
-      'MaxScaleDenominator': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readDecimal),
-      'Layer': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readLayer_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Name: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Title: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Abstract: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    KeywordList: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readKeywordList_
+    ),
+    CRS: ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+    EX_GeographicBoundingBox: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readEXGeographicBoundingBox_
+    ),
+    BoundingBox: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readBoundingBox_
+    ),
+    Dimension: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readDimension_
+    ),
+    Attribution: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readAttribution_
+    ),
+    AuthorityURL: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readAuthorityURL_
+    ),
+    Identifier: ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+    MetadataURL: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readMetadataURL_
+    ),
+    DataURL: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readFormatOnlineresource_
+    ),
+    FeatureListURL: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readFormatOnlineresource_
+    ),
+    Style: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readStyle_
+    ),
+    MinScaleDenominator: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readDecimal
+    ),
+    MaxScaleDenominator: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readDecimal
+    ),
+    Layer: ol.xml.makeObjectPropertyPusher(ol.format.WMSCapabilities.readLayer_)
+  }
+);
 
 /**
  * @const
@@ -644,32 +754,38 @@ ol.format.WMSCapabilities.LAYER_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'OnlineResource': ol.xml.makeObjectPropertySetter(
-          ol.format.XLink.readHref),
-      'LogoURL': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readSizedFormatOnlineresource_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Title: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    OnlineResource: ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref),
+    LogoURL: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readSizedFormatOnlineresource_
+    )
+  }
+);
 
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
-    ol.xml.makeStructureNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'westBoundLongitude': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readDecimal),
-      'eastBoundLongitude': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readDecimal),
-      'southBoundLatitude': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readDecimal),
-      'northBoundLatitude': ol.xml.makeObjectPropertySetter(
-          ol.format.XSD.readDecimal)
-    });
-
+ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ = ol.xml.makeStructureNS(
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    westBoundLongitude: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readDecimal
+    ),
+    eastBoundLongitude: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readDecimal
+    ),
+    southBoundLatitude: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readDecimal
+    ),
+    northBoundLatitude: ol.xml.makeObjectPropertySetter(
+      ol.format.XSD.readDecimal
+    )
+  }
+);
 
 /**
  * @const
@@ -677,15 +793,19 @@ ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_ =
  * @private
  */
 ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'GetCapabilities': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readOperationType_),
-      'GetMap': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readOperationType_),
-      'GetFeatureInfo': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readOperationType_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    GetCapabilities: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readOperationType_
+    ),
+    GetMap: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readOperationType_
+    ),
+    GetFeatureInfo: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readOperationType_
+    )
+  }
+);
 
 /**
  * @const
@@ -693,12 +813,14 @@ ol.format.WMSCapabilities.REQUEST_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
-      'DCPType': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readDCPType_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Format: ol.xml.makeObjectPropertyPusher(ol.format.XSD.readString),
+    DCPType: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readDCPType_
+    )
+  }
+);
 
 /**
  * @const
@@ -706,11 +828,11 @@ ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'HTTP': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readHTTP_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    HTTP: ol.xml.makeObjectPropertySetter(ol.format.WMSCapabilities.readHTTP_)
+  }
+);
 
 /**
  * @const
@@ -718,13 +840,16 @@ ol.format.WMSCapabilities.DCPTYPE_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Get': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readFormatOnlineresource_),
-      'Post': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readFormatOnlineresource_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Get: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readFormatOnlineresource_
+    ),
+    Post: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readFormatOnlineresource_
+    )
+  }
+);
 
 /**
  * @const
@@ -732,31 +857,35 @@ ol.format.WMSCapabilities.HTTP_PARSERS_ = ol.xml.makeStructureNS(
  * @private
  */
 ol.format.WMSCapabilities.STYLE_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Name': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Title': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'Abstract': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'LegendURL': ol.xml.makeObjectPropertyPusher(
-          ol.format.WMSCapabilities.readSizedFormatOnlineresource_),
-      'StyleSheetURL': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readFormatOnlineresource_),
-      'StyleURL': ol.xml.makeObjectPropertySetter(
-          ol.format.WMSCapabilities.readFormatOnlineresource_)
-    });
-
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Name: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Title: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    Abstract: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    LegendURL: ol.xml.makeObjectPropertyPusher(
+      ol.format.WMSCapabilities.readSizedFormatOnlineresource_
+    ),
+    StyleSheetURL: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readFormatOnlineresource_
+    ),
+    StyleURL: ol.xml.makeObjectPropertySetter(
+      ol.format.WMSCapabilities.readFormatOnlineresource_
+    )
+  }
+);
 
 /**
  * @const
  * @type {Object.<string, Object.<string, ol.XmlParser>>}
  * @private
  */
-ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
-    ol.xml.makeStructureNS(ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Format': ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
-      'OnlineResource': ol.xml.makeObjectPropertySetter(
-          ol.format.XLink.readHref)
-    });
-
+ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ = ol.xml.makeStructureNS(
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Format: ol.xml.makeObjectPropertySetter(ol.format.XSD.readString),
+    OnlineResource: ol.xml.makeObjectPropertySetter(ol.format.XLink.readHref)
+  }
+);
 
 /**
  * @const
@@ -764,6 +893,8 @@ ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_ =
  * @private
  */
 ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_ = ol.xml.makeStructureNS(
-    ol.format.WMSCapabilities.NAMESPACE_URIS_, {
-      'Keyword': ol.xml.makeArrayPusher(ol.format.XSD.readString)
-    });
+  ol.format.WMSCapabilities.NAMESPACE_URIS_,
+  {
+    Keyword: ol.xml.makeArrayPusher(ol.format.XSD.readString)
+  }
+);

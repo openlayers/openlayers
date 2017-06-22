@@ -5,14 +5,13 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.TileWMS');
 
-
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
       url: 'https://ahocevar.com/geoserver/wms',
       params: {
-        'LAYERS': 'ne:NE1_HR_LC_SR_W_DR',
-        'TILED': true
+        LAYERS: 'ne:NE1_HR_LC_SR_W_DR',
+        TILED: true
       }
     })
   })

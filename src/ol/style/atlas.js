@@ -2,7 +2,6 @@ goog.provide('ol.style.Atlas');
 
 goog.require('ol.dom');
 
-
 /**
  * This class facilitates the creation of image atlases.
  *
@@ -21,7 +20,6 @@ goog.require('ol.dom');
  *    padding around each image.
  */
 ol.style.Atlas = function(size, space) {
-
   /**
    * @private
    * @type {number}
@@ -53,7 +51,6 @@ ol.style.Atlas = function(size, space) {
   this.canvas_ = this.context_.canvas;
 };
 
-
 /**
  * @param {string} id The identifier of the entry to check.
  * @return {?ol.AtlasInfo} The atlas info.
@@ -61,7 +58,6 @@ ol.style.Atlas = function(size, space) {
 ol.style.Atlas.prototype.get = function(id) {
   return this.entries_[id] || null;
 };
-
 
 /**
  * @param {string} id The identifier of the entry to add.
@@ -73,12 +69,20 @@ ol.style.Atlas.prototype.get = function(id) {
  *    `renderCallback`.
  * @return {?ol.AtlasInfo} The position and atlas image for the entry.
  */
-ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_this) {
+ol.style.Atlas.prototype.add = function(
+  id,
+  width,
+  height,
+  renderCallback,
+  opt_this
+) {
   var block, i, ii;
   for (i = 0, ii = this.emptyBlocks_.length; i < ii; ++i) {
     block = this.emptyBlocks_[i];
-    if (block.width >= width + this.space_ &&
-        block.height >= height + this.space_) {
+    if (
+      block.width >= width + this.space_ &&
+      block.height >= height + this.space_
+    ) {
       // we found a block that is big enough for our entry
       var entry = {
         offsetX: block.x + this.space_,
@@ -88,8 +92,12 @@ ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_t
       this.entries_[id] = entry;
 
       // render the image on the atlas image
-      renderCallback.call(opt_this, this.context_,
-          block.x + this.space_, block.y + this.space_);
+      renderCallback.call(
+        opt_this,
+        this.context_,
+        block.x + this.space_,
+        block.y + this.space_
+      );
 
       // split the block after the insertion, either horizontally or vertically
       this.split_(i, block, width + this.space_, height + this.space_);
@@ -101,7 +109,6 @@ ol.style.Atlas.prototype.add = function(id, width, height, renderCallback, opt_t
   // there is no space for the new entry in this atlas
   return null;
 };
-
 
 /**
  * @private
@@ -157,7 +164,6 @@ ol.style.Atlas.prototype.split_ = function(index, block, width, height) {
     this.updateBlocks_(index, newBlock1, newBlock2);
   }
 };
-
 
 /**
  * Remove the old block and insert new blocks at the same array position.

@@ -11,7 +11,6 @@ goog.require('ol.CollectionEventType');
 goog.require('ol.Object');
 goog.require('ol.events.Event');
 
-
 /**
  * @classdesc
  * An expanded version of standard JS Array, adding convenience methods for
@@ -29,7 +28,6 @@ goog.require('ol.events.Event');
  * @api
  */
 ol.Collection = function(opt_array, opt_options) {
-
   ol.Object.call(this);
 
   var options = opt_options || {};
@@ -53,10 +51,8 @@ ol.Collection = function(opt_array, opt_options) {
   }
 
   this.updateLength_();
-
 };
 ol.inherits(ol.Collection, ol.Object);
-
 
 /**
  * Remove all elements from the collection.
@@ -67,7 +63,6 @@ ol.Collection.prototype.clear = function() {
     this.pop();
   }
 };
-
 
 /**
  * Add elements to the collection.  This pushes each item in the provided array
@@ -84,7 +79,6 @@ ol.Collection.prototype.extend = function(arr) {
   return this;
 };
 
-
 /**
  * Iterate over each element, calling the provided callback.
  * @param {function(this: S, T, number, Array.<T>): *} f The function to call
@@ -98,7 +92,6 @@ ol.Collection.prototype.forEach = function(f, opt_this) {
   this.array_.forEach(f, opt_this);
 };
 
-
 /**
  * Get a reference to the underlying Array object. Warning: if the array
  * is mutated, no events will be dispatched by the collection, and the
@@ -111,7 +104,6 @@ ol.Collection.prototype.getArray = function() {
   return this.array_;
 };
 
-
 /**
  * Get the element at the provided index.
  * @param {number} index Index.
@@ -122,7 +114,6 @@ ol.Collection.prototype.item = function(index) {
   return this.array_[index];
 };
 
-
 /**
  * Get the length of this collection.
  * @return {number} The length of the array.
@@ -130,9 +121,8 @@ ol.Collection.prototype.item = function(index) {
  * @api
  */
 ol.Collection.prototype.getLength = function() {
-  return /** @type {number} */ (this.get(ol.Collection.Property_.LENGTH));
+  return /** @type {number} */ this.get(ol.Collection.Property_.LENGTH);
 };
-
 
 /**
  * Insert an element at the provided index.
@@ -146,10 +136,8 @@ ol.Collection.prototype.insertAt = function(index, elem) {
   }
   this.array_.splice(index, 0, elem);
   this.updateLength_();
-  this.dispatchEvent(
-      new ol.Collection.Event(ol.CollectionEventType.ADD, elem));
+  this.dispatchEvent(new ol.Collection.Event(ol.CollectionEventType.ADD, elem));
 };
-
 
 /**
  * Remove the last element of the collection and return it.
@@ -160,7 +148,6 @@ ol.Collection.prototype.insertAt = function(index, elem) {
 ol.Collection.prototype.pop = function() {
   return this.removeAt(this.getLength() - 1);
 };
-
 
 /**
  * Insert the provided element at the end of the collection.
@@ -176,7 +163,6 @@ ol.Collection.prototype.push = function(elem) {
   this.insertAt(n, elem);
   return this.getLength();
 };
-
 
 /**
  * Remove the first occurrence of an element from the collection.
@@ -195,7 +181,6 @@ ol.Collection.prototype.remove = function(elem) {
   return undefined;
 };
 
-
 /**
  * Remove the element at the provided index and return it.
  * Return `undefined` if the collection does not contain this index.
@@ -208,10 +193,10 @@ ol.Collection.prototype.removeAt = function(index) {
   this.array_.splice(index, 1);
   this.updateLength_();
   this.dispatchEvent(
-      new ol.Collection.Event(ol.CollectionEventType.REMOVE, prev));
+    new ol.Collection.Event(ol.CollectionEventType.REMOVE, prev)
+  );
   return prev;
 };
-
 
 /**
  * Set the element at the provided index.
@@ -228,9 +213,11 @@ ol.Collection.prototype.setAt = function(index, elem) {
     var prev = this.array_[index];
     this.array_[index] = elem;
     this.dispatchEvent(
-        new ol.Collection.Event(ol.CollectionEventType.REMOVE, prev));
+      new ol.Collection.Event(ol.CollectionEventType.REMOVE, prev)
+    );
     this.dispatchEvent(
-        new ol.Collection.Event(ol.CollectionEventType.ADD, elem));
+      new ol.Collection.Event(ol.CollectionEventType.ADD, elem)
+    );
   } else {
     var j;
     for (j = n; j < index; ++j) {
@@ -240,14 +227,12 @@ ol.Collection.prototype.setAt = function(index, elem) {
   }
 };
 
-
 /**
  * @private
  */
 ol.Collection.prototype.updateLength_ = function() {
   this.set(ol.Collection.Property_.LENGTH, this.array_.length);
 };
-
 
 /**
  * @private
@@ -262,7 +247,6 @@ ol.Collection.prototype.assertUnique_ = function(elem, opt_except) {
   }
 };
 
-
 /**
  * @enum {string}
  * @private
@@ -270,7 +254,6 @@ ol.Collection.prototype.assertUnique_ = function(elem, opt_except) {
 ol.Collection.Property_ = {
   LENGTH: 'length'
 };
-
 
 /**
  * @classdesc
@@ -284,7 +267,6 @@ ol.Collection.Property_ = {
  * @param {*=} opt_element Element.
  */
 ol.Collection.Event = function(type, opt_element) {
-
   ol.events.Event.call(this, type);
 
   /**
@@ -293,6 +275,5 @@ ol.Collection.Event = function(type, opt_element) {
    * @api
    */
   this.element = opt_element;
-
 };
 ol.inherits(ol.Collection.Event, ol.events.Event);

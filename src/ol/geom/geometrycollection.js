@@ -8,7 +8,6 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.obj');
 
-
 /**
  * @classdesc
  * An array of {@link ol.geom.Geometry} objects.
@@ -19,7 +18,6 @@ goog.require('ol.obj');
  * @api
  */
 ol.geom.GeometryCollection = function(opt_geometries) {
-
   ol.geom.Geometry.call(this);
 
   /**
@@ -31,7 +29,6 @@ ol.geom.GeometryCollection = function(opt_geometries) {
   this.listenGeometriesChange_();
 };
 ol.inherits(ol.geom.GeometryCollection, ol.geom.Geometry);
-
 
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
@@ -47,7 +44,6 @@ ol.geom.GeometryCollection.cloneGeometries_ = function(geometries) {
   return clonedGeometries;
 };
 
-
 /**
  * @private
  */
@@ -58,11 +54,13 @@ ol.geom.GeometryCollection.prototype.unlistenGeometriesChange_ = function() {
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     ol.events.unlisten(
-        this.geometries_[i], ol.events.EventType.CHANGE,
-        this.changed, this);
+      this.geometries_[i],
+      ol.events.EventType.CHANGE,
+      this.changed,
+      this
+    );
   }
 };
-
 
 /**
  * @private
@@ -74,11 +72,13 @@ ol.geom.GeometryCollection.prototype.listenGeometriesChange_ = function() {
   }
   for (i = 0, ii = this.geometries_.length; i < ii; ++i) {
     ol.events.listen(
-        this.geometries_[i], ol.events.EventType.CHANGE,
-        this.changed, this);
+      this.geometries_[i],
+      ol.events.EventType.CHANGE,
+      this.changed,
+      this
+    );
   }
 };
-
 
 /**
  * Make a complete copy of the geometry.
@@ -92,24 +92,33 @@ ol.geom.GeometryCollection.prototype.clone = function() {
   return geometryCollection;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  if (minSquaredDistance <
-      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+ol.geom.GeometryCollection.prototype.closestPointXY = function(
+  x,
+  y,
+  closestPoint,
+  minSquaredDistance
+) {
+  if (
+    minSquaredDistance <
+    ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)
+  ) {
     return minSquaredDistance;
   }
   var geometries = this.geometries_;
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     minSquaredDistance = geometries[i].closestPointXY(
-        x, y, closestPoint, minSquaredDistance);
+      x,
+      y,
+      closestPoint,
+      minSquaredDistance
+    );
   }
   return minSquaredDistance;
 };
-
 
 /**
  * @inheritDoc
@@ -125,7 +134,6 @@ ol.geom.GeometryCollection.prototype.containsXY = function(x, y) {
   return false;
 };
 
-
 /**
  * @inheritDoc
  */
@@ -138,7 +146,6 @@ ol.geom.GeometryCollection.prototype.computeExtent = function(extent) {
   return extent;
 };
 
-
 /**
  * Return the geometries that make up this geometry collection.
  * @return {Array.<ol.geom.Geometry>} Geometries.
@@ -148,7 +155,6 @@ ol.geom.GeometryCollection.prototype.getGeometries = function() {
   return ol.geom.GeometryCollection.cloneGeometries_(this.geometries_);
 };
 
-
 /**
  * @return {Array.<ol.geom.Geometry>} Geometries.
  */
@@ -156,19 +162,22 @@ ol.geom.GeometryCollection.prototype.getGeometriesArray = function() {
   return this.geometries_;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTolerance) {
+ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(
+  squaredTolerance
+) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
     ol.obj.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
     this.simplifiedGeometryRevision = this.getRevision();
   }
-  if (squaredTolerance < 0 ||
-      (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-       squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)) {
+  if (
+    squaredTolerance < 0 ||
+    (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+      squaredTolerance < this.simplifiedGeometryMaxMinSquaredTolerance)
+  ) {
     return this;
   }
   var key = squaredTolerance.toString();
@@ -199,7 +208,6 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTol
   }
 };
 
-
 /**
  * @inheritDoc
  * @api
@@ -207,7 +215,6 @@ ol.geom.GeometryCollection.prototype.getSimplifiedGeometry = function(squaredTol
 ol.geom.GeometryCollection.prototype.getType = function() {
   return ol.geom.GeometryType.GEOMETRY_COLLECTION;
 };
-
 
 /**
  * @inheritDoc
@@ -224,14 +231,12 @@ ol.geom.GeometryCollection.prototype.intersectsExtent = function(extent) {
   return false;
 };
 
-
 /**
  * @return {boolean} Is empty.
  */
 ol.geom.GeometryCollection.prototype.isEmpty = function() {
   return this.geometries_.length === 0;
 };
-
 
 /**
  * @inheritDoc
@@ -244,7 +249,6 @@ ol.geom.GeometryCollection.prototype.rotate = function(angle, anchor) {
   }
   this.changed();
 };
-
 
 /**
  * @inheritDoc
@@ -262,7 +266,6 @@ ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
   this.changed();
 };
 
-
 /**
  * Set the geometries that make up this geometry collection.
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
@@ -270,9 +273,9 @@ ol.geom.GeometryCollection.prototype.scale = function(sx, opt_sy, opt_anchor) {
  */
 ol.geom.GeometryCollection.prototype.setGeometries = function(geometries) {
   this.setGeometriesArray(
-      ol.geom.GeometryCollection.cloneGeometries_(geometries));
+    ol.geom.GeometryCollection.cloneGeometries_(geometries)
+  );
 };
-
 
 /**
  * @param {Array.<ol.geom.Geometry>} geometries Geometries.
@@ -283,7 +286,6 @@ ol.geom.GeometryCollection.prototype.setGeometriesArray = function(geometries) {
   this.listenGeometriesChange_();
   this.changed();
 };
-
 
 /**
  * @inheritDoc
@@ -297,7 +299,6 @@ ol.geom.GeometryCollection.prototype.applyTransform = function(transformFn) {
   }
   this.changed();
 };
-
 
 /**
  * Translate the geometry.
@@ -314,7 +315,6 @@ ol.geom.GeometryCollection.prototype.translate = function(deltaX, deltaY) {
   }
   this.changed();
 };
-
 
 /**
  * @inheritDoc

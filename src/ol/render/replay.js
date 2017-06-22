@@ -2,7 +2,6 @@ goog.provide('ol.render.replay');
 
 goog.require('ol.render.ReplayType');
 
-
 /**
  * @const
  * @type {Array.<ol.render.ReplayType>}

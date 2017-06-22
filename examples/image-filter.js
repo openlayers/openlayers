@@ -20,47 +20,20 @@ var map = new ol.Map({
 });
 
 var kernels = {
-  none: [
-    0, 0, 0,
-    0, 1, 0,
-    0, 0, 0
-  ],
-  sharpen: [
-    0, -1, 0,
-    -1, 5, -1,
-    0, -1, 0
-  ],
-  sharpenless: [
-    0, -1, 0,
-    -1, 10, -1,
-    0, -1, 0
-  ],
-  blur: [
-    1, 1, 1,
-    1, 1, 1,
-    1, 1, 1
-  ],
-  shadow: [
-    1, 2, 1,
-    0, 1, 0,
-    -1, -2, -1
-  ],
-  emboss: [
-    -2, 1, 0,
-    -1, 1, 1,
-    0, 1, 2
-  ],
-  edge: [
-    0, 1, 0,
-    1, -4, 1,
-    0, 1, 0
-  ]
+  none: [0, 0, 0, 0, 1, 0, 0, 0, 0],
+  sharpen: [0, -1, 0, -1, 5, -1, 0, -1, 0],
+  sharpenless: [0, -1, 0, -1, 10, -1, 0, -1, 0],
+  blur: [1, 1, 1, 1, 1, 1, 1, 1, 1],
+  shadow: [1, 2, 1, 0, 1, 0, -1, -2, -1],
+  emboss: [-2, 1, 0, -1, 1, 1, 0, 1, 2],
+  edge: [0, 1, 0, 1, -4, 1, 0, 1, 0]
 };
 
 function normalize(kernel) {
   var len = kernel.length;
   var normal = new Array(len);
-  var i, sum = 0;
+  var i,
+    sum = 0;
   for (i = 0; i < len; ++i) {
     sum += kernel[i];
   }
@@ -79,7 +52,6 @@ function normalize(kernel) {
 var select = document.getElementById('kernel');
 var selectedKernel = normalize(kernels[select.value]);
 
-
 /**
  * Update the kernel and re-render on change.
  */
@@ -88,14 +60,12 @@ select.onchange = function() {
   map.render();
 };
 
-
 /**
  * Apply a filter on "postcompose" events.
  */
 imagery.on('postcompose', function(event) {
   convolve(event.context, selectedKernel);
 });
-
 
 /**
  * Apply a convolution kernel to canvas.  This works for any size kernel, but
@@ -119,14 +89,21 @@ function convolve(context, kernel) {
   for (var pixelY = 0; pixelY < height; ++pixelY) {
     var pixelsAbove = pixelY * width;
     for (var pixelX = 0; pixelX < width; ++pixelX) {
-      var r = 0, g = 0, b = 0, a = 0;
+      var r = 0,
+        g = 0,
+        b = 0,
+        a = 0;
       for (var kernelY = 0; kernelY < size; ++kernelY) {
         for (var kernelX = 0; kernelX < size; ++kernelX) {
           var weight = kernel[kernelY * size + kernelX];
           var neighborY = Math.min(
-              height - 1, Math.max(0, pixelY + kernelY - half));
+            height - 1,
+            Math.max(0, pixelY + kernelY - half)
+          );
           var neighborX = Math.min(
-              width - 1, Math.max(0, pixelX + kernelX - half));
+            width - 1,
+            Math.max(0, pixelX + kernelX - half)
+          );
           var inputIndex = (neighborY * width + neighborX) * 4;
           r += inputData[inputIndex] * weight;
           g += inputData[inputIndex + 1] * weight;

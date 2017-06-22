@@ -5,9 +5,7 @@ goog.require('ol.source.Tile');
 goog.require('ol.source.TileUTFGrid');
 goog.require('ol.tilegrid.TileGrid');
 
-
 describe('ol.source.TileUTFGrid', function() {
-
   var url = 'spec/ol/data/tileutfgrid.json';
   var tileJson = null;
 
@@ -36,9 +34,7 @@ describe('ol.source.TileUTFGrid', function() {
   }
 
   describe('constructor', function() {
-
     it('needs to be constructed with url option', function() {
-
       var source = new ol.source.TileUTFGrid({url: url});
       expect(source).to.be.an(ol.source.TileUTFGrid);
       expect(source).to.be.an(ol.source.Tile);
@@ -55,7 +51,6 @@ describe('ol.source.TileUTFGrid', function() {
 
       expect(getTileUTFGrid()).to.be.an(ol.source.TileUTFGrid);
     });
-
   });
 
   describe('change event (ready)', function() {
@@ -93,7 +88,6 @@ describe('ol.source.TileUTFGrid', function() {
   });
 
   describe('#handleTileJSONResponse', function() {
-
     it('sets up a tileGrid', function() {
       var source = getTileUTFGrid();
       expect(source.getTileGrid()).to.be(null);
@@ -119,7 +113,9 @@ describe('ol.source.TileUTFGrid', function() {
       var proj3857 = ol.proj.get('EPSG:3857');
       var expectedExtent4326 = tileJson.bounds;
       var expectedExtent3857 = ol.proj.transformExtent(
-        expectedExtent4326, proj4326, proj3857
+        expectedExtent4326,
+        proj4326,
+        proj3857
       );
       expect(extent).to.eql(proj3857.getExtent());
       expect(extent[0]).to.roughlyEqual(expectedExtent3857[0], 1e-8);
@@ -192,7 +188,6 @@ describe('ol.source.TileUTFGrid', function() {
 
       expect(source.getState()).to.be('ready');
     });
-
   });
 
   describe('#forDataAtCoordinateAndResolution', function() {
@@ -233,20 +228,26 @@ describe('ol.source.TileUTFGrid', function() {
       // always be for [1, 1 -1].
       source.getTile = function(z, x, y, pixelRatio, projection) {
         var tileCoord = [1, 1, -1]; // overwritten to match our stored JSON
-        var urlTileCoord =
-            this.getTileCoordForTileUrlFunction(tileCoord, projection);
-        var tileUrl = this.tileUrlFunction_(urlTileCoord, pixelRatio, projection);
+        var urlTileCoord = this.getTileCoordForTileUrlFunction(
+          tileCoord,
+          projection
+        );
+        var tileUrl = this.tileUrlFunction_(
+          urlTileCoord,
+          pixelRatio,
+          projection
+        );
         var tile = new ol.source.TileUTFGrid.Tile_(
-            tileCoord,
-            tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
-            tileUrl !== undefined ? tileUrl : '',
-            this.tileGrid.getTileCoordExtent(tileCoord),
-            true); // always preemptive, so loading doesn't happen automatically
+          tileCoord,
+          tileUrl !== undefined ? 0 : 4, // IDLE : EMPTY
+          tileUrl !== undefined ? tileUrl : '',
+          this.tileGrid.getTileCoordExtent(tileCoord),
+          true
+        ); // always preemptive, so loading doesn't happen automatically
         // manually call handleLoad_ with our local JSON data
         tile.handleLoad_(gridJson110);
         return tile;
       };
-
     });
     afterEach(function() {
       source = null;
@@ -261,7 +262,11 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-        bonn3857, resolutionZoom1, callback, null, true
+        bonn3857,
+        resolutionZoom1,
+        callback,
+        null,
+        true
       );
     });
 
@@ -272,7 +277,11 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-        bonn3857, resolutionZoom1, callback, scope, true
+        bonn3857,
+        resolutionZoom1,
+        callback,
+        scope,
+        true
       );
     });
 
@@ -283,10 +292,12 @@ describe('ol.source.TileUTFGrid', function() {
         done();
       };
       source.forDataAtCoordinateAndResolution(
-        noState3857, resolutionZoom1, callback, null, true
+        noState3857,
+        resolutionZoom1,
+        callback,
+        null,
+        true
       );
     });
-
   });
-
 });

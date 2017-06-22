@@ -1,6 +1,5 @@
 goog.provide('ol.css');
 
-
 /**
  * The CSS class for hidden feature.
  *
@@ -8,7 +7,6 @@ goog.provide('ol.css');
  * @type {string}
  */
 ol.css.CLASS_HIDDEN = 'ol-hidden';
-
 
 /**
  * The CSS class that we'll give the DOM elements to have them selectable.
@@ -26,7 +24,6 @@ ol.css.CLASS_SELECTABLE = 'ol-selectable';
  */
 ol.css.CLASS_UNSELECTABLE = 'ol-unselectable';
 
-
 /**
  * The CSS class for unsupported feature.
  *
@@ -34,7 +31,6 @@ ol.css.CLASS_UNSELECTABLE = 'ol-unselectable';
  * @type {string}
  */
 ol.css.CLASS_UNSUPPORTED = 'ol-unsupported';
-
 
 /**
  * The CSS class for controls.

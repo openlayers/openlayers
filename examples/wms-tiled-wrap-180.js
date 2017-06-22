@@ -4,7 +4,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileWMS');
 
-
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.OSM()
@@ -12,7 +11,7 @@ var layers = [
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
       url: 'https://ahocevar.com/geoserver/ne/wms',
-      params: {'LAYERS': 'ne:ne_10m_admin_0_countries', 'TILED': true},
+      params: {LAYERS: 'ne:ne_10m_admin_0_countries', TILED: true},
       serverType: 'geoserver'
     })
   })

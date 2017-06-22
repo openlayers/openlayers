@@ -7,7 +7,6 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
 
-
 /**
  * @classdesc
  * A button control to reset rotation to 0.
@@ -20,10 +19,11 @@ goog.require('ol.easing');
  * @api
  */
 ol.control.Rotate = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
-  var className = options.className !== undefined ? options.className : 'ol-rotate';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-rotate';
 
   var label = options.label !== undefined ? options.label : '\u21E7';
 
@@ -50,11 +50,15 @@ ol.control.Rotate = function(opt_options) {
   button.title = tipLabel;
   button.appendChild(this.label_);
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
-      ol.control.Rotate.prototype.handleClick_, this);
+  ol.events.listen(
+    button,
+    ol.events.EventType.CLICK,
+    ol.control.Rotate.prototype.handleClick_,
+    this
+  );
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL;
+  var cssClasses =
+    className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(button);
@@ -90,10 +94,8 @@ ol.control.Rotate = function(opt_options) {
   if (this.autoHide_) {
     this.element.classList.add(ol.css.CLASS_HIDDEN);
   }
-
 };
 ol.inherits(ol.control.Rotate, ol.control.Control);
-
 
 /**
  * @param {Event} event The event to handle
@@ -107,7 +109,6 @@ ol.control.Rotate.prototype.handleClick_ = function(event) {
     this.resetNorth_();
   }
 };
-
 
 /**
  * @private
@@ -132,7 +133,6 @@ ol.control.Rotate.prototype.resetNorth_ = function() {
     }
   }
 };
-
 
 /**
  * Update the rotate control element.

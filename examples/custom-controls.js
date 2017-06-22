@@ -6,18 +6,15 @@ goog.require('ol.control.Control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-
 /**
  * Define a namespace for the application.
  */
 window.app = {};
 var app = window.app;
 
-
 //
 // Define rotate to north control.
 //
-
 
 /**
  * @constructor
@@ -25,7 +22,6 @@ var app = window.app;
  * @param {Object=} opt_options Control options.
  */
 app.RotateNorthControl = function(opt_options) {
-
   var options = opt_options || {};
 
   var button = document.createElement('button');
@@ -47,24 +43,21 @@ app.RotateNorthControl = function(opt_options) {
     element: element,
     target: options.target
   });
-
 };
 ol.inherits(app.RotateNorthControl, ol.control.Control);
-
 
 //
 // Create map, giving it a rotate to north control.
 //
 
-
 var map = new ol.Map({
-  controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-      collapsible: false
+  controls: ol.control
+    .defaults({
+      attributionOptions /** @type {olx.control.AttributionOptions} */: {
+        collapsible: false
+      }
     })
-  }).extend([
-    new app.RotateNorthControl()
-  ]),
+    .extend([new app.RotateNorthControl()]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()

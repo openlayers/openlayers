@@ -33,15 +33,17 @@ var styleFunction = function(feature) {
     var dy = end[1] - start[1];
     var rotation = Math.atan2(dy, dx);
     // arrows
-    styles.push(new ol.style.Style({
-      geometry: new ol.geom.Point(end),
-      image: new ol.style.Icon({
-        src: 'data/arrow.png',
-        anchor: [0.75, 0.5],
-        rotateWithView: true,
-        rotation: -rotation
+    styles.push(
+      new ol.style.Style({
+        geometry: new ol.geom.Point(end),
+        image: new ol.style.Icon({
+          src: 'data/arrow.png',
+          anchor: [0.75, 0.5],
+          rotateWithView: true,
+          rotation: -rotation
+        })
       })
-    }));
+    );
   });
 
   return styles;
@@ -60,7 +62,9 @@ var map = new ol.Map({
   })
 });
 
-map.addInteraction(new ol.interaction.Draw({
-  source: source,
-  type: /** @type {ol.geom.GeometryType} */ ('LineString')
-}));
+map.addInteraction(
+  new ol.interaction.Draw({
+    source: source,
+    type /** @type {ol.geom.GeometryType} */: 'LineString'
+  })
+);

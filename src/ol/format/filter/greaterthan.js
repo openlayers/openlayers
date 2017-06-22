@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.GreaterThan');
 goog.require('ol');
 goog.require('ol.format.filter.ComparisonBinary');
 
-
 /**
  * @classdesc
  * Represents a `<PropertyIsGreaterThan>` comparison operator.
@@ -15,6 +14,11 @@ goog.require('ol.format.filter.ComparisonBinary');
  * @api
  */
 ol.format.filter.GreaterThan = function(propertyName, expression) {
-  ol.format.filter.ComparisonBinary.call(this, 'PropertyIsGreaterThan', propertyName, expression);
+  ol.format.filter.ComparisonBinary.call(
+    this,
+    'PropertyIsGreaterThan',
+    propertyName,
+    expression
+  );
 };
 ol.inherits(ol.format.filter.GreaterThan, ol.format.filter.ComparisonBinary);
