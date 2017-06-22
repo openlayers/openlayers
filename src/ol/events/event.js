@@ -47,15 +47,15 @@ ol.events.Event = function(type) {
  */
 ol.events.Event.prototype.preventDefault =
 
-/**
- * Stop event propagation.
- * @function
- * @override
- * @api
- */
-ol.events.Event.prototype.stopPropagation = function() {
-  this.propagationStopped = true;
-};
+  /**
+   * Stop event propagation.
+   * @function
+   * @override
+   * @api
+   */
+  ol.events.Event.prototype.stopPropagation = function() {
+    this.propagationStopped = true;
+  };
 
 
 /**

@@ -37,7 +37,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.altShiftKeysOnly;
+    options.condition : ol.events.condition.altShiftKeysOnly;
 
   /**
    * @private

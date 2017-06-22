@@ -125,10 +125,10 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   var stride = pointGeometry.getStride();
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(
-        flatCoordinates, 0, flatCoordinates.length, stride);
+      flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
-      // Remaining arguments to DRAW_IMAGE are in alphabetical order
+    // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -136,7 +136,7 @@ ol.render.canvas.ImageReplay.prototype.drawPoint = function(pointGeometry, featu
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
-      // Remaining arguments to DRAW_IMAGE are in alphabetical order
+    // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -157,10 +157,10 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   var stride = multiPointGeometry.getStride();
   var myBegin = this.coordinates.length;
   var myEnd = this.drawCoordinates_(
-        flatCoordinates, 0, flatCoordinates.length, stride);
+      flatCoordinates, 0, flatCoordinates.length, stride);
   this.instructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd, this.image_,
-      // Remaining arguments to DRAW_IMAGE are in alphabetical order
+    // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_
@@ -168,7 +168,7 @@ ol.render.canvas.ImageReplay.prototype.drawMultiPoint = function(multiPointGeome
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.DRAW_IMAGE, myBegin, myEnd,
     this.hitDetectionImage_,
-      // Remaining arguments to DRAW_IMAGE are in alphabetical order
+    // Remaining arguments to DRAW_IMAGE are in alphabetical order
     this.anchorX_, this.anchorY_, this.height_, this.opacity_,
     this.originX_, this.originY_, this.rotateWithView_, this.rotation_,
     this.scale_, this.snapToPixel_, this.width_

@@ -115,7 +115,7 @@ function augmentExamples(files, metalsmith, done) {
         for (var i = 0, ii = file.resources.length; i < ii; ++i) {
           var resource = file.resources[i];
           var remoteResource = resource.indexOf('//') === -1 ?
-              'https://openlayers.org/en/v' + pkg.version + '/examples/' +
+            'https://openlayers.org/en/v' + pkg.version + '/examples/' +
                   resource : resource;
           codePenResources[i] = remoteResource;
           if (isJsRegEx.test(resource)) {
@@ -138,7 +138,7 @@ function augmentExamples(files, metalsmith, done) {
           remote: remoteResources.join('\n')
         };
         file.extraResources = file.resources.length ?
-            ',' + codePenResources.join(',') : '';
+          ',' + codePenResources.join(',') : '';
       }
     }
   }

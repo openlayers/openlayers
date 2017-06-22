@@ -25,7 +25,7 @@ if (ol.ENABLE_WEBGL) {
      * @type {number}
      */
     this.usage_ = opt_usage !== undefined ?
-        opt_usage : ol.webgl.Buffer.Usage_.STATIC_DRAW;
+      opt_usage : ol.webgl.Buffer.Usage_.STATIC_DRAW;
 
   };
 

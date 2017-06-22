@@ -375,7 +375,7 @@ ol.geom.MultiPolygon.prototype.setCoordinates = function(coordinates, opt_layout
     } else {
       var lastEnds = endss[endss.length - 1];
       this.flatCoordinates.length = lastEnds.length === 0 ?
-          0 : lastEnds[lastEnds.length - 1];
+        0 : lastEnds[lastEnds.length - 1];
     }
     this.changed();
   }

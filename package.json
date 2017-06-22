@@ -57,7 +57,7 @@
     "clean-css-cli": "4.1.4",
     "coveralls": "2.13.1",
     "debounce": "^1.0.0",
-    "eslint": "3.19.0",
+    "eslint": "4.0.0",
     "eslint-config-openlayers": "7.0.0",
     "eslint-plugin-openlayers-internal": "^3.1.0",
     "expect.js": "0.3.1",
@@ -100,7 +100,23 @@
       "openlayers-internal/one-provide": 2,
       "openlayers-internal/requires-first": 2,
       "openlayers-internal/valid-provide": 2,
-      "openlayers-internal/valid-requires": 2
+      "openlayers-internal/valid-requires": 2,
+      "indent": [2, 2, {
+        "VariableDeclarator": 2,
+        "SwitchCase": 1,
+        "MemberExpression": 2,
+        "FunctionDeclaration": {
+          "parameters": 2,
+          "body": 1
+        },
+        "FunctionExpression": {
+          "parameters": 2,
+          "body": 1
+        },
+        "CallExpression": {
+          "arguments": 2
+        }
+      }]
     }
   },
   "ext": [

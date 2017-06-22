@@ -23,7 +23,7 @@ ol.source.Stamen = function(options) {
   var layerConfig = ol.source.Stamen.LayerConfig[options.layer];
 
   var url = options.url !== undefined ? options.url :
-      'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
+    'https://stamen-tiles-{a-d}.a.ssl.fastly.net/' + options.layer +
       '/{z}/{x}/{y}.' + layerConfig.extension;
 
   ol.source.XYZ.call(this, {

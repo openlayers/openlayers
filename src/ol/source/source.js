@@ -48,7 +48,7 @@ ol.source.Source = function(options) {
    * @type {ol.source.State}
    */
   this.state_ = options.state !== undefined ?
-      options.state : ol.source.State.READY;
+    options.state : ol.source.State.READY;
 
   /**
    * @private

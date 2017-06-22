@@ -178,7 +178,7 @@ ol.render.canvas.PolygonReplay.prototype.drawPolygon = function(polygonGeometry,
   this.hitDetectionInstructions.push([
     ol.render.canvas.Instruction.SET_FILL_STYLE,
     ol.color.asString(ol.render.canvas.defaultFillStyle)]
-                                    );
+  );
   if (state.strokeStyle !== undefined) {
     this.hitDetectionInstructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
@@ -275,32 +275,32 @@ ol.render.canvas.PolygonReplay.prototype.setFillStrokeStyle = function(fillStyle
   if (fillStyle) {
     var fillStyleColor = fillStyle.getColor();
     state.fillStyle = ol.colorlike.asColorLike(fillStyleColor ?
-        fillStyleColor : ol.render.canvas.defaultFillStyle);
+      fillStyleColor : ol.render.canvas.defaultFillStyle);
   } else {
     state.fillStyle = undefined;
   }
   if (strokeStyle) {
     var strokeStyleColor = strokeStyle.getColor();
     state.strokeStyle = ol.colorlike.asColorLike(strokeStyleColor ?
-        strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
+      strokeStyleColor : ol.render.canvas.defaultStrokeStyle);
     var strokeStyleLineCap = strokeStyle.getLineCap();
     state.lineCap = strokeStyleLineCap !== undefined ?
-        strokeStyleLineCap : ol.render.canvas.defaultLineCap;
+      strokeStyleLineCap : ol.render.canvas.defaultLineCap;
     var strokeStyleLineDash = strokeStyle.getLineDash();
     state.lineDash = strokeStyleLineDash ?
-        strokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
+      strokeStyleLineDash.slice() : ol.render.canvas.defaultLineDash;
     var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     state.lineDashOffset = strokeStyleLineDashOffset ?
-        strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset;
+      strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset;
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
     state.lineJoin = strokeStyleLineJoin !== undefined ?
-        strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
+      strokeStyleLineJoin : ol.render.canvas.defaultLineJoin;
     var strokeStyleWidth = strokeStyle.getWidth();
     state.lineWidth = strokeStyleWidth !== undefined ?
-        strokeStyleWidth : ol.render.canvas.defaultLineWidth;
+      strokeStyleWidth : ol.render.canvas.defaultLineWidth;
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     state.miterLimit = strokeStyleMiterLimit !== undefined ?
-        strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
+      strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit;
 
     if (state.lineWidth > this.maxLineWidth) {
       this.maxLineWidth = state.lineWidth;

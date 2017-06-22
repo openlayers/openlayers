@@ -87,8 +87,8 @@ ol.Object.changeEventTypeCache_ = {};
  */
 ol.Object.getChangeEventType = function(key) {
   return ol.Object.changeEventTypeCache_.hasOwnProperty(key) ?
-      ol.Object.changeEventTypeCache_[key] :
-      (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
+    ol.Object.changeEventTypeCache_[key] :
+    (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
 };
 
 

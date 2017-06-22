@@ -23,8 +23,8 @@ ol.colorlike.asColorLike = function(color) {
  */
 ol.colorlike.isColorLike = function(color) {
   return (
-      typeof color === 'string' ||
-      color instanceof CanvasPattern ||
-      color instanceof CanvasGradient
+    typeof color === 'string' ||
+    color instanceof CanvasPattern ||
+    color instanceof CanvasGradient
   );
 };

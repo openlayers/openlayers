@@ -74,8 +74,8 @@ ol.source.WMTS = function(options) {
    * @type {ol.source.WMTSRequestEncoding}
    */
   this.requestEncoding_ = options.requestEncoding !== undefined ?
-      /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
-      ol.source.WMTSRequestEncoding.KVP;
+    /** @type {ol.source.WMTSRequestEncoding} */ (options.requestEncoding) :
+    ol.source.WMTSRequestEncoding.KVP;
 
   var requestEncoding = this.requestEncoding_;
 
@@ -113,45 +113,45 @@ ol.source.WMTS = function(options) {
     // special template params
 
     template = (requestEncoding == ol.source.WMTSRequestEncoding.KVP) ?
-        ol.uri.appendParams(template, context) :
-        template.replace(/\{(\w+?)\}/g, function(m, p) {
-          return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
-        });
+      ol.uri.appendParams(template, context) :
+      template.replace(/\{(\w+?)\}/g, function(m, p) {
+        return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
+      });
 
     return (
-        /**
-         * @param {ol.TileCoord} tileCoord Tile coordinate.
-         * @param {number} pixelRatio Pixel ratio.
-         * @param {ol.proj.Projection} projection Projection.
-         * @return {string|undefined} Tile URL.
-         */
-        function(tileCoord, pixelRatio, projection) {
-          if (!tileCoord) {
-            return undefined;
+      /**
+       * @param {ol.TileCoord} tileCoord Tile coordinate.
+       * @param {number} pixelRatio Pixel ratio.
+       * @param {ol.proj.Projection} projection Projection.
+       * @return {string|undefined} Tile URL.
+       */
+      function(tileCoord, pixelRatio, projection) {
+        if (!tileCoord) {
+          return undefined;
+        } else {
+          var localContext = {
+            'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
+            'TileCol': tileCoord[1],
+            'TileRow': -tileCoord[2] - 1
+          };
+          ol.obj.assign(localContext, dimensions);
+          var url = template;
+          if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
+            url = ol.uri.appendParams(url, localContext);
           } else {
-            var localContext = {
-              'TileMatrix': tileGrid.getMatrixId(tileCoord[0]),
-              'TileCol': tileCoord[1],
-              'TileRow': -tileCoord[2] - 1
-            };
-            ol.obj.assign(localContext, dimensions);
-            var url = template;
-            if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
-              url = ol.uri.appendParams(url, localContext);
-            } else {
-              url = url.replace(/\{(\w+?)\}/g, function(m, p) {
-                return localContext[p];
-              });
-            }
-            return url;
+            url = url.replace(/\{(\w+?)\}/g, function(m, p) {
+              return localContext[p];
+            });
           }
-        });
+          return url;
+        }
+      });
   }
 
   var tileUrlFunction = (urls && urls.length > 0) ?
-      ol.TileUrlFunction.createFromTileUrlFunctions(
-          urls.map(createFromWMTSTemplate)) :
-      ol.TileUrlFunction.nullTileUrlFunction;
+    ol.TileUrlFunction.createFromTileUrlFunctions(
+        urls.map(createFromWMTSTemplate)) :
+    ol.TileUrlFunction.nullTileUrlFunction;
 
   ol.source.TileImage.call(this, {
     attributions: options.attributions,
@@ -335,9 +335,9 @@ ol.source.WMTS.optionsFromCapabilities = function(wmtsCap, config) {
     idx = 0;
   }
   matrixSet = /** @type {string} */
-      (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
+    (l['TileMatrixSetLink'][idx]['TileMatrixSet']);
   matrixLimits = /** @type {Array.<Object>} */
-      (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
+    (l['TileMatrixSetLink'][idx]['TileMatrixSetLimits']);
 
   var format = /** @type {string} */ (l['Format'][0]);
   if ('format' in config) {

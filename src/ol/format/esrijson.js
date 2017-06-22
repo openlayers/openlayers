@@ -83,8 +83,8 @@ ol.format.EsriJSON.readGeometry_ = function(object, opt_options) {
   }
   var geometryReader = ol.format.EsriJSON.GEOMETRY_READERS_[type];
   return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(
-          geometryReader(object), false, opt_options));
+    ol.format.Feature.transformWithOptions(
+        geometryReader(object), false, opt_options));
 };
 
 
@@ -121,9 +121,11 @@ ol.format.EsriJSON.convertRings_ = function(rings, layout) {
     // loop over all outer rings and see if they contain our hole.
     for (i = outerRings.length - 1; i >= 0; i--) {
       var outerRing = outerRings[i][0];
-      if (ol.extent.containsExtent(new ol.geom.LinearRing(
-          outerRing).getExtent(),
-          new ol.geom.LinearRing(hole).getExtent())) {
+      var containsHole = ol.extent.containsExtent(
+          new ol.geom.LinearRing(outerRing).getExtent(),
+          new ol.geom.LinearRing(hole).getExtent()
+      );
+      if (containsHole) {
         // the hole is contained push it into our polygon
         outerRings[i].push(hole);
         matched = true;
@@ -468,7 +470,7 @@ ol.format.EsriJSON.prototype.readFeatureFromObject = function(
   if (opt_options && opt_options.idField &&
       esriJSONFeature.attributes[opt_options.idField]) {
     feature.setId(/** @type {number} */(
-        esriJSONFeature.attributes[opt_options.idField]));
+      esriJSONFeature.attributes[opt_options.idField]));
   }
   if (esriJSONFeature.attributes) {
     feature.setProperties(esriJSONFeature.attributes);
@@ -559,8 +561,8 @@ ol.format.EsriJSON.prototype.readProjectionFromObject = function(object) {
 ol.format.EsriJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.EsriJSON.GEOMETRY_WRITERS_[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
-      opt_options);
+    ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
+  opt_options);
 };
 
 

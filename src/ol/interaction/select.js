@@ -46,28 +46,28 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.singleClick;
+    options.condition : ol.events.condition.singleClick;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
   this.addCondition_ = options.addCondition ?
-      options.addCondition : ol.events.condition.never;
+    options.addCondition : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
   this.removeCondition_ = options.removeCondition ?
-      options.removeCondition : ol.events.condition.never;
+    options.removeCondition : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
   this.toggleCondition_ = options.toggleCondition ?
-      options.toggleCondition : ol.events.condition.shiftKeyOnly;
+    options.toggleCondition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -80,7 +80,7 @@ ol.interaction.Select = function(opt_options) {
    * @type {ol.SelectFilterFunction}
    */
   this.filter_ = options.filter ? options.filter :
-      ol.functions.TRUE;
+    ol.functions.TRUE;
 
   /**
    * @private
@@ -95,7 +95,7 @@ ol.interaction.Select = function(opt_options) {
       wrapX: options.wrapX
     }),
     style: options.style ? options.style :
-        ol.interaction.Select.getDefaultStyleFunction(),
+      ol.interaction.Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -217,18 +217,19 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // the pixel.
     ol.obj.clear(this.featureLayerAssociation_);
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-      (/**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
-        function(feature, layer) {
-          if (this.filter_(feature, layer)) {
-            selected.push(feature);
-            this.addFeatureLayerAssociation_(feature, layer);
-            return !this.multi_;
-          }
-        }).bind(this), {
+        (
+          /**
+           * @param {ol.Feature|ol.render.Feature} feature Feature.
+           * @param {ol.layer.Layer} layer Layer.
+           * @return {boolean|undefined} Continue to iterate over the features.
+           */
+          function(feature, layer) {
+            if (this.filter_(feature, layer)) {
+              selected.push(feature);
+              this.addFeatureLayerAssociation_(feature, layer);
+              return !this.multi_;
+            }
+          }).bind(this), {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_
         });
@@ -250,25 +251,26 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   } else {
     // Modify the currently selected feature(s).
     map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-      (/**
-         * @param {ol.Feature|ol.render.Feature} feature Feature.
-         * @param {ol.layer.Layer} layer Layer.
-         * @return {boolean|undefined} Continue to iterate over the features.
-         */
-        function(feature, layer) {
-          if (this.filter_(feature, layer)) {
-            if ((add || toggle) &&
+        (
+          /**
+           * @param {ol.Feature|ol.render.Feature} feature Feature.
+           * @param {ol.layer.Layer} layer Layer.
+           * @return {boolean|undefined} Continue to iterate over the features.
+           */
+          function(feature, layer) {
+            if (this.filter_(feature, layer)) {
+              if ((add || toggle) &&
                 !ol.array.includes(features.getArray(), feature)) {
-              selected.push(feature);
-              this.addFeatureLayerAssociation_(feature, layer);
-            } else if ((remove || toggle) &&
+                selected.push(feature);
+                this.addFeatureLayerAssociation_(feature, layer);
+              } else if ((remove || toggle) &&
                 ol.array.includes(features.getArray(), feature)) {
-              deselected.push(feature);
-              this.removeFeatureLayerAssociation_(feature);
+                deselected.push(feature);
+                this.removeFeatureLayerAssociation_(feature);
+              }
+              return !this.multi_;
             }
-            return !this.multi_;
-          }
-        }).bind(this), {
+          }).bind(this), {
           layerFilter: this.layerFilter_,
           hitTolerance: this.hitTolerance_
         });

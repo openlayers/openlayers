@@ -71,7 +71,7 @@ ol.format.WMSCapabilities.prototype.readFromNode = function(node) {
  */
 ol.format.WMSCapabilities.readAttribution_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.ATTRIBUTION_PARSERS_, node, objectStack);
 };
 
 
@@ -110,9 +110,9 @@ ol.format.WMSCapabilities.readBoundingBox_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectStack) {
   var geographicBoundingBox = ol.xml.pushParseAndPop(
-        {},
-        ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
-        node, objectStack);
+      {},
+      ol.format.WMSCapabilities.EX_GEOGRAPHIC_BOUNDING_BOX_PARSERS_,
+      node, objectStack);
   if (!geographicBoundingBox) {
     return undefined;
   }
@@ -143,7 +143,7 @@ ol.format.WMSCapabilities.readEXGeographicBoundingBox_ = function(node, objectSt
  */
 ol.format.WMSCapabilities.readCapability_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.CAPABILITY_PARSERS_, node, objectStack);
 };
 
 
@@ -155,7 +155,7 @@ ol.format.WMSCapabilities.readCapability_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.SERVICE_PARSERS_, node, objectStack);
 };
 
 
@@ -167,8 +167,8 @@ ol.format.WMSCapabilities.readService_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
-        node, objectStack);
+      {}, ol.format.WMSCapabilities.CONTACT_INFORMATION_PARSERS_,
+      node, objectStack);
 };
 
 
@@ -180,8 +180,8 @@ ol.format.WMSCapabilities.readContactInformation_ = function(node, objectStack) 
  */
 ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_,
-        node, objectStack);
+      {}, ol.format.WMSCapabilities.CONTACT_PERSON_PARSERS_,
+      node, objectStack);
 };
 
 
@@ -193,8 +193,8 @@ ol.format.WMSCapabilities.readContactPersonPrimary_ = function(node, objectStack
  */
 ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
-        node, objectStack);
+      {}, ol.format.WMSCapabilities.CONTACT_ADDRESS_PARSERS_,
+      node, objectStack);
 };
 
 
@@ -206,7 +206,7 @@ ol.format.WMSCapabilities.readContactAddress_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readException_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        [], ol.format.WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
+      [], ol.format.WMSCapabilities.EXCEPTION_PARSERS_, node, objectStack);
 };
 
 
@@ -218,7 +218,7 @@ ol.format.WMSCapabilities.readException_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readCapabilityLayer_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 };
 
 
@@ -233,7 +233,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
         (objectStack[objectStack.length - 1]);
 
   var layerObject = ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.LAYER_PARSERS_, node, objectStack);
 
   if (!layerObject) {
     return undefined;
@@ -246,7 +246,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   layerObject['queryable'] = queryable !== undefined ? queryable : false;
 
   var cascaded = ol.format.XSD.readNonNegativeIntegerString(
-        node.getAttribute('cascaded'));
+      node.getAttribute('cascaded'));
   if (cascaded === undefined) {
     cascaded = parentLayerObject['cascaded'];
   }
@@ -279,7 +279,7 @@ ol.format.WMSCapabilities.readLayer_ = function(node, objectStack) {
   }
   layerObject['fixedHeight'] = fixedHeight;
 
-    // See 7.2.4.8
+  // See 7.2.4.8
   var addKeys = ['Style', 'CRS', 'AuthorityURL'];
   addKeys.forEach(function(key) {
     if (key in parentLayerObject) {
@@ -314,9 +314,9 @@ ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
     'unitSymbol': node.getAttribute('unitSymbol'),
     'default': node.getAttribute('default'),
     'multipleValues': ol.format.XSD.readBooleanString(
-          node.getAttribute('multipleValues')),
+        node.getAttribute('multipleValues')),
     'nearestValue': ol.format.XSD.readBooleanString(
-          node.getAttribute('nearestValue')),
+        node.getAttribute('nearestValue')),
     'current': ol.format.XSD.readBooleanString(node.getAttribute('current')),
     'values': ol.format.XSD.readString(node)
   };
@@ -332,8 +332,8 @@ ol.format.WMSCapabilities.readDimension_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
-        node, objectStack);
+      {}, ol.format.WMSCapabilities.FORMAT_ONLINERESOURCE_PARSERS_,
+      node, objectStack);
 };
 
 
@@ -345,7 +345,7 @@ ol.format.WMSCapabilities.readFormatOnlineresource_ = function(node, objectStack
  */
 ol.format.WMSCapabilities.readRequest_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.REQUEST_PARSERS_, node, objectStack);
 };
 
 
@@ -357,7 +357,7 @@ ol.format.WMSCapabilities.readRequest_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readDCPType_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.DCPTYPE_PARSERS_, node, objectStack);
 };
 
 
@@ -369,7 +369,7 @@ ol.format.WMSCapabilities.readDCPType_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readHTTP_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.HTTP_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.HTTP_PARSERS_, node, objectStack);
 };
 
 
@@ -381,7 +381,7 @@ ol.format.WMSCapabilities.readHTTP_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readOperationType_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.OPERATIONTYPE_PARSERS_, node, objectStack);
 };
 
 
@@ -448,7 +448,7 @@ ol.format.WMSCapabilities.readMetadataURL_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readStyle_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        {}, ol.format.WMSCapabilities.STYLE_PARSERS_, node, objectStack);
+      {}, ol.format.WMSCapabilities.STYLE_PARSERS_, node, objectStack);
 };
 
 
@@ -460,7 +460,7 @@ ol.format.WMSCapabilities.readStyle_ = function(node, objectStack) {
  */
 ol.format.WMSCapabilities.readKeywordList_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop(
-        [], ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
+      [], ol.format.WMSCapabilities.KEYWORDLIST_PARSERS_, node, objectStack);
 };
 
 

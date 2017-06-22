@@ -142,7 +142,7 @@ var lineFeature = new ol.Feature(
 
 var polygonFeature = new ol.Feature(
     new ol.geom.Polygon([[[-3e6, -1e6], [-3e6, 1e6],
-        [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
+      [-1e6, 1e6], [-1e6, -1e6], [-3e6, -1e6]]]));
 
 
 var map = new ol.Map({

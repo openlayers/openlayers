@@ -381,10 +381,10 @@ if (ol.ENABLE_WEBGL) {
     if (strokeStyle) {
       var strokeStyleLineDash = strokeStyle.getLineDash();
       this.state_.lineDash = strokeStyleLineDash ?
-          strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+        strokeStyleLineDash : ol.render.webgl.defaultLineDash;
       var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
       this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-          strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+        strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
       strokeStyleColor = strokeStyle.getColor();
       if (!(strokeStyleColor instanceof CanvasGradient) &&
           !(strokeStyleColor instanceof CanvasPattern)) {
@@ -396,7 +396,7 @@ if (ol.ENABLE_WEBGL) {
       }
       strokeStyleWidth = strokeStyle.getWidth();
       strokeStyleWidth = strokeStyleWidth !== undefined ?
-          strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+        strokeStyleWidth : ol.render.webgl.defaultLineWidth;
     } else {
       strokeStyleColor = [0, 0, 0, 0];
       strokeStyleWidth = 0;

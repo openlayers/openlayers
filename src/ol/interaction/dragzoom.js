@@ -25,7 +25,7 @@ ol.interaction.DragZoom = function(opt_options) {
   var options = opt_options ? opt_options : {};
 
   var condition = options.condition ?
-      options.condition : ol.events.condition.shiftKeyOnly;
+    options.condition : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private

@@ -34,7 +34,7 @@ ol.layer.Tile = function(opt_options) {
 
   this.setPreload(options.preload !== undefined ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
-      options.useInterimTilesOnError : true);
+    options.useInterimTilesOnError : true);
 };
 ol.inherits(ol.layer.Tile, ol.layer.Layer);
 
@@ -93,7 +93,7 @@ ol.layer.Tile.prototype.setPreload = function(preload) {
  */
 ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
   return /** @type {boolean} */ (
-      this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
+    this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 
 

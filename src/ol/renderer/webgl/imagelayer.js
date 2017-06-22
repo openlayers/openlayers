@@ -140,7 +140,7 @@ if (ol.ENABLE_WEBGL) {
               }
             }.bind(null, gl, this.texture);
             frameState.postRenderFunctions.push(
-              /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+                /** @type {ol.PostRenderFunction} */ (postRenderFunction)
             );
           }
         }
@@ -183,7 +183,7 @@ if (ol.ENABLE_WEBGL) {
    * @private
    */
   ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio,
-          viewCenter, viewResolution, viewRotation, imageExtent) {
+      viewCenter, viewResolution, viewRotation, imageExtent) {
 
     var canvasExtentWidth = canvasWidth * viewResolution;
     var canvasExtentHeight = canvasHeight * viewResolution;

@@ -34,7 +34,7 @@ ol.source.TileImage = function(options) {
     state: options.state,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
+      options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
@@ -55,7 +55,7 @@ ol.source.TileImage = function(options) {
    *        ?string, ol.TileLoadFunctionType)}
    */
   this.tileClass = options.tileClass !== undefined ?
-      options.tileClass : ol.ImageTile;
+    options.tileClass : ol.ImageTile;
 
   /**
    * @protected
@@ -216,7 +216,7 @@ ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projec
   var urlTileCoord = this.getTileCoordForTileUrlFunction(
       tileCoord, projection);
   var tileUrl = urlTileCoord ?
-      this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
+    this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
   var tile = new this.tileClass(
       tileCoord,
       tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,

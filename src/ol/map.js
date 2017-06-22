@@ -144,7 +144,7 @@ ol.Map = function(options) {
    */
   this.loadTilesWhileAnimating_ =
       options.loadTilesWhileAnimating !== undefined ?
-          options.loadTilesWhileAnimating : false;
+        options.loadTilesWhileAnimating : false;
 
   /**
    * @type {boolean}
@@ -152,14 +152,14 @@ ol.Map = function(options) {
    */
   this.loadTilesWhileInteracting_ =
       options.loadTilesWhileInteracting !== undefined ?
-          options.loadTilesWhileInteracting : false;
+        options.loadTilesWhileInteracting : false;
 
   /**
    * @private
    * @type {number}
    */
   this.pixelRatio_ = options.pixelRatio !== undefined ?
-      options.pixelRatio : ol.has.DEVICE_PIXEL_RATIO;
+    options.pixelRatio : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -603,7 +603,7 @@ ol.Map.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_l
   }
   var thisArg = opt_this !== undefined ? opt_this : null;
   var layerFilter = opt_layerFilter !== undefined ?
-      opt_layerFilter : ol.functions.TRUE;
+    opt_layerFilter : ol.functions.TRUE;
   var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
       pixel, this.frameState_, callback, thisArg,
@@ -627,7 +627,7 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   var coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
   var layerFilter = opt_options.layerFilter !== undefined ?
-      opt_options.layerFilter : ol.functions.TRUE;
+    opt_options.layerFilter : ol.functions.TRUE;
   var hitTolerance = opt_options.hitTolerance !== undefined ?
     opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
   return this.renderer_.hasFeatureAtCoordinate(
@@ -673,7 +673,7 @@ ol.Map.prototype.getEventPixel = function(event) {
  */
 ol.Map.prototype.getTarget = function() {
   return /** @type {Element|string|undefined} */ (
-      this.get(ol.MapProperty.TARGET));
+    this.get(ol.MapProperty.TARGET));
 };
 
 
@@ -1023,7 +1023,7 @@ ol.Map.prototype.handleTargetChanged_ = function() {
     targetElement.appendChild(this.viewport_);
 
     var keyboardEventTarget = !this.keyboardEventTarget_ ?
-        targetElement : this.keyboardEventTarget_;
+      targetElement : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
       ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYDOWN,
           this.handleBrowserEvent, this),
@@ -1387,8 +1387,8 @@ ol.Map.createOptionsInternal = function(options) {
   var keyboardEventTarget = null;
   if (options.keyboardEventTarget !== undefined) {
     keyboardEventTarget = typeof options.keyboardEventTarget === 'string' ?
-        document.getElementById(options.keyboardEventTarget) :
-        options.keyboardEventTarget;
+      document.getElementById(options.keyboardEventTarget) :
+      options.keyboardEventTarget;
   }
 
   /**
@@ -1414,13 +1414,13 @@ ol.Map.createOptionsInternal = function(options) {
   }
 
   var layerGroup = (options.layers instanceof ol.layer.Group) ?
-      options.layers : new ol.layer.Group({layers: options.layers});
+    options.layers : new ol.layer.Group({layers: options.layers});
   values[ol.MapProperty.LAYERGROUP] = layerGroup;
 
   values[ol.MapProperty.TARGET] = options.target;
 
   values[ol.MapProperty.VIEW] = options.view !== undefined ?
-      options.view : new ol.View();
+    options.view : new ol.View();
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}

@@ -62,7 +62,7 @@ ol.style.RegularShape = function(options) {
    * @type {number}
    */
   this.radius_ = /** @type {number} */ (options.radius !== undefined ?
-      options.radius : options.radius1);
+    options.radius : options.radius1);
 
   /**
    * @private
@@ -118,13 +118,13 @@ ol.style.RegularShape = function(options) {
    * @type {boolean}
    */
   var snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
+    options.snapToPixel : true;
 
   /**
    * @type {boolean}
    */
   var rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
+    options.rotateWithView : false;
 
   ol.style.Image.call(this, {
     opacity: 1,
@@ -442,7 +442,7 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
       angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
       radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-                     renderOptions.size / 2 + radiusC * Math.sin(angle0));
+          renderOptions.size / 2 + radiusC * Math.sin(angle0));
     }
   }
 
@@ -522,7 +522,7 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
       angle0 = i * 2 * Math.PI / points - Math.PI / 2 + this.angle_;
       radiusC = i % 2 === 0 ? this.radius_ : radius2;
       context.lineTo(renderOptions.size / 2 + radiusC * Math.cos(angle0),
-                     renderOptions.size / 2 + radiusC * Math.sin(angle0));
+          renderOptions.size / 2 + radiusC * Math.sin(angle0));
     }
   }
 
@@ -545,9 +545,9 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
  */
 ol.style.RegularShape.prototype.getChecksum = function() {
   var strokeChecksum = this.stroke_ ?
-      this.stroke_.getChecksum() : '-';
+    this.stroke_.getChecksum() : '-';
   var fillChecksum = this.fill_ ?
-      this.fill_.getChecksum() : '-';
+    this.fill_.getChecksum() : '-';
 
   var recalculate = !this.checksums_ ||
       (strokeChecksum != this.checksums_[1] ||

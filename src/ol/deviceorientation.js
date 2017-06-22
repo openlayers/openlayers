@@ -132,7 +132,7 @@ ol.DeviceOrientation.prototype.orientationChange_ = function(originalEvent) {
  */
 ol.DeviceOrientation.prototype.getAlpha = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.DeviceOrientation.Property_.ALPHA));
+    this.get(ol.DeviceOrientation.Property_.ALPHA));
 };
 
 
@@ -145,7 +145,7 @@ ol.DeviceOrientation.prototype.getAlpha = function() {
  */
 ol.DeviceOrientation.prototype.getBeta = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.DeviceOrientation.Property_.BETA));
+    this.get(ol.DeviceOrientation.Property_.BETA));
 };
 
 
@@ -158,7 +158,7 @@ ol.DeviceOrientation.prototype.getBeta = function() {
  */
 ol.DeviceOrientation.prototype.getGamma = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.DeviceOrientation.Property_.GAMMA));
+    this.get(ol.DeviceOrientation.Property_.GAMMA));
 };
 
 
@@ -171,7 +171,7 @@ ol.DeviceOrientation.prototype.getGamma = function() {
  */
 ol.DeviceOrientation.prototype.getHeading = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.DeviceOrientation.Property_.HEADING));
+    this.get(ol.DeviceOrientation.Property_.HEADING));
 };
 
 
@@ -183,7 +183,7 @@ ol.DeviceOrientation.prototype.getHeading = function() {
  */
 ol.DeviceOrientation.prototype.getTracking = function() {
   return /** @type {boolean} */ (
-      this.get(ol.DeviceOrientation.Property_.TRACKING));
+    this.get(ol.DeviceOrientation.Property_.TRACKING));
 };
 
 

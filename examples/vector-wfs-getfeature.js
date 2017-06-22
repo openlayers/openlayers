@@ -47,8 +47,8 @@ var featureRequest = new ol.format.WFS().writeGetFeature({
   featureTypes: ['water_areas'],
   outputFormat: 'application/json',
   filter: ol.format.filter.and(
-    ol.format.filter.like('name', 'Mississippi*'),
-    ol.format.filter.equalTo('waterway', 'riverbank')
+      ol.format.filter.like('name', 'Mississippi*'),
+      ol.format.filter.equalTo('waterway', 'riverbank')
   )
 });
 

@@ -477,7 +477,7 @@ describe('ol.format.EsriJSON', function() {
       expect(obj).to.be.a(ol.geom.LineString);
       expect(obj.getLayout()).to.eql('XYZM');
       expect(obj.getCoordinates()).to.eql([[10, 20, 1534, 1],
-            [30, 40, 1420, 2]]);
+        [30, 40, 1420, 2]]);
     });
 
     it('parses multilinestring', function() {
@@ -650,7 +650,7 @@ describe('ol.format.EsriJSON', function() {
       expect(obj.getLayout()).to.eql('XY');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1], [1, 4], [4, 3], [3, 0]], [[2, 2], [3, 2],
-            [3, 3], [2, 3]]],
+          [3, 3], [2, 3]]],
         [[[10, 1], [11, 5], [14, 3], [13, 0]]]
       ]);
     });
@@ -669,7 +669,7 @@ describe('ol.format.EsriJSON', function() {
       expect(obj.getLayout()).to.eql('XYZ');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
-            [3, 3, 0], [2, 3, 0]]],
+          [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
       ]);
     });
@@ -688,7 +688,7 @@ describe('ol.format.EsriJSON', function() {
       expect(obj.getLayout()).to.eql('XYM');
       expect(obj.getCoordinates()).to.eql([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
-            [3, 3, 0], [2, 3, 0]]],
+          [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
       ]);
     });
@@ -817,8 +817,8 @@ describe('ol.format.EsriJSON', function() {
 
     it('encodes XYZM linestring', function() {
       var linestring = new ol.geom.LineString([[10, 20, 1534, 1],
-            [30, 40, 1420, 1]],
-          'XYZM');
+        [30, 40, 1420, 1]],
+      'XYZM');
       var esrijson = format.writeGeometry(linestring);
       expect(linestring.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
@@ -882,7 +882,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('encodes XYZ multipoint', function() {
       var multipoint = new ol.geom.MultiPoint([[102.0, 0.0, 3],
-            [103.0, 1.0, 4]], 'XYZ');
+        [103.0, 1.0, 4]], 'XYZ');
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
@@ -890,7 +890,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('encodes XYM multipoint', function() {
       var multipoint = new ol.geom.MultiPoint([[102.0, 0.0, 3],
-            [103.0, 1.0, 4]], 'XYM');
+        [103.0, 1.0, 4]], 'XYM');
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
@@ -898,7 +898,7 @@ describe('ol.format.EsriJSON', function() {
 
     it('encodes XYZM multipoint', function() {
       var multipoint = new ol.geom.MultiPoint([[102.0, 0.0, 3, 1],
-            [103.0, 1.0, 4, 1]], 'XYZM');
+        [103.0, 1.0, 4, 1]], 'XYZM');
       var esrijson = format.writeGeometry(multipoint);
       expect(multipoint.getCoordinates()).to.eql(
           format.readGeometry(esrijson).getCoordinates());
@@ -959,7 +959,7 @@ describe('ol.format.EsriJSON', function() {
     it('encodes XYZ multipolygon', function() {
       var multipolygon = new ol.geom.MultiPolygon([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
-            [3, 3, 0], [2, 3, 0]]],
+          [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
       ], 'XYZ');
       var esrijson = format.writeGeometry(multipolygon);
@@ -970,7 +970,7 @@ describe('ol.format.EsriJSON', function() {
     it('encodes XYM multipolygon', function() {
       var multipolygon = new ol.geom.MultiPolygon([
         [[[0, 1, 0], [1, 4, 0], [4, 3, 0], [3, 0, 0]], [[2, 2, 0], [3, 2, 0],
-            [3, 3, 0], [2, 3, 0]]],
+          [3, 3, 0], [2, 3, 0]]],
         [[[10, 1, 0], [11, 5, 0], [14, 3, 0], [13, 0, 0]]]
       ], 'XYM');
       var esrijson = format.writeGeometry(multipolygon);

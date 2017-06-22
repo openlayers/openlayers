@@ -85,7 +85,7 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
     var rotation = frameState.viewState.rotation;
     ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
     var transform = opt_transform !== undefined ?
-        opt_transform : this.getTransform(frameState, 0);
+      opt_transform : this.getTransform(frameState, 0);
     var render = new ol.render.canvas.Immediate(
         context, frameState.pixelRatio, frameState.extent, transform,
         frameState.viewState.rotation);

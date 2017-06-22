@@ -221,27 +221,27 @@ ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse
  */
 ol.proj.createTransformFromCoordinateTransform = function(transform) {
   return (
-      /**
-       * @param {Array.<number>} input Input.
-       * @param {Array.<number>=} opt_output Output.
-       * @param {number=} opt_dimension Dimension.
-       * @return {Array.<number>} Output.
-       */
-      function(input, opt_output, opt_dimension) {
-        var length = input.length;
-        var dimension = opt_dimension !== undefined ? opt_dimension : 2;
-        var output = opt_output !== undefined ? opt_output : new Array(length);
-        var point, i, j;
-        for (i = 0; i < length; i += dimension) {
-          point = transform([input[i], input[i + 1]]);
-          output[i] = point[0];
-          output[i + 1] = point[1];
-          for (j = dimension - 1; j >= 2; --j) {
-            output[i + j] = input[i + j];
-          }
+    /**
+     * @param {Array.<number>} input Input.
+     * @param {Array.<number>=} opt_output Output.
+     * @param {number=} opt_dimension Dimension.
+     * @return {Array.<number>} Output.
+     */
+    function(input, opt_output, opt_dimension) {
+      var length = input.length;
+      var dimension = opt_dimension !== undefined ? opt_dimension : 2;
+      var output = opt_output !== undefined ? opt_output : new Array(length);
+      var point, i, j;
+      for (i = 0; i < length; i += dimension) {
+        point = transform([input[i], input[i + 1]]);
+        output[i] = point[0];
+        output[i + 1] = point[1];
+        for (j = dimension - 1; j >= 2; --j) {
+          output[i + j] = input[i + j];
         }
-        return output;
-      });
+      }
+      return output;
+    });
 };
 
 

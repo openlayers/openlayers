@@ -178,12 +178,12 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   var hints = frameState.viewHints;
   var animatingOrInteracting = hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING];
   if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
-        newTiles ||
+    newTiles ||
         !(this.renderedExtent_ && ol.extent.containsExtent(this.renderedExtent_, extent)) ||
         this.renderedRevision != sourceRevision ||
         oversampling != this.oversampling_ ||
         !animatingOrInteracting && renderedResolution != this.renderedResolution
-      )) {
+  )) {
 
     var context = this.context;
     if (context) {

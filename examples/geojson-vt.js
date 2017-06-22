@@ -85,10 +85,10 @@ fetch(url).then(function(response) {
       var data = tileIndex.getTile(tileCoord[0], tileCoord[1], -tileCoord[2] - 1);
 
       var features = format.readFeatures(
-        JSON.stringify({
-          type: 'FeatureCollection',
-          features: data ? data.features : []
-        }, replacer));
+          JSON.stringify({
+            type: 'FeatureCollection',
+            features: data ? data.features : []
+          }, replacer));
       tile.setLoader(function() {
         tile.setFeatures(features);
         tile.setProjection(tilePixels);

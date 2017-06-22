@@ -27,16 +27,16 @@ ol.control.ZoomToExtent = function(opt_options) {
   this.extent_ = options.extent ? options.extent : null;
 
   var className = options.className !== undefined ? options.className :
-      'ol-zoom-extent';
+    'ol-zoom-extent';
 
   var label = options.label !== undefined ? options.label : 'E';
   var tipLabel = options.tipLabel !== undefined ?
-      options.tipLabel : 'Fit to extent';
+    options.tipLabel : 'Fit to extent';
   var button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(
-    typeof label === 'string' ? document.createTextNode(label) : label
+      typeof label === 'string' ? document.createTextNode(label) : label
   );
 
   ol.events.listen(button, ol.events.EventType.CLICK,

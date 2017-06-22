@@ -103,24 +103,24 @@ if (ol.ENABLE_WEBGL) {
     var mapRenderer = this.mapRenderer;
 
     return (
-        /**
-         * @param {number} zoom Zoom level.
-         * @param {ol.TileRange} tileRange Tile range.
-         * @return {boolean} The tile range is fully loaded.
-         */
-        function(zoom, tileRange) {
-          function callback(tile) {
-            var loaded = mapRenderer.isTileTextureLoaded(tile);
-            if (loaded) {
-              if (!tiles[zoom]) {
-                tiles[zoom] = {};
-              }
-              tiles[zoom][tile.tileCoord.toString()] = tile;
+      /**
+       * @param {number} zoom Zoom level.
+       * @param {ol.TileRange} tileRange Tile range.
+       * @return {boolean} The tile range is fully loaded.
+       */
+      function(zoom, tileRange) {
+        function callback(tile) {
+          var loaded = mapRenderer.isTileTextureLoaded(tile);
+          if (loaded) {
+            if (!tiles[zoom]) {
+              tiles[zoom] = {};
             }
-            return loaded;
+            tiles[zoom][tile.tileCoord.toString()] = tile;
           }
-          return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-        });
+          return loaded;
+        }
+        return source.forEachLoadedTile(projection, zoom, tileRange, callback);
+      });
   };
 
 
