@@ -1,6 +1,5 @@
 goog.provide('ol.render.ReplayType');
 
-
 /**
  * @enum {string}
  */

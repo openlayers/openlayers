@@ -91,8 +91,24 @@ describe('ol.render.webgl.CircleReplay', function() {
       replay.radius_ = 5000;
       replay.drawCoordinates_([0, 0], 0, 2, 2);
 
-      expect(replay.vertices).to.eql([0, 0, 0, 5000, 0, 0, 1, 5000,
-        0, 0, 2, 5000, 0, 0, 3, 5000]);
+      expect(replay.vertices).to.eql([
+        0,
+        0,
+        0,
+        5000,
+        0,
+        0,
+        1,
+        5000,
+        0,
+        0,
+        2,
+        5000,
+        0,
+        0,
+        3,
+        5000
+      ]);
       expect(replay.indices).to.eql([0, 1, 2, 2, 3, 0]);
     });
   });
@@ -117,7 +133,8 @@ describe('ol.render.webgl.CircleReplay', function() {
     it('returns the locations used by the shaders', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          ol.render.webgl.circlereplay.defaultshader.Locations);
+        ol.render.webgl.circlereplay.defaultshader.Locations
+      );
     });
 
     it('gets and compiles the shaders', function() {
@@ -125,9 +142,12 @@ describe('ol.render.webgl.CircleReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
+      expect(
+        context.getProgram.calledWithExactly(
           ol.render.webgl.circlereplay.defaultshader.fragment,
-          ol.render.webgl.circlereplay.defaultshader.vertex)).to.be(true);
+          ol.render.webgl.circlereplay.defaultshader.vertex
+        )
+      ).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -137,9 +157,12 @@ describe('ol.render.webgl.CircleReplay', function() {
       sinon.spy(gl, 'enableVertexAttribArray');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
+      expect(gl.vertexAttribPointer.callCount).to.be(
+        gl.getAttribLocation.callCount
+      );
       expect(gl.enableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount
+      );
     });
   });
 
@@ -168,7 +191,8 @@ describe('ol.render.webgl.CircleReplay', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       replay.shutDownProgram(gl, locations);
       expect(gl.disableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount
+      );
     });
   });
 

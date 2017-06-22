@@ -51,47 +51,72 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: view
 });
 
 var zoomtoswitzerlandbest = document.getElementById('zoomtoswitzerlandbest');
-zoomtoswitzerlandbest.addEventListener('click', function() {
-  var feature = source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-  view.fit(polygon, {padding: [170, 50, 30, 150], constrainResolution: false});
-}, false);
+zoomtoswitzerlandbest.addEventListener(
+  'click',
+  function() {
+    var feature = source.getFeatures()[0];
+    var polygon /** @type {ol.geom.SimpleGeometry} */ = feature.getGeometry();
+    view.fit(polygon, {
+      padding: [170, 50, 30, 150],
+      constrainResolution: false
+    });
+  },
+  false
+);
 
-var zoomtoswitzerlandconstrained =
-    document.getElementById('zoomtoswitzerlandconstrained');
-zoomtoswitzerlandconstrained.addEventListener('click', function() {
-  var feature = source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-  view.fit(polygon, {padding: [170, 50, 30, 150]});
-}, false);
+var zoomtoswitzerlandconstrained = document.getElementById(
+  'zoomtoswitzerlandconstrained'
+);
+zoomtoswitzerlandconstrained.addEventListener(
+  'click',
+  function() {
+    var feature = source.getFeatures()[0];
+    var polygon /** @type {ol.geom.SimpleGeometry} */ = feature.getGeometry();
+    view.fit(polygon, {padding: [170, 50, 30, 150]});
+  },
+  false
+);
 
-var zoomtoswitzerlandnearest =
-    document.getElementById('zoomtoswitzerlandnearest');
-zoomtoswitzerlandnearest.addEventListener('click', function() {
-  var feature = source.getFeatures()[0];
-  var polygon = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-  view.fit(polygon, {padding: [170, 50, 30, 150], nearest: true});
-}, false);
+var zoomtoswitzerlandnearest = document.getElementById(
+  'zoomtoswitzerlandnearest'
+);
+zoomtoswitzerlandnearest.addEventListener(
+  'click',
+  function() {
+    var feature = source.getFeatures()[0];
+    var polygon /** @type {ol.geom.SimpleGeometry} */ = feature.getGeometry();
+    view.fit(polygon, {padding: [170, 50, 30, 150], nearest: true});
+  },
+  false
+);
 
 var zoomtolausanne = document.getElementById('zoomtolausanne');
-zoomtolausanne.addEventListener('click', function() {
-  var feature = source.getFeatures()[1];
-  var point = /** @type {ol.geom.SimpleGeometry} */ (feature.getGeometry());
-  view.fit(point, {padding: [170, 50, 30, 150], minResolution: 50});
-}, false);
+zoomtolausanne.addEventListener(
+  'click',
+  function() {
+    var feature = source.getFeatures()[1];
+    var point /** @type {ol.geom.SimpleGeometry} */ = feature.getGeometry();
+    view.fit(point, {padding: [170, 50, 30, 150], minResolution: 50});
+  },
+  false
+);
 
 var centerlausanne = document.getElementById('centerlausanne');
-centerlausanne.addEventListener('click', function() {
-  var feature = source.getFeatures()[1];
-  var point = /** @type {ol.geom.Point} */ (feature.getGeometry());
-  var size = /** @type {ol.Size} */ (map.getSize());
-  view.centerOn(point.getCoordinates(), size, [570, 500]);
-}, false);
+centerlausanne.addEventListener(
+  'click',
+  function() {
+    var feature = source.getFeatures()[1];
+    var point /** @type {ol.geom.Point} */ = feature.getGeometry();
+    var size /** @type {ol.Size} */ = map.getSize();
+    view.centerOn(point.getCoordinates(), size, [570, 500]);
+  },
+  false
+);

@@ -9,7 +9,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 // Create separate layers for red, green an blue circles.
 //
 // Every layer has one feature that is styled with a circle, together the
@@ -70,11 +69,7 @@ var blueLayer = new ol.layer.Vector({
 // Create the map, the view is centered on the triangle. Zooming and panning is
 // restricted to a sane area
 var map = new ol.Map({
-  layers: [
-    redLayer,
-    greenLayer,
-    blueLayer
-  ],
+  layers: [redLayer, greenLayer, blueLayer],
   target: 'map',
   view: new ol.View({
     center: [250, 220],
@@ -91,7 +86,6 @@ var affectRed = document.getElementById('affect-red');
 var affectGreen = document.getElementById('affect-green');
 var affectBlue = document.getElementById('affect-blue');
 
-
 /**
  * This method sets the globalCompositeOperation to the value of the select
  * field and it is bound to the precompose event of the layers.
@@ -101,7 +95,6 @@ var affectBlue = document.getElementById('affect-blue');
 var setBlendModeFromSelect = function(evt) {
   evt.context.globalCompositeOperation = select.value;
 };
-
 
 /**
  * This method resets the globalCompositeOperation to the default value of
@@ -113,7 +106,6 @@ var resetBlendModeFromSelect = function(evt) {
   evt.context.globalCompositeOperation = 'source-over';
 };
 
-
 /**
  * Bind the pre- and postcompose handlers to the passed layer.
  *
@@ -124,7 +116,6 @@ var bindLayerListeners = function(layer) {
   layer.on('postcompose', resetBlendModeFromSelect);
 };
 
-
 /**
  * Unind the pre- and postcompose handlers to the passed layers.
  *
@@ -134,7 +125,6 @@ var unbindLayerListeners = function(layer) {
   layer.un('precompose', setBlendModeFromSelect);
   layer.un('postcompose', resetBlendModeFromSelect);
 };
-
 
 /**
  * Handler for the click event of the 'affect-XXX' checkboxes.
@@ -157,7 +147,6 @@ var affectLayerClicked = function() {
   }
   map.render();
 };
-
 
 // Rerender map when blend mode changes
 select.addEventListener('change', function() {

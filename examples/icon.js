@@ -10,7 +10,6 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
-
 var iconFeature = new ol.Feature({
   geometry: new ol.geom.Point([0, 0]),
   name: 'Null Island',
@@ -19,12 +18,12 @@ var iconFeature = new ol.Feature({
 });
 
 var iconStyle = new ol.style.Style({
-  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+  image: new ol.style.Icon /** @type {olx.style.IconOptions} */({
     anchor: [0.5, 46],
     anchorXUnits: 'fraction',
     anchorYUnits: 'pixels',
     src: 'data/icon.png'
-  }))
+  })
 });
 
 iconFeature.setStyle(iconStyle);
@@ -65,17 +64,16 @@ map.addOverlay(popup);
 
 // display popup on click
 map.on('click', function(evt) {
-  var feature = map.forEachFeatureAtPixel(evt.pixel,
-      function(feature) {
-        return feature;
-      });
+  var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+    return feature;
+  });
   if (feature) {
     var coordinates = feature.getGeometry().getCoordinates();
     popup.setPosition(coordinates);
     $(element).popover({
-      'placement': 'top',
-      'html': true,
-      'content': feature.get('name')
+      placement: 'top',
+      html: true,
+      content: feature.get('name')
     });
     $(element).popover('show');
   } else {

@@ -5,6 +5,6 @@ goog.provide('ol.source.WMTSRequestEncoding');
  * @enum {string}
  */
 ol.source.WMTSRequestEncoding = {
-  KVP: 'KVP',  // see spec §8
+  KVP: 'KVP', // see spec §8
   REST: 'REST' // see spec §10
 };

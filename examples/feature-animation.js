@@ -14,7 +14,6 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -24,9 +23,9 @@ var map = new ol.Map({
     })
   ],
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   target: 'map',
   view: new ol.View({
@@ -46,8 +45,9 @@ map.addLayer(vector);
 function addRandomFeature() {
   var x = Math.random() * 360 - 180;
   var y = Math.random() * 180 - 90;
-  var geom = new ol.geom.Point(ol.proj.transform([x, y],
-      'EPSG:4326', 'EPSG:3857'));
+  var geom = new ol.geom.Point(
+    ol.proj.transform([x, y], 'EPSG:4326', 'EPSG:3857')
+  );
   var feature = new ol.Feature(geom);
   source.addFeature(feature);
 }

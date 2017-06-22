@@ -7,9 +7,7 @@ goog.require('ol.View');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 
-
 describe('ol.rendering.Map', function() {
-
   var target, map;
 
   function createMap(renderer) {
@@ -17,9 +15,11 @@ describe('ol.rendering.Map', function() {
 
     var vectorLayer = new ol.layer.Vector({
       source: new ol.source.Vector({
-        features: [new ol.Feature({
-          geometry: new ol.geom.Point([0, 0])
-        })]
+        features: [
+          new ol.Feature({
+            geometry: new ol.geom.Point([0, 0])
+          })
+        ]
       })
     });
 
@@ -89,14 +89,22 @@ describe('ol.rendering.Map', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       expectResemble(
-          map, 'spec/ol/expected/render-canvas.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/render-canvas.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       expectResemble(
-          map, 'spec/ol/expected/render-webgl.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/render-webgl.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
   });
 
@@ -109,7 +117,11 @@ describe('ol.rendering.Map', function() {
       map = createMap('canvas');
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'spec/ol/expected/pan-canvas.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/pan-canvas.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('tests the WebGL renderer', function(done) {
@@ -117,7 +129,11 @@ describe('ol.rendering.Map', function() {
       map = createMap('webgl');
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'spec/ol/expected/pan-webgl.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/pan-webgl.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
   });
 
@@ -130,8 +146,7 @@ describe('ol.rendering.Map', function() {
       map = createMap('canvas');
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
-      expectResemble(
-          map, 'spec/ol/expected/rotate-canvas.png', 2.8, done);
+      expectResemble(map, 'spec/ol/expected/rotate-canvas.png', 2.8, done);
     });
 
     it('tests the WebGL renderer', function(done) {
@@ -140,7 +155,11 @@ describe('ol.rendering.Map', function() {
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
       expectResemble(
-          map, 'spec/ol/expected/rotate-webgl.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/rotate-webgl.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
   });
 
@@ -154,7 +173,11 @@ describe('ol.rendering.Map', function() {
       map.getView().setCenter([10, 10]);
       map.getView().setResolution(2);
       expectResemble(
-          map, 'spec/ol/expected/zoom-canvas.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/zoom-canvas.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('tests the WebGL renderer', function(done) {
@@ -163,7 +186,11 @@ describe('ol.rendering.Map', function() {
       map.getView().setCenter([10, 10]);
       map.getView().setResolution(2);
       expectResemble(
-          map, 'spec/ol/expected/zoom-webgl.png', IMAGE_TOLERANCE, done);
+        map,
+        'spec/ol/expected/zoom-webgl.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
   });
 });

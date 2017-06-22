@@ -38,51 +38,45 @@ goog.require('ol.size');
 goog.require('ol.structs.PriorityQueue');
 goog.require('ol.transform');
 
-
 /**
  * @const
  * @type {string}
  */
 ol.OL_URL = 'https://openlayers.org/';
 
-
 /**
  * @const
  * @type {string}
  */
-ol.OL_LOGO_URL = 'data:image/png;base64,' +
-    'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBI' +
-    'WXMAAAHGAAABxgEXwfpGAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAA' +
-    'AhNQTFRF////AP//AICAgP//AFVVQECA////K1VVSbbbYL/fJ05idsTYJFtbbcjbJllmZszW' +
-    'WMTOIFhoHlNiZszTa9DdUcHNHlNlV8XRIVdiasrUHlZjIVZjaMnVH1RlIFRkH1RkH1ZlasvY' +
-    'asvXVsPQH1VkacnVa8vWIVZjIFRjVMPQa8rXIVVkXsXRsNveIFVkIFZlIVVj3eDeh6GmbMvX' +
-    'H1ZkIFRka8rWbMvXIFVkIFVjIFVkbMvWH1VjbMvWIFVlbcvWIFVla8vVIFVkbMvWbMvVH1Vk' +
-    'bMvWIFVlbcvWIFVkbcvVbMvWjNPbIFVkU8LPwMzNIFVkbczWIFVkbsvWbMvXIFVkRnB8bcvW' +
-    '2+TkW8XRIFVkIlZlJVloJlpoKlxrLl9tMmJwOWd0Omh1RXF8TneCT3iDUHiDU8LPVMLPVcLP' +
-    'VcPQVsPPVsPQV8PQWMTQWsTQW8TQXMXSXsXRX4SNX8bSYMfTYcfTYsfTY8jUZcfSZsnUaIqT' +
-    'acrVasrVa8jTa8rWbI2VbMvWbcvWdJObdcvUdszUd8vVeJaee87Yfc3WgJyjhqGnitDYjaar' +
-    'ldPZnrK2oNbborW5o9bbo9fbpLa6q9ndrL3ArtndscDDutzfu8fJwN7gwt7gxc/QyuHhy+Hi' +
-    'zeHi0NfX0+Pj19zb1+Tj2uXk29/e3uLg3+Lh3+bl4uXj4ufl4+fl5Ofl5ufl5ujm5+jmySDn' +
-    'BAAAAFp0Uk5TAAECAgMEBAYHCA0NDg4UGRogIiMmKSssLzU7PkJJT1JTVFliY2hrdHZ3foSF' +
-    'hYeJjY2QkpugqbG1tre5w8zQ09XY3uXn6+zx8vT09vf4+Pj5+fr6/P39/f3+gz7SsAAAAVVJ' +
-    'REFUOMtjYKA7EBDnwCPLrObS1BRiLoJLnte6CQy8FLHLCzs2QUG4FjZ5GbcmBDDjxJBXDWxC' +
-    'Brb8aM4zbkIDzpLYnAcE9VXlJSWlZRU13koIeW57mGx5XjoMZEUqwxWYQaQbSzLSkYGfKFSe' +
-    '0QMsX5WbjgY0YS4MBplemI4BdGBW+DQ11eZiymfqQuXZIjqwyadPNoSZ4L+0FVM6e+oGI6g8' +
-    'a9iKNT3o8kVzNkzRg5lgl7p4wyRUL9Yt2jAxVh6mQCogae6GmflI8p0r13VFWTHBQ0rWPW7a' +
-    'hgWVcPm+9cuLoyy4kCJDzCm6d8PSFoh0zvQNC5OjDJhQopPPJqph1doJBUD5tnkbZiUEqaCn' +
-    'B3bTqLTFG1bPn71kw4b+GFdpLElKIzRxxgYgWNYc5SCENVHKeUaltHdXx0dZ8uBI1hJ2UUDg' +
-    'q82CM2MwKeibqAvSO7MCABq0wXEPiqWEAAAAAElFTkSuQmCC';
-
+ol.OL_LOGO_URL =
+  'data:image/png;base64,' +
+  'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBI' +
+  'WXMAAAHGAAABxgEXwfpGAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAA' +
+  'AhNQTFRF////AP//AICAgP//AFVVQECA////K1VVSbbbYL/fJ05idsTYJFtbbcjbJllmZszW' +
+  'WMTOIFhoHlNiZszTa9DdUcHNHlNlV8XRIVdiasrUHlZjIVZjaMnVH1RlIFRkH1RkH1ZlasvY' +
+  'asvXVsPQH1VkacnVa8vWIVZjIFRjVMPQa8rXIVVkXsXRsNveIFVkIFZlIVVj3eDeh6GmbMvX' +
+  'H1ZkIFRka8rWbMvXIFVkIFVjIFVkbMvWH1VjbMvWIFVlbcvWIFVla8vVIFVkbMvWbMvVH1Vk' +
+  'bMvWIFVlbcvWIFVkbcvVbMvWjNPbIFVkU8LPwMzNIFVkbczWIFVkbsvWbMvXIFVkRnB8bcvW' +
+  '2+TkW8XRIFVkIlZlJVloJlpoKlxrLl9tMmJwOWd0Omh1RXF8TneCT3iDUHiDU8LPVMLPVcLP' +
+  'VcPQVsPPVsPQV8PQWMTQWsTQW8TQXMXSXsXRX4SNX8bSYMfTYcfTYsfTY8jUZcfSZsnUaIqT' +
+  'acrVasrVa8jTa8rWbI2VbMvWbcvWdJObdcvUdszUd8vVeJaee87Yfc3WgJyjhqGnitDYjaar' +
+  'ldPZnrK2oNbborW5o9bbo9fbpLa6q9ndrL3ArtndscDDutzfu8fJwN7gwt7gxc/QyuHhy+Hi' +
+  'zeHi0NfX0+Pj19zb1+Tj2uXk29/e3uLg3+Lh3+bl4uXj4ufl4+fl5Ofl5ufl5ujm5+jmySDn' +
+  'BAAAAFp0Uk5TAAECAgMEBAYHCA0NDg4UGRogIiMmKSssLzU7PkJJT1JTVFliY2hrdHZ3foSF' +
+  'hYeJjY2QkpugqbG1tre5w8zQ09XY3uXn6+zx8vT09vf4+Pj5+fr6/P39/f3+gz7SsAAAAVVJ' +
+  'REFUOMtjYKA7EBDnwCPLrObS1BRiLoJLnte6CQy8FLHLCzs2QUG4FjZ5GbcmBDDjxJBXDWxC' +
+  'Brb8aM4zbkIDzpLYnAcE9VXlJSWlZRU13koIeW57mGx5XjoMZEUqwxWYQaQbSzLSkYGfKFSe' +
+  '0QMsX5WbjgY0YS4MBplemI4BdGBW+DQ11eZiymfqQuXZIjqwyadPNoSZ4L+0FVM6e+oGI6g8' +
+  'a9iKNT3o8kVzNkzRg5lgl7p4wyRUL9Yt2jAxVh6mQCogae6GmflI8p0r13VFWTHBQ0rWPW7a' +
+  'hgWVcPm+9cuLoyy4kCJDzCm6d8PSFoh0zvQNC5OjDJhQopPPJqph1doJBUD5tnkbZiUEqaCn' +
+  'B3bTqLTFG1bPn71kw4b+GFdpLElKIzRxxgYgWNYc5SCENVHKeUaltHdXx0dZ8uBI1hJ2UUDg' +
+  'q82CM2MwKeibqAvSO7MCABq0wXEPiqWEAAAAAElFTkSuQmCC';
 
 /**
  * @type {Array.<ol.renderer.Type>}
  * @const
  */
-ol.DEFAULT_RENDERER_TYPES = [
-  ol.renderer.Type.CANVAS,
-  ol.renderer.Type.WEBGL
-];
-
+ol.DEFAULT_RENDERER_TYPES = [ol.renderer.Type.CANVAS, ol.renderer.Type.WEBGL];
 
 /**
  * @classdesc
@@ -133,7 +127,6 @@ ol.DEFAULT_RENDERER_TYPES = [
  * @api
  */
 ol.Map = function(options) {
-
   ol.Object.call(this);
 
   var optionsInternal = ol.Map.createOptionsInternal(options);
@@ -142,24 +135,26 @@ ol.Map = function(options) {
    * @type {boolean}
    * @private
    */
-  this.loadTilesWhileAnimating_ =
-      options.loadTilesWhileAnimating !== undefined ?
-          options.loadTilesWhileAnimating : false;
+  this.loadTilesWhileAnimating_ = options.loadTilesWhileAnimating !== undefined
+    ? options.loadTilesWhileAnimating
+    : false;
 
   /**
    * @type {boolean}
    * @private
    */
-  this.loadTilesWhileInteracting_ =
-      options.loadTilesWhileInteracting !== undefined ?
-          options.loadTilesWhileInteracting : false;
+  this.loadTilesWhileInteracting_ = options.loadTilesWhileInteracting !==
+    undefined
+    ? options.loadTilesWhileInteracting
+    : false;
 
   /**
    * @private
    * @type {number}
    */
-  this.pixelRatio_ = options.pixelRatio !== undefined ?
-      options.pixelRatio : ol.has.DEVICE_PIXEL_RATIO;
+  this.pixelRatio_ = options.pixelRatio !== undefined
+    ? options.pixelRatio
+    : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * @private
@@ -269,8 +264,11 @@ ol.Map = function(options) {
     ol.events.EventType.WHEEL
   ];
   for (var i = 0, ii = overlayEvents.length; i < ii; ++i) {
-    ol.events.listen(this.overlayContainerStopEvent_, overlayEvents[i],
-        ol.events.Event.stopPropagation);
+    ol.events.listen(
+      this.overlayContainerStopEvent_,
+      overlayEvents[i],
+      ol.events.Event.stopPropagation
+    );
   }
   this.viewport_.appendChild(this.overlayContainerStopEvent_);
 
@@ -278,10 +276,17 @@ ol.Map = function(options) {
    * @private
    * @type {ol.MapBrowserEventHandler}
    */
-  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(this, options.moveTolerance);
+  this.mapBrowserEventHandler_ = new ol.MapBrowserEventHandler(
+    this,
+    options.moveTolerance
+  );
   for (var key in ol.MapBrowserEventType) {
-    ol.events.listen(this.mapBrowserEventHandler_, ol.MapBrowserEventType[key],
-        this.handleMapBrowserEvent, this);
+    ol.events.listen(
+      this.mapBrowserEventHandler_,
+      ol.MapBrowserEventType[key],
+      this.handleMapBrowserEvent,
+      this
+    );
   }
 
   /**
@@ -296,10 +301,18 @@ ol.Map = function(options) {
    */
   this.keyHandlerKeys_ = null;
 
-  ol.events.listen(this.viewport_, ol.events.EventType.WHEEL,
-      this.handleBrowserEvent, this);
-  ol.events.listen(this.viewport_, ol.events.EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, this);
+  ol.events.listen(
+    this.viewport_,
+    ol.events.EventType.WHEEL,
+    this.handleBrowserEvent,
+    this
+  );
+  ol.events.listen(
+    this.viewport_,
+    ol.events.EventType.MOUSEWHEEL,
+    this.handleBrowserEvent,
+    this
+  );
 
   /**
    * @type {ol.Collection.<ol.control.Control>}
@@ -330,7 +343,10 @@ ol.Map = function(options) {
    * @type {ol.renderer.Map}
    * @private
    */
-  this.renderer_ = new /** @type {Function} */ (optionsInternal.rendererConstructor)(this.viewport_, this);
+  this.renderer_ = new /** @type {Function} */ optionsInternal.rendererConstructor(
+    this.viewport_,
+    this
+  );
 
   /**
    * @type {function(Event)|undefined}
@@ -355,8 +371,9 @@ ol.Map = function(options) {
    * @type {ol.TileQueue}
    */
   this.tileQueue_ = new ol.TileQueue(
-      this.getTilePriority.bind(this),
-      this.handleTileChange_.bind(this));
+    this.getTilePriority.bind(this),
+    this.handleTileChange_.bind(this)
+  );
 
   /**
    * Uids of features to skip at rendering time.
@@ -366,95 +383,136 @@ ol.Map = function(options) {
   this.skippedFeatureUids_ = {};
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
-      this.handleLayerGroupChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.VIEW),
-      this.handleViewChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.SIZE),
-      this.handleSizeChanged_, this);
-  ol.events.listen(this, ol.Object.getChangeEventType(ol.MapProperty.TARGET),
-      this.handleTargetChanged_, this);
+    this,
+    ol.Object.getChangeEventType(ol.MapProperty.LAYERGROUP),
+    this.handleLayerGroupChanged_,
+    this
+  );
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.MapProperty.VIEW),
+    this.handleViewChanged_,
+    this
+  );
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.MapProperty.SIZE),
+    this.handleSizeChanged_,
+    this
+  );
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.MapProperty.TARGET),
+    this.handleTargetChanged_,
+    this
+  );
 
   // setProperties will trigger the rendering of the map if the map
   // is "defined" already.
   this.setProperties(optionsInternal.values);
 
   this.controls_.forEach(
-      /**
+    /**
        * @param {ol.control.Control} control Control.
        * @this {ol.Map}
        */
-      function(control) {
-        control.setMap(this);
-      }, this);
+    function(control) {
+      control.setMap(this);
+    },
+    this
+  );
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.ADD,
-      /**
+  ol.events.listen(
+    this.controls_,
+    ol.CollectionEventType.ADD,
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(this);
-      }, this);
+    function(event) {
+      event.element.setMap(this);
+    },
+    this
+  );
 
-  ol.events.listen(this.controls_, ol.CollectionEventType.REMOVE,
-      /**
+  ol.events.listen(
+    this.controls_,
+    ol.CollectionEventType.REMOVE,
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(null);
-      }, this);
+    function(event) {
+      event.element.setMap(null);
+    },
+    this
+  );
 
   this.interactions_.forEach(
-      /**
+    /**
        * @param {ol.interaction.Interaction} interaction Interaction.
        * @this {ol.Map}
        */
-      function(interaction) {
-        interaction.setMap(this);
-      }, this);
+    function(interaction) {
+      interaction.setMap(this);
+    },
+    this
+  );
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.ADD,
-      /**
+  ol.events.listen(
+    this.interactions_,
+    ol.CollectionEventType.ADD,
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(this);
-      }, this);
+    function(event) {
+      event.element.setMap(this);
+    },
+    this
+  );
 
-  ol.events.listen(this.interactions_, ol.CollectionEventType.REMOVE,
-      /**
+  ol.events.listen(
+    this.interactions_,
+    ol.CollectionEventType.REMOVE,
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        event.element.setMap(null);
-      }, this);
+    function(event) {
+      event.element.setMap(null);
+    },
+    this
+  );
 
   this.overlays_.forEach(this.addOverlayInternal_, this);
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.ADD,
-      /**
+  ol.events.listen(
+    this.overlays_,
+    ol.CollectionEventType.ADD,
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        this.addOverlayInternal_(/** @type {ol.Overlay} */ (event.element));
-      }, this);
+    function(event) {
+      this.addOverlayInternal_ /** @type {ol.Overlay} */(event.element);
+    },
+    this
+  );
 
-  ol.events.listen(this.overlays_, ol.CollectionEventType.REMOVE,
-      /**
+  ol.events.listen(
+    this.overlays_,
+    ol.CollectionEventType.REMOVE,
+    /**
        * @param {ol.Collection.Event} event Collection event.
        */
-      function(event) {
-        var overlay = /** @type {ol.Overlay} */ (event.element);
-        var id = overlay.getId();
-        if (id !== undefined) {
-          delete this.overlayIdIndex_[id.toString()];
-        }
-        event.element.setMap(null);
-      }, this);
-
+    function(event) {
+      var overlay /** @type {ol.Overlay} */ = event.element;
+      var id = overlay.getId();
+      if (id !== undefined) {
+        delete this.overlayIdIndex_[id.toString()];
+      }
+      event.element.setMap(null);
+    },
+    this
+  );
 };
 ol.inherits(ol.Map, ol.Object);
-
 
 /**
  * Add the given control to the map.
@@ -465,7 +523,6 @@ ol.Map.prototype.addControl = function(control) {
   this.getControls().push(control);
 };
 
-
 /**
  * Add the given interaction to the map.
  * @param {ol.interaction.Interaction} interaction Interaction to add.
@@ -474,7 +531,6 @@ ol.Map.prototype.addControl = function(control) {
 ol.Map.prototype.addInteraction = function(interaction) {
   this.getInteractions().push(interaction);
 };
-
 
 /**
  * Adds the given layer to the top of this map. If you want to add a layer
@@ -488,7 +544,6 @@ ol.Map.prototype.addLayer = function(layer) {
   layers.push(layer);
 };
 
-
 /**
  * Add the given overlay to the map.
  * @param {ol.Overlay} overlay Overlay.
@@ -497,7 +552,6 @@ ol.Map.prototype.addLayer = function(layer) {
 ol.Map.prototype.addOverlay = function(overlay) {
   this.getOverlays().push(overlay);
 };
-
 
 /**
  * This deals with map's overlay collection changes.
@@ -512,7 +566,6 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
   overlay.setMap(this);
 };
 
-
 /**
  *
  * @inheritDoc
@@ -520,13 +573,24 @@ ol.Map.prototype.addOverlayInternal_ = function(overlay) {
 ol.Map.prototype.disposeInternal = function() {
   this.mapBrowserEventHandler_.dispose();
   this.renderer_.dispose();
-  ol.events.unlisten(this.viewport_, ol.events.EventType.WHEEL,
-      this.handleBrowserEvent, this);
-  ol.events.unlisten(this.viewport_, ol.events.EventType.MOUSEWHEEL,
-      this.handleBrowserEvent, this);
+  ol.events.unlisten(
+    this.viewport_,
+    ol.events.EventType.WHEEL,
+    this.handleBrowserEvent,
+    this
+  );
+  ol.events.unlisten(
+    this.viewport_,
+    ol.events.EventType.MOUSEWHEEL,
+    this.handleBrowserEvent,
+    this
+  );
   if (this.handleResize_ !== undefined) {
-    window.removeEventListener(ol.events.EventType.RESIZE,
-        this.handleResize_, false);
+    window.removeEventListener(
+      ol.events.EventType.RESIZE,
+      this.handleResize_,
+      false
+    );
     this.handleResize_ = undefined;
   }
   if (this.animationDelayKey_) {
@@ -536,7 +600,6 @@ ol.Map.prototype.disposeInternal = function() {
   this.setTarget(null);
   ol.Object.prototype.disposeInternal.call(this);
 };
-
 
 /**
  * Detect features that intersect a pixel on the viewport, and execute a
@@ -557,21 +620,32 @@ ol.Map.prototype.disposeInternal = function() {
  * @template S,T
  * @api
  */
-ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) {
+ol.Map.prototype.forEachFeatureAtPixel = function(
+  pixel,
+  callback,
+  opt_options
+) {
   if (!this.frameState_) {
     return;
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
-  var hitTolerance = opt_options.hitTolerance !== undefined ?
-    opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
-  var layerFilter = opt_options.layerFilter !== undefined ?
-    opt_options.layerFilter : ol.functions.TRUE;
+  var hitTolerance = opt_options.hitTolerance !== undefined
+    ? opt_options.hitTolerance * this.frameState_.pixelRatio
+    : 0;
+  var layerFilter = opt_options.layerFilter !== undefined
+    ? opt_options.layerFilter
+    : ol.functions.TRUE;
   return this.renderer_.forEachFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, callback, null,
-      layerFilter, null);
+    coordinate,
+    this.frameState_,
+    hitTolerance,
+    callback,
+    null,
+    layerFilter,
+    null
+  );
 };
-
 
 /**
  * Detect layers that have a color value at a pixel on the viewport, and
@@ -597,19 +671,30 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) 
  * @template S,T,U
  * @api
  */
-ol.Map.prototype.forEachLayerAtPixel = function(pixel, callback, opt_this, opt_layerFilter, opt_this2) {
+ol.Map.prototype.forEachLayerAtPixel = function(
+  pixel,
+  callback,
+  opt_this,
+  opt_layerFilter,
+  opt_this2
+) {
   if (!this.frameState_) {
     return;
   }
   var thisArg = opt_this !== undefined ? opt_this : null;
-  var layerFilter = opt_layerFilter !== undefined ?
-      opt_layerFilter : ol.functions.TRUE;
+  var layerFilter = opt_layerFilter !== undefined
+    ? opt_layerFilter
+    : ol.functions.TRUE;
   var thisArg2 = opt_this2 !== undefined ? opt_this2 : null;
   return this.renderer_.forEachLayerAtPixel(
-      pixel, this.frameState_, callback, thisArg,
-      layerFilter, thisArg2);
+    pixel,
+    this.frameState_,
+    callback,
+    thisArg,
+    layerFilter,
+    thisArg2
+  );
 };
-
 
 /**
  * Detect if features intersect a pixel on the viewport. Layers included in the
@@ -626,14 +711,20 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
   }
   var coordinate = this.getCoordinateFromPixel(pixel);
   opt_options = opt_options !== undefined ? opt_options : {};
-  var layerFilter = opt_options.layerFilter !== undefined ?
-      opt_options.layerFilter : ol.functions.TRUE;
-  var hitTolerance = opt_options.hitTolerance !== undefined ?
-    opt_options.hitTolerance * this.frameState_.pixelRatio : 0;
+  var layerFilter = opt_options.layerFilter !== undefined
+    ? opt_options.layerFilter
+    : ol.functions.TRUE;
+  var hitTolerance = opt_options.hitTolerance !== undefined
+    ? opt_options.hitTolerance * this.frameState_.pixelRatio
+    : 0;
   return this.renderer_.hasFeatureAtCoordinate(
-      coordinate, this.frameState_, hitTolerance, layerFilter, null);
+    coordinate,
+    this.frameState_,
+    hitTolerance,
+    layerFilter,
+    null
+  );
 };
-
 
 /**
  * Returns the coordinate in view projection for a browser event.
@@ -644,7 +735,6 @@ ol.Map.prototype.hasFeatureAtPixel = function(pixel, opt_options) {
 ol.Map.prototype.getEventCoordinate = function(event) {
   return this.getCoordinateFromPixel(this.getEventPixel(event));
 };
-
 
 /**
  * Returns the map pixel position for a browser event relative to the viewport.
@@ -661,7 +751,6 @@ ol.Map.prototype.getEventPixel = function(event) {
   ];
 };
 
-
 /**
  * Get the target in which this map is rendered.
  * Note that this returns what is entered as an option or in setTarget:
@@ -672,10 +761,10 @@ ol.Map.prototype.getEventPixel = function(event) {
  * @api
  */
 ol.Map.prototype.getTarget = function() {
-  return /** @type {Element|string|undefined} */ (
-      this.get(ol.MapProperty.TARGET));
+  return /** @type {Element|string|undefined} */ this.get(
+    ol.MapProperty.TARGET
+  );
 };
-
 
 /**
  * Get the DOM element into which this map is rendered. In contrast to
@@ -687,14 +776,13 @@ ol.Map.prototype.getTarget = function() {
 ol.Map.prototype.getTargetElement = function() {
   var target = this.getTarget();
   if (target !== undefined) {
-    return typeof target === 'string' ?
-      document.getElementById(target) :
-      target;
+    return typeof target === 'string'
+      ? document.getElementById(target)
+      : target;
   } else {
     return null;
   }
 };
-
 
 /**
  * Get the coordinate for a given pixel.  This returns a coordinate in the
@@ -708,10 +796,12 @@ ol.Map.prototype.getCoordinateFromPixel = function(pixel) {
   if (!frameState) {
     return null;
   } else {
-    return ol.transform.apply(frameState.pixelToCoordinateTransform, pixel.slice());
+    return ol.transform.apply(
+      frameState.pixelToCoordinateTransform,
+      pixel.slice()
+    );
   }
 };
-
 
 /**
  * Get the map controls. Modifying this collection changes the controls
@@ -723,7 +813,6 @@ ol.Map.prototype.getControls = function() {
   return this.controls_;
 };
 
-
 /**
  * Get the map overlays. Modifying this collection changes the overlays
  * associated with the map.
@@ -733,7 +822,6 @@ ol.Map.prototype.getControls = function() {
 ol.Map.prototype.getOverlays = function() {
   return this.overlays_;
 };
-
 
 /**
  * Get an overlay by its identifier (the value returned by overlay.getId()).
@@ -748,7 +836,6 @@ ol.Map.prototype.getOverlayById = function(id) {
   return overlay !== undefined ? overlay : null;
 };
 
-
 /**
  * Get the map interactions. Modifying this collection changes the interactions
  * associated with the map.
@@ -761,7 +848,6 @@ ol.Map.prototype.getInteractions = function() {
   return this.interactions_;
 };
 
-
 /**
  * Get the layergroup associated with this map.
  * @return {ol.layer.Group} A layer group containing the layers in this map.
@@ -769,9 +855,8 @@ ol.Map.prototype.getInteractions = function() {
  * @api
  */
 ol.Map.prototype.getLayerGroup = function() {
-  return /** @type {ol.layer.Group} */ (this.get(ol.MapProperty.LAYERGROUP));
+  return /** @type {ol.layer.Group} */ this.get(ol.MapProperty.LAYERGROUP);
 };
-
 
 /**
  * Get the collection of layers associated with this map.
@@ -782,7 +867,6 @@ ol.Map.prototype.getLayers = function() {
   var layers = this.getLayerGroup().getLayers();
   return layers;
 };
-
 
 /**
  * Get the pixel for a coordinate.  This takes a coordinate in the map view
@@ -796,11 +880,12 @@ ol.Map.prototype.getPixelFromCoordinate = function(coordinate) {
   if (!frameState) {
     return null;
   } else {
-    return ol.transform.apply(frameState.coordinateToPixelTransform,
-        coordinate.slice(0, 2));
+    return ol.transform.apply(
+      frameState.coordinateToPixelTransform,
+      coordinate.slice(0, 2)
+    );
   }
 };
-
 
 /**
  * Get the map renderer.
@@ -810,7 +895,6 @@ ol.Map.prototype.getRenderer = function() {
   return this.renderer_;
 };
 
-
 /**
  * Get the size of this map.
  * @return {ol.Size|undefined} The size in pixels of the map in the DOM.
@@ -818,9 +902,8 @@ ol.Map.prototype.getRenderer = function() {
  * @api
  */
 ol.Map.prototype.getSize = function() {
-  return /** @type {ol.Size|undefined} */ (this.get(ol.MapProperty.SIZE));
+  return /** @type {ol.Size|undefined} */ this.get(ol.MapProperty.SIZE);
 };
-
 
 /**
  * Get the view associated with this map. A view manages properties such as
@@ -830,9 +913,8 @@ ol.Map.prototype.getSize = function() {
  * @api
  */
 ol.Map.prototype.getView = function() {
-  return /** @type {ol.View} */ (this.get(ol.MapProperty.VIEW));
+  return /** @type {ol.View} */ this.get(ol.MapProperty.VIEW);
 };
-
 
 /**
  * Get the element that serves as the map viewport.
@@ -842,7 +924,6 @@ ol.Map.prototype.getView = function() {
 ol.Map.prototype.getViewport = function() {
   return this.viewport_;
 };
-
 
 /**
  * Get the element that serves as the container for overlays.  Elements added to
@@ -855,7 +936,6 @@ ol.Map.prototype.getOverlayContainer = function() {
   return this.overlayContainer_;
 };
 
-
 /**
  * Get the element that serves as a container for overlays that don't allow
  * event propagation. Elements added to this container won't let mousedown and
@@ -867,7 +947,6 @@ ol.Map.prototype.getOverlayContainerStopEvent = function() {
   return this.overlayContainerStopEvent_;
 };
 
-
 /**
  * @param {ol.Tile} tile Tile.
  * @param {string} tileSourceKey Tile source key.
@@ -875,7 +954,12 @@ ol.Map.prototype.getOverlayContainerStopEvent = function() {
  * @param {number} tileResolution Tile resolution.
  * @return {number} Tile priority.
  */
-ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, tileResolution) {
+ol.Map.prototype.getTilePriority = function(
+  tile,
+  tileSourceKey,
+  tileCenter,
+  tileResolution
+) {
   // Filter out tiles at higher zoom levels than the current zoom level, or that
   // are outside the visible extent.
   var frameState = this.frameState_;
@@ -893,10 +977,11 @@ ol.Map.prototype.getTilePriority = function(tile, tileSourceKey, tileCenter, til
   // 65536 * Math.log(2) = 45426 pixels from the focus.
   var deltaX = tileCenter[0] - frameState.focus[0];
   var deltaY = tileCenter[1] - frameState.focus[1];
-  return 65536 * Math.log(tileResolution) +
-      Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution;
+  return (
+    65536 * Math.log(tileResolution) +
+    Math.sqrt(deltaX * deltaX + deltaY * deltaY) / tileResolution
+  );
 };
-
 
 /**
  * @param {Event} browserEvent Browser event.
@@ -907,7 +992,6 @@ ol.Map.prototype.handleBrowserEvent = function(browserEvent, opt_type) {
   var mapBrowserEvent = new ol.MapBrowserEvent(type, this, browserEvent);
   this.handleMapBrowserEvent(mapBrowserEvent);
 };
-
 
 /**
  * @param {ol.MapBrowserEvent} mapBrowserEvent The event to handle.
@@ -936,12 +1020,10 @@ ol.Map.prototype.handleMapBrowserEvent = function(mapBrowserEvent) {
   }
 };
 
-
 /**
  * @protected
  */
 ol.Map.prototype.handlePostRender = function() {
-
   var frameState = this.frameState_;
 
   // Manage the tile queue
@@ -982,14 +1064,12 @@ ol.Map.prototype.handlePostRender = function() {
   postRenderFunctions.length = 0;
 };
 
-
 /**
  * @private
  */
 ol.Map.prototype.handleSizeChanged_ = function() {
   this.render();
 };
-
 
 /**
  * @private
@@ -1015,26 +1095,41 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   if (!targetElement) {
     ol.dom.removeNode(this.viewport_);
     if (this.handleResize_ !== undefined) {
-      window.removeEventListener(ol.events.EventType.RESIZE,
-          this.handleResize_, false);
+      window.removeEventListener(
+        ol.events.EventType.RESIZE,
+        this.handleResize_,
+        false
+      );
       this.handleResize_ = undefined;
     }
   } else {
     targetElement.appendChild(this.viewport_);
 
-    var keyboardEventTarget = !this.keyboardEventTarget_ ?
-        targetElement : this.keyboardEventTarget_;
+    var keyboardEventTarget = !this.keyboardEventTarget_
+      ? targetElement
+      : this.keyboardEventTarget_;
     this.keyHandlerKeys_ = [
-      ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYDOWN,
-          this.handleBrowserEvent, this),
-      ol.events.listen(keyboardEventTarget, ol.events.EventType.KEYPRESS,
-          this.handleBrowserEvent, this)
+      ol.events.listen(
+        keyboardEventTarget,
+        ol.events.EventType.KEYDOWN,
+        this.handleBrowserEvent,
+        this
+      ),
+      ol.events.listen(
+        keyboardEventTarget,
+        ol.events.EventType.KEYPRESS,
+        this.handleBrowserEvent,
+        this
+      )
     ];
 
     if (!this.handleResize_) {
       this.handleResize_ = this.updateSize.bind(this);
-      window.addEventListener(ol.events.EventType.RESIZE,
-          this.handleResize_, false);
+      window.addEventListener(
+        ol.events.EventType.RESIZE,
+        this.handleResize_,
+        false
+      );
     }
   }
 
@@ -1043,7 +1138,6 @@ ol.Map.prototype.handleTargetChanged_ = function() {
   // ourselves here.
 };
 
-
 /**
  * @private
  */
@@ -1051,14 +1145,12 @@ ol.Map.prototype.handleTileChange_ = function() {
   this.render();
 };
 
-
 /**
  * @private
  */
 ol.Map.prototype.handleViewPropertyChanged_ = function() {
   this.render();
 };
-
 
 /**
  * @private
@@ -1076,15 +1168,20 @@ ol.Map.prototype.handleViewChanged_ = function() {
   if (view) {
     this.viewport_.setAttribute('data-view', ol.getUid(view));
     this.viewPropertyListenerKey_ = ol.events.listen(
-        view, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleViewPropertyChanged_, this);
+      view,
+      ol.ObjectEventType.PROPERTYCHANGE,
+      this.handleViewPropertyChanged_,
+      this
+    );
     this.viewChangeListenerKey_ = ol.events.listen(
-        view, ol.events.EventType.CHANGE,
-        this.handleViewPropertyChanged_, this);
+      view,
+      ol.events.EventType.CHANGE,
+      this.handleViewPropertyChanged_,
+      this
+    );
   }
   this.render();
 };
-
 
 /**
  * @private
@@ -1098,16 +1195,21 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
   if (layerGroup) {
     this.layerGroupPropertyListenerKeys_ = [
       ol.events.listen(
-          layerGroup, ol.ObjectEventType.PROPERTYCHANGE,
-          this.render, this),
+        layerGroup,
+        ol.ObjectEventType.PROPERTYCHANGE,
+        this.render,
+        this
+      ),
       ol.events.listen(
-          layerGroup, ol.events.EventType.CHANGE,
-          this.render, this)
+        layerGroup,
+        ol.events.EventType.CHANGE,
+        this.render,
+        this
+      )
     ];
   }
   this.render();
 };
-
 
 /**
  * @return {boolean} Is rendered.
@@ -1115,7 +1217,6 @@ ol.Map.prototype.handleLayerGroupChanged_ = function() {
 ol.Map.prototype.isRendered = function() {
   return !!this.frameState_;
 };
-
 
 /**
  * Requests an immediate render in a synchronous manner.
@@ -1128,18 +1229,15 @@ ol.Map.prototype.renderSync = function() {
   this.animationDelay_();
 };
 
-
 /**
  * Request a map rendering (at the next animation frame).
  * @api
  */
 ol.Map.prototype.render = function() {
   if (this.animationDelayKey_ === undefined) {
-    this.animationDelayKey_ = requestAnimationFrame(
-        this.animationDelay_);
+    this.animationDelayKey_ = requestAnimationFrame(this.animationDelay_);
   }
 };
-
 
 /**
  * Remove the given control from the map.
@@ -1152,7 +1250,6 @@ ol.Map.prototype.removeControl = function(control) {
   return this.getControls().remove(control);
 };
 
-
 /**
  * Remove the given interaction from the map.
  * @param {ol.interaction.Interaction} interaction Interaction to remove.
@@ -1163,7 +1260,6 @@ ol.Map.prototype.removeControl = function(control) {
 ol.Map.prototype.removeInteraction = function(interaction) {
   return this.getInteractions().remove(interaction);
 };
-
 
 /**
  * Removes the given layer from the map.
@@ -1177,7 +1273,6 @@ ol.Map.prototype.removeLayer = function(layer) {
   return layers.remove(layer);
 };
 
-
 /**
  * Remove the given overlay from the map.
  * @param {ol.Overlay} overlay Overlay.
@@ -1188,7 +1283,6 @@ ol.Map.prototype.removeLayer = function(layer) {
 ol.Map.prototype.removeOverlay = function(overlay) {
   return this.getOverlays().remove(overlay);
 };
-
 
 /**
  * @param {number} time Time.
@@ -1204,14 +1298,16 @@ ol.Map.prototype.renderFrame_ = function(time) {
   /** @type {?olx.FrameState} */
   var frameState = null;
   if (size !== undefined && ol.size.hasArea(size) && view && view.isDef()) {
-    var viewHints = view.getHints(this.frameState_ ? this.frameState_.viewHints : undefined);
+    var viewHints = view.getHints(
+      this.frameState_ ? this.frameState_.viewHints : undefined
+    );
     var layerStatesArray = this.getLayerGroup().getLayerStatesArray();
     var layerStates = {};
     for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
       layerStates[ol.getUid(layerStatesArray[i].layer)] = layerStatesArray[i];
     }
     viewState = view.getState();
-    frameState = /** @type {olx.FrameState} */ ({
+    frameState /** @type {olx.FrameState} */ = {
       animate: false,
       attributions: {},
       coordinateToPixelTransform: this.coordinateToPixelTransform_,
@@ -1232,12 +1328,17 @@ ol.Map.prototype.renderFrame_ = function(time) {
       viewState: viewState,
       viewHints: viewHints,
       wantedTiles: {}
-    });
+    };
   }
 
   if (frameState) {
-    frameState.extent = ol.extent.getForViewAndSize(viewState.center,
-        viewState.resolution, viewState.rotation, frameState.size, extent);
+    frameState.extent = ol.extent.getForViewAndSize(
+      viewState.center,
+      viewState.resolution,
+      viewState.rotation,
+      frameState.size,
+      extent
+    );
   }
 
   this.frameState_ = frameState;
@@ -1248,38 +1349,45 @@ ol.Map.prototype.renderFrame_ = function(time) {
       this.render();
     }
     Array.prototype.push.apply(
-        this.postRenderFunctions_, frameState.postRenderFunctions);
+      this.postRenderFunctions_,
+      frameState.postRenderFunctions
+    );
 
     if (previousFrameState) {
-      var moveStart = !this.previousExtent_ ||
-          (!ol.extent.isEmpty(this.previousExtent_) &&
+      var moveStart =
+        !this.previousExtent_ ||
+        (!ol.extent.isEmpty(this.previousExtent_) &&
           !ol.extent.equals(frameState.extent, this.previousExtent_));
       if (moveStart) {
         this.dispatchEvent(
-            new ol.MapEvent(ol.MapEventType.MOVESTART, this, previousFrameState));
-        this.previousExtent_ = ol.extent.createOrUpdateEmpty(this.previousExtent_);
+          new ol.MapEvent(ol.MapEventType.MOVESTART, this, previousFrameState)
+        );
+        this.previousExtent_ = ol.extent.createOrUpdateEmpty(
+          this.previousExtent_
+        );
       }
     }
 
-    var idle = this.previousExtent_ &&
-        !frameState.viewHints[ol.ViewHint.ANIMATING] &&
-        !frameState.viewHints[ol.ViewHint.INTERACTING] &&
-        !ol.extent.equals(frameState.extent, this.previousExtent_);
+    var idle =
+      this.previousExtent_ &&
+      !frameState.viewHints[ol.ViewHint.ANIMATING] &&
+      !frameState.viewHints[ol.ViewHint.INTERACTING] &&
+      !ol.extent.equals(frameState.extent, this.previousExtent_);
 
     if (idle) {
       this.dispatchEvent(
-          new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState));
+        new ol.MapEvent(ol.MapEventType.MOVEEND, this, frameState)
+      );
       ol.extent.clone(frameState.extent, this.previousExtent_);
     }
   }
 
   this.dispatchEvent(
-      new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState));
+    new ol.MapEvent(ol.MapEventType.POSTRENDER, this, frameState)
+  );
 
   setTimeout(this.handlePostRender.bind(this), 0);
-
 };
-
 
 /**
  * Sets the layergroup of this map.
@@ -1292,7 +1400,6 @@ ol.Map.prototype.setLayerGroup = function(layerGroup) {
   this.set(ol.MapProperty.LAYERGROUP, layerGroup);
 };
 
-
 /**
  * Set the size of this map.
  * @param {ol.Size|undefined} size The size in pixels of the map in the DOM.
@@ -1302,7 +1409,6 @@ ol.Map.prototype.setLayerGroup = function(layerGroup) {
 ol.Map.prototype.setSize = function(size) {
   this.set(ol.MapProperty.SIZE, size);
 };
-
 
 /**
  * Set the target element to render this map into.
@@ -1315,7 +1421,6 @@ ol.Map.prototype.setTarget = function(target) {
   this.set(ol.MapProperty.TARGET, target);
 };
 
-
 /**
  * Set the view for this map.
  * @param {ol.View} view The view that controls this map.
@@ -1326,7 +1431,6 @@ ol.Map.prototype.setView = function(view) {
   this.set(ol.MapProperty.VIEW, view);
 };
 
-
 /**
  * @param {ol.Feature} feature Feature.
  */
@@ -1335,7 +1439,6 @@ ol.Map.prototype.skipFeature = function(feature) {
   this.skippedFeatureUids_[featureUid] = true;
   this.render();
 };
-
 
 /**
  * Force a recalculation of the map viewport size.  This should be called when
@@ -1351,19 +1454,18 @@ ol.Map.prototype.updateSize = function() {
     var computedStyle = getComputedStyle(targetElement);
     this.setSize([
       targetElement.offsetWidth -
-          parseFloat(computedStyle['borderLeftWidth']) -
-          parseFloat(computedStyle['paddingLeft']) -
-          parseFloat(computedStyle['paddingRight']) -
-          parseFloat(computedStyle['borderRightWidth']),
+        parseFloat(computedStyle['borderLeftWidth']) -
+        parseFloat(computedStyle['paddingLeft']) -
+        parseFloat(computedStyle['paddingRight']) -
+        parseFloat(computedStyle['borderRightWidth']),
       targetElement.offsetHeight -
-          parseFloat(computedStyle['borderTopWidth']) -
-          parseFloat(computedStyle['paddingTop']) -
-          parseFloat(computedStyle['paddingBottom']) -
-          parseFloat(computedStyle['borderBottomWidth'])
+        parseFloat(computedStyle['borderTopWidth']) -
+        parseFloat(computedStyle['paddingTop']) -
+        parseFloat(computedStyle['paddingBottom']) -
+        parseFloat(computedStyle['borderBottomWidth'])
     ]);
   }
 };
-
 
 /**
  * @param {ol.Feature} feature Feature.
@@ -1374,21 +1476,19 @@ ol.Map.prototype.unskipFeature = function(feature) {
   this.render();
 };
 
-
 /**
  * @param {olx.MapOptions} options Map options.
  * @return {ol.MapOptionsInternal} Internal map options.
  */
 ol.Map.createOptionsInternal = function(options) {
-
   /**
    * @type {Element|Document}
    */
   var keyboardEventTarget = null;
   if (options.keyboardEventTarget !== undefined) {
-    keyboardEventTarget = typeof options.keyboardEventTarget === 'string' ?
-        document.getElementById(options.keyboardEventTarget) :
-        options.keyboardEventTarget;
+    keyboardEventTarget = typeof options.keyboardEventTarget === 'string'
+      ? document.getElementById(options.keyboardEventTarget)
+      : options.keyboardEventTarget;
   }
 
   /**
@@ -1397,8 +1497,10 @@ ol.Map.createOptionsInternal = function(options) {
   var values = {};
 
   var logos = {};
-  if (options.logo === undefined ||
-      (typeof options.logo === 'boolean' && options.logo)) {
+  if (
+    options.logo === undefined ||
+    (typeof options.logo === 'boolean' && options.logo)
+  ) {
     logos[ol.OL_LOGO_URL] = ol.OL_URL;
   } else {
     var logo = options.logo;
@@ -1413,14 +1515,16 @@ ol.Map.createOptionsInternal = function(options) {
     }
   }
 
-  var layerGroup = (options.layers instanceof ol.layer.Group) ?
-      options.layers : new ol.layer.Group({layers: options.layers});
+  var layerGroup = options.layers instanceof ol.layer.Group
+    ? options.layers
+    : new ol.layer.Group({layers: options.layers});
   values[ol.MapProperty.LAYERGROUP] = layerGroup;
 
   values[ol.MapProperty.TARGET] = options.target;
 
-  values[ol.MapProperty.VIEW] = options.view !== undefined ?
-      options.view : new ol.View();
+  values[ol.MapProperty.VIEW] = options.view !== undefined
+    ? options.view
+    : new ol.View();
 
   /**
    * @type {function(new: ol.renderer.Map, Element, ol.Map)}
@@ -1439,7 +1543,7 @@ ol.Map.createOptionsInternal = function(options) {
     } else {
       ol.asserts.assert(false, 46); // Incorrect format for `renderer` option
     }
-    if (rendererTypes.indexOf(/** @type {ol.renderer.Type} */ ('dom')) >= 0) {
+    if (rendererTypes.indexOf /** @type {ol.renderer.Type} */('dom') >= 0) {
       rendererTypes = rendererTypes.concat(ol.DEFAULT_RENDERER_TYPES);
     }
   } else {
@@ -1468,8 +1572,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.controls)) {
       controls = new ol.Collection(options.controls.slice());
     } else {
-      ol.asserts.assert(options.controls instanceof ol.Collection,
-          47); // Expected `controls` to be an array or an `ol.Collection`
+      ol.asserts.assert(options.controls instanceof ol.Collection, 47); // Expected `controls` to be an array or an `ol.Collection`
       controls = options.controls;
     }
   } else {
@@ -1481,8 +1584,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.interactions)) {
       interactions = new ol.Collection(options.interactions.slice());
     } else {
-      ol.asserts.assert(options.interactions instanceof ol.Collection,
-          48); // Expected `interactions` to be an array or an `ol.Collection`
+      ol.asserts.assert(options.interactions instanceof ol.Collection, 48); // Expected `interactions` to be an array or an `ol.Collection`
       interactions = options.interactions;
     }
   } else {
@@ -1494,8 +1596,7 @@ ol.Map.createOptionsInternal = function(options) {
     if (Array.isArray(options.overlays)) {
       overlays = new ol.Collection(options.overlays.slice());
     } else {
-      ol.asserts.assert(options.overlays instanceof ol.Collection,
-          49); // Expected `overlays` to be an array or an `ol.Collection`
+      ol.asserts.assert(options.overlays instanceof ol.Collection, 49); // Expected `overlays` to be an array or an `ol.Collection`
       overlays = options.overlays;
     }
   } else {
@@ -1511,5 +1612,4 @@ ol.Map.createOptionsInternal = function(options) {
     rendererConstructor: rendererConstructor,
     values: values
   };
-
 };

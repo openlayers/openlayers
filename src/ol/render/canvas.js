@@ -1,12 +1,10 @@
 goog.provide('ol.render.canvas');
 
-
 /**
  * @const
  * @type {string}
  */
 ol.render.canvas.defaultFont = '10px sans-serif';
-
 
 /**
  * @const
@@ -14,13 +12,11 @@ ol.render.canvas.defaultFont = '10px sans-serif';
  */
 ol.render.canvas.defaultFillStyle = [0, 0, 0, 1];
 
-
 /**
  * @const
  * @type {string}
  */
 ol.render.canvas.defaultLineCap = 'round';
-
 
 /**
  * @const
@@ -28,13 +24,11 @@ ol.render.canvas.defaultLineCap = 'round';
  */
 ol.render.canvas.defaultLineDash = [];
 
-
 /**
  * @const
  * @type {number}
  */
 ol.render.canvas.defaultLineDashOffset = 0;
-
 
 /**
  * @const
@@ -42,13 +36,11 @@ ol.render.canvas.defaultLineDashOffset = 0;
  */
 ol.render.canvas.defaultLineJoin = 'round';
 
-
 /**
  * @const
  * @type {number}
  */
 ol.render.canvas.defaultMiterLimit = 10;
-
 
 /**
  * @const
@@ -56,13 +48,11 @@ ol.render.canvas.defaultMiterLimit = 10;
  */
 ol.render.canvas.defaultStrokeStyle = [0, 0, 0, 1];
 
-
 /**
  * @const
  * @type {string}
  */
 ol.render.canvas.defaultTextAlign = 'center';
-
 
 /**
  * @const
@@ -70,13 +60,11 @@ ol.render.canvas.defaultTextAlign = 'center';
  */
 ol.render.canvas.defaultTextBaseline = 'middle';
 
-
 /**
  * @const
  * @type {number}
  */
 ol.render.canvas.defaultLineWidth = 1;
-
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -84,7 +72,12 @@ ol.render.canvas.defaultLineWidth = 1;
  * @param {number} offsetX X offset.
  * @param {number} offsetY Y offset.
  */
-ol.render.canvas.rotateAtOffset = function(context, rotation, offsetX, offsetY) {
+ol.render.canvas.rotateAtOffset = function(
+  context,
+  rotation,
+  offsetX,
+  offsetY
+) {
   if (rotation !== 0) {
     context.translate(offsetX, offsetY);
     context.rotate(rotation);

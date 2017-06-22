@@ -6,17 +6,28 @@ goog.require('ol.VectorTile');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.proj');
 
-
 describe('ol.VectorImageTile', function() {
-
   it('configures loader that sets features on the source tile', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
-          return url;
-        }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+    var tile = new ol.VectorImageTile(
+      [0, 0, 0],
+      0,
+      url,
+      format,
+      ol.VectorImageTile.defaultLoadFunction,
+      [0, 0, 0],
+      function() {
+        return url;
+      },
+      ol.tilegrid.createXYZ(),
+      ol.tilegrid.createXYZ(),
+      {},
+      1,
+      ol.proj.get('EPSG:3857'),
+      ol.VectorTile,
+      function() {}
+    );
 
     tile.load();
     var sourceTile = tile.getTile(tile.tileKeys[0]);
@@ -32,11 +43,24 @@ describe('ol.VectorImageTile', function() {
   it('sets ERROR state when source tiles fail to load', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/unavailable.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
-          return url;
-        }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+    var tile = new ol.VectorImageTile(
+      [0, 0, 0],
+      0,
+      url,
+      format,
+      ol.VectorImageTile.defaultLoadFunction,
+      [0, 0, 0],
+      function() {
+        return url;
+      },
+      ol.tilegrid.createXYZ(),
+      ol.tilegrid.createXYZ(),
+      {},
+      1,
+      ol.proj.get('EPSG:3857'),
+      ol.VectorTile,
+      function() {}
+    );
 
     tile.load();
 
@@ -49,10 +73,22 @@ describe('ol.VectorImageTile', function() {
   it('sets EMPTY state when tile has only empty source tiles', function(done) {
     var format = new ol.format.GeoJSON();
     var url = '';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {},
-        ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ(), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+    var tile = new ol.VectorImageTile(
+      [0, 0, 0],
+      0,
+      url,
+      format,
+      ol.VectorImageTile.defaultLoadFunction,
+      [0, 0, 0],
+      function() {},
+      ol.tilegrid.createXYZ(),
+      ol.tilegrid.createXYZ(),
+      {},
+      1,
+      ol.proj.get('EPSG:3857'),
+      ol.VectorTile,
+      function() {}
+    );
 
     tile.load();
 
@@ -65,11 +101,24 @@ describe('ol.VectorImageTile', function() {
   it('#dispose() while loading', function() {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
-          return url;
-        }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ({tileSize: 512}), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+    var tile = new ol.VectorImageTile(
+      [0, 0, 0],
+      0,
+      url,
+      format,
+      ol.VectorImageTile.defaultLoadFunction,
+      [0, 0, 0],
+      function() {
+        return url;
+      },
+      ol.tilegrid.createXYZ(),
+      ol.tilegrid.createXYZ({tileSize: 512}),
+      {},
+      1,
+      ol.proj.get('EPSG:3857'),
+      ol.VectorTile,
+      function() {}
+    );
 
     tile.load();
     expect(tile.loadListenerKeys_.length).to.be(4);
@@ -85,11 +134,24 @@ describe('ol.VectorImageTile', function() {
   it('#dispose() when loaded', function(done) {
     var format = new ol.format.GeoJSON();
     var url = 'spec/ol/data/point.json';
-    var tile = new ol.VectorImageTile([0, 0, 0], 0, url, format,
-        ol.VectorImageTile.defaultLoadFunction, [0, 0, 0], function() {
-          return url;
-        }, ol.tilegrid.createXYZ(), ol.tilegrid.createXYZ({tileSize: 512}), {},
-        1, ol.proj.get('EPSG:3857'), ol.VectorTile, function() {});
+    var tile = new ol.VectorImageTile(
+      [0, 0, 0],
+      0,
+      url,
+      format,
+      ol.VectorImageTile.defaultLoadFunction,
+      [0, 0, 0],
+      function() {
+        return url;
+      },
+      ol.tilegrid.createXYZ(),
+      ol.tilegrid.createXYZ({tileSize: 512}),
+      {},
+      1,
+      ol.proj.get('EPSG:3857'),
+      ol.VectorTile,
+      function() {}
+    );
 
     tile.load();
     ol.events.listenOnce(tile, 'change', function() {
@@ -103,5 +165,4 @@ describe('ol.VectorImageTile', function() {
       done();
     });
   });
-
 });

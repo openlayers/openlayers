@@ -4,7 +4,6 @@ goog.require('ol.geom.Geometry');
 goog.require('ol.obj');
 goog.require('ol.proj');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -19,7 +18,6 @@ goog.require('ol.proj');
  * @api
  */
 ol.format.Feature = function() {
-
   /**
    * @protected
    * @type {ol.proj.Projection}
@@ -31,9 +29,7 @@ ol.format.Feature = function() {
    * @type {ol.proj.Projection}
    */
   this.defaultFeatureProjection = null;
-
 };
-
 
 /**
  * Adds the data projection to the read options.
@@ -46,14 +42,14 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
   var options;
   if (opt_options) {
     options = {
-      dataProjection: opt_options.dataProjection ?
-          opt_options.dataProjection : this.readProjection(source),
+      dataProjection: opt_options.dataProjection
+        ? opt_options.dataProjection
+        : this.readProjection(source),
       featureProjection: opt_options.featureProjection
     };
   }
   return this.adaptOptions(options);
 };
-
 
 /**
  * Sets the `defaultDataProjection` on the options, if no `dataProjection`
@@ -65,19 +61,20 @@ ol.format.Feature.prototype.getReadOptions = function(source, opt_options) {
  *     Updated options.
  */
 ol.format.Feature.prototype.adaptOptions = function(options) {
-  return ol.obj.assign({
-    dataProjection: this.defaultDataProjection,
-    featureProjection: this.defaultFeatureProjection
-  }, options);
+  return ol.obj.assign(
+    {
+      dataProjection: this.defaultDataProjection,
+      featureProjection: this.defaultFeatureProjection
+    },
+    options
+  );
 };
-
 
 /**
  * @abstract
  * @return {ol.format.FormatType} Format.
  */
 ol.format.Feature.prototype.getType = function() {};
-
 
 /**
  * Read a single feature from a source.
@@ -89,7 +86,6 @@ ol.format.Feature.prototype.getType = function() {};
  */
 ol.format.Feature.prototype.readFeature = function(source, opt_options) {};
 
-
 /**
  * Read all features from a source.
  *
@@ -99,7 +95,6 @@ ol.format.Feature.prototype.readFeature = function(source, opt_options) {};
  * @return {Array.<ol.Feature>} Features.
  */
 ol.format.Feature.prototype.readFeatures = function(source, opt_options) {};
-
 
 /**
  * Read a single geometry from a source.
@@ -111,7 +106,6 @@ ol.format.Feature.prototype.readFeatures = function(source, opt_options) {};
  */
 ol.format.Feature.prototype.readGeometry = function(source, opt_options) {};
 
-
 /**
  * Read the projection from a source.
  *
@@ -120,7 +114,6 @@ ol.format.Feature.prototype.readGeometry = function(source, opt_options) {};
  * @return {ol.proj.Projection} Projection.
  */
 ol.format.Feature.prototype.readProjection = function(source) {};
-
 
 /**
  * Encode a feature in this format.
@@ -132,7 +125,6 @@ ol.format.Feature.prototype.readProjection = function(source) {};
  */
 ol.format.Feature.prototype.writeFeature = function(feature, opt_options) {};
 
-
 /**
  * Encode an array of features in this format.
  *
@@ -142,7 +134,6 @@ ol.format.Feature.prototype.writeFeature = function(feature, opt_options) {};
  * @return {string} Result.
  */
 ol.format.Feature.prototype.writeFeatures = function(features, opt_options) {};
-
 
 /**
  * Write a single geometry in this format.
@@ -154,7 +145,6 @@ ol.format.Feature.prototype.writeFeatures = function(features, opt_options) {};
  */
 ol.format.Feature.prototype.writeGeometry = function(geometry, opt_options) {};
 
-
 /**
  * @param {ol.geom.Geometry|ol.Extent} geometry Geometry.
  * @param {boolean} write Set to true for writing, false for reading.
@@ -164,28 +154,38 @@ ol.format.Feature.prototype.writeGeometry = function(geometry, opt_options) {};
  * @protected
  */
 ol.format.Feature.transformWithOptions = function(
-    geometry, write, opt_options) {
-  var featureProjection = opt_options ?
-      ol.proj.get(opt_options.featureProjection) : null;
-  var dataProjection = opt_options ?
-      ol.proj.get(opt_options.dataProjection) : null;
+  geometry,
+  write,
+  opt_options
+) {
+  var featureProjection = opt_options
+    ? ol.proj.get(opt_options.featureProjection)
+    : null;
+  var dataProjection = opt_options
+    ? ol.proj.get(opt_options.dataProjection)
+    : null;
   /**
    * @type {ol.geom.Geometry|ol.Extent}
    */
   var transformed;
-  if (featureProjection && dataProjection &&
-      !ol.proj.equivalent(featureProjection, dataProjection)) {
+  if (
+    featureProjection &&
+    dataProjection &&
+    !ol.proj.equivalent(featureProjection, dataProjection)
+  ) {
     if (geometry instanceof ol.geom.Geometry) {
       transformed = (write ? geometry.clone() : geometry).transform(
-          write ? featureProjection : dataProjection,
-          write ? dataProjection : featureProjection);
+        write ? featureProjection : dataProjection,
+        write ? dataProjection : featureProjection
+      );
     } else {
       // FIXME this is necessary because ol.format.GML treats extents
       // as geometries
       transformed = ol.proj.transformExtent(
-          geometry,
-          dataProjection,
-          featureProjection);
+        geometry,
+        dataProjection,
+        featureProjection
+      );
     }
   } else {
     transformed = geometry;

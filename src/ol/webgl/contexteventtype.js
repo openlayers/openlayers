@@ -1,6 +1,5 @@
 goog.provide('ol.webgl.ContextEventType');
 
-
 /**
  * @enum {string}
  */

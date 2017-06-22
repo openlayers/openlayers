@@ -1,6 +1,5 @@
 goog.provide('ol.interaction.ModifyEventType');
 
-
 /**
  * @enum {string}
  */

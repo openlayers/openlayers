@@ -17,7 +17,6 @@ var map = new ol.Map({
   })
 });
 
-
 $('.ol-zoom-in, .ol-zoom-out').tooltip({
   placement: 'right'
 });

@@ -8,7 +8,6 @@ goog.require('ol.geom.Point');
 goog.require('ol.render.Feature');
 
 where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
-
   var data;
   beforeEach(function(done) {
     var xhr = new XMLHttpRequest();
@@ -22,7 +21,6 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
   });
 
   describe('#readFeatures', function() {
-
     it('uses ol.render.Feature as feature class by default', function() {
       var format = new ol.format.MVT({layers: ['water']});
       var features = format.readFeatures(data);
@@ -45,31 +43,36 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       var geometry, rawGeometry;
 
       rawGeometry = tile.layers['poi_label'].feature(0).loadGeometry();
-      geometry = format.readFeatures(data)[0]
-          .getGeometry();
+      geometry = format.readFeatures(data)[0].getGeometry();
       expect(geometry.getType()).to.be('Point');
-      expect(geometry.getCoordinates())
-          .to.eql([rawGeometry[0][0].x, rawGeometry[0][0].y]);
+      expect(geometry.getCoordinates()).to.eql([
+        rawGeometry[0][0].x,
+        rawGeometry[0][0].y
+      ]);
 
       rawGeometry = tile.layers['water'].feature(0).loadGeometry();
       format.setLayers(['water']);
-      geometry = format.readFeatures(data)[0]
-          .getGeometry();
+      geometry = format.readFeatures(data)[0].getGeometry();
       expect(geometry.getType()).to.be('Polygon');
-      expect(rawGeometry[0].length)
-          .to.equal(geometry.getCoordinates()[0].length);
-      expect(geometry.getCoordinates()[0][0])
-          .to.eql([rawGeometry[0][0].x, rawGeometry[0][0].y]);
+      expect(rawGeometry[0].length).to.equal(
+        geometry.getCoordinates()[0].length
+      );
+      expect(geometry.getCoordinates()[0][0]).to.eql([
+        rawGeometry[0][0].x,
+        rawGeometry[0][0].y
+      ]);
 
       rawGeometry = tile.layers['barrier_line'].feature(0).loadGeometry();
       format.setLayers(['barrier_line']);
-      geometry = format.readFeatures(data)[0]
-          .getGeometry();
+      geometry = format.readFeatures(data)[0].getGeometry();
       expect(geometry.getType()).to.be('MultiLineString');
-      expect(rawGeometry[1].length)
-          .to.equal(geometry.getCoordinates()[1].length);
-      expect(geometry.getCoordinates()[1][0])
-          .to.eql([rawGeometry[1][0].x, rawGeometry[1][0].y]);
+      expect(rawGeometry[1].length).to.equal(
+        geometry.getCoordinates()[1].length
+      );
+      expect(geometry.getCoordinates()[1][0]).to.eql([
+        rawGeometry[1][0].x,
+        rawGeometry[1][0].y
+      ]);
     });
 
     it('parses id property', function() {
@@ -87,13 +90,10 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       features = format.readFeatures(data);
       expect(features[0].getId()).to.be(2);
     });
-
   });
-
 });
 
 describe('ol.format.MVT', function() {
-
   describe('#readFeature_', function() {
     it('accepts a geometryName', function() {
       var format = new ol.format.MVT({
@@ -117,5 +117,4 @@ describe('ol.format.MVT', function() {
       expect(feature.get('geometry')).to.be('foo');
     });
   });
-
 });

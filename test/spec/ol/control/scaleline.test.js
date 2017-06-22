@@ -29,7 +29,6 @@ describe('ol.control.ScaleLine', function() {
   });
 
   describe('configuration options', function() {
-
     describe('className', function() {
       it('defaults to "ol-scale-line"', function() {
         var ctrl = new ol.control.ScaleLine();
@@ -73,16 +72,13 @@ describe('ol.control.ScaleLine', function() {
         expect(ctrl.render).to.be(ol.control.ScaleLine.render);
       });
       it('can be configured', function() {
-        var myRender = function() {
-
-        };
+        var myRender = function() {};
         var ctrl = new ol.control.ScaleLine({
           render: myRender
         });
         expect(ctrl.render).to.be(myRender);
       });
     });
-
   });
 
   describe('synchronisation with map view', function() {
@@ -94,10 +90,12 @@ describe('ol.control.ScaleLine', function() {
       expect(renderSpy.called).to.be(false);
       ctrl.setMap(map);
       expect(renderSpy.called).to.be(false);
-      map.setView(new ol.View({
-        center: [0, 0],
-        zoom: 0
-      }));
+      map.setView(
+        new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      );
       expect(renderSpy.called).to.be(false);
       map.once('postrender', function() {
         expect(renderSpy.called).to.be(true);
@@ -111,10 +109,12 @@ describe('ol.control.ScaleLine', function() {
         render: renderSpy
       });
       ctrl.setMap(map);
-      map.setView(new ol.View({
-        center: [0, 0],
-        zoom: 0
-      }));
+      map.setView(
+        new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      );
       map.renderSync();
       expect(renderSpy.callCount).to.be(1);
       map.renderSync();
@@ -128,10 +128,12 @@ describe('ol.control.ScaleLine', function() {
         render: renderSpy
       });
       ctrl.setMap(map);
-      map.setView(new ol.View({
-        center: [0, 0],
-        zoom: 0
-      }));
+      map.setView(
+        new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      );
       map.renderSync();
       map.once('postrender', function() {
         expect(renderSpy.callCount).to.be(2);
@@ -146,10 +148,12 @@ describe('ol.control.ScaleLine', function() {
       var ctrl = new ol.control.ScaleLine();
       var spy = sinon.spy(ctrl, 'updateElement_');
       ctrl.setMap(map);
-      map.setView(new ol.View({
-        center: [0, 0],
-        zoom: 0
-      }));
+      map.setView(
+        new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      );
       map.once('postrender', function() {
         expect(spy.called).to.be(true);
         done();
@@ -194,10 +198,12 @@ describe('ol.control.ScaleLine', function() {
     beforeEach(function(done) {
       ctrl = new ol.control.ScaleLine();
       ctrl.setMap(map);
-      map.setView(new ol.View({
-        center: [0, 0],
-        zoom: 0
-      }));
+      map.setView(
+        new ol.View({
+          center: [0, 0],
+          zoom: 0
+        })
+      );
       map.once('postrender', function() {
         metricHtml = ctrl.element_.innerHTML;
         done();
@@ -244,18 +250,22 @@ describe('ol.control.ScaleLine', function() {
     it('is rendered differently for different projections', function() {
       var ctrl = new ol.control.ScaleLine();
       ctrl.setMap(map);
-      map.setView(new ol.View({
-        center: ol.proj.fromLonLat([7, 52]),
-        zoom: 2,
-        projection: 'EPSG:3857'
-      }));
+      map.setView(
+        new ol.View({
+          center: ol.proj.fromLonLat([7, 52]),
+          zoom: 2,
+          projection: 'EPSG:3857'
+        })
+      );
       map.renderSync();
       var innerHtml3857 = ctrl.element_.innerHTML;
-      map.setView(new ol.View({
-        center: [7, 52],
-        zoom: 2,
-        projection: 'EPSG:4326'
-      }));
+      map.setView(
+        new ol.View({
+          center: [7, 52],
+          zoom: 2,
+          projection: 'EPSG:4326'
+        })
+      );
       map.renderSync();
       var innerHtml4326 = ctrl.element_.innerHTML;
       expect(innerHtml4326).to.not.be(innerHtml3857);
@@ -287,14 +297,15 @@ describe('ol.control.ScaleLine', function() {
         minWidth: 10
       });
       ctrl.setMap(map);
-      map.setView(new ol.View({
-        center: [0, 0],
-        zoom: currentZoom,
-        maxZoom: currentZoom
-      }));
+      map.setView(
+        new ol.View({
+          center: [0, 0],
+          zoom: currentZoom,
+          maxZoom: currentZoom
+        })
+      );
       mapView = map.getView();
       map.renderSync();
-
     });
     afterEach(function() {
       map.removeControl(ctrl);
@@ -365,5 +376,4 @@ describe('ol.control.ScaleLine', function() {
       }
     });
   });
-
 });

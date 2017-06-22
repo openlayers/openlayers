@@ -15,12 +15,10 @@
  * They are now all in the `ol` namespace.
  */
 
-
 /**
  * @typedef {{x: number, y: number, width: number, height: number}}
  */
 ol.AtlasBlock;
-
 
 /**
  * Provides information for an image inside an atlas.
@@ -29,7 +27,6 @@ ol.AtlasBlock;
  * @typedef {{offsetX: number, offsetY: number, image: HTMLCanvasElement}}
  */
 ol.AtlasInfo;
-
 
 /**
  * Provides information for an image inside an atlas manager.
@@ -40,7 +37,6 @@ ol.AtlasInfo;
  *    hitImage: HTMLCanvasElement}}
  */
 ol.AtlasManagerInfo;
-
 
 /**
  * A type that can be used to provide attribution information for data sources.
@@ -54,12 +50,10 @@ ol.AtlasManagerInfo;
  */
 ol.AttributionLike;
 
-
 /**
  * @typedef {{fillStyle: ol.ColorLike}}
  */
 ol.CanvasFillState;
-
 
 /**
  * A function returning the canvas element (`{HTMLCanvasElement}`)
@@ -75,7 +69,6 @@ ol.CanvasFillState;
  */
 ol.CanvasFunctionType;
 
-
 /**
  * @typedef {{lineCap: string,
  *            lineDash: Array.<number>,
@@ -86,7 +79,6 @@ ol.CanvasFunctionType;
  */
 ol.CanvasStrokeState;
 
-
 /**
  * @typedef {{font: string,
  *            textAlign: string,
@@ -94,19 +86,16 @@ ol.CanvasStrokeState;
  */
 ol.CanvasTextState;
 
-
 /**
  * @typedef {function((ol.Coordinate|undefined)): (ol.Coordinate|undefined)}
  */
 ol.CenterConstraintType;
-
 
 /**
  * @typedef {{strokeStyle: (ol.ColorLike|undefined), strokeWidth: number,
  *   size: number, lineDash: Array.<number>}}
  */
 ol.CircleRenderOptions;
-
 
 /**
  * A color represented as a short array [red, green, blue, alpha].
@@ -116,7 +105,6 @@ ol.CircleRenderOptions;
  * @typedef {Array.<number>}
  */
 ol.Color;
-
 
 /**
  * A type accepted by CanvasRenderingContext2D.fillStyle
@@ -129,7 +117,6 @@ ol.Color;
  */
 ol.ColorLike;
 
-
 /**
  * @typedef {{
  *   center: ol.CenterConstraintType,
@@ -139,13 +126,11 @@ ol.ColorLike;
  */
 ol.Constraints;
 
-
 /**
  * An array of numbers representing an xy coordinate. Example: `[16, 48]`.
  * @typedef {Array.<number>}
  */
 ol.Coordinate;
-
 
 /**
  * A function that takes a {@link ol.Coordinate} and transforms it into a
@@ -155,7 +140,6 @@ ol.Coordinate;
  */
 ol.CoordinateFormatType;
 
-
 /**
  * A function that takes a {@link ol.MapBrowserEvent} and two
  * {@link ol.Pixel}s and returns a `{boolean}`. If the condition is met,
@@ -163,7 +147,6 @@ ol.CoordinateFormatType;
  * @typedef {function(ol.MapBrowserEvent, ol.Pixel, ol.Pixel):boolean}
  */
 ol.DragBoxEndConditionType;
-
 
 /**
  * Function that takes an array of coordinates and an optional existing geometry as
@@ -175,7 +158,6 @@ ol.DragBoxEndConditionType;
  */
 ol.DrawGeometryFunctionType;
 
-
 /**
  * A function that takes an {@link ol.MapBrowserEvent} and returns a
  * `{boolean}`. If the condition is met, true should be returned.
@@ -183,7 +165,6 @@ ol.DrawGeometryFunctionType;
  * @typedef {function(ol.MapBrowserEvent): boolean}
  */
 ol.EventsConditionType;
-
 
 /**
  * Key to use with {@link ol.Observable#unByKey}.
@@ -198,7 +179,6 @@ ol.EventsConditionType;
  */
 ol.EventsKey;
 
-
 /**
  * Listener function. This function is called with an event object as argument.
  * When the function returns `false`, event propagation will stop.
@@ -207,19 +187,16 @@ ol.EventsKey;
  */
 ol.EventsListenerFunctionType;
 
-
 /**
  * @typedef {EventTarget|ol.events.EventTarget}
  */
 ol.EventTargetLike;
-
 
 /**
  * An array of numbers representing an extent: `[minx, miny, maxx, maxy]`.
  * @typedef {Array.<number>}
  */
 ol.Extent;
-
 
 /**
  * {@link ol.source.Vector} sources use a function of this type to load
@@ -237,7 +214,6 @@ ol.Extent;
  */
 ol.FeatureLoader;
 
-
 /**
  * A function that returns an array of {@link ol.style.Style styles} given a
  * resolution. The `this` keyword inside the function references the
@@ -247,7 +223,6 @@ ol.FeatureLoader;
  *     (ol.style.Style|Array.<ol.style.Style>)}
  */
 ol.FeatureStyleFunction;
-
 
 /**
  * {@link ol.source.Vector} sources use a function of this type to get the url
@@ -261,7 +236,6 @@ ol.FeatureStyleFunction;
  */
 ol.FeatureUrlFunction;
 
-
 /**
  * @typedef {{
  *     geom: ol.geom.Point,
@@ -269,7 +243,6 @@ ol.FeatureUrlFunction;
  * }}
  */
 ol.GraticuleLabelDataType;
-
 
 /**
  * A function that is called to trigger asynchronous canvas drawing.  It is
@@ -280,7 +253,6 @@ ol.GraticuleLabelDataType;
  * @typedef {function(function(Error))}
  */
 ol.ImageCanvasLoader;
-
 
 /**
  * A function that takes an {@link ol.Image} for the image and a `{string}` for
@@ -300,7 +272,6 @@ ol.ImageCanvasLoader;
  */
 ol.ImageLoadFunctionType;
 
-
 /**
  * @typedef {{x: number, xunits: (ol.style.IconAnchorUnits|undefined),
  *            y: number, yunits: (ol.style.IconAnchorUnits|undefined),
@@ -308,13 +279,11 @@ ol.ImageLoadFunctionType;
  */
 ol.KMLVec2_;
 
-
 /**
  * @typedef {{flatCoordinates: Array.<number>,
  *            whens: Array.<number>}}
  */
 ol.KMLGxTrackObject_;
-
 
 /**
  * @typedef {{layer: ol.layer.Layer,
@@ -329,12 +298,10 @@ ol.KMLGxTrackObject_;
  */
 ol.LayerState;
 
-
 /**
  * @typedef {{hasZ: (boolean|undefined), hasM: (boolean|undefined)}}
  */
 ol.LayoutOptions;
-
 
 /**
  * @typedef {{prev: (ol.LinkedListItem|undefined),
@@ -342,7 +309,6 @@ ol.LayoutOptions;
  *            data: ?}}
  */
 ol.LinkedListItem;
-
 
 /**
  * A function that takes an {@link ol.Extent} and a resolution as arguments, and
@@ -353,7 +319,6 @@ ol.LinkedListItem;
  */
 ol.LoadingStrategy;
 
-
 /**
  * @typedef {{key_: string,
  *            newer: Object,
@@ -361,7 +326,6 @@ ol.LoadingStrategy;
  *            value_: *}}
  */
 ol.LRUCacheEntry;
-
 
 /**
  * @typedef {{controls: ol.Collection.<ol.control.Control>,
@@ -375,14 +339,12 @@ ol.LRUCacheEntry;
  */
 ol.MapOptionsInternal;
 
-
 /**
  * An array representing an affine 2d transformation for use with
  * {@link ol.transform} functions. The array has 6 elements.
  * @typedef {!Array.<number>}
  */
 ol.Transform;
-
 
 /**
  * @typedef {{depth: (Array.<number>|undefined),
@@ -394,7 +356,6 @@ ol.Transform;
  */
 ol.ModifySegmentDataType;
 
-
 /**
  * An array with two elements, representing a pixel. The first element is the
  * x-coordinate, the second the y-coordinate of the pixel.
@@ -402,12 +363,10 @@ ol.ModifySegmentDataType;
  */
 ol.Pixel;
 
-
 /**
  * @typedef {function(ol.Map, ?olx.FrameState): boolean}
  */
 ol.PostRenderFunction;
-
 
 /**
  * Function to perform manipulations before rendering. This function is called
@@ -418,14 +377,12 @@ ol.PostRenderFunction;
  */
 ol.PreRenderFunction;
 
-
 /**
  * A projection as {@link ol.proj.Projection}, SRS identifier string or
  * undefined.
  * @typedef {ol.proj.Projection|string|undefined} ol.ProjectionLike
  */
 ol.ProjectionLike;
-
 
 /**
  * A function that takes an array of input data, performs some operation, and
@@ -446,7 +403,6 @@ ol.ProjectionLike;
  */
 ol.RasterOperation;
 
-
 /**
  * @typedef {{
  *   strokeStyle: (ol.ColorLike|undefined),
@@ -460,7 +416,6 @@ ol.RasterOperation;
  */
 ol.RegularShapeRenderOptions;
 
-
 /**
  * A function to be used when sorting features before rendering.
  * It takes two instances of {@link ol.Feature} or {@link ol.render.Feature} and
@@ -471,18 +426,15 @@ ol.RegularShapeRenderOptions;
  */
 ol.RenderOrderFunction;
 
-
 /**
  * @typedef {function(ol.Extent, number, number) : ol.ImageBase}
  */
 ol.ReprojImageFunctionType;
 
-
 /**
  * @typedef {function(number, number, number, number) : ol.Tile}
  */
 ol.ReprojTileFunctionType;
-
 
 /**
  * Single triangle; consists of 3 source points and 3 target points.
@@ -492,18 +444,15 @@ ol.ReprojTileFunctionType;
  */
 ol.ReprojTriangle;
 
-
 /**
  * @typedef {function((number|undefined), number, number): (number|undefined)}
  */
 ol.ResolutionConstraintType;
 
-
 /**
  * @typedef {function((number|undefined), number): (number|undefined)}
  */
 ol.RotationConstraintType;
-
 
 /**
  * A function that takes an {@link ol.Feature} or {@link ol.render.Feature} and
@@ -514,13 +463,11 @@ ol.RotationConstraintType;
  */
 ol.SelectFilterFunction;
 
-
 /**
  * An array of numbers representing a size: `[width, height]`.
  * @typedef {Array.<number>}
  */
 ol.Size;
-
 
 /**
  * @typedef {{
@@ -531,7 +478,6 @@ ol.Size;
  */
 ol.SnapResultType;
 
-
 /**
  * @typedef {{
  *     feature: ol.Feature,
@@ -539,7 +485,6 @@ ol.SnapResultType;
  * }}
  */
 ol.SnapSegmentDataType;
-
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
@@ -551,14 +496,12 @@ ol.SnapSegmentDataType;
  */
 ol.SourceImageOptions;
 
-
 /**
  * @typedef {{revision: number,
  *            resolution: number,
  *            extent: ol.Extent}}
  */
 ol.SourceRasterRenderedState;
-
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
@@ -568,7 +511,6 @@ ol.SourceRasterRenderedState;
  *            wrapX: (boolean|undefined)}}
  */
 ol.SourceSourceOptions;
-
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
@@ -583,7 +525,6 @@ ol.SourceSourceOptions;
  *            wrapX: (boolean|undefined)}}
  */
 ol.SourceTileOptions;
-
 
 /**
  * @typedef {{attributions: (ol.AttributionLike|undefined),
@@ -603,7 +544,6 @@ ol.SourceTileOptions;
  */
 ol.SourceUrlTileOptions;
 
-
 /**
  * A function that takes an {@link ol.Feature} and a `{number}` representing
  * the view's resolution. The function should return a {@link ol.style.Style}
@@ -614,7 +554,6 @@ ol.SourceUrlTileOptions;
  */
 ol.StyleFunction;
 
-
 /**
  * A function that takes an {@link ol.Feature} as argument and returns an
  * {@link ol.geom.Geometry} that will be rendered and styled for the feature.
@@ -623,7 +562,6 @@ ol.StyleFunction;
  *     (ol.geom.Geometry|ol.render.Feature|undefined)}
  */
 ol.StyleGeometryFunction;
-
 
 /**
  * @typedef {{opacity: number,
@@ -634,14 +572,12 @@ ol.StyleGeometryFunction;
  */
 ol.StyleImageOptions;
 
-
 /**
  * An array of three numbers representing the location of a tile in a tile
  * grid. The order is `z`, `x`, and `y`. `z` is the zoom level.
  * @typedef {Array.<number>} ol.TileCoord
  */
 ol.TileCoord;
-
 
 /**
  * A function that takes an {@link ol.Tile} for the tile and a `{string}` for
@@ -651,12 +587,10 @@ ol.TileCoord;
  */
 ol.TileLoadFunctionType;
 
-
 /**
  * @typedef {function(ol.Tile, string, ol.Coordinate, number): number}
  */
 ol.TilePriorityFunction;
-
 
 /**
  * @typedef {{
@@ -666,7 +600,6 @@ ol.TilePriorityFunction;
  *     renderedRevision: number}}
  */
 ol.TileReplayState;
-
 
 /**
  * {@link ol.source.Tile} sources use a function of this type to get the url
@@ -683,7 +616,6 @@ ol.TileReplayState;
  */
 ol.TileUrlFunctionType;
 
-
 /**
  * A transform function accepts an array of input coordinate values, an optional
  * output array, and an optional dimension (default should be 2).  The function
@@ -693,7 +625,6 @@ ol.TileUrlFunctionType;
  * @typedef {function(Array.<number>, Array.<number>=, number=): Array.<number>}
  */
 ol.TransformFunction;
-
 
 /**
  * An animation configuration
@@ -715,13 +646,11 @@ ol.TransformFunction;
  */
 ol.ViewAnimation;
 
-
 /**
  * @typedef {{buf: ol.webgl.Buffer,
  *            buffer: WebGLBuffer}}
  */
 ol.WebglBufferCacheEntry;
-
 
 /**
  * @typedef {{p0: ol.WebglPolygonVertex,
@@ -737,12 +666,10 @@ ol.WebglPolygonSegment;
  */
 ol.WebglPolygonVertex;
 
-
 /**
  * @typedef {{magFilter: number, minFilter: number, texture: WebGLTexture}}
  */
 ol.WebglTextureCacheEntry;
-
 
 /**
  * Number of features; bounds/extent.
@@ -750,7 +677,6 @@ ol.WebglTextureCacheEntry;
  *            bounds: ol.Extent}}
  */
 ol.WFSFeatureCollectionMetadata;
-
 
 /**
  * Total deleted; total inserted; total updated; array of insert ids.
@@ -761,12 +687,10 @@ ol.WFSFeatureCollectionMetadata;
  */
 ol.WFSTransactionResponse;
 
-
 /**
  * @typedef {{type: number, value: (number|string|undefined), position: number}}
  */
 ol.WKTToken;
-
 
 /**
  * When using {@link ol.xml.makeChildAppender} or
@@ -776,18 +700,15 @@ ol.WKTToken;
  */
 ol.XmlNodeStackItem;
 
-
 /**
  * @typedef {function(Node, Array.<*>)}
  */
 ol.XmlParser;
 
-
 /**
  * @typedef {function(Node, *, Array.<*>)}
  */
 ol.XmlSerializer;
-
 
 /**
  * @typedef {{minX: number, minY: number, maxX: number, maxY: number,

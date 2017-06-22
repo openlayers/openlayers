@@ -5,7 +5,6 @@ goog.require('ol.events');
 goog.require('ol.events.Event');
 goog.require('ol.events.EventTarget');
 
-
 describe('ol.events.EventTarget', function() {
   var called, events, eventTarget, spy1, spy2, spy3;
 
@@ -54,7 +53,6 @@ describe('ol.events.EventTarget', function() {
     });
   });
 
-
   describe('#addEventListener()', function() {
     it('has listeners for each registered type', function() {
       eventTarget.addEventListener('foo', spy1);
@@ -87,10 +85,14 @@ describe('ol.events.EventTarget', function() {
     });
     it('stops propagation when listeners return false', function() {
       eventTarget.addEventListener('foo', spy1);
-      eventTarget.addEventListener('foo', function(evt) {
-        spy2();
-        return false;
-      }, false);
+      eventTarget.addEventListener(
+        'foo',
+        function(evt) {
+          spy2();
+          return false;
+        },
+        false
+      );
       eventTarget.addEventListener('foo', spy3);
       eventTarget.dispatchEvent('foo');
       expect(called).to.eql([1, 2]);

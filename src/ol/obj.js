@@ -1,6 +1,5 @@
 goog.provide('ol.obj');
 
-
 /**
  * Polyfill for Object.assign().  Assigns enumerable and own properties from
  * one or more source objects to a target object.
@@ -10,25 +9,26 @@ goog.provide('ol.obj');
  * @param {...Object} var_sources The source object(s).
  * @return {!Object} The modified target object.
  */
-ol.obj.assign = (typeof Object.assign === 'function') ? Object.assign : function(target, var_sources) {
-  if (target === undefined || target === null) {
-    throw new TypeError('Cannot convert undefined or null to object');
-  }
+ol.obj.assign = typeof Object.assign === 'function'
+  ? Object.assign
+  : function(target, var_sources) {
+      if (target === undefined || target === null) {
+        throw new TypeError('Cannot convert undefined or null to object');
+      }
 
-  var output = Object(target);
-  for (var i = 1, ii = arguments.length; i < ii; ++i) {
-    var source = arguments[i];
-    if (source !== undefined && source !== null) {
-      for (var key in source) {
-        if (source.hasOwnProperty(key)) {
-          output[key] = source[key];
+      var output = Object(target);
+      for (var i = 1, ii = arguments.length; i < ii; ++i) {
+        var source = arguments[i];
+        if (source !== undefined && source !== null) {
+          for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+              output[key] = source[key];
+            }
+          }
         }
       }
-    }
-  }
-  return output;
-};
-
+      return output;
+    };
 
 /**
  * Removes all properties from an object.
@@ -39,7 +39,6 @@ ol.obj.clear = function(object) {
     delete object[property];
   }
 };
-
 
 /**
  * Get an array of property values from an object.
@@ -54,7 +53,6 @@ ol.obj.getValues = function(object) {
   }
   return values;
 };
-
 
 /**
  * Determine if an object has any properties.

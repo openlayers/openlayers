@@ -2,12 +2,11 @@
 
 // helper functions for async testing and other utility functions.
 (function(global) {
-
   // show generated maps for rendering tests
-  var showMap = (global.location.search.indexOf('generate') >= 0);
+  var showMap = global.location.search.indexOf('generate') >= 0;
 
   // show a diff when rendering tests fail
-  var showDiff = (global.location.search.indexOf('showdiff') >= 0);
+  var showDiff = global.location.search.indexOf('showdiff') >= 0;
 
   /**
    * The default tolerance for image comparisons.
@@ -41,7 +40,6 @@
     afterLoad('json', path, next);
   };
 
-
   /**
    * @param {string} path Relative path to file (e.g. 'spec/ol/foo.txt').
    * @param {function(string)} next Function to call with response text on
@@ -50,7 +48,6 @@
   global.afterLoadText = function(path, next) {
     afterLoad('text', path, next);
   };
-
 
   /**
    * @param {string} path Relative path to file (e.g. 'spec/ol/foo.xml').
@@ -61,10 +58,8 @@
     afterLoad('xml', path, next);
   };
 
-
   // extensions to expect.js
   var expect = global.expect;
-
 
   /**
    * Assert value is within some tolerance of a number.
@@ -74,18 +69,30 @@
    */
   expect.Assertion.prototype.roughlyEqual = function(n, tol) {
     this.assert(
-        Math.abs(this.obj - n) <= tol,
-        function() {
-          return 'expected ' + expect.stringify(this.obj) + ' to be within ' +
-              tol + ' of ' + n;
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' not to be within ' + tol + ' of ' + n;
-        });
+      Math.abs(this.obj - n) <= tol,
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to be within ' +
+          tol +
+          ' of ' +
+          n
+        );
+      },
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' not to be within ' +
+          tol +
+          ' of ' +
+          n
+        );
+      }
+    );
     return this;
   };
-
 
   /**
    * Assert that a sinon spy was called.
@@ -93,16 +100,16 @@
    */
   expect.Assertion.prototype.called = function() {
     this.assert(
-        this.obj.called,
-        function() {
-          return 'expected ' + expect.stringify(this.obj) + ' to be called';
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) + ' not to be called';
-        });
+      this.obj.called,
+      function() {
+        return 'expected ' + expect.stringify(this.obj) + ' to be called';
+      },
+      function() {
+        return 'expected ' + expect.stringify(this.obj) + ' not to be called';
+      }
+    );
     return this;
   };
-
 
   function getChildNodes(node, options) {
     // check whitespace
@@ -117,8 +124,10 @@
           nodes.push(child);
         } else if (child.nodeType == 3) {
           // text node, add if non empty
-          if (child.nodeValue &&
-              child.nodeValue.replace(/^\s*(.*?)\s*$/, '$1') !== '') {
+          if (
+            child.nodeValue &&
+            child.nodeValue.replace(/^\s*(.*?)\s*$/, '$1') !== ''
+          ) {
             nodes.push(child);
           }
         }
@@ -133,24 +142,46 @@
   }
 
   function assertElementNodesEqual(node1, node2, options, errors) {
-    var testPrefix = (options && options.prefix === true);
+    var testPrefix = options && options.prefix === true;
     if (node1.nodeType !== node2.nodeType) {
-      errors.push('nodeType test failed for: ' + node1.nodeName + ' | ' +
-        node2.nodeName + ' | expected ' + node1.nodeType + ' to equal ' +
-        node2.nodeType);
+      errors.push(
+        'nodeType test failed for: ' +
+          node1.nodeName +
+          ' | ' +
+          node2.nodeName +
+          ' | expected ' +
+          node1.nodeType +
+          ' to equal ' +
+          node2.nodeType
+      );
     }
     if (testPrefix) {
       if (node1.nodeName !== node2.nodeName) {
-        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
-            node2.nodeName + ' | expected ' + node1.nodeName + ' to equal ' +
-            node2.nodeName);
+        errors.push(
+          'nodeName test failed for: ' +
+            node1.nodeName +
+            ' | ' +
+            node2.nodeName +
+            ' | expected ' +
+            node1.nodeName +
+            ' to equal ' +
+            node2.nodeName
+        );
       }
     } else {
       var n1 = node1.nodeName.split(':').pop();
       var n2 = node2.nodeName.split(':').pop();
       if (n1 !== n2) {
-        errors.push('nodeName test failed for: ' + node1.nodeName + ' | ' +
-            node2.nodeName + ' | expected ' + n1 + ' to equal ' + n2);
+        errors.push(
+          'nodeName test failed for: ' +
+            node1.nodeName +
+            ' | ' +
+            node2.nodeName +
+            ' | expected ' +
+            n1 +
+            ' to equal ' +
+            n2
+        );
       }
     }
     // for text nodes compare value
@@ -158,8 +189,9 @@
       var nv1 = node1.nodeValue.replace(/\s/g, '');
       var nv2 = node2.nodeValue.replace(/\s/g, '');
       if (nv1 !== nv2) {
-        errors.push('nodeValue test failed | expected ' + nv1 + ' to equal ' +
-            nv2);
+        errors.push(
+          'nodeValue test failed | expected ' + nv1 + ' to equal ' + nv2
+        );
       }
     } else if (node1.nodeType === 1) {
       // for element type nodes compare namespace, attributes, and children
@@ -167,16 +199,27 @@
       if (node1.prefix || node2.prefix) {
         if (testPrefix) {
           if (node1.prefix !== node2.prefix) {
-            errors.push('Prefix test failed for: ' + node1.nodeName +
-                ' | expected ' + node1.prefix + ' to equal ' + node2.prefix);
+            errors.push(
+              'Prefix test failed for: ' +
+                node1.nodeName +
+                ' | expected ' +
+                node1.prefix +
+                ' to equal ' +
+                node2.prefix
+            );
           }
         }
       }
       if (node1.namespaceURI || node2.namespaceURI) {
         if (node1.namespaceURI !== node2.namespaceURI) {
-          errors.push('namespaceURI test failed for: ' + node1.nodeName +
-              ' | expected ' + node1.namespaceURI + ' to equal ' +
-              node2.namespaceURI);
+          errors.push(
+            'namespaceURI test failed for: ' +
+              node1.nodeName +
+              ' | expected ' +
+              node1.namespaceURI +
+              ' to equal ' +
+              node2.namespaceURI
+          );
         }
       }
       // compare attributes - disregard xmlns given namespace handling above
@@ -211,13 +254,23 @@
         }
       }
       if (node1AttrLen !== node2AttrLen) {
-        errors.push('Number of attributes test failed for: ' + node1.nodeName +
-            ' | expected ' + node1AttrLen + ' to equal ' + node2AttrLen);
+        errors.push(
+          'Number of attributes test failed for: ' +
+            node1.nodeName +
+            ' | expected ' +
+            node1AttrLen +
+            ' to equal ' +
+            node2AttrLen
+        );
       }
       for (var name in node1Attr) {
         if (node2Attr[name] === undefined) {
-          errors.push('Attribute name ' + node1Attr[name].name +
-              ' expected for element ' + node1.nodeName);
+          errors.push(
+            'Attribute name ' +
+              node1Attr[name].name +
+              ' expected for element ' +
+              node1.nodeName
+          );
           break;
         }
         // test attribute namespace
@@ -225,16 +278,28 @@
         // null for namespaceURI some tests will fail in IE9 otherwise
         // see also
         // http://msdn.microsoft.com/en-us/library/ff460650(v=vs.85).aspx
-        if ((node1Attr[name].namespaceURI || null) !==
-            (node2Attr[name].namespaceURI || null)) {
-          errors.push('namespaceURI attribute test failed for: ' +
-            node1.nodeName + ' | expected ' + node1Attr[name].namespaceURI +
-            ' to equal ' + node2Attr[name].namespaceURI);
+        if (
+          (node1Attr[name].namespaceURI || null) !==
+          (node2Attr[name].namespaceURI || null)
+        ) {
+          errors.push(
+            'namespaceURI attribute test failed for: ' +
+              node1.nodeName +
+              ' | expected ' +
+              node1Attr[name].namespaceURI +
+              ' to equal ' +
+              node2Attr[name].namespaceURI
+          );
         }
         if (node1Attr[name].value !== node2Attr[name].value) {
-          errors.push('Attribute value test failed for: ' + node1.nodeName +
-              ' | expected ' + node1Attr[name].value + ' to equal ' +
-              node2Attr[name].value);
+          errors.push(
+            'Attribute value test failed for: ' +
+              node1.nodeName +
+              ' | expected ' +
+              node1Attr[name].value +
+              ' to equal ' +
+              node2Attr[name].value
+          );
         }
       }
       // compare children
@@ -259,21 +324,29 @@
           }
         }
         if (!allText) {
-          errors.push('Number of childNodes test failed for: ' +
-            node1.nodeName + ' | expected ' + node1ChildNodes.length +
-            ' to equal ' + node2ChildNodes.length);
+          errors.push(
+            'Number of childNodes test failed for: ' +
+              node1.nodeName +
+              ' | expected ' +
+              node1ChildNodes.length +
+              ' to equal ' +
+              node2ChildNodes.length
+          );
         }
       }
       // only compare if they are equal
       if (node1ChildNodes.length === node2ChildNodes.length) {
         for (var j = 0, jj = node1ChildNodes.length; j < jj; ++j) {
           assertElementNodesEqual(
-              node1ChildNodes[j], node2ChildNodes[j], options, errors);
+            node1ChildNodes[j],
+            node2ChildNodes[j],
+            options,
+            errors
+          );
         }
       }
     }
   }
-
 
   /**
    * Checks if the XML document sort of equals another XML document.
@@ -291,22 +364,32 @@
     }
     var errors = [];
     assertElementNodesEqual(obj, this.obj, options, errors);
-    var result = (errors.length === 0);
+    var result = errors.length === 0;
     this.assert(
-        !!result,
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of equal ' + expect.stringify(obj) + '\n' +
-              errors.join('\n');
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of not equal ' + expect.stringify(obj) + '\n' +
-              errors.join('\n');
-        });
+      !!result,
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to sort of equal ' +
+          expect.stringify(obj) +
+          '\n' +
+          errors.join('\n')
+        );
+      },
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to sort of not equal ' +
+          expect.stringify(obj) +
+          '\n' +
+          errors.join('\n')
+        );
+      }
+    );
     return this;
   };
-
 
   /**
    * Checks if the array sort of equals another array.
@@ -315,18 +398,26 @@
    */
   expect.Assertion.prototype.arreql = function(obj) {
     this.assert(
-        ol.array.equals(this.obj, obj),
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of equal ' + expect.stringify(obj);
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of not equal ' + expect.stringify(obj);
-        });
+      ol.array.equals(this.obj, obj),
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to sort of equal ' +
+          expect.stringify(obj)
+        );
+      },
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to sort of not equal ' +
+          expect.stringify(obj)
+        );
+      }
+    );
     return this;
   };
-
 
   /**
    * Checks if the array sort of equals another array (allows NaNs to be equal).
@@ -336,19 +427,30 @@
   expect.Assertion.prototype.arreqlNaN = function(obj) {
     function compare(a, i) {
       var b = obj[i];
-      return a === b || (typeof a === 'number' && typeof b === 'number' &&
-          isNaN(a) && isNaN(b));
+      return (
+        a === b ||
+        (typeof a === 'number' && typeof b === 'number' && isNaN(a) && isNaN(b))
+      );
     }
     this.assert(
-        this.obj.length === obj.length && this.obj.every(compare),
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of equal ' + expect.stringify(obj);
-        },
-        function() {
-          return 'expected ' + expect.stringify(this.obj) +
-              ' to sort of not equal ' + expect.stringify(obj);
-        });
+      this.obj.length === obj.length && this.obj.every(compare),
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to sort of equal ' +
+          expect.stringify(obj)
+        );
+      },
+      function() {
+        return (
+          'expected ' +
+          expect.stringify(this.obj) +
+          ' to sort of not equal ' +
+          expect.stringify(obj)
+        );
+      }
+    );
     return this;
   };
 
@@ -389,13 +491,15 @@
     }
 
     resemble(referenceImage)
-      .compareTo(canvas.getContext('2d').getImageData(
-          0, 0, canvas.width, canvas.height))
+      .compareTo(
+        canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height)
+      )
       .onComplete(function(data) {
         if (!data.isSameDimensions) {
           expect().fail(
             'The dimensions of the reference image and ' +
-            'the test canvas are not the same.');
+              'the test canvas are not the same.'
+          );
         }
 
         if (data.misMatchPercentage > tolerance) {
@@ -435,8 +539,9 @@
       var canvas = document.createElement('canvas');
       canvas.width = webglCanvas.width;
       canvas.height = webglCanvas.height;
-      canvas.getContext('2d').drawImage(webglCanvas, 0, 0,
-          webglCanvas.width, webglCanvas.height);
+      canvas
+        .getContext('2d')
+        .drawImage(webglCanvas, 0, 0, webglCanvas.width, webglCanvas.height);
 
       resembleCanvas(canvas, referenceImage, tolerance, done);
     });
@@ -456,8 +561,7 @@
     } else if (map.getRenderer() instanceof ol.renderer.webgl.Map) {
       expectResembleWebGL(map, referenceImage, tolerance, done);
     } else {
-      expect().fail(
-        'resemble only works with the canvas and WebGL renderer.');
+      expect().fail('resemble only works with the canvas and WebGL renderer.');
     }
   };
 
@@ -465,7 +569,7 @@
     ArrayBuffer: 'ArrayBuffer' in global,
     'ArrayBuffer.isView': 'ArrayBuffer' in global && !!ArrayBuffer.isView,
     FileReader: 'FileReader' in global,
-    Uint8ClampedArray: ('Uint8ClampedArray' in global)
+    Uint8ClampedArray: 'Uint8ClampedArray' in global
   };
 
   /**
@@ -484,5 +588,4 @@
       describe: features[key] ? global.describe : global.xdescribe
     };
   };
-
 })(this);

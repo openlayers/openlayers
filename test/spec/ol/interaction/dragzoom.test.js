@@ -9,9 +9,7 @@ goog.require('ol.layer.Vector');
 goog.require('ol.render.Box');
 goog.require('ol.source.Vector');
 
-
 describe('ol.interaction.DragZoom', function() {
-
   var target, map, source;
 
   var width = 360;
@@ -48,7 +46,6 @@ describe('ol.interaction.DragZoom', function() {
   });
 
   describe('constructor', function() {
-
     it('can be constructed without arguments', function() {
       var instance = new ol.interaction.DragZoom();
       expect(instance).to.be.an(ol.interaction.DragZoom);
@@ -61,11 +58,9 @@ describe('ol.interaction.DragZoom', function() {
       var instance = new ol.interaction.DragZoom({className: 'test-dragzoom'});
       expect(instance.box_.element_.className).to.be('ol-box test-dragzoom');
     });
-
   });
 
   describe('#onBoxEnd()', function() {
-
     it('centers the view on the box geometry', function(done) {
       var interaction = new ol.interaction.DragZoom({
         duration: 10
@@ -84,7 +79,6 @@ describe('ol.interaction.DragZoom', function() {
         expect(center).to.eql(ol.extent.getCenter(extent));
         done();
       }, 50);
-
     });
 
     it('sets new resolution while zooming out', function(done) {
@@ -109,10 +103,6 @@ describe('ol.interaction.DragZoom', function() {
           done();
         }, 50);
       }, 50);
-
     });
-
   });
-
-
 });

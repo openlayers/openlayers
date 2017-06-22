@@ -25,7 +25,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
-
 /**
  * @classdesc
  * Interaction for drawing feature geometries.
@@ -37,7 +36,6 @@ goog.require('ol.style.Style');
  * @api
  */
 ol.interaction.Draw = function(options) {
-
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Draw.handleDownEvent_,
     handleEvent: ol.interaction.Draw.handleEvent,
@@ -104,9 +102,9 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.minPoints_ = options.minPoints ?
-      options.minPoints :
-      (this.mode_ === ol.interaction.Draw.Mode_.POLYGON ? 3 : 2);
+  this.minPoints_ = options.minPoints
+    ? options.minPoints
+    : this.mode_ === ol.interaction.Draw.Mode_.POLYGON ? 3 : 2;
 
   /**
    * The number of points that can be drawn before a polygon ring or line string
@@ -121,7 +119,9 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.finishCondition_ = options.finishCondition ? options.finishCondition : ol.functions.TRUE;
+  this.finishCondition_ = options.finishCondition
+    ? options.finishCondition
+    : ol.functions.TRUE;
 
   var geometryFunction = options.geometryFunction;
   if (!geometryFunction) {
@@ -133,10 +133,13 @@ ol.interaction.Draw = function(options) {
        * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
-        var circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
-            new ol.geom.Circle([NaN, NaN]);
+        var circle = opt_geometry /** @type {ol.geom.Circle} */
+          ? opt_geometry
+          : new ol.geom.Circle([NaN, NaN]);
         var squaredLength = ol.coordinate.squaredDistance(
-            coordinates[0], coordinates[1]);
+          coordinates[0],
+          coordinates[1]
+        );
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
         return circle;
       };
@@ -160,7 +163,9 @@ ol.interaction.Draw = function(options) {
         var geometry = opt_geometry;
         if (geometry) {
           if (mode === ol.interaction.Draw.Mode_.POLYGON) {
-            geometry.setCoordinates([coordinates[0].concat([coordinates[0][0]])]);
+            geometry.setCoordinates([
+              coordinates[0].concat([coordinates[0][0]])
+            ]);
           } else {
             geometry.setCoordinates(coordinates);
           }
@@ -228,8 +233,9 @@ ol.interaction.Draw = function(options) {
    * @type {number}
    * @private
    */
-  this.squaredClickTolerance_ = options.clickTolerance ?
-      options.clickTolerance * options.clickTolerance : 36;
+  this.squaredClickTolerance_ = options.clickTolerance
+    ? options.clickTolerance * options.clickTolerance
+    : 36;
 
   /**
    * Draw overlay where our sketch features are drawn.
@@ -241,8 +247,9 @@ ol.interaction.Draw = function(options) {
       useSpatialIndex: false,
       wrapX: options.wrapX ? options.wrapX : false
     }),
-    style: options.style ? options.style :
-        ol.interaction.Draw.getDefaultStyleFunction()
+    style: options.style
+      ? options.style
+      : ol.interaction.Draw.getDefaultStyleFunction()
   });
 
   /**
@@ -256,8 +263,9 @@ ol.interaction.Draw = function(options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-      options.condition : ol.events.condition.noModifierKeys;
+  this.condition_ = options.condition
+    ? options.condition
+    : ol.events.condition.noModifierKeys;
 
   /**
    * @private
@@ -267,17 +275,19 @@ ol.interaction.Draw = function(options) {
   if (options.freehand) {
     this.freehandCondition_ = ol.events.condition.always;
   } else {
-    this.freehandCondition_ = options.freehandCondition ?
-        options.freehandCondition : ol.events.condition.shiftKeyOnly;
+    this.freehandCondition_ = options.freehandCondition
+      ? options.freehandCondition
+      : ol.events.condition.shiftKeyOnly;
   }
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
-      this.updateState_, this);
-
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.interaction.Property.ACTIVE),
+    this.updateState_,
+    this
+  );
 };
 ol.inherits(ol.interaction.Draw, ol.interaction.Pointer);
-
 
 /**
  * @return {ol.StyleFunction} Styles.
@@ -289,7 +299,6 @@ ol.interaction.Draw.getDefaultStyleFunction = function() {
   };
 };
 
-
 /**
  * @inheritDoc
  */
@@ -297,7 +306,6 @@ ol.interaction.Draw.prototype.setMap = function(map) {
   ol.interaction.Pointer.prototype.setMap.call(this, map);
   this.updateState_();
 };
-
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} and may actually
@@ -308,21 +316,24 @@ ol.interaction.Draw.prototype.setMap = function(map) {
  * @api
  */
 ol.interaction.Draw.handleEvent = function(event) {
-  this.freehand_ = this.mode_ !== ol.interaction.Draw.Mode_.POINT && this.freehandCondition_(event);
+  this.freehand_ =
+    this.mode_ !== ol.interaction.Draw.Mode_.POINT &&
+    this.freehandCondition_(event);
   var pass = !this.freehand_;
-  if (this.freehand_ &&
-      event.type === ol.MapBrowserEventType.POINTERDRAG && this.sketchFeature_ !== null) {
+  if (
+    this.freehand_ &&
+    event.type === ol.MapBrowserEventType.POINTERDRAG &&
+    this.sketchFeature_ !== null
+  ) {
     this.addToDrawing_(event);
     pass = false;
-  } else if (event.type ===
-      ol.MapBrowserEventType.POINTERMOVE) {
+  } else if (event.type === ol.MapBrowserEventType.POINTERMOVE) {
     pass = this.handlePointerMove_(event);
   } else if (event.type === ol.MapBrowserEventType.DBLCLICK) {
     pass = false;
   }
   return ol.interaction.Pointer.handleEvent.call(this, event) && pass;
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} event Event.
@@ -346,7 +357,6 @@ ol.interaction.Draw.handleDownEvent_ = function(event) {
     return false;
   }
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} event Event.
@@ -384,7 +394,6 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
   return pass;
 };
 
-
 /**
  * Handle move events.
  * @param {ol.MapBrowserEvent} event A move event.
@@ -392,17 +401,19 @@ ol.interaction.Draw.handleUpEvent_ = function(event) {
  * @private
  */
 ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
-  if (this.downPx_ &&
-      ((!this.freehand_ && this.shouldHandle_) ||
-      (this.freehand_ && !this.shouldHandle_))) {
+  if (
+    this.downPx_ &&
+    ((!this.freehand_ && this.shouldHandle_) ||
+      (this.freehand_ && !this.shouldHandle_))
+  ) {
     var downPx = this.downPx_;
     var clickPx = event.pixel;
     var dx = downPx[0] - clickPx[0];
     var dy = downPx[1] - clickPx[1];
     var squaredDistance = dx * dx + dy * dy;
-    this.shouldHandle_ = this.freehand_ ?
-        squaredDistance > this.squaredClickTolerance_ :
-        squaredDistance <= this.squaredClickTolerance_;
+    this.shouldHandle_ = this.freehand_
+      ? squaredDistance > this.squaredClickTolerance_
+      : squaredDistance <= this.squaredClickTolerance_;
   }
 
   if (this.finishCoordinate_) {
@@ -412,7 +423,6 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
   }
   return true;
 };
-
 
 /**
  * Determine if an event is within the snapping tolerance of the start coord.
@@ -428,10 +438,11 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
     if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
       potentiallyDone = this.sketchCoords_.length > this.minPoints_;
     } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
-      potentiallyDone = this.sketchCoords_[0].length >
-          this.minPoints_;
-      potentiallyFinishCoordinates = [this.sketchCoords_[0][0],
-        this.sketchCoords_[0][this.sketchCoords_[0].length - 2]];
+      potentiallyDone = this.sketchCoords_[0].length > this.minPoints_;
+      potentiallyFinishCoordinates = [
+        this.sketchCoords_[0][0],
+        this.sketchCoords_[0][this.sketchCoords_[0].length - 2]
+      ];
     }
     if (potentiallyDone) {
       var map = event.map;
@@ -453,7 +464,6 @@ ol.interaction.Draw.prototype.atFinish_ = function(event) {
   return at;
 };
 
-
 /**
  * @param {ol.MapBrowserEvent} event Event.
  * @private
@@ -464,11 +474,10 @@ ol.interaction.Draw.prototype.createOrUpdateSketchPoint_ = function(event) {
     this.sketchPoint_ = new ol.Feature(new ol.geom.Point(coordinates));
     this.updateSketchFeatures_();
   } else {
-    var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
+    var sketchPointGeom /** @type {ol.geom.Point} */ = this.sketchPoint_.getGeometry();
     sketchPointGeom.setCoordinates(coordinates);
   }
 };
-
 
 /**
  * Start the drawing.
@@ -491,7 +500,8 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   }
   if (this.sketchLineCoords_) {
     this.sketchLine_ = new ol.Feature(
-        new ol.geom.LineString(this.sketchLineCoords_));
+      new ol.geom.LineString(this.sketchLineCoords_)
+    );
   }
   var geometry = this.geometryFunction_(this.sketchCoords_);
   this.sketchFeature_ = new ol.Feature();
@@ -500,10 +510,13 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
   }
   this.sketchFeature_.setGeometry(geometry);
   this.updateSketchFeatures_();
-  this.dispatchEvent(new ol.interaction.Draw.Event(
-      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(
+    new ol.interaction.Draw.Event(
+      ol.interaction.DrawEventType.DRAWSTART,
+      this.sketchFeature_
+    )
+  );
 };
-
 
 /**
  * Modify the drawing.
@@ -512,7 +525,7 @@ ol.interaction.Draw.prototype.startDrawing_ = function(event) {
  */
 ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   var coordinate = event.coordinate;
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  var geometry /** @type {ol.geom.SimpleGeometry} */ = this.sketchFeature_.getGeometry();
   var coordinates, last;
   if (this.mode_ === ol.interaction.Draw.Mode_.POINT) {
     last = this.sketchCoords_;
@@ -529,28 +542,35 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   }
   last[0] = coordinate[0];
   last[1] = coordinate[1];
-  this.geometryFunction_(/** @type {!Array.<ol.Coordinate>} */ (this.sketchCoords_), geometry);
+  this.geometryFunction_(
+    /** @type {!Array.<ol.Coordinate>} */
+    this.sketchCoords_,
+    geometry
+  );
   if (this.sketchPoint_) {
-    var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
+    var sketchPointGeom /** @type {ol.geom.Point} */ = this.sketchPoint_.getGeometry();
     sketchPointGeom.setCoordinates(coordinate);
   }
   var sketchLineGeom;
-  if (geometry instanceof ol.geom.Polygon &&
-      this.mode_ !== ol.interaction.Draw.Mode_.POLYGON) {
+  if (
+    geometry instanceof ol.geom.Polygon &&
+    this.mode_ !== ol.interaction.Draw.Mode_.POLYGON
+  ) {
     if (!this.sketchLine_) {
       this.sketchLine_ = new ol.Feature(new ol.geom.LineString(null));
     }
     var ring = geometry.getLinearRing(0);
-    sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom /** @type {ol.geom.LineString} */ = this.sketchLine_.getGeometry();
     sketchLineGeom.setFlatCoordinates(
-        ring.getLayout(), ring.getFlatCoordinates());
+      ring.getLayout(),
+      ring.getFlatCoordinates()
+    );
   } else if (this.sketchLineCoords_) {
-    sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom /** @type {ol.geom.LineString} */ = this.sketchLine_.getGeometry();
     sketchLineGeom.setCoordinates(this.sketchLineCoords_);
   }
   this.updateSketchFeatures_();
 };
-
 
 /**
  * Add a new coordinate to the drawing.
@@ -559,7 +579,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
  */
 ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   var coordinate = event.coordinate;
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  var geometry /** @type {ol.geom.SimpleGeometry} */ = this.sketchFeature_.getGeometry();
   var done;
   var coordinates;
   if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
@@ -595,7 +615,6 @@ ol.interaction.Draw.prototype.addToDrawing_ = function(event) {
   }
 };
 
-
 /**
  * Remove last point of the feature currently being drawn.
  * @api
@@ -604,7 +623,7 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
   if (!this.sketchFeature_) {
     return;
   }
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (this.sketchFeature_.getGeometry());
+  var geometry /** @type {ol.geom.SimpleGeometry} */ = this.sketchFeature_.getGeometry();
   var coordinates, sketchLineGeom;
   if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
     coordinates = this.sketchCoords_;
@@ -616,7 +635,7 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
   } else if (this.mode_ === ol.interaction.Draw.Mode_.POLYGON) {
     coordinates = this.sketchCoords_[0];
     coordinates.splice(-2, 1);
-    sketchLineGeom = /** @type {ol.geom.LineString} */ (this.sketchLine_.getGeometry());
+    sketchLineGeom /** @type {ol.geom.LineString} */ = this.sketchLine_.getGeometry();
     sketchLineGeom.setCoordinates(coordinates);
     this.geometryFunction_(this.sketchCoords_, geometry);
   }
@@ -628,7 +647,6 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
   this.updateSketchFeatures_();
 };
 
-
 /**
  * Stop drawing and add the sketch feature to the target layer.
  * The {@link ol.interaction.DrawEventType.DRAWEND} event is dispatched before
@@ -638,7 +656,7 @@ ol.interaction.Draw.prototype.removeLastPoint = function() {
 ol.interaction.Draw.prototype.finishDrawing = function() {
   var sketchFeature = this.abortDrawing_();
   var coordinates = this.sketchCoords_;
-  var geometry = /** @type {ol.geom.SimpleGeometry} */ (sketchFeature.getGeometry());
+  var geometry /** @type {ol.geom.SimpleGeometry} */ = sketchFeature.getGeometry();
   if (this.mode_ === ol.interaction.Draw.Mode_.LINE_STRING) {
     // remove the redundant last point
     coordinates.pop();
@@ -660,8 +678,12 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
   }
 
   // First dispatch event to allow full set up of feature
-  this.dispatchEvent(new ol.interaction.Draw.Event(
-      ol.interaction.DrawEventType.DRAWEND, sketchFeature));
+  this.dispatchEvent(
+    new ol.interaction.Draw.Event(
+      ol.interaction.DrawEventType.DRAWEND,
+      sketchFeature
+    )
+  );
 
   // Then insert feature
   if (this.features_) {
@@ -671,7 +693,6 @@ ol.interaction.Draw.prototype.finishDrawing = function() {
     this.source_.addFeature(sketchFeature);
   }
 };
-
 
 /**
  * Stop drawing without adding the sketch feature to the target layer.
@@ -690,7 +711,6 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
   return sketchFeature;
 };
 
-
 /**
  * Extend an existing geometry by adding additional points. This only works
  * on features with `LineString` geometries, where the interaction will
@@ -700,23 +720,25 @@ ol.interaction.Draw.prototype.abortDrawing_ = function() {
  */
 ol.interaction.Draw.prototype.extend = function(feature) {
   var geometry = feature.getGeometry();
-  var lineString = /** @type {ol.geom.LineString} */ (geometry);
+  var lineString /** @type {ol.geom.LineString} */ = geometry;
   this.sketchFeature_ = feature;
   this.sketchCoords_ = lineString.getCoordinates();
   var last = this.sketchCoords_[this.sketchCoords_.length - 1];
   this.finishCoordinate_ = last.slice();
   this.sketchCoords_.push(last.slice());
   this.updateSketchFeatures_();
-  this.dispatchEvent(new ol.interaction.Draw.Event(
-      ol.interaction.DrawEventType.DRAWSTART, this.sketchFeature_));
+  this.dispatchEvent(
+    new ol.interaction.Draw.Event(
+      ol.interaction.DrawEventType.DRAWSTART,
+      this.sketchFeature_
+    )
+  );
 };
-
 
 /**
  * @inheritDoc
  */
 ol.interaction.Draw.prototype.shouldStopEvent = ol.functions.FALSE;
-
 
 /**
  * Redraw the sketch features.
@@ -738,7 +760,6 @@ ol.interaction.Draw.prototype.updateSketchFeatures_ = function() {
   overlaySource.addFeatures(sketchFeatures);
 };
 
-
 /**
  * @private
  */
@@ -750,7 +771,6 @@ ol.interaction.Draw.prototype.updateState_ = function() {
   }
   this.overlay_.setMap(active ? map : null);
 };
-
 
 /**
  * Create a `geometryFunction` for `type: 'Circle'` that will create a regular
@@ -767,26 +787,26 @@ ol.interaction.Draw.prototype.updateState_ = function() {
  */
 ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
   return (
-      /**
+    /**
        * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
        * @param {ol.geom.SimpleGeometry=} opt_geometry
        * @return {ol.geom.SimpleGeometry}
        */
-      function(coordinates, opt_geometry) {
-        var center = coordinates[0];
-        var end = coordinates[1];
-        var radius = Math.sqrt(
-            ol.coordinate.squaredDistance(center, end));
-        var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-            ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
-        var angle = opt_angle ? opt_angle :
-            Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-        ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
-        return geometry;
-      }
+    function(coordinates, opt_geometry) {
+      var center = coordinates[0];
+      var end = coordinates[1];
+      var radius = Math.sqrt(ol.coordinate.squaredDistance(center, end));
+      var geometry = opt_geometry /** @type {ol.geom.Polygon} */
+        ? opt_geometry
+        : ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
+      var angle = opt_angle
+        ? opt_angle
+        : Math.atan((end[1] - center[1]) / (end[0] - center[0]));
+      ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
+      return geometry;
+    }
   );
 };
-
 
 /**
  * Create a `geometryFunction` that will create a box-shaped polygon (aligned
@@ -805,18 +825,19 @@ ol.interaction.Draw.createBox = function() {
     function(coordinates, opt_geometry) {
       var extent = ol.extent.boundingExtent(coordinates);
       var geometry = opt_geometry || new ol.geom.Polygon(null);
-      geometry.setCoordinates([[
-        ol.extent.getBottomLeft(extent),
-        ol.extent.getBottomRight(extent),
-        ol.extent.getTopRight(extent),
-        ol.extent.getTopLeft(extent),
-        ol.extent.getBottomLeft(extent)
-      ]]);
+      geometry.setCoordinates([
+        [
+          ol.extent.getBottomLeft(extent),
+          ol.extent.getBottomRight(extent),
+          ol.extent.getTopRight(extent),
+          ol.extent.getTopLeft(extent),
+          ol.extent.getBottomLeft(extent)
+        ]
+      ]);
       return geometry;
     }
   );
 };
-
 
 /**
  * Get the drawing mode.  The mode for mult-part geometries is the same as for
@@ -827,21 +848,26 @@ ol.interaction.Draw.createBox = function() {
  */
 ol.interaction.Draw.getMode_ = function(type) {
   var mode;
-  if (type === ol.geom.GeometryType.POINT ||
-      type === ol.geom.GeometryType.MULTI_POINT) {
+  if (
+    type === ol.geom.GeometryType.POINT ||
+    type === ol.geom.GeometryType.MULTI_POINT
+  ) {
     mode = ol.interaction.Draw.Mode_.POINT;
-  } else if (type === ol.geom.GeometryType.LINE_STRING ||
-      type === ol.geom.GeometryType.MULTI_LINE_STRING) {
+  } else if (
+    type === ol.geom.GeometryType.LINE_STRING ||
+    type === ol.geom.GeometryType.MULTI_LINE_STRING
+  ) {
     mode = ol.interaction.Draw.Mode_.LINE_STRING;
-  } else if (type === ol.geom.GeometryType.POLYGON ||
-      type === ol.geom.GeometryType.MULTI_POLYGON) {
+  } else if (
+    type === ol.geom.GeometryType.POLYGON ||
+    type === ol.geom.GeometryType.MULTI_POLYGON
+  ) {
     mode = ol.interaction.Draw.Mode_.POLYGON;
   } else if (type === ol.geom.GeometryType.CIRCLE) {
     mode = ol.interaction.Draw.Mode_.CIRCLE;
   }
-  return /** @type {!ol.interaction.Draw.Mode_} */ (mode);
+  return /** @type {!ol.interaction.Draw.Mode_} */ mode;
 };
-
 
 /**
  * Draw mode.  This collapses multi-part geometry types with their single-part
@@ -868,7 +894,6 @@ ol.interaction.Draw.Mode_ = {
  * @param {ol.Feature} feature The feature drawn.
  */
 ol.interaction.Draw.Event = function(type, feature) {
-
   ol.events.Event.call(this, type);
 
   /**
@@ -877,6 +902,5 @@ ol.interaction.Draw.Event = function(type, feature) {
    * @api
    */
   this.feature = feature;
-
 };
 ol.inherits(ol.interaction.Draw.Event, ol.events.Event);

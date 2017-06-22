@@ -3,11 +3,8 @@ goog.provide('ol.test.layer.Tile');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-
 describe('ol.layer.Tile', function() {
-
   describe('constructor (defaults)', function() {
-
     var layer;
 
     beforeEach(function() {
@@ -31,7 +28,5 @@ describe('ol.layer.Tile', function() {
     it('provides default useInterimTilesOnError', function() {
       expect(layer.getUseInterimTilesOnError()).to.be(true);
     });
-
   });
-
 });

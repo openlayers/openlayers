@@ -25,7 +25,6 @@ var map = new ol.Map({
   })
 });
 
-
 function updateUrl(index) {
   source.setUrl(urls[index]);
 }

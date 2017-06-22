@@ -2,13 +2,11 @@ goog.provide('ol.MapBrowserEventType');
 
 goog.require('ol.events.EventType');
 
-
 /**
  * Constants for event names.
  * @enum {string}
  */
 ol.MapBrowserEventType = {
-
   /**
    * A true single click with no dragging and no double click. Note that this
    * event is delayed by 250 ms to ensure that it is not a double click.

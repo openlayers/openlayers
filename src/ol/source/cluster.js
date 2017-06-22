@@ -12,7 +12,6 @@ goog.require('ol.extent');
 goog.require('ol.geom.Point');
 goog.require('ol.source.Vector');
 
-
 /**
  * @classdesc
  * Layer source to cluster vector data. Works out of the box with point
@@ -56,12 +55,13 @@ ol.source.Cluster = function(options) {
    * @return {ol.geom.Point} Cluster calculation point.
    * @protected
    */
-  this.geometryFunction = options.geometryFunction || function(feature) {
-    var geometry = /** @type {ol.geom.Point} */ (feature.getGeometry());
-    ol.asserts.assert(geometry instanceof ol.geom.Point,
-        10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
-    return geometry;
-  };
+  this.geometryFunction =
+    options.geometryFunction ||
+    function(feature) {
+      var geometry /** @type {ol.geom.Point} */ = feature.getGeometry();
+      ol.asserts.assert(geometry instanceof ol.geom.Point, 10); // The default `geometryFunction` can only handle `ol.geom.Point` geometries
+      return geometry;
+    };
 
   /**
    * @type {ol.source.Vector}
@@ -69,11 +69,13 @@ ol.source.Cluster = function(options) {
    */
   this.source = options.source;
 
-  this.source.on(ol.events.EventType.CHANGE,
-      ol.source.Cluster.prototype.refresh, this);
+  this.source.on(
+    ol.events.EventType.CHANGE,
+    ol.source.Cluster.prototype.refresh,
+    this
+  );
 };
 ol.inherits(ol.source.Cluster, ol.source.Vector);
-
 
 /**
  * Get the distance in pixels between clusters.
@@ -84,7 +86,6 @@ ol.source.Cluster.prototype.getDistance = function() {
   return this.distance;
 };
 
-
 /**
  * Get a reference to the wrapped source.
  * @return {ol.source.Vector} Source.
@@ -94,12 +95,14 @@ ol.source.Cluster.prototype.getSource = function() {
   return this.source;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
-    projection) {
+ol.source.Cluster.prototype.loadFeatures = function(
+  extent,
+  resolution,
+  projection
+) {
   this.source.loadFeatures(extent, resolution, projection);
   if (resolution !== this.resolution) {
     this.clear();
@@ -108,7 +111,6 @@ ol.source.Cluster.prototype.loadFeatures = function(extent, resolution,
     this.addFeatures(this.features);
   }
 };
-
 
 /**
  * Set the distance in pixels between clusters.
@@ -120,7 +122,6 @@ ol.source.Cluster.prototype.setDistance = function(distance) {
   this.refresh();
 };
 
-
 /**
  * handle the source changing
  * @override
@@ -131,7 +132,6 @@ ol.source.Cluster.prototype.refresh = function() {
   this.addFeatures(this.features);
   ol.source.Vector.prototype.refresh.call(this);
 };
-
 
 /**
  * @protected
@@ -174,7 +174,6 @@ ol.source.Cluster.prototype.cluster = function() {
     }
   }
 };
-
 
 /**
  * @param {Array.<ol.Feature>} features Features

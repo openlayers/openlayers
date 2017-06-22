@@ -2,20 +2,15 @@ goog.provide('ol.test.Disposable');
 
 goog.require('ol.Disposable');
 
-
 describe('ol.Disposable', function() {
-
   describe('constructor', function() {
-
     it('creates an instance', function() {
       var disposable = new ol.Disposable();
       expect(disposable).to.be.a(ol.Disposable);
     });
-
   });
 
   describe('#disposed_', function() {
-
     it('is initially false', function() {
       var disposable = new ol.Disposable();
       expect(disposable.disposed_).to.be(false);
@@ -26,11 +21,9 @@ describe('ol.Disposable', function() {
       disposable.dispose();
       expect(disposable.disposed_).to.be(true);
     });
-
   });
 
   describe('#dispose()', function() {
-
     it('calls disposeInternal only once', function() {
       var disposable = new ol.Disposable();
       sinon.spy(disposable, 'disposeInternal');
@@ -40,7 +33,5 @@ describe('ol.Disposable', function() {
       disposable.dispose();
       expect(disposable.disposeInternal.callCount).to.be(1);
     });
-
   });
-
 });

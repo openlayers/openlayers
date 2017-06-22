@@ -14,7 +14,6 @@ goog.require('ol.obj');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
-
 /**
  * @classdesc
  * Interaction for selecting vector features. By default, selected features are
@@ -34,7 +33,6 @@ goog.require('ol.style.Style');
  * @api
  */
 ol.interaction.Select = function(opt_options) {
-
   ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.Select.handleEvent
   });
@@ -45,29 +43,33 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-      options.condition : ol.events.condition.singleClick;
+  this.condition_ = options.condition
+    ? options.condition
+    : ol.events.condition.singleClick;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.addCondition_ = options.addCondition ?
-      options.addCondition : ol.events.condition.never;
+  this.addCondition_ = options.addCondition
+    ? options.addCondition
+    : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.removeCondition_ = options.removeCondition ?
-      options.removeCondition : ol.events.condition.never;
+  this.removeCondition_ = options.removeCondition
+    ? options.removeCondition
+    : ol.events.condition.never;
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.toggleCondition_ = options.toggleCondition ?
-      options.toggleCondition : ol.events.condition.shiftKeyOnly;
+  this.toggleCondition_ = options.toggleCondition
+    ? options.toggleCondition
+    : ol.events.condition.shiftKeyOnly;
 
   /**
    * @private
@@ -79,8 +81,7 @@ ol.interaction.Select = function(opt_options) {
    * @private
    * @type {ol.SelectFilterFunction}
    */
-  this.filter_ = options.filter ? options.filter :
-      ol.functions.TRUE;
+  this.filter_ = options.filter ? options.filter : ol.functions.TRUE;
 
   /**
    * @private
@@ -94,8 +95,9 @@ ol.interaction.Select = function(opt_options) {
       features: options.features,
       wrapX: options.wrapX
     }),
-    style: options.style ? options.style :
-        ol.interaction.Select.getDefaultStyleFunction(),
+    style: options.style
+      ? options.style
+      : ol.interaction.Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -136,25 +138,33 @@ ol.interaction.Select = function(opt_options) {
   this.featureLayerAssociation_ = {};
 
   var features = this.featureOverlay_.getSource().getFeaturesCollection();
-  ol.events.listen(features, ol.CollectionEventType.ADD,
-      this.addFeature_, this);
-  ol.events.listen(features, ol.CollectionEventType.REMOVE,
-      this.removeFeature_, this);
-
+  ol.events.listen(
+    features,
+    ol.CollectionEventType.ADD,
+    this.addFeature_,
+    this
+  );
+  ol.events.listen(
+    features,
+    ol.CollectionEventType.REMOVE,
+    this.removeFeature_,
+    this
+  );
 };
 ol.inherits(ol.interaction.Select, ol.interaction.Interaction);
-
 
 /**
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @param {ol.layer.Layer} layer Layer.
  * @private
  */
-ol.interaction.Select.prototype.addFeatureLayerAssociation_ = function(feature, layer) {
+ol.interaction.Select.prototype.addFeatureLayerAssociation_ = function(
+  feature,
+  layer
+) {
   var key = ol.getUid(feature);
   this.featureLayerAssociation_[key] = layer;
 };
-
 
 /**
  * Get the selected features.
@@ -165,7 +175,6 @@ ol.interaction.Select.prototype.getFeatures = function() {
   return this.featureOverlay_.getSource().getFeaturesCollection();
 };
 
-
 /**
  * Returns the Hit-detection tolerance.
  * @returns {number} Hit tolerance in pixels.
@@ -174,7 +183,6 @@ ol.interaction.Select.prototype.getFeatures = function() {
 ol.interaction.Select.prototype.getHitTolerance = function() {
   return this.hitTolerance_;
 };
-
 
 /**
  * Returns the associated {@link ol.layer.Vector vectorlayer} of
@@ -187,9 +195,8 @@ ol.interaction.Select.prototype.getHitTolerance = function() {
  */
 ol.interaction.Select.prototype.getLayer = function(feature) {
   var key = ol.getUid(feature);
-  return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
+  return /** @type {ol.layer.Vector} */ this.featureLayerAssociation_[key];
 };
-
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} and may change the
@@ -216,22 +223,25 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     // pixel, or clear the selected feature(s) if there is no feature at
     // the pixel.
     ol.obj.clear(this.featureLayerAssociation_);
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-      (/**
+    map.forEachFeatureAtPixel(
+      mapBrowserEvent.pixel,
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
-        function(feature, layer) {
-          if (this.filter_(feature, layer)) {
-            selected.push(feature);
-            this.addFeatureLayerAssociation_(feature, layer);
-            return !this.multi_;
-          }
-        }).bind(this), {
-          layerFilter: this.layerFilter_,
-          hitTolerance: this.hitTolerance_
-        });
+      function(feature, layer) {
+        if (this.filter_(feature, layer)) {
+          selected.push(feature);
+          this.addFeatureLayerAssociation_(feature, layer);
+          return !this.multi_;
+        }
+      }.bind(this),
+      {
+        layerFilter: this.layerFilter_,
+        hitTolerance: this.hitTolerance_
+      }
+    );
     var i;
     for (i = features.getLength() - 1; i >= 0; --i) {
       var feature = features.item(i);
@@ -249,29 +259,36 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
     }
   } else {
     // Modify the currently selected feature(s).
-    map.forEachFeatureAtPixel(mapBrowserEvent.pixel,
-      (/**
+    map.forEachFeatureAtPixel(
+      mapBrowserEvent.pixel,
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @param {ol.layer.Layer} layer Layer.
          * @return {boolean|undefined} Continue to iterate over the features.
          */
-        function(feature, layer) {
-          if (this.filter_(feature, layer)) {
-            if ((add || toggle) &&
-                !ol.array.includes(features.getArray(), feature)) {
-              selected.push(feature);
-              this.addFeatureLayerAssociation_(feature, layer);
-            } else if ((remove || toggle) &&
-                ol.array.includes(features.getArray(), feature)) {
-              deselected.push(feature);
-              this.removeFeatureLayerAssociation_(feature);
-            }
-            return !this.multi_;
+      function(feature, layer) {
+        if (this.filter_(feature, layer)) {
+          if (
+            (add || toggle) &&
+            !ol.array.includes(features.getArray(), feature)
+          ) {
+            selected.push(feature);
+            this.addFeatureLayerAssociation_(feature, layer);
+          } else if (
+            (remove || toggle) &&
+            ol.array.includes(features.getArray(), feature)
+          ) {
+            deselected.push(feature);
+            this.removeFeatureLayerAssociation_(feature);
           }
-        }).bind(this), {
-          layerFilter: this.layerFilter_,
-          hitTolerance: this.hitTolerance_
-        });
+          return !this.multi_;
+        }
+      }.bind(this),
+      {
+        layerFilter: this.layerFilter_,
+        hitTolerance: this.hitTolerance_
+      }
+    );
     var j;
     for (j = deselected.length - 1; j >= 0; --j) {
       features.remove(deselected[j]);
@@ -280,12 +297,16 @@ ol.interaction.Select.handleEvent = function(mapBrowserEvent) {
   }
   if (selected.length > 0 || deselected.length > 0) {
     this.dispatchEvent(
-        new ol.interaction.Select.Event(ol.interaction.Select.EventType_.SELECT,
-            selected, deselected, mapBrowserEvent));
+      new ol.interaction.Select.Event(
+        ol.interaction.Select.EventType_.SELECT,
+        selected,
+        deselected,
+        mapBrowserEvent
+      )
+    );
   }
   return ol.events.condition.pointerMove(mapBrowserEvent);
 };
-
 
 /**
  * Hit-detection tolerance. Pixels inside the radius around the given position
@@ -298,7 +319,6 @@ ol.interaction.Select.prototype.setHitTolerance = function(hitTolerance) {
   this.hitTolerance_ = hitTolerance;
 };
 
-
 /**
  * Remove the interaction from its current map, if any,  and attach it to a new
  * map, if any. Pass `null` to just remove the interaction from the current map.
@@ -308,8 +328,9 @@ ol.interaction.Select.prototype.setHitTolerance = function(hitTolerance) {
  */
 ol.interaction.Select.prototype.setMap = function(map) {
   var currentMap = this.getMap();
-  var selectedFeatures =
-      this.featureOverlay_.getSource().getFeaturesCollection();
+  var selectedFeatures = this.featureOverlay_
+    .getSource()
+    .getFeaturesCollection();
   if (currentMap) {
     selectedFeatures.forEach(currentMap.unskipFeature, currentMap);
   }
@@ -320,16 +341,19 @@ ol.interaction.Select.prototype.setMap = function(map) {
   }
 };
 
-
 /**
  * @return {ol.StyleFunction} Styles.
  */
 ol.interaction.Select.getDefaultStyleFunction = function() {
   var styles = ol.style.Style.createDefaultEditing();
-  ol.array.extend(styles[ol.geom.GeometryType.POLYGON],
-      styles[ol.geom.GeometryType.LINE_STRING]);
-  ol.array.extend(styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
-      styles[ol.geom.GeometryType.LINE_STRING]);
+  ol.array.extend(
+    styles[ol.geom.GeometryType.POLYGON],
+    styles[ol.geom.GeometryType.LINE_STRING]
+  );
+  ol.array.extend(
+    styles[ol.geom.GeometryType.GEOMETRY_COLLECTION],
+    styles[ol.geom.GeometryType.LINE_STRING]
+  );
 
   return function(feature, resolution) {
     if (!feature.getGeometry()) {
@@ -339,7 +363,6 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
   };
 };
 
-
 /**
  * @param {ol.Collection.Event} evt Event.
  * @private
@@ -347,10 +370,9 @@ ol.interaction.Select.getDefaultStyleFunction = function() {
 ol.interaction.Select.prototype.addFeature_ = function(evt) {
   var map = this.getMap();
   if (map) {
-    map.skipFeature(/** @type {ol.Feature} */ (evt.element));
+    map.skipFeature /** @type {ol.Feature} */(evt.element);
   }
 };
-
 
 /**
  * @param {ol.Collection.Event} evt Event.
@@ -359,20 +381,20 @@ ol.interaction.Select.prototype.addFeature_ = function(evt) {
 ol.interaction.Select.prototype.removeFeature_ = function(evt) {
   var map = this.getMap();
   if (map) {
-    map.unskipFeature(/** @type {ol.Feature} */ (evt.element));
+    map.unskipFeature /** @type {ol.Feature} */(evt.element);
   }
 };
-
 
 /**
  * @param {ol.Feature|ol.render.Feature} feature Feature.
  * @private
  */
-ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(feature) {
+ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(
+  feature
+) {
   var key = ol.getUid(feature);
   delete this.featureLayerAssociation_[key];
 };
-
 
 /**
  * @classdesc
@@ -388,7 +410,12 @@ ol.interaction.Select.prototype.removeFeatureLayerAssociation_ = function(featur
  * @extends {ol.events.Event}
  * @constructor
  */
-ol.interaction.Select.Event = function(type, selected, deselected, mapBrowserEvent) {
+ol.interaction.Select.Event = function(
+  type,
+  selected,
+  deselected,
+  mapBrowserEvent
+) {
   ol.events.Event.call(this, type);
 
   /**
@@ -413,7 +440,6 @@ ol.interaction.Select.Event = function(type, selected, deselected, mapBrowserEve
   this.mapBrowserEvent = mapBrowserEvent;
 };
 ol.inherits(ol.interaction.Select.Event, ol.events.Event);
-
 
 /**
  * @enum {string}

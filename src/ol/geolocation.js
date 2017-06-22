@@ -13,7 +13,6 @@ goog.require('ol.math');
 goog.require('ol.proj');
 goog.require('ol.sphere.WGS84');
 
-
 /**
  * @classdesc
  * Helper class for providing HTML5 Geolocation capabilities.
@@ -41,7 +40,6 @@ goog.require('ol.sphere.WGS84');
  * @api
  */
 ol.Geolocation = function(opt_options) {
-
   ol.Object.call(this);
 
   var options = opt_options || {};
@@ -66,11 +64,17 @@ ol.Geolocation = function(opt_options) {
   this.watchId_ = undefined;
 
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.GeolocationProperty.PROJECTION),
-      this.handleProjectionChanged_, this);
+    this,
+    ol.Object.getChangeEventType(ol.GeolocationProperty.PROJECTION),
+    this.handleProjectionChanged_,
+    this
+  );
   ol.events.listen(
-      this, ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
-      this.handleTrackingChanged_, this);
+    this,
+    ol.Object.getChangeEventType(ol.GeolocationProperty.TRACKING),
+    this.handleTrackingChanged_,
+    this
+  );
 
   if (options.projection !== undefined) {
     this.setProjection(options.projection);
@@ -80,10 +84,8 @@ ol.Geolocation = function(opt_options) {
   }
 
   this.setTracking(options.tracking !== undefined ? options.tracking : false);
-
 };
 ol.inherits(ol.Geolocation, ol.Object);
-
 
 /**
  * @inheritDoc
@@ -93,7 +95,6 @@ ol.Geolocation.prototype.disposeInternal = function() {
   ol.Object.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * @private
  */
@@ -101,14 +102,17 @@ ol.Geolocation.prototype.handleProjectionChanged_ = function() {
   var projection = this.getProjection();
   if (projection) {
     this.transform_ = ol.proj.getTransformFromProjections(
-        ol.proj.get('EPSG:4326'), projection);
+      ol.proj.get('EPSG:4326'),
+      projection
+    );
     if (this.position_) {
       this.set(
-          ol.GeolocationProperty.POSITION, this.transform_(this.position_));
+        ol.GeolocationProperty.POSITION,
+        this.transform_(this.position_)
+      );
     }
   }
 };
-
 
 /**
  * @private
@@ -118,16 +122,16 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
     var tracking = this.getTracking();
     if (tracking && this.watchId_ === undefined) {
       this.watchId_ = navigator.geolocation.watchPosition(
-          this.positionChange_.bind(this),
-          this.positionError_.bind(this),
-          this.getTrackingOptions());
+        this.positionChange_.bind(this),
+        this.positionError_.bind(this),
+        this.getTrackingOptions()
+      );
     } else if (!tracking && this.watchId_ !== undefined) {
       navigator.geolocation.clearWatch(this.watchId_);
       this.watchId_ = undefined;
     }
   }
 };
-
 
 /**
  * @private
@@ -136,13 +140,18 @@ ol.Geolocation.prototype.handleTrackingChanged_ = function() {
 ol.Geolocation.prototype.positionChange_ = function(position) {
   var coords = position.coords;
   this.set(ol.GeolocationProperty.ACCURACY, coords.accuracy);
-  this.set(ol.GeolocationProperty.ALTITUDE,
-      coords.altitude === null ? undefined : coords.altitude);
-  this.set(ol.GeolocationProperty.ALTITUDE_ACCURACY,
-      coords.altitudeAccuracy === null ?
-      undefined : coords.altitudeAccuracy);
-  this.set(ol.GeolocationProperty.HEADING, coords.heading === null ?
-      undefined : ol.math.toRadians(coords.heading));
+  this.set(
+    ol.GeolocationProperty.ALTITUDE,
+    coords.altitude === null ? undefined : coords.altitude
+  );
+  this.set(
+    ol.GeolocationProperty.ALTITUDE_ACCURACY,
+    coords.altitudeAccuracy === null ? undefined : coords.altitudeAccuracy
+  );
+  this.set(
+    ol.GeolocationProperty.HEADING,
+    coords.heading === null ? undefined : ol.math.toRadians(coords.heading)
+  );
   if (!this.position_) {
     this.position_ = [coords.longitude, coords.latitude];
   } else {
@@ -151,10 +160,15 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   }
   var projectedPosition = this.transform_(this.position_);
   this.set(ol.GeolocationProperty.POSITION, projectedPosition);
-  this.set(ol.GeolocationProperty.SPEED,
-      coords.speed === null ? undefined : coords.speed);
+  this.set(
+    ol.GeolocationProperty.SPEED,
+    coords.speed === null ? undefined : coords.speed
+  );
   var geometry = ol.geom.Polygon.circular(
-      ol.sphere.WGS84, this.position_, coords.accuracy);
+    ol.sphere.WGS84,
+    this.position_,
+    coords.accuracy
+  );
   geometry.applyTransform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
   this.changed();
@@ -173,9 +187,8 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
 ol.Geolocation.prototype.positionError_ = function(error) {
   error.type = ol.events.EventType.ERROR;
   this.setTracking(false);
-  this.dispatchEvent(/** @type {{type: string, target: undefined}} */ (error));
+  this.dispatchEvent /** @type {{type: string, target: undefined}} */(error);
 };
-
 
 /**
  * Get the accuracy of the position in meters.
@@ -185,10 +198,10 @@ ol.Geolocation.prototype.positionError_ = function(error) {
  * @api
  */
 ol.Geolocation.prototype.getAccuracy = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.GeolocationProperty.ACCURACY));
+  return /** @type {number|undefined} */ this.get(
+    ol.GeolocationProperty.ACCURACY
+  );
 };
-
 
 /**
  * Get a geometry of the position accuracy.
@@ -197,10 +210,12 @@ ol.Geolocation.prototype.getAccuracy = function() {
  * @api
  */
 ol.Geolocation.prototype.getAccuracyGeometry = function() {
-  return /** @type {?ol.geom.Polygon} */ (
-      this.get(ol.GeolocationProperty.ACCURACY_GEOMETRY) || null);
+  return (
+    /** @type {?ol.geom.Polygon} */ this.get(
+      ol.GeolocationProperty.ACCURACY_GEOMETRY
+    ) || null
+  );
 };
-
 
 /**
  * Get the altitude associated with the position.
@@ -210,10 +225,10 @@ ol.Geolocation.prototype.getAccuracyGeometry = function() {
  * @api
  */
 ol.Geolocation.prototype.getAltitude = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.GeolocationProperty.ALTITUDE));
+  return /** @type {number|undefined} */ this.get(
+    ol.GeolocationProperty.ALTITUDE
+  );
 };
-
 
 /**
  * Get the altitude accuracy of the position.
@@ -223,10 +238,10 @@ ol.Geolocation.prototype.getAltitude = function() {
  * @api
  */
 ol.Geolocation.prototype.getAltitudeAccuracy = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.GeolocationProperty.ALTITUDE_ACCURACY));
+  return /** @type {number|undefined} */ this.get(
+    ol.GeolocationProperty.ALTITUDE_ACCURACY
+  );
 };
-
 
 /**
  * Get the heading as radians clockwise from North.
@@ -235,10 +250,10 @@ ol.Geolocation.prototype.getAltitudeAccuracy = function() {
  * @api
  */
 ol.Geolocation.prototype.getHeading = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.GeolocationProperty.HEADING));
+  return /** @type {number|undefined} */ this.get(
+    ol.GeolocationProperty.HEADING
+  );
 };
-
 
 /**
  * Get the position of the device.
@@ -248,10 +263,10 @@ ol.Geolocation.prototype.getHeading = function() {
  * @api
  */
 ol.Geolocation.prototype.getPosition = function() {
-  return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.GeolocationProperty.POSITION));
+  return /** @type {ol.Coordinate|undefined} */ this.get(
+    ol.GeolocationProperty.POSITION
+  );
 };
-
 
 /**
  * Get the projection associated with the position.
@@ -261,10 +276,10 @@ ol.Geolocation.prototype.getPosition = function() {
  * @api
  */
 ol.Geolocation.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.GeolocationProperty.PROJECTION));
+  return /** @type {ol.proj.Projection|undefined} */ this.get(
+    ol.GeolocationProperty.PROJECTION
+  );
 };
-
 
 /**
  * Get the speed in meters per second.
@@ -274,10 +289,8 @@ ol.Geolocation.prototype.getProjection = function() {
  * @api
  */
 ol.Geolocation.prototype.getSpeed = function() {
-  return /** @type {number|undefined} */ (
-      this.get(ol.GeolocationProperty.SPEED));
+  return /** @type {number|undefined} */ this.get(ol.GeolocationProperty.SPEED);
 };
-
 
 /**
  * Determine if the device location is being tracked.
@@ -286,10 +299,8 @@ ol.Geolocation.prototype.getSpeed = function() {
  * @api
  */
 ol.Geolocation.prototype.getTracking = function() {
-  return /** @type {boolean} */ (
-      this.get(ol.GeolocationProperty.TRACKING));
+  return /** @type {boolean} */ this.get(ol.GeolocationProperty.TRACKING);
 };
-
 
 /**
  * Get the tracking options.
@@ -301,10 +312,10 @@ ol.Geolocation.prototype.getTracking = function() {
  * @api
  */
 ol.Geolocation.prototype.getTrackingOptions = function() {
-  return /** @type {GeolocationPositionOptions|undefined} */ (
-      this.get(ol.GeolocationProperty.TRACKING_OPTIONS));
+  return /** @type {GeolocationPositionOptions|undefined} */ this.get(
+    ol.GeolocationProperty.TRACKING_OPTIONS
+  );
 };
-
 
 /**
  * Set the projection to use for transforming the coordinates.
@@ -317,7 +328,6 @@ ol.Geolocation.prototype.setProjection = function(projection) {
   this.set(ol.GeolocationProperty.PROJECTION, ol.proj.get(projection));
 };
 
-
 /**
  * Enable or disable tracking.
  * @param {boolean} tracking Enable tracking.
@@ -327,7 +337,6 @@ ol.Geolocation.prototype.setProjection = function(projection) {
 ol.Geolocation.prototype.setTracking = function(tracking) {
   this.set(ol.GeolocationProperty.TRACKING, tracking);
 };
-
 
 /**
  * Set the tracking options.

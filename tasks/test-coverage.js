@@ -138,8 +138,8 @@ var outputFilenameByFilename = function(file) {
     match = m;
   }
   var idx = match.index;
-  var outfile = file.substr(0, idx) + replace +
-      file.substr(idx + search.length);
+  var outfile =
+    file.substr(0, idx) + replace + file.substr(idx + search.length);
 
   return outfile;
 };

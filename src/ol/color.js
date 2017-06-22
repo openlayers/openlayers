@@ -3,7 +3,6 @@ goog.provide('ol.color');
 goog.require('ol.asserts');
 goog.require('ol.math');
 
-
 /**
  * This RegExp matches # followed by 3 or 6 hex digits.
  * @const
@@ -12,7 +11,6 @@ goog.require('ol.math');
  */
 ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
 
-
 /**
  * Regular expression for matching potential named color style strings.
  * @const
@@ -20,7 +18,6 @@ ol.color.HEX_COLOR_RE_ = /^#(?:[0-9a-f]{3}){1,2}$/i;
  * @private
  */
 ol.color.NAMED_COLOR_RE_ = /^([a-z]*)$/i;
-
 
 /**
  * Return the color as an array. This function maintains a cache of calculated
@@ -33,10 +30,9 @@ ol.color.asArray = function(color) {
   if (Array.isArray(color)) {
     return color;
   } else {
-    return ol.color.fromString(/** @type {string} */ (color));
+    return ol.color.fromString /** @type {string} */(color);
   }
 };
-
 
 /**
  * Return the color as an rgba string.
@@ -66,63 +62,59 @@ ol.color.fromNamed = function(color) {
   return rgb;
 };
 
-
 /**
  * @param {string} s String.
  * @return {ol.Color} Color.
  */
-ol.color.fromString = (
-    function() {
+ol.color.fromString = (function() {
+  // We maintain a small cache of parsed strings.  To provide cheap LRU-like
+  // semantics, whenever the cache grows too large we simply delete an
+  // arbitrary 25% of the entries.
 
-      // We maintain a small cache of parsed strings.  To provide cheap LRU-like
-      // semantics, whenever the cache grows too large we simply delete an
-      // arbitrary 25% of the entries.
-
-      /**
+  /**
        * @const
        * @type {number}
        */
-      var MAX_CACHE_SIZE = 1024;
+  var MAX_CACHE_SIZE = 1024;
 
-      /**
+  /**
        * @type {Object.<string, ol.Color>}
        */
-      var cache = {};
+  var cache = {};
 
-      /**
+  /**
        * @type {number}
        */
-      var cacheSize = 0;
+  var cacheSize = 0;
 
-      return (
-          /**
+  return (
+    /**
            * @param {string} s String.
            * @return {ol.Color} Color.
            */
-          function(s) {
-            var color;
-            if (cache.hasOwnProperty(s)) {
-              color = cache[s];
-            } else {
-              if (cacheSize >= MAX_CACHE_SIZE) {
-                var i = 0;
-                var key;
-                for (key in cache) {
-                  if ((i++ & 3) === 0) {
-                    delete cache[key];
-                    --cacheSize;
-                  }
-                }
-              }
-              color = ol.color.fromStringInternal_(s);
-              cache[s] = color;
-              ++cacheSize;
+    function(s) {
+      var color;
+      if (cache.hasOwnProperty(s)) {
+        color = cache[s];
+      } else {
+        if (cacheSize >= MAX_CACHE_SIZE) {
+          var i = 0;
+          var key;
+          for (key in cache) {
+            if ((i++ & 3) === 0) {
+              delete cache[key];
+              --cacheSize;
             }
-            return color;
-          });
-
-    })();
-
+          }
+        }
+        color = ol.color.fromStringInternal_(s);
+        cache[s] = color;
+        ++cacheSize;
+      }
+      return color;
+    }
+  );
+})();
 
 /**
  * @param {string} s String.
@@ -136,7 +128,8 @@ ol.color.fromStringInternal_ = function(s) {
     s = ol.color.fromNamed(s);
   }
 
-  if (ol.color.HEX_COLOR_RE_.exec(s)) { // hex
+  if (ol.color.HEX_COLOR_RE_.exec(s)) {
+    // hex
     var n = s.length - 1; // number of hex digits
     ol.asserts.assert(n == 3 || n == 6, 54); // Hex color should have 3 or 6 digits
     var d = n == 3 ? 1 : 2; // number of digits per channel
@@ -150,19 +143,20 @@ ol.color.fromStringInternal_ = function(s) {
     }
     a = 1;
     color = [r, g, b, a];
-  } else if (s.indexOf('rgba(') == 0) { // rgba()
+  } else if (s.indexOf('rgba(') == 0) {
+    // rgba()
     parts = s.slice(5, -1).split(',').map(Number);
     color = ol.color.normalize(parts);
-  } else if (s.indexOf('rgb(') == 0) { // rgb()
+  } else if (s.indexOf('rgb(') == 0) {
+    // rgb()
     parts = s.slice(4, -1).split(',').map(Number);
     parts.push(1);
     color = ol.color.normalize(parts);
   } else {
     ol.asserts.assert(false, 14); // Invalid color
   }
-  return /** @type {ol.Color} */ (color);
+  return /** @type {ol.Color} */ color;
 };
-
 
 /**
  * @param {ol.Color} color Color.
@@ -177,7 +171,6 @@ ol.color.normalize = function(color, opt_color) {
   result[3] = ol.math.clamp(color[3], 0, 1);
   return result;
 };
-
 
 /**
  * @param {ol.Color} color Color.

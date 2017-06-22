@@ -2,7 +2,6 @@ goog.provide('ol.format.XML');
 
 goog.require('ol.xml');
 
-
 /**
  * @classdesc
  * Generic format for reading non-feature XML data
@@ -11,9 +10,7 @@ goog.require('ol.xml');
  * @abstract
  * @struct
  */
-ol.format.XML = function() {
-};
-
+ol.format.XML = function() {};
 
 /**
  * @param {Document|Node|string} source Source.
@@ -21,9 +18,9 @@ ol.format.XML = function() {
  */
 ol.format.XML.prototype.read = function(source) {
   if (ol.xml.isDocument(source)) {
-    return this.readFromDocument(/** @type {Document} */ (source));
+    return this.readFromDocument /** @type {Document} */(source);
   } else if (ol.xml.isNode(source)) {
-    return this.readFromNode(/** @type {Node} */ (source));
+    return this.readFromNode /** @type {Node} */(source);
   } else if (typeof source === 'string') {
     var doc = ol.xml.parse(source);
     return this.readFromDocument(doc);
@@ -32,14 +29,12 @@ ol.format.XML.prototype.read = function(source) {
   }
 };
 
-
 /**
  * @abstract
  * @param {Document} doc Document.
  * @return {Object} Object
  */
 ol.format.XML.prototype.readFromDocument = function(doc) {};
-
 
 /**
  * @abstract

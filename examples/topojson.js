@@ -9,7 +9,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var raster = new ol.layer.Tile({
   source: new ol.source.TileJSON({
     url: 'https://api.tiles.mapbox.com/v3/mapbox.world-dark.json?secure'

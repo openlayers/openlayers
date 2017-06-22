@@ -5,17 +5,16 @@ goog.require('ol.control.ScaleLine');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 
-
 var scaleLineControl = new ol.control.ScaleLine();
 
 var map = new ol.Map({
-  controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
-      collapsible: false
+  controls: ol.control
+    .defaults({
+      attributionOptions /** @type {olx.control.AttributionOptions} */: {
+        collapsible: false
+      }
     })
-  }).extend([
-    scaleLineControl
-  ]),
+    .extend([scaleLineControl]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.OSM()
@@ -27,7 +26,6 @@ var map = new ol.Map({
     zoom: 2
   })
 });
-
 
 var unitsSelect = document.getElementById('units');
 function onChange() {

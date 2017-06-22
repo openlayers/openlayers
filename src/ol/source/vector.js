@@ -22,7 +22,6 @@ goog.require('ol.source.State');
 goog.require('ol.source.VectorEventType');
 goog.require('ol.structs.RBush');
 
-
 /**
  * @classdesc
  * Provides a source of features for vector layers. Vector features provided
@@ -36,7 +35,6 @@ goog.require('ol.structs.RBush');
  * @api
  */
 ol.source.Vector = function(opt_options) {
-
   var options = opt_options || {};
 
   ol.source.Source.call(this, {
@@ -76,18 +74,23 @@ ol.source.Vector = function(opt_options) {
   } else if (this.url_ !== undefined) {
     ol.asserts.assert(this.format_, 7); // `format` must be set when `url` is set
     // create a XHR feature loader for "url" and "format"
-    this.loader_ = ol.featureloader.xhr(this.url_, /** @type {ol.format.Feature} */ (this.format_));
+    this.loader_ = ol.featureloader.xhr(
+      this.url_ /** @type {ol.format.Feature} */,
+      this.format_
+    );
   }
 
   /**
    * @private
    * @type {ol.LoadingStrategy}
    */
-  this.strategy_ = options.strategy !== undefined ? options.strategy :
-      ol.loadingstrategy.all;
+  this.strategy_ = options.strategy !== undefined
+    ? options.strategy
+    : ol.loadingstrategy.all;
 
-  var useSpatialIndex =
-      options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
+  var useSpatialIndex = options.useSpatialIndex !== undefined
+    ? options.useSpatialIndex
+    : true;
 
   /**
    * @private
@@ -149,10 +152,8 @@ ol.source.Vector = function(opt_options) {
   if (collection !== undefined) {
     this.bindFeaturesCollection_(collection);
   }
-
 };
 ol.inherits(ol.source.Vector, ol.source.Source);
-
 
 /**
  * Add a single feature to the source.  If you want to add a batch of features
@@ -167,7 +168,6 @@ ol.source.Vector.prototype.addFeature = function(feature) {
   this.addFeatureInternal(feature);
   this.changed();
 };
-
 
 /**
  * Add a feature without firing a `change` event.
@@ -194,9 +194,9 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
   }
 
   this.dispatchEvent(
-      new ol.source.Vector.Event(ol.source.VectorEventType.ADDFEATURE, feature));
+    new ol.source.Vector.Event(ol.source.VectorEventType.ADDFEATURE, feature)
+  );
 };
-
 
 /**
  * @param {string} featureKey Unique identifier for the feature.
@@ -205,13 +205,20 @@ ol.source.Vector.prototype.addFeatureInternal = function(feature) {
  */
 ol.source.Vector.prototype.setupChangeEvents_ = function(featureKey, feature) {
   this.featureChangeKeys_[featureKey] = [
-    ol.events.listen(feature, ol.events.EventType.CHANGE,
-        this.handleFeatureChange_, this),
-    ol.events.listen(feature, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleFeatureChange_, this)
+    ol.events.listen(
+      feature,
+      ol.events.EventType.CHANGE,
+      this.handleFeatureChange_,
+      this
+    ),
+    ol.events.listen(
+      feature,
+      ol.ObjectEventType.PROPERTYCHANGE,
+      this.handleFeatureChange_,
+      this
+    )
   ];
 };
-
 
 /**
  * @param {string} featureKey Unique identifier for the feature.
@@ -230,13 +237,11 @@ ol.source.Vector.prototype.addToIndex_ = function(featureKey, feature) {
       valid = false;
     }
   } else {
-    ol.asserts.assert(!(featureKey in this.undefIdIndex_),
-        30); // The passed `feature` was already added to the source
+    ol.asserts.assert(!(featureKey in this.undefIdIndex_), 30); // The passed `feature` was already added to the source
     this.undefIdIndex_[featureKey] = feature;
   }
   return valid;
 };
-
 
 /**
  * Add a batch of features to the source.
@@ -247,7 +252,6 @@ ol.source.Vector.prototype.addFeatures = function(features) {
   this.addFeaturesInternal(features);
   this.changed();
 };
-
 
 /**
  * Add features without firing a `change` event.
@@ -288,11 +292,14 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
   }
 
   for (i = 0, length = newFeatures.length; i < length; i++) {
-    this.dispatchEvent(new ol.source.Vector.Event(
-        ol.source.VectorEventType.ADDFEATURE, newFeatures[i]));
+    this.dispatchEvent(
+      new ol.source.Vector.Event(
+        ol.source.VectorEventType.ADDFEATURE,
+        newFeatures[i]
+      )
+    );
   }
 };
-
 
 /**
  * @param {!ol.Collection.<ol.Feature>} collection Collection.
@@ -300,41 +307,48 @@ ol.source.Vector.prototype.addFeaturesInternal = function(features) {
  */
 ol.source.Vector.prototype.bindFeaturesCollection_ = function(collection) {
   var modifyingCollection = false;
-  ol.events.listen(this, ol.source.VectorEventType.ADDFEATURE,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          collection.push(evt.feature);
-          modifyingCollection = false;
-        }
-      });
-  ol.events.listen(this, ol.source.VectorEventType.REMOVEFEATURE,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          collection.remove(evt.feature);
-          modifyingCollection = false;
-        }
-      });
-  ol.events.listen(collection, ol.CollectionEventType.ADD,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.addFeature(/** @type {ol.Feature} */ (evt.element));
-          modifyingCollection = false;
-        }
-      }, this);
-  ol.events.listen(collection, ol.CollectionEventType.REMOVE,
-      function(evt) {
-        if (!modifyingCollection) {
-          modifyingCollection = true;
-          this.removeFeature(/** @type {ol.Feature} */ (evt.element));
-          modifyingCollection = false;
-        }
-      }, this);
+  ol.events.listen(this, ol.source.VectorEventType.ADDFEATURE, function(evt) {
+    if (!modifyingCollection) {
+      modifyingCollection = true;
+      collection.push(evt.feature);
+      modifyingCollection = false;
+    }
+  });
+  ol.events.listen(this, ol.source.VectorEventType.REMOVEFEATURE, function(
+    evt
+  ) {
+    if (!modifyingCollection) {
+      modifyingCollection = true;
+      collection.remove(evt.feature);
+      modifyingCollection = false;
+    }
+  });
+  ol.events.listen(
+    collection,
+    ol.CollectionEventType.ADD,
+    function(evt) {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        this.addFeature /** @type {ol.Feature} */(evt.element);
+        modifyingCollection = false;
+      }
+    },
+    this
+  );
+  ol.events.listen(
+    collection,
+    ol.CollectionEventType.REMOVE,
+    function(evt) {
+      if (!modifyingCollection) {
+        modifyingCollection = true;
+        this.removeFeature /** @type {ol.Feature} */(evt.element);
+        modifyingCollection = false;
+      }
+    },
+    this
+  );
   this.featuresCollection_ = collection;
 };
-
 
 /**
  * Remove all features from the source.
@@ -375,7 +389,6 @@ ol.source.Vector.prototype.clear = function(opt_fast) {
   this.changed();
 };
 
-
 /**
  * Iterate through all features on the source, calling the provided callback
  * with each one.  If the callback returns any "truthy" value, iteration will
@@ -396,7 +409,6 @@ ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
   }
 };
 
-
 /**
  * Iterate through all features whose geometries contain the provided
  * coordinate, calling the callback with each feature.  If the callback returns
@@ -410,7 +422,11 @@ ol.source.Vector.prototype.forEachFeature = function(callback, opt_this) {
  * @return {S|undefined} The return value from the last call to the callback.
  * @template T,S
  */
-ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(coordinate, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(
+  coordinate,
+  callback,
+  opt_this
+) {
   var extent = [coordinate[0], coordinate[1], coordinate[0], coordinate[1]];
   return this.forEachFeatureInExtent(extent, function(feature) {
     var geometry = feature.getGeometry();
@@ -421,7 +437,6 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(coordinat
     }
   });
 };
-
 
 /**
  * Iterate through all features whose bounding box intersects the provided
@@ -444,14 +459,17 @@ ol.source.Vector.prototype.forEachFeatureAtCoordinateDirect = function(coordinat
  * @template T,S
  * @api
  */
-ol.source.Vector.prototype.forEachFeatureInExtent = function(extent, callback, opt_this) {
+ol.source.Vector.prototype.forEachFeatureInExtent = function(
+  extent,
+  callback,
+  opt_this
+) {
   if (this.featuresRtree_) {
     return this.featuresRtree_.forEachInExtent(extent, callback, opt_this);
   } else if (this.featuresCollection_) {
     return this.featuresCollection_.forEach(callback, opt_this);
   }
 };
-
 
 /**
  * Iterate through all features whose geometry intersects the provided extent,
@@ -470,24 +488,29 @@ ol.source.Vector.prototype.forEachFeatureInExtent = function(extent, callback, o
  * @template T,S
  * @api
  */
-ol.source.Vector.prototype.forEachFeatureIntersectingExtent = function(extent, callback, opt_this) {
-  return this.forEachFeatureInExtent(extent,
-      /**
+ol.source.Vector.prototype.forEachFeatureIntersectingExtent = function(
+  extent,
+  callback,
+  opt_this
+) {
+  return this.forEachFeatureInExtent(
+    extent,
+    /**
        * @param {ol.Feature} feature Feature.
        * @return {S|undefined} The return value from the last call to the callback.
        * @template S
        */
-      function(feature) {
-        var geometry = feature.getGeometry();
-        if (geometry.intersectsExtent(extent)) {
-          var result = callback.call(opt_this, feature);
-          if (result) {
-            return result;
-          }
+    function(feature) {
+      var geometry = feature.getGeometry();
+      if (geometry.intersectsExtent(extent)) {
+        var result = callback.call(opt_this, feature);
+        if (result) {
+          return result;
         }
-      });
+      }
+    }
+  );
 };
-
 
 /**
  * Get the features collection associated with this source. Will be `null`
@@ -499,7 +522,6 @@ ol.source.Vector.prototype.forEachFeatureIntersectingExtent = function(extent, c
 ol.source.Vector.prototype.getFeaturesCollection = function() {
   return this.featuresCollection_;
 };
-
 
 /**
  * Get all features on the source in random order.
@@ -513,13 +535,11 @@ ol.source.Vector.prototype.getFeatures = function() {
   } else if (this.featuresRtree_) {
     features = this.featuresRtree_.getAll();
     if (!ol.obj.isEmpty(this.nullGeometryFeatures_)) {
-      ol.array.extend(
-          features, ol.obj.getValues(this.nullGeometryFeatures_));
+      ol.array.extend(features, ol.obj.getValues(this.nullGeometryFeatures_));
     }
   }
-  return /** @type {Array.<ol.Feature>} */ (features);
+  return /** @type {Array.<ol.Feature>} */ features;
 };
-
 
 /**
  * Get all features whose geometry intersects the provided coordinate.
@@ -534,7 +554,6 @@ ol.source.Vector.prototype.getFeaturesAtCoordinate = function(coordinate) {
   });
   return features;
 };
-
 
 /**
  * Get all features in the provided extent.  Note that this returns an array of
@@ -551,7 +570,6 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
   return this.featuresRtree_.getInExtent(extent);
 };
 
-
 /**
  * Get the closest feature to the provided coordinate.
  *
@@ -564,7 +582,10 @@ ol.source.Vector.prototype.getFeaturesInExtent = function(extent) {
  * @return {ol.Feature} Closest feature.
  * @api
  */
-ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate, opt_filter) {
+ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(
+  coordinate,
+  opt_filter
+) {
   // Find the closest feature using branch and bound.  We start searching an
   // infinite extent, and find the distance from the first feature found.  This
   // becomes the closest feature.  We then compute a smaller extent which any
@@ -579,33 +600,38 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate, 
   var minSquaredDistance = Infinity;
   var extent = [-Infinity, -Infinity, Infinity, Infinity];
   var filter = opt_filter ? opt_filter : ol.functions.TRUE;
-  this.featuresRtree_.forEachInExtent(extent,
-      /**
+  this.featuresRtree_.forEachInExtent(
+    extent,
+    /**
        * @param {ol.Feature} feature Feature.
        */
-      function(feature) {
-        if (filter(feature)) {
-          var geometry = feature.getGeometry();
-          var previousMinSquaredDistance = minSquaredDistance;
-          minSquaredDistance = geometry.closestPointXY(
-              x, y, closestPoint, minSquaredDistance);
-          if (minSquaredDistance < previousMinSquaredDistance) {
-            closestFeature = feature;
-            // This is sneaky.  Reduce the extent that it is currently being
-            // searched while the R-Tree traversal using this same extent object
-            // is still in progress.  This is safe because the new extent is
-            // strictly contained by the old extent.
-            var minDistance = Math.sqrt(minSquaredDistance);
-            extent[0] = x - minDistance;
-            extent[1] = y - minDistance;
-            extent[2] = x + minDistance;
-            extent[3] = y + minDistance;
-          }
+    function(feature) {
+      if (filter(feature)) {
+        var geometry = feature.getGeometry();
+        var previousMinSquaredDistance = minSquaredDistance;
+        minSquaredDistance = geometry.closestPointXY(
+          x,
+          y,
+          closestPoint,
+          minSquaredDistance
+        );
+        if (minSquaredDistance < previousMinSquaredDistance) {
+          closestFeature = feature;
+          // This is sneaky.  Reduce the extent that it is currently being
+          // searched while the R-Tree traversal using this same extent object
+          // is still in progress.  This is safe because the new extent is
+          // strictly contained by the old extent.
+          var minDistance = Math.sqrt(minSquaredDistance);
+          extent[0] = x - minDistance;
+          extent[1] = y - minDistance;
+          extent[2] = x + minDistance;
+          extent[3] = y + minDistance;
         }
-      });
+      }
+    }
+  );
   return closestFeature;
 };
-
 
 /**
  * Get the extent of the features currently in the source.
@@ -621,7 +647,6 @@ ol.source.Vector.prototype.getExtent = function(opt_extent) {
   return this.featuresRtree_.getExtent(opt_extent);
 };
 
-
 /**
  * Get a feature by its identifier (the value returned by feature.getId()).
  * Note that the index treats string and numeric identifiers as the same.  So
@@ -636,7 +661,6 @@ ol.source.Vector.prototype.getFeatureById = function(id) {
   return feature !== undefined ? feature : null;
 };
 
-
 /**
  * Get the format associated with this source.
  *
@@ -647,7 +671,6 @@ ol.source.Vector.prototype.getFormat = function() {
   return this.format_;
 };
 
-
 /**
  * @return {boolean} The source can have overlapping geometries.
  */
@@ -655,12 +678,10 @@ ol.source.Vector.prototype.getOverlaps = function() {
   return this.overlaps_;
 };
 
-
 /**
  * @override
  */
 ol.source.Vector.prototype.getResolutions = function() {};
-
 
 /**
  * Get the url associated with this source.
@@ -672,13 +693,12 @@ ol.source.Vector.prototype.getUrl = function() {
   return this.url_;
 };
 
-
 /**
  * @param {ol.events.Event} event Event.
  * @private
  */
 ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
-  var feature = /** @type {ol.Feature} */ (event.target);
+  var feature /** @type {ol.Feature} */ = event.target;
   var featureKey = ol.getUid(feature).toString();
   var geometry = feature.getGeometry();
   if (!geometry) {
@@ -720,19 +740,19 @@ ol.source.Vector.prototype.handleFeatureChange_ = function(event) {
     }
   }
   this.changed();
-  this.dispatchEvent(new ol.source.Vector.Event(
-      ol.source.VectorEventType.CHANGEFEATURE, feature));
+  this.dispatchEvent(
+    new ol.source.Vector.Event(ol.source.VectorEventType.CHANGEFEATURE, feature)
+  );
 };
-
 
 /**
  * @return {boolean} Is empty.
  */
 ol.source.Vector.prototype.isEmpty = function() {
-  return this.featuresRtree_.isEmpty() &&
-      ol.obj.isEmpty(this.nullGeometryFeatures_);
+  return (
+    this.featuresRtree_.isEmpty() && ol.obj.isEmpty(this.nullGeometryFeatures_)
+  );
 };
-
 
 /**
  * @param {ol.Extent} extent Extent.
@@ -740,27 +760,31 @@ ol.source.Vector.prototype.isEmpty = function() {
  * @param {ol.proj.Projection} projection Projection.
  */
 ol.source.Vector.prototype.loadFeatures = function(
-    extent, resolution, projection) {
+  extent,
+  resolution,
+  projection
+) {
   var loadedExtentsRtree = this.loadedExtentsRtree_;
   var extentsToLoad = this.strategy_(extent, resolution);
   var i, ii;
   for (i = 0, ii = extentsToLoad.length; i < ii; ++i) {
     var extentToLoad = extentsToLoad[i];
-    var alreadyLoaded = loadedExtentsRtree.forEachInExtent(extentToLoad,
-        /**
+    var alreadyLoaded = loadedExtentsRtree.forEachInExtent(
+      extentToLoad,
+      /**
          * @param {{extent: ol.Extent}} object Object.
          * @return {boolean} Contains.
          */
-        function(object) {
-          return ol.extent.containsExtent(object.extent, extentToLoad);
-        });
+      function(object) {
+        return ol.extent.containsExtent(object.extent, extentToLoad);
+      }
+    );
     if (!alreadyLoaded) {
       this.loader_.call(this, extentToLoad, resolution, projection);
       loadedExtentsRtree.insert(extentToLoad, {extent: extentToLoad.slice()});
     }
   }
 };
-
 
 /**
  * Remove a single feature from the source.  If you want to remove all features
@@ -782,7 +806,6 @@ ol.source.Vector.prototype.removeFeature = function(feature) {
   this.changed();
 };
 
-
 /**
  * Remove feature without firing a `change` event.
  * @param {ol.Feature} feature Feature.
@@ -798,10 +821,10 @@ ol.source.Vector.prototype.removeFeatureInternal = function(feature) {
   } else {
     delete this.undefIdIndex_[featureKey];
   }
-  this.dispatchEvent(new ol.source.Vector.Event(
-      ol.source.VectorEventType.REMOVEFEATURE, feature));
+  this.dispatchEvent(
+    new ol.source.Vector.Event(ol.source.VectorEventType.REMOVEFEATURE, feature)
+  );
 };
-
 
 /**
  * Remove a feature from the id index.  Called internally when the feature id
@@ -822,7 +845,6 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
   return removed;
 };
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.source.Vector} instances are instances of this
@@ -835,7 +857,6 @@ ol.source.Vector.prototype.removeFromIdIndex_ = function(feature) {
  * @param {ol.Feature=} opt_feature Feature.
  */
 ol.source.Vector.Event = function(type, opt_feature) {
-
   ol.events.Event.call(this, type);
 
   /**
@@ -844,6 +865,5 @@ ol.source.Vector.Event = function(type, opt_feature) {
    * @api
    */
   this.feature = opt_feature;
-
 };
 ol.inherits(ol.source.Vector.Event, ol.events.Event);

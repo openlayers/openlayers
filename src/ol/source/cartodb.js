@@ -5,7 +5,6 @@ goog.require('ol.obj');
 goog.require('ol.source.State');
 goog.require('ol.source.XYZ');
 
-
 /**
  * @classdesc
  * Layer source for the CartoDB tiles.
@@ -16,7 +15,6 @@ goog.require('ol.source.XYZ');
  * @api
  */
 ol.source.CartoDB = function(options) {
-
   /**
    * @type {string}
    * @private
@@ -56,7 +54,6 @@ ol.source.CartoDB = function(options) {
 };
 ol.inherits(ol.source.CartoDB, ol.source.XYZ);
 
-
 /**
  * Returns the current config.
  * @return {!Object} The current configuration.
@@ -65,7 +62,6 @@ ol.inherits(ol.source.CartoDB, ol.source.XYZ);
 ol.source.CartoDB.prototype.getConfig = function() {
   return this.config_;
 };
-
 
 /**
  * Updates the carto db config.
@@ -78,7 +74,6 @@ ol.source.CartoDB.prototype.updateConfig = function(config) {
   this.initializeMap_();
 };
 
-
 /**
  * Sets the CartoDB config
  * @param {Object} config In the case of anonymous maps, a CartoDB configuration
@@ -90,7 +85,6 @@ ol.source.CartoDB.prototype.setConfig = function(config) {
   this.config_ = config || {};
   this.initializeMap_();
 };
-
 
 /**
  * Issue a request to initialize the CartoDB map.
@@ -109,13 +103,15 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
   }
 
   var client = new XMLHttpRequest();
-  client.addEventListener('load', this.handleInitResponse_.bind(this, paramHash));
+  client.addEventListener(
+    'load',
+    this.handleInitResponse_.bind(this, paramHash)
+  );
   client.addEventListener('error', this.handleInitError_.bind(this));
   client.open('POST', mapUrl);
   client.setRequestHeader('Content-type', 'application/json');
   client.send(JSON.stringify(this.config_));
 };
-
 
 /**
  * Handle map initialization response.
@@ -125,12 +121,14 @@ ol.source.CartoDB.prototype.initializeMap_ = function() {
  * @private
  */
 ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
-  var client = /** @type {XMLHttpRequest} */ (event.target);
+  var client /** @type {XMLHttpRequest} */ = event.target;
   // status will be 0 for file:// urls
-  if (!client.status || client.status >= 200 && client.status < 300) {
+  if (!client.status || (client.status >= 200 && client.status < 300)) {
     var response;
     try {
-      response = /** @type {CartoDBLayerInfo} */(JSON.parse(client.responseText));
+      response /** @type {CartoDBLayerInfo} */ = JSON.parse(
+        client.responseText
+      );
     } catch (err) {
       this.setState(ol.source.State.ERROR);
       return;
@@ -143,7 +141,6 @@ ol.source.CartoDB.prototype.handleInitResponse_ = function(paramHash, event) {
   }
 };
 
-
 /**
  * @private
  * @param {Event} event Event.
@@ -152,14 +149,19 @@ ol.source.CartoDB.prototype.handleInitError_ = function(event) {
   this.setState(ol.source.State.ERROR);
 };
 
-
 /**
  * Apply the new tile urls returned by carto db
  * @param {CartoDBLayerInfo} data Result of carto db call.
  * @private
  */
 ol.source.CartoDB.prototype.applyTemplate_ = function(data) {
-  var tilesUrl = 'https://' + data.cdn_url.https + '/' + this.account_ +
-      '/api/v1/map/' + data.layergroupid + '/{z}/{x}/{y}.png';
+  var tilesUrl =
+    'https://' +
+    data.cdn_url.https +
+    '/' +
+    this.account_ +
+    '/api/v1/map/' +
+    data.layergroupid +
+    '/{z}/{x}/{y}.png';
   this.setUrl(tilesUrl);
 };

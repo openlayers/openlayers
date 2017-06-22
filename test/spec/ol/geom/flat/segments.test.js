@@ -2,9 +2,7 @@ goog.provide('ol.test.geom.flat.segments');
 
 goog.require('ol.geom.flat.segments');
 
-
 describe('ol.geom.flat.segments', function() {
-
   describe('ol.geom.flat.segments.forEach', function() {
     var flatCoordinates, offset, end, stride;
     beforeEach(function() {
@@ -20,7 +18,12 @@ describe('ol.geom.flat.segments', function() {
           args.push([point1[0], point1[1], point2[0], point2[1]]);
         });
         var ret = ol.geom.flat.segments.forEach(
-            flatCoordinates, offset, end, stride, spy);
+          flatCoordinates,
+          offset,
+          end,
+          stride,
+          spy
+        );
         expect(spy.callCount).to.be(3);
         expect(args[0][0]).to.be(0);
         expect(args[0][1]).to.be(0);
@@ -45,7 +48,12 @@ describe('ol.geom.flat.segments', function() {
           return true;
         });
         var ret = ol.geom.flat.segments.forEach(
-            flatCoordinates, offset, end, stride, spy);
+          flatCoordinates,
+          offset,
+          end,
+          stride,
+          spy
+        );
         expect(spy.callCount).to.be(1);
         expect(args[0][0]).to.be(0);
         expect(args[0][1]).to.be(0);

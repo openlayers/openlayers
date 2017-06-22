@@ -8,7 +8,6 @@ goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 
 describe('ol.View', function() {
-
   describe('constructor (defaults)', function() {
     var view;
 
@@ -23,13 +22,10 @@ describe('ol.View', function() {
     it('provides default rotation', function() {
       expect(view.getRotation()).to.be(0);
     });
-
   });
 
   describe('create constraints', function() {
-
     describe('create center constraint', function() {
-
       describe('with no options', function() {
         it('gives a correct center constraint function', function() {
           var options = {};
@@ -51,44 +47,45 @@ describe('ol.View', function() {
           expect(fn([100, 100])).to.eql([1, 1]);
         });
       });
-
     });
 
     describe('create resolution constraint', function() {
-
       describe('with no options', function() {
         it('gives a correct resolution constraint function', function() {
           var options = {};
           var fn = ol.View.createResolutionConstraint_(options).constraint;
-          expect(fn(156543.03392804097, 0, 0))
-              .to.roughlyEqual(156543.03392804097, 1e-9);
-          expect(fn(78271.51696402048, 0, 0))
-              .to.roughlyEqual(78271.51696402048, 1e-10);
+          expect(fn(156543.03392804097, 0, 0)).to.roughlyEqual(
+            156543.03392804097,
+            1e-9
+          );
+          expect(fn(78271.51696402048, 0, 0)).to.roughlyEqual(
+            78271.51696402048,
+            1e-10
+          );
         });
       });
 
-      describe('with maxResolution, maxZoom, and zoomFactor options',
-          function() {
-            it('gives a correct resolution constraint function', function() {
-              var options = {
-                maxResolution: 81,
-                maxZoom: 3,
-                zoomFactor: 3
-              };
-              var info = ol.View.createResolutionConstraint_(options);
-              var maxResolution = info.maxResolution;
-              expect(maxResolution).to.eql(81);
-              var minResolution = info.minResolution;
-              expect(minResolution).to.eql(3);
-              var fn = info.constraint;
-              expect(fn(82, 0, 0)).to.eql(81);
-              expect(fn(81, 0, 0)).to.eql(81);
-              expect(fn(27, 0, 0)).to.eql(27);
-              expect(fn(9, 0, 0)).to.eql(9);
-              expect(fn(3, 0, 0)).to.eql(3);
-              expect(fn(2, 0, 0)).to.eql(3);
-            });
-          });
+      describe('with maxResolution, maxZoom, and zoomFactor options', function() {
+        it('gives a correct resolution constraint function', function() {
+          var options = {
+            maxResolution: 81,
+            maxZoom: 3,
+            zoomFactor: 3
+          };
+          var info = ol.View.createResolutionConstraint_(options);
+          var maxResolution = info.maxResolution;
+          expect(maxResolution).to.eql(81);
+          var minResolution = info.minResolution;
+          expect(minResolution).to.eql(3);
+          var fn = info.constraint;
+          expect(fn(82, 0, 0)).to.eql(81);
+          expect(fn(81, 0, 0)).to.eql(81);
+          expect(fn(27, 0, 0)).to.eql(27);
+          expect(fn(9, 0, 0)).to.eql(9);
+          expect(fn(3, 0, 0)).to.eql(3);
+          expect(fn(2, 0, 0)).to.eql(3);
+        });
+      });
 
       describe('with resolutions', function() {
         it('gives a correct resolution constraint function', function() {
@@ -110,7 +107,6 @@ describe('ol.View', function() {
       });
 
       describe('with zoom related options', function() {
-
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
           return ol.View.createResolutionConstraint_(options).constraint;
@@ -123,10 +119,14 @@ describe('ol.View', function() {
           });
 
           expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
-              defaultMaxRes, 1e-9);
+            defaultMaxRes,
+            1e-9
+          );
 
           expect(constraint(0, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
+            defaultMaxRes / Math.pow(2, maxZoom),
+            1e-9
+          );
         });
 
         it('works with only minZoom', function() {
@@ -136,10 +136,14 @@ describe('ol.View', function() {
           });
 
           expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(2, minZoom), 1e-9);
+            defaultMaxRes / Math.pow(2, minZoom),
+            1e-9
+          );
 
           expect(constraint(0, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(2, 28), 1e-9);
+            defaultMaxRes / Math.pow(2, 28),
+            1e-9
+          );
         });
 
         it('works with maxZoom and minZoom', function() {
@@ -151,10 +155,14 @@ describe('ol.View', function() {
           });
 
           expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(2, minZoom), 1e-9);
+            defaultMaxRes / Math.pow(2, minZoom),
+            1e-9
+          );
 
           expect(constraint(0, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(2, maxZoom), 1e-9);
+            defaultMaxRes / Math.pow(2, maxZoom),
+            1e-9
+          );
         });
 
         it('works with maxZoom, minZoom, and zoomFactor', function() {
@@ -168,16 +176,18 @@ describe('ol.View', function() {
           });
 
           expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(zoomFactor, minZoom), 1e-9);
+            defaultMaxRes / Math.pow(zoomFactor, minZoom),
+            1e-9
+          );
 
           expect(constraint(0, 0, 0)).to.roughlyEqual(
-              defaultMaxRes / Math.pow(zoomFactor, maxZoom), 1e-9);
+            defaultMaxRes / Math.pow(zoomFactor, maxZoom),
+            1e-9
+          );
         });
-
       });
 
       describe('with resolution related options', function() {
-
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
           return ol.View.createResolutionConstraint_(options).constraint;
@@ -190,7 +200,9 @@ describe('ol.View', function() {
           });
 
           expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
-              maxResolution, 1e-9);
+            maxResolution,
+            1e-9
+          );
 
           var minResolution = constraint(0, 0, 0);
           var defaultMinRes = defaultMaxRes / Math.pow(2, 28);
@@ -206,7 +218,9 @@ describe('ol.View', function() {
           });
 
           expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
-              defaultMaxRes, 1e-9);
+            defaultMaxRes,
+            1e-9
+          );
 
           var constrainedMinRes = constraint(0, 0, 0);
           expect(constrainedMinRes).to.be.greaterThan(minResolution);
@@ -242,11 +256,9 @@ describe('ol.View', function() {
           expect(constraint(10, 0, 0)).to.be(5);
           expect(constraint(1, 0, 0)).to.be(5);
         });
-
       });
 
       describe('overspecified options (prefers resolution)', function() {
-
         var defaultMaxRes = 156543.03392804097;
         function getConstraint(options) {
           return ol.View.createResolutionConstraint_(options).constraint;
@@ -261,7 +273,9 @@ describe('ol.View', function() {
           });
 
           expect(constraint(maxResolution * 3, 0, 0)).to.roughlyEqual(
-              maxResolution, 1e-9);
+            maxResolution,
+            1e-9
+          );
 
           var minResolution = constraint(0, 0, 0);
           var defaultMinRes = defaultMaxRes / Math.pow(2, 28);
@@ -279,15 +293,15 @@ describe('ol.View', function() {
           });
 
           expect(constraint(defaultMaxRes, 0, 0)).to.roughlyEqual(
-              defaultMaxRes, 1e-9);
+            defaultMaxRes,
+            1e-9
+          );
 
           var constrainedMinRes = constraint(0, 0, 0);
           expect(constrainedMinRes).to.be.greaterThan(minResolution);
           expect(constrainedMinRes / minResolution).to.be.lessThan(2);
         });
-
       });
-
     });
 
     describe('create rotation constraint', function() {
@@ -298,11 +312,9 @@ describe('ol.View', function() {
         expect(fn(0.15, 0)).to.eql(0.15);
       });
     });
-
   });
 
   describe('#setHint()', function() {
-
     it('changes a view hint', function() {
       var view = new ol.View({
         center: [0, 0],
@@ -330,11 +342,9 @@ describe('ol.View', function() {
       });
       view.setHint(ol.ViewHint.INTERACTING, 1);
     });
-
   });
 
   describe('#getUpdatedOptions_()', function() {
-
     it('applies minZoom to constructor options', function() {
       var view = new ol.View({
         center: [0, 0],
@@ -396,11 +406,9 @@ describe('ol.View', function() {
       expect(options.zoom).to.eql(10);
       expect(options.rotation).to.eql(Math.PI / 6);
     });
-
   });
 
   describe('#animate()', function() {
-
     var originalRequestAnimationFrame = window.requestAnimationFrame;
     var originalCancelAnimationFrame = window.cancelAnimationFrame;
 
@@ -463,15 +471,18 @@ describe('ol.View', function() {
         zoom: 5
       });
 
-      view.animate({
-        zoom: 4,
-        resolution: view.getResolution() * 3,
-        duration: 25
-      }, function(complete) {
-        expect(complete).to.be(true);
-        expect(view.getZoom()).to.be(4);
-        done();
-      });
+      view.animate(
+        {
+          zoom: 4,
+          resolution: view.getResolution() * 3,
+          duration: 25
+        },
+        function(complete) {
+          expect(complete).to.be(true);
+          expect(view.getZoom()).to.be(4);
+          done();
+        }
+      );
     });
 
     it('avoids going under minResolution', function(done) {
@@ -483,15 +494,18 @@ describe('ol.View', function() {
       });
 
       var minResolution = view.getMinResolution();
-      view.animate({
-        resolution: minResolution,
-        duration: 10
-      }, function(complete) {
-        expect(complete).to.be(true);
-        expect(view.getResolution()).to.be(minResolution);
-        expect(view.getZoom()).to.be(maxZoom);
-        done();
-      });
+      view.animate(
+        {
+          resolution: minResolution,
+          duration: 10
+        },
+        function(complete) {
+          expect(complete).to.be(true);
+          expect(view.getResolution()).to.be(minResolution);
+          expect(view.getZoom()).to.be(maxZoom);
+          done();
+        }
+      );
     });
 
     it('calls a callback when animation completes', function(done) {
@@ -500,28 +514,36 @@ describe('ol.View', function() {
         zoom: 0
       });
 
-      view.animate({
-        zoom: 1,
-        duration: 25
-      }, function(complete) {
-        expect(complete).to.be(true);
-        done();
-      });
+      view.animate(
+        {
+          zoom: 1,
+          duration: 25
+        },
+        function(complete) {
+          expect(complete).to.be(true);
+          done();
+        }
+      );
     });
 
-    it('calls callback with false when animation is interrupted', function(done) {
+    it('calls callback with false when animation is interrupted', function(
+      done
+    ) {
       var view = new ol.View({
         center: [0, 0],
         zoom: 0
       });
 
-      view.animate({
-        zoom: 1,
-        duration: 25
-      }, function(complete) {
-        expect(complete).to.be(false);
-        done();
-      });
+      view.animate(
+        {
+          zoom: 1,
+          duration: 25
+        },
+        function(complete) {
+          expect(complete).to.be(false);
+          done();
+        }
+      );
 
       view.setCenter([1, 2]); // interrupt the animation
     });
@@ -534,25 +556,28 @@ describe('ol.View', function() {
 
       var checked = false;
 
-      view.animate({
-        zoom: 2,
-        duration: 25
-      }, {
-        center: [10, 10],
-        duration: 25
-      }, function(complete) {
-        expect(checked).to.be(true);
-        expect(view.getZoom()).to.roughlyEqual(2, 1e-5);
-        expect(view.getCenter()).to.eql([10, 10]);
-        expect(complete).to.be(true);
-        done();
-      });
+      view.animate(
+        {
+          zoom: 2,
+          duration: 25
+        },
+        {
+          center: [10, 10],
+          duration: 25
+        },
+        function(complete) {
+          expect(checked).to.be(true);
+          expect(view.getZoom()).to.roughlyEqual(2, 1e-5);
+          expect(view.getCenter()).to.eql([10, 10]);
+          expect(complete).to.be(true);
+          done();
+        }
+      );
 
       setTimeout(function() {
         expect(view.getCenter()).to.eql([0, 0]);
         checked = true;
       }, 10);
-
     });
 
     it('properly sets the ANIMATING hint', function(done) {
@@ -570,24 +595,32 @@ describe('ol.View', function() {
           done();
         }
       }
-      view.animate({
-        center: [1, 2],
-        duration: 25
-      }, decrement);
+      view.animate(
+        {
+          center: [1, 2],
+          duration: 25
+        },
+        decrement
+      );
       expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(1);
 
-      view.animate({
-        zoom: 1,
-        duration: 25
-      }, decrement);
+      view.animate(
+        {
+          zoom: 1,
+          duration: 25
+        },
+        decrement
+      );
       expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(2);
 
-      view.animate({
-        rotate: Math.PI,
-        duration: 25
-      }, decrement);
+      view.animate(
+        {
+          rotate: Math.PI,
+          duration: 25
+        },
+        decrement
+      );
       expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(3);
-
     });
 
     it('clears the ANIMATING hint when animations are cancelled', function() {
@@ -618,11 +651,11 @@ describe('ol.View', function() {
       // cancel animations
       view.setCenter([10, 20]);
       expect(view.getHints()[ol.ViewHint.ANIMATING]).to.be(0);
-
     });
 
-    it('completes multiple staggered animations run in parallel', function(done) {
-
+    it('completes multiple staggered animations run in parallel', function(
+      done
+    ) {
       var view = new ol.View({
         center: [0, 0],
         zoom: 0
@@ -630,32 +663,36 @@ describe('ol.View', function() {
 
       var calls = 0;
 
-      view.animate({
-        zoom: 1,
-        duration: 25
-      }, function() {
-        ++calls;
-      });
+      view.animate(
+        {
+          zoom: 1,
+          duration: 25
+        },
+        function() {
+          ++calls;
+        }
+      );
 
       setTimeout(function() {
         expect(view.getZoom() > 0).to.be(true);
         expect(view.getZoom() < 1).to.be(true);
         expect(view.getAnimating()).to.be(true);
-        view.animate({
-          zoom: 2,
-          duration: 25
-        }, function() {
-          expect(calls).to.be(1);
-          expect(view.getZoom()).to.be(2);
-          expect(view.getAnimating()).to.be(false);
-          done();
-        });
+        view.animate(
+          {
+            zoom: 2,
+            duration: 25
+          },
+          function() {
+            expect(calls).to.be(1);
+            expect(view.getZoom()).to.be(2);
+            expect(view.getAnimating()).to.be(false);
+            done();
+          }
+        );
       }, 10);
-
     });
 
     it('completes complex animation using resolution', function(done) {
-
       var view = new ol.View({
         center: [0, 0],
         resolution: 2
@@ -670,26 +707,33 @@ describe('ol.View', function() {
         }
       }
 
-      view.animate({
-        center: [100, 100],
-        duration: 50
-      }, function() {
-        ++calls;
-        expect(view.getCenter()).to.eql([100, 100]);
-        onAnimateEnd();
-      });
+      view.animate(
+        {
+          center: [100, 100],
+          duration: 50
+        },
+        function() {
+          ++calls;
+          expect(view.getCenter()).to.eql([100, 100]);
+          onAnimateEnd();
+        }
+      );
 
-      view.animate({
-        resolution: 2000,
-        duration: 25
-      }, {
-        resolution: 2,
-        duration: 25
-      }, function() {
-        ++calls;
-        expect(view.getResolution()).to.be(2);
-        onAnimateEnd();
-      });
+      view.animate(
+        {
+          resolution: 2000,
+          duration: 25
+        },
+        {
+          resolution: 2,
+          duration: 25
+        },
+        function() {
+          ++calls;
+          expect(view.getResolution()).to.be(2);
+          onAnimateEnd();
+        }
+      );
 
       setTimeout(function() {
         expect(view.getResolution() > 2).to.be(true);
@@ -702,13 +746,10 @@ describe('ol.View', function() {
         expect(view.getResolution() < 2000).to.be(true);
         expect(view.getAnimating()).to.be(true);
       }, 40);
-
     });
-
   });
 
   describe('#cancelAnimations()', function() {
-
     var originalRequestAnimationFrame = window.requestAnimationFrame;
     var originalCancelAnimationFrame = window.cancelAnimationFrame;
 
@@ -755,13 +796,16 @@ describe('ol.View', function() {
         rotation: 0
       });
 
-      view.animate({
-        rotation: 10,
-        duration: 50
-      }, {
-        zoom: 10,
-        duration: 50
-      });
+      view.animate(
+        {
+          rotation: 10,
+          duration: 50
+        },
+        {
+          zoom: 10,
+          duration: 50
+        }
+      );
 
       view.animate({
         center: [10, 30],
@@ -778,27 +822,31 @@ describe('ol.View', function() {
       }, 10);
     });
 
-    it('calls callbacks with false to indicate animations did not complete', function(done) {
+    it('calls callbacks with false to indicate animations did not complete', function(
+      done
+    ) {
       var view = new ol.View({
         center: [0, 0],
         zoom: 0
       });
 
-      view.animate({
-        zoom: 10,
-        duration: 50
-      }, function(complete) {
-        expect(view.getAnimating()).to.be(false);
-        expect(complete).to.be(false);
-        done();
-      });
+      view.animate(
+        {
+          zoom: 10,
+          duration: 50
+        },
+        function(complete) {
+          expect(view.getAnimating()).to.be(false);
+          expect(complete).to.be(false);
+          done();
+        }
+      );
 
       setTimeout(function() {
         expect(view.getAnimating()).to.be(true);
         view.cancelAnimations();
       }, 10);
     });
-
   });
 
   describe('#getResolutions', function() {
@@ -871,7 +919,6 @@ describe('ol.View', function() {
 
       view.setZoom(3);
       expect(view.getZoom()).to.be(3);
-
     });
   });
 
@@ -926,9 +973,7 @@ describe('ol.View', function() {
   });
 
   describe('#getZoom() - overspecified', function() {
-
     it('gives maxResolution precedence over minZoom', function() {
-
       var view = new ol.View({
         maxResolution: 100,
         minZoom: 2 // this should get ignored
@@ -943,7 +988,6 @@ describe('ol.View', function() {
   });
 
   describe('#getZoomForResolution', function() {
-
     it('returns correct zoom levels', function() {
       var view = new ol.View();
       var max = view.getMaxResolution();
@@ -970,14 +1014,14 @@ describe('ol.View', function() {
 
       expect(view.getZoomForResolution(2)).to.be(4);
     });
-
   });
 
   describe('#getMaxZoom', function() {
-
     it('returns the zoom level for the min resolution', function() {
       var view = new ol.View();
-      expect(view.getMaxZoom()).to.be(view.getZoomForResolution(view.getMinResolution()));
+      expect(view.getMaxZoom()).to.be(
+        view.getZoomForResolution(view.getMinResolution())
+      );
     });
 
     it('works for a view configured with a maxZoom', function() {
@@ -986,14 +1030,14 @@ describe('ol.View', function() {
       });
       expect(view.getMaxZoom()).to.be(10);
     });
-
   });
 
   describe('#getMinZoom', function() {
-
     it('returns the zoom level for the max resolution', function() {
       var view = new ol.View();
-      expect(view.getMinZoom()).to.be(view.getZoomForResolution(view.getMaxResolution()));
+      expect(view.getMinZoom()).to.be(
+        view.getZoomForResolution(view.getMaxResolution())
+      );
     });
 
     it('works for views configured with a minZoom', function() {
@@ -1002,7 +1046,6 @@ describe('ol.View', function() {
       });
       expect(view.getMinZoom()).to.be(3);
     });
-
   });
 
   describe('#calculateExtent', function() {
@@ -1056,7 +1099,6 @@ describe('ol.View', function() {
   });
 
   describe('fit', function() {
-
     var originalRequestAnimationFrame = window.requestAnimationFrame;
     var originalCancelAnimationFrame = window.cancelAnimationFrame;
 
@@ -1084,60 +1126,78 @@ describe('ol.View', function() {
     });
     it('fits correctly to the geometry', function() {
       view.fit(
-          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {
+          size: [200, 200],
+          padding: [100, 0, 0, 100],
+          constrainResolution: false
+        }
+      );
       expect(view.getResolution()).to.be(11);
       expect(view.getCenter()[0]).to.be(5950);
       expect(view.getCenter()[1]).to.be(47100);
 
       view.fit(
-          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          {size: [200, 200], padding: [100, 0, 0, 100]});
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {size: [200, 200], padding: [100, 0, 0, 100]}
+      );
       expect(view.getResolution()).to.be(20);
       expect(view.getCenter()[0]).to.be(5500);
       expect(view.getCenter()[1]).to.be(47550);
 
       view.fit(
-          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          {size: [200, 200], padding: [100, 0, 0, 100], nearest: true});
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {size: [200, 200], padding: [100, 0, 0, 100], nearest: true}
+      );
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(47050);
 
-      view.fit(
-          new ol.geom.Point([6000, 46000]),
-          {size: [200, 200], padding: [100, 0, 0, 100], minResolution: 2});
+      view.fit(new ol.geom.Point([6000, 46000]), {
+        size: [200, 200],
+        padding: [100, 0, 0, 100],
+        minResolution: 2
+      });
       expect(view.getResolution()).to.be(2);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
-      view.fit(
-          new ol.geom.Point([6000, 46000]),
-          {size: [200, 200], padding: [100, 0, 0, 100], maxZoom: 6});
+      view.fit(new ol.geom.Point([6000, 46000]), {
+        size: [200, 200],
+        padding: [100, 0, 0, 100],
+        maxZoom: 6
+      });
       expect(view.getResolution()).to.be(2);
       expect(view.getZoom()).to.be(6);
       expect(view.getCenter()[0]).to.be(5900);
       expect(view.getCenter()[1]).to.be(46100);
 
-      view.fit(
-          new ol.geom.Circle([6000, 46000], 1000),
-          {size: [200, 200], constrainResolution: false});
+      view.fit(new ol.geom.Circle([6000, 46000], 1000), {
+        size: [200, 200],
+        constrainResolution: false
+      });
       expect(view.getResolution()).to.be(10);
       expect(view.getCenter()[0]).to.be(6000);
       expect(view.getCenter()[1]).to.be(46000);
 
       view.setRotation(Math.PI / 8);
-      view.fit(
-          new ol.geom.Circle([6000, 46000], 1000),
-          {size: [200, 200], constrainResolution: false});
+      view.fit(new ol.geom.Circle([6000, 46000], 1000), {
+        size: [200, 200],
+        constrainResolution: false
+      });
       expect(view.getResolution()).to.roughlyEqual(10, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(6000, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
 
       view.setRotation(Math.PI / 4);
       view.fit(
-          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-          {size: [200, 200], padding: [100, 0, 0, 100], constrainResolution: false});
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {
+          size: [200, 200],
+          padding: [100, 0, 0, 100],
+          constrainResolution: false
+        }
+      );
       expect(view.getResolution()).to.roughlyEqual(14.849242404917458, 1e-9);
       expect(view.getCenter()[0]).to.roughlyEqual(5200, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46300, 1e-9);
@@ -1166,7 +1226,8 @@ describe('ol.View', function() {
           padding: [100, 0, 0, 100],
           constrainResolution: false,
           duration: 25
-        });
+        }
+      );
 
       expect(view.getAnimating()).to.eql(true);
 
@@ -1177,26 +1238,30 @@ describe('ol.View', function() {
         expect(view.getAnimating()).to.eql(false);
         done();
       }, 50);
-
     });
     it('calls a callback when duration is not defined', function(done) {
-      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
-        callback: function(complete) {
-          expect(complete).to.be(true);
-          done();
+      view.fit(
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {
+          callback: function(complete) {
+            expect(complete).to.be(true);
+            done();
+          }
         }
-      });
+      );
     });
     it('calls a callback when animation completes', function(done) {
-      view.fit(new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]), {
-        duration: 25,
-        callback: function(complete) {
-          expect(complete).to.be(true);
-          done();
+      view.fit(
+        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+        {
+          duration: 25,
+          callback: function(complete) {
+            expect(complete).to.be(true);
+            done();
+          }
         }
-      });
+      );
     });
-
   });
 
   describe('centerOn', function() {
@@ -1208,20 +1273,12 @@ describe('ol.View', function() {
     });
     it('fit correctly to the coordinates', function() {
       view.setResolution(10);
-      view.centerOn(
-          [6000, 46000],
-          [400, 400],
-          [300, 300]
-      );
+      view.centerOn([6000, 46000], [400, 400], [300, 300]);
       expect(view.getCenter()[0]).to.be(5000);
       expect(view.getCenter()[1]).to.be(47000);
 
       view.setRotation(Math.PI / 4);
-      view.centerOn(
-          [6000, 46000],
-          [400, 400],
-          [300, 300]
-      );
+      view.centerOn([6000, 46000], [400, 400], [300, 300]);
       expect(view.getCenter()[0]).to.roughlyEqual(4585.78643762691, 1e-9);
       expect(view.getCenter()[1]).to.roughlyEqual(46000, 1e-9);
     });

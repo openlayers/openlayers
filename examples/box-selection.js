@@ -9,12 +9,10 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.OSM');
 goog.require('ol.source.Vector');
 
-
 var vectorSource = new ol.source.Vector({
   url: 'data/geojson/countries.geojson',
   format: new ol.format.GeoJSON()
 });
-
 
 var map = new ol.Map({
   layers: [

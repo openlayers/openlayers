@@ -9,7 +9,6 @@ goog.require('ol.proj');
 goog.require('ol.reproj.Image');
 goog.require('ol.source.Source');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -35,16 +34,15 @@ ol.source.Image = function(options) {
    * @private
    * @type {Array.<number>}
    */
-  this.resolutions_ = options.resolutions !== undefined ?
-      options.resolutions : null;
-
+  this.resolutions_ = options.resolutions !== undefined
+    ? options.resolutions
+    : null;
 
   /**
    * @private
    * @type {ol.reproj.Image}
    */
   this.reprojectedImage_ = null;
-
 
   /**
    * @private
@@ -54,7 +52,6 @@ ol.source.Image = function(options) {
 };
 ol.inherits(ol.source.Image, ol.source.Source);
 
-
 /**
  * @return {Array.<number>} Resolutions.
  * @override
@@ -62,7 +59,6 @@ ol.inherits(ol.source.Image, ol.source.Source);
 ol.source.Image.prototype.getResolutions = function() {
   return this.resolutions_;
 };
-
 
 /**
  * @protected
@@ -77,7 +73,6 @@ ol.source.Image.prototype.findNearestResolution = function(resolution) {
   return resolution;
 };
 
-
 /**
  * @param {ol.Extent} extent Extent.
  * @param {number} resolution Resolution.
@@ -85,23 +80,34 @@ ol.source.Image.prototype.findNearestResolution = function(resolution) {
  * @param {ol.proj.Projection} projection Projection.
  * @return {ol.ImageBase} Single image.
  */
-ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, projection) {
+ol.source.Image.prototype.getImage = function(
+  extent,
+  resolution,
+  pixelRatio,
+  projection
+) {
   var sourceProjection = this.getProjection();
-  if (!ol.ENABLE_RASTER_REPROJECTION ||
-      !sourceProjection ||
-      !projection ||
-      ol.proj.equivalent(sourceProjection, projection)) {
+  if (
+    !ol.ENABLE_RASTER_REPROJECTION ||
+    !sourceProjection ||
+    !projection ||
+    ol.proj.equivalent(sourceProjection, projection)
+  ) {
     if (sourceProjection) {
       projection = sourceProjection;
     }
     return this.getImageInternal(extent, resolution, pixelRatio, projection);
   } else {
     if (this.reprojectedImage_) {
-      if (this.reprojectedRevision_ == this.getRevision() &&
-          ol.proj.equivalent(
-              this.reprojectedImage_.getProjection(), projection) &&
-          this.reprojectedImage_.getResolution() == resolution &&
-          ol.extent.equals(this.reprojectedImage_.getExtent(), extent)) {
+      if (
+        this.reprojectedRevision_ == this.getRevision() &&
+        ol.proj.equivalent(
+          this.reprojectedImage_.getProjection(),
+          projection
+        ) &&
+        this.reprojectedImage_.getResolution() == resolution &&
+        ol.extent.equals(this.reprojectedImage_.getExtent(), extent)
+      ) {
         return this.reprojectedImage_;
       }
       this.reprojectedImage_.dispose();
@@ -109,17 +115,25 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
     }
 
     this.reprojectedImage_ = new ol.reproj.Image(
-        sourceProjection, projection, extent, resolution, pixelRatio,
-        function(extent, resolution, pixelRatio) {
-          return this.getImageInternal(extent, resolution,
-              pixelRatio, sourceProjection);
-        }.bind(this));
+      sourceProjection,
+      projection,
+      extent,
+      resolution,
+      pixelRatio,
+      function(extent, resolution, pixelRatio) {
+        return this.getImageInternal(
+          extent,
+          resolution,
+          pixelRatio,
+          sourceProjection
+        );
+      }.bind(this)
+    );
     this.reprojectedRevision_ = this.getRevision();
 
     return this.reprojectedImage_;
   }
 };
-
 
 /**
  * @abstract
@@ -130,8 +144,12 @@ ol.source.Image.prototype.getImage = function(extent, resolution, pixelRatio, pr
  * @return {ol.ImageBase} Single image.
  * @protected
  */
-ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {};
-
+ol.source.Image.prototype.getImageInternal = function(
+  extent,
+  resolution,
+  pixelRatio,
+  projection
+) {};
 
 /**
  * Handle image change events.
@@ -139,28 +157,36 @@ ol.source.Image.prototype.getImageInternal = function(extent, resolution, pixelR
  * @protected
  */
 ol.source.Image.prototype.handleImageChange = function(event) {
-  var image = /** @type {ol.Image} */ (event.target);
+  var image /** @type {ol.Image} */ = event.target;
   switch (image.getState()) {
     case ol.ImageState.LOADING:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADSTART,
-              image));
+        new ol.source.Image.Event(
+          ol.source.Image.EventType_.IMAGELOADSTART,
+          image
+        )
+      );
       break;
     case ol.ImageState.LOADED:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADEND,
-              image));
+        new ol.source.Image.Event(
+          ol.source.Image.EventType_.IMAGELOADEND,
+          image
+        )
+      );
       break;
     case ol.ImageState.ERROR:
       this.dispatchEvent(
-          new ol.source.Image.Event(ol.source.Image.EventType_.IMAGELOADERROR,
-              image));
+        new ol.source.Image.Event(
+          ol.source.Image.EventType_.IMAGELOADERROR,
+          image
+        )
+      );
       break;
     default:
-      // pass
+    // pass
   }
 };
-
 
 /**
  * Default image load function for image sources that use ol.Image image
@@ -171,7 +197,6 @@ ol.source.Image.prototype.handleImageChange = function(event) {
 ol.source.Image.defaultImageLoadFunction = function(image, src) {
   image.getImage().src = src;
 };
-
 
 /**
  * @classdesc
@@ -185,7 +210,6 @@ ol.source.Image.defaultImageLoadFunction = function(image, src) {
  * @param {ol.Image} image The image.
  */
 ol.source.Image.Event = function(type, image) {
-
   ol.events.Event.call(this, type);
 
   /**
@@ -194,17 +218,14 @@ ol.source.Image.Event = function(type, image) {
    * @api
    */
   this.image = image;
-
 };
 ol.inherits(ol.source.Image.Event, ol.events.Event);
-
 
 /**
  * @enum {string}
  * @private
  */
 ol.source.Image.EventType_ = {
-
   /**
    * Triggered when an image starts loading.
    * @event ol.source.Image.Event#imageloadstart
@@ -225,5 +246,4 @@ ol.source.Image.EventType_ = {
    * @api
    */
   IMAGELOADERROR: 'imageloaderror'
-
 };

@@ -46,5 +46,4 @@ describe('ol.interaction.KeyboardPan', function() {
       ol.interaction.Interaction.pan.restore();
     });
   });
-
 });

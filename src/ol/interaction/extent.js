@@ -15,7 +15,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 
-
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map.
@@ -29,7 +28,6 @@ goog.require('ol.style.Style');
  * @api
  */
 ol.interaction.Extent = function(opt_options) {
-
   /**
    * Extent of the drawn box
    * @type {ol.Extent}
@@ -98,7 +96,9 @@ ol.interaction.Extent = function(opt_options) {
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
     }),
-    style: opt_options.boxStyle ? opt_options.boxStyle : ol.interaction.Extent.getDefaultExtentStyleFunction_(),
+    style: opt_options.boxStyle
+      ? opt_options.boxStyle
+      : ol.interaction.Extent.getDefaultExtentStyleFunction_(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -113,7 +113,9 @@ ol.interaction.Extent = function(opt_options) {
       useSpatialIndex: false,
       wrapX: !!opt_options.wrapX
     }),
-    style: opt_options.pointerStyle ? opt_options.pointerStyle : ol.interaction.Extent.getDefaultPointerStyleFunction_(),
+    style: opt_options.pointerStyle
+      ? opt_options.pointerStyle
+      : ol.interaction.Extent.getDefaultPointerStyleFunction_(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -132,7 +134,10 @@ ol.interaction.Extent.handleEvent_ = function(mapBrowserEvent) {
     return true;
   }
   //display pointer (if not dragging)
-  if (mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE && !this.handlingDownUpSequence) {
+  if (
+    mapBrowserEvent.type == ol.MapBrowserEventType.POINTERMOVE &&
+    !this.handlingDownUpSequence
+  ) {
     this.handlePointerMove_(mapBrowserEvent);
   }
   //call pointer to determine up/down/drag
@@ -174,13 +179,15 @@ ol.interaction.Extent.handleDownEvent_ = function(mapBrowserEvent) {
     return null;
   };
   if (vertex && extent) {
-    var x = (vertex[0] == extent[0] || vertex[0] == extent[2]) ? vertex[0] : null;
-    var y = (vertex[1] == extent[1] || vertex[1] == extent[3]) ? vertex[1] : null;
+    var x = vertex[0] == extent[0] || vertex[0] == extent[2] ? vertex[0] : null;
+    var y = vertex[1] == extent[1] || vertex[1] == extent[3] ? vertex[1] : null;
 
     //snap to point
     if (x !== null && y !== null) {
-      this.pointerHandler_ = ol.interaction.Extent.getPointHandler_(getOpposingPoint(vertex));
-    //snap to edge
+      this.pointerHandler_ = ol.interaction.Extent.getPointHandler_(
+        getOpposingPoint(vertex)
+      );
+      //snap to edge
     } else if (x !== null) {
       this.pointerHandler_ = ol.interaction.Extent.getEdgeHandler_(
         getOpposingPoint([x, extent[1]]),
@@ -192,7 +199,7 @@ ol.interaction.Extent.handleDownEvent_ = function(mapBrowserEvent) {
         getOpposingPoint([extent[2], y])
       );
     }
-  //no snap - new bbox
+    //no snap - new bbox
   } else {
     vertex = map.getCoordinateFromPixel(pixel);
     this.setExtent([vertex[0], vertex[1], vertex[0], vertex[1]]);
@@ -312,8 +319,10 @@ ol.interaction.Extent.getSegments_ = function(extent) {
 ol.interaction.Extent.prototype.snapToVertex_ = function(pixel, map) {
   var pixelCoordinate = map.getCoordinateFromPixel(pixel);
   var sortByDistance = function(a, b) {
-    return ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a) -
-        ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b);
+    return (
+      ol.coordinate.squaredDistanceToSegment(pixelCoordinate, a) -
+      ol.coordinate.squaredDistanceToSegment(pixelCoordinate, b)
+    );
   };
   var extent = this.getExtent();
   if (extent) {
@@ -322,8 +331,10 @@ ol.interaction.Extent.prototype.snapToVertex_ = function(pixel, map) {
     segments.sort(sortByDistance);
     var closestSegment = segments[0];
 
-    var vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
-        closestSegment));
+    var vertex = ol.coordinate.closestOnSegment(
+      pixelCoordinate,
+      closestSegment
+    );
     var vertexPixel = map.getPixelFromCoordinate(vertex);
 
     //if the distance is within tolerance, snap to the segment
@@ -336,8 +347,9 @@ ol.interaction.Extent.prototype.snapToVertex_ = function(pixel, map) {
       var dist = Math.sqrt(Math.min(squaredDist1, squaredDist2));
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {
-        vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
+        vertex = squaredDist1 > squaredDist2
+          ? closestSegment[1]
+          : closestSegment[0];
       }
       return vertex;
     }
@@ -365,7 +377,9 @@ ol.interaction.Extent.prototype.handlePointerMove_ = function(mapBrowserEvent) {
  * @returns {ol.Feature} extent as featrue
  * @private
  */
-ol.interaction.Extent.prototype.createOrUpdateExtentFeature_ = function(extent) {
+ol.interaction.Extent.prototype.createOrUpdateExtentFeature_ = function(
+  extent
+) {
   var extentFeature = this.extentFeature_;
 
   if (!extentFeature) {
@@ -386,25 +400,25 @@ ol.interaction.Extent.prototype.createOrUpdateExtentFeature_ = function(extent) 
   return extentFeature;
 };
 
-
 /**
  * @param {ol.Coordinate} vertex location of feature
  * @returns {ol.Feature} vertex as feature
  * @private
  */
-ol.interaction.Extent.prototype.createOrUpdatePointerFeature_ = function(vertex) {
+ol.interaction.Extent.prototype.createOrUpdatePointerFeature_ = function(
+  vertex
+) {
   var vertexFeature = this.vertexFeature_;
   if (!vertexFeature) {
     vertexFeature = new ol.Feature(new ol.geom.Point(vertex));
     this.vertexFeature_ = vertexFeature;
     this.vertexOverlay_.getSource().addFeature(vertexFeature);
   } else {
-    var geometry = /** @type {ol.geom.Point} */ (vertexFeature.getGeometry());
+    var geometry /** @type {ol.geom.Point} */ = vertexFeature.getGeometry();
     geometry.setCoordinates(vertex);
   }
   return vertexFeature;
 };
-
 
 /**
  * @inheritDoc
@@ -438,7 +452,6 @@ ol.interaction.Extent.prototype.setExtent = function(extent) {
   this.dispatchEvent(new ol.interaction.Extent.Event(this.extent_));
 };
 
-
 /**
  * @classdesc
  * Events emitted by {@link ol.interaction.Extent} instances are instances of
@@ -459,7 +472,6 @@ ol.interaction.Extent.Event = function(extent) {
   this.extent_ = extent;
 };
 ol.inherits(ol.interaction.Extent.Event, ol.events.Event);
-
 
 /**
  * @enum {string}

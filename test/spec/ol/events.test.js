@@ -3,7 +3,6 @@ goog.provide('ol.test.events');
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
 
-
 describe('ol.events', function() {
   var add, remove, target;
 
@@ -83,7 +82,12 @@ describe('ol.events', function() {
       expect(result).to.be(listenerObj);
     });
     it('marks the delete index on a listener object', function() {
-      var result = ol.events.findListener_(listeners, listener, undefined, true);
+      var result = ol.events.findListener_(
+        listeners,
+        listener,
+        undefined,
+        true
+      );
       expect(result).to.be(listenerObj);
       expect(listenerObj.deleteIndex).to.be(0);
     });
@@ -93,11 +97,11 @@ describe('ol.events', function() {
     it('returns listeners for a target and type', function() {
       var foo = ol.events.listen(target, 'foo', function() {});
       var bar = ol.events.listen(target, 'bar', function() {});
-      expect (ol.events.getListeners(target, 'foo')).to.eql([foo]);
-      expect (ol.events.getListeners(target, 'bar')).to.eql([bar]);
+      expect(ol.events.getListeners(target, 'foo')).to.eql([foo]);
+      expect(ol.events.getListeners(target, 'bar')).to.eql([bar]);
     });
     it('returns undefined when no listeners are registered', function() {
-      expect (ol.events.getListeners(target, 'foo')).to.be(undefined);
+      expect(ol.events.getListeners(target, 'foo')).to.be(undefined);
     });
   });
 
@@ -216,9 +220,10 @@ describe('ol.events', function() {
       var key1 = ol.events.listen(target, 'foo', listener, {});
       var key2 = ol.events.listen(target, 'foo', listener, {});
       expect(key1.boundListener).to.not.equal(key2.boundListener);
-      expect(target.getListeners('foo')).to.eql(
-          [key1.boundListener, key2.boundListener]);
+      expect(target.getListeners('foo')).to.eql([
+        key1.boundListener,
+        key2.boundListener
+      ]);
     });
   });
-
 });

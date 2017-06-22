@@ -3,9 +3,7 @@ goog.provide('ol.test.style.Stroke');
 goog.require('ol.style.Stroke');
 
 describe('ol.style.Stroke', function() {
-
   describe('#clone', function() {
-
     it('creates a new ol.style.Stroke', function() {
       var original = new ol.style.Stroke();
       var clone = original.clone();
@@ -48,5 +46,4 @@ describe('ol.style.Stroke', function() {
       expect(original.getLineDash()).to.not.eql(clone.getLineDash());
     });
   });
-
 });

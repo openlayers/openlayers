@@ -17,7 +17,6 @@ goog.require('ol.format.filter.NotEqualTo');
 goog.require('ol.format.filter.Or');
 goog.require('ol.format.filter.Within');
 
-
 /**
  * Create a logical `<And>` operator between two or more filter conditions.
  *
@@ -27,9 +26,8 @@ goog.require('ol.format.filter.Within');
  */
 ol.format.filter.and = function(conditions) {
   var params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(ol.format.filter.And, params));
+  return new (Function.prototype.bind.apply(ol.format.filter.And, params))();
 };
-
 
 /**
  * Create a logical `<Or>` operator between two or more filter conditions.
@@ -40,9 +38,8 @@ ol.format.filter.and = function(conditions) {
  */
 ol.format.filter.or = function(conditions) {
   var params = [null].concat(Array.prototype.slice.call(arguments));
-  return new (Function.prototype.bind.apply(ol.format.filter.Or, params));
+  return new (Function.prototype.bind.apply(ol.format.filter.Or, params))();
 };
-
 
 /**
  * Represents a logical `<Not>` operator for a filter condition.
@@ -54,7 +51,6 @@ ol.format.filter.or = function(conditions) {
 ol.format.filter.not = function(condition) {
   return new ol.format.filter.Not(condition);
 };
-
 
 /**
  * Create a `<BBOX>` operator to test whether a geometry-valued property
@@ -101,7 +97,6 @@ ol.format.filter.within = function(geometryName, geometry, opt_srsName) {
   return new ol.format.filter.Within(geometryName, geometry, opt_srsName);
 };
 
-
 /**
  * Creates a `<PropertyIsEqualTo>` comparison operator.
  *
@@ -115,7 +110,6 @@ ol.format.filter.equalTo = function(propertyName, expression, opt_matchCase) {
   return new ol.format.filter.EqualTo(propertyName, expression, opt_matchCase);
 };
 
-
 /**
  * Creates a `<PropertyIsNotEqualTo>` comparison operator.
  *
@@ -125,10 +119,17 @@ ol.format.filter.equalTo = function(propertyName, expression, opt_matchCase) {
  * @returns {!ol.format.filter.NotEqualTo} `<PropertyIsNotEqualTo>` operator.
  * @api
  */
-ol.format.filter.notEqualTo = function(propertyName, expression, opt_matchCase) {
-  return new ol.format.filter.NotEqualTo(propertyName, expression, opt_matchCase);
+ol.format.filter.notEqualTo = function(
+  propertyName,
+  expression,
+  opt_matchCase
+) {
+  return new ol.format.filter.NotEqualTo(
+    propertyName,
+    expression,
+    opt_matchCase
+  );
 };
-
 
 /**
  * Creates a `<PropertyIsLessThan>` comparison operator.
@@ -142,7 +143,6 @@ ol.format.filter.lessThan = function(propertyName, expression) {
   return new ol.format.filter.LessThan(propertyName, expression);
 };
 
-
 /**
  * Creates a `<PropertyIsLessThanOrEqualTo>` comparison operator.
  *
@@ -154,7 +154,6 @@ ol.format.filter.lessThan = function(propertyName, expression) {
 ol.format.filter.lessThanOrEqualTo = function(propertyName, expression) {
   return new ol.format.filter.LessThanOrEqualTo(propertyName, expression);
 };
-
 
 /**
  * Creates a `<PropertyIsGreaterThan>` comparison operator.
@@ -168,7 +167,6 @@ ol.format.filter.greaterThan = function(propertyName, expression) {
   return new ol.format.filter.GreaterThan(propertyName, expression);
 };
 
-
 /**
  * Creates a `<PropertyIsGreaterThanOrEqualTo>` comparison operator.
  *
@@ -180,7 +178,6 @@ ol.format.filter.greaterThan = function(propertyName, expression) {
 ol.format.filter.greaterThanOrEqualTo = function(propertyName, expression) {
   return new ol.format.filter.GreaterThanOrEqualTo(propertyName, expression);
 };
-
 
 /**
  * Creates a `<PropertyIsNull>` comparison operator to test whether a property value
@@ -194,7 +191,6 @@ ol.format.filter.isNull = function(propertyName) {
   return new ol.format.filter.IsNull(propertyName);
 };
 
-
 /**
  * Creates a `<PropertyIsBetween>` comparison operator to test whether an expression
  * value lies within a range given by a lower and upper bound (inclusive).
@@ -205,10 +201,17 @@ ol.format.filter.isNull = function(propertyName) {
  * @returns {!ol.format.filter.IsBetween} `<PropertyIsBetween>` operator.
  * @api
  */
-ol.format.filter.between = function(propertyName, lowerBoundary, upperBoundary) {
-  return new ol.format.filter.IsBetween(propertyName, lowerBoundary, upperBoundary);
+ol.format.filter.between = function(
+  propertyName,
+  lowerBoundary,
+  upperBoundary
+) {
+  return new ol.format.filter.IsBetween(
+    propertyName,
+    lowerBoundary,
+    upperBoundary
+  );
 };
-
 
 /**
  * Represents a `<PropertyIsLike>` comparison operator that matches a string property
@@ -226,12 +229,23 @@ ol.format.filter.between = function(propertyName, lowerBoundary, upperBoundary) 
  * @returns {!ol.format.filter.IsLike} `<PropertyIsLike>` operator.
  * @api
  */
-ol.format.filter.like = function(propertyName, pattern,
-    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase) {
-  return new ol.format.filter.IsLike(propertyName, pattern,
-    opt_wildCard, opt_singleChar, opt_escapeChar, opt_matchCase);
+ol.format.filter.like = function(
+  propertyName,
+  pattern,
+  opt_wildCard,
+  opt_singleChar,
+  opt_escapeChar,
+  opt_matchCase
+) {
+  return new ol.format.filter.IsLike(
+    propertyName,
+    pattern,
+    opt_wildCard,
+    opt_singleChar,
+    opt_escapeChar,
+    opt_matchCase
+  );
 };
-
 
 /**
  * Create a `<During>` temporal operator.

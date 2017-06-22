@@ -2,7 +2,6 @@ goog.provide('ol.structs.LRUCache');
 
 goog.require('ol.asserts');
 
-
 /**
  * Implements a Least-Recently-Used cache where the keys do not conflict with
  * Object's properties (e.g. 'hasOwnProperty' is not allowed as a key). Expiring
@@ -12,7 +11,6 @@ goog.require('ol.asserts');
  * @template T
  */
 ol.structs.LRUCache = function() {
-
   /**
    * @private
    * @type {number}
@@ -36,9 +34,7 @@ ol.structs.LRUCache = function() {
    * @type {?ol.LRUCacheEntry}
    */
   this.newest_ = null;
-
 };
-
 
 /**
  * FIXME empty description for jsdoc
@@ -50,7 +46,6 @@ ol.structs.LRUCache.prototype.clear = function() {
   this.newest_ = null;
 };
 
-
 /**
  * @param {string} key Key.
  * @return {boolean} Contains key.
@@ -58,7 +53,6 @@ ol.structs.LRUCache.prototype.clear = function() {
 ol.structs.LRUCache.prototype.containsKey = function(key) {
   return this.entries_.hasOwnProperty(key);
 };
-
 
 /**
  * @param {function(this: S, T, string, ol.structs.LRUCache): ?} f The function
@@ -76,19 +70,17 @@ ol.structs.LRUCache.prototype.forEach = function(f, opt_this) {
   }
 };
 
-
 /**
  * @param {string} key Key.
  * @return {T} Value.
  */
 ol.structs.LRUCache.prototype.get = function(key) {
   var entry = this.entries_[key];
-  ol.asserts.assert(entry !== undefined,
-      15); // Tried to get a value for a key that does not exist in the cache
+  ol.asserts.assert(entry !== undefined, 15); // Tried to get a value for a key that does not exist in the cache
   if (entry === this.newest_) {
     return entry.value_;
   } else if (entry === this.oldest_) {
-    this.oldest_ = /** @type {ol.LRUCacheEntry} */ (this.oldest_.newer);
+    this.oldest_ /** @type {ol.LRUCacheEntry} */ = this.oldest_.newer;
     this.oldest_.older = null;
   } else {
     entry.newer.older = entry.older;
@@ -101,14 +93,12 @@ ol.structs.LRUCache.prototype.get = function(key) {
   return entry.value_;
 };
 
-
 /**
  * @return {number} Count.
  */
 ol.structs.LRUCache.prototype.getCount = function() {
   return this.count_;
 };
-
 
 /**
  * @return {Array.<string>} Keys.
@@ -123,7 +113,6 @@ ol.structs.LRUCache.prototype.getKeys = function() {
   return keys;
 };
 
-
 /**
  * @return {Array.<T>} Values.
  */
@@ -137,7 +126,6 @@ ol.structs.LRUCache.prototype.getValues = function() {
   return values;
 };
 
-
 /**
  * @return {T} Last value.
  */
@@ -145,14 +133,12 @@ ol.structs.LRUCache.prototype.peekLast = function() {
   return this.oldest_.value_;
 };
 
-
 /**
  * @return {string} Last key.
  */
 ol.structs.LRUCache.prototype.peekLastKey = function() {
   return this.oldest_.key_;
 };
-
 
 /**
  * @return {T} value Value.
@@ -163,7 +149,7 @@ ol.structs.LRUCache.prototype.pop = function() {
   if (entry.newer) {
     entry.newer.older = null;
   }
-  this.oldest_ = /** @type {ol.LRUCacheEntry} */ (entry.newer);
+  this.oldest_ /** @type {ol.LRUCacheEntry} */ = entry.newer;
   if (!this.oldest_) {
     this.newest_ = null;
   }
@@ -171,30 +157,27 @@ ol.structs.LRUCache.prototype.pop = function() {
   return entry.value_;
 };
 
-
 /**
  * @param {string} key Key.
  * @param {T} value Value.
  */
 ol.structs.LRUCache.prototype.replace = function(key, value) {
-  this.get(key);  // update `newest_`
+  this.get(key); // update `newest_`
   this.entries_[key].value_ = value;
 };
-
 
 /**
  * @param {string} key Key.
  * @param {T} value Value.
  */
 ol.structs.LRUCache.prototype.set = function(key, value) {
-  ol.asserts.assert(!(key in this.entries_),
-      16); // Tried to set a value for a key that is used already
-  var entry = /** @type {ol.LRUCacheEntry} */ ({
+  ol.asserts.assert(!(key in this.entries_), 16); // Tried to set a value for a key that is used already
+  var entry /** @type {ol.LRUCacheEntry} */ = {
     key_: key,
     newer: null,
     older: this.newest_,
     value_: value
-  });
+  };
   if (!this.newest_) {
     this.oldest_ = entry;
   } else {

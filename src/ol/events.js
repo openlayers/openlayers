@@ -2,7 +2,6 @@ goog.provide('ol.events');
 
 goog.require('ol.obj');
 
-
 /**
  * @param {ol.EventsKey} listenerObj Listener object.
  * @return {ol.EventsListenerFunctionType} Bound listener.
@@ -20,7 +19,6 @@ ol.events.bindListener_ = function(listenerObj) {
   return boundListener;
 };
 
-
 /**
  * Finds the matching {@link ol.EventsKey} in the given listener
  * array.
@@ -33,13 +31,16 @@ ol.events.bindListener_ = function(listenerObj) {
  * @return {ol.EventsKey|undefined} The matching listener object.
  * @private
  */
-ol.events.findListener_ = function(listeners, listener, opt_this,
-    opt_setDeleteIndex) {
+ol.events.findListener_ = function(
+  listeners,
+  listener,
+  opt_this,
+  opt_setDeleteIndex
+) {
   var listenerObj;
   for (var i = 0, ii = listeners.length; i < ii; ++i) {
     listenerObj = listeners[i];
-    if (listenerObj.listener === listener &&
-        listenerObj.bindTo === opt_this) {
+    if (listenerObj.listener === listener && listenerObj.bindTo === opt_this) {
       if (opt_setDeleteIndex) {
         listenerObj.deleteIndex = i;
       }
@@ -48,7 +49,6 @@ ol.events.findListener_ = function(listeners, listener, opt_this,
   }
   return undefined;
 };
-
 
 /**
  * @param {ol.EventTargetLike} target Target.
@@ -59,7 +59,6 @@ ol.events.getListeners = function(target, type) {
   var listenerMap = target.ol_lm;
   return listenerMap ? listenerMap[type] : undefined;
 };
-
 
 /**
  * Get the lookup of listeners.  If one does not exist on the target, it is
@@ -76,7 +75,6 @@ ol.events.getListenerMap_ = function(target) {
   }
   return listenerMap;
 };
-
 
 /**
  * Clean up all listener objects of the given type.  All properties on the
@@ -104,7 +102,6 @@ ol.events.removeListeners_ = function(target, type) {
   }
 };
 
-
 /**
  * Registers an event listener on an event target. Inspired by
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
@@ -126,28 +123,31 @@ ol.events.listen = function(target, type, listener, opt_this, opt_once) {
   if (!listeners) {
     listeners = listenerMap[type] = [];
   }
-  var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
-      false);
+  var listenerObj = ol.events.findListener_(
+    listeners,
+    listener,
+    opt_this,
+    false
+  );
   if (listenerObj) {
     if (!opt_once) {
       // Turn one-off listener into a permanent one.
       listenerObj.callOnce = false;
     }
   } else {
-    listenerObj = /** @type {ol.EventsKey} */ ({
+    listenerObj /** @type {ol.EventsKey} */ = {
       bindTo: opt_this,
       callOnce: !!opt_once,
       listener: listener,
       target: target,
       type: type
-    });
+    };
     target.addEventListener(type, ol.events.bindListener_(listenerObj));
     listeners.push(listenerObj);
   }
 
   return listenerObj;
 };
-
 
 /**
  * Registers a one-off event listener on an event target. Inspired by
@@ -173,7 +173,6 @@ ol.events.listenOnce = function(target, type, listener, opt_this) {
   return ol.events.listen(target, type, listener, opt_this, true);
 };
 
-
 /**
  * Unregisters an event listener on an event target. Inspired by
  * {@link https://google.github.io/closure-library/api/source/closure/goog/events/events.js.src.html}
@@ -190,14 +189,17 @@ ol.events.listenOnce = function(target, type, listener, opt_this) {
 ol.events.unlisten = function(target, type, listener, opt_this) {
   var listeners = ol.events.getListeners(target, type);
   if (listeners) {
-    var listenerObj = ol.events.findListener_(listeners, listener, opt_this,
-        true);
+    var listenerObj = ol.events.findListener_(
+      listeners,
+      listener,
+      opt_this,
+      true
+    );
     if (listenerObj) {
       ol.events.unlistenByKey(listenerObj);
     }
   }
 };
-
 
 /**
  * Unregisters event listeners on an event target. Inspired by
@@ -224,7 +226,6 @@ ol.events.unlistenByKey = function(key) {
     ol.obj.clear(key);
   }
 };
-
 
 /**
  * Unregisters all event listeners on an event target. Inspired by

@@ -10,26 +10,31 @@ goog.require('ol.reproj.Tile');
 goog.require('ol.source.TileImage');
 goog.require('ol.tilegrid');
 
-
 describe('ol.source.TileImage', function() {
   function createSource(opt_proj, opt_tileGrid, opt_cacheSize) {
     var proj = opt_proj || 'EPSG:3857';
     return new ol.source.TileImage({
       cacheSize: opt_cacheSize,
       projection: proj,
-      tileGrid: opt_tileGrid ||
+      tileGrid:
+        opt_tileGrid ||
           ol.tilegrid.createForProjection(proj, undefined, [2, 2]),
       tileUrlFunction: ol.TileUrlFunction.createFromTemplate(
-          'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=')
+        'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs='
+      )
     });
   }
 
   describe('#getTileCacheForProjection', function() {
     it('uses the cacheSize for reprojected tile caches', function() {
       var source = createSource(undefined, undefined, 42);
-      var tileCache = source.getTileCacheForProjection(ol.proj.get('EPSG:4326'));
+      var tileCache = source.getTileCacheForProjection(
+        ol.proj.get('EPSG:4326')
+      );
       expect(tileCache.highWaterMark).to.be(42);
-      expect(tileCache).to.not.equal(source.getTileCacheForProjection(source.getProjection()));
+      expect(tileCache).to.not.equal(
+        source.getTileCacheForProjection(source.getProjection())
+      );
     });
   });
 
@@ -56,19 +61,28 @@ describe('ol.source.TileImage', function() {
 
     it('gets the tile from the cache', function() {
       var returnedTile = source.getTileInternal(
-          0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+        0,
+        0,
+        -1,
+        1,
+        ol.proj.get('EPSG:3857')
+      );
       expect(returnedTile).to.be(tile);
     });
 
     describe('change a dynamic param', function() {
-
       describe('tile is not loaded', function() {
         it('returns a tile with no interim tile', function() {
           source.getKey = function() {
             return 'key0';
           };
           var returnedTile = source.getTileInternal(
-              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+            0,
+            0,
+            -1,
+            1,
+            ol.proj.get('EPSG:3857')
+          );
           expect(returnedTile).not.to.be(tile);
           expect(returnedTile.key).to.be('key0');
           expect(returnedTile.interimTile).to.be(null);
@@ -82,7 +96,12 @@ describe('ol.source.TileImage', function() {
           };
           tile.state = 2; // LOADED
           var returnedTile = source.getTileInternal(
-              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+            0,
+            0,
+            -1,
+            1,
+            ol.proj.get('EPSG:3857')
+          );
           expect(returnedTile).not.to.be(tile);
           expect(returnedTile.key).to.be('key0');
           expect(returnedTile.interimTile).to.be(tile);
@@ -98,18 +117,26 @@ describe('ol.source.TileImage', function() {
           dynamicParamsKey = 'key0';
           tile.state = 2; // LOADED
           returnedTile = source.getTileInternal(
-              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+            0,
+            0,
+            -1,
+            1,
+            ol.proj.get('EPSG:3857')
+          );
           dynamicParamsKey = 'key1';
           returnedTile = source.getTileInternal(
-              0, 0, -1, 1, ol.proj.get('EPSG:3857'));
+            0,
+            0,
+            -1,
+            1,
+            ol.proj.get('EPSG:3857')
+          );
           expect(returnedTile).not.to.be(tile);
           expect(returnedTile.key).to.be('key1');
           expect(returnedTile.interimTile).to.be(tile);
         });
       });
-
     });
-
   });
 
   describe('#getTile', function() {
@@ -138,15 +165,19 @@ describe('ol.source.TileImage', function() {
     });
 
     it('can handle source projection without extent and units', function(done) {
-      var source = createSource('4326_noextentnounits', ol.tilegrid.createXYZ({
-        extent: [-180, -90, 180, 90],
-        tileSize: [2, 2]
-      }));
+      var source = createSource(
+        '4326_noextentnounits',
+        ol.tilegrid.createXYZ({
+          extent: [-180, -90, 180, 90],
+          tileSize: [2, 2]
+        })
+      );
       var tile = source.getTile(0, 0, -1, 1, ol.proj.get('EPSG:3857'));
       expect(tile).to.be.a(ol.reproj.Tile);
 
       ol.events.listen(tile, 'change', function() {
-        if (tile.getState() == 2) { // LOADED
+        if (tile.getState() == 2) {
+          // LOADED
           done();
         }
       });
@@ -156,16 +187,19 @@ describe('ol.source.TileImage', function() {
     it('can handle target projection without extent and units', function(done) {
       var proj = ol.proj.get('4326_noextentnounits');
       var source = createSource();
-      source.setTileGridForProjection(proj,
-          ol.tilegrid.createXYZ({
-            extent: ol.proj.EPSG3857.WORLD_EXTENT,
-            tileSize: [2, 2]
-          }));
+      source.setTileGridForProjection(
+        proj,
+        ol.tilegrid.createXYZ({
+          extent: ol.proj.EPSG3857.WORLD_EXTENT,
+          tileSize: [2, 2]
+        })
+      );
       var tile = source.getTile(0, 0, -1, 1, proj);
       expect(tile).to.be.a(ol.reproj.Tile);
 
       ol.events.listen(tile, 'change', function() {
-        if (tile.getState() == 2) { // LOADED
+        if (tile.getState() == 2) {
+          // LOADED
           done();
         }
       });

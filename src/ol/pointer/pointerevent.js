@@ -30,10 +30,8 @@
 
 goog.provide('ol.pointer.PointerEvent');
 
-
 goog.require('ol');
 goog.require('ol.events.Event');
-
 
 /**
  * A class for pointer events.
@@ -139,8 +137,9 @@ ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
   /**
    * @type {Node}
    */
-  this.relatedTarget = 'relatedTarget' in eventDict ?
-      eventDict['relatedTarget'] : null;
+  this.relatedTarget = 'relatedTarget' in eventDict
+    ? eventDict['relatedTarget']
+    : null;
 
   // PointerEvent related properties
 
@@ -194,7 +193,6 @@ ol.pointer.PointerEvent = function(type, originalEvent, opt_eventDict) {
 };
 ol.inherits(ol.pointer.PointerEvent, ol.events.Event);
 
-
 /**
  * @private
  * @param {Object.<string, ?>} eventDict The event dictionary.
@@ -227,15 +225,21 @@ ol.pointer.PointerEvent.prototype.getButtons_ = function(eventDict) {
     buttons = eventDict.buttons;
   } else {
     switch (eventDict.which) {
-      case 1: buttons = 1; break;
-      case 2: buttons = 4; break;
-      case 3: buttons = 2; break;
-      default: buttons = 0;
+      case 1:
+        buttons = 1;
+        break;
+      case 2:
+        buttons = 4;
+        break;
+      case 3:
+        buttons = 2;
+        break;
+      default:
+        buttons = 0;
     }
   }
   return buttons;
 };
-
 
 /**
  * @private
@@ -255,13 +259,11 @@ ol.pointer.PointerEvent.prototype.getPressure_ = function(eventDict, buttons) {
   return pressure;
 };
 
-
 /**
  * Is the `buttons` property supported?
  * @type {boolean}
  */
 ol.pointer.PointerEvent.HAS_BUTTONS = false;
-
 
 /**
  * Checks if the `buttons` property is supported.

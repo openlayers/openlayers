@@ -1,12 +1,10 @@
 goog.provide('ol.proj.proj4');
 
-
 /**
  * @private
  * @type {Proj4}
  */
 ol.proj.proj4.cache_ = null;
-
 
 /**
  * Store the proj4 function.
@@ -15,7 +13,6 @@ ol.proj.proj4.cache_ = null;
 ol.proj.proj4.set = function(proj4) {
   ol.proj.proj4.cache_ = proj4;
 };
-
 
 /**
  * Get proj4.

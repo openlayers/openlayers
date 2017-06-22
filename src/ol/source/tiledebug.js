@@ -7,7 +7,6 @@ goog.require('ol.dom');
 goog.require('ol.size');
 goog.require('ol.source.Tile');
 
-
 /**
  * @classdesc
  * A pseudo tile source, which does not fetch tiles from a server, but renders
@@ -22,17 +21,14 @@ goog.require('ol.source.Tile');
  * @api
  */
 ol.source.TileDebug = function(options) {
-
   ol.source.Tile.call(this, {
     opaque: false,
     projection: options.projection,
     tileGrid: options.tileGrid,
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
-
 };
 ol.inherits(ol.source.TileDebug, ol.source.Tile);
-
 
 /**
  * @inheritDoc
@@ -40,19 +36,21 @@ ol.inherits(ol.source.TileDebug, ol.source.Tile);
 ol.source.TileDebug.prototype.getTile = function(z, x, y) {
   var tileCoordKey = this.getKeyZXY(z, x, y);
   if (this.tileCache.containsKey(tileCoordKey)) {
-    return /** @type {!ol.source.TileDebug.Tile_} */ (this.tileCache.get(tileCoordKey));
+    return /** @type {!ol.source.TileDebug.Tile_} */ this.tileCache.get(
+      tileCoordKey
+    );
   } else {
     var tileSize = ol.size.toSize(this.tileGrid.getTileSize(z));
     var tileCoord = [z, x, y];
     var textTileCoord = this.getTileCoordForTileUrlFunction(tileCoord);
-    var text = !textTileCoord ? '' :
-        this.getTileCoordForTileUrlFunction(textTileCoord).toString();
+    var text = !textTileCoord
+      ? ''
+      : this.getTileCoordForTileUrlFunction(textTileCoord).toString();
     var tile = new ol.source.TileDebug.Tile_(tileCoord, tileSize, text);
     this.tileCache.set(tileCoordKey, tile);
     return tile;
   }
 };
-
 
 /**
  * @constructor
@@ -63,7 +61,6 @@ ol.source.TileDebug.prototype.getTile = function(z, x, y) {
  * @private
  */
 ol.source.TileDebug.Tile_ = function(tileCoord, tileSize, text) {
-
   ol.Tile.call(this, tileCoord, ol.TileState.LOADED);
 
   /**
@@ -83,10 +80,8 @@ ol.source.TileDebug.Tile_ = function(tileCoord, tileSize, text) {
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = null;
-
 };
 ol.inherits(ol.source.TileDebug.Tile_, ol.Tile);
-
 
 /**
  * Get the image element for this tile.
@@ -112,7 +107,6 @@ ol.source.TileDebug.Tile_.prototype.getImage = function() {
     return context.canvas;
   }
 };
-
 
 /**
  * @override

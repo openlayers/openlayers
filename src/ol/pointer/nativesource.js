@@ -33,7 +33,6 @@ goog.provide('ol.pointer.NativeSource');
 goog.require('ol');
 goog.require('ol.pointer.EventSource');
 
-
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @constructor
@@ -41,19 +40,18 @@ goog.require('ol.pointer.EventSource');
  */
 ol.pointer.NativeSource = function(dispatcher) {
   var mapping = {
-    'pointerdown': this.pointerDown,
-    'pointermove': this.pointerMove,
-    'pointerup': this.pointerUp,
-    'pointerout': this.pointerOut,
-    'pointerover': this.pointerOver,
-    'pointercancel': this.pointerCancel,
-    'gotpointercapture': this.gotPointerCapture,
-    'lostpointercapture': this.lostPointerCapture
+    pointerdown: this.pointerDown,
+    pointermove: this.pointerMove,
+    pointerup: this.pointerUp,
+    pointerout: this.pointerOut,
+    pointerover: this.pointerOver,
+    pointercancel: this.pointerCancel,
+    gotpointercapture: this.gotPointerCapture,
+    lostpointercapture: this.lostPointerCapture
   };
   ol.pointer.EventSource.call(this, dispatcher, mapping);
 };
 ol.inherits(ol.pointer.NativeSource, ol.pointer.EventSource);
-
 
 /**
  * Handler for `pointerdown`.
@@ -64,7 +62,6 @@ ol.pointer.NativeSource.prototype.pointerDown = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
-
 /**
  * Handler for `pointermove`.
  *
@@ -73,7 +70,6 @@ ol.pointer.NativeSource.prototype.pointerDown = function(inEvent) {
 ol.pointer.NativeSource.prototype.pointerMove = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
-
 
 /**
  * Handler for `pointerup`.
@@ -84,7 +80,6 @@ ol.pointer.NativeSource.prototype.pointerUp = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
-
 /**
  * Handler for `pointerout`.
  *
@@ -93,7 +88,6 @@ ol.pointer.NativeSource.prototype.pointerUp = function(inEvent) {
 ol.pointer.NativeSource.prototype.pointerOut = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
-
 
 /**
  * Handler for `pointerover`.
@@ -104,7 +98,6 @@ ol.pointer.NativeSource.prototype.pointerOver = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
-
 /**
  * Handler for `pointercancel`.
  *
@@ -114,7 +107,6 @@ ol.pointer.NativeSource.prototype.pointerCancel = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
 
-
 /**
  * Handler for `lostpointercapture`.
  *
@@ -123,7 +115,6 @@ ol.pointer.NativeSource.prototype.pointerCancel = function(inEvent) {
 ol.pointer.NativeSource.prototype.lostPointerCapture = function(inEvent) {
   this.dispatcher.fireNativeEvent(inEvent);
 };
-
 
 /**
  * Handler for `gotpointercapture`.

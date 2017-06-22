@@ -11,7 +11,6 @@ goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
 goog.require('ol.tilegrid');
 
-
 /**
  * @classdesc
  * Layer source for Bing Maps tile data.
@@ -22,7 +21,6 @@ goog.require('ol.tilegrid');
  * @api
  */
 ol.source.BingMaps = function(options) {
-
   /**
    * @private
    * @type {boolean}
@@ -65,16 +63,20 @@ ol.source.BingMaps = function(options) {
    */
   this.imagerySet_ = options.imagerySet;
 
-  var url = 'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
-      this.imagerySet_ +
-      '?uriScheme=https&include=ImageryProviders&key=' + this.apiKey_;
+  var url =
+    'https://dev.virtualearth.net/REST/v1/Imagery/Metadata/' +
+    this.imagerySet_ +
+    '?uriScheme=https&include=ImageryProviders&key=' +
+    this.apiKey_;
 
-  ol.net.jsonp(url, this.handleImageryMetadataResponse.bind(this), undefined,
-      'jsonp');
-
+  ol.net.jsonp(
+    url,
+    this.handleImageryMetadataResponse.bind(this),
+    undefined,
+    'jsonp'
+  );
 };
 ol.inherits(ol.source.BingMaps, ol.source.TileImage);
-
 
 /**
  * The attribution containing a link to the Microsoft® Bing™ Maps Platform APIs’
@@ -84,11 +86,11 @@ ol.inherits(ol.source.BingMaps, ol.source.TileImage);
  * @api
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
-  html: '<a class="ol-attribution-bing-tos" ' +
+  html:
+    '<a class="ol-attribution-bing-tos" ' +
       'href="http://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
 });
-
 
 /**
  * Get the api key used for this source.
@@ -100,7 +102,6 @@ ol.source.BingMaps.prototype.getApiKey = function() {
   return this.apiKey_;
 };
 
-
 /**
  * Get the imagery set associated with this source.
  *
@@ -111,16 +112,19 @@ ol.source.BingMaps.prototype.getImagerySet = function() {
   return this.imagerySet_;
 };
 
-
 /**
  * @param {BingMapsImageryMetadataResponse} response Response.
  */
-ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) {
-  if (response.statusCode != 200 ||
-      response.statusDescription != 'OK' ||
-      response.authenticationResultCode != 'ValidCredentials' ||
-      response.resourceSets.length != 1 ||
-      response.resourceSets[0].resources.length != 1) {
+ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(
+  response
+) {
+  if (
+    response.statusCode != 200 ||
+    response.statusDescription != 'OK' ||
+    response.authenticationResultCode != 'ValidCredentials' ||
+    response.resourceSets.length != 1 ||
+    response.resourceSets[0].resources.length != 1
+  ) {
     this.setState(ol.source.State.ERROR);
     return;
   }
@@ -135,8 +139,9 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
 
   var sourceProjection = this.getProjection();
   var extent = ol.tilegrid.extentFromProjection(sourceProjection);
-  var tileSize = resource.imageWidth == resource.imageHeight ?
-      resource.imageWidth : [resource.imageWidth, resource.imageHeight];
+  var tileSize = resource.imageWidth == resource.imageHeight
+    ? resource.imageWidth
+    : [resource.imageWidth, resource.imageHeight];
   var tileGrid = ol.tilegrid.createXYZ({
     extent: extent,
     minZoom: resource.zoomMin,
@@ -148,37 +153,45 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
   var culture = this.culture_;
   var hidpi = this.hidpi_;
   this.tileUrlFunction = ol.TileUrlFunction.createFromTileUrlFunctions(
-      resource.imageUrlSubdomains.map(function(subdomain) {
-        var quadKeyTileCoord = [0, 0, 0];
-        var imageUrl = resource.imageUrl
-            .replace('{subdomain}', subdomain)
-            .replace('{culture}', culture);
-        return (
-            /**
+    resource.imageUrlSubdomains.map(function(subdomain) {
+      var quadKeyTileCoord = [0, 0, 0];
+      var imageUrl = resource.imageUrl
+        .replace('{subdomain}', subdomain)
+        .replace('{culture}', culture);
+      return (/**
              * @param {ol.TileCoord} tileCoord Tile coordinate.
              * @param {number} pixelRatio Pixel ratio.
              * @param {ol.proj.Projection} projection Projection.
              * @return {string|undefined} Tile URL.
              */
-            function(tileCoord, pixelRatio, projection) {
-              if (!tileCoord) {
-                return undefined;
-              } else {
-                ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
-                    -tileCoord[2] - 1, quadKeyTileCoord);
-                var url = imageUrl;
-                if (hidpi) {
-                  url += '&dpi=d1&device=mobile';
-                }
-                return url.replace('{quadkey}', ol.tilecoord.quadKey(
-                    quadKeyTileCoord));
-              }
-            });
-      }));
+        function(tileCoord, pixelRatio, projection) {
+          if (!tileCoord) {
+            return undefined;
+          } else {
+            ol.tilecoord.createOrUpdate(
+              tileCoord[0],
+              tileCoord[1],
+              -tileCoord[2] - 1,
+              quadKeyTileCoord
+            );
+            var url = imageUrl;
+            if (hidpi) {
+              url += '&dpi=d1&device=mobile';
+            }
+            return url.replace(
+              '{quadkey}',
+              ol.tilecoord.quadKey(quadKeyTileCoord)
+            );
+          }
+        } );
+    })
+  );
 
   if (resource.imageryProviders) {
     var transform = ol.proj.getTransformFromProjections(
-        ol.proj.get('EPSG:4326'), this.getProjection());
+      ol.proj.get('EPSG:4326'),
+      this.getProjection()
+    );
 
     var attributions = resource.imageryProviders.map(function(imageryProvider) {
       var html = imageryProvider.attribution;

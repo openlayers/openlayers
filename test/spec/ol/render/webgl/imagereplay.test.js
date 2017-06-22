@@ -47,7 +47,6 @@ describe('ol.render.webgl.ImageReplay', function() {
   });
 
   describe('#setImageStyle', function() {
-
     var imageStyle1, imageStyle2;
 
     beforeEach(function() {
@@ -130,8 +129,7 @@ describe('ol.render.webgl.ImageReplay', function() {
     it('sets the buffer data', function() {
       var multiPoint;
 
-      multiPoint = new ol.geom.MultiPoint(
-          [[1000, 2000], [2000, 3000]]);
+      multiPoint = new ol.geom.MultiPoint([[1000, 2000], [2000, 3000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(64);
       expect(replay.indices).to.have.length(12);
@@ -148,8 +146,7 @@ describe('ol.render.webgl.ImageReplay', function() {
       expect(replay.indices[10]).to.be(6);
       expect(replay.indices[11]).to.be(7);
 
-      multiPoint = new ol.geom.MultiPoint(
-          [[3000, 4000], [4000, 5000]]);
+      multiPoint = new ol.geom.MultiPoint([[3000, 4000], [4000, 5000]]);
       replay.drawMultiPoint(multiPoint, null);
       expect(replay.vertices).to.have.length(128);
       expect(replay.indices).to.have.length(24);
@@ -188,7 +185,8 @@ describe('ol.render.webgl.ImageReplay', function() {
     it('returns the locations used by the shaders', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       expect(locations).to.be.a(
-          ol.render.webgl.imagereplay.defaultshader.Locations);
+        ol.render.webgl.imagereplay.defaultshader.Locations
+      );
     });
 
     it('gets and compiles the shaders', function() {
@@ -196,9 +194,12 @@ describe('ol.render.webgl.ImageReplay', function() {
       sinon.spy(context, 'useProgram');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
+      expect(
+        context.getProgram.calledWithExactly(
           ol.render.webgl.imagereplay.defaultshader.fragment,
-          ol.render.webgl.imagereplay.defaultshader.vertex)).to.be(true);
+          ol.render.webgl.imagereplay.defaultshader.vertex
+        )
+      ).to.be(true);
       expect(context.useProgram.calledOnce).to.be(true);
     });
 
@@ -208,9 +209,12 @@ describe('ol.render.webgl.ImageReplay', function() {
       sinon.spy(gl, 'enableVertexAttribArray');
 
       replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
+      expect(gl.vertexAttribPointer.callCount).to.be(
+        gl.getAttribLocation.callCount
+      );
       expect(gl.enableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount
+      );
     });
   });
 
@@ -239,7 +243,8 @@ describe('ol.render.webgl.ImageReplay', function() {
       var locations = replay.setUpProgram(gl, context, [2, 2], 1);
       replay.shutDownProgram(gl, locations);
       expect(gl.disableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+        gl.getAttribLocation.callCount
+      );
     });
   });
 });

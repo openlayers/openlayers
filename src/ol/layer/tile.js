@@ -8,7 +8,6 @@ goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.webgl.TileLayer');
 
-
 /**
  * @classdesc
  * For layer sources that provide pre-rendered, tiled images in grids that are
@@ -30,14 +29,16 @@ ol.layer.Tile = function(opt_options) {
 
   delete baseOptions.preload;
   delete baseOptions.useInterimTilesOnError;
-  ol.layer.Layer.call(this,  /** @type {olx.layer.LayerOptions} */ (baseOptions));
+  ol.layer.Layer.call(this /** @type {olx.layer.LayerOptions} */, baseOptions);
 
   this.setPreload(options.preload !== undefined ? options.preload : 0);
-  this.setUseInterimTilesOnError(options.useInterimTilesOnError !== undefined ?
-      options.useInterimTilesOnError : true);
+  this.setUseInterimTilesOnError(
+    options.useInterimTilesOnError !== undefined
+      ? options.useInterimTilesOnError
+      : true
+  );
 };
 ol.inherits(ol.layer.Tile, ol.layer.Layer);
-
 
 /**
  * @inheritDoc
@@ -48,11 +49,11 @@ ol.layer.Tile.prototype.createRenderer = function(mapRenderer) {
   if (ol.ENABLE_CANVAS && type === ol.renderer.Type.CANVAS) {
     renderer = new ol.renderer.canvas.TileLayer(this);
   } else if (ol.ENABLE_WEBGL && type === ol.renderer.Type.WEBGL) {
-    renderer = new ol.renderer.webgl.TileLayer(/** @type {ol.renderer.webgl.Map} */ (mapRenderer), this);
+    renderer = new ol.renderer.webgl
+      .TileLayer /** @type {ol.renderer.webgl.Map} */(mapRenderer, this);
   }
   return renderer;
 };
-
 
 /**
  * Return the level as number to which we will preload tiles up to.
@@ -61,9 +62,8 @@ ol.layer.Tile.prototype.createRenderer = function(mapRenderer) {
  * @api
  */
 ol.layer.Tile.prototype.getPreload = function() {
-  return /** @type {number} */ (this.get(ol.layer.TileProperty.PRELOAD));
+  return /** @type {number} */ this.get(ol.layer.TileProperty.PRELOAD);
 };
-
 
 /**
  * Return the associated {@link ol.source.Tile tilesource} of the layer.
@@ -72,7 +72,6 @@ ol.layer.Tile.prototype.getPreload = function() {
  * @api
  */
 ol.layer.Tile.prototype.getSource;
-
 
 /**
  * Set the level as number to which we will preload tiles up to.
@@ -84,7 +83,6 @@ ol.layer.Tile.prototype.setPreload = function(preload) {
   this.set(ol.layer.TileProperty.PRELOAD, preload);
 };
 
-
 /**
  * Whether we use interim tiles on error.
  * @return {boolean} Use interim tiles on error.
@@ -92,10 +90,10 @@ ol.layer.Tile.prototype.setPreload = function(preload) {
  * @api
  */
 ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
-  return /** @type {boolean} */ (
-      this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
+  return /** @type {boolean} */ this.get(
+    ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR
+  );
 };
-
 
 /**
  * Set whether we use interim tiles on error.
@@ -103,7 +101,11 @@ ol.layer.Tile.prototype.getUseInterimTilesOnError = function() {
  * @observable
  * @api
  */
-ol.layer.Tile.prototype.setUseInterimTilesOnError = function(useInterimTilesOnError) {
+ol.layer.Tile.prototype.setUseInterimTilesOnError = function(
+  useInterimTilesOnError
+) {
   this.set(
-      ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR, useInterimTilesOnError);
+    ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR,
+    useInterimTilesOnError
+  );
 };

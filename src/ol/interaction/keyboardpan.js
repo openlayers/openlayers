@@ -7,7 +7,6 @@ goog.require('ol.events.KeyCode');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 
-
 /**
  * @classdesc
  * Allows the user to pan the map using keyboard arrows.
@@ -26,7 +25,6 @@ goog.require('ol.interaction.Interaction');
  * @api
  */
 ol.interaction.KeyboardPan = function(opt_options) {
-
   ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.KeyboardPan.handleEvent
   });
@@ -39,16 +37,19 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @return {boolean} Combined condition result.
    */
   this.defaultCondition_ = function(mapBrowserEvent) {
-    return ol.events.condition.noModifierKeys(mapBrowserEvent) &&
-      ol.events.condition.targetNotEditable(mapBrowserEvent);
+    return (
+      ol.events.condition.noModifierKeys(mapBrowserEvent) &&
+      ol.events.condition.targetNotEditable(mapBrowserEvent)
+    );
   };
 
   /**
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition !== undefined ?
-      options.condition : this.defaultCondition_;
+  this.condition_ = options.condition !== undefined
+    ? options.condition
+    : this.defaultCondition_;
 
   /**
    * @private
@@ -60,9 +61,9 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.pixelDelta_ = options.pixelDelta !== undefined ?
-      options.pixelDelta : 128;
-
+  this.pixelDelta_ = options.pixelDelta !== undefined
+    ? options.pixelDelta
+    : 128;
 };
 ol.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);
 
@@ -80,15 +81,18 @@ ol.interaction.KeyboardPan.handleEvent = function(mapBrowserEvent) {
   if (mapBrowserEvent.type == ol.events.EventType.KEYDOWN) {
     var keyEvent = mapBrowserEvent.originalEvent;
     var keyCode = keyEvent.keyCode;
-    if (this.condition_(mapBrowserEvent) &&
-        (keyCode == ol.events.KeyCode.DOWN ||
+    if (
+      this.condition_(mapBrowserEvent) &&
+      (keyCode == ol.events.KeyCode.DOWN ||
         keyCode == ol.events.KeyCode.LEFT ||
         keyCode == ol.events.KeyCode.RIGHT ||
-        keyCode == ol.events.KeyCode.UP)) {
+        keyCode == ol.events.KeyCode.UP)
+    ) {
       var map = mapBrowserEvent.map;
       var view = map.getView();
       var mapUnitsDelta = view.getResolution() * this.pixelDelta_;
-      var deltaX = 0, deltaY = 0;
+      var deltaX = 0,
+        deltaY = 0;
       if (keyCode == ol.events.KeyCode.DOWN) {
         deltaY = -mapUnitsDelta;
       } else if (keyCode == ol.events.KeyCode.LEFT) {

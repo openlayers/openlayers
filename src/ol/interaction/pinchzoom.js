@@ -6,7 +6,6 @@ goog.require('ol.functions');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
 
-
 /**
  * @classdesc
  * Allows the user to zoom the map by pinching with two fingers
@@ -18,7 +17,6 @@ goog.require('ol.interaction.Pointer');
  * @api
  */
 ol.interaction.PinchZoom = function(opt_options) {
-
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.PinchZoom.handleDownEvent_,
     handleDragEvent: ol.interaction.PinchZoom.handleDragEvent_,
@@ -56,10 +54,8 @@ ol.interaction.PinchZoom = function(opt_options) {
    * @type {number}
    */
   this.lastScaleDelta_ = 1;
-
 };
 ol.inherits(ol.interaction.PinchZoom, ol.interaction.Pointer);
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -81,7 +77,6 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
     scaleDelta = this.lastDistance_ / distance;
   }
   this.lastDistance_ = distance;
-
 
   var map = mapBrowserEvent.map;
   var view = map.getView();
@@ -110,9 +105,12 @@ ol.interaction.PinchZoom.handleDragEvent_ = function(mapBrowserEvent) {
 
   // scale, bypass the resolution constraint
   map.render();
-  ol.interaction.Interaction.zoomWithoutConstraints(view, newResolution, this.anchor_);
+  ol.interaction.Interaction.zoomWithoutConstraints(
+    view,
+    newResolution,
+    this.anchor_
+  );
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -126,22 +124,28 @@ ol.interaction.PinchZoom.handleUpEvent_ = function(mapBrowserEvent) {
     var view = map.getView();
     view.setHint(ol.ViewHint.INTERACTING, -1);
     var resolution = view.getResolution();
-    if (this.constrainResolution_ ||
-        resolution < view.getMinResolution() ||
-        resolution > view.getMaxResolution()) {
+    if (
+      this.constrainResolution_ ||
+      resolution < view.getMinResolution() ||
+      resolution > view.getMaxResolution()
+    ) {
       // Zoom to final resolution, with an animation, and provide a
       // direction not to zoom out/in if user was pinching in/out.
       // Direction is > 0 if pinching out, and < 0 if pinching in.
       var direction = this.lastScaleDelta_ - 1;
-      ol.interaction.Interaction.zoom(view, resolution,
-          this.anchor_, this.duration_, direction);
+      ol.interaction.Interaction.zoom(
+        view,
+        resolution,
+        this.anchor_,
+        this.duration_,
+        direction
+      );
     }
     return false;
   } else {
     return true;
   }
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -163,7 +167,6 @@ ol.interaction.PinchZoom.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 };
-
 
 /**
  * @inheritDoc

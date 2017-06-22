@@ -11,7 +11,6 @@ goog.require('ol.proj.projections');
 goog.require('ol.proj.transforms');
 goog.require('ol.sphere.NORMAL');
 
-
 /**
  * Meters per unit lookup table.
  * @const
@@ -19,7 +18,6 @@ goog.require('ol.sphere.NORMAL');
  * @api
  */
 ol.proj.METERS_PER_UNIT = ol.proj.Units.METERS_PER_UNIT;
-
 
 if (ol.ENABLE_PROJ4JS) {
   /**
@@ -38,7 +36,6 @@ if (ol.ENABLE_PROJ4JS) {
     ol.proj.proj4.set(proj4);
   };
 }
-
 
 /**
  * Get the resolution of the point in degrees or distance units.
@@ -72,18 +69,29 @@ ol.proj.getPointResolution = function(projection, resolution, point) {
       // Estimate point resolution by transforming the center pixel to EPSG:4326,
       // measuring its width and height on the normal sphere, and taking the
       // average of the width and height.
-      var toEPSG4326 = ol.proj.getTransformFromProjections(projection, ol.proj.get('EPSG:4326'));
+      var toEPSG4326 = ol.proj.getTransformFromProjections(
+        projection,
+        ol.proj.get('EPSG:4326')
+      );
       var vertices = [
-        point[0] - resolution / 2, point[1],
-        point[0] + resolution / 2, point[1],
-        point[0], point[1] - resolution / 2,
-        point[0], point[1] + resolution / 2
+        point[0] - resolution / 2,
+        point[1],
+        point[0] + resolution / 2,
+        point[1],
+        point[0],
+        point[1] - resolution / 2,
+        point[0],
+        point[1] + resolution / 2
       ];
       vertices = toEPSG4326(vertices, vertices, 2);
       var width = ol.sphere.NORMAL.haversineDistance(
-          vertices.slice(0, 2), vertices.slice(2, 4));
+        vertices.slice(0, 2),
+        vertices.slice(2, 4)
+      );
       var height = ol.sphere.NORMAL.haversineDistance(
-          vertices.slice(4, 6), vertices.slice(6, 8));
+        vertices.slice(4, 6),
+        vertices.slice(6, 8)
+      );
       pointResolution = (width + height) / 2;
       var metersPerUnit = projection.getMetersPerUnit();
       if (metersPerUnit !== undefined) {
@@ -93,7 +101,6 @@ ol.proj.getPointResolution = function(projection, resolution, point) {
   }
   return pointResolution;
 };
-
 
 /**
  * Registers transformation functions that don't alter coordinates. Those allow
@@ -113,7 +120,6 @@ ol.proj.addEquivalentProjections = function(projections) {
   });
 };
 
-
 /**
  * Registers transformation functions to convert coordinates in any projection
  * in projection1 to any projection in projection2.
@@ -127,7 +133,12 @@ ol.proj.addEquivalentProjections = function(projections) {
  * @param {ol.TransformFunction} inverseTransform Transform from any projection
  *   in projection2 to any projection in projection1..
  */
-ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTransform, inverseTransform) {
+ol.proj.addEquivalentTransforms = function(
+  projections1,
+  projections2,
+  forwardTransform,
+  inverseTransform
+) {
   projections1.forEach(function(projection1) {
     projections2.forEach(function(projection2) {
       ol.proj.transforms.add(projection1, projection2, forwardTransform);
@@ -135,7 +146,6 @@ ol.proj.addEquivalentTransforms = function(projections1, projections2, forwardTr
     });
   });
 };
-
 
 /**
  * Add a Projection object to the list of supported projections that can be
@@ -149,14 +159,12 @@ ol.proj.addProjection = function(projection) {
   ol.proj.transforms.add(projection, projection, ol.proj.cloneTransform);
 };
 
-
 /**
  * @param {Array.<ol.proj.Projection>} projections Projections.
  */
 ol.proj.addProjections = function(projections) {
   projections.forEach(ol.proj.addProjection);
 };
-
 
 /**
  * Clear all cached projections and transforms.
@@ -165,7 +173,6 @@ ol.proj.clearAllProjections = function() {
   ol.proj.projections.clear();
   ol.proj.transforms.clear();
 };
-
 
 /**
  * @param {ol.proj.Projection|string|undefined} projection Projection.
@@ -178,10 +185,9 @@ ol.proj.createProjection = function(projection, defaultCode) {
   } else if (typeof projection === 'string') {
     return ol.proj.get(projection);
   } else {
-    return /** @type {ol.proj.Projection} */ (projection);
+    return /** @type {ol.proj.Projection} */ projection;
   }
 };
-
 
 /**
  * Registers coordinate transform functions to convert coordinates between the
@@ -202,15 +208,25 @@ ol.proj.createProjection = function(projection, defaultCode) {
  *     the transformed {@link ol.Coordinate}.
  * @api
  */
-ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse) {
+ol.proj.addCoordinateTransforms = function(
+  source,
+  destination,
+  forward,
+  inverse
+) {
   var sourceProj = ol.proj.get(source);
   var destProj = ol.proj.get(destination);
-  ol.proj.transforms.add(sourceProj, destProj,
-      ol.proj.createTransformFromCoordinateTransform(forward));
-  ol.proj.transforms.add(destProj, sourceProj,
-      ol.proj.createTransformFromCoordinateTransform(inverse));
+  ol.proj.transforms.add(
+    sourceProj,
+    destProj,
+    ol.proj.createTransformFromCoordinateTransform(forward)
+  );
+  ol.proj.transforms.add(
+    destProj,
+    sourceProj,
+    ol.proj.createTransformFromCoordinateTransform(inverse)
+  );
 };
-
 
 /**
  * Creates a {@link ol.TransformFunction} from a simple 2D coordinate transform
@@ -221,29 +237,29 @@ ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse
  */
 ol.proj.createTransformFromCoordinateTransform = function(transform) {
   return (
-      /**
+    /**
        * @param {Array.<number>} input Input.
        * @param {Array.<number>=} opt_output Output.
        * @param {number=} opt_dimension Dimension.
        * @return {Array.<number>} Output.
        */
-      function(input, opt_output, opt_dimension) {
-        var length = input.length;
-        var dimension = opt_dimension !== undefined ? opt_dimension : 2;
-        var output = opt_output !== undefined ? opt_output : new Array(length);
-        var point, i, j;
-        for (i = 0; i < length; i += dimension) {
-          point = transform([input[i], input[i + 1]]);
-          output[i] = point[0];
-          output[i + 1] = point[1];
-          for (j = dimension - 1; j >= 2; --j) {
-            output[i + j] = input[i + j];
-          }
+    function(input, opt_output, opt_dimension) {
+      var length = input.length;
+      var dimension = opt_dimension !== undefined ? opt_dimension : 2;
+      var output = opt_output !== undefined ? opt_output : new Array(length);
+      var point, i, j;
+      for (i = 0; i < length; i += dimension) {
+        point = transform([input[i], input[i + 1]]);
+        output[i] = point[0];
+        output[i + 1] = point[1];
+        for (j = dimension - 1; j >= 2; --j) {
+          output[i + j] = input[i + j];
         }
-        return output;
-      });
+      }
+      return output;
+    }
+  );
 };
-
 
 /**
  * Transforms a coordinate from longitude/latitude to a different projection.
@@ -255,10 +271,12 @@ ol.proj.createTransformFromCoordinateTransform = function(transform) {
  * @api
  */
 ol.proj.fromLonLat = function(coordinate, opt_projection) {
-  return ol.proj.transform(coordinate, 'EPSG:4326',
-      opt_projection !== undefined ? opt_projection : 'EPSG:3857');
+  return ol.proj.transform(
+    coordinate,
+    'EPSG:4326',
+    opt_projection !== undefined ? opt_projection : 'EPSG:3857'
+  );
 };
-
 
 /**
  * Transforms a coordinate to longitude/latitude.
@@ -270,10 +288,12 @@ ol.proj.fromLonLat = function(coordinate, opt_projection) {
  * @api
  */
 ol.proj.toLonLat = function(coordinate, opt_projection) {
-  return ol.proj.transform(coordinate,
-      opt_projection !== undefined ? opt_projection : 'EPSG:3857', 'EPSG:4326');
+  return ol.proj.transform(
+    coordinate,
+    opt_projection !== undefined ? opt_projection : 'EPSG:3857',
+    'EPSG:4326'
+  );
 };
-
 
 /**
  * Fetches a Projection object for the code specified.
@@ -293,8 +313,7 @@ ol.proj.get = function(projectionLike) {
     projection = ol.proj.projections.get(code);
     if (ol.ENABLE_PROJ4JS && !projection) {
       var proj4js = ol.proj.proj4.get();
-      if (typeof proj4js == 'function' &&
-          proj4js.defs(code) !== undefined) {
+      if (typeof proj4js == 'function' && proj4js.defs(code) !== undefined) {
         projection = new ol.proj.Projection({code: code});
         ol.proj.addProjection(projection);
       }
@@ -302,7 +321,6 @@ ol.proj.get = function(projectionLike) {
   }
   return projection;
 };
-
 
 /**
  * Checks if two projections are the same, that is every coordinate in one
@@ -323,11 +341,12 @@ ol.proj.equivalent = function(projection1, projection2) {
     return equalUnits;
   } else {
     var transformFn = ol.proj.getTransformFromProjections(
-        projection1, projection2);
+      projection1,
+      projection2
+    );
     return transformFn === ol.proj.cloneTransform && equalUnits;
   }
 };
-
 
 /**
  * Given the projection-like objects, searches for a transformation
@@ -343,9 +362,10 @@ ol.proj.getTransform = function(source, destination) {
   var sourceProjection = ol.proj.get(source);
   var destinationProjection = ol.proj.get(destination);
   return ol.proj.getTransformFromProjections(
-      sourceProjection, destinationProjection);
+    sourceProjection,
+    destinationProjection
+  );
 };
-
 
 /**
  * Searches in the list of transform functions for the function for converting
@@ -356,7 +376,10 @@ ol.proj.getTransform = function(source, destination) {
  *     object.
  * @return {ol.TransformFunction} Transform function.
  */
-ol.proj.getTransformFromProjections = function(sourceProjection, destinationProjection) {
+ol.proj.getTransformFromProjections = function(
+  sourceProjection,
+  destinationProjection
+) {
   var sourceCode = sourceProjection.getCode();
   var destinationCode = destinationProjection.getCode();
   var transform = ol.proj.transforms.get(sourceCode, destinationCode);
@@ -368,11 +391,18 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
 
       if (sourceDef !== undefined && destinationDef !== undefined) {
         if (sourceDef === destinationDef) {
-          ol.proj.addEquivalentProjections([destinationProjection, sourceProjection]);
+          ol.proj.addEquivalentProjections([
+            destinationProjection,
+            sourceProjection
+          ]);
         } else {
           var proj4Transform = proj4js(destinationCode, sourceCode);
-          ol.proj.addCoordinateTransforms(destinationProjection, sourceProjection,
-              proj4Transform.forward, proj4Transform.inverse);
+          ol.proj.addCoordinateTransforms(
+            destinationProjection,
+            sourceProjection,
+            proj4Transform.forward,
+            proj4Transform.inverse
+          );
         }
         transform = ol.proj.transforms.get(sourceCode, destinationCode);
       }
@@ -383,7 +413,6 @@ ol.proj.getTransformFromProjections = function(sourceProjection, destinationProj
   }
   return transform;
 };
-
 
 /**
  * @param {Array.<number>} input Input coordinate array.
@@ -400,7 +429,6 @@ ol.proj.identityTransform = function(input, opt_output, opt_dimension) {
   }
   return input;
 };
-
 
 /**
  * @param {Array.<number>} input Input coordinate array.
@@ -422,7 +450,6 @@ ol.proj.cloneTransform = function(input, opt_output, opt_dimension) {
   return output;
 };
 
-
 /**
  * Transforms a coordinate from source projection to destination projection.
  * This returns a new coordinate (and does not modify the original).
@@ -442,7 +469,6 @@ ol.proj.transform = function(coordinate, source, destination) {
   return transformFn(coordinate, undefined, coordinate.length);
 };
 
-
 /**
  * Transforms an extent from source projection to destination projection.  This
  * returns a new extent (and does not modify the original).
@@ -458,7 +484,6 @@ ol.proj.transformExtent = function(extent, source, destination) {
   return ol.extent.applyTransform(extent, transformFn);
 };
 
-
 /**
  * Transforms the given point to the destination projection.
  *
@@ -467,9 +492,15 @@ ol.proj.transformExtent = function(extent, source, destination) {
  * @param {ol.proj.Projection} destinationProjection Destination projection.
  * @return {ol.Coordinate} Point.
  */
-ol.proj.transformWithProjections = function(point, sourceProjection, destinationProjection) {
+ol.proj.transformWithProjections = function(
+  point,
+  sourceProjection,
+  destinationProjection
+) {
   var transformFn = ol.proj.getTransformFromProjections(
-      sourceProjection, destinationProjection);
+    sourceProjection,
+    destinationProjection
+  );
   return transformFn(point);
 };
 
@@ -486,10 +517,11 @@ ol.proj.addCommon = function() {
   // Add transformations to convert EPSG:4326 like coordinates to EPSG:3857 like
   // coordinates and back.
   ol.proj.addEquivalentTransforms(
-      ol.proj.EPSG4326.PROJECTIONS,
-      ol.proj.EPSG3857.PROJECTIONS,
-      ol.proj.EPSG3857.fromEPSG4326,
-      ol.proj.EPSG3857.toEPSG4326);
+    ol.proj.EPSG4326.PROJECTIONS,
+    ol.proj.EPSG3857.PROJECTIONS,
+    ol.proj.EPSG3857.fromEPSG4326,
+    ol.proj.EPSG3857.toEPSG4326
+  );
 };
 
 ol.proj.addCommon();

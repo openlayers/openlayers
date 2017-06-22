@@ -44,23 +44,26 @@ ${postamble}`;
  * @return {Promise} Resolves on successful completion.
  */
 function main() {
-  return Promise.all(pkg.ext.map(ext => {
-    const moduleName = ext.name || ext.module;
-    const options = {
-      entry: require.resolve(ext.module),
-      dest: `${path.join(__dirname, '..', 'build', 'ol.ext', moduleName.toLowerCase())}.js`,
-      format: 'iife',
-      moduleName: moduleName,
-      exports: 'named',
-      plugins: [
-        node(),
-        common(),
-        cleanup(),
-        wrap(ext)
-      ]
-    };
-    return rollup(options).then(bundle => bundle.write(options));
-  }));
+  return Promise.all(
+    pkg.ext.map(ext => {
+      const moduleName = ext.name || ext.module;
+      const options = {
+        entry: require.resolve(ext.module),
+        dest: `${path.join(
+          __dirname,
+          '..',
+          'build',
+          'ol.ext',
+          moduleName.toLowerCase()
+        )}.js`,
+        format: 'iife',
+        moduleName: moduleName,
+        exports: 'named',
+        plugins: [node(), common(), cleanup(), wrap(ext)]
+      };
+      return rollup(options).then(bundle => bundle.write(options));
+    })
+  );
 }
 
 if (require.main === module) {

@@ -4,7 +4,6 @@ goog.require('ol.Image');
 goog.require('ol.layer.Layer');
 goog.require('ol.renderer.Layer');
 
-
 describe('ol.renderer.Layer', function() {
   var renderer;
   var eventType = 'change';
@@ -26,12 +25,18 @@ describe('ol.renderer.Layer', function() {
       var src = '';
       var crossOrigin = '';
       imageLoadFunction = sinon.spy();
-      image = new ol.Image(extent, resolution, pixelRatio, attributions,
-          src, crossOrigin, imageLoadFunction);
+      image = new ol.Image(
+        extent,
+        resolution,
+        pixelRatio,
+        attributions,
+        src,
+        crossOrigin,
+        imageLoadFunction
+      );
     });
 
     describe('load IDLE image', function() {
-
       it('returns false', function() {
         var loaded = renderer.loadImage(image);
         expect(loaded).to.be(false);
@@ -42,11 +47,9 @@ describe('ol.renderer.Layer', function() {
         var listeners = image.getListeners(eventType, false);
         expect(listeners).to.have.length(1);
       });
-
     });
 
     describe('load LOADED image', function() {
-
       it('returns true', function() {
         image.state = 2; // LOADED
         var loaded = renderer.loadImage(image);
@@ -58,11 +61,9 @@ describe('ol.renderer.Layer', function() {
         var loaded = renderer.loadImage(image);
         expect(loaded).to.be(true);
       });
-
     });
 
     describe('load LOADING image', function() {
-
       beforeEach(function() {
         renderer.loadImage(image);
         expect(image.getState()).to.be(1); // LOADING
@@ -78,8 +79,6 @@ describe('ol.renderer.Layer', function() {
         var listeners = image.getListeners(eventType, false);
         expect(listeners).to.have.length(1);
       });
-
     });
-
   });
 });

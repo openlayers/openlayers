@@ -23,9 +23,9 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: view
 });
@@ -42,18 +42,20 @@ map.addOverlay(marker);
 // LineString to store the different geolocation positions. This LineString
 // is time aware.
 // The Z dimension is actually used to store the rotation (heading).
-var positions = new ol.geom.LineString([],
-    /** @type {ol.geom.GeometryLayout} */ ('XYZM'));
+var positions = new ol.geom.LineString(
+  [],
+  /** @type {ol.geom.GeometryLayout} */ 'XYZM'
+);
 
 // Geolocation Control
-var geolocation = new ol.Geolocation(/** @type {olx.GeolocationOptions} */ ({
+var geolocation = new ol.Geolocation /** @type {olx.GeolocationOptions} */({
   projection: view.getProjection(),
   trackingOptions: {
     maximumAge: 10000,
     enableHighAccuracy: true,
     timeout: 600000
   }
-}));
+});
 
 var deltaMean = 500; // the geolocation sampling period mean in ms
 
@@ -98,7 +100,7 @@ function degToRad(deg) {
 }
 // modulo for negative values
 function mod(n) {
-  return ((n % (2 * Math.PI)) + (2 * Math.PI)) % (2 * Math.PI);
+  return (n % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
 }
 
 function addPosition(position, heading, m, speed) {
@@ -112,7 +114,7 @@ function addPosition(position, heading, m, speed) {
 
     // force the rotation change to be less than 180°
     if (Math.abs(headingDiff) > Math.PI) {
-      var sign = (headingDiff >= 0) ? 1 : -1;
+      var sign = headingDiff >= 0 ? 1 : -1;
       headingDiff = -sign * (2 * Math.PI - Math.abs(headingDiff));
     }
     heading = prevHeading + headingDiff;
@@ -159,20 +161,23 @@ function updateView() {
 
 // geolocate device
 var geolocateBtn = document.getElementById('geolocate');
-geolocateBtn.addEventListener('click', function() {
-  geolocation.setTracking(true); // Start position tracking
+geolocateBtn.addEventListener(
+  'click',
+  function() {
+    geolocation.setTracking(true); // Start position tracking
 
-  map.on('postcompose', updateView);
-  map.render();
+    map.on('postcompose', updateView);
+    map.render();
 
-  disableButtons();
-}, false);
+    disableButtons();
+  },
+  false
+);
 
 // simulate device move
 var simulationData;
 var client = new XMLHttpRequest();
 client.open('GET', 'data/geolocation-orientation.json');
-
 
 /**
  * Handle data loading.
@@ -183,40 +188,47 @@ client.onload = function() {
 client.send();
 
 var simulateBtn = document.getElementById('simulate');
-simulateBtn.addEventListener('click', function() {
-  var coordinates = simulationData;
+simulateBtn.addEventListener(
+  'click',
+  function() {
+    var coordinates = simulationData;
 
-  var first = coordinates.shift();
-  simulatePositionChange(first);
+    var first = coordinates.shift();
+    simulatePositionChange(first);
 
-  var prevDate = first.timestamp;
-  function geolocate() {
-    var position = coordinates.shift();
-    if (!position) {
-      return;
+    var prevDate = first.timestamp;
+    function geolocate() {
+      var position = coordinates.shift();
+      if (!position) {
+        return;
+      }
+      var newDate = position.timestamp;
+      simulatePositionChange(position);
+      window.setTimeout(function() {
+        prevDate = newDate;
+        geolocate();
+      }, (newDate - prevDate) / 0.5);
     }
-    var newDate = position.timestamp;
-    simulatePositionChange(position);
-    window.setTimeout(function() {
-      prevDate = newDate;
-      geolocate();
-    }, (newDate - prevDate) / 0.5);
-  }
-  geolocate();
+    geolocate();
 
-  map.on('postcompose', updateView);
-  map.render();
+    map.on('postcompose', updateView);
+    map.render();
 
-  disableButtons();
-}, false);
+    disableButtons();
+  },
+  false
+);
 
 function simulatePositionChange(position) {
   var coords = position.coords;
   geolocation.set('accuracy', coords.accuracy);
   geolocation.set('heading', degToRad(coords.heading));
   var position_ = [coords.longitude, coords.latitude];
-  var projectedPosition = ol.proj.transform(position_, 'EPSG:4326',
-      'EPSG:3857');
+  var projectedPosition = ol.proj.transform(
+    position_,
+    'EPSG:4326',
+    'EPSG:3857'
+  );
   geolocation.set('position', projectedPosition);
   geolocation.set('speed', coords.speed);
   geolocation.changed();

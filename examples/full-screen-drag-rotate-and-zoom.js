@@ -7,14 +7,11 @@ goog.require('ol.interaction.DragRotateAndZoom');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.BingMaps');
 
-
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
-    new ol.control.FullScreen()
-  ]),
-  interactions: ol.interaction.defaults().extend([
-    new ol.interaction.DragRotateAndZoom()
-  ]),
+  controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
+  interactions: ol.interaction
+    .defaults()
+    .extend([new ol.interaction.DragRotateAndZoom()]),
   layers: [
     new ol.layer.Tile({
       source: new ol.source.BingMaps({

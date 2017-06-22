@@ -14,7 +14,6 @@ goog.require('ol.geom.flat.interpolate');
 goog.require('ol.geom.flat.intersectsextent');
 goog.require('ol.geom.flat.simplify');
 
-
 /**
  * @classdesc
  * Multi-linestring geometry.
@@ -26,7 +25,6 @@ goog.require('ol.geom.flat.simplify');
  * @api
  */
 ol.geom.MultiLineString = function(coordinates, opt_layout) {
-
   ol.geom.SimpleGeometry.call(this);
 
   /**
@@ -48,10 +46,8 @@ ol.geom.MultiLineString = function(coordinates, opt_layout) {
   this.maxDeltaRevision_ = -1;
 
   this.setCoordinates(coordinates, opt_layout);
-
 };
 ol.inherits(ol.geom.MultiLineString, ol.geom.SimpleGeometry);
-
 
 /**
  * Append the passed linestring to the multilinestring.
@@ -63,12 +59,13 @@ ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
     this.flatCoordinates = lineString.getFlatCoordinates().slice();
   } else {
     ol.array.extend(
-        this.flatCoordinates, lineString.getFlatCoordinates().slice());
+      this.flatCoordinates,
+      lineString.getFlatCoordinates().slice()
+    );
   }
   this.ends_.push(this.flatCoordinates.length);
   this.changed();
 };
-
 
 /**
  * Make a complete copy of the geometry.
@@ -79,29 +76,53 @@ ol.geom.MultiLineString.prototype.appendLineString = function(lineString) {
 ol.geom.MultiLineString.prototype.clone = function() {
   var multiLineString = new ol.geom.MultiLineString(null);
   multiLineString.setFlatCoordinates(
-      this.layout, this.flatCoordinates.slice(), this.ends_.slice());
+    this.layout,
+    this.flatCoordinates.slice(),
+    this.ends_.slice()
+  );
   return multiLineString;
 };
-
 
 /**
  * @inheritDoc
  */
-ol.geom.MultiLineString.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {
-  if (minSquaredDistance <
-      ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)) {
+ol.geom.MultiLineString.prototype.closestPointXY = function(
+  x,
+  y,
+  closestPoint,
+  minSquaredDistance
+) {
+  if (
+    minSquaredDistance <
+    ol.extent.closestSquaredDistanceXY(this.getExtent(), x, y)
+  ) {
     return minSquaredDistance;
   }
   if (this.maxDeltaRevision_ != this.getRevision()) {
-    this.maxDelta_ = Math.sqrt(ol.geom.flat.closest.getsMaxSquaredDelta(
-        this.flatCoordinates, 0, this.ends_, this.stride, 0));
+    this.maxDelta_ = Math.sqrt(
+      ol.geom.flat.closest.getsMaxSquaredDelta(
+        this.flatCoordinates,
+        0,
+        this.ends_,
+        this.stride,
+        0
+      )
+    );
     this.maxDeltaRevision_ = this.getRevision();
   }
   return ol.geom.flat.closest.getsClosestPoint(
-      this.flatCoordinates, 0, this.ends_, this.stride,
-      this.maxDelta_, false, x, y, closestPoint, minSquaredDistance);
+    this.flatCoordinates,
+    0,
+    this.ends_,
+    this.stride,
+    this.maxDelta_,
+    false,
+    x,
+    y,
+    closestPoint,
+    minSquaredDistance
+  );
 };
-
 
 /**
  * Returns the coordinate at `m` using linear interpolation, or `null` if no
@@ -125,18 +146,30 @@ ol.geom.MultiLineString.prototype.closestPointXY = function(x, y, closestPoint, 
  * @return {ol.Coordinate} Coordinate.
  * @api
  */
-ol.geom.MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate, opt_interpolate) {
-  if ((this.layout != ol.geom.GeometryLayout.XYM &&
-       this.layout != ol.geom.GeometryLayout.XYZM) ||
-      this.flatCoordinates.length === 0) {
+ol.geom.MultiLineString.prototype.getCoordinateAtM = function(
+  m,
+  opt_extrapolate,
+  opt_interpolate
+) {
+  if (
+    (this.layout != ol.geom.GeometryLayout.XYM &&
+      this.layout != ol.geom.GeometryLayout.XYZM) ||
+    this.flatCoordinates.length === 0
+  ) {
     return null;
   }
   var extrapolate = opt_extrapolate !== undefined ? opt_extrapolate : false;
   var interpolate = opt_interpolate !== undefined ? opt_interpolate : false;
-  return ol.geom.flat.interpolate.lineStringsCoordinateAtM(this.flatCoordinates, 0,
-      this.ends_, this.stride, m, extrapolate, interpolate);
+  return ol.geom.flat.interpolate.lineStringsCoordinateAtM(
+    this.flatCoordinates,
+    0,
+    this.ends_,
+    this.stride,
+    m,
+    extrapolate,
+    interpolate
+  );
 };
-
 
 /**
  * Return the coordinates of the multilinestring.
@@ -146,9 +179,12 @@ ol.geom.MultiLineString.prototype.getCoordinateAtM = function(m, opt_extrapolate
  */
 ol.geom.MultiLineString.prototype.getCoordinates = function() {
   return ol.geom.flat.inflate.coordinatess(
-      this.flatCoordinates, 0, this.ends_, this.stride);
+    this.flatCoordinates,
+    0,
+    this.ends_,
+    this.stride
+  );
 };
-
 
 /**
  * @return {Array.<number>} Ends.
@@ -156,7 +192,6 @@ ol.geom.MultiLineString.prototype.getCoordinates = function() {
 ol.geom.MultiLineString.prototype.getEnds = function() {
   return this.ends_;
 };
-
 
 /**
  * Return the linestring at the specified index.
@@ -169,11 +204,15 @@ ol.geom.MultiLineString.prototype.getLineString = function(index) {
     return null;
   }
   var lineString = new ol.geom.LineString(null);
-  lineString.setFlatCoordinates(this.layout, this.flatCoordinates.slice(
-      index === 0 ? 0 : this.ends_[index - 1], this.ends_[index]));
+  lineString.setFlatCoordinates(
+    this.layout,
+    this.flatCoordinates.slice(
+      index === 0 ? 0 : this.ends_[index - 1],
+      this.ends_[index]
+    )
+  );
   return lineString;
 };
-
 
 /**
  * Return the linestrings of this multilinestring.
@@ -198,7 +237,6 @@ ol.geom.MultiLineString.prototype.getLineStrings = function() {
   return lineStrings;
 };
 
-
 /**
  * @return {Array.<number>} Flat midpoints.
  */
@@ -212,29 +250,44 @@ ol.geom.MultiLineString.prototype.getFlatMidpoints = function() {
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     var midpoint = ol.geom.flat.interpolate.lineString(
-        flatCoordinates, offset, end, stride, 0.5);
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      0.5
+    );
     ol.array.extend(midpoints, midpoint);
     offset = end;
   }
   return midpoints;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+ol.geom.MultiLineString.prototype.getSimplifiedGeometryInternal = function(
+  squaredTolerance
+) {
   var simplifiedFlatCoordinates = [];
   var simplifiedEnds = [];
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeuckers(
-      this.flatCoordinates, 0, this.ends_, this.stride, squaredTolerance,
-      simplifiedFlatCoordinates, 0, simplifiedEnds);
+    this.flatCoordinates,
+    0,
+    this.ends_,
+    this.stride,
+    squaredTolerance,
+    simplifiedFlatCoordinates,
+    0,
+    simplifiedEnds
+  );
   var simplifiedMultiLineString = new ol.geom.MultiLineString(null);
   simplifiedMultiLineString.setFlatCoordinates(
-      ol.geom.GeometryLayout.XY, simplifiedFlatCoordinates, simplifiedEnds);
+    ol.geom.GeometryLayout.XY,
+    simplifiedFlatCoordinates,
+    simplifiedEnds
+  );
   return simplifiedMultiLineString;
 };
-
 
 /**
  * @inheritDoc
@@ -244,16 +297,19 @@ ol.geom.MultiLineString.prototype.getType = function() {
   return ol.geom.GeometryType.MULTI_LINE_STRING;
 };
 
-
 /**
  * @inheritDoc
  * @api
  */
 ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
   return ol.geom.flat.intersectsextent.lineStrings(
-      this.flatCoordinates, 0, this.ends_, this.stride, extent);
+    this.flatCoordinates,
+    0,
+    this.ends_,
+    this.stride,
+    extent
+  );
 };
-
 
 /**
  * Set the coordinates of the multilinestring.
@@ -262,7 +318,10 @@ ol.geom.MultiLineString.prototype.intersectsExtent = function(extent) {
  * @override
  * @api
  */
-ol.geom.MultiLineString.prototype.setCoordinates = function(coordinates, opt_layout) {
+ol.geom.MultiLineString.prototype.setCoordinates = function(
+  coordinates,
+  opt_layout
+) {
   if (!coordinates) {
     this.setFlatCoordinates(ol.geom.GeometryLayout.XY, null, this.ends_);
   } else {
@@ -271,24 +330,31 @@ ol.geom.MultiLineString.prototype.setCoordinates = function(coordinates, opt_lay
       this.flatCoordinates = [];
     }
     var ends = ol.geom.flat.deflate.coordinatess(
-        this.flatCoordinates, 0, coordinates, this.stride, this.ends_);
+      this.flatCoordinates,
+      0,
+      coordinates,
+      this.stride,
+      this.ends_
+    );
     this.flatCoordinates.length = ends.length === 0 ? 0 : ends[ends.length - 1];
     this.changed();
   }
 };
-
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {Array.<number>} ends Ends.
  */
-ol.geom.MultiLineString.prototype.setFlatCoordinates = function(layout, flatCoordinates, ends) {
+ol.geom.MultiLineString.prototype.setFlatCoordinates = function(
+  layout,
+  flatCoordinates,
+  ends
+) {
   this.setFlatCoordinatesInternal(layout, flatCoordinates);
   this.ends_ = ends;
   this.changed();
 };
-
 
 /**
  * @param {Array.<ol.geom.LineString>} lineStrings LineStrings.

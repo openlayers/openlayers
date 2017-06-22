@@ -5,11 +5,8 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 
-
 describe('ol.style.Circle', function() {
-
   describe('#constructor', function() {
-
     it('creates a canvas if no atlas is used (no fill-style)', function() {
       var style = new ol.style.Circle({radius: 10});
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
@@ -77,7 +74,6 @@ describe('ol.style.Circle', function() {
   });
 
   describe('#clone', function() {
-
     it('creates a new ol.style.Circle', function() {
       var original = new ol.style.Circle();
       var clone = original.clone();
@@ -104,7 +100,9 @@ describe('ol.style.Circle', function() {
       expect(original.getRadius()).to.eql(clone.getRadius());
       expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
-      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getStroke().getColor()).to.eql(
+        clone.getStroke().getColor()
+      );
     });
 
     it('the clone does not reference the same objects as the original', function() {
@@ -122,14 +120,16 @@ describe('ol.style.Circle', function() {
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(clone.getFill().getColor());
-      expect(original.getStroke().getColor()).to.not.eql(clone.getStroke().getColor());
+      expect(original.getFill().getColor()).to.not.eql(
+        clone.getFill().getColor()
+      );
+      expect(original.getStroke().getColor()).to.not.eql(
+        clone.getStroke().getColor()
+      );
     });
-
   });
 
   describe('#getChecksum', function() {
-
     it('calculates the same hash code for default options', function() {
       var style1 = new ol.style.Circle();
       var style2 = new ol.style.Circle();
@@ -283,7 +283,6 @@ describe('ol.style.Circle', function() {
       style1.getStroke().setWidth(4);
       expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
-
   });
 
   describe('#setRadius', function() {
@@ -299,5 +298,4 @@ describe('ol.style.Circle', function() {
       expect(style.getRadius()).to.eql(20);
     });
   });
-
 });

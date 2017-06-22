@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.Comparison');
 goog.require('ol');
 goog.require('ol.format.filter.Filter');
 
-
 /**
  * @classdesc
  * Abstract class; normally only used for creating subclasses and not instantiated in apps.
@@ -16,7 +15,6 @@ goog.require('ol.format.filter.Filter');
  * @api
  */
 ol.format.filter.Comparison = function(tagName, propertyName) {
-
   ol.format.filter.Filter.call(this, tagName);
 
   /**

@@ -28,7 +28,6 @@ goog.provide('ol.geom.flat.simplify');
 
 goog.require('ol.math');
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -40,24 +39,43 @@ goog.require('ol.math');
  *     coordinates.
  * @return {Array.<number>} Simplified line string.
  */
-ol.geom.flat.simplify.lineString = function(flatCoordinates, offset, end,
-    stride, squaredTolerance, highQuality, opt_simplifiedFlatCoordinates) {
-  var simplifiedFlatCoordinates = opt_simplifiedFlatCoordinates !== undefined ?
-      opt_simplifiedFlatCoordinates : [];
+ol.geom.flat.simplify.lineString = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  squaredTolerance,
+  highQuality,
+  opt_simplifiedFlatCoordinates
+) {
+  var simplifiedFlatCoordinates = opt_simplifiedFlatCoordinates !== undefined
+    ? opt_simplifiedFlatCoordinates
+    : [];
   if (!highQuality) {
-    end = ol.geom.flat.simplify.radialDistance(flatCoordinates, offset, end,
-        stride, squaredTolerance,
-        simplifiedFlatCoordinates, 0);
+    end = ol.geom.flat.simplify.radialDistance(
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      squaredTolerance,
+      simplifiedFlatCoordinates,
+      0
+    );
     flatCoordinates = simplifiedFlatCoordinates;
     offset = 0;
     stride = 2;
   }
   simplifiedFlatCoordinates.length = ol.geom.flat.simplify.douglasPeucker(
-      flatCoordinates, offset, end, stride, squaredTolerance,
-      simplifiedFlatCoordinates, 0);
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    squaredTolerance,
+    simplifiedFlatCoordinates,
+    0
+  );
   return simplifiedFlatCoordinates;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -70,15 +88,21 @@ ol.geom.flat.simplify.lineString = function(flatCoordinates, offset, end,
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
  */
-ol.geom.flat.simplify.douglasPeucker = function(flatCoordinates, offset, end,
-    stride, squaredTolerance, simplifiedFlatCoordinates, simplifiedOffset) {
+ol.geom.flat.simplify.douglasPeucker = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  squaredTolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset
+) {
   var n = (end - offset) / stride;
   if (n < 3) {
     for (; offset < end; offset += stride) {
+      simplifiedFlatCoordinates[simplifiedOffset++] = flatCoordinates[offset];
       simplifiedFlatCoordinates[simplifiedOffset++] =
-          flatCoordinates[offset];
-      simplifiedFlatCoordinates[simplifiedOffset++] =
-          flatCoordinates[offset + 1];
+        flatCoordinates[offset + 1];
     }
     return simplifiedOffset;
   }
@@ -102,7 +126,13 @@ ol.geom.flat.simplify.douglasPeucker = function(flatCoordinates, offset, end,
       var x = flatCoordinates[i];
       var y = flatCoordinates[i + 1];
       var squaredDistance = ol.math.squaredSegmentDistance(
-          x, y, x1, y1, x2, y2);
+        x,
+        y,
+        x1,
+        y1,
+        x2,
+        y2
+      );
       if (squaredDistance > maxSquaredDistance) {
         index = i;
         maxSquaredDistance = squaredDistance;
@@ -121,14 +151,13 @@ ol.geom.flat.simplify.douglasPeucker = function(flatCoordinates, offset, end,
   for (i = 0; i < n; ++i) {
     if (markers[i]) {
       simplifiedFlatCoordinates[simplifiedOffset++] =
-          flatCoordinates[offset + i * stride];
+        flatCoordinates[offset + i * stride];
       simplifiedFlatCoordinates[simplifiedOffset++] =
-          flatCoordinates[offset + i * stride + 1];
+        flatCoordinates[offset + i * stride + 1];
     }
   }
   return simplifiedOffset;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -142,21 +171,33 @@ ol.geom.flat.simplify.douglasPeucker = function(flatCoordinates, offset, end,
  * @param {Array.<number>} simplifiedEnds Simplified ends.
  * @return {number} Simplified offset.
  */
-ol.geom.flat.simplify.douglasPeuckers = function(flatCoordinates, offset,
-    ends, stride, squaredTolerance, simplifiedFlatCoordinates,
-    simplifiedOffset, simplifiedEnds) {
+ol.geom.flat.simplify.douglasPeuckers = function(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  squaredTolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset,
+  simplifiedEnds
+) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     simplifiedOffset = ol.geom.flat.simplify.douglasPeucker(
-        flatCoordinates, offset, end, stride, squaredTolerance,
-        simplifiedFlatCoordinates, simplifiedOffset);
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      squaredTolerance,
+      simplifiedFlatCoordinates,
+      simplifiedOffset
+    );
     simplifiedEnds.push(simplifiedOffset);
     offset = end;
   }
   return simplifiedOffset;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -171,21 +212,34 @@ ol.geom.flat.simplify.douglasPeuckers = function(flatCoordinates, offset,
  * @return {number} Simplified offset.
  */
 ol.geom.flat.simplify.douglasPeuckerss = function(
-    flatCoordinates, offset, endss, stride, squaredTolerance,
-    simplifiedFlatCoordinates, simplifiedOffset, simplifiedEndss) {
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  squaredTolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset,
+  simplifiedEndss
+) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     var simplifiedEnds = [];
     simplifiedOffset = ol.geom.flat.simplify.douglasPeuckers(
-        flatCoordinates, offset, ends, stride, squaredTolerance,
-        simplifiedFlatCoordinates, simplifiedOffset, simplifiedEnds);
+      flatCoordinates,
+      offset,
+      ends,
+      stride,
+      squaredTolerance,
+      simplifiedFlatCoordinates,
+      simplifiedOffset,
+      simplifiedEnds
+    );
     simplifiedEndss.push(simplifiedEnds);
     offset = ends[ends.length - 1];
   }
   return simplifiedOffset;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -198,14 +252,21 @@ ol.geom.flat.simplify.douglasPeuckerss = function(
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
  */
-ol.geom.flat.simplify.radialDistance = function(flatCoordinates, offset, end,
-    stride, squaredTolerance, simplifiedFlatCoordinates, simplifiedOffset) {
+ol.geom.flat.simplify.radialDistance = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  squaredTolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset
+) {
   if (end <= offset + stride) {
     // zero or one point, no simplification possible, so copy and return
     for (; offset < end; offset += stride) {
       simplifiedFlatCoordinates[simplifiedOffset++] = flatCoordinates[offset];
       simplifiedFlatCoordinates[simplifiedOffset++] =
-          flatCoordinates[offset + 1];
+        flatCoordinates[offset + 1];
     }
     return simplifiedOffset;
   }
@@ -235,7 +296,6 @@ ol.geom.flat.simplify.radialDistance = function(flatCoordinates, offset, end,
   return simplifiedOffset;
 };
 
-
 /**
  * @param {number} value Value.
  * @param {number} tolerance Tolerance.
@@ -244,7 +304,6 @@ ol.geom.flat.simplify.radialDistance = function(flatCoordinates, offset, end,
 ol.geom.flat.simplify.snap = function(value, tolerance) {
   return tolerance * Math.round(value / tolerance);
 };
-
 
 /**
  * Simplifies a line string using an algorithm designed by Tim Schaub.
@@ -265,8 +324,15 @@ ol.geom.flat.simplify.snap = function(value, tolerance) {
  * @param {number} simplifiedOffset Simplified offset.
  * @return {number} Simplified offset.
  */
-ol.geom.flat.simplify.quantize = function(flatCoordinates, offset, end, stride,
-    tolerance, simplifiedFlatCoordinates, simplifiedOffset) {
+ol.geom.flat.simplify.quantize = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  tolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset
+) {
   // do nothing if the line is empty
   if (offset == end) {
     return simplifiedOffset;
@@ -314,9 +380,11 @@ ol.geom.flat.simplify.quantize = function(flatCoordinates, offset, end, stride,
     // if P1, P2, and P3 are colinear and P3 is further from P1 than P2 is from
     // P1 in the same direction then P2 is on the straight line between P1 and
     // P3
-    if ((dx1 * dy2 == dy1 * dx2) &&
-        ((dx1 < 0 && dx2 < dx1) || dx1 == dx2 || (dx1 > 0 && dx2 > dx1)) &&
-        ((dy1 < 0 && dy2 < dy1) || dy1 == dy2 || (dy1 > 0 && dy2 > dy1))) {
+    if (
+      dx1 * dy2 == dy1 * dx2 &&
+      ((dx1 < 0 && dx2 < dx1) || dx1 == dx2 || (dx1 > 0 && dx2 > dx1)) &&
+      ((dy1 < 0 && dy2 < dy1) || dy1 == dy2 || (dy1 > 0 && dy2 > dy1))
+    ) {
       // discard P2 and set P2 = P3
       x2 = x3;
       y2 = y3;
@@ -338,7 +406,6 @@ ol.geom.flat.simplify.quantize = function(flatCoordinates, offset, end, stride,
   return simplifiedOffset;
 };
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -352,22 +419,32 @@ ol.geom.flat.simplify.quantize = function(flatCoordinates, offset, end, stride,
  * @return {number} Simplified offset.
  */
 ol.geom.flat.simplify.quantizes = function(
-    flatCoordinates, offset, ends, stride,
-    tolerance,
-    simplifiedFlatCoordinates, simplifiedOffset, simplifiedEnds) {
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  tolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset,
+  simplifiedEnds
+) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
     var end = ends[i];
     simplifiedOffset = ol.geom.flat.simplify.quantize(
-        flatCoordinates, offset, end, stride,
-        tolerance,
-        simplifiedFlatCoordinates, simplifiedOffset);
+      flatCoordinates,
+      offset,
+      end,
+      stride,
+      tolerance,
+      simplifiedFlatCoordinates,
+      simplifiedOffset
+    );
     simplifiedEnds.push(simplifiedOffset);
     offset = end;
   }
   return simplifiedOffset;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -382,17 +459,29 @@ ol.geom.flat.simplify.quantizes = function(
  * @return {number} Simplified offset.
  */
 ol.geom.flat.simplify.quantizess = function(
-    flatCoordinates, offset, endss, stride,
-    tolerance,
-    simplifiedFlatCoordinates, simplifiedOffset, simplifiedEndss) {
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  tolerance,
+  simplifiedFlatCoordinates,
+  simplifiedOffset,
+  simplifiedEndss
+) {
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
     var simplifiedEnds = [];
     simplifiedOffset = ol.geom.flat.simplify.quantizes(
-        flatCoordinates, offset, ends, stride,
-        tolerance,
-        simplifiedFlatCoordinates, simplifiedOffset, simplifiedEnds);
+      flatCoordinates,
+      offset,
+      ends,
+      stride,
+      tolerance,
+      simplifiedFlatCoordinates,
+      simplifiedOffset,
+      simplifiedEnds
+    );
     simplifiedEndss.push(simplifiedEnds);
     offset = ends[ends.length - 1];
   }

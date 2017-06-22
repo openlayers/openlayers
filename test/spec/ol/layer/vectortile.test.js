@@ -3,11 +3,8 @@ goog.provide('ol.test.layer.VectorTile');
 goog.require('ol.layer.VectorTile');
 goog.require('ol.source.VectorTile');
 
-
 describe('ol.layer.VectorTile', function() {
-
   describe('constructor (defaults)', function() {
-
     var layer;
 
     beforeEach(function() {
@@ -35,7 +32,6 @@ describe('ol.layer.VectorTile', function() {
     it('provides default renderMode', function() {
       expect(layer.getRenderMode()).to.be('hybrid');
     });
-
   });
 
   describe('constructor (options)', function() {
@@ -58,5 +54,4 @@ describe('ol.layer.VectorTile', function() {
       }).to.throwException();
     });
   });
-
 });

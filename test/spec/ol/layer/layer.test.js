@@ -7,11 +7,8 @@ goog.require('ol.proj');
 goog.require('ol.render.Event');
 goog.require('ol.source.Source');
 
-
 describe('ol.layer.Layer', function() {
-
   describe('constructor (defaults)', function() {
-
     var layer;
 
     beforeEach(function() {
@@ -59,11 +56,9 @@ describe('ol.layer.Layer', function() {
         minResolution: 0
       });
     });
-
   });
 
   describe('constructor (options)', function() {
-
     it('accepts options', function() {
       var layer = new ol.layer.Layer({
         source: new ol.source.Source({
@@ -96,7 +91,6 @@ describe('ol.layer.Layer', function() {
 
       layer.dispose();
     });
-
   });
 
   describe('visibleAtResolution', function() {
@@ -145,11 +139,9 @@ describe('ol.layer.Layer', function() {
       var layerState = layer.getLayerState();
       expect(ol.layer.Layer.visibleAtResolution(layerState, 4)).to.be(true);
     });
-
   });
 
   describe('#getLayerState', function() {
-
     var layer;
 
     beforeEach(function() {
@@ -212,17 +204,14 @@ describe('ol.layer.Layer', function() {
         minResolution: 0
       });
     });
-
   });
 
   describe('#getSource', function() {
-
     it('gets the layer source', function() {
       var source = new ol.source.Source({projection: ol.proj.get('EPSG:4326')});
       var layer = new ol.layer.Layer({source: source});
       expect(layer.getSource()).to.be(source);
     });
-
   });
 
   describe('#set("source", source)', function() {
@@ -268,7 +257,6 @@ describe('ol.layer.Layer', function() {
       // remove spy
       ol.layer.Layer.prototype.handleSourceChange_.restore();
     });
-
   });
 
   describe('#setSource()', function() {
@@ -314,12 +302,9 @@ describe('ol.layer.Layer', function() {
       // remove spy
       ol.layer.Layer.prototype.handleSourceChange_.restore();
     });
-
   });
 
-
   describe('#setOpacity', function() {
-
     var layer;
 
     beforeEach(function() {
@@ -345,12 +330,9 @@ describe('ol.layer.Layer', function() {
       layer.setOpacity(0.4);
       expect(listener.calledOnce).to.be(true);
     });
-
   });
 
-
   describe('#setVisible', function() {
-
     var layer;
     beforeEach(function() {
       layer = new ol.layer.Layer({
@@ -382,7 +364,6 @@ describe('ol.layer.Layer', function() {
       layer.setVisible(true);
       expect(listener.callCount).to.be(2);
     });
-
   });
 
   describe('#setMap (unmanaged layer)', function() {
@@ -401,8 +382,9 @@ describe('ol.layer.Layer', function() {
           layerStatesArray: [],
           layerStates: {}
         };
-        map.dispatchEvent(new ol.render.Event('precompose', null,
-            frameState, null, null));
+        map.dispatchEvent(
+          new ol.render.Event('precompose', null, frameState, null, null)
+        );
         expect(frameState.layerStatesArray.length).to.be(1);
         var layerState = frameState.layerStatesArray[0];
         expect(layerState.layer).to.equal(layer);
@@ -433,9 +415,6 @@ describe('ol.layer.Layer', function() {
         layer.setMap(map);
         expect(mapRenderSpy.callCount).to.be(3);
       });
-
     });
-
   });
-
 });

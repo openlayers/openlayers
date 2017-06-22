@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.ImageBase');
 goog.require('ol.ImageState');
 
-
 /**
  * @constructor
  * @extends {ol.ImageBase}
@@ -16,9 +15,14 @@ goog.require('ol.ImageState');
  * @param {ol.ImageCanvasLoader=} opt_loader Optional loader function to
  *     support asynchronous canvas drawing.
  */
-ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
-    canvas, opt_loader) {
-
+ol.ImageCanvas = function(
+  extent,
+  resolution,
+  pixelRatio,
+  attributions,
+  canvas,
+  opt_loader
+) {
   /**
    * Optional canvas loader function.
    * @type {?ol.ImageCanvasLoader}
@@ -26,8 +30,9 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
    */
   this.loader_ = opt_loader !== undefined ? opt_loader : null;
 
-  var state = opt_loader !== undefined ?
-      ol.ImageState.IDLE : ol.ImageState.LOADED;
+  var state = opt_loader !== undefined
+    ? ol.ImageState.IDLE
+    : ol.ImageState.LOADED;
 
   ol.ImageBase.call(this, extent, resolution, pixelRatio, state, attributions);
 
@@ -42,10 +47,8 @@ ol.ImageCanvas = function(extent, resolution, pixelRatio, attributions,
    * @type {Error}
    */
   this.error_ = null;
-
 };
 ol.inherits(ol.ImageCanvas, ol.ImageBase);
-
 
 /**
  * Get any error associated with asynchronous rendering.
@@ -54,7 +57,6 @@ ol.inherits(ol.ImageCanvas, ol.ImageBase);
 ol.ImageCanvas.prototype.getError = function() {
   return this.error_;
 };
-
 
 /**
  * Handle async drawing complete.
@@ -71,7 +73,6 @@ ol.ImageCanvas.prototype.handleLoad_ = function(err) {
   this.changed();
 };
 
-
 /**
  * @inheritDoc
  */
@@ -82,7 +83,6 @@ ol.ImageCanvas.prototype.load = function() {
     this.loader_(this.handleLoad_.bind(this));
   }
 };
-
 
 /**
  * @inheritDoc

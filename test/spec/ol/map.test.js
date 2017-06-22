@@ -12,9 +12,7 @@ goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.XYZ');
 
-
 describe('ol.Map', function() {
-
   describe('constructor', function() {
     it('creates a new map', function() {
       var map = new ol.Map({});
@@ -47,7 +45,6 @@ describe('ol.Map', function() {
       var containerStop = map.getOverlayContainerStopEvent();
       expect(containerStop.className).to.be('ol-overlaycontainer-stopevent');
     });
-
   });
 
   describe('#addLayer()', function() {
@@ -100,7 +97,6 @@ describe('ol.Map', function() {
   });
 
   describe('movestart/moveend event', function() {
-
     var target, view, map;
 
     beforeEach(function() {
@@ -180,17 +176,19 @@ describe('ol.Map', function() {
       view.setCenter(center);
       view.setZoom(zoom);
     });
-
   });
 
-  describe('#forEachLayerAtPixel()', function()  {
-
+  describe('#forEachLayerAtPixel()', function() {
     var target, map, original, log;
 
     beforeEach(function(done) {
       log = [];
-      original = ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate;
-      ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(coordinate) {
+      original =
+        ol.renderer.canvas.IntermediateCanvas.prototype
+          .forEachLayerAtCoordinate;
+      ol.renderer.canvas.IntermediateCanvas.prototype.forEachLayerAtCoordinate = function(
+        coordinate
+      ) {
         log.push(coordinate.slice());
       };
 
@@ -242,11 +240,9 @@ describe('ol.Map', function() {
       expect(log[0]).to.eql(log[1]);
       expect(log[1]).to.eql(log[2]);
     });
-
   });
 
   describe('#render()', function() {
-
     var target, map;
 
     beforeEach(function() {
@@ -291,7 +287,6 @@ describe('ol.Map', function() {
     });
 
     it('calls renderFrame_ and results in an postrender event', function(done) {
-
       var spy = sinon.spy(map, 'renderFrame_');
       map.render();
       map.once('postrender', function(event) {
@@ -302,7 +297,6 @@ describe('ol.Map', function() {
         expect(frameState).not.to.be(null);
         done();
       });
-
     });
 
     it('uses the same render frame for subsequent calls', function(done) {
@@ -340,7 +334,6 @@ describe('ol.Map', function() {
         expect(frameState).to.be(null);
         done();
       });
-
     });
 
     it('results in an postrender event (for zero width map)', function(done) {
@@ -354,9 +347,7 @@ describe('ol.Map', function() {
         expect(frameState).to.be(null);
         done();
       });
-
     });
-
   });
 
   describe('dispose', function() {
@@ -403,11 +394,9 @@ describe('ol.Map', function() {
         expect(map.handleResize_).to.be.ok();
       });
     });
-
   });
 
   describe('create interactions', function() {
-
     var options;
 
     beforeEach(function() {
@@ -461,7 +450,6 @@ describe('ol.Map', function() {
     });
 
     describe('create double click interaction', function() {
-
       beforeEach(function() {
         options.doubleClickZoom = true;
       });
@@ -487,7 +475,6 @@ describe('ol.Map', function() {
     });
 
     describe('#getEventPixel', function() {
-
       var target;
 
       beforeEach(function() {
@@ -505,7 +492,6 @@ describe('ol.Map', function() {
       });
 
       it('works with touchend events', function() {
-
         var map = new ol.Map({
           target: target
         });
@@ -513,10 +499,12 @@ describe('ol.Map', function() {
         var browserEvent = {
           type: 'touchend',
           target: target,
-          changedTouches: [{
-            clientX: 100,
-            clientY: 200
-          }]
+          changedTouches: [
+            {
+              clientX: 100,
+              clientY: 200
+            }
+          ]
         };
         var position = map.getEventPixel(browserEvent);
         // 80 = clientX - target.style.left
@@ -586,9 +574,6 @@ describe('ol.Map', function() {
         map.removeOverlay(overlay);
         expect(map.getOverlayById('foo')).to.be(null);
       });
-
     });
-
   });
-
 });

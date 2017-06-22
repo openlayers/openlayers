@@ -7,7 +7,6 @@ goog.require('ol.events.condition');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.render.Box');
 
-
 /**
  * @classdesc
  * Allows the user to draw a vector box by clicking and dragging on the map,
@@ -26,7 +25,6 @@ goog.require('ol.render.Box');
  * @api
  */
 ol.interaction.DragBox = function(opt_options) {
-
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.DragBox.handleDownEvent_,
     handleDragEvent: ol.interaction.DragBox.handleDragEvent_,
@@ -57,18 +55,19 @@ ol.interaction.DragBox = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ?
-      options.condition : ol.events.condition.always;
+  this.condition_ = options.condition
+    ? options.condition
+    : ol.events.condition.always;
 
   /**
    * @private
    * @type {ol.DragBoxEndConditionType}
    */
-  this.boxEndCondition_ = options.boxEndCondition ?
-      options.boxEndCondition : ol.interaction.DragBox.defaultBoxEndCondition;
+  this.boxEndCondition_ = options.boxEndCondition
+    ? options.boxEndCondition
+    : ol.interaction.DragBox.defaultBoxEndCondition;
 };
 ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
-
 
 /**
  * The default condition for determining whether the boxend event
@@ -80,12 +79,15 @@ ol.inherits(ol.interaction.DragBox, ol.interaction.Pointer);
  * @return {boolean} Whether or not the boxend condition should be fired.
  * @this {ol.interaction.DragBox}
  */
-ol.interaction.DragBox.defaultBoxEndCondition = function(mapBrowserEvent, startPixel, endPixel) {
+ol.interaction.DragBox.defaultBoxEndCondition = function(
+  mapBrowserEvent,
+  startPixel,
+  endPixel
+) {
   var width = endPixel[0] - startPixel[0];
   var height = endPixel[1] - startPixel[1];
   return width * width + height * height >= this.minArea_;
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -99,10 +101,14 @@ ol.interaction.DragBox.handleDragEvent_ = function(mapBrowserEvent) {
 
   this.box_.setPixels(this.startPixel_, mapBrowserEvent.pixel);
 
-  this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXDRAG,
-    mapBrowserEvent.coordinate, mapBrowserEvent));
+  this.dispatchEvent(
+    new ol.interaction.DragBox.Event(
+      ol.interaction.DragBox.EventType_.BOXDRAG,
+      mapBrowserEvent.coordinate,
+      mapBrowserEvent
+    )
+  );
 };
-
 
 /**
  * Returns geometry of last drawn box.
@@ -113,7 +119,6 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
   return this.box_.getGeometry();
 };
 
-
 /**
  * To be overridden by child classes.
  * FIXME: use constructor option instead of relying on overriding.
@@ -121,7 +126,6 @@ ol.interaction.DragBox.prototype.getGeometry = function() {
  * @protected
  */
 ol.interaction.DragBox.prototype.onBoxEnd = ol.nullFunction;
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -136,15 +140,24 @@ ol.interaction.DragBox.handleUpEvent_ = function(mapBrowserEvent) {
 
   this.box_.setMap(null);
 
-  if (this.boxEndCondition_(mapBrowserEvent,
-      this.startPixel_, mapBrowserEvent.pixel)) {
+  if (
+    this.boxEndCondition_(
+      mapBrowserEvent,
+      this.startPixel_,
+      mapBrowserEvent.pixel
+    )
+  ) {
     this.onBoxEnd(mapBrowserEvent);
-    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXEND,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
+    this.dispatchEvent(
+      new ol.interaction.DragBox.Event(
+        ol.interaction.DragBox.EventType_.BOXEND,
+        mapBrowserEvent.coordinate,
+        mapBrowserEvent
+      )
+    );
   }
   return false;
 };
-
 
 /**
  * @param {ol.MapBrowserPointerEvent} mapBrowserEvent Event.
@@ -157,19 +170,25 @@ ol.interaction.DragBox.handleDownEvent_ = function(mapBrowserEvent) {
     return false;
   }
 
-  if (ol.events.condition.mouseActionButton(mapBrowserEvent) &&
-      this.condition_(mapBrowserEvent)) {
+  if (
+    ol.events.condition.mouseActionButton(mapBrowserEvent) &&
+    this.condition_(mapBrowserEvent)
+  ) {
     this.startPixel_ = mapBrowserEvent.pixel;
     this.box_.setMap(mapBrowserEvent.map);
     this.box_.setPixels(this.startPixel_, this.startPixel_);
-    this.dispatchEvent(new ol.interaction.DragBox.Event(ol.interaction.DragBox.EventType_.BOXSTART,
-        mapBrowserEvent.coordinate, mapBrowserEvent));
+    this.dispatchEvent(
+      new ol.interaction.DragBox.Event(
+        ol.interaction.DragBox.EventType_.BOXSTART,
+        mapBrowserEvent.coordinate,
+        mapBrowserEvent
+      )
+    );
     return true;
   } else {
     return false;
   }
 };
-
 
 /**
  * @enum {string}
@@ -197,7 +216,6 @@ ol.interaction.DragBox.EventType_ = {
    */
   BOXEND: 'boxend'
 };
-
 
 /**
  * @classdesc
@@ -228,6 +246,5 @@ ol.interaction.DragBox.Event = function(type, coordinate, mapBrowserEvent) {
    * @api
    */
   this.mapBrowserEvent = mapBrowserEvent;
-
 };
 ol.inherits(ol.interaction.DragBox.Event, ol.events.Event);

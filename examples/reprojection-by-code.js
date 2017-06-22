@@ -6,7 +6,6 @@ goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileImage');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -21,7 +20,6 @@ var map = new ol.Map({
   })
 });
 
-
 var queryInput = document.getElementById('epsg-query');
 var searchButton = document.getElementById('epsg-search');
 var resultSpan = document.getElementById('epsg-result');
@@ -30,11 +28,13 @@ var renderEdgesCheckbox = document.getElementById('render-edges');
 function setProjection(code, name, proj4def, bbox) {
   if (code === null || name === null || proj4def === null || bbox === null) {
     resultSpan.innerHTML = 'Nothing usable found, using EPSG:3857...';
-    map.setView(new ol.View({
-      projection: 'EPSG:3857',
-      center: [0, 0],
-      zoom: 1
-    }));
+    map.setView(
+      new ol.View({
+        projection: 'EPSG:3857',
+        center: [0, 0],
+        zoom: 1
+      })
+    );
     return;
   }
 
@@ -47,7 +47,9 @@ function setProjection(code, name, proj4def, bbox) {
 
   // very approximate calculation of projection extent
   var extent = ol.extent.applyTransform(
-      [bbox[1], bbox[2], bbox[3], bbox[0]], fromLonLat);
+    [bbox[1], bbox[2], bbox[3], bbox[0]],
+    fromLonLat
+  );
   newProj.setExtent(extent);
   var newView = new ol.View({
     projection: newProj
@@ -56,31 +58,39 @@ function setProjection(code, name, proj4def, bbox) {
   newView.fit(extent);
 }
 
-
 function search(query) {
   resultSpan.innerHTML = 'Searching ...';
-  fetch('https://epsg.io/?format=json&q=' + query).then(function(response) {
-    return response.json();
-  }).then(function(json) {
-    var results = json['results'];
-    if (results && results.length > 0) {
-      for (var i = 0, ii = results.length; i < ii; i++) {
-        var result = results[i];
-        if (result) {
-          var code = result['code'], name = result['name'],
-              proj4def = result['proj4'], bbox = result['bbox'];
-          if (code && code.length > 0 && proj4def && proj4def.length > 0 &&
-              bbox && bbox.length == 4) {
-            setProjection(code, name, proj4def, bbox);
-            return;
+  fetch('https://epsg.io/?format=json&q=' + query)
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(json) {
+      var results = json['results'];
+      if (results && results.length > 0) {
+        for (var i = 0, ii = results.length; i < ii; i++) {
+          var result = results[i];
+          if (result) {
+            var code = result['code'],
+              name = result['name'],
+              proj4def = result['proj4'],
+              bbox = result['bbox'];
+            if (
+              code &&
+              code.length > 0 &&
+              proj4def &&
+              proj4def.length > 0 &&
+              bbox &&
+              bbox.length == 4
+            ) {
+              setProjection(code, name, proj4def, bbox);
+              return;
+            }
           }
         }
       }
-    }
-    setProjection(null, null, null, null);
-  });
+      setProjection(null, null, null, null);
+    });
 }
-
 
 /**
  * Handle click event.
@@ -90,7 +100,6 @@ searchButton.onclick = function(event) {
   search(queryInput.value);
   event.preventDefault();
 };
-
 
 /**
  * Handle change event.

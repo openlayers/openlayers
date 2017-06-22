@@ -12,7 +12,6 @@ goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.PinchRotate');
 goog.require('ol.interaction.PinchZoom');
 
-
 /**
  * Set of interactions included in maps by default. Specific interactions can be
  * excluded by setting the appropriate option to false in the constructor
@@ -37,75 +36,90 @@ goog.require('ol.interaction.PinchZoom');
  * @api
  */
 ol.interaction.defaults = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   var interactions = new ol.Collection();
 
   var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
 
-  var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
-      options.altShiftDragRotate : true;
+  var altShiftDragRotate = options.altShiftDragRotate !== undefined
+    ? options.altShiftDragRotate
+    : true;
   if (altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate());
   }
 
-  var doubleClickZoom = options.doubleClickZoom !== undefined ?
-      options.doubleClickZoom : true;
+  var doubleClickZoom = options.doubleClickZoom !== undefined
+    ? options.doubleClickZoom
+    : true;
   if (doubleClickZoom) {
-    interactions.push(new ol.interaction.DoubleClickZoom({
-      delta: options.zoomDelta,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new ol.interaction.DoubleClickZoom({
+        delta: options.zoomDelta,
+        duration: options.zoomDuration
+      })
+    );
   }
 
   var dragPan = options.dragPan !== undefined ? options.dragPan : true;
   if (dragPan) {
-    interactions.push(new ol.interaction.DragPan({
-      kinetic: kinetic
-    }));
+    interactions.push(
+      new ol.interaction.DragPan({
+        kinetic: kinetic
+      })
+    );
   }
 
-  var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
-      true;
+  var pinchRotate = options.pinchRotate !== undefined
+    ? options.pinchRotate
+    : true;
   if (pinchRotate) {
     interactions.push(new ol.interaction.PinchRotate());
   }
 
   var pinchZoom = options.pinchZoom !== undefined ? options.pinchZoom : true;
   if (pinchZoom) {
-    interactions.push(new ol.interaction.PinchZoom({
-      constrainResolution: options.constrainResolution,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new ol.interaction.PinchZoom({
+        constrainResolution: options.constrainResolution,
+        duration: options.zoomDuration
+      })
+    );
   }
 
   var keyboard = options.keyboard !== undefined ? options.keyboard : true;
   if (keyboard) {
     interactions.push(new ol.interaction.KeyboardPan());
-    interactions.push(new ol.interaction.KeyboardZoom({
-      delta: options.zoomDelta,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new ol.interaction.KeyboardZoom({
+        delta: options.zoomDelta,
+        duration: options.zoomDuration
+      })
+    );
   }
 
-  var mouseWheelZoom = options.mouseWheelZoom !== undefined ?
-      options.mouseWheelZoom : true;
+  var mouseWheelZoom = options.mouseWheelZoom !== undefined
+    ? options.mouseWheelZoom
+    : true;
   if (mouseWheelZoom) {
-    interactions.push(new ol.interaction.MouseWheelZoom({
-      constrainResolution: options.constrainResolution,
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new ol.interaction.MouseWheelZoom({
+        constrainResolution: options.constrainResolution,
+        duration: options.zoomDuration
+      })
+    );
   }
 
-  var shiftDragZoom = options.shiftDragZoom !== undefined ?
-      options.shiftDragZoom : true;
+  var shiftDragZoom = options.shiftDragZoom !== undefined
+    ? options.shiftDragZoom
+    : true;
   if (shiftDragZoom) {
-    interactions.push(new ol.interaction.DragZoom({
-      duration: options.zoomDuration
-    }));
+    interactions.push(
+      new ol.interaction.DragZoom({
+        duration: options.zoomDuration
+      })
+    );
   }
 
   return interactions;
-
 };

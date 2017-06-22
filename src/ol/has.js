@@ -3,8 +3,9 @@ goog.provide('ol.has');
 goog.require('ol');
 goog.require('ol.webgl');
 
-var ua = typeof navigator !== 'undefined' ?
-    navigator.userAgent.toLowerCase() : '';
+var ua = typeof navigator !== 'undefined'
+  ? navigator.userAgent.toLowerCase()
+  : '';
 
 /**
  * User agent string says we are dealing with Firefox as browser.
@@ -30,7 +31,6 @@ ol.has.WEBKIT = ua.indexOf('webkit') !== -1 && ua.indexOf('edge') == -1;
  */
 ol.has.MAC = ua.indexOf('macintosh') !== -1;
 
-
 /**
  * The ratio between physical pixels and device-independent pixels
  * (dips) on the device (`window.devicePixelRatio`).
@@ -40,13 +40,11 @@ ol.has.MAC = ua.indexOf('macintosh') !== -1;
  */
 ol.has.DEVICE_PIXEL_RATIO = window.devicePixelRatio || 1;
 
-
 /**
  * True if the browser's Canvas implementation implements {get,set}LineDash.
  * @type {boolean}
  */
 ol.has.CANVAS_LINE_DASH = false;
-
 
 /**
  * True if both the library and browser support Canvas.  Always `false`
@@ -55,29 +53,29 @@ ol.has.CANVAS_LINE_DASH = false;
  * @type {boolean}
  * @api
  */
-ol.has.CANVAS = ol.ENABLE_CANVAS && (
-    /**
+ol.has.CANVAS =
+  ol.ENABLE_CANVAS &&
+  /**
      * @return {boolean} Canvas supported.
      */
-    function() {
-      if (!('HTMLCanvasElement' in window)) {
+  (function() {
+    if (!('HTMLCanvasElement' in window)) {
+      return false;
+    }
+    try {
+      var context = document.createElement('CANVAS').getContext('2d');
+      if (!context) {
         return false;
-      }
-      try {
-        var context = document.createElement('CANVAS').getContext('2d');
-        if (!context) {
-          return false;
-        } else {
-          if (context.setLineDash !== undefined) {
-            ol.has.CANVAS_LINE_DASH = true;
-          }
-          return true;
+      } else {
+        if (context.setLineDash !== undefined) {
+          ol.has.CANVAS_LINE_DASH = true;
         }
-      } catch (e) {
-        return false;
+        return true;
       }
-    })();
-
+    } catch (e) {
+      return false;
+    }
+  })();
 
 /**
  * Indicates if DeviceOrientation is supported in the user's browser.
@@ -87,7 +85,6 @@ ol.has.CANVAS = ol.ENABLE_CANVAS && (
  */
 ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
 
-
 /**
  * Is HTML5 geolocation supported in the current browser?
  * @const
@@ -95,7 +92,6 @@ ol.has.DEVICE_ORIENTATION = 'DeviceOrientationEvent' in window;
  * @api
  */
 ol.has.GEOLOCATION = 'geolocation' in navigator;
-
 
 /**
  * True if browser supports touch events.
@@ -105,7 +101,6 @@ ol.has.GEOLOCATION = 'geolocation' in navigator;
  */
 ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in window;
 
-
 /**
  * True if browser supports pointer events.
  * @const
@@ -113,14 +108,12 @@ ol.has.TOUCH = ol.ASSUME_TOUCH || 'ontouchstart' in window;
  */
 ol.has.POINTER = 'PointerEvent' in window;
 
-
 /**
  * True if browser supports ms pointer events (IE 10).
  * @const
  * @type {boolean}
  */
-ol.has.MSPOINTER = !!(navigator.msPointerEnabled);
-
+ol.has.MSPOINTER = !!navigator.msPointerEnabled;
 
 /**
  * True if both OpenLayers and browser support WebGL.  Always `false`
@@ -131,7 +124,6 @@ ol.has.MSPOINTER = !!(navigator.msPointerEnabled);
  */
 ol.has.WEBGL;
 
-
 (function() {
   if (ol.ENABLE_WEBGL) {
     var hasWebGL = false;
@@ -140,15 +132,17 @@ ol.has.WEBGL;
 
     if ('WebGLRenderingContext' in window) {
       try {
-        var canvas = /** @type {HTMLCanvasElement} */
-            (document.createElement('CANVAS'));
+        var canvas /** @type {HTMLCanvasElement} */ = document.createElement(
+          'CANVAS'
+        );
         var gl = ol.webgl.getContext(canvas, {
           failIfMajorPerformanceCaveat: true
         });
         if (gl) {
           hasWebGL = true;
-          textureSize = /** @type {number} */
-              (gl.getParameter(gl.MAX_TEXTURE_SIZE));
+          textureSize /** @type {number} */ = gl.getParameter(
+            gl.MAX_TEXTURE_SIZE
+          );
           extensions = gl.getSupportedExtensions();
         }
       } catch (e) {

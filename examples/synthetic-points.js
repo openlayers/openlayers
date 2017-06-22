@@ -10,16 +10,17 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var count = 20000;
 var features = new Array(count);
 var e = 18000000;
 for (var i = 0; i < count; ++i) {
   features[i] = new ol.Feature({
-    'geometry': new ol.geom.Point(
-        [2 * e * Math.random() - e, 2 * e * Math.random() - e]),
-    'i': i,
-    'size': i % 2 ? 10 : 20
+    geometry: new ol.geom.Point([
+      2 * e * Math.random() - e,
+      2 * e * Math.random() - e
+    ]),
+    i: i,
+    size: i % 2 ? 10 : 20
   });
 }
 

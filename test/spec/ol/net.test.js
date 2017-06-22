@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.net');
 
 describe('ol.net', function() {
-
   describe('jsonp()', function() {
     var head = document.getElementsByTagName('head')[0];
     var origAppendChild = head.appendChild;
@@ -82,7 +81,5 @@ describe('ol.net', function() {
       var callback = createCallback('foo?mycallback=', done);
       ol.net.jsonp('foo', callback, undefined, 'mycallback');
     });
-
   });
-
 });

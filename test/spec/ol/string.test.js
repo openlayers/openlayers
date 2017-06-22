@@ -2,11 +2,8 @@ goog.provide('ol.test.string');
 
 goog.require('ol.string');
 
-
 describe('ol.string', function() {
-
   describe('ol.string.padNumber', function() {
-
     it('returns the correct padding without precision', function() {
       expect(ol.string.padNumber(6.5, 2)).to.be('06.5');
       expect(ol.string.padNumber(6.5, 3)).to.be('006.5');
@@ -34,7 +31,6 @@ describe('ol.string', function() {
       expect(ol.string.padNumber(5, 2, 1)).to.be('05.0');
       expect(ol.string.padNumber(5, 2, 0)).to.be('05');
     });
-
   });
 
   describe('ol.string.compareVersions', function() {

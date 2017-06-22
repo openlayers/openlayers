@@ -9,7 +9,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({

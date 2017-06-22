@@ -10,7 +10,6 @@ goog.require('ol.proj');
 goog.require('ol.xml');
 
 describe('ol.format.GPX', function() {
-
   var format;
   beforeEach(function() {
     format = new ol.format.GPX();
@@ -29,12 +28,11 @@ describe('ol.format.GPX', function() {
   });
 
   describe('rte', function() {
-
     it('can read an empty rte', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
-          '  <rte/>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <rte/>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -47,23 +45,23 @@ describe('ol.format.GPX', function() {
 
     it('can read and write various rte attributes', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <rte>' +
-          '    <name>Name</name>' +
-          '    <cmt>Comment</cmt>' +
-          '    <desc>Description</desc>' +
-          '    <src>Source</src>' +
-          '    <link href="http://example.com/">' +
-          '      <text>Link text</text>' +
-          '      <type>Link type</type>' +
-          '    </link>' +
-          '    <number>1</number>' +
-          '    <type>Type</type>' +
-          '  </rte>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <rte>' +
+        '    <name>Name</name>' +
+        '    <cmt>Comment</cmt>' +
+        '    <desc>Description</desc>' +
+        '    <src>Source</src>' +
+        '    <link href="http://example.com/">' +
+        '      <text>Link text</text>' +
+        '      <type>Link type</type>' +
+        '    </link>' +
+        '    <number>1</number>' +
+        '    <type>Type</type>' +
+        '  </rte>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -83,15 +81,15 @@ describe('ol.format.GPX', function() {
 
     it('can read and write a rte with multiple rtepts', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <rte>' +
-          '    <rtept lat="1" lon="2"/>' +
-          '    <rtept lat="3" lon="4"/>' +
-          '  </rte>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <rte>' +
+        '    <rtept lat="1" lon="2"/>' +
+        '    <rtept lat="3" lon="4"/>' +
+        '  </rte>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -106,15 +104,15 @@ describe('ol.format.GPX', function() {
 
     it('can transform, read and write a rte', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <rte>' +
-          '    <rtept lat="1" lon="2"/>' +
-          '    <rtept lat="5" lon="6"/>' +
-          '  </rte>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <rte>' +
+        '    <rtept lat="1" lon="2"/>' +
+        '    <rtept lat="5" lon="6"/>' +
+        '  </rte>' +
+        '</gpx>';
       var fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857'
       });
@@ -135,30 +133,28 @@ describe('ol.format.GPX', function() {
 
     it('does not write rte attributes in rtepts', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <rte>' +
-          '    <name>Name</name>' +
-          '    <rtept lat="1" lon="2"/>' +
-          '    <rtept lat="3" lon="4"/>' +
-          '  </rte>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <rte>' +
+        '    <name>Name</name>' +
+        '    <rtept lat="1" lon="2"/>' +
+        '    <rtept lat="3" lon="4"/>' +
+        '  </rte>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       var serialized = format.writeFeaturesNode(fs);
       expect(serialized).to.xmleql(ol.xml.parse(text));
     });
-
   });
 
   describe('trk', function() {
-
     it('can read an empty trk', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
-          '  <trk/>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <trk/>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -171,23 +167,23 @@ describe('ol.format.GPX', function() {
 
     it('can read and write various trk attributes', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <trk>' +
-          '    <name>Name</name>' +
-          '    <cmt>Comment</cmt>' +
-          '    <desc>Description</desc>' +
-          '    <src>Source</src>' +
-          '    <link href="http://example.com/">' +
-          '      <text>Link text</text>' +
-          '      <type>Link type</type>' +
-          '    </link>' +
-          '    <number>1</number>' +
-          '    <type>Type</type>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <name>Name</name>' +
+        '    <cmt>Comment</cmt>' +
+        '    <desc>Description</desc>' +
+        '    <src>Source</src>' +
+        '    <link href="http://example.com/">' +
+        '      <text>Link text</text>' +
+        '      <type>Link type</type>' +
+        '    </link>' +
+        '    <number>1</number>' +
+        '    <type>Type</type>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -207,14 +203,14 @@ describe('ol.format.GPX', function() {
 
     it('can read and write a trk with an empty trkseg', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <trk>' +
-          '    <trkseg/>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <trkseg/>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -229,23 +225,23 @@ describe('ol.format.GPX', function() {
 
     it('can read/write a trk with a trkseg with multiple trkpts', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <trk>' +
-          '    <trkseg>' +
-          '      <trkpt lat="1" lon="2">' +
-          '        <ele>3</ele>' +
-          '        <time>2010-01-10T09:29:12Z</time>' +
-          '      </trkpt>' +
-          '      <trkpt lat="5" lon="6">' +
-          '        <ele>7</ele>' +
-          '        <time>2010-01-10T09:30:12Z</time>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <trkseg>' +
+        '      <trkpt lat="1" lon="2">' +
+        '        <ele>3</ele>' +
+        '        <time>2010-01-10T09:29:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="5" lon="6">' +
+        '        <ele>7</ele>' +
+        '        <time>2010-01-10T09:30:12Z</time>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -262,23 +258,23 @@ describe('ol.format.GPX', function() {
 
     it('can transform, read and write a trk with a trkseg', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <trk>' +
-          '    <trkseg>' +
-          '      <trkpt lat="1" lon="2">' +
-          '        <ele>3</ele>' +
-          '        <time>2010-01-10T09:29:12Z</time>' +
-          '      </trkpt>' +
-          '      <trkpt lat="5" lon="6">' +
-          '        <ele>7</ele>' +
-          '        <time>2010-01-10T09:30:12Z</time>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <trkseg>' +
+        '      <trkpt lat="1" lon="2">' +
+        '        <ele>3</ele>' +
+        '        <time>2010-01-10T09:29:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="5" lon="6">' +
+        '        <ele>7</ele>' +
+        '        <time>2010-01-10T09:30:12Z</time>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857'
       });
@@ -301,33 +297,33 @@ describe('ol.format.GPX', function() {
 
     it('can read and write a trk with multiple trksegs', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <trk>' +
-          '    <trkseg>' +
-          '      <trkpt lat="1" lon="2">' +
-          '        <ele>3</ele>' +
-          '        <time>2010-01-10T09:29:12Z</time>' +
-          '      </trkpt>' +
-          '      <trkpt lat="5" lon="6">' +
-          '        <ele>7</ele>' +
-          '        <time>2010-01-10T09:30:12Z</time>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '    <trkseg>' +
-          '      <trkpt lat="8" lon="9">' +
-          '        <ele>10</ele>' +
-          '        <time>2010-01-10T09:31:12Z</time>' +
-          '      </trkpt>' +
-          '      <trkpt lat="11" lon="12">' +
-          '        <ele>13</ele>' +
-          '        <time>2010-01-10T09:32:12Z</time>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <trkseg>' +
+        '      <trkpt lat="1" lon="2">' +
+        '        <ele>3</ele>' +
+        '        <time>2010-01-10T09:29:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="5" lon="6">' +
+        '        <ele>7</ele>' +
+        '        <time>2010-01-10T09:30:12Z</time>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '    <trkseg>' +
+        '      <trkpt lat="8" lon="9">' +
+        '        <ele>10</ele>' +
+        '        <time>2010-01-10T09:31:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="11" lon="12">' +
+        '        <ele>13</ele>' +
+        '        <time>2010-01-10T09:32:12Z</time>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -345,51 +341,49 @@ describe('ol.format.GPX', function() {
 
     it('does not write trk attributes in trkpts', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <trk>' +
-          '    <name>Name</name>' +
-          '    <trkseg>' +
-          '      <trkpt lat="1" lon="2">' +
-          '        <ele>3</ele>' +
-          '        <time>2010-01-10T09:29:12Z</time>' +
-          '      </trkpt>' +
-          '      <trkpt lat="5" lon="6">' +
-          '        <ele>7</ele>' +
-          '        <time>2010-01-10T09:30:12Z</time>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '    <trkseg>' +
-          '      <trkpt lat="8" lon="9">' +
-          '        <ele>10</ele>' +
-          '        <time>2010-01-10T09:31:12Z</time>' +
-          '      </trkpt>' +
-          '      <trkpt lat="11" lon="12">' +
-          '        <ele>13</ele>' +
-          '        <time>2010-01-10T09:32:12Z</time>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <trk>' +
+        '    <name>Name</name>' +
+        '    <trkseg>' +
+        '      <trkpt lat="1" lon="2">' +
+        '        <ele>3</ele>' +
+        '        <time>2010-01-10T09:29:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="5" lon="6">' +
+        '        <ele>7</ele>' +
+        '        <time>2010-01-10T09:30:12Z</time>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '    <trkseg>' +
+        '      <trkpt lat="8" lon="9">' +
+        '        <ele>10</ele>' +
+        '        <time>2010-01-10T09:31:12Z</time>' +
+        '      </trkpt>' +
+        '      <trkpt lat="11" lon="12">' +
+        '        <ele>13</ele>' +
+        '        <time>2010-01-10T09:32:12Z</time>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       var serialized = format.writeFeaturesNode(fs);
       expect(serialized).to.xmleql(ol.xml.parse(text));
     });
-
   });
 
   describe('wpt', function() {
-
     it('can read and write a wpt', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <wpt lat="1" lon="2"/>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <wpt lat="1" lon="2"/>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -404,12 +398,12 @@ describe('ol.format.GPX', function() {
 
     it('can transform, read and write a wpt', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <wpt lat="1" lon="2"/>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <wpt lat="1" lon="2"/>' +
+        '</gpx>';
       var fs = format.readFeatures(text, {
         featureProjection: 'EPSG:3857'
       });
@@ -429,14 +423,14 @@ describe('ol.format.GPX', function() {
 
     it('can read and write a wpt with ele', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <wpt lat="1" lon="2">' +
-          '    <ele>3</ele>' +
-          '  </wpt>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <wpt lat="1" lon="2">' +
+        '    <ele>3</ele>' +
+        '  </wpt>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -451,14 +445,14 @@ describe('ol.format.GPX', function() {
 
     it('can read and write a wpt with time', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <wpt lat="1" lon="2">' +
-          '    <time>2010-01-10T09:29:12Z</time>' +
-          '  </wpt>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <wpt lat="1" lon="2">' +
+        '    <time>2010-01-10T09:29:12Z</time>' +
+        '  </wpt>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -473,15 +467,15 @@ describe('ol.format.GPX', function() {
 
     it('can read and write a wpt with ele and time', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <wpt lat="1" lon="2">' +
-          '    <ele>3</ele>' +
-          '    <time>2010-01-10T09:29:12Z</time>' +
-          '  </wpt>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <wpt lat="1" lon="2">' +
+        '    <ele>3</ele>' +
+        '    <time>2010-01-10T09:29:12Z</time>' +
+        '  </wpt>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -496,32 +490,32 @@ describe('ol.format.GPX', function() {
 
     it('can read and write various wpt attributes', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
-          '  <wpt lat="1" lon="2">' +
-          '    <magvar>11</magvar>' +
-          '    <geoidheight>4</geoidheight>' +
-          '    <name>Name</name>' +
-          '    <cmt>Comment</cmt>' +
-          '    <desc>Description</desc>' +
-          '    <src>Source</src>' +
-          '    <link href="http://example.com/">' +
-          '      <text>Link text</text>' +
-          '      <type>Link type</type>' +
-          '    </link>' +
-          '    <sym>Symbol</sym>' +
-          '    <type>Type</type>' +
-          '    <fix>2d</fix>' +
-          '    <sat>5</sat>' +
-          '    <hdop>6</hdop>' +
-          '    <vdop>7</vdop>' +
-          '    <pdop>8</pdop>' +
-          '    <ageofdgpsdata>9</ageofdgpsdata>' +
-          '    <dgpsid>10</dgpsid>' +
-          '  </wpt>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" creator="OpenLayers">' +
+        '  <wpt lat="1" lon="2">' +
+        '    <magvar>11</magvar>' +
+        '    <geoidheight>4</geoidheight>' +
+        '    <name>Name</name>' +
+        '    <cmt>Comment</cmt>' +
+        '    <desc>Description</desc>' +
+        '    <src>Source</src>' +
+        '    <link href="http://example.com/">' +
+        '      <text>Link text</text>' +
+        '      <type>Link type</type>' +
+        '    </link>' +
+        '    <sym>Symbol</sym>' +
+        '    <type>Type</type>' +
+        '    <fix>2d</fix>' +
+        '    <sat>5</sat>' +
+        '    <hdop>6</hdop>' +
+        '    <vdop>7</vdop>' +
+        '    <pdop>8</pdop>' +
+        '    <ageofdgpsdata>9</ageofdgpsdata>' +
+        '    <dgpsid>10</dgpsid>' +
+        '  </wpt>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var f = fs[0];
@@ -546,52 +540,43 @@ describe('ol.format.GPX', function() {
       var serialized = format.writeFeaturesNode(fs);
       expect(serialized).to.xmleql(ol.xml.parse(text));
     });
-
   });
 
   describe('XML namespace support', function() {
-
     beforeEach(function() {
       format = new ol.format.GPX();
     });
 
     it('can read features with a version 1.0 namespace', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/0">' +
-          '  <wpt/>' +
-          '  <rte/>' +
-          '  <trk/>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/0">' +
+        '  <wpt/>' +
+        '  <rte/>' +
+        '  <trk/>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
     });
 
     it('can read features with a version 1.1 namespace', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
-          '  <wpt/>' +
-          '  <rte/>' +
-          '  <trk/>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <wpt/>' +
+        '  <rte/>' +
+        '  <trk/>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
     });
 
     it('can read features with no namespace', function() {
-      var text =
-          '<gpx>' +
-          '  <wpt/>' +
-          '  <rte/>' +
-          '  <trk/>' +
-          '</gpx>';
+      var text = '<gpx>' + '  <wpt/>' + '  <rte/>' + '  <trk/>' + '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(3);
     });
-
   });
 
   describe('extensions support', function() {
-
     beforeEach(function() {
       format = new ol.format.GPX({
         readExtensions: function(feature, extensionsNode) {
@@ -604,13 +589,13 @@ describe('ol.format.GPX', function() {
 
     it('can process extensions from wpt', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
-          '  <wpt>' +
-          '    <extensions>' +
-          '      <id>feature-id</id>' +
-          '    </extensions>' +
-          '  </wpt>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <wpt>' +
+        '    <extensions>' +
+        '      <id>feature-id</id>' +
+        '    </extensions>' +
+        '  </wpt>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var feature = fs[0];
@@ -619,14 +604,14 @@ describe('ol.format.GPX', function() {
 
     it('can process extensions from rte', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
-          '  <rte>' +
-          '    <extensions>' +
-          '      <foo>bar</foo>' +
-          '      <id>feature-id</id>' +
-          '    </extensions>' +
-          '  </rte>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <rte>' +
+        '    <extensions>' +
+        '      <foo>bar</foo>' +
+        '      <id>feature-id</id>' +
+        '    </extensions>' +
+        '  </rte>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var feature = fs[0];
@@ -635,26 +620,25 @@ describe('ol.format.GPX', function() {
 
     it('can process extensions from trk, not trkpt', function() {
       var text =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
-          '  <trk>' +
-          '    <extensions>' +
-          '      <id>feature-id</id>' +
-          '    </extensions>' +
-          '    <trkseg>' +
-          '      <trkpt>' +
-          '        <extensions>' +
-          '          <id>another-feature-id</id>' +
-          '        </extensions>' +
-          '      </trkpt>' +
-          '    </trkseg>' +
-          '  </trk>' +
-          '</gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1">' +
+        '  <trk>' +
+        '    <extensions>' +
+        '      <id>feature-id</id>' +
+        '    </extensions>' +
+        '    <trkseg>' +
+        '      <trkpt>' +
+        '        <extensions>' +
+        '          <id>another-feature-id</id>' +
+        '        </extensions>' +
+        '      </trkpt>' +
+        '    </trkseg>' +
+        '  </trk>' +
+        '</gpx>';
       var fs = format.readFeatures(text);
       expect(fs).to.have.length(1);
       var feature = fs[0];
       expect(feature.getId()).to.be('feature-id');
     });
-
   });
 
   describe('write unsupported geometries', function() {
@@ -663,19 +647,17 @@ describe('ol.format.GPX', function() {
     });
 
     it('does not fail', function() {
-      var polygon = new ol.geom.Polygon(
-          [[[0, 0], [2, 2], [4, 0], [0, 0]]]);
+      var polygon = new ol.geom.Polygon([[[0, 0], [2, 2], [4, 0], [0, 0]]]);
       var feature = new ol.Feature(polygon);
       var features = [feature];
       var gpx = format.writeFeaturesNode(features);
       var expected =
-          '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
-          'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
-          'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
-          'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" ' +
-          'creator="OpenLayers"></gpx>';
+        '<gpx xmlns="http://www.topografix.com/GPX/1/1" ' +
+        'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+        'xsi:schemaLocation="http://www.topografix.com/GPX/1/1 ' +
+        'http://www.topografix.com/GPX/1/1/gpx.xsd" version="1.1" ' +
+        'creator="OpenLayers"></gpx>';
       expect(gpx).to.xmleql(ol.xml.parse(expected));
     });
   });
-
 });

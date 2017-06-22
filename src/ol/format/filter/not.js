@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.Not');
 goog.require('ol');
 goog.require('ol.format.filter.Filter');
 
-
 /**
  * @classdesc
  * Represents a logical `<Not>` operator for a filter condition.
@@ -14,7 +13,6 @@ goog.require('ol.format.filter.Filter');
  * @api
  */
 ol.format.filter.Not = function(condition) {
-
   ol.format.filter.Filter.call(this, 'Not');
 
   /**

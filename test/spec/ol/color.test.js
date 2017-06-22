@@ -2,11 +2,8 @@ goog.provide('ol.test.color');
 
 goog.require('ol.color');
 
-
 describe('ol.color', function() {
-
   describe('ol.color.asArray()', function() {
-
     it('returns the same for an array', function() {
       var color = [1, 2, 3, 0.4];
       var got = ol.color.asArray(color);
@@ -27,11 +24,9 @@ describe('ol.color', function() {
       var color = ol.color.asArray('#00ccff');
       expect(color).to.eql([0, 204, 255, 1]);
     });
-
   });
 
   describe('ol.color.asString()', function() {
-
     it('returns the same for a string', function() {
       var color = 'rgba(0,1,2,0.3)';
       var got = ol.color.asString(color);
@@ -47,11 +42,9 @@ describe('ol.color', function() {
       var color = ol.color.asString([1, 2, 3]);
       expect(color).to.eql('rgba(1,2,3,1)');
     });
-
   });
 
   describe('ol.color.fromString', function() {
-
     before(function() {
       sinon.spy(ol.color, 'fromStringInternal_');
     });
@@ -79,43 +72,74 @@ describe('ol.color', function() {
     });
 
     it('ignores whitespace before, between & after numbers (rgb)', function() {
-      expect(ol.color.fromString('rgb( \t 0  ,   0 \n , 255  )')).to.eql(
-          [0, 0, 255, 1]);
+      expect(ol.color.fromString('rgb( \t 0  ,   0 \n , 255  )')).to.eql([
+        0,
+        0,
+        255,
+        1
+      ]);
     });
 
     it('can parse rgba colors', function() {
       // opacity 0
-      expect(ol.color.fromString('rgba(255, 255, 0, 0)')).to.eql(
-          [255, 255, 0, 0]);
+      expect(ol.color.fromString('rgba(255, 255, 0, 0)')).to.eql([
+        255,
+        255,
+        0,
+        0
+      ]);
       // opacity 0.0 (simple float)
-      expect(ol.color.fromString('rgba(255, 255, 0, 0.0)')).to.eql(
-          [255, 255, 0, 0]);
+      expect(ol.color.fromString('rgba(255, 255, 0, 0.0)')).to.eql([
+        255,
+        255,
+        0,
+        0
+      ]);
       // opacity 0.0000000000000000 (float with 16 digits)
-      expect(ol.color.fromString('rgba(255, 255, 0, 0.0000000000000000)')).to.eql(
-          [255, 255, 0, 0]);
+      expect(
+        ol.color.fromString('rgba(255, 255, 0, 0.0000000000000000)')
+      ).to.eql([255, 255, 0, 0]);
       // opacity 0.1 (simple float)
-      expect(ol.color.fromString('rgba(255, 255, 0, 0.1)')).to.eql(
-          [255, 255, 0, 0.1]);
+      expect(ol.color.fromString('rgba(255, 255, 0, 0.1)')).to.eql([
+        255,
+        255,
+        0,
+        0.1
+      ]);
       // opacity 0.1111111111111111 (float with 16 digits)
-      expect(ol.color.fromString('rgba(255, 255, 0, 0.1111111111111111)')).to.eql(
-          [255, 255, 0, 0.1111111111111111]);
+      expect(
+        ol.color.fromString('rgba(255, 255, 0, 0.1111111111111111)')
+      ).to.eql([255, 255, 0, 0.1111111111111111]);
       // opacity 1
-      expect(ol.color.fromString('rgba(255, 255, 0, 1)')).to.eql(
-          [255, 255, 0, 1]);
+      expect(ol.color.fromString('rgba(255, 255, 0, 1)')).to.eql([
+        255,
+        255,
+        0,
+        1
+      ]);
       // opacity 1.0
-      expect(ol.color.fromString('rgba(255, 255, 0, 1.0)')).to.eql(
-          [255, 255, 0, 1]);
+      expect(ol.color.fromString('rgba(255, 255, 0, 1.0)')).to.eql([
+        255,
+        255,
+        0,
+        1
+      ]);
       // opacity 1.0000000000000000
-      expect(ol.color.fromString('rgba(255, 255, 0, 1.0000000000000000)')).to.eql(
-          [255, 255, 0, 1]);
+      expect(
+        ol.color.fromString('rgba(255, 255, 0, 1.0000000000000000)')
+      ).to.eql([255, 255, 0, 1]);
       // with 30 decimal digits
-      expect(ol.color.fromString('rgba(255, 255, 0, 0.123456789012345678901234567890)')).to.eql(
-          [255, 255, 0, 0.123456789012345678901234567890]);
+      expect(
+        ol.color.fromString(
+          'rgba(255, 255, 0, 0.123456789012345678901234567890)'
+        )
+      ).to.eql([255, 255, 0, 0.12345678901234567890123456789]);
     });
 
     it('ignores whitespace before, between & after numbers (rgba)', function() {
-      expect(ol.color.fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')).to.eql(
-          [0, 0, 255, 0.4711]);
+      expect(
+        ol.color.fromString('rgba( \t 0  ,   0 \n ,   255  ,   0.4711   )')
+      ).to.eql([0, 0, 255, 0.4711]);
     });
 
     it('caches parsed values', function() {
@@ -135,11 +159,9 @@ describe('ol.color', function() {
         }).to.throwException();
       }
     });
-
   });
 
   describe('ol.color.normalize', function() {
-
     it('clamps out-of-range channels', function() {
       expect(ol.color.normalize([-1, 256, 0, 2])).to.eql([0, 255, 0, 1]);
     });
@@ -147,11 +169,9 @@ describe('ol.color', function() {
     it('rounds color channels to integers', function() {
       expect(ol.color.normalize([1.2, 2.5, 3.7, 1])).to.eql([1, 3, 4, 1]);
     });
-
   });
 
   describe('ol.color.toString', function() {
-
     it('converts valid colors', function() {
       expect(ol.color.toString([1, 2, 3, 0.4])).to.be('rgba(1,2,3,0.4)');
     });
@@ -163,6 +183,5 @@ describe('ol.color', function() {
     it('sets default alpha value if undefined', function() {
       expect(ol.color.toString([0, 0, 0])).to.be('rgba(0,0,0,1)');
     });
-
   });
 });

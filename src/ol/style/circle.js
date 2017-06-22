@@ -3,7 +3,6 @@ goog.provide('ol.style.Circle');
 goog.require('ol');
 goog.require('ol.style.RegularShape');
 
-
 /**
  * @classdesc
  * Set circle style for vector features.
@@ -14,7 +13,6 @@ goog.require('ol.style.RegularShape');
  * @api
  */
 ol.style.Circle = function(opt_options) {
-
   var options = opt_options || {};
 
   ol.style.RegularShape.call(this, {
@@ -25,10 +23,8 @@ ol.style.Circle = function(opt_options) {
     stroke: options.stroke,
     atlasManager: options.atlasManager
   });
-
 };
 ol.inherits(ol.style.Circle, ol.style.RegularShape);
-
 
 /**
  * Clones the style.  If an atlasmanager was provided to the original style it will be used in the cloned style, too.
@@ -48,7 +44,6 @@ ol.style.Circle.prototype.clone = function() {
   style.setScale(this.getScale());
   return style;
 };
-
 
 /**
  * Set the circle radius.

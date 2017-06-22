@@ -57,12 +57,12 @@ var polyline = [
   '~@ym@yjA??a@cFd@kBrCgDbAUnAcBhAyAdk@et@??kF}D??OL'
 ].join('');
 
-var route = /** @type {ol.geom.LineString} */ (new ol.format.Polyline({
+var route /** @type {ol.geom.LineString} */ = new ol.format.Polyline({
   factor: 1e6
 }).readGeometry(polyline, {
   dataProjection: 'EPSG:4326',
   featureProjection: 'EPSG:3857'
-}));
+});
 
 var routeCoords = route.getCoordinates();
 var routeLength = routeCoords.length;
@@ -85,24 +85,26 @@ var endMarker = new ol.Feature({
 });
 
 var styles = {
-  'route': new ol.style.Style({
+  route: new ol.style.Style({
     stroke: new ol.style.Stroke({
-      width: 6, color: [237, 212, 0, 0.8]
+      width: 6,
+      color: [237, 212, 0, 0.8]
     })
   }),
-  'icon': new ol.style.Style({
+  icon: new ol.style.Style({
     image: new ol.style.Icon({
       anchor: [0.5, 1],
       src: 'data/icon.png'
     })
   }),
-  'geoMarker': new ol.style.Style({
+  geoMarker: new ol.style.Style({
     image: new ol.style.Circle({
       radius: 7,
       snapToPixel: false,
       fill: new ol.style.Fill({color: 'black'}),
       stroke: new ol.style.Stroke({
-        color: 'white', width: 2
+        color: 'white',
+        width: 2
       })
     })
   })
@@ -187,7 +189,6 @@ function startAnimation() {
   }
 }
 
-
 /**
  * @param {boolean} ended end of animation.
  */
@@ -197,8 +198,7 @@ function stopAnimation(ended) {
 
   // if animation cancelled set the marker at the beginning
   var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
-  /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
-    .setCoordinates(coord);
+  /** @type {ol.geom.Point} */ geoMarker.getGeometry().setCoordinates(coord);
   //remove listener
   map.un('postcompose', moveFeature);
 }

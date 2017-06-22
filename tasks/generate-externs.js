@@ -22,7 +22,6 @@ function getInfo(callback) {
   });
 }
 
-
 /**
  * Generate externs code given a list symbols.
  * @param {Array.<Object>} typedefs List of typedefs.
@@ -45,8 +44,12 @@ function generateExterns(typedefs, symbols, externs, base) {
     parts.forEach(function(part) {
       namespace.push(part);
       var partialNamespace = namespace.join('.');
-      if (!(partialNamespace in processedSymbols ||
-          partialNamespace in constructors)) {
+      if (
+        !(
+          partialNamespace in processedSymbols ||
+          partialNamespace in constructors
+        )
+      ) {
         lines.push('/**');
         lines.push(' * @type {Object}');
         lines.push(' */');
@@ -107,17 +110,24 @@ function generateExterns(typedefs, symbols, externs, base) {
       symbol.params.forEach(function(param) {
         findConstructorOptionsTypes(param.types);
         args.push(param.name);
-        lines.push(' * @param {' +
+        lines.push(
+          ' * @param {' +
             (param.variable ? '...' : '') +
             param.types.join('|') +
-            (param.optional ? '=' : '') + (param.nullable ? '!' : '') +
-            '} ' + param.name);
+            (param.optional ? '=' : '') +
+            (param.nullable ? '!' : '') +
+            '} ' +
+            param.name
+        );
       });
     }
     if (symbol.returns) {
-      lines.push(' * @return {' +
+      lines.push(
+        ' * @return {' +
           (symbol.returns.nullable ? '!' : '') +
-          symbol.returns.types.join('|') + '}');
+          symbol.returns.types.join('|') +
+          '}'
+      );
     }
     if (symbol.template) {
       lines.push(' * @template ' + symbol.template);
@@ -150,7 +160,6 @@ function generateExterns(typedefs, symbols, externs, base) {
     lines.push('\n');
   });
 
-
   // At this point constructorOptionsTypes includes options types for which we
   // did not have a @typedef yet. For those we add @typedef {Object}.
   //
@@ -172,7 +181,6 @@ function generateExterns(typedefs, symbols, externs, base) {
   return lines.join('\n');
 }
 
-
 /**
  * Generate the exports code.
  *
@@ -180,38 +188,41 @@ function generateExterns(typedefs, symbols, externs, base) {
  *     error generating it.
  */
 function main(callback) {
-  async.waterfall([
-    getInfo,
-    function(typedefs, symbols, externs, base, done) {
-      var code, err;
-      try {
-        code = generateExterns(typedefs, symbols, externs, base);
-      } catch (e) {
-        err = e;
+  async.waterfall(
+    [
+      getInfo,
+      function(typedefs, symbols, externs, base, done) {
+        var code, err;
+        try {
+          code = generateExterns(typedefs, symbols, externs, base);
+        } catch (e) {
+          err = e;
+        }
+        done(err, code);
       }
-      done(err, code);
-    }
-  ], callback);
+    ],
+    callback
+  );
 }
-
 
 /**
  * If running this module directly, read the config file, call the main
  * function, and write the output file.
  */
 if (require.main === module) {
-  var options = nomnom.options({
-    output: {
-      position: 0,
-      required: true,
-      help: 'Output path for the generated externs file.'
-    }
-  }).parse();
+  var options = nomnom
+    .options({
+      output: {
+        position: 0,
+        required: true,
+        help: 'Output path for the generated externs file.'
+      }
+    })
+    .parse();
 
-  async.waterfall([
-    main,
-    fs.outputFile.bind(fs, options.output)
-  ], function(err) {
+  async.waterfall([main, fs.outputFile.bind(fs, options.output)], function(
+    err
+  ) {
     if (err) {
       process.stderr.write(err.message + '\n');
       process.exit(1);
@@ -220,7 +231,6 @@ if (require.main === module) {
     }
   });
 }
-
 
 /**
  * Export main function.

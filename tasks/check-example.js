@@ -1,12 +1,14 @@
 /*eslint-env es6*/
 
-const http       = require('http');
-const path       = require('path');
+const http = require('http');
+const path = require('path');
 const serveFiles = require('serve-files');
-const spawn      = require('child_process').spawn;
+const spawn = require('child_process').spawn;
 
 if (!process.argv[2]) {
-  process.stdout.write(`USAGE: node ${path.basename(module.filename)} [example_path]\n`);
+  process.stdout.write(
+    `USAGE: node ${path.basename(module.filename)} [example_path]\n`
+  );
   process.exit(0);
 }
 
@@ -16,14 +18,21 @@ const host = null;
 const examplePath = process.argv[2];
 const phantomPath = require('phantomjs-prebuilt').path;
 
-const server = http.createServer(serveFiles.createFileResponseHandler({
-  documentRoot: root,
-  followSymbolicLinks: false,
-  cacheTimeInSeconds: 3600
-}));
+const server = http.createServer(
+  serveFiles.createFileResponseHandler({
+    documentRoot: root,
+    followSymbolicLinks: false,
+    cacheTimeInSeconds: 3600
+  })
+);
 
 server.listen(port, host, null, function() {
-  const childProcess = spawn(phantomPath, ['--ssl-protocol=any', '--ignore-ssl-errors=true', path.join(__dirname, '..', 'bin', 'check-example.js'), 'http://localhost:8000/' + examplePath]);
+  const childProcess = spawn(phantomPath, [
+    '--ssl-protocol=any',
+    '--ignore-ssl-errors=true',
+    path.join(__dirname, '..', 'bin', 'check-example.js'),
+    'http://localhost:8000/' + examplePath
+  ]);
   childProcess.stdout.pipe(process.stdout);
   childProcess.stderr.pipe(process.stderr);
   process.stdin.pipe(childProcess.stdin);
@@ -37,7 +46,6 @@ server.listen(port, host, null, function() {
   childProcess.on('exit', function(code) {
     process.exit(code);
   });
-
 });
 
 // Keep track of connections, to enforce killing them when server must be stopped.
@@ -51,10 +59,22 @@ server.on('connection', function(socket) {
   });
 });
 
-['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT', 'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'].forEach(signal => {
+[
+  'SIGHUP',
+  'SIGINT',
+  'SIGQUIT',
+  'SIGILL',
+  'SIGTRAP',
+  'SIGABRT',
+  'SIGBUS',
+  'SIGFPE',
+  'SIGUSR1',
+  'SIGSEGV',
+  'SIGUSR2',
+  'SIGTERM'
+].forEach(signal => {
   process.once(signal, () => {
-    process.stdout.write(`Got ${signal}, stopping...\n`),
-    server.close(() => {
+    process.stdout.write(`Got ${signal}, stopping...\n`), server.close(() => {
       process.stdout.write('Stopped.\n');
       process.exit(0);
     });

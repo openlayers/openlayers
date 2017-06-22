@@ -13,11 +13,8 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
-
 describe('ol.renderer.canvas.VectorLayer', function() {
-
   describe('constructor', function() {
-
     it('creates a new instance', function() {
       var layer = new ol.layer.Vector({
         source: new ol.source.Vector()
@@ -38,16 +35,20 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         }),
         target: target
       });
-      var layerStyle = [new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'layer'
+      var layerStyle = [
+        new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'layer'
+          })
         })
-      })];
-      var featureStyle = [new ol.style.Style({
-        text: new ol.style.Text({
-          text: 'feature'
+      ];
+      var featureStyle = [
+        new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'feature'
+          })
         })
-      })];
+      ];
       var feature1 = new ol.Feature(new ol.geom.Point([0, 0]));
       var feature2 = new ol.Feature(new ol.geom.Point([0, 0]));
       feature2.setStyle(featureStyle);
@@ -58,14 +59,15 @@ describe('ol.renderer.canvas.VectorLayer', function() {
         style: layerStyle
       });
       map.addLayer(layer);
-      var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
-          'renderFeature');
+      var spy = sinon.spy(
+        map.getRenderer().getLayerRenderer(layer),
+        'renderFeature'
+      );
       map.renderSync();
       expect(spy.getCall(0).args[3]).to.be(layerStyle);
       expect(spy.getCall(1).args[3]).to.be(featureStyle);
       document.body.removeChild(target);
     });
-
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
@@ -78,8 +80,14 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       renderer = new ol.renderer.canvas.VectorLayer(layer);
       var replayGroup = {};
       renderer.replayGroup_ = replayGroup;
-      replayGroup.forEachFeatureAtCoordinate = function(coordinate,
-          resolution, rotation, hitTolerance, skippedFeaturesUids, callback) {
+      replayGroup.forEachFeatureAtCoordinate = function(
+        coordinate,
+        resolution,
+        rotation,
+        hitTolerance,
+        skippedFeaturesUids,
+        callback
+      ) {
         var feature = new ol.Feature();
         callback(feature);
         callback(feature);
@@ -99,7 +107,12 @@ describe('ol.renderer.canvas.VectorLayer', function() {
       };
       frameState.layerStates[ol.getUid(layer)] = {};
       renderer.forEachFeatureAtCoordinate(
-          coordinate, frameState, 0, spy, undefined);
+        coordinate,
+        frameState,
+        0,
+        spy,
+        undefined
+      );
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });
@@ -129,52 +142,87 @@ describe('ol.renderer.canvas.VectorLayer', function() {
     });
 
     it('sets correct extent for small viewport near dateline', function() {
-
-      frameState.extent =
-          [projExtent[0] - 10000, -10000, projExtent[0] + 10000, 10000];
+      frameState.extent = [
+        projExtent[0] - 10000,
+        -10000,
+        projExtent[0] + 10000,
+        10000
+      ];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
-        projExtent[0] - worldWidth + buffer,
-        -10000, projExtent[2] + worldWidth - buffer, 10000
-      ], buffer));
-
+      expect(renderer.replayGroup_.maxExtent_).to.eql(
+        ol.extent.buffer(
+          [
+            projExtent[0] - worldWidth + buffer,
+            -10000,
+            projExtent[2] + worldWidth - buffer,
+            10000
+          ],
+          buffer
+        )
+      );
     });
 
     it('sets correct extent for viewport less than 1 world wide', function() {
-
-      frameState.extent =
-          [projExtent[0] - 10000, -10000, projExtent[1] - 10000, 10000];
+      frameState.extent = [
+        projExtent[0] - 10000,
+        -10000,
+        projExtent[1] - 10000,
+        10000
+      ];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
-        projExtent[0] - worldWidth + buffer,
-        -10000, projExtent[2] + worldWidth - buffer, 10000
-      ], buffer));
+      expect(renderer.replayGroup_.maxExtent_).to.eql(
+        ol.extent.buffer(
+          [
+            projExtent[0] - worldWidth + buffer,
+            -10000,
+            projExtent[2] + worldWidth - buffer,
+            10000
+          ],
+          buffer
+        )
+      );
     });
 
     it('sets correct extent for viewport more than 1 world wide', function() {
-
-      frameState.extent =
-          [2 * projExtent[0] - 10000, -10000, 2 * projExtent[1] + 10000, 10000];
+      frameState.extent = [
+        2 * projExtent[0] - 10000,
+        -10000,
+        2 * projExtent[1] + 10000,
+        10000
+      ];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
-        projExtent[0] - worldWidth + buffer,
-        -10000, projExtent[2] + worldWidth - buffer, 10000
-      ], buffer));
+      expect(renderer.replayGroup_.maxExtent_).to.eql(
+        ol.extent.buffer(
+          [
+            projExtent[0] - worldWidth + buffer,
+            -10000,
+            projExtent[2] + worldWidth - buffer,
+            10000
+          ],
+          buffer
+        )
+      );
     });
 
     it('sets correct extent for viewport more than 2 worlds wide', function() {
-
       frameState.extent = [
         projExtent[0] - 2 * worldWidth - 10000,
-        -10000, projExtent[1] + 2 * worldWidth + 10000, 10000
+        -10000,
+        projExtent[1] + 2 * worldWidth + 10000,
+        10000
       ];
       renderer.prepareFrame(frameState, {});
-      expect(renderer.replayGroup_.maxExtent_).to.eql(ol.extent.buffer([
-        projExtent[0] - 2 * worldWidth - 10000,
-        -10000, projExtent[2] + 2 * worldWidth + 10000, 10000
-      ], buffer));
+      expect(renderer.replayGroup_.maxExtent_).to.eql(
+        ol.extent.buffer(
+          [
+            projExtent[0] - 2 * worldWidth - 10000,
+            -10000,
+            projExtent[2] + 2 * worldWidth + 10000,
+            10000
+          ],
+          buffer
+        )
+      );
     });
-
   });
-
 });

@@ -9,18 +9,19 @@ goog.require('ol.source.Raster');
 goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
 
+var red =
+  'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
+  'BAAEAAAICRAEAOw==';
 
-var red = 'data:image/gif;base64,R0lGODlhAQABAPAAAP8AAP///yH5BAAAAAAALAAAAAA' +
-    'BAAEAAAICRAEAOw==';
+var green =
+  'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
+  'AABAAEAAAICRAEAOw==';
 
-var green = 'data:image/gif;base64,R0lGODlhAQABAPAAAAD/AP///yH5BAAAAAAALAAAA' +
-    'AABAAEAAAICRAEAOw==';
-
-var blue = 'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
-    'ABAAEAAAICRAEAOw==';
+var blue =
+  'data:image/gif;base64,R0lGODlhAQABAPAAAAAA/////yH5BAAAAAAALAAAAA' +
+  'ABAAEAAAICRAEAOw==';
 
 where('Uint8ClampedArray').describe('ol.source.Raster', function() {
-
   var target, map, redSource, greenSource, blueSource, raster;
 
   beforeEach(function() {
@@ -88,7 +89,6 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
   });
 
   describe('constructor', function() {
-
     it('returns a tile source', function() {
       var source = new ol.source.Raster({
         threads: 0,
@@ -99,7 +99,6 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
     });
 
     it('defaults to "pixel" operation', function(done) {
-
       var log = [];
 
       var source = new ol.source.Raster({
@@ -123,7 +122,6 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
 
     it('allows operation type to be set to "image"', function(done) {
@@ -153,15 +151,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
-
   });
 
   describe('#setOperation()', function() {
-
     it('allows operation to be set', function(done) {
-
       var count = 0;
       raster.setOperation(function(pixels) {
         ++count;
@@ -182,11 +176,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
         expect(count).to.equal(4);
         done();
       });
-
     });
 
     it('updates and re-runs the operation', function(done) {
-
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
@@ -202,15 +194,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
           done();
         }
       });
-
     });
-
   });
 
   describe('beforeoperations', function() {
-
     it('gets called before operations are run', function(done) {
-
       var count = 0;
       raster.setOperation(function(inputs) {
         ++count;
@@ -229,12 +217,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
 
-
     it('allows data to be set for the operation', function(done) {
-
       raster.setOperation(function(inputs, data) {
         ++data.count;
         return inputs[0];
@@ -252,15 +237,11 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
-
   });
 
   describe('afteroperations', function() {
-
     it('gets called after operations are run', function(done) {
-
       var count = 0;
       raster.setOperation(function(inputs) {
         ++count;
@@ -279,11 +260,9 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
 
     it('receives data set by the operation', function(done) {
-
       raster.setOperation(function(inputs, data) {
         data.message = 'hello world';
         return inputs[0];
@@ -297,9 +276,6 @@ where('Uint8ClampedArray').describe('ol.source.Raster', function() {
       var view = map.getView();
       view.setCenter([0, 0]);
       view.setZoom(0);
-
     });
-
   });
-
 });

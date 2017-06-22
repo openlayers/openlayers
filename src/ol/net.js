@@ -2,7 +2,6 @@ goog.provide('ol.net');
 
 goog.require('ol');
 
-
 /**
  * Simple JSONP helper. Supports error callbacks and a custom callback param.
  * The error callback will be called when no JSONP is executed after 10 seconds.
@@ -22,8 +21,12 @@ ol.net.jsonp = function(url, callback, opt_errback, opt_callbackParam) {
     script.parentNode.removeChild(script);
   }
   script.async = true;
-  script.src = url + (url.indexOf('?') == -1 ? '?' : '&') +
-      (opt_callbackParam || 'callback') + '=' + key;
+  script.src =
+    url +
+    (url.indexOf('?') == -1 ? '?' : '&') +
+    (opt_callbackParam || 'callback') +
+    '=' +
+    key;
   var timer = setTimeout(function() {
     cleanup();
     if (opt_errback) {

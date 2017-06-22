@@ -10,7 +10,6 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
 
-
 var style = new ol.style.Style({
   fill: new ol.style.Fill({
     color: 'rgba(255, 255, 255, 0.6)'
@@ -91,7 +90,6 @@ var featureOverlay = new ol.layer.Vector({
 
 var highlight;
 var displayFeatureInfo = function(pixel) {
-
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
@@ -112,7 +110,6 @@ var displayFeatureInfo = function(pixel) {
     }
     highlight = feature;
   }
-
 };
 
 map.on('pointermove', function(evt) {

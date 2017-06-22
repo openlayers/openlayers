@@ -1,6 +1,5 @@
 goog.provide('ol.style.Image');
 
-
 /**
  * @classdesc
  * A base class used for creating subclasses and not instantiated in
@@ -13,7 +12,6 @@ goog.provide('ol.style.Image');
  * @api
  */
 ol.style.Image = function(options) {
-
   /**
    * @private
    * @type {number}
@@ -43,9 +41,7 @@ ol.style.Image = function(options) {
    * @type {boolean}
    */
   this.snapToPixel_ = options.snapToPixel;
-
 };
-
 
 /**
  * Get the symbolizer opacity.
@@ -56,7 +52,6 @@ ol.style.Image.prototype.getOpacity = function() {
   return this.opacity_;
 };
 
-
 /**
  * Determine whether the symbolizer rotates with the map.
  * @return {boolean} Rotate with map.
@@ -65,7 +60,6 @@ ol.style.Image.prototype.getOpacity = function() {
 ol.style.Image.prototype.getRotateWithView = function() {
   return this.rotateWithView_;
 };
-
 
 /**
  * Get the symoblizer rotation.
@@ -76,7 +70,6 @@ ol.style.Image.prototype.getRotation = function() {
   return this.rotation_;
 };
 
-
 /**
  * Get the symbolizer scale.
  * @return {number} Scale.
@@ -85,7 +78,6 @@ ol.style.Image.prototype.getRotation = function() {
 ol.style.Image.prototype.getScale = function() {
   return this.scale_;
 };
-
 
 /**
  * Determine whether the symbolizer should be snapped to a pixel.
@@ -96,7 +88,6 @@ ol.style.Image.prototype.getSnapToPixel = function() {
   return this.snapToPixel_;
 };
 
-
 /**
  * Get the anchor point in pixels. The anchor determines the center point for the
  * symbolizer.
@@ -104,7 +95,6 @@ ol.style.Image.prototype.getSnapToPixel = function() {
  * @return {Array.<number>} Anchor.
  */
 ol.style.Image.prototype.getAnchor = function() {};
-
 
 /**
  * Get the image element for the symbolizer.
@@ -114,7 +104,6 @@ ol.style.Image.prototype.getAnchor = function() {};
  */
 ol.style.Image.prototype.getImage = function(pixelRatio) {};
 
-
 /**
  * @abstract
  * @param {number} pixelRatio Pixel ratio.
@@ -122,13 +111,11 @@ ol.style.Image.prototype.getImage = function(pixelRatio) {};
  */
 ol.style.Image.prototype.getHitDetectionImage = function(pixelRatio) {};
 
-
 /**
  * @abstract
  * @return {ol.ImageState} Image state.
  */
 ol.style.Image.prototype.getImageState = function() {};
-
 
 /**
  * @abstract
@@ -136,13 +123,11 @@ ol.style.Image.prototype.getImageState = function() {};
  */
 ol.style.Image.prototype.getImageSize = function() {};
 
-
 /**
  * @abstract
  * @return {ol.Size} Size of the hit-detection image.
  */
 ol.style.Image.prototype.getHitDetectionImageSize = function() {};
-
 
 /**
  * Get the origin of the symbolizer.
@@ -151,14 +136,12 @@ ol.style.Image.prototype.getHitDetectionImageSize = function() {};
  */
 ol.style.Image.prototype.getOrigin = function() {};
 
-
 /**
  * Get the size of the symbolizer (in pixels).
  * @abstract
  * @return {ol.Size} Size.
  */
 ol.style.Image.prototype.getSize = function() {};
-
 
 /**
  * Set the opacity.
@@ -170,7 +153,6 @@ ol.style.Image.prototype.setOpacity = function(opacity) {
   this.opacity_ = opacity;
 };
 
-
 /**
  * Set whether to rotate the style with the view.
  *
@@ -179,7 +161,6 @@ ol.style.Image.prototype.setOpacity = function(opacity) {
 ol.style.Image.prototype.setRotateWithView = function(rotateWithView) {
   this.rotateWithView_ = rotateWithView;
 };
-
 
 /**
  * Set the rotation.
@@ -191,7 +172,6 @@ ol.style.Image.prototype.setRotation = function(rotation) {
   this.rotation_ = rotation;
 };
 
-
 /**
  * Set the scale.
  *
@@ -202,7 +182,6 @@ ol.style.Image.prototype.setScale = function(scale) {
   this.scale_ = scale;
 };
 
-
 /**
  * Set whether to snap the image to the closest pixel.
  *
@@ -211,7 +190,6 @@ ol.style.Image.prototype.setScale = function(scale) {
 ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
   this.snapToPixel_ = snapToPixel;
 };
-
 
 /**
  * @abstract
@@ -222,13 +200,11 @@ ol.style.Image.prototype.setSnapToPixel = function(snapToPixel) {
  */
 ol.style.Image.prototype.listenImageChange = function(listener, thisArg) {};
 
-
 /**
  * Load not yet loaded URI.
  * @abstract
  */
 ol.style.Image.prototype.load = function() {};
-
 
 /**
  * @abstract

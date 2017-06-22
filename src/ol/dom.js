@@ -1,6 +1,5 @@
 goog.provide('ol.dom');
 
-
 /**
  * Create an html canvas element and returns its 2d context.
  * @param {number=} opt_width Canvas width.
@@ -18,7 +17,6 @@ ol.dom.createCanvasContext2D = function(opt_width, opt_height) {
   return canvas.getContext('2d');
 };
 
-
 /**
  * Get the current computed width for the given element including margin,
  * padding and border.
@@ -33,7 +31,6 @@ ol.dom.outerWidth = function(element) {
 
   return width;
 };
-
 
 /**
  * Get the current computed height for the given element including margin,

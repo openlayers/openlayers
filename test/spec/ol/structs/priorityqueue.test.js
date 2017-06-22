@@ -2,15 +2,12 @@ goog.provide('ol.test.structs.PriorityQueue');
 
 goog.require('ol.structs.PriorityQueue');
 
-
 describe('ol.structs.PriorityQueue', function() {
-
   var identity = function(a) {
     return a;
   };
 
   describe('when empty', function() {
-
     var pq;
     beforeEach(function() {
       pq = new ol.structs.PriorityQueue(identity, identity);
@@ -33,16 +30,13 @@ describe('ol.structs.PriorityQueue', function() {
       expect(pq.elements_).to.eql([]);
       expect(pq.priorities_).to.eql([]);
     });
-
   });
 
   describe('when populated', function() {
-
     var elements, pq;
     beforeEach(function() {
       elements = [];
-      pq = new ol.structs.PriorityQueue(
-          identity, identity);
+      pq = new ol.structs.PriorityQueue(identity, identity);
       var element, i;
       for (i = 0; i < 32; ++i) {
         element = Math.random();
@@ -59,11 +53,9 @@ describe('ol.structs.PriorityQueue', function() {
       }
       expect(pq.isEmpty()).to.be(true);
     });
-
   });
 
   describe('with an impure priority function', function() {
-
     var pq, target;
     beforeEach(function() {
       target = 0.5;
@@ -118,15 +110,12 @@ describe('ol.structs.PriorityQueue', function() {
         lastDelta = delta;
       }
     });
-
   });
 
   describe('tracks elements in the queue', function() {
-
     var pq;
     beforeEach(function() {
-      pq = new ol.structs.PriorityQueue(
-          identity, identity);
+      pq = new ol.structs.PriorityQueue(identity, identity);
       pq.enqueue('a');
       pq.enqueue('b');
       pq.enqueue('c');
@@ -165,7 +154,5 @@ describe('ol.structs.PriorityQueue', function() {
       expect(pq.isQueued('b')).to.be(false);
       expect(pq.isQueued('c')).to.be(false);
     });
-
   });
-
 });

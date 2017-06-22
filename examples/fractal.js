@@ -12,7 +12,10 @@ var rise = radius * sin30;
 var run = radius * cos30;
 
 var triangle = new ol.geom.LineString([
-  [0, radius], [run, -rise], [-run, -rise], [0, radius]
+  [0, radius],
+  [run, -rise],
+  [-run, -rise],
+  [0, radius]
 ]);
 
 var feature = new ol.Feature(triangle);
@@ -80,7 +83,6 @@ function injectNodes(startNode) {
   thirdNode.next = endNode;
 }
 
-
 function coordsToGraph(coordinates) {
   var graph = {
     point: coordinates[0]
@@ -110,7 +112,6 @@ function update() {
 }
 
 var updateTimer;
-
 
 /**
  * Regenerate fractal on depth change.  Change events are debounced so updates

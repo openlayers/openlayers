@@ -13,40 +13,58 @@ goog.require('ol.source.Vector');
 goog.require('ol.source.XYZ');
 goog.require('ol.tilegrid');
 
-
-var serviceUrl = 'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
-    'services/PDX_Pedestrian_Districts/FeatureServer/';
+var serviceUrl =
+  'https://services.arcgis.com/rOo16HdIMeOBI4Mb/arcgis/rest/' +
+  'services/PDX_Pedestrian_Districts/FeatureServer/';
 var layer = '0';
 
 var esrijsonFormat = new ol.format.EsriJSON();
 
 var vectorSource = new ol.source.Vector({
   loader: function(extent, resolution, projection) {
-    var url = serviceUrl + layer + '/query/?f=json&' +
-        'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
-        encodeURIComponent('{"xmin":' + extent[0] + ',"ymin":' +
-            extent[1] + ',"xmax":' + extent[2] + ',"ymax":' + extent[3] +
-            ',"spatialReference":{"wkid":102100}}') +
-        '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
-        '&outSR=102100';
-    $.ajax({url: url, dataType: 'jsonp', success: function(response) {
-      if (response.error) {
-        alert(response.error.message + '\n' +
-            response.error.details.join('\n'));
-      } else {
-        // dataProjection will be read from document
-        var features = esrijsonFormat.readFeatures(response, {
-          featureProjection: projection
-        });
-        if (features.length > 0) {
-          vectorSource.addFeatures(features);
+    var url =
+      serviceUrl +
+      layer +
+      '/query/?f=json&' +
+      'returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry=' +
+      encodeURIComponent(
+        '{"xmin":' +
+          extent[0] +
+          ',"ymin":' +
+          extent[1] +
+          ',"xmax":' +
+          extent[2] +
+          ',"ymax":' +
+          extent[3] +
+          ',"spatialReference":{"wkid":102100}}'
+      ) +
+      '&geometryType=esriGeometryEnvelope&inSR=102100&outFields=*' +
+      '&outSR=102100';
+    $.ajax({
+      url: url,
+      dataType: 'jsonp',
+      success: function(response) {
+        if (response.error) {
+          alert(
+            response.error.message + '\n' + response.error.details.join('\n')
+          );
+        } else {
+          // dataProjection will be read from document
+          var features = esrijsonFormat.readFeatures(response, {
+            featureProjection: projection
+          });
+          if (features.length > 0) {
+            vectorSource.addFeatures(features);
+          }
         }
       }
-    }});
+    });
   },
-  strategy: ol.loadingstrategy.tile(ol.tilegrid.createXYZ({
-    tileSize: 512
-  }))
+  strategy: ol.loadingstrategy.tile(
+    ol.tilegrid.createXYZ({
+      tileSize: 512
+    })
+  )
 });
 
 var vector = new ol.layer.Vector({
@@ -55,16 +73,18 @@ var vector = new ol.layer.Vector({
 
 var raster = new ol.layer.Tile({
   source: new ol.source.XYZ({
-    attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+    attributions:
+      'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
         'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+    url:
+      'https://server.arcgisonline.com/ArcGIS/rest/services/' +
         'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
   })
 });
 
 var draw = new ol.interaction.Draw({
   source: vectorSource,
-  type: /** @type {ol.geom.GeometryType} */ ('Polygon')
+  type /** @type {ol.geom.GeometryType} */: 'Polygon'
 });
 
 var select = new ol.interaction.Select();
@@ -88,7 +108,6 @@ var map = new ol.Map({
 
 var typeSelect = document.getElementById('type');
 
-
 /**
  * Let user change the interaction type.
  */
@@ -111,9 +130,12 @@ selected.on('remove', function(evt) {
   var feature = evt.element;
   var fid = feature.getId();
   if (dirty[fid] === true) {
-    var payload = '[' + esrijsonFormat.writeFeature(feature, {
-      featureProjection: map.getView().getProjection()
-    }) + ']';
+    var payload =
+      '[' +
+      esrijsonFormat.writeFeature(feature, {
+        featureProjection: map.getView().getProjection()
+      }) +
+      ']';
     var url = serviceUrl + layer + '/updateFeatures';
     $.post(url, {f: 'json', features: payload}).done(function(data) {
       var result = JSON.parse(data);
@@ -131,9 +153,12 @@ selected.on('remove', function(evt) {
 
 draw.on('drawend', function(evt) {
   var feature = evt.feature;
-  var payload = '[' + esrijsonFormat.writeFeature(feature, {
-    featureProjection: map.getView().getProjection()
-  }) + ']';
+  var payload =
+    '[' +
+    esrijsonFormat.writeFeature(feature, {
+      featureProjection: map.getView().getProjection()
+    }) +
+    ']';
   var url = serviceUrl + layer + '/addFeatures';
   $.post(url, {f: 'json', features: payload}).done(function(data) {
     var result = JSON.parse(data);

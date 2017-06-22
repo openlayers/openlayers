@@ -9,12 +9,11 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var stroke = new ol.style.Stroke({color: 'black', width: 2});
 var fill = new ol.style.Fill({color: 'red'});
 
 var styles = {
-  'square': new ol.style.Style({
+  square: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -23,7 +22,7 @@ var styles = {
       angle: Math.PI / 4
     })
   }),
-  'triangle': new ol.style.Style({
+  triangle: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -33,7 +32,7 @@ var styles = {
       angle: 0
     })
   }),
-  'star': new ol.style.Style({
+  star: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -43,7 +42,7 @@ var styles = {
       angle: 0
     })
   }),
-  'cross': new ol.style.Style({
+  cross: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -53,7 +52,7 @@ var styles = {
       angle: 0
     })
   }),
-  'x': new ol.style.Style({
+  x: new ol.style.Style({
     image: new ol.style.RegularShape({
       fill: fill,
       stroke: stroke,
@@ -64,7 +63,6 @@ var styles = {
     })
   })
 };
-
 
 var styleKeys = ['x', 'cross', 'star', 'triangle', 'square'];
 var count = 250;
@@ -85,9 +83,7 @@ var vectorLayer = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
-  layers: [
-    vectorLayer
-  ],
+  layers: [vectorLayer],
   target: 'map',
   view: new ol.View({
     center: [0, 0],

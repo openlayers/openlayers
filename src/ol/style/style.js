@@ -6,7 +6,6 @@ goog.require('ol.style.Circle');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 
-
 /**
  * @classdesc
  * Container for vector feature rendering styles. Any changes made to the style
@@ -19,7 +18,6 @@ goog.require('ol.style.Stroke');
  * @api
  */
 ol.style.Style = function(opt_options) {
-
   var options = opt_options || {};
 
   /**
@@ -67,9 +65,7 @@ ol.style.Style = function(opt_options) {
    * @type {number|undefined}
    */
   this.zIndex_ = options.zIndex;
-
 };
-
 
 /**
  * Clones the style.
@@ -91,7 +87,6 @@ ol.style.Style.prototype.clone = function() {
   });
 };
 
-
 /**
  * Get the geometry to be rendered.
  * @return {string|ol.geom.Geometry|ol.StyleGeometryFunction}
@@ -103,7 +98,6 @@ ol.style.Style.prototype.getGeometry = function() {
   return this.geometry_;
 };
 
-
 /**
  * Get the function used to generate a geometry for rendering.
  * @return {!ol.StyleGeometryFunction} Function that is called with a feature
@@ -114,7 +108,6 @@ ol.style.Style.prototype.getGeometryFunction = function() {
   return this.geometryFunction_;
 };
 
-
 /**
  * Get the fill style.
  * @return {ol.style.Fill} Fill style.
@@ -123,7 +116,6 @@ ol.style.Style.prototype.getGeometryFunction = function() {
 ol.style.Style.prototype.getFill = function() {
   return this.fill_;
 };
-
 
 /**
  * Set the fill style.
@@ -134,7 +126,6 @@ ol.style.Style.prototype.setFill = function(fill) {
   this.fill_ = fill;
 };
 
-
 /**
  * Get the image style.
  * @return {ol.style.Image} Image style.
@@ -143,7 +134,6 @@ ol.style.Style.prototype.setFill = function(fill) {
 ol.style.Style.prototype.getImage = function() {
   return this.image_;
 };
-
 
 /**
  * Set the image style.
@@ -154,7 +144,6 @@ ol.style.Style.prototype.setImage = function(image) {
   this.image_ = image;
 };
 
-
 /**
  * Get the stroke style.
  * @return {ol.style.Stroke} Stroke style.
@@ -163,7 +152,6 @@ ol.style.Style.prototype.setImage = function(image) {
 ol.style.Style.prototype.getStroke = function() {
   return this.stroke_;
 };
-
 
 /**
  * Set the stroke style.
@@ -174,7 +162,6 @@ ol.style.Style.prototype.setStroke = function(stroke) {
   this.stroke_ = stroke;
 };
 
-
 /**
  * Get the text style.
  * @return {ol.style.Text} Text style.
@@ -183,7 +170,6 @@ ol.style.Style.prototype.setStroke = function(stroke) {
 ol.style.Style.prototype.getText = function() {
   return this.text_;
 };
-
 
 /**
  * Set the text style.
@@ -194,7 +180,6 @@ ol.style.Style.prototype.setText = function(text) {
   this.text_ = text;
 };
 
-
 /**
  * Get the z-index for the style.
  * @return {number|undefined} ZIndex.
@@ -203,7 +188,6 @@ ol.style.Style.prototype.setText = function(text) {
 ol.style.Style.prototype.getZIndex = function() {
   return this.zIndex_;
 };
-
 
 /**
  * Set a geometry that is rendered instead of the feature's geometry.
@@ -218,18 +202,17 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
     this.geometryFunction_ = geometry;
   } else if (typeof geometry === 'string') {
     this.geometryFunction_ = function(feature) {
-      return /** @type {ol.geom.Geometry} */ (feature.get(geometry));
+      return /** @type {ol.geom.Geometry} */ feature.get(geometry);
     };
   } else if (!geometry) {
     this.geometryFunction_ = ol.style.Style.defaultGeometryFunction;
   } else if (geometry !== undefined) {
     this.geometryFunction_ = function() {
-      return /** @type {ol.geom.Geometry} */ (geometry);
+      return /** @type {ol.geom.Geometry} */ geometry;
     };
   }
   this.geometry_ = geometry;
 };
-
 
 /**
  * Set the z-index.
@@ -240,7 +223,6 @@ ol.style.Style.prototype.setGeometry = function(geometry) {
 ol.style.Style.prototype.setZIndex = function(zIndex) {
   this.zIndex_ = zIndex;
 };
-
 
 /**
  * Convert the provided object into a style function.  Functions passed through
@@ -263,8 +245,7 @@ ol.style.Style.createFunction = function(obj) {
     if (Array.isArray(obj)) {
       styles = obj;
     } else {
-      ol.asserts.assert(obj instanceof ol.style.Style,
-          41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
+      ol.asserts.assert(obj instanceof ol.style.Style, 41); // Expected an `ol.style.Style` or an array of `ol.style.Style`
       styles = [obj];
     }
     styleFunction = function() {
@@ -274,13 +255,11 @@ ol.style.Style.createFunction = function(obj) {
   return styleFunction;
 };
 
-
 /**
  * @type {Array.<ol.style.Style>}
  * @private
  */
 ol.style.Style.default_ = null;
-
 
 /**
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -316,7 +295,6 @@ ol.style.Style.defaultFunction = function(feature, resolution) {
   return ol.style.Style.default_;
 };
 
-
 /**
  * Default styles for editing features.
  * @return {Object.<ol.geom.GeometryType, Array.<ol.style.Style>>} Styles
@@ -335,7 +313,7 @@ ol.style.Style.createDefaultEditing = function() {
     })
   ];
   styles[ol.geom.GeometryType.MULTI_POLYGON] =
-      styles[ol.geom.GeometryType.POLYGON];
+    styles[ol.geom.GeometryType.POLYGON];
 
   styles[ol.geom.GeometryType.LINE_STRING] = [
     new ol.style.Style({
@@ -352,13 +330,11 @@ ol.style.Style.createDefaultEditing = function() {
     })
   ];
   styles[ol.geom.GeometryType.MULTI_LINE_STRING] =
-      styles[ol.geom.GeometryType.LINE_STRING];
+    styles[ol.geom.GeometryType.LINE_STRING];
 
-  styles[ol.geom.GeometryType.CIRCLE] =
-      styles[ol.geom.GeometryType.POLYGON].concat(
-          styles[ol.geom.GeometryType.LINE_STRING]
-      );
-
+  styles[ol.geom.GeometryType.CIRCLE] = styles[
+    ol.geom.GeometryType.POLYGON
+  ].concat(styles[ol.geom.GeometryType.LINE_STRING]);
 
   styles[ol.geom.GeometryType.POINT] = [
     new ol.style.Style({
@@ -375,18 +351,17 @@ ol.style.Style.createDefaultEditing = function() {
       zIndex: Infinity
     })
   ];
-  styles[ol.geom.GeometryType.MULTI_POINT] =
-      styles[ol.geom.GeometryType.POINT];
+  styles[ol.geom.GeometryType.MULTI_POINT] = styles[ol.geom.GeometryType.POINT];
 
-  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] =
-      styles[ol.geom.GeometryType.POLYGON].concat(
-          styles[ol.geom.GeometryType.LINE_STRING],
-          styles[ol.geom.GeometryType.POINT]
-      );
+  styles[ol.geom.GeometryType.GEOMETRY_COLLECTION] = styles[
+    ol.geom.GeometryType.POLYGON
+  ].concat(
+    styles[ol.geom.GeometryType.LINE_STRING],
+    styles[ol.geom.GeometryType.POINT]
+  );
 
   return styles;
 };
-
 
 /**
  * Function that is called with a feature and returns its default geometry.

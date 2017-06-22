@@ -3,9 +3,7 @@ goog.provide('ol.test.coordinate');
 goog.require('ol.coordinate');
 goog.require('ol.geom.Circle');
 
-
 describe('ol.coordinate', function() {
-
   describe('#add', function() {
     var coordinate, delta;
 
@@ -36,7 +34,7 @@ describe('ol.coordinate', function() {
   describe('#equals', function() {
     var cologne = [50.93333, 6.95];
     var bonn1 = [50.73, 7.1];
-    var bonn2 = [50.73000, 7.10000];
+    var bonn2 = [50.73, 7.1];
 
     it('compares correctly', function() {
       var bonnEqualsBonn = ol.coordinate.equals(bonn1, bonn2);
@@ -94,52 +92,44 @@ describe('ol.coordinate', function() {
     var center = [5, 10];
     var circle = new ol.geom.Circle(center, 10);
     it('can find the closest point on circle', function() {
-      expect(ol.coordinate.closestOnCircle([-20, 10], circle))
-          .to.eql([-5, 10]);
+      expect(ol.coordinate.closestOnCircle([-20, 10], circle)).to.eql([-5, 10]);
     });
     it('can handle coordinate equal circle center', function() {
-      expect(ol.coordinate.closestOnCircle(center, circle))
-          .to.eql([15, 10]);
+      expect(ol.coordinate.closestOnCircle(center, circle)).to.eql([15, 10]);
     });
   });
 
   describe('#closestOnSegment', function() {
-    it('can handle points where the foot of the perpendicular is closest',
-        function() {
-          var point = [2, 5];
-          var segment = [[-5, 0], [10, 0]];
-          expect(ol.coordinate.closestOnSegment(point, segment))
-              .to.eql([2, 0]);
-        });
-    it('can handle points where the foot of the perpendicular is not closest',
-        function() {
-          var point = [0, -6];
-          var segment = [[-5, 0], [0, -1]];
-          expect(ol.coordinate.closestOnSegment(point, segment))
-              .to.eql([0, -1]);
-        });
+    it('can handle points where the foot of the perpendicular is closest', function() {
+      var point = [2, 5];
+      var segment = [[-5, 0], [10, 0]];
+      expect(ol.coordinate.closestOnSegment(point, segment)).to.eql([2, 0]);
+    });
+    it('can handle points where the foot of the perpendicular is not closest', function() {
+      var point = [0, -6];
+      var segment = [[-5, 0], [0, -1]];
+      expect(ol.coordinate.closestOnSegment(point, segment)).to.eql([0, -1]);
+    });
   });
 
   describe('#format', function() {
     it('can deal with undefined coordinate', function() {
       expect(ol.coordinate.format()).to.be('');
     });
-    it('formats a coordinate into a template (default precision is 0)',
-        function() {
-          var coord = [7.85, 47.983333];
-          var template = 'Coordinate is ({x}|{y}).';
-          var got = ol.coordinate.format(coord, template);
-          var expected = 'Coordinate is (8|48).';
-          expect(got).to.be(expected);
-        });
-    it('formats a coordinate into a template and respects precision)',
-        function() {
-          var coord = [7.85, 47.983333];
-          var template = 'Coordinate is ({x}|{y}).';
-          var got = ol.coordinate.format(coord, template, 2);
-          var expected = 'Coordinate is (7.85|47.98).';
-          expect(got).to.be(expected);
-        });
+    it('formats a coordinate into a template (default precision is 0)', function() {
+      var coord = [7.85, 47.983333];
+      var template = 'Coordinate is ({x}|{y}).';
+      var got = ol.coordinate.format(coord, template);
+      var expected = 'Coordinate is (8|48).';
+      expect(got).to.be(expected);
+    });
+    it('formats a coordinate into a template and respects precision)', function() {
+      var coord = [7.85, 47.983333];
+      var template = 'Coordinate is ({x}|{y}).';
+      var got = ol.coordinate.format(coord, template, 2);
+      var expected = 'Coordinate is (7.85|47.98).';
+      expect(got).to.be(expected);
+    });
   });
 
   describe('#rotate', function() {
@@ -194,21 +184,16 @@ describe('ol.coordinate', function() {
   });
 
   describe('#squaredDistanceToSegment', function() {
-    it('can handle points where the foot of the perpendicular is closest',
-        function() {
-          var point = [2, 5];
-          var segment = [[-5, 0], [10, 0]];
-          expect(ol.coordinate.squaredDistanceToSegment(point, segment))
-              .to.eql(25);
-        });
-    it('can handle points where the foot of the perpendicular is not closest',
-        function() {
-          var point = [0, -6];
-          var segment = [[-5, 0], [0, -1]];
-          expect(ol.coordinate.squaredDistanceToSegment(point, segment))
-              .to.eql(25);
-        });
-
+    it('can handle points where the foot of the perpendicular is closest', function() {
+      var point = [2, 5];
+      var segment = [[-5, 0], [10, 0]];
+      expect(ol.coordinate.squaredDistanceToSegment(point, segment)).to.eql(25);
+    });
+    it('can handle points where the foot of the perpendicular is not closest', function() {
+      var point = [0, -6];
+      var segment = [[-5, 0], [0, -1]];
+      expect(ol.coordinate.squaredDistanceToSegment(point, segment)).to.eql(25);
+    });
   });
 
   describe('#toStringHDMS', function() {
@@ -245,5 +230,4 @@ describe('ol.coordinate', function() {
       expect(got).to.be(expected);
     });
   });
-
 });

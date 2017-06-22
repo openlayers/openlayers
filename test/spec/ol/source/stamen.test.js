@@ -2,11 +2,8 @@ goog.provide('ol.test.source.Stamen');
 
 goog.require('ol.source.Stamen');
 
-
 describe('ol.source.Stamen', function() {
-
   describe('constructor', function() {
-
     it('can be constructed with a custom minZoom', function() {
       var source = new ol.source.Stamen({
         layer: 'watercolor',
@@ -21,9 +18,6 @@ describe('ol.source.Stamen', function() {
         maxZoom: 8
       });
       expect(source.getTileGrid().getMaxZoom()).to.be(8);
-
     });
-
   });
-
 });

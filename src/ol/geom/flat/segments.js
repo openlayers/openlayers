@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.segments');
 
-
 /**
  * This function calls `callback` for each segment of the flat coordinates
  * array. If the callback returns a truthy value the function returns that
@@ -16,11 +15,18 @@ goog.provide('ol.geom.flat.segments');
  * @return {T|boolean} Value.
  * @template T,S
  */
-ol.geom.flat.segments.forEach = function(flatCoordinates, offset, end, stride, callback, opt_this) {
+ol.geom.flat.segments.forEach = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  callback,
+  opt_this
+) {
   var point1 = [flatCoordinates[offset], flatCoordinates[offset + 1]];
   var point2 = [];
   var ret;
-  for (; (offset + stride) < end; offset += stride) {
+  for (; offset + stride < end; offset += stride) {
     point2[0] = flatCoordinates[offset + stride];
     point2[1] = flatCoordinates[offset + stride + 1];
     ret = callback.call(opt_this, point1, point2);

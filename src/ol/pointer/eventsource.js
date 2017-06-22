@@ -1,6 +1,5 @@
 goog.provide('ol.pointer.EventSource');
 
-
 /**
  * @param {ol.pointer.PointerEventHandler} dispatcher Event handler.
  * @param {!Object.<string, function(Event)>} mapping Event
@@ -21,7 +20,6 @@ ol.pointer.EventSource = function(dispatcher, mapping) {
   this.mapping_ = mapping;
 };
 
-
 /**
  * List of events supported by this source.
  * @return {Array.<string>} Event names
@@ -29,7 +27,6 @@ ol.pointer.EventSource = function(dispatcher, mapping) {
 ol.pointer.EventSource.prototype.getEvents = function() {
   return Object.keys(this.mapping_);
 };
-
 
 /**
  * Returns the handler that should handle a given event type.

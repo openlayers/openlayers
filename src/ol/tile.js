@@ -5,7 +5,6 @@ goog.require('ol.TileState');
 goog.require('ol.events.EventTarget');
 goog.require('ol.events.EventType');
 
-
 /**
  * @classdesc
  * Base class for tiles.
@@ -17,7 +16,6 @@ goog.require('ol.events.EventType');
  * @param {ol.TileState} state State.
  */
 ol.Tile = function(tileCoord, state) {
-
   ol.events.EventTarget.call(this);
 
   /**
@@ -46,10 +44,8 @@ ol.Tile = function(tileCoord, state) {
    * @type {string}
    */
   this.key = '';
-
 };
 ol.inherits(ol.Tile, ol.events.EventTarget);
-
 
 /**
  * @protected
@@ -57,7 +53,6 @@ ol.inherits(ol.Tile, ol.events.EventTarget);
 ol.Tile.prototype.changed = function() {
   this.dispatchEvent(ol.events.EventType.CHANGE);
 };
-
 
 /**
  * @return {string} Key.
@@ -136,7 +131,6 @@ ol.Tile.prototype.refreshInterimChain = function() {
 ol.Tile.prototype.getTileCoord = function() {
   return this.tileCoord;
 };
-
 
 /**
  * @return {ol.TileState} State.

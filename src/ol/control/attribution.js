@@ -10,7 +10,6 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.obj');
 
-
 /**
  * @classdesc
  * Control to show all the attributions associated with the layer sources
@@ -24,7 +23,6 @@ goog.require('ol.obj');
  * @api
  */
 ol.control.Attribution = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   /**
@@ -52,18 +50,25 @@ ol.control.Attribution = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.collapsible_ = options.collapsible !== undefined ?
-      options.collapsible : true;
+  this.collapsible_ = options.collapsible !== undefined
+    ? options.collapsible
+    : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;
   }
 
-  var className = options.className !== undefined ? options.className : 'ol-attribution';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-attribution';
 
-  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Attributions';
+  var tipLabel = options.tipLabel !== undefined
+    ? options.tipLabel
+    : 'Attributions';
 
-  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00BB';
+  var collapseLabel = options.collapseLabel !== undefined
+    ? options.collapseLabel
+    : '\u00BB';
 
   if (typeof collapseLabel === 'string') {
     /**
@@ -89,9 +94,9 @@ ol.control.Attribution = function(opt_options) {
     this.label_ = label;
   }
 
-
-  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_;
+  var activeLabel = this.collapsible_ && !this.collapsed_
+    ? this.collapseLabel_
+    : this.label_;
   var button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
@@ -99,10 +104,14 @@ ol.control.Attribution = function(opt_options) {
 
   ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL +
-      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
-      (this.collapsible_ ? '' : ' ol-uncollapsible');
+  var cssClasses =
+    className +
+    ' ' +
+    ol.css.CLASS_UNSELECTABLE +
+    ' ' +
+    ol.css.CLASS_CONTROL +
+    (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+    (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(this.ulElement_);
@@ -139,18 +148,24 @@ ol.control.Attribution = function(opt_options) {
    * @type {Object.<string, Element>}
    */
   this.logoElements_ = {};
-
 };
 ol.inherits(ol.control.Attribution, ol.control.Control);
-
 
 /**
  * @param {?olx.FrameState} frameState Frame state.
  * @return {Array.<Object.<string, ol.Attribution>>} Attributions.
  */
 ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
-  var i, ii, j, jj, tileRanges, source, sourceAttribution,
-      sourceAttributionKey, sourceAttributions, sourceKey;
+  var i,
+    ii,
+    j,
+    jj,
+    tileRanges,
+    source,
+    sourceAttribution,
+    sourceAttributionKey,
+    sourceAttributions,
+    sourceKey;
   var intersectsTileRange;
   var layerStatesArray = frameState.layerStatesArray;
   /** @type {Object.<string, ol.Attribution>} */
@@ -158,7 +173,8 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   /** @type {Object.<string, ol.Attribution>} */
   var hiddenAttributions = {};
   var uniqueAttributions = {};
-  var projection = /** @type {!ol.proj.Projection} */ (frameState.viewState.projection);
+  var projection /** @type {!ol.proj.Projection} */ =
+    frameState.viewState.projection;
   for (i = 0, ii = layerStatesArray.length; i < ii; i++) {
     source = layerStatesArray[i].layer.getSource();
     if (!source) {
@@ -177,9 +193,14 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
       }
       tileRanges = frameState.usedTiles[sourceKey];
       if (tileRanges) {
-        var tileGrid = /** @type {ol.source.Tile} */ (source).getTileGridForProjection(projection);
+        var tileGrid = /** @type {ol.source.Tile} */ source.getTileGridForProjection(
+          projection
+        );
         intersectsTileRange = sourceAttribution.intersectsAnyTileRange(
-            tileRanges, tileGrid, projection);
+          tileRanges,
+          tileGrid,
+          projection
+        );
       } else {
         intersectsTileRange = false;
       }
@@ -200,7 +221,6 @@ ol.control.Attribution.prototype.getSourceAttributions = function(frameState) {
   return [attributions, hiddenAttributions];
 };
 
-
 /**
  * Update the attribution element.
  * @param {ol.MapEvent} mapEvent Map event.
@@ -211,13 +231,11 @@ ol.control.Attribution.render = function(mapEvent) {
   this.updateElement_(mapEvent.frameState);
 };
 
-
 /**
  * @private
  * @param {?olx.FrameState} frameState Frame state.
  */
 ol.control.Attribution.prototype.updateElement_ = function(frameState) {
-
   if (!frameState) {
     if (this.renderedVisible_) {
       this.element.style.display = 'none';
@@ -254,46 +272,45 @@ ol.control.Attribution.prototype.updateElement_ = function(frameState) {
   }
   for (attributionKey in visibleAttributions) {
     attributionElement = document.createElement('LI');
-    attributionElement.innerHTML =
-        visibleAttributions[attributionKey].getHTML();
+    attributionElement.innerHTML = visibleAttributions[
+      attributionKey
+    ].getHTML();
     this.ulElement_.appendChild(attributionElement);
     this.attributionElements_[attributionKey] = attributionElement;
     this.attributionElementRenderedVisible_[attributionKey] = true;
   }
   for (attributionKey in hiddenAttributions) {
     attributionElement = document.createElement('LI');
-    attributionElement.innerHTML =
-        hiddenAttributions[attributionKey].getHTML();
+    attributionElement.innerHTML = hiddenAttributions[attributionKey].getHTML();
     attributionElement.style.display = 'none';
     this.ulElement_.appendChild(attributionElement);
     this.attributionElements_[attributionKey] = attributionElement;
   }
 
   var renderVisible =
-      !ol.obj.isEmpty(this.attributionElementRenderedVisible_) ||
-      !ol.obj.isEmpty(frameState.logos);
+    !ol.obj.isEmpty(this.attributionElementRenderedVisible_) ||
+    !ol.obj.isEmpty(frameState.logos);
   if (this.renderedVisible_ != renderVisible) {
     this.element.style.display = renderVisible ? '' : 'none';
     this.renderedVisible_ = renderVisible;
   }
-  if (renderVisible &&
-      ol.obj.isEmpty(this.attributionElementRenderedVisible_)) {
+  if (
+    renderVisible &&
+    ol.obj.isEmpty(this.attributionElementRenderedVisible_)
+  ) {
     this.element.classList.add('ol-logo-only');
   } else {
     this.element.classList.remove('ol-logo-only');
   }
 
   this.insertLogos_(frameState);
-
 };
-
 
 /**
  * @param {?olx.FrameState} frameState Frame state.
  * @private
  */
 ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
-
   var logo;
   var logos = frameState.logos;
   var logoElements = this.logoElements_;
@@ -328,9 +345,7 @@ ol.control.Attribution.prototype.insertLogos_ = function(frameState) {
   }
 
   this.logoLi_.style.display = !ol.obj.isEmpty(logos) ? '' : 'none';
-
 };
-
 
 /**
  * @param {Event} event The event to handle
@@ -340,7 +355,6 @@ ol.control.Attribution.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleToggle_();
 };
-
 
 /**
  * @private
@@ -355,7 +369,6 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
   this.collapsed_ = !this.collapsed_;
 };
 
-
 /**
  * Return `true` if the attribution is collapsible, `false` otherwise.
  * @return {boolean} True if the widget is collapsible.
@@ -364,7 +377,6 @@ ol.control.Attribution.prototype.handleToggle_ = function() {
 ol.control.Attribution.prototype.getCollapsible = function() {
   return this.collapsible_;
 };
-
 
 /**
  * Set whether the attribution should be collapsible.
@@ -382,7 +394,6 @@ ol.control.Attribution.prototype.setCollapsible = function(collapsible) {
   }
 };
 
-
 /**
  * Collapse or expand the attribution according to the passed parameter. Will
  * not do anything if the attribution isn't collapsible or if the current
@@ -396,7 +407,6 @@ ol.control.Attribution.prototype.setCollapsed = function(collapsed) {
   }
   this.handleToggle_();
 };
-
 
 /**
  * Return `true` when the attribution is currently collapsed or `false`

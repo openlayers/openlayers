@@ -1,6 +1,5 @@
 goog.provide('ol.format.FormatType');
 
-
 /**
  * @enum {string}
  */

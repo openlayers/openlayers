@@ -6,7 +6,6 @@ goog.require('ol.proj');
 goog.require('ol.source.OSM');
 goog.require('ol.style.Stroke');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({

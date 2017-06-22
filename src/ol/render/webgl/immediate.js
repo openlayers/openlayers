@@ -7,9 +7,7 @@ goog.require('ol.render.ReplayType');
 goog.require('ol.render.VectorContext');
 goog.require('ol.render.webgl.ReplayGroup');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @extends {ol.render.VectorContext}
@@ -22,7 +20,15 @@ if (ol.ENABLE_WEBGL) {
    * @param {number} pixelRatio Pixel ratio.
    * @struct
    */
-  ol.render.webgl.Immediate = function(context, center, resolution, rotation, size, extent, pixelRatio) {
+  ol.render.webgl.Immediate = function(
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    extent,
+    pixelRatio
+  ) {
     ol.render.VectorContext.call(this);
 
     /**
@@ -77,10 +83,8 @@ if (ol.ENABLE_WEBGL) {
      * @type {ol.style.Stroke}
      */
     this.strokeStyle_ = null;
-
   };
   ol.inherits(ol.render.webgl.Immediate, ol.render.VectorContext);
-
 
   /**
    * Set the rendering style.  Note that since this is an immediate rendering API,
@@ -95,7 +99,6 @@ if (ol.ENABLE_WEBGL) {
     this.setImageStyle(style.getImage());
   };
 
-
   /**
    * Render a geometry into the canvas.  Call
    * {@link ol.render.webgl.Immediate#setStyle} first to set the rendering style.
@@ -108,34 +111,45 @@ if (ol.ENABLE_WEBGL) {
     var type = geometry.getType();
     switch (type) {
       case ol.geom.GeometryType.POINT:
-        this.drawPoint(/** @type {ol.geom.Point} */ (geometry), null);
+        this.drawPoint /** @type {ol.geom.Point} */(geometry, null);
         break;
       case ol.geom.GeometryType.LINE_STRING:
-        this.drawLineString(/** @type {ol.geom.LineString} */ (geometry), null);
+        this.drawLineString /** @type {ol.geom.LineString} */(geometry, null);
         break;
       case ol.geom.GeometryType.POLYGON:
-        this.drawPolygon(/** @type {ol.geom.Polygon} */ (geometry), null);
+        this.drawPolygon /** @type {ol.geom.Polygon} */(geometry, null);
         break;
       case ol.geom.GeometryType.MULTI_POINT:
-        this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry), null);
+        this.drawMultiPoint /** @type {ol.geom.MultiPoint} */(geometry, null);
         break;
       case ol.geom.GeometryType.MULTI_LINE_STRING:
-        this.drawMultiLineString(/** @type {ol.geom.MultiLineString} */ (geometry), null);
+        this.drawMultiLineString(
+          /** @type {ol.geom.MultiLineString} */
+          geometry,
+          null
+        );
         break;
       case ol.geom.GeometryType.MULTI_POLYGON:
-        this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry), null);
+        this.drawMultiPolygon(
+          /** @type {ol.geom.MultiPolygon} */
+          geometry,
+          null
+        );
         break;
       case ol.geom.GeometryType.GEOMETRY_COLLECTION:
-        this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry), null);
+        this.drawGeometryCollection(
+          /** @type {ol.geom.GeometryCollection} */
+          geometry,
+          null
+        );
         break;
       case ol.geom.GeometryType.CIRCLE:
-        this.drawCircle(/** @type {ol.geom.Circle} */ (geometry), null);
+        this.drawCircle /** @type {ol.geom.Circle} */(geometry, null);
         break;
       default:
-        // pass
+      // pass
     }
   };
-
 
   /**
    * @inheritDoc
@@ -143,19 +157,23 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.Immediate.prototype.drawFeature = function(feature, style) {
     var geometry = style.getGeometryFunction()(feature);
-    if (!geometry ||
-        !ol.extent.intersects(this.extent_, geometry.getExtent())) {
+    if (
+      !geometry ||
+      !ol.extent.intersects(this.extent_, geometry.getExtent())
+    ) {
       return;
     }
     this.setStyle(style);
     this.drawGeometry(geometry);
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(geometry, data) {
+  ol.render.webgl.Immediate.prototype.drawGeometryCollection = function(
+    geometry,
+    data
+  ) {
     var geometries = geometry.getGeometriesArray();
     var i, ii;
     for (i = 0, ii = geometries.length; i < ii; ++i) {
@@ -163,15 +181,16 @@ if (ol.ENABLE_WEBGL) {
     }
   };
 
-
   /**
    * @inheritDoc
    */
   ol.render.webgl.Immediate.prototype.drawPoint = function(geometry, data) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.ImageReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
+    var replay /** @type {ol.render.webgl.ImageReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.IMAGE
+    );
     replay.setImageStyle(this.imageStyle_);
     replay.drawPoint(geometry, data);
     replay.finish(context);
@@ -180,21 +199,34 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.render.webgl.Immediate.prototype.drawMultiPoint = function(geometry, data) {
+  ol.render.webgl.Immediate.prototype.drawMultiPoint = function(
+    geometry,
+    data
+  ) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.ImageReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.IMAGE));
+    var replay /** @type {ol.render.webgl.ImageReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.IMAGE
+    );
     replay.setImageStyle(this.imageStyle_);
     replay.drawMultiPoint(geometry, data);
     replay.finish(context);
@@ -202,21 +234,34 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.render.webgl.Immediate.prototype.drawLineString = function(geometry, data) {
+  ol.render.webgl.Immediate.prototype.drawLineString = function(
+    geometry,
+    data
+  ) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.LineStringReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.LINE_STRING));
+    var replay /** @type {ol.render.webgl.LineStringReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.LINE_STRING
+    );
     replay.setFillStrokeStyle(null, this.strokeStyle_);
     replay.drawLineString(geometry, data);
     replay.finish(context);
@@ -224,21 +269,34 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.render.webgl.Immediate.prototype.drawMultiLineString = function(geometry, data) {
+  ol.render.webgl.Immediate.prototype.drawMultiLineString = function(
+    geometry,
+    data
+  ) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.LineStringReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.LINE_STRING));
+    var replay /** @type {ol.render.webgl.LineStringReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.LINE_STRING
+    );
     replay.setFillStrokeStyle(null, this.strokeStyle_);
     replay.drawMultiLineString(geometry, data);
     replay.finish(context);
@@ -246,12 +304,20 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
@@ -259,8 +325,10 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.Immediate.prototype.drawPolygon = function(geometry, data) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.PolygonReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.POLYGON));
+    var replay /** @type {ol.render.webgl.PolygonReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.POLYGON
+    );
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawPolygon(geometry, data);
     replay.finish(context);
@@ -268,21 +336,34 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.render.webgl.Immediate.prototype.drawMultiPolygon = function(geometry, data) {
+  ol.render.webgl.Immediate.prototype.drawMultiPolygon = function(
+    geometry,
+    data
+  ) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.PolygonReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.POLYGON));
+    var replay /** @type {ol.render.webgl.PolygonReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.POLYGON
+    );
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawMultiPolygon(geometry, data);
     replay.finish(context);
@@ -290,12 +371,20 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
@@ -303,8 +392,10 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.Immediate.prototype.drawCircle = function(geometry, data) {
     var context = this.context_;
     var replayGroup = new ol.render.webgl.ReplayGroup(1, this.extent_);
-    var replay = /** @type {ol.render.webgl.CircleReplay} */ (
-        replayGroup.getReplay(0, ol.render.ReplayType.CIRCLE));
+    var replay /** @type {ol.render.webgl.CircleReplay} */ = replayGroup.getReplay(
+      0,
+      ol.render.ReplayType.CIRCLE
+    );
     replay.setFillStrokeStyle(this.fillStyle_, this.strokeStyle_);
     replay.drawCircle(geometry, data);
     replay.finish(context);
@@ -312,12 +403,20 @@ if (ol.ENABLE_WEBGL) {
     var skippedFeatures = {};
     var featureCallback;
     var oneByOne = false;
-    replay.replay(this.context_, this.center_, this.resolution_, this.rotation_,
-        this.size_, this.pixelRatio_, opacity, skippedFeatures, featureCallback,
-        oneByOne);
+    replay.replay(
+      this.context_,
+      this.center_,
+      this.resolution_,
+      this.rotation_,
+      this.size_,
+      this.pixelRatio_,
+      opacity,
+      skippedFeatures,
+      featureCallback,
+      oneByOne
+    );
     replay.getDeleteResourcesFunction(context)();
   };
-
 
   /**
    * @inheritDoc
@@ -326,13 +425,14 @@ if (ol.ENABLE_WEBGL) {
     this.imageStyle_ = imageStyle;
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+  ol.render.webgl.Immediate.prototype.setFillStrokeStyle = function(
+    fillStyle,
+    strokeStyle
+  ) {
     this.fillStyle_ = fillStyle;
     this.strokeStyle_ = strokeStyle;
   };
-
 }

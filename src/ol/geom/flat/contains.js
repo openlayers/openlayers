@@ -2,7 +2,6 @@ goog.provide('ol.geom.flat.contains');
 
 goog.require('ol.extent');
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -11,19 +10,32 @@ goog.require('ol.extent');
  * @param {ol.Extent} extent Extent.
  * @return {boolean} Contains extent.
  */
-ol.geom.flat.contains.linearRingContainsExtent = function(flatCoordinates, offset, end, stride, extent) {
-  var outside = ol.extent.forEachCorner(extent,
-      /**
+ol.geom.flat.contains.linearRingContainsExtent = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  extent
+) {
+  var outside = ol.extent.forEachCorner(
+    extent,
+    /**
        * @param {ol.Coordinate} coordinate Coordinate.
        * @return {boolean} Contains (x, y).
        */
-      function(coordinate) {
-        return !ol.geom.flat.contains.linearRingContainsXY(flatCoordinates,
-            offset, end, stride, coordinate[0], coordinate[1]);
-      });
+    function(coordinate) {
+      return !ol.geom.flat.contains.linearRingContainsXY(
+        flatCoordinates,
+        offset,
+        end,
+        stride,
+        coordinate[0],
+        coordinate[1]
+      );
+    }
+  );
   return !outside;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -34,7 +46,14 @@ ol.geom.flat.contains.linearRingContainsExtent = function(flatCoordinates, offse
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.flat.contains.linearRingContainsXY = function(flatCoordinates, offset, end, stride, x, y) {
+ol.geom.flat.contains.linearRingContainsXY = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  x,
+  y
+) {
   // http://geomalgorithms.com/a03-_inclusion.html
   // Copyright 2000 softSurfer, 2012 Dan Sunday
   // This code may be freely used and modified for any purpose
@@ -49,10 +68,10 @@ ol.geom.flat.contains.linearRingContainsXY = function(flatCoordinates, offset, e
     var x2 = flatCoordinates[offset];
     var y2 = flatCoordinates[offset + 1];
     if (y1 <= y) {
-      if (y2 > y && ((x2 - x1) * (y - y1)) - ((x - x1) * (y2 - y1)) > 0) {
+      if (y2 > y && (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) > 0) {
         wn++;
       }
-    } else if (y2 <= y && ((x2 - x1) * (y - y1)) - ((x - x1) * (y2 - y1)) < 0) {
+    } else if (y2 <= y && (x2 - x1) * (y - y1) - (x - x1) * (y2 - y1) < 0) {
       wn--;
     }
     x1 = x2;
@@ -60,7 +79,6 @@ ol.geom.flat.contains.linearRingContainsXY = function(flatCoordinates, offset, e
   }
   return wn !== 0;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -71,24 +89,46 @@ ol.geom.flat.contains.linearRingContainsXY = function(flatCoordinates, offset, e
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.flat.contains.linearRingsContainsXY = function(flatCoordinates, offset, ends, stride, x, y) {
+ol.geom.flat.contains.linearRingsContainsXY = function(
+  flatCoordinates,
+  offset,
+  ends,
+  stride,
+  x,
+  y
+) {
   if (ends.length === 0) {
     return false;
   }
-  if (!ol.geom.flat.contains.linearRingContainsXY(
-      flatCoordinates, offset, ends[0], stride, x, y)) {
+  if (
+    !ol.geom.flat.contains.linearRingContainsXY(
+      flatCoordinates,
+      offset,
+      ends[0],
+      stride,
+      x,
+      y
+    )
+  ) {
     return false;
   }
   var i, ii;
   for (i = 1, ii = ends.length; i < ii; ++i) {
-    if (ol.geom.flat.contains.linearRingContainsXY(
-        flatCoordinates, ends[i - 1], ends[i], stride, x, y)) {
+    if (
+      ol.geom.flat.contains.linearRingContainsXY(
+        flatCoordinates,
+        ends[i - 1],
+        ends[i],
+        stride,
+        x,
+        y
+      )
+    ) {
       return false;
     }
   }
   return true;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -99,15 +139,30 @@ ol.geom.flat.contains.linearRingsContainsXY = function(flatCoordinates, offset, 
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
-ol.geom.flat.contains.linearRingssContainsXY = function(flatCoordinates, offset, endss, stride, x, y) {
+ol.geom.flat.contains.linearRingssContainsXY = function(
+  flatCoordinates,
+  offset,
+  endss,
+  stride,
+  x,
+  y
+) {
   if (endss.length === 0) {
     return false;
   }
   var i, ii;
   for (i = 0, ii = endss.length; i < ii; ++i) {
     var ends = endss[i];
-    if (ol.geom.flat.contains.linearRingsContainsXY(
-        flatCoordinates, offset, ends, stride, x, y)) {
+    if (
+      ol.geom.flat.contains.linearRingsContainsXY(
+        flatCoordinates,
+        offset,
+        ends,
+        stride,
+        x,
+        y
+      )
+    ) {
       return true;
     }
     offset = ends[ends.length - 1];

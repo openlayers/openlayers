@@ -9,9 +9,7 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
-
 describe('ol.rendering.style.Icon', function() {
-
   var target, map, vectorSource;
 
   var imgInfo = {
@@ -58,9 +56,13 @@ describe('ol.rendering.style.Icon', function() {
       var img = new Image();
       img.onload = function() {
         imgInfo.img = img;
-        feature.setStyle(new ol.style.Style({
-          image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ (imgInfo))
-        }));
+        feature.setStyle(
+          new ol.style.Style({
+            image: new ol.style.Icon /** @type {olx.style.IconOptions} */(
+              imgInfo
+            )
+          })
+        );
         vectorSource.addFeature(feature);
         callback();
       };
@@ -70,52 +72,81 @@ describe('ol.rendering.style.Icon', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       createFeatures('spec/ol/data/icon.png', imgInfo, function() {
-        expectResemble(map, 'spec/ol/style/expected/icon-canvas.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/style/expected/icon-canvas.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
 
     it('scales svg correctly in the canvas renderer', function(done) {
       map = createMap('canvas', 512, 512);
-      createFeatures('spec/ol/data/me0.svg', {
-        scale: 96 / 512,
-        imgSize: [512, 512]
-      }, function() {
-        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-scale.png',
-            IMAGE_TOLERANCE, done);
-      });
+      createFeatures(
+        'spec/ol/data/me0.svg',
+        {
+          scale: 96 / 512,
+          imgSize: [512, 512]
+        },
+        function() {
+          expectResemble(
+            map,
+            'spec/ol/style/expected/icon-canvas-svg-scale.png',
+            IMAGE_TOLERANCE,
+            done
+          );
+        }
+      );
     });
 
     it('uses offset correctly in the canvas renderer', function(done) {
       map = createMap('canvas', 256, 512);
-      createFeatures('spec/ol/data/me0.svg', {
-        offset: [0, 256],
-        size: [256, 256],
-        imgSize: [512, 512]
-      }, function() {
-        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-offset.png',
-            IMAGE_TOLERANCE, done);
-      });
+      createFeatures(
+        'spec/ol/data/me0.svg',
+        {
+          offset: [0, 256],
+          size: [256, 256],
+          imgSize: [512, 512]
+        },
+        function() {
+          expectResemble(
+            map,
+            'spec/ol/style/expected/icon-canvas-svg-offset.png',
+            IMAGE_TOLERANCE,
+            done
+          );
+        }
+      );
     });
 
-    it('uses offset correctly if it is larger than size in the canvas renderer', function(done) {
+    it('uses offset correctly if it is larger than size in the canvas renderer', function(
+      done
+    ) {
       map = createMap('canvas', 256, 512);
-      createFeatures('spec/ol/data/me0.svg', {
-        offset: [0, 374],
-        size: [256, 256],
-        imgSize: [512, 512]
-      }, function() {
-        expectResemble(map, 'spec/ol/style/expected/icon-canvas-svg-offset2.png',
-            IMAGE_TOLERANCE, done);
-      });
+      createFeatures(
+        'spec/ol/data/me0.svg',
+        {
+          offset: [0, 374],
+          size: [256, 256],
+          imgSize: [512, 512]
+        },
+        function() {
+          expectResemble(
+            map,
+            'spec/ol/style/expected/icon-canvas-svg-offset2.png',
+            IMAGE_TOLERANCE,
+            done
+          );
+        }
+      );
     });
 
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures('spec/ol/data/icon.png', imgInfo, function() {
-        expectResemble(map, 'spec/ol/style/expected/icon-webgl.png',
-            2.0, done);
+        expectResemble(map, 'spec/ol/style/expected/icon-webgl.png', 2.0, done);
       });
     });
   });

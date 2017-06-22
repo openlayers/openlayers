@@ -8,9 +8,7 @@ goog.require('ol.proj');
 goog.require('ol.source.ImageStatic');
 goog.require('ol.tilegrid');
 
-
 describe('ol.rendering.layer.Image', function() {
-
   var target, map;
 
   function createMap(renderer) {
@@ -21,7 +19,10 @@ describe('ol.rendering.layer.Image', function() {
       renderer: renderer,
       view: new ol.View({
         center: ol.proj.transform(
-            [-122.416667, 37.783333], 'EPSG:4326', 'EPSG:3857'),
+          [-122.416667, 37.783333],
+          'EPSG:4326',
+          'EPSG:3857'
+        ),
         zoom: 5
       })
     });
@@ -64,8 +65,9 @@ describe('ol.rendering.layer.Image', function() {
     beforeEach(function() {
       source = new ol.source.ImageStatic({
         url: 'spec/ol/data/tiles/osm/5/5/12.png',
-        imageExtent: ol.tilegrid.createXYZ().getTileCoordExtent(
-            [5, 5, -12 - 1]),
+        imageExtent: ol.tilegrid
+          .createXYZ()
+          .getTileCoordExtent([5, 5, -12 - 1]),
         projection: ol.proj.get('EPSG:3857')
       });
     });
@@ -77,8 +79,12 @@ describe('ol.rendering.layer.Image', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       waitForImages([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/image-canvas.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/image-canvas.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
 
@@ -86,8 +92,12 @@ describe('ol.rendering.layer.Image', function() {
       assertWebGL();
       map = createMap('webgl');
       waitForImages([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/image-webgl.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/image-webgl.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
   });
@@ -99,7 +109,10 @@ describe('ol.rendering.layer.Image', function() {
       source = new ol.source.ImageStatic({
         url: 'spec/ol/data/tiles/osm/5/5/12.png',
         imageExtent: ol.proj.transformExtent(
-            [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
+          [-123, 37, -122, 38],
+          'EPSG:4326',
+          'EPSG:3857'
+        )
       });
     });
 
@@ -110,10 +123,13 @@ describe('ol.rendering.layer.Image', function() {
     it('renders correctly', function(done) {
       map = createMap('canvas');
       waitForImages([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/image-scaled.png',
-            IMAGE_TOLERANCE, done);
+        expectResemble(
+          map,
+          'spec/ol/layer/expected/image-scaled.png',
+          IMAGE_TOLERANCE,
+          done
+        );
       });
     });
   });
-
 });

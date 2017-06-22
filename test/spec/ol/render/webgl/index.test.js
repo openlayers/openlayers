@@ -8,7 +8,6 @@ describe('ol.render.Replay', function() {
     replay = new ol.render.webgl.Replay(5, [-180, -90, 180, 90]);
   });
 
-
   describe('constructor', function() {
     it('stores view related data', function() {
       expect(replay.tolerance).to.be(5);
@@ -16,7 +15,7 @@ describe('ol.render.Replay', function() {
       expect(replay.origin).to.eql([0, 0]);
     });
 
-    it ('sets up the required matrices', function() {
+    it('sets up the required matrices', function() {
       var mat3 = [1, 0, 0, 1, 0, 0];
       var mat4 = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
       expect(replay.projectionMatrix_).to.eql(mat3);
@@ -50,11 +49,28 @@ describe('ol.render.Replay', function() {
 
     it('calculates the correct matrices', function() {
       var sin = Math.sin(Math.PI);
-      replay.replay(context, [0, 0], 10, Math.PI, [10, 10], 1, 0, {}, undefined,
-          false, undefined);
+      replay.replay(
+        context,
+        [0, 0],
+        10,
+        Math.PI,
+        [10, 10],
+        1,
+        0,
+        {},
+        undefined,
+        false,
+        undefined
+      );
 
-      expect(replay.projectionMatrix_).to.eql([-0.02, -sin * 0.02, sin * 0.02,
-        -0.02, 0, 0]);
+      expect(replay.projectionMatrix_).to.eql([
+        -0.02,
+        -sin * 0.02,
+        sin * 0.02,
+        -0.02,
+        0,
+        0
+      ]);
       expect(replay.offsetRotateMatrix_).to.eql([-1, -sin, sin, -1, 0, 0]);
       expect(replay.offsetScaleMatrix_).to.eql([0.2, 0, 0, 0.2, 0, 0]);
     });

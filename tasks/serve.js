@@ -16,12 +16,11 @@ var nomnom = require('nomnom');
 var buildExamples = require('./build-examples');
 var log = closure.log;
 
-
 /**
  * Create a debug server for ol and Closure Library sources.
  * @param {function(Error, closure.Server)} callback Callback.
  */
-var createServer = exports.createServer = function(callback) {
+var createServer = (exports.createServer = function(callback) {
   var server;
   var manager = new closure.Manager({
     lib: [
@@ -52,15 +51,21 @@ var createServer = exports.createServer = function(callback) {
         var pathName = url.parse(referer).pathname;
         if (pathName.indexOf('/test/') === 0) {
           main = path.resolve(
-            path.join(process.cwd(), 'build'), 'test_requires.js');
+            path.join(process.cwd(), 'build'),
+            'test_requires.js'
+          );
         } else if (pathName.indexOf('/test_rendering/') === 0) {
           main = path.resolve(
-            path.join(process.cwd(), 'build'), 'test_rendering_requires.js');
+            path.join(process.cwd(), 'build'),
+            'test_rendering_requires.js'
+          );
         } else {
           if (query.id) {
             if (referer) {
-              var from = path.join(process.cwd(),
-                  path.dirname(url.parse(referer).pathname));
+              var from = path.join(
+                process.cwd(),
+                path.dirname(url.parse(referer).pathname)
+              );
               main = path.resolve(from, query.id + '.js');
             }
           }
@@ -70,7 +75,7 @@ var createServer = exports.createServer = function(callback) {
     });
     callback(null, server);
   });
-};
+});
 
 /**
  * Build the examples and exit on any error.
@@ -93,8 +98,10 @@ function buildExamplesOrFatal(opt_callback) {
       if (err2) {
         log.error('serve', 'Failed to copy CSS.');
         log.error('serve', err.message);
-        log.error('serve',
-            'Use "verbose" logging to see the full stack trace.');
+        log.error(
+          'serve',
+          'Use "verbose" logging to see the full stack trace.'
+        );
         log.verbose('serve', err.stack);
         process.exit(1);
       }
@@ -110,21 +117,23 @@ function buildExamplesOrFatal(opt_callback) {
  * If running this module directly start the server.
  */
 if (require.main === module) {
-  var options = nomnom.options({
-    port: {
-      abbr: 'p',
-      default: 3000,
-      help: 'Port for incoming connections',
-      metavar: 'PORT'
-    },
-    loglevel: {
-      abbr: 'l',
-      choices: ['silly', 'verbose', 'info', 'warn', 'error'],
-      default: 'info',
-      help: 'Log level',
-      metavar: 'LEVEL'
-    }
-  }).parse();
+  var options = nomnom
+    .options({
+      port: {
+        abbr: 'p',
+        default: 3000,
+        help: 'Port for incoming connections',
+        metavar: 'PORT'
+      },
+      loglevel: {
+        abbr: 'l',
+        choices: ['silly', 'verbose', 'info', 'warn', 'error'],
+        default: 'info',
+        help: 'Log level',
+        metavar: 'LEVEL'
+      }
+    })
+    .parse();
 
   /** @type {string} */
   log.level = options.loglevel;
@@ -138,8 +147,10 @@ if (require.main === module) {
         process.exit(1);
       }
       server.listen(options.port, function() {
-        log.info('serve', 'Listening on http://localhost:' +
-            options.port + '/ (Ctrl+C to stop)');
+        log.info(
+          'serve',
+          'Listening on http://localhost:' + options.port + '/ (Ctrl+C to stop)'
+        );
       });
       server.on('error', function(err) {
         log.error('serve', 'Server failed to start: ' + err.message);
@@ -154,5 +165,4 @@ if (require.main === module) {
       debouncedBuild();
     });
   });
-
 }

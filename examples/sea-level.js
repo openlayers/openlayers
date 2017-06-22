@@ -10,7 +10,8 @@ goog.require('ol.source.XYZ');
 function flood(pixels, data) {
   var pixel = pixels[0];
   if (pixel[3]) {
-    var height = -10000 + ((pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1);
+    var height =
+      -10000 + (pixel[0] * 256 * 256 + pixel[1] * 256 + pixel[2]) * 0.1;
     if (height <= data.level) {
       pixel[0] = 145;
       pixel[1] = 175;
@@ -23,9 +24,12 @@ function flood(pixels, data) {
   return pixel;
 }
 
-var key = 'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
+var key =
+  'pk.eyJ1IjoidHNjaGF1YiIsImEiOiJjaW5zYW5lNHkxMTNmdWttM3JyOHZtMmNtIn0.CDIBD8H-G2Gf-cPkIuWtRg';
 var elevation = new ol.source.XYZ({
-  url: 'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' + key,
+  url:
+    'https://api.mapbox.com/v4/mapbox.terrain-rgb/{z}/{x}/{y}.pngraw?access_token=' +
+      key,
   crossOrigin: 'anonymous'
 });
 
@@ -39,7 +43,9 @@ var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
       source: new ol.source.XYZ({
-        url: 'https://api.mapbox.com/styles/v1/tschaub/ciutc102t00c62js5fqd47kqw/tiles/256/{z}/{x}/{y}?access_token=' + key
+        url:
+          'https://api.mapbox.com/styles/v1/tschaub/ciutc102t00c62js5fqd47kqw/tiles/256/{z}/{x}/{y}?access_token=' +
+            key
       })
     }),
     new ol.layer.Image({

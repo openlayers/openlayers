@@ -8,7 +8,6 @@ goog.require('ol.has');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.math');
 
-
 /**
  * @classdesc
  * Allows the user to zoom the map by scrolling the mouse wheel.
@@ -19,7 +18,6 @@ goog.require('ol.math');
  * @api
  */
 ol.interaction.MouseWheelZoom = function(opt_options) {
-
   ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.MouseWheelZoom.handleEvent
   });
@@ -105,10 +103,8 @@ ol.interaction.MouseWheelZoom = function(opt_options) {
    * @type {number}
    */
   this.trackpadZoomBuffer_ = 1.5;
-
 };
 ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
-
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} (if it was a
@@ -120,14 +116,17 @@ ol.inherits(ol.interaction.MouseWheelZoom, ol.interaction.Interaction);
  */
 ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   var type = mapBrowserEvent.type;
-  if (type !== ol.events.EventType.WHEEL && type !== ol.events.EventType.MOUSEWHEEL) {
+  if (
+    type !== ol.events.EventType.WHEEL &&
+    type !== ol.events.EventType.MOUSEWHEEL
+  ) {
     return true;
   }
 
   mapBrowserEvent.preventDefault();
 
   var map = mapBrowserEvent.map;
-  var wheelEvent = /** @type {WheelEvent} */ (mapBrowserEvent.originalEvent);
+  var wheelEvent /** @type {WheelEvent} */ = mapBrowserEvent.originalEvent;
 
   if (this.useAnchor_) {
     this.lastAnchor_ = mapBrowserEvent.coordinate;
@@ -138,8 +137,7 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   var delta;
   if (mapBrowserEvent.type == ol.events.EventType.WHEEL) {
     delta = wheelEvent.deltaY;
-    if (ol.has.FIREFOX &&
-        wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
+    if (ol.has.FIREFOX && wheelEvent.deltaMode === WheelEvent.DOM_DELTA_PIXEL) {
       delta /= ol.has.DEVICE_PIXEL_RATIO;
     }
     if (wheelEvent.deltaMode === WheelEvent.DOM_DELTA_LINE) {
@@ -163,9 +161,9 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   }
 
   if (!this.mode_ || now - this.startTime_ > this.trackpadEventGap_) {
-    this.mode_ = Math.abs(delta) < 4 ?
-        ol.interaction.MouseWheelZoom.Mode_.TRACKPAD :
-        ol.interaction.MouseWheelZoom.Mode_.WHEEL;
+    this.mode_ = Math.abs(delta) < 4
+      ? ol.interaction.MouseWheelZoom.Mode_.TRACKPAD
+      : ol.interaction.MouseWheelZoom.Mode_.WHEEL;
   }
 
   if (this.mode_ === ol.interaction.MouseWheelZoom.Mode_.TRACKPAD) {
@@ -175,16 +173,26 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
     } else {
       view.setHint(ol.ViewHint.INTERACTING, 1);
     }
-    this.trackpadTimeoutId_ = setTimeout(this.decrementInteractingHint_.bind(this), this.trackpadEventGap_);
-    var resolution = view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
+    this.trackpadTimeoutId_ = setTimeout(
+      this.decrementInteractingHint_.bind(this),
+      this.trackpadEventGap_
+    );
+    var resolution =
+      view.getResolution() * Math.pow(2, delta / this.trackpadDeltaPerZoom_);
     var minResolution = view.getMinResolution();
     var maxResolution = view.getMaxResolution();
     var rebound = 0;
     if (resolution < minResolution) {
-      resolution = Math.max(resolution, minResolution / this.trackpadZoomBuffer_);
+      resolution = Math.max(
+        resolution,
+        minResolution / this.trackpadZoomBuffer_
+      );
       rebound = 1;
     } else if (resolution > maxResolution) {
-      resolution = Math.min(resolution, maxResolution * this.trackpadZoomBuffer_);
+      resolution = Math.min(
+        resolution,
+        maxResolution * this.trackpadZoomBuffer_
+      );
       rebound = -1;
     }
     if (this.lastAnchor_) {
@@ -231,7 +239,6 @@ ol.interaction.MouseWheelZoom.handleEvent = function(mapBrowserEvent) {
   return false;
 };
 
-
 /**
  * @private
  */
@@ -240,7 +247,6 @@ ol.interaction.MouseWheelZoom.prototype.decrementInteractingHint_ = function() {
   var view = this.getMap().getView();
   view.setHint(ol.ViewHint.INTERACTING, -1);
 };
-
 
 /**
  * @private
@@ -253,15 +259,18 @@ ol.interaction.MouseWheelZoom.prototype.handleWheelZoom_ = function(map) {
   }
   var maxDelta = ol.MOUSEWHEELZOOM_MAXDELTA;
   var delta = ol.math.clamp(this.delta_, -maxDelta, maxDelta);
-  ol.interaction.Interaction.zoomByDelta(view, -delta, this.lastAnchor_,
-      this.duration_);
+  ol.interaction.Interaction.zoomByDelta(
+    view,
+    -delta,
+    this.lastAnchor_,
+    this.duration_
+  );
   this.mode_ = undefined;
   this.delta_ = 0;
   this.lastAnchor_ = null;
   this.startTime_ = undefined;
   this.timeoutId_ = undefined;
 };
-
 
 /**
  * Enable or disable using the mouse's location as an anchor when zooming
@@ -275,7 +284,6 @@ ol.interaction.MouseWheelZoom.prototype.setMouseAnchor = function(useAnchor) {
     this.lastAnchor_ = null;
   }
 };
-
 
 /**
  * @enum {string}

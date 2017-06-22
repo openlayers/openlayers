@@ -4,9 +4,7 @@ goog.require('ol.featureloader');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.source.Vector');
 
-
 describe('ol.featureloader', function() {
-
   describe('ol.featureloader.xhr', function() {
     var loader;
     var source;
@@ -58,7 +56,5 @@ describe('ol.featureloader', function() {
         loader.call(source, [], 1, 'EPSG:3857');
       });
     });
-
   });
-
 });

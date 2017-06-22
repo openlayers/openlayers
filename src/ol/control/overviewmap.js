@@ -18,7 +18,6 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 
-
 /**
  * Create a new control with a map acting as an overview map for an other
  * defined map.
@@ -28,7 +27,6 @@ goog.require('ol.extent');
  * @api
  */
 ol.control.OverviewMap = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   /**
@@ -41,18 +39,25 @@ ol.control.OverviewMap = function(opt_options) {
    * @private
    * @type {boolean}
    */
-  this.collapsible_ = options.collapsible !== undefined ?
-      options.collapsible : true;
+  this.collapsible_ = options.collapsible !== undefined
+    ? options.collapsible
+    : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;
   }
 
-  var className = options.className !== undefined ? options.className : 'ol-overviewmap';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-overviewmap';
 
-  var tipLabel = options.tipLabel !== undefined ? options.tipLabel : 'Overview map';
+  var tipLabel = options.tipLabel !== undefined
+    ? options.tipLabel
+    : 'Overview map';
 
-  var collapseLabel = options.collapseLabel !== undefined ? options.collapseLabel : '\u00AB';
+  var collapseLabel = options.collapseLabel !== undefined
+    ? options.collapseLabel
+    : '\u00AB';
 
   if (typeof collapseLabel === 'string') {
     /**
@@ -67,7 +72,6 @@ ol.control.OverviewMap = function(opt_options) {
 
   var label = options.label !== undefined ? options.label : '\u00BB';
 
-
   if (typeof label === 'string') {
     /**
      * @private
@@ -79,15 +83,15 @@ ol.control.OverviewMap = function(opt_options) {
     this.label_ = label;
   }
 
-  var activeLabel = (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_;
+  var activeLabel = this.collapsible_ && !this.collapsed_
+    ? this.collapseLabel_
+    : this.label_;
   var button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;
   button.appendChild(activeLabel);
 
-  ol.events.listen(button, ol.events.EventType.CLICK,
-      this.handleClick_, this);
+  ol.events.listen(button, ol.events.EventType.CLICK, this.handleClick_, this);
 
   /**
    * @type {Element}
@@ -109,12 +113,14 @@ ol.control.OverviewMap = function(opt_options) {
 
   if (options.layers) {
     options.layers.forEach(
-        /**
+      /**
        * @param {ol.layer.Layer} layer Layer.
        */
-        function(layer) {
-          ovmap.addLayer(layer);
-        }, this);
+      function(layer) {
+        ovmap.addLayer(layer);
+      },
+      this
+    );
   }
 
   var box = document.createElement('DIV');
@@ -132,10 +138,14 @@ ol.control.OverviewMap = function(opt_options) {
   });
   this.ovmap_.addOverlay(this.boxOverlay_);
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL +
-      (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
-      (this.collapsible_ ? '' : ' ol-uncollapsible');
+  var cssClasses =
+    className +
+    ' ' +
+    ol.css.CLASS_UNSELECTABLE +
+    ' ' +
+    ol.css.CLASS_CONTROL +
+    (this.collapsed_ && this.collapsible_ ? ' ol-collapsed' : '') +
+    (this.collapsible_ ? '' : ' ol-uncollapsible');
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(this.ovmapDiv_);
@@ -160,13 +170,15 @@ ol.control.OverviewMap = function(opt_options) {
 
   var computeDesiredMousePosition = function(mousePosition) {
     return {
-      clientX: mousePosition.clientX - (overlayBox.offsetWidth / 2),
-      clientY: mousePosition.clientY + (overlayBox.offsetHeight / 2)
+      clientX: mousePosition.clientX - overlayBox.offsetWidth / 2,
+      clientY: mousePosition.clientY + overlayBox.offsetHeight / 2
     };
   };
 
   var move = function(event) {
-    var coordinates = ovmap.getEventCoordinate(computeDesiredMousePosition(event));
+    var coordinates = ovmap.getEventCoordinate(
+      computeDesiredMousePosition(event)
+    );
 
     overlay.setPosition(coordinates);
   };
@@ -189,7 +201,6 @@ ol.control.OverviewMap = function(opt_options) {
 };
 ol.inherits(ol.control.OverviewMap, ol.control.Control);
 
-
 /**
  * @inheritDoc
  * @api
@@ -210,9 +221,14 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
 
   if (map) {
     this.ovmap_.setTarget(this.ovmapDiv_);
-    this.listenerKeys.push(ol.events.listen(
-        map, ol.ObjectEventType.PROPERTYCHANGE,
-        this.handleMapPropertyChange_, this));
+    this.listenerKeys.push(
+      ol.events.listen(
+        map,
+        ol.ObjectEventType.PROPERTYCHANGE,
+        this.handleMapPropertyChange_,
+        this
+      )
+    );
 
     // TODO: to really support map switching, this would need to be reworked
     if (this.ovmap_.getLayers().getLength() === 0) {
@@ -230,7 +246,6 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
   }
 };
 
-
 /**
  * Handle map property changes.  This only deals with changes to the map's view.
  * @param {ol.Object.Event} event The propertychange event.
@@ -238,7 +253,7 @@ ol.control.OverviewMap.prototype.setMap = function(map) {
  */
 ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
   if (event.key === ol.MapProperty.VIEW) {
-    var oldView = /** @type {ol.View} */ (event.oldValue);
+    var oldView /** @type {ol.View} */ = event.oldValue;
     if (oldView) {
       this.unbindView_(oldView);
     }
@@ -247,18 +262,19 @@ ol.control.OverviewMap.prototype.handleMapPropertyChange_ = function(event) {
   }
 };
 
-
 /**
  * Register listeners for view property changes.
  * @param {ol.View} view The view.
  * @private
  */
 ol.control.OverviewMap.prototype.bindView_ = function(view) {
-  ol.events.listen(view,
-      ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+  ol.events.listen(
+    view,
+    ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
+    this.handleRotationChanged_,
+    this
+  );
 };
-
 
 /**
  * Unregister listeners for view property changes.
@@ -266,11 +282,13 @@ ol.control.OverviewMap.prototype.bindView_ = function(view) {
  * @private
  */
 ol.control.OverviewMap.prototype.unbindView_ = function(view) {
-  ol.events.unlisten(view,
-      ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
-      this.handleRotationChanged_, this);
+  ol.events.unlisten(
+    view,
+    ol.Object.getChangeEventType(ol.ViewProperty.ROTATION),
+    this.handleRotationChanged_,
+    this
+  );
 };
-
 
 /**
  * Handle rotation changes to the main map.
@@ -282,7 +300,6 @@ ol.control.OverviewMap.prototype.handleRotationChanged_ = function() {
   this.ovmap_.getView().setRotation(this.getMap().getView().getRotation());
 };
 
-
 /**
  * Update the overview map element.
  * @param {ol.MapEvent} mapEvent Map event.
@@ -293,7 +310,6 @@ ol.control.OverviewMap.render = function(mapEvent) {
   this.validateExtent_();
   this.updateBox_();
 };
-
 
 /**
  * Reset the overview map extent if the box size (width or
@@ -314,20 +330,20 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
     return;
   }
 
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  var mapSize /** @type {ol.Size} */ = map.getSize();
 
   var view = map.getView();
   var extent = view.calculateExtent(mapSize);
 
-  var ovmapSize = /** @type {ol.Size} */ (ovmap.getSize());
+  var ovmapSize /** @type {ol.Size} */ = ovmap.getSize();
 
   var ovview = ovmap.getView();
   var ovextent = ovview.calculateExtent(ovmapSize);
 
-  var topLeftPixel =
-      ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
-  var bottomRightPixel =
-      ovmap.getPixelFromCoordinate(ol.extent.getBottomRight(extent));
+  var topLeftPixel = ovmap.getPixelFromCoordinate(ol.extent.getTopLeft(extent));
+  var bottomRightPixel = ovmap.getPixelFromCoordinate(
+    ol.extent.getBottomRight(extent)
+  );
 
   var boxWidth = Math.abs(topLeftPixel[0] - bottomRightPixel[0]);
   var boxHeight = Math.abs(topLeftPixel[1] - bottomRightPixel[1]);
@@ -335,16 +351,17 @@ ol.control.OverviewMap.prototype.validateExtent_ = function() {
   var ovmapWidth = ovmapSize[0];
   var ovmapHeight = ovmapSize[1];
 
-  if (boxWidth < ovmapWidth * ol.OVERVIEWMAP_MIN_RATIO ||
-      boxHeight < ovmapHeight * ol.OVERVIEWMAP_MIN_RATIO ||
-      boxWidth > ovmapWidth * ol.OVERVIEWMAP_MAX_RATIO ||
-      boxHeight > ovmapHeight * ol.OVERVIEWMAP_MAX_RATIO) {
+  if (
+    boxWidth < ovmapWidth * ol.OVERVIEWMAP_MIN_RATIO ||
+    boxHeight < ovmapHeight * ol.OVERVIEWMAP_MIN_RATIO ||
+    boxWidth > ovmapWidth * ol.OVERVIEWMAP_MAX_RATIO ||
+    boxHeight > ovmapHeight * ol.OVERVIEWMAP_MAX_RATIO
+  ) {
     this.resetExtent_();
   } else if (!ol.extent.containsExtent(ovextent, extent)) {
     this.recenter_();
   }
 };
-
 
 /**
  * Reset the overview map extent to half calculated min and max ratio times
@@ -359,7 +376,7 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   var map = this.getMap();
   var ovmap = this.ovmap_;
 
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  var mapSize /** @type {ol.Size} */ = map.getSize();
 
   var view = map.getView();
   var extent = view.calculateExtent(mapSize);
@@ -369,13 +386,12 @@ ol.control.OverviewMap.prototype.resetExtent_ = function() {
   // get how many times the current map overview could hold different
   // box sizes using the min and max ratio, pick the step in the middle used
   // to calculate the extent from the main map to set it to the overview map,
-  var steps = Math.log(
-      ol.OVERVIEWMAP_MAX_RATIO / ol.OVERVIEWMAP_MIN_RATIO) / Math.LN2;
+  var steps =
+    Math.log(ol.OVERVIEWMAP_MAX_RATIO / ol.OVERVIEWMAP_MIN_RATIO) / Math.LN2;
   var ratio = 1 / (Math.pow(2, steps / 2) * ol.OVERVIEWMAP_MIN_RATIO);
   ol.extent.scaleFromCenter(extent, ratio);
   ovview.fit(extent);
 };
-
 
 /**
  * Set the center of the overview map to the map center without changing its
@@ -393,7 +409,6 @@ ol.control.OverviewMap.prototype.recenter_ = function() {
   ovview.setCenter(view.getCenter());
 };
 
-
 /**
  * Update the box using the main map extent
  * @private
@@ -406,7 +421,7 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
     return;
   }
 
-  var mapSize = /** @type {ol.Size} */ (map.getSize());
+  var mapSize /** @type {ol.Size} */ = map.getSize();
 
   var view = map.getView();
 
@@ -427,11 +442,12 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
 
   // set box size calculated from map extent size and overview map resolution
   if (box) {
-    box.style.width = Math.abs((bottomLeft[0] - topRight[0]) / ovresolution) + 'px';
-    box.style.height = Math.abs((topRight[1] - bottomLeft[1]) / ovresolution) + 'px';
+    box.style.width =
+      Math.abs((bottomLeft[0] - topRight[0]) / ovresolution) + 'px';
+    box.style.height =
+      Math.abs((topRight[1] - bottomLeft[1]) / ovresolution) + 'px';
   }
 };
-
 
 /**
  * @param {number} rotation Target rotation.
@@ -440,7 +456,9 @@ ol.control.OverviewMap.prototype.updateBox_ = function() {
  * @private
  */
 ol.control.OverviewMap.prototype.calculateCoordinateRotate_ = function(
-    rotation, coordinate) {
+  rotation,
+  coordinate
+) {
   var coordinateRotate;
 
   var map = this.getMap();
@@ -459,7 +477,6 @@ ol.control.OverviewMap.prototype.calculateCoordinateRotate_ = function(
   return coordinateRotate;
 };
 
-
 /**
  * @param {Event} event The event to handle
  * @private
@@ -468,7 +485,6 @@ ol.control.OverviewMap.prototype.handleClick_ = function(event) {
   event.preventDefault();
   this.handleToggle_();
 };
-
 
 /**
  * @private
@@ -488,14 +504,16 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
   if (!this.collapsed_ && !ovmap.isRendered()) {
     ovmap.updateSize();
     this.resetExtent_();
-    ol.events.listenOnce(ovmap, ol.MapEventType.POSTRENDER,
-        function(event) {
-          this.updateBox_();
-        },
-        this);
+    ol.events.listenOnce(
+      ovmap,
+      ol.MapEventType.POSTRENDER,
+      function(event) {
+        this.updateBox_();
+      },
+      this
+    );
   }
 };
-
 
 /**
  * Return `true` if the overview map is collapsible, `false` otherwise.
@@ -505,7 +523,6 @@ ol.control.OverviewMap.prototype.handleToggle_ = function() {
 ol.control.OverviewMap.prototype.getCollapsible = function() {
   return this.collapsible_;
 };
-
 
 /**
  * Set whether the overview map should be collapsible.
@@ -523,7 +540,6 @@ ol.control.OverviewMap.prototype.setCollapsible = function(collapsible) {
   }
 };
 
-
 /**
  * Collapse or expand the overview map according to the passed parameter. Will
  * not do anything if the overview map isn't collapsible or if the current
@@ -538,7 +554,6 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
   this.handleToggle_();
 };
 
-
 /**
  * Determine if the overview map is collapsed.
  * @return {boolean} The overview map is collapsed.
@@ -547,7 +562,6 @@ ol.control.OverviewMap.prototype.setCollapsed = function(collapsed) {
 ol.control.OverviewMap.prototype.getCollapsed = function() {
   return this.collapsed_;
 };
-
 
 /**
  * Return the overview map.

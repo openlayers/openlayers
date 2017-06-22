@@ -5,7 +5,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.events.condition');
 goog.require('ol.interaction.Interaction');
 
-
 /**
  * @classdesc
  * Allows the user to zoom the map using keyboard + and -.
@@ -24,7 +23,6 @@ goog.require('ol.interaction.Interaction');
  * @api
  */
 ol.interaction.KeyboardZoom = function(opt_options) {
-
   ol.interaction.Interaction.call(this, {
     handleEvent: ol.interaction.KeyboardZoom.handleEvent
   });
@@ -35,8 +33,9 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    * @private
    * @type {ol.EventsConditionType}
    */
-  this.condition_ = options.condition ? options.condition :
-          ol.events.condition.targetNotEditable;
+  this.condition_ = options.condition
+    ? options.condition
+    : ol.events.condition.targetNotEditable;
 
   /**
    * @private
@@ -49,10 +48,8 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    * @type {number}
    */
   this.duration_ = options.duration !== undefined ? options.duration : 100;
-
 };
 ol.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
-
 
 /**
  * Handles the {@link ol.MapBrowserEvent map browser event} if it was a
@@ -65,17 +62,25 @@ ol.inherits(ol.interaction.KeyboardZoom, ol.interaction.Interaction);
  */
 ol.interaction.KeyboardZoom.handleEvent = function(mapBrowserEvent) {
   var stopEvent = false;
-  if (mapBrowserEvent.type == ol.events.EventType.KEYDOWN ||
-      mapBrowserEvent.type == ol.events.EventType.KEYPRESS) {
+  if (
+    mapBrowserEvent.type == ol.events.EventType.KEYDOWN ||
+    mapBrowserEvent.type == ol.events.EventType.KEYPRESS
+  ) {
     var keyEvent = mapBrowserEvent.originalEvent;
     var charCode = keyEvent.charCode;
-    if (this.condition_(mapBrowserEvent) &&
-        (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))) {
+    if (
+      this.condition_(mapBrowserEvent) &&
+      (charCode == '+'.charCodeAt(0) || charCode == '-'.charCodeAt(0))
+    ) {
       var map = mapBrowserEvent.map;
-      var delta = (charCode == '+'.charCodeAt(0)) ? this.delta_ : -this.delta_;
+      var delta = charCode == '+'.charCodeAt(0) ? this.delta_ : -this.delta_;
       var view = map.getView();
       ol.interaction.Interaction.zoomByDelta(
-          view, delta, undefined, this.duration_);
+        view,
+        delta,
+        undefined,
+        this.duration_
+      );
       mapBrowserEvent.preventDefault();
       stopEvent = true;
     }

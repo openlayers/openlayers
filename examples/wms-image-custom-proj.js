@@ -7,7 +7,6 @@ goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.source.ImageWMS');
 
-
 // Transparent Proj4js support:
 //
 // EPSG:21781 is known to Proj4js because its definition was loaded in the html.
@@ -35,13 +34,14 @@ var layers = [
     source: new ol.source.ImageWMS({
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
-      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+      attributions:
+        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
       params: {
-        'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
-        'FORMAT': 'image/jpeg'
+        LAYERS: 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
+        FORMAT: 'image/jpeg'
       },
-      serverType: /** @type {ol.source.WMSServerType} */ ('mapserver')
+      serverType /** @type {ol.source.WMSServerType} */: 'mapserver'
     })
   }),
   new ol.layer.Image({
@@ -49,18 +49,17 @@ var layers = [
     source: new ol.source.ImageWMS({
       url: 'https://wms.geo.admin.ch/',
       crossOrigin: 'anonymous',
-      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+      attributions:
+        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
-      serverType: /** @type {ol.source.WMSServerType} */ ('mapserver')
+      params: {LAYERS: 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      serverType /** @type {ol.source.WMSServerType} */: 'mapserver'
     })
   })
 ];
 
 var map = new ol.Map({
-  controls: ol.control.defaults().extend([
-    new ol.control.ScaleLine()
-  ]),
+  controls: ol.control.defaults().extend([new ol.control.ScaleLine()]),
   layers: layers,
   target: 'map',
   view: new ol.View({

@@ -16,7 +16,6 @@ goog.require('ol.renderer.Map');
 goog.require('ol.renderer.Type');
 goog.require('ol.source.State');
 
-
 /**
  * @constructor
  * @extends {ol.renderer.Map}
@@ -24,7 +23,6 @@ goog.require('ol.source.State');
  * @param {ol.Map} map Map.
  */
 ol.renderer.canvas.Map = function(container, map) {
-
   ol.renderer.Map.call(this, container, map);
 
   /**
@@ -56,17 +54,18 @@ ol.renderer.canvas.Map = function(container, map) {
    * @type {ol.Transform}
    */
   this.transform_ = ol.transform.create();
-
 };
 ol.inherits(ol.renderer.canvas.Map, ol.renderer.Map);
-
 
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {olx.FrameState} frameState Frame state.
  * @private
  */
-ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameState) {
+ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(
+  type,
+  frameState
+) {
   var map = this.getMap();
   var context = this.context_;
   if (map.hasListener(type)) {
@@ -77,14 +76,23 @@ ol.renderer.canvas.Map.prototype.dispatchComposeEvent_ = function(type, frameSta
 
     var transform = this.getTransform(frameState);
 
-    var vectorContext = new ol.render.canvas.Immediate(context, pixelRatio,
-        extent, transform, rotation);
-    var composeEvent = new ol.render.Event(type, vectorContext,
-        frameState, context, null);
+    var vectorContext = new ol.render.canvas.Immediate(
+      context,
+      pixelRatio,
+      extent,
+      transform,
+      rotation
+    );
+    var composeEvent = new ol.render.Event(
+      type,
+      vectorContext,
+      frameState,
+      context,
+      null
+    );
     map.dispatchEvent(composeEvent);
   }
 };
-
 
 /**
  * @param {olx.FrameState} frameState Frame state.
@@ -100,9 +108,17 @@ ol.renderer.canvas.Map.prototype.getTransform = function(frameState) {
   var angle = -viewState.rotation;
   var dx2 = -viewState.center[0];
   var dy2 = -viewState.center[1];
-  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
+  return ol.transform.compose(
+    this.transform_,
+    dx1,
+    dy1,
+    sx,
+    sy,
+    angle,
+    dx2,
+    dy2
+  );
 };
-
 
 /**
  * @inheritDoc
@@ -111,12 +127,10 @@ ol.renderer.canvas.Map.prototype.getType = function() {
   return ol.renderer.Type.CANVAS;
 };
 
-
 /**
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
-
   if (!frameState) {
     if (this.renderedVisible_) {
       this.canvas_.style.display = 'none';
@@ -155,9 +169,13 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   for (i = 0, ii = layerStatesArray.length; i < ii; ++i) {
     layerState = layerStatesArray[i];
     layer = layerState.layer;
-    layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
-    if (!ol.layer.Layer.visibleAtResolution(layerState, viewResolution) ||
-        layerState.sourceState != ol.source.State.READY) {
+    layerRenderer /** @type {ol.renderer.canvas.Layer} */ = this.getLayerRenderer(
+      layer
+    );
+    if (
+      !ol.layer.Layer.visibleAtResolution(layerState, viewResolution) ||
+      layerState.sourceState != ol.source.State.READY
+    ) {
       continue;
     }
     if (layerRenderer.prepareFrame(frameState, layerState)) {
@@ -169,8 +187,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
     context.restore();
   }
 
-  this.dispatchComposeEvent_(
-      ol.render.EventType.POSTCOMPOSE, frameState);
+  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, frameState);
 
   if (!this.renderedVisible_) {
     this.canvas_.style.display = '';
@@ -181,12 +198,17 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
   this.scheduleExpireIconCache(frameState);
 };
 
-
 /**
  * @inheritDoc
  */
-ol.renderer.canvas.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-        layerFilter, thisArg2) {
+ol.renderer.canvas.Map.prototype.forEachLayerAtPixel = function(
+  pixel,
+  frameState,
+  callback,
+  thisArg,
+  layerFilter,
+  thisArg2
+) {
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;
@@ -195,17 +217,27 @@ ol.renderer.canvas.Map.prototype.forEachLayerAtPixel = function(pixel, frameStat
   var numLayers = layerStates.length;
 
   var coordinate = ol.transform.apply(
-      frameState.pixelToCoordinateTransform, pixel.slice());
+    frameState.pixelToCoordinateTransform,
+    pixel.slice()
+  );
 
   var i;
   for (i = numLayers - 1; i >= 0; --i) {
     var layerState = layerStates[i];
     var layer = layerState.layer;
-    if (ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
-        layerFilter.call(thisArg2, layer)) {
-      var layerRenderer = /** @type {ol.renderer.canvas.Layer} */ (this.getLayerRenderer(layer));
+    if (
+      ol.layer.Layer.visibleAtResolution(layerState, viewResolution) &&
+      layerFilter.call(thisArg2, layer)
+    ) {
+      var layerRenderer /** @type {ol.renderer.canvas.Layer} */ = this.getLayerRenderer(
+        layer
+      );
       result = layerRenderer.forEachLayerAtCoordinate(
-          coordinate, frameState, callback, thisArg);
+        coordinate,
+        frameState,
+        callback,
+        thisArg
+      );
       if (result) {
         return result;
       }

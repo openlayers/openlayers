@@ -11,9 +11,7 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 describe('ol.render', function() {
-
   var context;
 
   beforeEach(function() {
@@ -21,7 +19,6 @@ describe('ol.render', function() {
   });
 
   describe('ol.render.toContext()', function() {
-
     it('creates a vector context from a Canvas 2d context', function() {
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
       expect(vectorContext).to.be.a(ol.render.VectorContext);
@@ -43,9 +40,12 @@ describe('ol.render', function() {
       vectorContext.setStyle(style);
       vectorContext.drawGeometry(new ol.geom.Point([50, 50]));
 
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
-
+      resembleCanvas(
+        context.canvas,
+        'spec/ol/expected/render-point.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('can be used to render a linestring geometry', function(done) {
@@ -59,13 +59,22 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.LineString([
-        [10, 60], [30, 40], [50, 60], [70, 40], [90, 60]
-      ]));
+      vectorContext.drawGeometry(
+        new ol.geom.LineString([
+          [10, 60],
+          [30, 40],
+          [50, 60],
+          [70, 40],
+          [90, 60]
+        ])
+      );
 
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
-
+      resembleCanvas(
+        context.canvas,
+        'spec/ol/expected/render-linestring.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('respects lineCap for linestring', function(done) {
@@ -80,13 +89,22 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.LineString([
-        [10, 60], [30, 40], [50, 60], [70, 40], [90, 60]
-      ]));
+      vectorContext.drawGeometry(
+        new ol.geom.LineString([
+          [10, 60],
+          [30, 40],
+          [50, 60],
+          [70, 40],
+          [90, 60]
+        ])
+      );
 
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
-
+      resembleCanvas(
+        context.canvas,
+        'spec/ol/expected/render-linestring-butt.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('respects lineJoin for linestring', function(done) {
@@ -101,13 +119,22 @@ describe('ol.render', function() {
       });
 
       vectorContext.setStyle(style);
-      vectorContext.drawGeometry(new ol.geom.LineString([
-        [10, 60], [30, 40], [50, 60], [70, 40], [90, 60]
-      ]));
+      vectorContext.drawGeometry(
+        new ol.geom.LineString([
+          [10, 60],
+          [30, 40],
+          [50, 60],
+          [70, 40],
+          [90, 60]
+        ])
+      );
 
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
-
+      resembleCanvas(
+        context.canvas,
+        'spec/ol/expected/render-linestring-bevel.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
 
     it('can be used to render a polygon geometry', function(done) {
@@ -125,16 +152,19 @@ describe('ol.render', function() {
 
       vectorContext.setStyle(style);
 
-      vectorContext.drawGeometry(new ol.geom.Polygon([
-        [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
-        [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
-      ]));
+      vectorContext.drawGeometry(
+        new ol.geom.Polygon([
+          [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
+          [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
+        ])
+      );
 
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
-
+      resembleCanvas(
+        context.canvas,
+        'spec/ol/expected/render-polygon.png',
+        IMAGE_TOLERANCE,
+        done
+      );
     });
-
   });
-
 });

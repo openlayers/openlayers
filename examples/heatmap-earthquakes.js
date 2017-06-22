@@ -44,7 +44,6 @@ var map = new ol.Map({
   })
 });
 
-
 blur.addEventListener('input', function() {
   vector.setBlur(parseInt(blur.value, 10));
 });

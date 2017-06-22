@@ -10,7 +10,6 @@ goog.require('ol.render.canvas.Immediate');
 goog.require('ol.renderer.Layer');
 goog.require('ol.transform');
 
-
 /**
  * @constructor
  * @abstract
@@ -18,7 +17,6 @@ goog.require('ol.transform');
  * @param {ol.layer.Layer} layer Layer.
  */
 ol.renderer.canvas.Layer = function(layer) {
-
   ol.renderer.Layer.call(this, layer);
 
   /**
@@ -32,10 +30,8 @@ ol.renderer.canvas.Layer = function(layer) {
    * @type {ol.Transform}
    */
   this.transform_ = ol.transform.create();
-
 };
 ol.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
-
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -43,15 +39,19 @@ ol.inherits(ol.renderer.canvas.Layer, ol.renderer.Layer);
  * @param {ol.Extent} extent Clip extent.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) {
+ol.renderer.canvas.Layer.prototype.clip = function(
+  context,
+  frameState,
+  extent
+) {
   var pixelRatio = frameState.pixelRatio;
   var width = frameState.size[0] * pixelRatio;
   var height = frameState.size[1] * pixelRatio;
   var rotation = frameState.viewState.rotation;
-  var topLeft = ol.extent.getTopLeft(/** @type {ol.Extent} */ (extent));
-  var topRight = ol.extent.getTopRight(/** @type {ol.Extent} */ (extent));
-  var bottomRight = ol.extent.getBottomRight(/** @type {ol.Extent} */ (extent));
-  var bottomLeft = ol.extent.getBottomLeft(/** @type {ol.Extent} */ (extent));
+  var topLeft = ol.extent.getTopLeft /** @type {ol.Extent} */(extent);
+  var topRight = ol.extent.getTopRight /** @type {ol.Extent} */(extent);
+  var bottomRight = ol.extent.getBottomRight /** @type {ol.Extent} */(extent);
+  var bottomLeft = ol.extent.getBottomLeft /** @type {ol.Extent} */(extent);
 
   ol.transform.apply(frameState.coordinateToPixelTransform, topLeft);
   ol.transform.apply(frameState.coordinateToPixelTransform, topRight);
@@ -69,7 +69,6 @@ ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) 
   ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
 };
 
-
 /**
  * @param {ol.render.EventType} type Event type.
  * @param {CanvasRenderingContext2D} context Context.
@@ -77,25 +76,39 @@ ol.renderer.canvas.Layer.prototype.clip = function(context, frameState, extent) 
  * @param {ol.Transform=} opt_transform Transform.
  * @private
  */
-ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, context, frameState, opt_transform) {
+ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(
+  type,
+  context,
+  frameState,
+  opt_transform
+) {
   var layer = this.getLayer();
   if (layer.hasListener(type)) {
     var width = frameState.size[0] * frameState.pixelRatio;
     var height = frameState.size[1] * frameState.pixelRatio;
     var rotation = frameState.viewState.rotation;
     ol.render.canvas.rotateAtOffset(context, -rotation, width / 2, height / 2);
-    var transform = opt_transform !== undefined ?
-        opt_transform : this.getTransform(frameState, 0);
+    var transform = opt_transform !== undefined
+      ? opt_transform
+      : this.getTransform(frameState, 0);
     var render = new ol.render.canvas.Immediate(
-        context, frameState.pixelRatio, frameState.extent, transform,
-        frameState.viewState.rotation);
-    var composeEvent = new ol.render.Event(type, render, frameState,
-        context, null);
+      context,
+      frameState.pixelRatio,
+      frameState.extent,
+      transform,
+      frameState.viewState.rotation
+    );
+    var composeEvent = new ol.render.Event(
+      type,
+      render,
+      frameState,
+      context,
+      null
+    );
     layer.dispatchEvent(composeEvent);
     ol.render.canvas.rotateAtOffset(context, rotation, width / 2, height / 2);
   }
 };
-
 
 /**
  * @param {ol.Coordinate} coordinate Coordinate.
@@ -106,9 +119,19 @@ ol.renderer.canvas.Layer.prototype.dispatchComposeEvent_ = function(type, contex
  * @return {T|undefined} Callback result.
  * @template S,T,U
  */
-ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinate, frameState, callback, thisArg) {
+ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(
+  coordinate,
+  frameState,
+  callback,
+  thisArg
+) {
   var hasFeature = this.forEachFeatureAtCoordinate(
-      coordinate, frameState, 0, ol.functions.TRUE, this);
+    coordinate,
+    frameState,
+    0,
+    ol.functions.TRUE,
+    this
+  );
 
   if (hasFeature) {
     return callback.call(thisArg, this.getLayer(), null);
@@ -117,7 +140,6 @@ ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinat
   }
 };
 
-
 /**
  * @param {CanvasRenderingContext2D} context Context.
  * @param {olx.FrameState} frameState Frame state.
@@ -125,11 +147,19 @@ ol.renderer.canvas.Layer.prototype.forEachLayerAtCoordinate = function(coordinat
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.postCompose = function(context, frameState, layerState, opt_transform) {
-  this.dispatchComposeEvent_(ol.render.EventType.POSTCOMPOSE, context,
-      frameState, opt_transform);
+ol.renderer.canvas.Layer.prototype.postCompose = function(
+  context,
+  frameState,
+  layerState,
+  opt_transform
+) {
+  this.dispatchComposeEvent_(
+    ol.render.EventType.POSTCOMPOSE,
+    context,
+    frameState,
+    opt_transform
+  );
 };
-
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -137,11 +167,18 @@ ol.renderer.canvas.Layer.prototype.postCompose = function(context, frameState, l
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.preCompose = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(ol.render.EventType.PRECOMPOSE, context,
-      frameState, opt_transform);
+ol.renderer.canvas.Layer.prototype.preCompose = function(
+  context,
+  frameState,
+  opt_transform
+) {
+  this.dispatchComposeEvent_(
+    ol.render.EventType.PRECOMPOSE,
+    context,
+    frameState,
+    opt_transform
+  );
 };
-
 
 /**
  * @param {CanvasRenderingContext2D} context Context.
@@ -149,11 +186,18 @@ ol.renderer.canvas.Layer.prototype.preCompose = function(context, frameState, op
  * @param {ol.Transform=} opt_transform Transform.
  * @protected
  */
-ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frameState, opt_transform) {
-  this.dispatchComposeEvent_(ol.render.EventType.RENDER, context,
-      frameState, opt_transform);
+ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(
+  context,
+  frameState,
+  opt_transform
+) {
+  this.dispatchComposeEvent_(
+    ol.render.EventType.RENDER,
+    context,
+    frameState,
+    opt_transform
+  );
 };
-
 
 /**
  * @param {olx.FrameState} frameState Frame state.
@@ -161,7 +205,10 @@ ol.renderer.canvas.Layer.prototype.dispatchRenderEvent = function(context, frame
  * @protected
  * @return {!ol.Transform} Transform.
  */
-ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) {
+ol.renderer.canvas.Layer.prototype.getTransform = function(
+  frameState,
+  offsetX
+) {
   var viewState = frameState.viewState;
   var pixelRatio = frameState.pixelRatio;
   var dx1 = pixelRatio * frameState.size[0] / 2;
@@ -171,9 +218,17 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) 
   var angle = -viewState.rotation;
   var dx2 = -viewState.center[0] + offsetX;
   var dy2 = -viewState.center[1];
-  return ol.transform.compose(this.transform_, dx1, dy1, sx, sy, angle, dx2, dy2);
+  return ol.transform.compose(
+    this.transform_,
+    dx1,
+    dy1,
+    sx,
+    sy,
+    angle,
+    dx2,
+    dy2
+  );
 };
-
 
 /**
  * @abstract
@@ -181,7 +236,11 @@ ol.renderer.canvas.Layer.prototype.getTransform = function(frameState, offsetX) 
  * @param {ol.LayerState} layerState Layer state.
  * @param {CanvasRenderingContext2D} context Context.
  */
-ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerState, context) {};
+ol.renderer.canvas.Layer.prototype.composeFrame = function(
+  frameState,
+  layerState,
+  context
+) {};
 
 /**
  * @abstract
@@ -189,4 +248,7 @@ ol.renderer.canvas.Layer.prototype.composeFrame = function(frameState, layerStat
  * @param {ol.LayerState} layerState Layer state.
  * @return {boolean} whether composeFrame should be called.
  */
-ol.renderer.canvas.Layer.prototype.prepareFrame = function(frameState, layerState) {};
+ol.renderer.canvas.Layer.prototype.prepareFrame = function(
+  frameState,
+  layerState
+) {};

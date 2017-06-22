@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.IsBetween');
 goog.require('ol');
 goog.require('ol.format.filter.Comparison');
 
-
 /**
  * @classdesc
  * Represents a `<PropertyIsBetween>` comparison operator.
@@ -15,7 +14,11 @@ goog.require('ol.format.filter.Comparison');
  * @extends {ol.format.filter.Comparison}
  * @api
  */
-ol.format.filter.IsBetween = function(propertyName, lowerBoundary, upperBoundary) {
+ol.format.filter.IsBetween = function(
+  propertyName,
+  lowerBoundary,
+  upperBoundary
+) {
   ol.format.filter.Comparison.call(this, 'PropertyIsBetween', propertyName);
 
   /**

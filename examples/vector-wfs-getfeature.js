@@ -10,7 +10,6 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var vectorSource = new ol.source.Vector();
 var vector = new ol.layer.Vector({
   source: vectorSource,
@@ -56,10 +55,12 @@ var featureRequest = new ol.format.WFS().writeGetFeature({
 fetch('https://ahocevar.com/geoserver/wfs', {
   method: 'POST',
   body: new XMLSerializer().serializeToString(featureRequest)
-}).then(function(response) {
-  return response.json();
-}).then(function(json) {
-  var features = new ol.format.GeoJSON().readFeatures(json);
-  vectorSource.addFeatures(features);
-  map.getView().fit(vectorSource.getExtent());
-});
+})
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(json) {
+    var features = new ol.format.GeoJSON().readFeatures(json);
+    vectorSource.addFeatures(features);
+    map.getView().fit(vectorSource.getExtent());
+  });

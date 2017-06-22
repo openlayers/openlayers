@@ -10,7 +10,6 @@ goog.require('ol.extent');
 goog.require('ol.events.EventType');
 goog.require('ol.featureloader');
 
-
 /**
  * @constructor
  * @extends {ol.Tile}
@@ -32,10 +31,22 @@ goog.require('ol.featureloader');
  * @param {function(this: ol.source.VectorTile, ol.events.Event)} handleTileChange
  *     Function to call when a source tile's state changes.
  */
-ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
-    urlTileCoord, tileUrlFunction, sourceTileGrid, tileGrid, sourceTiles,
-    pixelRatio, projection, tileClass, handleTileChange) {
-
+ol.VectorImageTile = function(
+  tileCoord,
+  state,
+  src,
+  format,
+  tileLoadFunction,
+  urlTileCoord,
+  tileUrlFunction,
+  sourceTileGrid,
+  tileGrid,
+  sourceTiles,
+  pixelRatio,
+  projection,
+  tileClass,
+  handleTileChange
+) {
   ol.Tile.call(this, tileCoord, state);
 
   /**
@@ -97,32 +108,50 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
     var extent = tileGrid.getTileCoordExtent(urlTileCoord);
     var resolution = tileGrid.getResolution(tileCoord[0]);
     var sourceZ = sourceTileGrid.getZForResolution(resolution);
-    sourceTileGrid.forEachTileCoord(extent, sourceZ, function(sourceTileCoord) {
-      var sharedExtent = ol.extent.getIntersection(extent,
-          sourceTileGrid.getTileCoordExtent(sourceTileCoord));
-      if (ol.extent.getWidth(sharedExtent) / resolution >= 0.5 &&
-          ol.extent.getHeight(sharedExtent) / resolution >= 0.5) {
-        // only include source tile if overlap is at least 1 pixel
-        var sourceTileKey = sourceTileCoord.toString();
-        var sourceTile = sourceTiles[sourceTileKey];
-        if (!sourceTile) {
-          var tileUrl = tileUrlFunction(sourceTileCoord, pixelRatio, projection);
-          sourceTile = sourceTiles[sourceTileKey] = new tileClass(sourceTileCoord,
+    sourceTileGrid.forEachTileCoord(
+      extent,
+      sourceZ,
+      function(sourceTileCoord) {
+        var sharedExtent = ol.extent.getIntersection(
+          extent,
+          sourceTileGrid.getTileCoordExtent(sourceTileCoord)
+        );
+        if (
+          ol.extent.getWidth(sharedExtent) / resolution >= 0.5 &&
+          ol.extent.getHeight(sharedExtent) / resolution >= 0.5
+        ) {
+          // only include source tile if overlap is at least 1 pixel
+          var sourceTileKey = sourceTileCoord.toString();
+          var sourceTile = sourceTiles[sourceTileKey];
+          if (!sourceTile) {
+            var tileUrl = tileUrlFunction(
+              sourceTileCoord,
+              pixelRatio,
+              projection
+            );
+            sourceTile = sourceTiles[sourceTileKey] = new tileClass(
+              sourceTileCoord,
               tileUrl == undefined ? ol.TileState.EMPTY : ol.TileState.IDLE,
               tileUrl == undefined ? '' : tileUrl,
-              format, tileLoadFunction);
-          this.sourceTileListenerKeys_.push(
-              ol.events.listen(sourceTile, ol.events.EventType.CHANGE, handleTileChange));
+              format,
+              tileLoadFunction
+            );
+            this.sourceTileListenerKeys_.push(
+              ol.events.listen(
+                sourceTile,
+                ol.events.EventType.CHANGE,
+                handleTileChange
+              )
+            );
+          }
+          sourceTile.consumers++;
+          this.tileKeys.push(sourceTileKey);
         }
-        sourceTile.consumers++;
-        this.tileKeys.push(sourceTileKey);
-      }
-    }.bind(this));
+      }.bind(this)
+    );
   }
-
 };
 ol.inherits(ol.VectorImageTile, ol.Tile);
-
 
 /**
  * @inheritDoc
@@ -153,7 +182,6 @@ ol.VectorImageTile.prototype.disposeInternal = function() {
   ol.Tile.prototype.disposeInternal.call(this);
 };
 
-
 /**
  * @return {CanvasRenderingContext2D} The rendering context.
  */
@@ -164,16 +192,15 @@ ol.VectorImageTile.prototype.getContext = function() {
   return this.context_;
 };
 
-
 /**
  * Get the Canvas for this tile.
  * @return {HTMLCanvasElement} Canvas.
  */
 ol.VectorImageTile.prototype.getImage = function() {
-  return this.replayState_.renderedTileRevision == -1 ?
-      null : this.context_.canvas;
+  return this.replayState_.renderedTileRevision == -1
+    ? null
+    : this.context_.canvas;
 };
-
 
 /**
  * @return {ol.TileReplayState} The replay state.
@@ -182,14 +209,12 @@ ol.VectorImageTile.prototype.getReplayState = function() {
   return this.replayState_;
 };
 
-
 /**
  * @inheritDoc
  */
 ol.VectorImageTile.prototype.getKey = function() {
   return this.tileKeys.join('/') + '/' + this.src_;
 };
-
 
 /**
  * @param {string} tileKey Key (tileCoord) of the source tile.
@@ -198,7 +223,6 @@ ol.VectorImageTile.prototype.getKey = function() {
 ol.VectorImageTile.prototype.getTile = function(tileKey) {
   return this.sourceTiles_[tileKey];
 };
-
 
 /**
  * @inheritDoc
@@ -210,48 +234,60 @@ ol.VectorImageTile.prototype.load = function() {
     this.setState(ol.TileState.LOADING);
   }
   if (this.state == ol.TileState.LOADING) {
-    this.tileKeys.forEach(function(sourceTileKey) {
-      var sourceTile = this.getTile(sourceTileKey);
-      if (sourceTile.state == ol.TileState.IDLE) {
-        sourceTile.setLoader(this.loader_);
-        sourceTile.load();
-      } else if (sourceTile.state == ol.TileState.ERROR) {
-        errors = true;
-      } else if (sourceTile.state == ol.TileState.EMPTY) {
-        ol.array.remove(this.tileKeys, sourceTileKey);
-      }
-      if (sourceTile.state == ol.TileState.LOADING) {
-        var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function(e) {
-          var state = sourceTile.getState();
-          if (state == ol.TileState.LOADED ||
-              state == ol.TileState.ERROR) {
-            --leftToLoad;
-            ol.events.unlistenByKey(key);
-            ol.array.remove(this.loadListenerKeys_, key);
-            if (state == ol.TileState.ERROR) {
-              ol.array.remove(this.tileKeys, sourceTileKey);
-              errors = true;
-            }
-            if (leftToLoad == 0) {
-              this.setState(this.tileKeys.length > 0 ?
-                  ol.TileState.LOADED : ol.TileState.ERROR);
-            }
-          }
-        }.bind(this));
-        this.loadListenerKeys_.push(key);
-        ++leftToLoad;
-      }
-    }.bind(this));
+    this.tileKeys.forEach(
+      function(sourceTileKey) {
+        var sourceTile = this.getTile(sourceTileKey);
+        if (sourceTile.state == ol.TileState.IDLE) {
+          sourceTile.setLoader(this.loader_);
+          sourceTile.load();
+        } else if (sourceTile.state == ol.TileState.ERROR) {
+          errors = true;
+        } else if (sourceTile.state == ol.TileState.EMPTY) {
+          ol.array.remove(this.tileKeys, sourceTileKey);
+        }
+        if (sourceTile.state == ol.TileState.LOADING) {
+          var key = ol.events.listen(
+            sourceTile,
+            ol.events.EventType.CHANGE,
+            function(e) {
+              var state = sourceTile.getState();
+              if (state == ol.TileState.LOADED || state == ol.TileState.ERROR) {
+                --leftToLoad;
+                ol.events.unlistenByKey(key);
+                ol.array.remove(this.loadListenerKeys_, key);
+                if (state == ol.TileState.ERROR) {
+                  ol.array.remove(this.tileKeys, sourceTileKey);
+                  errors = true;
+                }
+                if (leftToLoad == 0) {
+                  this.setState(
+                    this.tileKeys.length > 0
+                      ? ol.TileState.LOADED
+                      : ol.TileState.ERROR
+                  );
+                }
+              }
+            }.bind(this)
+          );
+          this.loadListenerKeys_.push(key);
+          ++leftToLoad;
+        }
+      }.bind(this)
+    );
   }
   if (leftToLoad == 0) {
-    setTimeout(function() {
-      this.setState(this.tileKeys.length > 0 ?
-          ol.TileState.LOADED :
-          (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
-    }.bind(this), 0);
+    setTimeout(
+      function() {
+        this.setState(
+          this.tileKeys.length > 0
+            ? ol.TileState.LOADED
+            : errors ? ol.TileState.ERROR : ol.TileState.EMPTY
+        );
+      }.bind(this),
+      0
+    );
   }
 };
-
 
 /**
  * Sets the loader for a tile.
@@ -260,7 +296,11 @@ ol.VectorImageTile.prototype.load = function() {
  */
 ol.VectorImageTile.defaultLoadFunction = function(tile, url) {
   var loader = ol.featureloader.loadFeaturesXhr(
-      url, tile.getFormat(), tile.onLoad_.bind(tile), tile.onError_.bind(tile));
+    url,
+    tile.getFormat(),
+    tile.onLoad_.bind(tile),
+    tile.onError_.bind(tile)
+  );
 
   tile.setLoader(loader);
 };

@@ -6,26 +6,27 @@ goog.require('ol.proj.Projection');
 goog.require('ol.source.ImageWMS');
 goog.require('ol.source.TileWMS');
 
-
 var layers = [
   new ol.layer.Tile({
     source: new ol.source.TileWMS({
-      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+      attributions:
+        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">Pixelmap 1:1000000 / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
       params: {
-        'LAYERS': 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
-        'FORMAT': 'image/jpeg'
+        LAYERS: 'ch.swisstopo.pixelkarte-farbe-pk1000.noscale',
+        FORMAT: 'image/jpeg'
       },
       url: 'https://wms.geo.admin.ch/'
     })
   }),
   new ol.layer.Image({
     source: new ol.source.ImageWMS({
-      attributions: '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
+      attributions:
+        '© <a href="http://www.geo.admin.ch/internet/geoportal/' +
           'en/home.html">National parks / geo.admin.ch</a>',
       crossOrigin: 'anonymous',
-      params: {'LAYERS': 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
+      params: {LAYERS: 'ch.bafu.schutzgebiete-paerke_nationaler_bedeutung'},
       serverType: 'mapserver',
       url: 'https://wms.geo.admin.ch/'
     })

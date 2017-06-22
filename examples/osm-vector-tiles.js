@@ -9,14 +9,13 @@ goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.tilegrid');
 
-
 var key = 'vector-tiles-5eJz6JX';
 
 var roadStyleCache = {};
 var roadColor = {
-  'major_road': '#776',
-  'minor_road': '#ccb',
-  'highway': '#f39'
+  major_road: '#776',
+  minor_road: '#ccb',
+  highway: '#f39'
 };
 var buildingStyle = new ol.style.Style({
   fill: new ol.style.Fill({
@@ -64,21 +63,28 @@ var map = new ol.Map({
   layers: [
     new ol.layer.VectorTile({
       source: new ol.source.VectorTile({
-        attributions: '&copy; OpenStreetMap contributors, Who’s On First, ' +
+        attributions:
+          '&copy; OpenStreetMap contributors, Who’s On First, ' +
             'Natural Earth, and openstreetmapdata.com',
         format: new ol.format.TopoJSON({
           layerName: 'layer',
           layers: ['water', 'roads', 'buildings']
         }),
         tileGrid: ol.tilegrid.createXYZ({maxZoom: 19}),
-        url: 'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=' + key
+        url:
+          'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=' +
+            key
       }),
       style: function(feature, resolution) {
         switch (feature.get('layer')) {
-          case 'water': return waterStyle;
-          case 'roads': return roadStyle(feature);
-          case 'buildings': return (resolution < 10) ? buildingStyle : null;
-          default: return null;
+          case 'water':
+            return waterStyle;
+          case 'roads':
+            return roadStyle(feature);
+          case 'buildings':
+            return resolution < 10 ? buildingStyle : null;
+          default:
+            return null;
         }
       }
     })

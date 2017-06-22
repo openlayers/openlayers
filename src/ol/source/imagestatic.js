@@ -10,7 +10,6 @@ goog.require('ol.extent');
 goog.require('ol.proj');
 goog.require('ol.source.Image');
 
-
 /**
  * @classdesc
  * A layer source for displaying a single, static image.
@@ -23,12 +22,14 @@ goog.require('ol.source.Image');
 ol.source.ImageStatic = function(options) {
   var imageExtent = options.imageExtent;
 
-  var crossOrigin = options.crossOrigin !== undefined ?
-      options.crossOrigin : null;
+  var crossOrigin = options.crossOrigin !== undefined
+    ? options.crossOrigin
+    : null;
 
-  var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction =
-      options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+  var /** @type {ol.ImageLoadFunctionType} */ imageLoadFunction = options.imageLoadFunction !==
+    undefined
+    ? options.imageLoadFunction
+    : ol.source.Image.defaultImageLoadFunction;
 
   ol.source.Image.call(this, {
     attributions: options.attributions,
@@ -40,8 +41,15 @@ ol.source.ImageStatic = function(options) {
    * @private
    * @type {ol.Image}
    */
-  this.image_ = new ol.Image(imageExtent, undefined, 1, this.getAttributions(),
-      options.url, crossOrigin, imageLoadFunction);
+  this.image_ = new ol.Image(
+    imageExtent,
+    undefined,
+    1,
+    this.getAttributions(),
+    options.url,
+    crossOrigin,
+    imageLoadFunction
+  );
 
   /**
    * @private
@@ -49,23 +57,29 @@ ol.source.ImageStatic = function(options) {
    */
   this.imageSize_ = options.imageSize ? options.imageSize : null;
 
-  ol.events.listen(this.image_, ol.events.EventType.CHANGE,
-      this.handleImageChange, this);
-
+  ol.events.listen(
+    this.image_,
+    ol.events.EventType.CHANGE,
+    this.handleImageChange,
+    this
+  );
 };
 ol.inherits(ol.source.ImageStatic, ol.source.Image);
-
 
 /**
  * @inheritDoc
  */
-ol.source.ImageStatic.prototype.getImageInternal = function(extent, resolution, pixelRatio, projection) {
+ol.source.ImageStatic.prototype.getImageInternal = function(
+  extent,
+  resolution,
+  pixelRatio,
+  projection
+) {
   if (ol.extent.intersects(extent, this.image_.getExtent())) {
     return this.image_;
   }
   return null;
 };
-
 
 /**
  * @inheritDoc
@@ -87,8 +101,17 @@ ol.source.ImageStatic.prototype.handleImageChange = function(evt) {
     if (targetWidth != imageWidth) {
       var context = ol.dom.createCanvasContext2D(targetWidth, imageHeight);
       var canvas = context.canvas;
-      context.drawImage(image, 0, 0, imageWidth, imageHeight,
-          0, 0, canvas.width, canvas.height);
+      context.drawImage(
+        image,
+        0,
+        0,
+        imageWidth,
+        imageHeight,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
       this.image_.setImage(canvas);
     }
   }

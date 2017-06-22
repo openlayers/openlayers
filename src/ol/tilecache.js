@@ -3,7 +3,6 @@ goog.provide('ol.TileCache');
 goog.require('ol');
 goog.require('ol.structs.LRUCache');
 
-
 /**
  * @constructor
  * @extends {ol.structs.LRUCache.<ol.Tile>}
@@ -11,17 +10,16 @@ goog.require('ol.structs.LRUCache');
  * @struct
  */
 ol.TileCache = function(opt_highWaterMark) {
-
   ol.structs.LRUCache.call(this);
 
   /**
    * @type {number}
    */
-  this.highWaterMark = opt_highWaterMark !== undefined ? opt_highWaterMark : 2048;
-
+  this.highWaterMark = opt_highWaterMark !== undefined
+    ? opt_highWaterMark
+    : 2048;
 };
 ol.inherits(ol.TileCache, ol.structs.LRUCache);
-
 
 /**
  * @return {boolean} Can expire cache.
@@ -29,7 +27,6 @@ ol.inherits(ol.TileCache, ol.structs.LRUCache);
 ol.TileCache.prototype.canExpireCache = function() {
   return this.getCount() > this.highWaterMark;
 };
-
 
 /**
  * @param {Object.<string, ol.TileRange>} usedTiles Used tiles.

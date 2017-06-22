@@ -2,7 +2,6 @@ goog.provide('ol.xml');
 
 goog.require('ol.array');
 
-
 /**
  * This document should be used when creating nodes for XML serializations. This
  * document is also used by {@link ol.xml.createElementNS} and
@@ -12,7 +11,6 @@ goog.require('ol.array');
  */
 ol.xml.DOCUMENT = document.implementation.createDocument('', '', null);
 
-
 /**
  * @param {string} namespaceURI Namespace URI.
  * @param {string} qualifiedName Qualified name.
@@ -21,7 +19,6 @@ ol.xml.DOCUMENT = document.implementation.createDocument('', '', null);
 ol.xml.createElementNS = function(namespaceURI, qualifiedName) {
   return ol.xml.DOCUMENT.createElementNS(namespaceURI, qualifiedName);
 };
-
 
 /**
  * Recursively grab all text content of child nodes into a single string.
@@ -35,7 +32,6 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
   return ol.xml.getAllTextContent_(node, normalizeWhitespace, []).join('');
 };
 
-
 /**
  * Recursively grab all text content of child nodes into a single string.
  * @param {Node} node Node.
@@ -46,8 +42,10 @@ ol.xml.getAllTextContent = function(node, normalizeWhitespace) {
  * @return {Array.<string>} Accumulator.
  */
 ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
-  if (node.nodeType == Node.CDATA_SECTION_NODE ||
-      node.nodeType == Node.TEXT_NODE) {
+  if (
+    node.nodeType == Node.CDATA_SECTION_NODE ||
+    node.nodeType == Node.TEXT_NODE
+  ) {
     if (normalizeWhitespace) {
       accumulator.push(String(node.nodeValue).replace(/(\r\n|\r|\n)/g, ''));
     } else {
@@ -62,7 +60,6 @@ ol.xml.getAllTextContent_ = function(node, normalizeWhitespace, accumulator) {
   return accumulator;
 };
 
-
 /**
  * @param {?} value Value.
  * @return {boolean} Is document.
@@ -71,7 +68,6 @@ ol.xml.isDocument = function(value) {
   return value instanceof Document;
 };
 
-
 /**
  * @param {?} value Value.
  * @return {boolean} Is node.
@@ -79,7 +75,6 @@ ol.xml.isDocument = function(value) {
 ol.xml.isNode = function(value) {
   return value instanceof Node;
 };
-
 
 /**
  * @param {Node} node Node.
@@ -91,7 +86,6 @@ ol.xml.getAttributeNS = function(node, namespaceURI, name) {
   return node.getAttributeNS(namespaceURI, name) || '';
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {?string} namespaceURI Namespace URI.
@@ -102,7 +96,6 @@ ol.xml.setAttributeNS = function(node, namespaceURI, name, value) {
   node.setAttributeNS(namespaceURI, name, value);
 };
 
-
 /**
  * Parse an XML string to an XML Document.
  * @param {string} xml XML.
@@ -112,7 +105,6 @@ ol.xml.setAttributeNS = function(node, namespaceURI, name, value) {
 ol.xml.parse = function(xml) {
   return new DOMParser().parseFromString(xml, 'application/xml');
 };
-
 
 /**
  * Make an array extender function for extending the array at the top of the
@@ -125,20 +117,20 @@ ol.xml.parse = function(xml) {
  */
 ol.xml.makeArrayExtender = function(valueReader, opt_this) {
   return (
-      /**
+    /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this, node, objectStack);
-        if (value !== undefined) {
-          var array = /** @type {Array.<*>} */
-              (objectStack[objectStack.length - 1]);
-          ol.array.extend(array, value);
-        }
-      });
+    function(node, objectStack) {
+      var value = valueReader.call(opt_this, node, objectStack);
+      if (value !== undefined) {
+        var array /** @type {Array.<*>} */ =
+          objectStack[objectStack.length - 1];
+        ol.array.extend(array, value);
+      }
+    }
+  );
 };
-
 
 /**
  * Make an array pusher function for pushing to the array at the top of the
@@ -150,20 +142,23 @@ ol.xml.makeArrayExtender = function(valueReader, opt_this) {
  */
 ol.xml.makeArrayPusher = function(valueReader, opt_this) {
   return (
-      /**
+    /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          var array = objectStack[objectStack.length - 1];
-          array.push(value);
-        }
-      });
+    function(node, objectStack) {
+      var value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
+      if (value !== undefined) {
+        var array = objectStack[objectStack.length - 1];
+        array.push(value);
+      }
+    }
+  );
 };
-
 
 /**
  * Make an object stack replacer function for replacing the object at the
@@ -175,19 +170,22 @@ ol.xml.makeArrayPusher = function(valueReader, opt_this) {
  */
 ol.xml.makeReplacer = function(valueReader, opt_this) {
   return (
-      /**
+    /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          objectStack[objectStack.length - 1] = value;
-        }
-      });
+    function(node, objectStack) {
+      var value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
+      if (value !== undefined) {
+        objectStack[objectStack.length - 1] = value;
+      }
+    }
+  );
 };
-
 
 /**
  * Make an object property pusher function for adding a property to the
@@ -198,31 +196,38 @@ ol.xml.makeReplacer = function(valueReader, opt_this) {
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) {
+ol.xml.makeObjectPropertyPusher = function(
+  valueReader,
+  opt_property,
+  opt_this
+) {
   return (
-      /**
+    /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          var object = /** @type {Object} */
-              (objectStack[objectStack.length - 1]);
-          var property = opt_property !== undefined ?
-              opt_property : node.localName;
-          var array;
-          if (property in object) {
-            array = object[property];
-          } else {
-            array = object[property] = [];
-          }
-          array.push(value);
+    function(node, objectStack) {
+      var value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
+      if (value !== undefined) {
+        var object /** @type {Object} */ = objectStack[objectStack.length - 1];
+        var property = opt_property !== undefined
+          ? opt_property
+          : node.localName;
+        var array;
+        if (property in object) {
+          array = object[property];
+        } else {
+          array = object[property] = [];
         }
-      });
+        array.push(value);
+      }
+    }
+  );
 };
-
 
 /**
  * Make an object property setter function.
@@ -232,25 +237,32 @@ ol.xml.makeObjectPropertyPusher = function(valueReader, opt_property, opt_this) 
  * @return {ol.XmlParser} Parser.
  * @template T
  */
-ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) {
+ol.xml.makeObjectPropertySetter = function(
+  valueReader,
+  opt_property,
+  opt_this
+) {
   return (
-      /**
+    /**
        * @param {Node} node Node.
        * @param {Array.<*>} objectStack Object stack.
        */
-      function(node, objectStack) {
-        var value = valueReader.call(opt_this !== undefined ? opt_this : this,
-            node, objectStack);
-        if (value !== undefined) {
-          var object = /** @type {Object} */
-              (objectStack[objectStack.length - 1]);
-          var property = opt_property !== undefined ?
-              opt_property : node.localName;
-          object[property] = value;
-        }
-      });
+    function(node, objectStack) {
+      var value = valueReader.call(
+        opt_this !== undefined ? opt_this : this,
+        node,
+        objectStack
+      );
+      if (value !== undefined) {
+        var object /** @type {Object} */ = objectStack[objectStack.length - 1];
+        var property = opt_property !== undefined
+          ? opt_property
+          : node.localName;
+        object[property] = value;
+      }
+    }
+  );
 };
-
 
 /**
  * Create a serializer that appends nodes written by its `nodeWriter` to its
@@ -264,14 +276,17 @@ ol.xml.makeObjectPropertySetter = function(valueReader, opt_property, opt_this) 
  */
 ol.xml.makeChildAppender = function(nodeWriter, opt_this) {
   return function(node, value, objectStack) {
-    nodeWriter.call(opt_this !== undefined ? opt_this : this,
-        node, value, objectStack);
+    nodeWriter.call(
+      opt_this !== undefined ? opt_this : this,
+      node,
+      value,
+      objectStack
+    );
     var parent = objectStack[objectStack.length - 1];
     var parentNode = parent.node;
     parentNode.appendChild(node);
   };
 };
-
 
 /**
  * Create a serializer that calls the provided `nodeWriter` from
@@ -300,7 +315,6 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
   };
 };
 
-
 /**
  * Create a node factory which can use the `opt_keys` passed to
  * {@link ol.xml.serialize} or {@link ol.xml.pushSerializeAndPop} as node names,
@@ -317,28 +331,30 @@ ol.xml.makeArraySerializer = function(nodeWriter, opt_this) {
 ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
   var fixedNodeName = opt_nodeName;
   return (
-      /**
+    /**
        * @param {*} value Value.
        * @param {Array.<*>} objectStack Object stack.
        * @param {string=} opt_nodeName Node name.
        * @return {Node} Node.
        */
-      function(value, objectStack, opt_nodeName) {
-        var context = objectStack[objectStack.length - 1];
-        var node = context.node;
-        var nodeName = fixedNodeName;
-        if (nodeName === undefined) {
-          nodeName = opt_nodeName;
-        }
-        var namespaceURI = opt_namespaceURI;
-        if (opt_namespaceURI === undefined) {
-          namespaceURI = node.namespaceURI;
-        }
-        return ol.xml.createElementNS(namespaceURI, /** @type {string} */ (nodeName));
+    function(value, objectStack, opt_nodeName) {
+      var context = objectStack[objectStack.length - 1];
+      var node = context.node;
+      var nodeName = fixedNodeName;
+      if (nodeName === undefined) {
+        nodeName = opt_nodeName;
       }
+      var namespaceURI = opt_namespaceURI;
+      if (opt_namespaceURI === undefined) {
+        namespaceURI = node.namespaceURI;
+      }
+      return ol.xml.createElementNS(
+        namespaceURI /** @type {string} */,
+        nodeName
+      );
+    }
   );
 };
-
 
 /**
  * A node factory that creates a node using the parent's `namespaceURI` and the
@@ -348,7 +364,6 @@ ol.xml.makeSimpleNodeFactory = function(opt_nodeName, opt_namespaceURI) {
  * @type {function(*, Array.<*>, string=): (Node|undefined)}
  */
 ol.xml.OBJECT_PROPERTY_NODE_FACTORY = ol.xml.makeSimpleNodeFactory();
-
 
 /**
  * Create an array of `values` to be used with {@link ol.xml.serialize} or
@@ -370,7 +385,6 @@ ol.xml.makeSequence = function(object, orderedKeys) {
   }
   return sequence;
 };
-
 
 /**
  * Create a namespaced structure, using the same values for each namespace.
@@ -394,7 +408,6 @@ ol.xml.makeStructureNS = function(namespaceURIs, structure, opt_structureNS) {
   return structureNS;
 };
 
-
 /**
  * Parse a node using the parsers and object stack.
  * @param {Object.<string, Object.<string, ol.XmlParser>>} parsersNS
@@ -416,7 +429,6 @@ ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
   }
 };
 
-
 /**
  * Push an object on top of the stack, parse and return the popped object.
  * @param {T} object Object.
@@ -429,12 +441,16 @@ ol.xml.parseNode = function(parsersNS, node, objectStack, opt_this) {
  * @template T
  */
 ol.xml.pushParseAndPop = function(
-    object, parsersNS, node, objectStack, opt_this) {
+  object,
+  parsersNS,
+  node,
+  objectStack,
+  opt_this
+) {
   objectStack.push(object);
   ol.xml.parseNode(parsersNS, node, objectStack, opt_this);
   return objectStack.pop();
 };
-
 
 /**
  * Walk through an array of `values` and call a serializer for each value.
@@ -459,22 +475,35 @@ ol.xml.pushParseAndPop = function(
  * @template T
  */
 ol.xml.serialize = function(
-    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+  serializersNS,
+  nodeFactory,
+  values,
+  objectStack,
+  opt_keys,
+  opt_this
+) {
   var length = (opt_keys !== undefined ? opt_keys : values).length;
   var value, node;
   for (var i = 0; i < length; ++i) {
     value = values[i];
     if (value !== undefined) {
-      node = nodeFactory.call(opt_this, value, objectStack,
-          opt_keys !== undefined ? opt_keys[i] : undefined);
+      node = nodeFactory.call(
+        opt_this,
+        value,
+        objectStack,
+        opt_keys !== undefined ? opt_keys[i] : undefined
+      );
       if (node !== undefined) {
-        serializersNS[node.namespaceURI][node.localName]
-            .call(opt_this, node, value, objectStack);
+        serializersNS[node.namespaceURI][node.localName].call(
+          opt_this,
+          node,
+          value,
+          objectStack
+        );
       }
     }
   }
 };
-
 
 /**
  * @param {O} object Object.
@@ -499,10 +528,23 @@ ol.xml.serialize = function(
  * @return {O|undefined} Object.
  * @template O, T
  */
-ol.xml.pushSerializeAndPop = function(object,
-    serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this) {
+ol.xml.pushSerializeAndPop = function(
+  object,
+  serializersNS,
+  nodeFactory,
+  values,
+  objectStack,
+  opt_keys,
+  opt_this
+) {
   objectStack.push(object);
   ol.xml.serialize(
-      serializersNS, nodeFactory, values, objectStack, opt_keys, opt_this);
+    serializersNS,
+    nodeFactory,
+    values,
+    objectStack,
+    opt_keys,
+    opt_this
+  );
   return objectStack.pop();
 };

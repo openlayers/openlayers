@@ -5,7 +5,6 @@ goog.require('ol.control.Attribution');
 goog.require('ol.control.Rotate');
 goog.require('ol.control.Zoom');
 
-
 /**
  * Set of controls included in maps by default. Unless configured otherwise,
  * this returns a collection containing an instance of each of the following
@@ -19,7 +18,6 @@ goog.require('ol.control.Zoom');
  * @api
  */
 ol.control.defaults = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   var controls = new ol.Collection();
@@ -34,12 +32,12 @@ ol.control.defaults = function(opt_options) {
     controls.push(new ol.control.Rotate(options.rotateOptions));
   }
 
-  var attributionControl = options.attribution !== undefined ?
-      options.attribution : true;
+  var attributionControl = options.attribution !== undefined
+    ? options.attribution
+    : true;
   if (attributionControl) {
     controls.push(new ol.control.Attribution(options.attributionOptions));
   }
 
   return controls;
-
 };

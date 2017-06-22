@@ -9,18 +9,14 @@ goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
 
 describe('ol.interaction.DragRotateAndZoom', function() {
-
   describe('constructor', function() {
-
     it('can be constructed without arguments', function() {
       var instance = new ol.interaction.DragRotateAndZoom();
       expect(instance).to.be.an(ol.interaction.DragRotateAndZoom);
     });
-
   });
 
   describe('#handleDragEvent_()', function() {
-
     var target, map, interaction;
 
     var width = 360;
@@ -59,27 +55,45 @@ describe('ol.interaction.DragRotateAndZoom', function() {
     });
 
     it('does not rotate when rotation is disabled on the view', function() {
-      var event = new ol.MapBrowserPointerEvent('pointermove', map,
-          new ol.pointer.PointerEvent('pointermove', {clientX: 20, clientY: 10}, {pointerType: 'mouse'}),
-          true);
+      var event = new ol.MapBrowserPointerEvent(
+        'pointermove',
+        map,
+        new ol.pointer.PointerEvent(
+          'pointermove',
+          {clientX: 20, clientY: 10},
+          {pointerType: 'mouse'}
+        ),
+        true
+      );
       interaction.lastAngle_ = Math.PI;
-      var spy = sinon.spy(ol.interaction.Interaction, 'rotateWithoutConstraints');
+      var spy = sinon.spy(
+        ol.interaction.Interaction,
+        'rotateWithoutConstraints'
+      );
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       expect(interaction.lastAngle_).to.be(-0.8308214428190254);
-      map.setView(new ol.View({
-        projection: 'EPSG:4326',
-        center: [0, 0],
-        resolution: 1,
-        enableRotation: false
-      }));
-      event = new ol.MapBrowserPointerEvent('pointermove', map,
-          new ol.pointer.PointerEvent('pointermove', {clientX: 24, clientY: 16}, {pointerType: 'mouse'}),
-          true);
+      map.setView(
+        new ol.View({
+          projection: 'EPSG:4326',
+          center: [0, 0],
+          resolution: 1,
+          enableRotation: false
+        })
+      );
+      event = new ol.MapBrowserPointerEvent(
+        'pointermove',
+        map,
+        new ol.pointer.PointerEvent(
+          'pointermove',
+          {clientX: 24, clientY: 16},
+          {pointerType: 'mouse'}
+        ),
+        true
+      );
       interaction.handleDragEvent_(event);
       expect(spy.callCount).to.be(1);
       ol.interaction.Interaction.rotateWithoutConstraints.restore();
     });
   });
-
 });

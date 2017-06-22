@@ -6,7 +6,6 @@ goog.require('ol.extent');
 goog.require('ol.functions');
 goog.require('ol.proj');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -22,7 +21,6 @@ goog.require('ol.proj');
  * @api
  */
 ol.geom.Geometry = function() {
-
   ol.Object.call(this);
 
   /**
@@ -54,10 +52,8 @@ ol.geom.Geometry = function() {
    * @type {number}
    */
   this.simplifiedGeometryRevision = 0;
-
 };
 ol.inherits(ol.geom.Geometry, ol.Object);
-
 
 /**
  * Make a complete copy of the geometry.
@@ -65,7 +61,6 @@ ol.inherits(ol.geom.Geometry, ol.Object);
  * @return {!ol.geom.Geometry} Clone.
  */
 ol.geom.Geometry.prototype.clone = function() {};
-
 
 /**
  * @abstract
@@ -75,8 +70,12 @@ ol.geom.Geometry.prototype.clone = function() {};
  * @param {number} minSquaredDistance Minimum squared distance.
  * @return {number} Minimum squared distance.
  */
-ol.geom.Geometry.prototype.closestPointXY = function(x, y, closestPoint, minSquaredDistance) {};
-
+ol.geom.Geometry.prototype.closestPointXY = function(
+  x,
+  y,
+  closestPoint,
+  minSquaredDistance
+) {};
 
 /**
  * Return the closest point of the geometry to the passed point as
@@ -92,7 +91,6 @@ ol.geom.Geometry.prototype.getClosestPoint = function(point, opt_closestPoint) {
   return closestPoint;
 };
 
-
 /**
  * Returns true if this geometry includes the specified coordinate. If the
  * coordinate is on the boundary of the geometry, returns false.
@@ -104,7 +102,6 @@ ol.geom.Geometry.prototype.intersectsCoordinate = function(coordinate) {
   return this.containsXY(coordinate[0], coordinate[1]);
 };
 
-
 /**
  * @abstract
  * @param {ol.Extent} extent Extent.
@@ -113,14 +110,12 @@ ol.geom.Geometry.prototype.intersectsCoordinate = function(coordinate) {
  */
 ol.geom.Geometry.prototype.computeExtent = function(extent) {};
 
-
 /**
  * @param {number} x X.
  * @param {number} y Y.
  * @return {boolean} Contains (x, y).
  */
 ol.geom.Geometry.prototype.containsXY = ol.functions.FALSE;
-
 
 /**
  * Get the extent of the geometry.
@@ -136,7 +131,6 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
   return ol.extent.returnOrUpdate(this.extent_, opt_extent);
 };
 
-
 /**
  * Rotate the geometry around a given coordinate. This modifies the geometry
  * coordinates in place.
@@ -146,7 +140,6 @@ ol.geom.Geometry.prototype.getExtent = function(opt_extent) {
  * @api
  */
 ol.geom.Geometry.prototype.rotate = function(angle, anchor) {};
-
 
 /**
  * Scale the geometry (with an optional origin).  This modifies the geometry
@@ -160,7 +153,6 @@ ol.geom.Geometry.prototype.rotate = function(angle, anchor) {};
  * @api
  */
 ol.geom.Geometry.prototype.scale = function(sx, opt_sy, opt_anchor) {};
-
 
 /**
  * Create a simplified version of this geometry.  For linestrings, this uses
@@ -178,7 +170,6 @@ ol.geom.Geometry.prototype.simplify = function(tolerance) {
   return this.getSimplifiedGeometry(tolerance * tolerance);
 };
 
-
 /**
  * Create a simplified version of this geometry using the Douglas Peucker
  * algorithm.
@@ -187,8 +178,9 @@ ol.geom.Geometry.prototype.simplify = function(tolerance) {
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.Geometry} Simplified geometry.
  */
-ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {};
-
+ol.geom.Geometry.prototype.getSimplifiedGeometry = function(
+  squaredTolerance
+) {};
 
 /**
  * Get the type of this geometry.
@@ -196,7 +188,6 @@ ol.geom.Geometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {}
  * @return {ol.geom.GeometryType} Geometry type.
  */
 ol.geom.Geometry.prototype.getType = function() {};
-
 
 /**
  * Apply a transform function to each coordinate of the geometry.
@@ -208,7 +199,6 @@ ol.geom.Geometry.prototype.getType = function() {};
  */
 ol.geom.Geometry.prototype.applyTransform = function(transformFn) {};
 
-
 /**
  * Test if the geometry and the passed extent intersect.
  * @abstract
@@ -216,7 +206,6 @@ ol.geom.Geometry.prototype.applyTransform = function(transformFn) {};
  * @return {boolean} `true` if the geometry and the extent intersect.
  */
 ol.geom.Geometry.prototype.intersectsExtent = function(extent) {};
-
 
 /**
  * Translate the geometry.  This modifies the geometry coordinates in place.  If
@@ -226,7 +215,6 @@ ol.geom.Geometry.prototype.intersectsExtent = function(extent) {};
  * @param {number} deltaY Delta Y.
  */
 ol.geom.Geometry.prototype.translate = function(deltaX, deltaY) {};
-
 
 /**
  * Transform each coordinate of the geometry from one coordinate reference

@@ -5,20 +5,18 @@ goog.require('ol.layer.Image');
 goog.require('ol.source.Raster');
 goog.require('ol.source.Stamen');
 
-
 /**
  * Color manipulation functions below are adapted from
  * https://github.com/d3/d3-color.
  */
-var Xn = 0.950470;
+var Xn = 0.95047;
 var Yn = 1;
-var Zn = 1.088830;
+var Zn = 1.08883;
 var t0 = 4 / 29;
 var t1 = 6 / 29;
 var t2 = 3 * t1 * t1;
 var t3 = t1 * t1 * t1;
 var twoPi = 2 * Math.PI;
-
 
 /**
  * Convert an RGB pixel into an HCL pixel.
@@ -31,11 +29,10 @@ function rgb2hcl(pixel) {
   var blue = rgb2xyz(pixel[2]);
 
   var x = xyz2lab(
-      (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn);
-  var y = xyz2lab(
-      (0.2126729 * red + 0.7151522 * green + 0.0721750 * blue) / Yn);
-  var z = xyz2lab(
-      (0.0193339 * red + 0.1191920 * green + 0.9503041 * blue) / Zn);
+    (0.4124564 * red + 0.3575761 * green + 0.1804375 * blue) / Xn
+  );
+  var y = xyz2lab((0.2126729 * red + 0.7151522 * green + 0.072175 * blue) / Yn);
+  var z = xyz2lab((0.0193339 * red + 0.119192 * green + 0.9503041 * blue) / Zn);
 
   var l = 116 * y - 16;
   var a = 500 * (x - y);
@@ -53,7 +50,6 @@ function rgb2hcl(pixel) {
 
   return pixel;
 }
-
 
 /**
  * Convert an HCL pixel into an RGB pixel.
@@ -77,7 +73,7 @@ function hcl2rgb(pixel) {
   z = Zn * lab2xyz(z);
 
   pixel[0] = xyz2rgb(3.2404542 * x - 1.5371385 * y - 0.4985314 * z);
-  pixel[1] = xyz2rgb(-0.9692660 * x + 1.8760108 * y + 0.0415560 * z);
+  pixel[1] = xyz2rgb(-0.969266 * x + 1.8760108 * y + 0.041556 * z);
   pixel[2] = xyz2rgb(0.0556434 * x - 0.2040259 * y + 1.0572252 * z);
 
   return pixel;
@@ -96,14 +92,17 @@ function rgb2xyz(x) {
 }
 
 function xyz2rgb(x) {
-  return 255 * (x <= 0.0031308 ?
-      12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055);
+  return (
+    255 * (x <= 0.0031308 ? 12.92 * x : 1.055 * Math.pow(x, 1 / 2.4) - 0.055)
+  );
 }
 
 var raster = new ol.source.Raster({
-  sources: [new ol.source.Stamen({
-    layer: 'watercolor'
-  })],
+  sources: [
+    new ol.source.Stamen({
+      layer: 'watercolor'
+    })
+  ],
   operation: function(pixels, data) {
     var hcl = rgb2hcl(pixels[0]);
 
@@ -115,8 +114,8 @@ var raster = new ol.source.Raster({
     }
     hcl[0] = h;
 
-    hcl[1] *= (data.chroma / 100);
-    hcl[2] *= (data.lightness / 100);
+    hcl[1] *= data.chroma / 100;
+    hcl[2] *= data.lightness / 100;
 
     return hcl2rgb(hcl);
   },

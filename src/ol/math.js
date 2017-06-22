@@ -2,7 +2,6 @@ goog.provide('ol.math');
 
 goog.require('ol.asserts');
 
-
 /**
  * Takes a number and clamps it to within the provided bounds.
  * @param {number} value The input number.
@@ -14,7 +13,6 @@ goog.require('ol.asserts');
 ol.math.clamp = function(value, min, max) {
   return Math.min(Math.max(value, min), max);
 };
-
 
 /**
  * Return the hyperbolic cosine of a given number. The method will use the
@@ -40,8 +38,7 @@ ol.math.cosh = (function() {
     };
   }
   return cosh;
-}());
-
+})();
 
 /**
  * @param {number} x X.
@@ -51,7 +48,6 @@ ol.math.roundUpToPowerOfTwo = function(x) {
   ol.asserts.assert(0 < x, 29); // `x` must be greater than `0`
   return Math.pow(2, Math.ceil(Math.log(x) / Math.LN2));
 };
-
 
 /**
  * Returns the square of the closest distance between the point (x, y) and the
@@ -80,7 +76,6 @@ ol.math.squaredSegmentDistance = function(x, y, x1, y1, x2, y2) {
   return ol.math.squaredDistance(x, y, x1, y1);
 };
 
-
 /**
  * Returns the square of the distance between the points (x1, y1) and (x2, y2).
  * @param {number} x1 X1.
@@ -94,7 +89,6 @@ ol.math.squaredDistance = function(x1, y1, x2, y2) {
   var dy = y2 - y1;
   return dx * dx + dy * dy;
 };
-
 
 /**
  * Solves system of linear equations using Gaussian elimination method.
@@ -151,7 +145,6 @@ ol.math.solveLinearSystem = function(mat) {
   return x;
 };
 
-
 /**
  * Converts radians to to degrees.
  *
@@ -161,7 +154,6 @@ ol.math.solveLinearSystem = function(mat) {
 ol.math.toDegrees = function(angleInRadians) {
   return angleInRadians * 180 / Math.PI;
 };
-
 
 /**
  * Converts degrees to radians.

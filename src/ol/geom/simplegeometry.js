@@ -8,7 +8,6 @@ goog.require('ol.geom.GeometryLayout');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.obj');
 
-
 /**
  * @classdesc
  * Abstract base class; only used for creating subclasses; do not instantiate
@@ -20,7 +19,6 @@ goog.require('ol.obj');
  * @api
  */
 ol.geom.SimpleGeometry = function() {
-
   ol.geom.Geometry.call(this);
 
   /**
@@ -40,10 +38,8 @@ ol.geom.SimpleGeometry = function() {
    * @type {Array.<number>}
    */
   this.flatCoordinates = null;
-
 };
 ol.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
-
 
 /**
  * @param {number} stride Stride.
@@ -59,9 +55,8 @@ ol.geom.SimpleGeometry.getLayoutForStride_ = function(stride) {
   } else if (stride == 4) {
     layout = ol.geom.GeometryLayout.XYZM;
   }
-  return /** @type {ol.geom.GeometryLayout} */ (layout);
+  return /** @type {ol.geom.GeometryLayout} */ layout;
 };
-
 
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
@@ -71,37 +66,40 @@ ol.geom.SimpleGeometry.getStrideForLayout = function(layout) {
   var stride;
   if (layout == ol.geom.GeometryLayout.XY) {
     stride = 2;
-  } else if (layout == ol.geom.GeometryLayout.XYZ || layout == ol.geom.GeometryLayout.XYM) {
+  } else if (
+    layout == ol.geom.GeometryLayout.XYZ ||
+    layout == ol.geom.GeometryLayout.XYM
+  ) {
     stride = 3;
   } else if (layout == ol.geom.GeometryLayout.XYZM) {
     stride = 4;
   }
-  return /** @type {number} */ (stride);
+  return /** @type {number} */ stride;
 };
-
 
 /**
  * @inheritDoc
  */
 ol.geom.SimpleGeometry.prototype.containsXY = ol.functions.FALSE;
 
-
 /**
  * @inheritDoc
  */
 ol.geom.SimpleGeometry.prototype.computeExtent = function(extent) {
   return ol.extent.createOrUpdateFromFlatCoordinates(
-      this.flatCoordinates, 0, this.flatCoordinates.length, this.stride,
-      extent);
+    this.flatCoordinates,
+    0,
+    this.flatCoordinates.length,
+    this.stride,
+    extent
+  );
 };
-
 
 /**
  * @abstract
  * @return {Array} Coordinates.
  */
 ol.geom.SimpleGeometry.prototype.getCoordinates = function() {};
-
 
 /**
  * Return the first coordinate of the geometry.
@@ -112,14 +110,12 @@ ol.geom.SimpleGeometry.prototype.getFirstCoordinate = function() {
   return this.flatCoordinates.slice(0, this.stride);
 };
 
-
 /**
  * @return {Array.<number>} Flat coordinates.
  */
 ol.geom.SimpleGeometry.prototype.getFlatCoordinates = function() {
   return this.flatCoordinates;
 };
-
 
 /**
  * Return the last coordinate of the geometry.
@@ -130,7 +126,6 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
   return this.flatCoordinates.slice(this.flatCoordinates.length - this.stride);
 };
 
-
 /**
  * Return the {@link ol.geom.GeometryLayout layout} of the geometry.
  * @return {ol.geom.GeometryLayout} Layout.
@@ -140,11 +135,12 @@ ol.geom.SimpleGeometry.prototype.getLayout = function() {
   return this.layout;
 };
 
-
 /**
  * @inheritDoc
  */
-ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredTolerance) {
+ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(
+  squaredTolerance
+) {
   if (this.simplifiedGeometryRevision != this.getRevision()) {
     ol.obj.clear(this.simplifiedGeometryCache);
     this.simplifiedGeometryMaxMinSquaredTolerance = 0;
@@ -152,17 +148,20 @@ ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredToleran
   }
   // If squaredTolerance is negative or if we know that simplification will not
   // have any effect then just return this.
-  if (squaredTolerance < 0 ||
-      (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
-       squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)) {
+  if (
+    squaredTolerance < 0 ||
+    (this.simplifiedGeometryMaxMinSquaredTolerance !== 0 &&
+      squaredTolerance <= this.simplifiedGeometryMaxMinSquaredTolerance)
+  ) {
     return this;
   }
   var key = squaredTolerance.toString();
   if (this.simplifiedGeometryCache.hasOwnProperty(key)) {
     return this.simplifiedGeometryCache[key];
   } else {
-    var simplifiedGeometry =
-        this.getSimplifiedGeometryInternal(squaredTolerance);
+    var simplifiedGeometry = this.getSimplifiedGeometryInternal(
+      squaredTolerance
+    );
     var simplifiedFlatCoordinates = simplifiedGeometry.getFlatCoordinates();
     if (simplifiedFlatCoordinates.length < this.flatCoordinates.length) {
       this.simplifiedGeometryCache[key] = simplifiedGeometry;
@@ -180,16 +179,16 @@ ol.geom.SimpleGeometry.prototype.getSimplifiedGeometry = function(squaredToleran
   }
 };
 
-
 /**
  * @param {number} squaredTolerance Squared tolerance.
  * @return {ol.geom.SimpleGeometry} Simplified geometry.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.getSimplifiedGeometryInternal = function(squaredTolerance) {
+ol.geom.SimpleGeometry.prototype.getSimplifiedGeometryInternal = function(
+  squaredTolerance
+) {
   return this;
 };
-
 
 /**
  * @return {number} Stride.
@@ -198,26 +197,29 @@ ol.geom.SimpleGeometry.prototype.getStride = function() {
   return this.stride;
 };
 
-
 /**
  * @param {ol.geom.GeometryLayout} layout Layout.
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal = function(layout, flatCoordinates) {
+ol.geom.SimpleGeometry.prototype.setFlatCoordinatesInternal = function(
+  layout,
+  flatCoordinates
+) {
   this.stride = ol.geom.SimpleGeometry.getStrideForLayout(layout);
   this.layout = layout;
   this.flatCoordinates = flatCoordinates;
 };
-
 
 /**
  * @abstract
  * @param {Array} coordinates Coordinates.
  * @param {ol.geom.GeometryLayout=} opt_layout Layout.
  */
-ol.geom.SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layout) {};
-
+ol.geom.SimpleGeometry.prototype.setCoordinates = function(
+  coordinates,
+  opt_layout
+) {};
 
 /**
  * @param {ol.geom.GeometryLayout|undefined} layout Layout.
@@ -225,7 +227,11 @@ ol.geom.SimpleGeometry.prototype.setCoordinates = function(coordinates, opt_layo
  * @param {number} nesting Nesting.
  * @protected
  */
-ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesting) {
+ol.geom.SimpleGeometry.prototype.setLayout = function(
+  layout,
+  coordinates,
+  nesting
+) {
   /** @type {number} */
   var stride;
   if (layout) {
@@ -238,7 +244,7 @@ ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesti
         this.stride = 2;
         return;
       } else {
-        coordinates = /** @type {Array} */ (coordinates[0]);
+        coordinates /** @type {Array} */ = coordinates[0];
       }
     }
     stride = coordinates.length;
@@ -247,7 +253,6 @@ ol.geom.SimpleGeometry.prototype.setLayout = function(layout, coordinates, nesti
   this.layout = layout;
   this.stride = stride;
 };
-
 
 /**
  * @inheritDoc
@@ -260,7 +265,6 @@ ol.geom.SimpleGeometry.prototype.applyTransform = function(transformFn) {
   }
 };
 
-
 /**
  * @inheritDoc
  * @api
@@ -270,12 +274,17 @@ ol.geom.SimpleGeometry.prototype.rotate = function(angle, anchor) {
   if (flatCoordinates) {
     var stride = this.getStride();
     ol.geom.flat.transform.rotate(
-        flatCoordinates, 0, flatCoordinates.length,
-        stride, angle, anchor, flatCoordinates);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+      angle,
+      anchor,
+      flatCoordinates
+    );
     this.changed();
   }
 };
-
 
 /**
  * @inheritDoc
@@ -294,12 +303,18 @@ ol.geom.SimpleGeometry.prototype.scale = function(sx, opt_sy, opt_anchor) {
   if (flatCoordinates) {
     var stride = this.getStride();
     ol.geom.flat.transform.scale(
-        flatCoordinates, 0, flatCoordinates.length,
-        stride, sx, sy, anchor, flatCoordinates);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+      sx,
+      sy,
+      anchor,
+      flatCoordinates
+    );
     this.changed();
   }
 };
-
 
 /**
  * @inheritDoc
@@ -310,12 +325,17 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
   if (flatCoordinates) {
     var stride = this.getStride();
     ol.geom.flat.transform.translate(
-        flatCoordinates, 0, flatCoordinates.length, stride,
-        deltaX, deltaY, flatCoordinates);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+      deltaX,
+      deltaY,
+      flatCoordinates
+    );
     this.changed();
   }
 };
-
 
 /**
  * @param {ol.geom.SimpleGeometry} simpleGeometry Simple geometry.
@@ -323,14 +343,23 @@ ol.geom.SimpleGeometry.prototype.translate = function(deltaX, deltaY) {
  * @param {Array.<number>=} opt_dest Destination.
  * @return {Array.<number>} Transformed flat coordinates.
  */
-ol.geom.SimpleGeometry.transform2D = function(simpleGeometry, transform, opt_dest) {
+ol.geom.SimpleGeometry.transform2D = function(
+  simpleGeometry,
+  transform,
+  opt_dest
+) {
   var flatCoordinates = simpleGeometry.getFlatCoordinates();
   if (!flatCoordinates) {
     return null;
   } else {
     var stride = simpleGeometry.getStride();
     return ol.geom.flat.transform.transform2D(
-        flatCoordinates, 0, flatCoordinates.length, stride,
-        transform, opt_dest);
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      stride,
+      transform,
+      opt_dest
+    );
   }
 };

@@ -5,7 +5,6 @@ goog.require('ol.extent');
 goog.require('ol.math');
 goog.require('ol.proj');
 
-
 /**
  * Calculates ideal resolution to use from the source in order to achieve
  * pixel mapping as close as possible to 1:1 during reprojection.
@@ -18,14 +17,20 @@ goog.require('ol.proj');
  * @param {number} targetResolution Target resolution.
  * @return {number} The best resolution to use. Can be +-Infinity, NaN or 0.
  */
-ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
-    targetCenter, targetResolution) {
-
+ol.reproj.calculateSourceResolution = function(
+  sourceProj,
+  targetProj,
+  targetCenter,
+  targetResolution
+) {
   var sourceCenter = ol.proj.transform(targetCenter, targetProj, sourceProj);
 
   // calculate the ideal resolution of the source data
-  var sourceResolution =
-      ol.proj.getPointResolution(targetProj, targetResolution, targetCenter);
+  var sourceResolution = ol.proj.getPointResolution(
+    targetProj,
+    targetResolution,
+    targetCenter
+  );
 
   var targetMetersPerUnit = targetProj.getMetersPerUnit();
   if (targetMetersPerUnit !== undefined) {
@@ -41,10 +46,13 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
   // in order to achieve optimal results.
 
   var sourceExtent = sourceProj.getExtent();
-  if (!sourceExtent || ol.extent.containsCoordinate(sourceExtent, sourceCenter)) {
+  if (
+    !sourceExtent ||
+    ol.extent.containsCoordinate(sourceExtent, sourceCenter)
+  ) {
     var compensationFactor =
-        ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
-        sourceResolution;
+      ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
+      sourceResolution;
     if (isFinite(compensationFactor) && compensationFactor > 0) {
       sourceResolution /= compensationFactor;
     }
@@ -52,7 +60,6 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
 
   return sourceResolution;
 };
-
 
 /**
  * Enlarge the clipping triangle point by 1 pixel to ensure the edges overlap
@@ -66,11 +73,11 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
  * @private
  */
 ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
-  var dX = x - centroidX, dY = y - centroidY;
+  var dX = x - centroidX,
+    dY = y - centroidY;
   var distance = Math.sqrt(dX * dX + dY * dY);
   return [Math.round(x + dX / distance), Math.round(y + dY / distance)];
 };
-
 
 /**
  * Renders the source data into new canvas based on the triangulation.
@@ -90,12 +97,23 @@ ol.reproj.enlargeClipPoint_ = function(centroidX, centroidY, x, y) {
  * @param {boolean=} opt_renderEdges Render reprojection edges.
  * @return {HTMLCanvasElement} Canvas with reprojected data.
  */
-ol.reproj.render = function(width, height, pixelRatio,
-    sourceResolution, sourceExtent, targetResolution, targetExtent,
-    triangulation, sources, gutter, opt_renderEdges) {
-
-  var context = ol.dom.createCanvasContext2D(Math.round(pixelRatio * width),
-                                             Math.round(pixelRatio * height));
+ol.reproj.render = function(
+  width,
+  height,
+  pixelRatio,
+  sourceResolution,
+  sourceExtent,
+  targetResolution,
+  targetExtent,
+  triangulation,
+  sources,
+  gutter,
+  opt_renderEdges
+) {
+  var context = ol.dom.createCanvasContext2D(
+    Math.round(pixelRatio * width),
+    Math.round(pixelRatio * height)
+  );
 
   if (sources.length === 0) {
     return context.canvas;
@@ -111,8 +129,9 @@ ol.reproj.render = function(width, height, pixelRatio,
   var canvasWidthInUnits = ol.extent.getWidth(sourceDataExtent);
   var canvasHeightInUnits = ol.extent.getHeight(sourceDataExtent);
   var stitchContext = ol.dom.createCanvasContext2D(
-      Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
-      Math.round(pixelRatio * canvasHeightInUnits / sourceResolution));
+    Math.round(pixelRatio * canvasWidthInUnits / sourceResolution),
+    Math.round(pixelRatio * canvasHeightInUnits / sourceResolution)
+  );
 
   var stitchScale = pixelRatio / sourceResolution;
 
@@ -123,11 +142,16 @@ ol.reproj.render = function(width, height, pixelRatio,
     var srcHeight = ol.extent.getHeight(src.extent);
 
     stitchContext.drawImage(
-        src.image,
-        gutter, gutter,
-        src.image.width - 2 * gutter, src.image.height - 2 * gutter,
-        xPos * stitchScale, yPos * stitchScale,
-        srcWidth * stitchScale, srcHeight * stitchScale);
+      src.image,
+      gutter,
+      gutter,
+      src.image.width - 2 * gutter,
+      src.image.height - 2 * gutter,
+      xPos * stitchScale,
+      yPos * stitchScale,
+      srcWidth * stitchScale,
+      srcHeight * stitchScale
+    );
   });
 
   var targetTopLeft = ol.extent.getTopLeft(targetExtent);
@@ -153,21 +177,26 @@ ol.reproj.render = function(width, height, pixelRatio,
      * |  0  0 0 x1 y1 1 |   |a11|   |v1|
      * |  0  0 0 x2 y2 1 |   |a12|   |v2|
      */
-    var source = triangle.source, target = triangle.target;
-    var x0 = source[0][0], y0 = source[0][1],
-        x1 = source[1][0], y1 = source[1][1],
-        x2 = source[2][0], y2 = source[2][1];
+    var source = triangle.source,
+      target = triangle.target;
+    var x0 = source[0][0],
+      y0 = source[0][1],
+      x1 = source[1][0],
+      y1 = source[1][1],
+      x2 = source[2][0],
+      y2 = source[2][1];
     var u0 = (target[0][0] - targetTopLeft[0]) / targetResolution,
-        v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
+      v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
     var u1 = (target[1][0] - targetTopLeft[0]) / targetResolution,
-        v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
+      v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
     var u2 = (target[2][0] - targetTopLeft[0]) / targetResolution,
-        v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
+      v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
 
     // Shift all the source points to improve numerical stability
     // of all the subsequent calculations. The [x0, y0] is used here.
     // This is also used to simplify the linear system.
-    var sourceNumericalShiftX = x0, sourceNumericalShiftY = y0;
+    var sourceNumericalShiftX = x0,
+      sourceNumericalShiftY = y0;
     x0 = 0;
     y0 = 0;
     x1 -= sourceNumericalShiftX;
@@ -188,7 +217,8 @@ ol.reproj.render = function(width, height, pixelRatio,
 
     context.save();
     context.beginPath();
-    var centroidX = (u0 + u1 + u2) / 3, centroidY = (v0 + v1 + v2) / 3;
+    var centroidX = (u0 + u1 + u2) / 3,
+      centroidY = (v0 + v1 + v2) / 3;
     var p0 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u0, v0);
     var p1 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u1, v1);
     var p2 = ol.reproj.enlargeClipPoint_(centroidX, centroidY, u2, v2);
@@ -199,13 +229,23 @@ ol.reproj.render = function(width, height, pixelRatio,
     context.clip();
 
     context.transform(
-        affineCoefs[0], affineCoefs[2], affineCoefs[1], affineCoefs[3], u0, v0);
+      affineCoefs[0],
+      affineCoefs[2],
+      affineCoefs[1],
+      affineCoefs[3],
+      u0,
+      v0
+    );
 
-    context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
-                      sourceDataExtent[3] - sourceNumericalShiftY);
+    context.translate(
+      sourceDataExtent[0] - sourceNumericalShiftX,
+      sourceDataExtent[3] - sourceNumericalShiftY
+    );
 
-    context.scale(sourceResolution / pixelRatio,
-                  -sourceResolution / pixelRatio);
+    context.scale(
+      sourceResolution / pixelRatio,
+      -sourceResolution / pixelRatio
+    );
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();
@@ -220,11 +260,11 @@ ol.reproj.render = function(width, height, pixelRatio,
     triangulation.getTriangles().forEach(function(triangle, i, arr) {
       var target = triangle.target;
       var u0 = (target[0][0] - targetTopLeft[0]) / targetResolution,
-          v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
+        v0 = -(target[0][1] - targetTopLeft[1]) / targetResolution;
       var u1 = (target[1][0] - targetTopLeft[0]) / targetResolution,
-          v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
+        v1 = -(target[1][1] - targetTopLeft[1]) / targetResolution;
       var u2 = (target[2][0] - targetTopLeft[0]) / targetResolution,
-          v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
+        v2 = -(target[2][1] - targetTopLeft[1]) / targetResolution;
 
       context.beginPath();
       context.moveTo(u1, v1);

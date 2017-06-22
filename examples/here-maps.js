@@ -49,22 +49,28 @@ var hereLayers = [
     app_code: appCode
   }
 ];
-var urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
+var urlTpl =
+  'https://{1-4}.{base}.maps.cit.api.here.com' +
   '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
   '?app_id={app_id}&app_code={app_code}';
 var layers = [];
 var i, ii;
 for (i = 0, ii = hereLayers.length; i < ii; ++i) {
   var layerDesc = hereLayers[i];
-  layers.push(new ol.layer.Tile({
-    visible: false,
-    preload: Infinity,
-    source: new ol.source.XYZ({
-      url: createUrl(urlTpl, layerDesc),
-      attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
-        '<a href="http://developer.here.com">HERE</a>'
+  layers.push(
+    new ol.layer.Tile({
+      visible: false,
+      preload: Infinity,
+      source: new ol.source.XYZ({
+        url: createUrl(urlTpl, layerDesc),
+        attributions:
+          'Map Tiles &copy; ' +
+            new Date().getFullYear() +
+            ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+      })
     })
-  }));
+  );
 }
 
 var map = new ol.Map({

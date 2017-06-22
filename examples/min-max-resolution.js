@@ -5,7 +5,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
 goog.require('ol.source.TileJSON');
 
-
 /**
  * Create the map.
  */
@@ -18,7 +17,8 @@ var map = new ol.Map({
     }),
     new ol.layer.Tile({
       source: new ol.source.TileJSON({
-        url: 'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
+        url:
+          'https://api.tiles.mapbox.com/v3/mapbox.natural-earth-hypso-bathy.json?secure',
         crossOrigin: 'anonymous'
       }),
       minResolution: 2000,
@@ -27,9 +27,9 @@ var map = new ol.Map({
   ],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     center: [653600, 5723680],

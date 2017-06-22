@@ -11,7 +11,6 @@ goog.require('ol.render.EventType');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
-
 /**
  * @classdesc
  * Layer for rendering vector data as a heatmap.
@@ -35,7 +34,10 @@ ol.layer.Heatmap = function(opt_options) {
   delete baseOptions.blur;
   delete baseOptions.shadow;
   delete baseOptions.weight;
-  ol.layer.Vector.call(this, /** @type {olx.layer.VectorOptions} */ (baseOptions));
+  ol.layer.Vector.call(
+    this /** @type {olx.layer.VectorOptions} */,
+    baseOptions
+  );
 
   /**
    * @private
@@ -61,23 +63,33 @@ ol.layer.Heatmap = function(opt_options) {
    */
   this.styleCache_ = null;
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.GRADIENT),
-      this.handleGradientChanged_, this);
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.GRADIENT),
+    this.handleGradientChanged_,
+    this
+  );
 
-  this.setGradient(options.gradient ?
-      options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
+  this.setGradient(
+    options.gradient ? options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT
+  );
 
   this.setBlur(options.blur !== undefined ? options.blur : 15);
 
   this.setRadius(options.radius !== undefined ? options.radius : 8);
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.BLUR),
-      this.handleStyleChanged_, this);
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.RADIUS),
-      this.handleStyleChanged_, this);
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.BLUR),
+    this.handleStyleChanged_,
+    this
+  );
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.layer.Heatmap.Property_.RADIUS),
+    this.handleStyleChanged_,
+    this
+  );
 
   this.handleStyleChanged_();
 
@@ -91,25 +103,27 @@ ol.layer.Heatmap = function(opt_options) {
     weightFunction = weight;
   }
 
-  this.setStyle(function(feature, resolution) {
-    var weight = weightFunction(feature);
-    var opacity = weight !== undefined ? ol.math.clamp(weight, 0, 1) : 1;
-    // cast to 8 bits
-    var index = (255 * opacity) | 0;
-    var style = this.styleCache_[index];
-    if (!style) {
-      style = [
-        new ol.style.Style({
-          image: new ol.style.Icon({
-            opacity: opacity,
-            src: this.circleImage_
+  this.setStyle(
+    function(feature, resolution) {
+      var weight = weightFunction(feature);
+      var opacity = weight !== undefined ? ol.math.clamp(weight, 0, 1) : 1;
+      // cast to 8 bits
+      var index = (255 * opacity) | 0;
+      var style = this.styleCache_[index];
+      if (!style) {
+        style = [
+          new ol.style.Style({
+            image: new ol.style.Icon({
+              opacity: opacity,
+              src: this.circleImage_
+            })
           })
-        })
-      ];
-      this.styleCache_[index] = style;
-    }
-    return style;
-  }.bind(this));
+        ];
+        this.styleCache_[index] = style;
+      }
+      return style;
+    }.bind(this)
+  );
 
   // For performance reasons, don't sort the features before rendering.
   // The render order is not relevant for a heatmap representation.
@@ -119,13 +133,11 @@ ol.layer.Heatmap = function(opt_options) {
 };
 ol.inherits(ol.layer.Heatmap, ol.layer.Vector);
 
-
 /**
  * @const
  * @type {Array.<string>}
  */
 ol.layer.Heatmap.DEFAULT_GRADIENT = ['#00f', '#0ff', '#0f0', '#ff0', '#f00'];
-
 
 /**
  * @param {Array.<string>} colors A list of colored.
@@ -149,7 +161,6 @@ ol.layer.Heatmap.createGradient_ = function(colors) {
   return context.getImageData(0, 0, width, height).data;
 };
 
-
 /**
  * @return {string} Data URL for a circle.
  * @private
@@ -170,7 +181,6 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
   return context.canvas.toDataURL();
 };
 
-
 /**
  * Return the blur size in pixels.
  * @return {number} Blur size in pixels.
@@ -178,9 +188,8 @@ ol.layer.Heatmap.prototype.createCircle_ = function() {
  * @observable
  */
 ol.layer.Heatmap.prototype.getBlur = function() {
-  return /** @type {number} */ (this.get(ol.layer.Heatmap.Property_.BLUR));
+  return /** @type {number} */ this.get(ol.layer.Heatmap.Property_.BLUR);
 };
-
 
 /**
  * Return the gradient colors as array of strings.
@@ -189,10 +198,10 @@ ol.layer.Heatmap.prototype.getBlur = function() {
  * @observable
  */
 ol.layer.Heatmap.prototype.getGradient = function() {
-  return /** @type {Array.<string>} */ (
-      this.get(ol.layer.Heatmap.Property_.GRADIENT));
+  return /** @type {Array.<string>} */ this.get(
+    ol.layer.Heatmap.Property_.GRADIENT
+  );
 };
-
 
 /**
  * Return the size of the radius in pixels.
@@ -201,9 +210,8 @@ ol.layer.Heatmap.prototype.getGradient = function() {
  * @observable
  */
 ol.layer.Heatmap.prototype.getRadius = function() {
-  return /** @type {number} */ (this.get(ol.layer.Heatmap.Property_.RADIUS));
+  return /** @type {number} */ this.get(ol.layer.Heatmap.Property_.RADIUS);
 };
-
 
 /**
  * @private
@@ -211,7 +219,6 @@ ol.layer.Heatmap.prototype.getRadius = function() {
 ol.layer.Heatmap.prototype.handleGradientChanged_ = function() {
   this.gradient_ = ol.layer.Heatmap.createGradient_(this.getGradient());
 };
-
 
 /**
  * @private
@@ -221,7 +228,6 @@ ol.layer.Heatmap.prototype.handleStyleChanged_ = function() {
   this.styleCache_ = new Array(256);
   this.changed();
 };
-
 
 /**
  * @param {ol.render.Event} event Post compose event
@@ -244,7 +250,6 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
   context.putImageData(image, 0, 0);
 };
 
-
 /**
  * Set the blur size in pixels.
  * @param {number} blur Blur size in pixels.
@@ -254,7 +259,6 @@ ol.layer.Heatmap.prototype.handleRender_ = function(event) {
 ol.layer.Heatmap.prototype.setBlur = function(blur) {
   this.set(ol.layer.Heatmap.Property_.BLUR, blur);
 };
-
 
 /**
  * Set the gradient colors as array of strings.
@@ -266,7 +270,6 @@ ol.layer.Heatmap.prototype.setGradient = function(colors) {
   this.set(ol.layer.Heatmap.Property_.GRADIENT, colors);
 };
 
-
 /**
  * Set the size of the radius in pixels.
  * @param {number} radius Radius size in pixel.
@@ -276,7 +279,6 @@ ol.layer.Heatmap.prototype.setGradient = function(colors) {
 ol.layer.Heatmap.prototype.setRadius = function(radius) {
   this.set(ol.layer.Heatmap.Property_.RADIUS, radius);
 };
-
 
 /**
  * @enum {string}

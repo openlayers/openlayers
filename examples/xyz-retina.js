@@ -18,7 +18,8 @@ var map = new ol.Map({
     new ol.layer.Tile({
       extent: ol.proj.transformExtent(mapExtent, 'EPSG:4326', 'EPSG:3857'),
       source: new ol.source.XYZ({
-        attributions: 'Tiles © USGS, rendered with ' +
+        attributions:
+          'Tiles © USGS, rendered with ' +
             '<a href="http://www.maptiler.com/">MapTiler</a>',
         url: 'https://tileserver.maptiler.com/grandcanyon@2x/{z}/{x}/{y}.png',
         tilePixelRatio: 2, // THIS IS IMPORTANT
@@ -29,8 +30,11 @@ var map = new ol.Map({
   ],
   view: new ol.View({
     projection: 'EPSG:3857',
-    center: ol.proj.transform([-112.18688965, 36.057944835],
-        'EPSG:4326', 'EPSG:3857'),
+    center: ol.proj.transform(
+      [-112.18688965, 36.057944835],
+      'EPSG:4326',
+      'EPSG:3857'
+    ),
     zoom: 12
   })
 });

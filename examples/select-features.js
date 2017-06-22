@@ -28,7 +28,7 @@ var map = new ol.Map({
   })
 });
 
-var select = null;  // ref to currently selected interaction
+var select = null; // ref to currently selected interaction
 
 // select interaction working on "singleclick"
 var selectSingleClick = new ol.interaction.Select();
@@ -45,8 +45,10 @@ var selectPointerMove = new ol.interaction.Select({
 
 var selectAltClick = new ol.interaction.Select({
   condition: function(mapBrowserEvent) {
-    return ol.events.condition.click(mapBrowserEvent) &&
-        ol.events.condition.altKeyOnly(mapBrowserEvent);
+    return (
+      ol.events.condition.click(mapBrowserEvent) &&
+      ol.events.condition.altKeyOnly(mapBrowserEvent)
+    );
   }
 });
 
@@ -71,14 +73,17 @@ var changeInteraction = function() {
   if (select !== null) {
     map.addInteraction(select);
     select.on('select', function(e) {
-      document.getElementById('status').innerHTML = '&nbsp;' +
-          e.target.getFeatures().getLength() +
-          ' selected features (last operation selected ' + e.selected.length +
-          ' and deselected ' + e.deselected.length + ' features)';
+      document.getElementById('status').innerHTML =
+        '&nbsp;' +
+        e.target.getFeatures().getLength() +
+        ' selected features (last operation selected ' +
+        e.selected.length +
+        ' and deselected ' +
+        e.deselected.length +
+        ' features)';
     });
   }
 };
-
 
 /**
  * onchange callback on the select element.

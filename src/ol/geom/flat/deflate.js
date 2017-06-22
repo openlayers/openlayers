@@ -1,6 +1,5 @@
 goog.provide('ol.geom.flat.deflate');
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -8,14 +7,18 @@ goog.provide('ol.geom.flat.deflate');
  * @param {number} stride Stride.
  * @return {number} offset Offset.
  */
-ol.geom.flat.deflate.coordinate = function(flatCoordinates, offset, coordinate, stride) {
+ol.geom.flat.deflate.coordinate = function(
+  flatCoordinates,
+  offset,
+  coordinate,
+  stride
+) {
   var i, ii;
   for (i = 0, ii = coordinate.length; i < ii; ++i) {
     flatCoordinates[offset++] = coordinate[i];
   }
   return offset;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -24,7 +27,12 @@ ol.geom.flat.deflate.coordinate = function(flatCoordinates, offset, coordinate, 
  * @param {number} stride Stride.
  * @return {number} offset Offset.
  */
-ol.geom.flat.deflate.coordinates = function(flatCoordinates, offset, coordinates, stride) {
+ol.geom.flat.deflate.coordinates = function(
+  flatCoordinates,
+  offset,
+  coordinates,
+  stride
+) {
   var i, ii;
   for (i = 0, ii = coordinates.length; i < ii; ++i) {
     var coordinate = coordinates[i];
@@ -36,7 +44,6 @@ ol.geom.flat.deflate.coordinates = function(flatCoordinates, offset, coordinates
   return offset;
 };
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -45,20 +52,29 @@ ol.geom.flat.deflate.coordinates = function(flatCoordinates, offset, coordinates
  * @param {Array.<number>=} opt_ends Ends.
  * @return {Array.<number>} Ends.
  */
-ol.geom.flat.deflate.coordinatess = function(flatCoordinates, offset, coordinatess, stride, opt_ends) {
+ol.geom.flat.deflate.coordinatess = function(
+  flatCoordinates,
+  offset,
+  coordinatess,
+  stride,
+  opt_ends
+) {
   var ends = opt_ends ? opt_ends : [];
   var i = 0;
   var j, jj;
   for (j = 0, jj = coordinatess.length; j < jj; ++j) {
     var end = ol.geom.flat.deflate.coordinates(
-        flatCoordinates, offset, coordinatess[j], stride);
+      flatCoordinates,
+      offset,
+      coordinatess[j],
+      stride
+    );
     ends[i++] = end;
     offset = end;
   }
   ends.length = i;
   return ends;
 };
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -68,13 +84,24 @@ ol.geom.flat.deflate.coordinatess = function(flatCoordinates, offset, coordinate
  * @param {Array.<Array.<number>>=} opt_endss Endss.
  * @return {Array.<Array.<number>>} Endss.
  */
-ol.geom.flat.deflate.coordinatesss = function(flatCoordinates, offset, coordinatesss, stride, opt_endss) {
+ol.geom.flat.deflate.coordinatesss = function(
+  flatCoordinates,
+  offset,
+  coordinatesss,
+  stride,
+  opt_endss
+) {
   var endss = opt_endss ? opt_endss : [];
   var i = 0;
   var j, jj;
   for (j = 0, jj = coordinatesss.length; j < jj; ++j) {
     var ends = ol.geom.flat.deflate.coordinatess(
-        flatCoordinates, offset, coordinatesss[j], stride, endss[i]);
+      flatCoordinates,
+      offset,
+      coordinatesss[j],
+      stride,
+      endss[i]
+    );
     endss[i++] = ends;
     offset = ends[ends.length - 1];
   }

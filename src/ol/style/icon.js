@@ -11,7 +11,6 @@ goog.require('ol.style.IconImage');
 goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Image');
 
-
 /**
  * @classdesc
  * Set icon style for vector features.
@@ -22,7 +21,6 @@ goog.require('ol.style.Image');
  * @api
  */
 ol.style.Icon = function(opt_options) {
-
   var options = opt_options || {};
 
   /**
@@ -41,29 +39,33 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {ol.style.IconOrigin}
    */
-  this.anchorOrigin_ = options.anchorOrigin !== undefined ?
-      options.anchorOrigin : ol.style.IconOrigin.TOP_LEFT;
+  this.anchorOrigin_ = options.anchorOrigin !== undefined
+    ? options.anchorOrigin
+    : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
-  this.anchorXUnits_ = options.anchorXUnits !== undefined ?
-      options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
+  this.anchorXUnits_ = options.anchorXUnits !== undefined
+    ? options.anchorXUnits
+    : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
-  this.anchorYUnits_ = options.anchorYUnits !== undefined ?
-      options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
+  this.anchorYUnits_ = options.anchorYUnits !== undefined
+    ? options.anchorYUnits
+    : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
    * @type {?string}
    */
-  this.crossOrigin_ =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+  this.crossOrigin_ = options.crossOrigin !== undefined
+    ? options.crossOrigin
+    : null;
 
   /**
    * @type {Image|HTMLCanvasElement}
@@ -80,36 +82,41 @@ ol.style.Icon = function(opt_options) {
    */
   var src = options.src;
 
-  ol.asserts.assert(!(src !== undefined && image),
-      4); // `image` and `src` cannot be provided at the same time
-  ol.asserts.assert(!image || (image && imgSize),
-      5); // `imgSize` must be set when `image` is provided
+  ol.asserts.assert(!(src !== undefined && image), 4); // `image` and `src` cannot be provided at the same time
+  ol.asserts.assert(!image || (image && imgSize), 5); // `imgSize` must be set when `image` is provided
 
   if ((src === undefined || src.length === 0) && image) {
     src = image.src || ol.getUid(image).toString();
   }
-  ol.asserts.assert(src !== undefined && src.length > 0,
-      6); // A defined and non-empty `src` or `image` must be provided
+  ol.asserts.assert(src !== undefined && src.length > 0, 6); // A defined and non-empty `src` or `image` must be provided
 
   /**
    * @type {ol.ImageState}
    */
-  var imageState = options.src !== undefined ?
-      ol.ImageState.IDLE : ol.ImageState.LOADED;
+  var imageState = options.src !== undefined
+    ? ol.ImageState.IDLE
+    : ol.ImageState.LOADED;
 
   /**
    * @private
    * @type {ol.Color}
    */
-  this.color_ = options.color !== undefined ? ol.color.asArray(options.color) :
-      null;
+  this.color_ = options.color !== undefined
+    ? ol.color.asArray(options.color)
+    : null;
 
   /**
    * @private
    * @type {ol.style.IconImage}
    */
   this.iconImage_ = ol.style.IconImage.get(
-      image, /** @type {string} */ (src), imgSize, this.crossOrigin_, imageState, this.color_);
+    image /** @type {string} */,
+    src,
+    imgSize,
+    this.crossOrigin_,
+    imageState,
+    this.color_
+  );
 
   /**
    * @private
@@ -121,8 +128,9 @@ ol.style.Icon = function(opt_options) {
    * @private
    * @type {ol.style.IconOrigin}
    */
-  this.offsetOrigin_ = options.offsetOrigin !== undefined ?
-      options.offsetOrigin : ol.style.IconOrigin.TOP_LEFT;
+  this.offsetOrigin_ = options.offsetOrigin !== undefined
+    ? options.offsetOrigin
+    : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -144,8 +152,9 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {boolean}
    */
-  var rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
+  var rotateWithView = options.rotateWithView !== undefined
+    ? options.rotateWithView
+    : false;
 
   /**
    * @type {number}
@@ -160,8 +169,9 @@ ol.style.Icon = function(opt_options) {
   /**
    * @type {boolean}
    */
-  var snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
+  var snapToPixel = options.snapToPixel !== undefined
+    ? options.snapToPixel
+    : true;
 
   ol.style.Image.call(this, {
     opacity: opacity,
@@ -170,10 +180,8 @@ ol.style.Icon = function(opt_options) {
     snapToPixel: snapToPixel,
     rotateWithView: rotateWithView
   });
-
 };
 ol.inherits(ol.style.Icon, ol.style.Image);
-
 
 /**
  * Clones the style.
@@ -185,9 +193,11 @@ ol.style.Icon.prototype.clone = function() {
   var newImage;
   if (this.iconImage_.getImageState() === ol.ImageState.LOADED) {
     if (oldImage.tagName.toUpperCase() === 'IMG') {
-      newImage = /** @type {Image} */ (oldImage.cloneNode(true));
+      newImage /** @type {Image} */ = oldImage.cloneNode(true);
     } else {
-      newImage = /** @type {HTMLCanvasElement} */ (document.createElement('canvas'));
+      newImage /** @type {HTMLCanvasElement} */ = document.createElement(
+        'canvas'
+      );
       var context = newImage.getContext('2d');
       newImage.width = oldImage.width;
       newImage.height = oldImage.height;
@@ -200,7 +210,9 @@ ol.style.Icon.prototype.clone = function() {
     anchorXUnits: this.anchorXUnits_,
     anchorYUnits: this.anchorYUnits_,
     crossOrigin: this.crossOrigin_,
-    color: (this.color_ && this.color_.slice) ? this.color_.slice() : this.color_ || undefined,
+    color: this.color_ && this.color_.slice
+      ? this.color_.slice()
+      : this.color_ || undefined,
     img: newImage ? newImage : undefined,
     imgSize: newImage ? this.iconImage_.getSize().slice() : undefined,
     src: newImage ? undefined : this.getSrc(),
@@ -215,7 +227,6 @@ ol.style.Icon.prototype.clone = function() {
   });
 };
 
-
 /**
  * @inheritDoc
  * @api
@@ -226,8 +237,10 @@ ol.style.Icon.prototype.getAnchor = function() {
   }
   var anchor = this.anchor_;
   var size = this.getSize();
-  if (this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
-      this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION) {
+  if (
+    this.anchorXUnits_ == ol.style.IconAnchorUnits.FRACTION ||
+    this.anchorYUnits_ == ol.style.IconAnchorUnits.FRACTION
+  ) {
     if (!size) {
       return null;
     }
@@ -247,19 +260,22 @@ ol.style.Icon.prototype.getAnchor = function() {
     if (anchor === this.anchor_) {
       anchor = this.anchor_.slice();
     }
-    if (this.anchorOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
-        this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (
+      this.anchorOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
+      this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT
+    ) {
       anchor[0] = -anchor[0] + size[0];
     }
-    if (this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
-        this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (
+      this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
+      this.anchorOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT
+    ) {
       anchor[1] = -anchor[1] + size[1];
     }
   }
   this.normalizedAnchor_ = anchor;
   return this.normalizedAnchor_;
 };
-
 
 /**
  * Get the icon color.
@@ -269,7 +285,6 @@ ol.style.Icon.prototype.getAnchor = function() {
 ol.style.Icon.prototype.getColor = function() {
   return this.color_;
 };
-
 
 /**
  * Get the image icon.
@@ -282,14 +297,12 @@ ol.style.Icon.prototype.getImage = function(pixelRatio) {
   return this.iconImage_.getImage(pixelRatio);
 };
 
-
 /**
  * @override
  */
 ol.style.Icon.prototype.getImageSize = function() {
   return this.iconImage_.getSize();
 };
-
 
 /**
  * @override
@@ -298,7 +311,6 @@ ol.style.Icon.prototype.getHitDetectionImageSize = function() {
   return this.getImageSize();
 };
 
-
 /**
  * @override
  */
@@ -306,14 +318,12 @@ ol.style.Icon.prototype.getImageState = function() {
   return this.iconImage_.getImageState();
 };
 
-
 /**
  * @override
  */
 ol.style.Icon.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.iconImage_.getHitDetectionImage(pixelRatio);
 };
-
 
 /**
  * @inheritDoc
@@ -332,19 +342,22 @@ ol.style.Icon.prototype.getOrigin = function() {
       return null;
     }
     offset = offset.slice();
-    if (this.offsetOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
-        this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (
+      this.offsetOrigin_ == ol.style.IconOrigin.TOP_RIGHT ||
+      this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT
+    ) {
       offset[0] = iconImageSize[0] - size[0] - offset[0];
     }
-    if (this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
-        this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT) {
+    if (
+      this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_LEFT ||
+      this.offsetOrigin_ == ol.style.IconOrigin.BOTTOM_RIGHT
+    ) {
       offset[1] = iconImageSize[1] - size[1] - offset[1];
     }
   }
   this.origin_ = offset;
   return this.origin_;
 };
-
 
 /**
  * Get the image URL.
@@ -355,7 +368,6 @@ ol.style.Icon.prototype.getSrc = function() {
   return this.iconImage_.getSrc();
 };
 
-
 /**
  * @inheritDoc
  * @api
@@ -364,15 +376,17 @@ ol.style.Icon.prototype.getSize = function() {
   return !this.size_ ? this.iconImage_.getSize() : this.size_;
 };
 
-
 /**
  * @override
  */
 ol.style.Icon.prototype.listenImageChange = function(listener, thisArg) {
-  return ol.events.listen(this.iconImage_, ol.events.EventType.CHANGE,
-      listener, thisArg);
+  return ol.events.listen(
+    this.iconImage_,
+    ol.events.EventType.CHANGE,
+    listener,
+    thisArg
+  );
 };
-
 
 /**
  * Load not yet loaded URI.
@@ -386,11 +400,14 @@ ol.style.Icon.prototype.load = function() {
   this.iconImage_.load();
 };
 
-
 /**
  * @override
  */
 ol.style.Icon.prototype.unlistenImageChange = function(listener, thisArg) {
-  ol.events.unlisten(this.iconImage_, ol.events.EventType.CHANGE,
-      listener, thisArg);
+  ol.events.unlisten(
+    this.iconImage_,
+    ol.events.EventType.CHANGE,
+    listener,
+    thisArg
+  );
 };

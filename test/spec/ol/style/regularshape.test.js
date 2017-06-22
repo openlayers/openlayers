@@ -5,11 +5,8 @@ goog.require('ol.style.RegularShape');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 
-
 describe('ol.style.RegularShape', function() {
-
   describe('#constructor', function() {
-
     it('can use rotateWithView', function() {
       var style = new ol.style.RegularShape({
         rotateWithView: true,
@@ -69,8 +66,10 @@ describe('ol.style.RegularShape', function() {
 
     it('adds itself to an atlas manager (no fill-style)', function() {
       var atlasManager = new ol.style.AtlasManager({initialSize: 512});
-      var style = new ol.style.RegularShape(
-          {radius: 10, atlasManager: atlasManager});
+      var style = new ol.style.RegularShape({
+        radius: 10,
+        atlasManager: atlasManager
+      });
       expect(style.getImage()).to.be.an(HTMLCanvasElement);
       expect(style.getSize()).to.eql([21, 21]);
       expect(style.getImageSize()).to.eql([512, 512]);
@@ -104,7 +103,6 @@ describe('ol.style.RegularShape', function() {
   });
 
   describe('#clone', function() {
-
     it('creates a new ol.style.RegularShape', function() {
       var original = new ol.style.RegularShape({
         points: 5
@@ -143,7 +141,9 @@ describe('ol.style.RegularShape', function() {
       expect(original.getRotateWithView()).to.eql(clone.getRotateWithView());
       expect(original.getScale()).to.eql(clone.getScale());
       expect(original.getSnapToPixel()).to.eql(clone.getSnapToPixel());
-      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getStroke().getColor()).to.eql(
+        clone.getStroke().getColor()
+      );
     });
 
     it('the clone does not reference the same objects as the original', function() {
@@ -161,14 +161,16 @@ describe('ol.style.RegularShape', function() {
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(clone.getFill().getColor());
-      expect(original.getStroke().getColor()).to.not.eql(clone.getStroke().getColor());
+      expect(original.getFill().getColor()).to.not.eql(
+        clone.getFill().getColor()
+      );
+      expect(original.getStroke().getColor()).to.not.eql(
+        clone.getStroke().getColor()
+      );
     });
   });
 
-
   describe('#getChecksum', function() {
-
     it('calculates not the same hash code (radius)', function() {
       var style1 = new ol.style.RegularShape({
         radius: 4,
@@ -344,6 +346,5 @@ describe('ol.style.RegularShape', function() {
       style1.getStroke().setWidth(4);
       expect(style1.getChecksum()).to.not.eql(style2.getChecksum());
     });
-
   });
 });

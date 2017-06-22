@@ -2,13 +2,11 @@ goog.provide('ol.proj.transforms');
 
 goog.require('ol.obj');
 
-
 /**
  * @private
  * @type {Object.<string, Object.<string, ol.TransformFunction>>}
  */
 ol.proj.transforms.cache_ = {};
-
 
 /**
  * Clear the transform cache.
@@ -16,7 +14,6 @@ ol.proj.transforms.cache_ = {};
 ol.proj.transforms.clear = function() {
   ol.proj.transforms.cache_ = {};
 };
-
 
 /**
  * Registers a conversion function to convert coordinates from the source
@@ -35,7 +32,6 @@ ol.proj.transforms.add = function(source, destination, transformFn) {
   }
   transforms[sourceCode][destinationCode] = transformFn;
 };
-
 
 /**
  * Unregisters the conversion function to convert coordinates from the source
@@ -57,7 +53,6 @@ ol.proj.transforms.remove = function(source, destination) {
   }
   return transform;
 };
-
 
 /**
  * Get a transform given a source code and a destination code.

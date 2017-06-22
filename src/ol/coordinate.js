@@ -3,7 +3,6 @@ goog.provide('ol.coordinate');
 goog.require('ol.math');
 goog.require('ol.string');
 
-
 /**
  * Add `delta` to `coordinate`. `coordinate` is modified in place and returned
  * by the function.
@@ -24,7 +23,6 @@ ol.coordinate.add = function(coordinate, delta) {
   coordinate[1] += delta[1];
   return coordinate;
 };
-
 
 /**
  * Calculates the point closest to the passed coordinate on the passed circle.
@@ -56,7 +54,6 @@ ol.coordinate.closestOnCircle = function(coordinate, circle) {
   return [x, y];
 };
 
-
 /**
  * Calculates the point closest to the passed coordinate on the passed segment.
  * This is the foot of the perpendicular of the coordinate to the segment when
@@ -79,8 +76,9 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
   var y2 = end[1];
   var dx = x2 - x1;
   var dy = y2 - y1;
-  var along = (dx === 0 && dy === 0) ? 0 :
-      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+  var along = dx === 0 && dy === 0
+    ? 0
+    : (dx * (x0 - x1) + dy * (y0 - y1)) / (dx * dx + dy * dy || 0);
   var x, y;
   if (along <= 0) {
     x = x1;
@@ -94,7 +92,6 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
   }
   return [x, y];
 };
-
 
 /**
  * Returns a {@link ol.CoordinateFormatType} function that can be used to format
@@ -121,15 +118,15 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
  */
 ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
-      /**
+    /**
        * @param {ol.Coordinate|undefined} coordinate Coordinate.
        * @return {string} String XY.
        */
-      function(coordinate) {
-        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
-      });
+    function(coordinate) {
+      return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
+    }
+  );
 };
-
 
 /**
  * @param {string} hemispheres Hemispheres.
@@ -138,7 +135,11 @@ ol.coordinate.createStringXY = function(opt_fractionDigits) {
  *    after the decimal point. Default is `0`.
  * @return {string} String.
  */
-ol.coordinate.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionDigits) {
+ol.coordinate.degreesToStringHDMS = function(
+  hemispheres,
+  degrees,
+  opt_fractionDigits
+) {
   var normalizedDegrees = ol.math.modulo(degrees + 180, 360) - 180;
   var x = Math.abs(3600 * normalizedDegrees);
   var dflPrecision = opt_fractionDigits || 0;
@@ -146,7 +147,7 @@ ol.coordinate.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionD
 
   var deg = Math.floor(x / 3600);
   var min = Math.floor((x - deg * 3600) / 60);
-  var sec = x - (deg * 3600) - (min * 60);
+  var sec = x - deg * 3600 - min * 60;
   sec = Math.ceil(sec * precision) / precision;
 
   if (sec >= 60) {
@@ -159,11 +160,18 @@ ol.coordinate.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionD
     deg += 1;
   }
 
-  return deg + '\u00b0 ' + ol.string.padNumber(min, 2) + '\u2032 ' +
-    ol.string.padNumber(sec, 2, dflPrecision) + '\u2033' +
-    (normalizedDegrees == 0 ? '' : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0));
+  return (
+    deg +
+    '\u00b0 ' +
+    ol.string.padNumber(min, 2) +
+    '\u2032 ' +
+    ol.string.padNumber(sec, 2, dflPrecision) +
+    '\u2033' +
+    (normalizedDegrees == 0
+      ? ''
+      : ' ' + hemispheres.charAt(normalizedDegrees < 0 ? 1 : 0))
+  );
 };
-
 
 /**
  * Transforms the given {@link ol.Coordinate} to a string using the given string
@@ -202,7 +210,6 @@ ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   }
 };
 
-
 /**
  * @param {ol.Coordinate} coordinate1 First coordinate.
  * @param {ol.Coordinate} coordinate2 Second coordinate.
@@ -218,7 +225,6 @@ ol.coordinate.equals = function(coordinate1, coordinate2) {
   }
   return equals;
 };
-
 
 /**
  * Rotate `coordinate` by `angle`. `coordinate` is modified in place and
@@ -246,7 +252,6 @@ ol.coordinate.rotate = function(coordinate, angle) {
   return coordinate;
 };
 
-
 /**
  * Scale `coordinate` by `scale`. `coordinate` is modified in place and returned
  * by the function.
@@ -268,7 +273,6 @@ ol.coordinate.scale = function(coordinate, scale) {
   return coordinate;
 };
 
-
 /**
  * Subtract `delta` to `coordinate`. `coordinate` is modified in place and
  * returned by the function.
@@ -283,7 +287,6 @@ ol.coordinate.sub = function(coordinate, delta) {
   return coordinate;
 };
 
-
 /**
  * @param {ol.Coordinate} coord1 First coordinate.
  * @param {ol.Coordinate} coord2 Second coordinate.
@@ -295,7 +298,6 @@ ol.coordinate.squaredDistance = function(coord1, coord2) {
   return dx * dx + dy * dy;
 };
 
-
 /**
  * @param {ol.Coordinate} coord1 First coordinate.
  * @param {ol.Coordinate} coord2 Second coordinate.
@@ -305,7 +307,6 @@ ol.coordinate.distance = function(coord1, coord2) {
   return Math.sqrt(ol.coordinate.squaredDistance(coord1, coord2));
 };
 
-
 /**
  * Calculate the squared distance from a coordinate to a line segment.
  *
@@ -314,10 +315,11 @@ ol.coordinate.distance = function(coord1, coord2) {
  * @return {number} Squared distance from the point to the line segment.
  */
 ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
-  return ol.coordinate.squaredDistance(coordinate,
-      ol.coordinate.closestOnSegment(coordinate, segment));
+  return ol.coordinate.squaredDistance(
+    coordinate,
+    ol.coordinate.closestOnSegment(coordinate, segment)
+  );
 };
-
 
 /**
  * Format a geographic coordinate with the hemisphere, degrees, minutes, and
@@ -343,13 +345,19 @@ ol.coordinate.squaredDistanceToSegment = function(coordinate, segment) {
  */
 ol.coordinate.toStringHDMS = function(coordinate, opt_fractionDigits) {
   if (coordinate) {
-    return ol.coordinate.degreesToStringHDMS('NS', coordinate[1], opt_fractionDigits) + ' ' +
-        ol.coordinate.degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits);
+    return (
+      ol.coordinate.degreesToStringHDMS(
+        'NS',
+        coordinate[1],
+        opt_fractionDigits
+      ) +
+      ' ' +
+      ol.coordinate.degreesToStringHDMS('EW', coordinate[0], opt_fractionDigits)
+    );
   } else {
     return '';
   }
 };
-
 
 /**
  * Format a coordinate as a comma delimited string.

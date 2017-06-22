@@ -12,7 +12,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
 
-
 describe('ol.interaction.Translate', function() {
   var target, map, source, features;
 
@@ -29,11 +28,14 @@ describe('ol.interaction.Translate', function() {
     style.height = height + 'px';
     document.body.appendChild(target);
     source = new ol.source.Vector();
-    features = [new ol.Feature({
-      geometry: new ol.geom.Point([10, -20])
-    }), new ol.Feature({
-      geometry: new ol.geom.Point([20, -30])
-    })];
+    features = [
+      new ol.Feature({
+        geometry: new ol.geom.Point([10, -20])
+      }),
+      new ol.Feature({
+        geometry: new ol.geom.Point([20, -30])
+      })
+    ];
     source.addFeatures(features);
     var layer = new ol.layer.Vector({source: source});
     map = new ol.Map({
@@ -68,12 +70,15 @@ describe('ol.interaction.Translate', function() {
     // calculated in case body has top < 0 (test runner with small window)
     var position = viewport.getBoundingClientRect();
     var shiftKey = opt_shiftKey !== undefined ? opt_shiftKey : false;
-    var event = new ol.MapBrowserPointerEvent(type, map,
-        new ol.pointer.PointerEvent(type, {
-          clientX: position.left + x + width / 2,
-          clientY: position.top + y + height / 2,
-          shiftKey: shiftKey
-        }));
+    var event = new ol.MapBrowserPointerEvent(
+      type,
+      map,
+      new ol.pointer.PointerEvent(type, {
+        clientX: position.left + x + width / 2,
+        clientY: position.top + y + height / 2,
+        shiftKey: shiftKey
+      })
+    );
     map.handleMapBrowserEvent(event);
   }
 
@@ -106,7 +111,6 @@ describe('ol.interaction.Translate', function() {
    * @param {Array<ol.Feature>} features The features.
    */
   function validateEvents(events, features) {
-
     var startevent = events[0];
     var endevent = events[events.length - 1];
 
@@ -130,9 +134,7 @@ describe('ol.interaction.Translate', function() {
     expect(endevent.features.getArray()).to.eql(features);
   }
 
-
   describe('constructor', function() {
-
     it('creates a new interaction', function() {
       var translate = new ol.interaction.Translate({
         features: features
@@ -140,11 +142,9 @@ describe('ol.interaction.Translate', function() {
       expect(translate).to.be.a(ol.interaction.Translate);
       expect(translate).to.be.a(ol.interaction.Interaction);
     });
-
   });
 
   describe('setActive', function() {
-
     it('works when the map is not set', function() {
       var translate = new ol.interaction.Translate({
         features: features
@@ -153,7 +153,6 @@ describe('ol.interaction.Translate', function() {
       translate.setActive(false);
       expect(translate.getActive()).to.be(false);
     });
-
   });
 
   describe('moving features, with features option', function() {
@@ -284,7 +283,5 @@ describe('ol.interaction.Translate', function() {
       expect(element.classList.contains('ol-grabbing')).to.be(false);
       expect(element.classList.contains('ol-grab')).to.be(false);
     });
-
   });
-
 });

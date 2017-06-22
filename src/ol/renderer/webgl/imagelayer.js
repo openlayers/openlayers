@@ -11,9 +11,7 @@ goog.require('ol.transform');
 goog.require('ol.webgl');
 goog.require('ol.webgl.Context');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @extends {ol.renderer.webgl.Layer}
@@ -21,7 +19,6 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.layer.Image} imageLayer Tile layer.
    */
   ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
-
     ol.renderer.webgl.Layer.call(this, mapRenderer, imageLayer);
 
     /**
@@ -42,10 +39,8 @@ if (ol.ENABLE_WEBGL) {
      * @type {?ol.Transform}
      */
     this.hitTransformationMatrix_ = null;
-
   };
   ol.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
-
 
   /**
    * @param {ol.ImageBase} image Image.
@@ -53,7 +48,6 @@ if (ol.ENABLE_WEBGL) {
    * @return {WebGLTexture} Texture.
    */
   ol.renderer.webgl.ImageLayer.prototype.createTexture_ = function(image) {
-
     // We meet the conditions to work with non-power of two textures.
     // http://www.khronos.org/webgl/wiki/WebGL_and_OpenGL_Differences#Non-Power_of_Two_Texture_Support
     // http://learningwebgl.com/blog/?p=2101
@@ -62,37 +56,52 @@ if (ol.ENABLE_WEBGL) {
     var gl = this.mapRenderer.getGL();
 
     return ol.webgl.Context.createTexture(
-        gl, imageElement, ol.webgl.CLAMP_TO_EDGE, ol.webgl.CLAMP_TO_EDGE);
+      gl,
+      imageElement,
+      ol.webgl.CLAMP_TO_EDGE,
+      ol.webgl.CLAMP_TO_EDGE
+    );
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg) {
+  ol.renderer.webgl.ImageLayer.prototype.forEachFeatureAtCoordinate = function(
+    coordinate,
+    frameState,
+    hitTolerance,
+    callback,
+    thisArg
+  ) {
     var layer = this.getLayer();
     var source = layer.getSource();
     var resolution = frameState.viewState.resolution;
     var rotation = frameState.viewState.rotation;
     var skippedFeatureUids = frameState.skippedFeatureUids;
     return source.forEachFeatureAtCoordinate(
-        coordinate, resolution, rotation, hitTolerance, skippedFeatureUids,
-
-        /**
+      coordinate,
+      resolution,
+      rotation,
+      hitTolerance,
+      skippedFeatureUids,
+      /**
          * @param {ol.Feature|ol.render.Feature} feature Feature.
          * @return {?} Callback result.
          */
-        function(feature) {
-          return callback.call(thisArg, feature, layer);
-        });
+      function(feature) {
+        return callback.call(thisArg, feature, layer);
+      }
+    );
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(frameState, layerState, context) {
-
+  ol.renderer.webgl.ImageLayer.prototype.prepareFrame = function(
+    frameState,
+    layerState,
+    context
+  ) {
     var gl = this.mapRenderer.getGL();
 
     var pixelRatio = frameState.pixelRatio;
@@ -103,7 +112,7 @@ if (ol.ENABLE_WEBGL) {
 
     var image = this.image_;
     var texture = this.texture;
-    var imageLayer = /** @type {ol.layer.Image} */ (this.getLayer());
+    var imageLayer /** @type {ol.layer.Image} */ = this.getLayer();
     var imageSource = imageLayer.getSource();
 
     var hints = frameState.viewHints;
@@ -111,10 +120,15 @@ if (ol.ENABLE_WEBGL) {
     var renderedExtent = frameState.extent;
     if (layerState.extent !== undefined) {
       renderedExtent = ol.extent.getIntersection(
-          renderedExtent, layerState.extent);
+        renderedExtent,
+        layerState.extent
+      );
     }
-    if (!hints[ol.ViewHint.ANIMATING] && !hints[ol.ViewHint.INTERACTING] &&
-        !ol.extent.isEmpty(renderedExtent)) {
+    if (
+      !hints[ol.ViewHint.ANIMATING] &&
+      !hints[ol.ViewHint.INTERACTING] &&
+      !ol.extent.isEmpty(renderedExtent)
+    ) {
       var projection = viewState.projection;
       if (!ol.ENABLE_RASTER_REPROJECTION) {
         var sourceProjection = imageSource.getProjection();
@@ -122,8 +136,12 @@ if (ol.ENABLE_WEBGL) {
           projection = sourceProjection;
         }
       }
-      var image_ = imageSource.getImage(renderedExtent, viewResolution,
-          pixelRatio, projection);
+      var image_ = imageSource.getImage(
+        renderedExtent,
+        viewResolution,
+        pixelRatio,
+        projection
+      );
       if (image_) {
         var loaded = this.loadImage(image_);
         if (loaded) {
@@ -140,7 +158,7 @@ if (ol.ENABLE_WEBGL) {
               }
             }.bind(null, gl, this.texture);
             frameState.postRenderFunctions.push(
-              /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+              /** @type {ol.PostRenderFunction} */ postRenderFunction
             );
           }
         }
@@ -150,9 +168,15 @@ if (ol.ENABLE_WEBGL) {
     if (image) {
       var canvas = this.mapRenderer.getContext().getCanvas();
 
-      this.updateProjectionMatrix_(canvas.width, canvas.height,
-          pixelRatio, viewCenter, viewResolution, viewRotation,
-          image.getExtent());
+      this.updateProjectionMatrix_(
+        canvas.width,
+        canvas.height,
+        pixelRatio,
+        viewCenter,
+        viewResolution,
+        viewRotation,
+        image.getExtent()
+      );
       this.hitTransformationMatrix_ = null;
 
       // Translate and scale to flip the Y coord.
@@ -171,7 +195,6 @@ if (ol.ENABLE_WEBGL) {
     return !!image;
   };
 
-
   /**
    * @param {number} canvasWidth Canvas width.
    * @param {number} canvasHeight Canvas height.
@@ -182,43 +205,65 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.Extent} imageExtent Image extent.
    * @private
    */
-  ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(canvasWidth, canvasHeight, pixelRatio,
-          viewCenter, viewResolution, viewRotation, imageExtent) {
-
+  ol.renderer.webgl.ImageLayer.prototype.updateProjectionMatrix_ = function(
+    canvasWidth,
+    canvasHeight,
+    pixelRatio,
+    viewCenter,
+    viewResolution,
+    viewRotation,
+    imageExtent
+  ) {
     var canvasExtentWidth = canvasWidth * viewResolution;
     var canvasExtentHeight = canvasHeight * viewResolution;
 
     var projectionMatrix = this.projectionMatrix;
     ol.transform.reset(projectionMatrix);
-    ol.transform.scale(projectionMatrix,
-        pixelRatio * 2 / canvasExtentWidth,
-        pixelRatio * 2 / canvasExtentHeight);
+    ol.transform.scale(
+      projectionMatrix,
+      pixelRatio * 2 / canvasExtentWidth,
+      pixelRatio * 2 / canvasExtentHeight
+    );
     ol.transform.rotate(projectionMatrix, -viewRotation);
-    ol.transform.translate(projectionMatrix,
-        imageExtent[0] - viewCenter[0],
-        imageExtent[1] - viewCenter[1]);
-    ol.transform.scale(projectionMatrix,
-        (imageExtent[2] - imageExtent[0]) / 2,
-        (imageExtent[3] - imageExtent[1]) / 2);
+    ol.transform.translate(
+      projectionMatrix,
+      imageExtent[0] - viewCenter[0],
+      imageExtent[1] - viewCenter[1]
+    );
+    ol.transform.scale(
+      projectionMatrix,
+      (imageExtent[2] - imageExtent[0]) / 2,
+      (imageExtent[3] - imageExtent[1]) / 2
+    );
     ol.transform.translate(projectionMatrix, 1, 1);
-
   };
-
 
   /**
    * @inheritDoc
    */
-  ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(coordinate, frameState) {
+  ol.renderer.webgl.ImageLayer.prototype.hasFeatureAtCoordinate = function(
+    coordinate,
+    frameState
+  ) {
     var hasFeature = this.forEachFeatureAtCoordinate(
-        coordinate, frameState, 0, ol.functions.TRUE, this);
+      coordinate,
+      frameState,
+      0,
+      ol.functions.TRUE,
+      this
+    );
     return hasFeature !== undefined;
   };
 
-
   /**
    * @inheritDoc
    */
-  ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg) {
+  ol.renderer.webgl.ImageLayer.prototype.forEachLayerAtPixel = function(
+    pixel,
+    frameState,
+    callback,
+    thisArg
+  ) {
     if (!this.image_ || !this.image_.getImage()) {
       return undefined;
     }
@@ -227,9 +272,16 @@ if (ol.ENABLE_WEBGL) {
       // for ImageVector sources use the original hit-detection logic,
       // so that for example also transparent polygons are detected
       var coordinate = ol.transform.apply(
-          frameState.pixelToCoordinateTransform, pixel.slice());
+        frameState.pixelToCoordinateTransform,
+        pixel.slice()
+      );
       var hasFeature = this.forEachFeatureAtCoordinate(
-          coordinate, frameState, 0, ol.functions.TRUE, this);
+        coordinate,
+        frameState,
+        0,
+        ol.functions.TRUE,
+        this
+      );
 
       if (hasFeature) {
         return callback.call(thisArg, this.getLayer(), null);
@@ -237,19 +289,29 @@ if (ol.ENABLE_WEBGL) {
         return undefined;
       }
     } else {
-      var imageSize =
-          [this.image_.getImage().width, this.image_.getImage().height];
+      var imageSize = [
+        this.image_.getImage().width,
+        this.image_.getImage().height
+      ];
 
       if (!this.hitTransformationMatrix_) {
         this.hitTransformationMatrix_ = this.getHitTransformationMatrix_(
-            frameState.size, imageSize);
+          frameState.size,
+          imageSize
+        );
       }
 
       var pixelOnFrameBuffer = ol.transform.apply(
-          this.hitTransformationMatrix_, pixel.slice());
+        this.hitTransformationMatrix_,
+        pixel.slice()
+      );
 
-      if (pixelOnFrameBuffer[0] < 0 || pixelOnFrameBuffer[0] > imageSize[0] ||
-          pixelOnFrameBuffer[1] < 0 || pixelOnFrameBuffer[1] > imageSize[1]) {
+      if (
+        pixelOnFrameBuffer[0] < 0 ||
+        pixelOnFrameBuffer[0] > imageSize[0] ||
+        pixelOnFrameBuffer[1] < 0 ||
+        pixelOnFrameBuffer[1] > imageSize[1]
+      ) {
         // outside the image, no need to check
         return undefined;
       }
@@ -259,18 +321,26 @@ if (ol.ENABLE_WEBGL) {
       }
 
       this.hitCanvasContext_.clearRect(0, 0, 1, 1);
-      this.hitCanvasContext_.drawImage(this.image_.getImage(),
-          pixelOnFrameBuffer[0], pixelOnFrameBuffer[1], 1, 1, 0, 0, 1, 1);
+      this.hitCanvasContext_.drawImage(
+        this.image_.getImage(),
+        pixelOnFrameBuffer[0],
+        pixelOnFrameBuffer[1],
+        1,
+        1,
+        0,
+        0,
+        1,
+        1
+      );
 
       var imageData = this.hitCanvasContext_.getImageData(0, 0, 1, 1).data;
       if (imageData[3] > 0) {
-        return callback.call(thisArg, this.getLayer(),  imageData);
+        return callback.call(thisArg, this.getLayer(), imageData);
       } else {
         return undefined;
       }
     }
   };
-
 
   /**
    * The transformation matrix to get the pixel on the image for a
@@ -280,7 +350,10 @@ if (ol.ENABLE_WEBGL) {
    * @return {ol.Transform} The transformation matrix.
    * @private
    */
-  ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(mapSize, imageSize) {
+  ol.renderer.webgl.ImageLayer.prototype.getHitTransformationMatrix_ = function(
+    mapSize,
+    imageSize
+  ) {
     // the first matrix takes a map pixel, flips the y-axis and scales to
     // a range between -1 ... 1
     var mapCoordTransform = ol.transform.create();
@@ -291,7 +364,9 @@ if (ol.ENABLE_WEBGL) {
 
     // the second matrix is the inverse of the projection matrix used in the
     // shader for drawing
-    var projectionMatrixInv = ol.transform.invert(this.projectionMatrix.slice());
+    var projectionMatrixInv = ol.transform.invert(
+      this.projectionMatrix.slice()
+    );
 
     // the third matrix scales to the image dimensions and flips the y-axis again
     var transform = ol.transform.create();
@@ -305,5 +380,4 @@ if (ol.ENABLE_WEBGL) {
 
     return transform;
   };
-
 }

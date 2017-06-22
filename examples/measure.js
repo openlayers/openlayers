@@ -16,7 +16,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var wgs84Sphere = new ol.Sphere(6378137);
 
 var raster = new ol.layer.Tile({
@@ -44,13 +43,11 @@ var vector = new ol.layer.Vector({
   })
 });
 
-
 /**
  * Currently drawn feature.
  * @type {ol.Feature}
  */
 var sketch;
-
 
 /**
  * The help tooltip element.
@@ -58,13 +55,11 @@ var sketch;
  */
 var helpTooltipElement;
 
-
 /**
  * Overlay to show the help messages.
  * @type {ol.Overlay}
  */
 var helpTooltip;
-
 
 /**
  * The measure tooltip element.
@@ -72,13 +67,11 @@ var helpTooltip;
  */
 var measureTooltipElement;
 
-
 /**
  * Overlay to show the measurement.
  * @type {ol.Overlay}
  */
 var measureTooltip;
-
 
 /**
  * Message to show when the user is drawing a polygon.
@@ -86,13 +79,11 @@ var measureTooltip;
  */
 var continuePolygonMsg = 'Click to continue drawing the polygon';
 
-
 /**
  * Message to show when the user is drawing a line.
  * @type {string}
  */
 var continueLineMsg = 'Click to continue drawing the line';
-
 
 /**
  * Handle pointer move.
@@ -106,7 +97,7 @@ var pointerMoveHandler = function(evt) {
   var helpMsg = 'Click to start drawing';
 
   if (sketch) {
-    var geom = (sketch.getGeometry());
+    var geom = sketch.getGeometry();
     if (geom instanceof ol.geom.Polygon) {
       helpMsg = continuePolygonMsg;
     } else if (geom instanceof ol.geom.LineString) {
@@ -119,7 +110,6 @@ var pointerMoveHandler = function(evt) {
 
   helpTooltipElement.classList.remove('hidden');
 };
-
 
 var map = new ol.Map({
   layers: [raster, vector],
@@ -140,7 +130,6 @@ var typeSelect = document.getElementById('type');
 var geodesicCheckbox = document.getElementById('geodesic');
 
 var draw; // global so we can remove it later
-
 
 /**
  * Format length output.
@@ -163,15 +152,12 @@ var formatLength = function(line) {
   }
   var output;
   if (length > 100) {
-    output = (Math.round(length / 1000 * 100) / 100) +
-        ' ' + 'km';
+    output = Math.round(length / 1000 * 100) / 100 + ' ' + 'km';
   } else {
-    output = (Math.round(length * 100) / 100) +
-        ' ' + 'm';
+    output = Math.round(length * 100) / 100 + ' ' + 'm';
   }
   return output;
 };
-
 
 /**
  * Format area output.
@@ -182,8 +168,9 @@ var formatArea = function(polygon) {
   var area;
   if (geodesicCheckbox.checked) {
     var sourceProj = map.getView().getProjection();
-    var geom = /** @type {ol.geom.Polygon} */(polygon.clone().transform(
-        sourceProj, 'EPSG:4326'));
+    var geom /** @type {ol.geom.Polygon} */ = polygon
+      .clone()
+      .transform(sourceProj, 'EPSG:4326');
     var coordinates = geom.getLinearRing(0).getCoordinates();
     area = Math.abs(wgs84Sphere.geodesicArea(coordinates));
   } else {
@@ -191,20 +178,18 @@ var formatArea = function(polygon) {
   }
   var output;
   if (area > 10000) {
-    output = (Math.round(area / 1000000 * 100) / 100) +
-        ' ' + 'km<sup>2</sup>';
+    output = Math.round(area / 1000000 * 100) / 100 + ' ' + 'km<sup>2</sup>';
   } else {
-    output = (Math.round(area * 100) / 100) +
-        ' ' + 'm<sup>2</sup>';
+    output = Math.round(area * 100) / 100 + ' ' + 'm<sup>2</sup>';
   }
   return output;
 };
 
 function addInteraction() {
-  var type = (typeSelect.value == 'area' ? 'Polygon' : 'LineString');
+  var type = typeSelect.value == 'area' ? 'Polygon' : 'LineString';
   draw = new ol.interaction.Draw({
     source: source,
-    type: /** @type {ol.geom.GeometryType} */ (type),
+    type /** @type {ol.geom.GeometryType} */: type,
     style: new ol.style.Style({
       fill: new ol.style.Fill({
         color: 'rgba(255, 255, 255, 0.2)'
@@ -231,42 +216,47 @@ function addInteraction() {
   createHelpTooltip();
 
   var listener;
-  draw.on('drawstart',
-      function(evt) {
-        // set sketch
-        sketch = evt.feature;
+  draw.on(
+    'drawstart',
+    function(evt) {
+      // set sketch
+      sketch = evt.feature;
 
-        /** @type {ol.Coordinate|undefined} */
-        var tooltipCoord = evt.coordinate;
+      /** @type {ol.Coordinate|undefined} */
+      var tooltipCoord = evt.coordinate;
 
-        listener = sketch.getGeometry().on('change', function(evt) {
-          var geom = evt.target;
-          var output;
-          if (geom instanceof ol.geom.Polygon) {
-            output = formatArea(geom);
-            tooltipCoord = geom.getInteriorPoint().getCoordinates();
-          } else if (geom instanceof ol.geom.LineString) {
-            output = formatLength(geom);
-            tooltipCoord = geom.getLastCoordinate();
-          }
-          measureTooltipElement.innerHTML = output;
-          measureTooltip.setPosition(tooltipCoord);
-        });
-      }, this);
+      listener = sketch.getGeometry().on('change', function(evt) {
+        var geom = evt.target;
+        var output;
+        if (geom instanceof ol.geom.Polygon) {
+          output = formatArea(geom);
+          tooltipCoord = geom.getInteriorPoint().getCoordinates();
+        } else if (geom instanceof ol.geom.LineString) {
+          output = formatLength(geom);
+          tooltipCoord = geom.getLastCoordinate();
+        }
+        measureTooltipElement.innerHTML = output;
+        measureTooltip.setPosition(tooltipCoord);
+      });
+    },
+    this
+  );
 
-  draw.on('drawend',
-      function() {
-        measureTooltipElement.className = 'tooltip tooltip-static';
-        measureTooltip.setOffset([0, -7]);
-        // unset sketch
-        sketch = null;
-        // unset tooltip so that a new one can be created
-        measureTooltipElement = null;
-        createMeasureTooltip();
-        ol.Observable.unByKey(listener);
-      }, this);
+  draw.on(
+    'drawend',
+    function() {
+      measureTooltipElement.className = 'tooltip tooltip-static';
+      measureTooltip.setOffset([0, -7]);
+      // unset sketch
+      sketch = null;
+      // unset tooltip so that a new one can be created
+      measureTooltipElement = null;
+      createMeasureTooltip();
+      ol.Observable.unByKey(listener);
+    },
+    this
+  );
 }
-
 
 /**
  * Creates a new help tooltip
@@ -285,7 +275,6 @@ function createHelpTooltip() {
   map.addOverlay(helpTooltip);
 }
 
-
 /**
  * Creates a new measure tooltip
  */
@@ -302,7 +291,6 @@ function createMeasureTooltip() {
   });
   map.addOverlay(measureTooltip);
 }
-
 
 /**
  * Let user change the geometry type.

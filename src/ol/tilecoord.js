@@ -1,6 +1,5 @@
 goog.provide('ol.tilecoord');
 
-
 /**
  * @param {number} z Z.
  * @param {number} x X.
@@ -19,7 +18,6 @@ ol.tilecoord.createOrUpdate = function(z, x, y, opt_tileCoord) {
   }
 };
 
-
 /**
  * @param {number} z Z.
  * @param {number} x X.
@@ -30,7 +28,6 @@ ol.tilecoord.getKeyZXY = function(z, x, y) {
   return z + '/' + x + '/' + y;
 };
 
-
 /**
  * @param {ol.TileCoord} tileCoord Tile coord.
  * @return {number} Hash.
@@ -38,7 +35,6 @@ ol.tilecoord.getKeyZXY = function(z, x, y) {
 ol.tilecoord.hash = function(tileCoord) {
   return (tileCoord[1] << tileCoord[0]) + tileCoord[2];
 };
-
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coord.
@@ -63,7 +59,6 @@ ol.tilecoord.quadKey = function(tileCoord) {
   }
   return digits.join('');
 };
-
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.

@@ -3,13 +3,11 @@ goog.provide('ol.format.XSD');
 goog.require('ol.xml');
 goog.require('ol.string');
 
-
 /**
  * @const
  * @type {string}
  */
 ol.format.XSD.NAMESPACE_URI = 'http://www.w3.org/2001/XMLSchema';
-
 
 /**
  * @param {Node} node Node.
@@ -19,7 +17,6 @@ ol.format.XSD.readBoolean = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   return ol.format.XSD.readBooleanString(s);
 };
-
 
 /**
  * @param {string} string String.
@@ -34,7 +31,6 @@ ol.format.XSD.readBooleanString = function(string) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @return {number|undefined} DateTime in seconds.
@@ -45,7 +41,6 @@ ol.format.XSD.readDateTime = function(node) {
   return isNaN(dateTime) ? undefined : dateTime / 1000;
 };
 
-
 /**
  * @param {Node} node Node.
  * @return {number|undefined} Decimal.
@@ -54,7 +49,6 @@ ol.format.XSD.readDecimal = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   return ol.format.XSD.readDecimalString(s);
 };
-
 
 /**
  * @param {string} string String.
@@ -70,7 +64,6 @@ ol.format.XSD.readDecimalString = function(string) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @return {number|undefined} Non negative integer.
@@ -79,7 +72,6 @@ ol.format.XSD.readNonNegativeInteger = function(node) {
   var s = ol.xml.getAllTextContent(node, false);
   return ol.format.XSD.readNonNegativeIntegerString(s);
 };
-
 
 /**
  * @param {string} string String.
@@ -94,7 +86,6 @@ ol.format.XSD.readNonNegativeIntegerString = function(string) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @return {string|undefined} String.
@@ -103,15 +94,13 @@ ol.format.XSD.readString = function(node) {
   return ol.xml.getAllTextContent(node, false).trim();
 };
 
-
 /**
  * @param {Node} node Node to append a TextNode with the boolean to.
  * @param {boolean} bool Boolean.
  */
 ol.format.XSD.writeBooleanTextNode = function(node, bool) {
-  ol.format.XSD.writeStringTextNode(node, (bool) ? '1' : '0');
+  ol.format.XSD.writeStringTextNode(node, bool ? '1' : '0');
 };
-
 
 /**
  * @param {Node} node Node to append a CDATA Section with the string to.
@@ -121,22 +110,27 @@ ol.format.XSD.writeCDATASection = function(node, string) {
   node.appendChild(ol.xml.DOCUMENT.createCDATASection(string));
 };
 
-
 /**
  * @param {Node} node Node to append a TextNode with the dateTime to.
  * @param {number} dateTime DateTime in seconds.
  */
 ol.format.XSD.writeDateTimeTextNode = function(node, dateTime) {
   var date = new Date(dateTime * 1000);
-  var string = date.getUTCFullYear() + '-' +
-      ol.string.padNumber(date.getUTCMonth() + 1, 2) + '-' +
-      ol.string.padNumber(date.getUTCDate(), 2) + 'T' +
-      ol.string.padNumber(date.getUTCHours(), 2) + ':' +
-      ol.string.padNumber(date.getUTCMinutes(), 2) + ':' +
-      ol.string.padNumber(date.getUTCSeconds(), 2) + 'Z';
+  var string =
+    date.getUTCFullYear() +
+    '-' +
+    ol.string.padNumber(date.getUTCMonth() + 1, 2) +
+    '-' +
+    ol.string.padNumber(date.getUTCDate(), 2) +
+    'T' +
+    ol.string.padNumber(date.getUTCHours(), 2) +
+    ':' +
+    ol.string.padNumber(date.getUTCMinutes(), 2) +
+    ':' +
+    ol.string.padNumber(date.getUTCSeconds(), 2) +
+    'Z';
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };
-
 
 /**
  * @param {Node} node Node to append a TextNode with the decimal to.
@@ -147,16 +141,17 @@ ol.format.XSD.writeDecimalTextNode = function(node, decimal) {
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };
 
-
 /**
  * @param {Node} node Node to append a TextNode with the decimal to.
  * @param {number} nonNegativeInteger Non negative integer.
  */
-ol.format.XSD.writeNonNegativeIntegerTextNode = function(node, nonNegativeInteger) {
+ol.format.XSD.writeNonNegativeIntegerTextNode = function(
+  node,
+  nonNegativeInteger
+) {
   var string = nonNegativeInteger.toString();
   node.appendChild(ol.xml.DOCUMENT.createTextNode(string));
 };
-
 
 /**
  * @param {Node} node Node to append a TextNode with the string to.

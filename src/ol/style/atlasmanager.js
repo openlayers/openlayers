@@ -3,7 +3,6 @@ goog.provide('ol.style.AtlasManager');
 goog.require('ol');
 goog.require('ol.style.Atlas');
 
-
 /**
  * Manages the creation of image atlases.
  *
@@ -22,7 +21,6 @@ goog.require('ol.style.Atlas');
  * @param {olx.style.AtlasManagerOptions=} opt_options Options.
  */
 ol.style.AtlasManager = function(opt_options) {
-
   var options = opt_options || {};
 
   /**
@@ -30,18 +28,22 @@ ol.style.AtlasManager = function(opt_options) {
    * @private
    * @type {number}
    */
-  this.currentSize_ = options.initialSize !== undefined ?
-      options.initialSize : ol.INITIAL_ATLAS_SIZE;
+  this.currentSize_ = options.initialSize !== undefined
+    ? options.initialSize
+    : ol.INITIAL_ATLAS_SIZE;
 
   /**
    * The maximum size in pixels of atlas images.
    * @private
    * @type {number}
    */
-  this.maxSize_ = options.maxSize !== undefined ?
-      options.maxSize : ol.MAX_ATLAS_SIZE != -1 ?
-          ol.MAX_ATLAS_SIZE : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined ?
-              ol.WEBGL_MAX_TEXTURE_SIZE : 2048;
+  this.maxSize_ = options.maxSize !== undefined
+    ? options.maxSize
+    : ol.MAX_ATLAS_SIZE != -1
+      ? ol.MAX_ATLAS_SIZE
+      : ol.WEBGL_MAX_TEXTURE_SIZE !== undefined
+        ? ol.WEBGL_MAX_TEXTURE_SIZE
+        : 2048;
 
   /**
    * The size in pixels between images.
@@ -70,7 +72,6 @@ ol.style.AtlasManager = function(opt_options) {
   this.hitAtlases_ = [new ol.style.Atlas(this.currentHitSize_, this.space_)];
 };
 
-
 /**
  * @param {string} id The identifier of the entry to check.
  * @return {?ol.AtlasManagerInfo} The position and atlas image for the
@@ -83,11 +84,10 @@ ol.style.AtlasManager.prototype.getInfo = function(id) {
   if (!info) {
     return null;
   }
-  var hitInfo = /** @type {ol.AtlasInfo} */ (this.getInfo_(this.hitAtlases_, id));
+  var hitInfo /** @type {ol.AtlasInfo} */ = this.getInfo_(this.hitAtlases_, id);
 
   return this.mergeInfos_(info, hitInfo);
 };
-
 
 /**
  * @private
@@ -108,7 +108,6 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
   return null;
 };
 
-
 /**
  * @private
  * @param {ol.AtlasInfo} info The info for the real image.
@@ -118,14 +117,13 @@ ol.style.AtlasManager.prototype.getInfo_ = function(atlases, id) {
  *    entry, or `null` if the entry is not part of the atlases.
  */
 ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
-  return /** @type {ol.AtlasManagerInfo} */ ({
+  return /** @type {ol.AtlasManagerInfo} */ {
     offsetX: info.offsetX,
     offsetY: info.offsetY,
     image: info.image,
     hitImage: hitInfo.image
-  });
+  };
 };
-
 
 /**
  * Add an image to the atlas manager.
@@ -149,16 +147,23 @@ ol.style.AtlasManager.prototype.mergeInfos_ = function(info, hitInfo) {
  * @return {?ol.AtlasManagerInfo}  The position and atlas image for the
  *    entry, or `null` if the image is too big.
  */
-ol.style.AtlasManager.prototype.add = function(id, width, height,
-        renderCallback, opt_renderHitCallback, opt_this) {
-  if (width + this.space_ > this.maxSize_ ||
-      height + this.space_ > this.maxSize_) {
+ol.style.AtlasManager.prototype.add = function(
+  id,
+  width,
+  height,
+  renderCallback,
+  opt_renderHitCallback,
+  opt_this
+) {
+  if (
+    width + this.space_ > this.maxSize_ ||
+    height + this.space_ > this.maxSize_
+  ) {
     return null;
   }
 
   /** @type {?ol.AtlasInfo} */
-  var info = this.add_(false,
-      id, width, height, renderCallback, opt_this);
+  var info = this.add_(false, id, width, height, renderCallback, opt_this);
   if (!info) {
     return null;
   }
@@ -166,15 +171,21 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
   // even if no hit-detection entry is requested, we insert a fake entry into
   // the hit-detection atlas, to make sure that the offset is the same for
   // the original image and the hit-detection image.
-  var renderHitCallback = opt_renderHitCallback !== undefined ?
-      opt_renderHitCallback : ol.nullFunction;
+  var renderHitCallback = opt_renderHitCallback !== undefined
+    ? opt_renderHitCallback
+    : ol.nullFunction;
 
-  var hitInfo = /** @type {ol.AtlasInfo} */ (this.add_(true,
-      id, width, height, renderHitCallback, opt_this));
+  var hitInfo /** @type {ol.AtlasInfo} */ = this.add_(
+    true,
+    id,
+    width,
+    height,
+    renderHitCallback,
+    opt_this
+  );
 
   return this.mergeInfos_(info, hitInfo);
 };
-
 
 /**
  * @private
@@ -189,9 +200,15 @@ ol.style.AtlasManager.prototype.add = function(id, width, height,
  * @return {?ol.AtlasInfo}  The position and atlas image for the entry,
  *    or `null` if the image is too big.
  */
-ol.style.AtlasManager.prototype.add_ = function(isHitAtlas, id, width, height,
-        renderCallback, opt_this) {
-  var atlases = (isHitAtlas) ? this.hitAtlases_ : this.atlases_;
+ol.style.AtlasManager.prototype.add_ = function(
+  isHitAtlas,
+  id,
+  width,
+  height,
+  renderCallback,
+  opt_this
+) {
+  var atlases = isHitAtlas ? this.hitAtlases_ : this.atlases_;
   var atlas, info, i, ii;
   for (i = 0, ii = atlases.length; i < ii; ++i) {
     atlas = atlases[i];

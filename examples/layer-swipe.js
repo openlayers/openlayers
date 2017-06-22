@@ -19,9 +19,9 @@ var map = new ol.Map({
   layers: [osm, bing],
   target: 'map',
   controls: ol.control.defaults({
-    attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+    attributionOptions /** @type {olx.control.AttributionOptions} */: {
       collapsible: false
-    })
+    }
   }),
   view: new ol.View({
     center: [0, 0],
@@ -46,6 +46,10 @@ bing.on('postcompose', function(event) {
   ctx.restore();
 });
 
-swipe.addEventListener('input', function() {
-  map.render();
-}, false);
+swipe.addEventListener(
+  'input',
+  function() {
+    map.render();
+  },
+  false
+);

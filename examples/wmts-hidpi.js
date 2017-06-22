@@ -5,7 +5,6 @@ goog.require('ol.has');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.WMTS');
 
-
 var capabilitiesUrl = 'https://www.basemap.at/wmts/1.0.0/WMTSCapabilities.xml';
 
 // HiDPI support:
@@ -23,17 +22,23 @@ var map = new ol.Map({
   })
 });
 
-fetch(capabilitiesUrl).then(function(response) {
-  return response.text();
-}).then(function(text) {
-  var result = new ol.format.WMTSCapabilities().read(text);
-  var options = ol.source.WMTS.optionsFromCapabilities(result, {
-    layer: layer,
-    matrixSet: 'google3857',
-    style: 'normal'
+fetch(capabilitiesUrl)
+  .then(function(response) {
+    return response.text();
+  })
+  .then(function(text) {
+    var result = new ol.format.WMTSCapabilities().read(text);
+    var options = ol.source.WMTS.optionsFromCapabilities(result, {
+      layer: layer,
+      matrixSet: 'google3857',
+      style: 'normal'
+    });
+    options.tilePixelRatio = tilePixelRatio;
+    map.addLayer(
+      new ol.layer.Tile({
+        source: new ol.source.WMTS /** @type {!olx.source.WMTSOptions} */(
+          options
+        )
+      })
+    );
   });
-  options.tilePixelRatio = tilePixelRatio;
-  map.addLayer(new ol.layer.Tile({
-    source: new ol.source.WMTS(/** @type {!olx.source.WMTSOptions} */ (options))
-  }));
-});

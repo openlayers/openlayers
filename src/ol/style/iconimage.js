@@ -8,7 +8,6 @@ goog.require('ol.events.EventType');
 goog.require('ol.ImageState');
 goog.require('ol.style');
 
-
 /**
  * @constructor
  * @param {Image|HTMLCanvasElement} image Image.
@@ -19,9 +18,14 @@ goog.require('ol.style');
  * @param {ol.Color} color Color.
  * @extends {ol.events.EventTarget}
  */
-ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
-                               color) {
-
+ol.style.IconImage = function(
+  image,
+  src,
+  size,
+  crossOrigin,
+  imageState,
+  color
+) {
   ol.events.EventTarget.call(this);
 
   /**
@@ -44,9 +48,9 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
    * @private
    * @type {HTMLCanvasElement}
    */
-  this.canvas_ = color ?
-      /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
-      null;
+  this.canvas_ = color
+    ? /** @type {HTMLCanvasElement} */ document.createElement('CANVAS')
+    : null;
 
   /**
    * @private
@@ -86,10 +90,8 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
   if (this.imageState_ == ol.ImageState.LOADED) {
     this.determineTainting_();
   }
-
 };
 ol.inherits(ol.style.IconImage, ol.events.EventTarget);
-
 
 /**
  * @param {Image|HTMLCanvasElement} image Image.
@@ -100,18 +102,29 @@ ol.inherits(ol.style.IconImage, ol.events.EventTarget);
  * @param {ol.Color} color Color.
  * @return {ol.style.IconImage} Icon image.
  */
-ol.style.IconImage.get = function(image, src, size, crossOrigin, imageState,
-                                   color) {
+ol.style.IconImage.get = function(
+  image,
+  src,
+  size,
+  crossOrigin,
+  imageState,
+  color
+) {
   var iconImageCache = ol.style.iconImageCache;
   var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {
     iconImage = new ol.style.IconImage(
-        image, src, size, crossOrigin, imageState, color);
+      image,
+      src,
+      size,
+      crossOrigin,
+      imageState,
+      color
+    );
     iconImageCache.set(src, crossOrigin, color, iconImage);
   }
   return iconImage;
 };
-
 
 /**
  * @private
@@ -126,14 +139,12 @@ ol.style.IconImage.prototype.determineTainting_ = function() {
   }
 };
 
-
 /**
  * @private
  */
 ol.style.IconImage.prototype.dispatchChangeEvent_ = function() {
   this.dispatchEvent(ol.events.EventType.CHANGE);
 };
-
 
 /**
  * @private
@@ -143,7 +154,6 @@ ol.style.IconImage.prototype.handleImageError_ = function() {
   this.unlistenImage_();
   this.dispatchChangeEvent_();
 };
-
 
 /**
  * @private
@@ -161,7 +171,6 @@ ol.style.IconImage.prototype.handleImageLoad_ = function() {
   this.dispatchChangeEvent_();
 };
 
-
 /**
  * @param {number} pixelRatio Pixel ratio.
  * @return {Image|HTMLCanvasElement} Image or Canvas element.
@@ -170,14 +179,12 @@ ol.style.IconImage.prototype.getImage = function(pixelRatio) {
   return this.canvas_ ? this.canvas_ : this.image_;
 };
 
-
 /**
  * @return {ol.ImageState} Image state.
  */
 ol.style.IconImage.prototype.getImageState = function() {
   return this.imageState_;
 };
-
 
 /**
  * @param {number} pixelRatio Pixel ratio.
@@ -198,14 +205,12 @@ ol.style.IconImage.prototype.getHitDetectionImage = function(pixelRatio) {
   return this.hitDetectionImage_;
 };
 
-
 /**
  * @return {ol.Size} Image size.
  */
 ol.style.IconImage.prototype.getSize = function() {
   return this.size_;
 };
-
 
 /**
  * @return {string|undefined} Image src.
@@ -214,7 +219,6 @@ ol.style.IconImage.prototype.getSrc = function() {
   return this.src_;
 };
 
-
 /**
  * Load not yet loaded URI.
  */
@@ -222,10 +226,18 @@ ol.style.IconImage.prototype.load = function() {
   if (this.imageState_ == ol.ImageState.IDLE) {
     this.imageState_ = ol.ImageState.LOADING;
     this.imageListenerKeys_ = [
-      ol.events.listenOnce(this.image_, ol.events.EventType.ERROR,
-          this.handleImageError_, this),
-      ol.events.listenOnce(this.image_, ol.events.EventType.LOAD,
-          this.handleImageLoad_, this)
+      ol.events.listenOnce(
+        this.image_,
+        ol.events.EventType.ERROR,
+        this.handleImageError_,
+        this
+      ),
+      ol.events.listenOnce(
+        this.image_,
+        ol.events.EventType.LOAD,
+        this.handleImageLoad_,
+        this
+      )
     ];
     try {
       this.image_.src = this.src_;
@@ -234,7 +246,6 @@ ol.style.IconImage.prototype.load = function() {
     }
   }
 };
-
 
 /**
  * @private
@@ -263,7 +274,6 @@ ol.style.IconImage.prototype.replaceColor_ = function() {
   }
   ctx.putImageData(imgData, 0, 0);
 };
-
 
 /**
  * Discards event handlers which listen for load completion or errors.

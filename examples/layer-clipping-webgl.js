@@ -12,19 +12,18 @@ if (!ol.has.WEBGL) {
    */
   info.style.display = '';
 } else {
-
   var osm = new ol.layer.Tile({
     source: new ol.source.OSM()
   });
 
   var map = new ol.Map({
     layers: [osm],
-    renderer: /** @type {ol.renderer.Type} */ ('webgl'),
+    renderer /** @type {ol.renderer.Type} */: 'webgl',
     target: 'map',
     controls: ol.control.defaults({
-      attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
+      attributionOptions /** @type {olx.control.AttributionOptions} */: {
         collapsible: false
-      })
+      }
     }),
     view: new ol.View({
       center: [0, 0],
@@ -73,20 +72,64 @@ if (!ol.has.WEBGL) {
 
     var buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      // first band
-      -1.0, -1.0, -0.75, -1.0, -1.0, 1.0,
-      -1.0, 1.0, -0.75, -1.0, -0.75, 1.0,
-      // second band
-      -0.5, -1.0, -0.25, -1.0, -0.5, 1.0,
-      -0.5, 1.0, -0.25, -1.0, -0.25, 1.0,
-      // third band
-      0.0, -1.0, 0.25, -1.0, 0.0, 1.0,
-      0.0, 1.0, 0.25, -1.0, 0.25, 1.0,
-      // forth band
-      0.5, -1.0, 0.75, -1.0, 0.5, 1.0,
-      0.5, 1.0, 0.75, -1.0, 0.75, 1.0
-    ]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([
+        // first band
+        -1.0,
+        -1.0,
+        -0.75,
+        -1.0,
+        -1.0,
+        1.0,
+        -1.0,
+        1.0,
+        -0.75,
+        -1.0,
+        -0.75,
+        1.0,
+        // second band
+        -0.5,
+        -1.0,
+        -0.25,
+        -1.0,
+        -0.5,
+        1.0,
+        -0.5,
+        1.0,
+        -0.25,
+        -1.0,
+        -0.25,
+        1.0,
+        // third band
+        0.0,
+        -1.0,
+        0.25,
+        -1.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.25,
+        -1.0,
+        0.25,
+        1.0,
+        // forth band
+        0.5,
+        -1.0,
+        0.75,
+        -1.0,
+        0.5,
+        1.0,
+        0.5,
+        1.0,
+        0.75,
+        -1.0,
+        0.75,
+        1.0
+      ]),
+      gl.STATIC_DRAW
+    );
 
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);

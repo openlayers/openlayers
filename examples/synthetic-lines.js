@@ -7,7 +7,6 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var count = 10000;
 var features = new Array(count);
 
@@ -31,7 +30,7 @@ for (i = 0; i < count; ++i) {
   deltaY = delta * signY;
   endPoint = [startPoint[0] + deltaX, startPoint[1] + deltaY];
   features[i] = new ol.Feature({
-    'geometry': new ol.geom.LineString([startPoint, endPoint])
+    geometry: new ol.geom.LineString([startPoint, endPoint])
   });
   startPoint = endPoint;
 }

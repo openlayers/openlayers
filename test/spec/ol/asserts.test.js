@@ -2,9 +2,7 @@ goog.provide('ol.asserts.asserts.test');
 
 goog.require('ol.asserts');
 
-
 describe('ol.asserts', function() {
-
   describe('ol.asserts.assert', function() {
     it('throws an exception', function() {
       expect(function() {
@@ -12,5 +10,4 @@ describe('ol.asserts', function() {
       }).to.throwException();
     });
   });
-
 });

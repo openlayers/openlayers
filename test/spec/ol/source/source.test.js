@@ -4,9 +4,7 @@ goog.require('ol.Attribution');
 goog.require('ol.proj');
 goog.require('ol.source.Source');
 
-
 describe('ol.source.Source', function() {
-
   describe('constructor', function() {
     it('returns a source', function() {
       var source = new ol.source.Source({
@@ -164,5 +162,4 @@ describe('ol.source.Source', function() {
       expect(attributions[1]).to.be(attribution);
     });
   });
-
 });

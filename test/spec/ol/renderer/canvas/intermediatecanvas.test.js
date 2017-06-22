@@ -5,9 +5,7 @@ goog.require('ol.layer.Image');
 goog.require('ol.renderer.Map');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
 
-
 describe('ol.renderer.canvas.IntermediateCanvas', function() {
-
   describe('#composeFrame()', function() {
     var renderer, frameState, layerState, context;
     beforeEach(function() {
@@ -63,8 +61,17 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.lineTo.secondCall.args).to.eql([6, 6]);
       expect(context.lineTo.thirdCall.args).to.eql([4, 6]);
       expect(context.clip.callCount).to.be(1);
-      expect(context.drawImage.firstCall.args).to.eql(
-          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+      expect(context.drawImage.firstCall.args).to.eql([
+        renderer.getImage(),
+        0,
+        0,
+        3,
+        3,
+        0,
+        0,
+        3,
+        3
+      ]);
       expect(context.restore.callCount).to.be(1);
     });
 
@@ -77,8 +84,17 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.rotate.callCount).to.be(0);
       expect(context.beginPath.callCount).to.be(0);
       expect(context.clip.callCount).to.be(0);
-      expect(context.drawImage.firstCall.args).to.eql(
-          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+      expect(context.drawImage.firstCall.args).to.eql([
+        renderer.getImage(),
+        0,
+        0,
+        3,
+        3,
+        0,
+        0,
+        3,
+        3
+      ]);
       expect(context.restore.callCount).to.be(0);
     });
 
@@ -91,11 +107,18 @@ describe('ol.renderer.canvas.IntermediateCanvas', function() {
       expect(context.rotate.callCount).to.be(0);
       expect(context.beginPath.callCount).to.be(0);
       expect(context.clip.callCount).to.be(0);
-      expect(context.drawImage.firstCall.args).to.eql(
-          [renderer.getImage(), 0, 0, 3, 3, 0, 0, 3, 3]);
+      expect(context.drawImage.firstCall.args).to.eql([
+        renderer.getImage(),
+        0,
+        0,
+        3,
+        3,
+        0,
+        0,
+        3,
+        3
+      ]);
       expect(context.restore.callCount).to.be(0);
     });
-
   });
-
 });

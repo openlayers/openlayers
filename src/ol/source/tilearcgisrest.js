@@ -9,7 +9,6 @@ goog.require('ol.source.TileImage');
 goog.require('ol.tilecoord');
 goog.require('ol.uri');
 
-
 /**
  * @classdesc
  * Layer source for tile data from ArcGIS Rest services. Map and Image
@@ -25,7 +24,6 @@ goog.require('ol.uri');
  * @api
  */
 ol.source.TileArcGISRest = function(opt_options) {
-
   var options = opt_options || {};
 
   ol.source.TileImage.call(this, {
@@ -58,7 +56,6 @@ ol.source.TileArcGISRest = function(opt_options) {
 };
 ol.inherits(ol.source.TileArcGISRest, ol.source.TileImage);
 
-
 /**
  * @private
  * @return {string} The key for the current params.
@@ -72,7 +69,6 @@ ol.source.TileArcGISRest.prototype.getKeyForParams_ = function() {
   return res.join('/');
 };
 
-
 /**
  * Get the user-provided params, i.e. those passed to the constructor through
  * the "params" option, and possibly updated using the updateParams method.
@@ -82,7 +78,6 @@ ol.source.TileArcGISRest.prototype.getKeyForParams_ = function() {
 ol.source.TileArcGISRest.prototype.getParams = function() {
   return this.params_;
 };
-
 
 /**
  * @param {ol.TileCoord} tileCoord Tile coordinate.
@@ -94,9 +89,14 @@ ol.source.TileArcGISRest.prototype.getParams = function() {
  * @return {string|undefined} Request URL.
  * @private
  */
-ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
-        pixelRatio, projection, params) {
-
+ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(
+  tileCoord,
+  tileSize,
+  tileExtent,
+  pixelRatio,
+  projection,
+  params
+) {
   var urls = this.urls;
   if (!urls) {
     return undefined;
@@ -110,8 +110,8 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   params['BBOXSR'] = srid;
   params['IMAGESR'] = srid;
   params['DPI'] = Math.round(
-      params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
-      );
+    params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
+  );
 
   var url;
   if (urls.length == 1) {
@@ -122,25 +122,26 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   }
 
   var modifiedUrl = url
-      .replace(/MapServer\/?$/, 'MapServer/export')
-      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+    .replace(/MapServer\/?$/, 'MapServer/export')
+    .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   return ol.uri.appendParams(modifiedUrl, params);
 };
-
 
 /**
  * @inheritDoc
  */
 ol.source.TileArcGISRest.prototype.getTilePixelRatio = function(pixelRatio) {
-  return /** @type {number} */ (pixelRatio);
+  return /** @type {number} */ pixelRatio;
 };
-
 
 /**
  * @inheritDoc
  */
-ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pixelRatio, projection) {
-
+ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(
+  tileCoord,
+  pixelRatio,
+  projection
+) {
   var tileGrid = this.getTileGrid();
   if (!tileGrid) {
     tileGrid = this.getTileGridForProjection(projection);
@@ -150,10 +151,11 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
     return undefined;
   }
 
-  var tileExtent = tileGrid.getTileCoordExtent(
-      tileCoord, this.tmpExtent_);
+  var tileExtent = tileGrid.getTileCoordExtent(tileCoord, this.tmpExtent_);
   var tileSize = ol.size.toSize(
-      tileGrid.getTileSize(tileCoord[0]), this.tmpSize);
+    tileGrid.getTileSize(tileCoord[0]),
+    this.tmpSize
+  );
 
   if (pixelRatio != 1) {
     tileSize = ol.size.scale(tileSize, pixelRatio, this.tmpSize);
@@ -161,16 +163,21 @@ ol.source.TileArcGISRest.prototype.fixedTileUrlFunction = function(tileCoord, pi
 
   // Apply default params and override with user specified values.
   var baseParams = {
-    'F': 'image',
-    'FORMAT': 'PNG32',
-    'TRANSPARENT': true
+    F: 'image',
+    FORMAT: 'PNG32',
+    TRANSPARENT: true
   };
   ol.obj.assign(baseParams, this.params_);
 
-  return this.getRequestUrl_(tileCoord, tileSize, tileExtent,
-      pixelRatio, projection, baseParams);
+  return this.getRequestUrl_(
+    tileCoord,
+    tileSize,
+    tileExtent,
+    pixelRatio,
+    projection,
+    baseParams
+  );
 };
-
 
 /**
  * Update the user-provided params.

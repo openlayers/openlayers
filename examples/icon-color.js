@@ -10,7 +10,6 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
-
 var rome = new ol.Feature({
   geometry: new ol.geom.Point(ol.proj.fromLonLat([12.5, 41.9]))
 });
@@ -23,30 +22,35 @@ var madrid = new ol.Feature({
   geometry: new ol.geom.Point(ol.proj.fromLonLat([-3.683333, 40.4]))
 });
 
-rome.setStyle(new ol.style.Style({
-  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-    color: '#8959A8',
-    crossOrigin: 'anonymous',
-    src: 'data/dot.png'
-  }))
-}));
+rome.setStyle(
+  new ol.style.Style({
+    image: new ol.style.Icon /** @type {olx.style.IconOptions} */({
+      color: '#8959A8',
+      crossOrigin: 'anonymous',
+      src: 'data/dot.png'
+    })
+  })
+);
 
-london.setStyle(new ol.style.Style({
-  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-    color: '#4271AE',
-    crossOrigin: 'anonymous',
-    src: 'data/dot.png'
-  }))
-}));
+london.setStyle(
+  new ol.style.Style({
+    image: new ol.style.Icon /** @type {olx.style.IconOptions} */({
+      color: '#4271AE',
+      crossOrigin: 'anonymous',
+      src: 'data/dot.png'
+    })
+  })
+);
 
-madrid.setStyle(new ol.style.Style({
-  image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
-    color: [113, 140, 0],
-    crossOrigin: 'anonymous',
-    src: 'data/dot.png'
-  }))
-}));
-
+madrid.setStyle(
+  new ol.style.Style({
+    image: new ol.style.Icon /** @type {olx.style.IconOptions} */({
+      color: [113, 140, 0],
+      crossOrigin: 'anonymous',
+      src: 'data/dot.png'
+    })
+  })
+);
 
 var vectorSource = new ol.source.Vector({
   features: [rome, london, madrid]
@@ -67,7 +71,7 @@ var map = new ol.Map({
   layers: [rasterLayer, vectorLayer],
   target: document.getElementById('map'),
   view: new ol.View({
-    center: ol.proj.fromLonLat([2.896372, 44.60240]),
+    center: ol.proj.fromLonLat([2.896372, 44.6024]),
     zoom: 3
   })
 });

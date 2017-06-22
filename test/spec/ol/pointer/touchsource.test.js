@@ -66,9 +66,10 @@ describe('ol.pointer.TouchSource', function() {
       expect(Object.keys(handler.pointerMap).length).to.be(1);
 
       // second touch (first touch still down)
-      simulateTouchEvent('touchstart', [
-        {identifier: 4, clientX: 30, clientY: 45}
-      ], [{identifier: 3}, {identifier: 4}]
+      simulateTouchEvent(
+        'touchstart',
+        [{identifier: 4, clientX: 30, clientY: 45}],
+        [{identifier: 3}, {identifier: 4}]
       );
       expect(eventSpy.calledTwice).to.be.ok();
       expect(Object.keys(handler.pointerMap).length).to.be(2);
@@ -77,9 +78,10 @@ describe('ol.pointer.TouchSource', function() {
       var moveEventSpy = sinon.spy();
       ol.events.listen(handler, 'pointermove', moveEventSpy);
 
-      simulateTouchEvent('touchmove', [
-        {identifier: 3, clientX: 15, clientY: 16}
-      ], [{identifier: 3}, {identifier: 4}]
+      simulateTouchEvent(
+        'touchmove',
+        [{identifier: 3, clientX: 15, clientY: 16}],
+        [{identifier: 3}, {identifier: 4}]
       );
       expect(moveEventSpy.calledOnce).to.be.ok();
 
@@ -87,10 +89,13 @@ describe('ol.pointer.TouchSource', function() {
       var upEventSpy = sinon.spy();
       ol.events.listen(handler, 'pointerup', upEventSpy);
 
-      simulateTouchEvent('touchend', [
-        {identifier: 3, clientX: 15, clientY: 16},
-        {identifier: 4, clientX: 30, clientY: 45}
-      ], [{identifier: 3}, {identifier: 4}]
+      simulateTouchEvent(
+        'touchend',
+        [
+          {identifier: 3, clientX: 15, clientY: 16},
+          {identifier: 4, clientX: 30, clientY: 45}
+        ],
+        [{identifier: 3}, {identifier: 4}]
       );
       expect(upEventSpy.calledTwice).to.be.ok();
       expect(Object.keys(handler.pointerMap).length).to.be(0);
@@ -109,9 +114,10 @@ describe('ol.pointer.TouchSource', function() {
       // second touch, but the first touch has disappeared
       var cancelEventSpy = sinon.spy();
       ol.events.listen(handler, 'pointercancel', cancelEventSpy);
-      simulateTouchEvent('touchstart', [
-        {identifier: 4, clientX: 30, clientY: 45}
-      ], [{identifier: 4}]
+      simulateTouchEvent(
+        'touchstart',
+        [{identifier: 4, clientX: 30, clientY: 45}],
+        [{identifier: 4}]
       );
       expect(eventSpy.calledTwice).to.be.ok();
 

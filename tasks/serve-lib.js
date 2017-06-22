@@ -15,13 +15,10 @@ var name = path.basename(__filename, '.js');
  * Create a debug server for the OpenLayers and Closure Library sources.
  * @param {function(Error, closure.Server)} callback Callback.
  */
-var createServer = exports.createServer = function(callback) {
+var createServer = (exports.createServer = function(callback) {
   var server;
   var manager = new closure.Manager({
-    lib: [
-      'src/**/*.js',
-      'build/ol.ext/*.js'
-    ],
+    lib: ['src/**/*.js', 'build/ol.ext/*.js'],
     cwd: path.join(__dirname, '..')
   });
   manager.on('error', function(err) {
@@ -38,7 +35,7 @@ var createServer = exports.createServer = function(callback) {
     });
     callback(null, server);
   });
-};
+});
 
 /**
  * Try listening for incoming connections on a range of ports.
@@ -74,21 +71,24 @@ function listen(min, max, server, callback) {
  * If running this module directly start the server.
  */
 if (require.main === module) {
-  var options = nomnom.options({
-    port: {
-      abbr: 'p',
-      default: 3000,
-      help: 'Port for incoming connections (will try additional ports if used)',
-      metavar: 'PORT'
-    },
-    loglevel: {
-      abbr: 'l',
-      choices: ['silly', 'verbose', 'info', 'warn', 'error'],
-      default: 'info',
-      help: 'Log level',
-      metavar: 'LEVEL'
-    }
-  }).parse();
+  var options = nomnom
+    .options({
+      port: {
+        abbr: 'p',
+        default: 3000,
+        help:
+          'Port for incoming connections (will try additional ports if used)',
+        metavar: 'PORT'
+      },
+      loglevel: {
+        abbr: 'l',
+        choices: ['silly', 'verbose', 'info', 'warn', 'error'],
+        default: 'info',
+        help: 'Log level',
+        metavar: 'LEVEL'
+      }
+    })
+    .parse();
 
   /** @type {string} */
   log.level = options.loglevel;
@@ -105,9 +105,12 @@ if (require.main === module) {
         log.error(name, 'Server failed to start: ' + err.message);
         process.exit(1);
       }
-      log.info(name, 'Debug server running http://localhost:' +
-          server.address().port + '/loader.js (Ctrl+C to stop)');
+      log.info(
+        name,
+        'Debug server running http://localhost:' +
+          server.address().port +
+          '/loader.js (Ctrl+C to stop)'
+      );
     });
   });
-
 }

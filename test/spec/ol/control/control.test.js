@@ -27,7 +27,7 @@ describe('ol.control.Control', function() {
   });
 });
 
-describe('ol.control.Control\'s target', function() {
+describe("ol.control.Control's target", function() {
   describe('target as string or element', function() {
     it('transforms target from string to element', function() {
       var target = document.createElement('div');

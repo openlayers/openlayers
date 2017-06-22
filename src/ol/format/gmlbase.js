@@ -20,7 +20,6 @@ goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.xml');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -37,8 +36,9 @@ goog.require('ol.xml');
  * @extends {ol.format.XMLFeature}
  */
 ol.format.GMLBase = function(opt_options) {
-  var options = /** @type {olx.format.GMLOptions} */
-      (opt_options ? opt_options : {});
+  var options /** @type {olx.format.GMLOptions} */ = opt_options
+    ? opt_options
+    : {};
 
   /**
    * @protected
@@ -69,23 +69,23 @@ ol.format.GMLBase = function(opt_options) {
    */
   this.FEATURE_COLLECTION_PARSERS = {};
   this.FEATURE_COLLECTION_PARSERS[ol.format.GMLBase.GMLNS] = {
-    'featureMember': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeaturesInternal),
-    'featureMembers': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFeaturesInternal)
+    featureMember: ol.xml.makeReplacer(
+      ol.format.GMLBase.prototype.readFeaturesInternal
+    ),
+    featureMembers: ol.xml.makeReplacer(
+      ol.format.GMLBase.prototype.readFeaturesInternal
+    )
   };
 
   ol.format.XMLFeature.call(this);
 };
 ol.inherits(ol.format.GMLBase, ol.format.XMLFeature);
 
-
 /**
  * @const
  * @type {string}
  */
 ol.format.GMLBase.GMLNS = 'http://www.opengis.net/gml';
-
 
 /**
  * A regular expression that matches if a string only contains whitespace
@@ -101,7 +101,6 @@ ol.format.GMLBase.GMLNS = 'http://www.opengis.net/gml';
  */
 ol.format.GMLBase.ONLY_WHITESPACE_RE_ = /^[\s\xa0]*$/;
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
@@ -112,21 +111,32 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   var features = null;
   if (localName == 'FeatureCollection') {
     if (node.namespaceURI === 'http://www.opengis.net/wfs') {
-      features = ol.xml.pushParseAndPop([],
-          this.FEATURE_COLLECTION_PARSERS, node,
-          objectStack, this);
+      features = ol.xml.pushParseAndPop(
+        [],
+        this.FEATURE_COLLECTION_PARSERS,
+        node,
+        objectStack,
+        this
+      );
     } else {
-      features = ol.xml.pushParseAndPop(null,
-          this.FEATURE_COLLECTION_PARSERS, node,
-          objectStack, this);
+      features = ol.xml.pushParseAndPop(
+        null,
+        this.FEATURE_COLLECTION_PARSERS,
+        node,
+        objectStack,
+        this
+      );
     }
   } else if (localName == 'featureMembers' || localName == 'featureMember') {
     var context = objectStack[0];
     var featureType = context['featureType'];
     var featureNS = context['featureNS'];
-    var i, ii, prefix = 'p', defaultPrefix = 'p0';
+    var i,
+      ii,
+      prefix = 'p',
+      defaultPrefix = 'p0';
     if (!featureType && node.childNodes) {
-      featureType = [], featureNS = {};
+      (featureType = []), (featureNS = {});
       for (i = 0, ii = node.childNodes.length; i < ii; ++i) {
         var child = node.childNodes[i];
         if (child.nodeType === 1) {
@@ -166,19 +176,25 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
     for (var p in featureNS) {
       var parsers = {};
       for (i = 0, ii = featureTypes.length; i < ii; ++i) {
-        var featurePrefix = featureTypes[i].indexOf(':') === -1 ?
-            defaultPrefix : featureTypes[i].split(':')[0];
+        var featurePrefix = featureTypes[i].indexOf(':') === -1
+          ? defaultPrefix
+          : featureTypes[i].split(':')[0];
         if (featurePrefix === p) {
-          parsers[featureTypes[i].split(':').pop()] =
-              (localName == 'featureMembers') ?
-              ol.xml.makeArrayPusher(this.readFeatureElement, this) :
-              ol.xml.makeReplacer(this.readFeatureElement, this);
+          parsers[featureTypes[i].split(':').pop()] = localName ==
+            'featureMembers'
+            ? ol.xml.makeArrayPusher(this.readFeatureElement, this)
+            : ol.xml.makeReplacer(this.readFeatureElement, this);
         }
       }
       parsersNS[featureNS[p]] = parsers;
     }
     if (localName == 'featureMember') {
-      features = ol.xml.pushParseAndPop(undefined, parsersNS, node, objectStack);
+      features = ol.xml.pushParseAndPop(
+        undefined,
+        parsersNS,
+        node,
+        objectStack
+      );
     } else {
       features = ol.xml.pushParseAndPop([], parsersNS, node, objectStack);
     }
@@ -189,26 +205,32 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
   return features;
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Geometry|undefined} Geometry.
  */
 ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
-  var context = /** @type {Object} */ (objectStack[0]);
+  var context /** @type {Object} */ = objectStack[0];
   context['srsName'] = node.firstElementChild.getAttribute('srsName');
   /** @type {ol.geom.Geometry} */
-  var geometry = ol.xml.pushParseAndPop(null,
-      this.GEOMETRY_PARSERS_, node, objectStack, this);
+  var geometry = ol.xml.pushParseAndPop(
+    null,
+    this.GEOMETRY_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
   if (geometry) {
-    return /** @type {ol.geom.Geometry} */ (
-        ol.format.Feature.transformWithOptions(geometry, false, context));
+    return /** @type {ol.geom.Geometry} */ ol.format.Feature.transformWithOptions(
+      geometry,
+      false,
+      context
+    );
   } else {
     return undefined;
   }
 };
-
 
 /**
  * @param {Node} node Node.
@@ -217,17 +239,21 @@ ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   var n;
-  var fid = node.getAttribute('fid') ||
-      ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
-  var values = {}, geometryName;
+  var fid =
+    node.getAttribute('fid') ||
+    ol.xml.getAttributeNS(node, ol.format.GMLBase.GMLNS, 'id');
+  var values = {},
+    geometryName;
   for (n = node.firstElementChild; n; n = n.nextElementSibling) {
     var localName = n.localName;
     // Assume attribute elements have one child node and that the child
     // is a text or CDATA node (to be treated as text).
     // Otherwise assume it is a geometry node.
-    if (n.childNodes.length === 0 ||
-        (n.childNodes.length === 1 &&
-        (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))) {
+    if (
+      n.childNodes.length === 0 ||
+      (n.childNodes.length === 1 &&
+        (n.firstChild.nodeType === 3 || n.firstChild.nodeType === 4))
+    ) {
       var value = ol.xml.getAllTextContent(n, false);
       if (ol.format.GMLBase.ONLY_WHITESPACE_RE_.test(value)) {
         value = undefined;
@@ -251,22 +277,19 @@ ol.format.GMLBase.prototype.readFeatureElement = function(node, objectStack) {
   return feature;
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.Point|undefined} Point.
  */
 ol.format.GMLBase.prototype.readPoint = function(node, objectStack) {
-  var flatCoordinates =
-      this.readFlatCoordinatesFromNode_(node, objectStack);
+  var flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var point = new ol.geom.Point(null);
     point.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
     return point;
   }
 };
-
 
 /**
  * @param {Node} node Node.
@@ -275,15 +298,19 @@ ol.format.GMLBase.prototype.readPoint = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
   /** @type {Array.<Array.<number>>} */
-  var coordinates = ol.xml.pushParseAndPop([],
-      this.MULTIPOINT_PARSERS_, node, objectStack, this);
+  var coordinates = ol.xml.pushParseAndPop(
+    [],
+    this.MULTIPOINT_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
   if (coordinates) {
     return new ol.geom.MultiPoint(coordinates);
   } else {
     return undefined;
   }
 };
-
 
 /**
  * @param {Node} node Node.
@@ -292,8 +319,13 @@ ol.format.GMLBase.prototype.readMultiPoint = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
   /** @type {Array.<ol.geom.LineString>} */
-  var lineStrings = ol.xml.pushParseAndPop([],
-      this.MULTILINESTRING_PARSERS_, node, objectStack, this);
+  var lineStrings = ol.xml.pushParseAndPop(
+    [],
+    this.MULTILINESTRING_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
   if (lineStrings) {
     var multiLineString = new ol.geom.MultiLineString(null);
     multiLineString.setLineStrings(lineStrings);
@@ -303,7 +335,6 @@ ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
@@ -311,8 +342,13 @@ ol.format.GMLBase.prototype.readMultiLineString = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
   /** @type {Array.<ol.geom.Polygon>} */
-  var polygons = ol.xml.pushParseAndPop([],
-      this.MULTIPOLYGON_PARSERS_, node, objectStack, this);
+  var polygons = ol.xml.pushParseAndPop(
+    [],
+    this.MULTIPOLYGON_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
   if (polygons) {
     var multiPolygon = new ol.geom.MultiPolygon(null);
     multiPolygon.setPolygons(polygons);
@@ -322,28 +358,26 @@ ol.format.GMLBase.prototype.readMultiPolygon = function(node, objectStack) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
 ol.format.GMLBase.prototype.pointMemberParser_ = function(node, objectStack) {
-  ol.xml.parseNode(this.POINTMEMBER_PARSERS_,
-      node, objectStack, this);
+  ol.xml.parseNode(this.POINTMEMBER_PARSERS_, node, objectStack, this);
 };
-
 
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @private
  */
-ol.format.GMLBase.prototype.lineStringMemberParser_ = function(node, objectStack) {
-  ol.xml.parseNode(this.LINESTRINGMEMBER_PARSERS_,
-      node, objectStack, this);
+ol.format.GMLBase.prototype.lineStringMemberParser_ = function(
+  node,
+  objectStack
+) {
+  ol.xml.parseNode(this.LINESTRINGMEMBER_PARSERS_, node, objectStack, this);
 };
-
 
 /**
  * @param {Node} node Node.
@@ -351,10 +385,8 @@ ol.format.GMLBase.prototype.lineStringMemberParser_ = function(node, objectStack
  * @private
  */
 ol.format.GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
-  ol.xml.parseNode(this.POLYGONMEMBER_PARSERS_, node,
-      objectStack, this);
+  ol.xml.parseNode(this.POLYGONMEMBER_PARSERS_, node, objectStack, this);
 };
-
 
 /**
  * @param {Node} node Node.
@@ -362,8 +394,7 @@ ol.format.GMLBase.prototype.polygonMemberParser_ = function(node, objectStack) {
  * @return {ol.geom.LineString|undefined} LineString.
  */
 ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
-  var flatCoordinates =
-      this.readFlatCoordinatesFromNode_(node, objectStack);
+  var flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var lineString = new ol.geom.LineString(null);
     lineString.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
@@ -373,7 +404,6 @@ ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
@@ -381,9 +411,13 @@ ol.format.GMLBase.prototype.readLineString = function(node, objectStack) {
  * @return {Array.<number>|undefined} LinearRing flat coordinates.
  */
 ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
-  var ring = ol.xml.pushParseAndPop(null,
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
-      objectStack, this);
+  var ring = ol.xml.pushParseAndPop(
+    null,
+    this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
   if (ring) {
     return ring;
   } else {
@@ -391,15 +425,13 @@ ol.format.GMLBase.prototype.readFlatLinearRing_ = function(node, objectStack) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
  * @return {ol.geom.LinearRing|undefined} LinearRing.
  */
 ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
-  var flatCoordinates =
-      this.readFlatCoordinatesFromNode_(node, objectStack);
+  var flatCoordinates = this.readFlatCoordinatesFromNode_(node, objectStack);
   if (flatCoordinates) {
     var ring = new ol.geom.LinearRing(null);
     ring.setFlatCoordinates(ol.geom.GeometryLayout.XYZ, flatCoordinates);
@@ -409,7 +441,6 @@ ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
   }
 };
 
-
 /**
  * @param {Node} node Node.
  * @param {Array.<*>} objectStack Object stack.
@@ -417,8 +448,13 @@ ol.format.GMLBase.prototype.readLinearRing = function(node, objectStack) {
  */
 ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
   /** @type {Array.<Array.<number>>} */
-  var flatLinearRings = ol.xml.pushParseAndPop([null],
-      this.FLAT_LINEAR_RINGS_PARSERS_, node, objectStack, this);
+  var flatLinearRings = ol.xml.pushParseAndPop(
+    [null],
+    this.FLAT_LINEAR_RINGS_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
   if (flatLinearRings && flatLinearRings[0]) {
     var polygon = new ol.geom.Polygon(null);
     var flatCoordinates = flatLinearRings[0];
@@ -429,13 +465,15 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
       ends.push(flatCoordinates.length);
     }
     polygon.setFlatCoordinates(
-        ol.geom.GeometryLayout.XYZ, flatCoordinates, ends);
+      ol.geom.GeometryLayout.XYZ,
+      flatCoordinates,
+      ends
+    );
     return polygon;
   } else {
     return undefined;
   }
 };
-
 
 /**
  * @param {Node} node Node.
@@ -443,12 +481,18 @@ ol.format.GMLBase.prototype.readPolygon = function(node, objectStack) {
  * @private
  * @return {Array.<number>} Flat coordinates.
  */
-ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, objectStack) {
-  return ol.xml.pushParseAndPop(null,
-      this.GEOMETRY_FLAT_COORDINATES_PARSERS_, node,
-      objectStack, this);
+ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(
+  node,
+  objectStack
+) {
+  return ol.xml.pushParseAndPop(
+    null,
+    this.GEOMETRY_FLAT_COORDINATES_PARSERS_,
+    node,
+    objectStack,
+    this
+  );
 };
-
 
 /**
  * @const
@@ -457,13 +501,14 @@ ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_ = function(node, object
  */
 ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'pointMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.pointMemberParser_),
-    'pointMembers': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.pointMemberParser_)
+    pointMember: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.pointMemberParser_
+    ),
+    pointMembers: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.pointMemberParser_
+    )
   }
 };
-
 
 /**
  * @const
@@ -472,13 +517,14 @@ ol.format.GMLBase.prototype.MULTIPOINT_PARSERS_ = {
  */
 ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'lineStringMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.lineStringMemberParser_),
-    'lineStringMembers': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.lineStringMemberParser_)
+    lineStringMember: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.lineStringMemberParser_
+    ),
+    lineStringMembers: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.lineStringMemberParser_
+    )
   }
 };
-
 
 /**
  * @const
@@ -487,13 +533,14 @@ ol.format.GMLBase.prototype.MULTILINESTRING_PARSERS_ = {
  */
 ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'polygonMember': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.polygonMemberParser_),
-    'polygonMembers': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.polygonMemberParser_)
+    polygonMember: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.polygonMemberParser_
+    ),
+    polygonMembers: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.polygonMemberParser_
+    )
   }
 };
-
 
 /**
  * @const
@@ -502,11 +549,11 @@ ol.format.GMLBase.prototype.MULTIPOLYGON_PARSERS_ = {
  */
 ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Point': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_)
+    Point: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.readFlatCoordinatesFromNode_
+    )
   }
 };
-
 
 /**
  * @const
@@ -515,11 +562,11 @@ ol.format.GMLBase.prototype.POINTMEMBER_PARSERS_ = {
  */
 ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'LineString': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readLineString)
+    LineString: ol.xml.makeArrayPusher(
+      ol.format.GMLBase.prototype.readLineString
+    )
   }
 };
-
 
 /**
  * @const
@@ -528,11 +575,9 @@ ol.format.GMLBase.prototype.LINESTRINGMEMBER_PARSERS_ = {
  */
 ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
   'http://www.opengis.net/gml': {
-    'Polygon': ol.xml.makeArrayPusher(
-        ol.format.GMLBase.prototype.readPolygon)
+    Polygon: ol.xml.makeArrayPusher(ol.format.GMLBase.prototype.readPolygon)
   }
 };
-
 
 /**
  * @const
@@ -541,21 +586,21 @@ ol.format.GMLBase.prototype.POLYGONMEMBER_PARSERS_ = {
  */
 ol.format.GMLBase.prototype.RING_PARSERS = {
   'http://www.opengis.net/gml': {
-    'LinearRing': ol.xml.makeReplacer(
-        ol.format.GMLBase.prototype.readFlatLinearRing_)
+    LinearRing: ol.xml.makeReplacer(
+      ol.format.GMLBase.prototype.readFlatLinearRing_
+    )
   }
 };
-
 
 /**
  * @inheritDoc
  */
 ol.format.GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
-  var geometry = this.readGeometryElement(node,
-      [this.getReadOptions(node, opt_options ? opt_options : {})]);
+  var geometry = this.readGeometryElement(node, [
+    this.getReadOptions(node, opt_options ? opt_options : {})
+  ]);
   return geometry ? geometry : null;
 };
-
 
 /**
  * Read all features from a GML FeatureCollection.
@@ -567,7 +612,6 @@ ol.format.GMLBase.prototype.readGeometryFromNode = function(node, opt_options) {
  * @api
  */
 ol.format.GMLBase.prototype.readFeatures;
-
 
 /**
  * @inheritDoc
@@ -584,11 +628,11 @@ ol.format.GMLBase.prototype.readFeaturesFromNode = function(node, opt_options) {
   return features || [];
 };
 
-
 /**
  * @inheritDoc
  */
 ol.format.GMLBase.prototype.readProjectionFromNode = function(node) {
-  return ol.proj.get(this.srsName ? this.srsName :
-      node.firstElementChild.getAttribute('srsName'));
+  return ol.proj.get(
+    this.srsName ? this.srsName : node.firstElementChild.getAttribute('srsName')
+  );
 };

@@ -7,9 +7,7 @@ goog.require('ol.transform');
 goog.require('ol.vec.Mat4');
 goog.require('ol.webgl');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @constructor
    * @abstract
@@ -112,25 +110,23 @@ if (ol.ENABLE_WEBGL) {
      * @type {ol.render.webgl.LineStringReplay|undefined}
      */
     this.lineStringReplay = undefined;
-
   };
   ol.inherits(ol.render.webgl.Replay, ol.render.VectorContext);
-
 
   /**
    * @abstract
    * @param {ol.webgl.Context} context WebGL context.
    * @return {function()} Delete resources function.
    */
-  ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = function(context) {};
-
+  ol.render.webgl.Replay.prototype.getDeleteResourcesFunction = function(
+    context
+  ) {};
 
   /**
    * @abstract
    * @param {ol.webgl.Context} context Context.
    */
   ol.render.webgl.Replay.prototype.finish = function(context) {};
-
 
   /**
    * @abstract
@@ -144,8 +140,12 @@ if (ol.ENABLE_WEBGL) {
               ol.render.webgl.linestringreplay.defaultshader.Locations|
               ol.render.webgl.polygonreplay.defaultshader.Locations} Locations.
    */
-  ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
-
+  ol.render.webgl.Replay.prototype.setUpProgram = function(
+    gl,
+    context,
+    size,
+    pixelRatio
+  ) {};
 
   /**
    * @abstract
@@ -158,7 +158,6 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {};
 
-
   /**
    * @abstract
    * @protected
@@ -168,8 +167,12 @@ if (ol.ENABLE_WEBGL) {
    *  to skip.
    * @param {boolean} hitDetection Hit detection mode.
    */
-  ol.render.webgl.Replay.prototype.drawReplay = function(gl, context, skippedFeaturesHash, hitDetection) {};
-
+  ol.render.webgl.Replay.prototype.drawReplay = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    hitDetection
+  ) {};
 
   /**
    * @abstract
@@ -184,8 +187,13 @@ if (ol.ENABLE_WEBGL) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne = function(gl, context, skippedFeaturesHash, featureCallback, opt_hitExtent) {};
-
+  ol.render.webgl.Replay.prototype.drawHitDetectionReplayOneByOne = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    featureCallback,
+    opt_hitExtent
+  ) {};
 
   /**
    * @protected
@@ -200,19 +208,33 @@ if (ol.ENABLE_WEBGL) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  ol.render.webgl.Replay.prototype.drawHitDetectionReplay = function(gl, context, skippedFeaturesHash,
-      featureCallback, oneByOne, opt_hitExtent) {
+  ol.render.webgl.Replay.prototype.drawHitDetectionReplay = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    featureCallback,
+    oneByOne,
+    opt_hitExtent
+  ) {
     if (!oneByOne) {
       // draw all hit-detection features in "once" (by texture group)
-      return this.drawHitDetectionReplayAll(gl, context,
-          skippedFeaturesHash, featureCallback);
+      return this.drawHitDetectionReplayAll(
+        gl,
+        context,
+        skippedFeaturesHash,
+        featureCallback
+      );
     } else {
       // draw hit-detection features one by one
-      return this.drawHitDetectionReplayOneByOne(gl, context,
-          skippedFeaturesHash, featureCallback, opt_hitExtent);
+      return this.drawHitDetectionReplayOneByOne(
+        gl,
+        context,
+        skippedFeaturesHash,
+        featureCallback,
+        opt_hitExtent
+      );
     }
   };
-
 
   /**
    * @protected
@@ -224,8 +246,12 @@ if (ol.ENABLE_WEBGL) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll = function(gl, context, skippedFeaturesHash,
-      featureCallback) {
+  ol.render.webgl.Replay.prototype.drawHitDetectionReplayAll = function(
+    gl,
+    context,
+    skippedFeaturesHash,
+    featureCallback
+  ) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     this.drawReplay(gl, context, skippedFeaturesHash, true);
 
@@ -236,7 +262,6 @@ if (ol.ENABLE_WEBGL) {
       return undefined;
     }
   };
-
 
   /**
    * @param {ol.webgl.Context} context Context.
@@ -255,13 +280,28 @@ if (ol.ENABLE_WEBGL) {
    * @return {T|undefined} Callback result.
    * @template T
    */
-  ol.render.webgl.Replay.prototype.replay = function(context,
-      center, resolution, rotation, size, pixelRatio,
-      opacity, skippedFeaturesHash,
-      featureCallback, oneByOne, opt_hitExtent) {
+  ol.render.webgl.Replay.prototype.replay = function(
+    context,
+    center,
+    resolution,
+    rotation,
+    size,
+    pixelRatio,
+    opacity,
+    skippedFeaturesHash,
+    featureCallback,
+    oneByOne,
+    opt_hitExtent
+  ) {
     var gl = context.getGL();
-    var tmpStencil, tmpStencilFunc, tmpStencilMaskVal, tmpStencilRef, tmpStencilMask,
-        tmpStencilOpFail, tmpStencilOpPass, tmpStencilOpZFail;
+    var tmpStencil,
+      tmpStencilFunc,
+      tmpStencilMaskVal,
+      tmpStencilRef,
+      tmpStencilMask,
+      tmpStencilOpFail,
+      tmpStencilOpPass,
+      tmpStencilOpZFail;
 
     if (this.lineStringReplay) {
       tmpStencil = gl.isEnabled(gl.STENCIL_TEST);
@@ -279,10 +319,19 @@ if (ol.ENABLE_WEBGL) {
       gl.stencilFunc(gl.ALWAYS, 1, 255);
       gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
 
-      this.lineStringReplay.replay(context,
-          center, resolution, rotation, size, pixelRatio,
-          opacity, skippedFeaturesHash,
-          featureCallback, oneByOne, opt_hitExtent);
+      this.lineStringReplay.replay(
+        context,
+        center,
+        resolution,
+        rotation,
+        size,
+        pixelRatio,
+        opacity,
+        skippedFeaturesHash,
+        featureCallback,
+        oneByOne,
+        opt_hitExtent
+      );
 
       gl.stencilMask(0);
       gl.stencilFunc(gl.NOTEQUAL, 1, 255);
@@ -296,9 +345,17 @@ if (ol.ENABLE_WEBGL) {
 
     // set the "uniform" values
     var projectionMatrix = ol.transform.reset(this.projectionMatrix_);
-    ol.transform.scale(projectionMatrix, 2 / (resolution * size[0]), 2 / (resolution * size[1]));
+    ol.transform.scale(
+      projectionMatrix,
+      2 / (resolution * size[0]),
+      2 / (resolution * size[1])
+    );
     ol.transform.rotate(projectionMatrix, -rotation);
-    ol.transform.translate(projectionMatrix, -(center[0] - this.origin[0]), -(center[1] - this.origin[1]));
+    ol.transform.translate(
+      projectionMatrix,
+      -(center[0] - this.origin[0]),
+      -(center[1] - this.origin[1])
+    );
 
     var offsetScaleMatrix = ol.transform.reset(this.offsetScaleMatrix_);
     ol.transform.scale(offsetScaleMatrix, 2 / size[0], 2 / size[1]);
@@ -308,12 +365,21 @@ if (ol.ENABLE_WEBGL) {
       ol.transform.rotate(offsetRotateMatrix, -rotation);
     }
 
-    gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-       ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
-    gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-       ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
-    gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-       ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+    gl.uniformMatrix4fv(
+      locations.u_projectionMatrix,
+      false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix)
+    );
+    gl.uniformMatrix4fv(
+      locations.u_offsetScaleMatrix,
+      false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix)
+    );
+    gl.uniformMatrix4fv(
+      locations.u_offsetRotateMatrix,
+      false,
+      ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix)
+    );
     gl.uniform1f(locations.u_opacity, opacity);
 
     // draw!
@@ -322,8 +388,14 @@ if (ol.ENABLE_WEBGL) {
       this.drawReplay(gl, context, skippedFeaturesHash, false);
     } else {
       // draw feature by feature for the hit-detection
-      result = this.drawHitDetectionReplay(gl, context, skippedFeaturesHash,
-          featureCallback, oneByOne, opt_hitExtent);
+      result = this.drawHitDetectionReplay(
+        gl,
+        context,
+        skippedFeaturesHash,
+        featureCallback,
+        oneByOne,
+        opt_hitExtent
+      );
     }
 
     // disable the vertex attrib arrays
@@ -334,11 +406,19 @@ if (ol.ENABLE_WEBGL) {
         gl.disable(gl.STENCIL_TEST);
       }
       gl.clear(gl.STENCIL_BUFFER_BIT);
-      gl.stencilFunc(/** @type {number} */ (tmpStencilFunc),
-         /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
-      gl.stencilMask(/** @type {number} */ (tmpStencilMask));
-      gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
-         /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
+      gl.stencilFunc(
+        /** @type {number} */
+        tmpStencilFunc,
+        /** @type {number} */ tmpStencilRef /** @type {number} */,
+        tmpStencilMaskVal
+      );
+      gl.stencilMask /** @type {number} */(tmpStencilMask);
+      gl.stencilOp(
+        /** @type {number} */
+        tmpStencilOpFail,
+        /** @type {number} */ tmpStencilOpZFail /** @type {number} */,
+        tmpStencilOpPass
+      );
     }
 
     return result;
@@ -352,14 +432,18 @@ if (ol.ENABLE_WEBGL) {
    * @param {number} end End index.
    */
   ol.render.webgl.Replay.prototype.drawElements = function(
-      gl, context, start, end) {
-    var elementType = context.hasOESElementIndexUint ?
-        ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
+    gl,
+    context,
+    start,
+    end
+  ) {
+    var elementType = context.hasOESElementIndexUint
+      ? ol.webgl.UNSIGNED_INT
+      : ol.webgl.UNSIGNED_SHORT;
     var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
     var numItems = end - start;
     var offsetInBytes = start * elementSize;
     gl.drawElements(ol.webgl.TRIANGLES, numItems, elementType, offsetInBytes);
   };
-
 }

@@ -1,8 +1,6 @@
 goog.provide('ol.style.Text');
 
-
 goog.require('ol.style.Fill');
-
 
 /**
  * @classdesc
@@ -13,7 +11,6 @@ goog.require('ol.style.Fill');
  * @api
  */
 ol.style.Text = function(opt_options) {
-
   var options = opt_options || {};
 
   /**
@@ -62,8 +59,9 @@ ol.style.Text = function(opt_options) {
    * @private
    * @type {ol.style.Fill}
    */
-  this.fill_ = options.fill !== undefined ? options.fill :
-      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
+  this.fill_ = options.fill !== undefined
+    ? options.fill
+    : new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private
@@ -84,7 +82,6 @@ ol.style.Text = function(opt_options) {
   this.offsetY_ = options.offsetY !== undefined ? options.offsetY : 0;
 };
 
-
 /**
  * The default fill color to use if no fill was set at construction time; a
  * blackish `#333`.
@@ -93,7 +90,6 @@ ol.style.Text = function(opt_options) {
  * @private
  */
 ol.style.Text.DEFAULT_FILL_COLOR_ = '#333';
-
 
 /**
  * Clones the style.
@@ -116,7 +112,6 @@ ol.style.Text.prototype.clone = function() {
   });
 };
 
-
 /**
  * Get the font name.
  * @return {string|undefined} Font.
@@ -125,7 +120,6 @@ ol.style.Text.prototype.clone = function() {
 ol.style.Text.prototype.getFont = function() {
   return this.font_;
 };
-
 
 /**
  * Get the x-offset for the text.
@@ -136,7 +130,6 @@ ol.style.Text.prototype.getOffsetX = function() {
   return this.offsetX_;
 };
 
-
 /**
  * Get the y-offset for the text.
  * @return {number} Vertical text offset.
@@ -145,7 +138,6 @@ ol.style.Text.prototype.getOffsetX = function() {
 ol.style.Text.prototype.getOffsetY = function() {
   return this.offsetY_;
 };
-
 
 /**
  * Get the fill style for the text.
@@ -156,7 +148,6 @@ ol.style.Text.prototype.getFill = function() {
   return this.fill_;
 };
 
-
 /**
  * Determine whether the text rotates with the map.
  * @return {boolean|undefined} Rotate with map.
@@ -165,7 +156,6 @@ ol.style.Text.prototype.getFill = function() {
 ol.style.Text.prototype.getRotateWithView = function() {
   return this.rotateWithView_;
 };
-
 
 /**
  * Get the text rotation.
@@ -176,7 +166,6 @@ ol.style.Text.prototype.getRotation = function() {
   return this.rotation_;
 };
 
-
 /**
  * Get the text scale.
  * @return {number|undefined} Scale.
@@ -185,7 +174,6 @@ ol.style.Text.prototype.getRotation = function() {
 ol.style.Text.prototype.getScale = function() {
   return this.scale_;
 };
-
 
 /**
  * Get the stroke style for the text.
@@ -196,7 +184,6 @@ ol.style.Text.prototype.getStroke = function() {
   return this.stroke_;
 };
 
-
 /**
  * Get the text to be rendered.
  * @return {string|undefined} Text.
@@ -205,7 +192,6 @@ ol.style.Text.prototype.getStroke = function() {
 ol.style.Text.prototype.getText = function() {
   return this.text_;
 };
-
 
 /**
  * Get the text alignment.
@@ -216,7 +202,6 @@ ol.style.Text.prototype.getTextAlign = function() {
   return this.textAlign_;
 };
 
-
 /**
  * Get the text baseline.
  * @return {string|undefined} Text baseline.
@@ -225,7 +210,6 @@ ol.style.Text.prototype.getTextAlign = function() {
 ol.style.Text.prototype.getTextBaseline = function() {
   return this.textBaseline_;
 };
-
 
 /**
  * Set the font.
@@ -237,7 +221,6 @@ ol.style.Text.prototype.setFont = function(font) {
   this.font_ = font;
 };
 
-
 /**
  * Set the x offset.
  *
@@ -247,7 +230,6 @@ ol.style.Text.prototype.setFont = function(font) {
 ol.style.Text.prototype.setOffsetX = function(offsetX) {
   this.offsetX_ = offsetX;
 };
-
 
 /**
  * Set the y offset.
@@ -259,7 +241,6 @@ ol.style.Text.prototype.setOffsetY = function(offsetY) {
   this.offsetY_ = offsetY;
 };
 
-
 /**
  * Set the fill.
  *
@@ -269,7 +250,6 @@ ol.style.Text.prototype.setOffsetY = function(offsetY) {
 ol.style.Text.prototype.setFill = function(fill) {
   this.fill_ = fill;
 };
-
 
 /**
  * Set the rotation.
@@ -281,7 +261,6 @@ ol.style.Text.prototype.setRotation = function(rotation) {
   this.rotation_ = rotation;
 };
 
-
 /**
  * Set the scale.
  *
@@ -291,7 +270,6 @@ ol.style.Text.prototype.setRotation = function(rotation) {
 ol.style.Text.prototype.setScale = function(scale) {
   this.scale_ = scale;
 };
-
 
 /**
  * Set the stroke.
@@ -303,7 +281,6 @@ ol.style.Text.prototype.setStroke = function(stroke) {
   this.stroke_ = stroke;
 };
 
-
 /**
  * Set the text.
  *
@@ -314,7 +291,6 @@ ol.style.Text.prototype.setText = function(text) {
   this.text_ = text;
 };
 
-
 /**
  * Set the text alignment.
  *
@@ -324,7 +300,6 @@ ol.style.Text.prototype.setText = function(text) {
 ol.style.Text.prototype.setTextAlign = function(textAlign) {
   this.textAlign_ = textAlign;
 };
-
 
 /**
  * Set the text baseline.

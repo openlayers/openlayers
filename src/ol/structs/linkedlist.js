@@ -9,7 +9,6 @@ goog.provide('ol.structs.LinkedList');
  * and the first item to the last one. Default is true.
  */
 ol.structs.LinkedList = function(opt_circular) {
-
   /**
    * @private
    * @type {ol.LinkedListItem|undefined}
@@ -47,7 +46,6 @@ ol.structs.LinkedList = function(opt_circular) {
  * @param {?} data Item data.
  */
 ol.structs.LinkedList.prototype.insertItem = function(data) {
-
   /** @type {ol.LinkedListItem} */
   var item = {
     prev: undefined,

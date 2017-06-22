@@ -19,7 +19,6 @@ goog.require('ol.layer.Vector');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.source.Vector');
 
-
 describe('ol.interaction.Draw', function() {
   var target, map, source;
 
@@ -78,7 +77,6 @@ describe('ol.interaction.Draw', function() {
   }
 
   describe('constructor', function() {
-
     it('creates a new interaction', function() {
       var draw = new ol.interaction.Draw({
         source: source,
@@ -103,11 +101,9 @@ describe('ol.interaction.Draw', function() {
 
       expect(draw.freehandCondition_(event)).to.be(true);
     });
-
   });
 
   describe('specifying a geometryName', function() {
-
     beforeEach(function() {
       var draw = new ol.interaction.Draw({
         source: source,
@@ -214,12 +210,11 @@ describe('ol.interaction.Draw', function() {
         end: 0,
         addfeature: 0
       };
-      ol.events.listen(draw, 'drawend',
-          function() {
-            expect(receivedEvents.end).to.be(0);
-            expect(receivedEvents.addfeature).to.be(0);
-            ++receivedEvents.end;
-          });
+      ol.events.listen(draw, 'drawend', function() {
+        expect(receivedEvents.end).to.be(0);
+        expect(receivedEvents.addfeature).to.be(0);
+        ++receivedEvents.end;
+      });
       source.on('addfeature', function() {
         expect(receivedEvents.end).to.be(1);
         expect(receivedEvents.addfeature).to.be(0);
@@ -235,12 +230,13 @@ describe('ol.interaction.Draw', function() {
   });
 
   describe('drawing multipoints', function() {
-
     beforeEach(function() {
-      map.addInteraction(new ol.interaction.Draw({
-        source: source,
-        type: 'MultiPoint'
-      }));
+      map.addInteraction(
+        new ol.interaction.Draw({
+          source: source,
+          type: 'MultiPoint'
+        })
+      );
     });
 
     it('draws multipoint on click', function() {
@@ -253,7 +249,6 @@ describe('ol.interaction.Draw', function() {
       expect(geometry).to.be.a(ol.geom.MultiPoint);
       expect(geometry.getCoordinates()).to.eql([[30, -15]]);
     });
-
   });
 
   describe('drawing linestrings', function() {
@@ -290,7 +285,6 @@ describe('ol.interaction.Draw', function() {
     });
 
     it('supports removeLastPoint while drawing', function() {
-
       draw.removeLastPoint();
 
       // first point
@@ -328,12 +322,14 @@ describe('ol.interaction.Draw', function() {
       expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
-      expect(geometry.getCoordinates()).to.eql(
-          [[10, -20], [20, -30], [20, -40]]);
+      expect(geometry.getCoordinates()).to.eql([
+        [10, -20],
+        [20, -30],
+        [20, -40]
+      ]);
     });
 
     it('allows freehand mode for part of the drawing', function() {
-
       // non-freehand
       simulateEvent('pointerdown', 10, 20);
       simulateEvent('pointerup', 10, 20);
@@ -365,8 +361,14 @@ describe('ol.interaction.Draw', function() {
       // expect(features).to.have.length(1);
       var geometry = features[0].getGeometry();
       expect(geometry).to.be.a(ol.geom.LineString);
-      expect(geometry.getCoordinates()).to.eql(
-          [[10, -20], [20, -30], [30, -40], [40, -50], [50, -60], [60, -70]]);
+      expect(geometry.getCoordinates()).to.eql([
+        [10, -20],
+        [20, -30],
+        [30, -40],
+        [40, -50],
+        [50, -60],
+        [60, -70]
+      ]);
     });
 
     it('does not add a point with a significant drag', function() {
@@ -423,7 +425,6 @@ describe('ol.interaction.Draw', function() {
       expect(de).to.be.called();
       expect(de.callCount).to.be(1);
     });
-
   });
 
   describe('drawing with a finishCondition', function() {
@@ -476,12 +477,13 @@ describe('ol.interaction.Draw', function() {
   });
 
   describe('drawing multi-linestrings', function() {
-
     beforeEach(function() {
-      map.addInteraction(new ol.interaction.Draw({
-        source: source,
-        type: 'MultiLineString'
-      }));
+      map.addInteraction(
+        new ol.interaction.Draw({
+          source: source,
+          type: 'MultiLineString'
+        })
+      );
     });
 
     it('draws multi with clicks, finishing on last point', function() {
@@ -505,7 +507,6 @@ describe('ol.interaction.Draw', function() {
       expect(geometry).to.be.a(ol.geom.MultiLineString);
       expect(geometry.getCoordinates()).to.eql([[[10, -20], [30, -20]]]);
     });
-
   });
 
   describe('drawing polygons', function() {
@@ -560,7 +561,6 @@ describe('ol.interaction.Draw', function() {
     });
 
     it('supports removeLastPoint while drawing', function() {
-
       draw.removeLastPoint();
 
       // first point
@@ -669,16 +669,16 @@ describe('ol.interaction.Draw', function() {
       expect(de).to.be.called();
       expect(de.callCount).to.be(1);
     });
-
   });
 
   describe('drawing multi-polygons', function() {
-
     beforeEach(function() {
-      map.addInteraction(new ol.interaction.Draw({
-        source: source,
-        type: 'MultiPolygon'
-      }));
+      map.addInteraction(
+        new ol.interaction.Draw({
+          source: source,
+          type: 'MultiPolygon'
+        })
+      );
     });
 
     it('draws multi with clicks, finishing on first point', function() {
@@ -745,7 +745,6 @@ describe('ol.interaction.Draw', function() {
         [[10, -20], [30, -20], [40, -10], [10, -20]]
       ]);
     });
-
   });
 
   describe('drawing circles', function() {
@@ -817,7 +816,6 @@ describe('ol.interaction.Draw', function() {
       expect(de).to.be.called();
       expect(de.callCount).to.be(1);
     });
-
   });
 
   describe('#setActive()', function() {
@@ -886,7 +884,6 @@ describe('ol.interaction.Draw', function() {
         expect(listenerSpy.callCount).to.be(1);
       });
     });
-
   });
 
   describe('#setMap()', function() {
@@ -940,7 +937,6 @@ describe('ol.interaction.Draw', function() {
           expect(spy.getCall(0).args[0]).to.be(null);
         });
       });
-
     });
   });
 
@@ -949,8 +945,10 @@ describe('ol.interaction.Draw', function() {
       var draw = new ol.interaction.Draw({
         source: source,
         type: 'Circle',
-        geometryFunction:
-            ol.interaction.Draw.createRegularPolygon(4, Math.PI / 4)
+        geometryFunction: ol.interaction.Draw.createRegularPolygon(
+          4,
+          Math.PI / 4
+        )
       });
       map.addInteraction(draw);
 
@@ -1014,7 +1012,8 @@ describe('ol.interaction.Draw', function() {
       });
       map.addInteraction(draw);
       feature = new ol.Feature(
-          new ol.geom.LineString([[0, 0], [1, 1], [2, 0]]));
+        new ol.geom.LineString([[0, 0], [1, 1], [2, 0]])
+      );
     });
 
     it('sets the initial state', function() {
@@ -1030,6 +1029,5 @@ describe('ol.interaction.Draw', function() {
       draw.extend(feature);
       expect(spy.callCount).to.be(1);
     });
-
   });
 });

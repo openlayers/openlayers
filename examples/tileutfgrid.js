@@ -9,13 +9,16 @@ var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 var mapLayer = new ol.layer.Tile({
   source: new ol.source.TileJSON({
-    url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
+    url:
+      'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' +
+        key
   })
 });
 
-
 var gridSource = new ol.source.TileUTFGrid({
-  url: 'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' + key
+  url:
+    'https://api.tiles.mapbox.com/v4/mapbox.geography-class.json?secure&access_token=' +
+      key
 });
 
 var gridLayer = new ol.layer.Tile({source: gridSource});
@@ -44,19 +47,22 @@ var infoOverlay = new ol.Overlay({
 map.addOverlay(infoOverlay);
 
 var displayCountryInfo = function(coordinate) {
-  var viewResolution = /** @type {number} */ (view.getResolution());
-  gridSource.forDataAtCoordinateAndResolution(coordinate, viewResolution,
-      function(data) {
-        // If you want to use the template from the TileJSON,
-        //  load the mustache.js library separately and call
-        //  info.innerHTML = Mustache.render(gridSource.getTemplate(), data);
-        mapElement.style.cursor = data ? 'pointer' : '';
-        if (data) {
-          flagElement.src = 'data:image/png;base64,' + data['flag_png'];
-          nameElement.innerHTML = data['admin'];
-        }
-        infoOverlay.setPosition(data ? coordinate : undefined);
-      });
+  var viewResolution /** @type {number} */ = view.getResolution();
+  gridSource.forDataAtCoordinateAndResolution(
+    coordinate,
+    viewResolution,
+    function(data) {
+      // If you want to use the template from the TileJSON,
+      //  load the mustache.js library separately and call
+      //  info.innerHTML = Mustache.render(gridSource.getTemplate(), data);
+      mapElement.style.cursor = data ? 'pointer' : '';
+      if (data) {
+        flagElement.src = 'data:image/png;base64,' + data['flag_png'];
+        nameElement.innerHTML = data['admin'];
+      }
+      infoOverlay.setPosition(data ? coordinate : undefined);
+    }
+  );
 };
 
 map.on('pointermove', function(evt) {

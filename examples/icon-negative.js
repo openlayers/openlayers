@@ -10,16 +10,15 @@ goog.require('ol.source.Vector');
 goog.require('ol.style.Icon');
 goog.require('ol.style.Style');
 
-
 function createStyle(src, img) {
   return new ol.style.Style({
-    image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+    image: new ol.style.Icon /** @type {olx.style.IconOptions} */({
       anchor: [0.5, 0.96],
       crossOrigin: 'anonymous',
       src: src,
       img: img,
       imgSize: img ? [img.width, img.height] : undefined
-    }))
+    })
   });
 }
 
@@ -69,6 +68,7 @@ var select = new ol.interaction.Select({
 map.addInteraction(select);
 
 map.on('pointermove', function(evt) {
-  map.getTargetElement().style.cursor =
-      map.hasFeatureAtPixel(evt.pixel) ? 'pointer' : '';
+  map.getTargetElement().style.cursor = map.hasFeatureAtPixel(evt.pixel)
+    ? 'pointer'
+    : '';
 });

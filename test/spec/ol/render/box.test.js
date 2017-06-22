@@ -6,9 +6,7 @@ goog.require('ol.View');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.Box');
 
-
 describe('ol.render.Box', function() {
-
   var box, map, target;
 
   beforeEach(function() {
@@ -46,13 +44,13 @@ describe('ol.render.Box', function() {
       expect(box.element_.className).to.be('ol-box test-box');
       expect(box.element_.style.position).to.be('absolute');
     });
-    it('appends the DIV to the map\'s overlay container', function() {
+    it("appends the DIV to the map's overlay container", function() {
       expect(box.element_.parentNode).to.equal(map.getOverlayContainer());
     });
   });
 
   describe('#setPixels()', function() {
-    it('applies correct styles for a box', function()  {
+    it('applies correct styles for a box', function() {
       box.setPixels([1, 2], [4, 8]);
       expect(box.element_.style.left).to.be('1px');
       expect(box.element_.style.top).to.be('2px');
@@ -72,5 +70,4 @@ describe('ol.render.Box', function() {
       expect(box.getGeometry()).to.be.a(ol.geom.Polygon);
     });
   });
-
 });

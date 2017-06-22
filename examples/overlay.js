@@ -6,7 +6,6 @@ goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.OSM');
 
-
 var layer = new ol.layer.Tile({
   source: new ol.source.OSM()
 });
@@ -47,17 +46,18 @@ map.addOverlay(popup);
 map.on('click', function(evt) {
   var element = popup.getElement();
   var coordinate = evt.coordinate;
-  var hdms = ol.coordinate.toStringHDMS(ol.proj.transform(
-      coordinate, 'EPSG:3857', 'EPSG:4326'));
+  var hdms = ol.coordinate.toStringHDMS(
+    ol.proj.transform(coordinate, 'EPSG:3857', 'EPSG:4326')
+  );
 
   $(element).popover('destroy');
   popup.setPosition(coordinate);
   // the keys are quoted to prevent renaming in ADVANCED mode.
   $(element).popover({
-    'placement': 'top',
-    'animation': false,
-    'html': true,
-    'content': '<p>The location you clicked was:</p><code>' + hdms + '</code>'
+    placement: 'top',
+    animation: false,
+    html: true,
+    content: '<p>The location you clicked was:</p><code>' + hdms + '</code>'
   });
   $(element).popover('show');
 });

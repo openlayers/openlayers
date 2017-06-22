@@ -3,7 +3,6 @@ goog.provide('ol.render.Event');
 goog.require('ol');
 goog.require('ol.events.Event');
 
-
 /**
  * @constructor
  * @extends {ol.events.Event}
@@ -15,9 +14,12 @@ goog.require('ol.events.Event');
  * @param {?ol.webgl.Context=} opt_glContext WebGL Context.
  */
 ol.render.Event = function(
-    type, opt_vectorContext, opt_frameState, opt_context,
-    opt_glContext) {
-
+  type,
+  opt_vectorContext,
+  opt_frameState,
+  opt_context,
+  opt_glContext
+) {
   ol.events.Event.call(this, type);
 
   /**
@@ -49,6 +51,5 @@ ol.render.Event = function(
    * @api
    */
   this.glContext = opt_glContext;
-
 };
 ol.inherits(ol.render.Event, ol.events.Event);

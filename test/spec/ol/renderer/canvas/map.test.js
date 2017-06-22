@@ -11,11 +11,8 @@ goog.require('ol.renderer.canvas.Layer');
 goog.require('ol.renderer.canvas.Map');
 goog.require('ol.source.Vector');
 
-
 describe('ol.renderer.canvas.Map', function() {
-
   describe('constructor', function() {
-
     it('creates a new instance', function() {
       var map = new ol.Map({
         target: document.createElement('div')
@@ -23,11 +20,9 @@ describe('ol.renderer.canvas.Map', function() {
       var renderer = new ol.renderer.canvas.Map(map.viewport_, map);
       expect(renderer).to.be.a(ol.renderer.canvas.Map);
     });
-
   });
 
   describe('#forEachFeatureAtCoordinate', function() {
-
     var layer, map, target;
 
     beforeEach(function(done) {
@@ -49,7 +44,8 @@ describe('ol.renderer.canvas.Map', function() {
       img.onload = function() {
         done();
       };
-      img.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
+      img.src =
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAAAAAA6fptVAAAACklEQVR4nGNiAAAABgADNjd8qAAAAABJRU5ErkJggg==';
 
       layer = new ol.layer.Vector({
         source: new ol.source.Vector({
@@ -120,12 +116,14 @@ describe('ol.renderer.canvas.Map', function() {
       expect(cb).to.not.be.called();
     });
 
-    it('doesn\'t fail with layer with no source', function() {
+    it("doesn't fail with layer with no source", function() {
       map.addLayer(new ol.layer.Tile());
       map.renderSync();
       expect(function() {
-        map.forEachFeatureAtPixel(map.getPixelFromCoordinate([0, 0]),
-            function() {});
+        map.forEachFeatureAtPixel(
+          map.getPixelFromCoordinate([0, 0]),
+          function() {}
+        );
       }).to.not.throwException();
     });
 
@@ -184,7 +182,5 @@ describe('ol.renderer.canvas.Map', function() {
       };
       renderer.layerRenderers_[ol.getUid(layer)] = layerRenderer;
     });
-
   });
-
 });

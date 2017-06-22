@@ -6,7 +6,6 @@ goog.require('ol.Observable');
 goog.require('ol.events.Event');
 goog.require('ol.obj');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -73,24 +72,21 @@ ol.Object = function(opt_values) {
 };
 ol.inherits(ol.Object, ol.Observable);
 
-
 /**
  * @private
  * @type {Object.<string, string>}
  */
 ol.Object.changeEventTypeCache_ = {};
 
-
 /**
  * @param {string} key Key name.
  * @return {string} Change name.
  */
 ol.Object.getChangeEventType = function(key) {
-  return ol.Object.changeEventTypeCache_.hasOwnProperty(key) ?
-      ol.Object.changeEventTypeCache_[key] :
-      (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
+  return ol.Object.changeEventTypeCache_.hasOwnProperty(key)
+    ? ol.Object.changeEventTypeCache_[key]
+    : (ol.Object.changeEventTypeCache_[key] = 'change:' + key);
 };
-
 
 /**
  * Gets a value.
@@ -106,7 +102,6 @@ ol.Object.prototype.get = function(key) {
   return value;
 };
 
-
 /**
  * Get a list of object property names.
  * @return {Array.<string>} List of property names.
@@ -116,7 +111,6 @@ ol.Object.prototype.getKeys = function() {
   return Object.keys(this.values_);
 };
 
-
 /**
  * Get an object of all property names and values.
  * @return {Object.<string, *>} Object.
@@ -125,7 +119,6 @@ ol.Object.prototype.getKeys = function() {
 ol.Object.prototype.getProperties = function() {
   return ol.obj.assign({}, this.values_);
 };
-
 
 /**
  * @param {string} key Key name.
@@ -138,7 +131,6 @@ ol.Object.prototype.notify = function(key, oldValue) {
   eventType = ol.ObjectEventType.PROPERTYCHANGE;
   this.dispatchEvent(new ol.Object.Event(eventType, key, oldValue));
 };
-
 
 /**
  * Sets a value.
@@ -159,7 +151,6 @@ ol.Object.prototype.set = function(key, value, opt_silent) {
   }
 };
 
-
 /**
  * Sets a collection of key-value pairs.  Note that this changes any existing
  * properties and adds new ones (it does not remove any existing properties).
@@ -173,7 +164,6 @@ ol.Object.prototype.setProperties = function(values, opt_silent) {
     this.set(key, values[key], opt_silent);
   }
 };
-
 
 /**
  * Unsets a property.
@@ -190,7 +180,6 @@ ol.Object.prototype.unset = function(key, opt_silent) {
     }
   }
 };
-
 
 /**
  * @classdesc
@@ -220,6 +209,5 @@ ol.Object.Event = function(type, key, oldValue) {
    * @api
    */
   this.oldValue = oldValue;
-
 };
 ol.inherits(ol.Object.Event, ol.events.Event);

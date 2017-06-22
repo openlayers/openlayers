@@ -4,7 +4,6 @@ goog.require('ol.Map');
 goog.require('ol.Overlay');
 goog.require('ol.View');
 
-
 describe('ol.Overlay', function() {
   var target, map;
 
@@ -38,12 +37,10 @@ describe('ol.Overlay', function() {
   });
 
   describe('constructor', function() {
-
     it('can be constructed with minimal arguments', function() {
       var instance = new ol.Overlay({});
       expect(instance).to.be.an(ol.Overlay);
     });
-
   });
 
   describe('#getId()', function() {
@@ -72,7 +69,6 @@ describe('ol.Overlay', function() {
       map.addOverlay(overlay);
       expect(overlay.getId()).to.be('foo');
     });
-
   });
 
   describe('#setVisible()', function() {
@@ -97,7 +93,5 @@ describe('ol.Overlay', function() {
       overlay.setVisible(false);
       expect(overlay.element_.style.display).to.be('none');
     });
-
   });
-
 });

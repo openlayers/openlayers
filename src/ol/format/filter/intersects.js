@@ -3,7 +3,6 @@ goog.provide('ol.format.filter.Intersects');
 goog.require('ol');
 goog.require('ol.format.filter.Spatial');
 
-
 /**
  * @classdesc
  * Represents a `<Intersects>` operator to test whether a geometry-valued property
@@ -18,8 +17,12 @@ goog.require('ol.format.filter.Spatial');
  * @api
  */
 ol.format.filter.Intersects = function(geometryName, geometry, opt_srsName) {
-
-  ol.format.filter.Spatial.call(this, 'Intersects', geometryName, geometry, opt_srsName);
-
+  ol.format.filter.Spatial.call(
+    this,
+    'Intersects',
+    geometryName,
+    geometry,
+    opt_srsName
+  );
 };
 ol.inherits(ol.format.filter.Intersects, ol.format.filter.Spatial);

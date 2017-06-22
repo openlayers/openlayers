@@ -11,7 +11,6 @@ goog.require('ol.reproj.Tile');
 goog.require('ol.source.UrlTile');
 goog.require('ol.tilegrid');
 
-
 /**
  * @classdesc
  * Base class for sources providing images divided into a tile grid.
@@ -23,7 +22,6 @@ goog.require('ol.tilegrid');
  * @api
  */
 ol.source.TileImage = function(options) {
-
   ol.source.UrlTile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize,
@@ -33,8 +31,9 @@ ol.source.TileImage = function(options) {
     projection: options.projection,
     state: options.state,
     tileGrid: options.tileGrid,
-    tileLoadFunction: options.tileLoadFunction ?
-        options.tileLoadFunction : ol.source.TileImage.defaultTileLoadFunction,
+    tileLoadFunction: options.tileLoadFunction
+      ? options.tileLoadFunction
+      : ol.source.TileImage.defaultTileLoadFunction,
     tilePixelRatio: options.tilePixelRatio,
     tileUrlFunction: options.tileUrlFunction,
     url: options.url,
@@ -46,16 +45,18 @@ ol.source.TileImage = function(options) {
    * @protected
    * @type {?string}
    */
-  this.crossOrigin =
-      options.crossOrigin !== undefined ? options.crossOrigin : null;
+  this.crossOrigin = options.crossOrigin !== undefined
+    ? options.crossOrigin
+    : null;
 
   /**
    * @protected
    * @type {function(new: ol.ImageTile, ol.TileCoord, ol.TileState, string,
    *        ?string, ol.TileLoadFunctionType)}
    */
-  this.tileClass = options.tileClass !== undefined ?
-      options.tileClass : ol.ImageTile;
+  this.tileClass = options.tileClass !== undefined
+    ? options.tileClass
+    : ol.ImageTile;
 
   /**
    * @protected
@@ -83,7 +84,6 @@ ol.source.TileImage = function(options) {
 };
 ol.inherits(ol.source.TileImage, ol.source.UrlTile);
 
-
 /**
  * @inheritDoc
  */
@@ -103,7 +103,6 @@ ol.source.TileImage.prototype.canExpireCache = function() {
   return false;
 };
 
-
 /**
  * @inheritDoc
  */
@@ -121,20 +120,21 @@ ol.source.TileImage.prototype.expireCache = function(projection, usedTiles) {
   }
 };
 
-
 /**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getGutter = function(projection) {
-  if (ol.ENABLE_RASTER_REPROJECTION &&
-      this.getProjection() && projection &&
-      !ol.proj.equivalent(this.getProjection(), projection)) {
+  if (
+    ol.ENABLE_RASTER_REPROJECTION &&
+    this.getProjection() &&
+    projection &&
+    !ol.proj.equivalent(this.getProjection(), projection)
+  ) {
     return 0;
   } else {
     return this.getGutterInternal();
   }
 };
-
 
 /**
  * @protected
@@ -144,49 +144,60 @@ ol.source.TileImage.prototype.getGutterInternal = function() {
   return 0;
 };
 
-
 /**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getOpaque = function(projection) {
-  if (ol.ENABLE_RASTER_REPROJECTION &&
-      this.getProjection() && projection &&
-      !ol.proj.equivalent(this.getProjection(), projection)) {
+  if (
+    ol.ENABLE_RASTER_REPROJECTION &&
+    this.getProjection() &&
+    projection &&
+    !ol.proj.equivalent(this.getProjection(), projection)
+  ) {
     return false;
   } else {
     return ol.source.UrlTile.prototype.getOpaque.call(this, projection);
   }
 };
 
-
 /**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileGridForProjection = function(projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return ol.source.UrlTile.prototype.getTileGridForProjection.call(this, projection);
+    return ol.source.UrlTile.prototype.getTileGridForProjection.call(
+      this,
+      projection
+    );
   }
   var thisProj = this.getProjection();
-  if (this.tileGrid &&
-      (!thisProj || ol.proj.equivalent(thisProj, projection))) {
+  if (
+    this.tileGrid &&
+    (!thisProj || ol.proj.equivalent(thisProj, projection))
+  ) {
     return this.tileGrid;
   } else {
     var projKey = ol.getUid(projection).toString();
     if (!(projKey in this.tileGridForProjection)) {
-      this.tileGridForProjection[projKey] =
-          ol.tilegrid.getForProjection(projection);
+      this.tileGridForProjection[projKey] = ol.tilegrid.getForProjection(
+        projection
+      );
     }
-    return /** @type {!ol.tilegrid.TileGrid} */ (this.tileGridForProjection[projKey]);
+    return /** @type {!ol.tilegrid.TileGrid} */ this.tileGridForProjection[
+      projKey
+    ];
   }
 };
-
 
 /**
  * @inheritDoc
  */
 ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
   if (!ol.ENABLE_RASTER_REPROJECTION) {
-    return ol.source.UrlTile.prototype.getTileCacheForProjection.call(this, projection);
+    return ol.source.UrlTile.prototype.getTileCacheForProjection.call(
+      this,
+      projection
+    );
   }
   var thisProj = this.getProjection();
   if (!thisProj || ol.proj.equivalent(thisProj, projection)) {
@@ -194,12 +205,13 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
   } else {
     var projKey = ol.getUid(projection).toString();
     if (!(projKey in this.tileCacheForProjection)) {
-      this.tileCacheForProjection[projKey] = new ol.TileCache(this.tileCache.highWaterMark);
+      this.tileCacheForProjection[projKey] = new ol.TileCache(
+        this.tileCache.highWaterMark
+      );
     }
     return this.tileCacheForProjection[projKey];
   }
 };
-
 
 /**
  * @param {number} z Tile coordinate z.
@@ -211,60 +223,93 @@ ol.source.TileImage.prototype.getTileCacheForProjection = function(projection) {
  * @return {!ol.Tile} Tile.
  * @private
  */
-ol.source.TileImage.prototype.createTile_ = function(z, x, y, pixelRatio, projection, key) {
+ol.source.TileImage.prototype.createTile_ = function(
+  z,
+  x,
+  y,
+  pixelRatio,
+  projection,
+  key
+) {
   var tileCoord = [z, x, y];
-  var urlTileCoord = this.getTileCoordForTileUrlFunction(
-      tileCoord, projection);
-  var tileUrl = urlTileCoord ?
-      this.tileUrlFunction(urlTileCoord, pixelRatio, projection) : undefined;
+  var urlTileCoord = this.getTileCoordForTileUrlFunction(tileCoord, projection);
+  var tileUrl = urlTileCoord
+    ? this.tileUrlFunction(urlTileCoord, pixelRatio, projection)
+    : undefined;
   var tile = new this.tileClass(
-      tileCoord,
-      tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
-      tileUrl !== undefined ? tileUrl : '',
-      this.crossOrigin,
-      this.tileLoadFunction);
+    tileCoord,
+    tileUrl !== undefined ? ol.TileState.IDLE : ol.TileState.EMPTY,
+    tileUrl !== undefined ? tileUrl : '',
+    this.crossOrigin,
+    this.tileLoadFunction
+  );
   tile.key = key;
-  ol.events.listen(tile, ol.events.EventType.CHANGE,
-      this.handleTileChange, this);
+  ol.events.listen(
+    tile,
+    ol.events.EventType.CHANGE,
+    this.handleTileChange,
+    this
+  );
   return tile;
 };
-
 
 /**
  * @inheritDoc
  */
-ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection) {
-  if (!ol.ENABLE_RASTER_REPROJECTION ||
-      !this.getProjection() ||
-      !projection ||
-      ol.proj.equivalent(this.getProjection(), projection)) {
-    return this.getTileInternal(z, x, y, pixelRatio, /** @type {!ol.proj.Projection} */ (projection));
+ol.source.TileImage.prototype.getTile = function(
+  z,
+  x,
+  y,
+  pixelRatio,
+  projection
+) {
+  if (
+    !ol.ENABLE_RASTER_REPROJECTION ||
+    !this.getProjection() ||
+    !projection ||
+    ol.proj.equivalent(this.getProjection(), projection)
+  ) {
+    return this.getTileInternal(
+      z,
+      x,
+      y,
+      pixelRatio /** @type {!ol.proj.Projection} */,
+      projection
+    );
   } else {
     var cache = this.getTileCacheForProjection(projection);
     var tileCoord = [z, x, y];
     var tile;
     var tileCoordKey = this.getKeyZXY.apply(this, tileCoord);
     if (cache.containsKey(tileCoordKey)) {
-      tile = /** @type {!ol.Tile} */ (cache.get(tileCoordKey));
+      tile /** @type {!ol.Tile} */ = cache.get(tileCoordKey);
     }
     var key = this.getKey();
     if (tile && tile.key == key) {
       return tile;
     } else {
-      var sourceProjection = /** @type {!ol.proj.Projection} */ (this.getProjection());
+      var sourceProjection /** @type {!ol.proj.Projection} */ = this.getProjection();
       var sourceTileGrid = this.getTileGridForProjection(sourceProjection);
       var targetTileGrid = this.getTileGridForProjection(projection);
-      var wrappedTileCoord =
-          this.getTileCoordForTileUrlFunction(tileCoord, projection);
+      var wrappedTileCoord = this.getTileCoordForTileUrlFunction(
+        tileCoord,
+        projection
+      );
       var newTile = new ol.reproj.Tile(
-          sourceProjection, sourceTileGrid,
-          projection, targetTileGrid,
-          tileCoord, wrappedTileCoord, this.getTilePixelRatio(pixelRatio),
-          this.getGutterInternal(),
-          function(z, x, y, pixelRatio) {
-            return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
-          }.bind(this), this.reprojectionErrorThreshold_,
-          this.renderReprojectionEdges_);
+        sourceProjection,
+        sourceTileGrid,
+        projection,
+        targetTileGrid,
+        tileCoord,
+        wrappedTileCoord,
+        this.getTilePixelRatio(pixelRatio),
+        this.getGutterInternal(),
+        function(z, x, y, pixelRatio) {
+          return this.getTileInternal(z, x, y, pixelRatio, sourceProjection);
+        }.bind(this),
+        this.reprojectionErrorThreshold_,
+        this.renderReprojectionEdges_
+      );
       newTile.key = key;
 
       if (tile) {
@@ -278,7 +323,6 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
   }
 };
 
-
 /**
  * @param {number} z Tile coordinate z.
  * @param {number} x Tile coordinate x.
@@ -288,7 +332,13 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
  * @return {!ol.Tile} Tile.
  * @protected
  */
-ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, projection) {
+ol.source.TileImage.prototype.getTileInternal = function(
+  z,
+  x,
+  y,
+  pixelRatio,
+  projection
+) {
   var tile = null;
   var tileCoordKey = this.getKeyZXY(z, x, y);
   var key = this.getKey();
@@ -318,15 +368,16 @@ ol.source.TileImage.prototype.getTileInternal = function(z, x, y, pixelRatio, pr
   return tile;
 };
 
-
 /**
  * Sets whether to render reprojection edges or not (usually for debugging).
  * @param {boolean} render Render the edges.
  * @api
  */
 ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
-  if (!ol.ENABLE_RASTER_REPROJECTION ||
-      this.renderReprojectionEdges_ == render) {
+  if (
+    !ol.ENABLE_RASTER_REPROJECTION ||
+    this.renderReprojectionEdges_ == render
+  ) {
     return;
   }
   this.renderReprojectionEdges_ = render;
@@ -335,7 +386,6 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
   }
   this.changed();
 };
-
 
 /**
  * Sets the tile grid to use when reprojecting the tiles to the given
@@ -349,7 +399,10 @@ ol.source.TileImage.prototype.setRenderReprojectionEdges = function(render) {
  * @param {ol.tilegrid.TileGrid} tilegrid Tile grid to use for the projection.
  * @api
  */
-ol.source.TileImage.prototype.setTileGridForProjection = function(projection, tilegrid) {
+ol.source.TileImage.prototype.setTileGridForProjection = function(
+  projection,
+  tilegrid
+) {
   if (ol.ENABLE_RASTER_REPROJECTION) {
     var proj = ol.proj.get(projection);
     if (proj) {
@@ -360,7 +413,6 @@ ol.source.TileImage.prototype.setTileGridForProjection = function(projection, ti
     }
   }
 };
-
 
 /**
  * @param {ol.ImageTile} imageTile Image tile.

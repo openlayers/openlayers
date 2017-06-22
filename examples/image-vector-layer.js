@@ -11,7 +11,6 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
-
 var map = new ol.Map({
   layers: [
     new ol.layer.Tile({
@@ -58,7 +57,6 @@ var featureOverlay = new ol.layer.Vector({
 
 var highlight;
 var displayFeatureInfo = function(pixel) {
-
   var feature = map.forEachFeatureAtPixel(pixel, function(feature) {
     return feature;
   });
@@ -79,7 +77,6 @@ var displayFeatureInfo = function(pixel) {
     }
     highlight = feature;
   }
-
 };
 
 map.on('pointermove', function(evt) {

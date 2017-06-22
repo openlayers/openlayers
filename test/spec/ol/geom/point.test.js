@@ -2,9 +2,7 @@ goog.provide('ol.test.geom.Point');
 
 goog.require('ol.geom.Point');
 
-
 describe('ol.geom.Point', function() {
-
   it('can be constructed with a null geometry', function() {
     expect(function() {
       return new ol.geom.Point(null);
@@ -12,7 +10,6 @@ describe('ol.geom.Point', function() {
   });
 
   describe('construct with 2D coordinates', function() {
-
     var point;
     beforeEach(function() {
       point = new ol.geom.Point([1, 2]);
@@ -42,14 +39,12 @@ describe('ol.geom.Point', function() {
       expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
     });
 
-    it('does intersect it\'s extent', function() {
+    it("does intersect it's extent", function() {
       expect(point.intersectsExtent(point.getExtent())).to.be(true);
     });
-
   });
 
   describe('construct with 3D coordinates and layout XYM', function() {
-
     var point;
     beforeEach(function() {
       point = new ol.geom.Point([1, 2, 3], 'XYM');
@@ -79,14 +74,12 @@ describe('ol.geom.Point', function() {
       expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
     });
 
-    it('does intersect it\'s extent', function() {
+    it("does intersect it's extent", function() {
       expect(point.intersectsExtent(point.getExtent())).to.be(true);
     });
-
   });
 
   describe('construct with 4D coordinates', function() {
-
     var point;
     beforeEach(function() {
       point = new ol.geom.Point([1, 2, 3, 4]);
@@ -116,23 +109,19 @@ describe('ol.geom.Point', function() {
       expect(point.intersectsExtent([0, 0, 10, 0.5])).to.be(false);
     });
 
-    it('does intersect it\'s extent', function() {
+    it("does intersect it's extent", function() {
       expect(point.intersectsExtent(point.getExtent())).to.be(true);
     });
 
     describe('#getClosestPoint', function() {
-
       it('preseves extra dimensions', function() {
         var closestPoint = point.getClosestPoint([0, 0]);
         expect(closestPoint).to.eql([1, 2, 3, 4]);
       });
-
     });
-
   });
 
   describe('#scale()', function() {
-
     it('scales a point', function() {
       var geom = new ol.geom.Point([1, 2]);
       geom.scale(10e6);
@@ -153,11 +142,9 @@ describe('ol.geom.Point', function() {
       var coordinates = geom.getCoordinates();
       expect(coordinates).to.eql([10, 30]);
     });
-
   });
 
   describe('#applyTransform()', function() {
-
     var point, transform;
     beforeEach(function() {
       point = new ol.geom.Point([1, 2]);
@@ -189,14 +176,14 @@ describe('ol.geom.Point', function() {
       var got = point.applyTransform(transform);
       expect(got).to.be(undefined);
     });
-
   });
 
   describe('#transform()', function() {
-
     it('transforms a geometry given CRS identifiers', function() {
       var point = new ol.geom.Point([-111, 45]).transform(
-          'EPSG:4326', 'EPSG:3857');
+        'EPSG:4326',
+        'EPSG:3857'
+      );
 
       expect(point).to.be.a(ol.geom.Point);
 
@@ -214,7 +201,5 @@ describe('ol.geom.Point', function() {
       expect(coords[0]).to.roughlyEqual(-12356463.47, 1e-2);
       expect(coords[1]).to.roughlyEqual(5621521.48, 1e-2);
     });
-
   });
-
 });

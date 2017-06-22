@@ -7,7 +7,6 @@ goog.require('ol.control.Control');
 goog.require('ol.css');
 goog.require('ol.easing');
 
-
 /**
  * @classdesc
  * A control with 2 buttons, one for zoom in and one for zoom out.
@@ -20,45 +19,62 @@ goog.require('ol.easing');
  * @api
  */
 ol.control.Zoom = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
-  var className = options.className !== undefined ? options.className : 'ol-zoom';
+  var className = options.className !== undefined
+    ? options.className
+    : 'ol-zoom';
 
   var delta = options.delta !== undefined ? options.delta : 1;
 
-  var zoomInLabel = options.zoomInLabel !== undefined ? options.zoomInLabel : '+';
-  var zoomOutLabel = options.zoomOutLabel !== undefined ? options.zoomOutLabel : '\u2212';
+  var zoomInLabel = options.zoomInLabel !== undefined
+    ? options.zoomInLabel
+    : '+';
+  var zoomOutLabel = options.zoomOutLabel !== undefined
+    ? options.zoomOutLabel
+    : '\u2212';
 
-  var zoomInTipLabel = options.zoomInTipLabel !== undefined ?
-      options.zoomInTipLabel : 'Zoom in';
-  var zoomOutTipLabel = options.zoomOutTipLabel !== undefined ?
-      options.zoomOutTipLabel : 'Zoom out';
+  var zoomInTipLabel = options.zoomInTipLabel !== undefined
+    ? options.zoomInTipLabel
+    : 'Zoom in';
+  var zoomOutTipLabel = options.zoomOutTipLabel !== undefined
+    ? options.zoomOutTipLabel
+    : 'Zoom out';
 
   var inElement = document.createElement('button');
   inElement.className = className + '-in';
   inElement.setAttribute('type', 'button');
   inElement.title = zoomInTipLabel;
   inElement.appendChild(
-    typeof zoomInLabel === 'string' ? document.createTextNode(zoomInLabel) : zoomInLabel
+    typeof zoomInLabel === 'string'
+      ? document.createTextNode(zoomInLabel)
+      : zoomInLabel
   );
 
-  ol.events.listen(inElement, ol.events.EventType.CLICK,
-      ol.control.Zoom.prototype.handleClick_.bind(this, delta));
+  ol.events.listen(
+    inElement,
+    ol.events.EventType.CLICK,
+    ol.control.Zoom.prototype.handleClick_.bind(this, delta)
+  );
 
   var outElement = document.createElement('button');
   outElement.className = className + '-out';
   outElement.setAttribute('type', 'button');
   outElement.title = zoomOutTipLabel;
   outElement.appendChild(
-    typeof zoomOutLabel === 'string' ? document.createTextNode(zoomOutLabel) : zoomOutLabel
+    typeof zoomOutLabel === 'string'
+      ? document.createTextNode(zoomOutLabel)
+      : zoomOutLabel
   );
 
-  ol.events.listen(outElement, ol.events.EventType.CLICK,
-      ol.control.Zoom.prototype.handleClick_.bind(this, -delta));
+  ol.events.listen(
+    outElement,
+    ol.events.EventType.CLICK,
+    ol.control.Zoom.prototype.handleClick_.bind(this, -delta)
+  );
 
-  var cssClasses = className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' +
-      ol.css.CLASS_CONTROL;
+  var cssClasses =
+    className + ' ' + ol.css.CLASS_UNSELECTABLE + ' ' + ol.css.CLASS_CONTROL;
   var element = document.createElement('div');
   element.className = cssClasses;
   element.appendChild(inElement);
@@ -74,10 +90,8 @@ ol.control.Zoom = function(opt_options) {
    * @private
    */
   this.duration_ = options.duration !== undefined ? options.duration : 250;
-
 };
 ol.inherits(ol.control.Zoom, ol.control.Control);
-
 
 /**
  * @param {number} delta Zoom delta.
@@ -88,7 +102,6 @@ ol.control.Zoom.prototype.handleClick_ = function(delta, event) {
   event.preventDefault();
   this.zoomByDelta_(delta);
 };
-
 
 /**
  * @param {number} delta Zoom delta.

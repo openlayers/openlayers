@@ -3,11 +3,8 @@ goog.provide('ol.test.style.Text');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Text');
 
-
 describe('ol.style.Text', function() {
-
   describe('#constructor', function() {
-
     it('uses a default fill style if none passed', function() {
       var style = new ol.style.Text();
       expect(style.getFill().getColor()).to.be('#333');
@@ -25,11 +22,9 @@ describe('ol.style.Text', function() {
       style.getFill().setColor();
       expect(style.getFill().getColor()).to.be(undefined);
     });
-
   });
 
   describe('#clone', function() {
-
     it('creates a new ol.style.Text', function() {
       var original = new ol.style.Text();
       var clone = original.clone();
@@ -65,7 +60,9 @@ describe('ol.style.Text', function() {
       expect(original.getText()).to.eql(clone.getText());
       expect(original.getTextAlign()).to.eql(clone.getTextAlign());
       expect(original.getTextBaseline()).to.eql(clone.getTextBaseline());
-      expect(original.getStroke().getColor()).to.eql(clone.getStroke().getColor());
+      expect(original.getStroke().getColor()).to.eql(
+        clone.getStroke().getColor()
+      );
       expect(original.getFill().getColor()).to.eql(clone.getFill().getColor());
     });
 
@@ -84,10 +81,12 @@ describe('ol.style.Text', function() {
 
       clone.getFill().setColor('#012345');
       clone.getStroke().setColor('#012345');
-      expect(original.getFill().getColor()).to.not.eql(clone.getFill().getColor());
-      expect(original.getStroke().getColor()).to.not.eql(clone.getStroke().getColor());
+      expect(original.getFill().getColor()).to.not.eql(
+        clone.getFill().getColor()
+      );
+      expect(original.getStroke().getColor()).to.not.eql(
+        clone.getStroke().getColor()
+      );
     });
-
   });
-
 });

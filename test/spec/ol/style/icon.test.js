@@ -5,22 +5,22 @@ goog.require('ol.style');
 goog.require('ol.style.Icon');
 goog.require('ol.style.IconImage');
 
-
 describe('ol.style.Icon', function() {
   var size = [36, 48];
-  var src = 'data:image/gif;base64,' +
-      'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
+  var src =
+    'data:image/gif;base64,' +
+    'R0lGODlhAQABAIAAAP///wAAACwAAAAAAQABAAACAkQBADs=';
 
   describe('constructor', function() {
-
     it('caches canvas images with a uid as src', function() {
       var canvas = document.createElement('canvas');
       new ol.style.Icon({
         img: canvas,
         imgSize: size
       });
-      expect(ol.style.IconImage.get(
-          canvas, ol.getUid(canvas), size, '').getImage()).to.eql(canvas);
+      expect(
+        ol.style.IconImage.get(canvas, ol.getUid(canvas), size, '').getImage()
+      ).to.eql(canvas);
     });
 
     it('imgSize overrides img.width and img.height', function(done) {
@@ -35,11 +35,9 @@ describe('ol.style.Icon', function() {
       });
       style.load();
     });
-
   });
 
   describe('#clone', function() {
-
     it('creates a new ol.style.Icon', function() {
       var original = new ol.style.Icon({
         src: src
@@ -77,7 +75,9 @@ describe('ol.style.Icon', function() {
       expect(original.crossOrigin_).to.eql(clone.crossOrigin_);
       expect(original.getColor()).to.eql(clone.getColor());
       expect(original.getImage(1).src).to.eql(clone.getImage(1).src);
-      expect(original.getImage(1).toDataURL()).to.eql(original.getImage(1).toDataURL());
+      expect(original.getImage(1).toDataURL()).to.eql(
+        original.getImage(1).toDataURL()
+      );
       expect(original.offset_).to.eql(clone.offset_);
       expect(original.offsetOrigin_).to.eql(clone.offsetOrigin_);
       expect(original.getSize()).to.eql(clone.getSize());

@@ -11,7 +11,6 @@ var minVgi = 0;
 var maxVgi = 0.25;
 var bins = 10;
 
-
 /**
  * Calculate the Vegetation Greenness Index (VGI) from an input pixel.  This
  * is a rough estimate assuming that pixel values correspond to reflectance.
@@ -24,7 +23,6 @@ function vgi(pixel) {
   var b = pixel[2] / 255;
   return (2 * g - r - b) / (2 * g + r + b);
 }
-
 
 /**
  * Summarize values for a histogram.
@@ -45,7 +43,6 @@ function summarize(value, counts) {
   }
 }
 
-
 /**
  * Use aerial imagery as the input data for the raster source.
  */
@@ -53,7 +50,6 @@ var bing = new ol.source.BingMaps({
   key: 'As1HiMj1PvLPlqc_gtM7AqZfBL8ZL3VrjaS3zIb22Uvb9WKhuJObROC-qUpa81U5',
   imagerySet: 'Aerial'
 });
-
 
 /**
  * Create a raster source where pixels with VGI values above a threshold will
@@ -128,7 +124,6 @@ var map = new ol.Map({
   })
 });
 
-
 var timer = null;
 function schedulePlot(resolution, counts, threshold) {
   if (timer) {
@@ -140,38 +135,48 @@ function schedulePlot(resolution, counts, threshold) {
 
 var barWidth = 15;
 var plotHeight = 150;
-var chart = d3.select('#plot').append('svg')
-    .attr('width', barWidth * bins)
-    .attr('height', plotHeight);
+var chart = d3
+  .select('#plot')
+  .append('svg')
+  .attr('width', barWidth * bins)
+  .attr('height', plotHeight);
 
 var chartRect = chart[0][0].getBoundingClientRect();
 
-var tip = d3.select(document.body).append('div')
-    .attr('class', 'tip');
+var tip = d3.select(document.body).append('div').attr('class', 'tip');
 
 function plot(resolution, counts, threshold) {
-  var yScale = d3.scale.linear()
-      .domain([0, d3.max(counts.values)])
-      .range([0, plotHeight]);
+  var yScale = d3.scale
+    .linear()
+    .domain([0, d3.max(counts.values)])
+    .range([0, plotHeight]);
 
   var bar = chart.selectAll('rect').data(counts.values);
 
   bar.enter().append('rect');
 
-  bar.attr('class', function(count, index) {
-    var value = counts.min + (index * counts.delta);
-    return 'bar' + (value >= threshold ? ' selected' : '');
-  })
-  .attr('width', barWidth - 2);
+  bar
+    .attr('class', function(count, index) {
+      var value = counts.min + index * counts.delta;
+      return 'bar' + (value >= threshold ? ' selected' : '');
+    })
+    .attr('width', barWidth - 2);
 
-  bar.transition().attr('transform', function(value, index) {
-    return 'translate(' + (index * barWidth) + ', ' +
-        (plotHeight - yScale(value)) + ')';
-  })
-  .attr('height', yScale);
+  bar
+    .transition()
+    .attr('transform', function(value, index) {
+      return (
+        'translate(' +
+        index * barWidth +
+        ', ' +
+        (plotHeight - yScale(value)) +
+        ')'
+      );
+    })
+    .attr('height', yScale);
 
   bar.on('mousemove', function(count, index) {
-    var threshold = counts.min + (index * counts.delta);
+    var threshold = counts.min + index * counts.delta;
     if (raster.get('threshold') !== threshold) {
       raster.set('threshold', threshold);
       raster.changed();
@@ -183,11 +188,11 @@ function plot(resolution, counts, threshold) {
     for (var i = counts.values.length - 1; i >= index; --i) {
       area += resolution * resolution * counts.values[i];
     }
-    tip.html(message(counts.min + (index * counts.delta), area));
+    tip.html(message(counts.min + index * counts.delta, area));
     tip.style('display', 'block');
     tip.transition().style({
-      left: (chartRect.left + (index * barWidth) + (barWidth / 2)) + 'px',
-      top: (d3.event.y - 60) + 'px',
+      left: chartRect.left + index * barWidth + barWidth / 2 + 'px',
+      top: d3.event.y - 60 + 'px',
       opacity: 1
     });
   });
@@ -197,7 +202,6 @@ function plot(resolution, counts, threshold) {
       tip.style('display', 'none');
     });
   });
-
 }
 
 function message(value, area) {

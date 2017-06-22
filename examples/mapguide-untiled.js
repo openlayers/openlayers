@@ -5,7 +5,7 @@ goog.require('ol.source.ImageMapGuide');
 
 var mdf = 'Library://Samples/Sheboygan/Maps/Sheboygan.MapDefinition';
 var agentUrl =
-    'http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous';
+  'http://data.mapguide.com/mapguide/mapagent/mapagent.fcgi?USERNAME=Anonymous';
 var bounds = [
   -87.865114442365922,
   43.665065564837931,

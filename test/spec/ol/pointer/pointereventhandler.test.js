@@ -7,7 +7,6 @@ goog.require('ol.pointer.MouseSource');
 goog.require('ol.pointer.PointerEvent');
 goog.require('ol.pointer.PointerEventHandler');
 
-
 describe('ol.pointer.PointerEventHandler', function() {
   var handler;
   var target;
@@ -27,7 +26,6 @@ describe('ol.pointer.PointerEventHandler', function() {
   afterEach(function() {
     handler.dispose();
   });
-
 
   describe('constructor', function() {
     it('registers a least one event source', function() {
@@ -132,7 +130,6 @@ describe('ol.pointer.PointerEventHandler', function() {
       // properties are copied from the defaults
       expect(eventClone.pointerId).to.be(0);
       expect(eventClone.pressure).to.be(0);
-
     });
   });
 
@@ -147,8 +144,11 @@ describe('ol.pointer.PointerEventHandler', function() {
       var browserEvent = event;
 
       var eventClone = handler.cloneEvent(browserEvent, event);
-      var pointerEvent = handler.makeEvent('pointerdown',
-          eventClone, browserEvent);
+      var pointerEvent = handler.makeEvent(
+        'pointerdown',
+        eventClone,
+        browserEvent
+      );
 
       expect(pointerEvent.type).to.be('pointerdown');
       expect(pointerEvent.clientX).to.be(1);
@@ -165,5 +165,4 @@ describe('ol.pointer.PointerEventHandler', function() {
       expect(pointerEvent).to.be.a(ol.pointer.PointerEvent);
     });
   });
-
 });

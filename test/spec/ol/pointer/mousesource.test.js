@@ -6,7 +6,6 @@ goog.require('ol.has');
 goog.require('ol.pointer.PointerEventHandler');
 goog.require('ol.pointer.TouchSource');
 
-
 describe('ol.pointer.MouseSource', function() {
   var handler;
   var target;
@@ -40,7 +39,6 @@ describe('ol.pointer.MouseSource', function() {
       simulateEvent('mousedown', 10, 20);
 
       expect(eventSpy.calledOnce).to.be.ok();
-
     });
 
     it('dispatches real mouse events', function() {
@@ -70,12 +68,14 @@ describe('ol.pointer.MouseSource', function() {
   });
 
   function simulateTouchEvent(type, x, y) {
-    var touches = [{
-      identifier: 4,
-      clientX: x,
-      clientY: y,
-      target: target
-    }];
+    var touches = [
+      {
+        identifier: 4,
+        clientX: x,
+        clientY: y,
+        target: target
+      }
+    ];
 
     var event = {
       type: type,

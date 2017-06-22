@@ -16,7 +16,6 @@ goog.require('ol.render.VectorContext');
 goog.require('ol.render.canvas');
 goog.require('ol.transform');
 
-
 /**
  * @classdesc
  * A concrete subclass of {@link ol.render.VectorContext} that implements
@@ -35,7 +34,13 @@ goog.require('ol.transform');
  * @param {number} viewRotation View rotation.
  * @struct
  */
-ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, viewRotation) {
+ol.render.canvas.Immediate = function(
+  context,
+  pixelRatio,
+  extent,
+  transform,
+  viewRotation
+) {
   ol.render.VectorContext.call(this);
 
   /**
@@ -235,10 +240,8 @@ ol.render.canvas.Immediate = function(context, pixelRatio, extent, transform, vi
    * @type {ol.Transform}
    */
   this.tmpLocalTransform_ = ol.transform.create();
-
 };
 ol.inherits(ol.render.canvas.Immediate, ol.render.VectorContext);
-
 
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
@@ -247,13 +250,23 @@ ol.inherits(ol.render.canvas.Immediate, ol.render.VectorContext);
  * @param {number} stride Stride.
  * @private
  */
-ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, offset, end, stride) {
+ol.render.canvas.Immediate.prototype.drawImages_ = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride
+) {
   if (!this.image_) {
     return;
   }
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
-      flatCoordinates, offset, end, 2, this.transform_,
-      this.pixelCoordinates_);
+    flatCoordinates,
+    offset,
+    end,
+    2,
+    this.transform_,
+    this.pixelCoordinates_
+  );
   var context = this.context_;
   var localTransform = this.tmpLocalTransform_;
   var alpha = context.globalAlpha;
@@ -275,16 +288,29 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
     if (rotation !== 0 || this.imageScale_ != 1) {
       var centerX = x + this.imageAnchorX_;
       var centerY = y + this.imageAnchorY_;
-      ol.transform.compose(localTransform,
-          centerX, centerY,
-          this.imageScale_, this.imageScale_,
-          rotation,
-          -centerX, -centerY);
+      ol.transform.compose(
+        localTransform,
+        centerX,
+        centerY,
+        this.imageScale_,
+        this.imageScale_,
+        rotation,
+        -centerX,
+        -centerY
+      );
       context.setTransform.apply(context, localTransform);
     }
-    context.drawImage(this.image_, this.imageOriginX_, this.imageOriginY_,
-        this.imageWidth_, this.imageHeight_, x, y,
-        this.imageWidth_, this.imageHeight_);
+    context.drawImage(
+      this.image_,
+      this.imageOriginX_,
+      this.imageOriginY_,
+      this.imageWidth_,
+      this.imageHeight_,
+      x,
+      y,
+      this.imageWidth_,
+      this.imageHeight_
+    );
   }
   if (rotation !== 0 || this.imageScale_ != 1) {
     context.setTransform(1, 0, 0, 1, 0, 0);
@@ -294,7 +320,6 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
   }
 };
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -302,7 +327,12 @@ ol.render.canvas.Immediate.prototype.drawImages_ = function(flatCoordinates, off
  * @param {number} stride Stride.
  * @private
  */
-ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offset, end, stride) {
+ol.render.canvas.Immediate.prototype.drawText_ = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride
+) {
   if (!this.textState_ || this.text_ === '') {
     return;
   }
@@ -314,8 +344,13 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
   }
   this.setContextTextState_(this.textState_);
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
-      flatCoordinates, offset, end, stride, this.transform_,
-      this.pixelCoordinates_);
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    this.transform_,
+    this.pixelCoordinates_
+  );
   var context = this.context_;
   var rotation = this.textRotation_;
   if (this.textRotateWithView_) {
@@ -325,11 +360,16 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
     var x = pixelCoordinates[offset] + this.textOffsetX_;
     var y = pixelCoordinates[offset + 1] + this.textOffsetY_;
     if (rotation !== 0 || this.textScale_ != 1) {
-      var localTransform = ol.transform.compose(this.tmpLocalTransform_,
-          x, y,
-          this.textScale_, this.textScale_,
-          rotation,
-          -x, -y);
+      var localTransform = ol.transform.compose(
+        this.tmpLocalTransform_,
+        x,
+        y,
+        this.textScale_,
+        this.textScale_,
+        rotation,
+        -x,
+        -y
+      );
       context.setTransform.apply(context, localTransform);
     }
     if (this.textStrokeState_) {
@@ -344,7 +384,6 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
   }
 };
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -354,11 +393,22 @@ ol.render.canvas.Immediate.prototype.drawText_ = function(flatCoordinates, offse
  * @private
  * @return {number} end End.
  */
-ol.render.canvas.Immediate.prototype.moveToLineTo_ = function(flatCoordinates, offset, end, stride, close) {
+ol.render.canvas.Immediate.prototype.moveToLineTo_ = function(
+  flatCoordinates,
+  offset,
+  end,
+  stride,
+  close
+) {
   var context = this.context_;
   var pixelCoordinates = ol.geom.flat.transform.transform2D(
-      flatCoordinates, offset, end, stride, this.transform_,
-      this.pixelCoordinates_);
+    flatCoordinates,
+    offset,
+    end,
+    stride,
+    this.transform_,
+    this.pixelCoordinates_
+  );
   context.moveTo(pixelCoordinates[0], pixelCoordinates[1]);
   var length = pixelCoordinates.length;
   if (close) {
@@ -373,7 +423,6 @@ ol.render.canvas.Immediate.prototype.moveToLineTo_ = function(flatCoordinates, o
   return end;
 };
 
-
 /**
  * @param {Array.<number>} flatCoordinates Flat coordinates.
  * @param {number} offset Offset.
@@ -382,15 +431,18 @@ ol.render.canvas.Immediate.prototype.moveToLineTo_ = function(flatCoordinates, o
  * @private
  * @return {number} End.
  */
-ol.render.canvas.Immediate.prototype.drawRings_ = function(flatCoordinates, offset, ends, stride) {
+ol.render.canvas.Immediate.prototype.drawRings_ = function(
+  flatCoordinates,
+  offset,
+  ends,
+  stride
+) {
   var i, ii;
   for (i = 0, ii = ends.length; i < ii; ++i) {
-    offset = this.moveToLineTo_(
-        flatCoordinates, offset, ends[i], stride, true);
+    offset = this.moveToLineTo_(flatCoordinates, offset, ends[i], stride, true);
   }
   return offset;
 };
-
 
 /**
  * Render a circle geometry into the canvas.  Rendering is immediate and uses
@@ -412,14 +464,22 @@ ol.render.canvas.Immediate.prototype.drawCircle = function(geometry) {
       this.setContextStrokeState_(this.strokeState_);
     }
     var pixelCoordinates = ol.geom.SimpleGeometry.transform2D(
-        geometry, this.transform_, this.pixelCoordinates_);
+      geometry,
+      this.transform_,
+      this.pixelCoordinates_
+    );
     var dx = pixelCoordinates[2] - pixelCoordinates[0];
     var dy = pixelCoordinates[3] - pixelCoordinates[1];
     var radius = Math.sqrt(dx * dx + dy * dy);
     var context = this.context_;
     context.beginPath();
     context.arc(
-        pixelCoordinates[0], pixelCoordinates[1], radius, 0, 2 * Math.PI);
+      pixelCoordinates[0],
+      pixelCoordinates[1],
+      radius,
+      0,
+      2 * Math.PI
+    );
     if (this.fillState_) {
       context.fill();
     }
@@ -431,7 +491,6 @@ ol.render.canvas.Immediate.prototype.drawCircle = function(geometry) {
     this.drawText_(geometry.getCenter(), 0, 2, 2);
   }
 };
-
 
 /**
  * Set the rendering style.  Note that since this is an immediate rendering API,
@@ -447,7 +506,6 @@ ol.render.canvas.Immediate.prototype.setStyle = function(style) {
   this.setTextStyle(style.getText());
 };
 
-
 /**
  * Render a geometry into the canvas.  Call
  * {@link ol.render.canvas.Immediate#setStyle} first to set the rendering style.
@@ -460,33 +518,35 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
   var type = geometry.getType();
   switch (type) {
     case ol.geom.GeometryType.POINT:
-      this.drawPoint(/** @type {ol.geom.Point} */ (geometry));
+      this.drawPoint /** @type {ol.geom.Point} */(geometry);
       break;
     case ol.geom.GeometryType.LINE_STRING:
-      this.drawLineString(/** @type {ol.geom.LineString} */ (geometry));
+      this.drawLineString /** @type {ol.geom.LineString} */(geometry);
       break;
     case ol.geom.GeometryType.POLYGON:
-      this.drawPolygon(/** @type {ol.geom.Polygon} */ (geometry));
+      this.drawPolygon /** @type {ol.geom.Polygon} */(geometry);
       break;
     case ol.geom.GeometryType.MULTI_POINT:
-      this.drawMultiPoint(/** @type {ol.geom.MultiPoint} */ (geometry));
+      this.drawMultiPoint /** @type {ol.geom.MultiPoint} */(geometry);
       break;
     case ol.geom.GeometryType.MULTI_LINE_STRING:
-      this.drawMultiLineString(/** @type {ol.geom.MultiLineString} */ (geometry));
+      this.drawMultiLineString /** @type {ol.geom.MultiLineString} */(geometry);
       break;
     case ol.geom.GeometryType.MULTI_POLYGON:
-      this.drawMultiPolygon(/** @type {ol.geom.MultiPolygon} */ (geometry));
+      this.drawMultiPolygon /** @type {ol.geom.MultiPolygon} */(geometry);
       break;
     case ol.geom.GeometryType.GEOMETRY_COLLECTION:
-      this.drawGeometryCollection(/** @type {ol.geom.GeometryCollection} */ (geometry));
+      this.drawGeometryCollection(
+        /** @type {ol.geom.GeometryCollection} */
+        geometry
+      );
       break;
     case ol.geom.GeometryType.CIRCLE:
-      this.drawCircle(/** @type {ol.geom.Circle} */ (geometry));
+      this.drawCircle /** @type {ol.geom.Circle} */(geometry);
       break;
     default:
   }
 };
-
 
 /**
  * Render a feature into the canvas.  Note that any `zIndex` on the provided
@@ -501,14 +561,12 @@ ol.render.canvas.Immediate.prototype.drawGeometry = function(geometry) {
  */
 ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
   var geometry = style.getGeometryFunction()(feature);
-  if (!geometry ||
-      !ol.extent.intersects(this.extent_, geometry.getExtent())) {
+  if (!geometry || !ol.extent.intersects(this.extent_, geometry.getExtent())) {
     return;
   }
   this.setStyle(style);
   this.drawGeometry(geometry);
 };
-
 
 /**
  * Render a GeometryCollection to the canvas.  Rendering is immediate and
@@ -517,14 +575,15 @@ ol.render.canvas.Immediate.prototype.drawFeature = function(feature, style) {
  * @param {ol.geom.GeometryCollection} geometry Geometry collection.
  * @override
  */
-ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(geometry) {
+ol.render.canvas.Immediate.prototype.drawGeometryCollection = function(
+  geometry
+) {
   var geometries = geometry.getGeometriesArray();
   var i, ii;
   for (i = 0, ii = geometries.length; i < ii; ++i) {
     this.drawGeometry(geometries[i]);
   }
 };
-
 
 /**
  * Render a Point geometry into the canvas.  Rendering is immediate and uses
@@ -544,7 +603,6 @@ ol.render.canvas.Immediate.prototype.drawPoint = function(geometry) {
   }
 };
 
-
 /**
  * Render a MultiPoint geometry  into the canvas.  Rendering is immediate and
  * uses the current style.
@@ -563,7 +621,6 @@ ol.render.canvas.Immediate.prototype.drawMultiPoint = function(geometry) {
   }
 };
 
-
 /**
  * Render a LineString into the canvas.  Rendering is immediate and uses
  * the current style.
@@ -580,8 +637,13 @@ ol.render.canvas.Immediate.prototype.drawLineString = function(geometry) {
     var context = this.context_;
     var flatCoordinates = geometry.getFlatCoordinates();
     context.beginPath();
-    this.moveToLineTo_(flatCoordinates, 0, flatCoordinates.length,
-        geometry.getStride(), false);
+    this.moveToLineTo_(
+      flatCoordinates,
+      0,
+      flatCoordinates.length,
+      geometry.getStride(),
+      false
+    );
     context.stroke();
   }
   if (this.text_ !== '') {
@@ -589,7 +651,6 @@ ol.render.canvas.Immediate.prototype.drawLineString = function(geometry) {
     this.drawText_(flatMidpoint, 0, 2, 2);
   }
 };
-
 
 /**
  * Render a MultiLineString geometry into the canvas.  Rendering is immediate
@@ -615,7 +676,12 @@ ol.render.canvas.Immediate.prototype.drawMultiLineString = function(geometry) {
     var i, ii;
     for (i = 0, ii = ends.length; i < ii; ++i) {
       offset = this.moveToLineTo_(
-          flatCoordinates, offset, ends[i], stride, false);
+        flatCoordinates,
+        offset,
+        ends[i],
+        stride,
+        false
+      );
     }
     context.stroke();
   }
@@ -624,7 +690,6 @@ ol.render.canvas.Immediate.prototype.drawMultiLineString = function(geometry) {
     this.drawText_(flatMidpoints, 0, flatMidpoints.length, 2);
   }
 };
-
 
 /**
  * Render a Polygon geometry into the canvas.  Rendering is immediate and uses
@@ -646,8 +711,12 @@ ol.render.canvas.Immediate.prototype.drawPolygon = function(geometry) {
     }
     var context = this.context_;
     context.beginPath();
-    this.drawRings_(geometry.getOrientedFlatCoordinates(),
-        0, geometry.getEnds(), geometry.getStride());
+    this.drawRings_(
+      geometry.getOrientedFlatCoordinates(),
+      0,
+      geometry.getEnds(),
+      geometry.getStride()
+    );
     if (this.fillState_) {
       context.fill();
     }
@@ -660,7 +729,6 @@ ol.render.canvas.Immediate.prototype.drawPolygon = function(geometry) {
     this.drawText_(flatInteriorPoint, 0, 2, 2);
   }
 };
-
 
 /**
  * Render MultiPolygon geometry into the canvas.  Rendering is immediate and
@@ -703,12 +771,13 @@ ol.render.canvas.Immediate.prototype.drawMultiPolygon = function(geometry) {
   }
 };
 
-
 /**
  * @param {ol.CanvasFillState} fillState Fill state.
  * @private
  */
-ol.render.canvas.Immediate.prototype.setContextFillState_ = function(fillState) {
+ol.render.canvas.Immediate.prototype.setContextFillState_ = function(
+  fillState
+) {
   var context = this.context_;
   var contextFillState = this.contextFillState_;
   if (!contextFillState) {
@@ -723,12 +792,13 @@ ol.render.canvas.Immediate.prototype.setContextFillState_ = function(fillState) 
   }
 };
 
-
 /**
  * @param {ol.CanvasStrokeState} strokeState Stroke state.
  * @private
  */
-ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeState) {
+ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(
+  strokeState
+) {
   var context = this.context_;
   var contextStrokeState = this.contextStrokeState_;
   if (!contextStrokeState) {
@@ -753,9 +823,10 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
       contextStrokeState.lineCap = context.lineCap = strokeState.lineCap;
     }
     if (ol.has.CANVAS_LINE_DASH) {
-      if (!ol.array.equals(
-          contextStrokeState.lineDash, strokeState.lineDash)) {
-        context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
+      if (!ol.array.equals(contextStrokeState.lineDash, strokeState.lineDash)) {
+        context.setLineDash(
+          (contextStrokeState.lineDash = strokeState.lineDash)
+        );
       }
     }
     if (contextStrokeState.lineJoin != strokeState.lineJoin) {
@@ -766,21 +837,22 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
     }
     if (contextStrokeState.miterLimit != strokeState.miterLimit) {
       contextStrokeState.miterLimit = context.miterLimit =
-          strokeState.miterLimit;
+        strokeState.miterLimit;
     }
     if (contextStrokeState.strokeStyle != strokeState.strokeStyle) {
       contextStrokeState.strokeStyle = context.strokeStyle =
-          strokeState.strokeStyle;
+        strokeState.strokeStyle;
     }
   }
 };
-
 
 /**
  * @param {ol.CanvasTextState} textState Text state.
  * @private
  */
-ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) {
+ol.render.canvas.Immediate.prototype.setContextTextState_ = function(
+  textState
+) {
   var context = this.context_;
   var contextTextState = this.contextTextState_;
   if (!contextTextState) {
@@ -801,11 +873,10 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) 
     }
     if (contextTextState.textBaseline != textState.textBaseline) {
       contextTextState.textBaseline = context.textBaseline =
-          textState.textBaseline;
+        textState.textBaseline;
     }
   }
 };
-
 
 /**
  * Set the fill and stroke style for subsequent draw operations.  To clear
@@ -815,14 +886,18 @@ ol.render.canvas.Immediate.prototype.setContextTextState_ = function(textState) 
  * @param {ol.style.Stroke} strokeStyle Stroke style.
  * @override
  */
-ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
+ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(
+  fillStyle,
+  strokeStyle
+) {
   if (!fillStyle) {
     this.fillState_ = null;
   } else {
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
-      fillStyle: ol.colorlike.asColorLike(fillStyleColor ?
-          fillStyleColor : ol.render.canvas.defaultFillStyle)
+      fillStyle: ol.colorlike.asColorLike(
+        fillStyleColor ? fillStyleColor : ol.render.canvas.defaultFillStyle
+      )
     };
   }
   if (!strokeStyle) {
@@ -836,24 +911,34 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
     var strokeStyleWidth = strokeStyle.getWidth();
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     this.strokeState_ = {
-      lineCap: strokeStyleLineCap !== undefined ?
-          strokeStyleLineCap : ol.render.canvas.defaultLineCap,
-      lineDash: strokeStyleLineDash ?
-          strokeStyleLineDash : ol.render.canvas.defaultLineDash,
-      lineDashOffset: strokeStyleLineDashOffset ?
-          strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
-      lineJoin: strokeStyleLineJoin !== undefined ?
-          strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-      lineWidth: this.pixelRatio_ * (strokeStyleWidth !== undefined ?
-          strokeStyleWidth : ol.render.canvas.defaultLineWidth),
-      miterLimit: strokeStyleMiterLimit !== undefined ?
-          strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
-      strokeStyle: ol.colorlike.asColorLike(strokeStyleColor ?
-          strokeStyleColor : ol.render.canvas.defaultStrokeStyle)
+      lineCap: strokeStyleLineCap !== undefined
+        ? strokeStyleLineCap
+        : ol.render.canvas.defaultLineCap,
+      lineDash: strokeStyleLineDash
+        ? strokeStyleLineDash
+        : ol.render.canvas.defaultLineDash,
+      lineDashOffset: strokeStyleLineDashOffset
+        ? strokeStyleLineDashOffset
+        : ol.render.canvas.defaultLineDashOffset,
+      lineJoin: strokeStyleLineJoin !== undefined
+        ? strokeStyleLineJoin
+        : ol.render.canvas.defaultLineJoin,
+      lineWidth:
+        this.pixelRatio_ *
+          (strokeStyleWidth !== undefined
+            ? strokeStyleWidth
+            : ol.render.canvas.defaultLineWidth),
+      miterLimit: strokeStyleMiterLimit !== undefined
+        ? strokeStyleMiterLimit
+        : ol.render.canvas.defaultMiterLimit,
+      strokeStyle: ol.colorlike.asColorLike(
+        strokeStyleColor
+          ? strokeStyleColor
+          : ol.render.canvas.defaultStrokeStyle
+      )
     };
   }
 };
-
 
 /**
  * Set the image style for subsequent draw operations.  Pass null to remove
@@ -886,7 +971,6 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
   }
 };
 
-
 /**
  * Set the text style for subsequent draw operations.  Pass null to
  * remove the text style.
@@ -904,8 +988,11 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     } else {
       var textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
-        fillStyle: ol.colorlike.asColorLike(textFillStyleColor ?
-            textFillStyleColor : ol.render.canvas.defaultFillStyle)
+        fillStyle: ol.colorlike.asColorLike(
+          textFillStyleColor
+            ? textFillStyleColor
+            : ol.render.canvas.defaultFillStyle
+        )
       };
     }
     var textStrokeStyle = textStyle.getStroke();
@@ -920,20 +1007,29 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       var textStrokeStyleWidth = textStrokeStyle.getWidth();
       var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
       this.textStrokeState_ = {
-        lineCap: textStrokeStyleLineCap !== undefined ?
-            textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
-        lineDash: textStrokeStyleLineDash ?
-            textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
-        lineDashOffset: textStrokeStyleLineDashOffset ?
-            textStrokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
-        lineJoin: textStrokeStyleLineJoin !== undefined ?
-            textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
-        lineWidth: textStrokeStyleWidth !== undefined ?
-            textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
-        miterLimit: textStrokeStyleMiterLimit !== undefined ?
-            textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
-        strokeStyle: ol.colorlike.asColorLike(textStrokeStyleColor ?
-            textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle)
+        lineCap: textStrokeStyleLineCap !== undefined
+          ? textStrokeStyleLineCap
+          : ol.render.canvas.defaultLineCap,
+        lineDash: textStrokeStyleLineDash
+          ? textStrokeStyleLineDash
+          : ol.render.canvas.defaultLineDash,
+        lineDashOffset: textStrokeStyleLineDashOffset
+          ? textStrokeStyleLineDashOffset
+          : ol.render.canvas.defaultLineDashOffset,
+        lineJoin: textStrokeStyleLineJoin !== undefined
+          ? textStrokeStyleLineJoin
+          : ol.render.canvas.defaultLineJoin,
+        lineWidth: textStrokeStyleWidth !== undefined
+          ? textStrokeStyleWidth
+          : ol.render.canvas.defaultLineWidth,
+        miterLimit: textStrokeStyleMiterLimit !== undefined
+          ? textStrokeStyleMiterLimit
+          : ol.render.canvas.defaultMiterLimit,
+        strokeStyle: ol.colorlike.asColorLike(
+          textStrokeStyleColor
+            ? textStrokeStyleColor
+            : ol.render.canvas.defaultStrokeStyle
+        )
       };
     }
     var textFont = textStyle.getFont();
@@ -946,21 +1042,26 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     var textTextAlign = textStyle.getTextAlign();
     var textTextBaseline = textStyle.getTextBaseline();
     this.textState_ = {
-      font: textFont !== undefined ?
-          textFont : ol.render.canvas.defaultFont,
-      textAlign: textTextAlign !== undefined ?
-          textTextAlign : ol.render.canvas.defaultTextAlign,
-      textBaseline: textTextBaseline !== undefined ?
-          textTextBaseline : ol.render.canvas.defaultTextBaseline
+      font: textFont !== undefined ? textFont : ol.render.canvas.defaultFont,
+      textAlign: textTextAlign !== undefined
+        ? textTextAlign
+        : ol.render.canvas.defaultTextAlign,
+      textBaseline: textTextBaseline !== undefined
+        ? textTextBaseline
+        : ol.render.canvas.defaultTextBaseline
     };
     this.text_ = textText !== undefined ? textText : '';
-    this.textOffsetX_ =
-        textOffsetX !== undefined ? (this.pixelRatio_ * textOffsetX) : 0;
-    this.textOffsetY_ =
-        textOffsetY !== undefined ? (this.pixelRatio_ * textOffsetY) : 0;
-    this.textRotateWithView_ = textRotateWithView !== undefined ? textRotateWithView : false;
+    this.textOffsetX_ = textOffsetX !== undefined
+      ? this.pixelRatio_ * textOffsetX
+      : 0;
+    this.textOffsetY_ = textOffsetY !== undefined
+      ? this.pixelRatio_ * textOffsetY
+      : 0;
+    this.textRotateWithView_ = textRotateWithView !== undefined
+      ? textRotateWithView
+      : false;
     this.textRotation_ = textRotation !== undefined ? textRotation : 0;
-    this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
-        textScale : 1);
+    this.textScale_ =
+      this.pixelRatio_ * (textScale !== undefined ? textScale : 1);
   }
 };

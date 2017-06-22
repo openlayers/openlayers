@@ -7,7 +7,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.Raster');
 goog.require('ol.source.XYZ');
 
-
 /**
  * Generates a shaded relief image given elevation data.  Uses a 3x3
  * neighborhood for determining slope and aspect.
@@ -31,8 +30,21 @@ function shade(inputs, data) {
   var sunAz = Math.PI * data.sunAz / 180;
   var cosSunEl = Math.cos(sunEl);
   var sinSunEl = Math.sin(sunEl);
-  var pixelX, pixelY, x0, x1, y0, y1, offset,
-      z0, z1, dzdx, dzdy, slope, aspect, cosIncidence, scaled;
+  var pixelX,
+    pixelY,
+    x0,
+    x1,
+    y0,
+    y1,
+    offset,
+    z0,
+    z1,
+    dzdx,
+    dzdy,
+    slope,
+    aspect,
+    cosIncidence,
+    scaled;
   for (pixelY = 0; pixelY <= maxY; ++pixelY) {
     y0 = pixelY === 0 ? 0 : pixelY - 1;
     y1 = pixelY === maxY ? maxY : pixelY + 1;
@@ -87,8 +99,9 @@ function shade(inputs, data) {
         aspect = halfPi - aspect;
       }
 
-      cosIncidence = sinSunEl * Math.cos(slope) +
-          cosSunEl * Math.sin(slope) * Math.cos(sunAz - aspect);
+      cosIncidence =
+        sinSunEl * Math.cos(slope) +
+        cosSunEl * Math.sin(slope) * Math.cos(sunAz - aspect);
 
       offset = (pixelY * width + pixelX) * 4;
       scaled = 255 * cosIncidence;

@@ -53,8 +53,10 @@ var modify = new ol.interaction.Modify({
   // that new vertices can be drawn at the same position
   // of existing vertices
   deleteCondition: function(event) {
-    return ol.events.condition.shiftKeyOnly(event) &&
-        ol.events.condition.singleClick(event);
+    return (
+      ol.events.condition.shiftKeyOnly(event) &&
+      ol.events.condition.singleClick(event)
+    );
   }
 });
 map.addInteraction(modify);
@@ -65,11 +67,10 @@ var typeSelect = document.getElementById('type');
 function addInteraction() {
   draw = new ol.interaction.Draw({
     features: features,
-    type: /** @type {ol.geom.GeometryType} */ (typeSelect.value)
+    type /** @type {ol.geom.GeometryType} */: typeSelect.value
   });
   map.addInteraction(draw);
 }
-
 
 /**
  * Handle change event.

@@ -5,9 +5,9 @@ goog.require('ol.layer.Tile');
 goog.require('ol.proj');
 goog.require('ol.source.XYZ');
 
-
 var attribution = new ol.Attribution({
-  html: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+  html:
+    'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
       'rest/services/World_Topo_Map/MapServer">ArcGIS</a>'
 });
 
@@ -17,7 +17,8 @@ var map = new ol.Map({
     new ol.layer.Tile({
       source: new ol.source.XYZ({
         attributions: [attribution],
-        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+        url:
+          'https://server.arcgisonline.com/ArcGIS/rest/services/' +
             'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
       })
     })

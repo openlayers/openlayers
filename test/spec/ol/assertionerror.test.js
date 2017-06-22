@@ -6,14 +6,18 @@ goog.require('ol.AssertionError');
 describe('ol.AssertionError', function() {
   it('generates a message', function() {
     var error = new ol.AssertionError(42);
-    expect(error.message).to.be('Assertion failed. See https://openlayers.org/en/latest/doc/errors/#42 for details.');
+    expect(error.message).to.be(
+      'Assertion failed. See https://openlayers.org/en/latest/doc/errors/#42 for details.'
+    );
   });
 
   it('generates a message with a versioned url', function() {
     var origVersion = ol.VERSION;
     ol.VERSION = 'foo';
     var error = new ol.AssertionError(42);
-    expect(error.message).to.be('Assertion failed. See https://openlayers.org/en/foo/doc/errors/#42 for details.');
+    expect(error.message).to.be(
+      'Assertion failed. See https://openlayers.org/en/foo/doc/errors/#42 for details.'
+    );
     ol.VERSION = origVersion;
   });
 

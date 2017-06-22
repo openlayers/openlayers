@@ -27,7 +27,9 @@ function getBinaryPath(binaryName) {
   var jsdocResolved = require.resolve('jsdoc/jsdoc.js');
   var expectedPaths = [
     path.join(__dirname, '..', 'node_modules', '.bin', binaryName),
-    path.resolve(path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName))
+    path.resolve(
+      path.join(path.dirname(jsdocResolved), '..', '.bin', binaryName)
+    )
   ];
 
   for (var i = 0; i < expectedPaths.length; i++) {
@@ -37,14 +39,21 @@ function getBinaryPath(binaryName) {
     }
   }
 
-  throw Error('JsDoc binary was not found in any of the expected paths: ' + expectedPaths);
+  throw Error(
+    'JsDoc binary was not found in any of the expected paths: ' + expectedPaths
+  );
 }
 
 var jsdoc = getBinaryPath('jsdoc');
 
 var jsdocConfig = path.join(
-    __dirname, '..', 'config', 'jsdoc', 'info', 'conf.json');
-
+  __dirname,
+  '..',
+  'config',
+  'jsdoc',
+  'info',
+  'conf.json'
+);
 
 /**
  * Get the mtime of the info file.
@@ -64,7 +73,6 @@ function getInfoTime(callback) {
     }
   });
 }
-
 
 /**
  * Test whether any externs are newer than the provided date.
@@ -93,7 +101,6 @@ function getNewerExterns(date, callback) {
   });
 }
 
-
 /**
  * Generate a list of all .js paths in the source directory if any are newer
  * than the provided date.
@@ -120,7 +127,6 @@ function getNewer(date, newer, callback) {
     callback(new Error('Trouble walking ' + sourceDir));
   });
   walker.on('end', function() {
-
     /**
      * Windows has restrictions on length of command line, so passing all the
      * changed paths to a task will fail if this limit is exceeded.
@@ -134,7 +140,6 @@ function getNewer(date, newer, callback) {
     callback(null, newer ? paths : []);
   });
 }
-
 
 /**
  * Parse the JSDoc output.
@@ -161,7 +166,6 @@ function parseOutput(output) {
 
   return info;
 }
-
 
 /**
  * Spawn JSDoc.
@@ -207,7 +211,6 @@ function spawnJSDoc(paths, callback) {
   });
 }
 
-
 /**
  * Given the path to a source file, get the list of provides.
  * @param {string} srcPath Path to source file.
@@ -231,7 +234,6 @@ var getProvides = async.memoize(function(srcPath, callback) {
     callback(null, provides);
   });
 });
-
 
 /**
  * Add provides data to new symbols.
@@ -263,7 +265,6 @@ function addSymbolProvides(info, callback) {
   });
 }
 
-
 /**
  * Write symbol and define metadata to the info file.
  * @param {Object} info Symbol and define metadata.
@@ -280,7 +281,6 @@ function writeInfo(info, callback) {
   }
 }
 
-
 /**
  * Determine if source files have been changed, run JSDoc and write updated
  * info if there are any changes.
@@ -289,16 +289,18 @@ function writeInfo(info, callback) {
  *     (or an error occurs).
  */
 function main(callback) {
-  async.waterfall([
-    getInfoTime,
-    getNewerExterns,
-    getNewer,
-    spawnJSDoc,
-    addSymbolProvides,
-    writeInfo
-  ], callback);
+  async.waterfall(
+    [
+      getInfoTime,
+      getNewerExterns,
+      getNewer,
+      spawnJSDoc,
+      addSymbolProvides,
+      writeInfo
+    ],
+    callback
+  );
 }
-
 
 /**
  * If running this module directly, read the config file and call the main
@@ -314,7 +316,6 @@ if (require.main === module) {
     }
   });
 }
-
 
 /**
  * Export main function.

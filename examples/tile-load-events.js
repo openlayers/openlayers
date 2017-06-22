@@ -3,7 +3,6 @@ goog.require('ol.View');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.TileJSON');
 
-
 /**
  * Renders a progress bar.
  * @param {Element} el The target element.
@@ -14,7 +13,6 @@ function Progress(el) {
   this.loading = 0;
   this.loaded = 0;
 }
-
 
 /**
  * Increment the count of loading tiles.
@@ -27,7 +25,6 @@ Progress.prototype.addLoading = function() {
   this.update();
 };
 
-
 /**
  * Increment the count of loaded tiles.
  */
@@ -38,7 +35,6 @@ Progress.prototype.addLoaded = function() {
     this_.update();
   }, 100);
 };
-
 
 /**
  * Update the progress bar.
@@ -56,14 +52,12 @@ Progress.prototype.update = function() {
   }
 };
 
-
 /**
  * Show the progress bar.
  */
 Progress.prototype.show = function() {
   this.el.style.visibility = 'visible';
 };
-
 
 /**
  * Hide the progress bar.
@@ -95,9 +89,7 @@ source.on('tileloaderror', function() {
 
 var map = new ol.Map({
   logo: false,
-  layers: [
-    new ol.layer.Tile({source: source})
-  ],
+  layers: [new ol.layer.Tile({source: source})],
   target: 'map',
   view: new ol.View({
     center: [0, 0],

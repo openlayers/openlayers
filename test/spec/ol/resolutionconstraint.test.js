@@ -2,16 +2,17 @@ goog.provide('ol.test.ResolutionConstraint');
 
 goog.require('ol.ResolutionConstraint');
 
-
 describe('ol.ResolutionConstraint', function() {
-
   describe('SnapToResolution', function() {
-
     var resolutionConstraint;
 
     beforeEach(function() {
-      resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions(
-          [1000, 500, 250, 100]);
+      resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions([
+        1000,
+        500,
+        250,
+        100
+      ]);
     });
 
     describe('delta 0', function() {
@@ -43,13 +44,15 @@ describe('ol.ResolutionConstraint', function() {
   });
 
   describe('SnapToResolutions Nearest', function() {
-
     var resolutionConstraint;
 
     beforeEach(function() {
-      resolutionConstraint =
-          ol.ResolutionConstraint.createSnapToResolutions(
-              [1000, 500, 250, 100]);
+      resolutionConstraint = ol.ResolutionConstraint.createSnapToResolutions([
+        1000,
+        500,
+        250,
+        100
+      ]);
     });
 
     describe('delta 0', function() {
@@ -93,12 +96,14 @@ describe('ol.ResolutionConstraint', function() {
   });
 
   describe('createSnapToPower', function() {
-
     var resolutionConstraint;
 
     beforeEach(function() {
-      resolutionConstraint =
-          ol.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+      resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
+        2,
+        1024,
+        10
+      );
     });
 
     describe('delta 0', function() {
@@ -151,12 +156,14 @@ describe('ol.ResolutionConstraint', function() {
   });
 
   describe('createSnapToPower Nearest', function() {
-
     var resolutionConstraint;
 
     beforeEach(function() {
-      resolutionConstraint =
-          ol.ResolutionConstraint.createSnapToPower(2, 1024, 10);
+      resolutionConstraint = ol.ResolutionConstraint.createSnapToPower(
+        2,
+        1024,
+        10
+      );
     });
 
     describe('delta 0, direction 0', function() {

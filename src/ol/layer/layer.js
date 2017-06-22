@@ -10,7 +10,6 @@ goog.require('ol.obj');
 goog.require('ol.render.EventType');
 goog.require('ol.source.State');
 
-
 /**
  * @classdesc
  * Abstract base class; normally only used for creating subclasses and not
@@ -34,11 +33,10 @@ goog.require('ol.source.State');
  * @api
  */
 ol.layer.Layer = function(options) {
-
   var baseOptions = ol.obj.assign({}, options);
   delete baseOptions.source;
 
-  ol.layer.Base.call(this, /** @type {olx.layer.BaseOptions} */ (baseOptions));
+  ol.layer.Base.call(this /** @type {olx.layer.BaseOptions} */, baseOptions);
 
   /**
    * @private
@@ -62,15 +60,17 @@ ol.layer.Layer = function(options) {
     this.setMap(options.map);
   }
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.layer.Property.SOURCE),
-      this.handleSourcePropertyChange_, this);
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.layer.Property.SOURCE),
+    this.handleSourcePropertyChange_,
+    this
+  );
 
   var source = options.source ? options.source : null;
   this.setSource(source);
 };
 ol.inherits(ol.layer.Layer, ol.layer.Base);
-
 
 /**
  * Return `true` if the layer is visible, and if the passed resolution is
@@ -81,10 +81,12 @@ ol.inherits(ol.layer.Layer, ol.layer.Base);
  * @return {boolean} The layer is visible at the given resolution.
  */
 ol.layer.Layer.visibleAtResolution = function(layerState, resolution) {
-  return layerState.visible && resolution >= layerState.minResolution &&
-      resolution < layerState.maxResolution;
+  return (
+    layerState.visible &&
+    resolution >= layerState.minResolution &&
+    resolution < layerState.maxResolution
+  );
 };
-
 
 /**
  * @inheritDoc
@@ -95,7 +97,6 @@ ol.layer.Layer.prototype.getLayersArray = function(opt_array) {
   return array;
 };
 
-
 /**
  * @inheritDoc
  */
@@ -105,7 +106,6 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
   return states;
 };
 
-
 /**
  * Get the layer source.
  * @return {ol.source.Source} The layer source (or `null` if not yet set).
@@ -114,9 +114,8 @@ ol.layer.Layer.prototype.getLayerStatesArray = function(opt_states) {
  */
 ol.layer.Layer.prototype.getSource = function() {
   var source = this.get(ol.layer.Property.SOURCE);
-  return /** @type {ol.source.Source} */ (source) || null;
+  return /** @type {ol.source.Source} */ source || null;
 };
-
 
 /**
   * @inheritDoc
@@ -126,14 +125,12 @@ ol.layer.Layer.prototype.getSourceState = function() {
   return !source ? ol.source.State.UNDEFINED : source.getState();
 };
 
-
 /**
  * @private
  */
 ol.layer.Layer.prototype.handleSourceChange_ = function() {
   this.changed();
 };
-
 
 /**
  * @private
@@ -145,12 +142,15 @@ ol.layer.Layer.prototype.handleSourcePropertyChange_ = function() {
   }
   var source = this.getSource();
   if (source) {
-    this.sourceChangeKey_ = ol.events.listen(source,
-        ol.events.EventType.CHANGE, this.handleSourceChange_, this);
+    this.sourceChangeKey_ = ol.events.listen(
+      source,
+      ol.events.EventType.CHANGE,
+      this.handleSourceChange_,
+      this
+    );
   }
   this.changed();
 };
-
 
 /**
  * Sets the layer to be rendered on top of other layers on a map. The map will
@@ -178,19 +178,26 @@ ol.layer.Layer.prototype.setMap = function(map) {
   }
   if (map) {
     this.mapPrecomposeKey_ = ol.events.listen(
-        map, ol.render.EventType.PRECOMPOSE, function(evt) {
-          var layerState = this.getLayerState();
-          layerState.managed = false;
-          layerState.zIndex = Infinity;
-          evt.frameState.layerStatesArray.push(layerState);
-          evt.frameState.layerStates[ol.getUid(this)] = layerState;
-        }, this);
+      map,
+      ol.render.EventType.PRECOMPOSE,
+      function(evt) {
+        var layerState = this.getLayerState();
+        layerState.managed = false;
+        layerState.zIndex = Infinity;
+        evt.frameState.layerStatesArray.push(layerState);
+        evt.frameState.layerStates[ol.getUid(this)] = layerState;
+      },
+      this
+    );
     this.mapRenderKey_ = ol.events.listen(
-        this, ol.events.EventType.CHANGE, map.render, map);
+      this,
+      ol.events.EventType.CHANGE,
+      map.render,
+      map
+    );
     this.changed();
   }
 };
-
 
 /**
  * Set the layer source.

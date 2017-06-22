@@ -9,7 +9,6 @@ goog.require('ol.Object');
 goog.require('ol.control.Control');
 goog.require('ol.proj');
 
-
 /**
  * @classdesc
  * A control to show the 2D coordinates of the mouse cursor. By default, these
@@ -24,14 +23,16 @@ goog.require('ol.proj');
  * @api
  */
 ol.control.MousePosition = function(opt_options) {
-
   var options = opt_options ? opt_options : {};
 
   var element = document.createElement('DIV');
-  element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
+  element.className = options.className !== undefined
+    ? options.className
+    : 'ol-mouse-position';
 
-  var render = options.render ?
-      options.render : ol.control.MousePosition.render;
+  var render = options.render
+    ? options.render
+    : ol.control.MousePosition.render;
 
   ol.control.Control.call(this, {
     element: element,
@@ -39,9 +40,12 @@ ol.control.MousePosition = function(opt_options) {
     target: options.target
   });
 
-  ol.events.listen(this,
-      ol.Object.getChangeEventType(ol.control.MousePosition.Property_.PROJECTION),
-      this.handleProjectionChanged_, this);
+  ol.events.listen(
+    this,
+    ol.Object.getChangeEventType(ol.control.MousePosition.Property_.PROJECTION),
+    this.handleProjectionChanged_,
+    this
+  );
 
   if (options.coordinateFormat) {
     this.setCoordinateFormat(options.coordinateFormat);
@@ -54,7 +58,9 @@ ol.control.MousePosition = function(opt_options) {
    * @private
    * @type {string}
    */
-  this.undefinedHTML_ = options.undefinedHTML !== undefined ? options.undefinedHTML : '';
+  this.undefinedHTML_ = options.undefinedHTML !== undefined
+    ? options.undefinedHTML
+    : '';
 
   /**
    * @private
@@ -79,10 +85,8 @@ ol.control.MousePosition = function(opt_options) {
    * @type {ol.Pixel}
    */
   this.lastMouseMovePixel_ = null;
-
 };
 ol.inherits(ol.control.MousePosition, ol.control.Control);
-
 
 /**
  * Update the mouseposition element.
@@ -103,14 +107,12 @@ ol.control.MousePosition.render = function(mapEvent) {
   this.updateHTML_(this.lastMouseMovePixel_);
 };
 
-
 /**
  * @private
  */
 ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
   this.transform_ = null;
 };
-
 
 /**
  * Return the coordinate format type used to render the current position or
@@ -121,10 +123,10 @@ ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
  * @api
  */
 ol.control.MousePosition.prototype.getCoordinateFormat = function() {
-  return /** @type {ol.CoordinateFormatType|undefined} */ (
-      this.get(ol.control.MousePosition.Property_.COORDINATE_FORMAT));
+  return /** @type {ol.CoordinateFormatType|undefined} */ this.get(
+    ol.control.MousePosition.Property_.COORDINATE_FORMAT
+  );
 };
-
 
 /**
  * Return the projection that is used to report the mouse position.
@@ -134,10 +136,10 @@ ol.control.MousePosition.prototype.getCoordinateFormat = function() {
  * @api
  */
 ol.control.MousePosition.prototype.getProjection = function() {
-  return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.control.MousePosition.Property_.PROJECTION));
+  return /** @type {ol.proj.Projection|undefined} */ this.get(
+    ol.control.MousePosition.Property_.PROJECTION
+  );
 };
-
 
 /**
  * @param {Event} event Browser event.
@@ -149,7 +151,6 @@ ol.control.MousePosition.prototype.handleMouseMove = function(event) {
   this.updateHTML_(this.lastMouseMovePixel_);
 };
 
-
 /**
  * @param {Event} event Browser event.
  * @protected
@@ -158,7 +159,6 @@ ol.control.MousePosition.prototype.handleMouseOut = function(event) {
   this.updateHTML_(null);
   this.lastMouseMovePixel_ = null;
 };
-
 
 /**
  * @inheritDoc
@@ -169,14 +169,21 @@ ol.control.MousePosition.prototype.setMap = function(map) {
   if (map) {
     var viewport = map.getViewport();
     this.listenerKeys.push(
-        ol.events.listen(viewport, ol.events.EventType.MOUSEMOVE,
-            this.handleMouseMove, this),
-        ol.events.listen(viewport, ol.events.EventType.MOUSEOUT,
-            this.handleMouseOut, this)
+      ol.events.listen(
+        viewport,
+        ol.events.EventType.MOUSEMOVE,
+        this.handleMouseMove,
+        this
+      ),
+      ol.events.listen(
+        viewport,
+        ol.events.EventType.MOUSEOUT,
+        this.handleMouseOut,
+        this
+      )
     );
   }
 };
-
 
 /**
  * Set the coordinate format type used to render the current position.
@@ -189,7 +196,6 @@ ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
   this.set(ol.control.MousePosition.Property_.COORDINATE_FORMAT, format);
 };
 
-
 /**
  * Set the projection that is used to report the mouse position.
  * @param {ol.ProjectionLike} projection The projection to report mouse
@@ -198,9 +204,11 @@ ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
  * @api
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
-  this.set(ol.control.MousePosition.Property_.PROJECTION, ol.proj.get(projection));
+  this.set(
+    ol.control.MousePosition.Property_.PROJECTION,
+    ol.proj.get(projection)
+  );
 };
-
 
 /**
  * @param {?ol.Pixel} pixel Pixel.
@@ -213,7 +221,9 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
       var projection = this.getProjection();
       if (projection) {
         this.transform_ = ol.proj.getTransformFromProjections(
-            this.mapProjection_, projection);
+          this.mapProjection_,
+          projection
+        );
       } else {
         this.transform_ = ol.proj.identityTransform;
       }
@@ -235,7 +245,6 @@ ol.control.MousePosition.prototype.updateHTML_ = function(pixel) {
     this.renderedHTML_ = html;
   }
 };
-
 
 /**
  * @enum {string}

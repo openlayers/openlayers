@@ -8,9 +8,7 @@ goog.require('ol.obj');
 goog.require('ol.webgl');
 goog.require('ol.webgl.ContextEventType');
 
-
 if (ol.ENABLE_WEBGL) {
-
   /**
    * @classdesc
    * A WebGL context for accessing low-level WebGL capabilities.
@@ -21,7 +19,6 @@ if (ol.ENABLE_WEBGL) {
    * @param {WebGLRenderingContext} gl GL.
    */
   ol.webgl.Context = function(canvas, gl) {
-
     /**
      * @private
      * @type {HTMLCanvasElement}
@@ -80,21 +77,29 @@ if (ol.ENABLE_WEBGL) {
      * @type {boolean}
      */
     this.hasOESElementIndexUint = ol.array.includes(
-        ol.WEBGL_EXTENSIONS, 'OES_element_index_uint');
+      ol.WEBGL_EXTENSIONS,
+      'OES_element_index_uint'
+    );
 
     // use the OES_element_index_uint extension if available
     if (this.hasOESElementIndexUint) {
       gl.getExtension('OES_element_index_uint');
     }
 
-    ol.events.listen(this.canvas_, ol.webgl.ContextEventType.LOST,
-        this.handleWebGLContextLost, this);
-    ol.events.listen(this.canvas_, ol.webgl.ContextEventType.RESTORED,
-        this.handleWebGLContextRestored, this);
-
+    ol.events.listen(
+      this.canvas_,
+      ol.webgl.ContextEventType.LOST,
+      this.handleWebGLContextLost,
+      this
+    );
+    ol.events.listen(
+      this.canvas_,
+      ol.webgl.ContextEventType.RESTORED,
+      this.handleWebGLContextRestored,
+      this
+    );
   };
   ol.inherits(ol.webgl.Context, ol.Disposable);
-
 
   /**
    * Just bind the buffer if it's in the cache. Otherwise create
@@ -117,8 +122,9 @@ if (ol.ENABLE_WEBGL) {
       if (target == ol.webgl.ARRAY_BUFFER) {
         arrayBuffer = new Float32Array(arr);
       } else if (target == ol.webgl.ELEMENT_ARRAY_BUFFER) {
-        arrayBuffer = this.hasOESElementIndexUint ?
-            new Uint32Array(arr) : new Uint16Array(arr);
+        arrayBuffer = this.hasOESElementIndexUint
+          ? new Uint32Array(arr)
+          : new Uint16Array(arr);
       }
       gl.bufferData(target, arrayBuffer, buf.getUsage());
       this.bufferCache_[bufferKey] = {
@@ -127,7 +133,6 @@ if (ol.ENABLE_WEBGL) {
       };
     }
   };
-
 
   /**
    * @param {ol.webgl.Buffer} buf Buffer.
@@ -141,7 +146,6 @@ if (ol.ENABLE_WEBGL) {
     }
     delete this.bufferCache_[bufferKey];
   };
-
 
   /**
    * @inheritDoc
@@ -167,14 +171,12 @@ if (ol.ENABLE_WEBGL) {
     }
   };
 
-
   /**
    * @return {HTMLCanvasElement} Canvas.
    */
   ol.webgl.Context.prototype.getCanvas = function() {
     return this.canvas_;
   };
-
 
   /**
    * Get the WebGL rendering context
@@ -184,7 +186,6 @@ if (ol.ENABLE_WEBGL) {
   ol.webgl.Context.prototype.getGL = function() {
     return this.gl_;
   };
-
 
   /**
    * Get the frame buffer for hit detection.
@@ -196,7 +197,6 @@ if (ol.ENABLE_WEBGL) {
     }
     return this.hitDetectionFramebuffer_;
   };
-
 
   /**
    * Get shader from the cache if it's in the cache. Otherwise, create
@@ -218,7 +218,6 @@ if (ol.ENABLE_WEBGL) {
     }
   };
 
-
   /**
    * Get the program from the cache if it's in the cache. Otherwise create
    * the WebGL program, attach the shaders to it, and add an entry to the
@@ -228,9 +227,11 @@ if (ol.ENABLE_WEBGL) {
    * @return {WebGLProgram} Program.
    */
   ol.webgl.Context.prototype.getProgram = function(
-      fragmentShaderObject, vertexShaderObject) {
+    fragmentShaderObject,
+    vertexShaderObject
+  ) {
     var programKey =
-        ol.getUid(fragmentShaderObject) + '/' + ol.getUid(vertexShaderObject);
+      ol.getUid(fragmentShaderObject) + '/' + ol.getUid(vertexShaderObject);
     if (programKey in this.programCache_) {
       return this.programCache_[programKey];
     } else {
@@ -243,7 +244,6 @@ if (ol.ENABLE_WEBGL) {
       return program;
     }
   };
-
 
   /**
    * FIXME empy description for jsdoc
@@ -258,13 +258,10 @@ if (ol.ENABLE_WEBGL) {
     this.hitDetectionRenderbuffer_ = null;
   };
 
-
   /**
    * FIXME empy description for jsdoc
    */
-  ol.webgl.Context.prototype.handleWebGLContextRestored = function() {
-  };
-
+  ol.webgl.Context.prototype.handleWebGLContextRestored = function() {};
 
   /**
    * Creates a 1x1 pixel framebuffer for the hit-detection.
@@ -280,9 +277,18 @@ if (ol.ENABLE_WEBGL) {
     gl.bindRenderbuffer(gl.RENDERBUFFER, renderbuffer);
     gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 1, 1);
     gl.framebufferTexture2D(
-        gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, texture, 0);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT,
-        gl.RENDERBUFFER, renderbuffer);
+      gl.FRAMEBUFFER,
+      gl.COLOR_ATTACHMENT0,
+      gl.TEXTURE_2D,
+      texture,
+      0
+    );
+    gl.framebufferRenderbuffer(
+      gl.FRAMEBUFFER,
+      gl.DEPTH_ATTACHMENT,
+      gl.RENDERBUFFER,
+      renderbuffer
+    );
 
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.bindRenderbuffer(gl.RENDERBUFFER, null);
@@ -292,7 +298,6 @@ if (ol.ENABLE_WEBGL) {
     this.hitDetectionTexture_ = texture;
     this.hitDetectionRenderbuffer_ = renderbuffer;
   };
-
 
   /**
    * Use a program.  If the program is already in use, this will return `false`.
@@ -311,7 +316,6 @@ if (ol.ENABLE_WEBGL) {
     }
   };
 
-
   /**
    * @param {WebGLRenderingContext} gl WebGL rendering context.
    * @param {number=} opt_wrapS wrapS.
@@ -326,17 +330,14 @@ if (ol.ENABLE_WEBGL) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
     if (opt_wrapS !== undefined) {
-      gl.texParameteri(
-          ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
+      gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_S, opt_wrapS);
     }
     if (opt_wrapT !== undefined) {
-      gl.texParameteri(
-          ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, opt_wrapT);
+      gl.texParameteri(ol.webgl.TEXTURE_2D, ol.webgl.TEXTURE_WRAP_T, opt_wrapT);
     }
 
     return texture;
   };
-
 
   /**
    * @param {WebGLRenderingContext} gl WebGL rendering context.
@@ -347,15 +348,27 @@ if (ol.ENABLE_WEBGL) {
    * @return {WebGLTexture} The texture.
    */
   ol.webgl.Context.createEmptyTexture = function(
-      gl, width, height, opt_wrapS, opt_wrapT) {
+    gl,
+    width,
+    height,
+    opt_wrapS,
+    opt_wrapT
+  ) {
     var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
     gl.texImage2D(
-        gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-        null);
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      width,
+      height,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      null
+    );
 
     return texture;
   };
-
 
   /**
    * @param {WebGLRenderingContext} gl WebGL rendering context.
@@ -366,10 +379,8 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.webgl.Context.createTexture = function(gl, image, opt_wrapS, opt_wrapT) {
     var texture = ol.webgl.Context.createTexture_(gl, opt_wrapS, opt_wrapT);
-    gl.texImage2D(
-        gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
 
     return texture;
   };
-
 }

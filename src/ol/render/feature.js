@@ -4,7 +4,6 @@ goog.require('ol');
 goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 
-
 /**
  * Lightweight, read-only, {@link ol.Feature} and {@link ol.geom.Geometry} like
  * structure, optimized for rendering and styling. Geometry access through the
@@ -56,7 +55,6 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
   this.properties_ = properties;
 };
 
-
 /**
  * Get a feature property by its key.
  * @param {string} key Key
@@ -67,14 +65,12 @@ ol.render.Feature.prototype.get = function(key) {
   return this.properties_[key];
 };
 
-
 /**
  * @return {Array.<number>|Array.<Array.<number>>} Ends or endss.
  */
 ol.render.Feature.prototype.getEnds = function() {
   return this.ends_;
 };
-
 
 /**
  * Get the extent of this feature's geometry.
@@ -83,11 +79,14 @@ ol.render.Feature.prototype.getEnds = function() {
  */
 ol.render.Feature.prototype.getExtent = function() {
   if (!this.extent_) {
-    this.extent_ = this.type_ === ol.geom.GeometryType.POINT ?
-        ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_) :
-        ol.extent.createOrUpdateFromFlatCoordinates(
-            this.flatCoordinates_, 0, this.flatCoordinates_.length, 2);
-
+    this.extent_ = this.type_ === ol.geom.GeometryType.POINT
+      ? ol.extent.createOrUpdateFromCoordinate(this.flatCoordinates_)
+      : ol.extent.createOrUpdateFromFlatCoordinates(
+          this.flatCoordinates_,
+          0,
+          this.flatCoordinates_.length,
+          2
+        );
   }
   return this.extent_;
 };
@@ -102,7 +101,6 @@ ol.render.Feature.prototype.getId = function() {
   return this.id_;
 };
 
-
 /**
  * @return {Array.<number>} Flat coordinates.
  */
@@ -110,13 +108,11 @@ ol.render.Feature.prototype.getOrientedFlatCoordinates = function() {
   return this.flatCoordinates_;
 };
 
-
 /**
  * @return {Array.<number>} Flat coordinates.
  */
 ol.render.Feature.prototype.getFlatCoordinates =
-    ol.render.Feature.prototype.getOrientedFlatCoordinates;
-
+  ol.render.Feature.prototype.getOrientedFlatCoordinates;
 
 /**
  * For API compatibility with {@link ol.Feature}, this method is useful when
@@ -128,7 +124,6 @@ ol.render.Feature.prototype.getGeometry = function() {
   return this;
 };
 
-
 /**
  * Get the feature properties.
  * @return {Object.<string, *>} Feature properties.
@@ -138,14 +133,12 @@ ol.render.Feature.prototype.getProperties = function() {
   return this.properties_;
 };
 
-
 /**
  * Get the feature for working with its geometry.
  * @return {ol.render.Feature} Feature.
  */
 ol.render.Feature.prototype.getSimplifiedGeometry =
-    ol.render.Feature.prototype.getGeometry;
-
+  ol.render.Feature.prototype.getGeometry;
 
 /**
  * @return {number} Stride.
@@ -154,12 +147,10 @@ ol.render.Feature.prototype.getStride = function() {
   return 2;
 };
 
-
 /**
  * @return {undefined}
  */
 ol.render.Feature.prototype.getStyleFunction = ol.nullFunction;
-
 
 /**
  * Get the type of this feature's geometry.
