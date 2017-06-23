@@ -38,39 +38,39 @@ describe('ol.render.webgl.TextReplay', function() {
 
     beforeEach(function() {
       textStyle1 = createTextStyle(
-        new ol.style.Fill({
-          color: [0, 0, 0, 1]
-        }),
-        new ol.style.Stroke({
-          width: 1,
-          color: [0, 0, 0, 1],
-          lineCap: 'butt',
-          lineJoin: 'bevel',
-          lineDash: [5, 5],
-          lineDashOffset: 15,
-          miterLimit: 2
-        }),
-        'someText');
+          new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          }),
+          new ol.style.Stroke({
+            width: 1,
+            color: [0, 0, 0, 1],
+            lineCap: 'butt',
+            lineJoin: 'bevel',
+            lineDash: [5, 5],
+            lineDashOffset: 15,
+            miterLimit: 2
+          }),
+          'someText');
       textStyle2 = createTextStyle(
-        new ol.style.Fill({
-          color: [255, 255, 255, 1]
-        }),
-        new ol.style.Stroke({
-          width: 1,
-          color: [255, 255, 255, 1]
-        }),
-        'someText'
+          new ol.style.Fill({
+            color: [255, 255, 255, 1]
+          }),
+          new ol.style.Stroke({
+            width: 1,
+            color: [255, 255, 255, 1]
+          }),
+          'someText'
       );
       textStyle3 = createTextStyle(null, null, 'someText');
       textStyle4 = createTextStyle(
-        new ol.style.Fill({
-          color: [0, 0, 0, 1]
-        }),
-        new ol.style.Stroke({
-          width: 1,
-          color: [0, 0, 0, 1]
-        }),
-        ''
+          new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          }),
+          new ol.style.Stroke({
+            width: 1,
+            color: [0, 0, 0, 1]
+          }),
+          ''
       );
     });
 
@@ -116,10 +116,10 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#drawText', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-        new ol.style.Fill({
-          color: [0, 0, 0, 1]
-        }),
-        null, 'someText');
+          new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          }),
+          null, 'someText');
       replay.setTextStyle(textStyle);
     });
 
@@ -172,10 +172,10 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#addCharToAtlas_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-        new ol.style.Fill({
-          color: [0, 0, 0, 1]
-        }),
-        null, 'someText');
+          new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          }),
+          null, 'someText');
       replay.setTextStyle(textStyle);
     });
 
@@ -210,10 +210,10 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#getTextSize_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-        new ol.style.Fill({
-          color: [0, 0, 0, 1]
-        }),
-        null, 'someText');
+          new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          }),
+          null, 'someText');
       textStyle.setScale(1);
       replay.setTextStyle(textStyle);
     });
@@ -262,10 +262,10 @@ describe('ol.render.webgl.TextReplay', function() {
   describe('#getAtlas_', function() {
     beforeEach(function() {
       var textStyle = createTextStyle(
-        new ol.style.Fill({
-          color: [0, 0, 0, 1]
-        }),
-        null, 'someText');
+          new ol.style.Fill({
+            color: [0, 0, 0, 1]
+          }),
+          null, 'someText');
       replay.setTextStyle(textStyle);
     });
 

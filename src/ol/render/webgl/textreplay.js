@@ -150,7 +150,7 @@ if (ol.ENABLE_WEBGL) {
             this.originY = charInfo.offsetY;
             this.height = glyphAtlas.height;
             this.width = j === 0 || j === charArr.length - 1 ?
-                glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
+              glyphAtlas.width[charArr[j]] + lineWidth : glyphAtlas.width[charArr[j]];
             this.imageHeight = image.height;
             this.imageWidth = image.width;
 
@@ -330,7 +330,7 @@ if (ol.ENABLE_WEBGL) {
       } else {
         var textFillStyleColor = textFillStyle.getColor();
         state.fillColor = ol.colorlike.asColorLike(textFillStyleColor ?
-            textFillStyleColor : ol.render.webgl.defaultFillStyle);
+          textFillStyleColor : ol.render.webgl.defaultFillStyle);
       }
       if (!textStrokeStyle) {
         state.strokeColor = null;
@@ -338,7 +338,7 @@ if (ol.ENABLE_WEBGL) {
       } else {
         var textStrokeStyleColor = textStrokeStyle.getColor();
         state.strokeColor = ol.colorlike.asColorLike(textStrokeStyleColor ?
-            textStrokeStyleColor : ol.render.webgl.defaultStrokeStyle);
+          textStrokeStyleColor : ol.render.webgl.defaultStrokeStyle);
         state.lineWidth = textStrokeStyle.getWidth() || ol.render.webgl.defaultLineWidth;
         state.lineCap = textStrokeStyle.getLineCap() || ol.render.webgl.defaultLineCap;
         state.lineDashOffset = textStrokeStyle.getLineDashOffset() || ol.render.webgl.defaultLineDashOffset;
@@ -353,9 +353,9 @@ if (ol.ENABLE_WEBGL) {
       var textAlign = ol.render.webgl.TextReplay.Align_[textStyle.getTextAlign()];
       var textBaseline = ol.render.webgl.TextReplay.Align_[textStyle.getTextBaseline()];
       this.textAlign_ = textAlign === undefined ?
-          ol.render.webgl.defaultTextAlign : textAlign;
+        ol.render.webgl.defaultTextAlign : textAlign;
       this.textBaseline_ = textBaseline === undefined ?
-          ol.render.webgl.defaultTextBaseline : textBaseline;
+        ol.render.webgl.defaultTextBaseline : textBaseline;
       this.offsetX_ = textStyle.getOffsetX() || 0;
       this.offsetY_ = textStyle.getOffsetY() || 0;
       this.rotateWithView = !!textStyle.getRotateWithView();
