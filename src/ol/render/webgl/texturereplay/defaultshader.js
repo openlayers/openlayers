@@ -38,8 +38,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.render.webgl.texturereplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
-      ol.render.webgl.texturereplay.defaultshader.Fragment.DEBUG_SOURCE :
-      ol.render.webgl.texturereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+    ol.render.webgl.texturereplay.defaultshader.Fragment.DEBUG_SOURCE :
+    ol.render.webgl.texturereplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.texturereplay.defaultshader.fragment = new ol.render.webgl.texturereplay.defaultshader.Fragment();
@@ -75,8 +75,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.render.webgl.texturereplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
-      ol.render.webgl.texturereplay.defaultshader.Vertex.DEBUG_SOURCE :
-      ol.render.webgl.texturereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+    ol.render.webgl.texturereplay.defaultshader.Vertex.DEBUG_SOURCE :
+    ol.render.webgl.texturereplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.texturereplay.defaultshader.vertex = new ol.render.webgl.texturereplay.defaultshader.Vertex();
