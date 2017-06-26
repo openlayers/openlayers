@@ -64,7 +64,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
   }
   WMTSCapabilityObject['version'] = version;
   WMTSCapabilityObject = ol.xml.pushParseAndPop(WMTSCapabilityObject,
-        ol.format.WMTSCapabilities.PARSERS_, node, []);
+      ol.format.WMTSCapabilities.PARSERS_, node, []);
   return WMTSCapabilityObject ? WMTSCapabilityObject : null;
 };
 
@@ -77,7 +77,7 @@ ol.format.WMTSCapabilities.prototype.readFromNode = function(node) {
  */
 ol.format.WMTSCapabilities.readContents_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop({},
-        ol.format.WMTSCapabilities.CONTENTS_PARSERS_, node, objectStack);
+      ol.format.WMTSCapabilities.CONTENTS_PARSERS_, node, objectStack);
 };
 
 
@@ -89,7 +89,7 @@ ol.format.WMTSCapabilities.readContents_ = function(node, objectStack) {
  */
 ol.format.WMTSCapabilities.readLayer_ = function(node, objectStack) {
   return ol.xml.pushParseAndPop({},
-        ol.format.WMTSCapabilities.LAYER_PARSERS_, node, objectStack);
+      ol.format.WMTSCapabilities.LAYER_PARSERS_, node, objectStack);
 };
 
 

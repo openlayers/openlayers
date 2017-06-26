@@ -208,29 +208,29 @@ describe('ol.geom.Circle', function() {
     describe('#intersectsExtent', function() {
 
       it('returns false for non-intersecting extents (wide outside own bbox)',
-         function() {
-           var wideOutsideLeftTop = [-3, 2, -2, 3];
-           var wideOutsideRightTop = [2, 2, 3, 3];
-           var wideOutsideRightBottom = [2, -3, 3, -2];
-           var wideOutsideLeftBottom = [-3, -3, -2, -2];
-           expect(circle.intersectsExtent(wideOutsideLeftTop)).to.be(false);
-           expect(circle.intersectsExtent(wideOutsideRightTop)).to.be(false);
-           expect(circle.intersectsExtent(wideOutsideRightBottom)).to.be(false);
-           expect(circle.intersectsExtent(wideOutsideLeftBottom)).to.be(false);
-         }
+          function() {
+            var wideOutsideLeftTop = [-3, 2, -2, 3];
+            var wideOutsideRightTop = [2, 2, 3, 3];
+            var wideOutsideRightBottom = [2, -3, 3, -2];
+            var wideOutsideLeftBottom = [-3, -3, -2, -2];
+            expect(circle.intersectsExtent(wideOutsideLeftTop)).to.be(false);
+            expect(circle.intersectsExtent(wideOutsideRightTop)).to.be(false);
+            expect(circle.intersectsExtent(wideOutsideRightBottom)).to.be(false);
+            expect(circle.intersectsExtent(wideOutsideLeftBottom)).to.be(false);
+          }
       );
 
       it('returns false for non-intersecting extents (inside own bbox)',
-         function() {
-           var nearOutsideLeftTop = [-1, 0.9, -0.9, 1];
-           var nearOutsideRightTop = [0.9, 0.9, 1, 1];
-           var nearOutsideRightBottom = [0.9, -1, 1, -0.9];
-           var nearOutsideLeftBottom = [-1, -1, -0.9, -0.9];
-           expect(circle.intersectsExtent(nearOutsideLeftTop)).to.be(false);
-           expect(circle.intersectsExtent(nearOutsideRightTop)).to.be(false);
-           expect(circle.intersectsExtent(nearOutsideRightBottom)).to.be(false);
-           expect(circle.intersectsExtent(nearOutsideLeftBottom)).to.be(false);
-         }
+          function() {
+            var nearOutsideLeftTop = [-1, 0.9, -0.9, 1];
+            var nearOutsideRightTop = [0.9, 0.9, 1, 1];
+            var nearOutsideRightBottom = [0.9, -1, 1, -0.9];
+            var nearOutsideLeftBottom = [-1, -1, -0.9, -0.9];
+            expect(circle.intersectsExtent(nearOutsideLeftTop)).to.be(false);
+            expect(circle.intersectsExtent(nearOutsideRightTop)).to.be(false);
+            expect(circle.intersectsExtent(nearOutsideRightBottom)).to.be(false);
+            expect(circle.intersectsExtent(nearOutsideLeftBottom)).to.be(false);
+          }
       );
 
       it('returns true for extents that intersect clearly', function() {

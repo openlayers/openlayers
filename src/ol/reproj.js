@@ -95,7 +95,7 @@ ol.reproj.render = function(width, height, pixelRatio,
     triangulation, sources, gutter, opt_renderEdges) {
 
   var context = ol.dom.createCanvasContext2D(Math.round(pixelRatio * width),
-                                             Math.round(pixelRatio * height));
+      Math.round(pixelRatio * height));
 
   if (sources.length === 0) {
     return context.canvas;
@@ -202,10 +202,10 @@ ol.reproj.render = function(width, height, pixelRatio,
         affineCoefs[0], affineCoefs[2], affineCoefs[1], affineCoefs[3], u0, v0);
 
     context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
-                      sourceDataExtent[3] - sourceNumericalShiftY);
+        sourceDataExtent[3] - sourceNumericalShiftY);
 
     context.scale(sourceResolution / pixelRatio,
-                  -sourceResolution / pixelRatio);
+        -sourceResolution / pixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();

@@ -66,7 +66,7 @@ ol.layer.Heatmap = function(opt_options) {
       this.handleGradientChanged_, this);
 
   this.setGradient(options.gradient ?
-      options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
+    options.gradient : ol.layer.Heatmap.DEFAULT_GRADIENT);
 
   this.setBlur(options.blur !== undefined ? options.blur : 15);
 
@@ -190,7 +190,7 @@ ol.layer.Heatmap.prototype.getBlur = function() {
  */
 ol.layer.Heatmap.prototype.getGradient = function() {
   return /** @type {Array.<string>} */ (
-      this.get(ol.layer.Heatmap.Property_.GRADIENT));
+    this.get(ol.layer.Heatmap.Property_.GRADIENT));
 };
 
 

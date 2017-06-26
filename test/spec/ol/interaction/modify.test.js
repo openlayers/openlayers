@@ -217,7 +217,7 @@ describe('ol.interaction.Modify', function() {
     it('deletes first vertex of a LineString', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+            [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
       features.length = 0;
@@ -253,7 +253,7 @@ describe('ol.interaction.Modify', function() {
     it('deletes last vertex of a LineString', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+            [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
       features.length = 0;
@@ -289,7 +289,7 @@ describe('ol.interaction.Modify', function() {
     it('deletes vertex of a LineString programmatically', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+            [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
       features.length = 0;
@@ -331,7 +331,7 @@ describe('ol.interaction.Modify', function() {
     it('keeps the third dimension', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
+            [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
         )
       });
       features.length = 0;

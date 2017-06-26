@@ -55,13 +55,13 @@ describe('ol.proj', function() {
 
     it('gives that CRS:84, urn:ogc:def:crs:EPSG:6.6:4326, EPSG:4326 are ' +
         'equivalent',
-        function() {
-          _testAllEquivalent([
-            'CRS:84',
-            'urn:ogc:def:crs:EPSG:6.6:4326',
-            'EPSG:4326'
-          ]);
-        });
+    function() {
+      _testAllEquivalent([
+        'CRS:84',
+        'urn:ogc:def:crs:EPSG:6.6:4326',
+        'EPSG:4326'
+      ]);
+    });
 
     it('requires code and units to be equal for projection evquivalence',
         function() {

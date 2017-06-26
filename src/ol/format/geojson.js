@@ -39,7 +39,7 @@ ol.format.GeoJSON = function(opt_options) {
    */
   this.defaultDataProjection = ol.proj.get(
       options.defaultDataProjection ?
-          options.defaultDataProjection : 'EPSG:4326');
+        options.defaultDataProjection : 'EPSG:4326');
 
 
   if (options.featureProjection) {
@@ -69,8 +69,8 @@ ol.format.GeoJSON.readGeometry_ = function(object, opt_options) {
   }
   var geometryReader = ol.format.GeoJSON.GEOMETRY_READERS_[object.type];
   return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(
-          geometryReader(object), false, opt_options));
+    ol.format.Feature.transformWithOptions(
+        geometryReader(object), false, opt_options));
 };
 
 
@@ -163,8 +163,8 @@ ol.format.GeoJSON.readPolygonGeometry_ = function(object) {
 ol.format.GeoJSON.writeGeometry_ = function(geometry, opt_options) {
   var geometryWriter = ol.format.GeoJSON.GEOMETRY_WRITERS_[geometry.getType()];
   return geometryWriter(/** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
-      opt_options);
+    ol.format.Feature.transformWithOptions(geometry, true, opt_options)),
+  opt_options);
 };
 
 

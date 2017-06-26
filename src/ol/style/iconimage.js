@@ -20,7 +20,7 @@ goog.require('ol.style');
  * @extends {ol.events.EventTarget}
  */
 ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
-                               color) {
+    color) {
 
   ol.events.EventTarget.call(this);
 
@@ -45,8 +45,8 @@ ol.style.IconImage = function(image, src, size, crossOrigin, imageState,
    * @type {HTMLCanvasElement}
    */
   this.canvas_ = color ?
-      /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
-      null;
+    /** @type {HTMLCanvasElement} */ (document.createElement('CANVAS')) :
+    null;
 
   /**
    * @private
@@ -101,7 +101,7 @@ ol.inherits(ol.style.IconImage, ol.events.EventTarget);
  * @return {ol.style.IconImage} Icon image.
  */
 ol.style.IconImage.get = function(image, src, size, crossOrigin, imageState,
-                                   color) {
+    color) {
   var iconImageCache = ol.style.iconImageCache;
   var iconImage = iconImageCache.get(src, crossOrigin, color);
   if (!iconImage) {

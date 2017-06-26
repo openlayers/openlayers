@@ -108,8 +108,8 @@ ol.geom.flat.orient.orientLinearRings = function(flatCoordinates, offset, ends, 
     var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(
         flatCoordinates, offset, end, stride);
     var reverse = i === 0 ?
-        (right && isClockwise) || (!right && !isClockwise) :
-        (right && !isClockwise) || (!right && isClockwise);
+      (right && isClockwise) || (!right && !isClockwise) :
+      (right && !isClockwise) || (!right && isClockwise);
     if (reverse) {
       ol.geom.flat.reverse.coordinates(flatCoordinates, offset, end, stride);
     }

@@ -47,15 +47,15 @@ ol.format.WFS = function(opt_options) {
    * @type {ol.format.GMLBase}
    */
   this.gmlFormat_ = options.gmlFormat ?
-      options.gmlFormat : new ol.format.GML3();
+    options.gmlFormat : new ol.format.GML3();
 
   /**
    * @private
    * @type {string}
    */
   this.schemaLocation_ = options.schemaLocation ?
-      options.schemaLocation :
-          ol.format.WFS.SCHEMA_LOCATIONS[ol.format.WFS.DEFAULT_VERSION];
+    options.schemaLocation :
+    ol.format.WFS.SCHEMA_LOCATIONS[ol.format.WFS.DEFAULT_VERSION];
 
   ol.format.XMLFeature.call(this);
 };
@@ -414,7 +414,7 @@ ol.format.WFS.writeOgcFidFilter_ = function(node, fid, objectStack) {
  */
 ol.format.WFS.getTypeName_ = function(featurePrefix, featureType) {
   featurePrefix = featurePrefix ? featurePrefix :
-      ol.format.WFS.FEATURE_PREFIX;
+    ol.format.WFS.FEATURE_PREFIX;
   var prefix = featurePrefix + ':';
   // The featureType already contains the prefix.
   if (featureType.indexOf(prefix) === 0) {
@@ -477,9 +477,9 @@ ol.format.WFS.writeUpdate_ = function(node, feature, objectStack) {
     ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */ (
       {'gmlVersion': context['gmlVersion'], node: node,
         'hasZ': context['hasZ'], 'srsName': context['srsName']}),
-        ol.format.WFS.TRANSACTION_SERIALIZERS_,
-        ol.xml.makeSimpleNodeFactory('Property'), values,
-        objectStack);
+    ol.format.WFS.TRANSACTION_SERIALIZERS_,
+    ol.xml.makeSimpleNodeFactory('Property'), values,
+    objectStack);
     ol.format.WFS.writeOgcFidFilter_(node, fid, objectStack);
   }
 };
@@ -964,7 +964,7 @@ ol.format.WFS.prototype.writeTransaction = function(inserts, updates, deletes,
   var objectStack = [];
   var node = ol.xml.createElementNS(ol.format.WFS.WFSNS, 'Transaction');
   var version = options.version ?
-        options.version : ol.format.WFS.DEFAULT_VERSION;
+    options.version : ol.format.WFS.DEFAULT_VERSION;
   var gmlVersion = version === '1.0.0' ? 2 : 3;
   node.setAttribute('service', 'WFS');
   node.setAttribute('version', version);

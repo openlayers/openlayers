@@ -74,7 +74,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
   var extent = frameState.extent;
   var pixelRatio = frameState.pixelRatio;
   var skippedFeatureUids = layerState.managed ?
-      frameState.skippedFeatureUids : {};
+    frameState.skippedFeatureUids : {};
   var viewState = frameState.viewState;
   var projection = viewState.projection;
   var rotation = viewState.rotation;

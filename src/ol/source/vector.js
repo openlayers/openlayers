@@ -84,7 +84,7 @@ ol.source.Vector = function(opt_options) {
    * @type {ol.LoadingStrategy}
    */
   this.strategy_ = options.strategy !== undefined ? options.strategy :
-      ol.loadingstrategy.all;
+    ol.loadingstrategy.all;
 
   var useSpatialIndex =
       options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;

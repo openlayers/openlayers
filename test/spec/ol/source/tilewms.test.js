@@ -143,14 +143,14 @@ describe('ol.source.TileWMS', function() {
     });
 
     it('rounds FORMAT_OPTIONS to an integer when the server is GeoServer',
-       function() {
-         options.serverType = 'geoserver';
-         var source = new ol.source.TileWMS(options);
-         var tile = source.getTile(3, 2, -3, 1.325, ol.proj.get('CRS:84'));
-         var uri = new URL(tile.src_);
-         var queryData = uri.searchParams;
-         expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
-       });
+        function() {
+          options.serverType = 'geoserver';
+          var source = new ol.source.TileWMS(options);
+          var tile = source.getTile(3, 2, -3, 1.325, ol.proj.get('CRS:84'));
+          var uri = new URL(tile.src_);
+          var queryData = uri.searchParams;
+          expect(queryData.get('FORMAT_OPTIONS')).to.be('dpi:119');
+        });
 
   });
 

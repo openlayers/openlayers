@@ -42,7 +42,7 @@ describe('ol.format.OWS 1.1', function() {
                     '</ows:ServiceContact>' +
                 '</ows:ServiceProvider>' +
             '</ows:GetCapabilities>'
-        );
+    );
 
     var obj = parser.read(doc);
     expect(obj).to.be.ok();
@@ -76,7 +76,7 @@ describe('ol.format.OWS 1.1', function() {
             '<ows:AccessConstraints>none</ows:AccessConstraints>' +
         '</ows:ServiceIdentification>' +
         '</ows:GetCapabilities>'
-        );
+    );
     var obj = parser.readFromNode(doc.firstChild);
     expect(obj).to.be.ok();
 
@@ -129,7 +129,7 @@ describe('ol.format.OWS 1.1', function() {
             '</ows:Operation>' +
         '</ows:OperationsMetadata>' +
         '</ows:GetCapabilities>'
-        );
+    );
     var obj = parser.readFromNode(doc.firstChild);
     expect(obj).to.be.ok();
 

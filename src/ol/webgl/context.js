@@ -118,7 +118,7 @@ if (ol.ENABLE_WEBGL) {
         arrayBuffer = new Float32Array(arr);
       } else if (target == ol.webgl.ELEMENT_ARRAY_BUFFER) {
         arrayBuffer = this.hasOESElementIndexUint ?
-            new Uint32Array(arr) : new Uint16Array(arr);
+          new Uint32Array(arr) : new Uint16Array(arr);
       }
       gl.bufferData(target, arrayBuffer, buf.getUsage());
       this.bufferCache_[bufferKey] = {

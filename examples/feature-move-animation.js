@@ -198,7 +198,7 @@ function stopAnimation(ended) {
   // if animation cancelled set the marker at the beginning
   var coord = ended ? routeCoords[routeLength - 1] : routeCoords[0];
   /** @type {ol.geom.Point} */ (geoMarker.getGeometry())
-    .setCoordinates(coord);
+      .setCoordinates(coord);
   //remove listener
   map.un('postcompose', moveFeature);
 }

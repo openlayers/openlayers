@@ -107,7 +107,7 @@ ol.layer.Base.prototype.getLayerStatesArray = function(opt_states) {};
  */
 ol.layer.Base.prototype.getExtent = function() {
   return /** @type {ol.Extent|undefined} */ (
-      this.get(ol.layer.Property.EXTENT));
+    this.get(ol.layer.Property.EXTENT));
 };
 
 
@@ -119,7 +119,7 @@ ol.layer.Base.prototype.getExtent = function() {
  */
 ol.layer.Base.prototype.getMaxResolution = function() {
   return /** @type {number} */ (
-      this.get(ol.layer.Property.MAX_RESOLUTION));
+    this.get(ol.layer.Property.MAX_RESOLUTION));
 };
 
 
@@ -131,7 +131,7 @@ ol.layer.Base.prototype.getMaxResolution = function() {
  */
 ol.layer.Base.prototype.getMinResolution = function() {
   return /** @type {number} */ (
-      this.get(ol.layer.Property.MIN_RESOLUTION));
+    this.get(ol.layer.Property.MIN_RESOLUTION));
 };
 
 

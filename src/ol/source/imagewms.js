@@ -55,7 +55,7 @@ ol.source.ImageWMS = function(opt_options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
   /**
    * @private

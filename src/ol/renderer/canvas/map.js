@@ -186,7 +186,7 @@ ol.renderer.canvas.Map.prototype.renderFrame = function(frameState) {
  * @inheritDoc
  */
 ol.renderer.canvas.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-        layerFilter, thisArg2) {
+    layerFilter, thisArg2) {
   var result;
   var viewState = frameState.viewState;
   var viewResolution = viewState.resolution;

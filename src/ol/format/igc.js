@@ -35,7 +35,7 @@ ol.format.IGC = function(opt_options) {
    * @type {ol.format.IGCZ}
    */
   this.altitudeMode_ = options.altitudeMode ?
-      options.altitudeMode : ol.format.IGCZ.NONE;
+    options.altitudeMode : ol.format.IGCZ.NONE;
 
 };
 ol.inherits(ol.format.IGC, ol.format.TextFeature);
@@ -158,7 +158,7 @@ ol.format.IGC.prototype.readFeatureFromText = function(text, opt_options) {
   }
   var lineString = new ol.geom.LineString(null);
   var layout = altitudeMode == ol.format.IGCZ.NONE ?
-      ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
+    ol.geom.GeometryLayout.XYM : ol.geom.GeometryLayout.XYZM;
   lineString.setFlatCoordinates(layout, flatCoordinates);
   var feature = new ol.Feature(ol.format.Feature.transformWithOptions(
       lineString, false, opt_options));

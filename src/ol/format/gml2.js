@@ -35,7 +35,7 @@ ol.format.GML2 = function(opt_options) {
    * @inheritDoc
    */
   this.schemaLocation = options.schemaLocation ?
-      options.schemaLocation : ol.format.GML2.schemaLocation_;
+    options.schemaLocation : ol.format.GML2.schemaLocation_;
 
 };
 ol.inherits(ol.format.GML2, ol.format.GMLBase);
@@ -469,8 +469,8 @@ ol.format.GML2.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
     axisOrientation = ol.proj.get(opt_srsName).getAxisOrientation();
   }
   var coords = ((axisOrientation.substr(0, 2) === 'en') ?
-      point[0] + ',' + point[1] :
-      point[1] + ',' + point[0]);
+    point[0] + ',' + point[1] :
+    point[1] + ',' + point[0]);
   if (opt_hasZ) {
     // For newly created points, Z can be undefined.
     var z = point[2] || 0;

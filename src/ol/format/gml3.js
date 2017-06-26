@@ -52,20 +52,20 @@ ol.format.GML3 = function(opt_options) {
    * @type {boolean}
    */
   this.multiCurve_ = options.multiCurve !== undefined ?
-      options.multiCurve : true;
+    options.multiCurve : true;
 
   /**
    * @private
    * @type {boolean}
    */
   this.multiSurface_ = options.multiSurface !== undefined ?
-      options.multiSurface : true;
+    options.multiSurface : true;
 
   /**
    * @inheritDoc
    */
   this.schemaLocation = options.schemaLocation ?
-      options.schemaLocation : ol.format.GML3.schemaLocation_;
+    options.schemaLocation : ol.format.GML3.schemaLocation_;
 
 };
 ol.inherits(ol.format.GML3, ol.format.GMLBase);
@@ -601,8 +601,8 @@ ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
     axisOrientation = ol.proj.get(opt_srsName).getAxisOrientation();
   }
   var coords = ((axisOrientation.substr(0, 2) === 'en') ?
-      point[0] + ' ' + point[1] :
-      point[1] + ' ' + point[0]);
+    point[0] + ' ' + point[1] :
+    point[1] + ' ' + point[0]);
   if (opt_hasZ) {
     // For newly created points, Z can be undefined.
     var z = point[2] || 0;

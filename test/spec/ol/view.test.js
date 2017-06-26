@@ -1160,13 +1160,13 @@ describe('ol.View', function() {
     });
     it('animates when duration is defined', function(done) {
       view.fit(
-        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-        {
-          size: [200, 200],
-          padding: [100, 0, 0, 100],
-          constrainResolution: false,
-          duration: 25
-        });
+          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          {
+            size: [200, 200],
+            padding: [100, 0, 0, 100],
+            constrainResolution: false,
+            duration: 25
+          });
 
       expect(view.getAnimating()).to.eql(true);
 

@@ -54,7 +54,7 @@ ol.inherits(ol.interaction.Interaction, ol.Object);
  */
 ol.interaction.Interaction.prototype.getActive = function() {
   return /** @type {boolean} */ (
-      this.get(ol.interaction.Property.ACTIVE));
+    this.get(ol.interaction.Property.ACTIVE));
 };
 
 

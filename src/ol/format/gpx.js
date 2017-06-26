@@ -606,8 +606,8 @@ ol.format.GPX.writeWptType_ = function(node, coordinate, objectStack) {
       // pass
   }
   var orderedKeys = (node.nodeName == 'rtept') ?
-      ol.format.GPX.RTEPT_TYPE_SEQUENCE_[namespaceURI] :
-      ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
+    ol.format.GPX.RTEPT_TYPE_SEQUENCE_[namespaceURI] :
+    ol.format.GPX.WPT_TYPE_SEQUENCE_[namespaceURI];
   var values = ol.xml.makeSequence(properties, orderedKeys);
   ol.xml.pushSerializeAndPop(/** @type {ol.XmlNodeStackItem} */
       ({node: node, 'properties': properties}),
@@ -629,7 +629,7 @@ ol.format.GPX.writeRte_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.LineString} */
-        (ol.format.Feature.transformWithOptions(geometry, true, options));
+      (ol.format.Feature.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     properties['rtept'] = geometry.getCoordinates();
   }
@@ -656,7 +656,7 @@ ol.format.GPX.writeTrk_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.MultiLineString} */
-        (ol.format.Feature.transformWithOptions(geometry, true, options));
+      (ol.format.Feature.transformWithOptions(geometry, true, options));
     properties['trkseg'] = geometry.getLineStrings();
   }
   var parentNode = objectStack[objectStack.length - 1].node;
@@ -697,7 +697,7 @@ ol.format.GPX.writeWpt_ = function(node, feature, objectStack) {
   var geometry = feature.getGeometry();
   if (geometry) {
     geometry = /** @type {ol.geom.Point} */
-        (ol.format.Feature.transformWithOptions(geometry, true, options));
+      (ol.format.Feature.transformWithOptions(geometry, true, options));
     context['geometryLayout'] = geometry.getLayout();
     ol.format.GPX.writeWptType_(node, geometry.getCoordinates(), objectStack);
   }

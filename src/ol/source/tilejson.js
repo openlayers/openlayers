@@ -137,7 +137,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   if (tileJSON.attribution !== undefined && !this.getAttributions()) {
     var attributionExtent = extent !== undefined ?
-        extent : epsg4326Projection.getExtent();
+      extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};
     var z, zKey;

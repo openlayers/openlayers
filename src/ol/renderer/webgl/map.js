@@ -37,7 +37,7 @@ if (ol.ENABLE_WEBGL) {
      * @type {HTMLCanvasElement}
      */
     this.canvas_ = /** @type {HTMLCanvasElement} */
-        (document.createElement('CANVAS'));
+      (document.createElement('CANVAS'));
     this.canvas_.style.width = '100%';
     this.canvas_.style.height = '100%';
     this.canvas_.style.display = 'block';
@@ -460,7 +460,7 @@ if (ol.ENABLE_WEBGL) {
     if (this.textureCache_.getCount() - this.textureCacheFrameMarkerCount_ >
         ol.WEBGL_TEXTURE_CACHE_HIGH_WATER_MARK) {
       frameState.postRenderFunctions.push(
-        /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
+          /** @type {ol.PostRenderFunction} */ (this.expireCache_.bind(this))
       );
     }
 
@@ -481,7 +481,7 @@ if (ol.ENABLE_WEBGL) {
    * @inheritDoc
    */
   ol.renderer.webgl.Map.prototype.forEachFeatureAtCoordinate = function(coordinate, frameState, hitTolerance, callback, thisArg,
-          layerFilter, thisArg2) {
+      layerFilter, thisArg2) {
     var result;
 
     if (this.getGL().isContextLost()) {
@@ -546,7 +546,7 @@ if (ol.ENABLE_WEBGL) {
    * @inheritDoc
    */
   ol.renderer.webgl.Map.prototype.forEachLayerAtPixel = function(pixel, frameState, callback, thisArg,
-          layerFilter, thisArg2) {
+      layerFilter, thisArg2) {
     if (this.getGL().isContextLost()) {
       return false;
     }

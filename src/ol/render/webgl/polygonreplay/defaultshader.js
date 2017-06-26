@@ -38,8 +38,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.render.webgl.polygonreplay.defaultshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
-      ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE :
-      ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
+    ol.render.webgl.polygonreplay.defaultshader.Fragment.DEBUG_SOURCE :
+    ol.render.webgl.polygonreplay.defaultshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.polygonreplay.defaultshader.fragment = new ol.render.webgl.polygonreplay.defaultshader.Fragment();
@@ -75,8 +75,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.render.webgl.polygonreplay.defaultshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
-      ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE :
-      ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
+    ol.render.webgl.polygonreplay.defaultshader.Vertex.DEBUG_SOURCE :
+    ol.render.webgl.polygonreplay.defaultshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.render.webgl.polygonreplay.defaultshader.vertex = new ol.render.webgl.polygonreplay.defaultshader.Vertex();

@@ -63,7 +63,7 @@ ol.style.Text = function(opt_options) {
    * @type {ol.style.Fill}
    */
   this.fill_ = options.fill !== undefined ? options.fill :
-      new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
+    new ol.style.Fill({color: ol.style.Text.DEFAULT_FILL_COLOR_});
 
   /**
    * @private

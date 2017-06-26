@@ -33,13 +33,13 @@ ol.layer.VectorTile = function(opt_options) {
 
   this.setPreload(options.preload ? options.preload : 0);
   this.setUseInterimTilesOnError(options.useInterimTilesOnError ?
-      options.useInterimTilesOnError : true);
+    options.useInterimTilesOnError : true);
 
   ol.asserts.assert(options.renderMode == undefined ||
       options.renderMode == ol.layer.VectorTileRenderType.IMAGE ||
       options.renderMode == ol.layer.VectorTileRenderType.HYBRID ||
       options.renderMode == ol.layer.VectorTileRenderType.VECTOR,
-      28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
+  28); // `renderMode` must be `'image'`, `'hybrid'` or `'vector'`
 
   /**
    * @private
@@ -91,7 +91,7 @@ ol.layer.VectorTile.prototype.getRenderMode = function() {
  */
 ol.layer.VectorTile.prototype.getUseInterimTilesOnError = function() {
   return /** @type {boolean} */ (
-      this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
+    this.get(ol.layer.TileProperty.USE_INTERIM_TILES_ON_ERROR));
 };
 
 

@@ -114,7 +114,7 @@ ol.interaction.Snap = function(opt_options) {
    * @private
    */
   this.pixelTolerance_ = options.pixelTolerance !== undefined ?
-      options.pixelTolerance : 10;
+    options.pixelTolerance : 10;
 
   /**
    * @type {function(ol.SnapSegmentDataType, ol.SnapSegmentDataType): number}
@@ -309,17 +309,17 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   if (map) {
     if (this.features_) {
       keys.push(
-        ol.events.listen(this.features_, ol.CollectionEventType.ADD,
-            this.handleFeatureAdd_, this),
-        ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-            this.handleFeatureRemove_, this)
+          ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+              this.handleFeatureAdd_, this),
+          ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+              this.handleFeatureRemove_, this)
       );
     } else if (this.source_) {
       keys.push(
-        ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
-            this.handleFeatureAdd_, this),
-        ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
-            this.handleFeatureRemove_, this)
+          ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
+              this.handleFeatureAdd_, this),
+          ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
+              this.handleFeatureRemove_, this)
       );
     }
     features.forEach(this.forEachFeatureAdd_, this);
@@ -378,7 +378,7 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       if (snappedToVertex) {
         snapped = true;
         vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
+          closestSegment[1] : closestSegment[0];
         vertexPixel = map.getPixelFromCoordinate(vertex);
       }
     } else if (this.edge_) {
@@ -401,7 +401,7 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
           snappedToVertex = dist <= this.pixelTolerance_;
           if (snappedToVertex) {
             vertex = squaredDist1 > squaredDist2 ?
-                closestSegment[1] : closestSegment[0];
+              closestSegment[1] : closestSegment[0];
             vertexPixel = map.getPixelFromCoordinate(vertex);
           }
         }
@@ -631,5 +631,5 @@ ol.interaction.Snap.sortByDistance = function(a, b) {
   return ol.coordinate.squaredDistanceToSegment(
       this.pixelCoordinate_, a.segment) -
       ol.coordinate.squaredDistanceToSegment(
-      this.pixelCoordinate_, b.segment);
+          this.pixelCoordinate_, b.segment);
 };

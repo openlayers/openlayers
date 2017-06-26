@@ -80,7 +80,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   var along = (dx === 0 && dy === 0) ? 0 :
-      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+    ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
   var x, y;
   if (along <= 0) {
     x = x1;
@@ -121,13 +121,13 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
  */
 ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
-      /**
-       * @param {ol.Coordinate|undefined} coordinate Coordinate.
-       * @return {string} String XY.
-       */
-      function(coordinate) {
-        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
-      });
+    /**
+     * @param {ol.Coordinate|undefined} coordinate Coordinate.
+     * @return {string} String XY.
+     */
+    function(coordinate) {
+      return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
+    });
 };
 
 
@@ -195,8 +195,8 @@ ol.coordinate.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionD
 ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   if (coordinate) {
     return template
-      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
-      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+        .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+        .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
   } else {
     return '';
   }

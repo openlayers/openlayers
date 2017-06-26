@@ -18,60 +18,60 @@ goog.require('ol.xml');
  */
 ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
   return (
+    /**
+     * @param {ol.Extent} extent Extent.
+     * @param {number} resolution Resolution.
+     * @param {ol.proj.Projection} projection Projection.
+     * @this {ol.source.Vector|ol.VectorTile}
+     */
+    function(extent, resolution, projection) {
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET',
+          typeof url === 'function' ? url(extent, resolution, projection) : url,
+          true);
+      if (format.getType() == ol.format.FormatType.ARRAY_BUFFER) {
+        xhr.responseType = 'arraybuffer';
+      }
       /**
-       * @param {ol.Extent} extent Extent.
-       * @param {number} resolution Resolution.
-       * @param {ol.proj.Projection} projection Projection.
-       * @this {ol.source.Vector|ol.VectorTile}
+       * @param {Event} event Event.
+       * @private
        */
-      function(extent, resolution, projection) {
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET',
-            typeof url === 'function' ? url(extent, resolution, projection) : url,
-            true);
-        if (format.getType() == ol.format.FormatType.ARRAY_BUFFER) {
-          xhr.responseType = 'arraybuffer';
-        }
-        /**
-         * @param {Event} event Event.
-         * @private
-         */
-        xhr.onload = function(event) {
-          // status will be 0 for file:// urls
-          if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
-            var type = format.getType();
-            /** @type {Document|Node|Object|string|undefined} */
-            var source;
-            if (type == ol.format.FormatType.JSON ||
+      xhr.onload = function(event) {
+        // status will be 0 for file:// urls
+        if (!xhr.status || xhr.status >= 200 && xhr.status < 300) {
+          var type = format.getType();
+          /** @type {Document|Node|Object|string|undefined} */
+          var source;
+          if (type == ol.format.FormatType.JSON ||
                 type == ol.format.FormatType.TEXT) {
-              source = xhr.responseText;
-            } else if (type == ol.format.FormatType.XML) {
-              source = xhr.responseXML;
-              if (!source) {
-                source = ol.xml.parse(xhr.responseText);
-              }
-            } else if (type == ol.format.FormatType.ARRAY_BUFFER) {
-              source = /** @type {ArrayBuffer} */ (xhr.response);
+            source = xhr.responseText;
+          } else if (type == ol.format.FormatType.XML) {
+            source = xhr.responseXML;
+            if (!source) {
+              source = ol.xml.parse(xhr.responseText);
             }
-            if (source) {
-              success.call(this, format.readFeatures(source,
-                  {featureProjection: projection}),
-                  format.readProjection(source));
-            } else {
-              failure.call(this);
-            }
+          } else if (type == ol.format.FormatType.ARRAY_BUFFER) {
+            source = /** @type {ArrayBuffer} */ (xhr.response);
+          }
+          if (source) {
+            success.call(this, format.readFeatures(source,
+                {featureProjection: projection}),
+            format.readProjection(source));
           } else {
             failure.call(this);
           }
-        }.bind(this);
-        /**
-         * @private
-         */
-        xhr.onerror = function() {
+        } else {
           failure.call(this);
-        }.bind(this);
-        xhr.send();
-      });
+        }
+      }.bind(this);
+      /**
+       * @private
+       */
+      xhr.onerror = function() {
+        failure.call(this);
+      }.bind(this);
+      xhr.send();
+    });
 };
 
 

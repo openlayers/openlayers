@@ -43,7 +43,7 @@ goog.require('ol.math');
 ol.geom.flat.simplify.lineString = function(flatCoordinates, offset, end,
     stride, squaredTolerance, highQuality, opt_simplifiedFlatCoordinates) {
   var simplifiedFlatCoordinates = opt_simplifiedFlatCoordinates !== undefined ?
-      opt_simplifiedFlatCoordinates : [];
+    opt_simplifiedFlatCoordinates : [];
   if (!highQuality) {
     end = ol.geom.flat.simplify.radialDistance(flatCoordinates, offset, end,
         stride, squaredTolerance,

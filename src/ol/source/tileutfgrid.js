@@ -36,7 +36,7 @@ ol.source.TileUTFGrid = function(options) {
    * @type {boolean}
    */
   this.preemptive_ = options.preemptive !== undefined ?
-      options.preemptive : true;
+    options.preemptive : true;
 
   /**
    * @private
@@ -197,7 +197,7 @@ ol.source.TileUTFGrid.prototype.handleTileJSONResponse = function(tileJSON) {
 
   if (tileJSON.attribution !== undefined) {
     var attributionExtent = extent !== undefined ?
-        extent : epsg4326Projection.getExtent();
+      extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};
     var z, zKey;

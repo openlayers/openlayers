@@ -35,7 +35,7 @@ ol.control.defaults = function(opt_options) {
   }
 
   var attributionControl = options.attribution !== undefined ?
-      options.attribution : true;
+    options.attribution : true;
   if (attributionControl) {
     controls.push(new ol.control.Attribution(options.attributionOptions));
   }

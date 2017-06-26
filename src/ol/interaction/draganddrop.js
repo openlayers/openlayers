@@ -34,14 +34,14 @@ ol.interaction.DragAndDrop = function(opt_options) {
    * @type {Array.<function(new: ol.format.Feature)>}
    */
   this.formatConstructors_ = options.formatConstructors ?
-      options.formatConstructors : [];
+    options.formatConstructors : [];
 
   /**
    * @private
    * @type {ol.proj.Projection}
    */
   this.projection_ = options.projection ?
-      ol.proj.get(options.projection) : null;
+    ol.proj.get(options.projection) : null;
 
   /**
    * @private

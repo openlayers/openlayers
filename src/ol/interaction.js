@@ -45,13 +45,13 @@ ol.interaction.defaults = function(opt_options) {
   var kinetic = new ol.Kinetic(-0.005, 0.05, 100);
 
   var altShiftDragRotate = options.altShiftDragRotate !== undefined ?
-      options.altShiftDragRotate : true;
+    options.altShiftDragRotate : true;
   if (altShiftDragRotate) {
     interactions.push(new ol.interaction.DragRotate());
   }
 
   var doubleClickZoom = options.doubleClickZoom !== undefined ?
-      options.doubleClickZoom : true;
+    options.doubleClickZoom : true;
   if (doubleClickZoom) {
     interactions.push(new ol.interaction.DoubleClickZoom({
       delta: options.zoomDelta,
@@ -67,7 +67,7 @@ ol.interaction.defaults = function(opt_options) {
   }
 
   var pinchRotate = options.pinchRotate !== undefined ? options.pinchRotate :
-      true;
+    true;
   if (pinchRotate) {
     interactions.push(new ol.interaction.PinchRotate());
   }
@@ -90,7 +90,7 @@ ol.interaction.defaults = function(opt_options) {
   }
 
   var mouseWheelZoom = options.mouseWheelZoom !== undefined ?
-      options.mouseWheelZoom : true;
+    options.mouseWheelZoom : true;
   if (mouseWheelZoom) {
     interactions.push(new ol.interaction.MouseWheelZoom({
       constrainResolution: options.constrainResolution,
@@ -99,7 +99,7 @@ ol.interaction.defaults = function(opt_options) {
   }
 
   var shiftDragZoom = options.shiftDragZoom !== undefined ?
-      options.shiftDragZoom : true;
+    options.shiftDragZoom : true;
   if (shiftDragZoom) {
     interactions.push(new ol.interaction.DragZoom({
       duration: options.zoomDuration

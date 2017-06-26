@@ -17,7 +17,7 @@ goog.require('ol.has');
 ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      originalEvent.altKey &&
+    originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       !originalEvent.shiftKey);
 };
@@ -34,7 +34,7 @@ ol.events.condition.altKeyOnly = function(mapBrowserEvent) {
 ol.events.condition.altShiftKeysOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      originalEvent.altKey &&
+    originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       originalEvent.shiftKey);
 };
@@ -138,7 +138,7 @@ ol.events.condition.doubleClick = function(mapBrowserEvent) {
 ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !originalEvent.altKey &&
+    !originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       !originalEvent.shiftKey);
 };
@@ -156,7 +156,7 @@ ol.events.condition.noModifierKeys = function(mapBrowserEvent) {
 ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !originalEvent.altKey &&
+    !originalEvent.altKey &&
       (ol.has.MAC ? originalEvent.metaKey : originalEvent.ctrlKey) &&
       !originalEvent.shiftKey);
 };
@@ -173,7 +173,7 @@ ol.events.condition.platformModifierKeyOnly = function(mapBrowserEvent) {
 ol.events.condition.shiftKeyOnly = function(mapBrowserEvent) {
   var originalEvent = mapBrowserEvent.originalEvent;
   return (
-      !originalEvent.altKey &&
+    !originalEvent.altKey &&
       !(originalEvent.metaKey || originalEvent.ctrlKey) &&
       originalEvent.shiftKey);
 };
@@ -191,7 +191,7 @@ ol.events.condition.targetNotEditable = function(mapBrowserEvent) {
   var target = mapBrowserEvent.originalEvent.target;
   var tagName = target.tagName;
   return (
-      tagName !== 'INPUT' &&
+    tagName !== 'INPUT' &&
       tagName !== 'SELECT' &&
       tagName !== 'TEXTAREA');
 };

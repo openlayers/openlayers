@@ -211,8 +211,8 @@ if (ol.ENABLE_WEBGL) {
     do {
       var reflex = ccw ? ol.render.webgl.triangleIsCounterClockwise(s1.p1.x,
           s1.p1.y, s0.p1.x, s0.p1.y, s0.p0.x, s0.p0.y) :
-          ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
-          s0.p1.y, s1.p1.x, s1.p1.y);
+        ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
+            s0.p1.y, s1.p1.x, s1.p1.y);
       if (reflex === undefined) {
         this.removeItem_(s0, s1, list, rtree);
         pointsReclassified = true;
@@ -609,7 +609,7 @@ if (ol.ENABLE_WEBGL) {
   };
 
 
-   /**
+  /**
     * @private
     * @param {ol.WebglPolygonSegment} s0 Segment before the remove candidate.
     * @param {ol.WebglPolygonSegment} s1 Remove candidate segment.
@@ -642,7 +642,7 @@ if (ol.ENABLE_WEBGL) {
     var result = [];
     var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x),
       Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y,
-        p1.y, p2.y)]);
+          p1.y, p2.y)]);
     for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
       for (j in segmentsInExtent[i]) {
         p = segmentsInExtent[i][j];

@@ -36,7 +36,7 @@ ol.interaction.KeyboardZoom = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ? options.condition :
-          ol.events.condition.targetNotEditable;
+    ol.events.condition.targetNotEditable;
 
   /**
    * @private

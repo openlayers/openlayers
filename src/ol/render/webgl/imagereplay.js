@@ -497,12 +497,12 @@ if (ol.ENABLE_WEBGL) {
           }
           // continue with the next feature
           start = (featureIndex === this.startIndices.length - 1) ?
-              groupEnd : this.startIndices[featureIndex + 1];
+            groupEnd : this.startIndices[featureIndex + 1];
           end = start;
         } else {
           // the feature is not skipped, augment the end index
           end = (featureIndex === this.startIndices.length - 1) ?
-              groupEnd : this.startIndices[featureIndex + 1];
+            groupEnd : this.startIndices[featureIndex + 1];
         }
         featureIndex++;
       }

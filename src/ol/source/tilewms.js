@@ -206,7 +206,7 @@ ol.source.TileWMS.prototype.getParams = function() {
  * @private
  */
 ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
-        pixelRatio, projection, params) {
+    pixelRatio, projection, params) {
 
   var urls = this.urls;
   if (!urls) {
@@ -275,7 +275,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
  */
 ol.source.TileWMS.prototype.getTilePixelRatio = function(pixelRatio) {
   return (!this.hidpi_ || this.serverType_ === undefined) ? 1 :
-      /** @type {number} */ (pixelRatio);
+  /** @type {number} */ (pixelRatio);
 };
 
 

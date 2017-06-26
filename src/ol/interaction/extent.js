@@ -183,13 +183,13 @@ ol.interaction.Extent.handleDownEvent_ = function(mapBrowserEvent) {
     //snap to edge
     } else if (x !== null) {
       this.pointerHandler_ = ol.interaction.Extent.getEdgeHandler_(
-        getOpposingPoint([x, extent[1]]),
-        getOpposingPoint([x, extent[3]])
+          getOpposingPoint([x, extent[1]]),
+          getOpposingPoint([x, extent[3]])
       );
     } else if (y !== null) {
       this.pointerHandler_ = ol.interaction.Extent.getEdgeHandler_(
-        getOpposingPoint([extent[0], y]),
-        getOpposingPoint([extent[2], y])
+          getOpposingPoint([extent[0], y]),
+          getOpposingPoint([extent[2], y])
       );
     }
   //no snap - new bbox
@@ -337,7 +337,7 @@ ol.interaction.Extent.prototype.snapToVertex_ = function(pixel, map) {
       this.snappedToVertex_ = dist <= this.pixelTolerance_;
       if (this.snappedToVertex_) {
         vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
+          closestSegment[1] : closestSegment[0];
       }
       return vertex;
     }

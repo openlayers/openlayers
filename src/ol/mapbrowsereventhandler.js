@@ -50,7 +50,7 @@ ol.MapBrowserEventHandler = function(map, moveTolerance) {
    * @private
    */
   this.moveTolerance_ = moveTolerance ?
-      moveTolerance * ol.has.DEVICE_PIXEL_RATIO : ol.has.DEVICE_PIXEL_RATIO;
+    moveTolerance * ol.has.DEVICE_PIXEL_RATIO : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * The most recent "down" type event (or null if none have occurred).
@@ -165,13 +165,13 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEven
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new ol.MapBrowserPointerEvent(
-     ol.MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
+      ol.MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
- // We emulate click events on left mouse button click, touch contact, and pen
- // contact. isMouseActionButton returns true in these cases (evt.button is set
- // to 0).
- // See http://www.w3.org/TR/pointerevents/#button-states
+  // We emulate click events on left mouse button click, touch contact, and pen
+  // contact. isMouseActionButton returns true in these cases (evt.button is set
+  // to 0).
+  // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
     this.emulateClick_(this.down_);
   }
@@ -218,13 +218,13 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
         new ol.pointer.PointerEventHandler(document);
 
     this.dragListenerKeys_.push(
-      ol.events.listen(this.documentPointerEventHandler_,
-          ol.MapBrowserEventType.POINTERMOVE,
-          this.handlePointerMove_, this),
-      ol.events.listen(this.documentPointerEventHandler_,
-          ol.MapBrowserEventType.POINTERUP,
-          this.handlePointerUp_, this),
-      /* Note that the listener for `pointercancel is set up on
+        ol.events.listen(this.documentPointerEventHandler_,
+            ol.MapBrowserEventType.POINTERMOVE,
+            this.handlePointerMove_, this),
+        ol.events.listen(this.documentPointerEventHandler_,
+            ol.MapBrowserEventType.POINTERUP,
+            this.handlePointerUp_, this),
+        /* Note that the listener for `pointercancel is set up on
        * `pointerEventHandler_` and not `documentPointerEventHandler_` like
        * the `pointerup` and `pointermove` listeners.
        *
@@ -237,9 +237,9 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
        * only receive a `touchcancel` from `pointerEventHandler_`, because it is
        * only registered there.
        */
-      ol.events.listen(this.pointerEventHandler_,
-          ol.MapBrowserEventType.POINTERCANCEL,
-          this.handlePointerUp_, this)
+        ol.events.listen(this.pointerEventHandler_,
+            ol.MapBrowserEventType.POINTERCANCEL,
+            this.handlePointerUp_, this)
     );
   }
 };
