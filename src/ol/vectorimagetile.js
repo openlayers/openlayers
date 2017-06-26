@@ -205,7 +205,6 @@ ol.VectorImageTile.prototype.getTile = function(tileKey) {
  */
 ol.VectorImageTile.prototype.load = function() {
   var leftToLoad = 0;
-  var errors = false;
   if (this.state == ol.TileState.IDLE) {
     this.setState(ol.TileState.LOADING);
   }
@@ -215,10 +214,6 @@ ol.VectorImageTile.prototype.load = function() {
       if (sourceTile.state == ol.TileState.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
-      } else if (sourceTile.state == ol.TileState.ERROR) {
-        errors = true;
-      } else if (sourceTile.state == ol.TileState.EMPTY) {
-        ol.array.remove(this.tileKeys, sourceTileKey);
       }
       if (sourceTile.state == ol.TileState.LOADING) {
         var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function(e) {
@@ -228,13 +223,8 @@ ol.VectorImageTile.prototype.load = function() {
             --leftToLoad;
             ol.events.unlistenByKey(key);
             ol.array.remove(this.loadListenerKeys_, key);
-            if (state == ol.TileState.ERROR) {
-              ol.array.remove(this.tileKeys, sourceTileKey);
-              errors = true;
-            }
             if (leftToLoad == 0) {
-              this.setState(this.tileKeys.length > 0 ?
-                ol.TileState.LOADED : ol.TileState.ERROR);
+              this.finishLoading_();
             }
           }
         }.bind(this));
@@ -244,12 +234,29 @@ ol.VectorImageTile.prototype.load = function() {
     }.bind(this));
   }
   if (leftToLoad == 0) {
-    setTimeout(function() {
-      this.setState(this.tileKeys.length > 0 ?
-        ol.TileState.LOADED :
-        (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
-    }.bind(this), 0);
+    setTimeout(this.finishLoading_.bind(this), 0);
   }
+};
+
+
+/**
+ * @private
+ */
+ol.VectorImageTile.prototype.finishLoading_ = function() {
+  var errors = false;
+  var tile;
+  for (var i = this.tileKeys.length - 1; i >= 0; --i) {
+    tile = this.getTile(this.tileKeys[i]);
+    if (tile.getState() == ol.TileState.ERROR) {
+      errors = true;
+    }
+    if (tile.getState() != ol.TileState.LOADED) {
+      this.tileKeys.splice(i, 1);
+    }
+  }
+  this.setState(this.tileKeys.length > 0 ?
+    ol.TileState.LOADED :
+    (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
 };
 
 
