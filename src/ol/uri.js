@@ -29,7 +29,8 @@ ol.uri.appendParams = function(uri, params, opt_proxy) {
     if (opt_proxy.indexOf('###') === -1) {
       uri = opt_proxy + uri + qs;
     } else {
-      uri = opt_proxy.replace('###', uri) + qs;
+      uri = uri + qs;
+      uri = opt_proxy.replace('###', uri);
     }
   } else {
     uri = uri + qs;

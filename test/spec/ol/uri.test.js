@@ -71,4 +71,21 @@ describe('ol.uri.appendParams()', function() {
     expect(url).to.equal('http://example.com/foo?a=1');
   });
 
+  it('should suffix proxy to base URL', function() {
+    var url = ol.uri.appendParams('http://example.com/foo', {
+      a: '1',
+      b: null,
+      c: undefined
+    },
+    'http://example.com/proxy/');
+    expect(url).to.equal('http://example.com/proxy/http://example.com/foo?a=1');
+  });
+
+  it('should apply base URL to ### in the proxy URL', function() {
+    var url = ol.uri.appendParams('http://example.com/foo', {
+      a: '1'
+    },
+    'http://example.com/proxy/?Uri=###&auth=true');
+    expect(url).to.equal('http://example.com/proxy/?Uri=http://example.com/foo?a=1&auth=true');
+  });
 });
