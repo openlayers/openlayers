@@ -141,7 +141,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
           0,
           -sourceTileExtent[0], -sourceTileExtent[3]);
       extent = (ol.transform.apply(transform, [sharedExtent[0], sharedExtent[3]])
-          .concat(ol.transform.apply(transform, [sharedExtent[2], sharedExtent[1]])));
+        .concat(ol.transform.apply(transform, [sharedExtent[2], sharedExtent[1]])));
     } else {
       tileResolution = resolution;
       extent = sharedExtent;
