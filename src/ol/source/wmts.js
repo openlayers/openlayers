@@ -61,6 +61,12 @@ ol.source.WMTS = function(options) {
    */
   this.style_ = options.style;
 
+  /**
+   * @protected
+   * @type {?string}
+   */
+  this.proxy =  options.proxy || null;
+
   var urls = options.urls;
   if (urls === undefined && options.url !== undefined) {
     urls = ol.TileUrlFunction.expandUrl(options.url);
@@ -108,12 +114,14 @@ ol.source.WMTS = function(options) {
    */
   function createFromWMTSTemplate(template) {
 
+    var proxy = this.proxy;
+
     // TODO: we may want to create our own appendParams function so that params
     // order conforms to wmts spec guidance, and so that we can avoid to escape
     // special template params
 
     template = (requestEncoding == ol.source.WMTSRequestEncoding.KVP) ?
-      ol.uri.appendParams(template, context) :
+      ol.uri.appendParams(template, context, proxy) :
       template.replace(/\{(\w+?)\}/g, function(m, p) {
         return (p.toLowerCase() in context) ? context[p.toLowerCase()] : m;
       });
@@ -137,7 +145,7 @@ ol.source.WMTS = function(options) {
           ol.obj.assign(localContext, dimensions);
           var url = template;
           if (requestEncoding == ol.source.WMTSRequestEncoding.KVP) {
-            url = ol.uri.appendParams(url, localContext);
+            url = ol.uri.appendParams(url, localContext, proxy);
           } else {
             url = url.replace(/\{(\w+?)\}/g, function(m, p) {
               return localContext[p];

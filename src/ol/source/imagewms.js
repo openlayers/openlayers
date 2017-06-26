@@ -107,6 +107,12 @@ ol.source.ImageWMS = function(opt_options) {
    */
   this.ratio_ = options.ratio !== undefined ? options.ratio : 1.5;
 
+  /**
+   * @protected
+   * @type {?string}
+   */
+  this.proxy = options.proxy || null;
+
 };
 ol.inherits(ol.source.ImageWMS, ol.source.Image);
 
@@ -260,6 +266,7 @@ ol.source.ImageWMS.prototype.getImageLoadFunction = function() {
 ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio, projection, params) {
 
   ol.asserts.assert(this.url_ !== undefined, 9); // `url` must be configured or set using `#setUrl()`
+  var proxy = this.proxy;
 
   params[this.v13_ ? 'CRS' : 'SRS'] = projection.getCode();
 
@@ -302,7 +309,7 @@ ol.source.ImageWMS.prototype.getRequestUrl_ = function(extent, size, pixelRatio,
   }
   params['BBOX'] = bbox.join(',');
 
-  return ol.uri.appendParams(/** @type {string} */ (this.url_), params);
+  return ol.uri.appendParams(/** @type {string} */ (this.url_), params, proxy);
 };
 
 

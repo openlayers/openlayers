@@ -93,6 +93,12 @@ ol.source.TileWMS = function(opt_options) {
    */
   this.tmpExtent_ = ol.extent.createEmpty();
 
+  /**
+   * @protected
+   * @type {?string}
+   */
+  this.proxy =  options.proxy || null;
+
   this.updateV13_();
   this.setKey(this.getKeyForParams_());
 
@@ -206,6 +212,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
   if (!urls) {
     return undefined;
   }
+  var proxy = this.proxy;
 
   params['WIDTH'] = tileSize[0];
   params['HEIGHT'] = tileSize[1];
@@ -259,7 +266,7 @@ ol.source.TileWMS.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileE
     var index = ol.math.modulo(ol.tilecoord.hash(tileCoord), urls.length);
     url = urls[index];
   }
-  return ol.uri.appendParams(url, params);
+  return ol.uri.appendParams(url, params, proxy);
 };
 
 
