@@ -111,7 +111,7 @@ ol.source.ImageWMS = function(opt_options) {
    * @protected
    * @type {?string}
    */
-  this.proxy = options.proxy;
+  this.proxy = options.proxy || null;
 
 };
 ol.inherits(ol.source.ImageWMS, ol.source.Image);

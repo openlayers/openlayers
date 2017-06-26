@@ -97,7 +97,7 @@ ol.source.TileWMS = function(opt_options) {
    * @protected
    * @type {?string}
    */
-  this.proxy =  options.proxy;
+  this.proxy =  options.proxy || null;
 
   this.updateV13_();
   this.setKey(this.getKeyForParams_());
