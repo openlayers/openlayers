@@ -494,7 +494,7 @@ describe('ol.View', function() {
       });
     });
 
-    it('takes the shortest angle to the target rotation', function(done) {
+    it('takes the shortest arc to the target rotation', function(done) {
       var view = new ol.View({
         center: [0, 0],
         zoom: 0,
@@ -505,6 +505,21 @@ describe('ol.View', function() {
         duration: 0
       }, function() {
         expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * -1, 1e-12);
+        done();
+      });
+    });
+
+    it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: Math.PI / 180 * 1
+      });
+      view.animate({
+        rotation: Math.PI / 180 * -181,
+        duration: 0
+      }, function() {
+        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * 179, 1e-12);
         done();
       });
     });

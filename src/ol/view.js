@@ -296,9 +296,7 @@ ol.View.prototype.animate = function(var_args) {
 
     if (options.rotation !== undefined) {
       animation.sourceRotation = rotation;
-      var delta =
-          ol.math.modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) -
-          Math.PI;
+      var delta = ol.math.modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
       animation.targetRotation = rotation + delta;
       rotation = animation.targetRotation;
     }
@@ -399,7 +397,7 @@ ol.View.prototype.updateAnimations_ = function() {
       }
       if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
         var rotation = progress === 1 ?
-          animation.targetRotation :
+          ol.math.modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
           animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
         if (animation.anchor) {
           this.set(ol.ViewProperty.CENTER,
