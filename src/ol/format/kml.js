@@ -1092,13 +1092,13 @@ ol.format.KML.setCommonGeometryProperties_ = function(multiGeometry,
 ol.format.KML.DataParser_ = function(node, objectStack) {
   var name = node.getAttribute('name');
   ol.xml.parseNode(ol.format.KML.DATA_PARSERS_, node, objectStack);
-  var featureObject =
-      /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  var featureObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
   if (name !== null) {
     featureObject[name] = featureObject.value;
   } else if (featureObject.displayName !== null) {
     featureObject[featureObject.displayName] = featureObject.value;
   }
+  delete featureObject['value'];
 };
 
 
