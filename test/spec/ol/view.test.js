@@ -988,6 +988,31 @@ describe('ol.View', function() {
 
   });
 
+  describe('#getResolutionForZoom', function() {
+
+    it('returns correct zoom resolution', function() {
+      var view = new ol.View();
+      var max = view.getMaxZoom();
+      var min = view.getMinZoom();
+
+      expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
+      expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
+    });
+
+    it('returns correct zoom levels for specifically configured resolutions', function() {
+      var view = new ol.View({
+        resolutions: [10, 8, 6, 4, 2]
+      });
+
+      expect(view.getResolutionForZoom(0)).to.be(10);
+      expect(view.getResolutionForZoom(1)).to.be(8);
+      expect(view.getResolutionForZoom(2)).to.be(6);
+      expect(view.getResolutionForZoom(3)).to.be(4);
+      expect(view.getResolutionForZoom(4)).to.be(2);
+    });
+
+  });
+
   describe('#getMaxZoom', function() {
 
     it('returns the zoom level for the min resolution', function() {
