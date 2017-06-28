@@ -494,6 +494,21 @@ describe('ol.View', function() {
       });
     });
 
+    it('takes the shortest angle to the target rotation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: Math.PI / 180 * 1
+      });
+      view.animate({
+        rotation: Math.PI / 180 * 359,
+        duration: 0
+      }, function() {
+        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * -1, 1e-12);
+        done();
+      });
+    });
+
     it('calls a callback when animation completes', function(done) {
       var view = new ol.View({
         center: [0, 0],

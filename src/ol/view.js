@@ -15,6 +15,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.math');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
@@ -295,7 +296,10 @@ ol.View.prototype.animate = function(var_args) {
 
     if (options.rotation !== undefined) {
       animation.sourceRotation = rotation;
-      animation.targetRotation = options.rotation;
+      var delta =
+          ol.math.modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) -
+          Math.PI;
+      animation.targetRotation = rotation + delta;
       rotation = animation.targetRotation;
     }
 
