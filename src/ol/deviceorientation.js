@@ -67,7 +67,7 @@ ol.DeviceOrientation = function(opt_options) {
   ol.Object.call(this);
 
   var options = opt_options ? opt_options : {
-    absolute: false,
+    absolute: false
   };
 
   /**
