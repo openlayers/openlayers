@@ -3,6 +3,39 @@ const closure = require('closure-util');
 const path = require('path');
 const processCliArgs = require('karma/lib/cli').process;
 
+function insertDependencies(manager, files, previousLookup) {
+  previousLookup = previousLookup || {};
+  let firstIndex = NaN;
+  const original = files.filter((obj, index) => {
+    if (previousLookup[obj.pattern]) {
+      if (isNaN(firstIndex)) {
+        firstIndex = index;
+      }
+      return false;
+    } else {
+      return true;
+    }
+  });
+  if (isNaN(firstIndex)) {
+    firstIndex = 0;
+  }
+  const lookup = {};
+  const dependencies = manager.getDependencies().map(script => {
+    lookup[script.path] = true;
+    return {
+      pattern: script.path,
+      included: true,
+      served: true,
+      watched: false
+    };
+  });
+  original.splice.apply(original, [firstIndex, 0].concat(dependencies));
+  files.length = 0;
+  files.push.apply(files, original);
+
+  return lookup;
+}
+
 /**
  * Start Karma.  This prepends the Karma `files` config with all library files
  * sorted in dependency order.
@@ -22,15 +55,8 @@ function serve(config, manager, callback) {
   const server = new Server(config, exit);
 
   const files = server.get('config.files');
-  const dependencies = manager.getDependencies().map(script => script.path);
-  dependencies.reverse().forEach(filePath => {
-    files.unshift({
-      pattern: filePath,
-      included: true,
-      served: true,
-      watched: true
-    });
-  });
+
+  let lookup = insertDependencies(manager, files);
 
   // stop goog base.js from trying to load deps.js
   files.unshift({
@@ -38,6 +64,11 @@ function serve(config, manager, callback) {
     included: true,
     served: true,
     watched: false
+  });
+
+  manager.on('update', () => {
+    lookup = insertDependencies(manager, files, lookup);
+    server.refreshFiles();
   });
 
   server.start();

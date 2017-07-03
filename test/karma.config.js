@@ -12,6 +12,9 @@ var path = require('path');
 module.exports = function(karma) {
   karma.set({
     frameworks: ['mocha'],
+    client: {
+      runInParent: true
+    },
     files: [
       {
         pattern: path.resolve(__dirname, require.resolve('jquery/dist/jquery.js')),
