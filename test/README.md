@@ -14,24 +14,17 @@ Install the test dependencies (from the root of the repository):
 
     npm install
 
-Run the tests once with PhantomJS:
+Run the tests once:
 
-    make test
+    npm test
 
-(Note that for `npm` users, this can also be run as `npm test`.)
+To run the tests continuously:
 
-Run the tests in a browser:
+    npm run karma
 
-    make serve
-
-(Again for `npm` users, this is `npm start`.)
-
-Now visit http://localhost:3000/test/ in your browser.  The tests will re-run
-any time one of the source or spec files changes.
-
-Tip for TDD'ers: to make PhantomJS run the test suite continuously each time
-a spec file is changed you can use nosier (http://pypi.python.org/pypi/nosier)
-and do `nosier -p test -p src "make test"`.
+After this, the test server is listening on http://localhost:9876/, and you can
+attach any number of browsers for testing (during development, tests will run
+in Chrome by default).
 
 # Rendering tests
 

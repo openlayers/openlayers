@@ -1,95 +1,102 @@
-/**
- * This task starts a dev server that provides a script loader for OpenLayers
- * and Closure Library and runs tests in PhantomJS.
- */
+const Server = require('karma').Server;
+const closure = require('closure-util');
+const path = require('path');
+const processCliArgs = require('karma/lib/cli').process;
 
-var path = require('path');
-var spawn = require('child_process').spawn;
-
-var phantomjs = require('phantomjs-prebuilt');
-
-var serve = require('./serve');
-
-/**
- * Try listening for incoming connections on a range of ports.
- * @param {number} min Minimum port to try.
- * @param {number} max Maximum port to try.
- * @param {http.Server} server The server.
- * @param {function(Error)} callback Callback called with any error.
- */
-function listen(min, max, server, callback) {
-  function _listen(port) {
-    server.once('error', function(err) {
-      if (err.code === 'EADDRINUSE') {
-        ++port;
-        if (port < max) {
-          _listen(port);
-        } else {
-          callback(new Error('Could not find an open port'));
-        }
-      } else {
-        callback(err);
+function insertDependencies(manager, files, previousLookup) {
+  previousLookup = previousLookup || {};
+  let firstIndex = NaN;
+  const original = files.filter((obj, index) => {
+    if (previousLookup[obj.pattern]) {
+      if (isNaN(firstIndex)) {
+        firstIndex = index;
       }
-    });
-    server.listen(port, '127.0.0.1');
-  }
-  server.once('listening', function() {
-    callback(null);
+      return false;
+    } else {
+      return true;
+    }
   });
-  _listen(min);
+  if (isNaN(firstIndex)) {
+    firstIndex = 0;
+  }
+  const lookup = {};
+  const dependencies = manager.getDependencies().map(script => {
+    lookup[script.path] = true;
+    return {
+      pattern: script.path,
+      included: true,
+      served: true,
+      watched: false
+    };
+  });
+  original.splice.apply(original, [firstIndex, 0].concat(dependencies));
+  files.length = 0;
+  files.push.apply(files, original);
+
+  return lookup;
 }
 
-
-function runTests(conf, callback) {
-  var coverage = 'coverage' in conf ? conf.coverage : false;
-  var reporter = 'reporter' in conf ? conf.reporter : 'spec';
-  /**
-   * Create the debug server and run tests.
-   */
-  serve.createServer(function(err, server) {
-    if (err) {
-      process.stderr.write(err.message + '\n');
-      process.exit(1);
+/**
+ * Start Karma.  This prepends the Karma `files` config with all library files
+ * sorted in dependency order.
+ * @param {Object} config Karma options.
+ * @param {Manager} manager The dependency file manager.
+ * @param {function(Error)} callback Called with any error.
+ */
+function serve(config, manager, callback) {
+  function exit(code) {
+    let error = null;
+    if (code) {
+      error = new Error(`Karma exited with ${code}`);
+      error.code = code;
     }
+    callback(error);
+  }
+  const server = new Server(config, exit);
 
-    listen(3001, 3005, server, function(err) {
-      if (err) {
-        process.stderr.write('Server failed to start: ' + err.message + '\n');
-        process.exit(1);
-      }
-      var address = server.address();
-      var url = 'http://' + address.address + ':' + address.port;
-      var args = [
-        require.resolve('mocha-phantomjs-core'),
-        url + '/test/index.html',
-        reporter
-      ];
-      var config = {
-        ignoreResourceErrors: true,
-        useColors: true
-      };
+  const files = server.get('config.files');
 
-      if (coverage) {
-        config.hooks = path.join(__dirname, '../test/phantom_hooks.js');
-      }
+  let lookup = insertDependencies(manager, files);
 
-      args.push(JSON.stringify(config));
+  // stop goog base.js from trying to load deps.js
+  files.unshift({
+    pattern: path.resolve(__dirname, '../test/no-deps.js'),
+    included: true,
+    served: true,
+    watched: false
+  });
 
-      var child = spawn(phantomjs.path, args, {stdio: 'inherit'});
-      child.on('exit', function(code) {
-        callback(code);
-      });
-    });
+  manager.on('update', () => {
+    lookup = insertDependencies(manager, files, lookup);
+    server.refreshFiles();
+  });
+
+  server.start();
+}
+
+function main(config, callback) {
+  const manager = new closure.Manager({
+    lib: [
+      'src/**/*.js',
+      'build/ol.ext/*.js'
+    ]
+  });
+
+  manager.on('error', callback);
+
+  manager.on('ready', () => {
+    serve(config, manager, callback);
   });
 }
 
 if (require.main === module) {
-  runTests({coverage: false, reporter: 'spec'}, function(code) {
-    process.exit(code);
+  const config = processCliArgs();
+  main(config, (err, manager) => {
+    if (err) {
+      process.stderr.write(err.message, () => process.exit(1));
+      return;
+    } else {
+      process.exit(0);
+    }
   });
 }
-
-module.exports = {
-  runTests: runTests,
-  listen: listen
-};

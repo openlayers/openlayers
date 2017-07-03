@@ -17,7 +17,7 @@
     "pretest": "npm run lint",
     "test": "npm run karma -- --single-run",
     "debug-server": "node tasks/serve-lib.js",
-    "karma": "node tasks/test-all.js start test/karma.config.js"
+    "karma": "node tasks/test.js start test/karma.config.js"
   },
   "main": "dist/ol.js",
   "repository": {
