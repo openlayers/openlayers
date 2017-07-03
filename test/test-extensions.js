@@ -368,8 +368,10 @@
   global.disposeMap = function(map) {
     var target = map.getTarget();
     map.setTarget(null);
+    if (target && target.parentNode) {
+      target.parentNode.removeChild(target);
+    }
     map.dispose();
-    document.body.removeChild(target);
   };
 
   global.assertWebGL = function(map) {
