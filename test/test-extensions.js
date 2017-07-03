@@ -494,4 +494,12 @@ goog.require('ol.renderer.webgl.Map');
     };
   };
 
+  // throw if anybody appends a div to the body and doesn't remove it
+  afterEach(function() {
+    var garbage = document.body.getElementsByTagName('div');
+    if (garbage.length) {
+      throw new Error('Found extra <div> elements in the body');
+    }
+  });
+
 })(this);

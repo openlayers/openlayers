@@ -47,9 +47,17 @@ describe('ol.rendering.source.TileWMS', function() {
     });
   }
 
+  var map;
+  afterEach(function() {
+    if (map) {
+      disposeMap(map);
+    }
+    map = null;
+  });
+
   describe('0px gutter, 1 pixel ratio', function() {
     it('tests the canvas renderer', function(done) {
-      var map = createMap('canvas', 1);
+      map = createMap('canvas', 1);
       var source = createSource(0);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_1.canvas.png', IMAGE_TOLERANCE, done);
@@ -61,7 +69,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      var map = createMap('webgl', 1);
+      map = createMap('webgl', 1);
       var source = createSource(0);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_1.webgl.png', IMAGE_TOLERANCE, done);
@@ -74,7 +82,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
   describe('0px gutter, 2 pixel ratio', function() {
     it('tests the canvas renderer', function(done) {
-      var map = createMap('canvas', 2);
+      map = createMap('canvas', 2);
       var source = createSource(0);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_2.canvas.png', IMAGE_TOLERANCE, done);
@@ -86,7 +94,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      var map = createMap('webgl', 2);
+      map = createMap('webgl', 2);
       var source = createSource(0);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/0_2.webgl.png', IMAGE_TOLERANCE, done);
@@ -100,7 +108,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
   describe('20px gutter, 1 pixel ratio', function() {
     it('tests the canvas renderer', function(done) {
-      var map = createMap('canvas', 1);
+      map = createMap('canvas', 1);
       var source = createSource(20);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_1.canvas.png', IMAGE_TOLERANCE, done);
@@ -112,7 +120,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      var map = createMap('webgl', 1);
+      map = createMap('webgl', 1);
       var source = createSource(20);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_1.webgl.png', IMAGE_TOLERANCE, done);
@@ -125,7 +133,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
   describe('20px gutter, 2 pixel ratio', function() {
     it('tests the canvas renderer', function(done) {
-      var map = createMap('canvas', 2);
+      map = createMap('canvas', 2);
       var source = createSource(20);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_2.canvas.png', IMAGE_TOLERANCE, done);
@@ -137,7 +145,7 @@ describe('ol.rendering.source.TileWMS', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      var map = createMap('webgl', 2);
+      map = createMap('webgl', 2);
       var source = createSource(20);
       tilesLoaded(source, function() {
         expectResemble(map, 'rendering/ol/source/expected/20_2.webgl.png', IMAGE_TOLERANCE, done);
