@@ -3,7 +3,7 @@ sudo: false
 language: node_js
 
 node_js:
-  - "6.1"
+  - "8"
 
 addons:
   firefox: "52.0"
@@ -14,19 +14,12 @@ cache:
 env:
   - DISPLAY=:99.0
 
-before_install:
-  - "npm prune"
-
 before_script:
   - "rm src/ol/renderer/webgl/*shader.js"
   - "sh -e /etc/init.d/xvfb start"
   - "npm ls || true"
 
 script: "make ci"
-
-after_success:
-  - "make test-coverage"
-  - "cat coverage/lcov.info | ./node_modules/.bin/coveralls"
 
 branches:
   only:
