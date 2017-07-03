@@ -8,9 +8,9 @@ goog.require('ol.source.Tile');
 
 describe('ol.control.Attribution', function() {
 
-  var map, target;
+  var map;
   beforeEach(function() {
-    target = document.createElement('div');
+    var target = document.createElement('div');
     target.style.width = target.style.height = '100px';
     document.body.appendChild(target);
     map = new ol.Map({
@@ -63,13 +63,13 @@ describe('ol.control.Attribution', function() {
   });
 
   afterEach(function() {
-    map.setTarget(null);
-    document.body.removeChild(target);
+    disposeMap(map);
+    map = null;
   });
 
   it('does not add duplicate attributions', function() {
     map.renderSync();
-    var attribution = document.querySelectorAll('.ol-attribution li');
+    var attribution = map.getTarget().querySelectorAll('.ol-attribution li');
     expect(attribution.length).to.be(3); // first <li> is the logo
   });
 
