@@ -88,7 +88,7 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       waitForTiles([source], {}, function() {
@@ -122,7 +122,7 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       waitForTiles([source1, source2], {}, function() {
@@ -195,7 +195,7 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       waitForTiles([source], {opacity: 0.2}, function() {
@@ -229,7 +229,7 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('512x256 renders correcly using the webgl renderer', function(done) {
+    where('WebGL').it('512x256 renders correcly using the webgl renderer', function(done) {
       assertWebGL();
       var source = createSource('512x256');
       map = createMap('webgl', [-10997148, 4569099]);
@@ -249,7 +249,7 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    it('192x256 renders correcly using the webgl renderer', function(done) {
+    where('WebGL').it('192x256 renders correcly using the webgl renderer', function(done) {
       assertWebGL();
       var source = createSource('192x256');
       map = createMap('webgl', [-11271098, 3747248], [100, 100], undefined,

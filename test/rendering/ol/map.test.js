@@ -69,7 +69,7 @@ describe('ol.rendering.Map', function() {
       });
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       map.once('postrender', function() {
@@ -92,7 +92,7 @@ describe('ol.rendering.Map', function() {
           map, 'rendering/ol/expected/render-canvas.png', IMAGE_TOLERANCE, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       expectResemble(
@@ -112,7 +112,7 @@ describe('ol.rendering.Map', function() {
           map, 'rendering/ol/expected/pan-canvas.png', IMAGE_TOLERANCE, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       map.getView().setCenter([10, 10]);
@@ -134,7 +134,7 @@ describe('ol.rendering.Map', function() {
           map, 'rendering/ol/expected/rotate-canvas.png', 2.8, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       map.getView().setRotation(90);
@@ -157,7 +157,7 @@ describe('ol.rendering.Map', function() {
           map, 'rendering/ol/expected/zoom-canvas.png', IMAGE_TOLERANCE, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       map.getView().setCenter([10, 10]);

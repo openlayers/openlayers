@@ -92,7 +92,7 @@ describe('ol.rendering.style.Polygon', function() {
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
+    where('WebGL').it('tests the webgl renderer', function(done) {
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-types-webgl.png',
@@ -161,7 +161,7 @@ describe('ol.rendering.style.Polygon', function() {
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
+    where('WebGL').it('tests the webgl renderer', function(done) {
       map = createMap('webgl', 100);
       map.getView().setResolution(0.5);
       createFeatures();
@@ -222,7 +222,7 @@ describe('ol.rendering.style.Polygon', function() {
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
+    where('WebGL').it('tests the webgl renderer', function(done) {
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/polygon-zindex-webgl.png',
@@ -282,7 +282,7 @@ describe('ol.rendering.style.Polygon', function() {
           IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer', function(done) {
+    where('WebGL').it('tests the webgl renderer', function(done) {
       map = createMap('webgl');
       createFeatures();
       expectResemble(

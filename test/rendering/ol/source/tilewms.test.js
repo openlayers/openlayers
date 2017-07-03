@@ -59,7 +59,7 @@ describe('ol.rendering.source.TileWMS', function() {
       }));
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       var map = createMap('webgl', 1);
       var source = createSource(0);
@@ -84,7 +84,7 @@ describe('ol.rendering.source.TileWMS', function() {
       }));
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       var map = createMap('webgl', 2);
       var source = createSource(0);
@@ -110,7 +110,7 @@ describe('ol.rendering.source.TileWMS', function() {
       }));
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       var map = createMap('webgl', 1);
       var source = createSource(20);
@@ -135,7 +135,7 @@ describe('ol.rendering.source.TileWMS', function() {
       }));
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       var map = createMap('webgl', 2);
       var source = createSource(20);

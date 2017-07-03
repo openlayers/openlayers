@@ -136,7 +136,7 @@ describe('ol.rendering.style.RegularShape', function() {
       expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-linedashoffset.png', 5, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures(stroke, fill);
@@ -158,7 +158,7 @@ describe('ol.rendering.style.RegularShape', function() {
       expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures(stroke, fill);

@@ -190,7 +190,7 @@ describe('ol.rendering.style.Circle', function() {
           8.0, done);
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures();

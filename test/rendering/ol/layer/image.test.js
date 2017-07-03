@@ -82,7 +82,7 @@ describe('ol.rendering.layer.Image', function() {
       });
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       waitForImages([source], {}, function() {

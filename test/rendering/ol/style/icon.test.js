@@ -110,7 +110,7 @@ describe('ol.rendering.style.Icon', function() {
       });
     });
 
-    it('tests the WebGL renderer', function(done) {
+    where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures('rendering/ol/data/icon.png', imgInfo, function() {

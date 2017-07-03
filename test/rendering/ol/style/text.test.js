@@ -102,13 +102,13 @@ describe('ol.rendering.style.Text', function() {
       expectResemble(map, 'rendering/ol/style/expected/text-rotated-canvas.png', IMAGE_TOLERANCE, done);
     });
 
-    it('tests the webgl renderer without rotation', function(done) {
+    where('WebGL').it('tests the webgl renderer without rotation', function(done) {
       map = createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/text-webgl.png', 1.8, done);
     });
 
-    it('tests the webgl renderer with rotation', function(done) {
+    where('WebGL').it('tests the webgl renderer with rotation', function(done) {
       map = createMap('webgl');
       createFeatures();
       map.getView().setRotation(Math.PI / 7);
