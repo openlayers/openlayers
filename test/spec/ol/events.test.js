@@ -2,7 +2,7 @@ goog.provide('ol.test.events');
 
 goog.require('ol.events');
 goog.require('ol.events.EventTarget');
-
+goog.require('ol');
 
 describe('ol.events', function() {
   var add, remove, target;
@@ -53,7 +53,7 @@ describe('ol.events', function() {
       var boundListener = ol.events.bindListener_(listenerObj);
       expect(listenerObj.boundListener).to.equal(boundListener);
       boundListener();
-      ol.events.unlistenByKey.restore();
+      unlistenSpy.restore();
     });
   });
 

@@ -9,6 +9,48 @@ goog.require('ol.source.Source');
 goog.require('ol.source.Tile');
 goog.require('ol.tilegrid.TileGrid');
 
+/**
+ * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
+ * 256x256 tiles.
+ *
+ * @constructor
+ * @extends {ol.source.Tile}
+ * @param {Object.<string, ol.TileState>} tileStates Lookup of tile key to
+ *     tile state.
+ */
+ol.test.source.TileSource.Mock = function(tileStates) {
+  var tileGrid = new ol.tilegrid.TileGrid({
+    resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
+    origin: [-180, -180],
+    tileSize: 256
+  });
+
+  ol.source.Tile.call(this, {
+    projection: ol.proj.get('EPSG:4326'),
+    tileGrid: tileGrid
+  });
+
+  for (var key in tileStates) {
+    this.tileCache.set(key, new ol.Tile(key.split('/'), tileStates[key]));
+  }
+
+};
+ol.inherits(ol.test.source.TileSource.Mock, ol.source.Tile);
+
+
+/**
+ * @inheritDoc
+ */
+ol.test.source.TileSource.Mock.prototype.getTile = function(z, x, y) {
+  var key = this.getKeyZXY(z, x, y);
+  if (this.tileCache.containsKey(key)) {
+    return /** @type {!ol.Tile} */ (this.tileCache.get(key));
+  } else {
+    var tile = new ol.Tile(key, 0); // IDLE
+    this.tileCache.set(key, tile);
+    return tile;
+  }
+};
 
 describe('ol.source.Tile', function() {
 
@@ -79,7 +121,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('does not call the callback if no tiles are loaded', function() {
-      var source = new ol.test.source.TileMock({});
+      var source = new ol.test.source.TileSource.Mock({});
       var grid = source.getTileGrid();
       var extent = [-180, -180, 180, 180];
       var zoom = 3;
@@ -90,7 +132,7 @@ describe('ol.source.Tile', function() {
     });
 
     it('does not call getTile() if no tiles are loaded', function() {
-      var source = new ol.test.source.TileMock({});
+      var source = new ol.test.source.TileSource.Mock({});
       sinon.spy(source, 'getTile');
       var grid = source.getTileGrid();
       var extent = [-180, -180, 180, 180];
@@ -104,7 +146,7 @@ describe('ol.source.Tile', function() {
 
 
     it('calls callback for each loaded tile', function() {
-      var source = new ol.test.source.TileMock({
+      var source = new ol.test.source.TileSource.Mock({
         '1/0/0': 2, // LOADED
         '1/0/1': 2, // LOADED
         '1/1/0': 1, // LOADING,
@@ -120,7 +162,7 @@ describe('ol.source.Tile', function() {
 
     it('returns true if range is fully loaded', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.TileMock({
+      var source = new ol.test.source.TileSource.Mock({
         '1/0/0': 2, // LOADED,
         '1/0/1': 2, // LOADED,
         '1/1/0': 2, // LOADED,
@@ -140,7 +182,7 @@ describe('ol.source.Tile', function() {
 
     it('returns false if range is not fully loaded', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.TileMock({
+      var source = new ol.test.source.TileSource.Mock({
         '1/0/0': 2, // LOADED,
         '1/0/1': 2, // LOADED,
         '1/1/0': 1, // LOADING,
@@ -160,7 +202,7 @@ describe('ol.source.Tile', function() {
 
     it('allows callback to override loaded check', function() {
       // a source with no loaded tiles
-      var source = new ol.test.source.TileMock({
+      var source = new ol.test.source.TileSource.Mock({
         '1/0/0': 2, // LOADED,
         '1/0/1': 2, // LOADED,
         '1/1/0': 2, // LOADED,
@@ -232,7 +274,7 @@ describe('ol.source.Tile', function() {
   describe('#refresh()', function() {
     it('checks clearing of internal state', function() {
       // create a source with one loaded tile
-      var source = new ol.test.source.TileMock({
+      var source = new ol.test.source.TileSource.Mock({
         '1/0/0': 2 // LOADED
       });
       // check the loaded tile is there
@@ -250,63 +292,19 @@ describe('ol.source.Tile', function() {
 });
 
 
-/**
- * Tile source for tests that uses a EPSG:4326 based grid with 4 resolutions and
- * 256x256 tiles.
- *
- * @constructor
- * @extends {ol.source.Tile}
- * @param {Object.<string, ol.TileState>} tileStates Lookup of tile key to
- *     tile state.
- */
-ol.test.source.TileMock = function(tileStates) {
-  var tileGrid = new ol.tilegrid.TileGrid({
-    resolutions: [360 / 256, 180 / 256, 90 / 256, 45 / 256],
-    origin: [-180, -180],
-    tileSize: 256
-  });
-
-  ol.source.Tile.call(this, {
-    projection: ol.proj.get('EPSG:4326'),
-    tileGrid: tileGrid
-  });
-
-  for (var key in tileStates) {
-    this.tileCache.set(key, new ol.Tile(key.split('/'), tileStates[key]));
-  }
-
-};
-ol.inherits(ol.test.source.TileMock, ol.source.Tile);
-
-
-/**
- * @inheritDoc
- */
-ol.test.source.TileMock.prototype.getTile = function(z, x, y) {
-  var key = this.getKeyZXY(z, x, y);
-  if (this.tileCache.containsKey(key)) {
-    return /** @type {!ol.Tile} */ (this.tileCache.get(key));
-  } else {
-    var tile = new ol.Tile(key, 0); // IDLE
-    this.tileCache.set(key, tile);
-    return tile;
-  }
-};
-
-
-describe('ol.test.source.TileMock', function() {
+describe('ol.test.source.TileSource.Mock', function() {
 
   describe('constructor', function() {
     it('creates a tile source', function() {
-      var source = new ol.test.source.TileMock({});
+      var source = new ol.test.source.TileSource.Mock({});
       expect(source).to.be.a(ol.source.Tile);
-      expect(source).to.be.a(ol.test.source.TileMock);
+      expect(source).to.be.a(ol.test.source.TileSource.Mock);
     });
   });
 
   describe('#getTile()', function() {
     it('returns a tile with state based on constructor arg', function() {
-      var source = new ol.test.source.TileMock({
+      var source = new ol.test.source.TileSource.Mock({
         '0/0/0': 2, // LOADED,
         '1/0/0': 2 // LOADED
       });

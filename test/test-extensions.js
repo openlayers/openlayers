@@ -1,3 +1,8 @@
+goog.require('ol.array');
+goog.require('ol.has');
+goog.require('ol.renderer.canvas.Map');
+goog.require('ol.renderer.webgl.Map');
+
 // FIXME remove afterLoadXml as it uses the wrong XML parser on IE9
 
 // helper functions for async testing and other utility functions.

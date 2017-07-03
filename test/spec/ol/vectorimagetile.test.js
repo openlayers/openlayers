@@ -1,10 +1,12 @@
 goog.provide('ol.test.VectorImageTile');
 
-goog.require('ol.events');
+goog.require('ol.TileState');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
+goog.require('ol.events');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.proj');
+goog.require('ol.tilegrid');
 
 
 describe('ol.VectorImageTile', function() {

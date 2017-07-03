@@ -1,7 +1,7 @@
 goog.provide('ol.test.format.KML');
 
-goog.require('ol.array');
 goog.require('ol.Feature');
+goog.require('ol.array');
 goog.require('ol.format.GeoJSON');
 goog.require('ol.format.KML');
 goog.require('ol.geom.GeometryCollection');
@@ -12,12 +12,14 @@ goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.MultiPolygon');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.style.Circle');
-goog.require('ol.style.Fill');
-goog.require('ol.style.Icon');
 goog.require('ol.proj');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.transforms');
+goog.require('ol.style.Circle');
+goog.require('ol.style.Fill');
+goog.require('ol.style.Icon');
+goog.require('ol.style.IconAnchorUnits');
+goog.require('ol.style.IconOrigin');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');

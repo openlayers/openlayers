@@ -3,6 +3,8 @@ goog.provide('ol.test.renderer.canvas.VectorTileLayer');
 goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.Map');
+goog.require('ol.TileState');
+goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
 goog.require('ol.View');
 goog.require('ol.format.MVT');

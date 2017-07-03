@@ -11,24 +11,22 @@ goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 
+function getContext() {
+  return document.createElement('canvas').getContext('2d');
+}
 
 describe('ol.render', function() {
-
-  var context;
-
-  beforeEach(function() {
-    context = document.createElement('canvas').getContext('2d');
-  });
 
   describe('ol.render.toContext()', function() {
 
     it('creates a vector context from a Canvas 2d context', function() {
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
+      var vectorContext = ol.render.toContext(getContext(), {size: [100, 100]});
       expect(vectorContext).to.be.a(ol.render.VectorContext);
       expect(vectorContext).to.be.a(ol.render.canvas.Immediate);
     });
 
     it('can be used to render a point geometry', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -49,6 +47,7 @@ describe('ol.render', function() {
     });
 
     it('can be used to render a linestring geometry', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -69,6 +68,7 @@ describe('ol.render', function() {
     });
 
     it('respects lineCap for linestring', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -90,6 +90,7 @@ describe('ol.render', function() {
     });
 
     it('respects lineJoin for linestring', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -111,6 +112,7 @@ describe('ol.render', function() {
     });
 
     it('can be used to render a polygon geometry', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({

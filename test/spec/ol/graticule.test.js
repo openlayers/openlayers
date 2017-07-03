@@ -4,7 +4,7 @@ goog.require('ol.Graticule');
 goog.require('ol.Map');
 goog.require('ol.proj');
 goog.require('ol.style.Stroke');
-
+goog.require('ol.style.Text');
 
 describe('ol.Graticule', function() {
   var graticule;

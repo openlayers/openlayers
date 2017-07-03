@@ -1,10 +1,12 @@
 goog.provide('ol.test.control.Attribution');
 
 goog.require('ol.Map');
+goog.require('ol.Tile');
 goog.require('ol.View');
 goog.require('ol.control.Attribution');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.Tile');
+goog.require('ol.tilegrid');
 
 describe('ol.control.Attribution', function() {
 

@@ -1,9 +1,11 @@
 goog.provide('ol.test.View');
 
 goog.require('ol');
+goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.ViewHint');
 goog.require('ol.extent');
+goog.require('ol.geom.Circle');
 goog.require('ol.geom.LineString');
 goog.require('ol.geom.Point');
 

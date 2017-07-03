@@ -1,6 +1,6 @@
 goog.provide('ol.test.renderer.canvas.Replay');
 
-goog.require('ol.transform');
+goog.require('ol');
 goog.require('ol.Feature');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.canvas.LineStringReplay');
@@ -11,6 +11,7 @@ goog.require('ol.renderer.vector');
 goog.require('ol.style.Fill');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
+goog.require('ol.transform');
 
 describe('ol.render.canvas.ReplayGroup', function() {
 
