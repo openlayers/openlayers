@@ -483,7 +483,8 @@
       throw new Error('where() called with unknown key: ' + key);
     }
     return {
-      describe: features[key] ? global.describe : global.xdescribe
+      describe: features[key] ? global.describe : global.xdescribe,
+      it: features[key] ? global.id : global.xit
     };
   };
 
