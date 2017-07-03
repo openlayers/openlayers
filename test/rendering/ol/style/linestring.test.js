@@ -114,14 +114,14 @@ describe('ol.rendering.style.LineString', function() {
       map = createMap('canvas');
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/linestring-strokes-canvas.png',
+          map, 'rendering/ol/style/expected/linestring-strokes-canvas.png',
           3.0, done);
     });
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/linestring-strokes-webgl.png',
+      expectResemble(map, 'rendering/ol/style/expected/linestring-strokes-webgl.png',
           14.6, done);
     });
 
@@ -129,7 +129,7 @@ describe('ol.rendering.style.LineString', function() {
       map = createMap('canvas', 2);
       createFeatures();
       expectResemble(
-          map, 'spec/ol/style/expected/linestring-strokes-canvas-hidpi.png',
+          map, 'rendering/ol/style/expected/linestring-strokes-canvas-hidpi.png',
           3.0, done);
     });
   });

@@ -72,7 +72,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source = new ol.source.XYZ({
-        url: 'spec/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
     });
 
@@ -83,7 +83,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/osm-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -92,7 +92,7 @@ describe('ol.rendering.layer.Tile', function() {
       assertWebGL();
       map = createMap('webgl');
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/osm-webgl.png',
+        expectResemble(map, 'rendering/ol/layer/expected/osm-webgl.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -103,10 +103,10 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source1 = new ol.source.XYZ({
-        url: 'spec/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
       source2 = new ol.source.XYZ({
-        url: 'spec/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/stamen-labels/{z}/{x}/{y}.png'
       });
     });
 
@@ -117,7 +117,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       waitForTiles([source1, source2], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -126,7 +126,7 @@ describe('ol.rendering.layer.Tile', function() {
       assertWebGL();
       map = createMap('webgl');
       waitForTiles([source1, source2], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/2-layers-webgl.png',
+        expectResemble(map, 'rendering/ol/layer/expected/2-layers-webgl.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -141,7 +141,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('tests canvas layer extent clipping', function(done) {
       map = createMap('canvas');
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas-extent.png',
+        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -150,7 +150,7 @@ describe('ol.rendering.layer.Tile', function() {
       map = createMap('canvas');
       map.getView().setRotation(Math.PI / 2);
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas-extent-rotate.png',
+        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -158,7 +158,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('tests canvas layer extent clipping (HiDPI)', function(done) {
       map = createMap('canvas', undefined, undefined, 2);
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas-extent-hidpi.png',
+        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-hidpi.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -167,7 +167,7 @@ describe('ol.rendering.layer.Tile', function() {
       map = createMap('canvas', undefined, undefined, 2);
       map.getView().setRotation(Math.PI / 2);
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
-        expectResemble(map, 'spec/ol/layer/expected/2-layers-canvas-extent-rotate-hidpi.png',
+        expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate-hidpi.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -179,7 +179,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source = new ol.source.XYZ({
-        url: 'spec/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
     });
 
@@ -190,7 +190,7 @@ describe('ol.rendering.layer.Tile', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       waitForTiles([source], {opacity: 0.2}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/opacity-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/opacity-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -199,7 +199,7 @@ describe('ol.rendering.layer.Tile', function() {
       assertWebGL();
       map = createMap('webgl');
       waitForTiles([source], {opacity: 0.2}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/opacity-webgl.png',
+        expectResemble(map, 'rendering/ol/layer/expected/opacity-webgl.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -209,7 +209,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     function createSource(tileSize) {
       return new ol.source.TileImage({
-        url: 'spec/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
+        url: 'rendering/ol/data/tiles/' + tileSize + '/{z}/{x}/{y}.png',
         tileGrid: ol.tilegrid.createXYZ({
           tileSize: tileSize.split('x')
         })
@@ -224,7 +224,7 @@ describe('ol.rendering.layer.Tile', function() {
       var source = createSource('512x256');
       map = createMap('canvas', [-10997148, 4569099]);
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/512x256-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/512x256-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -234,7 +234,7 @@ describe('ol.rendering.layer.Tile', function() {
       var source = createSource('512x256');
       map = createMap('webgl', [-10997148, 4569099]);
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/512x256-webgl.png',
+        expectResemble(map, 'rendering/ol/layer/expected/512x256-webgl.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -244,7 +244,7 @@ describe('ol.rendering.layer.Tile', function() {
       map = createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
           source.getTileGrid().getResolutions());
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/192x256-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/192x256-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -255,7 +255,7 @@ describe('ol.rendering.layer.Tile', function() {
       map = createMap('webgl', [-11271098, 3747248], [100, 100], undefined,
           source.getTileGrid().getResolutions());
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/192x256-webgl.png',
+        expectResemble(map, 'rendering/ol/layer/expected/192x256-webgl.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -266,7 +266,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     beforeEach(function() {
       source = new ol.source.XYZ({
-        url: 'spec/ol/data/tiles/osm/{z}/{x}/{y}.png'
+        url: 'rendering/ol/data/tiles/osm/{z}/{x}/{y}.png'
       });
       onAddLayer = function(evt) {
         evt.element.on('render', function(e) {
@@ -290,7 +290,7 @@ describe('ol.rendering.layer.Tile', function() {
       map = createMap('canvas', undefined, [100, 100]);
       map.getLayers().on('add', onAddLayer);
       waitForTiles([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/render-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/render-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });

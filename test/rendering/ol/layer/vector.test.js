@@ -92,7 +92,7 @@ describe('ol.rendering.layer.Vector', function() {
         source: source
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas.png',
             17, done);
       });
     });
@@ -151,7 +151,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-rotated.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-rotated.png',
             1.7, done);
       });
     });
@@ -177,7 +177,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-opaque.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-opaque.png',
             24.34, done);
       });
     });
@@ -201,7 +201,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-stroke.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-stroke.png',
             7, done);
       });
     });
@@ -252,9 +252,9 @@ describe('ol.rendering.layer.Vector', function() {
         var referenceImage = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
         // now render the same with `overlaps: false`
         layer.setSource(createSource(false));
-        // result should be exactly the same as with `overlaps: true`
+        // result should be similar to `overlaps: true`
         map.once('postrender', function() {
-          expectResemble(map, referenceImage, 0, done);
+          expectResemble(map, referenceImage, 2, done);
         });
       });
     });
@@ -362,7 +362,7 @@ describe('ol.rendering.layer.Vector', function() {
       map.addLayer(layer);
 
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/inverted-star.png', 1, done);
+        expectResemble(map, 'rendering/ol/layer/expected/inverted-star.png', 1, done);
       });
 
     });
@@ -424,7 +424,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-simplified.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -436,7 +436,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-fill.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-simplified-fill.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -449,7 +449,7 @@ describe('ol.rendering.layer.Vector', function() {
         })
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-simplified-stroke.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-simplified-stroke.png',
             IMAGE_TOLERANCE, done);
       });
     });

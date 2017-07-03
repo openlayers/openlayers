@@ -44,7 +44,7 @@ describe('ol.render', function() {
       vectorContext.drawGeometry(new ol.geom.Point([50, 50]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-point.png', IMAGE_TOLERANCE, done);
 
     });
 
@@ -64,7 +64,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-linestring.png', IMAGE_TOLERANCE, done);
 
     });
 
@@ -85,7 +85,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-linestring-butt.png', IMAGE_TOLERANCE, done);
 
     });
 
@@ -106,7 +106,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-linestring-bevel.png', IMAGE_TOLERANCE, done);
 
     });
 
@@ -131,7 +131,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-polygon.png', IMAGE_TOLERANCE, done);
 
     });
 

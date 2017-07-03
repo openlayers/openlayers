@@ -116,7 +116,7 @@ describe('ol.rendering.style.RegularShape', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas.png', 9.4, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas.png', 9.4, done);
     });
 
     it('supports lineDash', function(done) {
@@ -140,7 +140,7 @@ describe('ol.rendering.style.RegularShape', function() {
       assertWebGL();
       map = createMap('webgl');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-webgl.png', 8.2, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-webgl.png', 8.2, done);
     });
   });
 
@@ -155,14 +155,14 @@ describe('ol.rendering.style.RegularShape', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-default-style.png', 3.0, done);
     });
 
     it('tests the WebGL renderer', function(done) {
       assertWebGL();
       map = createMap('webgl');
       createFeatures(stroke, fill);
-      expectResemble(map, 'spec/ol/style/expected/regularshape-webgl-default-style.png', 3.0, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-webgl-default-style.png', 3.0, done);
     });
   });
 });

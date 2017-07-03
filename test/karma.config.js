@@ -29,6 +29,9 @@ module.exports = function(karma) {
         pattern: path.resolve(__dirname, require.resolve('proj4/dist/proj4.js')),
         watched: false
       }, {
+        pattern: path.resolve(__dirname, require.resolve('resemblejs/resemble.js')),
+        watched: false
+      }, {
         pattern: path.resolve(__dirname, './test-extensions.js')
       }, {
         pattern: '**/*.test.js'
@@ -39,6 +42,7 @@ module.exports = function(karma) {
       }
     ],
     proxies: {
+      '/rendering/': '/base/rendering/',
       '/spec/': '/base/spec/'
     }
   });

@@ -1,11 +1,23 @@
 {
+  "env": {
+    "mocha": true
+  },
   "rules": {
     "openlayers-internal/no-missing-requires": 0,
     "openlayers-internal/valid-provide": 0
   },
   "globals": {
+    "IMAGE_TOLERANCE": false,
+    "afterLoadText": false,
+    "assertWebGL": false,
     "createMapDiv": true,
     "disposeMap": true,
-    "resemble": true
+    "expect": false,
+    "expectResemble": false,
+    "proj4": false,
+    "resemble": false,
+    "resembleCanvas": false,
+    "sinon": false,
+    "where": false
   }
 }

@@ -63,7 +63,7 @@ describe('ol.rendering.layer.Image', function() {
 
     beforeEach(function() {
       source = new ol.source.ImageStatic({
-        url: 'spec/ol/data/tiles/osm/5/5/12.png',
+        url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: ol.tilegrid.createXYZ().getTileCoordExtent(
             [5, 5, -12 - 1]),
         projection: ol.proj.get('EPSG:3857')
@@ -77,7 +77,7 @@ describe('ol.rendering.layer.Image', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       waitForImages([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/image-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/image-canvas.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -86,7 +86,7 @@ describe('ol.rendering.layer.Image', function() {
       assertWebGL();
       map = createMap('webgl');
       waitForImages([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/image-webgl.png',
+        expectResemble(map, 'rendering/ol/layer/expected/image-webgl.png',
             IMAGE_TOLERANCE, done);
       });
     });
@@ -97,7 +97,7 @@ describe('ol.rendering.layer.Image', function() {
 
     beforeEach(function() {
       source = new ol.source.ImageStatic({
-        url: 'spec/ol/data/tiles/osm/5/5/12.png',
+        url: 'rendering/ol/data/tiles/osm/5/5/12.png',
         imageExtent: ol.proj.transformExtent(
             [-123, 37, -122, 38], 'EPSG:4326', 'EPSG:3857')
       });
@@ -110,7 +110,7 @@ describe('ol.rendering.layer.Image', function() {
     it('renders correctly', function(done) {
       map = createMap('canvas');
       waitForImages([source], {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/image-scaled.png',
+        expectResemble(map, 'rendering/ol/layer/expected/image-scaled.png',
             IMAGE_TOLERANCE, done);
       });
     });

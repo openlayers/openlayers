@@ -43,7 +43,7 @@ describe('ol.rendering.source.TileWMS', function() {
         'LAYERS': 'layer'
       },
       gutter: gutter,
-      url: 'spec/ol/data/tiles/wms/wms' + gutter + '.png'
+      url: 'rendering/ol/data/tiles/wms/wms' + gutter + '.png'
     });
   }
 
@@ -52,7 +52,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('canvas', 1);
       var source = createSource(0);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/0_1.canvas.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/0_1.canvas.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -64,7 +64,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('webgl', 1);
       var source = createSource(0);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/0_1.webgl.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/0_1.webgl.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -77,7 +77,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('canvas', 2);
       var source = createSource(0);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/0_2.canvas.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/0_2.canvas.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -89,7 +89,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('webgl', 2);
       var source = createSource(0);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/0_2.webgl.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/0_2.webgl.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -103,7 +103,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('canvas', 1);
       var source = createSource(20);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/20_1.canvas.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/20_1.canvas.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -115,7 +115,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('webgl', 1);
       var source = createSource(20);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/20_1.webgl.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/20_1.webgl.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -128,7 +128,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('canvas', 2);
       var source = createSource(20);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/20_2.canvas.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/20_2.canvas.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source
@@ -140,7 +140,7 @@ describe('ol.rendering.source.TileWMS', function() {
       var map = createMap('webgl', 2);
       var source = createSource(20);
       tilesLoaded(source, function() {
-        expectResemble(map, 'spec/ol/source/expected/20_2.webgl.png', IMAGE_TOLERANCE, done);
+        expectResemble(map, 'rendering/ol/source/expected/20_2.webgl.png', IMAGE_TOLERANCE, done);
       });
       map.addLayer(new ol.layer.Tile({
         source: source

@@ -186,7 +186,7 @@ describe('ol.rendering.style.Circle', function() {
     it('tests the canvas renderer', function(done) {
       map = createMap('canvas');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/circle-canvas.png',
+      expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
           8.0, done);
     });
 
@@ -194,7 +194,7 @@ describe('ol.rendering.style.Circle', function() {
       assertWebGL();
       map = createMap('webgl');
       createFeatures();
-      expectResemble(map, 'spec/ol/style/expected/circle-webgl.png',
+      expectResemble(map, 'rendering/ol/style/expected/circle-webgl.png',
           8.0, done);
     });
   });

@@ -64,7 +64,7 @@ describe('ol.rendering.layer.VectorTile', function() {
         format: new ol.format.MVT(),
         tileGrid: ol.tilegrid.createXYZ(),
         tilePixelRatio: 16,
-        url: 'spec/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf'
+        url: 'rendering/ol/data/tiles/mvt/{z}-{x}-{y}.vector.pbf'
       });
     });
 
@@ -75,7 +75,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     it('renders correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas.png',
             11.7, done);
       });
     });
@@ -84,7 +84,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map = createMap('canvas');
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-rotated.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated.png',
             13.4, done);
       });
     });
@@ -92,7 +92,7 @@ describe('ol.rendering.layer.VectorTile', function() {
     it('renders correctly with the canvas renderer (HiDPI)', function(done) {
       map = createMap('canvas', 2);
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-hidpi.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-hidpi.png',
             11.3, done);
       });
     });
@@ -101,7 +101,7 @@ describe('ol.rendering.layer.VectorTile', function() {
       map = createMap('canvas', 2);
       map.getView().setRotation(Math.PI / 4);
       waitForTiles(source, {}, function() {
-        expectResemble(map, 'spec/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vectortile-canvas-rotated-hidpi.png',
             14.8, done);
       });
     });
