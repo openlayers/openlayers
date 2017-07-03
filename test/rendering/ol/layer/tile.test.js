@@ -17,15 +17,14 @@ goog.require('ol.tilegrid');
 
 describe('ol.rendering.layer.Tile', function() {
 
-  var target, map;
+  var map;
 
   function createMap(renderer, opt_center, opt_size, opt_pixelRatio, opt_resolutions) {
     var size = opt_size !== undefined ? opt_size : [50, 50];
-    target = createMapDiv(size[0], size[1]);
 
     map = new ol.Map({
       pixelRatio: opt_pixelRatio || 1,
-      target: target,
+      target: createMapDiv(size[0], size[1]),
       renderer: renderer,
       view: new ol.View({
         center: opt_center !== undefined ? opt_center : ol.proj.transform(
@@ -34,8 +33,14 @@ describe('ol.rendering.layer.Tile', function() {
         zoom: 5
       })
     });
-    return map;
   }
+
+  afterEach(function() {
+    if (map) {
+      disposeMap(map);
+    }
+    map = null;
+  });
 
   function waitForTiles(sources, layerOptions, onTileLoaded) {
     var tilesLoading = 0;
@@ -76,12 +81,8 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/osm-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -90,7 +91,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/osm-webgl.png',
             IMAGE_TOLERANCE, done);
@@ -110,12 +111,8 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForTiles([source1, source2], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -124,7 +121,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       waitForTiles([source1, source2], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-webgl.png',
             IMAGE_TOLERANCE, done);
@@ -139,7 +136,7 @@ describe('ol.rendering.layer.Tile', function() {
     }
 
     it('tests canvas layer extent clipping', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent.png',
             IMAGE_TOLERANCE, done);
@@ -147,7 +144,7 @@ describe('ol.rendering.layer.Tile', function() {
     });
 
     it('tests canvas layer extent clipping with rotation', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       map.getView().setRotation(Math.PI / 2);
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate.png',
@@ -156,7 +153,7 @@ describe('ol.rendering.layer.Tile', function() {
     });
 
     it('tests canvas layer extent clipping (HiDPI)', function(done) {
-      map = createMap('canvas', undefined, undefined, 2);
+      createMap('canvas', undefined, undefined, 2);
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-hidpi.png',
             IMAGE_TOLERANCE, done);
@@ -164,7 +161,7 @@ describe('ol.rendering.layer.Tile', function() {
     });
 
     it('tests canvas layer extent clipping with rotation (HiDPI)', function(done) {
-      map = createMap('canvas', undefined, undefined, 2);
+      createMap('canvas', undefined, undefined, 2);
       map.getView().setRotation(Math.PI / 2);
       waitForTiles([source1, source2], [{}, {extent: centerExtent(map)}], function() {
         expectResemble(map, 'rendering/ol/layer/expected/2-layers-canvas-extent-rotate-hidpi.png',
@@ -183,12 +180,8 @@ describe('ol.rendering.layer.Tile', function() {
       });
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForTiles([source], {opacity: 0.2}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/opacity-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -197,7 +190,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       waitForTiles([source], {opacity: 0.2}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/opacity-webgl.png',
             IMAGE_TOLERANCE, done);
@@ -216,13 +209,9 @@ describe('ol.rendering.layer.Tile', function() {
       });
     }
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('512x256 renders correcly using the canvas renderer', function(done) {
       var source = createSource('512x256');
-      map = createMap('canvas', [-10997148, 4569099]);
+      createMap('canvas', [-10997148, 4569099]);
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/512x256-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -232,7 +221,7 @@ describe('ol.rendering.layer.Tile', function() {
     where('WebGL').it('512x256 renders correcly using the webgl renderer', function(done) {
       assertWebGL();
       var source = createSource('512x256');
-      map = createMap('webgl', [-10997148, 4569099]);
+      createMap('webgl', [-10997148, 4569099]);
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/512x256-webgl.png',
             IMAGE_TOLERANCE, done);
@@ -241,7 +230,7 @@ describe('ol.rendering.layer.Tile', function() {
 
     it('192x256 renders correcly using the canvas renderer', function(done) {
       var source = createSource('192x256');
-      map = createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
+      createMap('canvas', [-11271098, 3747248], [100, 100], undefined,
           source.getTileGrid().getResolutions());
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/192x256-canvas.png',
@@ -252,7 +241,7 @@ describe('ol.rendering.layer.Tile', function() {
     where('WebGL').it('192x256 renders correcly using the webgl renderer', function(done) {
       assertWebGL();
       var source = createSource('192x256');
-      map = createMap('webgl', [-11271098, 3747248], [100, 100], undefined,
+      createMap('webgl', [-11271098, 3747248], [100, 100], undefined,
           source.getTileGrid().getResolutions());
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/192x256-webgl.png',
@@ -282,12 +271,8 @@ describe('ol.rendering.layer.Tile', function() {
       };
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('works with the canvas renderer', function(done) {
-      map = createMap('canvas', undefined, [100, 100]);
+      createMap('canvas', undefined, [100, 100]);
       map.getLayers().on('add', onAddLayer);
       waitForTiles([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/render-canvas.png',

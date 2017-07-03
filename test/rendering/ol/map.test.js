@@ -10,11 +10,8 @@ goog.require('ol.source.Vector');
 
 describe('ol.rendering.Map', function() {
 
-  var target, map;
-
+  var map;
   function createMap(renderer) {
-    target = createMapDiv(50, 50);
-
     var vectorLayer = new ol.layer.Vector({
       source: new ol.source.Vector({
         features: [new ol.Feature({
@@ -24,7 +21,7 @@ describe('ol.rendering.Map', function() {
     });
 
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -33,34 +30,19 @@ describe('ol.rendering.Map', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  describe('#updateSize()', function() {
-    var map, target;
-
-    function createMap(renderer) {
-      target = document.createElement('div');
-      document.body.appendChild(target);
-      map = new ol.Map({
-        renderer: renderer,
-        controls: [],
-        target: target,
-        view: new ol.View({
-          center: [0, 0],
-          zoom: 2
-        })
-      });
-      return map;
+  afterEach(function() {
+    if (map) {
+      disposeMap(map);
     }
+    map = null;
+  });
 
-    afterEach(function() {
-      map.setTarget(null);
-      document.body.removeChild(target);
-    });
+  describe('#updateSize()', function() {
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       map.once('postrender', function() {
         var initialSize = map.getSize();
         map.updateSize();
@@ -71,7 +53,7 @@ describe('ol.rendering.Map', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       map.once('postrender', function() {
         var initialSize = map.getSize();
         map.updateSize();
@@ -82,31 +64,25 @@ describe('ol.rendering.Map', function() {
   });
 
   describe('#render()', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       expectResemble(
           map, 'rendering/ol/expected/render-canvas.png', IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       expectResemble(
           map, 'rendering/ol/expected/render-webgl.png', IMAGE_TOLERANCE, done);
     });
   });
 
   describe('#pan()', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       map.getView().setCenter([10, 10]);
       expectResemble(
           map, 'rendering/ol/expected/pan-canvas.png', IMAGE_TOLERANCE, done);
@@ -114,7 +90,7 @@ describe('ol.rendering.Map', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       map.getView().setCenter([10, 10]);
       expectResemble(
           map, 'rendering/ol/expected/pan-webgl.png', IMAGE_TOLERANCE, done);
@@ -122,12 +98,9 @@ describe('ol.rendering.Map', function() {
   });
 
   describe('#rotate()', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
       expectResemble(
@@ -136,7 +109,7 @@ describe('ol.rendering.Map', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       map.getView().setRotation(90);
       map.getView().setCenter([10, 10]);
       expectResemble(
@@ -145,12 +118,9 @@ describe('ol.rendering.Map', function() {
   });
 
   describe('#zoom()', function() {
-    afterEach(function() {
-      disposeMap(map);
-    });
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       map.getView().setCenter([10, 10]);
       map.getView().setResolution(2);
       expectResemble(
@@ -159,7 +129,7 @@ describe('ol.rendering.Map', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       map.getView().setCenter([10, 10]);
       map.getView().setResolution(2);
       expectResemble(

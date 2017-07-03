@@ -13,18 +13,16 @@ goog.require('ol.style.Stroke');
 
 describe('ol.rendering.style.Text', function() {
 
-  var target, map, vectorSource;
+  var map, vectorSource;
 
   function createMap(renderer) {
-    target = createMapDiv(200, 200);
-
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(200, 200),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -33,13 +31,16 @@ describe('ol.rendering.style.Text', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  describe('#render', function() {
-    afterEach(function() {
+  afterEach(function() {
+    if (map) {
       disposeMap(map);
-    });
+      map = null;
+    }
+  });
+
+  describe('#render', function() {
 
     function createFeatures() {
       var feature;
@@ -86,30 +87,29 @@ describe('ol.rendering.style.Text', function() {
         })
       }));
       vectorSource.addFeature(feature);
-
     }
 
     it('tests the canvas renderer without rotation', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/text-canvas.png', IMAGE_TOLERANCE, done);
     });
 
     it('tests the canvas renderer with rotation', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
       map.getView().setRotation(Math.PI / 7);
       expectResemble(map, 'rendering/ol/style/expected/text-rotated-canvas.png', IMAGE_TOLERANCE, done);
     });
 
     where('WebGL').it('tests the webgl renderer without rotation', function(done) {
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/text-webgl.png', 1.8, done);
     });
 
     where('WebGL').it('tests the webgl renderer with rotation', function(done) {
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures();
       map.getView().setRotation(Math.PI / 7);
       expectResemble(map, 'rendering/ol/style/expected/text-rotated-webgl.png', 1.8, done);

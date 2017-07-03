@@ -12,7 +12,7 @@ goog.require('ol.style.Style');
 
 describe('ol.rendering.style.Icon', function() {
 
-  var target, map, vectorSource;
+  var map, vectorSource;
 
   var imgInfo = {
     anchor: [0.5, 46],
@@ -24,15 +24,13 @@ describe('ol.rendering.style.Icon', function() {
   };
 
   function createMap(renderer, width, height) {
-    target = createMapDiv(width ? width : 50, height ? height : 50);
-
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(width ? width : 50, height ? height : 50),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -41,13 +39,16 @@ describe('ol.rendering.style.Icon', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  describe('#render', function() {
-    afterEach(function() {
+  afterEach(function() {
+    if (map) {
       disposeMap(map);
-    });
+      map = null;
+    }
+  });
+
+  describe('#render', function() {
 
     function createFeatures(src, imgInfo, callback) {
       var feature;
@@ -68,7 +69,7 @@ describe('ol.rendering.style.Icon', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures('rendering/ol/data/icon.png', imgInfo, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -76,7 +77,7 @@ describe('ol.rendering.style.Icon', function() {
     });
 
     it('scales svg correctly in the canvas renderer', function(done) {
-      map = createMap('canvas', 512, 512);
+      createMap('canvas', 512, 512);
       createFeatures('rendering/ol/data/me0.svg', {
         scale: 96 / 512,
         imgSize: [512, 512]
@@ -87,7 +88,7 @@ describe('ol.rendering.style.Icon', function() {
     });
 
     it('uses offset correctly in the canvas renderer', function(done) {
-      map = createMap('canvas', 256, 512);
+      createMap('canvas', 256, 512);
       createFeatures('rendering/ol/data/me0.svg', {
         offset: [0, 256],
         size: [256, 256],
@@ -99,7 +100,7 @@ describe('ol.rendering.style.Icon', function() {
     });
 
     it('uses offset correctly if it is larger than size in the canvas renderer', function(done) {
-      map = createMap('canvas', 256, 512);
+      createMap('canvas', 256, 512);
       createFeatures('rendering/ol/data/me0.svg', {
         offset: [0, 374],
         size: [256, 256],
@@ -112,7 +113,7 @@ describe('ol.rendering.style.Icon', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures('rendering/ol/data/icon.png', imgInfo, function() {
         expectResemble(map, 'rendering/ol/style/expected/icon-webgl.png',
             2.0, done);

@@ -11,13 +11,11 @@ goog.require('ol.tilegrid');
 
 describe('ol.rendering.layer.Image', function() {
 
-  var target, map;
+  var map;
 
   function createMap(renderer) {
-    target = createMapDiv(50, 50);
-
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(50, 50),
       renderer: renderer,
       view: new ol.View({
         center: ol.proj.transform(
@@ -25,8 +23,14 @@ describe('ol.rendering.layer.Image', function() {
         zoom: 5
       })
     });
-    return map;
   }
+
+  afterEach(function() {
+    if (map) {
+      disposeMap(map);
+    }
+    map = null;
+  });
 
   function waitForImages(sources, layerOptions, onImagesLoaded) {
     var imagesLoading = 0;
@@ -70,12 +74,8 @@ describe('ol.rendering.layer.Image', function() {
       });
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForImages([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-canvas.png',
             IMAGE_TOLERANCE, done);
@@ -84,7 +84,7 @@ describe('ol.rendering.layer.Image', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       waitForImages([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-webgl.png',
             IMAGE_TOLERANCE, done);
@@ -103,12 +103,8 @@ describe('ol.rendering.layer.Image', function() {
       });
     });
 
-    afterEach(function() {
-      disposeMap(map);
-    });
-
     it('renders correctly', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       waitForImages([source], {}, function() {
         expectResemble(map, 'rendering/ol/layer/expected/image-scaled.png',
             IMAGE_TOLERANCE, done);

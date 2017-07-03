@@ -14,18 +14,16 @@ goog.require('ol.style.Stroke');
 
 describe('ol.rendering.style.Circle', function() {
 
-  var target, map, vectorSource;
+  var map, vectorSource;
 
   function createMap(renderer) {
-    target = createMapDiv(50, 50);
-
     vectorSource = new ol.source.Vector();
     var vectorLayer = new ol.layer.Vector({
       source: vectorSource
     });
 
     map = new ol.Map({
-      target: target,
+      target: createMapDiv(50, 50),
       renderer: renderer,
       layers: [vectorLayer],
       view: new ol.View({
@@ -34,13 +32,16 @@ describe('ol.rendering.style.Circle', function() {
         resolution: 1
       })
     });
-    return map;
   }
 
-  describe('#render', function() {
-    afterEach(function() {
+  afterEach(function() {
+    if (map) {
       disposeMap(map);
-    });
+      map = null;
+    }
+  });
+
+  describe('#render', function() {
 
     function createFeatures() {
       var feature;
@@ -184,7 +185,7 @@ describe('ol.rendering.style.Circle', function() {
     }
 
     it('tests the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/circle-canvas.png',
           8.0, done);
@@ -192,7 +193,7 @@ describe('ol.rendering.style.Circle', function() {
 
     where('WebGL').it('tests the WebGL renderer', function(done) {
       assertWebGL();
-      map = createMap('webgl');
+      createMap('webgl');
       createFeatures();
       expectResemble(map, 'rendering/ol/style/expected/circle-webgl.png',
           8.0, done);
