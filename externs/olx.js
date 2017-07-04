@@ -6155,6 +6155,9 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     gutter: (number|undefined),
  *     hidpi: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
+ *                          ol.TileState, string, ?string,
+ *                          ol.TileLoadFunctionType)|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
@@ -6235,6 +6238,16 @@ olx.source.TileWMSOptions.prototype.hidpi;
  * @api
  */
 olx.source.TileWMSOptions.prototype.logo;
+
+
+/**
+ * Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
+ * @type {function(new: ol.ImageTile, ol.TileCoord,
+ *                 ol.TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)|undefined}
+ * @api
+ */
+olx.source.TileWMSOptions.prototype.tileClass;
 
 
 /**
