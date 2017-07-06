@@ -48,6 +48,10 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
    */
   this.projection_;
 
+  /**
+   * @private
+   * @type {Object.<string, ol.render.ReplayGroup>}
+   */
   this.replayGroups_ = {};
 
   /**
@@ -117,6 +121,10 @@ ol.VectorTile.prototype.getProjection = function() {
 };
 
 
+/**
+ * @param {string} key Key.
+ * @return {ol.render.ReplayGroup} Replay group.
+ */
 ol.VectorTile.prototype.getReplayGroup = function(key) {
   return this.replayGroups_[key];
 };
@@ -173,6 +181,10 @@ ol.VectorTile.prototype.setProjection = function(projection) {
 };
 
 
+/**
+ * @param {string} key Key.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
+ */
 ol.VectorTile.prototype.setReplayGroup = function(key, replayGroup) {
   this.replayGroups_[key] = replayGroup;
 };

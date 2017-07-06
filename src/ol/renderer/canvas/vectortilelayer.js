@@ -260,7 +260,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
       } else {
         tileSpaceCoordinate = coordinate;
       }
-      replayGroup = sourceTile.getReplayGroup(tile.tileCoord);
+      replayGroup = sourceTile.getReplayGroup(tile.tileCoord.toString());
       found = found || replayGroup.forEachFeatureAtCoordinate(
           tileSpaceCoordinate, resolution, rotation, hitTolerance, {},
           /**
