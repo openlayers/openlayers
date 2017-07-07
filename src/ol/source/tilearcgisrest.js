@@ -95,7 +95,7 @@ ol.source.TileArcGISRest.prototype.getParams = function() {
  * @private
  */
 ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize, tileExtent,
-        pixelRatio, projection, params) {
+    pixelRatio, projection, params) {
 
   var urls = this.urls;
   if (!urls) {
@@ -111,7 +111,7 @@ ol.source.TileArcGISRest.prototype.getRequestUrl_ = function(tileCoord, tileSize
   params['IMAGESR'] = srid;
   params['DPI'] = Math.round(
       params['DPI'] ? params['DPI'] * pixelRatio : 90 * pixelRatio
-      );
+  );
 
   var url;
   if (urls.length == 1) {

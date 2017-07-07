@@ -9,6 +9,7 @@ goog.provide('ol.source.TileJSON');
 goog.require('ol');
 goog.require('ol.Attribution');
 goog.require('ol.TileUrlFunction');
+goog.require('ol.asserts');
 goog.require('ol.extent');
 goog.require('ol.net');
 goog.require('ol.proj');
@@ -45,15 +46,21 @@ ol.source.TileJSON = function(options) {
     wrapX: options.wrapX !== undefined ? options.wrapX : true
   });
 
-  if (options.jsonp) {
-    ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
-        this.handleTileJSONError.bind(this));
+  if (options.url) {
+    if (options.jsonp) {
+      ol.net.jsonp(options.url, this.handleTileJSONResponse.bind(this),
+          this.handleTileJSONError.bind(this));
+    } else {
+      var client = new XMLHttpRequest();
+      client.addEventListener('load', this.onXHRLoad_.bind(this));
+      client.addEventListener('error', this.onXHRError_.bind(this));
+      client.open('GET', options.url);
+      client.send();
+    }
+  } else if (options.tileJSON) {
+    this.handleTileJSONResponse(options.tileJSON);
   } else {
-    var client = new XMLHttpRequest();
-    client.addEventListener('load', this.onXHRLoad_.bind(this));
-    client.addEventListener('error', this.onXHRError_.bind(this));
-    client.open('GET', options.url);
-    client.send();
+    ol.asserts.assert(false, 51); // Either `url` or `tileJSON` options must be provided
   }
 
 };
@@ -130,7 +137,7 @@ ol.source.TileJSON.prototype.handleTileJSONResponse = function(tileJSON) {
 
   if (tileJSON.attribution !== undefined && !this.getAttributions()) {
     var attributionExtent = extent !== undefined ?
-        extent : epsg4326Projection.getExtent();
+      extent : epsg4326Projection.getExtent();
     /** @type {Object.<string, Array.<ol.TileRange>>} */
     var tileRanges = {};
     var z, zKey;

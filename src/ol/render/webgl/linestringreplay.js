@@ -88,9 +88,9 @@ if (ol.ENABLE_WEBGL) {
     //ol.render.webgl.LineStringReplay.Instruction_, and a rounding factor (1 or 2). If the product is even,
     //we round it. If it is odd, we don't.
     var lineJoin = this.state_.lineJoin === 'bevel' ? 0 :
-        this.state_.lineJoin === 'miter' ? 1 : 2;
+      this.state_.lineJoin === 'miter' ? 1 : 2;
     var lineCap = this.state_.lineCap === 'butt' ? 0 :
-        this.state_.lineCap === 'square' ? 1 : 2;
+      this.state_.lineCap === 'square' ? 1 : 2;
     var closed = ol.geom.flat.topology.lineStringIsClosed(flatCoordinates, offset, end, stride);
     var startCoords, sign, n;
     var lastIndex = numIndices;
@@ -194,7 +194,7 @@ if (ol.ENABLE_WEBGL) {
 
       // We group CW and straight lines, thus the not so inituitive CCW checking function.
       sign = ol.render.webgl.triangleIsCounterClockwise(p0[0], p0[1], p1[0], p1[1], p2[0], p2[1])
-          ? -1 : 1;
+        ? -1 : 1;
 
       numVertices = this.addVertices_(p0, p1, p2,
           sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
@@ -236,7 +236,7 @@ if (ol.ENABLE_WEBGL) {
     if (closed) {
       n = n || numVertices / 7;
       sign = ol.geom.flat.orient.linearRingIsClockwise([p0[0], p0[1], p1[0], p1[1], p2[0], p2[1]], 0, 6, 2)
-          ? 1 : -1;
+        ? 1 : -1;
 
       numVertices = this.addVertices_(p0, p1, p2,
           sign * ol.render.webgl.LineStringReplay.Instruction_.BEVEL_FIRST * (lineJoin || 1), numVertices);
@@ -324,16 +324,19 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.LineStringReplay.prototype.drawMultiLineString = function(multiLineStringGeometry, feature) {
     var indexCount = this.indices.length;
-    var lineStringGeometries = multiLineStringGeometry.getLineStrings();
+    var ends = multiLineStringGeometry.getEnds();
+    ends.unshift(0);
+    var flatCoordinates = multiLineStringGeometry.getFlatCoordinates();
+    var stride = multiLineStringGeometry.getStride();
     var i, ii;
-    for (i = 0, ii = lineStringGeometries.length; i < ii; ++i) {
-      var flatCoordinates = lineStringGeometries[i].getFlatCoordinates();
-      var stride = lineStringGeometries[i].getStride();
-      if (this.isValid_(flatCoordinates, 0, flatCoordinates.length, stride)) {
-        flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
-            stride, -this.origin[0], -this.origin[1]);
-        this.drawCoordinates_(
-            flatCoordinates, 0, flatCoordinates.length, stride);
+    if (ends.length > 1) {
+      for (i = 1, ii = ends.length; i < ii; ++i) {
+        if (this.isValid_(flatCoordinates, ends[i - 1], ends[i], stride)) {
+          var lineString = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1], ends[i],
+              stride, -this.origin[0], -this.origin[1]);
+          this.drawCoordinates_(
+              lineString, 0, lineString.length, stride);
+        }
       }
     }
     if (this.indices.length > indexCount) {
@@ -632,16 +635,16 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.LineStringReplay.prototype.setFillStrokeStyle = function(fillStyle, strokeStyle) {
     var strokeStyleLineCap = strokeStyle.getLineCap();
     this.state_.lineCap = strokeStyleLineCap !== undefined ?
-        strokeStyleLineCap : ol.render.webgl.defaultLineCap;
+      strokeStyleLineCap : ol.render.webgl.defaultLineCap;
     var strokeStyleLineDash = strokeStyle.getLineDash();
     this.state_.lineDash = strokeStyleLineDash ?
-        strokeStyleLineDash : ol.render.webgl.defaultLineDash;
+      strokeStyleLineDash : ol.render.webgl.defaultLineDash;
     var strokeStyleLineDashOffset = strokeStyle.getLineDashOffset();
     this.state_.lineDashOffset = strokeStyleLineDashOffset ?
-        strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
+      strokeStyleLineDashOffset : ol.render.webgl.defaultLineDashOffset;
     var strokeStyleLineJoin = strokeStyle.getLineJoin();
     this.state_.lineJoin = strokeStyleLineJoin !== undefined ?
-        strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
+      strokeStyleLineJoin : ol.render.webgl.defaultLineJoin;
     var strokeStyleColor = strokeStyle.getColor();
     if (!(strokeStyleColor instanceof CanvasGradient) &&
         !(strokeStyleColor instanceof CanvasPattern)) {
@@ -653,10 +656,10 @@ if (ol.ENABLE_WEBGL) {
     }
     var strokeStyleWidth = strokeStyle.getWidth();
     strokeStyleWidth = strokeStyleWidth !== undefined ?
-        strokeStyleWidth : ol.render.webgl.defaultLineWidth;
+      strokeStyleWidth : ol.render.webgl.defaultLineWidth;
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     strokeStyleMiterLimit = strokeStyleMiterLimit !== undefined ?
-        strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
+      strokeStyleMiterLimit : ol.render.webgl.defaultMiterLimit;
     if (!this.state_.strokeColor || !ol.array.equals(this.state_.strokeColor, strokeStyleColor) ||
         this.state_.lineWidth !== strokeStyleWidth || this.state_.miterLimit !== strokeStyleMiterLimit) {
       this.state_.changed = true;

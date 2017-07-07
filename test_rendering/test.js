@@ -28,9 +28,9 @@ page.open(url).then(function(status) {
           console.log('Writing coverage to coverage/coverage-rendering.json');
           var fs = require('fs');
           fs.write(
-            fs.workingDirectory + '/coverage/coverage-rendering.json',
-            JSON.stringify(coverage),
-            'w'
+              fs.workingDirectory + '/coverage/coverage-rendering.json',
+              JSON.stringify(coverage),
+              'w'
           );
         }
         console.log('All tests passed.');

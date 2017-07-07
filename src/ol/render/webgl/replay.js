@@ -140,9 +140,9 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
-              ol.render.webgl.imagereplay.defaultshader.Locations|
               ol.render.webgl.linestringreplay.defaultshader.Locations|
-              ol.render.webgl.polygonreplay.defaultshader.Locations} Locations.
+              ol.render.webgl.polygonreplay.defaultshader.Locations|
+              ol.render.webgl.texturereplay.defaultshader.Locations} Locations.
    */
   ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
@@ -152,9 +152,9 @@ if (ol.ENABLE_WEBGL) {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {ol.render.webgl.circlereplay.defaultshader.Locations|
-             ol.render.webgl.imagereplay.defaultshader.Locations|
              ol.render.webgl.linestringreplay.defaultshader.Locations|
-             ol.render.webgl.polygonreplay.defaultshader.Locations} locations Locations.
+             ol.render.webgl.polygonreplay.defaultshader.Locations|
+             ol.render.webgl.texturereplay.defaultshader.Locations} locations Locations.
    */
   ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {};
 
@@ -309,11 +309,11 @@ if (ol.ENABLE_WEBGL) {
     }
 
     gl.uniformMatrix4fv(locations.u_projectionMatrix, false,
-       ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
+        ol.vec.Mat4.fromTransform(this.tmpMat4_, projectionMatrix));
     gl.uniformMatrix4fv(locations.u_offsetScaleMatrix, false,
-       ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
+        ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetScaleMatrix));
     gl.uniformMatrix4fv(locations.u_offsetRotateMatrix, false,
-       ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
+        ol.vec.Mat4.fromTransform(this.tmpMat4_, offsetRotateMatrix));
     gl.uniform1f(locations.u_opacity, opacity);
 
     // draw!
@@ -335,10 +335,10 @@ if (ol.ENABLE_WEBGL) {
       }
       gl.clear(gl.STENCIL_BUFFER_BIT);
       gl.stencilFunc(/** @type {number} */ (tmpStencilFunc),
-         /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
+          /** @type {number} */ (tmpStencilRef), /** @type {number} */ (tmpStencilMaskVal));
       gl.stencilMask(/** @type {number} */ (tmpStencilMask));
       gl.stencilOp(/** @type {number} */ (tmpStencilOpFail),
-         /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
+          /** @type {number} */ (tmpStencilOpZFail), /** @type {number} */ (tmpStencilOpPass));
     }
 
     return result;
@@ -354,7 +354,7 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.Replay.prototype.drawElements = function(
       gl, context, start, end) {
     var elementType = context.hasOESElementIndexUint ?
-        ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
+      ol.webgl.UNSIGNED_INT : ol.webgl.UNSIGNED_SHORT;
     var elementSize = context.hasOESElementIndexUint ? 4 : 2;
 
     var numItems = end - start;

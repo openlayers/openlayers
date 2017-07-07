@@ -208,10 +208,21 @@ ol.structs.RBush.prototype.clear = function() {
 
 /**
  * @param {ol.Extent=} opt_extent Extent.
- * @return {!ol.Extent} Extent.
+ * @return {ol.Extent} Extent.
  */
 ol.structs.RBush.prototype.getExtent = function(opt_extent) {
   // FIXME add getExtent() to rbush
   var data = this.rbush_.data;
   return ol.extent.createOrUpdate(data.minX, data.minY, data.maxX, data.maxY, opt_extent);
+};
+
+
+/**
+ * @param {ol.structs.RBush} rbush R-Tree.
+ */
+ol.structs.RBush.prototype.concat = function(rbush) {
+  this.rbush_.load(rbush.rbush_.all());
+  for (var i in rbush.items_) {
+    this.items_[i | 0] = rbush.items_[i | 0];
+  }
 };

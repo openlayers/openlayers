@@ -8,7 +8,7 @@ goog.require('ol.format.GeoJSON');
 goog.require('ol.interaction.DragAndDrop');
 
 
-describe('ol.interaction.DragAndDrop', function() {
+where('FileReader').describe('ol.interaction.DragAndDrop', function() {
   var viewport, map, interaction;
 
   beforeEach(function() {
@@ -37,7 +37,20 @@ describe('ol.interaction.DragAndDrop', function() {
       expect(interaction.formatConstructors_).to.have.length(1);
     });
 
+  });
 
+  describe('#setActive()', function() {
+    it('registers and unregisters listeners', function() {
+      interaction.setMap(map);
+      interaction.setActive(true);
+      expect(viewport.hasListener('dragenter')).to.be(true);
+      expect(viewport.hasListener('dragover')).to.be(true);
+      expect(viewport.hasListener('drop')).to.be(true);
+      interaction.setActive(false);
+      expect(viewport.hasListener('dragenter')).to.be(false);
+      expect(viewport.hasListener('dragover')).to.be(false);
+      expect(viewport.hasListener('drop')).to.be(false);
+    });
   });
 
   describe('#setMap()', function() {
@@ -70,9 +83,11 @@ describe('ol.interaction.DragAndDrop', function() {
   });
 
   describe('#handleDrop_', function() {
-    var OrigFileReader = FileReader;
+    var OrigFileReader;
 
     beforeEach(function() {
+      OrigFileReader = FileReader;
+
       FileReader = function() {
         ol.events.EventTarget.apply(this, arguments);
         this.readAsText = function(file) {

@@ -40,12 +40,14 @@ ol.reproj.calculateSourceResolution = function(sourceProj, targetProj,
   // coordinates may be slightly different. We need to reverse-compensate this
   // in order to achieve optimal results.
 
-  var compensationFactor =
-      ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
-      sourceResolution;
-
-  if (isFinite(compensationFactor) && compensationFactor > 0) {
-    sourceResolution /= compensationFactor;
+  var sourceExtent = sourceProj.getExtent();
+  if (!sourceExtent || ol.extent.containsCoordinate(sourceExtent, sourceCenter)) {
+    var compensationFactor =
+        ol.proj.getPointResolution(sourceProj, sourceResolution, sourceCenter) /
+        sourceResolution;
+    if (isFinite(compensationFactor) && compensationFactor > 0) {
+      sourceResolution /= compensationFactor;
+    }
   }
 
   return sourceResolution;
@@ -93,7 +95,7 @@ ol.reproj.render = function(width, height, pixelRatio,
     triangulation, sources, gutter, opt_renderEdges) {
 
   var context = ol.dom.createCanvasContext2D(Math.round(pixelRatio * width),
-                                             Math.round(pixelRatio * height));
+      Math.round(pixelRatio * height));
 
   if (sources.length === 0) {
     return context.canvas;
@@ -200,10 +202,10 @@ ol.reproj.render = function(width, height, pixelRatio,
         affineCoefs[0], affineCoefs[2], affineCoefs[1], affineCoefs[3], u0, v0);
 
     context.translate(sourceDataExtent[0] - sourceNumericalShiftX,
-                      sourceDataExtent[3] - sourceNumericalShiftY);
+        sourceDataExtent[3] - sourceNumericalShiftY);
 
     context.scale(sourceResolution / pixelRatio,
-                  -sourceResolution / pixelRatio);
+        -sourceResolution / pixelRatio);
 
     context.drawImage(stitchContext.canvas, 0, 0);
     context.restore();

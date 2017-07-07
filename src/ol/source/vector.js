@@ -84,7 +84,7 @@ ol.source.Vector = function(opt_options) {
    * @type {ol.LoadingStrategy}
    */
   this.strategy_ = options.strategy !== undefined ? options.strategy :
-      ol.loadingstrategy.all;
+    ol.loadingstrategy.all;
 
   var useSpatialIndex =
       options.useSpatialIndex !== undefined ? options.useSpatialIndex : true;
@@ -157,7 +157,9 @@ ol.inherits(ol.source.Vector, ol.source.Source);
 /**
  * Add a single feature to the source.  If you want to add a batch of features
  * at once, call {@link ol.source.Vector#addFeatures source.addFeatures()}
- * instead.
+ * instead. A feature will not be added to the source if feature with
+ * the same id is already there. The reason for this behavior is to avoid
+ * feature duplication when using bbox or tile loading strategies.
  * @param {ol.Feature} feature Feature to add.
  * @api
  */
@@ -612,7 +614,7 @@ ol.source.Vector.prototype.getClosestFeatureToCoordinate = function(coordinate, 
  * `useSpatialIndex` set to `false`.
  * @param {ol.Extent=} opt_extent Destination extent. If provided, no new extent
  *     will be created. Instead, that extent's coordinates will be overwritten.
- * @return {!ol.Extent} Extent.
+ * @return {ol.Extent} Extent.
  * @api
  */
 ol.source.Vector.prototype.getExtent = function(opt_extent) {

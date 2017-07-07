@@ -46,7 +46,7 @@ ol.source.Raster = function(options) {
    * @type {ol.source.RasterOperationType}
    */
   this.operationType_ = options.operationType !== undefined ?
-      options.operationType : ol.source.RasterOperationType.PIXEL;
+    options.operationType : ol.source.RasterOperationType.PIXEL;
 
   /**
    * @private
@@ -170,10 +170,10 @@ ol.source.Raster.prototype.setOperation = function(operation, opt_lib) {
 ol.source.Raster.prototype.updateFrameState_ = function(extent, resolution, projection) {
 
   var frameState = /** @type {olx.FrameState} */ (
-      ol.obj.assign({}, this.frameState_));
+    ol.obj.assign({}, this.frameState_));
 
   frameState.viewState = /** @type {olx.ViewState} */ (
-      ol.obj.assign({}, frameState.viewState));
+    ol.obj.assign({}, frameState.viewState));
 
   var center = ol.extent.getCenter(extent);
 
@@ -220,8 +220,6 @@ ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, p
   var frameState = this.updateFrameState_(extent, resolution, projection);
   this.requestedFrameState_ = frameState;
 
-  frameState.tileQueue.loadMoreTiles(16, 16);
-
   // check if we can't reuse the existing ol.ImageCanvas
   if (this.renderedImageCanvas_) {
     var renderedResolution = this.renderedImageCanvas_.getResolution();
@@ -235,6 +233,7 @@ ol.source.Raster.prototype.getImage = function(extent, resolution, pixelRatio, p
     this.processSources_();
   }
 
+  frameState.tileQueue.loadMoreTiles(16, 16);
   return this.renderedImageCanvas_;
 };
 

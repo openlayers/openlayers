@@ -31,7 +31,7 @@ ol.control.MousePosition = function(opt_options) {
   element.className = options.className !== undefined ? options.className : 'ol-mouse-position';
 
   var render = options.render ?
-      options.render : ol.control.MousePosition.render;
+    options.render : ol.control.MousePosition.render;
 
   ol.control.Control.call(this, {
     element: element,
@@ -47,7 +47,7 @@ ol.control.MousePosition = function(opt_options) {
     this.setCoordinateFormat(options.coordinateFormat);
   }
   if (options.projection) {
-    this.setProjection(ol.proj.get(options.projection));
+    this.setProjection(options.projection);
   }
 
   /**
@@ -122,7 +122,7 @@ ol.control.MousePosition.prototype.handleProjectionChanged_ = function() {
  */
 ol.control.MousePosition.prototype.getCoordinateFormat = function() {
   return /** @type {ol.CoordinateFormatType|undefined} */ (
-      this.get(ol.control.MousePosition.Property_.COORDINATE_FORMAT));
+    this.get(ol.control.MousePosition.Property_.COORDINATE_FORMAT));
 };
 
 
@@ -135,7 +135,7 @@ ol.control.MousePosition.prototype.getCoordinateFormat = function() {
  */
 ol.control.MousePosition.prototype.getProjection = function() {
   return /** @type {ol.proj.Projection|undefined} */ (
-      this.get(ol.control.MousePosition.Property_.PROJECTION));
+    this.get(ol.control.MousePosition.Property_.PROJECTION));
 };
 
 
@@ -192,13 +192,13 @@ ol.control.MousePosition.prototype.setCoordinateFormat = function(format) {
 
 /**
  * Set the projection that is used to report the mouse position.
- * @param {ol.proj.Projection} projection The projection to report mouse
+ * @param {ol.ProjectionLike} projection The projection to report mouse
  *     position in.
  * @observable
  * @api
  */
 ol.control.MousePosition.prototype.setProjection = function(projection) {
-  this.set(ol.control.MousePosition.Property_.PROJECTION, projection);
+  this.set(ol.control.MousePosition.Property_.PROJECTION, ol.proj.get(projection));
 };
 
 

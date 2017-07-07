@@ -45,7 +45,7 @@ ol.source.Tile = function(options) {
    * @type {number}
    */
   this.tilePixelRatio_ = options.tilePixelRatio !== undefined ?
-      options.tilePixelRatio : 1;
+    options.tilePixelRatio : 1;
 
   /**
    * @protected
@@ -283,7 +283,7 @@ ol.source.Tile.prototype.getTilePixelSize = function(z, pixelRatio, projection) 
  */
 ol.source.Tile.prototype.getTileCoordForTileUrlFunction = function(tileCoord, opt_projection) {
   var projection = opt_projection !== undefined ?
-      opt_projection : this.getProjection();
+    opt_projection : this.getProjection();
   var tileGrid = this.getTileGridForProjection(projection);
   if (this.getWrapX() && projection.isGlobal()) {
     tileCoord = ol.tilegrid.wrapX(tileGrid, tileCoord, projection);

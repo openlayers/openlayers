@@ -822,7 +822,7 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
     var fillStyleColor = fillStyle.getColor();
     this.fillState_ = {
       fillStyle: ol.colorlike.asColorLike(fillStyleColor ?
-          fillStyleColor : ol.render.canvas.defaultFillStyle)
+        fillStyleColor : ol.render.canvas.defaultFillStyle)
     };
   }
   if (!strokeStyle) {
@@ -837,19 +837,19 @@ ol.render.canvas.Immediate.prototype.setFillStrokeStyle = function(fillStyle, st
     var strokeStyleMiterLimit = strokeStyle.getMiterLimit();
     this.strokeState_ = {
       lineCap: strokeStyleLineCap !== undefined ?
-          strokeStyleLineCap : ol.render.canvas.defaultLineCap,
+        strokeStyleLineCap : ol.render.canvas.defaultLineCap,
       lineDash: strokeStyleLineDash ?
-          strokeStyleLineDash : ol.render.canvas.defaultLineDash,
+        strokeStyleLineDash : ol.render.canvas.defaultLineDash,
       lineDashOffset: strokeStyleLineDashOffset ?
-          strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
+        strokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
       lineJoin: strokeStyleLineJoin !== undefined ?
-          strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
+        strokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
       lineWidth: this.pixelRatio_ * (strokeStyleWidth !== undefined ?
-          strokeStyleWidth : ol.render.canvas.defaultLineWidth),
+        strokeStyleWidth : ol.render.canvas.defaultLineWidth),
       miterLimit: strokeStyleMiterLimit !== undefined ?
-          strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
+        strokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
       strokeStyle: ol.colorlike.asColorLike(strokeStyleColor ?
-          strokeStyleColor : ol.render.canvas.defaultStrokeStyle)
+        strokeStyleColor : ol.render.canvas.defaultStrokeStyle)
     };
   }
 };
@@ -905,7 +905,7 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       var textFillStyleColor = textFillStyle.getColor();
       this.textFillState_ = {
         fillStyle: ol.colorlike.asColorLike(textFillStyleColor ?
-            textFillStyleColor : ol.render.canvas.defaultFillStyle)
+          textFillStyleColor : ol.render.canvas.defaultFillStyle)
       };
     }
     var textStrokeStyle = textStyle.getStroke();
@@ -921,19 +921,19 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
       var textStrokeStyleMiterLimit = textStrokeStyle.getMiterLimit();
       this.textStrokeState_ = {
         lineCap: textStrokeStyleLineCap !== undefined ?
-            textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
+          textStrokeStyleLineCap : ol.render.canvas.defaultLineCap,
         lineDash: textStrokeStyleLineDash ?
-            textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
+          textStrokeStyleLineDash : ol.render.canvas.defaultLineDash,
         lineDashOffset: textStrokeStyleLineDashOffset ?
-            textStrokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
+          textStrokeStyleLineDashOffset : ol.render.canvas.defaultLineDashOffset,
         lineJoin: textStrokeStyleLineJoin !== undefined ?
-            textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
+          textStrokeStyleLineJoin : ol.render.canvas.defaultLineJoin,
         lineWidth: textStrokeStyleWidth !== undefined ?
-            textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
+          textStrokeStyleWidth : ol.render.canvas.defaultLineWidth,
         miterLimit: textStrokeStyleMiterLimit !== undefined ?
-            textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
+          textStrokeStyleMiterLimit : ol.render.canvas.defaultMiterLimit,
         strokeStyle: ol.colorlike.asColorLike(textStrokeStyleColor ?
-            textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle)
+          textStrokeStyleColor : ol.render.canvas.defaultStrokeStyle)
       };
     }
     var textFont = textStyle.getFont();
@@ -947,11 +947,11 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     var textTextBaseline = textStyle.getTextBaseline();
     this.textState_ = {
       font: textFont !== undefined ?
-          textFont : ol.render.canvas.defaultFont,
+        textFont : ol.render.canvas.defaultFont,
       textAlign: textTextAlign !== undefined ?
-          textTextAlign : ol.render.canvas.defaultTextAlign,
+        textTextAlign : ol.render.canvas.defaultTextAlign,
       textBaseline: textTextBaseline !== undefined ?
-          textTextBaseline : ol.render.canvas.defaultTextBaseline
+        textTextBaseline : ol.render.canvas.defaultTextBaseline
     };
     this.text_ = textText !== undefined ? textText : '';
     this.textOffsetX_ =
@@ -961,6 +961,6 @@ ol.render.canvas.Immediate.prototype.setTextStyle = function(textStyle) {
     this.textRotateWithView_ = textRotateWithView !== undefined ? textRotateWithView : false;
     this.textRotation_ = textRotation !== undefined ? textRotation : 0;
     this.textScale_ = this.pixelRatio_ * (textScale !== undefined ?
-        textScale : 1);
+      textScale : 1);
   }
 };

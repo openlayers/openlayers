@@ -210,7 +210,7 @@ ol.structs.PriorityQueue.prototype.siftUp_ = function(index) {
 
     var smallerChildIndex = rIndex < count &&
         priorities[rIndex] < priorities[lIndex] ?
-        rIndex : lIndex;
+      rIndex : lIndex;
 
     elements[index] = elements[smallerChildIndex];
     priorities[index] = priorities[smallerChildIndex];

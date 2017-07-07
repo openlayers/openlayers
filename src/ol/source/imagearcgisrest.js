@@ -61,7 +61,7 @@ ol.source.ImageArcGISRest = function(opt_options) {
    * @type {ol.ImageLoadFunctionType}
    */
   this.imageLoadFunction_ = options.imageLoadFunction !== undefined ?
-      options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
+    options.imageLoadFunction : ol.source.Image.defaultImageLoadFunction;
 
 
   /**
@@ -213,8 +213,8 @@ ol.source.ImageArcGISRest.prototype.getRequestUrl_ = function(extent, size, pixe
   var url = this.url_;
 
   var modifiedUrl = url
-   .replace(/MapServer\/?$/, 'MapServer/export')
-   .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
+      .replace(/MapServer\/?$/, 'MapServer/export')
+      .replace(/ImageServer\/?$/, 'ImageServer/exportImage');
   if (modifiedUrl == url) {
     ol.asserts.assert(false, 50); // `options.featureTypes` should be an Array
   }

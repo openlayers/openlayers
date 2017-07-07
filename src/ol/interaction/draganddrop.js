@@ -34,14 +34,14 @@ ol.interaction.DragAndDrop = function(opt_options) {
    * @type {Array.<function(new: ol.format.Feature)>}
    */
   this.formatConstructors_ = options.formatConstructors ?
-      options.formatConstructors : [];
+    options.formatConstructors : [];
 
   /**
    * @private
    * @type {ol.proj.Projection}
    */
   this.projection_ = options.projection ?
-      ol.proj.get(options.projection) : null;
+    ol.proj.get(options.projection) : null;
 
   /**
    * @private
@@ -141,14 +141,10 @@ ol.interaction.DragAndDrop.handleEvent = ol.functions.TRUE;
 
 
 /**
- * @inheritDoc
+ * @private
  */
-ol.interaction.DragAndDrop.prototype.setMap = function(map) {
-  if (this.dropListenKeys_) {
-    this.dropListenKeys_.forEach(ol.events.unlistenByKey);
-    this.dropListenKeys_ = null;
-  }
-  ol.interaction.Interaction.prototype.setMap.call(this, map);
+ol.interaction.DragAndDrop.prototype.registerListeners_ = function() {
+  var map = this.getMap();
   if (map) {
     var dropArea = this.target ? this.target : map.getViewport();
     this.dropListenKeys_ = [
@@ -166,6 +162,31 @@ ol.interaction.DragAndDrop.prototype.setMap = function(map) {
 
 
 /**
+ * @inheritDoc
+ */
+ol.interaction.DragAndDrop.prototype.setActive = function(active) {
+  ol.interaction.Interaction.prototype.setActive.call(this, active);
+  if (active) {
+    this.registerListeners_();
+  } else {
+    this.unregisterListeners_();
+  }
+};
+
+
+/**
+ * @inheritDoc
+ */
+ol.interaction.DragAndDrop.prototype.setMap = function(map) {
+  this.unregisterListeners_();
+  ol.interaction.Interaction.prototype.setMap.call(this, map);
+  if (this.getActive()) {
+    this.registerListeners_();
+  }
+};
+
+
+/**
  * @param {ol.format.Feature} format Format.
  * @param {string} text Text.
  * @param {olx.format.ReadOptions} options Read options.
@@ -177,6 +198,17 @@ ol.interaction.DragAndDrop.prototype.tryReadFeatures_ = function(format, text, o
     return format.readFeatures(text, options);
   } catch (e) {
     return null;
+  }
+};
+
+
+/**
+ * @private
+ */
+ol.interaction.DragAndDrop.prototype.unregisterListeners_ = function() {
+  if (this.dropListenKeys_) {
+    this.dropListenKeys_.forEach(ol.events.unlistenByKey);
+    this.dropListenKeys_ = null;
   }
 };
 

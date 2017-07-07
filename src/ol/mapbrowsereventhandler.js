@@ -1,6 +1,7 @@
 goog.provide('ol.MapBrowserEventHandler');
 
 goog.require('ol');
+goog.require('ol.has');
 goog.require('ol.MapBrowserEventType');
 goog.require('ol.MapBrowserPointerEvent');
 goog.require('ol.events');
@@ -11,10 +12,11 @@ goog.require('ol.pointer.PointerEventHandler');
 
 /**
  * @param {ol.Map} map The map with the viewport to listen to events on.
+ * @param {number|undefined} moveTolerance The minimal distance the pointer must travel to trigger a move.
  * @constructor
  * @extends {ol.events.EventTarget}
  */
-ol.MapBrowserEventHandler = function(map) {
+ol.MapBrowserEventHandler = function(map, moveTolerance) {
 
   ol.events.EventTarget.call(this);
 
@@ -42,6 +44,13 @@ ol.MapBrowserEventHandler = function(map) {
    * @private
    */
   this.dragListenerKeys_ = [];
+
+  /**
+   * @type {number}
+   * @private
+   */
+  this.moveTolerance_ = moveTolerance ?
+    moveTolerance * ol.has.DEVICE_PIXEL_RATIO : ol.has.DEVICE_PIXEL_RATIO;
 
   /**
    * The most recent "down" type event (or null if none have occurred).
@@ -156,13 +165,13 @@ ol.MapBrowserEventHandler.prototype.updateActivePointers_ = function(pointerEven
 ol.MapBrowserEventHandler.prototype.handlePointerUp_ = function(pointerEvent) {
   this.updateActivePointers_(pointerEvent);
   var newEvent = new ol.MapBrowserPointerEvent(
-     ol.MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
+      ol.MapBrowserEventType.POINTERUP, this.map_, pointerEvent);
   this.dispatchEvent(newEvent);
 
- // We emulate click events on left mouse button click, touch contact, and pen
- // contact. isMouseActionButton returns true in these cases (evt.button is set
- // to 0).
- // See http://www.w3.org/TR/pointerevents/#button-states
+  // We emulate click events on left mouse button click, touch contact, and pen
+  // contact. isMouseActionButton returns true in these cases (evt.button is set
+  // to 0).
+  // See http://www.w3.org/TR/pointerevents/#button-states
   if (!this.dragging_ && this.isMouseActionButton_(pointerEvent)) {
     this.emulateClick_(this.down_);
   }
@@ -209,13 +218,13 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
         new ol.pointer.PointerEventHandler(document);
 
     this.dragListenerKeys_.push(
-      ol.events.listen(this.documentPointerEventHandler_,
-          ol.MapBrowserEventType.POINTERMOVE,
-          this.handlePointerMove_, this),
-      ol.events.listen(this.documentPointerEventHandler_,
-          ol.MapBrowserEventType.POINTERUP,
-          this.handlePointerUp_, this),
-      /* Note that the listener for `pointercancel is set up on
+        ol.events.listen(this.documentPointerEventHandler_,
+            ol.MapBrowserEventType.POINTERMOVE,
+            this.handlePointerMove_, this),
+        ol.events.listen(this.documentPointerEventHandler_,
+            ol.MapBrowserEventType.POINTERUP,
+            this.handlePointerUp_, this),
+        /* Note that the listener for `pointercancel is set up on
        * `pointerEventHandler_` and not `documentPointerEventHandler_` like
        * the `pointerup` and `pointermove` listeners.
        *
@@ -228,9 +237,9 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
        * only receive a `touchcancel` from `pointerEventHandler_`, because it is
        * only registered there.
        */
-      ol.events.listen(this.pointerEventHandler_,
-          ol.MapBrowserEventType.POINTERCANCEL,
-          this.handlePointerUp_, this)
+        ol.events.listen(this.pointerEventHandler_,
+            ol.MapBrowserEventType.POINTERCANCEL,
+            this.handlePointerUp_, this)
     );
   }
 };
@@ -241,11 +250,9 @@ ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) 
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handlePointerMove_ = function(pointerEvent) {
-  // Fix IE10 on windows Surface : When you tap the tablet, it triggers
-  // multiple pointermove events between pointerdown and pointerup with
-  // the exact same coordinates of the pointerdown event. To avoid a
-  // 'false' touchmove event to be dispatched , we test if the pointer
-  // effectively moved.
+  // Between pointerdown and pointerup, pointermove events are triggered.
+  // To avoid a 'false' touchmove event to be dispatched, we test if the pointer
+  // moved a significant distance.
   if (this.isMoving_(pointerEvent)) {
     this.dragging_ = true;
     var newEvent = new ol.MapBrowserPointerEvent(
@@ -281,8 +288,8 @@ ol.MapBrowserEventHandler.prototype.relayEvent_ = function(pointerEvent) {
  * @private
  */
 ol.MapBrowserEventHandler.prototype.isMoving_ = function(pointerEvent) {
-  return pointerEvent.clientX != this.down_.clientX ||
-      pointerEvent.clientY != this.down_.clientY;
+  return Math.abs(pointerEvent.clientX - this.down_.clientX) > this.moveTolerance_ ||
+      Math.abs(pointerEvent.clientY - this.down_.clientY) > this.moveTolerance_;
 };
 
 

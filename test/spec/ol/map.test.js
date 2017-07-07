@@ -99,7 +99,7 @@ describe('ol.Map', function() {
     });
   });
 
-  describe('moveend event', function() {
+  describe('movestart/moveend event', function() {
 
     var target, view, map;
 
@@ -135,16 +135,46 @@ describe('ol.Map', function() {
       document.body.removeChild(target);
     });
 
-    it('is fired only once after view changes', function(done) {
+    it('are fired only once after view changes', function(done) {
       var center = [10, 20];
       var zoom = 3;
-      var calls = 0;
+      var startCalls = 0;
+      var endCalls = 0;
+      map.on('movestart', function() {
+        ++startCalls;
+        expect(startCalls).to.be(1);
+      });
       map.on('moveend', function() {
-        ++calls;
-        expect(calls).to.be(1);
+        ++endCalls;
+        expect(endCalls).to.be(1);
         expect(view.getCenter()).to.eql(center);
         expect(view.getZoom()).to.be(zoom);
         window.setTimeout(done, 1000);
+      });
+
+      view.setCenter(center);
+      view.setZoom(zoom);
+    });
+
+    it('are fired in sequence', function(done) {
+      view.setCenter([0, 0]);
+      view.setResolution(0.703125);
+      map.renderSync();
+      var center = [10, 20];
+      var zoom = 3;
+      var calls = [];
+      map.on('movestart', function(e) {
+        calls.push('start');
+        expect(calls).to.eql(['start']);
+        expect(e.frameState.viewState.center).to.eql([0, 0]);
+        expect(e.frameState.viewState.resolution).to.be(0.703125);
+      });
+      map.on('moveend', function() {
+        calls.push('end');
+        expect(calls).to.eql(['start', 'end']);
+        expect(view.getCenter()).to.eql(center);
+        expect(view.getZoom()).to.be(zoom);
+        done();
       });
 
       view.setCenter(center);

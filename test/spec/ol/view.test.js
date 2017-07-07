@@ -494,6 +494,36 @@ describe('ol.View', function() {
       });
     });
 
+    it('takes the shortest arc to the target rotation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: Math.PI / 180 * 1
+      });
+      view.animate({
+        rotation: Math.PI / 180 * 359,
+        duration: 0
+      }, function() {
+        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * -1, 1e-12);
+        done();
+      });
+    });
+
+    it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', function(done) {
+      var view = new ol.View({
+        center: [0, 0],
+        zoom: 0,
+        rotation: Math.PI / 180 * 1
+      });
+      view.animate({
+        rotation: Math.PI / 180 * -181,
+        duration: 0
+      }, function() {
+        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * 179, 1e-12);
+        done();
+      });
+    });
+
     it('calls a callback when animation completes', function(done) {
       var view = new ol.View({
         center: [0, 0],
@@ -973,6 +1003,31 @@ describe('ol.View', function() {
 
   });
 
+  describe('#getResolutionForZoom', function() {
+
+    it('returns correct zoom resolution', function() {
+      var view = new ol.View();
+      var max = view.getMaxZoom();
+      var min = view.getMinZoom();
+
+      expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
+      expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
+    });
+
+    it('returns correct zoom levels for specifically configured resolutions', function() {
+      var view = new ol.View({
+        resolutions: [10, 8, 6, 4, 2]
+      });
+
+      expect(view.getResolutionForZoom(0)).to.be(10);
+      expect(view.getResolutionForZoom(1)).to.be(8);
+      expect(view.getResolutionForZoom(2)).to.be(6);
+      expect(view.getResolutionForZoom(3)).to.be(4);
+      expect(view.getResolutionForZoom(4)).to.be(2);
+    });
+
+  });
+
   describe('#getMaxZoom', function() {
 
     it('returns the zoom level for the min resolution', function() {
@@ -1160,13 +1215,13 @@ describe('ol.View', function() {
     });
     it('animates when duration is defined', function(done) {
       view.fit(
-        new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
-        {
-          size: [200, 200],
-          padding: [100, 0, 0, 100],
-          constrainResolution: false,
-          duration: 25
-        });
+          new ol.geom.LineString([[6000, 46000], [6000, 47100], [7000, 46000]]),
+          {
+            size: [200, 200],
+            padding: [100, 0, 0, 100],
+            constrainResolution: false,
+            duration: 25
+          });
 
       expect(view.getAnimating()).to.eql(true);
 

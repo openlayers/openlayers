@@ -820,12 +820,26 @@ describe('ol.format.GeoJSON', function() {
 
     it('truncates a linestring with decimals option', function() {
       var linestring = new ol.geom.LineString([[42.123456789, 38.987654321],
-          [43, 39]]);
+        [43, 39]]);
       var geojson = format.writeGeometry(linestring, {
         decimals: 6
       });
       expect(format.readGeometry(geojson).getCoordinates()).to.eql(
           [[42.123457, 38.987654], [43, 39]]);
+      expect(linestring.getCoordinates()).to.eql(
+          [[42.123456789, 38.987654321], [43, 39]]);
+    });
+
+    it('rounds a linestring with decimals option = 0', function() {
+      var linestring = new ol.geom.LineString([[42.123456789, 38.987654321],
+        [43, 39]]);
+      var geojson = format.writeGeometry(linestring, {
+        decimals: 0
+      });
+      expect(format.readGeometry(geojson).getCoordinates()).to.eql(
+          [[42, 39], [43, 39]]);
+      expect(linestring.getCoordinates()).to.eql(
+          [[42.123456789, 38.987654321], [43, 39]]);
     });
   });
 

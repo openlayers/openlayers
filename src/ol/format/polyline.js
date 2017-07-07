@@ -46,7 +46,7 @@ ol.format.Polyline = function(opt_options) {
    * @type {ol.geom.GeometryLayout}
    */
   this.geometryLayout_ = options.geometryLayout ?
-      options.geometryLayout : ol.geom.GeometryLayout.XY;
+    options.geometryLayout : ol.geom.GeometryLayout.XY;
 };
 ol.inherits(ol.format.Polyline, ol.format.TextFeature);
 
@@ -332,9 +332,9 @@ ol.format.Polyline.prototype.readGeometryFromText = function(text, opt_options) 
       flatCoordinates, 0, flatCoordinates.length, stride);
 
   return /** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(
-          new ol.geom.LineString(coordinates, this.geometryLayout_), false,
-          this.adaptOptions(opt_options)));
+    ol.format.Feature.transformWithOptions(
+        new ol.geom.LineString(coordinates, this.geometryLayout_), false,
+        this.adaptOptions(opt_options)));
 };
 
 
@@ -388,8 +388,8 @@ ol.format.Polyline.prototype.writeGeometry;
  */
 ol.format.Polyline.prototype.writeGeometryText = function(geometry, opt_options) {
   geometry = /** @type {ol.geom.LineString} */
-      (ol.format.Feature.transformWithOptions(
-          geometry, true, this.adaptOptions(opt_options)));
+    (ol.format.Feature.transformWithOptions(
+        geometry, true, this.adaptOptions(opt_options)));
   var flatCoordinates = geometry.getFlatCoordinates();
   var stride = geometry.getStride();
   ol.geom.flat.flip.flipXY(

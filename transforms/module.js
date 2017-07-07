@@ -132,7 +132,7 @@ module.exports = function(info, api) {
   // replace `ol.VERSION = ''` with correct version
   root.find(j.ExpressionStatement, getMemberExpressionAssignment('ol.VERSION'))
     .forEach(path => {
-      path.value.expression.right = j.literal(thisPackage.version);
+      path.value.expression.right = j.literal('v' + thisPackage.version);
     });
 
   const replacements = {};

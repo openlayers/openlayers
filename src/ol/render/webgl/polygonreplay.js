@@ -88,20 +88,39 @@ if (ol.ENABLE_WEBGL) {
       for (i = 0, ii = holeFlatCoordinates.length; i < ii; ++i) {
         var holeList = {
           list: new ol.structs.LinkedList(),
-          maxX: undefined
+          maxX: undefined,
+          rtree: new ol.structs.RBush()
         };
         holeLists.push(holeList);
         holeList.maxX = this.processFlatCoordinates_(holeFlatCoordinates[i],
-            stride, holeList.list, rtree, false);
+            stride, holeList.list, holeList.rtree, false);
       }
       holeLists.sort(function(a, b) {
-        return b.maxX - a.maxX;
+        return b.maxX[0] === a.maxX[0] ? a.maxX[1] - b.maxX[1] : b.maxX[0] - a.maxX[0];
       });
       for (i = 0; i < holeLists.length; ++i) {
-        this.bridgeHole_(holeLists[i].list, holeLists[i].maxX, outerRing, maxX, rtree);
+        var currList = holeLists[i].list;
+        var start = currList.firstItem();
+        var currItem = start;
+        var intersection;
+        do {
+          if (this.getIntersections_(currItem, rtree).length) {
+            intersection = true;
+            break;
+          }
+          currItem = currList.nextItem();
+        } while (start !== currItem);
+        if (!intersection) {
+          this.classifyPoints_(currList, holeLists[i].rtree, true);
+          if (this.bridgeHole_(currList, holeLists[i].maxX[0], outerRing, maxX[0], rtree)) {
+            rtree.concat(holeLists[i].rtree);
+            this.classifyPoints_(outerRing, rtree, false);
+          }
+        }
       }
+    } else {
+      this.classifyPoints_(outerRing, rtree, false);
     }
-    this.classifyPoints_(outerRing, rtree, false);
     this.triangulate_(outerRing, rtree);
   };
 
@@ -114,13 +133,13 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.structs.LinkedList} list Linked list.
    * @param {ol.structs.RBush} rtree R-Tree of the polygon.
    * @param {boolean} clockwise Coordinate order should be clockwise.
-   * @return {number} Maximum X value.
+   * @return {Array.<number>} X and Y coords of maximum X value.
    */
   ol.render.webgl.PolygonReplay.prototype.processFlatCoordinates_ = function(
       flatCoordinates, stride, list, rtree, clockwise) {
     var isClockwise = ol.geom.flat.orient.linearRingIsClockwise(flatCoordinates,
         0, flatCoordinates.length, stride);
-    var i, ii, maxX;
+    var i, ii, maxXX, maxXY;
     var n = this.vertices.length / 2;
     /** @type {ol.WebglPolygonVertex} */
     var start;
@@ -133,13 +152,17 @@ if (ol.ENABLE_WEBGL) {
     if (clockwise === isClockwise) {
       start = this.createPoint_(flatCoordinates[0], flatCoordinates[1], n++);
       p0 = start;
-      maxX = flatCoordinates[0];
+      maxXX = flatCoordinates[0];
+      maxXY = flatCoordinates[1];
       for (i = stride, ii = flatCoordinates.length; i < ii; i += stride) {
         p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
         segments.push(this.insertItem_(p0, p1, list));
         extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
           Math.max(p0.y, p1.y)]);
-        maxX = flatCoordinates[i] > maxX ? flatCoordinates[i] : maxX;
+        if (flatCoordinates[i] > maxXX) {
+          maxXX = flatCoordinates[i];
+          maxXY = flatCoordinates[i + 1];
+        }
         p0 = p1;
       }
       segments.push(this.insertItem_(p1, start, list));
@@ -149,13 +172,17 @@ if (ol.ENABLE_WEBGL) {
       var end = flatCoordinates.length - stride;
       start = this.createPoint_(flatCoordinates[end], flatCoordinates[end + 1], n++);
       p0 = start;
-      maxX = flatCoordinates[end];
+      maxXX = flatCoordinates[end];
+      maxXY = flatCoordinates[end + 1];
       for (i = end - stride, ii = 0; i >= ii; i -= stride) {
         p1 = this.createPoint_(flatCoordinates[i], flatCoordinates[i + 1], n++);
         segments.push(this.insertItem_(p0, p1, list));
         extents.push([Math.min(p0.x, p1.x), Math.min(p0.y, p1.y), Math.max(p0.x, p1.x),
           Math.max(p0.y, p1.y)]);
-        maxX = flatCoordinates[i] > maxX ? flatCoordinates[i] : maxX;
+        if (flatCoordinates[i] > maxXX) {
+          maxXX = flatCoordinates[i];
+          maxXY = flatCoordinates[i + 1];
+        }
         p0 = p1;
       }
       segments.push(this.insertItem_(p1, start, list));
@@ -164,7 +191,7 @@ if (ol.ENABLE_WEBGL) {
     }
     rtree.load(extents, segments);
 
-    return maxX;
+    return [maxXX, maxXY];
   };
 
 
@@ -184,8 +211,8 @@ if (ol.ENABLE_WEBGL) {
     do {
       var reflex = ccw ? ol.render.webgl.triangleIsCounterClockwise(s1.p1.x,
           s1.p1.y, s0.p1.x, s0.p1.y, s0.p0.x, s0.p0.y) :
-          ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
-          s0.p1.y, s1.p1.x, s1.p1.y);
+        ol.render.webgl.triangleIsCounterClockwise(s0.p0.x, s0.p0.y, s0.p1.x,
+            s0.p1.y, s1.p1.x, s1.p1.y);
       if (reflex === undefined) {
         this.removeItem_(s0, s1, list, rtree);
         pointsReclassified = true;
@@ -212,10 +239,10 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.structs.LinkedList} list Linked list of the polygon.
    * @param {number} listMaxX Maximum X value of the polygon.
    * @param {ol.structs.RBush} rtree R-Tree of the polygon.
+   * @return {boolean} Bridging was successful.
    */
   ol.render.webgl.PolygonReplay.prototype.bridgeHole_ = function(hole, holeMaxX,
       list, listMaxX, rtree) {
-    this.classifyPoints_(hole, rtree, true);
     var seg = hole.firstItem();
     while (seg.p1.x !== holeMaxX) {
       seg = hole.nextItem();
@@ -232,19 +259,18 @@ if (ol.ENABLE_WEBGL) {
     var intersectingSegments = this.getIntersections_({p0: p1, p1: p2}, rtree, true);
     for (i = 0, ii = intersectingSegments.length; i < ii; ++i) {
       var currSeg = intersectingSegments[i];
-      if (currSeg.p0.reflex === undefined) {
-        var intersection = this.calculateIntersection_(p1, p2, currSeg.p0,
-            currSeg.p1, true);
-        var dist = Math.abs(p1.x - intersection[0]);
-        if (dist < minDist) {
-          minDist = dist;
-          p5 = {x: intersection[0], y: intersection[1], i: -1};
-          seg = currSeg;
-        }
+      var intersection = this.calculateIntersection_(p1, p2, currSeg.p0,
+          currSeg.p1, true);
+      var dist = Math.abs(p1.x - intersection[0]);
+      if (dist < minDist && ol.render.webgl.triangleIsCounterClockwise(p1.x, p1.y,
+          currSeg.p0.x, currSeg.p0.y, currSeg.p1.x, currSeg.p1.y) !== undefined) {
+        minDist = dist;
+        p5 = {x: intersection[0], y: intersection[1], i: -1};
+        seg = currSeg;
       }
     }
     if (minDist === Infinity) {
-      return;
+      return false;
     }
     bestPoint = seg.p1;
 
@@ -264,7 +290,7 @@ if (ol.ENABLE_WEBGL) {
     }
 
     seg = list.firstItem();
-    while (seg.p1 !== bestPoint) {
+    while (seg.p1.x !== bestPoint.x || seg.p1.y !== bestPoint.y) {
       seg = list.nextItem();
     }
 
@@ -278,6 +304,8 @@ if (ol.ENABLE_WEBGL) {
     seg.p1 = p1Bridge;
     hole.setFirstItem();
     list.concat(hole);
+
+    return true;
   };
 
 
@@ -581,7 +609,7 @@ if (ol.ENABLE_WEBGL) {
   };
 
 
-   /**
+  /**
     * @private
     * @param {ol.WebglPolygonSegment} s0 Segment before the remove candidate.
     * @param {ol.WebglPolygonSegment} s1 Remove candidate segment.
@@ -614,7 +642,7 @@ if (ol.ENABLE_WEBGL) {
     var result = [];
     var segmentsInExtent = rtree.getInExtent([Math.min(p0.x, p1.x, p2.x),
       Math.min(p0.y, p1.y, p2.y), Math.max(p0.x, p1.x, p2.x), Math.max(p0.y,
-        p1.y, p2.y)]);
+          p1.y, p2.y)]);
     for (i = 0, ii = segmentsInExtent.length; i < ii; ++i) {
       for (j in segmentsInExtent[i]) {
         p = segmentsInExtent[i][j];
@@ -712,28 +740,33 @@ if (ol.ENABLE_WEBGL) {
    * @inheritDoc
    */
   ol.render.webgl.PolygonReplay.prototype.drawMultiPolygon = function(multiPolygonGeometry, feature) {
-    var polygons = multiPolygonGeometry.getPolygons();
+    var endss = multiPolygonGeometry.getEndss();
     var stride = multiPolygonGeometry.getStride();
     var currIndex = this.indices.length;
     var currLineIndex = this.lineStringReplay.getCurrentIndex();
+    var flatCoordinates = multiPolygonGeometry.getFlatCoordinates();
     var i, ii, j, jj;
-    for (i = 0, ii = polygons.length; i < ii; ++i) {
-      var linearRings = polygons[i].getLinearRings();
-      if (linearRings.length > 0) {
-        var flatCoordinates = linearRings[0].getFlatCoordinates();
-        flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+    var start = 0;
+    for (i = 0, ii = endss.length; i < ii; ++i) {
+      var ends = endss[i];
+      if (ends.length > 0) {
+        var outerRing = ol.geom.flat.transform.translate(flatCoordinates, start, ends[0],
             stride, -this.origin[0], -this.origin[1]);
-        var holes = [];
-        var holeFlatCoords;
-        for (j = 1, jj = linearRings.length; j < jj; ++j) {
-          holeFlatCoords = linearRings[j].getFlatCoordinates();
-          holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
-              stride, -this.origin[0], -this.origin[1]);
-          holes.push(holeFlatCoords);
+        if (outerRing.length) {
+          var holes = [];
+          var holeFlatCoords;
+          for (j = 1, jj = ends.length; j < jj; ++j) {
+            if (ends[j] !== ends[j - 1]) {
+              holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[j - 1],
+                  ends[j], stride, -this.origin[0], -this.origin[1]);
+              holes.push(holeFlatCoords);
+            }
+          }
+          this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+          this.drawCoordinates_(outerRing, holes, stride);
         }
-        this.lineStringReplay.drawPolygonCoordinates(flatCoordinates, holes, stride);
-        this.drawCoordinates_(flatCoordinates, holes, stride);
       }
+      start = ends[ends.length - 1];
     }
     if (this.indices.length > currIndex) {
       this.startIndices.push(currIndex);
@@ -753,30 +786,34 @@ if (ol.ENABLE_WEBGL) {
    * @inheritDoc
    */
   ol.render.webgl.PolygonReplay.prototype.drawPolygon = function(polygonGeometry, feature) {
-    var linearRings = polygonGeometry.getLinearRings();
+    var ends = polygonGeometry.getEnds();
     var stride = polygonGeometry.getStride();
-    if (linearRings.length > 0) {
-      this.startIndices.push(this.indices.length);
-      this.startIndicesFeature.push(feature);
-      if (this.state_.changed) {
-        this.styleIndices_.push(this.indices.length);
-        this.state_.changed = false;
-      }
-      this.lineStringReplay.setPolygonStyle(feature);
-
-      var flatCoordinates = linearRings[0].getFlatCoordinates();
-      flatCoordinates = ol.geom.flat.transform.translate(flatCoordinates, 0, flatCoordinates.length,
+    if (ends.length > 0) {
+      var flatCoordinates = polygonGeometry.getFlatCoordinates().map(Number);
+      var outerRing = ol.geom.flat.transform.translate(flatCoordinates, 0, ends[0],
           stride, -this.origin[0], -this.origin[1]);
-      var holes = [];
-      var i, ii, holeFlatCoords;
-      for (i = 1, ii = linearRings.length; i < ii; ++i) {
-        holeFlatCoords = linearRings[i].getFlatCoordinates();
-        holeFlatCoords = ol.geom.flat.transform.translate(holeFlatCoords, 0, holeFlatCoords.length,
-            stride, -this.origin[0], -this.origin[1]);
-        holes.push(holeFlatCoords);
+      if (outerRing.length) {
+        var holes = [];
+        var i, ii, holeFlatCoords;
+        for (i = 1, ii = ends.length; i < ii; ++i) {
+          if (ends[i] !== ends[i - 1]) {
+            holeFlatCoords = ol.geom.flat.transform.translate(flatCoordinates, ends[i - 1],
+                ends[i], stride, -this.origin[0], -this.origin[1]);
+            holes.push(holeFlatCoords);
+          }
+        }
+
+        this.startIndices.push(this.indices.length);
+        this.startIndicesFeature.push(feature);
+        if (this.state_.changed) {
+          this.styleIndices_.push(this.indices.length);
+          this.state_.changed = false;
+        }
+        this.lineStringReplay.setPolygonStyle(feature);
+
+        this.lineStringReplay.drawPolygonCoordinates(outerRing, holes, stride);
+        this.drawCoordinates_(outerRing, holes, stride);
       }
-      this.lineStringReplay.drawPolygonCoordinates(flatCoordinates, holes, stride);
-      this.drawCoordinates_(flatCoordinates, holes, stride);
     }
   };
 

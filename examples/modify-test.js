@@ -96,8 +96,8 @@ var geojsonObject = {
     'geometry': {
       'type': 'Polygon',
       'coordinates': [[[-5e6, -1e6], [-4e6, 1e6],
-          [-3e6, -1e6], [-5e6, -1e6]], [[-4.5e6, -0.5e6],
-          [-3.5e6, -0.5e6], [-4e6, 0.5e6], [-4.5e6, -0.5e6]]]
+        [-3e6, -1e6], [-5e6, -1e6]], [[-4.5e6, -0.5e6],
+        [-3.5e6, -0.5e6], [-4e6, 0.5e6], [-4.5e6, -0.5e6]]]
     }
   }, {
     'type': 'Feature',
@@ -117,11 +117,11 @@ var geojsonObject = {
       'type': 'MultiPolygon',
       'coordinates': [
         [[[-5e6, 6e6], [-5e6, 8e6], [-3e6, 8e6],
-            [-3e6, 6e6], [-5e6, 6e6]]],
+          [-3e6, 6e6], [-5e6, 6e6]]],
         [[[-3e6, 6e6], [-2e6, 8e6], [0, 8e6],
-            [0, 6e6], [-3e6, 6e6]]],
+          [0, 6e6], [-3e6, 6e6]]],
         [[[1e6, 6e6], [1e6, 8e6], [3e6, 8e6],
-            [3e6, 6e6], [1e6, 6e6]]]
+          [3e6, 6e6], [1e6, 6e6]]]
       ]
     }
   }, {
@@ -222,7 +222,13 @@ var select = new ol.interaction.Select({
 
 var modify = new ol.interaction.Modify({
   features: select.getFeatures(),
-  style: overlayStyle
+  style: overlayStyle,
+  insertVertexCondition: function() {
+    // prevent new vertices to be added to the polygons
+    return !this.features_.getArray().every(function(feature) {
+      return feature.getGeometry().getType().match(/Polygon/);
+    });
+  }
 });
 
 var map = new ol.Map({

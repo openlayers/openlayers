@@ -52,10 +52,10 @@ var createServer = exports.createServer = function(callback) {
         var pathName = url.parse(referer).pathname;
         if (pathName.indexOf('/test/') === 0) {
           main = path.resolve(
-            path.join(process.cwd(), 'build'), 'test_requires.js');
+              path.join(process.cwd(), 'build'), 'test_requires.js');
         } else if (pathName.indexOf('/test_rendering/') === 0) {
           main = path.resolve(
-            path.join(process.cwd(), 'build'), 'test_rendering_requires.js');
+              path.join(process.cwd(), 'build'), 'test_rendering_requires.js');
         } else {
           if (query.id) {
             if (referer) {

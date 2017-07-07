@@ -29,13 +29,14 @@ var style = new ol.style.Style({
 var vector = new ol.layer.Vector({
   source: new ol.source.Vector({
     url: 'data/topojson/world-110m.json',
-    format: new ol.format.TopoJSON(),
+    format: new ol.format.TopoJSON({
+      // don't want to render the full world polygon (stored as 'land' layer),
+      // which repeats all countries
+      layers: ['countries']
+    }),
     overlaps: false
   }),
-  style: function(feature) {
-    // don't want to render the full world polygon, which repeats all countries
-    return feature.getId() !== undefined ? style : null;
-  }
+  style: style
 });
 
 var map = new ol.Map({

@@ -35,7 +35,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
     it('sets the buffer data', function() {
       var polygon1 = new ol.geom.Polygon(
           [[[1000, 2000], [1200, 2000], [1200, 3000]]]
-          );
+      );
       replay.drawPolygon(polygon1, null);
       expect(replay.vertices).to.have.length(8);
       expect(replay.indices).to.have.length(3);
@@ -46,7 +46,7 @@ describe('ol.render.webgl.PolygonReplay', function() {
 
       var polygon2 = new ol.geom.Polygon(
           [[[4000, 2000], [4200, 2000], [4200, 3000]]]
-          );
+      );
       replay.drawPolygon(polygon2, null);
       expect(replay.vertices).to.have.length(16);
       expect(replay.indices).to.have.length(6);

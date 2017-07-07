@@ -2,6 +2,36 @@
 
 ### Next release
 
+#### `ol.animate` now takes the shortest arc for rotation animation
+
+Usually rotation animations should animate along the shortest arc. There are rare occasions where a spinning animation effect is desired. So if you previously had something like
+```js
+map.getView().animate({
+  rotation: 2 * Math.PI,
+  duration: 2000
+});
+```
+we recommend to split the animation into two parts and use different easing functions. The code below results in the same effect as the snippet above did with previous versions:
+```js
+map.getView().animate({
+  rotation: Math.PI,
+  easing: ol.easing.easeIn
+}, {
+  rotation: 2 * Math.PI,
+  easing: ol.easing.easeOut
+});
+```
+
+### v4.2.0
+
+#### Return values of two `ol.style.RegularShape` getters have changed
+
+To provide a more consistent behaviour the following getters now return the same value that was given to constructor:
+
+`ol.style.RegularShape#getPoints` does not return the double amount of points anymore if a radius2 is set.
+
+`ol.style.RegularShape#getRadius2` will return `undefined` if no radius2 is set.
+
 ### v4.1.0
 
 #### Adding duplicate layers to a map throws

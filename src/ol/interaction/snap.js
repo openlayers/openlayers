@@ -8,6 +8,8 @@ goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.extent');
 goog.require('ol.functions');
+goog.require('ol.geom.GeometryType');
+goog.require('ol.geom.Polygon');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.obj');
 goog.require('ol.source.Vector');
@@ -112,7 +114,7 @@ ol.interaction.Snap = function(opt_options) {
    * @private
    */
   this.pixelTolerance_ = options.pixelTolerance !== undefined ?
-      options.pixelTolerance : 10;
+    options.pixelTolerance : 10;
 
   /**
    * @type {function(ol.SnapSegmentDataType, ol.SnapSegmentDataType): number}
@@ -142,7 +144,8 @@ ol.interaction.Snap = function(opt_options) {
     'MultiPoint': this.writeMultiPointGeometry_,
     'MultiLineString': this.writeMultiLineStringGeometry_,
     'MultiPolygon': this.writeMultiPolygonGeometry_,
-    'GeometryCollection': this.writeGeometryCollectionGeometry_
+    'GeometryCollection': this.writeGeometryCollectionGeometry_,
+    'Circle': this.writeCircleGeometry_
   };
 };
 ol.inherits(ol.interaction.Snap, ol.interaction.Pointer);
@@ -306,17 +309,17 @@ ol.interaction.Snap.prototype.setMap = function(map) {
   if (map) {
     if (this.features_) {
       keys.push(
-        ol.events.listen(this.features_, ol.CollectionEventType.ADD,
-            this.handleFeatureAdd_, this),
-        ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
-            this.handleFeatureRemove_, this)
+          ol.events.listen(this.features_, ol.CollectionEventType.ADD,
+              this.handleFeatureAdd_, this),
+          ol.events.listen(this.features_, ol.CollectionEventType.REMOVE,
+              this.handleFeatureRemove_, this)
       );
     } else if (this.source_) {
       keys.push(
-        ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
-            this.handleFeatureAdd_, this),
-        ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
-            this.handleFeatureRemove_, this)
+          ol.events.listen(this.source_, ol.source.VectorEventType.ADDFEATURE,
+              this.handleFeatureAdd_, this),
+          ol.events.listen(this.source_, ol.source.VectorEventType.REMOVEFEATURE,
+              this.handleFeatureRemove_, this)
       );
     }
     features.forEach(this.forEachFeatureAdd_, this);
@@ -345,6 +348,15 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
   var box = ol.extent.boundingExtent([lowerLeft, upperRight]);
 
   var segments = this.rBush_.getInExtent(box);
+
+  // If snapping on vertices only, don't consider circles
+  if (this.vertex_ && !this.edge_) {
+    segments = segments.filter(function(segment) {
+      return segment.feature.getGeometry().getType() !==
+          ol.geom.GeometryType.CIRCLE;
+    });
+  }
+
   var snappedToVertex = false;
   var snapped = false;
   var vertex = null;
@@ -354,6 +366,8 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
     this.pixelCoordinate_ = pixelCoordinate;
     segments.sort(this.sortByDistance_);
     var closestSegment = segments[0].segment;
+    var isCircle = segments[0].feature.getGeometry().getType() ===
+        ol.geom.GeometryType.CIRCLE;
     if (this.vertex_ && !this.edge_) {
       pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
       pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
@@ -364,16 +378,21 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
       if (snappedToVertex) {
         snapped = true;
         vertex = squaredDist1 > squaredDist2 ?
-            closestSegment[1] : closestSegment[0];
+          closestSegment[1] : closestSegment[0];
         vertexPixel = map.getPixelFromCoordinate(vertex);
       }
     } else if (this.edge_) {
-      vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
-          closestSegment));
+      if (isCircle) {
+        vertex = ol.coordinate.closestOnCircle(pixelCoordinate,
+            /** @type {ol.geom.Circle} */ (segments[0].feature.getGeometry()));
+      } else {
+        vertex = (ol.coordinate.closestOnSegment(pixelCoordinate,
+            closestSegment));
+      }
       vertexPixel = map.getPixelFromCoordinate(vertex);
       if (ol.coordinate.distance(pixel, vertexPixel) <= this.pixelTolerance_) {
         snapped = true;
-        if (this.vertex_) {
+        if (this.vertex_ && !isCircle) {
           pixel1 = map.getPixelFromCoordinate(closestSegment[0]);
           pixel2 = map.getPixelFromCoordinate(closestSegment[1]);
           squaredDist1 = ol.coordinate.squaredDistance(vertexPixel, pixel1);
@@ -382,7 +401,7 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
           snappedToVertex = dist <= this.pixelTolerance_;
           if (snappedToVertex) {
             vertex = squaredDist1 > squaredDist2 ?
-                closestSegment[1] : closestSegment[0];
+              closestSegment[1] : closestSegment[0];
             vertexPixel = map.getPixelFromCoordinate(vertex);
           }
         }
@@ -407,6 +426,26 @@ ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {
 ol.interaction.Snap.prototype.updateFeature_ = function(feature) {
   this.removeFeature(feature, false);
   this.addFeature(feature, false);
+};
+
+
+/**
+ * @param {ol.Feature} feature Feature
+ * @param {ol.geom.Circle} geometry Geometry.
+ * @private
+ */
+ol.interaction.Snap.prototype.writeCircleGeometry_ = function(feature, geometry) {
+  var polygon = ol.geom.Polygon.fromCircle(geometry);
+  var coordinates = polygon.getCoordinates()[0];
+  var i, ii, segment, segmentData;
+  for (i = 0, ii = coordinates.length - 1; i < ii; ++i) {
+    segment = coordinates.slice(i, i + 2);
+    segmentData = /** @type {ol.SnapSegmentDataType} */ ({
+      feature: feature,
+      segment: segment
+    });
+    this.rBush_.insert(ol.extent.boundingExtent(segment), segmentData);
+  }
 };
 
 
@@ -592,5 +631,5 @@ ol.interaction.Snap.sortByDistance = function(a, b) {
   return ol.coordinate.squaredDistanceToSegment(
       this.pixelCoordinate_, a.segment) -
       ol.coordinate.squaredDistanceToSegment(
-      this.pixelCoordinate_, b.segment);
+          this.pixelCoordinate_, b.segment);
 };

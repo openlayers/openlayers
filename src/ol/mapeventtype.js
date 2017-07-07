@@ -13,6 +13,13 @@ ol.MapEventType = {
   POSTRENDER: 'postrender',
 
   /**
+   * Triggered when the map starts moving.
+   * @event ol.MapEvent#movestart
+   * @api
+   */
+  MOVESTART: 'movestart',
+
+  /**
    * Triggered after the map is moved.
    * @event ol.MapEvent#moveend
    * @api

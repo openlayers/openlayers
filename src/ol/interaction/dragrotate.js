@@ -1,6 +1,7 @@
 goog.provide('ol.interaction.DragRotate');
 
 goog.require('ol');
+goog.require('ol.RotationConstraint');
 goog.require('ol.ViewHint');
 goog.require('ol.events.condition');
 goog.require('ol.functions');
@@ -36,7 +37,7 @@ ol.interaction.DragRotate = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.altShiftKeysOnly;
+    options.condition : ol.events.condition.altShiftKeysOnly;
 
   /**
    * @private
@@ -64,13 +65,16 @@ ol.interaction.DragRotate.handleDragEvent_ = function(mapBrowserEvent) {
   }
 
   var map = mapBrowserEvent.map;
+  var view = map.getView();
+  if (view.getConstraints().rotation === ol.RotationConstraint.disable) {
+    return;
+  }
   var size = map.getSize();
   var offset = mapBrowserEvent.pixel;
   var theta =
       Math.atan2(size[1] / 2 - offset[1], offset[0] - size[0] / 2);
   if (this.lastAngle_ !== undefined) {
     var delta = theta - this.lastAngle_;
-    var view = map.getView();
     var rotation = view.getRotation();
     ol.interaction.Interaction.rotateWithoutConstraints(
         view, rotation - delta);

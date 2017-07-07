@@ -47,7 +47,7 @@ ol.interaction.Modify = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.primaryAction;
+    options.condition : ol.events.condition.primaryAction;
 
 
   /**
@@ -65,7 +65,14 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.deleteCondition_ = options.deleteCondition ?
-      options.deleteCondition : this.defaultDeleteCondition_;
+    options.deleteCondition : this.defaultDeleteCondition_;
+
+  /**
+   * @type {ol.EventsConditionType}
+   * @private
+   */
+  this.insertVertexCondition_ = options.insertVertexCondition ?
+    options.insertVertexCondition : ol.events.condition.always;
 
   /**
    * Editing vertex.
@@ -113,7 +120,7 @@ ol.interaction.Modify = function(options) {
    * @private
    */
   this.pixelTolerance_ = options.pixelTolerance !== undefined ?
-      options.pixelTolerance : 10;
+    options.pixelTolerance : 10;
 
   /**
    * @type {boolean}
@@ -146,7 +153,7 @@ ol.interaction.Modify = function(options) {
       wrapX: !!options.wrapX
     }),
     style: options.style ? options.style :
-        ol.interaction.Modify.getDefaultStyleFunction(),
+      ol.interaction.Modify.getDefaultStyleFunction(),
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
@@ -600,7 +607,7 @@ ol.interaction.Modify.handleDownEvent_ = function(evt) {
 
         this.dragSegments_.push([segmentDataMatch, 1]);
         componentSegments[uid][1] = segmentDataMatch;
-      } else if (ol.getUid(segment) in this.vertexSegments_ &&
+      } else if (this.insertVertexCondition_(evt) && ol.getUid(segment) in this.vertexSegments_ &&
           (!componentSegments[uid][0] && !componentSegments[uid][1])) {
         insertVertices.push([segmentDataMatch, vertex]);
       }
@@ -818,7 +825,7 @@ ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {
         this.snappedToVertex_ = dist <= this.pixelTolerance_;
         if (this.snappedToVertex_) {
           vertex = squaredDist1 > squaredDist2 ?
-              closestSegment[1] : closestSegment[0];
+            closestSegment[1] : closestSegment[0];
         }
         this.createOrUpdateVertexFeature_(vertex);
         var segment;

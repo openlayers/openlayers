@@ -38,8 +38,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.renderer.webgl.defaultmapshader.Fragment.SOURCE = ol.DEBUG_WEBGL ?
-      ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE :
-      ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
+    ol.renderer.webgl.defaultmapshader.Fragment.DEBUG_SOURCE :
+    ol.renderer.webgl.defaultmapshader.Fragment.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.defaultmapshader.fragment = new ol.renderer.webgl.defaultmapshader.Fragment();
@@ -75,8 +75,8 @@ if (ol.ENABLE_WEBGL) {
    * @type {string}
    */
   ol.renderer.webgl.defaultmapshader.Vertex.SOURCE = ol.DEBUG_WEBGL ?
-      ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE :
-      ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
+    ol.renderer.webgl.defaultmapshader.Vertex.DEBUG_SOURCE :
+    ol.renderer.webgl.defaultmapshader.Vertex.OPTIMIZED_SOURCE;
 
 
   ol.renderer.webgl.defaultmapshader.vertex = new ol.renderer.webgl.defaultmapshader.Vertex();

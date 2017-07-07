@@ -44,16 +44,22 @@ if (ol.ENABLE_PROJ4JS) {
  * Get the resolution of the point in degrees or distance units.
  * For projections with degrees as the unit this will simply return the
  * provided resolution. For other projections the point resolution is
- * estimated by transforming the 'point' pixel to EPSG:4326,
+ * by default estimated by transforming the 'point' pixel to EPSG:4326,
  * measuring its width and height on the normal sphere,
  * and taking the average of the width and height.
- * @param {ol.proj.Projection} projection The projection.
+ * A custom function can be provided for a specific projection, either
+ * by setting the `getPointResolution` option in the
+ * {@link ol.proj.Projection} constructor or by using
+ * {@link ol.proj.Projection#setGetPointResolution} to change an existing
+ * projection object.
+ * @param {ol.ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {ol.Coordinate} point Point to find adjusted resolution at.
  * @return {number} Point resolution at point in projection units.
  * @api
  */
 ol.proj.getPointResolution = function(projection, resolution, point) {
+  projection = ol.proj.get(projection);
   var pointResolution;
   var getter = projection.getPointResolutionFunc();
   if (getter) {
@@ -148,10 +154,7 @@ ol.proj.addProjection = function(projection) {
  * @param {Array.<ol.proj.Projection>} projections Projections.
  */
 ol.proj.addProjections = function(projections) {
-  var addedProjections = [];
-  projections.forEach(function(projection) {
-    addedProjections.push(ol.proj.addProjection(projection));
-  });
+  projections.forEach(ol.proj.addProjection);
 };
 
 
@@ -218,27 +221,27 @@ ol.proj.addCoordinateTransforms = function(source, destination, forward, inverse
  */
 ol.proj.createTransformFromCoordinateTransform = function(transform) {
   return (
-      /**
-       * @param {Array.<number>} input Input.
-       * @param {Array.<number>=} opt_output Output.
-       * @param {number=} opt_dimension Dimension.
-       * @return {Array.<number>} Output.
-       */
-      function(input, opt_output, opt_dimension) {
-        var length = input.length;
-        var dimension = opt_dimension !== undefined ? opt_dimension : 2;
-        var output = opt_output !== undefined ? opt_output : new Array(length);
-        var point, i, j;
-        for (i = 0; i < length; i += dimension) {
-          point = transform([input[i], input[i + 1]]);
-          output[i] = point[0];
-          output[i + 1] = point[1];
-          for (j = dimension - 1; j >= 2; --j) {
-            output[i + j] = input[i + j];
-          }
+    /**
+     * @param {Array.<number>} input Input.
+     * @param {Array.<number>=} opt_output Output.
+     * @param {number=} opt_dimension Dimension.
+     * @return {Array.<number>} Output.
+     */
+    function(input, opt_output, opt_dimension) {
+      var length = input.length;
+      var dimension = opt_dimension !== undefined ? opt_dimension : 2;
+      var output = opt_output !== undefined ? opt_output : new Array(length);
+      var point, i, j;
+      for (i = 0; i < length; i += dimension) {
+        point = transform([input[i], input[i + 1]]);
+        output[i] = point[0];
+        output[i + 1] = point[1];
+        for (j = dimension - 1; j >= 2; --j) {
+          output[i + j] = input[i + j];
         }
-        return output;
-      });
+      }
+      return output;
+    });
 };
 
 
@@ -288,9 +291,9 @@ ol.proj.get = function(projectionLike) {
   } else if (typeof projectionLike === 'string') {
     var code = projectionLike;
     projection = ol.proj.projections.get(code);
-    if (ol.ENABLE_PROJ4JS) {
+    if (ol.ENABLE_PROJ4JS && !projection) {
       var proj4js = ol.proj.proj4.get();
-      if (!projection && typeof proj4js == 'function' &&
+      if (typeof proj4js == 'function' &&
           proj4js.defs(code) !== undefined) {
         projection = new ol.proj.Projection({code: code});
         ol.proj.addProjection(projection);

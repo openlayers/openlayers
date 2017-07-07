@@ -3,8 +3,6 @@ goog.provide('ol.VectorTile');
 goog.require('ol');
 goog.require('ol.Tile');
 goog.require('ol.TileState');
-goog.require('ol.dom');
-goog.require('ol.featureloader');
 
 
 /**
@@ -21,10 +19,9 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
   ol.Tile.call(this, tileCoord, state);
 
   /**
-   * @private
-   * @type {CanvasRenderingContext2D}
+   * @type {number}
    */
-  this.context_ = null;
+  this.consumers = 0;
 
   /**
    * @private
@@ -53,15 +50,9 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
 
   /**
    * @private
-   * @type {ol.TileReplayState}
+   * @type {Object.<string, ol.render.ReplayGroup>}
    */
-  this.replayState_ = {
-    dirty: false,
-    renderedRenderOrder: null,
-    renderedRevision: -1,
-    renderedTileRevision: -1,
-    replayGroup: null
-  };
+  this.replayGroups_ = {};
 
   /**
    * @private
@@ -80,22 +71,14 @@ ol.inherits(ol.VectorTile, ol.Tile);
 
 
 /**
- * @return {CanvasRenderingContext2D} The rendering context.
+ * @inheritDoc
  */
-ol.VectorTile.prototype.getContext = function() {
-  if (!this.context_) {
-    this.context_ = ol.dom.createCanvasContext2D();
-  }
-  return this.context_;
-};
-
-
-/**
- * @override
- */
-ol.VectorTile.prototype.getImage = function() {
-  return this.replayState_.renderedTileRevision == -1 ?
-      null : this.context_.canvas;
+ol.VectorTile.prototype.disposeInternal = function() {
+  this.features_ = null;
+  this.replayGroups_ = {};
+  this.state = ol.TileState.ABORT;
+  this.changed();
+  ol.Tile.prototype.disposeInternal.call(this);
 };
 
 
@@ -110,18 +93,13 @@ ol.VectorTile.prototype.getFormat = function() {
 
 
 /**
- * @return {Array.<ol.Feature>} Features.
+ * Get the features for this tile. Geometries will be in the projection returned
+ * by {@link #getProjection}.
+ * @return {Array.<ol.Feature|ol.render.Feature>} Features.
+ * @api
  */
 ol.VectorTile.prototype.getFeatures = function() {
   return this.features_;
-};
-
-
-/**
- * @return {ol.TileReplayState} The replay state.
- */
-ol.VectorTile.prototype.getReplayState = function() {
-  return this.replayState_;
 };
 
 
@@ -134,10 +112,21 @@ ol.VectorTile.prototype.getKey = function() {
 
 
 /**
+ * Get the feature projection of features returned by {@link #getFeatures}.
  * @return {ol.proj.Projection} Feature projection.
+ * @api
  */
 ol.VectorTile.prototype.getProjection = function() {
   return this.projection_;
+};
+
+
+/**
+ * @param {string} key Key.
+ * @return {ol.render.ReplayGroup} Replay group.
+ */
+ol.VectorTile.prototype.getReplayGroup = function(key) {
+  return this.replayGroups_[key];
 };
 
 
@@ -193,11 +182,11 @@ ol.VectorTile.prototype.setProjection = function(projection) {
 
 
 /**
- * @param {ol.TileState} tileState Tile state.
+ * @param {string} key Key.
+ * @param {ol.render.ReplayGroup} replayGroup Replay group.
  */
-ol.VectorTile.prototype.setState = function(tileState) {
-  this.state = tileState;
-  this.changed();
+ol.VectorTile.prototype.setReplayGroup = function(key, replayGroup) {
+  this.replayGroups_[key] = replayGroup;
 };
 
 
@@ -208,17 +197,4 @@ ol.VectorTile.prototype.setState = function(tileState) {
  */
 ol.VectorTile.prototype.setLoader = function(loader) {
   this.loader_ = loader;
-};
-
-
-/**
- * Sets the loader for a tile.
- * @param {ol.VectorTile} tile Vector tile.
- * @param {string} url URL.
- */
-ol.VectorTile.defaultLoadFunction = function(tile, url) {
-  var loader = ol.featureloader.loadFeaturesXhr(
-      url, tile.getFormat(), tile.onLoad_.bind(tile), tile.onError_.bind(tile));
-
-  tile.setLoader(loader);
 };

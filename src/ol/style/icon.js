@@ -42,21 +42,21 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconOrigin}
    */
   this.anchorOrigin_ = options.anchorOrigin !== undefined ?
-      options.anchorOrigin : ol.style.IconOrigin.TOP_LEFT;
+    options.anchorOrigin : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
   this.anchorXUnits_ = options.anchorXUnits !== undefined ?
-      options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
+    options.anchorXUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
    * @type {ol.style.IconAnchorUnits}
    */
   this.anchorYUnits_ = options.anchorYUnits !== undefined ?
-      options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
+    options.anchorYUnits : ol.style.IconAnchorUnits.FRACTION;
 
   /**
    * @private
@@ -95,14 +95,14 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.ImageState}
    */
   var imageState = options.src !== undefined ?
-      ol.ImageState.IDLE : ol.ImageState.LOADED;
+    ol.ImageState.IDLE : ol.ImageState.LOADED;
 
   /**
    * @private
    * @type {ol.Color}
    */
   this.color_ = options.color !== undefined ? ol.color.asArray(options.color) :
-      null;
+    null;
 
   /**
    * @private
@@ -122,7 +122,7 @@ ol.style.Icon = function(opt_options) {
    * @type {ol.style.IconOrigin}
    */
   this.offsetOrigin_ = options.offsetOrigin !== undefined ?
-      options.offsetOrigin : ol.style.IconOrigin.TOP_LEFT;
+    options.offsetOrigin : ol.style.IconOrigin.TOP_LEFT;
 
   /**
    * @private
@@ -145,7 +145,7 @@ ol.style.Icon = function(opt_options) {
    * @type {boolean}
    */
   var rotateWithView = options.rotateWithView !== undefined ?
-      options.rotateWithView : false;
+    options.rotateWithView : false;
 
   /**
    * @type {number}
@@ -161,7 +161,7 @@ ol.style.Icon = function(opt_options) {
    * @type {boolean}
    */
   var snapToPixel = options.snapToPixel !== undefined ?
-      options.snapToPixel : true;
+    options.snapToPixel : true;
 
   ol.style.Image.call(this, {
     opacity: opacity,

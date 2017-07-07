@@ -144,6 +144,15 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
+      if (tile.getState() == ol.TileState.ERROR) {
+        if (!tileLayer.getUseInterimTilesOnError()) {
+          // When useInterimTilesOnError is false, we consider the error tile as loaded.
+          tile.setState(ol.TileState.LOADED);
+        } else if (tileLayer.getPreload() > 0) {
+          // Preloaded tiles for lower resolutions might have finished loading.
+          newTiles = true;
+        }
+      }
       if (!this.isDrawableTile_(tile)) {
         tile = tile.getInterimTile();
       }
@@ -170,13 +179,16 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
     }
   }
 
+  var renderedResolution = tileResolution * pixelRatio / tilePixelRatio * oversampling;
   var hints = frameState.viewHints;
-  if (!(this.renderedResolution && Date.now() - frameState.time > 16 &&
-      (hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING])) &&
-      (newTiles || !(this.renderedExtent_ &&
-      ol.extent.containsExtent(this.renderedExtent_, extent)) ||
-      this.renderedRevision != sourceRevision) ||
-      oversampling != this.oversampling_) {
+  var animatingOrInteracting = hints[ol.ViewHint.ANIMATING] || hints[ol.ViewHint.INTERACTING];
+  if (!(this.renderedResolution && Date.now() - frameState.time > 16 && animatingOrInteracting) && (
+    newTiles ||
+        !(this.renderedExtent_ && ol.extent.containsExtent(this.renderedExtent_, extent)) ||
+        this.renderedRevision != sourceRevision ||
+        oversampling != this.oversampling_ ||
+        !animatingOrInteracting && renderedResolution != this.renderedResolution
+  )) {
 
     var context = this.context;
     if (context) {

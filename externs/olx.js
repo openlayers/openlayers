@@ -292,6 +292,7 @@ olx.interaction.InteractionOptions.prototype.handleEvent;
  *     loadTilesWhileAnimating: (boolean|undefined),
  *     loadTilesWhileInteracting: (boolean|undefined),
  *     logo: (boolean|string|olx.LogoOptions|Element|undefined),
+ *     moveTolerance: (number|undefined),
  *     overlays: (ol.Collection.<ol.Overlay>|Array.<ol.Overlay>|undefined),
  *     renderer: (ol.renderer.Type|Array.<ol.renderer.Type>|undefined),
  *     target: (Element|string|undefined),
@@ -383,6 +384,17 @@ olx.MapOptions.prototype.loadTilesWhileInteracting;
  * @api
  */
 olx.MapOptions.prototype.logo;
+
+
+/**
+ * The minimum distance in pixels the cursor must move to be detected
+ * as a map move event instead of a click. Increasing this value can make it
+ * easier to click on the map.
+ * Default is `1`.
+ * @type {number|undefined}
+ * @api
+ */
+olx.MapOptions.prototype.moveTolerance;
 
 
 /**
@@ -668,7 +680,8 @@ olx.ProjectionOptions.prototype.worldExtent;
 /**
  * Function to determine resolution at a point. The function is called with a
  * `{number}` view resolution and an `{ol.Coordinate}` as arguments, and returns
- * the `{number}` resolution at the passed coordinate.
+ * the `{number}` resolution at the passed coordinate. If this is `undefined`,
+ * the default {@link ol.proj#getPointResolution} function will be used.
  * @type {(function(number, ol.Coordinate):number|undefined)}
  * @api
  */
@@ -1981,9 +1994,9 @@ olx.format.MVTOptions;
  * {@link ol.Feature} to get full editing and geometry support at the cost of
  * decreased rendering performance. The default is {@link ol.render.Feature},
  * which is optimized for rendering and hit detection.
- * @type {undefined|function((ol.geom.Geometry|Object.<string, *>)=)|
+ * @type {undefined|function((ol.geom.Geometry|Object.<string,*>)=)|
  *     function(ol.geom.GeometryType,Array.<number>,
- *         (Array.<number>|Array.<Array.<number>>),Object.<string, *>)}
+ *         (Array.<number>|Array.<Array.<number>>),Object.<string,*>,number)}
  * @api
  */
 olx.format.MVTOptions.prototype.featureClass;
@@ -2040,7 +2053,11 @@ olx.format.PolylineOptions.prototype.geometryLayout;
 
 
 /**
- * @typedef {{defaultDataProjection: ol.ProjectionLike}}
+ * @typedef {{
+ *     defaultDataProjection: ol.ProjectionLike,
+ *     layerName: (string|undefined),
+ *     layers: (Array.<string>|undefined)
+ * }}
  */
 olx.format.TopoJSONOptions;
 
@@ -2051,6 +2068,38 @@ olx.format.TopoJSONOptions;
  * @api
  */
 olx.format.TopoJSONOptions.prototype.defaultDataProjection;
+
+
+/**
+ * Set the name of the TopoJSON topology `objects`'s children as feature
+ * property with the specified name. This means that when set to `'layer'`, a
+ * topology like
+ * ```
+ * {
+ *   "type": "Topology",
+ *   "objects": {
+ *     "example": {
+ *       "type": "GeometryCollection",
+ *       "geometries": []
+ *     }
+ *   }
+ * }
+ * ```
+ * will result in features that have a property `'layer'` set to `'example'`.
+ * When not set, no property will be added to features.
+ * @type {string|undefined}
+ * @api
+ */
+olx.format.TopoJSONOptions.prototype.layerName;
+
+
+/**
+ * Names of the TopoJSON topology's `objects`'s children to read features from.
+ * If not provided, features will be read from all children.
+ * @type {Array.<string>|undefined}
+ * @api
+ */
+olx.format.TopoJSONOptions.prototype.layers;
 
 
 /**
@@ -3164,12 +3213,15 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
 
 
 /**
- * @typedef {{condition: (ol.EventsConditionType|undefined),
+ * @typedef {{
+ *     condition: (ol.EventsConditionType|undefined),
  *     deleteCondition: (ol.EventsConditionType|undefined),
+ *     insertVertexCondition: (ol.EventsConditionType|undefined),
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     features: ol.Collection.<ol.Feature>,
- *     wrapX: (boolean|undefined)}}
+ *     wrapX: (boolean|undefined)
+ * }}
  */
 olx.interaction.ModifyOptions;
 
@@ -3194,6 +3246,16 @@ olx.interaction.ModifyOptions.prototype.condition;
  * @api
  */
 olx.interaction.ModifyOptions.prototype.deleteCondition;
+
+
+/**
+ * A function that takes an {@link ol.MapBrowserEvent} and returns a boolean
+ * to indicate whether a new vertex can be added to the sketch features.
+ * Default is {@link ol.events.condition.always}
+ * @type {ol.EventsConditionType|undefined}
+ * @api
+ */
+olx.interaction.ModifyOptions.prototype.insertVertexCondition;
 
 
 /**
@@ -4864,7 +4926,7 @@ olx.source.VectorTileOptions.prototype.state;
 
 
 /**
- * Class used to instantiate image tiles. Default is {@link ol.VectorTile}.
+ * Class used to instantiate vector tiles. Default is {@link ol.VectorTile}.
  * @type {function(new: ol.VectorTile, ol.TileCoord,
  *                 ol.TileState, string, ol.format.Feature,
  *                 ol.TileLoadFunctionType)|undefined}
@@ -5991,8 +6053,9 @@ olx.source.TileArcGISRestOptions.prototype.urls;
  *     crossOrigin: (null|string|undefined),
  *     jsonp: (boolean|undefined),
  *     reprojectionErrorThreshold: (number|undefined),
+ *     tileJSON: (TileJSON|undefined),
  *     tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *     url: string,
+ *     url: (string|undefined),
  *     wrapX: (boolean|undefined)}}
  */
 olx.source.TileJSONOptions;
@@ -6047,6 +6110,15 @@ olx.source.TileJSONOptions.prototype.reprojectionErrorThreshold;
 
 
 /**
+ * TileJSON configuration for this source. If not provided, `url` must be
+ * configured.
+ * @type {TileJSON|undefined}
+ * @api
+ */
+olx.source.TileJSONOptions.prototype.tileJSON;
+
+
+/**
  * Optional function to load a tile given a URL. The default is
  * ```js
  * function(imageTile, src) {
@@ -6060,8 +6132,8 @@ olx.source.TileJSONOptions.prototype.tileLoadFunction;
 
 
 /**
- * URL to the TileJSON file.
- * @type {string}
+ * URL to the TileJSON file. If not provided, `tileJSON` must be configured.
+ * @type {string|undefined}
  * @api
  */
 olx.source.TileJSONOptions.prototype.url;

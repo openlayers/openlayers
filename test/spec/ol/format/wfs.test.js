@@ -348,14 +348,14 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'topp',
         featureTypes: ['states'],
         filter: ol.format.filter.or(
-          ol.format.filter.and(
-            ol.format.filter.greaterThan('area', 100),
-            ol.format.filter.greaterThanOrEqualTo('pop', 20000)
-          ),
-          ol.format.filter.and(
-            ol.format.filter.lessThan('area', 100),
-            ol.format.filter.lessThanOrEqualTo('pop', 20000)
-          )
+            ol.format.filter.and(
+                ol.format.filter.greaterThan('area', 100),
+                ol.format.filter.greaterThanOrEqualTo('pop', 20000)
+            ),
+            ol.format.filter.and(
+                ol.format.filter.lessThan('area', 100),
+                ol.format.filter.lessThanOrEqualTo('pop', 20000)
+            )
         )
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
@@ -505,9 +505,9 @@ describe('ol.format.WFS', function() {
         featurePrefix: 'topp',
         featureTypes: ['states'],
         filter: ol.format.filter.and(
-          ol.format.filter.equalTo('name', 'New York'),
-          ol.format.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326'),
-          ol.format.filter.greaterThan('population', 2000000)
+            ol.format.filter.equalTo('name', 'New York'),
+            ol.format.filter.bbox('the_geom', [1, 2, 3, 4], 'urn:ogc:def:crs:EPSG::4326'),
+            ol.format.filter.greaterThan('population', 2000000)
         )
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
@@ -539,11 +539,11 @@ describe('ol.format.WFS', function() {
         filter: ol.format.filter.intersects(
             'the_geom',
             new ol.geom.Polygon([[
-                [10, 20],
-                [10, 25],
-                [15, 25],
-                [15, 20],
-                [10, 20]
+              [10, 20],
+              [10, 25],
+              [15, 25],
+              [15, 20],
+              [10, 20]
             ]])
         )
       });
@@ -576,13 +576,44 @@ describe('ol.format.WFS', function() {
         filter: ol.format.filter.within(
             'the_geom',
             new ol.geom.Polygon([[
-                [10, 20],
-                [10, 25],
-                [15, 25],
-                [15, 20],
-                [10, 20]
+              [10, 20],
+              [10, 25],
+              [15, 25],
+              [15, 20],
+              [10, 20]
             ]])
         )
+      });
+      expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
+    });
+
+    it('creates During property filter', function() {
+      var text =
+          '<wfs:Query xmlns:wfs="http://www.opengis.net/wfs" ' +
+          '    typeName="states" srsName="EPSG:4326">' +
+          '  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">' +
+          '    <ogc:During>' +
+          '      <fes:ValueReference xmlns:fes="http://www.opengis.net/fes">date_prop</fes:ValueReference>' +
+          '      <gml:TimePeriod xmlns:gml="http://www.opengis.net/gml">' +
+          '        <gml:begin>' +
+          '          <gml:TimeInstant>' +
+          '            <gml:timePosition>2010-01-20T00:00:00Z</gml:timePosition>' +
+          '          </gml:TimeInstant>' +
+          '        </gml:begin>' +
+          '        <gml:end>' +
+          '          <gml:TimeInstant>' +
+          '            <gml:timePosition>2012-12-31T00:00:00Z</gml:timePosition>' +
+          '          </gml:TimeInstant>' +
+          '        </gml:end>' +
+          '      </gml:TimePeriod>' +
+          '    </ogc:During>' +
+          '  </ogc:Filter>' +
+          '</wfs:Query>';
+
+      var serialized = new ol.format.WFS().writeGetFeature({
+        srsName: 'EPSG:4326',
+        featureTypes: ['states'],
+        filter: ol.format.filter.during('date_prop', '2010-01-20T00:00:00Z', '2012-12-31T00:00:00Z')
       });
       expect(serialized.firstElementChild).to.xmleql(ol.xml.parse(text));
     });
@@ -663,6 +694,29 @@ describe('ol.format.WFS', function() {
         gmlOptions: {srsName: 'EPSG:900913'}
       });
       expect(serialized).to.xmleql(ol.xml.parse(text));
+    });
+  });
+
+  describe('when writing out a Transaction request', function() {
+
+    it('creates the correct update with default featurePrefix', function() {
+      var format = new ol.format.WFS();
+      var updateFeature = new ol.Feature();
+      updateFeature.setGeometryName('the_geom');
+      updateFeature.setGeometry(new ol.geom.MultiLineString([[
+        [-12279454, 6741885],
+        [-12064207, 6732101],
+        [-11941908, 6595126],
+        [-12240318, 6507071],
+        [-12416429, 6604910]
+      ]]));
+      updateFeature.setId('FAULTS.4455');
+      var serialized = format.writeTransaction(null, [updateFeature], null, {
+        featureNS: 'http://foo',
+        featureType: 'FAULTS',
+        gmlOptions: {srsName: 'EPSG:900913'}
+      });
+      expect(serialized.firstChild.attributes.getNamedItem('xmlns:feature') !== null).to.equal(true);
     });
   });
 
@@ -1151,10 +1205,10 @@ describe('ol.format.WFS', function() {
           '  </And>' +
           '</Filter>';
       var serialized = ol.format.WFS.writeFilter(
-        ol.format.filter.and(
-          ol.format.filter.like('name', 'Mississippi*'),
-          ol.format.filter.equalTo('waterway', 'riverbank')
-        )
+          ol.format.filter.and(
+              ol.format.filter.like('name', 'Mississippi*'),
+              ol.format.filter.equalTo('waterway', 'riverbank')
+          )
       );
       expect(serialized).to.xmleql(ol.xml.parse(text));
     });

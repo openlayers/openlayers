@@ -7,9 +7,17 @@ if (ol.ENABLE_WEBGL) {
 
   /**
    * @const
+   * @type {string}
+   */
+  ol.render.webgl.defaultFont = '10px sans-serif';
+
+
+  /**
+   * @const
    * @type {ol.Color}
    */
   ol.render.webgl.defaultFillStyle = [0.0, 0.0, 0.0, 1.0];
+
 
   /**
    * @const
@@ -51,6 +59,21 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.render.webgl.defaultStrokeStyle = [0.0, 0.0, 0.0, 1.0];
 
+
+  /**
+   * @const
+   * @type {number}
+   */
+  ol.render.webgl.defaultTextAlign = 0.5;
+
+
+  /**
+   * @const
+   * @type {number}
+   */
+  ol.render.webgl.defaultTextBaseline = 0.5;
+
+
   /**
    * @const
    * @type {number}
@@ -70,7 +93,7 @@ if (ol.ENABLE_WEBGL) {
   ol.render.webgl.triangleIsCounterClockwise = function(x1, y1, x2, y2, x3, y3) {
     var area = (x2 - x1) * (y3 - y1) - (x3 - x1) * (y2 - y1);
     return (area <= ol.render.webgl.EPSILON && area >= -ol.render.webgl.EPSILON) ?
-        undefined : area > 0;
+      undefined : area > 0;
   };
 
   /**

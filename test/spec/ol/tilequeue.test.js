@@ -29,7 +29,7 @@ describe('ol.TileQueue', function() {
         'yH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==#' + tileId;
 
     var tileLoadFunction = opt_tileLoadFunction ?
-        opt_tileLoadFunction : ol.source.Image.defaultImageLoadFunction;
+      opt_tileLoadFunction : ol.source.Image.defaultImageLoadFunction;
     return new ol.ImageTile(tileCoord, state, src, null, tileLoadFunction);
   }
 
@@ -84,6 +84,20 @@ describe('ol.TileQueue', function() {
         done();
       }, 20);
 
+    });
+
+    it('calls #tileChangeCallback_ when all wanted tiles are aborted', function() {
+      var tileChangeCallback = sinon.spy();
+      var queue = new ol.TileQueue(noop, tileChangeCallback);
+      var numTiles = 20;
+      for (var i = 0; i < numTiles; ++i) {
+        var tile = createImageTile();
+        tile.state = ol.TileState.ABORT;
+        queue.enqueue([tile]);
+      }
+      var maxLoading = numTiles / 2;
+      queue.loadMoreTiles(maxLoading, maxLoading);
+      expect(tileChangeCallback.callCount).to.be(1);
     });
 
   });

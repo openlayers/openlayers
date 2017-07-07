@@ -38,7 +38,7 @@ ol.format.WKT = function(opt_options) {
    * @private
    */
   this.splitCollection_ = options.splitCollection !== undefined ?
-      options.splitCollection : false;
+    options.splitCollection : false;
 
 };
 ol.inherits(ol.format.WKT, ol.format.TextFeature);
@@ -330,7 +330,7 @@ ol.format.WKT.prototype.readGeometryFromText = function(text, opt_options) {
   var geometry = this.parse_(text);
   if (geometry) {
     return /** @type {ol.geom.Geometry} */ (
-        ol.format.Feature.transformWithOptions(geometry, false, opt_options));
+      ol.format.Feature.transformWithOptions(geometry, false, opt_options));
   } else {
     return null;
   }
@@ -405,7 +405,7 @@ ol.format.WKT.prototype.writeGeometry;
  */
 ol.format.WKT.prototype.writeGeometryText = function(geometry, opt_options) {
   return ol.format.WKT.encode_(/** @type {ol.geom.Geometry} */ (
-      ol.format.Feature.transformWithOptions(geometry, true, opt_options)));
+    ol.format.Feature.transformWithOptions(geometry, true, opt_options)));
 };
 
 
@@ -535,7 +535,7 @@ ol.format.WKT.Lexer.prototype.readNumber_ = function() {
     }
     c = this.nextChar_();
   } while (
-      this.isNumeric_(c, decimal) ||
+    this.isNumeric_(c, decimal) ||
       // if we haven't detected a scientific number before, 'e' or 'E'
       // hint that we should continue to read
       !scientificNotation && (c == 'e' || c == 'E') ||

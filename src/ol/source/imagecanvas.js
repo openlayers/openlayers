@@ -48,7 +48,7 @@ ol.source.ImageCanvas = function(options) {
    * @type {number}
    */
   this.ratio_ = options.ratio !== undefined ?
-      options.ratio : 1.5;
+    options.ratio : 1.5;
 
 };
 ol.inherits(ol.source.ImageCanvas, ol.source.Image);

@@ -48,7 +48,7 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition !== undefined ?
-      options.condition : this.defaultCondition_;
+    options.condition : this.defaultCondition_;
 
   /**
    * @private
@@ -61,7 +61,7 @@ ol.interaction.KeyboardPan = function(opt_options) {
    * @type {number}
    */
   this.pixelDelta_ = options.pixelDelta !== undefined ?
-      options.pixelDelta : 128;
+    options.pixelDelta : 128;
 
 };
 ol.inherits(ol.interaction.KeyboardPan, ol.interaction.Interaction);

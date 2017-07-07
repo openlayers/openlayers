@@ -81,11 +81,11 @@ var map = new ol.Map({
 
 function createUrl(tpl, layerDesc) {
   return tpl
-    .replace('{base}', layerDesc.base)
-    .replace('{type}', layerDesc.type)
-    .replace('{scheme}', layerDesc.scheme)
-    .replace('{app_id}', layerDesc.app_id)
-    .replace('{app_code}', layerDesc.app_code);
+      .replace('{base}', layerDesc.base)
+      .replace('{type}', layerDesc.type)
+      .replace('{scheme}', layerDesc.scheme)
+      .replace('{app_id}', layerDesc.app_id)
+      .replace('{app_code}', layerDesc.app_code);
 }
 
 var select = document.getElementById('layer-select');

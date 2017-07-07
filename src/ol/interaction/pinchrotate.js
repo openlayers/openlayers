@@ -5,6 +5,7 @@ goog.require('ol.ViewHint');
 goog.require('ol.functions');
 goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.Pointer');
+goog.require('ol.RotationConstraint');
 
 
 /**
@@ -95,6 +96,10 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
   this.lastAngle_ = angle;
 
   var map = mapBrowserEvent.map;
+  var view = map.getView();
+  if (view.getConstraints().rotation === ol.RotationConstraint.disable) {
+    return;
+  }
 
   // rotate anchor point.
   // FIXME: should be the intersection point between the lines:
@@ -107,7 +112,6 @@ ol.interaction.PinchRotate.handleDragEvent_ = function(mapBrowserEvent) {
 
   // rotate
   if (this.rotating_) {
-    var view = map.getView();
     var rotation = view.getRotation();
     map.render();
     ol.interaction.Interaction.rotateWithoutConstraints(view,

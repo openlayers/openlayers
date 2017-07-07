@@ -27,6 +27,37 @@ ol.coordinate.add = function(coordinate, delta) {
 
 
 /**
+ * Calculates the point closest to the passed coordinate on the passed circle.
+ *
+ * @param {ol.Coordinate} coordinate The coordinate.
+ * @param {ol.geom.Circle} circle The circle.
+ * @return {ol.Coordinate} Closest point on the circumference
+ */
+ol.coordinate.closestOnCircle = function(coordinate, circle) {
+  var r = circle.getRadius();
+  var center = circle.getCenter();
+  var x0 = center[0];
+  var y0 = center[1];
+  var x1 = coordinate[0];
+  var y1 = coordinate[1];
+
+  var dx = x1 - x0;
+  var dy = y1 - y0;
+  if (dx === 0 && dy === 0) {
+    dx = 1;
+  }
+  var d = Math.sqrt(dx * dx + dy * dy);
+
+  var x, y;
+
+  x = x0 + r * dx / d;
+  y = y0 + r * dy / d;
+
+  return [x, y];
+};
+
+
+/**
  * Calculates the point closest to the passed coordinate on the passed segment.
  * This is the foot of the perpendicular of the coordinate to the segment when
  * the foot is on the segment, or the closest segment coordinate when the foot
@@ -49,7 +80,7 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
   var dx = x2 - x1;
   var dy = y2 - y1;
   var along = (dx === 0 && dy === 0) ? 0 :
-      ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
+    ((dx * (x0 - x1)) + (dy * (y0 - y1))) / ((dx * dx + dy * dy) || 0);
   var x, y;
   if (along <= 0) {
     x = x1;
@@ -90,13 +121,13 @@ ol.coordinate.closestOnSegment = function(coordinate, segment) {
  */
 ol.coordinate.createStringXY = function(opt_fractionDigits) {
   return (
-      /**
-       * @param {ol.Coordinate|undefined} coordinate Coordinate.
-       * @return {string} String XY.
-       */
-      function(coordinate) {
-        return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
-      });
+    /**
+     * @param {ol.Coordinate|undefined} coordinate Coordinate.
+     * @return {string} String XY.
+     */
+    function(coordinate) {
+      return ol.coordinate.toStringXY(coordinate, opt_fractionDigits);
+    });
 };
 
 
@@ -164,8 +195,8 @@ ol.coordinate.degreesToStringHDMS = function(hemispheres, degrees, opt_fractionD
 ol.coordinate.format = function(coordinate, template, opt_fractionDigits) {
   if (coordinate) {
     return template
-      .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
-      .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
+        .replace('{x}', coordinate[0].toFixed(opt_fractionDigits))
+        .replace('{y}', coordinate[1].toFixed(opt_fractionDigits));
   } else {
     return '';
   }

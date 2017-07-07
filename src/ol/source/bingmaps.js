@@ -136,7 +136,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
   var sourceProjection = this.getProjection();
   var extent = ol.tilegrid.extentFromProjection(sourceProjection);
   var tileSize = resource.imageWidth == resource.imageHeight ?
-      resource.imageWidth : [resource.imageWidth, resource.imageHeight];
+    resource.imageWidth : [resource.imageWidth, resource.imageHeight];
   var tileGrid = ol.tilegrid.createXYZ({
     extent: extent,
     minZoom: resource.zoomMin,
@@ -154,26 +154,26 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
             .replace('{subdomain}', subdomain)
             .replace('{culture}', culture);
         return (
-            /**
-             * @param {ol.TileCoord} tileCoord Tile coordinate.
-             * @param {number} pixelRatio Pixel ratio.
-             * @param {ol.proj.Projection} projection Projection.
-             * @return {string|undefined} Tile URL.
-             */
-            function(tileCoord, pixelRatio, projection) {
-              if (!tileCoord) {
-                return undefined;
-              } else {
-                ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
-                    -tileCoord[2] - 1, quadKeyTileCoord);
-                var url = imageUrl;
-                if (hidpi) {
-                  url += '&dpi=d1&device=mobile';
-                }
-                return url.replace('{quadkey}', ol.tilecoord.quadKey(
-                    quadKeyTileCoord));
+          /**
+           * @param {ol.TileCoord} tileCoord Tile coordinate.
+           * @param {number} pixelRatio Pixel ratio.
+           * @param {ol.proj.Projection} projection Projection.
+           * @return {string|undefined} Tile URL.
+           */
+          function(tileCoord, pixelRatio, projection) {
+            if (!tileCoord) {
+              return undefined;
+            } else {
+              ol.tilecoord.createOrUpdate(tileCoord[0], tileCoord[1],
+                  -tileCoord[2] - 1, quadKeyTileCoord);
+              var url = imageUrl;
+              if (hidpi) {
+                url += '&dpi=d1&device=mobile';
               }
-            });
+              return url.replace('{quadkey}', ol.tilecoord.quadKey(
+                  quadKeyTileCoord));
+            }
+          });
       }));
 
   if (resource.imageryProviders) {

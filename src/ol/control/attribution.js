@@ -53,7 +53,7 @@ ol.control.Attribution = function(opt_options) {
    * @type {boolean}
    */
   this.collapsible_ = options.collapsible !== undefined ?
-      options.collapsible : true;
+    options.collapsible : true;
 
   if (!this.collapsible_) {
     this.collapsed_ = false;
@@ -91,7 +91,7 @@ ol.control.Attribution = function(opt_options) {
 
 
   var activeLabel = (this.collapsible_ && !this.collapsed_) ?
-      this.collapseLabel_ : this.label_;
+    this.collapseLabel_ : this.label_;
   var button = document.createElement('button');
   button.setAttribute('type', 'button');
   button.title = tipLabel;

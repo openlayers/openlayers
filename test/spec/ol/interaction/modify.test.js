@@ -217,7 +217,7 @@ describe('ol.interaction.Modify', function() {
     it('deletes first vertex of a LineString', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+            [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
       features.length = 0;
@@ -253,7 +253,7 @@ describe('ol.interaction.Modify', function() {
     it('deletes last vertex of a LineString', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+            [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
       features.length = 0;
@@ -289,7 +289,7 @@ describe('ol.interaction.Modify', function() {
     it('deletes vertex of a LineString programmatically', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
+            [[0, 0], [10, 20], [0, 40], [40, 40], [40, 0]]
         )
       });
       features.length = 0;
@@ -331,7 +331,7 @@ describe('ol.interaction.Modify', function() {
     it('keeps the third dimension', function() {
       var lineFeature = new ol.Feature({
         geometry: new ol.geom.LineString(
-          [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
+            [[0, 0, 10], [10, 20, 20], [0, 40, 30], [40, 40, 40], [40, 0, 50]]
         )
       });
       features.length = 0;
@@ -556,6 +556,40 @@ describe('ol.interaction.Modify', function() {
       expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
 
       expect(events.length).to.eql(0);
+    });
+  });
+
+  describe('insertVertexCondition', function() {
+    it('calls the callback function', function() {
+      var listenerSpy = sinon.spy(function(event) {
+        return false;
+      });
+
+      var modify = new ol.interaction.Modify({
+        features: new ol.Collection(features),
+        insertVertexCondition: listenerSpy
+      });
+      map.addInteraction(modify);
+      var feature = features[0];
+
+      // move first vertex
+      simulateEvent('pointermove', 0, 0, false, 0);
+      simulateEvent('pointerdown', 0, 0, false, 0);
+      simulateEvent('pointermove', -10, -10, false, 0);
+      simulateEvent('pointerdrag', -10, -10, false, 0);
+      simulateEvent('pointerup', -10, -10, false, 0);
+
+      expect(listenerSpy.callCount).to.be(0);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
+
+      // try to add vertex
+      simulateEvent('pointerdown', 40, -20, false, 0);
+      simulateEvent('pointerup', 40, -20, false, 0);
+      simulateEvent('click', 40, -20, false, 0);
+      simulateEvent('singleclick', 40, -20, false, 0);
+
+      expect(listenerSpy.callCount).to.be(1);
+      expect(feature.getGeometry().getCoordinates()[0]).to.have.length(5);
     });
   });
 

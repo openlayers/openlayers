@@ -2,7 +2,6 @@ goog.provide('ol.View');
 
 goog.require('ol');
 goog.require('ol.CenterConstraint');
-goog.require('ol.Constraints');
 goog.require('ol.Object');
 goog.require('ol.ResolutionConstraint');
 goog.require('ol.RotationConstraint');
@@ -16,6 +15,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Polygon');
 goog.require('ol.geom.SimpleGeometry');
+goog.require('ol.math');
 goog.require('ol.obj');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
@@ -126,7 +126,7 @@ ol.View.prototype.applyOptions_ = function(options) {
    */
   var properties = {};
   properties[ol.ViewProperty.CENTER] = options.center !== undefined ?
-      options.center : null;
+    options.center : null;
 
   var resolutionConstraintInfo = ol.View.createResolutionConstraint_(
       options);
@@ -169,8 +169,11 @@ ol.View.prototype.applyOptions_ = function(options) {
    * @private
    * @type {ol.Constraints}
    */
-  this.constraints_ = new ol.Constraints(
-      centerConstraint, resolutionConstraint, rotationConstraint);
+  this.constraints_ = {
+    center: centerConstraint,
+    resolution: resolutionConstraint,
+    rotation: rotationConstraint
+  };
 
   if (options.resolution !== undefined) {
     properties[ol.ViewProperty.RESOLUTION] = options.resolution;
@@ -283,7 +286,7 @@ ol.View.prototype.animate = function(var_args) {
     if (options.zoom !== undefined) {
       animation.sourceResolution = resolution;
       animation.targetResolution = this.constrainResolution(
-            this.maxResolution_, options.zoom - this.minZoom_, 0);
+          this.maxResolution_, options.zoom - this.minZoom_, 0);
       resolution = animation.targetResolution;
     } else if (options.resolution) {
       animation.sourceResolution = resolution;
@@ -293,7 +296,8 @@ ol.View.prototype.animate = function(var_args) {
 
     if (options.rotation !== undefined) {
       animation.sourceRotation = rotation;
-      animation.targetRotation = options.rotation;
+      var delta = ol.math.modulo(options.rotation - rotation + Math.PI, 2 * Math.PI) - Math.PI;
+      animation.targetRotation = rotation + delta;
       rotation = animation.targetRotation;
     }
 
@@ -383,8 +387,8 @@ ol.View.prototype.updateAnimations_ = function() {
       }
       if (animation.sourceResolution && animation.targetResolution) {
         var resolution = progress === 1 ?
-            animation.targetResolution :
-            animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
+          animation.targetResolution :
+          animation.sourceResolution + progress * (animation.targetResolution - animation.sourceResolution);
         if (animation.anchor) {
           this.set(ol.ViewProperty.CENTER,
               this.calculateCenterZoom(resolution, animation.anchor));
@@ -393,8 +397,8 @@ ol.View.prototype.updateAnimations_ = function() {
       }
       if (animation.sourceRotation !== undefined && animation.targetRotation !== undefined) {
         var rotation = progress === 1 ?
-            animation.targetRotation :
-            animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
+          ol.math.modulo(animation.targetRotation + Math.PI, 2 * Math.PI) - Math.PI :
+          animation.sourceRotation + progress * (animation.targetRotation - animation.sourceRotation);
         if (animation.anchor) {
           this.set(ol.ViewProperty.CENTER,
               this.calculateCenterRotate(rotation, animation.anchor));
@@ -524,7 +528,15 @@ ol.View.prototype.constrainRotation = function(rotation, opt_delta) {
  */
 ol.View.prototype.getCenter = function() {
   return /** @type {ol.Coordinate|undefined} */ (
-      this.get(ol.ViewProperty.CENTER));
+    this.get(ol.ViewProperty.CENTER));
+};
+
+
+/**
+ * @return {ol.Constraints} Constraints.
+ */
+ol.View.prototype.getConstraints = function() {
+  return this.constraints_;
 };
 
 
@@ -644,7 +656,7 @@ ol.View.prototype.getProjection = function() {
  */
 ol.View.prototype.getResolution = function() {
   return /** @type {number|undefined} */ (
-      this.get(ol.ViewProperty.RESOLUTION));
+    this.get(ol.ViewProperty.RESOLUTION));
 };
 
 
@@ -662,11 +674,13 @@ ol.View.prototype.getResolutions = function() {
 /**
  * Get the resolution for a provided extent (in map units) and size (in pixels).
  * @param {ol.Extent} extent Extent.
- * @param {ol.Size} size Box pixel size.
+ * @param {ol.Size=} opt_size Box pixel size.
  * @return {number} The resolution at which the provided extent will render at
  *     the given size.
+ * @api
  */
-ol.View.prototype.getResolutionForExtent = function(extent, size) {
+ol.View.prototype.getResolutionForExtent = function(extent, opt_size) {
+  var size = opt_size || this.getSizeFromViewport_();
   var xResolution = ol.extent.getWidth(extent) / size[0];
   var yResolution = ol.extent.getHeight(extent) / size[1];
   return Math.max(xResolution, yResolution);
@@ -685,14 +699,14 @@ ol.View.prototype.getResolutionForValueFunction = function(opt_power) {
   var minResolution = this.minResolution_;
   var max = Math.log(maxResolution / minResolution) / Math.log(power);
   return (
-      /**
-       * @param {number} value Value.
-       * @return {number} Resolution.
-       */
-      function(value) {
-        var resolution = maxResolution / Math.pow(power, value * max);
-        return resolution;
-      });
+    /**
+     * @param {number} value Value.
+     * @return {number} Resolution.
+     */
+    function(value) {
+      var resolution = maxResolution / Math.pow(power, value * max);
+      return resolution;
+    });
 };
 
 
@@ -719,15 +733,15 @@ ol.View.prototype.getValueForResolutionFunction = function(opt_power) {
   var minResolution = this.minResolution_;
   var max = Math.log(maxResolution / minResolution) / Math.log(power);
   return (
-      /**
-       * @param {number} resolution Resolution.
-       * @return {number} Value.
-       */
-      function(resolution) {
-        var value =
+    /**
+     * @param {number} resolution Resolution.
+     * @return {number} Value.
+     */
+    function(resolution) {
+      var value =
             (Math.log(maxResolution / resolution) / Math.log(power)) / max;
-        return value;
-      });
+      return value;
+    });
 };
 
 
@@ -794,6 +808,18 @@ ol.View.prototype.getZoomForResolution = function(resolution) {
 
 
 /**
+ * Get the resolution for a zoom level.
+ * @param {number} zoom Zoom level.
+ * @return {number} The view resolution for the provided zoom level.
+ * @api
+ */
+ol.View.prototype.getResolutionForZoom = function(zoom) {
+  return /** @type {number} */ (this.constrainResolution(
+      this.maxResolution_, zoom - this.minZoom_, 0));
+};
+
+
+/**
  * Fit the given geometry or extent based on the given map size and border.
  * The size is pixel dimensions of the box to fit the extent into.
  * In most cases you will want to use the map size, that is `map.getSize()`.
@@ -827,7 +853,7 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
 
   var padding = options.padding !== undefined ? options.padding : [0, 0, 0, 0];
   var constrainResolution = options.constrainResolution !== undefined ?
-      options.constrainResolution : true;
+    options.constrainResolution : true;
   var nearest = options.nearest !== undefined ? options.nearest : false;
   var minResolution;
   if (options.minResolution !== undefined) {
@@ -863,7 +889,7 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
       [minRotX, minRotY, maxRotX, maxRotY],
       [size[0] - padding[1] - padding[3], size[1] - padding[0] - padding[2]]);
   resolution = isNaN(resolution) ? minResolution :
-      Math.max(resolution, minResolution);
+    Math.max(resolution, minResolution);
   if (constrainResolution) {
     var constrainedResolution = this.constrainResolution(resolution, 0, 0);
     if (!nearest && constrainedResolution < resolution) {
@@ -1009,9 +1035,7 @@ ol.View.prototype.setRotation = function(rotation) {
  * @api
  */
 ol.View.prototype.setZoom = function(zoom) {
-  var resolution = this.constrainResolution(
-      this.maxResolution_, zoom - this.minZoom_, 0);
-  this.setResolution(resolution);
+  this.setResolution(this.getResolutionForZoom(zoom));
 };
 
 
@@ -1046,13 +1070,13 @@ ol.View.createResolutionConstraint_ = function(options) {
   var defaultZoomFactor = 2;
 
   var minZoom = options.minZoom !== undefined ?
-      options.minZoom : ol.DEFAULT_MIN_ZOOM;
+    options.minZoom : ol.DEFAULT_MIN_ZOOM;
 
   var maxZoom = options.maxZoom !== undefined ?
-      options.maxZoom : defaultMaxZoom;
+    options.maxZoom : defaultMaxZoom;
 
   var zoomFactor = options.zoomFactor !== undefined ?
-      options.zoomFactor : defaultZoomFactor;
+    options.zoomFactor : defaultZoomFactor;
 
   if (options.resolutions !== undefined) {
     var resolutions = options.resolutions;
@@ -1065,10 +1089,10 @@ ol.View.createResolutionConstraint_ = function(options) {
     var projection = ol.proj.createProjection(options.projection, 'EPSG:3857');
     var extent = projection.getExtent();
     var size = !extent ?
-        // use an extent that can fit the whole world if need be
-        360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
+      // use an extent that can fit the whole world if need be
+      360 * ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES] /
             projection.getMetersPerUnit() :
-        Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent));
+      Math.max(ol.extent.getWidth(extent), ol.extent.getHeight(extent));
 
     var defaultMaxResolution = size / ol.DEFAULT_TILE_SIZE / Math.pow(
         defaultZoomFactor, ol.DEFAULT_MIN_ZOOM);
@@ -1118,7 +1142,7 @@ ol.View.createResolutionConstraint_ = function(options) {
  */
 ol.View.createRotationConstraint_ = function(options) {
   var enableRotation = options.enableRotation !== undefined ?
-      options.enableRotation : true;
+    options.enableRotation : true;
   if (enableRotation) {
     var constrainRotation = options.constrainRotation;
     if (constrainRotation === undefined || constrainRotation === true) {

@@ -66,20 +66,20 @@ ol.renderer.Layer.prototype.hasFeatureAtCoordinate = ol.functions.FALSE;
  */
 ol.renderer.Layer.prototype.createLoadedTileFinder = function(source, projection, tiles) {
   return (
-      /**
-       * @param {number} zoom Zoom level.
-       * @param {ol.TileRange} tileRange Tile range.
-       * @return {boolean} The tile range is fully loaded.
-       */
-      function(zoom, tileRange) {
-        function callback(tile) {
-          if (!tiles[zoom]) {
-            tiles[zoom] = {};
-          }
-          tiles[zoom][tile.tileCoord.toString()] = tile;
+    /**
+     * @param {number} zoom Zoom level.
+     * @param {ol.TileRange} tileRange Tile range.
+     * @return {boolean} The tile range is fully loaded.
+     */
+    function(zoom, tileRange) {
+      function callback(tile) {
+        if (!tiles[zoom]) {
+          tiles[zoom] = {};
         }
-        return source.forEachLoadedTile(projection, zoom, tileRange, callback);
-      });
+        tiles[zoom][tile.tileCoord.toString()] = tile;
+      }
+      return source.forEachLoadedTile(projection, zoom, tileRange, callback);
+    });
 };
 
 
@@ -152,12 +152,14 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
      */
     var postRenderFunction = function(tileSource, map, frameState) {
       var tileSourceKey = ol.getUid(tileSource).toString();
-      tileSource.expireCache(frameState.viewState.projection,
-                             frameState.usedTiles[tileSourceKey]);
+      if (tileSourceKey in frameState.usedTiles) {
+        tileSource.expireCache(frameState.viewState.projection,
+            frameState.usedTiles[tileSourceKey]);
+      }
     }.bind(null, tileSource);
 
     frameState.postRenderFunctions.push(
-      /** @type {ol.PostRenderFunction} */ (postRenderFunction)
+        /** @type {ol.PostRenderFunction} */ (postRenderFunction)
     );
   }
 };

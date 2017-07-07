@@ -57,7 +57,7 @@ ol.tilegrid.wrapX = function(tileGrid, tileCoord, projection) {
  */
 ol.tilegrid.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_corner) {
   var corner = opt_corner !== undefined ?
-      opt_corner : ol.extent.Corner.TOP_LEFT;
+    opt_corner : ol.extent.Corner.TOP_LEFT;
 
   var resolutions = ol.tilegrid.resolutionsFromExtent(
       extent, opt_maxZoom, opt_tileSize);
@@ -74,13 +74,13 @@ ol.tilegrid.createForExtent = function(extent, opt_maxZoom, opt_tileSize, opt_co
 /**
  * Creates a tile grid with a standard XYZ tiling scheme.
  * @param {olx.tilegrid.XYZOptions=} opt_options Tile grid options.
- * @return {ol.tilegrid.TileGrid} Tile grid instance.
+ * @return {!ol.tilegrid.TileGrid} Tile grid instance.
  * @api
  */
 ol.tilegrid.createXYZ = function(opt_options) {
   var options = /** @type {olx.tilegrid.TileGridOptions} */ ({});
   ol.obj.assign(options, opt_options !== undefined ?
-      opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
+    opt_options : /** @type {olx.tilegrid.XYZOptions} */ ({}));
   if (options.extent === undefined) {
     options.extent = ol.proj.get('EPSG:3857').getExtent();
   }
@@ -103,13 +103,13 @@ ol.tilegrid.createXYZ = function(opt_options) {
  */
 ol.tilegrid.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize) {
   var maxZoom = opt_maxZoom !== undefined ?
-      opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
+    opt_maxZoom : ol.DEFAULT_MAX_ZOOM;
 
   var height = ol.extent.getHeight(extent);
   var width = ol.extent.getWidth(extent);
 
   var tileSize = ol.size.toSize(opt_tileSize !== undefined ?
-      opt_tileSize : ol.DEFAULT_TILE_SIZE);
+    opt_tileSize : ol.DEFAULT_TILE_SIZE);
   var maxResolution = Math.max(
       width / tileSize[0], height / tileSize[1]);
 
@@ -126,7 +126,8 @@ ol.tilegrid.resolutionsFromExtent = function(extent, opt_maxZoom, opt_tileSize) 
  * @param {ol.ProjectionLike} projection Projection.
  * @param {number=} opt_maxZoom Maximum zoom level (default is
  *     ol.DEFAULT_MAX_ZOOM).
- * @param {ol.Size=} opt_tileSize Tile size (default uses ol.DEFAULT_TILE_SIZE).
+ * @param {number|ol.Size=} opt_tileSize Tile size (default uses
+ *     ol.DEFAULT_TILE_SIZE).
  * @param {ol.extent.Corner=} opt_corner Extent corner (default is
  *     ol.extent.Corner.BOTTOM_LEFT).
  * @return {!ol.tilegrid.TileGrid} TileGrid instance.

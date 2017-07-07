@@ -115,7 +115,7 @@ ol.control.Control.prototype.setMap = function(map) {
   this.map_ = map;
   if (this.map_) {
     var target = this.target_ ?
-        this.target_ : map.getOverlayContainerStopEvent();
+      this.target_ : map.getOverlayContainerStopEvent();
     target.appendChild(this.element);
     if (this.render !== ol.nullFunction) {
       this.listenerKeys.push(ol.events.listen(map,

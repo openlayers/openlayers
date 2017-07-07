@@ -72,56 +72,56 @@ ol.color.fromNamed = function(color) {
  * @return {ol.Color} Color.
  */
 ol.color.fromString = (
-    function() {
+  function() {
 
-      // We maintain a small cache of parsed strings.  To provide cheap LRU-like
-      // semantics, whenever the cache grows too large we simply delete an
-      // arbitrary 25% of the entries.
+    // We maintain a small cache of parsed strings.  To provide cheap LRU-like
+    // semantics, whenever the cache grows too large we simply delete an
+    // arbitrary 25% of the entries.
 
+    /**
+     * @const
+     * @type {number}
+     */
+    var MAX_CACHE_SIZE = 1024;
+
+    /**
+     * @type {Object.<string, ol.Color>}
+     */
+    var cache = {};
+
+    /**
+     * @type {number}
+     */
+    var cacheSize = 0;
+
+    return (
       /**
-       * @const
-       * @type {number}
+       * @param {string} s String.
+       * @return {ol.Color} Color.
        */
-      var MAX_CACHE_SIZE = 1024;
-
-      /**
-       * @type {Object.<string, ol.Color>}
-       */
-      var cache = {};
-
-      /**
-       * @type {number}
-       */
-      var cacheSize = 0;
-
-      return (
-          /**
-           * @param {string} s String.
-           * @return {ol.Color} Color.
-           */
-          function(s) {
-            var color;
-            if (cache.hasOwnProperty(s)) {
-              color = cache[s];
-            } else {
-              if (cacheSize >= MAX_CACHE_SIZE) {
-                var i = 0;
-                var key;
-                for (key in cache) {
-                  if ((i++ & 3) === 0) {
-                    delete cache[key];
-                    --cacheSize;
-                  }
-                }
+      function(s) {
+        var color;
+        if (cache.hasOwnProperty(s)) {
+          color = cache[s];
+        } else {
+          if (cacheSize >= MAX_CACHE_SIZE) {
+            var i = 0;
+            var key;
+            for (key in cache) {
+              if ((i++ & 3) === 0) {
+                delete cache[key];
+                --cacheSize;
               }
-              color = ol.color.fromStringInternal_(s);
-              cache[s] = color;
-              ++cacheSize;
             }
-            return color;
-          });
+          }
+          color = ol.color.fromStringInternal_(s);
+          cache[s] = color;
+          ++cacheSize;
+        }
+        return color;
+      });
 
-    })();
+  })();
 
 
 /**

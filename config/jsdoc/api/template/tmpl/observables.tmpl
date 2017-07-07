@@ -16,8 +16,10 @@
   <tbody>
   <?js
       var self = this;
+      var propsByName = {};
       props.forEach(function(prop) {
-        if (!prop) { return; }
+        if (!prop || propsByName[prop.name]) { return; }
+        propsByName[prop.name] = prop;
         var setter = prop.readonly ? 'no' : 'yes';
   ?>
 

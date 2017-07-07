@@ -105,8 +105,8 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.minPoints_ = options.minPoints ?
-      options.minPoints :
-      (this.mode_ === ol.interaction.Draw.Mode_.POLYGON ? 3 : 2);
+    options.minPoints :
+    (this.mode_ === ol.interaction.Draw.Mode_.POLYGON ? 3 : 2);
 
   /**
    * The number of points that can be drawn before a polygon ring or line string
@@ -127,14 +127,14 @@ ol.interaction.Draw = function(options) {
   if (!geometryFunction) {
     if (this.type_ === ol.geom.GeometryType.CIRCLE) {
       /**
-       * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+       * @param {!Array.<ol.Coordinate>} coordinates
        *     The coordinates.
        * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
        * @return {ol.geom.SimpleGeometry} A geometry.
        */
       geometryFunction = function(coordinates, opt_geometry) {
         var circle = opt_geometry ? /** @type {ol.geom.Circle} */ (opt_geometry) :
-            new ol.geom.Circle([NaN, NaN]);
+          new ol.geom.Circle([NaN, NaN]);
         var squaredLength = ol.coordinate.squaredDistance(
             coordinates[0], coordinates[1]);
         circle.setCenterAndRadius(coordinates[0], Math.sqrt(squaredLength));
@@ -151,7 +151,7 @@ ol.interaction.Draw = function(options) {
         Constructor = ol.geom.Polygon;
       }
       /**
-       * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+       * @param {!Array.<ol.Coordinate>} coordinates
        *     The coordinates.
        * @param {ol.geom.SimpleGeometry=} opt_geometry Optional geometry.
        * @return {ol.geom.SimpleGeometry} A geometry.
@@ -229,7 +229,7 @@ ol.interaction.Draw = function(options) {
    * @private
    */
   this.squaredClickTolerance_ = options.clickTolerance ?
-      options.clickTolerance * options.clickTolerance : 36;
+    options.clickTolerance * options.clickTolerance : 36;
 
   /**
    * Draw overlay where our sketch features are drawn.
@@ -242,7 +242,7 @@ ol.interaction.Draw = function(options) {
       wrapX: options.wrapX ? options.wrapX : false
     }),
     style: options.style ? options.style :
-        ol.interaction.Draw.getDefaultStyleFunction()
+      ol.interaction.Draw.getDefaultStyleFunction()
   });
 
   /**
@@ -257,7 +257,7 @@ ol.interaction.Draw = function(options) {
    * @type {ol.EventsConditionType}
    */
   this.condition_ = options.condition ?
-      options.condition : ol.events.condition.noModifierKeys;
+    options.condition : ol.events.condition.noModifierKeys;
 
   /**
    * @private
@@ -268,7 +268,7 @@ ol.interaction.Draw = function(options) {
     this.freehandCondition_ = ol.events.condition.always;
   } else {
     this.freehandCondition_ = options.freehandCondition ?
-        options.freehandCondition : ol.events.condition.shiftKeyOnly;
+      options.freehandCondition : ol.events.condition.shiftKeyOnly;
   }
 
   ol.events.listen(this,
@@ -401,8 +401,8 @@ ol.interaction.Draw.prototype.handlePointerMove_ = function(event) {
     var dy = downPx[1] - clickPx[1];
     var squaredDistance = dx * dx + dy * dy;
     this.shouldHandle_ = this.freehand_ ?
-        squaredDistance > this.squaredClickTolerance_ :
-        squaredDistance <= this.squaredClickTolerance_;
+      squaredDistance > this.squaredClickTolerance_ :
+      squaredDistance <= this.squaredClickTolerance_;
   }
 
   if (this.finishCoordinate_) {
@@ -529,9 +529,7 @@ ol.interaction.Draw.prototype.modifyDrawing_ = function(event) {
   }
   last[0] = coordinate[0];
   last[1] = coordinate[1];
-  this.geometryFunction_(
-      /** @type {!ol.Coordinate|!Array.<ol.Coordinate>|!Array.<Array.<ol.Coordinate>>} */ (this.sketchCoords_),
-      geometry);
+  this.geometryFunction_(/** @type {!Array.<ol.Coordinate>} */ (this.sketchCoords_), geometry);
   if (this.sketchPoint_) {
     var sketchPointGeom = /** @type {ol.geom.Point} */ (this.sketchPoint_.getGeometry());
     sketchPointGeom.setCoordinates(coordinate);
@@ -769,23 +767,23 @@ ol.interaction.Draw.prototype.updateState_ = function() {
  */
 ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
   return (
-      /**
+  /**
        * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
        * @param {ol.geom.SimpleGeometry=} opt_geometry
        * @return {ol.geom.SimpleGeometry}
        */
-      function(coordinates, opt_geometry) {
-        var center = coordinates[0];
-        var end = coordinates[1];
-        var radius = Math.sqrt(
-            ol.coordinate.squaredDistance(center, end));
-        var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
-            ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
-        var angle = opt_angle ? opt_angle :
-            Math.atan((end[1] - center[1]) / (end[0] - center[0]));
-        ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
-        return geometry;
-      }
+    function(coordinates, opt_geometry) {
+      var center = coordinates[0];
+      var end = coordinates[1];
+      var radius = Math.sqrt(
+          ol.coordinate.squaredDistance(center, end));
+      var geometry = opt_geometry ? /** @type {ol.geom.Polygon} */ (opt_geometry) :
+        ol.geom.Polygon.fromCircle(new ol.geom.Circle(center), opt_sides);
+      var angle = opt_angle ? opt_angle :
+        Math.atan((end[1] - center[1]) / (end[0] - center[0]));
+      ol.geom.Polygon.makeRegular(geometry, center, radius, angle);
+      return geometry;
+    }
   );
 };
 
@@ -800,7 +798,7 @@ ol.interaction.Draw.createRegularPolygon = function(opt_sides, opt_angle) {
 ol.interaction.Draw.createBox = function() {
   return (
     /**
-     * @param {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>} coordinates
+     * @param {Array.<ol.Coordinate>} coordinates
      * @param {ol.geom.SimpleGeometry=} opt_geometry
      * @return {ol.geom.SimpleGeometry}
      */
