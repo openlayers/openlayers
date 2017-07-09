@@ -40,9 +40,9 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
 
   /**
    * @private
-   * @type {CanvasRenderingContext2D}
+   * @type {Object.<string, CanvasRenderingContext2D>}
    */
-  this.context_ = null;
+  this.context_ = {};
 
   /**
    * @private
@@ -52,14 +52,9 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
 
   /**
    * @private
-   * @type {ol.TileReplayState}
+   * @type {Object.<string, ol.TileReplayState>}
    */
-  this.replayState_ = {
-    dirty: false,
-    renderedRenderOrder: null,
-    renderedRevision: -1,
-    renderedTileRevision: -1
-  };
+  this.replayState_ = {};
 
   /**
    * @private
@@ -155,31 +150,44 @@ ol.VectorImageTile.prototype.disposeInternal = function() {
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
  * @return {CanvasRenderingContext2D} The rendering context.
  */
-ol.VectorImageTile.prototype.getContext = function() {
-  if (!this.context_) {
-    this.context_ = ol.dom.createCanvasContext2D();
+ol.VectorImageTile.prototype.getContext = function(layer) {
+  var key = ol.getUid(layer).toString();
+  if (!(key in this.context_)) {
+    this.context_[key] = ol.dom.createCanvasContext2D();
   }
-  return this.context_;
+  return this.context_[key];
 };
 
 
 /**
  * Get the Canvas for this tile.
+ * @param {ol.layer.Layer} layer Layer.
  * @return {HTMLCanvasElement} Canvas.
  */
-ol.VectorImageTile.prototype.getImage = function() {
-  return this.replayState_.renderedTileRevision == -1 ?
-    null : this.context_.canvas;
+ol.VectorImageTile.prototype.getImage = function(layer) {
+  return this.getReplayState(layer).renderedTileRevision == -1 ?
+    null : this.getContext(layer).canvas;
 };
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
  * @return {ol.TileReplayState} The replay state.
  */
-ol.VectorImageTile.prototype.getReplayState = function() {
-  return this.replayState_;
+ol.VectorImageTile.prototype.getReplayState = function(layer) {
+  var key = ol.getUid(layer).toString();
+  if (!(key in this.replayState_)) {
+    this.replayState_[key] = {
+      dirty: false,
+      renderedRenderOrder: null,
+      renderedRevision: -1,
+      renderedTileRevision: -1
+    };
+  }
+  return this.replayState_[key];
 };
 
 
