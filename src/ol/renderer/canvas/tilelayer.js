@@ -274,7 +274,7 @@ ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState
   if (!this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
   }
-  var image = tile.getImage();
+  var image = tile.getImage(this.getLayer());
   if (image) {
     this.context.drawImage(image, gutter, gutter,
         image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);
