@@ -47,6 +47,7 @@ function main() {
   return Promise.all(pkg.ext.map(ext => {
     const moduleName = ext.name || ext.module;
     const options = {
+      extend: true,
       entry: require.resolve(ext.module),
       dest: `${path.join(__dirname, '..', 'build', 'ol.ext', moduleName.toLowerCase())}.js`,
       format: 'iife',
