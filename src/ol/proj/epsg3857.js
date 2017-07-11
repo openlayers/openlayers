@@ -31,6 +31,8 @@ ol.inherits(ol.proj.EPSG3857.Projection_, ol.proj.Projection);
 
 
 /**
+ * Radius of WGS84 sphere
+ *
  * @const
  * @type {number}
  */

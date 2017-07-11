@@ -21,7 +21,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('constructor', function() {
 
-    var map, layer, feature1, feature2, target, tileCallback;
+    var map, layer, source, feature1, feature2, target, tileCallback;
 
     beforeEach(function() {
       tileCallback = function() {};
@@ -57,7 +57,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileCallback(this);
       };
       ol.inherits(TileClass, ol.VectorTile);
-      var source = new ol.source.VectorTile({
+      source = new ol.source.VectorTile({
         format: new ol.format.MVT(),
         tileClass: TileClass,
         tileGrid: ol.tilegrid.createXYZ()
@@ -150,6 +150,28 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       map.renderSync();
       expect(tile.getProjection()).to.equal(proj);
       expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);
+    });
+
+    it('works for multiple layers that use the same source', function() {
+      var layer2 = new ol.layer.VectorTile({
+        source: source,
+        style: new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'layer2'
+          })
+        })
+      });
+      map.addLayer(layer2);
+
+      var spy1 = sinon.spy(ol.VectorTile.prototype,
+          'getReplayGroup');
+      var spy2 = sinon.spy(ol.VectorTile.prototype,
+          'setReplayGroup');
+      map.renderSync();
+      expect(spy1.callCount).to.be(4);
+      expect(spy2.callCount).to.be(2);
+      spy1.restore();
+      spy2.restore();
     });
 
   });

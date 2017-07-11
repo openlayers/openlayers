@@ -122,11 +122,12 @@ ol.VectorTile.prototype.getProjection = function() {
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
  * @param {string} key Key.
  * @return {ol.render.ReplayGroup} Replay group.
  */
-ol.VectorTile.prototype.getReplayGroup = function(key) {
-  return this.replayGroups_[key];
+ol.VectorTile.prototype.getReplayGroup = function(layer, key) {
+  return this.replayGroups_[ol.getUid(layer) + ',' + key];
 };
 
 
@@ -182,11 +183,12 @@ ol.VectorTile.prototype.setProjection = function(projection) {
 
 
 /**
+ * @param {ol.layer.Layer} layer Layer.
  * @param {string} key Key.
  * @param {ol.render.ReplayGroup} replayGroup Replay group.
  */
-ol.VectorTile.prototype.setReplayGroup = function(key, replayGroup) {
-  this.replayGroups_[key] = replayGroup;
+ol.VectorTile.prototype.setReplayGroup = function(layer, key, replayGroup) {
+  this.replayGroups_[ol.getUid(layer) + ',' + key] = replayGroup;
 };
 
 

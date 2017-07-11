@@ -72,8 +72,8 @@ describe('ol.rendering.style.LineString', function() {
       feature.setStyle([new ol.style.Style({
         stroke: new ol.style.Stroke({color: '#F2F211', width: 5})
       }), new ol.style.Style({
-          stroke: new ol.style.Stroke({color: '#292921', width: 1})
-        })]);
+        stroke: new ol.style.Stroke({color: '#292921', width: 1})
+      })]);
       vectorSource.addFeature(feature);
 
       feature = new ol.Feature({
