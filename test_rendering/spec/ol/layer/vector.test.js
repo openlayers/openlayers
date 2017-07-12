@@ -97,6 +97,45 @@ describe('ol.rendering.layer.Vector', function() {
       });
     });
 
+    it('renders transparent layers correctly with the canvas renderer', function(done) {
+      map = createMap('canvas');
+      var smallLine = new ol.Feature(new ol.geom.LineString([
+        [center[0], center[1] - 1],
+        [center[0], center[1] + 1]
+      ]));
+      smallLine.setStyle([
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 75, color: 'red'})
+        }),
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 45, color: 'white'})
+        })
+      ]);
+      source.addFeature(smallLine);
+      var smallLine2 = new ol.Feature(new ol.geom.LineString([
+        [center[0], center[1] - 1000],
+        [center[0], center[1] + 1000]
+      ]));
+      smallLine2.setStyle([
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 35, color: 'blue'})
+        }),
+        new ol.style.Style({
+          stroke: new ol.style.Stroke({width: 15, color: 'green'})
+        })
+      ]);
+      source.addFeature(smallLine2);
+
+      map.addLayer(new ol.layer.Vector({
+        source: source,
+        opacity: 0.5
+      }));
+      map.once('postrender', function() {
+        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-transparent.png',
+            7, done);
+      });
+    });
+
     it('renders rotation correctly with the canvas renderer', function(done) {
       map = createMap('canvas');
       map.getView().setRotation(Math.PI + Math.PI / 4);
