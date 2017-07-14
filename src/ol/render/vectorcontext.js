@@ -14,6 +14,16 @@ ol.render.VectorContext = function() {
 
 
 /**
+ * Render a geometry with a custom renderer.
+ *
+ * @param {ol.geom.SimpleGeometry} geometry Geometry.
+ * @param {ol.Feature|ol.render.Feature} feature Feature.
+ * @param {Function} renderer Renderer.
+ */
+ol.render.VectorContext.prototype.drawCustom = function(geometry, feature, renderer) {};
+
+
+/**
  * Render a geometry.
  *
  * @param {ol.geom.Geometry} geometry The geometry to render.

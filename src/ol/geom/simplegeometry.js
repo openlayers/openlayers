@@ -41,6 +41,12 @@ ol.geom.SimpleGeometry = function() {
    */
   this.flatCoordinates = null;
 
+  /**
+   * @private
+   * @type {Array.<number>|Array.<Array.<number>>|Array.<Array.<Array.<number>>>}
+   */
+  this.renderCoordinates_ = null;
+
 };
 ol.inherits(ol.geom.SimpleGeometry, ol.geom.Geometry);
 
@@ -138,6 +144,18 @@ ol.geom.SimpleGeometry.prototype.getLastCoordinate = function() {
  */
 ol.geom.SimpleGeometry.prototype.getLayout = function() {
   return this.layout;
+};
+
+
+/**
+ * @return {Array.<number>|Array.<Array.<number>>|Array.<Array.<Array.<number>>>}
+ *     Render coordinates.
+ */
+ol.geom.SimpleGeometry.prototype.getRenderCoordinates = function() {
+  if (!this.renderCoordinates_) {
+    this.renderCoordinates_ = [];
+  }
+  return this.renderCoordinates_;
 };
 
 

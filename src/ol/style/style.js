@@ -52,6 +52,12 @@ ol.style.Style = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.StyleRenderFunction|null}
+   */
+  this.renderer_ = options.renderer !== undefined ? options.renderer : null;
+
+  /**
+   * @private
    * @type {ol.style.Stroke}
    */
   this.stroke_ = options.stroke !== undefined ? options.stroke : null;
@@ -89,6 +95,28 @@ ol.style.Style.prototype.clone = function() {
     text: this.getText() ? this.getText().clone() : undefined,
     zIndex: this.getZIndex()
   });
+};
+
+
+/**
+ * Get the custom renderer function that was configured with
+ * {@link #setRenderer} or the `renderer` constructor option.
+ * @return {ol.StyleRenderFunction|null} Custom renderer function.
+ * @api
+ */
+ol.style.Style.prototype.getRenderer = function() {
+  return this.renderer_;
+};
+
+
+/**
+ * Sets a custom renderer function for this style. When set, `fill`, `stroke`
+ * and `image` optins of the style will be ignored.
+ * @param {ol.StyleRenderFunction|null} renderer Custom renderer function.
+ * @api
+ */
+ol.style.Style.prototype.setRenderer = function(renderer) {
+  this.renderer_ = renderer;
 };
 
 
