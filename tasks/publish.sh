@@ -98,7 +98,7 @@ main() {
   npm install
   build_js ${PROFILES}
   build_css
-  npm publish
+  npm publish --tag beta
 }
 
 if test ${#} -ne 1; then
