@@ -735,6 +735,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
     context.lineCap = strokeState.lineCap;
     if (ol.has.CANVAS_LINE_DASH) {
       context.setLineDash(strokeState.lineDash);
+      context.lineDashOffset = strokeState.lineDashOffset;
     }
     context.lineJoin = strokeState.lineJoin;
     context.lineWidth = strokeState.lineWidth;
@@ -743,6 +744,7 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
     this.contextStrokeState_ = {
       lineCap: strokeState.lineCap,
       lineDash: strokeState.lineDash,
+      lineDashOffset: strokeState.lineDashOffset,
       lineJoin: strokeState.lineJoin,
       lineWidth: strokeState.lineWidth,
       miterLimit: strokeState.miterLimit,
@@ -756,6 +758,10 @@ ol.render.canvas.Immediate.prototype.setContextStrokeState_ = function(strokeSta
       if (!ol.array.equals(
           contextStrokeState.lineDash, strokeState.lineDash)) {
         context.setLineDash(contextStrokeState.lineDash = strokeState.lineDash);
+      }
+      if (contextStrokeState.lineDashOffset != strokeState.lineDashOffset) {
+        contextStrokeState.lineDashOffset = context.lineDashOffset =
+            strokeState.lineDashOffset;
       }
     }
     if (contextStrokeState.lineJoin != strokeState.lineJoin) {
