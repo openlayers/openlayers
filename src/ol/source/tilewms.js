@@ -42,6 +42,7 @@ ol.source.TileWMS = function(opt_options) {
     opaque: !transparent,
     projection: options.projection,
     reprojectionErrorThreshold: options.reprojectionErrorThreshold,
+    tileClass: options.tileClass,
     tileGrid: options.tileGrid,
     tileLoadFunction: options.tileLoadFunction,
     url: options.url,
