@@ -73,6 +73,7 @@ ol.proj.EPSG3857.PROJECTIONS = [
   new ol.proj.EPSG3857.Projection_('EPSG:3857'),
   new ol.proj.EPSG3857.Projection_('EPSG:102100'),
   new ol.proj.EPSG3857.Projection_('EPSG:102113'),
+  new ol.proj.EPSG3857.Projection_('EPSG:900913'),
   new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG:6.18:3:3857'),
   new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG:3857'),
   new ol.proj.EPSG3857.Projection_('urn:ogc:def:crs:EPSG::3857'),
