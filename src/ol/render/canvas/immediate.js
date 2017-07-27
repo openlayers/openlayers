@@ -886,7 +886,7 @@ ol.render.canvas.Immediate.prototype.setImageStyle = function(imageStyle) {
     this.imageOriginY_ = imageOrigin[1];
     this.imageRotateWithView_ = imageStyle.getRotateWithView();
     this.imageRotation_ = imageStyle.getRotation();
-    this.imageScale_ = imageStyle.getScale();
+    this.imageScale_ = imageStyle.getScale() * this.pixelRatio_;
     this.imageSnapToPixel_ = imageStyle.getSnapToPixel();
     this.imageWidth_ = imageSize[0];
   }
