@@ -76,10 +76,6 @@ ol.interaction.Extent = function(opt_options) {
     opt_options = {};
   }
 
-  if (opt_options.extent) {
-    this.setExtent(opt_options.extent);
-  }
-
   /* Inherit ol.interaction.Pointer */
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Extent.handleDownEvent_,
@@ -117,6 +113,10 @@ ol.interaction.Extent = function(opt_options) {
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
+
+  if (opt_options.extent) {
+    this.setExtent(opt_options.extent);
+  }
 };
 
 ol.inherits(ol.interaction.Extent, ol.interaction.Pointer);

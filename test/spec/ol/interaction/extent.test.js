@@ -72,6 +72,19 @@ describe('ol.interaction.Extent', function() {
     event.pointerEvent.pointerId = 1;
     map.handleMapBrowserEvent(event);
   }
+
+  describe('Constructor', function() {
+
+    it('can be configured with an extent', function() {
+      expect(function() {
+        new ol.interaction.Extent({
+          extent: [-10, -10, 10, 10]
+        });
+      }).to.not.throwException();
+    });
+
+  });
+
   describe('snap to vertex', function() {
     it('snap to vertex works', function() {
       interaction.setExtent([-50, -50, 50, 50]);
