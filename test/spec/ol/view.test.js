@@ -1089,7 +1089,7 @@ describe('ol.View', function() {
     });
   });
 
-  describe('#getSizeFromViewport_()', function() {
+  describe('#getSizeFromViewport()', function() {
     var map, target;
     beforeEach(function() {
       target = document.createElement('div');
@@ -1105,7 +1105,7 @@ describe('ol.View', function() {
       document.body.removeChild(target);
     });
     it('calculates the size correctly', function() {
-      var size = map.getView().getSizeFromViewport_();
+      var size = map.getView().getSizeFromViewport();
       expect(size).to.eql([200, 150]);
     });
   });
