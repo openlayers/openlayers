@@ -71,7 +71,10 @@ goog.require('ol.proj.Units');
  * horizontal.
  *
  * The *center constraint* is determined by the `extent` option. By
- * default the center is not constrained at all.
+ * default the center is not constrained at all. Optionally enabling
+ * the `restrictExtent` will constrain the extent to the edges of the
+ * Viewport, instead of its center point. Note that this requires
+ * rotation to be disabled.
  *
  * @constructor
  * @extends {ol.Object}
@@ -161,7 +164,7 @@ ol.View.prototype.applyOptions_ = function(options) {
    */
   this.minZoom_ = resolutionConstraintInfo.minZoom;
 
-  var centerConstraint = ol.View.createCenterConstraint_(options);
+  var centerConstraint = ol.View.createCenterConstraint_(options, this);
   var resolutionConstraint = resolutionConstraintInfo.constraint;
   var rotationConstraint = ol.View.createRotationConstraint_(options);
 
@@ -457,17 +460,21 @@ ol.View.prototype.calculateCenterZoom = function(resolution, anchor) {
         resolution * (anchor[0] - currentCenter[0]) / currentResolution;
     var y = anchor[1] -
         resolution * (anchor[1] - currentCenter[1]) / currentResolution;
-    center = [x, y];
+    if (this.options_.restrictExtent) {
+      center = this.constrainCenter([x, y]);
+    } else {
+      center = [x, y];
+    }
   }
   return center;
 };
 
 
 /**
- * @private
  * @return {ol.Size} Viewport size or `[100, 100]` when no viewport is found.
+ * @api
  */
-ol.View.prototype.getSizeFromViewport_ = function() {
+ol.View.prototype.getSizeFromViewport = function() {
   var size = [100, 100];
   var selector = '.ol-viewport[data-view="' + ol.getUid(this) + '"]';
   var element = document.querySelector(selector);
@@ -566,7 +573,7 @@ ol.View.prototype.getHints = function(opt_hints) {
  * @api
  */
 ol.View.prototype.calculateExtent = function(opt_size) {
-  var size = opt_size || this.getSizeFromViewport_();
+  var size = opt_size || this.getSizeFromViewport();
   var center = /** @type {!ol.Coordinate} */ (this.getCenter());
   ol.asserts.assert(center, 1); // The view center is not defined
   var resolution = /** @type {!number} */ (this.getResolution());
@@ -680,7 +687,7 @@ ol.View.prototype.getResolutions = function() {
  * @api
  */
 ol.View.prototype.getResolutionForExtent = function(extent, opt_size) {
-  var size = opt_size || this.getSizeFromViewport_();
+  var size = opt_size || this.getSizeFromViewport();
   var xResolution = ol.extent.getWidth(extent) / size[0];
   var yResolution = ol.extent.getHeight(extent) / size[1];
   return Math.max(xResolution, yResolution);
@@ -833,7 +840,7 @@ ol.View.prototype.fit = function(geometryOrExtent, opt_options) {
   var options = opt_options || {};
   var size = options.size;
   if (!size) {
-    size = this.getSizeFromViewport_();
+    size = this.getSizeFromViewport();
   }
   /** @type {ol.geom.SimpleGeometry} */
   var geometry;
@@ -1044,9 +1051,10 @@ ol.View.prototype.setZoom = function(zoom) {
  * @private
  * @return {ol.CenterConstraintType} The constraint.
  */
-ol.View.createCenterConstraint_ = function(options) {
+ol.View.createCenterConstraint_ = function(options, view) {
   if (options.extent !== undefined) {
-    return ol.CenterConstraint.createExtent(options.extent);
+    options.restrictExtent = (!options.enableRotation && options.restrictExtent === true);
+    return ol.CenterConstraint.createExtent(options.extent, options.restrictExtent ? view : undefined);
   } else {
     return ol.CenterConstraint.none;
   }

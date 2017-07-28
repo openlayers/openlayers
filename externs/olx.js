@@ -694,6 +694,7 @@ olx.ProjectionOptions.prototype.getPointResolution;
  *     constrainRotation: (boolean|number|undefined),
  *     enableRotation: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
+ *     restrictExtent: (boolean|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     minZoom: (number|undefined),
@@ -747,6 +748,13 @@ olx.ViewOptions.prototype.enableRotation;
  */
 olx.ViewOptions.prototype.extent;
 
+/**
+ * Force the extent to fit the edges of the Viewport instead of the center point.
+ * Has no effect if enableRotation is set to `true`. Default `false`.
+ * @type {boolean|undefined}
+ * @api
+ */
+olx.ViewOptions.prototype.restrictExtent;
 
 /**
  * The maximum resolution used to determine the resolution constraint. It is
