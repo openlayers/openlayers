@@ -3,6 +3,7 @@ goog.require('ol.View');
 goog.require('ol.control');
 goog.require('ol.layer.Tile');
 goog.require('ol.source.OSM');
+goog.require('ol.extent');
 
 
 /**
@@ -22,7 +23,7 @@ var view = new ol.View({
   center: ol.extent.getCenter(maxExtent),
   minZoom: 6,
   zoom: 6,
-  restrictExtent: true,
+  restrictExtent: true
 });
 
 map = new ol.Map({
@@ -34,7 +35,7 @@ map = new ol.Map({
   controls: ol.control.defaults({
     attributionOptions: /** @type {olx.control.AttributionOptions} */ ({
       collapsible: false
-    }),
+    })
   }),
   renderer: common.getRendererFromQueryString(),
   target: 'map',

@@ -13,7 +13,7 @@ ol.CenterConstraint.createExtent = function(extent, view) {
   // Extent doesn't change, so we can store the size and center.
   var extentSize = [
     extent[2] - extent[0],
-    extent[3] - extent[1],
+    extent[3] - extent[1]
   ];
   var extentCenter = ol.extent.getCenter(extent);
   return (
@@ -34,12 +34,11 @@ ol.CenterConstraint.createExtent = function(extent, view) {
           // Clamp to the center when the restrictExtent has smaller display than the Viewport.
           var deltaX = Math.max((extentSize[0] - (viewportSize[0] * viewResolution)) / 2, 0);
           var deltaY = Math.max((extentSize[1] - (viewportSize[1] * viewResolution)) / 2, 0);
-          var c = ol.extent.getCenter(extent);
           extent_ = [
             extentCenter[0] - deltaX,
             extentCenter[1] - deltaY,
             extentCenter[0] + deltaX,
-            extentCenter[1] + deltaY,
+            extentCenter[1] + deltaY
           ];
         }
         return [

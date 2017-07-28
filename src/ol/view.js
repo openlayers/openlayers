@@ -1048,6 +1048,7 @@ ol.View.prototype.setZoom = function(zoom) {
 
 /**
  * @param {olx.ViewOptions} options View options.
+ * @param {ol.View} view View to restrict to, if restrictExtent is enabled.
  * @private
  * @return {ol.CenterConstraintType} The constraint.
  */
