@@ -111,7 +111,7 @@ ol.style.Style.prototype.getRenderer = function() {
 
 /**
  * Sets a custom renderer function for this style. When set, `fill`, `stroke`
- * and `image` optins of the style will be ignored.
+ * and `image` options of the style will be ignored.
  * @param {ol.StyleRenderFunction|null} renderer Custom renderer function.
  * @api
  */

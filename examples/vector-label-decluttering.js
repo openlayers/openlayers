@@ -1,4 +1,5 @@
 // NOCOMPILE
+/* global labelgun */
 goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.extent');
@@ -38,8 +39,8 @@ var map = new ol.Map({
   })
 });
 
-/*global labelgun*/
-var labelEngine = new labelgun['default'](function() {}, function() {});
+var emptyFn = function() {};
+var labelEngine = new labelgun['default'](emptyFn, emptyFn);
 
 function createLabel(canvas, text, coord) {
   var halfWidth = canvas.width / 2;
@@ -57,7 +58,7 @@ function sortByWidth(a, b) {
   return ol.extent.getWidth(b.getExtent()) - ol.extent.getWidth(a.getExtent());
 }
 
-var resolution;
+var resolution; // This is set by the map's precompose listener
 var styles = [
   new ol.style.Style({
     fill: new ol.style.Fill({
@@ -85,6 +86,7 @@ var styles = [
         context.strokeText(text, 0, 0);
         context.fillText(text, 0, 0);
       }
+      // The 3rd value of the coordinate is the measure of the extent width
       var extentWidth = geometry.getCoordinates()[2] / resolution * pixelRatio;
       if (extentWidth > canvas.width) {
         // Only consider labels not wider than their country's bounding box
@@ -100,6 +102,7 @@ var styles = [
       }
       var coordinates = geometry.getInteriorPoint().getCoordinates();
       var extentWidth = ol.extent.getWidth(geometry.getExtent());
+      // We are using the extentWidth as measure value of the geometry
       coordinates.push(extentWidth);
       return new ol.geom.Point(coordinates, 'XYM');
     }
@@ -125,6 +128,5 @@ vectorLayer.on('postcompose', function(e) {
     e.context.drawImage(label.labelObject, label.minX, label.minY);
   }
 });
-
 
 map.addLayer(vectorLayer);

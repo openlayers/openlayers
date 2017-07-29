@@ -4426,7 +4426,7 @@ olx.render.State.prototype.pixelRatio;
 
 
 /**
- * Resolution that the render batch was created and optiized for. This is
+ * Resolution that the render batch was created and optimized for. This is
  * not the view's resolution that is being rendered.
  * @type {number}
  * @api

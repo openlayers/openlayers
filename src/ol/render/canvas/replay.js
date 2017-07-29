@@ -324,7 +324,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   /**
    * @type {olx.render.State}
    */
-  var replayState = {
+  var state = {
     context: context,
     pixelRatio: pixelRatio,
     resolution: this.resolution,
@@ -397,7 +397,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         } else {
           coords = pixelCoordinates.slice(d, dd);
         }
-        renderer(coords, geometry, feature, replayState);
+        renderer(coords, geometry, feature, state);
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:
