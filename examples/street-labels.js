@@ -20,7 +20,7 @@ function measureText(text) {
 
 var extent, letters; // Will be set in the style's renderer function
 function collectDrawData(letter, x, y, angle) {
-  ol.extent.extendCoordinate(extent, [x, y]);
+  ol.extent.extend(extent, [x, y, x, y]);
   letters.push([x, y, angle, letter]);
 }
 
