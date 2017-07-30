@@ -121,6 +121,18 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       spy2.restore();
     });
 
+    it('renders replays with custom renderers as direct replays', function() {
+      layer.renderMode_ = 'image';
+      layer.setStyle(new ol.style.Style({
+        renderer: function() {}
+      }));
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'getReplayTransform_');
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
+      spy.restore();
+    });
+
     it('gives precedence to feature styles over layer styles', function() {
       var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
           'renderFeature');

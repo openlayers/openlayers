@@ -12,5 +12,6 @@ ol.render.replay.ORDER = [
   ol.render.ReplayType.CIRCLE,
   ol.render.ReplayType.LINE_STRING,
   ol.render.ReplayType.IMAGE,
-  ol.render.ReplayType.TEXT
+  ol.render.ReplayType.TEXT,
+  ol.render.ReplayType.DEFAULT
 ];

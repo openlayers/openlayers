@@ -6,6 +6,7 @@ goog.provide('ol.render.ReplayType');
  */
 ol.render.ReplayType = {
   CIRCLE: 'Circle',
+  DEFAULT: 'Default',
   IMAGE: 'Image',
   LINE_STRING: 'LineString',
   POLYGON: 'Polygon',

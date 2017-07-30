@@ -4401,6 +4401,48 @@ olx.render;
 
 
 /**
+ * @typedef {{context: CanvasRenderingContext2D,
+ *     pixelRatio: number,
+ *     resolution: number,
+ *     rotation: number}}
+ */
+olx.render.State;
+
+
+/**
+ * Canvas context that the layer is being rendered to.
+ * @type {CanvasRenderingContext2D}
+ * @api
+ */
+olx.render.State.prototype.context;
+
+
+/**
+ * Pixel ratio used by the layer renderer.
+ * @type {number}
+ * @api
+ */
+olx.render.State.prototype.pixelRatio;
+
+
+/**
+ * Resolution that the render batch was created and optimized for. This is
+ * not the view's resolution that is being rendered.
+ * @type {number}
+ * @api
+ */
+olx.render.State.prototype.resolution;
+
+
+/**
+ * Rotation of the rendered layer in radians.
+ * @type {number}
+ * @api
+ */
+olx.render.State.prototype.rotation;
+
+
+/**
  * @typedef {{size: (ol.Size|undefined),
  *     pixelRatio: (number|undefined)}}
  */
@@ -7621,6 +7663,7 @@ olx.style.TextOptions.prototype.stroke;
  * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction),
  *     fill: (ol.style.Fill|undefined),
  *     image: (ol.style.Image|undefined),
+ *     renderer: (ol.StyleRenderFunction|undefined),
  *     stroke: (ol.style.Stroke|undefined),
  *     text: (ol.style.Text|undefined),
  *     zIndex: (number|undefined)}}
@@ -7651,6 +7694,16 @@ olx.style.StyleOptions.prototype.fill;
  * @api
  */
 olx.style.StyleOptions.prototype.image;
+
+
+/**
+ * Custom renderer. When configured, `fill`, `stroke` and `image` will be
+ * ignored, and the provided function will be called with each render frame for
+ * each geometry.
+ *
+ * @type {ol.StyleRenderFunction|undefined}
+ */
+olx.style.StyleOptions.prototype.renderer;
 
 
 /**
