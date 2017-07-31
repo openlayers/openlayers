@@ -325,7 +325,7 @@ if (ol.ENABLE_WEBGL) {
           if (!this.classifyPoints_(list, rtree, ccw)) {
             // Due to the behavior of OL's PIP algorithm, the ear clipping cannot
             // introduce touching segments. However, the original data may have some.
-            if (!this.resolveLocalSelfIntersections_(list, rtree, true)) {
+            if (!this.resolveSelfIntersections_(list, rtree, true)) {
               break;
             }
           }
@@ -335,7 +335,7 @@ if (ol.ENABLE_WEBGL) {
           // We ran out of ears, try to reclassify.
           if (!this.classifyPoints_(list, rtree, ccw)) {
             // We have a bad polygon, try to resolve local self-intersections.
-            if (!this.resolveLocalSelfIntersections_(list, rtree)) {
+            if (!this.resolveSelfIntersections_(list, rtree)) {
               simple = this.isSimple_(list, rtree);
               if (!simple) {
                 // We have a really bad polygon, try more time consuming methods.
@@ -425,7 +425,7 @@ if (ol.ENABLE_WEBGL) {
    * @param {boolean=} opt_touch Resolve touching segments.
    * @return {boolean} There were resolved intersections.
   */
-  ol.render.webgl.PolygonReplay.prototype.resolveLocalSelfIntersections_ = function(
+  ol.render.webgl.PolygonReplay.prototype.resolveSelfIntersections_ = function(
       list, rtree, opt_touch) {
     var start = list.firstItem();
     list.nextItem();
