@@ -382,10 +382,15 @@ if (ol.ENABLE_WEBGL) {
       p2 = s2.p1;
       if (p1.reflex === false) {
         // We might have a valid ear
-        var diagonalIsInside = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0,
-            s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
+        var variableCriterion;
+        if (simple) {
+          variableCriterion = this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0;
+        } else {
+          variableCriterion = ccw ? this.diagonalIsInside_(s3.p1, p2, p1, p0,
+              s0.p0) : this.diagonalIsInside_(s0.p0, p0, p1, p2, s3.p1);
+        }
         if ((simple || this.getIntersections_({p0: p0, p1: p2}, rtree).length === 0) &&
-            diagonalIsInside && this.getPointsInTriangle_(p0, p1, p2, rtree, true).length === 0) {
+            variableCriterion) {
           //The diagonal is completely inside the polygon
           if (simple || p0.reflex === false || p2.reflex === false ||
               ol.geom.flat.orient.linearRingIsClockwise([s0.p0.x, s0.p0.y, p0.x,
