@@ -94,6 +94,17 @@ oli.DrawEvent.prototype.feature;
 /**
  * @interface
  */
+oli.ExtentEvent = function() {};
+
+
+/**
+ * @type {ol.Extent}
+ */
+oli.ExtentEvent.prototype.extent;
+
+/**
+ * @interface
+ */
 oli.ModifyEvent = function() {};
 
 
