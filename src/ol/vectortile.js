@@ -25,6 +25,12 @@ ol.VectorTile = function(tileCoord, state, src, format, tileLoadFunction) {
 
   /**
    * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = null;
+
+  /**
+   * @private
    * @type {ol.format.Feature}
    */
   this.format_ = format;
@@ -79,6 +85,15 @@ ol.VectorTile.prototype.disposeInternal = function() {
   this.state = ol.TileState.ABORT;
   this.changed();
   ol.Tile.prototype.disposeInternal.call(this);
+};
+
+
+/**
+ * Gets the extent of the vector tile.
+ * @return {ol.Extent} The extent.
+ */
+ol.VectorTile.prototype.getExtent = function() {
+  return this.extent_;
 };
 
 
@@ -147,18 +162,30 @@ ol.VectorTile.prototype.load = function() {
  * Handler for successful tile load.
  * @param {Array.<ol.Feature>} features The loaded features.
  * @param {ol.proj.Projection} dataProjection Data projection.
+ * @param {ol.Extent} extent Extent.
  */
-ol.VectorTile.prototype.onLoad_ = function(features, dataProjection) {
+ol.VectorTile.prototype.onLoad = function(features, dataProjection, extent) {
   this.setProjection(dataProjection);
   this.setFeatures(features);
+  this.setExtent(extent);
 };
 
 
 /**
  * Handler for tile load errors.
  */
-ol.VectorTile.prototype.onError_ = function() {
+ol.VectorTile.prototype.onError = function() {
   this.setState(ol.TileState.ERROR);
+};
+
+
+/**
+ * Sets the extent of the vector tile.
+ * @param {ol.Extent} extent The extent.
+ * @api
+ */
+ol.VectorTile.prototype.setExtent = function(extent) {
+  this.extent_ = extent;
 };
 
 

@@ -44,7 +44,6 @@ var map = new ol.Map({
           resolutions: resolutions,
           tileSize: 512
         }),
-        tilePixelRatio: 8,
         tileUrlFunction: tileUrlFunction
       }),
       style: createMapboxStreetsV6Style()

@@ -69,8 +69,23 @@ ol.format.MVT = function(opt_options) {
    */
   this.layers_ = options.layers ? options.layers : null;
 
+  /**
+   * @private
+   * @type {ol.Extent}
+   */
+  this.extent_ = null;
+
 };
 ol.inherits(ol.format.MVT, ol.format.Feature);
+
+
+/**
+ * @inheritDoc
+ * @api
+ */
+ol.format.MVT.prototype.getLastExtent = function() {
+  return this.extent_;
+};
 
 
 /**
@@ -161,14 +176,17 @@ ol.format.MVT.prototype.readFeatures = function(source, opt_options) {
     }
     layer = tile.layers[name];
 
+    var rawFeature;
     for (var i = 0, ii = layer.length; i < ii; ++i) {
+      rawFeature = layer.feature(i);
       if (featureClass === ol.render.Feature) {
-        feature = this.readRenderFeature_(layer.feature(i), name);
+        feature = this.readRenderFeature_(rawFeature, name);
       } else {
-        feature = this.readFeature_(layer.feature(i), name, opt_options);
+        feature = this.readFeature_(rawFeature, name, opt_options);
       }
       features.push(feature);
     }
+    this.extent_ = layer ? [0, 0, layer.extent, layer.extent] : null;
   }
 
   return features;

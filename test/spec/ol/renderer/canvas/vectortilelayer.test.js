@@ -186,6 +186,14 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       spy2.restore();
     });
 
+    it('uses the extent of the source tile', function() {
+      var renderer = map.getRenderer().getLayerRenderer(layer);
+      var tile = new ol.VectorTile([0, 0, 0], 2);
+      tile.setExtent([0, 0, 4096, 4096]);
+      var tilePixelRatio = renderer.getTilePixelRatio_(source, tile);
+      expect(tilePixelRatio).to.be(16);
+    });
+
   });
 
   describe('#prepareFrame', function() {

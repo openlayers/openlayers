@@ -4994,6 +4994,8 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  *     var format = tile.getFormat();
  *     tile.setFeatures(format.readFeatures(data));
  *     tile.setProjection(format.readProjection(data));
+ *     // uncomment the line below for ol.format.MVT only
+ *     //tile.setExtent(format.getLastExtent());
  *   };
  * });
  * ```
@@ -5004,10 +5006,12 @@ olx.source.VectorTileOptions.prototype.tileLoadFunction;
 
 
 /**
- * The pixel ratio used by the tile service. For example, if the tile
- * service advertizes 256px by 256px tiles but actually sends 512px
- * by 512px tiles (for retina/hidpi devices) then `tilePixelRatio`
- * should be set to `2`. Default is `1`.
+ * The pixel ratio used by the tile service. For example, if the tile service
+ * advertizes 512px by 512px tiles but actually sends tiles with coordinates in
+ * the range of 0..4096 pixels, then `tilePixelRatio` should be set to `8`.
+ * When {@link ol.format.MVT} is used to parse the features, this setting will
+ * be overridden by the coordinate range advertized in the tile.
+ * Default is `1`.
  * @type {number|undefined}
  * @api
  */
