@@ -4898,7 +4898,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  *                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
@@ -5003,19 +5002,6 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  * @api
  */
 olx.source.VectorTileOptions.prototype.tileLoadFunction;
-
-
-/**
- * The pixel ratio used by the tile service. For example, if the tile service
- * advertizes 512px by 512px tiles but actually sends tiles with coordinates in
- * the range of 0..4096 pixels, then `tilePixelRatio` should be set to `8`.
- * When {@link ol.format.MVT} is used to parse the features, this setting will
- * be overridden by the coordinate range advertized in the tile.
- * Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.source.VectorTileOptions.prototype.tilePixelRatio;
 
 
 /**

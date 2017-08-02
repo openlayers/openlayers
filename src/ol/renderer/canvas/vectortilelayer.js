@@ -325,11 +325,8 @@ ol.renderer.canvas.VectorTileLayer.prototype.getReplayTransform_ = function(tile
  * @return {number} The tile's pixel ratio.
  */
 ol.renderer.canvas.VectorTileLayer.prototype.getTilePixelRatio_ = function(source, tile) {
-  var extent = tile.getExtent();
-  return extent ?
-    ol.extent.getWidth(extent) /
-        ol.size.toSize(source.getTileGrid().getTileSize(tile.tileCoord[0]))[0] :
-    source.getTilePixelRatio();
+  return ol.extent.getWidth(tile.getExtent()) /
+        ol.size.toSize(source.getTileGrid().getTileSize(tile.tileCoord[0]))[0];
 };
 
 

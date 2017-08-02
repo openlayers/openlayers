@@ -93,7 +93,7 @@ ol.VectorTile.prototype.disposeInternal = function() {
  * @return {ol.Extent} The extent.
  */
 ol.VectorTile.prototype.getExtent = function() {
-  return this.extent_;
+  return this.extent_ || ol.VectorTile.DEFAULT_EXTENT;
 };
 
 
@@ -180,7 +180,12 @@ ol.VectorTile.prototype.onError = function() {
 
 
 /**
- * Sets the extent of the vector tile.
+ * Sets the extent of the vector tile. For tiles in projections with
+ * `tile-pixels` as units, this should be set to
+ * `[0, 0, tilePixelSize, tilePixelSize]` by the source's `tileLoadFunction`.
+ * `tilePixelSize` is calculated by multiplying the tile size with the tile
+ * pixel ratio. When using `ol.format.MVT`, the format's `getLastExtent()`
+ * method returns the correct extent. The default is `[0, 0, 4096, 4096]`.
  * @param {ol.Extent} extent The extent.
  * @api
  */
@@ -227,3 +232,10 @@ ol.VectorTile.prototype.setReplayGroup = function(layer, key, replayGroup) {
 ol.VectorTile.prototype.setLoader = function(loader) {
   this.loader_ = loader;
 };
+
+
+/**
+ * @const
+ * @type {ol.Extent}
+ */
+ol.VectorTile.DEFAULT_EXTENT = [0, 0, 4096, 4096];
