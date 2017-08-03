@@ -442,4 +442,15 @@ describe('ol.interaction.Select', function() {
       });
     });
   });
+
+  describe('setting zIndex', function() {
+    it('Should have zIndex property when rendering', function() {
+      var zIndex = 20;
+      var select = new ol.interaction.Select({
+        zIndex: zIndex
+      });
+      map.addInteraction(select);
+      expect(select.getZIndex()).to.equal(zIndex);
+    });
+  });
 });

@@ -2941,7 +2941,8 @@ olx.interaction.PointerOptions.prototype.handleUpEvent;
  *     features: (ol.Collection.<ol.Feature>|undefined),
  *     filter: (ol.SelectFilterFunction|undefined),
  *     wrapX: (boolean|undefined),
- *     hitTolerance: (number|undefined)}}
+ *     hitTolerance: (number|undefined),
+ *     zIndex: (number|undefined)}}
  */
 olx.interaction.SelectOptions;
 

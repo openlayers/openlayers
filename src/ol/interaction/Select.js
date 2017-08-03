@@ -96,7 +96,8 @@ var Select = function(opt_options) {
     style: options.style ? options.style :
       Select.getDefaultStyleFunction(),
     updateWhileAnimating: true,
-    updateWhileInteracting: true
+    updateWhileInteracting: true,
+    zIndex: goog.isDef(options.zIndex) ? options.zIndex : Infinity
   });
 
   /**
@@ -188,6 +189,16 @@ Select.prototype.getHitTolerance = function() {
 Select.prototype.getLayer = function(feature) {
   var key = getUid(feature);
   return /** @type {ol.layer.Vector} */ (this.featureLayerAssociation_[key]);
+};
+
+
+/**
+ * Returns the Z-Index for the overlay layer
+ * @returns {number} Z-index
+ * @api
+ */
+ol.interaction.Select.prototype.getZIndex = function() {
+  return this.featureOverlay_.getZIndex();
 };
 
 

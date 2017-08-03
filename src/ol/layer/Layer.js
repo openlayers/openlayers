@@ -154,11 +154,11 @@ Layer.prototype.handleSourcePropertyChange_ = function() {
 
 
 /**
- * Sets the layer to be rendered on top of other layers on a map. The map will
- * not manage this layer in its layers collection, and the callback in
- * {@link ol.Map#forEachLayerAtPixel} will receive `null` as layer. This
- * is useful for temporary layers. To remove an unmanaged layer from the map,
- * use `#setMap(null)`.
+ * Sets the layer to be rendered on top of other layers on a map (unless
+ * a Z-index is specified). The map will not manage this layer in its layers
+ * collection, and the callback in {@link ol.Map#forEachLayerAtPixel} will
+ * receive `null` as layer. This is useful for temporary layers. To remove an
+ * unmanaged layer from the map, use `#setMap(null)`.
  *
  * To add the layer to a map and have it managed by the map, use
  * {@link ol.Map#addLayer} instead.
@@ -181,8 +181,9 @@ Layer.prototype.setMap = function(map) {
     this.mapPrecomposeKey_ = _ol_events_.listen(
         map, RenderEventType.PRECOMPOSE, function(evt) {
           var layerState = this.getLayerState();
+          var zIndex = this.getZIndex();
           layerState.managed = false;
-          layerState.zIndex = Infinity;
+          layerState.zIndex = (goog.isDef(zIndex) && zIndex !== 0) ? zIndex : Infinity;
           evt.frameState.layerStatesArray.push(layerState);
           evt.frameState.layerStates[getUid(this)] = layerState;
         }, this);

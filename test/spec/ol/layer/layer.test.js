@@ -406,6 +406,25 @@ describe('ol.layer.Layer', function() {
         expect(layerState.layer).to.equal(layer);
         expect(frameState.layerStates[getUid(layer)]).to.equal(layerState);
       });
+
+      it('gets the Z-index', function() {
+        var zIndex = 20;
+        var layer = new ol.layer.Layer({
+          map: map,
+          zIndex: zIndex
+        });
+        var frameState = {
+          layerStatesArray: [],
+          layerStates: {}
+        };
+        map.dispatchEvent(new ol.render.Event('precompose', null,
+            frameState, null, null));
+        expect(frameState.layerStatesArray.length).to.be(1);
+        var layerState = frameState.layerStatesArray[0];
+        expect(layerState.layer).to.equal(layer);
+        expect(layerState.zIndex).to.equal(zIndex);
+        expect(frameState.layerStates[ol.getUid(layer)]).to.equal(layerState);
+      });
     });
 
     describe('setMap sequences', function() {
