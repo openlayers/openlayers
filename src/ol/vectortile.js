@@ -109,7 +109,7 @@ ol.VectorTile.prototype.getFormat = function() {
 
 /**
  * Get the features for this tile. Geometries will be in the projection returned
- * by {@link #getProjection}.
+ * by {@link ol.VectorTile#getProjection}.
  * @return {Array.<ol.Feature|ol.render.Feature>} Features.
  * @api
  */
@@ -127,7 +127,8 @@ ol.VectorTile.prototype.getKey = function() {
 
 
 /**
- * Get the feature projection of features returned by {@link #getFeatures}.
+ * Get the feature projection of features returned by
+ * {@link ol.VectorTile#getFeatures}.
  * @return {ol.proj.Projection} Feature projection.
  * @api
  */
@@ -180,12 +181,14 @@ ol.VectorTile.prototype.onError = function() {
 
 
 /**
- * Sets the extent of the vector tile. For tiles in projections with
- * `tile-pixels` as units, this should be set to
- * `[0, 0, tilePixelSize, tilePixelSize]` by the source's `tileLoadFunction`.
- * `tilePixelSize` is calculated by multiplying the tile size with the tile
- * pixel ratio. When using `ol.format.MVT`, the format's `getLastExtent()`
- * method returns the correct extent. The default is `[0, 0, 4096, 4096]`.
+ * Function for use in an {@link ol.source.VectorTile}'s `tileLoadFunction`.
+ * Sets the extent of the vector tile. This is only required for tiles in
+ * projections with `tile-pixels` as units. The extent should be set to
+ * `[0, 0, tilePixelSize, tilePixelSize]`, where `tilePixelSize` is calculated
+ * by multiplying the tile size with the tile pixel ratio. For sources using
+ * {@link ol.format.MVT} as feature format, the
+ * {@link ol.format.MVT#getLastExtent} method will return the correct extent.
+ * The default is `[0, 0, 4096, 4096]`.
  * @param {ol.Extent} extent The extent.
  * @api
  */
@@ -195,6 +198,8 @@ ol.VectorTile.prototype.setExtent = function(extent) {
 
 
 /**
+ * Function for use in an {@link ol.source.VectorTile}'s `tileLoadFunction`.
+ * Sets the features for the tile.
  * @param {Array.<ol.Feature>} features Features.
  * @api
  */
@@ -205,7 +210,9 @@ ol.VectorTile.prototype.setFeatures = function(features) {
 
 
 /**
- * Set the projection of the features that were added with {@link #setFeatures}.
+ * Function for use in an {@link ol.source.VectorTile}'s `tileLoadFunction`.
+ * Sets the projection of the features that were added with
+ * {@link ol.VectorTile#setFeatures}.
  * @param {ol.proj.Projection} projection Feature projection.
  * @api
  */
