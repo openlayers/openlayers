@@ -4898,7 +4898,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  *                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
@@ -4994,6 +4993,8 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  *     var format = tile.getFormat();
  *     tile.setFeatures(format.readFeatures(data));
  *     tile.setProjection(format.readProjection(data));
+ *     // uncomment the line below for ol.format.MVT only
+ *     //tile.setExtent(format.getLastExtent());
  *   };
  * });
  * ```
@@ -5001,17 +5002,6 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  * @api
  */
 olx.source.VectorTileOptions.prototype.tileLoadFunction;
-
-
-/**
- * The pixel ratio used by the tile service. For example, if the tile
- * service advertizes 256px by 256px tiles but actually sends 512px
- * by 512px tiles (for retina/hidpi devices) then `tilePixelRatio`
- * should be set to `2`. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.source.VectorTileOptions.prototype.tilePixelRatio;
 
 
 /**

@@ -141,7 +141,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
-    tileSize: tileSize / this.getTilePixelRatio()
+    tileSize: tileSize / (this.hidpi_ ? 2 : 1)
   });
   this.tileGrid = tileGrid;
 

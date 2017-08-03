@@ -276,7 +276,7 @@ ol.VectorImageTile.prototype.finishLoading_ = function() {
  */
 ol.VectorImageTile.defaultLoadFunction = function(tile, url) {
   var loader = ol.featureloader.loadFeaturesXhr(
-      url, tile.getFormat(), tile.onLoad_.bind(tile), tile.onError_.bind(tile));
+      url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
 
   tile.setLoader(loader);
 };
