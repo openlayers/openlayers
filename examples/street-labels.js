@@ -25,7 +25,8 @@ function collectDrawData(letter, x, y, angle) {
 }
 
 var style = new ol.style.Style({
-  renderer: function(coords, geometry, feature) {
+  renderer: function(coords, context) {
+    var feature = context.feature;
     var text = feature.get('name');
     if (text) {
       // Only create label when geometry has a long and straight segment

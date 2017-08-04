@@ -90,7 +90,7 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
-   * @type {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
+   * @type {Object.<number,ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>>}
    */
   this.coordinateCache_ = {};
 
@@ -326,16 +326,14 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
+  var coordinateCache = this.coordinateCache_;
 
-  /**
-   * @type {olx.render.State}
-   */
-  var state = {
+  var state = /** @type {olx.render.State} */ ({
     context: context,
     pixelRatio: pixelRatio,
     resolution: this.resolution,
     rotation: viewRotation
-  };
+  });
 
   // When the batch size gets too big, performance decreases. 200 is a good
   // balance between batch size and number of fill/stroke instructions.
@@ -344,7 +342,7 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   while (i < ii) {
     var instruction = instructions[i];
     var type = /** @type {ol.render.canvas.Instruction} */ (instruction[0]);
-    var feature, fill, stroke, text, x, y;
+    var /** @type {ol.Feature|ol.render.Feature} */ feature, fill, stroke, text, x, y;
     switch (type) {
       case ol.render.canvas.Instruction.BEGIN_GEOMETRY:
         feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
@@ -396,17 +394,21 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         dd = instruction[2];
         var geometry = /** @type {ol.geom.SimpleGeometry} */ (instruction[3]);
         var renderer = instruction[4];
-        var coords;
-        if (instruction.length == 6) {
-          var fn = instruction[5];
-          if (!(d in this.coordinateCache_)) {
-            this.coordinateCache_[d] = [];
-          }
-          coords = fn(pixelCoordinates, d, dd, 2, this.coordinateCache_[d]);
-        } else {
-          coords = pixelCoordinates.slice(d, dd);
+        var fn = instruction.length == 6 ? instruction[5] : undefined;
+        state.geometry = geometry;
+        state.feature = feature;
+        if (!(i in coordinateCache)) {
+          coordinateCache[i] = [];
         }
-        renderer(coords, geometry, feature, state);
+        var coords = coordinateCache[i];
+        if (fn) {
+          fn(pixelCoordinates, d, dd, 2, coords);
+        } else {
+          coords[0] = pixelCoordinates[d];
+          coords[1] = pixelCoordinates[d + 1];
+          coords.length = 2;
+        }
+        renderer(coords, state);
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:

@@ -70,9 +70,9 @@ var styles = [
     })
   }),
   new ol.style.Style({
-    renderer: function(coord, geometry, feature, state) {
+    renderer: function(coords, state) {
       var pixelRatio = state.pixelRatio;
-      var text = feature.get('name');
+      var text = state.feature.get('name');
       var canvas = textCache[text];
       if (!canvas) {
         // Draw the label to its own canvas and cache it.
@@ -87,7 +87,7 @@ var styles = [
         context.fillText(text, 0, 0);
       }
       // The 3rd value of the coordinate is the measure of the extent width
-      var extentWidth = geometry.getCoordinates()[2] / resolution * pixelRatio;
+      var extentWidth = state.geometry.getCoordinates()[2] / resolution * pixelRatio;
       if (extentWidth > canvas.width) {
         // Only consider labels not wider than their country's bounding box
         createLabel(canvas, text, coord);

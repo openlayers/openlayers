@@ -4402,6 +4402,8 @@ olx.render;
 
 /**
  * @typedef {{context: CanvasRenderingContext2D,
+ *     feature: (ol.Feature|ol.render.Feature),
+ *     geometry: ol.geom.SimpleGeometry,
  *     pixelRatio: number,
  *     resolution: number,
  *     rotation: number}}
