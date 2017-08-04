@@ -28,20 +28,18 @@ var style = new ol.style.Style({
   renderer: function(coords, context) {
     var feature = context.feature;
     var text = feature.get('name');
-    if (text) {
-      // Only create label when geometry has a long and straight segment
-      var path = labelSegment(coords, Math.PI / 8, measureText(text));
-      if (path) {
-        extent = ol.extent.createEmpty();
-        letters = [];
-        textPath(text, path, measureText, collectDrawData);
-        ol.extent.buffer(extent, 5 * pixelRatio, extent);
-        var bounds = {
-          bottomLeft: ol.extent.getBottomLeft(extent),
-          topRight: ol.extent.getTopRight(extent)
-        };
-        labelEngine.ingestLabel(bounds, feature.getId(), 1, letters, text, false);
-      }
+    // Only create label when geometry has a long and straight segment
+    var path = labelSegment(coords, Math.PI / 8, measureText(text));
+    if (path) {
+      extent = ol.extent.createEmpty();
+      letters = [];
+      textPath(text, path, measureText, collectDrawData);
+      ol.extent.buffer(extent, 5 * pixelRatio, extent);
+      var bounds = {
+        bottomLeft: ol.extent.getBottomLeft(extent),
+        topRight: ol.extent.getTopRight(extent)
+      };
+      labelEngine.ingestLabel(bounds, feature.getId(), 1, letters, text, false);
     }
   }
 });
@@ -70,7 +68,7 @@ fetch('https://overpass-api.de/api/interpreter', {
 var vectorLayer = new ol.layer.Vector({
   source: source,
   style: function(feature) {
-    if (feature.getGeometry().getType() == 'LineString') {
+    if (feature.getGeometry().getType() == 'LineString' && feature.get('text')) {
       return style;
     }
   }
