@@ -90,6 +90,12 @@ ol.render.canvas.Replay = function(tolerance, maxExtent, resolution, overlaps) {
 
   /**
    * @private
+   * @type {ol.Coordinate|Array.<ol.Coordinate>|Array.<Array.<ol.Coordinate>>}
+   */
+  this.coordinateCache_ = {};
+
+  /**
+   * @private
    * @type {!ol.Transform}
    */
   this.renderedTransform_ = ol.transform.create();
@@ -393,7 +399,10 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         var coords;
         if (instruction.length == 6) {
           var fn = instruction[5];
-          coords = fn(pixelCoordinates, d, dd, 2, geometry.getRenderCoordinates());
+          if (!(d in this.coordinateCache_)) {
+            this.coordinateCache_[d] = [];
+          }
+          coords = fn(pixelCoordinates, d, dd, 2, this.coordinateCache_[d]);
         } else {
           coords = pixelCoordinates.slice(d, dd);
         }
