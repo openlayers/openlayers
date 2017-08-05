@@ -5,10 +5,14 @@ layout: doc.hbs
 
 # Compiling Application with Closure Compiler
 
+**Note**: When building an application with dependencies that are available as [npm](https://npmjs.com/) packages, it will probably be easier to use the [ol](https://npmjs.com/package/ol) package and follow the instructions there.
+
 The OpenLayers code uses the Closure Library, and it is compiled with the
 Closure Compiler. Using OpenLayers in an application does not require using
 Closure. But using Closure in an OpenLayers application is possible. And this
 is what this tutorial is about.
+
+When you want to include OpenLayers as separate script without bundling with your application, follow the [Creating custom builds](./custom-builds.html) tutorial instead.
 
 This tutorial will teach you how to set up an OpenLayers application based on
 the [`closure-util`](https://github.com/openlayers/closure-util) node package,

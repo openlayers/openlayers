@@ -269,6 +269,7 @@ ol.source.TileImage.prototype.getTile = function(z, x, y, pixelRatio, projection
 
       if (tile) {
         newTile.interimTile = tile;
+        newTile.refreshInterimChain();
         cache.replace(tileCoordKey, newTile);
       } else {
         cache.set(tileCoordKey, newTile);

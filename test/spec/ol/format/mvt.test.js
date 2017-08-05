@@ -88,6 +88,13 @@ where('ArrayBuffer.isView').describe('ol.format.MVT', function() {
       expect(features[0].getId()).to.be(2);
     });
 
+    it('sets the extent of the last readFeatures call', function() {
+      var format = new ol.format.MVT();
+      format.readFeatures(data);
+      var extent = format.getLastExtent();
+      expect(extent.getWidth()).to.be(4096);
+    });
+
   });
 
 });

@@ -7,6 +7,7 @@ goog.require('ol.extent');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.obj');
 goog.require('ol.render.ReplayGroup');
+goog.require('ol.render.canvas.Replay');
 goog.require('ol.render.canvas.ImageReplay');
 goog.require('ol.render.canvas.LineStringReplay');
 goog.require('ol.render.canvas.PolygonReplay');
@@ -160,6 +161,24 @@ ol.render.canvas.ReplayGroup.getCircleArray_ = function(radius) {
   ol.render.canvas.ReplayGroup.circleArrayCache_[radius] = arr;
   return arr;
 };
+
+
+/**
+ * @param {Array.<ol.render.ReplayType>} replays Replays.
+ * @return {boolean} Has replays of the provided types.
+ */
+ol.render.canvas.ReplayGroup.prototype.hasReplays = function(replays) {
+  for (var zIndex in this.replaysByZIndex_) {
+    var candidates = this.replaysByZIndex_[zIndex];
+    for (var i = 0, ii = replays.length; i < ii; ++i) {
+      if (replays[i] in candidates) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
+
 
 /**
  * FIXME empty description for jsdoc
@@ -387,6 +406,7 @@ ol.render.canvas.ReplayGroup.prototype.replayHitDetection_ = function(
  */
 ol.render.canvas.ReplayGroup.BATCH_CONSTRUCTORS_ = {
   'Circle': ol.render.canvas.PolygonReplay,
+  'Default': ol.render.canvas.Replay,
   'Image': ol.render.canvas.ImageReplay,
   'LineString': ol.render.canvas.LineStringReplay,
   'Polygon': ol.render.canvas.PolygonReplay,

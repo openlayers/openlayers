@@ -45,6 +45,12 @@ ol.render.Feature = function(type, flatCoordinates, ends, properties, id) {
 
   /**
    * @private
+   * @type {Array.<number>|Array.<Array.<number>>|Array.<Array.<Array.<number>>>}
+   */
+  this.renderCoordinates_ = null;
+
+  /**
+   * @private
    * @type {Array.<number>|Array.<Array.<number>>}
    */
   this.ends_ = ends;
@@ -108,6 +114,18 @@ ol.render.Feature.prototype.getId = function() {
  */
 ol.render.Feature.prototype.getOrientedFlatCoordinates = function() {
   return this.flatCoordinates_;
+};
+
+
+/**
+ * @return {Array.<number>|Array.<Array.<number>>|Array.<Array.<Array.<number>>>}
+ *     Render coordinates.
+ */
+ol.render.Feature.prototype.getRenderCoordinates = function() {
+  if (!this.renderCoordinates_) {
+    this.renderCoordinates_ = [];
+  }
+  return this.renderCoordinates_;
 };
 
 

@@ -21,7 +21,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
 
   describe('constructor', function() {
 
-    var map, layer, feature1, feature2, target, tileCallback;
+    var map, layer, source, feature1, feature2, target, tileCallback;
 
     beforeEach(function() {
       tileCallback = function() {};
@@ -57,7 +57,7 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
         tileCallback(this);
       };
       ol.inherits(TileClass, ol.VectorTile);
-      var source = new ol.source.VectorTile({
+      source = new ol.source.VectorTile({
         format: new ol.format.MVT(),
         tileClass: TileClass,
         tileGrid: ol.tilegrid.createXYZ()
@@ -121,6 +121,18 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       spy2.restore();
     });
 
+    it('renders replays with custom renderers as direct replays', function() {
+      layer.renderMode_ = 'image';
+      layer.setStyle(new ol.style.Style({
+        renderer: function() {}
+      }));
+      var spy = sinon.spy(ol.renderer.canvas.VectorTileLayer.prototype,
+          'getReplayTransform_');
+      map.renderSync();
+      expect(spy.callCount).to.be(1);
+      spy.restore();
+    });
+
     it('gives precedence to feature styles over layer styles', function() {
       var spy = sinon.spy(map.getRenderer().getLayerRenderer(layer),
           'renderFeature');
@@ -150,6 +162,36 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       map.renderSync();
       expect(tile.getProjection()).to.equal(proj);
       expect(feature1.getGeometry().getCoordinates()).to.eql([1, -1]);
+    });
+
+    it('works for multiple layers that use the same source', function() {
+      var layer2 = new ol.layer.VectorTile({
+        source: source,
+        style: new ol.style.Style({
+          text: new ol.style.Text({
+            text: 'layer2'
+          })
+        })
+      });
+      map.addLayer(layer2);
+
+      var spy1 = sinon.spy(ol.VectorTile.prototype,
+          'getReplayGroup');
+      var spy2 = sinon.spy(ol.VectorTile.prototype,
+          'setReplayGroup');
+      map.renderSync();
+      expect(spy1.callCount).to.be(4);
+      expect(spy2.callCount).to.be(2);
+      spy1.restore();
+      spy2.restore();
+    });
+
+    it('uses the extent of the source tile', function() {
+      var renderer = map.getRenderer().getLayerRenderer(layer);
+      var tile = new ol.VectorTile([0, 0, 0], 2);
+      tile.setExtent([0, 0, 4096, 4096]);
+      var tilePixelRatio = renderer.getTilePixelRatio_(source, tile);
+      expect(tilePixelRatio).to.be(16);
     });
 
   });

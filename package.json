@@ -32,20 +32,14 @@
   ],
   "dependencies": {
     "async": "2.5.0",
-    "closure-util": "1.21.0",
-    "derequire": "2.0.6",
-    "fs-extra": "3.0.1",
-    "glob": "7.1.1",
-    "handlebars": "4.0.10",
-    "jsdoc": "3.4.3",
-    "marked": "0.3.6",
-    "metalsmith": "2.3.0",
-    "metalsmith-layouts": "1.8.1",
+    "closure-util": "1.22.0",
+    "fs-extra": "4.0.1",
+    "jsdoc": "3.5.4",
     "nomnom": "1.8.1",
     "pbf": "3.0.5",
     "pixelworks": "1.1.0",
     "rbush": "2.0.1",
-    "rollup": "^0.42.0",
+    "rollup": "^0.45.0",
     "rollup-plugin-cleanup": "^1.0.0",
     "rollup-plugin-commonjs": "^8.0.2",
     "rollup-plugin-node-resolve": "^3.0.0",
@@ -54,25 +48,30 @@
     "walk": "2.3.9"
   },
   "devDependencies": {
-    "clean-css-cli": "4.1.4",
+    "clean-css-cli": "4.1.6",
     "coveralls": "2.13.1",
     "debounce": "^1.0.0",
-    "eslint": "4.1.1",
+    "eslint": "4.3.0",
     "eslint-config-openlayers": "7.0.0",
     "eslint-plugin-openlayers-internal": "^3.1.0",
     "expect.js": "0.3.1",
     "gaze": "^1.0.0",
+    "glob": "7.1.1",
+    "handlebars": "4.0.10",
     "istanbul": "0.4.5",
     "jquery": "3.2.1",
     "jscodeshift": "^0.3.30",
-    "mocha": "3.4.2",
+    "marked": "0.3.6",
+    "metalsmith": "2.3.0",
+    "metalsmith-layouts": "1.8.1",
+    "mocha": "3.5.0",
     "mocha-phantomjs-core": "^2.1.0",
     "mustache": "2.3.0",
     "phantomjs-prebuilt": "2.1.14",
     "proj4": "2.4.3",
     "resemblejs": "2.2.4",
     "serve-files": "1.0.1",
-    "sinon": "2.3.5",
+    "sinon": "3.0.0",
     "slimerjs": "0.10.3"
   },
   "eslintConfig": {
@@ -101,22 +100,26 @@
       "openlayers-internal/requires-first": 2,
       "openlayers-internal/valid-provide": 2,
       "openlayers-internal/valid-requires": 2,
-      "indent": [2, 2, {
-        "VariableDeclarator": 2,
-        "SwitchCase": 1,
-        "MemberExpression": 2,
-        "FunctionDeclaration": {
-          "parameters": 2,
-          "body": 1
-        },
-        "FunctionExpression": {
-          "parameters": 2,
-          "body": 1
-        },
-        "CallExpression": {
-          "arguments": 2
+      "indent": [
+        2,
+        2,
+        {
+          "VariableDeclarator": 2,
+          "SwitchCase": 1,
+          "MemberExpression": 2,
+          "FunctionDeclaration": {
+            "parameters": 2,
+            "body": 1
+          },
+          "FunctionExpression": {
+            "parameters": 2,
+            "body": 1
+          },
+          "CallExpression": {
+            "arguments": 2
+          }
         }
-      }]
+      ]
     }
   },
   "ext": [

@@ -85,7 +85,7 @@ ol.inherits(ol.source.BingMaps, ol.source.TileImage);
  */
 ol.source.BingMaps.TOS_ATTRIBUTION = new ol.Attribution({
   html: '<a class="ol-attribution-bing-tos" ' +
-      'href="http://www.microsoft.com/maps/product/terms.html">' +
+      'href="https://www.microsoft.com/maps/product/terms.html">' +
       'Terms of Use</a>'
 });
 
@@ -141,7 +141,7 @@ ol.source.BingMaps.prototype.handleImageryMetadataResponse = function(response) 
     extent: extent,
     minZoom: resource.zoomMin,
     maxZoom: maxZoom,
-    tileSize: tileSize / this.getTilePixelRatio()
+    tileSize: tileSize / (this.hidpi_ ? 2 : 1)
   });
   this.tileGrid = tileGrid;
 

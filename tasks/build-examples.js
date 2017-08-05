@@ -10,7 +10,7 @@ var markupRegEx = /([^\/^\.]*)\.html$/;
 var cleanupJSRegEx = /.*(\/\/ NOCOMPILE|goog\.require\(.*\);)[\r\n]*/g;
 var requiresRegEx = /.*goog\.require\('(ol\.\S*)'\);/g;
 var isCssRegEx = /\.css$/;
-var isJsRegEx = /\.js$/;
+var isJsRegEx = /\.js(\?.*)?$/;
 
 var srcDir = path.join(__dirname, '..', 'examples');
 var destDir = path.join(__dirname, '..', 'build', 'examples');

@@ -4401,6 +4401,48 @@ olx.render;
 
 
 /**
+ * @typedef {{context: CanvasRenderingContext2D,
+ *     pixelRatio: number,
+ *     resolution: number,
+ *     rotation: number}}
+ */
+olx.render.State;
+
+
+/**
+ * Canvas context that the layer is being rendered to.
+ * @type {CanvasRenderingContext2D}
+ * @api
+ */
+olx.render.State.prototype.context;
+
+
+/**
+ * Pixel ratio used by the layer renderer.
+ * @type {number}
+ * @api
+ */
+olx.render.State.prototype.pixelRatio;
+
+
+/**
+ * Resolution that the render batch was created and optimized for. This is
+ * not the view's resolution that is being rendered.
+ * @type {number}
+ * @api
+ */
+olx.render.State.prototype.resolution;
+
+
+/**
+ * Rotation of the rendered layer in radians.
+ * @type {number}
+ * @api
+ */
+olx.render.State.prototype.rotation;
+
+
+/**
  * @typedef {{size: (ol.Size|undefined),
  *     pixelRatio: (number|undefined)}}
  */
@@ -4856,7 +4898,6 @@ olx.source.TileImageOptions.prototype.wrapX;
  *                 ol.TileLoadFunctionType)|undefined),
  *            tileGrid: (ol.tilegrid.TileGrid|undefined),
  *            tileLoadFunction: (ol.TileLoadFunctionType|undefined),
- *            tilePixelRatio: (number|undefined),
  *            tileUrlFunction: (ol.TileUrlFunctionType|undefined),
  *            url: (string|undefined),
  *            urls: (Array.<string>|undefined),
@@ -4952,6 +4993,8 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  *     var format = tile.getFormat();
  *     tile.setFeatures(format.readFeatures(data));
  *     tile.setProjection(format.readProjection(data));
+ *     // uncomment the line below for ol.format.MVT only
+ *     //tile.setExtent(format.getLastExtent());
  *   };
  * });
  * ```
@@ -4959,17 +5002,6 @@ olx.source.VectorTileOptions.prototype.tileGrid;
  * @api
  */
 olx.source.VectorTileOptions.prototype.tileLoadFunction;
-
-
-/**
- * The pixel ratio used by the tile service. For example, if the tile
- * service advertizes 256px by 256px tiles but actually sends 512px
- * by 512px tiles (for retina/hidpi devices) then `tilePixelRatio`
- * should be set to `2`. Default is `1`.
- * @type {number|undefined}
- * @api
- */
-olx.source.VectorTileOptions.prototype.tilePixelRatio;
 
 
 /**
@@ -6155,6 +6187,9 @@ olx.source.TileJSONOptions.prototype.wrapX;
  *     gutter: (number|undefined),
  *     hidpi: (boolean|undefined),
  *     logo: (string|olx.LogoOptions|undefined),
+ *     tileClass: (function(new: ol.ImageTile, ol.TileCoord,
+ *                          ol.TileState, string, ?string,
+ *                          ol.TileLoadFunctionType)|undefined),
  *     tileGrid: (ol.tilegrid.TileGrid|undefined),
  *     projection: ol.ProjectionLike,
  *     reprojectionErrorThreshold: (number|undefined),
@@ -6235,6 +6270,16 @@ olx.source.TileWMSOptions.prototype.hidpi;
  * @api
  */
 olx.source.TileWMSOptions.prototype.logo;
+
+
+/**
+ * Class used to instantiate image tiles. Default is {@link ol.ImageTile}.
+ * @type {function(new: ol.ImageTile, ol.TileCoord,
+ *                 ol.TileState, string, ?string,
+ *                 ol.TileLoadFunctionType)|undefined}
+ * @api
+ */
+olx.source.TileWMSOptions.prototype.tileClass;
 
 
 /**
@@ -7608,6 +7653,7 @@ olx.style.TextOptions.prototype.stroke;
  * @typedef {{geometry: (undefined|string|ol.geom.Geometry|ol.StyleGeometryFunction),
  *     fill: (ol.style.Fill|undefined),
  *     image: (ol.style.Image|undefined),
+ *     renderer: (ol.StyleRenderFunction|undefined),
  *     stroke: (ol.style.Stroke|undefined),
  *     text: (ol.style.Text|undefined),
  *     zIndex: (number|undefined)}}
@@ -7638,6 +7684,16 @@ olx.style.StyleOptions.prototype.fill;
  * @api
  */
 olx.style.StyleOptions.prototype.image;
+
+
+/**
+ * Custom renderer. When configured, `fill`, `stroke` and `image` will be
+ * ignored, and the provided function will be called with each render frame for
+ * each geometry.
+ *
+ * @type {ol.StyleRenderFunction|undefined}
+ */
+olx.style.StyleOptions.prototype.renderer;
 
 
 /**

@@ -2,7 +2,6 @@ goog.provide('ol.test.render.webgl.ImageReplay');
 
 goog.require('ol.geom.MultiPoint');
 goog.require('ol.geom.Point');
-goog.require('ol.render.webgl.imagereplay.defaultshader');
 goog.require('ol.render.webgl.ImageReplay');
 goog.require('ol.style.Image');
 
@@ -57,34 +56,34 @@ describe('ol.render.webgl.ImageReplay', function() {
 
     it('set expected states', function() {
       replay.setImageStyle(imageStyle1);
-      expect(replay.anchorX_).to.be(0.5);
-      expect(replay.anchorY_).to.be(1);
-      expect(replay.height_).to.be(256);
-      expect(replay.imageHeight_).to.be(512);
-      expect(replay.imageWidth_).to.be(512);
-      expect(replay.opacity_).to.be(0.1);
-      expect(replay.originX_).to.be(200);
-      expect(replay.originY_).to.be(200);
-      expect(replay.rotation_).to.be(1.5);
-      expect(replay.rotateWithView_).to.be(true);
-      expect(replay.scale_).to.be(2.0);
-      expect(replay.width_).to.be(256);
+      expect(replay.anchorX).to.be(0.5);
+      expect(replay.anchorY).to.be(1);
+      expect(replay.height).to.be(256);
+      expect(replay.imageHeight).to.be(512);
+      expect(replay.imageWidth).to.be(512);
+      expect(replay.opacity).to.be(0.1);
+      expect(replay.originX).to.be(200);
+      expect(replay.originY).to.be(200);
+      expect(replay.rotation).to.be(1.5);
+      expect(replay.rotateWithView).to.be(true);
+      expect(replay.scale).to.be(2.0);
+      expect(replay.width).to.be(256);
       expect(replay.images_).to.have.length(1);
-      expect(replay.groupIndices_).to.have.length(0);
+      expect(replay.groupIndices).to.have.length(0);
       expect(replay.hitDetectionImages_).to.have.length(1);
-      expect(replay.hitDetectionGroupIndices_).to.have.length(0);
+      expect(replay.hitDetectionGroupIndices).to.have.length(0);
 
       replay.setImageStyle(imageStyle1);
       expect(replay.images_).to.have.length(1);
-      expect(replay.groupIndices_).to.have.length(0);
+      expect(replay.groupIndices).to.have.length(0);
       expect(replay.hitDetectionImages_).to.have.length(1);
-      expect(replay.hitDetectionGroupIndices_).to.have.length(0);
+      expect(replay.hitDetectionGroupIndices).to.have.length(0);
 
       replay.setImageStyle(imageStyle2);
       expect(replay.images_).to.have.length(2);
-      expect(replay.groupIndices_).to.have.length(1);
+      expect(replay.groupIndices).to.have.length(1);
       expect(replay.hitDetectionImages_).to.have.length(2);
-      expect(replay.hitDetectionGroupIndices_).to.have.length(1);
+      expect(replay.hitDetectionGroupIndices).to.have.length(1);
     });
   });
 
@@ -168,78 +167,43 @@ describe('ol.render.webgl.ImageReplay', function() {
     });
   });
 
-  describe('#setUpProgram', function() {
-    var context, gl;
+  describe('#getTextures', function() {
     beforeEach(function() {
-      context = {
-        getProgram: function() {},
-        useProgram: function() {}
-      };
-      gl = {
-        enableVertexAttribArray: function() {},
-        vertexAttribPointer: function() {},
-        uniform1f: function() {},
-        uniform2fv: function() {},
-        getUniformLocation: function() {},
-        getAttribLocation: function() {}
-      };
+      replay.textures_ = [1, 2];
+      replay.hitDetectionTextures_ = [3, 4];
     });
 
-    it('returns the locations used by the shaders', function() {
-      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(locations).to.be.a(
-          ol.render.webgl.imagereplay.defaultshader.Locations);
+    it('returns the textures', function() {
+      var textures = replay.getTextures();
+
+      expect(textures).to.have.length(2);
+      expect(textures[0]).to.be(1);
+      expect(textures[1]).to.be(2);
     });
 
-    it('gets and compiles the shaders', function() {
-      sinon.spy(context, 'getProgram');
-      sinon.spy(context, 'useProgram');
+    it('can additionally return the hit detection textures', function() {
+      var textures = replay.getTextures(true);
 
-      replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(context.getProgram.calledWithExactly(
-          ol.render.webgl.imagereplay.defaultshader.fragment,
-          ol.render.webgl.imagereplay.defaultshader.vertex)).to.be(true);
-      expect(context.useProgram.calledOnce).to.be(true);
-    });
-
-    it('initializes the attrib pointers', function() {
-      sinon.spy(gl, 'getAttribLocation');
-      sinon.spy(gl, 'vertexAttribPointer');
-      sinon.spy(gl, 'enableVertexAttribArray');
-
-      replay.setUpProgram(gl, context, [2, 2], 1);
-      expect(gl.vertexAttribPointer.callCount).to.be(gl.getAttribLocation.callCount);
-      expect(gl.enableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+      expect(textures).to.have.length(4);
+      expect(textures[0]).to.be(1);
+      expect(textures[1]).to.be(2);
+      expect(textures[2]).to.be(3);
+      expect(textures[3]).to.be(4);
     });
   });
 
-  describe('#shutDownProgram', function() {
-    var context, gl;
+  describe('#getHitDetectionTextures', function() {
     beforeEach(function() {
-      context = {
-        getProgram: function() {},
-        useProgram: function() {}
-      };
-      gl = {
-        enableVertexAttribArray: function() {},
-        disableVertexAttribArray: function() {},
-        vertexAttribPointer: function() {},
-        uniform1f: function() {},
-        uniform2fv: function() {},
-        getUniformLocation: function() {},
-        getAttribLocation: function() {}
-      };
+      replay.textures_ = [1, 2];
+      replay.hitDetectionTextures_ = [3, 4];
     });
 
-    it('disables the attrib pointers', function() {
-      sinon.spy(gl, 'getAttribLocation');
-      sinon.spy(gl, 'disableVertexAttribArray');
+    it('returns the hit detection textures', function() {
+      var textures = replay.getHitDetectionTextures();
 
-      var locations = replay.setUpProgram(gl, context, [2, 2], 1);
-      replay.shutDownProgram(gl, locations);
-      expect(gl.disableVertexAttribArray.callCount).to.be(
-          gl.getAttribLocation.callCount);
+      expect(textures).to.have.length(2);
+      expect(textures[0]).to.be(3);
+      expect(textures[1]).to.be(4);
     });
   });
 });

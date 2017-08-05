@@ -17,7 +17,7 @@ var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
 
 // Calculation of resolutions that match zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
 var resolutions = [];
-for (var i = 0; i <= 7; ++i) {
+for (var i = 0; i <= 8; ++i) {
   resolutions.push(156543.03392804097 / Math.pow(2, i * 2));
 }
 // Calculation of tile urls for zoom levels 1, 3, 5, 7, 9, 11, 13, 15.
@@ -44,7 +44,6 @@ var map = new ol.Map({
           resolutions: resolutions,
           tileSize: 512
         }),
-        tilePixelRatio: 8,
         tileUrlFunction: tileUrlFunction
       }),
       style: createMapboxStreetsV6Style()
