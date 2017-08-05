@@ -48,8 +48,8 @@ ol.inherits(ol.source.Stamen, ol.source.XYZ);
  */
 ol.source.Stamen.ATTRIBUTIONS = [
   new ol.Attribution({
-    html: 'Map tiles by <a href="https://stamen.com/">Stamen Design</a>, ' +
-        'under <a href="https://creativecommons.org/licenses/by/3.0/">CC BY' +
+    html: 'Map tiles by <a href="http://stamen.com/">Stamen Design</a>, ' +
+        'under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY' +
         ' 3.0</a>.'
   }),
   ol.source.OSM.ATTRIBUTION

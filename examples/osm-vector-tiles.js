@@ -70,7 +70,7 @@ var map = new ol.Map({
           layerName: 'layer',
           layers: ['water', 'roads', 'buildings']
         }),
-        tileGrid: ol.tilegrid.createXYZ({tileSize: 512, maxZoom: 19}),
+        tileGrid: ol.tilegrid.createXYZ({maxZoom: 19}),
         url: 'https://tile.mapzen.com/mapzen/vector/v1/all/{z}/{x}/{y}.topojson?api_key=' + key
       }),
       style: function(feature, resolution) {

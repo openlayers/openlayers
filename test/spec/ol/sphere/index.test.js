@@ -4,8 +4,8 @@
 goog.provide('ol.test.Sphere');
 
 goog.require('ol.Sphere');
+goog.require('ol.sphere.WGS84');
 goog.require('ol.format.WKT');
-goog.require('ol.proj.EPSG4326');
 
 
 describe('ol.Sphere', function() {
@@ -102,8 +102,7 @@ describe('ol.Sphere', function() {
 
     it('results match the expected area of Ilinois', function() {
       var coords = geometry.getPolygon(0).getLinearRing(0).getCoordinates();
-      var sphere = new ol.Sphere(ol.proj.EPSG4326.RADIUS);
-      expect(sphere.geodesicArea(coords)).to.equal(145978332359.37125);
+      expect(ol.sphere.WGS84.geodesicArea(coords)).to.equal(145978332359.37125);
     });
   });
 

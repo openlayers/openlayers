@@ -144,7 +144,7 @@ var map = new ol.Map({
   layers: [raster, vector],
   interactions: ol.interaction.defaults().extend([new ol.interaction.Select({
     condition: function(evt) {
-      return  evt.type == 'pointermove' ||
+      return evt.originalEvent.type == 'mousemove' ||
           evt.type == 'singleclick';
     },
     style: selectStyleFunction

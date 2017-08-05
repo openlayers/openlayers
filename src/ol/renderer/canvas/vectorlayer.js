@@ -97,9 +97,7 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     var drawOffsetX = 0;
     var drawOffsetY = 0;
     var replayContext;
-    var transparentLayer = layerState.opacity !== 1;
-    var hasRenderListeners = layer.hasListener(ol.render.EventType.RENDER);
-    if (transparentLayer || hasRenderListeners) {
+    if (layer.hasListener(ol.render.EventType.RENDER)) {
       var drawWidth = context.canvas.width;
       var drawHeight = context.canvas.height;
       if (rotation) {
@@ -115,15 +113,11 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
     } else {
       replayContext = context;
     }
-
+    // for performance reasons, context.save / context.restore is not used
+    // to save and restore the transformation matrix and the opacity.
+    // see http://jsperf.com/context-save-restore-versus-variable
     var alpha = replayContext.globalAlpha;
-    if (!transparentLayer) {
-      // for performance reasons, context.save / context.restore is not used
-      // to save and restore the transformation matrix and the opacity.
-      // see http://jsperf.com/context-save-restore-versus-variable
-      replayContext.globalAlpha = layerState.opacity;
-    }
-
+    replayContext.globalAlpha = layerState.opacity;
     if (replayContext != context) {
       replayContext.translate(drawOffsetX, drawOffsetY);
     }
@@ -165,23 +159,11 @@ ol.renderer.canvas.VectorLayer.prototype.composeFrame = function(frameState, lay
         width / 2, height / 2);
 
     if (replayContext != context) {
-      if (hasRenderListeners) {
-        this.dispatchRenderEvent(replayContext, frameState, transform);
-      }
-      if (transparentLayer) {
-        var mainContextAlpha = context.globalAlpha;
-        context.globalAlpha = layerState.opacity;
-        context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
-        context.globalAlpha = mainContextAlpha;
-      } else {
-        context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
-      }
+      this.dispatchRenderEvent(replayContext, frameState, transform);
+      context.drawImage(replayContext.canvas, -drawOffsetX, -drawOffsetY);
       replayContext.translate(-drawOffsetX, -drawOffsetY);
     }
-
-    if (!transparentLayer) {
-      replayContext.globalAlpha = alpha;
-    }
+    replayContext.globalAlpha = alpha;
   }
 
   if (clipped) {
@@ -295,9 +277,10 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
 
   this.dirty_ = false;
 
-  var replayGroup = new ol.render.canvas.ReplayGroup(
-      ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
-      resolution, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
+  var replayGroup =
+      new ol.render.canvas.ReplayGroup(
+          ol.renderer.vector.getTolerance(resolution, pixelRatio), extent,
+          resolution, vectorSource.getOverlaps(), vectorLayer.getRenderBuffer());
   vectorSource.loadFeatures(extent, resolution, projection);
   /**
    * @param {ol.Feature} feature Feature.

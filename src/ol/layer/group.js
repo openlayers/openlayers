@@ -80,7 +80,9 @@ ol.layer.Group.prototype.createRenderer = function(mapRenderer) {};
  * @private
  */
 ol.layer.Group.prototype.handleLayerChange_ = function() {
-  this.changed();
+  if (this.getVisible()) {
+    this.changed();
+  }
 };
 
 

@@ -519,7 +519,7 @@ ol.Graticule.prototype.getMeridians = function() {
 ol.Graticule.prototype.getParallel_ = function(lat, minLon, maxLon,
     squaredTolerance, index) {
   var flatCoordinates = ol.geom.flat.geodesic.parallel(lat,
-      minLon, maxLon, this.projection_, squaredTolerance);
+      this.minLon_, this.maxLon_, this.projection_, squaredTolerance);
   var lineString = this.parallels_[index] !== undefined ?
     this.parallels_[index] : new ol.geom.LineString(null);
   lineString.setFlatCoordinates(ol.geom.GeometryLayout.XY, flatCoordinates);

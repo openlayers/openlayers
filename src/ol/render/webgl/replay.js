@@ -140,9 +140,9 @@ if (ol.ENABLE_WEBGL) {
    * @param {ol.Size} size Size.
    * @param {number} pixelRatio Pixel ratio.
    * @return {ol.render.webgl.circlereplay.defaultshader.Locations|
+              ol.render.webgl.imagereplay.defaultshader.Locations|
               ol.render.webgl.linestringreplay.defaultshader.Locations|
-              ol.render.webgl.polygonreplay.defaultshader.Locations|
-              ol.render.webgl.texturereplay.defaultshader.Locations} Locations.
+              ol.render.webgl.polygonreplay.defaultshader.Locations} Locations.
    */
   ol.render.webgl.Replay.prototype.setUpProgram = function(gl, context, size, pixelRatio) {};
 
@@ -152,9 +152,9 @@ if (ol.ENABLE_WEBGL) {
    * @protected
    * @param {WebGLRenderingContext} gl gl.
    * @param {ol.render.webgl.circlereplay.defaultshader.Locations|
+             ol.render.webgl.imagereplay.defaultshader.Locations|
              ol.render.webgl.linestringreplay.defaultshader.Locations|
-             ol.render.webgl.polygonreplay.defaultshader.Locations|
-             ol.render.webgl.texturereplay.defaultshader.Locations} locations Locations.
+             ol.render.webgl.polygonreplay.defaultshader.Locations} locations Locations.
    */
   ol.render.webgl.Replay.prototype.shutDownProgram = function(gl, locations) {};
 

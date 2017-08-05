@@ -3,6 +3,7 @@
  * an api tag) and boolean defines (with a define tag and a default value).
  */
 var assert = require('assert');
+var fs = require('fs');
 var path = require('path');
 
 
@@ -88,6 +89,7 @@ exports.publish = function(data, opts) {
         types: getTypes(doc.type.names)
       });
     } else {
+      var types;
       var symbol = {
         name: doc.longname,
         kind: doc.kind,
@@ -167,15 +169,13 @@ exports.publish = function(data, opts) {
     return (symbol.name in augments || symbol.virtual);
   });
 
-  return new Promise(function(resolve, reject) {
-    process.stdout.write(
-        JSON.stringify({
-          symbols: symbols,
-          defines: defines,
-          typedefs: typedefs,
-          externs: externs,
-          base: base
-        }, null, 2));
-  });
+  process.stdout.write(
+      JSON.stringify({
+        symbols: symbols,
+        defines: defines,
+        typedefs: typedefs,
+        externs: externs,
+        base: base
+      }, null, 2));
 
 };

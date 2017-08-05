@@ -3,6 +3,7 @@ goog.provide('ol.proj.EPSG4326');
 goog.require('ol');
 goog.require('ol.proj.Projection');
 goog.require('ol.proj.Units');
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -34,15 +35,6 @@ ol.inherits(ol.proj.EPSG4326.Projection_, ol.proj.Projection);
 
 
 /**
- * Radius of WGS84 sphere
- *
- * @const
- * @type {number}
- */
-ol.proj.EPSG4326.RADIUS = 6378137;
-
-
-/**
  * Extent of the EPSG:4326 projection which is the whole world.
  *
  * @const
@@ -55,7 +47,7 @@ ol.proj.EPSG4326.EXTENT = [-180, -90, 180, 90];
  * @const
  * @type {number}
  */
-ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.proj.EPSG4326.RADIUS / 180;
+ol.proj.EPSG4326.METERS_PER_UNIT = Math.PI * ol.sphere.WGS84.radius / 180;
 
 
 /**

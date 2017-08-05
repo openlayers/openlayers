@@ -37,7 +37,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, o
    *         currentLineJoin: (string|undefined),
    *         currentLineWidth: (number|undefined),
    *         currentMiterLimit: (number|undefined),
-   *         lastStroke: (number|undefined),
+   *         lastStroke: number,
    *         strokeStyle: (ol.ColorLike|undefined),
    *         lineCap: (string|undefined),
    *         lineDash: Array.<number>,
@@ -54,7 +54,7 @@ ol.render.canvas.LineStringReplay = function(tolerance, maxExtent, resolution, o
     currentLineJoin: undefined,
     currentLineWidth: undefined,
     currentMiterLimit: undefined,
-    lastStroke: undefined,
+    lastStroke: 0,
     strokeStyle: undefined,
     lineCap: undefined,
     lineDash: null,
@@ -122,11 +122,10 @@ ol.render.canvas.LineStringReplay.prototype.setStrokeStyle_ = function() {
       state.currentLineJoin != lineJoin ||
       state.currentLineWidth != lineWidth ||
       state.currentMiterLimit != miterLimit) {
-    if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
+    if (state.lastStroke != this.coordinates.length) {
       this.instructions.push([ol.render.canvas.Instruction.STROKE]);
       state.lastStroke = this.coordinates.length;
     }
-    state.lastStroke = 0;
     this.instructions.push([
       ol.render.canvas.Instruction.SET_STROKE_STYLE,
       strokeStyle, lineWidth, lineCap, lineJoin, miterLimit, lineDash, lineDashOffset, true, 1
@@ -209,7 +208,7 @@ ol.render.canvas.LineStringReplay.prototype.drawMultiLineString = function(multi
  */
 ol.render.canvas.LineStringReplay.prototype.finish = function() {
   var state = this.state_;
-  if (state.lastStroke != undefined && state.lastStroke != this.coordinates.length) {
+  if (state.lastStroke != this.coordinates.length) {
     this.instructions.push([ol.render.canvas.Instruction.STROKE]);
   }
   this.reverseHitDetectionInstructions();

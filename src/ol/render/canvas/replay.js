@@ -4,8 +4,6 @@ goog.require('ol');
 goog.require('ol.array');
 goog.require('ol.extent');
 goog.require('ol.extent.Relationship');
-goog.require('ol.geom.GeometryType');
-goog.require('ol.geom.flat.inflate');
 goog.require('ol.geom.flat.transform');
 goog.require('ol.has');
 goog.require('ol.obj');
@@ -177,75 +175,6 @@ ol.render.canvas.Replay.prototype.appendFlatCoordinates = function(flatCoordinat
 
 
 /**
- * @param {Array.<number>} flatCoordinates Flat coordinates.
- * @param {number} offset Offset.
- * @param {Array.<number>} ends Ends.
- * @param {number} stride Stride.
- * @param {Array.<number>} replayEnds Replay ends.
- * @return {number} Offset.
- */
-ol.render.canvas.Replay.prototype.drawCustomCoordinates_ = function(flatCoordinates, offset, ends, stride, replayEnds) {
-  for (var i = 0, ii = ends.length; i < ii; ++i) {
-    var end = ends[i];
-    var replayEnd = this.appendFlatCoordinates(flatCoordinates, offset, end, stride, false, false);
-    replayEnds.push(replayEnd);
-    offset = end;
-  }
-  return offset;
-};
-
-
-/**
- * @inheritDoc.
- */
-ol.render.canvas.Replay.prototype.drawCustom = function(geometry, feature, renderer) {
-  this.beginGeometry(geometry, feature);
-  var type = geometry.getType();
-  var stride = geometry.getStride();
-  var replayBegin = this.coordinates.length;
-  var flatCoordinates, replayEnd, replayEnds, replayEndss;
-  var offset;
-  if (type == ol.geom.GeometryType.MULTI_POLYGON) {
-    geometry = /** @type {ol.geom.MultiPolygon} */ (geometry);
-    flatCoordinates = geometry.getOrientedFlatCoordinates();
-    replayEndss = [];
-    var endss = geometry.getEndss();
-    offset = 0;
-    for (var i = 0, ii = endss.length; i < ii; ++i) {
-      var myEnds = [];
-      offset = this.drawCustomCoordinates_(flatCoordinates, offset, endss[i], stride, myEnds);
-      replayEndss.push(myEnds);
-    }
-    this.instructions.push([ol.render.canvas.Instruction.CUSTOM,
-      replayBegin, replayEndss, geometry, renderer, ol.geom.flat.inflate.coordinatesss]);
-  } else if (type == ol.geom.GeometryType.POLYGON || type == ol.geom.GeometryType.MULTI_LINE_STRING) {
-    replayEnds = [];
-    flatCoordinates = (type == ol.geom.GeometryType.POLYGON) ?
-      /** @type {ol.geom.Polygon} */ (geometry).getOrientedFlatCoordinates() :
-      geometry.getFlatCoordinates();
-    offset = this.drawCustomCoordinates_(flatCoordinates, 0,
-        /** @type {ol.geom.Polygon|ol.geom.MultiLineString} */ (geometry).getEnds(),
-        stride, replayEnds);
-    this.instructions.push([ol.render.canvas.Instruction.CUSTOM,
-      replayBegin, replayEnds, geometry, renderer, ol.geom.flat.inflate.coordinatess]);
-  } else if (type == ol.geom.GeometryType.LINE_STRING || type == ol.geom.GeometryType.MULTI_POINT) {
-    flatCoordinates = geometry.getFlatCoordinates();
-    replayEnd = this.appendFlatCoordinates(
-        flatCoordinates, 0, flatCoordinates.length, stride, false, false);
-    this.instructions.push([ol.render.canvas.Instruction.CUSTOM,
-      replayBegin, replayEnd, geometry, renderer, ol.geom.flat.inflate.coordinates]);
-  } else if (type == ol.geom.GeometryType.POINT) {
-    flatCoordinates = geometry.getFlatCoordinates();
-    this.coordinates.push(flatCoordinates[0], flatCoordinates[1]);
-    replayEnd = this.coordinates.length;
-    this.instructions.push([ol.render.canvas.Instruction.CUSTOM,
-      replayBegin, replayEnd, geometry, renderer]);
-  }
-  this.endGeometry(geometry, feature);
-};
-
-
-/**
  * @protected
  * @param {ol.geom.Geometry|ol.render.Feature} geometry Geometry.
  * @param {ol.Feature|ol.render.Feature} feature Feature.
@@ -320,17 +249,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
   var prevX, prevY, roundX, roundY;
   var pendingFill = 0;
   var pendingStroke = 0;
-
-  /**
-   * @type {olx.render.State}
-   */
-  var state = {
-    context: context,
-    pixelRatio: pixelRatio,
-    resolution: this.resolution,
-    rotation: viewRotation
-  };
-
   // When the batch size gets too big, performance decreases. 200 is a good
   // balance between batch size and number of fill/stroke instructions.
   var batchSize =
@@ -383,21 +301,6 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.CLOSE_PATH:
         context.closePath();
-        ++i;
-        break;
-      case ol.render.canvas.Instruction.CUSTOM:
-        d = /** @type {number} */ (instruction[1]);
-        dd = instruction[2];
-        var geometry = /** @type {ol.geom.SimpleGeometry} */ (instruction[3]);
-        var renderer = instruction[4];
-        var coords;
-        if (instruction.length == 6) {
-          var fn = instruction[5];
-          coords = fn(pixelCoordinates, d, dd, 2, geometry.getRenderCoordinates());
-        } else {
-          coords = pixelCoordinates.slice(d, dd);
-        }
-        renderer(coords, geometry, feature, state);
         ++i;
         break;
       case ol.render.canvas.Instruction.DRAW_IMAGE:
@@ -511,7 +414,8 @@ ol.render.canvas.Replay.prototype.replay_ = function(
         break;
       case ol.render.canvas.Instruction.END_GEOMETRY:
         if (featureCallback !== undefined) {
-          feature = /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
+          feature =
+              /** @type {ol.Feature|ol.render.Feature} */ (instruction[1]);
           var result = featureCallback(feature);
           if (result) {
             return result;

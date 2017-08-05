@@ -6,7 +6,6 @@ goog.require('ol.source.BingMaps');
 
 var styles = [
   'Road',
-  'RoadOnDemand',
   'Aerial',
   'AerialWithLabels',
   'collinsBart',

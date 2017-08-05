@@ -9,13 +9,9 @@
 
 ## Getting Started
 
-Use one of the following methods to use OpenLayers in your project:
-
-- For use with mainstream bundlers and minifiers, install the [ol](https://www.npmjs.com/package/ol) npm package: `npm install ol`
-- Use `ol.js` and `ol.css` from (cdnjs)[https://cdnjs.com/libraries/openlayers]
 - Download the [latest release](https://openlayers.org/download/)
+- Install with npm: `npm install openlayers`
 - Clone the repo: `git clone git@github.com:openlayers/openlayers.git`
-- For use with Closure Library, install the [openlayers](https://npmjs.com/package/openlayers) npm package and read the [tutorial](http://openlayers.org/en/latest/doc/tutorials/closure.html).
 
 ## Supported Browsers
 
@@ -37,3 +33,4 @@ Please see our guide on [contributing](CONTRIBUTING.md) if you're interested in 
 
 - Need help? Find it on [Stack Overflow using the tag 'openlayers'](http://stackoverflow.com/questions/tagged/openlayers)
 - Follow [@openlayers](https://twitter.com/openlayers) on Twitter
+- Discuss with openlayers users on IRC in `#openlayers` at `chat.freenode`
