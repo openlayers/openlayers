@@ -40,9 +40,9 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
 
   /**
    * @private
-   * @type {Object.<string, CanvasRenderingContext2D>}
+   * @type {CanvasRenderingContext2D}
    */
-  this.context_ = {};
+  this.context_ = null;
 
   /**
    * @private
@@ -52,9 +52,14 @@ ol.VectorImageTile = function(tileCoord, state, src, format, tileLoadFunction,
 
   /**
    * @private
-   * @type {Object.<string, ol.TileReplayState>}
+   * @type {ol.TileReplayState}
    */
-  this.replayState_ = {};
+  this.replayState_ = {
+    dirty: false,
+    renderedRenderOrder: null,
+    renderedRevision: -1,
+    renderedTileRevision: -1
+  };
 
   /**
    * @private
@@ -150,44 +155,31 @@ ol.VectorImageTile.prototype.disposeInternal = function() {
 
 
 /**
- * @param {ol.layer.Layer} layer Layer.
  * @return {CanvasRenderingContext2D} The rendering context.
  */
-ol.VectorImageTile.prototype.getContext = function(layer) {
-  var key = ol.getUid(layer).toString();
-  if (!(key in this.context_)) {
-    this.context_[key] = ol.dom.createCanvasContext2D();
+ol.VectorImageTile.prototype.getContext = function() {
+  if (!this.context_) {
+    this.context_ = ol.dom.createCanvasContext2D();
   }
-  return this.context_[key];
+  return this.context_;
 };
 
 
 /**
  * Get the Canvas for this tile.
- * @param {ol.layer.Layer} layer Layer.
  * @return {HTMLCanvasElement} Canvas.
  */
-ol.VectorImageTile.prototype.getImage = function(layer) {
-  return this.getReplayState(layer).renderedTileRevision == -1 ?
-    null : this.getContext(layer).canvas;
+ol.VectorImageTile.prototype.getImage = function() {
+  return this.replayState_.renderedTileRevision == -1 ?
+    null : this.context_.canvas;
 };
 
 
 /**
- * @param {ol.layer.Layer} layer Layer.
  * @return {ol.TileReplayState} The replay state.
  */
-ol.VectorImageTile.prototype.getReplayState = function(layer) {
-  var key = ol.getUid(layer).toString();
-  if (!(key in this.replayState_)) {
-    this.replayState_[key] = {
-      dirty: false,
-      renderedRenderOrder: null,
-      renderedRevision: -1,
-      renderedTileRevision: -1
-    };
-  }
-  return this.replayState_[key];
+ol.VectorImageTile.prototype.getReplayState = function() {
+  return this.replayState_;
 };
 
 
@@ -213,6 +205,7 @@ ol.VectorImageTile.prototype.getTile = function(tileKey) {
  */
 ol.VectorImageTile.prototype.load = function() {
   var leftToLoad = 0;
+  var errors = false;
   if (this.state == ol.TileState.IDLE) {
     this.setState(ol.TileState.LOADING);
   }
@@ -222,6 +215,10 @@ ol.VectorImageTile.prototype.load = function() {
       if (sourceTile.state == ol.TileState.IDLE) {
         sourceTile.setLoader(this.loader_);
         sourceTile.load();
+      } else if (sourceTile.state == ol.TileState.ERROR) {
+        errors = true;
+      } else if (sourceTile.state == ol.TileState.EMPTY) {
+        ol.array.remove(this.tileKeys, sourceTileKey);
       }
       if (sourceTile.state == ol.TileState.LOADING) {
         var key = ol.events.listen(sourceTile, ol.events.EventType.CHANGE, function(e) {
@@ -231,8 +228,13 @@ ol.VectorImageTile.prototype.load = function() {
             --leftToLoad;
             ol.events.unlistenByKey(key);
             ol.array.remove(this.loadListenerKeys_, key);
+            if (state == ol.TileState.ERROR) {
+              ol.array.remove(this.tileKeys, sourceTileKey);
+              errors = true;
+            }
             if (leftToLoad == 0) {
-              this.finishLoading_();
+              this.setState(this.tileKeys.length > 0 ?
+                ol.TileState.LOADED : ol.TileState.ERROR);
             }
           }
         }.bind(this));
@@ -242,30 +244,12 @@ ol.VectorImageTile.prototype.load = function() {
     }.bind(this));
   }
   if (leftToLoad == 0) {
-    setTimeout(this.finishLoading_.bind(this), 0);
+    setTimeout(function() {
+      this.setState(this.tileKeys.length > 0 ?
+        ol.TileState.LOADED :
+        (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
+    }.bind(this), 0);
   }
-};
-
-
-/**
- * @private
- */
-ol.VectorImageTile.prototype.finishLoading_ = function() {
-  var errors = false;
-  var loaded = this.tileKeys.length;
-  var state;
-  for (var i = loaded - 1; i >= 0; --i) {
-    state = this.getTile(this.tileKeys[i]).getState();
-    if (state != ol.TileState.LOADED) {
-      if (state == ol.TileState.ERROR) {
-        errors = true;
-      }
-      --loaded;
-    }
-  }
-  this.setState(loaded > 0 ?
-    ol.TileState.LOADED :
-    (errors ? ol.TileState.ERROR : ol.TileState.EMPTY));
 };
 
 
@@ -276,7 +260,7 @@ ol.VectorImageTile.prototype.finishLoading_ = function() {
  */
 ol.VectorImageTile.defaultLoadFunction = function(tile, url) {
   var loader = ol.featureloader.loadFeaturesXhr(
-      url, tile.getFormat(), tile.onLoad.bind(tile), tile.onError.bind(tile));
+      url, tile.getFormat(), tile.onLoad_.bind(tile), tile.onError_.bind(tile));
 
   tile.setLoader(loader);
 };

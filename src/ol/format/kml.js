@@ -1092,13 +1092,13 @@ ol.format.KML.setCommonGeometryProperties_ = function(multiGeometry,
 ol.format.KML.DataParser_ = function(node, objectStack) {
   var name = node.getAttribute('name');
   ol.xml.parseNode(ol.format.KML.DATA_PARSERS_, node, objectStack);
-  var featureObject = /** @type {Object} */ (objectStack[objectStack.length - 1]);
+  var featureObject =
+      /** @type {Object} */ (objectStack[objectStack.length - 1]);
   if (name !== null) {
     featureObject[name] = featureObject.value;
   } else if (featureObject.displayName !== null) {
     featureObject[featureObject.displayName] = featureObject.value;
   }
-  delete featureObject['value'];
 };
 
 
@@ -2260,7 +2260,7 @@ ol.format.KML.writeIconStyle_ = function(node, style, objectStack) {
       iconProperties['y'] = iconImageSize[1] - (origin[1] + size[1]);
     }
 
-    if (anchor && (anchor[0] !== size[0] / 2 || anchor[1] !== size[1] / 2)) {
+    if (anchor && anchor[0] !== 0 && anchor[1] !== size[1]) {
       var /** @type {ol.KMLVec2_} */ hotSpot = {
         x: anchor[0],
         xunits: ol.style.IconAnchorUnits.PIXELS,

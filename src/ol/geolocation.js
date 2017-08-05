@@ -3,16 +3,15 @@
 goog.provide('ol.Geolocation');
 
 goog.require('ol');
-goog.require('ol.GeolocationProperty');
 goog.require('ol.Object');
-goog.require('ol.Sphere');
+goog.require('ol.GeolocationProperty');
 goog.require('ol.events');
 goog.require('ol.events.EventType');
 goog.require('ol.geom.Polygon');
 goog.require('ol.has');
 goog.require('ol.math');
 goog.require('ol.proj');
-goog.require('ol.proj.EPSG4326');
+goog.require('ol.sphere.WGS84');
 
 
 /**
@@ -59,12 +58,6 @@ ol.Geolocation = function(opt_options) {
    * @type {ol.TransformFunction}
    */
   this.transform_ = ol.proj.identityTransform;
-
-  /**
-   * @private
-   * @type {ol.Sphere}
-   */
-  this.sphere_ = new ol.Sphere(ol.proj.EPSG4326.RADIUS);
 
   /**
    * @private
@@ -161,7 +154,7 @@ ol.Geolocation.prototype.positionChange_ = function(position) {
   this.set(ol.GeolocationProperty.SPEED,
       coords.speed === null ? undefined : coords.speed);
   var geometry = ol.geom.Polygon.circular(
-      this.sphere_, this.position_, coords.accuracy);
+      ol.sphere.WGS84, this.position_, coords.accuracy);
   geometry.applyTransform(this.transform_);
   this.set(ol.GeolocationProperty.ACCURACY_GEOMETRY, geometry);
   this.changed();

@@ -152,10 +152,8 @@ ol.renderer.Layer.prototype.scheduleExpireCache = function(frameState, tileSourc
      */
     var postRenderFunction = function(tileSource, map, frameState) {
       var tileSourceKey = ol.getUid(tileSource).toString();
-      if (tileSourceKey in frameState.usedTiles) {
-        tileSource.expireCache(frameState.viewState.projection,
-            frameState.usedTiles[tileSourceKey]);
-      }
+      tileSource.expireCache(frameState.viewState.projection,
+          frameState.usedTiles[tileSourceKey]);
     }.bind(null, tileSource);
 
     frameState.postRenderFunctions.push(

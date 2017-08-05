@@ -73,15 +73,6 @@ ol.format.Feature.prototype.adaptOptions = function(options) {
 
 
 /**
- * Get the extent from the source of the last {@link readFeatures} call.
- * @return {ol.Extent} Tile extent.
- */
-ol.format.Feature.prototype.getLastExtent = function() {
-  return null;
-};
-
-
-/**
  * @abstract
  * @return {ol.format.FormatType} Format.
  */

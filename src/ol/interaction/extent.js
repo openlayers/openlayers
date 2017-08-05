@@ -10,7 +10,6 @@ goog.require('ol.extent');
 goog.require('ol.geom.GeometryType');
 goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
-goog.require('ol.interaction.ExtentEventType');
 goog.require('ol.interaction.Pointer');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
@@ -77,6 +76,10 @@ ol.interaction.Extent = function(opt_options) {
     opt_options = {};
   }
 
+  if (opt_options.extent) {
+    this.setExtent(opt_options.extent);
+  }
+
   /* Inherit ol.interaction.Pointer */
   ol.interaction.Pointer.call(this, {
     handleDownEvent: ol.interaction.Extent.handleDownEvent_,
@@ -114,10 +117,6 @@ ol.interaction.Extent = function(opt_options) {
     updateWhileAnimating: true,
     updateWhileInteracting: true
   });
-
-  if (opt_options.extent) {
-    this.setExtent(opt_options.extent);
-  }
 };
 
 ol.inherits(ol.interaction.Extent, ol.interaction.Pointer);
@@ -446,19 +445,31 @@ ol.interaction.Extent.prototype.setExtent = function(extent) {
  * this type.
  *
  * @constructor
- * @implements {oli.ExtentEvent}
  * @param {ol.Extent} extent the new extent
  * @extends {ol.events.Event}
  */
 ol.interaction.Extent.Event = function(extent) {
-  ol.events.Event.call(this, ol.interaction.ExtentEventType.EXTENTCHANGED);
+  ol.events.Event.call(this, ol.interaction.Extent.EventType_.EXTENTCHANGED);
 
   /**
    * The current extent.
    * @type {ol.Extent}
    * @api
    */
-  this.extent = extent;
-
+  this.extent_ = extent;
 };
 ol.inherits(ol.interaction.Extent.Event, ol.events.Event);
+
+
+/**
+ * @enum {string}
+ * @private
+ */
+ol.interaction.Extent.EventType_ = {
+  /**
+   * Triggered after the extent is changed
+   * @event ol.interaction.Extent.Event
+   * @api
+   */
+  EXTENTCHANGED: 'extentchanged'
+};

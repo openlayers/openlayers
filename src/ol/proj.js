@@ -1,7 +1,6 @@
 goog.provide('ol.proj');
 
 goog.require('ol');
-goog.require('ol.Sphere');
 goog.require('ol.extent');
 goog.require('ol.proj.EPSG3857');
 goog.require('ol.proj.EPSG4326');
@@ -10,6 +9,7 @@ goog.require('ol.proj.Units');
 goog.require('ol.proj.proj4');
 goog.require('ol.proj.projections');
 goog.require('ol.proj.transforms');
+goog.require('ol.sphere.NORMAL');
 
 
 /**
@@ -19,14 +19,6 @@ goog.require('ol.proj.transforms');
  * @api
  */
 ol.proj.METERS_PER_UNIT = ol.proj.Units.METERS_PER_UNIT;
-
-
-/**
- * A place to store the radius of the Clarke 1866 Authalic Sphere.
- * @private
- * @type {ol.Sphere}
- */
-ol.proj.AUTHALIC_SPHERE_ = new ol.Sphere(6370997);
 
 
 if (ol.ENABLE_PROJ4JS) {
@@ -88,9 +80,9 @@ ol.proj.getPointResolution = function(projection, resolution, point) {
         point[0], point[1] + resolution / 2
       ];
       vertices = toEPSG4326(vertices, vertices, 2);
-      var width = ol.proj.AUTHALIC_SPHERE_.haversineDistance(
+      var width = ol.sphere.NORMAL.haversineDistance(
           vertices.slice(0, 2), vertices.slice(2, 4));
-      var height = ol.proj.AUTHALIC_SPHERE_.haversineDistance(
+      var height = ol.sphere.NORMAL.haversineDistance(
           vertices.slice(4, 6), vertices.slice(6, 8));
       pointResolution = (width + height) / 2;
       var metersPerUnit = projection.getMetersPerUnit();

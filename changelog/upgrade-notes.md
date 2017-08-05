@@ -2,36 +2,6 @@
 
 ### Next release
 
-#### `ol.source.VectorTile` no longer has a `tilePixelRatio` option
-
-The `tilePixelRatio` option was only used for tiles in projections with `tile-pixels` as units. For tiles read with `ol.format.MVT` and the default tile loader, or tiles with the default pixel size of 4096 pixels, no changes are necessary. For the very rare cases that do not fall under these categories, a custom `tileLoadFunction` now needs to be configured on the `ol.source.VectorTile`. In addition to calling `tile.setFeatures()` and `tile.setProjection()`, it also needs to contain code like the following:
-```js
-var extent = tile.getFormat() instanceof ol.format.MVT ?
-  tile.getLastExtent() :
-  [0, 0, tilePixelRatio * tileSize, tilePixelRatio * tileSize];
-tile.setExtent(extent);
-```
-
-#### `ol.animate` now takes the shortest arc for rotation animation
-
-Usually rotation animations should animate along the shortest arc. There are rare occasions where a spinning animation effect is desired. So if you previously had something like
-```js
-map.getView().animate({
-  rotation: 2 * Math.PI,
-  duration: 2000
-});
-```
-we recommend to split the animation into two parts and use different easing functions. The code below results in the same effect as the snippet above did with previous versions:
-```js
-map.getView().animate({
-  rotation: Math.PI,
-  easing: ol.easing.easeIn
-}, {
-  rotation: 2 * Math.PI,
-  easing: ol.easing.easeOut
-});
-```
-
 ### v4.2.0
 
 #### Return values of two `ol.style.RegularShape` getters have changed

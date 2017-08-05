@@ -8,7 +8,7 @@ goog.require('ol.xml');
 /**
  * @param {string|ol.FeatureUrlFunction} url Feature URL service.
  * @param {ol.format.Feature} format Feature format.
- * @param {function(this:ol.VectorTile, Array.<ol.Feature>, ol.proj.Projection, ol.Extent)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
+ * @param {function(this:ol.VectorTile, Array.<ol.Feature>, ol.proj.Projection)|function(this:ol.source.Vector, Array.<ol.Feature>)} success
  *     Function called with the loaded features and optionally with the data
  *     projection. Called with the vector tile or source as `this`.
  * @param {function(this:ol.VectorTile)|function(this:ol.source.Vector)} failure
@@ -56,7 +56,7 @@ ol.featureloader.loadFeaturesXhr = function(url, format, success, failure) {
           if (source) {
             success.call(this, format.readFeatures(source,
                 {featureProjection: projection}),
-            format.readProjection(source), format.getLastExtent());
+            format.readProjection(source));
           } else {
             failure.call(this);
           }

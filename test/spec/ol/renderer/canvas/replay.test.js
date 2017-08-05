@@ -205,53 +205,6 @@ describe('ol.render.canvas.ReplayGroup', function() {
       expect(style2.getStroke().getLineDashOffset()).to.be(2);
       expect(lineDashOffset).to.be(4);
     });
-
-    it('calls the renderer function configured for the style', function() {
-      var spy = sinon.spy();
-      var style = new ol.style.Style({
-        renderer: spy
-      });
-      var point = new ol.Feature(new ol.geom.Point([45, 90]));
-      var multipoint = new ol.Feature(new ol.geom.MultiPoint(
-          [[45, 90], [90, 45]]));
-      var linestring = new ol.Feature(new ol.geom.LineString(
-          [[45, 90], [45, 45], [90, 45]]));
-      var multilinestring = new ol.Feature(new ol.geom.MultiLineString(
-          [linestring.getGeometry().getCoordinates(), linestring.getGeometry().getCoordinates()]));
-      var polygon = feature1;
-      var multipolygon = new ol.Feature(new ol.geom.MultiPolygon(
-          [polygon.getGeometry().getCoordinates(), polygon.getGeometry().getCoordinates()]));
-      var geometrycollection = new ol.Feature(new ol.geom.GeometryCollection(
-          [point.getGeometry(), linestring.getGeometry(), polygon.getGeometry()]));
-      replay = new ol.render.canvas.ReplayGroup(1, [-180, -90, 180, 90], 1, true);
-      ol.renderer.vector.renderFeature(replay, point, style, 1);
-      ol.renderer.vector.renderFeature(replay, multipoint, style, 1);
-      ol.renderer.vector.renderFeature(replay, linestring, style, 1);
-      ol.renderer.vector.renderFeature(replay, multilinestring, style, 1);
-      ol.renderer.vector.renderFeature(replay, polygon, style, 1);
-      ol.renderer.vector.renderFeature(replay, multipolygon, style, 1);
-      ol.renderer.vector.renderFeature(replay, geometrycollection, style, 1);
-      ol.transform.scale(transform, 0.1, 0.1);
-      replay.replay(context, 1, transform, 0, {});
-      expect(spy.callCount).to.be(9);
-      expect(spy.firstCall.args.length).to.be(4);
-      expect(spy.firstCall.args[1]).to.be(point.getGeometry());
-      expect(spy.firstCall.args[2]).to.be(point);
-      expect(spy.firstCall.args[3].context).to.be(context);
-      expect(spy.firstCall.args[3].pixelRatio).to.be(1);
-      expect(spy.firstCall.args[3].rotation).to.be(0);
-      expect(spy.firstCall.args[3].resolution).to.be(1);
-      expect(spy.getCall(0).args[0]).to.eql([4.5, 9]);
-      expect(spy.getCall(1).args[0][0]).to.eql([4.5, 9]);
-      expect(spy.getCall(2).args[0][0]).to.eql([4.5, 9]);
-      expect(spy.getCall(3).args[0][0][0]).to.eql([4.5, 9]);
-      expect(spy.getCall(4).args[0][0][0]).to.eql([-9, -4.5]);
-      expect(spy.getCall(5).args[0][0][0][0]).to.eql([-9, -4.5]);
-      expect(spy.getCall(6).args[2]).to.be(geometrycollection);
-      expect(spy.getCall(6).args[1].getCoordinates()).to.eql([45, 90]);
-      expect(spy.getCall(7).args[1].getCoordinates()[0]).to.eql([45, 90]);
-      expect(spy.getCall(8).args[1].getCoordinates()[0][0]).to.eql([-90, -45]);
-    });
   });
 
 });

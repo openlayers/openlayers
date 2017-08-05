@@ -494,36 +494,6 @@ describe('ol.View', function() {
       });
     });
 
-    it('takes the shortest arc to the target rotation', function(done) {
-      var view = new ol.View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: Math.PI / 180 * 1
-      });
-      view.animate({
-        rotation: Math.PI / 180 * 359,
-        duration: 0
-      }, function() {
-        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * -1, 1e-12);
-        done();
-      });
-    });
-
-    it('normalizes rotation to angles between -180 and 180 degrees after the anmiation', function(done) {
-      var view = new ol.View({
-        center: [0, 0],
-        zoom: 0,
-        rotation: Math.PI / 180 * 1
-      });
-      view.animate({
-        rotation: Math.PI / 180 * -181,
-        duration: 0
-      }, function() {
-        expect(view.getRotation()).to.roughlyEqual(Math.PI / 180 * 179, 1e-12);
-        done();
-      });
-    });
-
     it('calls a callback when animation completes', function(done) {
       var view = new ol.View({
         center: [0, 0],
@@ -999,31 +969,6 @@ describe('ol.View', function() {
       expect(view.getZoomForResolution(4)).to.be(3);
 
       expect(view.getZoomForResolution(2)).to.be(4);
-    });
-
-  });
-
-  describe('#getResolutionForZoom', function() {
-
-    it('returns correct zoom resolution', function() {
-      var view = new ol.View();
-      var max = view.getMaxZoom();
-      var min = view.getMinZoom();
-
-      expect(view.getResolutionForZoom(max)).to.be(view.getMinResolution());
-      expect(view.getResolutionForZoom(min)).to.be(view.getMaxResolution());
-    });
-
-    it('returns correct zoom levels for specifically configured resolutions', function() {
-      var view = new ol.View({
-        resolutions: [10, 8, 6, 4, 2]
-      });
-
-      expect(view.getResolutionForZoom(0)).to.be(10);
-      expect(view.getResolutionForZoom(1)).to.be(8);
-      expect(view.getResolutionForZoom(2)).to.be(6);
-      expect(view.getResolutionForZoom(3)).to.be(4);
-      expect(view.getResolutionForZoom(4)).to.be(2);
     });
 
   });

@@ -317,7 +317,6 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
   var lineJoin = '';
   var miterLimit = 0;
   var lineDash = null;
-  var lineDashOffset = 0;
   var strokeStyle;
   var strokeWidth = 0;
 
@@ -332,10 +331,8 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
       strokeWidth = ol.render.canvas.defaultLineWidth;
     }
     lineDash = this.stroke_.getLineDash();
-    lineDashOffset = this.stroke_.getLineDashOffset();
     if (!ol.has.CANVAS_LINE_DASH) {
       lineDash = null;
-      lineDashOffset = 0;
     }
     lineJoin = this.stroke_.getLineJoin();
     if (lineJoin === undefined) {
@@ -360,7 +357,6 @@ ol.style.RegularShape.prototype.render_ = function(atlasManager) {
     size: size,
     lineCap: lineCap,
     lineDash: lineDash,
-    lineDashOffset: lineDashOffset,
     lineJoin: lineJoin,
     miterLimit: miterLimit
   };
@@ -464,7 +460,6 @@ ol.style.RegularShape.prototype.draw_ = function(renderOptions, context, x, y) {
     context.lineWidth = renderOptions.strokeWidth;
     if (renderOptions.lineDash) {
       context.setLineDash(renderOptions.lineDash);
-      context.lineDashOffset = renderOptions.lineDashOffset;
     }
     context.lineCap = renderOptions.lineCap;
     context.lineJoin = renderOptions.lineJoin;
@@ -538,7 +533,6 @@ ol.style.RegularShape.prototype.drawHitDetectionCanvas_ = function(renderOptions
     context.lineWidth = renderOptions.strokeWidth;
     if (renderOptions.lineDash) {
       context.setLineDash(renderOptions.lineDash);
-      context.lineDashOffset = renderOptions.lineDashOffset;
     }
     context.stroke();
   }

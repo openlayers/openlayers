@@ -40,6 +40,7 @@ ol.source.VectorTile = function(options) {
     tileLoadFunction: options.tileLoadFunction ?
       options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
+    tilePixelRatio: options.tilePixelRatio,
     url: options.url,
     urls: options.urls,
     wrapX: options.wrapX === undefined ? true : options.wrapX
@@ -140,8 +141,10 @@ ol.source.VectorTile.prototype.getTileGridForProjection = function(projection) {
 /**
  * @inheritDoc
  */
-ol.source.VectorTile.prototype.getTilePixelRatio = function(pixelRatio) {
-  return pixelRatio;
+ol.source.VectorTile.prototype.getTilePixelRatio = function(opt_pixelRatio) {
+  return opt_pixelRatio == undefined ?
+    ol.source.UrlTile.prototype.getTilePixelRatio.call(this, opt_pixelRatio) :
+    opt_pixelRatio;
 };
 
 

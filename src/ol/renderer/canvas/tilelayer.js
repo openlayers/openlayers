@@ -144,14 +144,9 @@ ol.renderer.canvas.TileLayer.prototype.prepareFrame = function(frameState, layer
   for (x = tileRange.minX; x <= tileRange.maxX; ++x) {
     for (y = tileRange.minY; y <= tileRange.maxY; ++y) {
       tile = tileSource.getTile(z, x, y, pixelRatio, projection);
-      if (tile.getState() == ol.TileState.ERROR) {
-        if (!tileLayer.getUseInterimTilesOnError()) {
-          // When useInterimTilesOnError is false, we consider the error tile as loaded.
-          tile.setState(ol.TileState.LOADED);
-        } else if (tileLayer.getPreload() > 0) {
-          // Preloaded tiles for lower resolutions might have finished loading.
-          newTiles = true;
-        }
+      // When useInterimTilesOnError is false, we consider the error tile as loaded.
+      if (tile.getState() == ol.TileState.ERROR && !this.getLayer().getUseInterimTilesOnError()) {
+        tile.setState(ol.TileState.LOADED);
       }
       if (!this.isDrawableTile_(tile)) {
         tile = tile.getInterimTile();
@@ -274,7 +269,7 @@ ol.renderer.canvas.TileLayer.prototype.drawTileImage = function(tile, frameState
   if (!this.getLayer().getSource().getOpaque(frameState.viewState.projection)) {
     this.context.clearRect(x, y, w, h);
   }
-  var image = tile.getImage(this.getLayer());
+  var image = tile.getImage();
   if (image) {
     this.context.drawImage(image, gutter, gutter,
         image.width - 2 * gutter, image.height - 2 * gutter, x, y, w, h);

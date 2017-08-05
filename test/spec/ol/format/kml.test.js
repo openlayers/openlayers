@@ -1580,29 +1580,7 @@ describe('ol.format.KML', function() {
           expect(fs).to.have.length(1);
           var f = fs[0];
           expect(f).to.be.an(ol.Feature);
-          expect(f.getProperties()).to.only.have.keys(['foo', 'geometry']);
           expect(f.get('foo')).to.be('bar');
-        });
-
-        it('can read ExtendedData with no values', function() {
-          var text =
-              '<kml xmlns="http://earth.google.com/kml/2.2">' +
-              '  <Placemark xmlns="http://earth.google.com/kml/2.2">' +
-              '    <ExtendedData>' +
-              '      <Data name="foo">' +
-              '        <value>200</value>' +
-              '      </Data>' +
-              '      <Data name="bar"/>' +
-              '    </ExtendedData>' +
-              '  </Placemark>' +
-              '</kml>';
-          var fs = format.readFeatures(text);
-          expect(fs).to.have.length(1);
-          var f = fs[0];
-          expect(f).to.be.an(ol.Feature);
-          expect(f.getProperties()).to.only.have.keys(['foo', 'bar', 'geometry']);
-          expect(f.get('foo')).to.be('200');
-          expect(f.get('bar')).to.be(undefined);
         });
 
         it('can read ExtendedData with displayName instead of name', function() {

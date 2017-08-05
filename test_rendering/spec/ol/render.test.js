@@ -135,49 +135,6 @@ describe('ol.render', function() {
 
     });
 
-    it('supports lineDash styles', function(done) {
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
-
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          lineDash: [10, 5]
-        })
-      });
-
-      vectorContext.setStyle(style);
-
-      vectorContext.drawGeometry(new ol.geom.Polygon([
-        [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
-        [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
-      ]));
-
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
-
-    });
-
-    it('supports lineDashOffset', function(done) {
-      var vectorContext = ol.render.toContext(context, {size: [100, 100]});
-
-      var style = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-          lineDash: [10, 5],
-          lineDashOffset: 5
-        })
-      });
-
-      vectorContext.setStyle(style);
-
-      vectorContext.drawGeometry(new ol.geom.Polygon([
-        [[25, 25], [75, 25], [75, 75], [25, 75], [25, 25]],
-        [[40, 40], [40, 60], [60, 60], [60, 40], [40, 40]]
-      ]));
-
-      resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
-
-    });
-
   });
 
 });

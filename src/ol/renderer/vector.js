@@ -2,7 +2,6 @@ goog.provide('ol.renderer.vector');
 
 goog.require('ol');
 goog.require('ol.ImageState');
-goog.require('ol.geom.GeometryType');
 goog.require('ol.render.ReplayType');
 
 
@@ -112,34 +111,9 @@ ol.renderer.vector.renderFeature_ = function(
     return;
   }
   var simplifiedGeometry = geometry.getSimplifiedGeometry(squaredTolerance);
-  var renderer = style.getRenderer();
-  if (renderer) {
-    ol.renderer.vector.renderGeometry_(replayGroup, simplifiedGeometry, style, feature);
-  } else {
-    var geometryRenderer =
-        ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
-    geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
-  }
-};
-
-
-/**
- * @param {ol.render.ReplayGroup} replayGroup Replay group.
- * @param {ol.geom.Geometry} geometry Geometry.
- * @param {ol.style.Style} style Style.
- * @param {ol.Feature|ol.render.Feature} feature Feature.
- * @private
- */
-ol.renderer.vector.renderGeometry_ = function(replayGroup, geometry, style, feature) {
-  if (geometry.getType() == ol.geom.GeometryType.GEOMETRY_COLLECTION) {
-    var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
-    for (var i = 0, ii = geometries.length; i < ii; ++i) {
-      ol.renderer.vector.renderGeometry_(replayGroup, geometries[i], style, feature);
-    }
-    return;
-  }
-  var replay = replayGroup.getReplay(style.getZIndex(), ol.render.ReplayType.DEFAULT);
-  replay.drawCustom(/** @type {ol.geom.SimpleGeometry} */ (geometry), feature, style.getRenderer());
+  var geometryRenderer =
+      ol.renderer.vector.GEOMETRY_RENDERERS_[simplifiedGeometry.getType()];
+  geometryRenderer(replayGroup, simplifiedGeometry, style, feature);
 };
 
 
