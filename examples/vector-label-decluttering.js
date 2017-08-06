@@ -4,7 +4,6 @@ goog.require('ol.Map');
 goog.require('ol.View');
 goog.require('ol.extent');
 goog.require('ol.format.GeoJSON');
-goog.require('ol.geom.Point');
 goog.require('ol.layer.Vector');
 goog.require('ol.source.Vector');
 goog.require('ol.style.Fill');
@@ -58,26 +57,43 @@ function sortByWidth(a, b) {
   return ol.extent.getWidth(b.getExtent()) - ol.extent.getWidth(a.getExtent());
 }
 
-var resolution; // This is set by the map's precompose listener
-var styles = [
-  new ol.style.Style({
-    fill: new ol.style.Fill({
-      color: 'rgba(255, 255, 255, 0.6)'
-    }),
-    stroke: new ol.style.Stroke({
-      color: '#319FD3',
-      width: 1
-    })
+var labelStyle = new ol.style.Style({
+  renderer: function(coords, state) {
+    var text = state.feature.get('name');
+    createLabel(textCache[text], text, coords);
+  }
+});
+var countryStyle = new ol.style.Style({
+  fill: new ol.style.Fill({
+    color: 'rgba(255, 255, 255, 0.6)'
   }),
-  new ol.style.Style({
-    renderer: function(coord, geometry, feature, state) {
-      var pixelRatio = state.pixelRatio;
-      var text = feature.get('name');
-      var canvas = textCache[text];
-      if (!canvas) {
+  stroke: new ol.style.Stroke({
+    color: '#319FD3',
+    width: 1
+  })
+});
+var styleWithLabel = [countryStyle, labelStyle];
+var styleWithoutLabel = [countryStyle];
+
+var pixelRatio; // This is set by the map's precompose listener
+var vectorLayer = new ol.layer.Vector({
+  source: new ol.source.Vector({
+    url: 'data/geojson/countries.geojson',
+    format: new ol.format.GeoJSON()
+  }),
+  style: function(feature, resolution) {
+    var text = feature.get('name');
+    var width = textMeasureContext.measureText(text).width;
+    var geometry = feature.getGeometry();
+    if (geometry.getType() == 'MultiPolygon') {
+      geometry = geometry.getPolygons().sort(sortByWidth)[0];
+    }
+    var extentWidth = ol.extent.getWidth(geometry.getExtent());
+    if (extentWidth / resolution > width) {
+      // Only consider label when it fits its geometry's extent
+      if (!(text in textCache)) {
         // Draw the label to its own canvas and cache it.
-        var width = textMeasureContext.measureText(text).width;
-        canvas = textCache[text] = document.createElement('CANVAS');
+        var canvas = textCache[text] = document.createElement('CANVAS');
         canvas.width = width * pixelRatio;
         canvas.height = height * pixelRatio;
         var context = canvas.getContext('2d');
@@ -86,38 +102,15 @@ var styles = [
         context.strokeText(text, 0, 0);
         context.fillText(text, 0, 0);
       }
-      // The 3rd value of the coordinate is the measure of the extent width
-      var extentWidth = geometry.getCoordinates()[2] / resolution * pixelRatio;
-      if (extentWidth > canvas.width) {
-        // Only consider labels not wider than their country's bounding box
-        createLabel(canvas, text, coord);
-      }
-    },
-    // Geometry function to determine label positions
-    geometry: function(feature) {
-      var geometry = feature.getGeometry();
-      if (geometry.getType() == 'MultiPolygon') {
-        var geometries = geometry.getPolygons();
-        geometry = geometries.sort(sortByWidth)[0];
-      }
-      var coordinates = geometry.getInteriorPoint().getCoordinates();
-      var extentWidth = ol.extent.getWidth(geometry.getExtent());
-      // We are using the extentWidth as measure value of the geometry
-      coordinates.push(extentWidth);
-      return new ol.geom.Point(coordinates, 'XYM');
+      labelStyle.setGeometry(geometry.getInteriorPoint());
+      return styleWithLabel;
+    } else {
+      return styleWithoutLabel;
     }
-  })
-];
-
-var vectorLayer = new ol.layer.Vector({
-  source: new ol.source.Vector({
-    url: 'data/geojson/countries.geojson',
-    format: new ol.format.GeoJSON()
-  }),
-  style: styles
+  }
 });
 vectorLayer.on('precompose', function(e) {
-  resolution = e.frameState.viewState.resolution;
+  pixelRatio = e.frameState.pixelRatio;
   labelEngine.destroy();
 });
 vectorLayer.on('postcompose', function(e) {

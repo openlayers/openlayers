@@ -627,14 +627,12 @@ ol.StyleGeometryFunction;
 
 
 /**
- * Custom renderer function. Takes 4 arguments:
+ * Custom renderer function. Takes two arguments:
  *
  * 1. The pixel coordinates of the geometry in GeoJSON notation.
- * 2. The original {@link ol.geom.SimpleGeometry}.
- * 3. The underlying {@link ol.Feature} or {@link ol.render.Feature}.
- * 4. The {@link olx.render.State} of the layer renderer.
+ * 2. The {@link olx.render.State} of the layer renderer.
  *
- * @typedef {function(Array,ol.geom.SimpleGeometry,(ol.Feature|ol.render.Feature),olx.render.State)}
+ * @typedef {function((ol.Coordinate|Array<ol.Coordinate>|Array.<Array.<ol.Coordinate>>),olx.render.State)}
  */
 ol.StyleRenderFunction;
 
