@@ -68,7 +68,7 @@ fetch('https://overpass-api.de/api/interpreter', {
 var vectorLayer = new ol.layer.Vector({
   source: source,
   style: function(feature) {
-    if (feature.getGeometry().getType() == 'LineString' && feature.get('text')) {
+    if (feature.getGeometry().getType() == 'LineString' && feature.get('name')) {
       return style;
     }
   }
