@@ -63,10 +63,12 @@ if (ol.ENABLE_PROJ4JS) {
  * @param {ol.ProjectionLike} projection The projection.
  * @param {number} resolution Nominal resolution in projection units.
  * @param {ol.Coordinate} point Point to find adjusted resolution at.
- * @return {number} Point resolution at point in projection units.
+ * @param {ol.proj.Units=} opt_units Units to get the point resolution in.
+ * Default is the projection's units.
+ * @return {number} Point resolution.
  * @api
  */
-ol.proj.getPointResolution = function(projection, resolution, point) {
+ol.proj.getPointResolution = function(projection, resolution, point, opt_units) {
   projection = ol.proj.get(projection);
   var pointResolution;
   var getter = projection.getPointResolutionFunc();
@@ -74,7 +76,7 @@ ol.proj.getPointResolution = function(projection, resolution, point) {
     pointResolution = getter(resolution, point);
   } else {
     var units = projection.getUnits();
-    if (units == ol.proj.Units.DEGREES) {
+    if (units == ol.proj.Units.DEGREES && !opt_units || opt_units == ol.proj.Units.DEGREES) {
       pointResolution = resolution;
     } else {
       // Estimate point resolution by transforming the center pixel to EPSG:4326,
@@ -93,7 +95,9 @@ ol.proj.getPointResolution = function(projection, resolution, point) {
       var height = ol.proj.AUTHALIC_SPHERE_.haversineDistance(
           vertices.slice(4, 6), vertices.slice(6, 8));
       pointResolution = (width + height) / 2;
-      var metersPerUnit = projection.getMetersPerUnit();
+      var metersPerUnit = opt_units ?
+        ol.proj.Units.METERS_PER_UNIT[opt_units] :
+        projection.getMetersPerUnit();
       if (metersPerUnit !== undefined) {
         pointResolution /= metersPerUnit;
       }
