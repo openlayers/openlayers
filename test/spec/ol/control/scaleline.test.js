@@ -262,6 +262,44 @@ describe('ol.control.ScaleLine', function() {
     });
   });
 
+  describe('latitude may affect scale line in EPSG:4326', function() {
+
+    it('is rendered differently at different latitudes for metric', function() {
+      var ctrl = new ol.control.ScaleLine();
+      ctrl.setMap(map);
+      map.setView(new ol.View({
+        center: ol.proj.fromLonLat([7, 0]),
+        zoom: 2,
+        projection: 'EPSG:4326'
+      }));
+      map.renderSync();
+      var innerHtml0 = ctrl.element_.innerHTML;
+      map.getView().setCenter([7, 52]);
+      map.renderSync();
+      var innerHtml52 = ctrl.element_.innerHTML;
+      expect(innerHtml0).to.not.be(innerHtml52);
+    });
+
+    it('is rendered the same at different latitudes for degrees', function() {
+      var ctrl = new ol.control.ScaleLine({
+        units: 'degrees'
+      });
+      ctrl.setMap(map);
+      map.setView(new ol.View({
+        center: ol.proj.fromLonLat([7, 0]),
+        zoom: 2,
+        projection: 'EPSG:4326'
+      }));
+      map.renderSync();
+      var innerHtml0 = ctrl.element_.innerHTML;
+      map.getView().setCenter([7, 52]);
+      map.renderSync();
+      var innerHtml52 = ctrl.element_.innerHTML;
+      expect(innerHtml0).to.be(innerHtml52);
+    });
+
+  });
+
   describe('zoom affects the scaleline', function() {
     var currentZoom;
     var ctrl;

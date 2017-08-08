@@ -168,17 +168,22 @@ ol.control.ScaleLine.prototype.updateElement_ = function() {
 
   var center = viewState.center;
   var projection = viewState.projection;
-  var metersPerUnit = projection.getMetersPerUnit();
+  var units = this.getUnits();
+  var pointResolutionUnits = units == ol.control.ScaleLineUnits.DEGREES ?
+    ol.proj.Units.DEGREES :
+    ol.proj.Units.METERS;
   var pointResolution =
-      ol.proj.getPointResolution(projection, viewState.resolution, center) *
-      metersPerUnit;
+      ol.proj.getPointResolution(projection, viewState.resolution, center, pointResolutionUnits);
 
   var nominalCount = this.minWidth_ * pointResolution;
   var suffix = '';
-  var units = this.getUnits();
   if (units == ol.control.ScaleLineUnits.DEGREES) {
     var metersPerDegree = ol.proj.METERS_PER_UNIT[ol.proj.Units.DEGREES];
-    pointResolution /= metersPerDegree;
+    if (projection.getUnits() == ol.proj.Units.DEGREES) {
+      nominalCount *= metersPerDegree;
+    } else {
+      pointResolution /= metersPerDegree;
+    }
     if (nominalCount < metersPerDegree / 60) {
       suffix = '\u2033'; // seconds
       pointResolution *= 3600;
