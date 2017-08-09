@@ -3851,7 +3851,8 @@ olx.layer.GroupOptions.prototype.layers;
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
  *     source: (ol.source.Vector|undefined),
- *     visible: (boolean|undefined)}}
+ *     visible: (boolean|undefined),
+ *     zIndex: (number|undefined)}}
  */
 olx.layer.HeatmapOptions;
 
@@ -3949,13 +3950,23 @@ olx.layer.HeatmapOptions.prototype.visible;
 
 
 /**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.HeatmapOptions.prototype.zIndex;
+
+
+/**
  * @typedef {{opacity: (number|undefined),
  *     map: (ol.Map|undefined),
  *     source: (ol.source.Image|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
- *     maxResolution: (number|undefined)}}
+ *     maxResolution: (number|undefined),
+ *     zIndex: (number|undefined)}}
  */
 olx.layer.ImageOptions;
 
@@ -4021,6 +4032,15 @@ olx.layer.ImageOptions.prototype.maxResolution;
 
 
 /**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.ImageOptions.prototype.zIndex;
+
+
+/**
  * @typedef {{opacity: (number|undefined),
  *     preload: (number|undefined),
  *     source: (ol.source.Tile|undefined),
@@ -4029,7 +4049,8 @@ olx.layer.ImageOptions.prototype.maxResolution;
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
- *     useInterimTilesOnError: (boolean|undefined)}}
+ *     useInterimTilesOnError: (boolean|undefined),
+ *     zIndex: (number|undefined)}}
  */
 olx.layer.TileOptions;
 
@@ -4112,6 +4133,15 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
 
 
 /**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.TileOptions.prototype.zIndex;
+
+
+/**
  * @typedef {{renderOrder: (ol.RenderOrderFunction|null|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
@@ -4122,7 +4152,8 @@ olx.layer.TileOptions.prototype.useInterimTilesOnError;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
- *     visible: (boolean|undefined)}}
+ *     visible: (boolean|undefined),
+ *     zIndex: (number|undefined)}}
  */
 olx.layer.VectorOptions;
 
@@ -4238,6 +4269,15 @@ olx.layer.VectorOptions.prototype.visible;
 
 
 /**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.zIndex;
+
+
+/**
  * @typedef {{extent: (ol.Extent|undefined),
  *     map: (ol.Map|undefined),
  *     minResolution: (number|undefined),
@@ -4251,7 +4291,8 @@ olx.layer.VectorOptions.prototype.visible;
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
- *     visible: (boolean|undefined)}}
+ *     visible: (boolean|undefined),
+ *     zIndex: (number|undefined)}}
  */
 olx.layer.VectorTileOptions;
 
@@ -4391,6 +4432,15 @@ olx.layer.VectorTileOptions.prototype.updateWhileInteracting;
  * @api
  */
 olx.layer.VectorTileOptions.prototype.visible;
+
+
+/**
+ * The z-index for layer rendering.  At rendering time, the layers will be
+ * ordered, first by Z-index and then by position. The default Z-index is 0.
+ * @type {number|undefined}
+ * @api
+ */
+olx.layer.VectorOptions.prototype.zIndex;
 
 
 /**
