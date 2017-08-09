@@ -319,7 +319,7 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
           feature, resolution, pixelRatio, styles, replayGroup);
       this.dirty_ = this.dirty_ || dirty;
     }
-  };
+  }.bind(this);
   if (vectorLayerRenderOrder) {
     /** @type {Array.<ol.Feature>} */
     var features = [];
@@ -331,7 +331,9 @@ ol.renderer.canvas.VectorLayer.prototype.prepareFrame = function(frameState, lay
           features.push(feature);
         }, this);
     features.sort(vectorLayerRenderOrder);
-    features.forEach(renderFeature, this);
+    for (var i = 0, ii = features.length; i < ii; ++i) {
+      renderFeature(features[i]);
+    }
   } else {
     vectorSource.forEachFeatureInExtent(extent, renderFeature, this);
   }

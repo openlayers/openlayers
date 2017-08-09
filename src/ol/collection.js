@@ -95,7 +95,11 @@ ol.Collection.prototype.extend = function(arr) {
  * @api
  */
 ol.Collection.prototype.forEach = function(f, opt_this) {
-  this.array_.forEach(f, opt_this);
+  var fn = (opt_this) ? f.bind(opt_this) : f;
+  var array = this.array_;
+  for (var i = 0, ii = array.length; i < ii; ++i) {
+    fn(array[i], i, array);
+  }
 };
 
 
