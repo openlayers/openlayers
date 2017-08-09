@@ -23,7 +23,7 @@ goog.require('ol.events.Event');
  * @constructor
  * @extends {ol.Object}
  * @fires ol.Collection.Event
- * @param {!Array.<T>=} opt_array Array.
+ * @param {Array.<T>=} opt_array Array.
  * @param {olx.CollectionOptions=} opt_options Collection options.
  * @template T
  * @api

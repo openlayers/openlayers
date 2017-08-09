@@ -2,6 +2,20 @@
 
 ### Next release
 
+#### `ol.interaction.Modify` deletes with `alt` key only
+
+To delete features with the modify interaction, press the `alt` key while clicking on an existing vertex.  If you want to configure the modify interaction with a different delete condition, use the `deleteCondition` option.  For example, to allow deletion on a single click with no modifier keys, configure the interaction like this:
+```js
+var interaction = new ol.interaction.Modify({
+  source: source,
+  deleteCondition: function(event) {
+    return ol.events.condition.noModifierKeys(event) && ol.events.condition.singleClick(event);
+  }
+});
+```
+
+The motivation for this change is to make the modify, draw, and snap interactions all work well together.  Previously, the use of these interactions with the default configuration would make it so you couldn't reliably add new vertices (click with no modifier) and delete existing vertices (click with no modifier).
+
 #### `ol.source.VectorTile` no longer has a `tilePixelRatio` option
 
 The `tilePixelRatio` option was only used for tiles in projections with `tile-pixels` as units. For tiles read with `ol.format.MVT` and the default tile loader, or tiles with the default pixel size of 4096 pixels, no changes are necessary. For the very rare cases that do not fall under these categories, a custom `tileLoadFunction` now needs to be configured on the `ol.source.VectorTile`. In addition to calling `tile.setFeatures()` and `tile.setProjection()`, it also needs to contain code like the following:
