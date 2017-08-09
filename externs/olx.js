@@ -3219,7 +3219,8 @@ olx.interaction.KeyboardZoomOptions.prototype.delta;
  *     insertVertexCondition: (ol.EventsConditionType|undefined),
  *     pixelTolerance: (number|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
- *     features: ol.Collection.<ol.Feature>,
+ *     source: (ol.source.Vector|undefined),
+ *     features: (ol.Collection.<ol.Feature>|undefined),
  *     wrapX: (boolean|undefined)
  * }}
  */
@@ -3277,8 +3278,18 @@ olx.interaction.ModifyOptions.prototype.style;
 
 
 /**
- * The features the interaction works on.
- * @type {ol.Collection.<ol.Feature>}
+ * The vector source with features to modify.  If a vector source is not
+ * provided, a feature collection must be provided with the features option.
+ * @type {ol.source.Vector|undefined}
+ * @api
+ */
+olx.interaction.ModifyOptions.prototype.source;
+
+
+/**
+ * The features the interaction works on.  If a feature collection is not
+ * provided, a vector source must be provided with the source option.
+ * @type {ol.Collection.<ol.Feature>|undefined}
  * @api
  */
 olx.interaction.ModifyOptions.prototype.features;
