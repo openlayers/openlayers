@@ -475,7 +475,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered_.left_ !== '') {
       this.rendered_.left_ = style.left = '';
     }
-    var right = Math.round(mapSize[0] - pixel[0] - offsetX) + 'px';
+    var right = (mapSize[0] - pixel[0] - offsetX) + 'px';
     if (this.rendered_.right_ != right) {
       this.rendered_.right_ = style.right = right;
     }
@@ -488,7 +488,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
         positioning == ol.OverlayPositioning.TOP_CENTER) {
       offsetX -= this.element_.offsetWidth / 2;
     }
-    var left = Math.round(pixel[0] + offsetX) + 'px';
+    var left = (pixel[0] + offsetX) + 'px';
     if (this.rendered_.left_ != left) {
       this.rendered_.left_ = style.left = left;
     }
@@ -499,7 +499,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
     if (this.rendered_.top_ !== '') {
       this.rendered_.top_ = style.top = '';
     }
-    var bottom = Math.round(mapSize[1] - pixel[1] - offsetY) + 'px';
+    var bottom = (mapSize[1] - pixel[1] - offsetY) + 'px';
     if (this.rendered_.bottom_ != bottom) {
       this.rendered_.bottom_ = style.bottom = bottom;
     }
@@ -512,7 +512,7 @@ ol.Overlay.prototype.updateRenderedPosition = function(pixel, mapSize) {
         positioning == ol.OverlayPositioning.CENTER_RIGHT) {
       offsetY -= this.element_.offsetHeight / 2;
     }
-    var top = Math.round(pixel[1] + offsetY) + 'px';
+    var top = (pixel[1] + offsetY) + 'px';
     if (this.rendered_.top_ != top) {
       this.rendered_.top_ = style.top = top;
     }
