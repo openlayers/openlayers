@@ -541,7 +541,7 @@ ol.Map.prototype.disposeInternal = function() {
 /**
  * Detect features that intersect a pixel on the viewport, and execute a
  * callback with each intersecting feature. Layers included in the detection can
- * be configured through `opt_layerFilter`.
+ * be configured through the `layerFilter` option in `opt_options`.
  * @param {ol.Pixel} pixel Pixel.
  * @param {function(this: S, (ol.Feature|ol.render.Feature),
  *     ol.layer.Layer): T} callback Feature callback. The callback will be
@@ -572,6 +572,25 @@ ol.Map.prototype.forEachFeatureAtPixel = function(pixel, callback, opt_options) 
       layerFilter, null);
 };
 
+
+/**
+ * Get all features that intersect a pixel on the viewport.
+ * @param {ol.Pixel} pixel Pixel.
+ * @param {olx.AtPixelOptions=} opt_options Optional options.
+ * @return {Array.<ol.Feature|ol.render.Feature>} The detected features or
+ * `null` if none were found.
+ * @api
+ */
+ol.Map.prototype.getFeaturesAtPixel = function(pixel, opt_options) {
+  var features = null;
+  this.forEachFeatureAtPixel(pixel, function(feature) {
+    if (!features) {
+      features = [];
+    }
+    features.push(feature);
+  }, opt_options);
+  return features;
+};
 
 /**
  * Detect layers that have a color value at a pixel on the viewport, and
