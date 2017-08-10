@@ -51,6 +51,12 @@ ol.interaction.DragAndDrop = function(opt_options) {
 
   /**
    * @private
+   * @type {ol.source.Vector}
+   */
+  this.source_ = options.source || null;
+
+  /**
+   * @private
    * @type {Element}
    */
   this.target = options.target ? options.target : null;
@@ -121,6 +127,10 @@ ol.interaction.DragAndDrop.prototype.handleResult_ = function(file, event) {
     if (features && features.length > 0) {
       break;
     }
+  }
+  if (this.source_) {
+    this.source_.clear();
+    this.source_.addFeatures(features);
   }
   this.dispatchEvent(
       new ol.interaction.DragAndDrop.Event(
