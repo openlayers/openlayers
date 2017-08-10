@@ -8,6 +8,7 @@
 goog.provide('ol.Sphere');
 
 goog.require('ol.math');
+goog.require('ol.geom.GeometryType');
 
 
 /**
@@ -75,14 +76,7 @@ ol.Sphere.prototype.geodesicArea = function(coordinates) {
  * @api
  */
 ol.Sphere.prototype.haversineDistance = function(c1, c2) {
-  var lat1 = ol.math.toRadians(c1[1]);
-  var lat2 = ol.math.toRadians(c2[1]);
-  var deltaLatBy2 = (lat2 - lat1) / 2;
-  var deltaLonBy2 = ol.math.toRadians(c2[0] - c1[0]) / 2;
-  var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
-      Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
-      Math.cos(lat1) * Math.cos(lat2);
-  return 2 * this.radius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return ol.Sphere.getDistance_(c1, c2, this.radius);
 };
 
 
@@ -106,4 +100,109 @@ ol.Sphere.prototype.offset = function(c1, distance, bearing) {
       Math.sin(bearing) * Math.sin(dByR) * Math.cos(lat1),
       Math.cos(dByR) - Math.sin(lat1) * Math.sin(lat));
   return [ol.math.toDegrees(lon), ol.math.toDegrees(lat)];
+};
+
+
+/**
+ * The mean Earth radius (1/3 * (2a + b)) for the WGS84 ellipsoid.
+ * https://en.wikipedia.org/wiki/Earth_radius#Mean_radius
+ * @type {number}
+ */
+ol.Sphere.DEFAULT_RADIUS = 6371008.8;
+
+
+/**
+ * Get the spherical length of a geometry.  This length is the sum of the
+ * great circle distances between coordinates.  For polygons, the length is
+ * the sum of all rings.  For points, the length is zero.  For multi-part
+ * geometries, the length is the sum of the length of each part.
+ * @param {ol.geom.Geometry} geometry A geometry.
+ * @param {olx.SphereLengthOptions} opt_options Options for the length
+ *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
+ *     You can change this by providing a `projection` option.
+ * @return {number} The spherical length (in meters).
+ */
+ol.Sphere.getLength = function(geometry, opt_options) {
+  var options = opt_options || {};
+  var radius = options.radius || ol.Sphere.DEFAULT_RADIUS;
+  var projection = options.projection || 'EPSG:3857';
+  geometry = geometry.clone().transform(projection, 'EPSG:4326');
+  var type = geometry.getType();
+  var length = 0;
+  var coordinates, coords, i, ii, j, jj;
+  switch (type) {
+    case ol.geom.GeometryType.POINT:
+    case ol.geom.GeometryType.MULTI_POINT: {
+      break;
+    }
+    case ol.geom.GeometryType.LINE_STRING:
+    case ol.geom.GeometryType.LINEAR_RING: {
+      coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
+      length = ol.Sphere.getLength_(coordinates, radius);
+      break;
+    }
+    case ol.geom.GeometryType.MULTI_LINE_STRING:
+    case ol.geom.GeometryType.POLYGON: {
+      coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
+      for (i = 0, ii = coordinates.length; i < ii; ++i) {
+        length += ol.Sphere.getLength_(coordinates[i], radius);
+      }
+      break;
+    }
+    case ol.geom.GeometryType.MULTI_POLYGON: {
+      coordinates = /** @type {ol.geom.SimpleGeometry} */ (geometry).getCoordinates();
+      for (i = 0, ii = coordinates.length; i < ii; ++i) {
+        coords = coordinates[i];
+        for (j = 0, jj = coords.length; j < jj; ++j) {
+          length += ol.Sphere.getLength_(coords[j], radius);
+        }
+      }
+      break;
+    }
+    case ol.geom.GeometryType.GEOMETRY_COLLECTION: {
+      var geometries = /** @type {ol.geom.GeometryCollection} */ (geometry).getGeometries();
+      for (i = 0, ii = geometries.length; i < ii; ++i) {
+        length += ol.Sphere.getLength(geometries[i], opt_options);
+      }
+      break;
+    }
+    default: {
+      throw new Error('Unsupported geometry type: ' + type);
+    }
+  }
+  return length;
+};
+
+
+/**
+ * Get the cumulative great circle length of linestring coordinates (geographic).
+ * @param {Array} coordinates Linestring coordinates.
+ * @param {number} radius The sphere radius to use.
+ * @return {number} The length (in meters).
+ */
+ol.Sphere.getLength_ = function(coordinates, radius) {
+  var length = 0;
+  for (var i = 0, ii = coordinates.length; i < ii - 1; ++i) {
+    length += ol.Sphere.getDistance_(coordinates[i], coordinates[i + 1], radius);
+  }
+  return length;
+};
+
+
+/**
+ * Get the great circle distance between two geographic coordinates.
+ * @param {Array} c1 Starting coordinate.
+ * @param {Array} c2 Ending coordinate.
+ * @param {number} radius The sphere radius to use.
+ * @return {number} The great circle distance between the points (in meters).
+ */
+ol.Sphere.getDistance_ = function(c1, c2, radius) {
+  var lat1 = ol.math.toRadians(c1[1]);
+  var lat2 = ol.math.toRadians(c2[1]);
+  var deltaLatBy2 = (lat2 - lat1) / 2;
+  var deltaLonBy2 = ol.math.toRadians(c2[0] - c1[0]) / 2;
+  var a = Math.sin(deltaLatBy2) * Math.sin(deltaLatBy2) +
+      Math.sin(deltaLonBy2) * Math.sin(deltaLonBy2) *
+      Math.cos(lat1) * Math.cos(lat2);
+  return 2 * radius * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 };
