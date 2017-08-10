@@ -72,7 +72,8 @@ describe('ol.ImageTile', function() {
         var state = tile.getState();
         if (state == ol.TileState.ERROR) {
           expect(state).to.be(ol.TileState.ERROR);
-          expect(tile.image_).to.be(ol.ImageTile.blankImage);
+          expect(tile.image_).not.to.be(ol.ImageTile.blankImage);
+          expect(tile.image_.src).to.be(ol.ImageTile.blankImage.toDataURL('image/png'));
           done();
         }
       });

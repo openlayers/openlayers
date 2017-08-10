@@ -97,7 +97,7 @@ ol.ImageTile.prototype.getKey = function() {
 ol.ImageTile.prototype.handleImageError_ = function() {
   this.state = ol.TileState.ERROR;
   this.unlistenImage_();
-  this.image_ = ol.ImageTile.blankImage;
+  this.image_.src = ol.ImageTile.blankImage.toDataURL('image/png');
   this.changed();
 };
 
