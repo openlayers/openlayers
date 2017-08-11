@@ -22,11 +22,11 @@ ol.proj.METERS_PER_UNIT = ol.proj.Units.METERS_PER_UNIT;
 
 
 /**
- * A place to store the radius of the Clarke 1866 Authalic Sphere.
+ * A place to store the mean radius of the Earth.
  * @private
  * @type {ol.Sphere}
  */
-ol.proj.AUTHALIC_SPHERE_ = new ol.Sphere(6370997);
+ol.proj.SPHERE_ = new ol.Sphere(ol.Sphere.DEFAULT_RADIUS);
 
 
 if (ol.ENABLE_PROJ4JS) {
@@ -90,9 +90,9 @@ ol.proj.getPointResolution = function(projection, resolution, point, opt_units) 
         point[0], point[1] + resolution / 2
       ];
       vertices = toEPSG4326(vertices, vertices, 2);
-      var width = ol.proj.AUTHALIC_SPHERE_.haversineDistance(
+      var width = ol.proj.SPHERE_.haversineDistance(
           vertices.slice(0, 2), vertices.slice(2, 4));
-      var height = ol.proj.AUTHALIC_SPHERE_.haversineDistance(
+      var height = ol.proj.SPHERE_.haversineDistance(
           vertices.slice(4, 6), vertices.slice(6, 8));
       pointResolution = (width + height) / 2;
       var metersPerUnit = opt_units ?

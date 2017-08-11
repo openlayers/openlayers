@@ -437,6 +437,33 @@ olx.MapOptions.prototype.view;
 
 
 /**
+ * Object literal with options for the {@link ol.Sphere.getLength} or
+ * {@link ol.Sphere.getArea} functions.
+ * @typedef {{projection: (ol.ProjectionLike|undefined),
+ *    radius: (number|undefined)}}
+ */
+olx.SphereMetricOptions;
+
+
+/**
+ * Projection of the geometry.  By default, the geometry is assumed to be in
+ * EPSG:3857 (Web Mercator).
+ * @type {(ol.ProjectionLike|undefined)}
+ * @api
+ */
+olx.SphereMetricOptions.prototype.projection;
+
+
+/**
+ * Sphere radius.  By default, the radius of the earth is used (Clarke 1866
+ * Authalic Sphere).
+ * @type {(number|undefined)}
+ * @api
+ */
+olx.SphereMetricOptions.prototype.radius;
+
+
+/**
  * Object literal with options for the {@link ol.Map#forEachFeatureAtPixel} and
  * {@link ol.Map#hasFeatureAtPixel} methods.
  * @typedef {{layerFilter: ((function(ol.layer.Layer): boolean)|undefined),

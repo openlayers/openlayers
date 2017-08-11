@@ -108,3 +108,92 @@ describe('ol.Sphere', function() {
   });
 
 });
+
+describe('ol.Sphere.getLength()', function() {
+  var cases = [{
+    geometry: new ol.geom.Point([0, 0]),
+    length: 0
+  }, {
+    geometry: new ol.geom.MultiPoint([[0, 0], [1, 1]]),
+    length: 0
+  }, {
+    geometry: new ol.geom.LineString([
+      [12801741.441226462, -3763310.627144653],
+      [14582853.293918837, -2511525.2348457114],
+      [15918687.18343812, -2875744.624352243],
+      [16697923.618991036, -4028802.0261344076]
+    ]),
+    length: 4407939.124914191
+  }, {
+    geometry: new ol.geom.LineString([
+      [115, -32],
+      [131, -22],
+      [143, -25],
+      [150, -34]
+    ]),
+    options: {projection: 'EPSG:4326'},
+    length: 4407939.124914191
+  }, {
+    geometry: new ol.geom.MultiLineString([
+      [
+        [115, -32],
+        [131, -22],
+        [143, -25],
+        [150, -34]
+      ], [
+        [115, -32],
+        [131, -22],
+        [143, -25],
+        [150, -34]
+      ]
+    ]),
+    options: {projection: 'EPSG:4326'},
+    length: 2 * 4407939.124914191
+  }, {
+    geometry: new ol.geom.GeometryCollection([
+      new ol.geom.LineString([
+        [115, -32],
+        [131, -22],
+        [143, -25],
+        [150, -34]
+      ]),
+      new ol.geom.LineString([
+        [115, -32],
+        [131, -22],
+        [143, -25],
+        [150, -34]
+      ])
+    ]),
+    options: {projection: 'EPSG:4326'},
+    length: 2 * 4407939.124914191
+  }];
+
+  cases.forEach(function(c, i) {
+    it('works for case ' + i, function() {
+      var c = cases[i];
+      var length = ol.Sphere.getLength(c.geometry, c.options);
+      expect(length).to.equal(c.length);
+    });
+  });
+
+});
+
+describe('ol.Sphere.getArea()', function() {
+  var geometry;
+  before(function(done) {
+    afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
+      try {
+        var format = new ol.format.WKT();
+        geometry = format.readGeometry(wkt);
+      } catch (e) {
+        done(e);
+      }
+      done();
+    });
+  });
+
+  it('calculates the area of Ilinois', function() {
+    var area = ol.Sphere.getArea(geometry, {projection: 'EPSG:4326'});
+    expect(area).to.equal(145652224192.4434);
+  });
+});
