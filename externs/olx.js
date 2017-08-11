@@ -437,11 +437,12 @@ olx.MapOptions.prototype.view;
 
 
 /**
- * Object literal with options for the {@link ol.Sphere.getLength}.
+ * Object literal with options for the {@link ol.Sphere.getLength} or
+ * {@link ol.Sphere.getArea} functions.
  * @typedef {{projection: (ol.ProjectionLike|undefined),
  *    radius: (number|undefined)}}
  */
-olx.SphereLengthOptions;
+olx.SphereMetricOptions;
 
 
 /**
@@ -450,7 +451,7 @@ olx.SphereLengthOptions;
  * @type {(ol.ProjectionLike|undefined)}
  * @api
  */
-olx.SphereLengthOptions.prototype.projection;
+olx.SphereMetricOptions.prototype.projection;
 
 
 /**
@@ -459,7 +460,7 @@ olx.SphereLengthOptions.prototype.projection;
  * @type {(number|undefined)}
  * @api
  */
-olx.SphereLengthOptions.prototype.radius;
+olx.SphereMetricOptions.prototype.radius;
 
 
 /**

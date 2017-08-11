@@ -177,3 +177,23 @@ describe('ol.Sphere.getLength()', function() {
   });
 
 });
+
+describe('ol.Sphere.getArea()', function() {
+  var geometry;
+  before(function(done) {
+    afterLoadText('spec/ol/format/wkt/illinois.wkt', function(wkt) {
+      try {
+        var format = new ol.format.WKT();
+        geometry = format.readGeometry(wkt);
+      } catch (e) {
+        done(e);
+      }
+      done();
+    });
+  });
+
+  it('calculates the area of Ilinois', function() {
+    var area = ol.Sphere.getArea(geometry, {projection: 'EPSG:4326'});
+    expect(area).to.equal(145652224192.4434);
+  });
+});
