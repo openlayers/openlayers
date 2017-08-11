@@ -204,7 +204,7 @@ ol.Sphere.getDistance_ = function(c1, c2, radius) {
  * @param {olx.SphereMetricOptions} opt_options Options for the area
  *     calculation.  By default, geometries are assumed to be in 'EPSG:3857'.
  *     You can change this by providing a `projection` option.
- * @return {number} The spherical area (in meters).
+ * @return {number} The spherical area (in square meters).
  */
 ol.Sphere.getArea = function(geometry, opt_options) {
   var options = opt_options || {};
@@ -268,7 +268,7 @@ ol.Sphere.getArea = function(geometry, opt_options) {
  * ring. If the ring is oriented clockwise, the area will be positive,
  * otherwise it will be negative.
  * @param {number} radius The sphere radius.
- * @return {number} Area (in meters).
+ * @return {number} Area (in square meters).
  */
 ol.Sphere.getArea_ = function(coordinates, radius) {
   var area = 0, len = coordinates.length;
