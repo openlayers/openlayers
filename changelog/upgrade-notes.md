@@ -1,6 +1,8 @@
 ## Upgrade notes
 
-### Next release
+### Next Release
+
+### v4.3.0
 
 #### `ol.source.VectorTile` no longer requires a `tileGrid` option
 
