@@ -2,6 +2,27 @@
 
 ### Next release
 
+#### `ol.source.VectorTile` no longer requires a `tileGrid` option
+
+By default, the `ol.source.VectorTile` constructor creates an XYZ tile grid (in Web Mercator) for 512 pixel tiles and assumes a max zoom level of 22.  If you were creating a vector tile source with an explicit `tileGrid` option, you can now remove this.
+
+Before:
+```js
+var source = new ol.source.VectorTile({
+  tileGrid: ol.tilegrid.createXYZ({tileSize: 512, maxZoom: 22}),
+  url: url
+});
+```
+
+After:
+```js
+var source = new ol.source.VectorTile({
+  url: url
+});
+```
+
+If you need to change the max zoom level, you can pass the source a `maxZoom` option.  If you need to change the tile size, you can pass the source a `tileSize` option.  If you need a completely custom tile grid, you can still pass the source a `tileGrid` option.
+
 #### `ol.interaction.Modify` deletes with `alt` key only
 
 To delete features with the modify interaction, press the `alt` key while clicking on an existing vertex.  If you want to configure the modify interaction with a different delete condition, use the `deleteCondition` option.  For example, to allow deletion on a single click with no modifier keys, configure the interaction like this:

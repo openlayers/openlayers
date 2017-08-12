@@ -6,7 +6,6 @@ goog.require('ol.source.OSM');
 goog.require('ol.source.VectorTile');
 goog.require('ol.layer.Tile');
 goog.require('ol.layer.VectorTile');
-goog.require('ol.tilegrid');
 goog.require('ol.proj.Projection');
 
 
@@ -77,7 +76,6 @@ fetch(url).then(function(response) {
   });
   var vectorSource = new ol.source.VectorTile({
     format: new ol.format.GeoJSON(),
-    tileGrid: ol.tilegrid.createXYZ(),
     tileLoadFunction: function(tile) {
       var format = tile.getFormat();
       var tileCoord = tile.getTileCoord();

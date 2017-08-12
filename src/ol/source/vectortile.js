@@ -27,16 +27,26 @@ goog.require('ol.source.UrlTile');
  * @api
  */
 ol.source.VectorTile = function(options) {
+  var projection = options.projection || 'EPSG:3857';
+
+  var extent = options.extent || ol.tilegrid.extentFromProjection(projection);
+
+  var tileGrid = options.tileGrid || ol.tilegrid.createXYZ({
+    extent: extent,
+    maxZoom: options.maxZoom || 22,
+    minZoom: options.minZoom,
+    tileSize: options.tileSize || 512
+  });
 
   ol.source.UrlTile.call(this, {
     attributions: options.attributions,
     cacheSize: options.cacheSize !== undefined ? options.cacheSize : 128,
-    extent: options.extent,
+    extent: extent,
     logo: options.logo,
     opaque: false,
-    projection: options.projection,
+    projection: projection,
     state: options.state,
-    tileGrid: options.tileGrid,
+    tileGrid: tileGrid,
     tileLoadFunction: options.tileLoadFunction ?
       options.tileLoadFunction : ol.VectorImageTile.defaultLoadFunction,
     tileUrlFunction: options.tileUrlFunction,
