@@ -10,7 +10,6 @@ goog.require('ol.style.Icon');
 goog.require('ol.style.Stroke');
 goog.require('ol.style.Style');
 goog.require('ol.style.Text');
-goog.require('ol.tilegrid');
 
 
 var key = 'pk.eyJ1IjoiYWhvY2V2YXIiLCJhIjoiRk1kMWZaSSJ9.E5BkluenyWQMsBLsuByrmg';
@@ -23,7 +22,6 @@ var map = new ol.Map({
           '© <a href="https://www.openstreetmap.org/copyright">' +
           'OpenStreetMap contributors</a>',
         format: new ol.format.MVT(),
-        tileGrid: ol.tilegrid.createXYZ({tileSize: 512, maxZoom: 22}),
         url: 'https://{a-d}.tiles.mapbox.com/v4/mapbox.mapbox-streets-v6/' +
             '{z}/{x}/{y}.vector.pbf?access_token=' + key
       }),
