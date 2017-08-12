@@ -11,11 +11,14 @@
 
 Use one of the following methods to use OpenLayers in your project:
 
-- For use with mainstream bundlers and minifiers, install the [ol](https://www.npmjs.com/package/ol) npm package: `npm install ol`
-- Use `ol.js` and `ol.css` from (cdnjs)[https://cdnjs.com/libraries/openlayers]
-- Download the [latest release](https://openlayers.org/download/)
-- Clone the repo: `git clone git@github.com:openlayers/openlayers.git`
-- For use with Closure Library, install the [openlayers](https://npmjs.com/package/openlayers) npm package and read the [tutorial](http://openlayers.org/en/latest/doc/tutorials/closure.html).
+* For use with webpack, Rollup, Browserify, or other module bundlers, install the [`ol` package](https://www.npmjs.com/package/ol):
+    ```
+    npm install ol
+    ```
+
+* If you just want to add a `<script>` tag to test things out, you can link directly to one of the full builds from [cdnjs](https://cdnjs.com/libraries/openlayers) (not recommended for production)
+
+* For use with Closure Library (rare), install the [`openlayers` package](https://npmjs.com/package/openlayers) and read the [tutorial](http://openlayers.org/en/latest/doc/tutorials/closure.html).
 
 ## Supported Browsers
 
