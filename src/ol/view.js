@@ -1173,11 +1173,8 @@ ol.View.createRotationConstraint_ = function(options) {
  * @return {boolean} The animation involves no view change.
  */
 ol.View.isNoopAnimation = function(animation) {
-  if (animation.sourceCenter) {
-    if (animation.sourceCenter[0] !== animation.targetCenter[0]) {
-      return false;
-    }
-    if (animation.sourceCenter[1] !== animation.targetCenter[1]) {
+  if (animation.sourceCenter && animation.targetCenter) {
+    if (!ol.coordinate.equals(animation.sourceCenter, animation.targetCenter)) {
       return false;
     }
   }
