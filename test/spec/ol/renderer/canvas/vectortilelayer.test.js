@@ -298,6 +298,42 @@ describe('ol.renderer.canvas.VectorTileLayer', function() {
       expect(spy.callCount).to.be(1);
       expect(spy.getCall(0).args[1]).to.equal(layer);
     });
-  });
 
+    it('does not give false positives when overzoomed', function(done) {
+      var target = document.createElement('div');
+      target.style.width = '100px';
+      target.style.height = '100px';
+      document.body.appendChild(target);
+      var extent = [1824704.739223726, 6141868.096770482, 1827150.7241288517, 6144314.081675608];
+      var source = new ol.source.VectorTile({
+        format: new ol.format.MVT(),
+        url: 'spec/ol/data/14-8938-5680.vector.pbf',
+        minZoom: 14,
+        maxZoom: 14
+      });
+      var map = new ol.Map({
+        target: target,
+        layers: [
+          new ol.layer.VectorTile({
+            extent: extent,
+            source: source
+          })
+        ],
+        view: new ol.View({
+          center: ol.extent.getCenter(extent),
+          zoom: 19
+        })
+      });
+      source.on('tileloadend', function() {
+        setTimeout(function() {
+          var features = map.getFeaturesAtPixel([96, 96]);
+          document.body.removeChild(target);
+          map.dispose();
+          expect(features).to.be(null);
+          done();
+        }, 200);
+      });
+    });
+
+  });
 });

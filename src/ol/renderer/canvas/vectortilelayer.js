@@ -238,7 +238,7 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
   var sourceTileGrid = source.getTileGrid();
   var bufferedExtent, found, tileSpaceCoordinate;
   var i, ii, origin, replayGroup;
-  var tile, tileCoord, tileExtent, tilePixelRatio, tileResolution;
+  var tile, tileCoord, tileExtent, tilePixelRatio, tileRenderResolution;
   for (i = 0, ii = renderedTiles.length; i < ii; ++i) {
     tile = renderedTiles[i];
     tileCoord = tile.tileCoord;
@@ -254,12 +254,14 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
         var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord, this.tmpExtent);
         origin = ol.extent.getTopLeft(sourceTileExtent);
         tilePixelRatio = this.getTilePixelRatio_(source, sourceTile);
-        tileResolution = sourceTileGrid.getResolution(sourceTileCoord[0]) / tilePixelRatio;
+        var sourceTileResolution = sourceTileGrid.getResolution(sourceTileCoord[0]);
+        tileRenderResolution = sourceTileResolution / tilePixelRatio;
         tileSpaceCoordinate = [
-          (coordinate[0] - origin[0]) / tileResolution,
-          (origin[1] - coordinate[1]) / tileResolution
+          (coordinate[0] - origin[0]) / tileRenderResolution,
+          (origin[1] - coordinate[1]) / tileRenderResolution
         ];
-        resolution = tilePixelRatio;
+        var upscaling = tileGrid.getResolution(tileCoord[0]) / sourceTileResolution;
+        resolution = tilePixelRatio * upscaling;
       } else {
         tileSpaceCoordinate = coordinate;
       }
