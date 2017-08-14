@@ -128,6 +128,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.createReplayGroup_ = function(
 
   for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
     var sourceTile = tile.getTile(tile.tileKeys[t]);
+    if (sourceTile.getState() == ol.TileState.ERROR) {
+      continue;
+    }
     replayState.dirty = false;
 
     var sourceTileCoord = sourceTile.tileCoord;
@@ -249,6 +252,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.forEachFeatureAtCoordinate = functi
     }
     for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       var sourceTile = tile.getTile(tile.tileKeys[t]);
+      if (sourceTile.getState() == ol.TileState.ERROR) {
+        continue;
+      }
       if (sourceTile.getProjection().getUnits() === ol.proj.Units.TILE_PIXELS) {
         var sourceTileCoord = sourceTile.tileCoord;
         var sourceTileExtent = sourceTileGrid.getTileCoordExtent(sourceTileCoord, this.tmpExtent);
@@ -368,6 +374,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.postCompose = function(context, fra
         tileGrid.getTileCoordExtent(tile.wrappedTileCoord)[0];
     for (var t = 0, tt = tile.tileKeys.length; t < tt; ++t) {
       var sourceTile = tile.getTile(tile.tileKeys[t]);
+      if (sourceTile.getState() == ol.TileState.ERROR) {
+        continue;
+      }
       var tilePixelRatio = this.getTilePixelRatio_(source, sourceTile);
       var replayGroup = sourceTile.getReplayGroup(layer, tileCoord.toString());
       if (renderMode != ol.layer.VectorTileRenderType.VECTOR && !replayGroup.hasReplays(replays)) {
@@ -466,6 +475,9 @@ ol.renderer.canvas.VectorTileLayer.prototype.renderTileImage_ = function(
     var tileExtent = tileGrid.getTileCoordExtent(tileCoord);
     for (var i = 0, ii = tile.tileKeys.length; i < ii; ++i) {
       var sourceTile = tile.getTile(tile.tileKeys[i]);
+      if (sourceTile.getState() == ol.TileState.ERROR) {
+        continue;
+      }
       var tilePixelRatio = this.getTilePixelRatio_(source, sourceTile);
       var sourceTileCoord = sourceTile.tileCoord;
       var pixelScale = pixelRatio / resolution;
