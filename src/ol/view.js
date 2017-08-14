@@ -302,7 +302,14 @@ ol.View.prototype.animate = function(var_args) {
     }
 
     animation.callback = callback;
-    start += animation.duration;
+
+    // check if animation is a no-op
+    if (ol.View.isNoopAnimation(animation)) {
+      animation.complete = true;
+      // we still push it onto the series for callback handling
+    } else {
+      start += animation.duration;
+    }
     series.push(animation);
   }
   this.animations_.push(series);
@@ -1157,4 +1164,28 @@ ol.View.createRotationConstraint_ = function(options) {
   } else {
     return ol.RotationConstraint.disable;
   }
+};
+
+
+/**
+ * Determine if an animation involves no view change.
+ * @param {ol.ViewAnimation} animation The animation.
+ * @return {boolean} The animation involves no view change.
+ */
+ol.View.isNoopAnimation = function(animation) {
+  if (animation.sourceCenter) {
+    if (animation.sourceCenter[0] !== animation.targetCenter[0]) {
+      return false;
+    }
+    if (animation.sourceCenter[1] !== animation.targetCenter[1]) {
+      return false;
+    }
+  }
+  if (animation.sourceResolution !== animation.targetResolution) {
+    return false;
+  }
+  if (animation.sourceRotation !== animation.targetRotation) {
+    return false;
+  }
+  return true;
 };
