@@ -345,7 +345,7 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   var s = ol.xml.getAllTextContent(node, false).replace(/^\s*|\s*$/g, '');
   var context = objectStack[0];
   var containerSrs = context['srsName'];
-  var containerDimension = node.parentNode.getAttribute('srsDimension');
+  var contextDimension = context['srsDimension'];
   var axisOrientation = 'enu';
   if (containerSrs) {
     var proj = ol.proj.get(containerSrs);
@@ -360,8 +360,11 @@ ol.format.GML3.prototype.readFlatPosList_ = function(node, objectStack) {
   } else if (node.getAttribute('dimension')) {
     dim = ol.format.XSD.readNonNegativeIntegerString(
         node.getAttribute('dimension'));
-  } else if (containerDimension) {
-    dim = ol.format.XSD.readNonNegativeIntegerString(containerDimension);
+  } else if (node.parentNode.getAttribute('srsDimension')) {
+    dim = ol.format.XSD.readNonNegativeIntegerString(
+        node.parentNode.getAttribute('srsDimension'));
+  } else if (contextDimension) {
+    dim = ol.format.XSD.readNonNegativeIntegerString(contextDimension);
   }
   var x, y, z;
   var flatCoordinates = [];

@@ -1466,4 +1466,35 @@ describe('ol.format.GML3', function() {
 
   });
 
+  describe('when parsing srsDimension from WFS (Geoserver)', function() {
+
+    var features, feature;
+    before(function(done) {
+      afterLoadText('spec/ol/format/gml/geoserverFeatures.xml', function(xml) {
+        try {
+          var config = {
+            'featureNS': 'http://www.openplans.org/topp',
+            'featureType': 'states'
+          };
+          features = new ol.format.GML(config).readFeatures(xml);
+        } catch (e) {
+          done(e);
+        }
+        done();
+      });
+    });
+
+    it('creates 3 features', function() {
+      expect(features).to.have.length(3);
+    });
+
+    it('creates a polygon for Illinois', function() {
+      feature = features[0];
+      expect(feature.getId()).to.equal('states.1');
+      expect(feature.get('STATE_NAME')).to.equal('Illinois');
+      expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
+    });
+
+  });
+
 });

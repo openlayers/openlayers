@@ -198,6 +198,7 @@ ol.format.GMLBase.prototype.readFeaturesInternal = function(node, objectStack) {
 ol.format.GMLBase.prototype.readGeometryElement = function(node, objectStack) {
   var context = /** @type {Object} */ (objectStack[0]);
   context['srsName'] = node.firstElementChild.getAttribute('srsName');
+  context['srsDimension'] = node.firstElementChild.getAttribute('srsDimension');
   /** @type {ol.geom.Geometry} */
   var geometry = ol.xml.pushParseAndPop(null,
       this.GEOMETRY_PARSERS_, node, objectStack, this);
