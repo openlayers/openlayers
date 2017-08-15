@@ -124,7 +124,7 @@ goog.require('ol.source.OSM');
 
 
 /**
- * @type {ol.Map}
+ * @type {ol.PluggableMap}
  */
 app.map = new ol.Map({
   target: 'map',

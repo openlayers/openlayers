@@ -31,7 +31,7 @@ ol.interaction.Interaction = function(options) {
 
   /**
    * @private
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    */
   this.map_ = null;
 
@@ -60,7 +60,7 @@ ol.interaction.Interaction.prototype.getActive = function() {
 
 /**
  * Get the map associated with this interaction.
- * @return {ol.Map} Map.
+ * @return {ol.PluggableMap} Map.
  * @api
  */
 ol.interaction.Interaction.prototype.getMap = function() {
@@ -83,7 +83,7 @@ ol.interaction.Interaction.prototype.setActive = function(active) {
  * Remove the interaction from its current map and attach it to the new map.
  * Subclasses may set up event handlers to get notified about changes to
  * the map here.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  */
 ol.interaction.Interaction.prototype.setMap = function(map) {
   this.map_ = map;

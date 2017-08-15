@@ -30,7 +30,7 @@ ol.render.Box = function(className) {
 
   /**
    * @private
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    */
   this.map_ = null;
 
@@ -74,7 +74,7 @@ ol.render.Box.prototype.render_ = function() {
 
 
 /**
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  */
 ol.render.Box.prototype.setMap = function(map) {
   if (this.map_) {

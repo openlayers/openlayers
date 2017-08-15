@@ -28,7 +28,7 @@ if (ol.ENABLE_WEBGL) {
    * @constructor
    * @extends {ol.renderer.Map}
    * @param {Element} container Container.
-   * @param {ol.Map} map Map.
+   * @param {ol.PluggableMap} map Map.
    * @api
    */
   ol.renderer.webgl.Map = function(container, map) {
@@ -133,7 +133,7 @@ if (ol.ENABLE_WEBGL) {
 
 
     /**
-     * @param {ol.Map} map Map.
+     * @param {ol.PluggableMap} map Map.
      * @param {?olx.FrameState} frameState Frame state.
      * @return {boolean} false.
      * @this {ol.renderer.webgl.Map}
@@ -177,7 +177,7 @@ if (ol.ENABLE_WEBGL) {
   /**
    * Create the map renderer.
    * @param {Element} container Container.
-   * @param {ol.Map} map Map.
+   * @param {ol.PluggableMap} map Map.
    * @return {ol.renderer.webgl.Map} The map renderer.
    */
   ol.renderer.webgl.Map['create'] = function(container, map) {
@@ -301,7 +301,7 @@ if (ol.ENABLE_WEBGL) {
 
 
   /**
-   * @param {ol.Map} map Map.
+   * @param {ol.PluggableMap} map Map.
    * @param {olx.FrameState} frameState Frame state.
    * @private
    */

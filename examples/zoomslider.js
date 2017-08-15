@@ -9,7 +9,7 @@ goog.require('ol.source.OSM');
  * Helper method for map-creation.
  *
  * @param {string} divId The id of the div for the map.
- * @return {ol.Map} The ol.Map instance.
+ * @return {ol.PluggableMap} The ol.Map instance.
  */
 var createMap = function(divId) {
   var source, layer, map, zoomslider;

@@ -291,7 +291,7 @@ ol.PluggableMap = function(options) {
   this.controls.forEach(
       /**
        * @param {ol.control.Control} control Control.
-       * @this {ol.Map}
+       * @this {ol.PluggableMap}
        */
       function(control) {
         control.setMap(this);
@@ -316,7 +316,7 @@ ol.PluggableMap = function(options) {
   this.interactions.forEach(
       /**
        * @param {ol.interaction.Interaction} interaction Interaction.
-       * @this {ol.Map}
+       * @this {ol.PluggableMap}
        */
       function(interaction) {
         interaction.setMap(this);

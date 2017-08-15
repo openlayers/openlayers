@@ -21,7 +21,7 @@ goog.require('ol.source.State');
  * @constructor
  * @extends {ol.renderer.Map}
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @api
  */
 ol.renderer.canvas.Map = function(container, map) {
@@ -75,7 +75,7 @@ ol.renderer.canvas.Map['handles'] = function(type) {
 /**
  * Create the map renderer.
  * @param {Element} container Container.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @return {ol.renderer.canvas.Map} The map renderer.
  */
 ol.renderer.canvas.Map['create'] = function(container, map) {
