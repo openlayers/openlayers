@@ -107,7 +107,7 @@ var vector = new ol.layer.Vector({
 });
 
 var map = new ol.Map({
-  renderer: /** @type {ol.renderer.Type} */ ('webgl'),
+  renderer: /** @type {Array<ol.renderer.Type>} */ (['webgl', 'canvas']),
   layers: [vector],
   target: document.getElementById('map'),
   view: new ol.View({
