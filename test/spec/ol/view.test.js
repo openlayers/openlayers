@@ -471,6 +471,49 @@ describe('ol.View', function() {
       expect(view.getAnimating()).to.eql(false);
     });
 
+    it('immediately completes if view is not defined before', function() {
+      var view = new ol.View();
+      var center = [1, 2];
+      var zoom = 3;
+      var rotation = 0.4;
+
+      view.animate({
+        zoom: zoom,
+        center: center,
+        rotation: rotation,
+        duration: 25
+      });
+      expect(view.getAnimating()).to.eql(false);
+      expect(view.getCenter()).to.eql(center);
+      expect(view.getZoom()).to.eql(zoom);
+      expect(view.getRotation()).to.eql(rotation);
+    });
+
+    it('sets final animation state if view is not defined before', function() {
+      var view = new ol.View();
+
+      var center = [1, 2];
+      var zoom = 3;
+      var rotation = 0.4;
+
+      view.animate({
+        zoom: 1
+      }, {
+        center: [2, 3]
+      }, {
+        rotation: 4
+      }, {
+        zoom: zoom,
+        center: center,
+        rotation: rotation,
+        duration: 25
+      });
+      expect(view.getAnimating()).to.eql(false);
+      expect(view.getCenter()).to.eql(center);
+      expect(view.getZoom()).to.eql(zoom);
+      expect(view.getRotation()).to.eql(rotation);
+    });
+
     it('prefers zoom over resolution', function(done) {
       var view = new ol.View({
         center: [0, 0],
@@ -580,6 +623,19 @@ describe('ol.View', function() {
         zoom: 0,
         duration: 25
       }, function(complete) {
+        expect(complete).to.be(true);
+        done();
+      });
+    });
+
+    it('calls a callback if view is not defined before', function(done) {
+      var view = new ol.View();
+
+      view.animate({
+        zoom: 10,
+        duration: 25
+      }, function(complete) {
+        expect(view.getZoom()).to.be(10);
         expect(complete).to.be(true);
         done();
       });

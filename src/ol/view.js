@@ -255,16 +255,33 @@ ol.View.prototype.getUpdatedOptions_ = function(newOptions) {
  * @api
  */
 ol.View.prototype.animate = function(var_args) {
-  var start = Date.now();
-  var center = this.getCenter().slice();
-  var resolution = this.getResolution();
-  var rotation = this.getRotation();
   var animationCount = arguments.length;
   var callback;
   if (animationCount > 1 && typeof arguments[animationCount - 1] === 'function') {
     callback = arguments[animationCount - 1];
     --animationCount;
   }
+  if (!this.isDef()) {
+    // if view properties are not yet set, shortcut to the final state
+    var state = arguments[animationCount - 1];
+    if (state.center) {
+      this.setCenter(state.center);
+    }
+    if (state.zoom !== undefined) {
+      this.setZoom(state.zoom);
+    }
+    if (state.rotation !== undefined) {
+      this.setRotation(state.rotation);
+    }
+    if (callback) {
+      callback(true);
+    }
+    return;
+  }
+  var start = Date.now();
+  var center = this.getCenter().slice();
+  var resolution = this.getResolution();
+  var rotation = this.getRotation();
   var series = [];
   for (var i = 0; i < animationCount; ++i) {
     var options = /** @type {olx.AnimationOptions} */ (arguments[i]);
