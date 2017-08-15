@@ -108,8 +108,8 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.renderer.webgl.TileLayer['create'] = function(mapRenderer, layer) {
     return new ol.renderer.webgl.TileLayer(
-      /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-      /** @type {ol.layer.Tile} */ (layer)
+        /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+        /** @type {ol.layer.Tile} */ (layer)
     );
   };
 

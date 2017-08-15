@@ -90,8 +90,8 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.renderer.webgl.VectorLayer['create'] = function(mapRenderer, layer) {
     return new ol.renderer.webgl.VectorLayer(
-      /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-      /** @type {ol.layer.Vector} */ (layer)
+        /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+        /** @type {ol.layer.Vector} */ (layer)
     );
   };
 

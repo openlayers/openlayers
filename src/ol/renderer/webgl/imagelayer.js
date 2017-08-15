@@ -69,8 +69,8 @@ if (ol.ENABLE_WEBGL) {
    */
   ol.renderer.webgl.ImageLayer['create'] = function(mapRenderer, layer) {
     return new ol.renderer.webgl.ImageLayer(
-      /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
-      /** @type {ol.layer.Image} */ (layer)
+        /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+        /** @type {ol.layer.Image} */ (layer)
     );
   };
 
