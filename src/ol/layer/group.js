@@ -71,12 +71,6 @@ ol.inherits(ol.layer.Group, ol.layer.Base);
 
 
 /**
- * @inheritDoc
- */
-ol.layer.Group.prototype.createRenderer = function(mapRenderer) {};
-
-
-/**
  * @private
  */
 ol.layer.Group.prototype.handleLayerChange_ = function() {

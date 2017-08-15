@@ -166,12 +166,12 @@ ol.Overlay.prototype.getId = function() {
 
 /**
  * Get the map associated with this overlay.
- * @return {ol.Map|undefined} The map that the overlay is part of.
+ * @return {ol.PluggableMap|undefined} The map that the overlay is part of.
  * @observable
  * @api
  */
 ol.Overlay.prototype.getMap = function() {
-  return /** @type {ol.Map|undefined} */ (
+  return /** @type {ol.PluggableMap|undefined} */ (
     this.get(ol.Overlay.Property_.MAP));
 };
 
@@ -299,7 +299,7 @@ ol.Overlay.prototype.setElement = function(element) {
 
 /**
  * Set the map to be associated with this overlay.
- * @param {ol.Map|undefined} map The map that the overlay is part of.
+ * @param {ol.PluggableMap|undefined} map The map that the overlay is part of.
  * @observable
  * @api
  */

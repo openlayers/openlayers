@@ -109,7 +109,7 @@ olx.LogoOptions.prototype.src;
 
 
 /**
- * @typedef {{map: (ol.Map|undefined),
+ * @typedef {{map: (ol.PluggableMap|undefined),
  *     maxLines: (number|undefined),
  *     strokeStyle: (ol.style.Stroke|undefined),
  *     targetSize: (number|undefined),
@@ -126,7 +126,7 @@ olx.GraticuleOptions;
 
 /**
  * Reference to an `ol.Map` object.
- * @type {ol.Map|undefined}
+ * @type {ol.PluggableMap|undefined}
  * @api
  */
 olx.GraticuleOptions.prototype.map;
@@ -4011,7 +4011,7 @@ olx.layer.HeatmapOptions.prototype.zIndex;
 
 /**
  * @typedef {{opacity: (number|undefined),
- *     map: (ol.Map|undefined),
+ *     map: (ol.PluggableMap|undefined),
  *     source: (ol.source.Image|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
@@ -4043,7 +4043,7 @@ olx.layer.ImageOptions.prototype.source;
  * layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it
  * managed by the map is to use {@link ol.Map#addLayer}.
- * @type {ol.Map|undefined}
+ * @type {ol.PluggableMap|undefined}
  * @api
  */
 olx.layer.ImageOptions.prototype.map;
@@ -4095,7 +4095,7 @@ olx.layer.ImageOptions.prototype.zIndex;
  * @typedef {{opacity: (number|undefined),
  *     preload: (number|undefined),
  *     source: (ol.source.Tile|undefined),
- *     map: (ol.Map|undefined),
+ *     map: (ol.PluggableMap|undefined),
  *     visible: (boolean|undefined),
  *     extent: (ol.Extent|undefined),
  *     minResolution: (number|undefined),
@@ -4136,7 +4136,7 @@ olx.layer.TileOptions.prototype.source;
  * layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it
  * managed by the map is to use {@link ol.Map#addLayer}.
- * @type {ol.Map|undefined}
+ * @type {ol.PluggableMap|undefined}
  * @api
  */
 olx.layer.TileOptions.prototype.map;
@@ -4199,7 +4199,7 @@ olx.layer.TileOptions.prototype.zIndex;
  *     opacity: (number|undefined),
  *     renderBuffer: (number|undefined),
  *     source: (ol.source.Vector|undefined),
- *     map: (ol.Map|undefined),
+ *     map: (ol.PluggableMap|undefined),
  *     style: (ol.style.Style|Array.<ol.style.Style>|ol.StyleFunction|undefined),
  *     updateWhileAnimating: (boolean|undefined),
  *     updateWhileInteracting: (boolean|undefined),
@@ -4224,7 +4224,7 @@ olx.layer.VectorOptions.prototype.renderOrder;
  * layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it
  * managed by the map is to use {@link ol.Map#addLayer}.
- * @type {ol.Map|undefined}
+ * @type {ol.PluggableMap|undefined}
  * @api
  */
 olx.layer.VectorOptions.prototype.map;
@@ -4330,7 +4330,7 @@ olx.layer.VectorOptions.prototype.zIndex;
 
 /**
  * @typedef {{extent: (ol.Extent|undefined),
- *     map: (ol.Map|undefined),
+ *     map: (ol.PluggableMap|undefined),
  *     minResolution: (number|undefined),
  *     maxResolution: (number|undefined),
  *     opacity: (number|undefined),
@@ -4392,7 +4392,7 @@ olx.layer.VectorTileOptions.prototype.renderOrder;
  * layers collection, and the layer will be rendered on top. This is useful for
  * temporary layers. The standard way to add a layer to a map and have it
  * managed by the map is to use {@link ol.Map#addLayer}.
- * @type {ol.Map|undefined}
+ * @type {ol.PluggableMap|undefined}
  * @api
  */
 olx.layer.VectorTileOptions.prototype.map;
@@ -8290,3 +8290,49 @@ olx.style.AtlasManagerOptions.prototype.maxSize;
  * @api
  */
 olx.style.AtlasManagerOptions.prototype.space;
+
+
+/**
+ * @typedef {{handles: function(ol.renderer.Type):boolean,
+ *     create: function(Element, ol.PluggableMap):ol.renderer.Map}}
+ */
+olx.MapRendererPlugin;
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @type {function(ol.renderer.Type):boolean}
+ * @api
+ */
+olx.MapRendererPlugin.prototype.handles;
+
+
+/**
+ * Create the map renderer.
+ * @type {function(Element, ol.PluggableMap):ol.renderer.Map}
+ * @api
+ */
+olx.MapRendererPlugin.prototype.create;
+
+
+/**
+ * @typedef {{handles: function(ol.renderer.Type, ol.layer.Layer):boolean,
+ *     create: function(ol.renderer.Map, ol.layer.Layer):ol.renderer.Layer}}
+ */
+olx.LayerRendererPlugin;
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @type {function(ol.renderer.Type, ol.layer.Layer):boolean}
+ * @api
+ */
+olx.LayerRendererPlugin.prototype.handles;
+
+
+/**
+ * Create a layer renderer.
+ * @type {function(ol.renderer.Map, ol.layer.Layer):ol.renderer.Layer}
+ * @api
+ */
+olx.LayerRendererPlugin.prototype.create;

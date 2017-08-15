@@ -2,7 +2,7 @@ goog.provide('ol.control.OverviewMap');
 
 goog.require('ol');
 goog.require('ol.Collection');
-goog.require('ol.Map');
+goog.require('ol.PluggableMap');
 goog.require('ol.MapEventType');
 goog.require('ol.MapProperty');
 goog.require('ol.Object');
@@ -97,10 +97,10 @@ ol.control.OverviewMap = function(opt_options) {
   this.ovmapDiv_.className = 'ol-overviewmap-map';
 
   /**
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    * @private
    */
-  this.ovmap_ = new ol.Map({
+  this.ovmap_ = new ol.PluggableMap({
     controls: new ol.Collection(),
     interactions: new ol.Collection(),
     view: options.view
@@ -551,7 +551,7 @@ ol.control.OverviewMap.prototype.getCollapsed = function() {
 
 /**
  * Return the overview map.
- * @return {ol.Map} Overview map.
+ * @return {ol.PluggableMap} Overview map.
  * @api
  */
 ol.control.OverviewMap.prototype.getOverviewMap = function() {

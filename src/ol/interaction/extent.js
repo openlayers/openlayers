@@ -306,7 +306,7 @@ ol.interaction.Extent.getSegments_ = function(extent) {
 
 /**
  * @param {ol.Pixel} pixel cursor location
- * @param {ol.Map} map map
+ * @param {ol.PluggableMap} map map
  * @returns {ol.Coordinate|null} snapped vertex on extent
  * @private
  */

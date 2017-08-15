@@ -839,7 +839,7 @@ ol.interaction.Modify.prototype.handlePointerMove_ = function(evt) {
 
 /**
  * @param {ol.Pixel} pixel Pixel
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @private
  */
 ol.interaction.Modify.prototype.handlePointerAtPixel_ = function(pixel, map) {

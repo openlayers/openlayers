@@ -336,7 +336,7 @@ ol.interaction.Snap.prototype.shouldStopEvent = ol.functions.FALSE;
 /**
  * @param {ol.Pixel} pixel Pixel
  * @param {ol.Coordinate} pixelCoordinate Coordinate
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @return {ol.SnapResultType} Snap result
  */
 ol.interaction.Snap.prototype.snapTo = function(pixel, pixelCoordinate, map) {

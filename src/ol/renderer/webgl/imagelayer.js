@@ -1,10 +1,12 @@
 goog.provide('ol.renderer.webgl.ImageLayer');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.ViewHint');
 goog.require('ol.dom');
 goog.require('ol.extent');
 goog.require('ol.functions');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.webgl.Layer');
 goog.require('ol.source.ImageVector');
 goog.require('ol.transform');
@@ -19,6 +21,7 @@ if (ol.ENABLE_WEBGL) {
    * @extends {ol.renderer.webgl.Layer}
    * @param {ol.renderer.webgl.Map} mapRenderer Map renderer.
    * @param {ol.layer.Image} imageLayer Tile layer.
+   * @api
    */
   ol.renderer.webgl.ImageLayer = function(mapRenderer, imageLayer) {
 
@@ -45,6 +48,31 @@ if (ol.ENABLE_WEBGL) {
 
   };
   ol.inherits(ol.renderer.webgl.ImageLayer, ol.renderer.webgl.Layer);
+
+
+  /**
+   * Determine if this renderer handles the provided layer.
+   * @param {ol.renderer.Type} type The renderer type.
+   * @param {ol.layer.Layer} layer The candidate layer.
+   * @return {boolean} The renderer can render the layer.
+   */
+  ol.renderer.webgl.ImageLayer['handles'] = function(type, layer) {
+    return type === ol.renderer.Type.WEBGL && layer.getType() === ol.LayerType.IMAGE;
+  };
+
+
+  /**
+   * Create a layer renderer.
+   * @param {ol.renderer.Map} mapRenderer The map renderer.
+   * @param {ol.layer.Layer} layer The layer to be rendererd.
+   * @return {ol.renderer.webgl.ImageLayer} The layer renderer.
+   */
+  ol.renderer.webgl.ImageLayer['create'] = function(mapRenderer, layer) {
+    return new ol.renderer.webgl.ImageLayer(
+        /** @type {ol.renderer.webgl.Map} */ (mapRenderer),
+        /** @type {ol.layer.Image} */ (layer)
+    );
+  };
 
 
   /**

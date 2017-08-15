@@ -13,7 +13,7 @@ goog.require('ol.events.Event');
  * @extends {ol.events.Event}
  * @implements {oli.MapEvent}
  * @param {string} type Event type.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @param {?olx.FrameState=} opt_frameState Frame state.
  */
 ol.MapEvent = function(type, map, opt_frameState) {
@@ -22,7 +22,7 @@ ol.MapEvent = function(type, map, opt_frameState) {
 
   /**
    * The map where the event occurred.
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    * @api
    */
   this.map = map;

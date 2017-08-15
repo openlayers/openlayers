@@ -445,7 +445,7 @@
   /**
    * Assert that the given map resembles a reference image.
    *
-   * @param {ol.Map} map A map using the canvas renderer.
+   * @param {ol.PluggableMap} map A map using the canvas renderer.
    * @param {string} referenceImage Path to the reference image.
    * @param {number} tolerance The accepted mismatch tolerance.
    * @param {function} done A callback to indicate that the test is done.

@@ -1,4 +1,4 @@
-goog.provide('ol.Map');
+goog.provide('ol.CanvasMap');
 
 goog.require('ol');
 goog.require('ol.PluggableMap');
@@ -12,30 +12,15 @@ goog.require('ol.renderer.canvas.Map');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.canvas.VectorLayer');
 goog.require('ol.renderer.canvas.VectorTileLayer');
-goog.require('ol.renderer.webgl.ImageLayer');
-goog.require('ol.renderer.webgl.Map');
-goog.require('ol.renderer.webgl.TileLayer');
-goog.require('ol.renderer.webgl.VectorLayer');
 
 
-if (ol.ENABLE_CANVAS) {
-  ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.canvas.Map);
-  ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
-    ol.renderer.canvas.ImageLayer,
-    ol.renderer.canvas.TileLayer,
-    ol.renderer.canvas.VectorLayer,
-    ol.renderer.canvas.VectorTileLayer
-  ]);
-}
-
-if (ol.ENABLE_WEBGL) {
-  ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.webgl.Map);
-  ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
-    ol.renderer.webgl.ImageLayer,
-    ol.renderer.webgl.TileLayer,
-    ol.renderer.webgl.VectorLayer
-  ]);
-}
+ol.plugins.register(ol.PluginType.MAP_RENDERER, ol.renderer.canvas.Map);
+ol.plugins.registerMultiple(ol.PluginType.LAYER_RENDERER, [
+  ol.renderer.canvas.ImageLayer,
+  ol.renderer.canvas.TileLayer,
+  ol.renderer.canvas.VectorLayer,
+  ol.renderer.canvas.VectorTileLayer
+]);
 
 
 /**
@@ -43,7 +28,7 @@ if (ol.ENABLE_WEBGL) {
  * The map is the core component of OpenLayers. For a map to render, a view,
  * one or more layers, and a target container are needed:
  *
- *     var map = new ol.Map({
+ *     var map = new ol.CanvasMap({
  *       view: new ol.View({
  *         center: [0, 0],
  *         zoom: 1
@@ -86,8 +71,9 @@ if (ol.ENABLE_WEBGL) {
  * @fires ol.render.Event#precompose
  * @api
  */
-ol.Map = function(options) {
+ol.CanvasMap = function(options) {
   options = ol.obj.assign({}, options);
+  delete options.renderer;
   if (!options.controls) {
     options.controls = ol.control.defaults();
   }
@@ -97,4 +83,4 @@ ol.Map = function(options) {
 
   ol.PluggableMap.call(this, options);
 };
-ol.inherits(ol.Map, ol.PluggableMap);
+ol.inherits(ol.CanvasMap, ol.PluggableMap);

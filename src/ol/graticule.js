@@ -24,7 +24,7 @@ ol.Graticule = function(opt_options) {
   var options = opt_options || {};
 
   /**
-   * @type {ol.Map}
+   * @type {ol.PluggableMap}
    * @private
    */
   this.map_ = null;
@@ -469,7 +469,7 @@ ol.Graticule.prototype.getInterval_ = function(resolution) {
 
 /**
  * Get the map associated with this graticule.
- * @return {ol.Map} The map.
+ * @return {ol.PluggableMap} The map.
  * @api
  */
 ol.Graticule.prototype.getMap = function() {
@@ -642,7 +642,7 @@ ol.Graticule.prototype.updateProjectionInfo_ = function(projection) {
 /**
  * Set the map for this graticule.  The graticule will be rendered on the
  * provided map.
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @api
  */
 ol.Graticule.prototype.setMap = function(map) {

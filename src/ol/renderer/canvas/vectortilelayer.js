@@ -1,16 +1,18 @@
 goog.provide('ol.renderer.canvas.VectorTileLayer');
 
 goog.require('ol');
+goog.require('ol.LayerType');
 goog.require('ol.TileState');
 goog.require('ol.dom');
 goog.require('ol.extent');
+goog.require('ol.layer.VectorTileRenderType');
 goog.require('ol.proj');
 goog.require('ol.proj.Units');
-goog.require('ol.layer.VectorTileRenderType');
 goog.require('ol.render.ReplayType');
 goog.require('ol.render.canvas');
 goog.require('ol.render.canvas.ReplayGroup');
 goog.require('ol.render.replay');
+goog.require('ol.renderer.Type');
 goog.require('ol.renderer.canvas.TileLayer');
 goog.require('ol.renderer.vector');
 goog.require('ol.size');
@@ -21,6 +23,7 @@ goog.require('ol.transform');
  * @constructor
  * @extends {ol.renderer.canvas.TileLayer}
  * @param {ol.layer.VectorTile} layer VectorTile layer.
+ * @api
  */
 ol.renderer.canvas.VectorTileLayer = function(layer) {
 
@@ -55,6 +58,28 @@ ol.renderer.canvas.VectorTileLayer = function(layer) {
 
 };
 ol.inherits(ol.renderer.canvas.VectorTileLayer, ol.renderer.canvas.TileLayer);
+
+
+/**
+ * Determine if this renderer handles the provided layer.
+ * @param {ol.renderer.Type} type The renderer type.
+ * @param {ol.layer.Layer} layer The candidate layer.
+ * @return {boolean} The renderer can render the layer.
+ */
+ol.renderer.canvas.VectorTileLayer['handles'] = function(type, layer) {
+  return type === ol.renderer.Type.CANVAS && layer.getType() === ol.LayerType.VECTOR_TILE;
+};
+
+
+/**
+ * Create a layer renderer.
+ * @param {ol.renderer.Map} mapRenderer The map renderer.
+ * @param {ol.layer.Layer} layer The layer to be rendererd.
+ * @return {ol.renderer.canvas.VectorTileLayer} The layer renderer.
+ */
+ol.renderer.canvas.VectorTileLayer['create'] = function(mapRenderer, layer) {
+  return new ol.renderer.canvas.VectorTileLayer(/** @type {ol.layer.VectorTile} */ (layer));
+};
 
 
 /**

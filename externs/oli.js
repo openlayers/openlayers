@@ -181,7 +181,7 @@ oli.MapEvent = function() {};
 
 
 /**
- * @type {ol.Map}
+ * @type {ol.PluggableMap}
  */
 oli.MapEvent.prototype.map;
 
@@ -229,7 +229,7 @@ oli.control.Control = function() {};
 
 
 /**
- * @param {ol.Map} map Map.
+ * @param {ol.PluggableMap} map Map.
  * @return {undefined} Undefined.
  */
 oli.control.Control.prototype.setMap = function(map) {};
