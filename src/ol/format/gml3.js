@@ -573,6 +573,8 @@ ol.format.GML3.prototype.SEGMENTS_PARSERS_ = {
 ol.format.GML3.prototype.writePos_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
+  var srsDimension = hasZ ? 3 : 2;
+  node.setAttribute('srsDimension', srsDimension);
   var srsName = context['srsName'];
   var axisOrientation = 'enu';
   if (srsName) {
@@ -629,6 +631,8 @@ ol.format.GML3.prototype.getCoords_ = function(point, opt_srsName, opt_hasZ) {
 ol.format.GML3.prototype.writePosList_ = function(node, value, objectStack) {
   var context = objectStack[objectStack.length - 1];
   var hasZ = context['hasZ'];
+  var srsDimension = hasZ ? 3 : 2;
+  node.setAttribute('srsDimension', srsDimension);
   var srsName = context['srsName'];
   // only 2d for simple features profile
   var points = value.getCoordinates();
