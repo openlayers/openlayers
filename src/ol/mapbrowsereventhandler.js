@@ -202,7 +202,7 @@ ol.MapBrowserEventHandler.prototype.isMouseActionButton_ = function(pointerEvent
  * @private
  */
 ol.MapBrowserEventHandler.prototype.handlePointerDown_ = function(pointerEvent) {
-  var isIE11 = navigator.userAgent.match(/Trident\/7.0; rv 11.0/);
+  var isIE11 = navigator.userAgent.indexOf('rv:11.0') >= 0;
   if (isE11) {
     pointerEvent.preventDefault();
   }
