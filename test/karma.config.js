@@ -3,9 +3,9 @@ var path = require('path');
 /**
  * The config below is not enough to run Karma.  In addition, we need to add
  * all library files in dependency order.  This could be done with a plugin if
- * Karma supported async plugins (there may other alternatives as well).  But
+ * Karma supported async plugins (there may be other alternatives as well).  But
  * for now we start Karma with the `tasks/test.js` script.  This script
- * sorts dependencies and add files to the Karma config below.
+ * sorts dependencies and adds files to the Karma config below.
  */
 
 module.exports = function(karma) {
