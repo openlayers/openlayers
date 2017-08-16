@@ -1470,29 +1470,69 @@ describe('ol.format.GML3', function() {
 
     var features, feature;
     before(function(done) {
-      afterLoadText('spec/ol/format/gml/geoserverFeatures.xml', function(xml) {
-        try {
-          var config = {
-            'featureNS': 'http://www.openplans.org/topp',
-            'featureType': 'states'
-          };
-          features = new ol.format.GML(config).readFeatures(xml);
-        } catch (e) {
-          done(e);
-        }
-        done();
-      });
+      afterLoadText('spec/ol/format/gml/geoserver3DFeatures.xml',
+          function(xml) {
+            try {
+              var config = {
+                'featureNS': 'http://www.opengeospatial.net/cite',
+                'featureType': 'geoserver_layer'
+              };
+              features = new ol.format.GML(config).readFeatures(xml);
+            } catch (e) {
+              done(e);
+            }
+            done();
+          });
     });
 
     it('creates 3 features', function() {
       expect(features).to.have.length(3);
     });
 
-    it('creates a polygon for Illinois', function() {
+    it('creates a LineString', function() {
       feature = features[0];
-      expect(feature.getId()).to.equal('states.1');
-      expect(feature.get('STATE_NAME')).to.equal('Illinois');
-      expect(feature.getGeometry()).to.be.an(ol.geom.MultiPolygon);
+      expect(feature.getId()).to.equal('geoserver_layer.1');
+      expect(feature.getGeometry()).to.be.an(ol.geom.LineString);
+    });
+
+    it('creates a Polygon', function() {
+      feature = features[1];
+      expect(feature.getId()).to.equal('geoserver_layer.2');
+      expect(feature.getGeometry()).to.be.an(ol.geom.Polygon);
+    });
+
+    it('creates a Point', function() {
+      feature = features[2];
+      expect(feature.getId()).to.equal('geoserver_layer.3');
+      expect(feature.getGeometry()).to.be.an(ol.geom.Point);
+    });
+
+
+    it('creates 3D Features with the expected geometries', function() {
+      var expectedGeometry1 = [
+        4.46386854, 51.91122415, 46.04679351,
+        4.46382399, 51.91120839, 46.04679382
+      ];
+      var expectedGeometry2 = [
+        4.46385491, 51.91119276, 46.06074531,
+        4.4638264, 51.91118582, 46.06074609,
+        4.46380612, 51.91121772, 46.06074168,
+        4.46383463, 51.91122465, 46.06074089,
+        4.46385491, 51.91119276, 46.06074531
+      ];
+      var expectedGeometry3 = [
+        4.46383715, 51.91125849, 46.04679348
+      ];
+
+      feature = features[0];
+      expect(feature.getGeometry().getFlatCoordinates())
+          .to.eql(expectedGeometry1);
+      feature = features[1];
+      expect(feature.getGeometry().getFlatCoordinates())
+          .to.eql(expectedGeometry2);
+      feature = features[2];
+      expect(feature.getGeometry().getFlatCoordinates())
+          .to.eql(expectedGeometry3);
     });
 
   });
