@@ -119,20 +119,20 @@ describe('ol.rendering.style.RegularShape', function() {
     });
 
     it('supports lineDash', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures(new ol.style.Stroke({
         lineDash: [10, 5]
       }));
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-linedash.png', 5, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedash.png', 5, done);
     });
 
     it('supports lineDashOffset', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       createFeatures(new ol.style.Stroke({
         lineDash: [10, 5],
         lineDashOffset: 5
       }));
-      expectResemble(map, 'spec/ol/style/expected/regularshape-canvas-linedashoffset.png', 5, done);
+      expectResemble(map, 'rendering/ol/style/expected/regularshape-canvas-linedashoffset.png', 5, done);
     });
 
     where('WebGL').it('tests the WebGL renderer', function(done) {

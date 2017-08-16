@@ -98,7 +98,7 @@ describe('ol.rendering.layer.Vector', function() {
     });
 
     it('renders transparent layers correctly with the canvas renderer', function(done) {
-      map = createMap('canvas');
+      createMap('canvas');
       var smallLine = new ol.Feature(new ol.geom.LineString([
         [center[0], center[1] - 1],
         [center[0], center[1] + 1]
@@ -131,7 +131,7 @@ describe('ol.rendering.layer.Vector', function() {
         opacity: 0.5
       }));
       map.once('postrender', function() {
-        expectResemble(map, 'spec/ol/layer/expected/vector-canvas-transparent.png',
+        expectResemble(map, 'rendering/ol/layer/expected/vector-canvas-transparent.png',
             7, done);
       });
     });

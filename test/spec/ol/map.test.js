@@ -1,9 +1,11 @@
 goog.provide('ol.test.Map');
 
+goog.require('ol.Feature');
 goog.require('ol.Map');
 goog.require('ol.MapEvent');
 goog.require('ol.Overlay');
 goog.require('ol.View');
+goog.require('ol.geom.Point');
 goog.require('ol.has');
 goog.require('ol.interaction');
 goog.require('ol.interaction.DoubleClickZoom');
@@ -11,7 +13,9 @@ goog.require('ol.interaction.Interaction');
 goog.require('ol.interaction.MouseWheelZoom');
 goog.require('ol.interaction.PinchZoom');
 goog.require('ol.layer.Tile');
+goog.require('ol.layer.Vector');
 goog.require('ol.renderer.canvas.IntermediateCanvas');
+goog.require('ol.source.Vector');
 goog.require('ol.source.XYZ');
 
 describe('ol.Map', function() {

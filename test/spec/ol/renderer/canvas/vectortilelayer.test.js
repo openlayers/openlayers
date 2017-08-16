@@ -7,6 +7,7 @@ goog.require('ol.TileState');
 goog.require('ol.VectorImageTile');
 goog.require('ol.VectorTile');
 goog.require('ol.View');
+goog.require('ol.extent');
 goog.require('ol.format.MVT');
 goog.require('ol.geom.Point');
 goog.require('ol.layer.VectorTile');

@@ -138,6 +138,7 @@ describe('ol.render', function() {
     });
 
     it('supports lineDash styles', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -154,11 +155,12 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-polygon-linedash.png', IMAGE_TOLERANCE, done);
 
     });
 
     it('supports lineDashOffset', function(done) {
+      var context = getContext();
       var vectorContext = ol.render.toContext(context, {size: [100, 100]});
 
       var style = new ol.style.Style({
@@ -176,7 +178,7 @@ describe('ol.render', function() {
       ]));
 
       resembleCanvas(context.canvas,
-          'spec/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
+          'rendering/ol/expected/render-polygon-linedashoffset.png', IMAGE_TOLERANCE, done);
 
     });
 

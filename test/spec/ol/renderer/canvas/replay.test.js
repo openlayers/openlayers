@@ -2,6 +2,12 @@ goog.provide('ol.test.renderer.canvas.Replay');
 
 goog.require('ol');
 goog.require('ol.Feature');
+goog.require('ol.geom.GeometryCollection');
+goog.require('ol.geom.LineString');
+goog.require('ol.geom.MultiLineString');
+goog.require('ol.geom.MultiPoint');
+goog.require('ol.geom.MultiPolygon');
+goog.require('ol.geom.Point');
 goog.require('ol.geom.Polygon');
 goog.require('ol.render.canvas.LineStringReplay');
 goog.require('ol.render.canvas.PolygonReplay');
