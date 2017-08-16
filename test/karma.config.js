@@ -1,4 +1,5 @@
 var path = require('path');
+var pkg = require('../package.json');
 
 /**
  * The config below is not enough to run Karma.  In addition, we need to add
@@ -47,9 +48,45 @@ module.exports = function(karma) {
   });
 
   if (process.env.TRAVIS) {
+    // see https://wiki.saucelabs.com/display/DOCS/Platform+Configurator
+    // for platform and browserName options (Selenium API, node.js code)
+    var customLaunchers = {
+      SL_Chrome: {
+        base: 'SauceLabs',
+        browserName: 'chrome'
+      },
+      SL_Firefox: {
+        base: 'SauceLabs',
+        browserName: 'firefox'
+      },
+      SL_Edge: {
+        base: 'SauceLabs',
+        platform: 'Windows 10',
+        browserName: 'MicrosoftEdge'
+      },
+      SL_Safari: {
+        base: 'SauceLabs',
+        platform: 'macos 10.12',
+        browserName: 'safari'
+      }
+    };
     karma.set({
-      reporters: ['dots'],
-      browsers: ['Firefox']
+      sauceLabs: {
+        testName: pkg.name + '@' + pkg.version,
+        recordScreenshots: false,
+        connectOptions: {
+          port: 5757
+        },
+        startConnect: false,
+        tunnelIdentifier: process.env.TRAVIS_JOB_NUMBER,
+        username: 'openlayers',
+        accessKey: process.env.SAUCE_ACCESS_KEY
+      },
+      reporters: ['dots', 'saucelabs'],
+      captureTimeout: 240000,
+      browserNoActivityTimeout: 240000,
+      customLaunchers: customLaunchers,
+      browsers: Object.keys(customLaunchers)
     });
   } else {
     karma.set({
